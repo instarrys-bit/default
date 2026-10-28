@@ -1,32 +1,40 @@
 # Shadowrocket configuration
 
-This repository is the source of truth for the maintained Shadowrocket configuration.
+This repository is the canonical, version-controlled source for the maintained Shadowrocket configuration.
 
-## Subscription URL
-
-After `shadowrocket/ss.conf` is committed, use this raw URL in Shadowrocket:
+## Remote configuration URL
 
 `https://raw.githubusercontent.com/instarrys-bit/default/main/shadowrocket/ss.conf`
 
-In Shadowrocket, add/import the URL as a remote configuration or subscription, then use its update/refresh action to pull future commits. GitHub `main` is the delivery branch; changes committed to this file become available at the same URL. The app's refresh interval and exact menu labels depend on the installed Shadowrocket version.
+Add that URL in Shadowrocket as a remote configuration (or URL-based configuration import, depending on app version). After a change is committed to `main`, refresh/update the remote configuration in Shadowrocket to fetch the new version. The URL is stable; do not rename or move `shadowrocket/ss.conf` without intentionally migrating the subscription.
 
-## Maintenance rules
+## Source and scope
 
-- Keep the canonical config at `shadowrocket/ss.conf`; preserve the URL to avoid needing to re-add the subscription.
-- Before each change, review the current file and compare the diff; do not overwrite the whole configuration from an older copy.
-- Preserve the existing DNS routing constraints, rule-layer order, Apple-specific handling, and domain-by-domain evidence notes unless a reviewed change explicitly requires otherwise.
-- Validate section headers, rule syntax, duplicate/conflicting rules, DNS policy consistency, and final catch-all rules before committing.
-- Test on-device after refresh. A successful GitHub commit only verifies delivery, not that Shadowrocket accepts the config or that traffic behaves as intended.
-- Do not put proxy credentials, private keys, subscription tokens, or other secrets in this public repository.
+- Canonical file: `shadowrocket/ss.conf`
+- Delivery branch: `main`
+- Current file is based on the user-provided `ss.conf`, uploaded without intentional rule or DNS edits.
+- GitHub history records every committed version and provides diffs for maintenance review.
 
-## Change workflow
+## Maintenance contract
 
-1. Inspect the current version and identify the exact intended changes.
-2. Make a minimal, reviewable diff and explain the reason/evidence for each routing or DNS change.
-3. Run static checks and review the diff.
-4. Commit to `main` only after the change is approved.
-5. Refresh the remote configuration in Shadowrocket and test the affected traffic paths on the device.
+1. **Audit first:** read the current repository version and inspect relevant logs/evidence before planning changes.
+2. **Plan before editing:** state the exact proposed changes and rationale; do not make broad rewrites from an older local copy.
+3. **Preserve architecture:** retain the DNS path constraints, six-layer rule ordering, domain-by-domain analysis, Apple-specific strategy, and existing policy intent unless a reviewed change explicitly calls for a change.
+4. **Minimize diffs:** change only the necessary lines and explain the evidence and expected effect.
+5. **Validate before commit:** check section headers, rule syntax, duplicate/conflicting rules, DNS policy consistency, catch-all ordering, and the diff. Static checks cannot prove that Shadowrocket will accept the config or that network traffic behaves correctly.
+6. **Device verification:** after refreshing the URL, test the affected traffic paths and inspect Shadowrocket logs. Record what was and was not tested.
+7. **Protect secrets:** this repository is public. Never commit proxy credentials, private keys, subscription tokens, private IP/account details, or diagnostic logs containing sensitive information.
 
-## Status
+## Typical update procedure
 
-The repository was initially empty. The configuration file still needs to be added at `shadowrocket/ss.conf` before the subscription URL above can be used.
+- Inspect current `main` and the relevant evidence.
+- Propose a minimal diff and wait for approval before changing routing/DNS behavior.
+- Run available static checks and review the diff.
+- Commit the approved change to `main`.
+- Refresh the remote configuration in Shadowrocket and test on-device.
+
+## Current status
+
+- [x] Initial configuration uploaded to `shadowrocket/ss.conf`.
+- [x] Stable raw URL established for remote import/update.
+- [ ] Shadowrocket import/refresh and real-device traffic tests remain to be performed by the user; a successful GitHub upload does not verify device behavior.
