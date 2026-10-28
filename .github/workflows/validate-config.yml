@@ -1,0 +1,24 @@
+name: Validate Shadowrocket config
+
+on:
+  push:
+    paths:
+      - "shadowrocket/ss.conf"
+      - "scripts/validate_config.py"
+      - ".github/workflows/validate-config.yml"
+  pull_request:
+    paths:
+      - "shadowrocket/ss.conf"
+      - "scripts/validate_config.py"
+      - ".github/workflows/validate-config.yml"
+
+jobs:
+  structural-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Check config structure
+        run: python scripts/validate_config.py
