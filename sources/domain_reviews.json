@@ -1,0 +1,1823 @@
+{
+  "schema_version": 1,
+  "engine": "deterministic-domain-audit/1.1",
+  "updated_at": "2026-10-31T17:31:31.835929+00:00",
+  "source_snapshot": [
+    {
+      "id": "sr-adblock-domain-lite",
+      "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "entries": 56516
+    },
+    {
+      "id": "hagezi-domains-pro",
+      "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a",
+      "entries": 213387
+    }
+  ],
+  "run_counts": {
+    "ALREADY_COVERED": 21,
+    "DUPLICATE": 29,
+    "RISK_HOLD": 17
+  },
+  "counts": {
+    "ALREADY_COVERED": 21,
+    "DUPLICATE": 29,
+    "RISK_HOLD": 17
+  },
+  "reviews": [
+    {
+      "domain": "39d83s.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "a-remad.qm989.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "activity-ag.awemeughun.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "ad-cdn.qingting.fm",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN ad-cdn.qingting.fm => REJECT (line 692)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "ad.21cn.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN ad.21cn.com => REJECT (line 693)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "ad.api.moji.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN ad.api.moji.com => REJECT (line 694)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "ad.mcloud.139.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN ad.mcloud.139.com => REJECT (line 695)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "adapi.izuiyou.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN adapi.izuiyou.com => REJECT (line 696)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "adbehavior.ximalaya.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN adbehavior.ximalaya.com => REJECT (line 697)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "adcdn.tencentmusic.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN adcdn.tencentmusic.com => REJECT (line 698)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "adcdn6.tencentmusic.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN adcdn6.tencentmusic.com => REJECT (line 699)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "adclick.tencentmusic.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN adclick.tencentmusic.com => REJECT (line 700)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "adexpo.tencentmusic.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN adexpo.tencentmusic.com => REJECT (line 701)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "adlaunch.qingting.fm",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "RISK_HOLD",
+      "reason": "Exact host is on the critical-function protection list",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "PASS",
+      "conflict_check": "PASS",
+      "risk_check": "VETO",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "ads-shopping.shouqianba.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN ads-shopping.shouqianba.com => REJECT (line 702)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "ads.play.cbsi.video",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "ads.reembed.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "ads.snapchat.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "RISK_HOLD",
+      "reason": "Exact host is on the critical-function protection list",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "PASS",
+      "conflict_check": "PASS",
+      "risk_check": "VETO",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "ads.storm8.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "ads.yahoo.de",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "adsehera.ximalaya.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "adsfilebssdlbig.tx.kugou.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "adv-adlog.variflight.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN adv-adlog.variflight.com => REJECT (line 703)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "adv-ads.variflight.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN adv-ads.variflight.com => REJECT (line 704)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "advertise.baicizhan.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN advertise.baicizhan.com => REJECT (line 705)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "advertise.baicizhan.org",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN advertise.baicizhan.org => REJECT (line 706)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "adwbs.ximalaya.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN adwbs.ximalaya.com => REJECT (line 707)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "adx.op.cp18.ott.cibntv.net",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "amdc.m.youku.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "api-ad.kajicam.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "api.iqiyi.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "RISK_HOLD",
+      "reason": "Exact host is on the critical-function protection list",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "PASS",
+      "conflict_check": "PASS",
+      "risk_check": "VETO",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "apis.alenable.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN apis.alenable.com => REJECT (line 708)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "apiv4-iyes.youku.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "RISK_HOLD",
+      "reason": "Exact host is on the critical-function protection list",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "PASS",
+      "conflict_check": "PASS",
+      "risk_check": "VETO",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "business-cdn.shouji.sogou.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "RISK_HOLD",
+      "reason": "Exact host is on the critical-function protection list",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "PASS",
+      "conflict_check": "PASS",
+      "risk_check": "VETO",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "business.msstatic.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "RISK_HOLD",
+      "reason": "Exact host is on the critical-function protection list",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "PASS",
+      "conflict_check": "PASS",
+      "risk_check": "VETO",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "cdn-new-ad.wtzw.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "cr-status.iqiyi.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN cr-status.iqiyi.com => REJECT (line 709)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "data-hoisin.coocaa.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN data-hoisin.coocaa.com => REJECT (line 710)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "ddfs-public.ddimg.mobi",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "dflow.bz.mgtv.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN dflow.bz.mgtv.com => REJECT (line 711)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "encounter.bz.mgtv.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN encounter.bz.mgtv.com => REJECT (line 712)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "floor.bz.mgtv.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN floor.bz.mgtv.com => REJECT (line 713)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "ggadoffline.miguvideo.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN ggadoffline.miguvideo.com => REJECT (line 714)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "ggic03.miguvideo.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN ggic03.miguvideo.com => REJECT (line 715)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "ggmk.miguvideo.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN ggmk.miguvideo.com => REJECT (line 716)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "ggx03.miguvideo.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN ggx03.miguvideo.com => REJECT (line 717)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "huyafile.msstatic.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "icloud-amap.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "RISK_HOLD",
+      "reason": "Exact host is on the critical-function protection list",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "PASS",
+      "conflict_check": "PASS",
+      "risk_check": "VETO",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "kad.gotokeep.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN kad.gotokeep.com => REJECT (line 718)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "layer.bz.mgtv.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN layer.bz.mgtv.com => REJECT (line 719)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "livep.l.t002.ottcn.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "RISK_HOLD",
+      "reason": "Exact host is on the critical-function protection list",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "PASS",
+      "conflict_check": "PASS",
+      "risk_check": "VETO",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "livewebbs2.msstatic.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "RISK_HOLD",
+      "reason": "Exact host is on the critical-function protection list",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "PASS",
+      "conflict_check": "PASS",
+      "risk_check": "VETO",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "livewebbs2pcdn.msstatic.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "RISK_HOLD",
+      "reason": "Exact host is on the critical-function protection list",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "PASS",
+      "conflict_check": "PASS",
+      "risk_check": "VETO",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "log.51wnl-cq.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "mob.bz.mgtv.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "RISK_HOLD",
+      "reason": "Exact host is on the critical-function protection list",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "PASS",
+      "conflict_check": "PASS",
+      "risk_check": "VETO",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "msync-im1-vip6-std.easemob.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "RISK_HOLD",
+      "reason": "Exact host is on the critical-function protection list",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "PASS",
+      "conflict_check": "PASS",
+      "risk_check": "VETO",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "pl.cp31.ott.cibntv.net",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "RISK_HOLD",
+      "reason": "Exact host is on the critical-function protection list",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "PASS",
+      "conflict_check": "PASS",
+      "risk_check": "VETO",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "pp-cdnfile2pcdn.msstatic.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "RISK_HOLD",
+      "reason": "Exact host is on the critical-function protection list",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "PASS",
+      "conflict_check": "PASS",
+      "risk_check": "VETO",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "r.51wnl-cq.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "rc-topic-api.bz.mgtv.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "RISK_HOLD",
+      "reason": "Exact host is on the critical-function protection list",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "PASS",
+      "conflict_check": "PASS",
+      "risk_check": "VETO",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "richmanapi.jxedt.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "richmanmain.jxedt.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "richmanrules.jxedt.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "rttrack.ddxq.mobi",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "ALREADY_COVERED",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "safebrowsing.g.applimg.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "RISK_HOLD",
+      "reason": "Exact host is on the critical-function protection list",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "PASS",
+      "conflict_check": "PASS",
+      "risk_check": "VETO",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "trackercollect.ddxq.mobi",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.26,
+      "status": "DUPLICATE",
+      "reason": "Existing first-match DOMAIN trackercollect.ddxq.mobi => REJECT (line 720)",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        },
+        {
+          "source_id": "hagezi-domains-pro",
+          "publisher": "HaGeZi/dns-blocklists",
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a"
+        }
+      ],
+      "source_count": 2,
+      "duplicate_check": "DUPLICATE",
+      "conflict_check": "PASS",
+      "risk_check": "PASS",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    },
+    {
+      "domain": "vip.bz.mgtv.com",
+      "classification": "REJECT",
+      "policy": "REJECT",
+      "confidence": 0.13,
+      "status": "RISK_HOLD",
+      "reason": "Exact host is on the critical-function protection list",
+      "evidence": [
+        {
+          "source_id": "sr-adblock-domain-lite",
+          "publisher": "ithtelab/sr-adblock",
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+          "currently_listed": true
+        }
+      ],
+      "source_count": 1,
+      "duplicate_check": "PASS",
+      "conflict_check": "PASS",
+      "risk_check": "VETO",
+      "decision_engine": "deterministic-domain-audit/1.1",
+      "reviewed_at": "2026-10-31T17:31:31.835929+00:00",
+      "config_baseline": "managed-block-excluded"
+    }
+  ]
+}
