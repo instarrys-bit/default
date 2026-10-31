@@ -15,7 +15,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: shadowrocket-deterministic-audit
+  group: shadowrocket-main-writer
   cancel-in-progress: false
 
 jobs:
@@ -57,6 +57,7 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git commit -m "Run deterministic Shadowrocket domain audit"
+            git pull --rebase origin main
             git push
           else
             echo "No ledger, report or config changes."
