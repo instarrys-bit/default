@@ -29,3 +29,8 @@ jobs:
 
       - name: Audit canonical config and DNS invariants
         run: python3 scripts/audit_pipeline.py
+
+      - name: Audit pinned external domain-only source
+        run: |
+          python3 scripts/audit_external_domains.py
+          cat reports/external-domain-audit.md >> "$GITHUB_STEP_SUMMARY"
