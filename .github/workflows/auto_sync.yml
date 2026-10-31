@@ -1,6 +1,8 @@
-name: Shadowrocket Deterministic Domain Audit and Publish
+name: Shadowrocket Deterministic Domain Audit (Immutable Baseline)
 
 on:
+  schedule:
+    - cron: "17 */6 * * *"
   workflow_dispatch:
 
 permissions:
@@ -11,7 +13,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  audit-and-publish:
+  audit-only:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -42,13 +44,13 @@ jobs:
           python3 scripts/audit_external_domains.py
           cat reports/external-domain-audit.md >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Commit validated ledger, reports and config
+      - name: Commit audit ledger and reports only
         run: |
           git add sources/domain_reviews.json reports/external-domain-audit.md data/domain_candidates.json data/primary_snapshot.txt
           if ! git diff --cached --quiet; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git commit -m "Run deterministic Shadowrocket domain audit and safe publish"
+            git commit -m "Run deterministic Shadowrocket domain audit"
             git push
           else
             echo "No ledger, report or config changes."
