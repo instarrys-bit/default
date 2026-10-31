@@ -23,7 +23,7 @@ def strip_block(text):
     return "".join(lines[:a[0]]+lines[b[0]+1:])
 def conditional_overlap(domain,conditional):
     for _,raw in conditional:
-        for _,d in COND_RE.findall(raw):
+        for d in COND_RE.findall(raw):
             d=d.lower().strip(".")
             if domain==d or domain.endswith("."+d) or d.endswith("."+domain): return True
     return False
