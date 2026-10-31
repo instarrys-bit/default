@@ -1,30 +1,31 @@
-name: Auto Sync Shadowrocket Config
+name: Shadowrocket Safe Audit
 
 on:
   schedule:
-    # 每周一凌晨 04:00 (北京时间) 自动运行
-    - cron: '0 20 * * 0'
-  workflow_dispatch: # 支持在 GitHub 页面随时手动一键点击运行
+    # Every Monday at 04:00 China Standard Time (Sunday 20:00 UTC)
+    - cron: "0 20 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shadowrocket-safe-audit
+  cancel-in-progress: false
 
 jobs:
-  build:
+  audit:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
-      - name: Run Build Script
-        run: |
-          python3 scripts/build_config.py
-
-      - name: Commit and Push
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add shadowrocket/ss.conf
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update Shadowrocket config [skip ci]" && git push)
+      - name: Audit canonical config and DNS invariants
+        run: python3 scripts/audit_pipeline.py
