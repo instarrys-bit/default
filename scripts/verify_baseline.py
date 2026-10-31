@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Fail-closed verification of the immutable uploaded Shadowrocket baseline."""
+"""Fail-closed verification of the immutable uploaded Shadowrocket baseline.
+
+This script is the first gate in every scheduled deterministic audit.
+"""
 from __future__ import annotations
 import hashlib
 import json
