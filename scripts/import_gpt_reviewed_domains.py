@@ -13,6 +13,7 @@ END="# END GPT-REVIEWED DOMAIN RULES (managed)"
 LAYER3="# === Layer 3 & Layer 4: Domestic (DIRECT) & International/Web3 (PROXY) Domain Sets (Length-Sorted Zero-Shadowing) ==="
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$")
 COND_RE=re.compile(r"DOMAIN(-SUFFIX)?,([A-Za-z0-9.-]+)",re.I)
+SEARCH_HOSTS={"google.com","bing.com","duckduckgo.com","search.yahoo.com","yandex.com"}
 def fail(m): raise SystemExit("ERROR: "+m)
 def blob(data): return hashlib.sha1(f"blob {len(data)}\0".encode("ascii")+data).hexdigest()
 def strip_block(text):
@@ -33,9 +34,26 @@ def load_rules_from_text(content):
         f.write(content); name=f.name
     try: return load_domain_rules(Path(name))
     finally: Path(name).unlink(missing_ok=True)
+def validate_evidence(d,evidence,min_sources):
+    if not isinstance(evidence,list) or len(evidence)<min_sources: fail("too few evidence sources for "+d)
+    hosts=set(); publishers=set()
+    for ev in evidence:
+        url=str(ev.get("url","")).strip()
+        if not url.startswith("https://"): fail("non-HTTPS evidence URL for "+d)
+        parsed=urlparse(url); host=(parsed.hostname or "").lower()
+        if not host or any(host==x or host.endswith("."+x) for x in SEARCH_HOSTS):
+            fail("search-result pages are not evidence for "+d)
+        publisher=str(ev.get("publisher","")).strip().lower()
+        supports=str(ev.get("supports","")).strip()
+        if not publisher or not supports: fail("publisher/supporting claim missing for "+d)
+        hosts.add(host); publishers.add(publisher)
+    if len(hosts)<min_sources or len(publishers)<min_sources:
+        fail("evidence publishers and hosts are not sufficiently independent for "+d)
 def main():
     check="--check" in sys.argv
-    policy=json.loads(POLICY.read_text(encoding="utf-8"))
+    policy=json.loads(POLICY.read_text(encoding="utf-8")); release=policy["release_policy"]
+    min_sources=int(release.get("minimum_independent_evidence_sources",2))
+    min_confidence=float(release.get("minimum_confidence",0.90))
     original=CONFIG.read_text(encoding="utf-8"); base=strip_block(original)
     if blob(base.encode("utf-8"))!=policy["canonical_config"]["approved_git_blob_sha"]:
         fail("config outside managed block differs from approved baseline")
@@ -65,17 +83,8 @@ def main():
         p=str(item.get("policy","")).upper()
         if p not in {"DIRECT","PROXY","REJECT"}: fail("invalid policy for "+d)
         confidence=item.get("confidence")
-        if not isinstance(confidence,(int,float)) or confidence<0.90: fail("confidence below 0.90 for "+d)
-        evidence=item.get("evidence")
-        if not isinstance(evidence,list) or len(evidence)<2: fail("fewer than two evidence sources for "+d)
-        hosts=set()
-        for ev in evidence:
-            u=str(ev.get("url","")).strip()
-            if not u.startswith("https://"): fail("non-HTTPS evidence URL for "+d)
-            host=urlparse(u).hostname
-            if not host: fail("invalid evidence host for "+d)
-            hosts.add(host.lower())
-        if len(hosts)<2: fail("evidence sources are not independent for "+d)
+        if not isinstance(confidence,(int,float)) or confidence<min_confidence: fail("confidence below policy threshold for "+d)
+        validate_evidence(d,item.get("evidence"),min_sources)
         if not str(item.get("reason","")).strip() or not str(item.get("reviewed_at","")).strip():
             fail("review rationale/date missing for "+d)
         if conditional_overlap(d,conditional):
@@ -98,7 +107,7 @@ def main():
             f"Quarantined or review-only: {len(quarantined)}",f"Remaining pending candidates: {len(remaining)}","",
             "| Domain | Result |","|---|---|"]
     report.extend("| "+d+" | "+reason+" |" for d,reason in quarantined)
-    report += ["","Only exact DOMAIN rules are automatically published. Each approval requires two independent HTTPS evidence hosts, rationale, review date and confidence >= 0.90.",
+    report += ["","Only exact DOMAIN rules are automatically published. Each approval requires independent HTTPS publishers/hosts, rationale, review date and confidence above the configured threshold.",
                "No suffix-wide rules are generated automatically. Existing rules win; conflicts and conditional-rule overlaps are quarantined.",
                "Only the managed block and pending queue may change. DNS, nodes, MITM, URL Rewrite and all bytes outside the managed block are protected.",""]
     rendered="\n".join(report)
