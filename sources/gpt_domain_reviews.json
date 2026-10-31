@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-31T15:13:09.521Z",
+  "updated_at": "2026-10-31T15:14:55.102Z",
   "reviews": [
     {
       "domain": "39d83s.com",
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "检索未定位到可信运营主体、产品文档或用途说明；不能仅凭随机样式域名推断恶意、广告或跟踪。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "检索未定位到可信运营主体、产品文档或用途说明；不能仅凭随机样式域名推断恶意、广告或跟踪。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -15,6 +15,18 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://bgp.he.net/net/128.1.134.0/24",
+          "publisher": "Hurricane Electric BGP Toolkit",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该网段页面列出该域名与 IP 的关联，属于网络归属辅助线索，不证明业务用途或域名运营主体。"
+        },
+        {
+          "url": "https://zhupite.com/dev/%E7%94%B5%E5%BD%B1%E5%A4%A9%E5%A0%82APP%E9%80%86%E5%90%91%E5%88%86%E6%9E%90.html",
+          "publisher": "朱皮特的烂笔头",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "逆向分析文章出现该域名作为图片资源 URL；单一第三方样本不能证明其当前用途或安全属性。"
         }
       ]
     },
@@ -23,7 +35,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "检索未找到可核验的官方域名说明或可信用途资料；主机名片段本身不足以证明广告属性。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "检索未找到可核验的官方域名说明或可信用途资料；主机名片段本身不足以证明广告属性。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -31,6 +43,12 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://www.bybk.cc/en/2100.html",
+          "publisher": "BYBK",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方广告过滤指南列出该域名；只说明被该指南作为过滤对象，不是运营方用途证明。"
         }
       ]
     },
@@ -39,7 +57,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "搜索仅命中社区规则讨论及该 IP 网段的云服务注册资料；IP 注册主体不能证明精确域名运营主体或功能。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "搜索仅命中社区规则讨论及该 IP 网段的云服务注册资料；IP 注册主体不能证明精确域名运营主体或功能。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -47,6 +65,18 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://dnsrepo.noc.org/?ip=47.246.2.227",
+          "publisher": "DNS Repo",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "DNS 数据显示该域名及其别名解析关系，网络数据仅作辅助，不能证明运营主体或功能。"
+        },
+        {
+          "url": "https://www.nodeseek.com/post-387541-1",
+          "publisher": "NodeSeek",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "社区规则帖将该域名列为番茄小说相关拦截项；不是官方说明，也不能证明其为纯广告端点。"
         }
       ]
     },
@@ -55,7 +85,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "命中两个独立第三方广告列表，但未找到蜻蜓 FM 官方资料确认此精确主机是否只承载广告；整域阻止的功能影响未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "命中两个独立第三方广告列表，但未找到蜻蜓 FM 官方资料确认此精确主机是否只承载广告；整域阻止的功能影响未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -75,6 +105,12 @@
           "publisher": "GitHub: x-o-r-r-o/Pi-Hole-Block-Lists",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方移动广告列表包含该域名；不能单独证明具体功能或核心依赖关系。"
+        },
+        {
+          "url": "https://yaoge.me/it/2209.html",
+          "publisher": "瑶哥的博客",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 hosts 列表列出该域名；未提供官方用途说明。"
         }
       ]
     },
@@ -83,7 +119,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "命中第三方规则列表，未找到 21CN/运营方对精确主机用途的官方说明；列表命中不足以证明整域可阻止。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "命中第三方规则列表，未找到 21CN/运营方对精确主机用途的官方说明；列表命中不足以证明整域可阻止。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -103,6 +139,12 @@
           "publisher": "GitHub: HaGeZi DNS Blocklists",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方 DNS 拦截列表包含该域名；不能单独证明精确主机的用途或运营主体。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/Remove_ads_by_keli",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方配置将该域名列为 REJECT 候选；不证明运营方用途或无核心依赖。"
         }
       ]
     },
@@ -111,7 +153,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "第三方规则库将其列为广告相关候选，但未找到墨迹天气官方接口说明确认该精确主机仅承载广告，可能存在应用依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "第三方规则库将其列为广告相关候选，但未找到墨迹天气官方接口说明确认该精确主机仅承载广告，可能存在应用依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -131,6 +173,12 @@
           "publisher": "GitHub: blackmatrix7/ios_rule_script",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方规则针对该主机或其特定 URL 路径设置拦截；只能作为线索，不能证明整域名均可阻止。"
+        },
+        {
+          "url": "https://git.co-villa.com/kyumoka/ACL4SSR/-/blob/master/Clash/BanProgramAD.list",
+          "publisher": "ACL4SSR 镜像仓库",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方规则再次收录该域名；仍无墨迹天气官方接口用途说明。"
         }
       ]
     },
@@ -139,7 +187,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "第三方规则资料提到 /advertapi 路径，提示广告 API 线索；没有两份独立可信的运营方资料确认整域用途。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "第三方规则资料提到 /advertapi 路径，提示广告 API 线索；没有两份独立可信的运营方资料确认整域用途。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -159,6 +207,18 @@
           "publisher": "GitHub: HaGeZi DNS Blocklists",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方 DNS 拦截列表包含该域名；不能单独证明精确主机的用途或运营主体。"
+        },
+        {
+          "url": "https://www.joesandbox.com/analysis/1341779/0/executive",
+          "publisher": "Joe Sandbox",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "动态分析报告记录样本访问该域名及其解析 IP；说明存在真实网络访问，不直接证明广告用途或安全风险。"
+        },
+        {
+          "url": "https://www.ssllabs.com/ssltest//analyze.html?d=ad.mcloud.139.com",
+          "publisher": "Qualys SSL Labs",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "TLS 测试页面确认该主机可提供 TLS 服务；不证明其业务用途。"
         }
       ]
     },
@@ -167,7 +227,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "第三方规则资料提到广告 API 路径，但没有官方资料确认是否仅用于广告，亦未排除即刻应用其他接口依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "第三方规则资料提到广告 API 路径，但没有官方资料确认是否仅用于广告，亦未排除即刻应用其他接口依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -187,6 +247,18 @@
           "publisher": "GitHub: blackmatrix7/ios_rule_script",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方规则针对该主机或其特定 URL 路径设置拦截；只能作为线索，不能证明整域名均可阻止。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/ZuiYou_remove_ads",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方配置将该主机作为最右广告候选；非官方用途说明。"
+        },
+        {
+          "url": "https://www.scribd.com/document/930708146/Headshot-Shadowrocket-VIP-conf",
+          "publisher": "Scribd 用户上传文档",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "文档出现该主机的 /ad/fetch_api_ads 路径，提示广告 API 线索；上传文档非可信运营方资料。"
         }
       ]
     },
@@ -195,7 +267,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "资料仅确认喜马拉雅平台运营主体与音频业务，没有证据说明该精确子域承担行为广告、分析还是核心服务。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "资料仅确认喜马拉雅平台运营主体与音频业务，没有证据说明该精确子域承担行为广告、分析还是核心服务。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -215,6 +287,18 @@
           "publisher": "Bloomberg",
           "published_or_accessed_date": "2026-10-31",
           "supports": "公司资料确认 Ximalaya 的音频平台业务；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://routeruls.site/geosite/ximalaya/",
+          "publisher": "RouterULS",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 geosite 数据将该主机归入 Ximalaya 域名集合；不能证明其具体功能。"
+        },
+        {
+          "url": "https://www.wmtips.com/tools/subnet/101.91.134.0/24",
+          "publisher": "Webmaster Tips",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "网络资产页面显示该主机与 Ximalaya 相关域名处于同一网段；仅为网络关联线索。"
         }
       ]
     },
@@ -223,7 +307,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "两个第三方广告列表包含该域名，但腾讯音乐官方业务/隐私材料没有说明此精确主机的 CDN 内容类型或是否影响播放。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "两个第三方广告列表包含该域名，但腾讯音乐官方业务/隐私材料没有说明此精确主机的 CDN 内容类型或是否影响播放。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -243,6 +327,18 @@
           "publisher": "GitHub: x-o-r-r-o/Pi-Hole-Block-Lists",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方移动广告列表包含该域名；不能单独证明具体功能或核心依赖关系。"
+        },
+        {
+          "url": "https://dnsrepo.noc.org/?domain=adcdn.tencentmusic.com.",
+          "publisher": "DNS Repo",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "DNS 历史页面显示该主机及 CDN 别名；不证明其内容一定是广告。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/QQMusic_remove_ads",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 QQ 音乐配置将该主机列为广告拦截候选；没有腾讯音乐官方用途说明。"
         }
       ]
     },
@@ -251,7 +347,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.48,
-      "reason": "腾讯音乐官方业务页与隐私政策确认母品牌及服务，但未说明此精确主机；第三方广告线索不足以排除音乐播放或资源依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "腾讯音乐官方业务页与隐私政策确认母品牌及服务，但未说明此精确主机；第三方广告线索不足以排除音乐播放或资源依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -271,6 +367,18 @@
           "publisher": "Tencent Music Entertainment Group",
           "published_or_accessed_date": "2026-10-31",
           "supports": "官方隐私政策说明腾讯音乐服务中的个人信息处理；没有直接说明该精确子域的功能。"
+        },
+        {
+          "url": "https://dnsrepo.noc.org/?ip=114.112.216.78",
+          "publisher": "DNS Repo",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "DNS/IP 页面显示该主机及 CDN 别名；网络解析数据不能证明业务用途。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/QQMusic_remove_ads",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 QQ 音乐配置将该主机列为广告拦截候选；没有官方说明排除播放依赖。"
         }
       ]
     },
@@ -279,7 +387,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "第三方广告列表命中，但未找到官方主机说明；点击归因端点可能与广告统计相关，仍需确认是否影响播放或用户操作。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "第三方广告列表命中，但未找到官方主机说明；点击归因端点可能与广告统计相关，仍需确认是否影响播放或用户操作。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -299,6 +407,18 @@
           "publisher": "GitHub: x-o-r-r-o/Pi-Hole-Block-Lists",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方移动广告列表包含该域名；不能单独证明具体功能或核心依赖关系。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/QQMusic_remove_ads",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 QQ 音乐配置将该主机列为广告候选；不是官方功能说明。"
+        },
+        {
+          "url": "https://yaoge.me/it/2209.html",
+          "publisher": "瑶哥的博客",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 hosts 列表列出该主机；未说明整域名是否只承载广告。"
         }
       ]
     },
@@ -307,7 +427,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "第三方广告列表命中，但腾讯音乐官方材料未说明该精确主机功能；不能仅凭名称推断为可整域阻止的广告端点。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "第三方广告列表命中，但腾讯音乐官方材料未说明该精确主机功能；不能仅凭名称推断为可整域阻止的广告端点。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -327,6 +447,18 @@
           "publisher": "GitHub: x-o-r-r-o/Pi-Hole-Block-Lists",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方移动广告列表包含该域名；不能单独证明具体功能或核心依赖关系。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/QQMusic_remove_ads",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 QQ 音乐配置列出该主机；用途仍需官方确认。"
+        },
+        {
+          "url": "https://yaoge.me/it/2209.html",
+          "publisher": "瑶哥的博客",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 hosts 列表列出该主机；不是独立运营方证明。"
         }
       ]
     },
@@ -335,7 +467,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "独立检索未找到可信官方主机说明或可核验用途证据；蜻蜓 FM 的母品牌关联不能说明此主机的具体功能。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "独立检索未找到可信官方主机说明或可核验用途证据；蜻蜓 FM 的母品牌关联不能说明此主机的具体功能。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -343,6 +475,12 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://yaoge.me/it/2209.html",
+          "publisher": "瑶哥的博客",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 hosts 列表将该主机列为过滤候选；没有蜻蜓 FM 官方说明。"
         }
       ]
     },
@@ -351,7 +489,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "第三方列表将其作为广告候选，但未找到收钱吧官方说明；考虑其可能与商户/支付应用生态相关，整域阻止风险未排除。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "第三方列表将其作为广告候选，但未找到收钱吧官方说明；考虑其可能与商户/支付应用生态相关，整域阻止风险未排除。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -371,6 +509,18 @@
           "publisher": "GitHub: x-o-r-r-o/Pi-Hole-Block-Lists",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方移动广告列表包含该域名；不能单独证明具体功能或核心依赖关系。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/WexinMiniPrograms_Remove_ads",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方小程序配置将该主机标为收钱吧广告候选；未证明其不承担商户或支付应用功能。"
+        },
+        {
+          "url": "https://www.bybk.cc/en/2100.html",
+          "publisher": "BYBK",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方广告过滤指南列出该域名；不是运营方用途说明。"
         }
       ]
     },
@@ -379,7 +529,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "检索未找到能够确认运营主体、服务地区或功能的可信资料；不能根据 ads 子串直接认定为广告投放端点。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "检索未找到能够确认运营主体、服务地区或功能的可信资料；不能根据 ads 子串直接认定为广告投放端点。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -387,6 +537,18 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://ads.play.cbsi.video/",
+          "publisher": "CBS Interactive / host response",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "精确主机可响应 HTTPS 请求，但页面未提供可识别的业务说明。"
+        },
+        {
+          "url": "https://community.ui.com/questions/Hulu-Sling-and-Paramount-stopped-working-on-Apple-TV/247deddb-d5b5-4c78-b0c8-806da9ab78c3",
+          "publisher": "Ubiquiti Community",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "用户报告网络屏蔽该主机后 Paramount+ 等流媒体无法正常播放，提示存在核心播放/广告支持链路风险。"
         }
       ]
     },
@@ -395,7 +557,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "检索未找到足以核验运营主体及该精确主机功能的可信资料；无法判断广告用途与核心依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "检索未找到足以核验运营主体及该精确主机功能的可信资料；无法判断广告用途与核心依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -403,6 +565,18 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://dnsrepo.noc.org/?ip=172.67.68.145",
+          "publisher": "DNS Repo",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "DNS/IP 页面显示该主机解析到 Cloudflare 地址；不证明具体业务用途。"
+        },
+        {
+          "url": "https://www.stoxos.gr/2017/06/blog-post_294.html",
+          "publisher": "Stoxos",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "网页包含该主机的 track.php 点击跟踪 URL，提示广告点击跟踪用途；页面年代较早，不能证明当前行为。"
         }
       ]
     },
@@ -411,7 +585,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.48,
-      "reason": "Snap 官方确认这是 Ads Manager 管理入口，开发者文档确认广告活动管理 API；这并不证明它是普通客户端广告投放/跟踪端点，且整域阻止会影响广告管理业务。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "Snap 官方确认这是 Ads Manager 管理入口，开发者文档确认广告活动管理 API；这并不证明它是普通客户端广告投放/跟踪端点，且整域阻止会影响广告管理业务。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -431,6 +605,18 @@
           "publisher": "Snap Inc. Developers",
           "published_or_accessed_date": "2026-10-31",
           "supports": "官方开发文档说明 Snap Ads API 可管理广告活动；没有说明该域名是终端广告投放依赖。"
+        },
+        {
+          "url": "https://forbusiness.snapchat.com/blog/how-to-promote-on-snapchat-with-advanced-create",
+          "publisher": "Snap for Business",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方业务文章将该域名作为 Snapchat 广告账户注册/管理入口；说明其是业务管理服务，不是单纯终端广告端点。"
+        },
+        {
+          "url": "https://developers.snap.com/marketing-api/Ads-API/ad-squads",
+          "publisher": "Snap Inc. Developers",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方 API 文档描述广告组及广告位管理，支持其广告管理产品属性；不证明普通客户端应阻止该主机。"
         }
       ]
     },
@@ -439,7 +625,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "检索未找到 Storm8 官方主机说明或可核验端点用途；无法确认是否为广告、游戏遥测或游戏核心依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "检索未找到 Storm8 官方主机说明或可核验端点用途；无法确认是否为广告、游戏遥测或游戏核心依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -447,6 +633,18 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://www.storm8.com/notice-of-privacy/index.html",
+          "publisher": "Storm8",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方隐私声明说明其产品会展示第三方广告并处理归因，但未明确指向该精确主机。"
+        },
+        {
+          "url": "https://www.storm8.com/contact/index.html",
+          "publisher": "Storm8",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方联系页面确认 Storm8 运营主体及业务联系渠道；没有说明该精确主机用途。"
         }
       ]
     },
@@ -455,7 +653,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "检索未找到 Yahoo 官方对该精确主机的用途说明；不能仅凭 ads 子串或 .de 后缀判断应阻止。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "检索未找到 Yahoo 官方对该精确主机的用途说明；不能仅凭 ads 子串或 .de 后缀判断应阻止。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -463,6 +661,18 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://www.yahooinc.com/yahoo-ads",
+          "publisher": "Yahoo Inc.",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方页面确认 Yahoo Ads 广告产品；没有直接说明 ads.yahoo.de 精确主机是否用于广告投放或管理。"
+        },
+        {
+          "url": "https://legal.yahoo.com/us/en/yahoo/privacy/adinfo/index.html",
+          "publisher": "Yahoo",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方隐私说明解释广告选择所使用的数据类别；没有直接说明该精确主机。"
         }
       ]
     },
@@ -471,7 +681,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "独立资料确认喜马拉雅是音频平台，但没有任何直接证据说明该精确子域的用途；不据名称猜测广告或遥测。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "独立资料确认喜马拉雅是音频平台，但没有任何直接证据说明该精确子域的用途；不据名称猜测广告或遥测。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -479,6 +689,12 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://yaoge.me/it/2209.html",
+          "publisher": "瑶哥的博客",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 hosts 列表列出该主机；不构成官方用途说明。"
         }
       ]
     },
@@ -503,7 +719,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.48,
-      "reason": "VariFlight 官方资料确认航空数据业务，但没有说明该精确子域；不能把公司业务资料推定为该主机的广告日志功能。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "VariFlight 官方资料确认航空数据业务，但没有说明该精确子域；不能把公司业务资料推定为该主机的广告日志功能。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -523,6 +739,12 @@
           "publisher": "VariFlight DataWorks",
           "published_or_accessed_date": "2026-10-31",
           "supports": "官方资料下载页确认 DataWorks 提供航空数据/API 文档；没有直接说明该精确子域的用途。"
+        },
+        {
+          "url": "https://www.scribd.com/document/930708146/Headshot-Shadowrocket-VIP-conf",
+          "publisher": "Scribd 用户上传文档",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方配置材料出现 Variflight /ad/ 路径线索，但未直接确认该精确主机功能。"
         }
       ]
     },
@@ -531,7 +753,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.48,
-      "reason": "VariFlight 官方资料确认航空数据服务，但未直接说明该精确主机；缺少用途证据与核心依赖排除。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "VariFlight 官方资料确认航空数据服务，但未直接说明该精确主机；缺少用途证据与核心依赖排除。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -551,6 +773,18 @@
           "publisher": "VariFlight DataWorks",
           "published_or_accessed_date": "2026-10-31",
           "supports": "官方资料下载页确认 DataWorks 提供航空数据/API 文档；没有直接说明该精确子域的用途。"
+        },
+        {
+          "url": "https://www.variflight.com/en/products/real-time-aircraft-tracking.html",
+          "publisher": "VariFlight",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方产品页确认 VariFlight 提供实时航班追踪服务；未说明该精确子域是否广告或业务遥测。"
+        },
+        {
+          "url": "https://www.variflight.com/index.php?m=home&c=Lists&a=index&tid=8&n=8",
+          "publisher": "VariFlight",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方产品页确认 VariFlight Pro 面向航空行业专业用户；未说明该精确子域用途。"
         }
       ]
     },
@@ -559,7 +793,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "第三方规则库包含该域名，但未找到百词斩官方接口说明；不能只凭 advertise 名称和规则库收录批准 REJECT。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "第三方规则库包含该域名，但未找到百词斩官方接口说明；不能只凭 advertise 名称和规则库收录批准 REJECT。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -579,6 +813,18 @@
           "publisher": "GitHub: HaGeZi DNS Blocklists",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方 DNS 拦截列表包含该域名；不能单独证明精确主机的用途或运营主体。"
+        },
+        {
+          "url": "https://passport.baicizhan.com/privacy/privacy.html",
+          "publisher": "百词斩",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方隐私政策确认百词斩应用与服务及个人信息处理；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://apps.apple.com/us/app/%E7%99%BE%E8%AF%8D%E6%96%A9-%E5%AD%A6%E8%8B%B1%E8%AF%AD-%E8%83%8C%E5%8D%95%E8%AF%8D%E5%BF%85%E5%A4%87/id557545298",
+          "publisher": "Apple App Store / 百词斩开发者",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "应用商店资料确认百词斩产品主体和学习应用属性；没有直接说明该精确子域用途。"
         }
       ]
     },
@@ -587,7 +833,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "第三方规则库包含该域名，但未找到官方资料确认 .org 主机归属及功能；同品牌推断不足以确定策略。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "第三方规则库包含该域名，但未找到官方资料确认 .org 主机归属及功能；同品牌推断不足以确定策略。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -607,6 +853,12 @@
           "publisher": "GitHub: HaGeZi DNS Blocklists",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方 DNS 拦截列表包含该域名；不能单独证明精确主机的用途或运营主体。"
+        },
+        {
+          "url": "https://apps.apple.com/us/app/%E7%99%BE%E8%AF%8D%E6%96%A9-%E5%AD%A6%E8%8B%B1%E8%AF%AD-%E8%83%8C%E5%8D%95%E8%AF%8D%E5%BF%85%E5%A4%87/id557545298",
+          "publisher": "Apple App Store / 百词斩开发者",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "应用商店资料确认百词斩产品主体，但未确认 .org 精确域名归属或用途。"
         }
       ]
     },
@@ -615,7 +867,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "资料确认喜马拉雅母品牌，但没有直接说明该主机是否是广告位、业务服务或统计端点。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "资料确认喜马拉雅母品牌，但没有直接说明该主机是否是广告位、业务服务或统计端点。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -635,6 +887,18 @@
           "publisher": "Bloomberg",
           "published_or_accessed_date": "2026-10-31",
           "supports": "公司资料确认 Ximalaya 的音频平台业务；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://yaoge.me/it/2209.html",
+          "publisher": "瑶哥的博客",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 hosts 列表列出该主机；不能证明其具体功能。"
+        },
+        {
+          "url": "https://blog.yzautop.com/it/2212.html",
+          "publisher": "YZAutoP 博客",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方广告列表列出该主机；不是官方用途说明。"
         }
       ]
     },
@@ -643,7 +907,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "检索未能把精确主机与可信运营方或产品文档对应；OTT/CDN 语境下整域阻止可能影响视频服务。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "检索未能把精确主机与可信运营方或产品文档对应；OTT/CDN 语境下整域阻止可能影响视频服务。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -651,6 +915,12 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://www.filescan.io/uploads/6a7a0f5e553c37f8031ab0c9/reports/91845c10-94b4-48e2-a1f7-f2c6e8fb2d02/osint",
+          "publisher": "Filescan.io",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "OSINT 报告记录该精确主机及 result-fb.ad 路径，提示广告相关用途；单一安全分析报告不足以排除 OTT 核心依赖。"
         }
       ]
     },
@@ -659,7 +929,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "未找到优酷官方资料确认该精确主机功能；不能只凭主机名判断广告或媒体资源。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "未找到优酷官方资料确认该精确主机功能；不能只凭主机名判断广告或媒体资源。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -667,6 +937,18 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/YouKu_Video_remove_ads",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方优酷去广告配置将该主机列为 REJECT 候选；不是优酷官方说明。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/Cainiao_remove_ads",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方菜鸟配置也列出该主机；仍未证明其精确功能或无核心依赖。"
         }
       ]
     },
@@ -675,7 +957,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "仅命中第三方广告列表，未找到 KajiCam 官方说明；无法确认广告用途、运营主体和核心功能影响。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "仅命中第三方广告列表，未找到 KajiCam 官方说明；无法确认广告用途、运营主体和核心功能影响。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -689,6 +971,12 @@
           "publisher": "GitHub: TG-Twilight/AWAvenue-Ads-Rule",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方广告规则清单包含该域名；仅是拦截线索，不是该域名运营主体或用途的直接证明。"
+        },
+        {
+          "url": "https://yaoge.me/it/2209.html",
+          "publisher": "瑶哥的博客",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 hosts 列表列出该主机；没有 KajiCam 官方用途说明。"
         }
       ]
     },
@@ -697,7 +985,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.48,
-      "reason": "开源客户端代码显示该主机用于 video/playervideoinfo 视频信息请求，提示可能承担视频播放依赖；iQIYI 官方资料只确认母品牌，不能据此阻止。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "开源客户端代码显示该主机用于 video/playervideoinfo 视频信息请求，提示可能承担视频播放依赖；iQIYI 官方资料只确认母品牌，不能据此阻止。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -717,6 +1005,18 @@
           "publisher": "iQIYI, Inc.",
           "published_or_accessed_date": "2026-10-31",
           "supports": "官方投资者关系页面确认 iQIYI 的运营主体及在线视频业务；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://www.netify.ai/resources/hostnames/api.iqiyi.com",
+          "publisher": "Netify",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "主机情报资料将该主机关联到 iQIYI 应用；属于第三方归属线索。"
+        },
+        {
+          "url": "https://subdomainfinder.c99.nl/scans/2026-10-13/iqiyi.com",
+          "publisher": "C99.nl",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "子域扫描结果确认该主机属于 iqiyi.com 子域空间；不能证明具体 API 用途。"
         }
       ]
     },
@@ -725,7 +1025,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "第三方规则对其特定 mall/skin API 路径设置拦截，路径语义也可能涉及商城皮肤资源；未证明整域均为广告。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "第三方规则对其特定 mall/skin API 路径设置拦截，路径语义也可能涉及商城皮肤资源；未证明整域均为广告。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -745,6 +1045,12 @@
           "publisher": "GitHub: blackmatrix7/ios_rule_script",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方 Shadowrocket 规则针对该主机或特定 URL 路径处理；不构成整域名用途的官方证明。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/WexinMiniPrograms_Remove_ads",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方配置对 /mall/v1/api/mall/skin/user/get 与 /ycx 路径处理，说明存在具体商城/皮肤 API 路径，整域阻止风险未排除。"
         }
       ]
     },
@@ -753,7 +1059,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.48,
-      "reason": "优酷官方视频云文档确认其 API/播放器业务，但未说明该精确主机；有核心视频功能风险，不能直接拦截。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "优酷官方视频云文档确认其 API/播放器业务，但未说明该精确主机；有核心视频功能风险，不能直接拦截。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -773,6 +1079,18 @@
           "publisher": "Stack Overflow",
           "published_or_accessed_date": "2026-10-31",
           "supports": "开发者讨论提到优酷上传 API 与授权流程；非运营方资料，不能证明该精确子域用途。"
+        },
+        {
+          "url": "https://dnsrepo.noc.org/?domain=apiv4-iyes.cp12.ott.cibntv.net.",
+          "publisher": "DNS Repo",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "DNS 历史数据显示该主机与优酷 OTT/CDN 别名存在关联；仅作网络辅助证据。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/YouKu_Video_remove_ads",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方配置将该主机列入优酷去广告候选；与官方视频云 API 文档合并仍不足以证明整域可阻止。"
         }
       ]
     },
@@ -781,7 +1099,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "第三方配置指向 wapdl 图片/视频路径，提示可能承载文件分发；整域阻止可能影响内容加载，缺少官方说明。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "第三方配置指向 wapdl 图片/视频路径，提示可能承载文件分发；整域阻止可能影响内容加载，缺少官方说明。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -801,6 +1119,18 @@
           "publisher": "GitHub: blackmatrix7/ios_rule_script",
           "published_or_accessed_date": "2026-10-31",
           "supports": "社区讨论引用该主机的特定 URL 规则；只能说明存在相关请求路径线索。"
+        },
+        {
+          "url": "https://bbs.huorong.cn/archiver/?tid-73561.html",
+          "publisher": "火绒安全论坛",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "用户记录该主机用于搜狗输入法相关图片/接口请求，提示其可能影响内容加载；不是运营方资料。"
+        },
+        {
+          "url": "https://t.me/s/Aa28413761/1075",
+          "publisher": "Telegram: 广告必须死",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "帖子记录该主机的 wapdl 图片路径，并提醒屏蔽可能误伤搜狗输入法图片；社区线索，非官方说明。"
         }
       ]
     },
@@ -809,7 +1139,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "第三方规则只针对 /advertiser/ 路径，不代表整域所有资源均属广告；整域拦截可能误伤其他业务内容。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "第三方规则只针对 /advertiser/ 路径，不代表整域所有资源均属广告；整域拦截可能误伤其他业务内容。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -829,6 +1159,18 @@
           "publisher": "GitHub: blackmatrix7/ios_rule_script",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方 Shadowrocket 规则针对该主机或特定 URL 路径处理；不构成整域名用途的官方证明。"
+        },
+        {
+          "url": "https://www.virustotal.com/gui/domain/business.msstatic.com",
+          "publisher": "VirusTotal",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "域名情报页面确认该精确主机存在并有社区安全数据；不能证明其具体用途。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/Remove_ads_by_keli",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方配置将该主机列为广告候选；未证明整域所有路径都是广告。"
         }
       ]
     },
@@ -837,7 +1179,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "检索未找到运营方或官方产品资料确认精确主机；不能仅凭域名标签判断为广告 CDN。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "检索未找到运营方或官方产品资料确认精确主机；不能仅凭域名标签判断为广告 CDN。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -845,6 +1187,18 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/SevenCat_remove_ads",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方七猫小说配置将该主机列为广告候选；非七猫官方用途说明。"
+        },
+        {
+          "url": "https://www.bybk.cc/en/2100.html",
+          "publisher": "BYBK",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方广告过滤指南列出该主机；不能单独证明用途。"
         }
       ]
     },
@@ -881,7 +1235,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.48,
-      "reason": "Coocaa 隐私政策确认电视服务涉及数据处理，但没有直接说明该精确主机；可能涉及设备数据/遥测，核心依赖风险未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "Coocaa 隐私政策确认电视服务涉及数据处理，但没有直接说明该精确主机；可能涉及设备数据/遥测，核心依赖风险未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -901,6 +1255,24 @@
           "publisher": "Coocaa TV",
           "published_or_accessed_date": "2026-10-31",
           "supports": "Coocaa TV 隐私政策说明电视服务的数据处理；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://data-hoisin.coocaa.com/",
+          "publisher": "Coocaa host response",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "精确主机可通过 HTTPS 响应，但页面没有提供功能或运营主体说明。"
+        },
+        {
+          "url": "https://www.znds.com/tv-1272868-1-1.html",
+          "publisher": "ZNDS 论坛",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "电视用户讨论中将该主机与酷开电视系统流量/服务关联；社区线索，不能确认是否为广告或系统依赖。"
+        },
+        {
+          "url": "https://www.right.com.cn/forum/thread-307349-1-1.html",
+          "publisher": "恩山无线论坛",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "社区 hosts 列表将该主机列入电视广告过滤候选；不是官方功能说明。"
         }
       ]
     },
@@ -909,7 +1281,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "检索结果与该域名无可靠关联，未确认运营主体或功能；不能把缩写或域名形式当作用途证据。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "检索结果与该域名无可靠关联，未确认运营主体或功能；不能把缩写或域名形式当作用途证据。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -917,6 +1289,18 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://dnsrepo.noc.org/?ip=117.21.178.222",
+          "publisher": "DNS Repo",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "DNS/IP 页面显示该主机的 CDN 别名关系；不证明业务用途。"
+        },
+        {
+          "url": "https://huaban.com/pins/4447576423/",
+          "publisher": "花瓣网",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "页面来源标注该域名，但未说明其运营主体或功能；仅为弱关联线索。"
         }
       ]
     },
@@ -925,7 +1309,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.48,
-      "reason": "MGTV 官方页面确认视频内容服务，但未说明此精确主机；第三方搜索结果出现同名无关 DFlow，不能据此归属或判断用途。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "MGTV 官方页面确认视频内容服务，但未说明此精确主机；第三方搜索结果出现同名无关 DFlow，不能据此归属或判断用途。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -939,6 +1323,12 @@
           "publisher": "MangoTV / MGTV",
           "published_or_accessed_date": "2026-10-31",
           "supports": "官方页面确认 MangoTV 提供视频频道与内容服务；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/Mango_Viedo_remove_ads",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 MangoTV 去广告配置将该主机列为候选；未提供官方用途说明。"
         }
       ]
     },
@@ -947,7 +1337,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.48,
-      "reason": "MGTV 官方页面仅确认母品牌视频服务，未说明该精确子域；用途及其是否参与内容加载未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "MGTV 官方页面仅确认母品牌视频服务，未说明该精确子域；用途及其是否参与内容加载未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -961,6 +1351,12 @@
           "publisher": "MangoTV / MGTV",
           "published_or_accessed_date": "2026-10-31",
           "supports": "官方页面确认 MangoTV 提供视频频道与内容服务；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/Mango_Viedo_remove_ads",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 MangoTV 去广告配置将该主机列为候选；未证明其只承载广告。"
         }
       ]
     },
@@ -969,7 +1365,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.48,
-      "reason": "MGTV 官方页面仅确认母品牌视频服务，未说明该精确子域；搜索结果存在同名无关网站，不能据名称推断。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "MGTV 官方页面仅确认母品牌视频服务，未说明该精确子域；搜索结果存在同名无关网站，不能据名称推断。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -983,6 +1379,12 @@
           "publisher": "MangoTV / MGTV",
           "published_or_accessed_date": "2026-10-31",
           "supports": "官方页面确认 MangoTV 提供视频频道与内容服务；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/Mango_Viedo_remove_ads",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 MangoTV 去广告配置将该主机列为候选；未提供官方用途说明。"
         }
       ]
     },
@@ -1047,7 +1449,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.48,
-      "reason": "Migu 官方资料确认视频平台运营主体，但未说明该精确子域；无法判断广告、媒资或核心服务用途。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "Migu 官方资料确认视频平台运营主体，但未说明该精确子域；无法判断广告、媒资或核心服务用途。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -1067,6 +1469,12 @@
           "publisher": "MongoDB",
           "published_or_accessed_date": "2026-10-31",
           "supports": "独立技术案例确认 Migu Video 的在线视频业务与技术服务场景；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://ipchaxun.com/cnwomenlearn.cn/",
+          "publisher": "IPChaxun",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "反向 IP/域名页面出现该主机，属于弱网络关联线索，不证明用途。"
         }
       ]
     },
@@ -1125,7 +1533,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "检索未找到 Apple、高德或其他运营方对该精确域名的官方说明；不能根据字符串组合推断其属于 iCloud 或高德。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "检索未找到 Apple、高德或其他运营方对该精确域名的官方说明；不能根据字符串组合推断其属于 iCloud 或高德。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -1133,6 +1541,18 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://forum.ubuntu-fr.org/viewtopic.php?id=2012377&p=2",
+          "publisher": "Ubuntu-fr Forum",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "社区 hosts 列表出现该域名；未提供可信运营主体或功能说明。"
+        },
+        {
+          "url": "https://www.autobak.kz/ru/398-oplata.html",
+          "publisher": "Autobak.kz",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "页面列表中出现该域名但无上下文说明；不能据此认定与 Apple 或高德有关。"
         }
       ]
     },
@@ -1207,7 +1627,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "社区脚本引用该主机的 Huya 直播图片资源，提示可能承载直播内容/CDN；缺少官方主机说明，不能阻止。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "社区脚本引用该主机的 Huya 直播图片资源，提示可能承载直播内容/CDN；缺少官方主机说明，不能阻止。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -1227,6 +1647,24 @@
           "publisher": "GitHub: vernesong/OpenClash",
           "published_or_accessed_date": "2026-10-31",
           "supports": "用户提交的规则/日志中出现该主机；属于社区线索，不是运营方用途说明。"
+        },
+        {
+          "url": "https://www.huya.com/index.php?r=profile/updateSubscribeStatus",
+          "publisher": "Huya",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "虎牙官方页面返回内容中引用该主机的 huya_hot_rec_theme_logo 图片资源，直接表明其承载虎牙静态资源。"
+        },
+        {
+          "url": "https://livewebbs2.msstatic.com/hy_miniapp_design.pdf.pdf",
+          "publisher": "Huya / msstatic CDN",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该主机直接托管虎牙小程序设计指南 PDF，证明其用于虎牙开发/内容资源分发。"
+        },
+        {
+          "url": "https://developer.cloud.tencent.com/article/2334215",
+          "publisher": "Tencent Cloud Developer Community",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "技术文章示例引用该主机的 Huya 图片资源，提供独立技术交叉线索。"
         }
       ]
     },
@@ -1257,7 +1695,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "检索未找到与 51wnl-cq 精确主机对应的可信运营方资料；不能仅凭 log 子串认定可阻止。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "检索未找到与 51wnl-cq 精确主机对应的可信运营方资料；不能仅凭 log 子串认定可阻止。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -1265,6 +1703,18 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://mobile.51wnl-cq.com/huangli_tab_h5/",
+          "publisher": "万年历",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方万年历移动页面确认 51wnl-cq.com 旗下服务；没有直接说明 log 子域用途。"
+        },
+        {
+          "url": "https://www.51wnl-cq.com/wnl_tieshi/privacy_user.html",
+          "publisher": "万年历",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方用户协议确认万年历平台运营服务；没有直接说明 log 子域用途。"
         }
       ]
     },
@@ -1301,7 +1751,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "社区配置中出现该精确主机，但未找到环信官方说明；msync 命名可能对应消息同步，整域 REJECT 存在核心 IM 依赖风险。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "社区配置中出现该精确主机，但未找到环信官方说明；msync 命名可能对应消息同步，整域 REJECT 存在核心 IM 依赖风险。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -1315,6 +1765,18 @@
           "publisher": "GitHub: vernesong/OpenClash",
           "published_or_accessed_date": "2026-10-31",
           "supports": "用户提交的规则/日志中出现该主机；属于社区线索，不是运营方用途说明。"
+        },
+        {
+          "url": "https://www.nodeseek.com/post-387541-1",
+          "publisher": "NodeSeek",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "社区规则帖将该主机列入番茄小说广告过滤规则；没有环信官方说明，且主机可能承担消息同步。"
+        },
+        {
+          "url": "https://linux.do/t/topic/2256788?tl=en",
+          "publisher": "LINUX DO",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "社区规则分享再次列出该主机；属于第三方过滤线索，不是运营方功能证明。"
         }
       ]
     },
@@ -1323,7 +1785,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "第三方广告列表收录该主机，但 OTT/CDN 域可能承载视频播放；没有官方证据排除媒体传输依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "第三方广告列表收录该主机，但 OTT/CDN 域可能承载视频播放；没有官方证据排除媒体传输依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -1343,6 +1805,18 @@
           "publisher": "GitHub: HaGeZi DNS Blocklists",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方 DNS 拦截列表包含该域名；不能单独证明精确主机的用途或运营主体。"
+        },
+        {
+          "url": "https://dnsrepo.noc.org/?ip=106.11.43.107",
+          "publisher": "DNS Repo",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "DNS/IP 页面显示该主机与优酷相关服务别名存在关联；仅作网络线索。"
+        },
+        {
+          "url": "https://blog.yzautop.com/it/2211.html",
+          "publisher": "YZAutoP 博客",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方电视广告列表列出该主机；同一域名还存在 OTT/playlist 路径线索，整域拦截可能误伤视频。"
         }
       ]
     },
@@ -1367,7 +1841,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "仅在第三方 DNS 拦截列表中发现该主机；没有运营方说明或独立用途证据，不能判断为跟踪端点。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "仅在第三方 DNS 拦截列表中发现该主机；没有运营方说明或独立用途证据，不能判断为跟踪端点。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -1381,6 +1855,12 @@
           "publisher": "GitHub: HaGeZi DNS Blocklists",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方 DNS 拦截列表包含该域名；不能单独证明精确主机的用途或运营主体。"
+        },
+        {
+          "url": "https://tool.chinaz.com/ssl/r.51wnl-cq.com",
+          "publisher": "站长工具",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "SSL 证书查询确认该主机证书信息；不证明其用途。"
         }
       ]
     },
@@ -1389,7 +1869,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "MGTV 官方页面确认视频平台，但未说明该精确 topic API 主机；可能承载内容主题/推荐接口，阻止风险未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "MGTV 官方页面确认视频平台，但未说明该精确 topic API 主机；可能承载内容主题/推荐接口，阻止风险未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -1397,6 +1877,12 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/Mango_Viedo_remove_ads",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 MangoTV 配置将该主机列为拦截候选；topic API 可能承载内容接口，官方用途未确认。"
         }
       ]
     },
@@ -1405,7 +1891,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.38,
-      "reason": "第三方规则指向 /api/(ad|adplus|guideplus|banadplus) 路径，提示该路径可能是广告接口；整域其他 API 是否核心未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "第三方规则指向 /api/(ad|adplus|guideplus|banadplus) 路径，提示该路径可能是广告接口；整域其他 API 是否核心未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -1425,6 +1911,12 @@
           "publisher": "GitHub: blackmatrix7/ios_rule_script",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方 Shadowrocket 规则针对该主机或特定 URL 路径处理；不构成整域名用途的官方证明。"
+        },
+        {
+          "url": "https://www.cnblogs.com/Librarvl/p/12911246.html",
+          "publisher": "博客园用户",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方规则库提及该主机；与路径级广告规则线索合并仍不足以确认整域功能。"
         }
       ]
     },
@@ -1487,7 +1979,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.48,
-      "reason": "Google 官方 Safe Browsing 文档确认安全浏览服务，但没有证据将 applimg.com 精确主机归属于 Google；贸然阻止可能误伤安全检查，也可能误关联。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "Google 官方 Safe Browsing 文档确认安全浏览服务，但没有证据将 applimg.com 精确主机归属于 Google；贸然阻止可能误伤安全检查，也可能误关联。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -1507,6 +1999,24 @@
           "publisher": "Google Developers",
           "published_or_accessed_date": "2026-10-31",
           "supports": "官方文档说明 Safe Browsing API 的 URL 安全检查功能；没有证据把该精确 applimg.com 主机归属于 Google。"
+        },
+        {
+          "url": "https://cincodias.elpais.com/smartlife/2021/02/11/lifestyle/1613037146_507479.html",
+          "publisher": "Cinco Días / El País",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "报道提到 Safari 安全浏览流量经 Apple 代理时出现该主机；提示可能与系统安全浏览有关，但不是 Apple 官方精确主机清单。"
+        },
+        {
+          "url": "https://androidinsider.ru/polezno-znat/pochemu-poisk-google-dlya-ios-okazalsya-luchshe-chem-android.html",
+          "publisher": "AndroidInsider",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "报道同样提及 Safari Safe Browsing 与该主机的关联；非官方资料，需以 Apple 官方网络主机清单为准。"
+        },
+        {
+          "url": "https://support.apple.com/ja-jp/101555",
+          "publisher": "Apple Support",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "Apple 官方网络主机清单确认 Safari 欺诈网站警告依赖 token.safebrowsing.apple；该资料未列出本候选主机，说明相关系统安全功能有核心依赖，但不能确认精确域名。"
         }
       ]
     },
@@ -1543,7 +2053,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.48,
-      "reason": "MGTV 官方页面确认视频内容服务，但未说明该精确 vip 子域；可能涉及会员权益/鉴权，整域阻止风险不能排除。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "MGTV 官方页面确认视频内容服务，但未说明该精确 vip 子域；可能涉及会员权益/鉴权，整域阻止风险不能排除。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -1557,6 +2067,12 @@
           "publisher": "MangoTV / MGTV",
           "published_or_accessed_date": "2026-10-31",
           "supports": "官方页面确认 MangoTV 提供视频频道与内容服务；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/Mango_Viedo_remove_ads",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 MangoTV 配置将该主机列为拦截候选；未排除会员权益或鉴权功能。"
         }
       ]
     }
