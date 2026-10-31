@@ -43,6 +43,9 @@ jobs:
       - name: Run deterministic duplicate, conflict, confidence and risk review
         run: python3 scripts/deterministic_review.py
 
+      - name: Build standalone DIRECT, PROXY and REJECT rule sets
+        run: python3 scripts/build_rulesets.py
+
       - name: Validate Shadowrocket config structure
         run: python3 scripts/validate_config.py
 
@@ -53,7 +56,7 @@ jobs:
 
       - name: Commit audit ledger and reports only
         run: |
-          git add sources/domain_reviews.json reports/external-domain-audit.md data/domain_candidates.json data/primary_snapshot.txt
+          git add sources/domain_reviews.json reports/external-domain-audit.md data/domain_candidates.json data/primary_snapshot.txt rulesets/
           if ! git diff --cached --quiet; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
