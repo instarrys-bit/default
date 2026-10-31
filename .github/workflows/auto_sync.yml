@@ -8,7 +8,6 @@ on:
   push:
     branches: [main]
     paths:
-      - "data/domain_candidates.json"
       - "sources/domain_sources.json"
       - "sources/protected_domains.json"
       - "sources/policy.json"
@@ -59,10 +58,10 @@ jobs:
 
       - name: Commit validated ledger, reports and config
         run: |
-          if ! git diff --quiet -- shadowrocket/ss.conf sources/domain_reviews.json reports/domain-publication.md reports/external-domain-audit.md sources/published_domains.json; then
+          git add shadowrocket/ss.conf sources/domain_reviews.json reports/domain-publication.md reports/external-domain-audit.md sources/published_domains.json data/domain_candidates.json data/primary_snapshot.txt
+          if ! git diff --cached --quiet; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add shadowrocket/ss.conf sources/domain_reviews.json reports/domain-publication.md reports/external-domain-audit.md sources/published_domains.json
             git commit -m "Run deterministic Shadowrocket domain audit and safe publish"
             git push
           else
