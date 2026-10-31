@@ -190,9 +190,16 @@ def main() -> None:
             stats["multi_policy_conflict"] += 1
             conflicts.append((domain, "multi-policy", sorted(policies)))
             continue
+        if hits and approval is not None and policies == {approval["policy"]}:
+            stats["already_present_same_policy"] += 1
+            continue
+        if hits and approval is not None and policies != {approval["policy"]}:
+            stats["approval_conflict"] += 1
+            conflicts.append((domain, "approval differs from existing policy", sorted(policies)))
+            continue
         if policies & {"DIRECT", "PROXY"}:
             stats["routing_scope_overlap"] += 1
-            conflicts.append((domain, "DIRECT/PROXY scope", sorted(policies)))
+            conflicts.append((domain, "DIRECT/PROXY scope requires review", sorted(policies)))
             continue
         if policies == {"REJECT"}:
             stats["already_rejected"] += 1
@@ -200,13 +207,6 @@ def main() -> None:
         if approval is None:
             stats["unreviewed"] += 1
             pending.append(domain)
-            continue
-        if hits and policies == {approval["policy"]}:
-            stats["already_present_same_policy"] += 1
-            continue
-        if hits:
-            stats["approval_conflict"] += 1
-            conflicts.append((domain, "approval differs from existing policy", sorted(policies)))
             continue
         # Deliberately emit exact DOMAIN only. A source suffix marker does not
         # authorize widening a rule to all subdomains.
