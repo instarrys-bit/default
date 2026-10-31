@@ -34,25 +34,29 @@
   },
   "release_policy": {
     "automatic_config_rewrite": true,
-    "automatic_policy_inference": false,
-    "gpt_review_required": true,
-    "minimum_independent_evidence_sources": 1,
+    "automatic_policy_inference": true,
+    "gpt_review_required": false,
+    "minimum_independent_evidence_sources": 2,
     "minimum_confidence": 0.26,
     "publish_only_after_all_checks": true,
-    "rule_scope": "DOMAIN only; DOMAIN-SUFFIX requires separate explicit manual approval",
-    "approval_rule": "Confidence >= 0.26 automatically sets APPROVED unless either mandatory veto applies; confidence below 0.26 remains REVIEW.",
+    "rule_scope": "DOMAIN only; DOMAIN-SUFFIX is never generated automatically",
+    "approval_rule": "Confidence >= 0.26 is automatically APPROVED only when two independent domain-only sources corroborate the exact host and all duplicate, conflict and critical-function veto checks pass. Otherwise REVIEW or a terminal hold status.",
     "minimum_met_criteria": 1,
     "approval_criteria": [
       {
-        "id": "confidence",
-        "description": "Confidence >= 0.26; this criterion alone triggers automatic APPROVED unless a mandatory veto applies."
+        "id": "independent_source_confidence",
+        "description": "Two independent source publishers corroborate the exact host; deterministic score 0.13 per source reaches 0.26."
       }
     ],
     "mandatory_vetoes": [
-      "A confirmed existing-rule conflict or an unresolved first-match outcome blocks APPROVED",
-      "A credible unresolved risk of disrupting critical system or core application functionality blocks APPROVED"
+      "Any exact or suffix rule with a different effective policy blocks publication",
+      "Any unresolved conditional AND/OR/NOT overlap blocks publication",
+      "Any critical-function protection-list match blocks publication",
+      "Any skip-proxy direct-bypass match blocks publication",
+      "Any malformed source, invalid domain, duplicate ledger key or failed validator blocks publication"
     ],
-    "review_status": "If confidence < 0.26, or either mandatory veto applies, status must be REVIEW; otherwise status is APPROVED.",
-    "publish_gate": "APPROVED is a review-buffer status only; publishing remains a separate user-authorized workflow requiring confirm_release=true."
+    "review_status": "Candidates below confidence 0.26 remain REVIEW; confirmed duplicates are not imported; conflicts and critical-function risks are held.",
+    "publish_gate": "APPROVED candidates are automatically published only after deterministic import checks, canonical baseline validation, DNS invariants and structural validation pass.",
+    "decision_engine": "deterministic-domain-audit/1.0"
   }
 }
