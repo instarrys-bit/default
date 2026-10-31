@@ -1,9 +1,9 @@
 # Domain candidate filter
 
-Input candidates: 0
-Ready for GPT: 0
-Already in GPT ledger (retained for release gate): 0
+Raw intake candidates: 0
+Ready in GPT buffer: 0
+Previously reviewed candidates retained for release gate: 0
 Filtered and archived this run: 0
 
-Filtering checks syntax, duplicates, source scope, existing first-match DOMAIN/DOMAIN-SUFFIX rules, conditional rules, skip-proxy, DOMAIN-KEYWORD and URL-REGEX.
-Filtered candidates are retained in reports/domain-filtered.json for audit. No policy is inferred and ss.conf is read-only.
+Checks: syntax, duplicate/review-ledger status, exact-vs-suffix scope, existing first-match DOMAIN/DOMAIN-SUFFIX, conditional rules, skip-proxy, DOMAIN-KEYWORD and URL-REGEX.
+Filtered candidates are retained in reports/domain-filtered.json. Only READY_FOR_GPT candidates enter pending-gpt-review.json. ss.conf is read-only.
