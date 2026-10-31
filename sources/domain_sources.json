@@ -24,6 +24,8 @@
     "source_weight": 0.13,
     "minimum_independent_sources": 2,
     "minimum_confidence": 0.26,
-    "classification": "REJECT"
+    "classification": "REJECT",
+    "independence_basis": "Distinct source publishers and rule repositories are counted separately; shared upstream data lineage is not fully audited. The score is an operational threshold, not a probability of correctness.",
+    "confidence_interpretation": "0.13 per publisher; 0.26 requires exact-host corroboration in both configured sources."
   }
 }
