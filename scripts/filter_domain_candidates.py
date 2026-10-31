@@ -13,6 +13,8 @@ LEDGER=ROOT/"sources/gpt_domain_reviews.json"
 FILTERED=ROOT/"reports/domain-filtered.json"
 REPORT=ROOT/"reports/domain-filter.md"
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:[.][A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$")
+MAX_RAW_PER_RUN=1000
+MAX_PENDING=100
 COND_RE=re.compile(r"DOMAIN(?:-SUFFIX)?,([A-Za-z0-9.-]+)",re.I)
 
 def fail(message): raise SystemExit("ERROR: "+message)
@@ -34,7 +36,15 @@ def main():
             skip += [x.strip().lower() for x in line.split("=",1)[1].split(",") if x.strip()]
     kept={str(x.get("domain","")).lower():x for x in pending.get("candidates",[])}
     archived=[]
-    for item in intake.get("candidates",[]):
+    raw_candidates=intake.get("candidates",[])
+    remaining=[]
+    processed=0
+    for position,item in enumerate(raw_candidates):
+        # Keep the GPT queue bounded and process the backlog in deterministic daily batches.
+        if processed>=MAX_RAW_PER_RUN or len(kept)>=MAX_PENDING:
+            remaining.extend(raw_candidates[position:])
+            break
+        processed+=1
         d=str(item.get("domain","")).lower().strip()
         reason=None
         if not DOMAIN_RE.fullmatch(d):
@@ -89,10 +99,11 @@ def main():
     for x in archived: merged[x["domain"]]=x
     FILTERED.write_text(json.dumps({"schema_version":1,"filtered":sorted(merged.values(),key=lambda x:x["domain"])},ensure_ascii=False,indent=2)+chr(10),encoding="utf-8")
     PENDING.write_text(json.dumps({"schema_version":1,"updated_at":intake.get("updated_at",pending.get("updated_at")),"candidates":sorted(kept.values(),key=lambda x:x["domain"])},ensure_ascii=False,indent=2)+chr(10),encoding="utf-8")
-    INTAKE.write_text(json.dumps({"schema_version":1,"updated_at":intake.get("updated_at"),"candidates":[]},ensure_ascii=False,indent=2)+chr(10),encoding="utf-8")
-    report=["# Domain candidate filter","",f"Raw intake candidates: {len(intake.get('candidates',[]))}",f"Ready in GPT buffer: {sum(1 for x in kept.values() if x.get('filter_status')=='READY_FOR_GPT')}",f"Previously reviewed candidates retained for release gate: {sum(1 for x in kept.values() if x.get('domain','').lower() in reviewed)}",f"Filtered and archived this run: {len(archived)}","",
+    INTAKE.write_text(json.dumps({"schema_version":1,"updated_at":intake.get("updated_at"),"candidates":remaining},ensure_ascii=False,indent=2)+chr(10),encoding="utf-8")
+    report=["# Domain candidate filter","",f"Raw intake candidates at start: {len(raw_candidates)}",f"Raw candidates processed this run: {processed}",f"Remaining intake backlog: {len(remaining)}",f"Candidates retained in GPT buffer: {len(kept)}",f"Filtered and archived this run: {len(archived)}","",
             "Checks: syntax, duplicate/review-ledger status, exact-vs-suffix scope, existing first-match DOMAIN/DOMAIN-SUFFIX, conditional rules, skip-proxy, DOMAIN-KEYWORD and URL-REGEX.",
-            "Filtered candidates are retained in reports/domain-filtered.json. Only READY_FOR_GPT candidates enter pending-gpt-review.json. ss.conf is read-only.",""]
+            f"Processing limits: at most {MAX_RAW_PER_RUN} raw candidates per run and {MAX_PENDING} candidates in the GPT buffer.",
+            "Filtered candidates are retained in reports/domain-filtered.json. Unprocessed candidates remain in reports/domain-intake.json for later runs. ss.conf is read-only.",""]
     REPORT.write_text(chr(10).join(report),encoding="utf-8")
     print(chr(10).join(report))
 
