@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import base64, hashlib, json, re, urllib.request, zlib
-from datetime import datetime, timezone
+import base64,hashlib,json,re,sys,urllib.request,zlib
+from datetime import datetime,timezone
 from pathlib import Path
 from urllib.parse import urlparse
 ROOT=Path(__file__).resolve().parents[1]
@@ -11,8 +11,7 @@ BITS=4_000_000; HASHES=10; MAX_BYTES=8_000_000
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$")
 def fail(m): raise SystemExit("ERROR: "+m)
 def indices(d):
-    h=hashlib.sha256(d.encode("ascii")).digest()
-    a=int.from_bytes(h[:8],"big"); b=int.from_bytes(h[8:16],"big")|1
+    h=hashlib.sha256(d.encode("ascii")).digest(); a=int.from_bytes(h[:8],"big"); b=int.from_bytes(h[8:16],"big")|1
     for i in range(HASHES): yield (a+i*b+i*i)%BITS
 def add(bits,d):
     for i in indices(d): bits[i>>3]|=1<<(i&7)
@@ -43,7 +42,8 @@ def main():
         if d in found: fail("duplicate domain: "+d)
         found[d]="suffix_candidate" if suffix else "exact_candidate"
     if not 1000<=len(found)<=200000: fail("source entry count outside safety bounds")
-    first=not STATE.exists(); now=datetime.now(timezone.utc).isoformat(); sha=hashlib.sha256(data).hexdigest()
+    sha=hashlib.sha256(data).hexdigest(); now=datetime.now(timezone.utc).isoformat()
+    first=not STATE.exists()
     if first:
         bits=bytearray((BITS+7)//8)
         for d in found: add(bits,d)
@@ -55,10 +55,12 @@ def main():
         if len(bits)!=(BITS+7)//8: fail("Bloom state size mismatch")
         new={d:t for d,t in found.items() if not has(bits,d)}
         for d in found: add(bits,d)
+        if sha==st.get("source_sha256") and not new:
+            print("No source change or new domains; no repository write needed.")
+            return
     pending={}
     if PENDING.exists():
-        old=json.loads(PENDING.read_text(encoding="utf-8"))
-        pending={x["domain"]:x for x in old.get("candidates",[])}
+        old=json.loads(PENDING.read_text(encoding="utf-8")); pending={x["domain"]:x for x in old.get("candidates",[])}
     for d,t in new.items():
         pending.setdefault(d,{"domain":d,"source_entry_type":t,"first_seen":now,"source_id":src["id"],"source_sha256":sha})
     PENDING.parent.mkdir(parents=True,exist_ok=True); STATE.parent.mkdir(parents=True,exist_ok=True)
