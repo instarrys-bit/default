@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
-from domain_rule_engine import analyze_candidate, load_domain_rules
+from domain_rule_engine import RuleIndex, analyze_candidate, load_domain_rules
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "shadowrocket" / "ss.conf"
@@ -65,12 +65,13 @@ def main() -> int:
 
     candidates = load_candidates(data)
     rules, conditional, ignored = load_domain_rules(CONFIG)
+    rule_index = RuleIndex(rules)
     apex_policy_counts = {"DIRECT": 0, "PROXY": 0, "REJECT": 0}
     apex_covered = 0
     suffix_scope_varied = []
     shadowed_same_host = []
     for domain, is_suffix in candidates:
-        result = analyze_candidate(domain, is_suffix, rules)
+        result = analyze_candidate(domain, is_suffix, rule_index)
         winner = result["apex_winner"]
         if winner:
             apex_covered += 1
