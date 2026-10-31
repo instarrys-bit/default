@@ -2,7 +2,12 @@
   "schema_version": 1,
   "canonical_config": {
     "path": "shadowrocket/ss.conf",
-    "approved_git_blob_sha": "4c1abd066cc6d77ca9e59f46470e08314d14bea9"
+    "approved_git_blob_sha": "bd3a08178c5ecf314420d00ca2b5d6dbb85974c7",
+    "uploaded_sha256": "f2a2a91d4853ea83fb55d406659c1cde4f3d29092a9e08d4a3a80e00015446c8",
+    "uploaded_file": "ss(1).conf",
+    "uploaded_bytes": 90490,
+    "uploaded_lines": 2402,
+    "immutable": true
   },
   "allowed_policy_outputs": [
     "DIRECT",
@@ -33,7 +38,7 @@
     "hijack-dns": ":53"
   },
   "release_policy": {
-    "automatic_config_rewrite": true,
+    "automatic_config_rewrite": false,
     "automatic_policy_inference": true,
     "gpt_review_required": false,
     "minimum_independent_evidence_sources": 1,
@@ -56,8 +61,9 @@
       "Any malformed source, invalid domain, duplicate ledger key or failed validator blocks publication"
     ],
     "review_status": "Candidates below confidence 0.26 remain REVIEW; confirmed duplicates are not imported; conflicts and critical-function risks are held.",
-    "publish_gate": "APPROVED candidates are automatically published only after deterministic import checks, canonical baseline validation, DNS invariants and structural validation pass.",
+    "publish_gate": "No automatic configuration writes. Candidate decisions and reports only; original config remains immutable.",
     "decision_engine": "deterministic-domain-audit/1.0",
-    "confidence_interpretation": "Operational evidence score, not a statistical probability or guarantee of safe blocking."
+    "confidence_interpretation": "Operational evidence score, not a statistical probability or guarantee of safe blocking.",
+    "publication_mode": "review-only"
   }
 }
