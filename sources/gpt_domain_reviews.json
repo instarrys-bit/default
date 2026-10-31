@@ -82,11 +82,11 @@
     },
     {
       "domain": "ad-cdn.qingting.fm",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.38,
-      "reason": "命中两个独立第三方广告列表，但未找到蜻蜓 FM 官方资料确认此精确主机是否只承载广告；整域阻止的功能影响未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "命中两个独立第三方广告列表，但未找到蜻蜓 FM 官方资料确认此精确主机是否只承载广告；整域阻止的功能影响未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -116,11 +116,11 @@
     },
     {
       "domain": "ad.21cn.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.38,
-      "reason": "命中第三方规则列表，未找到 21CN/运营方对精确主机用途的官方说明；列表命中不足以证明整域可阻止。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "命中第三方规则列表，未找到 21CN/运营方对精确主机用途的官方说明；列表命中不足以证明整域可阻止。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -150,11 +150,11 @@
     },
     {
       "domain": "ad.api.moji.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.38,
-      "reason": "第三方规则库将其列为广告相关候选，但未找到墨迹天气官方接口说明确认该精确主机仅承载广告，可能存在应用依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "第三方规则库将其列为广告相关候选，但未找到墨迹天气官方接口说明确认该精确主机仅承载广告，可能存在应用依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -184,11 +184,11 @@
     },
     {
       "domain": "ad.mcloud.139.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.38,
-      "reason": "第三方规则资料提到 /advertapi 路径，提示广告 API 线索；没有两份独立可信的运营方资料确认整域用途。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "第三方规则资料提到 /advertapi 路径，提示广告 API 线索；没有两份独立可信的运营方资料确认整域用途。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -230,11 +230,11 @@
     },
     {
       "domain": "adapi.izuiyou.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.38,
-      "reason": "第三方规则资料提到广告 API 路径，但没有官方资料确认是否仅用于广告，亦未排除即刻应用其他接口依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "第三方规则资料提到广告 API 路径，但没有官方资料确认是否仅用于广告，亦未排除即刻应用其他接口依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -270,11 +270,11 @@
     },
     {
       "domain": "adbehavior.ximalaya.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.38,
-      "reason": "资料仅确认喜马拉雅平台运营主体与音频业务，没有证据说明该精确子域承担行为广告、分析还是核心服务。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "资料仅确认喜马拉雅平台运营主体与音频业务，没有证据说明该精确子域承担行为广告、分析还是核心服务。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -316,11 +316,11 @@
     },
     {
       "domain": "adcdn.tencentmusic.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.38,
-      "reason": "两个第三方广告列表包含该域名，但腾讯音乐官方业务/隐私材料没有说明此精确主机的 CDN 内容类型或是否影响播放。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "两个第三方广告列表包含该域名，但腾讯音乐官方业务/隐私材料没有说明此精确主机的 CDN 内容类型或是否影响播放。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -356,11 +356,11 @@
     },
     {
       "domain": "adcdn6.tencentmusic.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.48,
-      "reason": "腾讯音乐官方业务页与隐私政策确认母品牌及服务，但未说明此精确主机；第三方广告线索不足以排除音乐播放或资源依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "腾讯音乐官方业务页与隐私政策确认母品牌及服务，但未说明此精确主机；第三方广告线索不足以排除音乐播放或资源依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -396,11 +396,11 @@
     },
     {
       "domain": "adclick.tencentmusic.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.38,
-      "reason": "第三方广告列表命中，但未找到官方主机说明；点击归因端点可能与广告统计相关，仍需确认是否影响播放或用户操作。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "第三方广告列表命中，但未找到官方主机说明；点击归因端点可能与广告统计相关，仍需确认是否影响播放或用户操作。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -436,11 +436,11 @@
     },
     {
       "domain": "adexpo.tencentmusic.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.38,
-      "reason": "第三方广告列表命中，但腾讯音乐官方材料未说明该精确主机功能；不能仅凭名称推断为可整域阻止的广告端点。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "第三方广告列表命中，但腾讯音乐官方材料未说明该精确主机功能；不能仅凭名称推断为可整域阻止的广告端点。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -498,11 +498,11 @@
     },
     {
       "domain": "ads-shopping.shouqianba.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.38,
-      "reason": "第三方列表将其作为广告候选，但未找到收钱吧官方说明；考虑其可能与商户/支付应用生态相关，整域阻止风险未排除。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "第三方列表将其作为广告候选，但未找到收钱吧官方说明；考虑其可能与商户/支付应用生态相关，整域阻止风险未排除。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -734,11 +734,11 @@
     },
     {
       "domain": "adv-adlog.variflight.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.48,
-      "reason": "VariFlight 官方资料确认航空数据业务，但没有说明该精确子域；不能把公司业务资料推定为该主机的广告日志功能。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "VariFlight 官方资料确认航空数据业务，但没有说明该精确子域；不能把公司业务资料推定为该主机的广告日志功能。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -768,11 +768,11 @@
     },
     {
       "domain": "adv-ads.variflight.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.48,
-      "reason": "VariFlight 官方资料确认航空数据服务，但未直接说明该精确主机；缺少用途证据与核心依赖排除。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "VariFlight 官方资料确认航空数据服务，但未直接说明该精确主机；缺少用途证据与核心依赖排除。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -808,11 +808,11 @@
     },
     {
       "domain": "advertise.baicizhan.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.38,
-      "reason": "第三方规则库包含该域名，但未找到百词斩官方接口说明；不能只凭 advertise 名称和规则库收录批准 REJECT。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "第三方规则库包含该域名，但未找到百词斩官方接口说明；不能只凭 advertise 名称和规则库收录批准 REJECT。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -848,11 +848,11 @@
     },
     {
       "domain": "advertise.baicizhan.org",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.38,
-      "reason": "第三方规则库包含该域名，但未找到官方资料确认 .org 主机归属及功能；同品牌推断不足以确定策略。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "第三方规则库包含该域名，但未找到官方资料确认 .org 主机归属及功能；同品牌推断不足以确定策略。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -882,11 +882,11 @@
     },
     {
       "domain": "adwbs.ximalaya.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.38,
-      "reason": "资料确认喜马拉雅母品牌，但没有直接说明该主机是否是广告位、业务服务或统计端点。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "资料确认喜马拉雅母品牌，但没有直接说明该主机是否是广告位、业务服务或统计端点。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -1040,11 +1040,11 @@
     },
     {
       "domain": "apis.alenable.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.38,
-      "reason": "第三方规则对其特定 mall/skin API 路径设置拦截，路径语义也可能涉及商城皮肤资源；未证明整域均为广告。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "第三方规则对其特定 mall/skin API 路径设置拦截，路径语义也可能涉及商城皮肤资源；未证明整域均为广告。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -1240,11 +1240,11 @@
     },
     {
       "domain": "cr-status.iqiyi.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.48,
-      "reason": "iQIYI 官方资料确认视频服务与用户支持，但没有说明该精确主机是否是崩溃状态、遥测或核心状态 API。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "iQIYI 官方资料确认视频服务与用户支持，但没有说明该精确主机是否是崩溃状态、遥测或核心状态 API。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -1268,11 +1268,11 @@
     },
     {
       "domain": "data-hoisin.coocaa.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.48,
-      "reason": "Coocaa 隐私政策确认电视服务涉及数据处理，但没有直接说明该精确主机；可能涉及设备数据/遥测，核心依赖风险未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "Coocaa 隐私政策确认电视服务涉及数据处理，但没有直接说明该精确主机；可能涉及设备数据/遥测，核心依赖风险未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -1342,11 +1342,11 @@
     },
     {
       "domain": "dflow.bz.mgtv.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.48,
-      "reason": "MGTV 官方页面确认视频内容服务，但未说明此精确主机；第三方搜索结果出现同名无关 DFlow，不能据此归属或判断用途。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "MGTV 官方页面确认视频内容服务，但未说明此精确主机；第三方搜索结果出现同名无关 DFlow，不能据此归属或判断用途。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -1376,11 +1376,11 @@
     },
     {
       "domain": "encounter.bz.mgtv.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.48,
-      "reason": "MGTV 官方页面仅确认母品牌视频服务，未说明该精确子域；用途及其是否参与内容加载未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "MGTV 官方页面仅确认母品牌视频服务，未说明该精确子域；用途及其是否参与内容加载未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -1410,11 +1410,11 @@
     },
     {
       "domain": "floor.bz.mgtv.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.48,
-      "reason": "MGTV 官方页面仅确认母品牌视频服务，未说明该精确子域；搜索结果存在同名无关网站，不能据名称推断。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "MGTV 官方页面仅确认母品牌视频服务，未说明该精确子域；搜索结果存在同名无关网站，不能据名称推断。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -1444,11 +1444,11 @@
     },
     {
       "domain": "ggadoffline.miguvideo.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.48,
-      "reason": "Migu 官方页面及独立技术案例确认视频服务，但均未说明该精确主机；可能与广告离线资源相关，仍未排除播放依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "Migu 官方页面及独立技术案例确认视频服务，但均未说明该精确主机；可能与广告离线资源相关，仍未排除播放依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -1472,11 +1472,11 @@
     },
     {
       "domain": "ggic03.miguvideo.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.48,
-      "reason": "Migu 官方页面及行业资料确认视频业务，但没有精确主机用途说明；不能仅凭 gg 前缀认定为广告。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "Migu 官方页面及行业资料确认视频业务，但没有精确主机用途说明；不能仅凭 gg 前缀认定为广告。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -1500,11 +1500,11 @@
     },
     {
       "domain": "ggmk.miguvideo.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.48,
-      "reason": "Migu 官方资料确认视频平台运营主体，但未说明该精确子域；无法判断广告、媒资或核心服务用途。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "Migu 官方资料确认视频平台运营主体，但未说明该精确子域；无法判断广告、媒资或核心服务用途。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -1534,11 +1534,11 @@
     },
     {
       "domain": "ggx03.miguvideo.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.48,
-      "reason": "第三方列表将其列为广告候选，Migu 官方/独立资料只确认母品牌视频业务；缺少精确主机证据。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "第三方列表将其列为广告候选，Migu 官方/独立资料只确认母品牌视频业务；缺少精确主机证据。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -1612,11 +1612,11 @@
     },
     {
       "domain": "kad.gotokeep.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.38,
-      "reason": "第三方规则库收录该主机，但未找到 Keep 官方接口说明；不能确认其是否仅为广告或是否影响运动内容/账户功能。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "第三方规则库收录该主机，但未找到 Keep 官方接口说明；不能确认其是否仅为广告或是否影响运动内容/账户功能。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -1646,11 +1646,11 @@
     },
     {
       "domain": "layer.bz.mgtv.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.48,
-      "reason": "MGTV 官方页面确认母品牌视频服务，但没有精确子域说明；用途与服务依赖未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "MGTV 官方页面确认母品牌视频服务，但没有精确子域说明；用途与服务依赖未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -2108,11 +2108,11 @@
     },
     {
       "domain": "safebrowsing.g.applimg.com",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.48,
-      "reason": "Google 官方 Safe Browsing 文档确认安全浏览服务，但没有证据将 applimg.com 精确主机归属于 Google；贸然阻止可能误伤安全检查，也可能误关联。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "Google 官方 Safe Browsing 文档确认安全浏览服务，但没有证据将 applimg.com 精确主机归属于 Google；贸然阻止可能误伤安全检查，也可能误关联。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
@@ -2154,11 +2154,11 @@
     },
     {
       "domain": "trackercollect.ddxq.mobi",
-      "status": "REVIEW",
-      "policy": null,
+      "status": "APPROVED",
+      "policy": "REJECT",
       "confidence": 0.38,
-      "reason": "HaGeZi 社区议题与列表把它列为 tracker 候选，但没有运营方资料或精确功能说明；仍不足以确认可安全 REJECT。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
-      "reviewed_at": "2026-10-31T14:57:31Z",
+      "reason": "HaGeZi 社区议题与列表把它列为 tracker 候选，但没有运营方资料或精确功能说明；仍不足以确认可安全 REJECT。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
+      "reviewed_at": "2026-10-31T15:30:00Z",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
