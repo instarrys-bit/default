@@ -45,7 +45,7 @@
     "approval_criteria": [
       {
         "id": "independent_source_confidence",
-        "description": "Two independent source publishers corroborate the exact host; deterministic score 0.13 per source reaches 0.26."
+        "description": "Two different source publishers corroborate the exact host; deterministic score 0.13 per publisher reaches 0.26. Shared upstream lineage is not fully audited, so the score is an operational threshold rather than a probability."
       }
     ],
     "mandatory_vetoes": [
@@ -57,6 +57,7 @@
     ],
     "review_status": "Candidates below confidence 0.26 remain REVIEW; confirmed duplicates are not imported; conflicts and critical-function risks are held.",
     "publish_gate": "APPROVED candidates are automatically published only after deterministic import checks, canonical baseline validation, DNS invariants and structural validation pass.",
-    "decision_engine": "deterministic-domain-audit/1.0"
+    "decision_engine": "deterministic-domain-audit/1.0",
+    "confidence_interpretation": "Operational evidence score, not a statistical probability or guarantee of safe blocking."
   }
 }
