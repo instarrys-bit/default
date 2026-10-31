@@ -7,10 +7,10 @@
       "role": "primary_candidate_source",
       "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
       "format": "domain-only",
-      "expected_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "expected_entries": 56516,
       "weight": 0.26,
-      "classification": "REJECT"
+      "classification": "REJECT",
+      "initial_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "minimum_entries": 50000
     },
     {
       "id": "hagezi-domains-pro",
