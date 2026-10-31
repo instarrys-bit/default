@@ -5,20 +5,31 @@ on:
     paths:
       - "shadowrocket/ss.conf"
       - "scripts/validate_config.py"
+      - "scripts/audit_pipeline.py"
+      - "sources/policy.json"
       - ".github/workflows/validate-config.yml"
   pull_request:
     paths:
       - "shadowrocket/ss.conf"
       - "scripts/validate_config.py"
+      - "scripts/audit_pipeline.py"
+      - "sources/policy.json"
       - ".github/workflows/validate-config.yml"
+
+permissions:
+  contents: read
 
 jobs:
   structural-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: "3.11"
       - name: Check config structure
         run: python scripts/validate_config.py
+      - name: Check approved baseline and DNS policy
+        run: python scripts/audit_pipeline.py
