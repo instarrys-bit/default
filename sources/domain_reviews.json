@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "engine": "deterministic-domain-audit/1.1",
-  "updated_at": "2026-10-31T17:34:13.122203+00:00",
+  "updated_at": "2026-10-31T18:32:41.263032+00:00",
   "source_snapshot": [
     {
       "id": "sr-adblock-domain-lite",
@@ -15,14 +15,14 @@
     }
   ],
   "run_counts": {
-    "ALREADY_COVERED": 21,
-    "DUPLICATE": 29,
-    "RISK_HOLD": 17
+    "ALREADY_COVERED": 40,
+    "CONFLICT": 17,
+    "RISK_HOLD": 10
   },
   "counts": {
-    "ALREADY_COVERED": 21,
-    "DUPLICATE": 29,
-    "RISK_HOLD": 17
+    "ALREADY_COVERED": 40,
+    "CONFLICT": 17,
+    "RISK_HOLD": 10
   },
   "reviews": [
     {
@@ -46,8 +46,8 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "a-remad.qm989.com",
@@ -70,8 +70,8 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "activity-ag.awemeughun.com",
@@ -94,16 +94,16 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "ad-cdn.qingting.fm",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN ad-cdn.qingting.fm => REJECT (line 692)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -120,20 +120,20 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "ad.21cn.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN ad.21cn.com => REJECT (line 693)",
+      "status": "CONFLICT",
+      "reason": "Existing first-match DOMAIN-SUFFIX 21cn.com => DIRECT (line 811)",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -150,20 +150,20 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "DUPLICATE",
-      "conflict_check": "PASS",
+      "duplicate_check": "PASS",
+      "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "ad.api.moji.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN ad.api.moji.com => REJECT (line 694)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -180,20 +180,20 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "ad.mcloud.139.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN ad.mcloud.139.com => REJECT (line 695)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -210,20 +210,20 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "adapi.izuiyou.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN adapi.izuiyou.com => REJECT (line 696)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -240,20 +240,20 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "adbehavior.ximalaya.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN adbehavior.ximalaya.com => REJECT (line 697)",
+      "status": "CONFLICT",
+      "reason": "Existing first-match DOMAIN-SUFFIX ximalaya.com => DIRECT (line 1254)",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -270,20 +270,20 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "DUPLICATE",
-      "conflict_check": "PASS",
+      "duplicate_check": "PASS",
+      "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "adcdn.tencentmusic.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN adcdn.tencentmusic.com => REJECT (line 698)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -300,20 +300,20 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "adcdn6.tencentmusic.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN adcdn6.tencentmusic.com => REJECT (line 699)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -330,20 +330,20 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "adclick.tencentmusic.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN adclick.tencentmusic.com => REJECT (line 700)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -360,20 +360,20 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "adexpo.tencentmusic.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN adexpo.tencentmusic.com => REJECT (line 701)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -390,12 +390,12 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "adlaunch.qingting.fm",
@@ -418,16 +418,16 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "ads-shopping.shouqianba.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN ads-shopping.shouqianba.com => REJECT (line 702)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -444,12 +444,12 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "ads.play.cbsi.video",
@@ -472,8 +472,8 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "ads.reembed.com",
@@ -496,16 +496,16 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "ads.snapchat.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "RISK_HOLD",
-      "reason": "Exact host is on the critical-function protection list",
+      "status": "CONFLICT",
+      "reason": "Existing first-match DOMAIN-SUFFIX snapchat.com => PROXY (line 1896)",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -523,11 +523,11 @@
       ],
       "source_count": 2,
       "duplicate_check": "PASS",
-      "conflict_check": "PASS",
-      "risk_check": "VETO",
+      "conflict_check": "CONFLICT",
+      "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "ads.storm8.com",
@@ -550,8 +550,8 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "ads.yahoo.de",
@@ -580,16 +580,16 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "adsehera.ximalaya.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "ALREADY_COVERED",
-      "reason": "Matches existing URL-REGEX => REJECT",
+      "status": "CONFLICT",
+      "reason": "Existing first-match DOMAIN-SUFFIX ximalaya.com => DIRECT (line 1254)",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -606,12 +606,12 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "ALREADY_COVERED",
-      "conflict_check": "PASS",
+      "duplicate_check": "PASS",
+      "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "adsfilebssdlbig.tx.kugou.com",
@@ -640,16 +640,16 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "adv-adlog.variflight.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.26,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN adv-adlog.variflight.com => REJECT (line 703)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -660,20 +660,20 @@
         }
       ],
       "source_count": 1,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "adv-ads.variflight.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.26,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN adv-ads.variflight.com => REJECT (line 704)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -684,20 +684,20 @@
         }
       ],
       "source_count": 1,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "advertise.baicizhan.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN advertise.baicizhan.com => REJECT (line 705)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -714,20 +714,20 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "advertise.baicizhan.org",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN advertise.baicizhan.org => REJECT (line 706)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -744,20 +744,20 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "adwbs.ximalaya.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN adwbs.ximalaya.com => REJECT (line 707)",
+      "status": "CONFLICT",
+      "reason": "Existing first-match DOMAIN-SUFFIX ximalaya.com => DIRECT (line 1254)",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -774,12 +774,12 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "DUPLICATE",
-      "conflict_check": "PASS",
+      "duplicate_check": "PASS",
+      "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "adx.op.cp18.ott.cibntv.net",
@@ -802,16 +802,16 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "amdc.m.youku.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "ALREADY_COVERED",
-      "reason": "Matches existing URL-REGEX => REJECT",
+      "status": "CONFLICT",
+      "reason": "Existing first-match DOMAIN-SUFFIX youku.com => DIRECT (line 959)",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -828,12 +828,12 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "ALREADY_COVERED",
-      "conflict_check": "PASS",
+      "duplicate_check": "PASS",
+      "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "api-ad.kajicam.com",
@@ -862,16 +862,16 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "api.iqiyi.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.26,
-      "status": "RISK_HOLD",
-      "reason": "Exact host is on the critical-function protection list",
+      "status": "CONFLICT",
+      "reason": "Existing first-match DOMAIN-SUFFIX iqiyi.com => DIRECT (line 917)",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -883,19 +883,19 @@
       ],
       "source_count": 1,
       "duplicate_check": "PASS",
-      "conflict_check": "PASS",
-      "risk_check": "VETO",
+      "conflict_check": "CONFLICT",
+      "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "apis.alenable.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.26,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN apis.alenable.com => REJECT (line 708)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -906,20 +906,20 @@
         }
       ],
       "source_count": 1,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "apiv4-iyes.youku.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "RISK_HOLD",
-      "reason": "Exact host is on the critical-function protection list",
+      "status": "CONFLICT",
+      "reason": "Existing first-match DOMAIN-SUFFIX youku.com => DIRECT (line 959)",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -937,19 +937,19 @@
       ],
       "source_count": 2,
       "duplicate_check": "PASS",
-      "conflict_check": "PASS",
-      "risk_check": "VETO",
+      "conflict_check": "CONFLICT",
+      "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "business-cdn.shouji.sogou.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "RISK_HOLD",
-      "reason": "Exact host is on the critical-function protection list",
+      "status": "CONFLICT",
+      "reason": "Existing first-match DOMAIN-SUFFIX sogou.com => DIRECT (line 943)",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -967,11 +967,11 @@
       ],
       "source_count": 2,
       "duplicate_check": "PASS",
-      "conflict_check": "PASS",
-      "risk_check": "VETO",
+      "conflict_check": "CONFLICT",
+      "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "business.msstatic.com",
@@ -994,8 +994,8 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "cdn-new-ad.wtzw.com",
@@ -1024,16 +1024,16 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "cr-status.iqiyi.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.26,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN cr-status.iqiyi.com => REJECT (line 709)",
+      "status": "CONFLICT",
+      "reason": "Existing first-match DOMAIN-SUFFIX iqiyi.com => DIRECT (line 917)",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -1044,20 +1044,20 @@
         }
       ],
       "source_count": 1,
-      "duplicate_check": "DUPLICATE",
-      "conflict_check": "PASS",
+      "duplicate_check": "PASS",
+      "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "data-hoisin.coocaa.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.26,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN data-hoisin.coocaa.com => REJECT (line 710)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -1068,12 +1068,12 @@
         }
       ],
       "source_count": 1,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "ddfs-public.ddimg.mobi",
@@ -1096,16 +1096,16 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "dflow.bz.mgtv.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.26,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN dflow.bz.mgtv.com => REJECT (line 711)",
+      "status": "CONFLICT",
+      "reason": "Existing first-match DOMAIN-SUFFIX mgtv.com => DIRECT (line 838)",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -1116,20 +1116,20 @@
         }
       ],
       "source_count": 1,
-      "duplicate_check": "DUPLICATE",
-      "conflict_check": "PASS",
+      "duplicate_check": "PASS",
+      "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "encounter.bz.mgtv.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.26,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN encounter.bz.mgtv.com => REJECT (line 712)",
+      "status": "CONFLICT",
+      "reason": "Existing first-match DOMAIN-SUFFIX mgtv.com => DIRECT (line 838)",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -1140,20 +1140,20 @@
         }
       ],
       "source_count": 1,
-      "duplicate_check": "DUPLICATE",
-      "conflict_check": "PASS",
+      "duplicate_check": "PASS",
+      "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "floor.bz.mgtv.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.26,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN floor.bz.mgtv.com => REJECT (line 713)",
+      "status": "CONFLICT",
+      "reason": "Existing first-match DOMAIN-SUFFIX mgtv.com => DIRECT (line 838)",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -1164,20 +1164,20 @@
         }
       ],
       "source_count": 1,
-      "duplicate_check": "DUPLICATE",
-      "conflict_check": "PASS",
+      "duplicate_check": "PASS",
+      "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "ggadoffline.miguvideo.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.26,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN ggadoffline.miguvideo.com => REJECT (line 714)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -1188,20 +1188,20 @@
         }
       ],
       "source_count": 1,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "ggic03.miguvideo.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.26,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN ggic03.miguvideo.com => REJECT (line 715)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -1212,20 +1212,20 @@
         }
       ],
       "source_count": 1,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "ggmk.miguvideo.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.26,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN ggmk.miguvideo.com => REJECT (line 716)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -1236,20 +1236,20 @@
         }
       ],
       "source_count": 1,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "ggx03.miguvideo.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN ggx03.miguvideo.com => REJECT (line 717)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -1266,12 +1266,12 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "huyafile.msstatic.com",
@@ -1294,8 +1294,8 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "icloud-amap.com",
@@ -1318,16 +1318,16 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "kad.gotokeep.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN kad.gotokeep.com => REJECT (line 718)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -1344,20 +1344,20 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "layer.bz.mgtv.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN layer.bz.mgtv.com => REJECT (line 719)",
+      "status": "CONFLICT",
+      "reason": "Existing first-match DOMAIN-SUFFIX mgtv.com => DIRECT (line 838)",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -1374,12 +1374,12 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "DUPLICATE",
-      "conflict_check": "PASS",
+      "duplicate_check": "PASS",
+      "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "livep.l.t002.ottcn.com",
@@ -1408,8 +1408,8 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "livewebbs2.msstatic.com",
@@ -1432,8 +1432,8 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "livewebbs2pcdn.msstatic.com",
@@ -1462,8 +1462,8 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "log.51wnl-cq.com",
@@ -1486,16 +1486,16 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "mob.bz.mgtv.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.26,
-      "status": "RISK_HOLD",
-      "reason": "Exact host is on the critical-function protection list",
+      "status": "CONFLICT",
+      "reason": "Existing first-match DOMAIN-SUFFIX mgtv.com => DIRECT (line 838)",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -1507,11 +1507,11 @@
       ],
       "source_count": 1,
       "duplicate_check": "PASS",
-      "conflict_check": "PASS",
-      "risk_check": "VETO",
+      "conflict_check": "CONFLICT",
+      "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "msync-im1-vip6-std.easemob.com",
@@ -1534,8 +1534,8 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "pl.cp31.ott.cibntv.net",
@@ -1564,8 +1564,8 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "pp-cdnfile2pcdn.msstatic.com",
@@ -1588,8 +1588,8 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "r.51wnl-cq.com",
@@ -1618,16 +1618,16 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "rc-topic-api.bz.mgtv.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.26,
-      "status": "RISK_HOLD",
-      "reason": "Exact host is on the critical-function protection list",
+      "status": "CONFLICT",
+      "reason": "Existing first-match DOMAIN-SUFFIX mgtv.com => DIRECT (line 838)",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -1639,11 +1639,11 @@
       ],
       "source_count": 1,
       "duplicate_check": "PASS",
-      "conflict_check": "PASS",
-      "risk_check": "VETO",
+      "conflict_check": "CONFLICT",
+      "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "richmanapi.jxedt.com",
@@ -1666,8 +1666,8 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "richmanmain.jxedt.com",
@@ -1690,8 +1690,8 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "richmanrules.jxedt.com",
@@ -1714,8 +1714,8 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "rttrack.ddxq.mobi",
@@ -1738,8 +1738,8 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "safebrowsing.g.applimg.com",
@@ -1762,16 +1762,16 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "trackercollect.ddxq.mobi",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.39,
-      "status": "DUPLICATE",
-      "reason": "Existing first-match DOMAIN trackercollect.ddxq.mobi => REJECT (line 720)",
+      "status": "ALREADY_COVERED",
+      "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -1788,20 +1788,20 @@
         }
       ],
       "source_count": 2,
-      "duplicate_check": "DUPLICATE",
+      "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     },
     {
       "domain": "vip.bz.mgtv.com",
       "classification": "REJECT",
       "policy": "REJECT",
       "confidence": 0.26,
-      "status": "RISK_HOLD",
-      "reason": "Exact host is on the critical-function protection list",
+      "status": "CONFLICT",
+      "reason": "Existing first-match DOMAIN-SUFFIX mgtv.com => DIRECT (line 838)",
       "evidence": [
         {
           "source_id": "sr-adblock-domain-lite",
@@ -1813,11 +1813,11 @@
       ],
       "source_count": 1,
       "duplicate_check": "PASS",
-      "conflict_check": "PASS",
-      "risk_check": "VETO",
+      "conflict_check": "CONFLICT",
+      "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
-      "config_baseline": "managed-block-excluded"
+      "reviewed_at": "2026-10-31T18:32:41.263032+00:00",
+      "config_baseline": "uploaded-immutable-baseline"
     }
   ]
 }
