@@ -12,7 +12,7 @@ PENDING=ROOT/"reports/pending-gpt-review.json"
 LEDGER=ROOT/"sources/gpt_domain_reviews.json"
 FILTERED=ROOT/"reports/domain-filtered.json"
 REPORT=ROOT/"reports/domain-filter.md"
-DOMAIN_RE=re.compile(r"^(?=.{1,253}$)[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$")
+DOMAIN_RE=re.compile(r"^(?=.{1,253}$)[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:[.][A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$")
 COND_RE=re.compile(r"DOMAIN(?:-SUFFIX)?,([A-Za-z0-9.-]+)",re.I)
 
 def fail(message): raise SystemExit("ERROR: "+message)
@@ -88,13 +88,13 @@ def main():
         old=json.loads(FILTERED.read_text(encoding="utf-8")).get("filtered",[])
     merged={x["domain"]:x for x in old}
     for x in archived: merged[x["domain"]]=x
-    FILTERED.write_text(json.dumps({"schema_version":1,"filtered":sorted(merged.values(),key=lambda x:x["domain"])},ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
-    PENDING.write_text(json.dumps({"schema_version":1,"updated_at":pending.get("updated_at"),"candidates":kept},ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+    FILTERED.write_text(json.dumps({"schema_version":1,"filtered":sorted(merged.values(),key=lambda x:x["domain"])},ensure_ascii=False,indent=2)+chr(10),encoding="utf-8")
+    PENDING.write_text(json.dumps({"schema_version":1,"updated_at":pending.get("updated_at"),"candidates":kept},ensure_ascii=False,indent=2)+chr(10),encoding="utf-8")
     ready=sum(1 for x in kept if x.get("domain","").lower() not in reviewed)
     report=["# Domain candidate filter","",f"Input candidates: {len(pending.get('candidates',[]))}",f"Ready for GPT: {ready}",f"Already in GPT ledger (retained for release gate): {len(kept)-ready}",f"Filtered and archived this run: {len(archived)}","",
             "Filtering checks syntax, duplicates, source scope, existing first-match DOMAIN/DOMAIN-SUFFIX rules, conditional rules, skip-proxy, DOMAIN-KEYWORD and URL-REGEX.",
             "Filtered candidates are retained in reports/domain-filtered.json for audit. No policy is inferred and ss.conf is read-only.",""]
-    REPORT.write_text("\\n".join(report),encoding="utf-8")
-    print("\\n".join(report))
+    REPORT.write_text(chr(10).join(report),encoding="utf-8")
+    print(chr(10).join(report))
 
 if __name__=="__main__": main()
