@@ -46,16 +46,22 @@ def main():
     first=not STATE.exists()
     if first:
         bits=bytearray((BITS+7)//8)
+        new=found.copy()
         for d in found: add(bits,d)
-        new={}
+        baseline_imported=True
     else:
         st=json.loads(STATE.read_text(encoding="utf-8"))
         if st.get("schema_version")!=1 or st.get("bits")!=BITS or st.get("hashes")!=HASHES: fail("Bloom state schema mismatch")
         bits=bytearray(zlib.decompress(base64.b64decode(st["data"])))
         if len(bits)!=(BITS+7)//8: fail("Bloom state size mismatch")
-        new={d:t for d,t in found.items() if not has(bits,d)}
+        baseline_imported=st.get("baseline_imported") is True
+        if not baseline_imported:
+            # One-time migration: queue the already-baselined source entries instead of silently skipping them.
+            new=found.copy()
+        else:
+            new={d:t for d,t in found.items() if not has(bits,d)}
         for d in found: add(bits,d)
-        if sha==st.get("source_sha256") and not new:
+        if baseline_imported and sha==st.get("source_sha256") and not new:
             print("No source change or new domains; no repository write needed.")
             return
     pending={}
@@ -65,12 +71,12 @@ def main():
         pending.setdefault(d,{"domain":d,"source_entry_type":t,"first_seen":now,"source_id":src["id"],"source_sha256":sha})
     INTAKE.parent.mkdir(parents=True,exist_ok=True); STATE.parent.mkdir(parents=True,exist_ok=True)
     state={"schema_version":1,"bits":BITS,"hashes":HASHES,"source_id":src["id"],"source_sha256":sha,
-           "entry_count":len(found),"updated_at":now,"data":base64.b64encode(zlib.compress(bytes(bits),9)).decode("ascii")}
+           "entry_count":len(found),"baseline_imported":True,"updated_at":now,"data":base64.b64encode(zlib.compress(bytes(bits),9)).decode("ascii")}
     INTAKE.write_text(json.dumps({"schema_version":1,"updated_at":now,"candidates":sorted(pending.values(),key=lambda x:x["domain"])},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     STATE.write_text(json.dumps(state,separators=(",",":"))+"\n",encoding="utf-8")
     report=["# Domain source capture","",f"Source: {src['url']}",f"SHA-256: {sha}",f"Current entries: {len(found)}",
             f"New candidates detected: {len(new)}",f"Raw intake candidates awaiting filter: {len(pending)}",
-            "Initial baseline: "+("established; existing entries were not queued" if first else "already established"),"",
+            "Initial baseline migration: "+("all current source entries queued for first-pass filtering" if not baseline_imported or first else "already completed"),"",
             "Only domain strings are captured. Upstream policy, scripts, modules, DNS, MITM and rewrite directives are never imported.",
             "A compact Bloom filter tracks prior domains without storing a plain copy of the source list. Its false-positive probability is negligible; it has no false negatives.",
             "Source removals never delete existing rules automatically. Candidates are staged in domain-intake.json; no GPT buffer or config changes occur during capture.",""]
