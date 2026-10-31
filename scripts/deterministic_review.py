@@ -72,13 +72,8 @@ def main():
     protected=json.loads(PROTECTED.read_text(encoding="utf-8"))
     collected=json.loads(CANDIDATES.read_text(encoding="utf-8"))
     config=CONFIG.read_text(encoding="utf-8")
-    start="# BEGIN GPT-REVIEWED DOMAIN RULES (managed)"
-    end="# END GPT-REVIEWED DOMAIN RULES (managed)"
-    lines=config.splitlines(keepends=True)
-    a=[i for i,x in enumerate(lines) if x.strip()==start]
-    b=[i for i,x in enumerate(lines) if x.strip()==end]
-    if len(a)!=1 or len(b)!=1 or a[0]>=b[0]: fail("managed rule block markers invalid")
-    base="".join(lines[:a[0]]+lines[b[0]+1:])
+    # The uploaded baseline is immutable; review against every original rule as-is.
+    base=config
     rules,conditional,ignored=load_domain_rules(CONFIG)
     index=RuleIndex(rules)
     score_cfg=source_cfg["scoring"]
@@ -111,7 +106,7 @@ def main():
             "conflict_check":"PASS" if status not in {"CONFLICT","REVIEW"} else status,
             "risk_check":"VETO" if status=="RISK_HOLD" else "PASS",
             "decision_engine":"deterministic-domain-audit/1.1","reviewed_at":now,
-            "config_baseline":"managed-block-excluded"
+            "config_baseline":"uploaded-immutable-baseline"
         }
         run_counts[status]=run_counts.get(status,0)+1
     reviews=sorted(review_map.values(),key=lambda x:x["domain"])
