@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-31T15:16:12.414Z",
+  "updated_at": "2026-10-31T15:21:30.530Z",
   "reviews": [
     {
       "domain": "39d83s.com",
@@ -219,6 +219,12 @@
           "publisher": "Qualys SSL Labs",
           "published_or_accessed_date": "2026-10-31",
           "supports": "TLS 测试页面确认该主机可提供 TLS 服务；不证明其业务用途。"
+        },
+        {
+          "url": "https://clashios.app/stoverride/lodepuly_vpn_tool/mobileClouds_remove_ads",
+          "publisher": "Clash iOS / Stash 玩家",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "模块针对 /advertapi/adv-filter/ 路径处理，提供中国移动云盘广告 API 线索；不证明全主机只有广告用途。"
         }
       ]
     },
@@ -299,6 +305,12 @@
           "publisher": "Webmaster Tips",
           "published_or_accessed_date": "2026-10-31",
           "supports": "网络资产页面显示该主机与 Ximalaya 相关域名处于同一网段；仅为网络关联线索。"
+        },
+        {
+          "url": "https://github.com/v2ray/v2ray-core/issues/2709",
+          "publisher": "V2Ray Core issue tracker",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "历史请求日志出现精确路径 /api/v1/adRealTime，支持其存在广告实时请求路径的线索；但日志年代较早，不能证明当前全主机仅用于广告。"
         }
       ]
     },
@@ -1057,6 +1069,12 @@
           "publisher": "Clash iOS / Stash 玩家",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方配置对 /mall/v1/api/mall/skin/user/get 与 /ycx 路径处理，说明存在具体商城/皮肤 API 路径，整域阻止风险未排除。"
+        },
+        {
+          "url": "https://github.com/blackmatrix7/ios_rule_script/blob/master/rewrite/QuantumultX/Advertising/Advertising.conf",
+          "publisher": "blackmatrix7/ios_rule_script",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "规则只针对 /ycx/v1/api/adPut 等具体 URL 路径处理，证明存在广告投放路径线索，但不能推出整域所有 API 都可阻止。"
         }
       ]
     },
@@ -1137,6 +1155,12 @@
           "publisher": "Telegram: 广告必须死",
           "published_or_accessed_date": "2026-10-31",
           "supports": "帖子记录该主机的 wapdl 图片路径，并提醒屏蔽可能误伤搜狗输入法图片；社区线索，非官方说明。"
+        },
+        {
+          "url": "https://github.com/ihxperfect/loon-plugin/blob/main/AdBlock.plugin",
+          "publisher": "ihxperfect/loon-plugin",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "规则只针对 /wapdl/hole/ 下的图片/媒体路径，说明可疑内容可能局限于特定路径，整主机阻止可能影响其他搜狗输入法资源。"
         }
       ]
     },
@@ -1177,6 +1201,12 @@
           "publisher": "Clash iOS / Stash 玩家",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方配置将该主机列为广告候选；未证明整域所有路径都是广告。"
+        },
+        {
+          "url": "https://github.com/kongfl888/ad-rules/blob/master/video2.txt",
+          "publisher": "kongfl888/ad-rules",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "规则匹配 /advertiser/material 路径，支持广告素材资源路径线索；无法证明该 CDN 主机只服务广告。"
         }
       ]
     },
@@ -1335,6 +1365,12 @@
           "publisher": "Clash iOS / Stash 玩家",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方 MangoTV 去广告配置将该主机列为候选；未提供官方用途说明。"
+        },
+        {
+          "url": "https://github.com/Crazy-Z7/AdGuard/blob/main/NoAdMgTV.conf",
+          "publisher": "Crazy-Z7/AdGuard",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该规则指向 /flow/getExtensionPosition 路径；仅为接口路径线索，缺少运营方说明及全主机纯广告证明。"
         }
       ]
     },
@@ -1363,6 +1399,12 @@
           "publisher": "Clash iOS / Stash 玩家",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方 MangoTV 去广告配置将该主机列为候选；未证明其只承载广告。"
+        },
+        {
+          "url": "https://github.com/Crazy-Z7/AdGuard/blob/main/NoAdMgTV.conf",
+          "publisher": "Crazy-Z7/AdGuard",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "规则针对 /encounter/entrance/home 路径，接口名称/路径本身不能证明全主机广告用途，保留整域阻止风险。"
         }
       ]
     },
@@ -1391,6 +1433,12 @@
           "publisher": "Clash iOS / Stash 玩家",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方 MangoTV 去广告配置将该主机列为候选；未提供官方用途说明。"
+        },
+        {
+          "url": "https://github.com/Crazy-Z7/AdGuard/blob/main/NoAdMgTV.conf",
+          "publisher": "Crazy-Z7/AdGuard",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "规则指向 /floor/detail.+ 路径，说明可能包含楼层/内容接口；不支持整主机 REJECT。"
         }
       ]
     },
@@ -1587,6 +1635,12 @@
           "publisher": "GitHub: blackmatrix7/ios_rule_script",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方 Shadowrocket 规则针对该主机或特定 URL 路径处理；不构成整域名用途的官方证明。"
+        },
+        {
+          "url": "https://github.com/Crazy-Z7/AdGuard/blob/main/Ad.conf",
+          "publisher": "Crazy-Z7/AdGuard",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "规则只匹配 /op-engine-webapp/v*/ad 路径，支持广告路径存在，但不支持整域阻止。"
         }
       ]
     },
@@ -1609,6 +1663,12 @@
           "publisher": "MangoTV / MGTV",
           "published_or_accessed_date": "2026-10-31",
           "supports": "官方页面确认 MangoTV 提供视频频道与内容服务；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://github.com/Crazy-Z7/AdGuard/blob/main/NoAdMgTV.conf",
+          "publisher": "Crazy-Z7/AdGuard",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "规则分别处理 /layer/conf.* 与 /layer/report 路径，说明主机存在多种接口；无法据此认定全部流量都是广告。"
         }
       ]
     },
@@ -1705,6 +1765,12 @@
           "publisher": "GitHub: TG-Twilight/AWAvenue-Ads-Rule",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方广告规则清单包含该域名；仅是拦截线索，不是该域名运营主体或用途的直接证明。"
+        },
+        {
+          "url": "https://songshu.im/rules/sets/07_reject-no-drop.conf",
+          "publisher": "Songshu rules",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该主机被列在其他静态资源/CDN 域名相邻规则中；此来源本身不证明广告用途，反而说明其可能属于内容分发域，保持整域 REVIEW。"
         }
       ]
     },
@@ -1761,6 +1827,12 @@
           "publisher": "GitHub: blackmatrix7/ios_rule_script",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方 Shadowrocket 规则针对该主机或特定 URL 路径处理；不构成整域名用途的官方证明。"
+        },
+        {
+          "url": "https://github.com/Crazy-Z7/AdGuard/blob/main/NoAdMgTV.conf",
+          "publisher": "Crazy-Z7/AdGuard",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "列出 /odin/c1/channel/ads 等广告路径，同时同主机还出现 /channel/listpage、/skin/info 等普通接口响应，整主机阻止可能影响 MangoTV 功能。"
         }
       ]
     },
@@ -1835,6 +1907,12 @@
           "publisher": "YZAutoP 博客",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方电视广告列表列出该主机；同一域名还存在 OTT/playlist 路径线索，整域拦截可能误伤视频。"
+        },
+        {
+          "url": "https://github.com/airdge/VideoParse/issues/3",
+          "publisher": "airdge/VideoParse",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "讨论中出现该主机的 /playlist/m3u8 播放地址，直接提示其承载视频播放清单；全主机阻止可能破坏优酷/OTT 播放。"
         }
       ]
     },
@@ -1901,6 +1979,12 @@
           "publisher": "Clash iOS / Stash 玩家",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方 MangoTV 配置将该主机列为拦截候选；topic API 可能承载内容接口，官方用途未确认。"
+        },
+        {
+          "url": "https://github.com/Crazy-Z7/AdGuard/blob/main/NoAdMgTV.conf",
+          "publisher": "Crazy-Z7/AdGuard",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "规则针对 /rc/topic/rank 路径，可能是专题/排名接口；没有证据证明整主机为广告专用。"
         }
       ]
     },
@@ -1935,6 +2019,12 @@
           "publisher": "博客园用户",
           "published_or_accessed_date": "2026-10-31",
           "supports": "第三方规则库提及该主机；与路径级广告规则线索合并仍不足以确认整域功能。"
+        },
+        {
+          "url": "https://github.com/rookiediiick/Surge/blob/master/Block-Ads.sgmodule",
+          "publisher": "rookiediiick/Surge",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "规则仅匹配 /api/(ad|adplus)/ 等路径，说明该主机包含广告 API 路径线索；不证明同主机其他接口可阻止。"
         }
       ]
     },
@@ -1957,6 +2047,12 @@
           "publisher": "GitHub: blackmatrix7/ios_rule_script",
           "published_or_accessed_date": "2026-10-31",
           "supports": "社区讨论引用该主机的特定 URL 规则；只能说明存在相关请求路径线索。"
+        },
+        {
+          "url": "https://github.com/mymoonyue/Shadowrocket/blob/master/mianliu.conf",
+          "publisher": "mymoonyue/Shadowrocket",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "规则针对 /advertisement/fallback 路径，而非整主机；这支持路径级广告内容线索，不支持全主机 REJECT。"
         }
       ]
     },
