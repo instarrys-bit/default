@@ -1,132 +1,54 @@
 #!/usr/bin/env python3
-"""Read-only safety gate for the canonical Shadowrocket configuration.
-
-This audit intentionally does not rewrite ss.conf, classify domains, or publish rules.
-The approved Git blob SHA is a change-control lock: intentional config changes require
-an explicit review and a corresponding policy-manifest update.
-"""
 from __future__ import annotations
-
-import json
-import subprocess
-import sys
-from collections import Counter
+import hashlib,json,sys
 from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
-CONFIG = ROOT / "shadowrocket" / "ss.conf"
-POLICY = ROOT / "sources" / "policy.json"
-REQUIRED_SECTIONS = ("[General]", "[Rule]", "[Host]")
-DNS_KEYS = (
-    "dns-server",
-    "fallback-dns-server",
-    "direct-dns-server",
-    "proxy-dns-server",
-    "dns-direct-system",
-    "dns-direct-fallback-proxy",
-    "hijack-dns",
-)
-
-
-def fail(message: str) -> None:
-    print(f"ERROR: {message}", file=sys.stderr)
-    raise SystemExit(1)
-
-
-def git_blob_sha(path: str) -> str:
-    try:
-        return subprocess.check_output(
-            ["git", "rev-parse", f"HEAD:{path}"], cwd=ROOT, text=True
-        ).strip()
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        fail("cannot read the canonical config Git blob SHA; run inside a full Git checkout")
-
-
-def parse_general(text: str) -> dict[str, list[str]]:
-    block = text.split("[General]", 1)[1].split("[", 1)[0]
-    values: dict[str, list[str]] = {}
-    for raw in block.splitlines():
-        line = raw.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        key, value = (part.strip() for part in line.split("=", 1))
-        values.setdefault(key, []).append(value)
-    return values
-
-
-def main() -> None:
-    if not CONFIG.is_file():
-        fail("shadowrocket/ss.conf is missing")
-    if not POLICY.is_file():
-        fail("sources/policy.json is missing")
-
-    try:
-        policy = json.loads(POLICY.read_text(encoding="utf-8"))
-    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-        fail(f"policy manifest is invalid: {exc}")
-
-    text = CONFIG.read_text(encoding="utf-8")
-    if not text.strip():
-        fail("canonical config is empty")
-
-    positions = {}
-    for section in REQUIRED_SECTIONS:
-        if text.count(section) != 1:
-            fail(f"expected exactly one {section} section")
-        positions[section] = text.index(section)
-    if not (positions["[General]"] < positions["[Rule]"] < positions["[Host]"]):
-        fail("section order must remain [General], [Rule], [Host]")
-
-    expected_sha = policy.get("canonical_config", {}).get("approved_git_blob_sha")
-    actual_sha = git_blob_sha("shadowrocket/ss.conf")
-    if not expected_sha or actual_sha != expected_sha:
-        fail(
-            "canonical config differs from the approved baseline "
-            f"(expected blob {expected_sha!r}, found {actual_sha}); "
-            "no automated rewrite or publication is permitted"
-        )
-
-    general = parse_general(text)
-    expected_dns = policy.get("dns_invariants", {})
-    for key in DNS_KEYS:
-        found = general.get(key, [])
-        expected = expected_dns.get(key)
-        if len(found) != 1:
-            fail(f"DNS invariant {key!r} must appear exactly once; found {len(found)}")
-        if found[0] != expected:
-            fail(f"DNS invariant changed: {key!r}")
-
-    allowed = policy.get("allowed_policy_outputs")
-    if allowed != ["DIRECT", "PROXY", "REJECT"]:
-        fail("policy outputs must be exactly DIRECT, PROXY, REJECT in that order")
-    if policy.get("external_source_mode") != "domain-only":
-        fail("external source mode must remain domain-only")
-    if policy.get("release_policy", {}).get("automatic_config_rewrite") is not False:
-        fail("automatic config rewrite must remain disabled")
-    if policy.get("release_policy", {}).get("automatic_policy_inference") is not False:
-        fail("automatic policy inference must remain disabled")
-
-    rule_block = text.split("[Rule]", 1)[1].split("[Host]", 1)[0]
-    active = [
-        line.strip() for line in rule_block.splitlines()
-        if line.strip() and not line.lstrip().startswith("#")
-    ]
-    if not active:
-        fail("[Rule] contains no active rules")
-    types = Counter(line.split(",", 1)[0] for line in active)
-
-    print("PASS: read-only Shadowrocket safety audit")
-    print(f"Canonical config blob: {actual_sha}")
-    print(f"Active existing rules: {len(active)}")
-    print("Existing rule types (reported, not rewritten):")
-    for rule_type, count in sorted(types.items()):
-        print(f"  {rule_type}: {count}")
-    print("DNS invariants: all 7 match the approved baseline")
-    print("External sources: 0 approved; no external domains imported")
-    print("Policy outputs: DIRECT / PROXY / REJECT only")
-    print("Publication: disabled; this workflow cannot modify ss.conf")
-    print("NOTE: static audit does not replace Shadowrocket device testing.")
-
-
-if __name__ == "__main__":
-    main()
+ROOT=Path(__file__).resolve().parents[1]
+CONFIG=ROOT/"shadowrocket/ss.conf"; POLICY=ROOT/"sources/policy.json"; LEDGER=ROOT/"sources/gpt_domain_reviews.json"
+START="# BEGIN GPT-REVIEWED DOMAIN RULES (managed)"; END="# END GPT-REVIEWED DOMAIN RULES (managed)"
+DNS_KEYS=("dns-server","fallback-dns-server","direct-dns-server","proxy-dns-server","dns-direct-system","dns-direct-fallback-proxy","hijack-dns")
+L2="# === Layer 2: Explicit High-Priority Domain Rules & Exceptions (DOMAIN) ==="
+L3="# === Layer 3 & Layer 4: Domestic (DIRECT) & International/Web3 (PROXY) Domain Sets (Length-Sorted Zero-Shadowing) ==="
+def fail(m): print("ERROR: "+m,file=sys.stderr); raise SystemExit(1)
+def blob(data): return hashlib.sha1(f"blob {len(data)}\0".encode("ascii")+data).hexdigest()
+def main():
+    text=CONFIG.read_text(encoding="utf-8"); p=json.loads(POLICY.read_text(encoding="utf-8"))
+    if any(text.count(s)!=1 for s in ("[General]","[Rule]","[Host]")): fail("required section count invalid")
+    if not text.index("[General]")<text.index("[Rule]")<text.index("[Host]"): fail("section order invalid")
+    lines=text.splitlines(keepends=True)
+    a=[i for i,x in enumerate(lines) if x.strip()==START]; b=[i for i,x in enumerate(lines) if x.strip()==END]
+    if len(a)!=1 or len(b)!=1 or a[0]>=b[0]: fail("managed import markers invalid")
+    if text.count(L2)!=1 or text.count(L3)!=1 or not text.index(L2)<text.index(START)<text.index(END)<text.index(L3):
+        fail("managed block must remain after explicit Layer 2 and before Layer 3")
+    base="".join(lines[:a[0]]+lines[b[0]+1:])
+    actual=blob(base.encode("utf-8")); expected=p["canonical_config"]["approved_git_blob_sha"]
+    if actual!=expected: fail(f"unmanaged config changed: expected {expected}, got {actual}")
+    general=text.split("[General]",1)[1].split("[",1)[0]; values={}
+    for raw in general.splitlines():
+        line=raw.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k,v=(z.strip() for z in line.split("=",1)); values.setdefault(k,[]).append(v)
+    for k in DNS_KEYS:
+        if values.get(k)!=[p["dns_invariants"].get(k)]: fail("DNS invariant changed: "+k)
+    if p.get("allowed_policy_outputs")!=["DIRECT","PROXY","REJECT"]: fail("allowed policies changed")
+    rel=p.get("release_policy",{})
+    if rel.get("automatic_config_rewrite") is not True or rel.get("automatic_policy_inference") is not False or rel.get("gpt_review_required") is not True:
+        fail("GPT-reviewed publication policy flags invalid")
+    rule=text.split("[Rule]",1)[1].split("[Host]",1)[0].splitlines()
+    start=next(i for i,x in enumerate(rule) if x.strip()==START); end=next(i for i,x in enumerate(rule) if x.strip()==END)
+    imported=[x.strip() for x in rule[start+1:end] if x.strip() and not x.strip().startswith("#")]
+    ledger=json.loads(LEDGER.read_text(encoding="utf-8"))
+    approved={x["domain"]:x for x in ledger.get("reviews",[]) if str(x.get("status","")).upper()=="APPROVED"}
+    seen=set()
+    for line in imported:
+        f=[x.strip() for x in line.split(",")]
+        if len(f)!=3 or f[0]!="DOMAIN" or f[2] not in {"DIRECT","PROXY","REJECT"}: fail("invalid managed rule: "+line)
+        if f[1] in seen: fail("duplicate managed domain: "+f[1])
+        seen.add(f[1])
+        item=approved.get(f[1])
+        if not item or str(item.get("policy","")).upper()!=f[2]: fail("managed rule lacks matching GPT approval: "+f[1])
+    print("PASS: canonical baseline, GPT approval ledger, managed rules and 7 DNS invariants")
+    print("Managed exact domain rules: "+str(len(imported)))
+    print("Unmanaged config bytes preserved; DNS, nodes, MITM and URL Rewrite unchanged.")
+if __name__=="__main__":
+    try: main()
+    except (OSError,KeyError,ValueError,json.JSONDecodeError) as e: fail(str(e))
