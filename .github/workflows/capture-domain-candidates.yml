@@ -7,6 +7,7 @@ on:
     paths:
       - "sources/policy.json"
       - "scripts/capture_domain_candidates.py"
+      - "scripts/filter_domain_candidates.py"
       - ".github/workflows/capture-domain-candidates.yml"
 permissions:
   contents: write
