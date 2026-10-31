@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
-from domain_rule_engine import analyze_candidate, load_domain_rules
+from domain_rule_engine import RuleIndex, analyze_candidate, load_domain_rules
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "shadowrocket" / "ss.conf"
@@ -123,12 +123,13 @@ def main() -> None:
         return
     candidates = load_candidates()
     rules, conditional, ignored = load_domain_rules(CONFIG)
+    rule_index = RuleIndex(rules)
     approvals = load_approvals(candidates)
     stats = defaultdict(int)
     review, pending, generated = [], [], []
 
     for domain, is_suffix in candidates.items():
-        result = analyze_candidate(domain, is_suffix, rules)
+        result = analyze_candidate(domain, is_suffix, rule_index)
         policies = result["scope_policies"]
         approval = approvals.get(domain)
         if len(policies) > 1:
