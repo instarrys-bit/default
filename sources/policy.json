@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "canonical_config": {
+    "path": "shadowrocket/ss.conf",
+    "approved_git_blob_sha": "4c1abd066cc6d77ca9e59f46470e08314d14bea9"
+  },
+  "allowed_policy_outputs": ["DIRECT", "PROXY", "REJECT"],
+  "external_source_mode": "domain-only",
+  "external_sources": [],
+  "dns_invariants": {
+    "dns-server": "https://dns.quad9.net/dns-query#proxy, https://dns.google/dns-query#proxy, https://cloudflare-dns.com/dns-query#proxy",
+    "fallback-dns-server": "https://cloudflare-dns.com/dns-query#proxy, https://dns.google/dns-query#proxy",
+    "direct-dns-server": "https://doh.pub/dns-query, https://dns.alidns.com/dns-query",
+    "proxy-dns-server": "https://dns.quad9.net/dns-query#proxy, https://dns.google/dns-query#proxy, https://cloudflare-dns.com/dns-query#proxy",
+    "dns-direct-system": "false",
+    "dns-direct-fallback-proxy": "false",
+    "hijack-dns": ":53"
+  },
+  "release_policy": {
+    "automatic_config_rewrite": false,
+    "automatic_policy_inference": false,
+    "publish_only_after_all_checks": true
+  }
+}
