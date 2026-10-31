@@ -34,7 +34,7 @@ jobs:
       - name: Commit queue and source fingerprint
         run: |
           git diff --check
-          git add reports/domain-source-bloom.json reports/pending-gpt-review.json reports/domain-capture.md reports/domain-filtered.json reports/domain-filter.md
+          git add reports/domain-source-bloom.json reports/domain-intake.json reports/pending-gpt-review.json reports/domain-capture.md reports/domain-filtered.json reports/domain-filter.md
           if git diff --cached --quiet; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
