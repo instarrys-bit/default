@@ -1,5 +1,1564 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-31T13:45:56.370Z",
-  "reviews": []
+  "updated_at": "2026-10-31T14:57:31Z",
+  "reviews": [
+    {
+      "domain": "39d83s.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "检索未定位到可信运营主体、产品文档或用途说明；不能仅凭随机样式域名推断恶意、广告或跟踪。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "a-remad.qm989.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "检索未找到可核验的官方域名说明或可信用途资料；主机名片段本身不足以证明广告属性。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "activity-ag.awemeughun.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "搜索仅命中社区规则讨论及该 IP 网段的云服务注册资料；IP 注册主体不能证明精确域名运营主体或功能。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "ad-cdn.qingting.fm",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "命中两个独立第三方广告列表，但未找到蜻蜓 FM 官方资料确认此精确主机是否只承载广告；整域阻止的功能影响未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/TG-Twilight/AWAvenue-Ads-Rule/blob/main/AWAvenue-Ads-Rule.txt",
+          "publisher": "GitHub: TG-Twilight/AWAvenue-Ads-Rule",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方广告规则清单包含该域名；仅是拦截线索，不是该域名运营主体或用途的直接证明。"
+        },
+        {
+          "url": "https://github.com/x-o-r-r-o/Pi-Hole-Block-Lists/blob/master/mobile-ads.txt",
+          "publisher": "GitHub: x-o-r-r-o/Pi-Hole-Block-Lists",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方移动广告列表包含该域名；不能单独证明具体功能或核心依赖关系。"
+        }
+      ]
+    },
+    {
+      "domain": "ad.21cn.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "命中第三方规则列表，未找到 21CN/运营方对精确主机用途的官方说明；列表命中不足以证明整域可阻止。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/BlueGrave/Surge/blob/master/Module/WhiteList.sgmodule",
+          "publisher": "GitHub: BlueGrave/Surge",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 Surge 规则中出现该域名；不证明其当前真实用途。"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "publisher": "GitHub: HaGeZi DNS Blocklists",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 DNS 拦截列表包含该域名；不能单独证明精确主机的用途或运营主体。"
+        }
+      ]
+    },
+    {
+      "domain": "ad.api.moji.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "第三方规则库将其列为广告相关候选，但未找到墨迹天气官方接口说明确认该精确主机仅承载广告，可能存在应用依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/SukkaW/Clash-Rules/blob/master/clash_rules",
+          "publisher": "GitHub: SukkaW/Clash-Rules",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方规则仓库列出该域名；只证明其被该规则集收录。"
+        },
+        {
+          "url": "https://github.com/blackmatrix7/ios_rule_script/blob/master/rewrite/Surge/Advertising/Advertising.sgmodule",
+          "publisher": "GitHub: blackmatrix7/ios_rule_script",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方规则针对该主机或其特定 URL 路径设置拦截；只能作为线索，不能证明整域名均可阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "ad.mcloud.139.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "第三方规则资料提到 /advertapi 路径，提示广告 API 线索；没有两份独立可信的运营方资料确认整域用途。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/blackmatrix7/ios_rule_script/blob/master/rewrite/Surge/Advertising/Advertising.sgmodule",
+          "publisher": "GitHub: blackmatrix7/ios_rule_script",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方规则针对该主机或其特定 URL 路径设置拦截；只能作为线索，不能证明整域名均可阻止。"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "publisher": "GitHub: HaGeZi DNS Blocklists",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 DNS 拦截列表包含该域名；不能单独证明精确主机的用途或运营主体。"
+        }
+      ]
+    },
+    {
+      "domain": "adapi.izuiyou.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "第三方规则资料提到广告 API 路径，但没有官方资料确认是否仅用于广告，亦未排除即刻应用其他接口依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/TG-Twilight/AWAvenue-Ads-Rule/blob/main/AWAvenue-Ads-Rule.txt",
+          "publisher": "GitHub: TG-Twilight/AWAvenue-Ads-Rule",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方广告规则清单包含该域名；仅是拦截线索，不是该域名运营主体或用途的直接证明。"
+        },
+        {
+          "url": "https://github.com/blackmatrix7/ios_rule_script/blob/master/rewrite/Surge/Advertising/Advertising.sgmodule",
+          "publisher": "GitHub: blackmatrix7/ios_rule_script",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方规则针对该主机或其特定 URL 路径设置拦截；只能作为线索，不能证明整域名均可阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "adbehavior.ximalaya.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "资料仅确认喜马拉雅平台运营主体与音频业务，没有证据说明该精确子域承担行为广告、分析还是核心服务。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://apis.io/providers/ximalaya/",
+          "publisher": "APIs.io",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方目录确认 Ximalaya 是音频内容平台；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://prod.cm.bloomberg.com/quote/XIMA:US",
+          "publisher": "Bloomberg",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "公司资料确认 Ximalaya 的音频平台业务；没有直接说明该精确子域用途。"
+        }
+      ]
+    },
+    {
+      "domain": "adcdn.tencentmusic.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "两个第三方广告列表包含该域名，但腾讯音乐官方业务/隐私材料没有说明此精确主机的 CDN 内容类型或是否影响播放。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/TG-Twilight/AWAvenue-Ads-Rule/blob/main/AWAvenue-Ads-Rule.txt",
+          "publisher": "GitHub: TG-Twilight/AWAvenue-Ads-Rule",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方广告规则清单包含该域名；仅是拦截线索，不是该域名运营主体或用途的直接证明。"
+        },
+        {
+          "url": "https://github.com/x-o-r-r-o/Pi-Hole-Block-Lists/blob/master/mobile-ads.txt",
+          "publisher": "GitHub: x-o-r-r-o/Pi-Hole-Block-Lists",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方移动广告列表包含该域名；不能单独证明具体功能或核心依赖关系。"
+        }
+      ]
+    },
+    {
+      "domain": "adcdn6.tencentmusic.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.48,
+      "reason": "腾讯音乐官方业务页与隐私政策确认母品牌及服务，但未说明此精确主机；第三方广告线索不足以排除音乐播放或资源依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://www.tencentmusic.com/en-us/business.html",
+          "publisher": "Tencent Music Entertainment Group",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方页面确认腾讯音乐的内容与服务业务；没有直接说明该精确子域的功能。"
+        },
+        {
+          "url": "https://www.tencentmusic.com/en-us/privacypolicy.html",
+          "publisher": "Tencent Music Entertainment Group",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方隐私政策说明腾讯音乐服务中的个人信息处理；没有直接说明该精确子域的功能。"
+        }
+      ]
+    },
+    {
+      "domain": "adclick.tencentmusic.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "第三方广告列表命中，但未找到官方主机说明；点击归因端点可能与广告统计相关，仍需确认是否影响播放或用户操作。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/TG-Twilight/AWAvenue-Ads-Rule/blob/main/AWAvenue-Ads-Rule.txt",
+          "publisher": "GitHub: TG-Twilight/AWAvenue-Ads-Rule",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方广告规则清单包含该域名；仅是拦截线索，不是该域名运营主体或用途的直接证明。"
+        },
+        {
+          "url": "https://github.com/x-o-r-r-o/Pi-Hole-Block-Lists/blob/master/mobile-ads.txt",
+          "publisher": "GitHub: x-o-r-r-o/Pi-Hole-Block-Lists",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方移动广告列表包含该域名；不能单独证明具体功能或核心依赖关系。"
+        }
+      ]
+    },
+    {
+      "domain": "adexpo.tencentmusic.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "第三方广告列表命中，但腾讯音乐官方材料未说明该精确主机功能；不能仅凭名称推断为可整域阻止的广告端点。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/TG-Twilight/AWAvenue-Ads-Rule/blob/main/AWAvenue-Ads-Rule.txt",
+          "publisher": "GitHub: TG-Twilight/AWAvenue-Ads-Rule",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方广告规则清单包含该域名；仅是拦截线索，不是该域名运营主体或用途的直接证明。"
+        },
+        {
+          "url": "https://github.com/x-o-r-r-o/Pi-Hole-Block-Lists/blob/master/mobile-ads.txt",
+          "publisher": "GitHub: x-o-r-r-o/Pi-Hole-Block-Lists",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方移动广告列表包含该域名；不能单独证明具体功能或核心依赖关系。"
+        }
+      ]
+    },
+    {
+      "domain": "adlaunch.qingting.fm",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "独立检索未找到可信官方主机说明或可核验用途证据；蜻蜓 FM 的母品牌关联不能说明此主机的具体功能。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "ads-shopping.shouqianba.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "第三方列表将其作为广告候选，但未找到收钱吧官方说明；考虑其可能与商户/支付应用生态相关，整域阻止风险未排除。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/TG-Twilight/AWAvenue-Ads-Rule/blob/main/AWAvenue-Ads-Rule.txt",
+          "publisher": "GitHub: TG-Twilight/AWAvenue-Ads-Rule",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方广告规则清单包含该域名；仅是拦截线索，不是该域名运营主体或用途的直接证明。"
+        },
+        {
+          "url": "https://github.com/x-o-r-r-o/Pi-Hole-Block-Lists/blob/master/mobile-ads.txt",
+          "publisher": "GitHub: x-o-r-r-o/Pi-Hole-Block-Lists",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方移动广告列表包含该域名；不能单独证明具体功能或核心依赖关系。"
+        }
+      ]
+    },
+    {
+      "domain": "ads.play.cbsi.video",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "检索未找到能够确认运营主体、服务地区或功能的可信资料；不能根据 ads 子串直接认定为广告投放端点。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "ads.reembed.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "检索未找到足以核验运营主体及该精确主机功能的可信资料；无法判断广告用途与核心依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "ads.snapchat.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.48,
+      "reason": "Snap 官方确认这是 Ads Manager 管理入口，开发者文档确认广告活动管理 API；这并不证明它是普通客户端广告投放/跟踪端点，且整域阻止会影响广告管理业务。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://ads.snapchat.com/",
+          "publisher": "Snap Inc.",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方页面确认该域名提供 Snapchat Ads Manager；它是广告管理产品入口，不能据此认定为普通客户端广告投放/跟踪端点。"
+        },
+        {
+          "url": "https://developers.snap.com/marketing-api/Ads-API/campaigns",
+          "publisher": "Snap Inc. Developers",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方开发文档说明 Snap Ads API 可管理广告活动；没有说明该域名是终端广告投放依赖。"
+        }
+      ]
+    },
+    {
+      "domain": "ads.storm8.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "检索未找到 Storm8 官方主机说明或可核验端点用途；无法确认是否为广告、游戏遥测或游戏核心依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "ads.yahoo.de",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "检索未找到 Yahoo 官方对该精确主机的用途说明；不能仅凭 ads 子串或 .de 后缀判断应阻止。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "adsehera.ximalaya.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "独立资料确认喜马拉雅是音频平台，但没有任何直接证据说明该精确子域的用途；不据名称猜测广告或遥测。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "adsfilebssdlbig.tx.kugou.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "检索未找到酷狗官方域名/接口说明；无法判断该主机是否为广告素材、音乐资源或客户端依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "adv-adlog.variflight.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.48,
+      "reason": "VariFlight 官方资料确认航空数据业务，但没有说明该精确子域；不能把公司业务资料推定为该主机的广告日志功能。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://www.variflight.com/",
+          "publisher": "VariFlight",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方页面确认 VariFlight 提供航空数据与数字服务；没有直接说明该精确子域的用途。"
+        },
+        {
+          "url": "https://dataworks.variflight.com/about-us/download-zone/",
+          "publisher": "VariFlight DataWorks",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方资料下载页确认 DataWorks 提供航空数据/API 文档；没有直接说明该精确子域的用途。"
+        }
+      ]
+    },
+    {
+      "domain": "adv-ads.variflight.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.48,
+      "reason": "VariFlight 官方资料确认航空数据服务，但未直接说明该精确主机；缺少用途证据与核心依赖排除。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://www.variflight.com/",
+          "publisher": "VariFlight",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方页面确认 VariFlight 提供航空数据与数字服务；没有直接说明该精确子域的用途。"
+        },
+        {
+          "url": "https://dataworks.variflight.com/about-us/download-zone/",
+          "publisher": "VariFlight DataWorks",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方资料下载页确认 DataWorks 提供航空数据/API 文档；没有直接说明该精确子域的用途。"
+        }
+      ]
+    },
+    {
+      "domain": "advertise.baicizhan.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "第三方规则库包含该域名，但未找到百词斩官方接口说明；不能只凭 advertise 名称和规则库收录批准 REJECT。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/SukkaW/Clash-Rules/blob/master/clash_rules",
+          "publisher": "GitHub: SukkaW/Clash-Rules",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方规则仓库列出该域名；只证明其被该规则集收录。"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "publisher": "GitHub: HaGeZi DNS Blocklists",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 DNS 拦截列表包含该域名；不能单独证明精确主机的用途或运营主体。"
+        }
+      ]
+    },
+    {
+      "domain": "advertise.baicizhan.org",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "第三方规则库包含该域名，但未找到官方资料确认 .org 主机归属及功能；同品牌推断不足以确定策略。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/SukkaW/Clash-Rules/blob/master/clash_rules",
+          "publisher": "GitHub: SukkaW/Clash-Rules",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方规则仓库列出该域名；只证明其被该规则集收录。"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "publisher": "GitHub: HaGeZi DNS Blocklists",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 DNS 拦截列表包含该域名；不能单独证明精确主机的用途或运营主体。"
+        }
+      ]
+    },
+    {
+      "domain": "adwbs.ximalaya.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "资料确认喜马拉雅母品牌，但没有直接说明该主机是否是广告位、业务服务或统计端点。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://apis.io/providers/ximalaya/",
+          "publisher": "APIs.io",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方目录确认 Ximalaya 是音频内容平台；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://prod.cm.bloomberg.com/quote/XIMA:US",
+          "publisher": "Bloomberg",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "公司资料确认 Ximalaya 的音频平台业务；没有直接说明该精确子域用途。"
+        }
+      ]
+    },
+    {
+      "domain": "adx.op.cp18.ott.cibntv.net",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "检索未能把精确主机与可信运营方或产品文档对应；OTT/CDN 语境下整域阻止可能影响视频服务。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "amdc.m.youku.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "未找到优酷官方资料确认该精确主机功能；不能只凭主机名判断广告或媒体资源。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "api-ad.kajicam.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "仅命中第三方广告列表，未找到 KajiCam 官方说明；无法确认广告用途、运营主体和核心功能影响。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/TG-Twilight/AWAvenue-Ads-Rule/blob/main/AWAvenue-Ads-Rule.txt",
+          "publisher": "GitHub: TG-Twilight/AWAvenue-Ads-Rule",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方广告规则清单包含该域名；仅是拦截线索，不是该域名运营主体或用途的直接证明。"
+        }
+      ]
+    },
+    {
+      "domain": "api.iqiyi.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.48,
+      "reason": "开源客户端代码显示该主机用于 video/playervideoinfo 视频信息请求，提示可能承担视频播放依赖；iQIYI 官方资料只确认母品牌，不能据此阻止。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/soimort/you-get/blob/develop/src/you_get/extractors/iqiyi.py",
+          "publisher": "GitHub: soimort/you-get",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "开源客户端代码将该主机用于 iQIYI 视频信息接口请求，提示可能承担视频播放/信息 API 功能；非官方说明。"
+        },
+        {
+          "url": "https://ir.iqiyi.com/",
+          "publisher": "iQIYI, Inc.",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方投资者关系页面确认 iQIYI 的运营主体及在线视频业务；没有直接说明该精确子域用途。"
+        }
+      ]
+    },
+    {
+      "domain": "apis.alenable.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "第三方规则对其特定 mall/skin API 路径设置拦截，路径语义也可能涉及商城皮肤资源；未证明整域均为广告。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/blackmatrix7/ios_rule_script/blob/master/rewrite/Surge/Advertising/Advertising.sgmodule",
+          "publisher": "GitHub: blackmatrix7/ios_rule_script",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方规则针对该主机或其特定 URL 路径设置拦截；只能作为线索，不能证明整域名均可阻止。"
+        },
+        {
+          "url": "https://github.com/blackmatrix7/ios_rule_script/blob/master/rewrite/Shadowrocket/AllInOne/AllInOne.sgmodule",
+          "publisher": "GitHub: blackmatrix7/ios_rule_script",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 Shadowrocket 规则针对该主机或特定 URL 路径处理；不构成整域名用途的官方证明。"
+        }
+      ]
+    },
+    {
+      "domain": "apiv4-iyes.youku.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.48,
+      "reason": "优酷官方视频云文档确认其 API/播放器业务，但未说明该精确主机；有核心视频功能风险，不能直接拦截。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://cloud.youku.com/docs?id=111",
+          "publisher": "Youku Video Cloud",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "优酷官方开发文档确认其提供视频云 API/播放器服务；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://stackoverflow.com/questions/64782231/how-to-authorize-my-application-with-youku-to-upload-videos-to-end-users-accoun",
+          "publisher": "Stack Overflow",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "开发者讨论提到优酷上传 API 与授权流程；非运营方资料，不能证明该精确子域用途。"
+        }
+      ]
+    },
+    {
+      "domain": "business-cdn.shouji.sogou.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "第三方配置指向 wapdl 图片/视频路径，提示可能承载文件分发；整域阻止可能影响内容加载，缺少官方说明。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/BlueGrave/Shadowrocket/blob/master/sRocket.conf",
+          "publisher": "GitHub: BlueGrave/Shadowrocket",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方配置针对该主机的 wapdl 图片/视频路径；显示其可能承载内容文件，不足以确认整域名用途。"
+        },
+        {
+          "url": "https://github.com/blackmatrix7/ios_rule_script/issues/135",
+          "publisher": "GitHub: blackmatrix7/ios_rule_script",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "社区讨论引用该主机的特定 URL 规则；只能说明存在相关请求路径线索。"
+        }
+      ]
+    },
+    {
+      "domain": "business.msstatic.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "第三方规则只针对 /advertiser/ 路径，不代表整域所有资源均属广告；整域拦截可能误伤其他业务内容。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/blackmatrix7/ios_rule_script/blob/master/rewrite/Surge/Advertising/Advertising.sgmodule",
+          "publisher": "GitHub: blackmatrix7/ios_rule_script",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方规则针对该主机或其特定 URL 路径设置拦截；只能作为线索，不能证明整域名均可阻止。"
+        },
+        {
+          "url": "https://github.com/blackmatrix7/ios_rule_script/blob/master/rewrite/Shadowrocket/AllInOne/AllInOne.sgmodule",
+          "publisher": "GitHub: blackmatrix7/ios_rule_script",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 Shadowrocket 规则针对该主机或特定 URL 路径处理；不构成整域名用途的官方证明。"
+        }
+      ]
+    },
+    {
+      "domain": "cdn-new-ad.wtzw.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "检索未找到运营方或官方产品资料确认精确主机；不能仅凭域名标签判断为广告 CDN。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "cr-status.iqiyi.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.48,
+      "reason": "iQIYI 官方资料确认视频服务与用户支持，但没有说明该精确主机是否是崩溃状态、遥测或核心状态 API。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://ir.iqiyi.com/",
+          "publisher": "iQIYI, Inc.",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方投资者关系页面确认 iQIYI 的运营主体及在线视频业务；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://intl-help.iq.com/m/?entry=h5&lang=en_us&mod=us",
+          "publisher": "iQIYI",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方帮助页面确认 iQIYI 客户端/账户服务；没有直接说明该精确子域用途。"
+        }
+      ]
+    },
+    {
+      "domain": "data-hoisin.coocaa.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.48,
+      "reason": "Coocaa 隐私政策确认电视服务涉及数据处理，但没有直接说明该精确主机；可能涉及设备数据/遥测，核心依赖风险未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://www.coocaa.co.id/en/privacy-policy",
+          "publisher": "Coocaa",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "Coocaa 官方隐私政策说明其网站/产品会处理用户数据；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://www.coocaatv.in/privacy-policy",
+          "publisher": "Coocaa TV",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "Coocaa TV 隐私政策说明电视服务的数据处理；没有直接说明该精确子域用途。"
+        }
+      ]
+    },
+    {
+      "domain": "ddfs-public.ddimg.mobi",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "检索结果与该域名无可靠关联，未确认运营主体或功能；不能把缩写或域名形式当作用途证据。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "dflow.bz.mgtv.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.48,
+      "reason": "MGTV 官方页面确认视频内容服务，但未说明此精确主机；第三方搜索结果出现同名无关 DFlow，不能据此归属或判断用途。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://glb.m.mgtv.com/channel/",
+          "publisher": "MangoTV / MGTV",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方页面确认 MangoTV 提供视频频道与内容服务；没有直接说明该精确子域用途。"
+        }
+      ]
+    },
+    {
+      "domain": "encounter.bz.mgtv.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.48,
+      "reason": "MGTV 官方页面仅确认母品牌视频服务，未说明该精确子域；用途及其是否参与内容加载未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://glb.m.mgtv.com/channel/",
+          "publisher": "MangoTV / MGTV",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方页面确认 MangoTV 提供视频频道与内容服务；没有直接说明该精确子域用途。"
+        }
+      ]
+    },
+    {
+      "domain": "floor.bz.mgtv.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.48,
+      "reason": "MGTV 官方页面仅确认母品牌视频服务，未说明该精确子域；搜索结果存在同名无关网站，不能据名称推断。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://glb.m.mgtv.com/channel/",
+          "publisher": "MangoTV / MGTV",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方页面确认 MangoTV 提供视频频道与内容服务；没有直接说明该精确子域用途。"
+        }
+      ]
+    },
+    {
+      "domain": "ggadoffline.miguvideo.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.48,
+      "reason": "Migu 官方页面及独立技术案例确认视频服务，但均未说明该精确主机；可能与广告离线资源相关，仍未排除播放依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://www.miguvideo.com/",
+          "publisher": "Migu Video",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方页面确认 Migu Video 视频服务；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://www.mongodb.com/solutions/customer-case-studies/migu",
+          "publisher": "MongoDB",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "独立技术案例确认 Migu Video 的在线视频业务与技术服务场景；没有直接说明该精确子域用途。"
+        }
+      ]
+    },
+    {
+      "domain": "ggic03.miguvideo.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.48,
+      "reason": "Migu 官方页面及行业资料确认视频业务，但没有精确主机用途说明；不能仅凭 gg 前缀认定为广告。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://www.miguvideo.com/",
+          "publisher": "Migu Video",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方页面确认 Migu Video 视频服务；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://en.unifrance.org/directories/company/366120/migu-video-co-ltd",
+          "publisher": "UniFrance",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "行业目录确认 Migu Video Co. Ltd. 的视频点播业务；没有直接说明该精确子域用途。"
+        }
+      ]
+    },
+    {
+      "domain": "ggmk.miguvideo.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.48,
+      "reason": "Migu 官方资料确认视频平台运营主体，但未说明该精确子域；无法判断广告、媒资或核心服务用途。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://www.miguvideo.com/",
+          "publisher": "Migu Video",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方页面确认 Migu Video 视频服务；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://www.mongodb.com/solutions/customer-case-studies/migu",
+          "publisher": "MongoDB",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "独立技术案例确认 Migu Video 的在线视频业务与技术服务场景；没有直接说明该精确子域用途。"
+        }
+      ]
+    },
+    {
+      "domain": "ggx03.miguvideo.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.48,
+      "reason": "第三方列表将其列为广告候选，Migu 官方/独立资料只确认母品牌视频业务；缺少精确主机证据。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/TG-Twilight/AWAvenue-Ads-Rule/blob/main/AWAvenue-Ads-Rule.txt",
+          "publisher": "GitHub: TG-Twilight/AWAvenue-Ads-Rule",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方广告规则清单包含该域名；仅是拦截线索，不是该域名运营主体或用途的直接证明。"
+        },
+        {
+          "url": "https://www.miguvideo.com/",
+          "publisher": "Migu Video",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方页面确认 Migu Video 视频服务；没有直接说明该精确子域用途。"
+        },
+        {
+          "url": "https://www.mongodb.com/solutions/customer-case-studies/migu",
+          "publisher": "MongoDB",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "独立技术案例确认 Migu Video 的在线视频业务与技术服务场景；没有直接说明该精确子域用途。"
+        }
+      ]
+    },
+    {
+      "domain": "huyafile.msstatic.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "搜索未找到该精确主机的官方说明；其他 msstatic/mzstatic 搜索结果不能互相替代，避免误把不同域名关联。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "icloud-amap.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "检索未找到 Apple、高德或其他运营方对该精确域名的官方说明；不能根据字符串组合推断其属于 iCloud 或高德。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "kad.gotokeep.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "第三方规则库收录该主机，但未找到 Keep 官方接口说明；不能确认其是否仅为广告或是否影响运动内容/账户功能。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/blackmatrix7/ios_rule_script/blob/master/rewrite/Surge/Advertising/Advertising.sgmodule",
+          "publisher": "GitHub: blackmatrix7/ios_rule_script",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方规则针对该主机或其特定 URL 路径设置拦截；只能作为线索，不能证明整域名均可阻止。"
+        },
+        {
+          "url": "https://github.com/blackmatrix7/ios_rule_script/blob/master/rewrite/Shadowrocket/AllInOne/AllInOne.sgmodule",
+          "publisher": "GitHub: blackmatrix7/ios_rule_script",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 Shadowrocket 规则针对该主机或特定 URL 路径处理；不构成整域名用途的官方证明。"
+        }
+      ]
+    },
+    {
+      "domain": "layer.bz.mgtv.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.48,
+      "reason": "MGTV 官方页面确认母品牌视频服务，但没有精确子域说明；用途与服务依赖未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://glb.m.mgtv.com/channel/",
+          "publisher": "MangoTV / MGTV",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方页面确认 MangoTV 提供视频频道与内容服务；没有直接说明该精确子域用途。"
+        }
+      ]
+    },
+    {
+      "domain": "livep.l.t002.ottcn.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "检索未找到可信资料说明该 OTT 主机归属及功能；考虑可能是视频传输路径，阻止风险较高。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "livewebbs2.msstatic.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "社区脚本引用该主机的 Huya 直播图片资源，提示可能承载直播内容/CDN；缺少官方主机说明，不能阻止。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://greasyfork.org/en/scripts/449261-%E7%9B%B4%E6%92%AD%E6%8F%92%E4%BB%B6/code",
+          "publisher": "Greasy Fork",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方脚本引用 livewebbs2.msstatic.com 的 Huya 直播图片资源，提示该主机可能承载内容/CDN 资源；非官方资料。"
+        },
+        {
+          "url": "https://github.com/vernesong/OpenClash/issues/5123",
+          "publisher": "GitHub: vernesong/OpenClash",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "用户提交的规则/日志中出现该主机；属于社区线索，不是运营方用途说明。"
+        }
+      ]
+    },
+    {
+      "domain": "livewebbs2pcdn.msstatic.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "第三方广告清单出现该主机，但未找到运营方资料；PCDN 可能涉及内容分发，核心媒体依赖未排除。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/TG-Twilight/AWAvenue-Ads-Rule/blob/main/AWAvenue-Ads-Rule.txt",
+          "publisher": "GitHub: TG-Twilight/AWAvenue-Ads-Rule",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方广告规则清单包含该域名；仅是拦截线索，不是该域名运营主体或用途的直接证明。"
+        }
+      ]
+    },
+    {
+      "domain": "log.51wnl-cq.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "检索未找到与 51wnl-cq 精确主机对应的可信运营方资料；不能仅凭 log 子串认定可阻止。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "mob.bz.mgtv.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "第三方规则只针对 /odin/c1/channel/ads 路径；这不能证明整域均为广告，整域拦截可能影响 MangoTV 其他移动 API。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/blackmatrix7/ios_rule_script/blob/master/rewrite/Surge/Advertising/Advertising.sgmodule",
+          "publisher": "GitHub: blackmatrix7/ios_rule_script",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方规则针对该主机或其特定 URL 路径设置拦截；只能作为线索，不能证明整域名均可阻止。"
+        },
+        {
+          "url": "https://github.com/blackmatrix7/ios_rule_script/blob/master/rewrite/Shadowrocket/AllInOne/AllInOne.sgmodule",
+          "publisher": "GitHub: blackmatrix7/ios_rule_script",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 Shadowrocket 规则针对该主机或特定 URL 路径处理；不构成整域名用途的官方证明。"
+        }
+      ]
+    },
+    {
+      "domain": "msync-im1-vip6-std.easemob.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "社区配置中出现该精确主机，但未找到环信官方说明；msync 命名可能对应消息同步，整域 REJECT 存在核心 IM 依赖风险。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/vernesong/OpenClash/issues/5123",
+          "publisher": "GitHub: vernesong/OpenClash",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "用户提交的规则/日志中出现该主机；属于社区线索，不是运营方用途说明。"
+        }
+      ]
+    },
+    {
+      "domain": "pl.cp31.ott.cibntv.net",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "第三方广告列表收录该主机，但 OTT/CDN 域可能承载视频播放；没有官方证据排除媒体传输依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/TG-Twilight/AWAvenue-Ads-Rule/blob/main/AWAvenue-Ads-Rule.txt",
+          "publisher": "GitHub: TG-Twilight/AWAvenue-Ads-Rule",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方广告规则清单包含该域名；仅是拦截线索，不是该域名运营主体或用途的直接证明。"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "publisher": "GitHub: HaGeZi DNS Blocklists",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 DNS 拦截列表包含该域名；不能单独证明精确主机的用途或运营主体。"
+        }
+      ]
+    },
+    {
+      "domain": "pp-cdnfile2pcdn.msstatic.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "检索未找到该精确主机的可信资料；针对 mzstatic.com 的资料不能用于证明 msstatic.com 的运营主体或功能。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "r.51wnl-cq.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "仅在第三方 DNS 拦截列表中发现该主机；没有运营方说明或独立用途证据，不能判断为跟踪端点。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "publisher": "GitHub: HaGeZi DNS Blocklists",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 DNS 拦截列表包含该域名；不能单独证明精确主机的用途或运营主体。"
+        }
+      ]
+    },
+    {
+      "domain": "rc-topic-api.bz.mgtv.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "MGTV 官方页面确认视频平台，但未说明该精确 topic API 主机；可能承载内容主题/推荐接口，阻止风险未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "richmanapi.jxedt.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "第三方规则指向 /api/(ad|adplus|guideplus|banadplus) 路径，提示该路径可能是广告接口；整域其他 API 是否核心未知。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/blackmatrix7/ios_rule_script/blob/master/rewrite/Surge/Advertising/Advertising.sgmodule",
+          "publisher": "GitHub: blackmatrix7/ios_rule_script",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方规则针对该主机或其特定 URL 路径设置拦截；只能作为线索，不能证明整域名均可阻止。"
+        },
+        {
+          "url": "https://github.com/blackmatrix7/ios_rule_script/blob/master/rewrite/Shadowrocket/AllInOne/AllInOne.sgmodule",
+          "publisher": "GitHub: blackmatrix7/ios_rule_script",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 Shadowrocket 规则针对该主机或特定 URL 路径处理；不构成整域名用途的官方证明。"
+        }
+      ]
+    },
+    {
+      "domain": "richmanmain.jxedt.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "社区规则讨论指向 /advertisement/fallback 路径，但没有驾校一点通官方资料确认；只能作为路径线索，不能推定整域用途。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/blackmatrix7/ios_rule_script/issues/135",
+          "publisher": "GitHub: blackmatrix7/ios_rule_script",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "社区讨论引用该主机的特定 URL 规则；只能说明存在相关请求路径线索。"
+        }
+      ]
+    },
+    {
+      "domain": "richmanrules.jxedt.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "检索未找到可信官方资料或直接路径证据；不能因与 richmanapi 同属父域就推定其用途相同。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "rttrack.ddxq.mobi",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.25,
+      "reason": "检索未找到该精确主机的可信用途说明；不能仅凭 rttrack 命名判断为跟踪或遥测。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        }
+      ]
+    },
+    {
+      "domain": "safebrowsing.g.applimg.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.48,
+      "reason": "Google 官方 Safe Browsing 文档确认安全浏览服务，但没有证据将 applimg.com 精确主机归属于 Google；贸然阻止可能误伤安全检查，也可能误关联。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://safebrowsing.google.com/",
+          "publisher": "Google",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "Google 官方页面说明 Safe Browsing 安全浏览服务；没有证据把该精确 applimg.com 主机归属于 Google。"
+        },
+        {
+          "url": "https://developers.google.com/safe-browsing/reference",
+          "publisher": "Google Developers",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方文档说明 Safe Browsing API 的 URL 安全检查功能；没有证据把该精确 applimg.com 主机归属于 Google。"
+        }
+      ]
+    },
+    {
+      "domain": "trackercollect.ddxq.mobi",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.38,
+      "reason": "HaGeZi 社区议题与列表把它列为 tracker 候选，但没有运营方资料或精确功能说明；仍不足以确认可安全 REJECT。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/hagezi/dns-blocklists/issues/7744",
+          "publisher": "GitHub: HaGeZi DNS Blocklists",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "社区议题将该域名作为 tracker 候选讨论；不是运营方用途说明。"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+          "publisher": "GitHub: HaGeZi DNS Blocklists",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "第三方 DNS 拦截列表包含该域名；不能单独证明精确主机的用途或运营主体。"
+        }
+      ]
+    },
+    {
+      "domain": "vip.bz.mgtv.com",
+      "status": "REVIEW",
+      "policy": null,
+      "confidence": 0.48,
+      "reason": "MGTV 官方页面确认视频内容服务，但未说明该精确 vip 子域；可能涉及会员权益/鉴权，整域阻止风险不能排除。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reviewed_at": "2026-10-31T14:57:31Z",
+      "evidence": [
+        {
+          "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+          "publisher": "ithtelab/sr-adblock",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://glb.m.mgtv.com/channel/",
+          "publisher": "MangoTV / MGTV",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "官方页面确认 MangoTV 提供视频频道与内容服务；没有直接说明该精确子域用途。"
+        }
+      ]
+    }
+  ]
 }
