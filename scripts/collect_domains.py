@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import hashlib, json, re, sys, urllib.request
+import hashlib,json,re,sys,urllib.request
 from pathlib import Path
+from urllib.parse import urlparse
 ROOT=Path(__file__).resolve().parents[1]
 SOURCES=ROOT/"sources/domain_sources.json"
 BUFFER=ROOT/"data/domain_candidates.json"
 OUTPUT=ROOT/"data/candidates.json"
-MAX_BYTES=20_000_000
+MAX_BYTES=30_000_000
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
 def fetch(url):
     req=urllib.request.Request(url,headers={"User-Agent":"Shadowrocket-Deterministic-Audit/1.0"})
-    with urllib.request.urlopen(req,timeout=60) as r:
-        if r.status!=200 or r.geturl().split(":",1)[0]!="https":
-            raise ValueError("unexpected source response: "+url)
+    with urllib.request.urlopen(req,timeout=90) as r:
+        final=urlparse(r.geturl())
+        if r.status!=200 or final.scheme!="https" or final.hostname!="raw.githubusercontent.com":
+            raise ValueError("unexpected source response: "+r.geturl())
         data=r.read(MAX_BYTES+1)
     if len(data)>MAX_BYTES: raise ValueError("source exceeds byte limit: "+url)
     return data
@@ -27,10 +29,21 @@ def parse_domain_list(data,allow_leading_dot=False):
             raise ValueError(f"unsupported/non-domain line {number}: {raw[:120]!r}")
         result.add(value)
     return result
+def parse_adblock(data):
+    result=set()
+    rule=re.compile(r"^\|\|([a-z0-9.-]+)\^")
+    for raw in data.decode("utf-8-sig").splitlines():
+        value=raw.strip()
+        if not value or value.startswith(("!","[","@@")): continue
+        match=rule.match(value.lower())
+        if not match: continue
+        domain=match.group(1).rstrip(".")
+        if DOMAIN_RE.fullmatch(domain): result.add(domain)
+    if not result: raise ValueError("secondary Adblock source yielded no domain rules")
+    return result
 def main():
     cfg=json.loads(SOURCES.read_text(encoding="utf-8"))
     buf=json.loads(BUFFER.read_text(encoding="utf-8"))
-    candidates=buf.get("candidates",[])
     by_id={x["id"]:x for x in cfg["sources"]}
     primary=by_id["sr-adblock-domain-lite"]
     secondary=by_id["hagezi-domains-pro"]
@@ -43,16 +56,16 @@ def main():
         raise SystemExit("ERROR: primary source entry count mismatch")
     secondary_bytes=fetch(secondary["url"])
     secondary_hash=hashlib.sha256(secondary_bytes).hexdigest()
-    secondary_domains=parse_domain_list(secondary_bytes)
+    secondary_domains=parse_adblock(secondary_bytes)
     rows=[]
-    for item in candidates:
+    for item in buf.get("candidates",[]):
         domain=str(item.get("domain","")).lower().rstrip(".")
         if not DOMAIN_RE.fullmatch(domain): raise ValueError("invalid candidate domain: "+domain)
         if item.get("source_id")!=primary["id"]: raise ValueError("candidate source id mismatch: "+domain)
         if item.get("source_sha256")!=primary_hash: raise ValueError("candidate source hash mismatch: "+domain)
         if domain not in primary_domains: raise ValueError("candidate no longer exists in primary source: "+domain)
         evidence=[{"source_id":primary["id"],"publisher":primary["publisher"],"url":primary["url"],"sha256":primary_hash}]
-        if domain in secondary_domains:
+        if any(domain==x or domain.endswith("."+x) for x in secondary_domains):
             evidence.append({"source_id":secondary["id"],"publisher":secondary["publisher"],"url":secondary["url"],"sha256":secondary_hash})
         rows.append({"domain":domain,"classification":"REJECT","evidence":evidence,"first_seen":item.get("first_seen")})
     rows.sort(key=lambda x:x["domain"])
