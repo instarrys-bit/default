@@ -1,55 +1,57 @@
 #!/usr/bin/env python3
-"""Read-only audit of a pinned external domain list against the canonical config.
-
-No downloaded code is executed. This script never classifies candidates, rewrites
-ss.conf, or publishes rules. It reports syntax, source drift, duplicates and
-intersections with existing DOMAIN / DOMAIN-SUFFIX rules. The canonical config is
-authoritative: external candidates never override or replace an existing rule.
-"""
+"""Read-only audit of a pinned external domain list against canonical ss.conf."""
 from __future__ import annotations
 
 import hashlib
-import re
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
+from domain_rule_engine import analyze_candidate, load_domain_rules
+
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "shadowrocket" / "ss.conf"
-SOURCE_URL = (
-    "https://raw.githubusercontent.com/ithtelab/sr-adblock/"
-    "release/ruleset/ad-domain-lite.list"
-)
+SOURCE_URL = "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list"
 EXPECTED_GIT_BLOB_SHA1 = "ec23c2d1280ea4a59717816716b8ccb569dac624"
 EXPECTED_ENTRIES = 56516
 MAX_BYTES = 2_000_000
 OUTPUT = ROOT / "reports" / "external-domain-audit.md"
-DOMAIN_RE = re.compile(
-    r"^(?=.{1,253}$)[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?"
-    r"(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$"
-)
-RULE_DOMAIN_RE = re.compile(
-    r"^(?=.{1,253}$)[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?"
-    r"(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$"
-)
 
 
 def git_blob_sha1(data: bytes) -> str:
-    header = f"blob {len(data)}\0".encode("ascii")
-    return hashlib.sha1(header + data).hexdigest()
+    return hashlib.sha1(f"blob {len(data)}\0".encode("ascii") + data).hexdigest()
 
 
-def ancestors(domain: str):
-    labels = domain.split(".")
-    for index in range(len(labels)):
-        yield ".".join(labels[index:])
+def load_candidates(data: bytes):
+    candidates = []
+    seen = set()
+    for number, raw in enumerate(data.decode("utf-8").splitlines(), 1):
+        value = raw.strip()
+        if not value or value.startswith("#"):
+            continue
+        if value != raw or any(ch.isspace() for ch in value):
+            raise ValueError(f"invalid whitespace at source line {number}")
+        is_suffix = value.startswith(".")
+        domain = value[1:] if is_suffix else value
+        labels = domain.split(".")
+        if (len(domain) > 253 or len(labels) < 2 or
+            any(not label or len(label) > 63 or label.startswith("-") or
+                label.endswith("-") or not label.replace("-", "").isalnum() or
+                not label.isascii() for label in labels)):
+            raise ValueError(f"invalid domain at source line {number}: {raw!r}")
+        key = domain.lower()
+        if key in seen:
+            raise ValueError(f"duplicate candidate at source line {number}: {key}")
+        seen.add(key)
+        candidates.append((key, is_suffix))
+    if len(candidates) != EXPECTED_ENTRIES:
+        raise ValueError(f"candidate count mismatch: expected {EXPECTED_ENTRIES}, got {len(candidates)}")
+    return candidates
 
 
 def main() -> int:
-    request = urllib.request.Request(
-        SOURCE_URL, headers={"User-Agent": "Shadowrocket-domain-audit/1.0"}
-    )
+    request = urllib.request.Request(SOURCE_URL, headers={"User-Agent": "Shadowrocket-domain-audit/2.0"})
     with urllib.request.urlopen(request, timeout=45) as response:
         final = urlparse(response.geturl())
         if response.status != 200 or final.scheme != "https" or final.hostname != "raw.githubusercontent.com":
@@ -57,165 +59,74 @@ def main() -> int:
         data = response.read(MAX_BYTES + 1)
     if len(data) > MAX_BYTES:
         raise SystemExit("ERROR: source exceeds the 2 MB safety limit")
-
     actual_sha = git_blob_sha1(data)
     if actual_sha != EXPECTED_GIT_BLOB_SHA1:
-        raise SystemExit(
-            f"ERROR: upstream content changed; expected {EXPECTED_GIT_BLOB_SHA1}, "
-            f"received {actual_sha}. Manual review required."
-        )
+        raise SystemExit(f"ERROR: upstream drift; expected {EXPECTED_GIT_BLOB_SHA1}, received {actual_sha}")
 
-    text = data.decode("utf-8")
-    candidates: list[tuple[str, bool]] = []
-    invalid: list[tuple[int, str]] = []
-    seen: set[str] = set()
-    duplicates: list[tuple[int, str]] = []
-    for number, raw in enumerate(text.splitlines(), 1):
-        value = raw.strip()
-        if not value or value.startswith("#"):
-            continue
-        if value != raw or any(ch.isspace() for ch in value):
-            invalid.append((number, raw))
-            continue
-        is_suffix = value.startswith(".")
-        domain = value[1:] if is_suffix else value
-        if not DOMAIN_RE.fullmatch(domain):
-            invalid.append((number, raw))
-            continue
-        key = value.lower()
-        if key in seen:
-            duplicates.append((number, raw))
-            continue
-        seen.add(key)
-        candidates.append((domain.lower(), is_suffix))
-
-    if invalid or duplicates or len(candidates) != EXPECTED_ENTRIES:
-        raise SystemExit(
-            f"ERROR: source validation failed: entries={len(candidates)}, "
-            f"invalid={len(invalid)}, duplicates={len(duplicates)}, "
-            f"expected={EXPECTED_ENTRIES}"
-        )
-    if not CONFIG.is_file():
-        raise SystemExit("ERROR: canonical shadowrocket/ss.conf is missing")
-
-    # Read only existing domain rule types; other existing rule types are untouched.
-    config_text = CONFIG.read_text(encoding="utf-8")
-    if "[Rule]" not in config_text or "[Host]" not in config_text:
-        raise SystemExit("ERROR: cannot isolate the canonical [Rule] section")
-    rule_block = config_text.split("[Rule]", 1)[1].split("[Host]", 1)[0]
-    existing = []
-    for line_number, raw in enumerate(rule_block.splitlines(), 1):
-        line = raw.strip()
-        if not line or line.startswith("#"):
-            continue
-        fields = [part.strip() for part in line.split(",")]
-        if len(fields) < 3:
-            continue
-        kind = fields[0].upper()
-        if kind not in {"DOMAIN", "DOMAIN-SUFFIX"}:
-            continue
-        domain = fields[1].lower().lstrip(".")
-        policy = fields[-1].upper()
-        if RULE_DOMAIN_RE.fullmatch(domain):
-            existing.append((kind, domain, policy, line_number))
-
-    suffix_rules: dict[str, list[tuple[str, int]]] = {}
-    exact_rules: dict[str, list[tuple[str, int]]] = {}
-    for kind, domain, policy, line_number in existing:
-        target = suffix_rules if kind == "DOMAIN-SUFFIX" else exact_rules
-        target.setdefault(domain, []).append((policy, line_number))
-
-    suffix_candidates: dict[str, list[int]] = {}
-    for index, (domain, is_suffix) in enumerate(candidates):
-        if is_suffix:
-            suffix_candidates.setdefault(domain, []).append(index)
-
-    hits: list[dict[str, set[str]]] = [dict() for _ in candidates]
-
-    def record(index: int, policy: str, rule: str) -> None:
-        hits[index].setdefault(policy, set()).add(rule)
-
-    # Existing suffix rules that cover each candidate, plus exact matches.
-    for index, (domain, _is_suffix) in enumerate(candidates):
-        for parent in ancestors(domain):
-            for policy, line_number in suffix_rules.get(parent, []):
-                record(index, policy, f"DOMAIN-SUFFIX {parent} (rule line {line_number})")
-        for policy, line_number in exact_rules.get(domain, []):
-            record(index, policy, f"DOMAIN {domain} (rule line {line_number})")
-
-    # Existing exact/suffix rules beneath a candidate suffix also overlap it.
-    for kind, rule_domain, policy, line_number in existing:
-        for parent in ancestors(rule_domain):
-            for index in suffix_candidates.get(parent, []):
-                record(index, policy, f"{kind} {rule_domain} (rule line {line_number})")
-
-    by_policy = {"DIRECT": 0, "PROXY": 0, "REJECT": 0, "OTHER": 0}
-    overlapping = 0
-    conflicts = []
-    for index, (domain, is_suffix) in enumerate(candidates):
-        policies = hits[index]
-        if not policies:
-            continue
-        overlapping += 1
-        for policy in policies:
-            by_policy[policy if policy in by_policy else "OTHER"] += 1
-        if len(policies) > 1:
-            conflicts.append((domain, is_suffix, policies))
+    candidates = load_candidates(data)
+    rules, conditional, ignored = load_domain_rules(CONFIG)
+    apex_policy_counts = {"DIRECT": 0, "PROXY": 0, "REJECT": 0}
+    apex_covered = 0
+    suffix_scope_varied = []
+    shadowed_same_host = []
+    for domain, is_suffix in candidates:
+        result = analyze_candidate(domain, is_suffix, rules)
+        winner = result["apex_winner"]
+        if winner:
+            apex_covered += 1
+            apex_policy_counts[winner.policy] += 1
+        if is_suffix and len(result["scope_policies"]) > 1:
+            winners = sorted({(r.policy, r.line, r.domain) for r in result["scope_winners"].values()})
+            suffix_scope_varied.append((domain, winners))
+        hit_policies = {r.policy for r in result["apex_hits"]}
+        if len(hit_policies) > 1:
+            shadowed_same_host.append((domain, result["apex_hits"][0], result["apex_hits"][1:]))
 
     report = [
-        "# External domain source audit",
-        "",
+        "# External domain source audit", "",
         f"- Audit time: {datetime.now(timezone.utc).isoformat()}",
         f"- Source: {SOURCE_URL}",
         f"- Git blob SHA-1: `{actual_sha}`",
-        f"- File bytes: {len(data)}",
-        f"- Candidate entries: {len(candidates)} (expected {EXPECTED_ENTRIES})",
-        f"- Exact entries: {sum(not suffix for _, suffix in candidates)}",
-        f"- Subdomain entries: {sum(suffix for _, suffix in candidates)}",
-        f"- Invalid entries: {len(invalid)}",
-        f"- Duplicate entries: {len(duplicates)}",
-        f"- Existing DOMAIN / DOMAIN-SUFFIX rules examined: {len(existing)}",
-        f"- Candidate entries overlapping existing domain rules: {overlapping}",
-        "",
-        "## Existing policy overlap (candidate counts; categories can overlap)",
-        "",
-        "| Existing policy | Candidate entries overlapping |",
-        "|---|---:|",
+        f"- Candidate entries: {len(candidates)}",
+        f"- Existing unconditional DOMAIN / DOMAIN-SUFFIX rules parsed: {len(rules)}",
+        f"- Conditional composite rules containing DOMAIN terms (not flattened): {len(conditional)}",
+        f"- Malformed or unsupported simple domain rules held aside: {len(ignored)}",
+        f"- Candidates whose apex is governed by an existing domain rule: {apex_covered}",
+        "", "## Apex effective policy (first matching original rule wins)", "",
+        "| Effective policy | Candidate apexes |", "|---|---:|",
     ]
-    for policy, count in by_policy.items():
+    for policy, count in apex_policy_counts.items():
         report.append(f"| {policy} | {count} |")
     report += [
+        "", "## Source-suffix scope policy variation", "",
+        f"Candidates whose source suffix scope intersects multiple effective policies: {len(suffix_scope_varied)}",
         "",
-        "## Original-rule precedence",
-        "",
-        "- The existing canonical ss.conf is authoritative over every external source.",
-        "- Any candidate covered by an existing DOMAIN / DOMAIN-SUFFIX rule is already governed by the original config; it is not an instruction to replace that rule.",
-        "- Where multiple original policies overlap, preserve the original rule order exactly; report the overlap for manual review and do not resolve it by external-source priority.",
-        "- No existing rule is deleted, reordered, rewritten, or reclassified by this audit.",
-        "",
-        f"## Multi-policy collisions: {len(conflicts)}",
-        "",
-        "These candidates overlap existing rules carrying more than one policy. Original rule order remains authoritative; collisions are report-only and must not be auto-classified.",
-        "",
-        "| Candidate | Source match | Existing policies |",
-        "|---|---|---|",
+        "These are not same-host rule collisions. They indicate that different hosts within one source suffix would be governed by different first-match rules. The source suffix is not eligible for automatic policy assignment.",
+        "", "| Candidate suffix | Effective policy boundaries (policy / config line / rule domain) |",
+        "|---|---|",
     ]
-    for domain, is_suffix, policies in conflicts:
-        report.append(
-            f"| `{domain}` | {'suffix' if is_suffix else 'exact'} | "
-            f"{', '.join(sorted(policies))} |"
-        )
+    for domain, winners in suffix_scope_varied:
+        detail = "; ".join(f"{p} / line {line} / {rule_domain}" for p, line, rule_domain in winners)
+        report.append(f"| `{domain}` | {detail} |")
     report += [
+        "", "## Same-host shadowed rules", "",
+        f"Candidate apexes with later matching rules carrying another policy: {len(shadowed_same_host)}",
         "",
-        "## Safety boundary",
-        "",
-        "- Only the pinned raw domain list was downloaded; no downloaded content was executed.",
-        "- No upstream modules, scripts, MITM, DNS, rewrite, URL, IP, or policy directives are consumed.",
-        "- No DIRECT / PROXY / REJECT policy is inferred or assigned.",
-        "- No candidate domain is imported into the canonical config.",
-        "- Existing config and DNS settings are read-only and remain unchanged.",
-        "- Source hash changes stop the audit pending manual review.",
-        "",
+        "The earliest matching original rule determines the effective domain-rule policy. Later matches are recorded as shadowed; they are not treated as an unresolved conflict.",
+        "", "| Candidate | Winner | Later matching rules |", "|---|---|---|",
+    ]
+    for domain, winner, later in shadowed_same_host:
+        detail = "; ".join(f"{r.policy} line {r.line} ({r.kind} {r.domain})" for r in later)
+        report.append(f"| `{domain}` | {winner.policy} line {winner.line} ({winner.kind} {winner.domain}) | {detail} |")
+    report += [
+        "", "## Interpretation and safety boundary", "",
+        "- The canonical ss.conf is authoritative; original rule order is preserved.",
+        "- The effective policy for an exact host is the first matching unconditional DOMAIN or DOMAIN-SUFFIX rule.",
+        "- Conditional AND/OR/NOT rules are not flattened into unconditional domain rules; protocol and other conditions remain conditional.",
+        "- Source suffix entries are checked at the apex and at existing rule boundaries beneath the suffix. Different winners across subdomains are scope variation, not a same-host collision.",
+        "- No external policy is inferred, and no candidate is imported into ss.conf.",
+        "- No existing rule, DNS setting, node, rule order, or subscription is modified.",
+        "- Upstream source hash changes stop the audit pending manual review.", "",
     ]
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     rendered = "\n".join(report)
