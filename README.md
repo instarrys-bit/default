@@ -25,6 +25,17 @@ Add that URL in Shadowrocket as a remote configuration (or URL-based configurati
 6. **Device verification:** after refreshing the URL, test the affected traffic paths and inspect Shadowrocket logs. Record what was and was not tested.
 7. **Protect secrets:** this repository is public. Never commit proxy credentials, private keys, subscription tokens, private IP/account details, or diagnostic logs containing sensitive information.
 
+## External domain rule selector
+
+- External domain lists are untrusted candidate data only; upstream policy directives are never imported.
+- `scripts/select_domain_rules.py` compares pinned candidates with existing `DOMAIN` and `DOMAIN-SUFFIX` scopes.
+- Candidates overlapping existing DIRECT/PROXY scopes or multiple policies are quarantined for review.
+- Policy assignment requires an explicit entry in `sources/policy_approvals.json` with an evidence note.
+- Same-policy rules already covered by the canonical config are excluded as duplicates.
+- The selector emits only exact `DOMAIN,<domain>,DIRECT|PROXY|REJECT` lines into `reports/approved-domain-rules.list`; it does not patch `ss.conf`.
+- A source leading dot is not permission to generate a broader `DOMAIN-SUFFIX` rule.
+- Empty approvals mean zero new rules are authorized. Do not populate approvals without domain-specific evidence and review.
+
 ## Typical update procedure
 
 - Inspect current `main` and the relevant evidence.
