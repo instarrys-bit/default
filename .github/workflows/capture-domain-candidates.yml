@@ -26,12 +26,14 @@ jobs:
           python-version: "3.11"
       - name: Capture and compare domain-only source
         run: python3 scripts/capture_domain_candidates.py
+      - name: Filter candidates against canonical config and review ledger
+        run: python3 scripts/filter_domain_candidates.py
       - name: Validate generated queue
         run: python3 -m json.tool reports/pending-gpt-review.json >/dev/null
       - name: Commit queue and source fingerprint
         run: |
           git diff --check
-          git add reports/domain-source-bloom.json reports/pending-gpt-review.json reports/domain-capture.md
+          git add reports/domain-source-bloom.json reports/pending-gpt-review.json reports/domain-capture.md reports/domain-filtered.json reports/domain-filter.md
           if git diff --cached --quiet; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
