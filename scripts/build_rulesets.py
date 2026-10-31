@@ -30,7 +30,7 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for policy in sorted(POLICIES):
         path = OUT / f"{policy.lower()}.list"
-        lines = [f"DOMAIN,{domain},{policy}" for domain in sorted(rules[policy])]
+        lines = [f"DOMAIN,{domain}" for domain in sorted(rules[policy])]
         path.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
 
     manifest = {
@@ -40,8 +40,8 @@ def main() -> None:
         "config_modified": False,
         "rule_count": {policy: len(rules[policy]) for policy in sorted(POLICIES)},
         "held_or_not_approved": held,
-        "format": "Shadowrocket DOMAIN,<domain>,<policy>",
-        "import_instruction": "User manually adds the selected rule-set URL/reference to their config after reviewing it."
+        "format": "Shadowrocket RULE-SET list: DOMAIN,<domain>; policy is assigned by the RULE-SET reference",
+        "import_instruction": "Reference each list in [Rule] with RULE-SET,<raw URL>,<matching policy>."
     }
     (OUT / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(manifest, ensure_ascii=False, sort_keys=True))
