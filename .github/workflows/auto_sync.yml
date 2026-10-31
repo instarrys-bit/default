@@ -1,26 +1,29 @@
-name: Shadowrocket Safe Audit and Auto Publish
+name: Shadowrocket Deterministic Domain Audit and Publish
 
 on:
   schedule:
-    # Every Monday at 04:00 China Standard Time (Sunday 20:00 UTC)
-    - cron: "0 20 * * 0"
+    # Six-hourly monitoring; GitHub scheduling may be delayed by platform load.
+    - cron: "17 */6 * * *"
   workflow_dispatch:
   push:
     branches: [main]
     paths:
-      - "sources/gpt_domain_reviews.json"
+      - "data/domain_candidates.json"
+      - "sources/domain_sources.json"
+      - "sources/protected_domains.json"
       - "sources/policy.json"
 
 permissions:
   contents: write
 
 concurrency:
-  group: shadowrocket-safe-audit
+  group: shadowrocket-deterministic-audit
   cancel-in-progress: false
 
 jobs:
   audit-and-publish:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -32,28 +35,34 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Import approved GPT-reviewed domains into managed ss.conf block
-        run: python3 scripts/import_gpt_reviewed_domains.py
+      - name: Collect and cross-check domain-only sources
+        run: python3 scripts/collect_domains.py
 
-      - name: Audit canonical config and DNS invariants
+      - name: Run deterministic duplicate, conflict, confidence and risk review
+        run: python3 scripts/deterministic_review.py
+
+      - name: Import only approved exact-domain rules
+        run: python3 scripts/import_approved_domains.py
+
+      - name: Audit canonical config, original-rule protection and DNS invariants
         run: python3 scripts/audit_pipeline.py
 
-      - name: Validate config structure
+      - name: Validate Shadowrocket config structure
         run: python3 scripts/validate_config.py
 
-      - name: Audit pinned external domain-only source
+      - name: Run read-only full-source regression audit
         run: |
           python3 scripts/audit_external_domains.py
           cat reports/external-domain-audit.md >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Commit approved config changes
+      - name: Commit validated ledger, reports and config
         run: |
-          if ! git diff --quiet -- shadowrocket/ss.conf reports/pending-gpt-review.json reports/gpt-domain-publication.md; then
+          if ! git diff --quiet -- shadowrocket/ss.conf sources/domain_reviews.json reports/domain-publication.md reports/external-domain-audit.md; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add shadowrocket/ss.conf reports/pending-gpt-review.json reports/gpt-domain-publication.md
-            git commit -m "Auto-publish approved GPT-reviewed Shadowrocket domains"
+            git add shadowrocket/ss.conf sources/domain_reviews.json reports/domain-publication.md reports/external-domain-audit.md
+            git commit -m "Run deterministic Shadowrocket domain audit and safe publish"
             git push
           else
-            echo "No approved domain changes to publish."
+            echo "No ledger, report or config changes."
           fi
