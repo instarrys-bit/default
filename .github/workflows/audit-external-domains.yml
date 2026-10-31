@@ -1,6 +1,22 @@
 name: External Domain Source Audit
 
 on:
+  push:
+    paths:
+      - "scripts/audit_external_domains.py"
+      - "scripts/select_domain_rules.py"
+      - "sources/policy_approvals.json"
+      - "sources/policy.json"
+      - "shadowrocket/ss.conf"
+      - ".github/workflows/audit-external-domains.yml"
+  pull_request:
+    paths:
+      - "scripts/audit_external_domains.py"
+      - "scripts/select_domain_rules.py"
+      - "sources/policy_approvals.json"
+      - "sources/policy.json"
+      - "shadowrocket/ss.conf"
+      - ".github/workflows/audit-external-domains.yml"
   schedule:
     # Weekly, separate from the canonical-config audit
     - cron: "15 20 * * 0"
