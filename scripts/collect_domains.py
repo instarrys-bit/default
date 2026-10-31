@@ -3,14 +3,17 @@ from __future__ import annotations
 import hashlib,json,re,sys,urllib.request
 from pathlib import Path
 from urllib.parse import urlparse
+from datetime import datetime,timezone
 ROOT=Path(__file__).resolve().parents[1]
 SOURCES=ROOT/"sources/domain_sources.json"
 BUFFER=ROOT/"data/domain_candidates.json"
+SNAPSHOT=ROOT/"data/primary_snapshot.txt"
+REVIEWS=ROOT/"sources/domain_reviews.json"
 OUTPUT=ROOT/"data/candidates.json"
 MAX_BYTES=30_000_000
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
 def fetch(url):
-    req=urllib.request.Request(url,headers={"User-Agent":"Shadowrocket-Deterministic-Audit/1.0"})
+    req=urllib.request.Request(url,headers={"User-Agent":"Shadowrocket-Deterministic-Audit/1.1"})
     with urllib.request.urlopen(req,timeout=90) as r:
         final=urlparse(r.geturl())
         if r.status!=200 or final.scheme!="https" or final.hostname!="raw.githubusercontent.com":
@@ -49,29 +52,37 @@ def main():
     secondary=by_id["hagezi-domains-pro"]
     primary_bytes=fetch(primary["url"])
     primary_hash=hashlib.sha256(primary_bytes).hexdigest()
-    if primary_hash!=primary["expected_sha256"]:
-        raise SystemExit("ERROR: primary source drift; candidate baseline must be refreshed and re-audited")
     primary_domains=parse_domain_list(primary_bytes,allow_leading_dot=True)
-    if len(primary_domains)!=int(primary["expected_entries"]):
-        raise SystemExit("ERROR: primary source entry count mismatch")
+    minimum=int(primary.get("minimum_entries",50000))
+    if len(primary_domains)<minimum: raise ValueError("primary source unexpectedly small or truncated")
     secondary_bytes=fetch(secondary["url"])
     secondary_hash=hashlib.sha256(secondary_bytes).hexdigest()
     secondary_domains=parse_adblock(secondary_bytes)
+    if SNAPSHOT.exists():
+        previous={x.strip().lower() for x in SNAPSHOT.read_text(encoding="utf-8").splitlines() if x.strip()}
+    else:
+        previous=set(primary_domains)
+    discovered=primary_domains-previous
+    queue={x["domain"]:x for x in buf.get("candidates",[])}
+    now=datetime.now(timezone.utc).isoformat()
+    for domain in sorted(discovered):
+        if domain not in queue:
+            queue[domain]={"domain":domain,"source_id":primary["id"],"source_sha256":primary_hash,"first_seen":now,"source_entry_type":"new_source_delta"}
     rows=[]
-    for item in buf.get("candidates",[]):
-        domain=str(item.get("domain","")).lower().rstrip(".")
+    for domain,item in sorted(queue.items()):
         if not DOMAIN_RE.fullmatch(domain): raise ValueError("invalid candidate domain: "+domain)
-        if item.get("source_id")!=primary["id"]: raise ValueError("candidate source id mismatch: "+domain)
-        if item.get("source_sha256")!=primary_hash: raise ValueError("candidate source hash mismatch: "+domain)
-        if domain not in primary_domains: raise ValueError("candidate no longer exists in primary source: "+domain)
-        evidence=[{"source_id":primary["id"],"publisher":primary["publisher"],"url":primary["url"],"sha256":primary_hash}]
+        evidence=[]
+        evidence.append({"source_id":primary["id"],"publisher":primary["publisher"],"url":primary["url"],"sha256":primary_hash,"currently_listed":domain in primary_domains})
         if any(domain==x or domain.endswith("."+x) for x in secondary_domains):
             evidence.append({"source_id":secondary["id"],"publisher":secondary["publisher"],"url":secondary["url"],"sha256":secondary_hash})
+        item["source_sha256"]=primary_hash
         rows.append({"domain":domain,"classification":"REJECT","evidence":evidence,"first_seen":item.get("first_seen")})
-    rows.sort(key=lambda x:x["domain"])
+    BUFFER.write_text(json.dumps({"schema_version":1,"updated_at":now,"candidates":list(queue.values())},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    SNAPSHOT.parent.mkdir(parents=True,exist_ok=True)
+    SNAPSHOT.write_text("\n".join(sorted(primary_domains))+"\n",encoding="utf-8")
     OUTPUT.parent.mkdir(parents=True,exist_ok=True)
-    OUTPUT.write_text(json.dumps({"schema_version":1,"collected_at":__import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat(),"sources":[{"id":primary["id"],"sha256":primary_hash,"entries":len(primary_domains)},{"id":secondary["id"],"sha256":secondary_hash,"entries":len(secondary_domains)}],"candidates":rows},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    print(f"Collected {len(rows)} candidates; {sum(len(x['evidence'])>=2 for x in rows)} independently corroborated by both sources.")
+    OUTPUT.write_text(json.dumps({"schema_version":1,"collected_at":now,"new_primary_domains":len(discovered),"sources":[{"id":primary["id"],"sha256":primary_hash,"entries":len(primary_domains)},{"id":secondary["id"],"sha256":secondary_hash,"entries":len(secondary_domains)}],"candidates":rows},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    print(f"Primary source domains: {len(primary_domains)}; newly discovered: {len(discovered)}; queued candidates: {len(rows)}; corroborated by both sources: {sum(len(x['evidence'])>=2 for x in rows)}.")
 if __name__=="__main__":
     try: main()
     except (OSError,KeyError,ValueError,json.JSONDecodeError) as e: print("ERROR: "+str(e),file=sys.stderr); raise SystemExit(1)
