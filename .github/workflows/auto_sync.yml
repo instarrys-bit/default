@@ -1,0 +1,30 @@
+name: Auto Sync Shadowrocket Config
+
+on:
+  schedule:
+    # 每周一凌晨 04:00 (北京时间) 自动运行
+    - cron: '0 20 * * 0'
+  workflow_dispatch: # 支持在 GitHub 页面随时手动一键点击运行
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Build Script
+        run: |
+          python3 scripts/build_config.py
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add shadowrocket/ss.conf
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update Shadowrocket config [skip ci]" && git push)
