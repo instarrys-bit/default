@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "engine": "deterministic-domain-audit/1.1",
-  "updated_at": "2026-10-31T17:33:18.629998+00:00",
+  "updated_at": "2026-10-31T17:34:13.122203+00:00",
   "source_snapshot": [
     {
       "id": "sr-adblock-domain-lite",
@@ -46,7 +46,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -70,7 +70,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -94,7 +94,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -124,7 +124,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -154,7 +154,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -184,7 +184,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -214,7 +214,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -244,7 +244,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -274,7 +274,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -304,7 +304,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -334,7 +334,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -364,7 +364,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -394,7 +394,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -418,7 +418,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -448,7 +448,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -472,7 +472,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -496,7 +496,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -526,7 +526,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -550,7 +550,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -580,7 +580,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -610,7 +610,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -640,7 +640,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -664,7 +664,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -688,7 +688,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -718,7 +718,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -748,7 +748,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -778,7 +778,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -802,7 +802,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -832,7 +832,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -862,7 +862,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -886,7 +886,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -910,7 +910,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -940,7 +940,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -970,7 +970,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -994,7 +994,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1024,7 +1024,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1048,7 +1048,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1072,7 +1072,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1096,7 +1096,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1120,7 +1120,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1144,7 +1144,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1168,7 +1168,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1192,7 +1192,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1216,7 +1216,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1240,7 +1240,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1270,7 +1270,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1294,7 +1294,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1318,7 +1318,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1348,7 +1348,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1378,7 +1378,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1408,7 +1408,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1432,7 +1432,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1462,7 +1462,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1486,7 +1486,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1510,7 +1510,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1534,7 +1534,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1564,7 +1564,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1588,7 +1588,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1618,7 +1618,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1642,7 +1642,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1666,7 +1666,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1690,7 +1690,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1714,7 +1714,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1738,7 +1738,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1762,7 +1762,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1792,7 +1792,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     },
     {
@@ -1816,7 +1816,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/1.1",
-      "reviewed_at": "2026-10-31T17:33:18.629998+00:00",
+      "reviewed_at": "2026-10-31T17:34:13.122203+00:00",
       "config_baseline": "managed-block-excluded"
     }
   ]
