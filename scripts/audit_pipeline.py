@@ -8,6 +8,7 @@ CONFIG=ROOT/"shadowrocket/ss.conf"
 POLICY=ROOT/"sources/policy.json"
 LEDGER=ROOT/"sources/domain_reviews.json"
 LEGACY=ROOT/"sources/legacy_managed_rules.json"
+PUBLISHED=ROOT/"sources/published_domains.json"
 DNS_KEYS=("dns-server","fallback-dns-server","direct-dns-server","proxy-dns-server","dns-direct-system","dns-direct-fallback-proxy","hijack-dns")
 START="# BEGIN GPT-REVIEWED DOMAIN RULES (managed)"
 END="# END GPT-REVIEWED DOMAIN RULES (managed)"
@@ -20,6 +21,7 @@ def main():
     policy=json.loads(POLICY.read_text(encoding="utf-8"))
     ledger=json.loads(LEDGER.read_text(encoding="utf-8"))
     legacy=json.loads(LEGACY.read_text(encoding="utf-8"))
+    published=json.loads(PUBLISHED.read_text(encoding="utf-8"))
     if any(text.count(s)!=1 for s in ("[General]","[Rule]","[Host]")): fail("required section count invalid")
     if not text.index("[General]")<text.index("[Rule]")<text.index("[Host]"): fail("section order invalid")
     lines=text.splitlines(keepends=True)
@@ -29,7 +31,7 @@ def main():
     if text.count(L2)!=1 or text.count(L3)!=1 or not text.index(L2)<text.index(START)<text.index(END)<text.index(L3): fail("managed block placement invalid")
     base="".join(lines[:a[0]]+lines[b[0]+1:])
     if blob(base.encode("utf-8"))!=policy["canonical_config"]["approved_git_blob_sha"]: fail("unmanaged config bytes differ from approved baseline")
-    general=text.split("[General]",1)[1].split("[",1)[0]
+    general=text.split("[General]",1)[1].split("[Rule]",1)[0]
     values={}
     for raw in general.splitlines():
         row=raw.strip()
@@ -54,10 +56,21 @@ def main():
         seen.add(f[1])
     legacy_rules=set(legacy.get("rules",[]))
     if not legacy_rules.issubset(set(imported)): fail("one or more pre-existing managed rules were removed")
+    published_rows=published.get("published",[])
+    published_map={}
+    for row in published_rows:
+        d=row.get("domain","")
+        rule="DOMAIN,"+d+","+str(row.get("policy","")).upper()
+        if d in published_map: fail("duplicate publication-history domain: "+d)
+        if row.get("policy") not in {"DIRECT","PROXY","REJECT"}: fail("invalid publication-history policy: "+d)
+        if float(row.get("confidence",0))<0.26: fail("publication-history confidence below threshold: "+d)
+        if len({x.get("source_id") for x in row.get("source_evidence",[])})<2: fail("publication-history evidence below minimum: "+d)
+        published_map[d]=rule
+    allowed=set(legacy_rules)|set(published_map.values())
+    if not set(imported).issubset(allowed): fail("managed rule lacks legacy or append-only publication provenance")
+    if not set(published_map.values()).issubset(set(imported)): fail("publication history contains a rule missing from ss.conf")
     approved={x["domain"]:"DOMAIN,"+x["domain"]+","+x["policy"] for x in ledger.get("reviews",[]) if x.get("status")=="APPROVED"}
     if len(approved)!=len([x for x in ledger.get("reviews",[]) if x.get("status")=="APPROVED"]): fail("duplicate approved domains in ledger")
-    for rule in imported:
-        if rule not in legacy_rules and rule not in set(approved.values()): fail("managed rule lacks deterministic approval: "+rule)
     for domain,rule in approved.items():
         if rule not in imported: fail("approved rule not published: "+domain)
     with tempfile.NamedTemporaryFile("w",encoding="utf-8",suffix=".conf",delete=False) as f:
@@ -67,12 +80,12 @@ def main():
     finally:
         Path(name).unlink(missing_ok=True)
     index=RuleIndex(rules)
-    for domain in approved:
-        if index.matches_host(domain): fail("new managed rule duplicates or conflicts with original domain rule: "+domain)
+    for domain in published_map:
+        if index.matches_host(domain): fail("published rule now overlaps an original domain rule: "+domain)
         for _,raw in conditional:
-            if domain in raw.lower(): fail("new managed rule overlaps original conditional rule: "+domain)
-    print("PASS: canonical baseline, deterministic ledger, original-rule protection and 7 DNS invariants")
-    print("Managed exact-domain rules: "+str(len(imported))+" (legacy preserved: "+str(len(legacy_rules))+", newly approved: "+str(len(approved))+")")
+            if domain in raw.lower(): fail("published rule now overlaps original conditional rule: "+domain)
+    print("PASS: canonical baseline, deterministic ledger, publication provenance, original-rule protection and 7 DNS invariants")
+    print("Managed exact-domain rules: "+str(len(imported))+" (legacy preserved: "+str(len(legacy_rules))+", auto-published: "+str(len(published_map))+")")
     print("GPT ledger is not read; DNS, nodes, MITM and unmanaged config bytes remain protected.")
 if __name__=="__main__":
     try: main()
