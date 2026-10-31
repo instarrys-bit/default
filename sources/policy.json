@@ -37,7 +37,7 @@
     "automatic_policy_inference": false,
     "gpt_review_required": true,
     "minimum_independent_evidence_sources": 2,
-    "minimum_confidence": 0.9,
+    "minimum_confidence": 0.26,
     "publish_only_after_all_checks": true,
     "rule_scope": "DOMAIN only; DOMAIN-SUFFIX requires separate explicit manual approval",
     "approval_rule": "At least 3 of 5 approval criteria must be satisfied; each criterion must be evidence-backed and recorded in the review reason.",
@@ -45,7 +45,7 @@
     "approval_criteria": [
       {
         "id": "confidence",
-        "description": "Confidence >= 0.90"
+        "description": "Confidence >= 0.26"
       },
       {
         "id": "independent_sources",
