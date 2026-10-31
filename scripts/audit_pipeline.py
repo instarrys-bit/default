@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import hashlib,json,sys
+import hashlib,json,re,sys
 from pathlib import Path
 from urllib.parse import urlparse
 ROOT=Path(__file__).resolve().parents[1]
@@ -12,6 +12,31 @@ L3="# === Layer 3 & Layer 4: Domestic (DIRECT) & International/Web3 (PROXY) Doma
 SEARCH_HOSTS={"google.com","bing.com","duckduckgo.com","search.yahoo.com","yandex.com"}
 def fail(m): print("ERROR: "+m,file=sys.stderr); raise SystemExit(1)
 def blob(data): return hashlib.sha1(f"blob {len(data)}\0".encode("ascii")+data).hexdigest()
+def parse_general(text,key):
+    block=text.split("[General]",1)[1].split("[",1)[0]
+    for raw in block.splitlines():
+        line=raw.strip()
+        if line.startswith(key+"="): return [x.strip().lower() for x in line.split("=",1)[1].split(",") if x.strip()]
+    return []
+def check_other_match(domain,base):
+    for item in parse_general(base,"skip-proxy"):
+        if "/" in item or ":" in item: continue
+        if item.startswith("*."):
+            root=item[2:]
+            if domain==root or domain.endswith("."+root): fail("managed rule intersects skip-proxy direct bypass: "+domain)
+        elif domain==item: fail("managed rule intersects skip-proxy direct bypass: "+domain)
+    block=base.split("[Rule]",1)[1].split("[Host]",1)[0]
+    for raw in block.splitlines():
+        line=raw.strip()
+        if line.startswith("DOMAIN-KEYWORD,"):
+            f=line.split(",",2)
+            if len(f)==3 and f[1].lower() in domain: fail("managed rule intersects DOMAIN-KEYWORD: "+domain)
+        if line.startswith("URL-REGEX,"):
+            f=line.rsplit(",",1)
+            if len(f)==2:
+                try: pattern=re.compile(f[0][len("URL-REGEX,"):])
+                except re.error: fail("existing URL-REGEX cannot be safely evaluated")
+                if pattern.search(domain) or pattern.search("https://"+domain+"/"): fail("managed rule intersects URL-REGEX: "+domain)
 def main():
     text=CONFIG.read_text(encoding="utf-8"); p=json.loads(POLICY.read_text(encoding="utf-8")); ledger=json.loads(LEDGER.read_text(encoding="utf-8"))
     if any(text.count(s)!=1 for s in ("[General]","[Rule]","[Host]")): fail("required section count invalid")
@@ -50,13 +75,13 @@ def main():
         hosts=set(); publishers=set()
         if not isinstance(ev,list) or len(ev)<min_sources: fail("insufficient evidence count: "+d)
         for x in ev:
-            url=str(x.get("url","")); host=(urlparse(url).hostname or "").lower()
-            pub=str(x.get("publisher","")).strip().lower()
+            url=str(x.get("url","")); host=(urlparse(url).hostname or "").lower(); pub=str(x.get("publisher","")).strip().lower()
             if not url.startswith("https://") or not host or any(host==z or host.endswith("."+z) for z in SEARCH_HOSTS): fail("invalid evidence URL: "+d)
             if not pub or not str(x.get("supports","")).strip(): fail("evidence metadata missing: "+d)
             hosts.add(host); publishers.add(pub)
         if len(hosts)<min_sources or len(publishers)<min_sources: fail("evidence is not independent: "+d)
         if not str(item.get("reason","")).strip() or not str(item.get("reviewed_at","")).strip(): fail("review rationale/date missing: "+d)
+        check_other_match(d,base)
     print("PASS: canonical baseline, GPT evidence, managed rules and 7 DNS invariants")
     print("Managed exact domain rules: "+str(len(imported)))
     print("Unmanaged config bytes preserved; DNS, nodes, MITM and URL Rewrite unchanged.")
