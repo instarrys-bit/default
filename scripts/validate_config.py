@@ -8,7 +8,7 @@ import sys
 
 path = Path("sources/baseline/ss.conf")
 if not path.is_file():
-    sys.exit("ERROR: shadowrocket/ss.conf is missing")
+    sys.exit("ERROR: sources/baseline/ss.conf is missing")
 
 text = path.read_text(encoding="utf-8")
 if not text.strip():
