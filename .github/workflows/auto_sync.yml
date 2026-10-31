@@ -10,6 +10,7 @@ on:
       - "sources/policy.json"
       - "sources/domain_sources.json"
       - "scripts/**"
+      - ".github/workflows/auto_sync.yml"
 
 permissions:
   contents: write
