@@ -17,6 +17,8 @@ on:
       - "scripts/validate_config.py"
       - "scripts/audit_pipeline.py"
       - "scripts/audit_external_domains.py"
+      - "scripts/select_domain_rules.py"
+      - "sources/policy_approvals.json"
       - "sources/policy.json"
       - ".github/workflows/validate-config.yml"
 
