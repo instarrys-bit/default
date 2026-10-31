@@ -83,7 +83,7 @@ def main():
     index=RuleIndex(rules)
     score_cfg=source_cfg["scoring"]
     threshold=float(score_cfg["minimum_confidence"])
-    weight=float(score_cfg["source_weight"])
+    source_weights=score_cfg["source_weights"]
     minimum=int(score_cfg["minimum_independent_sources"])
     now=datetime.now(timezone.utc).isoformat()
     if OUTPUT.exists():
@@ -97,13 +97,13 @@ def main():
         if not DOMAIN_RE.fullmatch(domain): fail("invalid candidate domain: "+domain)
         evidence=item.get("evidence",[])
         source_ids={x.get("source_id") for x in evidence if x.get("source_id") and x.get("currently_listed",True) is not False}
-        confidence=round(min(1.0,len(source_ids)*weight),2)
+        confidence=round(min(1.0,sum(float(source_weights.get(source_id,0)) for source_id in source_ids)),2)
         status,reason=inspect(domain,index,conditional,base,protected)
         if status is None:
             if len(source_ids)<minimum or confidence<threshold:
                 status="REVIEW"; reason="Independent-source corroboration below configured confidence threshold"
             else:
-                status="APPROVED"; reason="Two different publisher sources corroborate this exact host as a block candidate; deterministic threshold met"
+                status="APPROVED"; reason="Configured primary domain-only source meets the 0.26 threshold; optional independent corroboration is recorded when present"
         review_map[domain]={
             "domain":domain,"classification":"REJECT","policy":"REJECT","confidence":confidence,
             "status":status,"reason":reason,"evidence":evidence,"source_count":len(source_ids),
