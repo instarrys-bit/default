@@ -6,7 +6,7 @@ from pathlib import Path
 from domain_rule_engine import RuleIndex,load_domain_rules
 
 ROOT=Path(__file__).resolve().parents[1]
-CONFIG=ROOT/"shadowrocket/ss.conf"
+CONFIG=ROOT/"sources/baseline/ss.conf"
 INTAKE=ROOT/"reports/domain-intake.json"
 PENDING=ROOT/"reports/pending-gpt-review.json"
 LEDGER=ROOT/"sources/gpt_domain_reviews.json"
