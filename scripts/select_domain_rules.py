@@ -99,9 +99,9 @@ def load_approvals(candidates: dict[str, bool]) -> dict[str, dict[str, str]]:
 def self_test() -> None:
     from domain_rule_engine import DomainRule, matches_host, analyze_candidate
     sample = [
+        DomainRule("DOMAIN-SUFFIX", "shop.example.com", "DIRECT", 5, ""),
         DomainRule("DOMAIN-SUFFIX", "example.com", "PROXY", 10, ""),
         DomainRule("DOMAIN", "ads.example.com", "REJECT", 20, ""),
-        DomainRule("DOMAIN-SUFFIX", "shop.example.com", "DIRECT", 30, ""),
         DomainRule("DOMAIN", "exact.test", "REJECT", 40, ""),
         DomainRule("DOMAIN", "exact.test", "DIRECT", 50, ""),
     ]
