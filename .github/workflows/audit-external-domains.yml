@@ -1,70 +1,14 @@
-name: External Domain Source Audit
-
+name: Legacy External Domain Audit (Manual)
 on:
-  push:
-    paths:
-      - "scripts/audit_external_domains.py"
-      - "scripts/select_domain_rules.py"
-      - "scripts/domain_rule_engine.py"
-      - "sources/policy_approvals.json"
-      - "sources/policy.json"
-      - "shadowrocket/ss.conf"
-      - ".github/workflows/audit-external-domains.yml"
-  pull_request:
-    paths:
-      - "scripts/audit_external_domains.py"
-      - "scripts/select_domain_rules.py"
-      - "scripts/domain_rule_engine.py"
-      - "sources/policy_approvals.json"
-      - "sources/policy.json"
-      - "shadowrocket/ss.conf"
-      - ".github/workflows/audit-external-domains.yml"
-  schedule:
-    # Weekly, separate from the canonical-config audit
-    - cron: "15 20 * * 0"
   workflow_dispatch:
-
 permissions:
   contents: read
-
-concurrency:
-  group: external-domain-source-audit
-  cancel-in-progress: false
-
 jobs:
-  audit-domain-source:
+  manual-audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Audit pinned domain-only source
-        id: audit
-        continue-on-error: true
-        run: python3 scripts/audit_external_domains.py
-      - name: Test approval-gated selector
-        run: python3 scripts/select_domain_rules.py --self-test
-      - name: Run approval-gated rule selector
-        id: selector
-        continue-on-error: true
-        run: python3 scripts/select_domain_rules.py
-      - name: Upload audit and selector outputs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: external-domain-source-audit
-          path: |
-            reports/external-domain-audit.md
-            reports/rule-selector-audit.md
-            reports/approved-domain-rules.list
-          if-no-files-found: error
-          retention-days: 30
-      - name: Fail if an audit or selector step did not pass
-        if: steps.audit.outcome != 'success' || steps.selector.outcome != 'success'
-        run: |
-          echo "External source or selector requires review; no config was changed."
-          exit 1
+      - run: python3 scripts/audit_external_domains.py
