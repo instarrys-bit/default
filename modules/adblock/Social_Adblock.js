@@ -1,7 +1,7 @@
 /**
  * Targeted Social & Search JSON AdBlock Script for Shadowrocket
  * Targets: X (Twitter) GraphQL & REST Timelines, Instagram Web/GraphQL, Google Search JSON/HTML, and YouTube JSON fallback
- * Repository Path: https://raw.githubusercontent.com/instarrys-bit/default/main/shadowrocket/social_adblock.js
+ * Repository Path: https://raw.githubusercontent.com/instarrys-bit/default/main/modules/adblock/Social_Adblock.js
  */
 (function () {
   if (typeof $response === "undefined" || !$response || !$response.body) {
