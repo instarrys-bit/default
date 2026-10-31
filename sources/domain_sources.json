@@ -15,8 +15,8 @@
       "id": "hagezi-domains-pro",
       "publisher": "HaGeZi/dns-blocklists",
       "role": "independent_adblock_corroboration",
-      "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/pro.txt",
-      "format": "domain-only",
+      "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+      "format": "adblock-domain-rules",
       "weight": 0.13
     }
   ],
