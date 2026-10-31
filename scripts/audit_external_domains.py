@@ -3,7 +3,8 @@
 
 No downloaded code is executed. This script never classifies candidates, rewrites
 ss.conf, or publishes rules. It reports syntax, source drift, duplicates and
-intersections with existing DOMAIN / DOMAIN-SUFFIX rules.
+intersections with existing DOMAIN / DOMAIN-SUFFIX rules. The canonical config is
+authoritative: external candidates never override or replace an existing rule.
 """
 from __future__ import annotations
 
@@ -185,9 +186,16 @@ def main() -> int:
         report.append(f"| {policy} | {count} |")
     report += [
         "",
+        "## Original-rule precedence",
+        "",
+        "- The existing canonical ss.conf is authoritative over every external source.",
+        "- Any candidate covered by an existing DOMAIN / DOMAIN-SUFFIX rule is already governed by the original config; it is not an instruction to replace that rule.",
+        "- Where multiple original policies overlap, preserve the original rule order exactly; report the overlap for manual review and do not resolve it by external-source priority.",
+        "- No existing rule is deleted, reordered, rewritten, or reclassified by this audit.",
+        "",
         f"## Multi-policy collisions: {len(conflicts)}",
         "",
-        "These candidates overlap existing rules carrying more than one policy. They must not be auto-classified.",
+        "These candidates overlap existing rules carrying more than one policy. Original rule order remains authoritative; collisions are report-only and must not be auto-classified.",
         "",
         "| Candidate | Source match | Existing policies |",
         "|---|---|---|",
