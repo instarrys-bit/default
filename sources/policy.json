@@ -4,9 +4,26 @@
     "path": "shadowrocket/ss.conf",
     "approved_git_blob_sha": "4c1abd066cc6d77ca9e59f46470e08314d14bea9"
   },
-  "allowed_policy_outputs": ["DIRECT", "PROXY", "REJECT"],
+  "allowed_policy_outputs": [
+    "DIRECT",
+    "PROXY",
+    "REJECT"
+  ],
   "external_source_mode": "domain-only",
-  "external_sources": [],
+  "external_sources": [
+    {
+      "id": "sr-adblock-domain-lite",
+      "enabled": true,
+      "format": "domain-only",
+      "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+      "upstream_git_blob_sha": "ec23c2d1280ea4a59717816716b8ccb569dac624",
+      "expected_entries": 56516,
+      "allow_leading_dot": true,
+      "import_enabled": false,
+      "policy_assignment_enabled": false,
+      "note": "仅作为原始域名候选数据；不读取其模块、脚本、MITM、DNS、Rewrite 或策略。源文件声明为多来源混合数据，包含 GPL-2.0、CC-BY-SA-4.0 及未声明/无许可证来源，需独立评估再决定分发方式。"
+    }
+  ],
   "dns_invariants": {
     "dns-server": "https://dns.quad9.net/dns-query#proxy, https://dns.google/dns-query#proxy, https://cloudflare-dns.com/dns-query#proxy",
     "fallback-dns-server": "https://cloudflare-dns.com/dns-query#proxy, https://dns.google/dns-query#proxy",
