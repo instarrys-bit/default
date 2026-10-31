@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-31T15:14:55.102Z",
+  "updated_at": "2026-10-31T15:16:12.414Z",
   "reviews": [
     {
       "domain": "39d83s.com",
@@ -703,7 +703,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "检索未找到酷狗官方域名/接口说明；无法判断该主机是否为广告素材、音乐资源或客户端依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "检索未找到酷狗官方域名/接口说明；无法判断该主机是否为广告素材、音乐资源或客户端依赖。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：再次针对该精确主机进行定向检索，新增第三方列表/社区线索；该类材料不构成运营方直接证明，故维持 REVIEW，原证据保留。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -711,6 +711,12 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/790953214/qy-Ads-Rule/blob/main/black.txt",
+          "publisher": "GitHub: 790953214/qy-Ads-Rule",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "独立第三方广告列表再次收录该主机；没有酷狗官方用途说明，不能据此确认其是否仅承载广告。"
         }
       ]
     },
@@ -1611,7 +1617,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "检索未找到可信资料说明该 OTT 主机归属及功能；考虑可能是视频传输路径，阻止风险较高。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "检索未找到可信资料说明该 OTT 主机归属及功能；考虑可能是视频传输路径，阻止风险较高。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：再次针对该精确主机进行定向检索，新增第三方列表/社区线索；该类材料不构成运营方直接证明，故维持 REVIEW，原证据保留。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -1619,6 +1625,18 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://www.right.com.cn/forum/thread-4090928-1-1.html",
+          "publisher": "恩山无线论坛",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "社区 DNS 过滤配置列出该主机；属于过滤名单线索，不能证明精确用途或排除 OTT 播放依赖。"
+        },
+        {
+          "url": "https://mudew.com/2022/11/23/%E5%B0%8F%E7%B1%B3AX9000%E6%8A%98%E8%85%BE%E8%AE%B0%E5%BD%95/",
+          "publisher": "沐雨露の山头",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "独立路由器配置文章列出该主机作为过滤项；不是运营方资料，也不能证明该主机仅用于广告。"
         }
       ]
     },
@@ -1947,7 +1965,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "检索未找到可信官方资料或直接路径证据；不能因与 richmanapi 同属父域就推定其用途相同。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "检索未找到可信官方资料或直接路径证据；不能因与 richmanapi 同属父域就推定其用途相同。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：再次针对该精确主机进行定向检索，新增第三方列表/社区线索；该类材料不构成运营方直接证明，故维持 REVIEW，原证据保留。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -1955,6 +1973,12 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://github.com/limbopro/Adblock4limbo/blob/main/Adblock4limbo.list",
+          "publisher": "GitHub: limbopro/Adblock4limbo",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "独立第三方拦截清单收录该主机；没有驾校一点通官方资料确认其用途。"
         }
       ]
     },
@@ -1963,7 +1987,7 @@
       "status": "REVIEW",
       "policy": null,
       "confidence": 0.25,
-      "reason": "检索未找到该精确主机的可信用途说明；不能仅凭 rttrack 命名判断为跟踪或遥测。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。",
+      "reason": "检索未找到该精确主机的可信用途说明；不能仅凭 rttrack 命名判断为跟踪或遥测。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：再次针对该精确主机进行定向检索，新增第三方列表/社区线索；该类材料不构成运营方直接证明，故维持 REVIEW，原证据保留。",
       "reviewed_at": "2026-10-31T14:57:31Z",
       "evidence": [
         {
@@ -1971,6 +1995,18 @@
           "publisher": "ithtelab/sr-adblock",
           "published_or_accessed_date": "2026-10-31",
           "supports": "该精确域名被上游 ad-domain-lite 列为候选；仅证明其进入上游候选清单，不证明实际用途、运营主体、广告属性或是否可安全阻止。"
+        },
+        {
+          "url": "https://t.me/s/Aa28413761?after=1802",
+          "publisher": "Telegram: 广告必须死",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "社区帖子把该主机列为叮咚买菜相关过滤项；仅为线索，不证明其精确用途。"
+        },
+        {
+          "url": "https://telegram.me/s/Aa28413761?after=1763",
+          "publisher": "Telegram: 广告必须死",
+          "published_or_accessed_date": "2026-10-31",
+          "supports": "同一社区频道的另一条帖子提到该主机及广告 URL Rewrite；与前一来源并非独立发布者，不能满足双来源批准条件。"
         }
       ]
     },
