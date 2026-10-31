@@ -14,7 +14,7 @@ from urllib.parse import urlparse
 from domain_rule_engine import RuleIndex, analyze_candidate, load_domain_rules
 
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG = ROOT / "shadowrocket" / "ss.conf"
+CONFIG = ROOT / "sources" / "baseline" / "ss.conf"
 APPROVALS = ROOT / "sources" / "policy_approvals.json"
 REPORT = ROOT / "reports" / "rule-selector-audit.md"
 OUTPUT = ROOT / "reports" / "approved-domain-rules.list"
