@@ -1,14 +1,12 @@
 name: Publish GPT-reviewed Shadowrocket domains
 on:
-  schedule:
-    - cron: "15 20 * * *"
-  push:
-    paths:
-      - "sources/gpt_domain_reviews.json"
-      - "scripts/import_gpt_reviewed_domains.py"
-      - "scripts/audit_pipeline.py"
-      - "shadowrocket/ss.conf"
   workflow_dispatch:
+    inputs:
+      confirm_release:
+        description: "Confirm publishing GPT-approved domain rules to ss.conf"
+        required: true
+        type: boolean
+        default: false
 permissions:
   contents: write
 concurrency:
@@ -16,6 +14,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish:
+    if: ${{ inputs.confirm_release == true }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
