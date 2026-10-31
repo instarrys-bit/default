@@ -61,7 +61,7 @@ def main():
                 reason=f"Already governed by first-match {winner[0].policy} ({winner[0].kind} {winner[0].domain}, line {winner[0].line})"
             if not reason:
                 for _,raw in conditional:
-                    for _,host in COND_RE.findall(raw):
+                    for host in COND_RE.findall(raw):
                         host=host.lower().strip(".")
                         if d==host or d.endswith("."+host) or host.endswith("."+d):
                             reason="Overlaps existing conditional AND/OR/NOT domain rule"; break
