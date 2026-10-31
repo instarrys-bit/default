@@ -39,6 +39,37 @@
     "minimum_independent_evidence_sources": 2,
     "minimum_confidence": 0.9,
     "publish_only_after_all_checks": true,
-    "rule_scope": "DOMAIN only; DOMAIN-SUFFIX requires separate explicit manual approval"
+    "rule_scope": "DOMAIN only; DOMAIN-SUFFIX requires separate explicit manual approval",
+    "approval_rule": "At least 3 of 5 approval criteria must be satisfied; each criterion must be evidence-backed and recorded in the review reason.",
+    "minimum_met_criteria": 3,
+    "approval_criteria": [
+      {
+        "id": "confidence",
+        "description": "Confidence >= 0.90"
+      },
+      {
+        "id": "independent_sources",
+        "description": "At least two independent trustworthy HTTPS sources; syndicated copies of the same source do not count separately"
+      },
+      {
+        "id": "direct_evidence",
+        "description": "Direct evidence supports the exact hostname's purpose or operator"
+      },
+      {
+        "id": "policy_clarity",
+        "description": "A defensible policy is clear: DIRECT, PROXY, or REJECT"
+      },
+      {
+        "id": "functional_safety",
+        "description": "No material risk of disrupting login, payment, messaging, push, updates, CDN/media delivery, system, or core app functionality"
+      }
+    ],
+    "mandatory_vetoes": [
+      "A confirmed existing-rule conflict or an unresolved first-match outcome blocks APPROVED",
+      "A credible unresolved risk of disrupting critical system or core application functionality blocks APPROVED",
+      "A candidate with insufficient evidence to identify its purpose or operator cannot be APPROVED solely from its hostname or third-party blocklist inclusion"
+    ],
+    "review_status": "If fewer than 3 criteria are met, or any mandatory veto applies, status must be REVIEW.",
+    "publish_gate": "APPROVED is a review-buffer status only; publishing remains a separate user-authorized workflow requiring confirm_release=true."
   }
 }
