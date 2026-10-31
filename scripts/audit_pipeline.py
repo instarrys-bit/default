@@ -3,12 +3,14 @@ from __future__ import annotations
 import hashlib,json,sys,tempfile
 from pathlib import Path
 from domain_rule_engine import RuleIndex,load_domain_rules
+from deterministic_review import inspect
 ROOT=Path(__file__).resolve().parents[1]
 CONFIG=ROOT/"shadowrocket/ss.conf"
 POLICY=ROOT/"sources/policy.json"
 LEDGER=ROOT/"sources/domain_reviews.json"
 LEGACY=ROOT/"sources/legacy_managed_rules.json"
 PUBLISHED=ROOT/"sources/published_domains.json"
+PROTECTED=ROOT/"sources/protected_domains.json"
 DNS_KEYS=("dns-server","fallback-dns-server","direct-dns-server","proxy-dns-server","dns-direct-system","dns-direct-fallback-proxy","hijack-dns")
 START="# BEGIN GPT-REVIEWED DOMAIN RULES (managed)"
 END="# END GPT-REVIEWED DOMAIN RULES (managed)"
@@ -22,6 +24,7 @@ def main():
     ledger=json.loads(LEDGER.read_text(encoding="utf-8"))
     legacy=json.loads(LEGACY.read_text(encoding="utf-8"))
     published=json.loads(PUBLISHED.read_text(encoding="utf-8"))
+    protected=json.loads(PROTECTED.read_text(encoding="utf-8"))
     if any(text.count(s)!=1 for s in ("[General]","[Rule]","[Host]")): fail("required section count invalid")
     if not text.index("[General]")<text.index("[Rule]")<text.index("[Host]"): fail("section order invalid")
     lines=text.splitlines(keepends=True)
@@ -81,9 +84,8 @@ def main():
         Path(name).unlink(missing_ok=True)
     index=RuleIndex(rules)
     for domain in published_map:
-        if index.matches_host(domain): fail("published rule now overlaps an original domain rule: "+domain)
-        for _,raw in conditional:
-            if domain in raw.lower(): fail("published rule now overlaps original conditional rule: "+domain)
+        status,reason=inspect(domain,index,conditional,base,protected)
+        if status is not None: fail("published rule fails current duplicate/conflict/risk recheck: "+domain+" ("+str(status)+": "+str(reason)+")")
     print("PASS: canonical baseline, deterministic ledger, publication provenance, original-rule protection and 7 DNS invariants")
     print("Managed exact-domain rules: "+str(len(imported))+" (legacy preserved: "+str(len(legacy_rules))+", auto-published: "+str(len(published_map))+")")
     print("GPT ledger is not read; DNS, nodes, MITM and unmanaged config bytes remain protected.")
