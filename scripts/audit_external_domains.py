@@ -11,7 +11,7 @@ from urllib.parse import urlparse
 from domain_rule_engine import RuleIndex, analyze_candidate, load_domain_rules
 
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG = ROOT / "shadowrocket" / "ss.conf"
+CONFIG = ROOT / "sources" / "baseline" / "ss.conf"
 SOURCE_URL = "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list"
 MIN_EXPECTED_ENTRIES = 50000
 MAX_BYTES = 2_000_000
