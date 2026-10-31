@@ -51,3 +51,23 @@ Add that URL in Shadowrocket as a remote configuration (or URL-based configurati
 - [x] Initial configuration uploaded to `shadowrocket/ss.conf`.
 - [x] Stable raw URL established for remote import/update.
 - [ ] Shadowrocket import/refresh and real-device traffic tests remain to be performed by the user; a successful GitHub upload does not verify device behavior.
+
+
+## Automated capture, GPT review and publication
+
+The current pipeline separates source collection, semantic review, and config publication:
+
+1. `capture-domain-candidates.yml` runs daily. It downloads only the configured domain-only source, validates the domain syntax, and detects newly appearing domains. It does not adopt upstream policies or modify `ss.conf`.
+2. `reports/pending-gpt-review.json` is the incremental review queue. `reports/domain-source-bloom.json` stores a compact Bloom-filter fingerprint of the previously seen domain set so the repository does not need to mirror the full upstream list.
+3. The ChatGPT task **Shadowrocket 域名周审** reviews up to 100 unreviewed candidates per run. It must use at least two independent HTTPS evidence hosts, document the reason, policy, confidence and review date, and write decisions to `sources/gpt_domain_reviews.json`.
+4. `publish-gpt-reviewed-domains.yml` runs when the GPT review ledger changes and also performs a daily reconciliation. It publishes only APPROVED exact-domain decisions with confidence >= 0.90 and two independent evidence hosts.
+5. The publisher preserves first-match precedence, checks existing direct/proxy/reject rules and conditional domain rules, and quarantines conflicts. It inserts rules only in the managed block after explicit Layer 2 exceptions and before Layer 3 domain sets.
+6. The audit gate verifies that every managed rule has a matching GPT approval, that the bytes outside the managed block match the approved baseline, and that all seven DNS invariants remain unchanged.
+
+### Automation boundaries
+
+- Initial source contents are treated as the baseline on the first capture. Only future additions enter the GPT queue; the existing 56,516-entry source list is not automatically bulk-approved or backfilled.
+- GPT review can mark a domain APPROVED or REVIEW. Uncertain entries are not published.
+- Automatic publication currently accepts exact `DOMAIN` rules only. Broad `DOMAIN-SUFFIX` rules require a separate explicit review.
+- Source removals never delete existing rules automatically.
+- Static CI checks do not replace testing in Shadowrocket on the iPhone.
