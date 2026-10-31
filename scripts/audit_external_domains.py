@@ -26,7 +26,11 @@ MAX_BYTES = 2_000_000
 OUTPUT = ROOT / "reports" / "external-domain-audit.md"
 DOMAIN_RE = re.compile(
     r"^(?=.{1,253}$)[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?"
-    r"(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$"
+    r"(?:\\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$"
+)
+RULE_DOMAIN_RE = re.compile(
+    r"^(?=.{1,253}$)[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?"
+    r"(?:\\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$"
 )
 
 
@@ -111,7 +115,7 @@ def main() -> int:
             continue
         domain = fields[1].lower().lstrip(".")
         policy = fields[-1].upper()
-        if DOMAIN_RE.fullmatch(domain):
+        if RULE_DOMAIN_RE.fullmatch(domain):
             existing.append((kind, domain, policy, line_number))
 
     suffix_rules: dict[str, list[tuple[str, int]]] = {}
