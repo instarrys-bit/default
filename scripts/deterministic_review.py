@@ -96,7 +96,7 @@ def main():
         domain=str(item.get("domain","")).lower().rstrip(".")
         if not DOMAIN_RE.fullmatch(domain): fail("invalid candidate domain: "+domain)
         evidence=item.get("evidence",[])
-        source_ids={x.get("source_id") for x in evidence if x.get("source_id")}
+        source_ids={x.get("source_id") for x in evidence if x.get("source_id") and x.get("currently_listed",True) is not False}
         confidence=round(min(1.0,len(source_ids)*weight),2)
         status,reason=inspect(domain,index,conditional,base,protected)
         if status is None:
