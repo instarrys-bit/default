@@ -8,7 +8,6 @@ an explicit review and a corresponding policy-manifest update.
 from __future__ import annotations
 
 import json
-import re
 import subprocess
 import sys
 from collections import Counter
@@ -102,8 +101,10 @@ def main() -> None:
         fail("policy outputs must be exactly DIRECT, PROXY, REJECT in that order")
     if policy.get("external_source_mode") != "domain-only":
         fail("external source mode must remain domain-only")
-    if policy.get("automatic_config_rewrite") is True:
-        fail("automatic config rewrite is forbidden")
+    if policy.get("release_policy", {}).get("automatic_config_rewrite") is not False:
+        fail("automatic config rewrite must remain disabled")
+    if policy.get("release_policy", {}).get("automatic_policy_inference") is not False:
+        fail("automatic policy inference must remain disabled")
 
     rule_block = text.split("[Rule]", 1)[1].split("[Host]", 1)[0]
     active = [
