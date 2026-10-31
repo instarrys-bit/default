@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "sr-adblock-domain-lite",
+      "publisher": "ithtelab/sr-adblock",
+      "role": "primary_candidate_source",
+      "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+      "format": "domain-only",
+      "expected_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "expected_entries": 56516,
+      "weight": 0.13
+    },
+    {
+      "id": "hagezi-domains-pro",
+      "publisher": "HaGeZi/dns-blocklists",
+      "role": "independent_adblock_corroboration",
+      "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/pro.txt",
+      "format": "domain-only",
+      "weight": 0.13
+    }
+  ],
+  "scoring": {
+    "source_weight": 0.13,
+    "minimum_independent_sources": 2,
+    "minimum_confidence": 0.26,
+    "classification": "REJECT"
+  }
+}
