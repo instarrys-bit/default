@@ -5,6 +5,7 @@ on:
     paths:
       - "scripts/audit_external_domains.py"
       - "scripts/select_domain_rules.py"
+      - "scripts/domain_rule_engine.py"
       - "sources/policy_approvals.json"
       - "sources/policy.json"
       - "shadowrocket/ss.conf"
@@ -13,6 +14,7 @@ on:
     paths:
       - "scripts/audit_external_domains.py"
       - "scripts/select_domain_rules.py"
+      - "scripts/domain_rule_engine.py"
       - "sources/policy_approvals.json"
       - "sources/policy.json"
       - "shadowrocket/ss.conf"
