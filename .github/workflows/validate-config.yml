@@ -2,7 +2,7 @@ name: Validate Shadowrocket config structure
 on:
   push:
     paths:
-      - "shadowrocket/ss.conf"
+      - "sources/baseline/ss.conf"
       - "scripts/validate_config.py"
       - "scripts/select_domain_rules.py"
       - "scripts/domain_rule_engine.py"
@@ -10,7 +10,7 @@ on:
       - ".github/workflows/validate-config.yml"
   pull_request:
     paths:
-      - "shadowrocket/ss.conf"
+      - "sources/baseline/ss.conf"
       - "scripts/validate_config.py"
       - "scripts/select_domain_rules.py"
       - "scripts/domain_rule_engine.py"
@@ -26,5 +26,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - run: python scripts/verify_baseline.py
       - run: python scripts/validate_config.py
       - run: python scripts/select_domain_rules.py --self-test
