@@ -6,7 +6,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 ROOT=Path(__file__).resolve().parents[1]
 POLICY=ROOT/"sources/policy.json"; STATE=ROOT/"reports/domain-source-bloom.json"
-PENDING=ROOT/"reports/pending-gpt-review.json"; REPORT=ROOT/"reports/domain-capture.md"
+INTAKE=ROOT/"reports/domain-intake.json"; REPORT=ROOT/"reports/domain-capture.md"
 BITS=4_000_000; HASHES=10; MAX_BYTES=8_000_000
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$")
 def fail(m): raise SystemExit("ERROR: "+m)
@@ -59,20 +59,20 @@ def main():
             print("No source change or new domains; no repository write needed.")
             return
     pending={}
-    if PENDING.exists():
-        old=json.loads(PENDING.read_text(encoding="utf-8")); pending={x["domain"]:x for x in old.get("candidates",[])}
+    if INTAKE.exists():
+        old=json.loads(INTAKE.read_text(encoding="utf-8")); pending={x["domain"]:x for x in old.get("candidates",[])}
     for d,t in new.items():
         pending.setdefault(d,{"domain":d,"source_entry_type":t,"first_seen":now,"source_id":src["id"],"source_sha256":sha})
-    PENDING.parent.mkdir(parents=True,exist_ok=True); STATE.parent.mkdir(parents=True,exist_ok=True)
+    INTAKE.parent.mkdir(parents=True,exist_ok=True); STATE.parent.mkdir(parents=True,exist_ok=True)
     state={"schema_version":1,"bits":BITS,"hashes":HASHES,"source_id":src["id"],"source_sha256":sha,
            "entry_count":len(found),"updated_at":now,"data":base64.b64encode(zlib.compress(bytes(bits),9)).decode("ascii")}
-    PENDING.write_text(json.dumps({"schema_version":1,"updated_at":now,"candidates":sorted(pending.values(),key=lambda x:x["domain"])},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    INTAKE.write_text(json.dumps({"schema_version":1,"updated_at":now,"candidates":sorted(pending.values(),key=lambda x:x["domain"])},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     STATE.write_text(json.dumps(state,separators=(",",":"))+"\n",encoding="utf-8")
     report=["# Domain source capture","",f"Source: {src['url']}",f"SHA-256: {sha}",f"Current entries: {len(found)}",
-            f"New candidates detected: {len(new)}",f"Pending GPT review queue: {len(pending)}",
+            f"New candidates detected: {len(new)}",f"Raw intake candidates awaiting filter: {len(pending)}",
             "Initial baseline: "+("established; existing entries were not queued" if first else "already established"),"",
             "Only domain strings are captured. Upstream policy, scripts, modules, DNS, MITM and rewrite directives are never imported.",
             "A compact Bloom filter tracks prior domains without storing a plain copy of the source list. Its false-positive probability is negligible; it has no false negatives.",
-            "Source removals never delete existing rules automatically. No config changes occur during capture.",""]
+            "Source removals never delete existing rules automatically. Candidates are staged in domain-intake.json; no GPT buffer or config changes occur during capture.",""]
     REPORT.write_text("\n".join(report),encoding="utf-8"); print("\n".join(report))
 if __name__=="__main__": main()
