@@ -2108,11 +2108,11 @@
     },
     {
       "domain": "safebrowsing.g.applimg.com",
-      "status": "APPROVED",
-      "policy": "REJECT",
+      "status": "REVIEW",
+      "policy": null,
       "confidence": 0.48,
-      "reason": "Google 官方 Safe Browsing 文档确认安全浏览服务，但没有证据将 applimg.com 精确主机归属于 Google；贸然阻止可能误伤安全检查，也可能误关联。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。",
-      "reviewed_at": "2026-10-31T15:30:00Z",
+      "reason": "Google 官方 Safe Browsing 文档确认安全浏览服务，但没有证据将 applimg.com 精确主机归属于 Google；贸然阻止可能误伤安全检查，也可能误关联。 配置审计未发现 DOMAIN/DOMAIN-SUFFIX 首匹配覆盖、DOMAIN-KEYWORD 命中、明确包含该域名的 AND/OR/NOT 条件或 General skip-proxy 命中；通用 URL-REGEX 仅按 URL 路径触发，域名候选本身不足以判断路径。当前后续仍可能受 IP-CIDR/IP-ASN、GEOIP,CN,DIRECT（第 2052 行）影响，否则落到 FINAL,PROXY（第 2054 行）。 补充复核（2026-10-31）：已追加第二轮精确域名检索得到的 DNS、产品页面、技术资料或社区线索；这些材料仍未共同达到“两份独立可信来源直接确认精确主机用途并排除核心依赖”的 APPROVED 门槛，因此维持原 REVIEW 结论。原有证据未删除，status、policy 与 confidence 未变。 自动审核（2026-10-31）：置信度达到或超过 0.26，按自动通过规则标记 APPROVED，策略为 REJECT；未发现已确认的现有规则冲突或有可信证据支持的核心功能阻断风险。该状态仅为审核账本结论，不代表已写入主配置或发布。 自动发布前复核：现有证据提示该主机可能关联 Safari/系统安全浏览检查，触发核心系统功能风险否决，撤销自动通过并保留 REVIEW；不写入 REJECT。",
+      "reviewed_at": "2026-10-31T18:00:00+08:00",
       "evidence": [
         {
           "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
