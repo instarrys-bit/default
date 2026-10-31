@@ -93,13 +93,13 @@ def main():
     REPORT.parent.mkdir(parents=True,exist_ok=True)
     counts=ledger.get("counts",{})
     REPORT.write_text("# Deterministic domain publication\n\n"+
-      "- Review engine: deterministic-domain-audit/1.0\n"+
+      "- Review engine: deterministic-domain-audit/1.1\n"+
       "- Candidates reviewed: "+str(len(entries))+"\n"+
       "- New rules added: "+str(len(additions))+"\n"+
       "- Existing managed rules preserved: "+str(len(old))+"\n"+
       "- Append-only publication history: "+str(len(published_out["published"]))+"\n"+
       "- Review outcomes: "+json.dumps(counts,ensure_ascii=False,sort_keys=True)+"\n\n"+
-      "Only exact-host candidates corroborated by two independent publishers and passing duplicate, conflict and critical-function veto checks are eligible.\n"+
+      "Exact-host candidates meeting the configured 0.26 confidence threshold and passing duplicate, conflict and critical-function veto checks are eligible; secondary corroboration is optional.\n"+
       "DNS, nodes, MITM, original rules and all bytes outside the managed block are protected.\n",encoding="utf-8")
     print("Added "+str(len(additions))+" new rules; preserved "+str(len(old))+" existing managed rules.")
 if __name__=="__main__":
