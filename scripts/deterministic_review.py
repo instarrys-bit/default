@@ -17,7 +17,8 @@ def section(text,name,next_name):
     if text.count(name)!=1 or text.count(next_name)!=1: fail("cannot isolate "+name)
     return text.split(name,1)[1].split(next_name,1)[0]
 def parse_skip_proxy(text):
-    block=section(text,"[General]","[")
+    if text.count("[General]")!=1 or text.count("[Rule]")!=1: fail("cannot isolate [General] section")
+    block=text.split("[General]",1)[1].split("[Rule]",1)[0]
     for raw in block.splitlines():
         if raw.strip().lower().startswith("skip-proxy"):
             return [x.strip().lower() for x in raw.split("=",1)[1].split(",") if x.strip()]
