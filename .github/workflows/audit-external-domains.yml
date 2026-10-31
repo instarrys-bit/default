@@ -1,0 +1,43 @@
+name: External Domain Source Audit
+
+on:
+  schedule:
+    # Weekly, separate from the canonical-config audit
+    - cron: "15 20 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: external-domain-source-audit
+  cancel-in-progress: false
+
+jobs:
+  audit-domain-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Audit pinned domain-only source
+        id: audit
+        continue-on-error: true
+        run: python3 scripts/audit_external_domains.py
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: external-domain-source-audit
+          path: reports/external-domain-audit.md
+          if-no-files-found: error
+          retention-days: 30
+      - name: Fail if source audit did not pass
+        if: steps.audit.outcome != 'success'
+        run: |
+          echo "External source requires review; no config was changed."
+          exit 1
