@@ -1,5 +1,14 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-31T13:45:56.370Z",
-  "candidates": []
+  "updated_at": "2026-10-31T14:47:37.646707+00:00",
+  "candidates": [
+    {
+      "domain": "39d83s.com",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "filter_status": "READY_FOR_GPT"
+    }
+  ]
 }
