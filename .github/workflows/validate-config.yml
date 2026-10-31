@@ -1,24 +1,20 @@
-name: Validate Shadowrocket config
+name: Validate Shadowrocket config structure
 on:
   push:
     paths:
       - "shadowrocket/ss.conf"
       - "scripts/validate_config.py"
-      - "scripts/audit_pipeline.py"
-      - "scripts/import_gpt_reviewed_domains.py"
+      - "scripts/select_domain_rules.py"
       - "scripts/domain_rule_engine.py"
       - "sources/policy.json"
-      - "sources/gpt_domain_reviews.json"
       - ".github/workflows/validate-config.yml"
   pull_request:
     paths:
       - "shadowrocket/ss.conf"
       - "scripts/validate_config.py"
-      - "scripts/audit_pipeline.py"
-      - "scripts/import_gpt_reviewed_domains.py"
+      - "scripts/select_domain_rules.py"
       - "scripts/domain_rule_engine.py"
       - "sources/policy.json"
-      - "sources/gpt_domain_reviews.json"
       - ".github/workflows/validate-config.yml"
 permissions:
   contents: read
@@ -31,5 +27,4 @@ jobs:
         with:
           python-version: "3.11"
       - run: python scripts/validate_config.py
-      - run: python scripts/audit_pipeline.py
       - run: python scripts/select_domain_rules.py --self-test
