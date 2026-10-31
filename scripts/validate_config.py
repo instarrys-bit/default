@@ -6,7 +6,7 @@ This is not a full Shadowrocket parser and does not replace device testing.
 from pathlib import Path
 import sys
 
-path = Path("shadowrocket/ss.conf")
+path = Path("sources/baseline/ss.conf")
 if not path.is_file():
     sys.exit("ERROR: shadowrocket/ss.conf is missing")
 
