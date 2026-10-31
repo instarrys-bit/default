@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "description": "Exact-host safety vetoes. These entries are held for review and are never auto-blocked.",
+  "protected_exact": [
+    "safebrowsing.g.applimg.com",
+    "icloud-amap.com",
+    "api.iqiyi.com",
+    "apiv4-iyes.youku.com",
+    "business-cdn.shouji.sogou.com",
+    "business.msstatic.com",
+    "livep.l.t002.ottcn.com",
+    "livewebbs2.msstatic.com",
+    "livewebbs2pcdn.msstatic.com",
+    "msync-im1-vip6-std.easemob.com",
+    "pl.cp31.ott.cibntv.net",
+    "pp-cdnfile2pcdn.msstatic.com",
+    "rc-topic-api.bz.mgtv.com",
+    "vip.bz.mgtv.com",
+    "mob.bz.mgtv.com",
+    "ads.snapchat.com",
+    "adlaunch.qingting.fm"
+  ],
+  "protected_suffixes": [],
+  "reason": "Known or plausible security, authentication, media delivery, messaging, CDN, or business-function dependency; requires explicit evidence before whole-host blocking."
+}
