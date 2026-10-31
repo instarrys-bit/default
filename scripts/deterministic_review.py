@@ -3,7 +3,7 @@ from __future__ import annotations
 import json,re,sys
 from pathlib import Path
 from datetime import datetime,timezone
-from domain_rule_engine import RuleIndex,analyze_candidate,load_domain_rules
+from domain_rule_engine import RuleIndex,load_domain_rules
 ROOT=Path(__file__).resolve().parents[1]
 CONFIG=ROOT/"shadowrocket/ss.conf"
 POLICY=ROOT/"sources/domain_sources.json"
@@ -23,13 +23,10 @@ def parse_skip_proxy(text):
         if raw.strip().lower().startswith("skip-proxy"):
             return [x.strip().lower() for x in raw.split("=",1)[1].split(",") if x.strip()]
     return []
-def policy_from_rule(line):
-    fields=line.split(",")
-    return fields[-1].strip().upper() if len(fields)>=3 else ""
 def overlaps(domain, rule_domain):
     rule_domain=rule_domain.lower().strip(".")
     return domain==rule_domain or domain.endswith("."+rule_domain)
-def inspect(domain, rules, conditional, base, protected):
+def inspect(domain,rules,conditional,base,protected):
     hits=rules.matches_host(domain)
     if hits:
         winner=hits[0]
@@ -39,8 +36,7 @@ def inspect(domain, rules, conditional, base, protected):
         for kind,match in COND_RE.findall(raw):
             match=match.lower().strip(".")
             applies=(domain==match or (kind.upper()=="DOMAIN-SUFFIX" and domain.endswith("."+match)))
-            if applies:
-                return "REVIEW","Candidate intersects an existing conditional AND/OR/NOT domain rule"
+            if applies: return "REVIEW","Candidate intersects an existing conditional AND/OR/NOT domain rule"
     for entry in protected.get("protected_exact",[]):
         if domain==entry.lower(): return "RISK_HOLD","Exact host is on the critical-function protection list"
     for suffix in protected.get("protected_suffixes",[]):
@@ -90,33 +86,44 @@ def main():
     weight=float(score_cfg["source_weight"])
     minimum=int(score_cfg["minimum_independent_sources"])
     now=datetime.now(timezone.utc).isoformat()
-    reviews=[]
-    counts={}
+    if OUTPUT.exists():
+        prior=json.loads(OUTPUT.read_text(encoding="utf-8"))
+    else:
+        prior={"schema_version":1,"reviews":[]}
+    review_map={x["domain"]:x for x in prior.get("reviews",[])}
+    run_counts={}
     for item in collected.get("candidates",[]):
         domain=str(item.get("domain","")).lower().rstrip(".")
         if not DOMAIN_RE.fullmatch(domain): fail("invalid candidate domain: "+domain)
         evidence=item.get("evidence",[])
-        source_ids={x.get("source_id") for x in evidence}
+        source_ids={x.get("source_id") for x in evidence if x.get("source_id")}
         confidence=round(min(1.0,len(source_ids)*weight),2)
         status,reason=inspect(domain,index,conditional,base,protected)
         if status is None:
             if len(source_ids)<minimum or confidence<threshold:
                 status="REVIEW"; reason="Independent-source corroboration below configured confidence threshold"
             else:
-                status="APPROVED"; reason="Two independent domain-only sources classify this exact host as an ad-block candidate; deterministic threshold met"
-        reviews.append({
+                status="APPROVED"; reason="Two different publisher sources corroborate this exact host as a block candidate; deterministic threshold met"
+        review_map[domain]={
             "domain":domain,"classification":"REJECT","policy":"REJECT","confidence":confidence,
             "status":status,"reason":reason,"evidence":evidence,"source_count":len(source_ids),
             "duplicate_check":"PASS" if status not in {"DUPLICATE","ALREADY_COVERED"} else status,
             "conflict_check":"PASS" if status not in {"CONFLICT","REVIEW"} else status,
             "risk_check":"VETO" if status=="RISK_HOLD" else "PASS",
-            "decision_engine":"deterministic-domain-audit/1.0","reviewed_at":now,
+            "decision_engine":"deterministic-domain-audit/1.1","reviewed_at":now,
             "config_baseline":"managed-block-excluded"
-        })
-        counts[status]=counts.get(status,0)+1
-    OUTPUT.write_text(json.dumps({"schema_version":1,"engine":"deterministic-domain-audit/1.0","updated_at":now,"source_snapshot":collected.get("sources",[]),"counts":counts,"reviews":reviews},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    print("Deterministic review complete: "+json.dumps(counts,ensure_ascii=False,sort_keys=True))
-    print("Candidates reviewed: "+str(len(reviews))+" (no 100-item cap).")
+        }
+        run_counts[status]=run_counts.get(status,0)+1
+    reviews=sorted(review_map.values(),key=lambda x:x["domain"])
+    total_counts={}
+    for item in reviews: total_counts[item["status"]]=total_counts.get(item["status"],0)+1
+    OUTPUT.write_text(json.dumps({
+        "schema_version":1,"engine":"deterministic-domain-audit/1.1","updated_at":now,
+        "source_snapshot":collected.get("sources",[]),"run_counts":run_counts,
+        "counts":total_counts,"reviews":reviews
+    },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    print("Deterministic review complete: "+json.dumps(run_counts,ensure_ascii=False,sort_keys=True))
+    print("Historical ledger entries: "+str(len(reviews))+"; candidates reviewed this run: "+str(len(collected.get("candidates",[])))+" (no 100-item cap).")
 if __name__=="__main__":
     try: main()
     except (OSError,KeyError,ValueError,json.JSONDecodeError) as e: print("ERROR: "+str(e),file=sys.stderr); raise SystemExit(1)
