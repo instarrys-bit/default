@@ -28,10 +28,12 @@ Add that URL in Shadowrocket as a remote configuration (or URL-based configurati
 ## External domain rule selector
 
 - External domain lists are untrusted candidate data only; upstream policy directives are never imported.
-- `scripts/select_domain_rules.py` compares pinned candidates with existing `DOMAIN` and `DOMAIN-SUFFIX` scopes.
-- Candidates overlapping existing DIRECT/PROXY scopes or multiple policies are quarantined for review.
-- Policy assignment requires an explicit entry in `sources/policy_approvals.json` with an evidence note.
-- Same-policy rules already covered by the canonical config are excluded as duplicates.
+- `scripts/domain_rule_engine.py` is the shared parser for both audit and selection. It reads the canonical `[Rule]` section in file order and reads the policy from the third comma-separated field; trailing options such as `no-resolve` are not mistaken for policy.
+- For an exact host, the first matching unconditional `DOMAIN` or `DOMAIN-SUFFIX` rule determines the effective domain-rule policy. Later matching rules are recorded as shadowed, not treated as unresolved conflicts.
+- Conditional `AND` / `OR` / `NOT` rules are counted separately and are not flattened into unconditional domain policy.
+- A source suffix is checked at its apex and at existing rule boundaries beneath it. If different subdomains resolve to different first-match policies, that suffix is quarantined for review rather than assigned one policy.
+- Candidates already governed by the canonical config are excluded; external policy never overrides the original configuration.
+- New policy assignment requires an explicit entry in `sources/policy_approvals.json` with an evidence note.
 - The selector emits only exact `DOMAIN,<domain>,DIRECT|PROXY|REJECT` lines into `reports/approved-domain-rules.list`; it does not patch `ss.conf`.
 - A source leading dot is not permission to generate a broader `DOMAIN-SUFFIX` rule.
 - Empty approvals mean zero new rules are authorized. Do not populate approvals without domain-specific evidence and review.
