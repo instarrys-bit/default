@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "source_ledger": "sources/domain_reviews.json",
+  "baseline": "sources/baseline/ss.conf",
+  "config_modified": false,
+  "rule_count": {
+    "DIRECT": 0,
+    "PROXY": 0,
+    "REJECT": 0
+  },
+  "held_or_not_approved": 67,
+  "format": "Shadowrocket DOMAIN,<domain>,<policy>",
+  "import_instruction": "User manually adds the selected rule-set URL/reference to their config after reviewing it."
+}
