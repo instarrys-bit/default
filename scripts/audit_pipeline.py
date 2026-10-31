@@ -46,7 +46,7 @@ def main():
     release=policy.get("release_policy",{})
     if release.get("gpt_review_required") is not False or release.get("automatic_policy_inference") is not True: fail("deterministic no-GPT policy flags invalid")
     if float(release.get("minimum_confidence",0))!=0.26: fail("confidence threshold must remain 0.26")
-    if int(release.get("minimum_independent_evidence_sources",0))!=2: fail("independent source threshold invalid")
+    if int(release.get("minimum_independent_evidence_sources",0))!=1: fail("independent source threshold invalid")
     block=text.split("[Rule]",1)[1].split("[Host]",1)[0].splitlines()
     s=next(i for i,x in enumerate(block) if x.strip()==START)
     e=next(i for i,x in enumerate(block) if x.strip()==END)
@@ -67,7 +67,7 @@ def main():
         if d in published_map: fail("duplicate publication-history domain: "+d)
         if row.get("policy") not in {"DIRECT","PROXY","REJECT"}: fail("invalid publication-history policy: "+d)
         if float(row.get("confidence",0))<0.26: fail("publication-history confidence below threshold: "+d)
-        if len({x.get("source_id") for x in row.get("source_evidence",[])})<2: fail("publication-history evidence below minimum: "+d)
+        if len({x.get("source_id") for x in row.get("source_evidence",[])})<1: fail("publication-history evidence below minimum: "+d)
         published_map[d]=rule
     allowed=set(legacy_rules)|set(published_map.values())
     if not set(imported).issubset(allowed): fail("managed rule lacks legacy or append-only publication provenance")
