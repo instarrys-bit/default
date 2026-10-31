@@ -30,7 +30,7 @@ def ancestors(domain: str):
 
 def load_domain_rules(config_path: Path):
     if not config_path.is_file():
-        raise ValueError("canonical shadowrocket/ss.conf is missing")
+        raise ValueError("canonical sources/baseline/ss.conf is missing")
     content = config_path.read_text(encoding="utf-8")
     if content.count("[Rule]") != 1 or content.count("[Host]") != 1:
         raise ValueError("cannot uniquely isolate canonical [Rule] section")
