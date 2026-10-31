@@ -1,0 +1,33 @@
+#!name=YouTube Ads Helper - Combined
+#!desc=Combined conservative YouTube ad/tracking rules plus the existing response helper. Domain and URL rewrite rules do not require MITM; response-body script requires HTTPS decryption for youtubei.googleapis.com. No DNS or proxy-routing changes.
+
+[Rule]
+# Common Google/YouTube ad services
+DOMAIN-SUFFIX,doubleclick.net,REJECT
+DOMAIN-SUFFIX,googleadservices.com,REJECT
+DOMAIN-SUFFIX,googlesyndication.com,REJECT
+DOMAIN-SUFFIX,googletagservices.com,REJECT
+DOMAIN-SUFFIX,ads.youtube.com,REJECT
+DOMAIN-SUFFIX,adservice.google.com,REJECT
+DOMAIN-SUFFIX,adservice.google.com.hk,REJECT
+DOMAIN-SUFFIX,adservice.google.com.tw,REJECT
+DOMAIN-SUFFIX,adservice.google.co.jp,REJECT
+
+# YouTube telemetry endpoints commonly associated with ads/tracking
+DOMAIN-SUFFIX,s.youtube.com,REJECT
+DOMAIN,video-stats.l.google.com,REJECT
+
+[URL Rewrite]
+# Web ad/tracking endpoints. App support and effectiveness can vary.
+^https?://(www\.)?youtube\.com/api/stats/ads - reject
+^https?://(www\.)?youtube\.com/pagead/ - reject
+^https?://(www\.)?youtube\.com/ptracking - reject
+^https?://(www\.)?youtube\.com/youtubei/v1/log_event - reject
+^https?://(www\.)?youtube\.com/youtubei/v1/player/ad_break - reject
+^https?://(www\.)?youtube\.com/get_midroll_ - reject
+^https?://(www\.)?youtube\.com/get_video_info.*&adformat= - reject
+^https?://(www\.)?youtube\.com/get_video_info.*ad3_module - reject
+
+[Script]
+# Existing user-owned response script retained. Requires HTTPS decryption for this host to modify response bodies.
+YouTube Response = type=http-response,pattern=^https?://youtubei\.googleapis\.com/youtubei/v1/(browse|next|player|search|reel/reel_watch_sequence|guide|account/get_setting|get_watch|log_event|config)(\?.*)?$,requires-body=1,max-size=-1,binary-body-mode=1,script-path=https://raw.githubusercontent.com/instarrys-bit/shadowrocket/main/youtube_response.js
