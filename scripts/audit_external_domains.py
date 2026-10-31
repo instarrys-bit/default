@@ -18,11 +18,12 @@ SOURCE_URL = (
     "release/ruleset/ad-domain-lite.list"
 )
 EXPECTED_GIT_BLOB_SHA1 = "ec23c2d1280ea4a59717816716b8ccb569dac624"
+EXPECTED_ENTRIES = 56516
 MAX_BYTES = 2_000_000
 OUTPUT = Path("reports/external-domain-audit.md")
 DOMAIN_RE = re.compile(
-    r"^(?=.{1,253}$)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+"
-    r"[A-Za-z]{2,63}$"
+    r"^(?=.{1,253}$)[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?"
+    r"(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$"
 )
 
 
@@ -71,7 +72,8 @@ def main() -> int:
         active.append((number, value))
 
     drift = actual_sha != EXPECTED_GIT_BLOB_SHA1
-    status = "REVIEW REQUIRED" if drift or invalid or duplicates else "PASS"
+    count_changed = len(active) != EXPECTED_ENTRIES
+    status = "REVIEW REQUIRED" if drift or count_changed or invalid or duplicates else "PASS"
     report = [
         "# External domain source audit",
         "",
@@ -83,6 +85,7 @@ def main() -> int:
         f"- File bytes: {len(data)}",
         f"- Physical lines: {len(lines)}",
         f"- Valid domain entries: {len(active)}",
+        f"- Expected domain entries: {EXPECTED_ENTRIES}",
         f"- Duplicate entries: {len(duplicates)}",
         f"- Invalid entries: {len(invalid)}",
         "",
@@ -112,7 +115,7 @@ def main() -> int:
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text("\n".join(report), encoding="utf-8")
     print("\n".join(report))
-    return 1 if drift or invalid or duplicates else 0
+    return 1 if drift or count_changed or invalid or duplicates else 0
 
 
 if __name__ == "__main__":
