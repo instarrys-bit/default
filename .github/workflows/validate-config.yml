@@ -14,6 +14,7 @@ on:
       - "shadowrocket/ss.conf"
       - "scripts/validate_config.py"
       - "scripts/audit_pipeline.py"
+      - "scripts/audit_external_domains.py"
       - "sources/policy.json"
       - ".github/workflows/validate-config.yml"
 
@@ -34,3 +35,5 @@ jobs:
         run: python scripts/validate_config.py
       - name: Check approved baseline and DNS policy
         run: python scripts/audit_pipeline.py
+      - name: Audit pinned external domain source
+        run: python scripts/audit_external_domains.py
