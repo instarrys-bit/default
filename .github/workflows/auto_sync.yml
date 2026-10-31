@@ -1,18 +1,7 @@
 name: Shadowrocket Deterministic Domain Audit and Publish
 
 on:
-  schedule:
-    # Six-hourly monitoring; GitHub scheduling may be delayed by platform load.
-    - cron: "17 */6 * * *"
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - "sources/domain_sources.json"
-      - "sources/protected_domains.json"
-      - "sources/policy.json"
-      - "sources/legacy_managed_rules.json"
-      - "scripts/**"
 
 permissions:
   contents: write
@@ -42,11 +31,8 @@ jobs:
       - name: Run deterministic duplicate, conflict, confidence and risk review
         run: python3 scripts/deterministic_review.py
 
-      - name: Import only approved exact-domain rules
-        run: python3 scripts/import_approved_domains.py
-
-      - name: Audit canonical config, original-rule protection and DNS invariants
-        run: python3 scripts/audit_pipeline.py
+      - name: Verify immutable uploaded baseline
+        run: python3 scripts/verify_baseline.py
 
       - name: Validate Shadowrocket config structure
         run: python3 scripts/validate_config.py
@@ -58,7 +44,7 @@ jobs:
 
       - name: Commit validated ledger, reports and config
         run: |
-          git add shadowrocket/ss.conf sources/domain_reviews.json reports/domain-publication.md reports/external-domain-audit.md sources/published_domains.json data/domain_candidates.json data/primary_snapshot.txt
+          git add sources/domain_reviews.json reports/external-domain-audit.md data/domain_candidates.json data/primary_snapshot.txt
           if ! git diff --cached --quiet; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
