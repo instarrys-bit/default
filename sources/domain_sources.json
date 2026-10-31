@@ -9,7 +9,8 @@
       "format": "domain-only",
       "expected_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
       "expected_entries": 56516,
-      "weight": 0.13
+      "weight": 0.26,
+      "classification": "REJECT"
     },
     {
       "id": "hagezi-domains-pro",
@@ -21,11 +22,14 @@
     }
   ],
   "scoring": {
-    "source_weight": 0.13,
-    "minimum_independent_sources": 2,
+    "minimum_independent_sources": 1,
     "minimum_confidence": 0.26,
     "classification": "REJECT",
-    "independence_basis": "Distinct source publishers and rule repositories are counted separately; shared upstream data lineage is not fully audited. The score is an operational threshold, not a probability of correctness.",
-    "confidence_interpretation": "0.13 per publisher; 0.26 requires exact-host corroboration in both configured sources."
+    "independence_basis": "The primary adblock source alone contributes 0.26, matching the user's configured auto-approval threshold. HaGeZi is optional corroboration (+0.13). Distinct publishers are counted separately, but shared upstream data lineage is not fully audited.",
+    "confidence_interpretation": "Primary source membership: 0.26; optional secondary corroboration: +0.13. This is an operational score, not a probability of correctness.",
+    "source_weights": {
+      "sr-adblock-domain-lite": 0.26,
+      "hagezi-domains-pro": 0.13
+    }
   }
 }
