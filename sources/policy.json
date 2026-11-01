@@ -143,13 +143,13 @@
   },
   "managed_config_guard": {
     "path": "shadowrocket/ss.conf",
-    "approved_git_blob_sha": "acec8132ad5db3a5f8188b5532c49daafcd0d546",
+    "approved_git_blob_sha": "18d96ce2141a6a5be8d2c370b400b5893b92acde",
     "immutable": true,
     "description": "Authoritative user-managed Shadowrocket config baseline. Read-only for automation; derived rule audits must evaluate against this file.",
     "last_user_approved_baseline_update": {
-      "previous_blob_sha": "6fd417b8d6c41f1e112014828e4849adc9be280c",
-      "new_blob_sha": "acec8132ad5db3a5f8188b5532c49daafcd0d546",
-      "reason": "Synchronize the read-only integrity guard to the current user-approved shadowrocket/ss.conf revision; the config file itself is not modified by automation."
+      "previous_blob_sha": "acec8132ad5db3a5f8188b5532c49daafcd0d546",
+      "new_blob_sha": "18d96ce2141a6a5be8d2c370b400b5893b92acde",
+      "reason": "Register the latest user-approved Shadowrocket config revision without changing the config."
     }
   }
 }
