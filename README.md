@@ -14,7 +14,7 @@
 - `.github/workflows/`：GitHub Actions 工作流
 - `shadowrocket/ss.conf`：主配置
 - `rulesets/`：DIRECT、PROXY、REJECT 规则集及清单
-- `sources/`：域名来源、确定性审核账本、策略与只读冲突检测基线
+- `sources/`：域名来源、确定性审核账本、策略与主配置保护元数据
 - `scripts/`：域名采集、确定性证据审核、冲突检测、规则集构建和质量验证
 - `data/`、`reports/`、`dist/`：采集数据、审计报告和构建产物
 - `modules/adblock/`：社交与搜索广告处理脚本
@@ -50,7 +50,7 @@
 
 证据不足、来源冲突/移除、已有规则覆盖、现有规则策略冲突、条件规则交叠或关键功能保护命中，均不会发布。历史 Gemini/GPT 审核流程已退役，其旧审核账本、待审队列和发布报告已从当前分支清理（Git 历史仍可追溯）；当前工作流、脚本和规则集构建不调用任何 AI/LLM 或模型 API。唯一审核账本为 `sources/domain_reviews.json`，规则判断完全由可测试的确定性证据与安全门槛完成。
 
-审核账本：`sources/domain_reviews.json`。发布统计：`rulesets/manifest.json`。主配置 `shadowrocket/ss.conf` 与只读基线 `sources/baseline/ss.conf` 始终不被此流程修改。
+审核账本：`sources/domain_reviews.json`。发布统计：`rulesets/manifest.json`。`shadowrocket/ss.conf` 是唯一权威主配置；自动化只读取它并核对登记的 Git blob SHA，不会修改或提交它。
 
 每次构建还会在 `rulesets/manifest.json` 的 `rule_lifecycle` 中记录 DIRECT、PROXY、REJECT 三类规则集各自的前后数量、增加/移除数量、前后 SHA-256 和最多 10 条变化样例。该记录只用于审计动态变化，不改变证据门槛；输出目录严格只允许 `direct.list`、`proxy.list`、`reject.list` 三个策略文件。
 
@@ -86,7 +86,7 @@ Publisher names and separate repository URLs are not sufficient proof of indepen
 
 Discovery is intentionally non-activating. Search terms and repository names are not policy evidence. A candidate cannot enter `sources/domain_sources.json` until policy semantics, exact parser compatibility, publisher identity, lineage/overlap and update-drift checks pass. A GitHub API outage retains the previous inventory and does not interrupt the independent deterministic audit.
 
-The automation guards both the uploaded baseline and the current user-managed `shadowrocket/ss.conf` by Git blob SHA. An unapproved change to either file fails the integrity gate; the workflow never stages or commits `shadowrocket/ss.conf`.
+The automation guards the single authoritative user-managed config `shadowrocket/ss.conf` by Git blob SHA. An owner-approved change is registered in `sources/policy.json`; any other mismatch fails the integrity gate. The workflow never stages or commits `shadowrocket/ss.conf`.
 
 
 ## Automated source assessment
