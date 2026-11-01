@@ -39,6 +39,19 @@ DOMAIN,late.example.com,REJECT
         conditional = match_candidate("api.example.com", "DIRECT", [(2, "AND,((DOMAIN-SUFFIX,example.com),(GEOIP,CN)),DIRECT")])
         self.assertEqual(conditional["status"], "CONDITIONAL_POTENTIAL")
 
+    def test_skip_proxy_is_counted_as_direct_coverage(self):
+        config = "[General]\nskip-proxy = *.example.com,exact.example.net,192.168.0.0/16\n[Rule]\nRULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list,DIRECT\n[Host]\n"
+        ledger = {"reviews": [
+            {"domain": "api.example.com", "policy": "PROXY", "status": "REVIEW"},
+            {"domain": "exact.example.net", "policy": "DIRECT", "status": "REVIEW"},
+            {"domain": "notexample.com", "policy": "DIRECT", "status": "REVIEW"}
+        ]}
+        report = audit(config, ledger)
+        by_domain = {item["domain"]: item for item in report["results"]}
+        self.assertEqual(by_domain["api.example.com"]["status"], "CONFLICT")
+        self.assertEqual(by_domain["exact.example.net"]["status"], "ALREADY_COVERED")
+        self.assertEqual(by_domain["notexample.com"]["status"], "NOT_COVERED_BY_PRIOR_DOMAIN_RULES")
+
     def test_approved_ledger_overlap_fails_closed(self):
         config = "[Rule]\nDOMAIN,api.example.com,REJECT\nRULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list,DIRECT\n[Host]\n"
         ledger = {"reviews": [{"domain": "api.example.com", "policy": "DIRECT", "status": "APPROVED"}]}
