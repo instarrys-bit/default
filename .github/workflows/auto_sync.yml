@@ -4,6 +4,7 @@ name: Shadowrocket Deterministic Domain Audit (User Config Baseline)
 on:
   schedule:
     - cron: "0 20 * * *"
+    # Beijing time: every day at 04:00.
   workflow_dispatch:
   push:
     branches: [main]
