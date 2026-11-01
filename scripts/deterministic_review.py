@@ -68,7 +68,22 @@ def parse_skip_proxy(text):
 def overlaps(domain, rule_domain):
     rule_domain=rule_domain.lower().strip(".")
     return domain==rule_domain or domain.endswith("."+rule_domain)
+def first_ruleset_line(text):
+    in_rules=False
+    for number,raw in enumerate(text.splitlines(),1):
+        line=raw.strip()
+        if line.startswith("[") and line.endswith("]"):
+            in_rules=line[1:-1].strip().lower()=="rule"
+            continue
+        if in_rules and line and not line.startswith("#") and line.upper().startswith("RULE-SET,"):
+            return number
+    return None
+
 def inspect(domain,rules,conditional,base,protected,candidate_policy=None):
+    boundary=first_ruleset_line(base)
+    if boundary is not None:
+        rules=RuleIndex([rule for rule in rules.rules if rule.line<boundary])
+        conditional=[(line,raw) for line,raw in conditional if line<boundary]
     hits=rules.matches_host(domain)
     if hits:
         winner=hits[0]
@@ -85,6 +100,9 @@ def inspect(domain,rules,conditional,base,protected,candidate_policy=None):
     for suffix in protected.get("protected_suffixes",[]):
         if overlaps(domain,suffix): return "RISK_HOLD","Candidate intersects protected suffix "+suffix
     rule_block=section(base,"[Rule]","[Host]")
+    if boundary is not None:
+        rule_start=base.split("[Rule]",1)[0].count("\n")+2
+        rule_block="\n".join(raw for offset,raw in enumerate(rule_block.splitlines()) if rule_start+offset<boundary)
     for raw in rule_block.splitlines():
         line=raw.strip()
         if not line or line.startswith("#"): continue

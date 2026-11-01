@@ -5,7 +5,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
 from deterministic_review import DOMAIN_RE, evidence_gate, inspect, validate_evidence
-from domain_rule_engine import RuleIndex
+from domain_rule_engine import RuleIndex, DomainRule
 from deterministic_review import CONFIG as REVIEW_CONFIG
 from build_rulesets import CONFIG as RULESET_CONFIG
 from collect_domains import bootstrap_source_domains, check_source_delta, parse_adblock, parse_domain_list, parse_source
@@ -167,6 +167,37 @@ class UrlRegexScopeTests(unittest.TestCase):
         self.assertEqual(status,"CONFLICT")
         status,reason=inspect("example.com",RuleIndex([]),[],base,{},"DIRECT")
         self.assertIsNone(status)
+
+
+
+class RuleSetPrecedenceTests(unittest.TestCase):
+    def test_rules_after_first_ruleset_do_not_affect_review(self):
+        base = """[General]
+skip-proxy =
+[Rule]
+RULE-SET,https://example.invalid/proxy.list,PROXY
+DOMAIN,late.example.com,REJECT
+DOMAIN-KEYWORD,late,REJECT
+AND,((DOMAIN-SUFFIX,late.example.com),(GEOIP,CN)),REJECT
+[Host]
+"""
+        rules = RuleIndex([DomainRule("DOMAIN", "late.example.com", "REJECT", 5, "DOMAIN,late.example.com,REJECT")])
+        conditional = [(7, "AND,((DOMAIN-SUFFIX,late.example.com),(GEOIP,CN)),REJECT")]
+        status, reason = inspect("late.example.com", rules, conditional, base, {}, "DIRECT")
+        self.assertIsNone(status)
+
+    def test_rules_before_first_ruleset_still_take_precedence(self):
+        base = """[General]
+skip-proxy =
+[Rule]
+DOMAIN-SUFFIX,example.com,REJECT
+RULE-SET,https://example.invalid/proxy.list,PROXY
+DOMAIN,late.example.com,DIRECT
+[Host]
+"""
+        rules = RuleIndex([DomainRule("DOMAIN-SUFFIX", "example.com", "REJECT", 4, "DOMAIN-SUFFIX,example.com,REJECT")])
+        status, reason = inspect("api.example.com", rules, [], base, {}, "DIRECT")
+        self.assertEqual(status, "CONFLICT")
 
 
 class SourceIntegrityTests(unittest.TestCase):
