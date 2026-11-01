@@ -1,5 +1,5 @@
 # Request observations enter only as unclassified candidates; trusted source evidence controls policy.
-name: Shadowrocket Deterministic Domain Audit (Immutable Baseline)
+name: Shadowrocket Deterministic Domain Audit (User Config Baseline)
 
 on:
   schedule:
@@ -57,7 +57,7 @@ jobs:
           python3 scripts/assess_sources.py
           cat reports/source-assessment.md >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Verify immutable uploaded baseline
+      - name: Verify registered user config baseline
         run: python3 scripts/verify_baseline.py --baseline-only
 
       - name: Import observed request hostnames as unclassified candidates
