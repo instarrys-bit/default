@@ -1,6 +1,6 @@
 # Automated source discovery
 
-- Candidate repositories retained: **197**
+- Candidate repositories retained: **198**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
@@ -18,7 +18,7 @@
 ### [ACL4SSR/ACL4SSR](https://github.com/ACL4SSR/ACL4SSR)
 
 - Description: SSR 去广告ACL规则/SS完整GFWList规则/Clash规则碎片，Telegram频道订阅地址
-- Stars: 6888; archived: False; fork: False
+- Stars: 6889; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 3
 - Curated seed links: 3
@@ -890,6 +890,14 @@
 - Description: Generate china domain list for dnsmasq and dnscrypt
 - Stars: 0; archived: False; fork: False
 - Search queries: China domain list
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
+### [dyb061211/shadowrocket-rules](https://github.com/dyb061211/shadowrocket-rules)
+
+- Description: Shadowrocket 的 AI/Google 隐私出口与 DNS/国内服务直连模块
+- Stars: 5; archived: False; fork: False
+- Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 

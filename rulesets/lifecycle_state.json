@@ -6,6 +6,6 @@
   "active": false,
   "status": "suspended_below_threshold",
   "activated_at": null,
-  "updated_at": "2026-11-01T13:45:43.958708+00:00",
+  "updated_at": "2026-11-01T13:51:17.889708+00:00",
   "semantics": "Activation is latched once the published total first reaches 5,000; it does not depend on additions, removals, or daily changes."
 }
