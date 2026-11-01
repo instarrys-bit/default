@@ -209,27 +209,29 @@
   "rule_count": {
     "DIRECT": 0,
     "PROXY": 0,
-    "REJECT": 0
+    "REJECT": 18
   },
   "reviewed_total": 978,
-  "approved_total": 0,
-  "held_total": 978,
+  "approved_total": 18,
+  "held_total": 960,
   "status_count": {
-    "ALREADY_COVERED": 406,
-    "CONFLICT": 516,
+    "ALREADY_COVERED": 379,
+    "APPROVED": 18,
+    "CONFLICT": 43,
     "POLICY_CONFLICT": 43,
-    "REVIEW": 3,
+    "REVIEW": 485,
     "RISK_HOLD": 10
   },
   "deterministic_review_progress": {
     "candidate_total": 978,
-    "approved_total": 0,
-    "held_total": 978,
+    "approved_total": 18,
+    "held_total": 960,
     "status_count": {
-      "ALREADY_COVERED": 406,
-      "CONFLICT": 516,
+      "ALREADY_COVERED": 379,
+      "APPROVED": 18,
+      "CONFLICT": 43,
       "POLICY_CONFLICT": 43,
-      "REVIEW": 3,
+      "REVIEW": 485,
       "RISK_HOLD": 10
     }
   },
