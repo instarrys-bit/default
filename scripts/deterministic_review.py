@@ -6,7 +6,7 @@ from datetime import datetime,timezone
 from domain_rule_engine import RuleIndex,load_domain_rules
 from source_registry import validate_registry
 ROOT=Path(__file__).resolve().parents[1]
-CONFIG=ROOT/"sources/baseline/ss.conf"
+CONFIG=ROOT/"shadowrocket/ss.conf"
 POLICY=ROOT/"sources/domain_sources.json"
 PROTECTED=ROOT/"sources/protected_domains.json"
 CANDIDATES=ROOT/"data/candidates.json"
