@@ -12,7 +12,7 @@
     "Surge direct proxy domain-set rules",
     "Quantumult X direct proxy domain rules"
   ],
-  "candidate_count": 201,
+  "candidate_count": 202,
   "candidates": [
     {
       "repository": "34wolf/shadowrocket-rules",
@@ -54,14 +54,14 @@
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list": [
-          "DIRECT"
-        ],
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list": [
           "PROXY"
+        ],
+        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list": [
+          "DIRECT"
         ]
       },
       "seeded_source_urls": [
@@ -768,10 +768,10 @@
           "PROXY",
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/profile-next.conf": [
+        "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/china.conf": [
           "DIRECT"
         ],
-        "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/china.conf": [
+        "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/profile-next.conf": [
           "DIRECT"
         ]
       },
@@ -1156,26 +1156,26 @@
         "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/v2rayA.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv4.txt": [
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv6.txt": [
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/proxy-special.list": [
-          "PROXY"
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/direct-special.list": [
+          "DIRECT"
         ],
         "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute.txt": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/Shadowrocket.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv6.txt": [
           "REJECT"
         ],
         "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/reject-special.list": [
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/direct-special.list": [
-          "DIRECT"
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/Shadowrocket.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv4.txt": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/proxy-special.list": [
+          "PROXY"
         ]
       },
       "search_queries": [
@@ -1555,10 +1555,10 @@
         "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https.txt": [
+        "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http.txt": [
+        "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https.txt": [
           "PROXY"
         ]
       },
@@ -1964,9 +1964,9 @@
       "html_url": "https://github.com/blackmatrix7/ios_rule_script",
       "description": "分流规则、重写写规则及脚本。",
       "default_branch": "master",
-      "updated_at": "2026-11-01T16:25:30Z",
+      "updated_at": "2026-11-01T16:52:00Z",
       "pushed_at": "2026-10-27T21:45:44Z",
-      "stars": 28498,
+      "stars": 28499,
       "archived": false,
       "fork": false,
       "license": "GPL-2.0",
@@ -2583,6 +2583,9 @@
         "https://raw.githubusercontent.com/gatework/surge-rules/release/proxy.txt"
       ],
       "readme_policy_claims": {
+        "https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt": [
+          "PROXY"
+        ],
         "https://raw.githubusercontent.com/gatework/surge-rules/release/direct.txt": [
           "DIRECT",
           "PROXY",
@@ -2592,9 +2595,6 @@
           "DIRECT",
           "PROXY",
           "REJECT"
-        ],
-        "https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt": [
-          "PROXY"
         ]
       },
       "seeded_source_urls": [
@@ -2668,6 +2668,25 @@
       ],
       "discovered_at": "2026-11-01T06:32:16.737787+00:00",
       "seeded_source_urls": []
+    },
+    {
+      "repository": "guoyingwei6/shadowrocket-lazy-custom",
+      "html_url": "https://github.com/guoyingwei6/shadowrocket-lazy-custom",
+      "description": "Shadowrocket lazy_group.conf auto-merge with custom rules",
+      "default_branch": "main",
+      "updated_at": "2026-11-01T16:52:58Z",
+      "pushed_at": "2026-11-01T16:52:54Z",
+      "stars": 2,
+      "archived": false,
+      "fork": false,
+      "license": null,
+      "readme_sha256": "e4ea3401e1c5e529480fe16d6c76297152242e2a7a19cc77a62a88d7c33ef4d0",
+      "rule_list_urls": [],
+      "readme_policy_claims": {},
+      "search_queries": [
+        "shadowrocket rules"
+      ],
+      "discovered_at": "2026-11-01T16:53:24.496234+00:00"
     },
     {
       "repository": "haokun-1/shadowrocket-rules",
@@ -4217,7 +4236,13 @@
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt": [
@@ -4226,31 +4251,25 @@
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/tools.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/telegram.txt": [
           "PROXY"
         ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
+          "PROXY"
+        ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/netflix.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
-          "PROXY"
-        ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/torrent.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
           "PROXY"
         ]
       },
