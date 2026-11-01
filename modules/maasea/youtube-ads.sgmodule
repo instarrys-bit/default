@@ -30,4 +30,4 @@ DOMAIN,video-stats.l.google.com,REJECT
 
 [Script]
 # Existing user-owned response script retained. Requires HTTPS decryption for this host to modify response bodies.
-YouTube Response = type=http-response,pattern=^https?://youtubei\.googleapis\.com/youtubei/v1/(browse|next|player|search|reel/reel_watch_sequence|guide|account/get_setting|get_watch|log_event|config)(\?.*)?$,requires-body=1,max-size=-1,binary-body-mode=1,script-path=https://raw.githubusercontent.com/instarrys-bit/default/main/modules/maasea/youtube_response.js
+YouTube Response = type=http-response,pattern=^https?://youtubei\.googleapis\.com/youtubei/v1/(browse|next|player|search|reel/reel_watch_sequence|guide|account/get_setting|get_watch|log_event|config)(\?.*)?$,requires-body=1,max-size=-1,binary-body-mode=1,script-path=https://raw.githubusercontent.com/instarrys-bit/default/36ab147fb59034c026c81ecb1913ef8248ad576f/modules/maasea/youtube_response.js
