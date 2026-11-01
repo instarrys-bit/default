@@ -117,3 +117,47 @@ def analyze_candidate(domain: str, is_suffix: bool, rules):
         "scope_winners": scope,
         "scope_policies": policies,
     }
+
+
+
+def inspect_suffix_scope(domain: str, policy: str, rules, conditional, protected):
+    """Fail closed when a suffix would cover a differently routed or protected host."""
+    domain = domain.lower().rstrip(".")
+    policy = policy.upper()
+    for rule in rules.rules:
+        intersects = (
+            rule.domain == domain
+            or rule.domain.endswith("." + domain)
+            or (
+                rule.kind == "DOMAIN-SUFFIX"
+                and (domain.endswith("." + rule.domain) or domain == rule.domain)
+            )
+        )
+        if intersects and rule.policy != policy:
+            return "CONFLICT", (
+                "Suffix scope intersects existing " + rule.kind + " "
+                + rule.domain + " => " + rule.policy + " (line " + str(rule.line) + ")"
+            )
+    for _, raw in conditional:
+        for kind, match in re.findall(r"(DOMAIN-SUFFIX|DOMAIN),([A-Za-z0-9.-]+)", raw, re.I):
+            match = match.lower().strip(".")
+            intersects = (
+                domain == match
+                or domain.endswith("." + match)
+                or (kind.upper() == "DOMAIN-SUFFIX" and match.endswith("." + domain))
+            )
+            if intersects:
+                return "REVIEW", "Suffix scope intersects an existing conditional domain rule"
+    for host in protected.get("protected_exact", []):
+        host = host.lower().strip(".")
+        if host == domain or host.endswith("." + domain):
+            return "RISK_HOLD", "Suffix scope would include protected exact host " + host
+    for suffix in protected.get("protected_suffixes", []):
+        suffix = suffix.lower().strip(".")
+        if (
+            suffix == domain
+            or suffix.endswith("." + domain)
+            or domain.endswith("." + suffix)
+        ):
+            return "RISK_HOLD", "Suffix scope intersects protected suffix " + suffix
+    return None, None

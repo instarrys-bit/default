@@ -4,7 +4,7 @@ from __future__ import annotations
 import json, re
 from pathlib import Path
 from deterministic_review import inspect
-from domain_rule_engine import RuleIndex, load_domain_rules
+from domain_rule_engine import RuleIndex, load_domain_rules, inspect_suffix_scope
 from source_registry import validate_registry
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -52,7 +52,7 @@ def main():
         policy=str(item.get("policy","")).upper()
         if not DOMAIN_RE.fullmatch(domain) or policy not in POLICIES:
             raise ValueError("invalid approved domain or policy: "+domain)
-        if item.get("decision_engine")!="deterministic-domain-audit/3.0":
+        if item.get("decision_engine")!="deterministic-domain-audit/4.0":
             raise ValueError("approved record was not produced by the current deterministic reviewer: "+domain)
         if domain in seen:
             raise ValueError("duplicate or cross-policy approved domain: "+domain)
@@ -81,6 +81,11 @@ def main():
             if ev.get("upstream_repositories")!=src.get("upstream_repositories",[]):
                 continue
             valid.append(ev)
+        scope=str(item.get("source_entry_type","exact_candidate"))
+        if scope not in {"exact_candidate","suffix_candidate"}:
+            raise ValueError("unsupported approved domain scope: "+domain)
+        if scope=="suffix_candidate":
+            valid=[ev for ev in valid if ev.get("entry_type")=="suffix_candidate"]
         source_ids={str(ev["source_id"]) for ev in valid}
         publishers={str(ev["publisher"]) for ev in valid if ev.get("publisher")}
         groups={str(ev["independence_group"]) for ev in valid if ev.get("independence_group")}
@@ -93,16 +98,20 @@ def main():
             raise ValueError("approved record source count below minimum: "+domain)
         if any(item.get(key)!="PASS" for key in ("duplicate_check","conflict_check","risk_check")):
             raise ValueError("approved record failed a local safety gate: "+domain)
+        if scope=="suffix_candidate":
+            local_status,reason=inspect_suffix_scope(domain,policy,index,conditional,protected)
+            if local_status:
+                raise ValueError("approved suffix scope intersects baseline ("+str(local_status)+"): "+domain+" / "+str(reason))
         local_status,reason=inspect(domain,index,conditional,base,protected,policy)
         if local_status:
             raise ValueError("approved record now overlaps baseline ("+str(local_status)+"): "+domain+" / "+str(reason))
         seen[domain]=policy
-        rule_sets[policy].add(domain)
+        rule_sets[policy].add((scope,domain))
         approved+=1
 
     OUT.mkdir(parents=True,exist_ok=True)
     for policy in sorted(POLICIES):
-        lines=["DOMAIN,"+domain for domain in sorted(rule_sets[policy])]
+        lines=[("DOMAIN-SUFFIX," if scope=="suffix_candidate" else "DOMAIN,")+domain for scope,domain in sorted(rule_sets[policy])]
         (OUT/(policy.lower()+".list")).write_text("\n".join(lines)+("\n" if lines else ""),encoding="utf-8")
     candidate_matrix_path=ROOT/"sources/source_candidates.json"
     candidate_matrix=json.loads(candidate_matrix_path.read_text(encoding="utf-8")) if candidate_matrix_path.exists() else {}
@@ -112,7 +121,7 @@ def main():
         "current_source_snapshot":"data/candidates.json",
         "artifact_scope":"standalone_rulesets_only",
         "outputs":["direct.list","proxy.list","reject.list"],
-        "review_engine":"deterministic-domain-audit/3.0",
+        "review_engine":"deterministic-domain-audit/4.0",
         "minimum_independent_sources":minimum,
         "minimum_confidence_score":threshold,
         "required_sources_by_policy":required_by_policy,
@@ -135,13 +144,13 @@ def main():
             "held_total":held,
             "status_count":dict(sorted(status_counts.items()))
         },
-        "format":"Standalone Shadowrocket RULE-SET lists: DOMAIN,<domain>; policy is assigned by the RULE-SET reference.",
+        "format":"Standalone Shadowrocket domain RULE-SET lists: DOMAIN,<domain> and DOMAIN-SUFFIX,<domain>; source scope is preserved and policy is assigned by the RULE-SET reference.",
         "import_instruction":"Optionally reference each published raw list URL in the user-managed Shadowrocket [Rule] section with RULE-SET,<raw URL>,<matching policy>. This automation does not edit the user config.",
         "limitations":[
-            "Only exact DOMAIN candidates with current policy-labelled evidence and all local gates passing are published.",
+            "All supported domain scopes are eligible: exact DOMAIN requires corroborated current domain evidence; DOMAIN-SUFFIX requires at least two independent current publishers explicitly listing the same suffix scope. Source scope is preserved.",
             "A domain is published only when at least two distinct configured publishers and source groups agree on its routing policy; a single-source candidate remains under review.",
             "Lineage status is retained as provenance metadata, not a blanket publication veto; source overlap is a correlation signal, not proof of identical domain ancestry.",
-            "Broad single-label suffixes are excluded; only exact-domain entries are emitted.",
+            "Single-label root suffixes are excluded during source parsing. Suffix publication is blocked when it intersects conflicting baseline rules, conditional rules, or protected hosts/suffixes.",
             "Static checks do not replace Shadowrocket device testing."
         ]
     }

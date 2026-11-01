@@ -110,13 +110,13 @@
     "minimum_independent_evidence_sources": 2,
     "minimum_confidence": 0.8,
     "publish_only_after_all_checks": true,
-    "rule_scope": "DOMAIN only; DOMAIN-SUFFIX is never generated automatically",
-    "approval_rule": "A domain is assigned only when at least two distinct configured publishers and source groups currently list the exact domain under the same declared policy, and all deterministic local checks pass. Incomplete lineage is recorded but is not a blanket veto. No AI, model API, or manual per-domain review is used.",
+    "rule_scope": "No exact-versus-suffix publication restriction for supported domain rules. Preserve source scope as DOMAIN or DOMAIN-SUFFIX; do not add routing policy types beyond DIRECT, PROXY and REJECT.",
+    "approval_rule": "A domain is assigned only when at least two distinct configured publishers and source groups currently corroborate the same declared policy. Exact DOMAIN entries may be corroborated by exact or broader suffix evidence; DOMAIN-SUFFIX publication additionally requires at least two independent publishers to explicitly list that suffix scope. All deterministic local checks pass. Incomplete lineage and shared README references are recorded as warnings, not blanket vetoes. No AI, model API, or manual per-domain review is used.",
     "minimum_met_criteria": 2,
     "approval_criteria": [
       {
         "id": "multi_publisher_policy_evidence",
-        "description": "At least two distinct current publisher sources and source groups list the exact domain under the same DIRECT, PROXY or REJECT policy; source identity, policy-evidence type and snapshot hash must match the registry."
+        "description": "At least two distinct current publisher sources and source groups corroborate the same DIRECT, PROXY or REJECT policy. A DOMAIN-SUFFIX output additionally requires matching suffix-scope evidence from at least two independent publishers; source identity, policy-evidence type, entry scope and snapshot hash must match the registry."
       },
       {
         "id": "local_safety_veto",
@@ -132,11 +132,11 @@
     ],
     "review_status": "A single-source candidate or a candidate below the two-publisher corroboration threshold remains REVIEW; cross-policy conflicts and critical-function risks are held.",
     "publish_gate": "No automatic writes to original or canonical baseline. Derived output only.",
-    "decision_engine": "deterministic-domain-audit/3.0",
+    "decision_engine": "deterministic-domain-audit/4.0",
     "confidence_interpretation": "Operational evidence score, not a statistical probability or guarantee of safe blocking.",
     "publication_mode": "deterministic-evidence-reviewed-derived-rulesets",
     "direct_proxy_policy": "DIRECT and PROXY are active through the registered ACL4SSR/Clash-FX and ACL4SSR/sve1r source pairs; only domain-level corroborated entries are eligible for publication.",
-    "review_engine": "deterministic-domain-audit/3.0",
+    "review_engine": "deterministic-domain-audit/4.0",
     "automation_mode": "fully_hosted_deterministic",
     "manual_review_required": false,
     "model_api_calls": 0

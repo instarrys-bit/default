@@ -249,6 +249,7 @@ def main():
             scopes.append(entry_type)
             evidence.append({
                 "source_id":sid,
+                "entry_type":entry_type,
                 "publisher":source["publisher"],
                 "independence_group":source["independence_group"],
                 "lineage_status":source["lineage_status"],

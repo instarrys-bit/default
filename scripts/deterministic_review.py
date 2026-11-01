@@ -3,7 +3,7 @@ from __future__ import annotations
 import json,re,sys
 from pathlib import Path
 from datetime import datetime,timezone
-from domain_rule_engine import RuleIndex,load_domain_rules
+from domain_rule_engine import RuleIndex,load_domain_rules,inspect_suffix_scope
 from source_registry import validate_registry
 ROOT=Path(__file__).resolve().parents[1]
 CONFIG=ROOT/"shadowrocket/ss.conf"
@@ -179,6 +179,7 @@ def main():
         policy=str(item.get("classification","")).upper()
         raw_evidence=item.get("evidence",[])
         candidate_policies={str(x).upper() for x in item.get("candidate_policies",[])}
+        source_entry_type="exact_candidate"
         if policy=="CONFLICT" or len(candidate_policies)>1:
             evidence=[]
             for evidence_policy in ("DIRECT","PROXY","REJECT"):
@@ -197,23 +198,39 @@ def main():
         else:
             evidence=validate_evidence(raw_evidence,source_map,current_hashes,policy)
             required_sources=set(score_cfg.get("required_sources_by_policy",{}).get(policy,[]))
-            confidence,source_ids,publishers,groups,qualified=evidence_gate(evidence,source_weights,minimum,threshold,required_sources)
-            status,reason=inspect(domain,index,conditional,base,protected,policy)
+            suffix_evidence=[x for x in evidence if x.get("entry_type")=="suffix_candidate"]
+            suffix_confidence,suffix_source_ids,suffix_publishers,suffix_groups,suffix_qualified=evidence_gate(
+                suffix_evidence,source_weights,minimum,threshold,required_sources
+            )
+            if suffix_qualified:
+                source_entry_type="suffix_candidate"
+                evidence=suffix_evidence
+                confidence,source_ids,publishers,groups,qualified=(
+                    suffix_confidence,suffix_source_ids,suffix_publishers,suffix_groups,suffix_qualified
+                )
+            else:
+                source_entry_type="exact_candidate"
+                confidence,source_ids,publishers,groups,qualified=evidence_gate(evidence,source_weights,minimum,threshold,required_sources)
+            scope_status,scope_reason=(None,None)
+            if source_entry_type=="suffix_candidate":
+                scope_status,scope_reason=inspect_suffix_scope(domain,policy,index,conditional,protected)
+            if scope_status:
+                status,reason=scope_status,scope_reason
+            else:
+                status,reason=inspect(domain,index,conditional,base,protected,policy)
             if status is None:
-                if item.get("source_entry_type")=="suffix_candidate":
-                    status="REVIEW"; reason="Source marks suffix-wide scope; automatic rules are exact DOMAIN only"
-                elif not qualified:
-                    status="REVIEW"; reason="Current source identity, publisher, policy, independence or confidence evidence is below configured threshold"
+                if not qualified:
+                    status="REVIEW"; reason="Current source identity, publisher, policy, independence, scope or confidence evidence is below configured threshold"
                 else:
-                    status="APPROVED"; reason="Policy evidence agrees across distinct configured publishers; source lineage is recorded separately and all local gates passed"
+                    status="APPROVED"; reason="Policy and domain scope evidence agree across distinct configured publishers; lineage is recorded separately and is not a blanket veto; all local gates passed"
         review_map[domain]={
-            "domain":domain,"source_entry_type":item.get("source_entry_type","exact_candidate"),"candidate_policies":sorted(candidate_policies),"classification":policy,"policy":policy,"confidence":confidence,
+            "domain":domain,"source_entry_type":source_entry_type,"candidate_policies":sorted(candidate_policies),"classification":policy,"policy":policy,"confidence":confidence,
             "status":status,"reason":reason,"evidence":evidence,"source_count":len(source_ids),"publisher_count":len(publishers),"independence_group_count":len(groups),
             "rejected_evidence_count":len(raw_evidence)-len(evidence),
             "duplicate_check":"PASS" if status not in {"DUPLICATE","ALREADY_COVERED"} else status,
             "conflict_check":"PASS" if status not in {"CONFLICT","POLICY_CONFLICT","REVIEW"} else status,
             "risk_check":"VETO" if status=="RISK_HOLD" else "PASS",
-            "decision_engine":"deterministic-domain-audit/3.0","reviewed_at":now,
+            "decision_engine":"deterministic-domain-audit/4.0","reviewed_at":now,
             "config_baseline":"uploaded-immutable-baseline"
         }
         run_counts[status]=run_counts.get(status,0)+1
@@ -221,7 +238,7 @@ def main():
     total_counts={}
     for item in reviews: total_counts[item["status"]]=total_counts.get(item["status"],0)+1
     OUTPUT.write_text(json.dumps({
-        "schema_version":3,"engine":"deterministic-domain-audit/3.0","updated_at":now,
+        "schema_version":3,"engine":"deterministic-domain-audit/4.0","updated_at":now,
         "source_snapshot":collected.get("sources",[]),"run_counts":run_counts,
         "counts":total_counts,"reviews":reviews
     },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")

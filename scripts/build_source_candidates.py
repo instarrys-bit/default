@@ -64,21 +64,23 @@ def build_matrix(assessments: dict, lineage: dict) -> dict:
             "".join(sorted(item["domain_fingerprints"])).encode("ascii")
         ).hexdigest()
         item["file_count"] = len(item["files"])
+        # Lineage and shared README references are provenance/correlation signals,
+        # not blanket activation vetoes. Policy evidence, publisher status and
+        # domain-level corroboration remain the actual gates.
         item["activation_eligible"] = (
-            item["lineage_status"] == "verified"
-            and item["policy_evidence_strong"]
+            item["policy_evidence_strong"]
             and not item["archived"]
-            and not item["readme_shared_reference_peers"]
         )
         item["activation_blockers"] = []
-        if item["lineage_status"] != "verified":
-            item["activation_blockers"].append("lineage_not_verified")
         if not item["policy_evidence_strong"]:
             item["activation_blockers"].append("policy_evidence_not_strong")
         if item["archived"]:
             item["activation_blockers"].append("publisher_archived")
+        item["lineage_warning"] = (
+            "lineage_not_verified" if item["lineage_status"] != "verified" else None
+        )
         if item["readme_shared_reference_peers"]:
-            item["activation_blockers"].append("possible_shared_readme_references_require_review")
+            item["lineage_warning"] = "possible_shared_readme_references; correlation signal only"
         item["files"] = sorted(item["files"], key=lambda x: x["url"])
         candidates.append(item)
     candidates.sort(key=lambda x: (POLICIES.index(x["policy"]), -x["total_domain_entries"], x["repository"]))
@@ -146,7 +148,7 @@ def build_matrix(assessments: dict, lineage: dict) -> dict:
         "same_policy_domain_overlap": overlap_pairs,
         "cross_policy_conflicts": cross_policy_conflicts,
         "candidates": candidates,
-        "activation_policy": "This matrix never edits the active source registry. Two independent verified publishers per policy remain mandatory.",
+        "activation_policy": "This matrix never edits the active source registry. Two independent policy-evidenced publishers per policy remain mandatory; incomplete lineage and shared README references are recorded as warnings, not blanket vetoes.",
     }
 
 def render_report(data: dict) -> str:
