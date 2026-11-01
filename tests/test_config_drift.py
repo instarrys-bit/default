@@ -13,6 +13,11 @@ class ConfigDriftTests(unittest.TestCase):
         self.assertEqual(parsed["General"]["dns-server"], ["one", "two"])
         self.assertEqual(parsed["MITM"]["enable"], ["true"])
 
+    def test_rule_lines_preserve_regex_commas(self):
+        parsed = parse_config("[Rule]\\nURL-REGEX,^http://host/path\\?,REJECT\\n[URL Rewrite]\\n^http://host/a,b _ reject\\n")
+        self.assertEqual(parsed["Rule"]["__raw_lines__"], ["URL-REGEX,^http://host/path\\?,REJECT"])
+        self.assertEqual(parsed["URL Rewrite"]["__raw_lines__"], ["^http://host/a,b _ reject"])
+
     def test_compare_detects_dns_change_and_added_mitm(self):
         baseline = parse_config("[General]\ndns-server = old\n[Rule]\n")
         managed = parse_config("[General]\ndns-server = new\n[MITM]\nenable = true\n")
