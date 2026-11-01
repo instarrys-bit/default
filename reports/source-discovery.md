@@ -1,10 +1,18 @@
 # Automated source discovery
 
-- Candidate repositories retained: **208**
+- Candidate repositories retained: **214**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
 ## Candidate repositories
+
+### [123xjjj/shadowrocket-rules](https://github.com/123xjjj/shadowrocket-rules)
+
+- Description: Not supplied
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
 
 ### [34wolf/shadowrocket-rules](https://github.com/34wolf/shadowrocket-rules)
 
@@ -324,6 +332,14 @@
 - Description: Research data and supporting documentation for seven domains of supply chain risk disclosure in Chinese listed firms, 2018–2025.
 - Stars: 0; archived: False; fork: False
 - Search queries: China domain list
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
+### [Johnshall/Shadowrocket-ADBlock-Rules-Forever](https://github.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever)
+
+- Description: 提供多款 Shadowrocket 规则，拥有强劲的广告过滤功能。每日 8 时重新构建规则。
+- Stars: 31750; archived: False; fork: False
+- Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
@@ -1132,6 +1148,14 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [huijingfei/anywhere-rules](https://github.com/huijingfei/anywhere-rules)
+
+- Description: iOS 屏蔽开屏广告 Anywhere Rules，Shadowrocket 小火箭免费替代品
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
 ### [huodongbin/geosite-domains](https://github.com/huodongbin/geosite-domains)
 
 - Description: Not supplied
@@ -1372,10 +1396,26 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [moshall/egloon_rule_hub](https://github.com/moshall/egloon_rule_hub)
+
+- Description: Multi-source proxy rule hub for Egern, Loon, Clash, QuanX, and Shadowrocket
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
 ### [moshall/myself_rules](https://github.com/moshall/myself_rules)
 
 - Description: 个人维护的Quanx和Shadowrocket规则
 - Stars: 2; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
+### [mrc991/lc-network-rules](https://github.com/mrc991/lc-network-rules)
+
+- Description: LC 个人分流规则：上游 Aethersailor/Johnshall + 定制，自动构建 Clash 模板、覆写与 Shadowrocket 配置
+- Stars: 0; archived: False; fork: False
 - Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
@@ -1516,6 +1556,14 @@
 - Description: Continuously updated list of Chinese IP addresses and gfwlist domain names
 - Stars: 303; archived: False; fork: False
 - Search queries: China domain list
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
+### [rylox1/shadowracket_rules](https://github.com/rylox1/shadowracket_rules)
+
+- Description: Convert GMOogway Shadowrocket modules into RULE-SET files and update them automatically with GitHub Actions.
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 

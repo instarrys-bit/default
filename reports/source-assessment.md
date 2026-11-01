@@ -8,8 +8,8 @@
 |---|---|---|---:|---|---|
 | blackmatrix7/ios_rule_script | unsupported_or_too_small | — | 0 | unchanged | none |
 | blackmatrix7/ios_rule_script | unsupported_or_too_small | — | 0 | unchanged | none |
-| Loyalsoldier/v2ray-rules-dat | domain-only | — | 109578 | unchanged | ambiguous |
-| Loyalsoldier/v2ray-rules-dat | domain-only | — | 26487 | unchanged | ambiguous |
+| Loyalsoldier/v2ray-rules-dat | domain-only | — | 109581 | domain_set_changed | ambiguous |
+| Loyalsoldier/v2ray-rules-dat | domain-only | — | 26496 | domain_set_changed | ambiguous |
 | Loyalsoldier/v2ray-rules-dat | fetch_or_validation_error | — | 0 | unavailable | none |
 | Hackl0us/SS-Rule-Snippet | shadowrocket-domain-rules | — | 118 | unchanged | ambiguous |
 | Hackl0us/SS-Rule-Snippet | shadowrocket-domain-rules | — | 272 | unchanged | none |
@@ -60,8 +60,8 @@
 ## Source update drift
 
 - New source files: 0
-- Changed source files: 0
-- Added domain entries: 0
+- Changed source files: 2
+- Added domain entries: 12
 - Removed domain entries: 0
 - Policy changes: 0
 
@@ -88,8 +88,8 @@
 ### Loyalsoldier/v2ray-rules-dat
 
 - URL: https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt
-- SHA-256: 7799323e9937cb93ab62a776cb22597d2206bfe5bf9ffbdad385809b2783e06f
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 109578; duplicate lines: 0
+- SHA-256: 790563cc78af7c35fca000a3d16f692042e8cf0d9d2154685966c21d1a6e98ae
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 109581; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: ambiguous; candidate: none
@@ -97,8 +97,8 @@
 ### Loyalsoldier/v2ray-rules-dat
 
 - URL: https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt
-- SHA-256: f911b163c52407362f2ed6c8d504ecd32a338d20b07616dc8d398ffbc5483c09
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 26487; duplicate lines: 0
+- SHA-256: 4789a78f00c35271e082aacce8247f9c4a2632be55aebb3258749d6450c28445
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 26496; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: ambiguous; candidate: none
