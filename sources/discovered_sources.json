@@ -54,14 +54,14 @@
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list"
       ],
       "readme_policy_claims": {
+        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list": [
+          "PROXY"
+        ],
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list": [
           "DIRECT"
-        ],
-        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list": [
-          "PROXY"
         ]
       },
       "seeded_source_urls": [
@@ -299,9 +299,9 @@
       "html_url": "https://github.com/Chocolate4U/Iran-v2ray-rules",
       "description": "Enhanced v2ray/xray and v2ray/xray-clients routing rules with built-in Iranian domains and a focus on security and adblocking.",
       "default_branch": "main",
-      "updated_at": "2026-10-30T19:07:47Z",
+      "updated_at": "2026-11-01T16:21:10Z",
       "pushed_at": "2026-11-01T11:29:42Z",
-      "stars": 783,
+      "stars": 784,
       "archived": false,
       "fork": false,
       "license": "GPL-3.0",
@@ -842,12 +842,12 @@
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list": [
           "DIRECT"
         ],
-        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/gfw.list": [
+        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list": [
           "DIRECT",
           "PROXY",
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list": [
+        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/gfw.list": [
           "DIRECT",
           "PROXY",
           "REJECT"
@@ -982,17 +982,17 @@
         "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt"
       ],
       "readme_policy_claims": {
+        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt": [
+          "DIRECT",
+          "PROXY",
+          "REJECT"
+        ],
         "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
         ],
         "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt": [
-          "DIRECT",
-          "PROXY",
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
@@ -1156,6 +1156,15 @@
         "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/v2rayA.txt"
       ],
       "readme_policy_claims": {
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/reject-special.list": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/direct-special.list": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv6.txt": [
+          "REJECT"
+        ],
         "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/Shadowrocket.conf": [
           "REJECT"
         ],
@@ -1164,15 +1173,6 @@
         ],
         "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/proxy-special.list": [
           "PROXY"
-        ],
-        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/reject-special.list": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv6.txt": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/direct-special.list": [
-          "DIRECT"
         ],
         "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv4.txt": [
           "REJECT"
@@ -1555,10 +1555,10 @@
         "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http.txt": [
+        "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https.txt": [
+        "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http.txt": [
           "PROXY"
         ]
       },
@@ -2583,15 +2583,15 @@
         "https://raw.githubusercontent.com/gatework/surge-rules/release/proxy.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/gatework/surge-rules/release/proxy.txt": [
-          "DIRECT",
-          "PROXY",
-          "REJECT"
-        ],
         "https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/gatework/surge-rules/release/direct.txt": [
+          "DIRECT",
+          "PROXY",
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/gatework/surge-rules/release/proxy.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
@@ -4217,40 +4217,40 @@
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/tools.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/netflix.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/telegram.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
           "PROXY"
         ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
+          "PROXY"
+        ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/torrent.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/tools.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/telegram.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/netflix.txt": [
           "PROXY"
         ]
       },

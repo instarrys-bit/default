@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "completed_at": "2026-11-01T16:18:06.341048+00:00",
+  "completed_at": "2026-11-01T16:21:34.312413+00:00",
   "config_path": "shadowrocket/ss.conf",
   "config_read_only": true,
-  "config_blob_sha": "c8d742ae87a75506efc15dc6effe190ae8cd6b43",
-  "first_ruleset_line": 2258,
-  "higher_priority_rule_count": 2216,
+  "config_blob_sha": "444ba3bfb8b455b6ba2727a34d8220631a78f935",
+  "first_ruleset_line": 2259,
+  "higher_priority_rule_count": 2217,
   "published_before": {
     "DIRECT": 32,
     "PROXY": 119,
@@ -30,7 +30,7 @@
       "domain": "amazon.com",
       "scope": "suffix_candidate",
       "effective_policy": "PROXY",
-      "config_line": 2132,
+      "config_line": 2133,
       "config_rule": "DOMAIN-KEYWORD,amazon,PROXY",
       "reason": "Prior DOMAIN-KEYWORD may match this candidate"
     },
@@ -41,7 +41,7 @@
       "domain": "blogspot.com",
       "scope": "suffix_candidate",
       "effective_policy": "PROXY",
-      "config_line": 2142,
+      "config_line": 2143,
       "config_rule": "DOMAIN-KEYWORD,blogspot,PROXY",
       "reason": "Prior DOMAIN-KEYWORD may match this candidate"
     },
@@ -52,7 +52,7 @@
       "domain": "blogspot.hk",
       "scope": "suffix_candidate",
       "effective_policy": "PROXY",
-      "config_line": 2142,
+      "config_line": 2143,
       "config_rule": "DOMAIN-KEYWORD,blogspot,PROXY",
       "reason": "Prior DOMAIN-KEYWORD may match this candidate"
     },
@@ -63,7 +63,7 @@
       "domain": "live.net",
       "scope": "suffix_candidate",
       "effective_policy": "PROXY",
-      "config_line": 2028,
+      "config_line": 2029,
       "config_rule": "DOMAIN-SUFFIX,skyapi.live.net,PROXY",
       "reason": "Prior first-match rules intersect candidate suffix scope"
     },
@@ -74,7 +74,7 @@
       "domain": "onedrive.com",
       "scope": "suffix_candidate",
       "effective_policy": "PROXY",
-      "config_line": 2037,
+      "config_line": 2038,
       "config_rule": "DOMAIN-SUFFIX,api.onedrive.com,PROXY",
       "reason": "Prior first-match rules intersect candidate suffix scope"
     },
@@ -85,7 +85,7 @@
       "domain": "pixiv.net",
       "scope": "suffix_candidate",
       "effective_policy": "PROXY",
-      "config_line": 2131,
+      "config_line": 2132,
       "config_rule": "DOMAIN-KEYWORD,pixiv,PROXY",
       "reason": "Prior DOMAIN-KEYWORD may match this candidate"
     },
@@ -96,7 +96,7 @@
       "domain": "thefacebook.com",
       "scope": "suffix_candidate",
       "effective_policy": "PROXY",
-      "config_line": 2143,
+      "config_line": 2144,
       "config_rule": "DOMAIN-KEYWORD,facebook,PROXY",
       "reason": "Prior DOMAIN-KEYWORD may match this candidate"
     }

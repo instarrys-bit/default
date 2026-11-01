@@ -117,7 +117,7 @@
 ### [Chocolate4U/Iran-v2ray-rules](https://github.com/Chocolate4U/Iran-v2ray-rules)
 
 - Description: Enhanced v2ray/xray and v2ray/xray-clients routing rules with built-in Iranian domains and a focus on security and adblocking.
-- Stars: 783; archived: False; fork: False
+- Stars: 784; archived: False; fork: False
 - Search queries: geosite domain
 - README / curated seed rule-list links: 0
 - Curated seed links: 0

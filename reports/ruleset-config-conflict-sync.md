@@ -1,8 +1,8 @@
 # RULE-SET / ss.conf conflict synchronization
 
 - Config: shadowrocket/ss.conf (read-only)
-- Config blob SHA: c8d742ae87a75506efc15dc6effe190ae8cd6b43
-- Higher-priority config rules inspected: 2216
+- Config blob SHA: 444ba3bfb8b455b6ba2727a34d8220631a78f935
+- Higher-priority config rules inspected: 2217
 - Published rules removed: 0
 - Pending queue entries removed: 0
 - Ambiguous overlaps retained for review: 7
