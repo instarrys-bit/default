@@ -8,6 +8,8 @@ from deterministic_review import DOMAIN_RE, evidence_gate, inspect, validate_evi
 from domain_rule_engine import RuleIndex, DomainRule
 from deterministic_review import CONFIG as REVIEW_CONFIG
 from build_rulesets import CONFIG as RULESET_CONFIG
+from select_domain_rules import CONFIG as SELECTOR_CONFIG
+from audit_external_domains import CONFIG as EXTERNAL_AUDIT_CONFIG
 from collect_domains import bootstrap_source_domains, check_source_delta, parse_adblock, parse_domain_list, parse_source
 from source_registry import validate_registry
 
@@ -690,3 +692,5 @@ class UserConfigBaselineTests(unittest.TestCase):
         expected = ROOT / "shadowrocket" / "ss.conf"
         self.assertEqual(REVIEW_CONFIG, expected)
         self.assertEqual(RULESET_CONFIG, expected)
+        self.assertEqual(SELECTOR_CONFIG, expected)
+        self.assertEqual(EXTERNAL_AUDIT_CONFIG, expected)
