@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-01T09:19:37.443237+00:00",
+  "audited_at": "2026-11-01T09:47:10.319110+00:00",
   "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
   "source_count": 6,
   "audited_source_count": 6,
@@ -30,8 +30,8 @@
       ]
     }
   ],
-  "candidate_source_count": 34,
-  "candidate_readme_audited_count": 34,
+  "candidate_source_count": 36,
+  "candidate_readme_audited_count": 36,
   "candidate_shared_reference_pairs": [
     {
       "repositories": [
@@ -1067,6 +1067,17 @@
       "status": "audited_reference_inventory"
     },
     {
+      "repository": "Criogaid/shadowrocket-config",
+      "readme_url": "https://raw.githubusercontent.com/Criogaid/shadowrocket-config/main/README.md",
+      "readme_sha256": "1477d42f2df05671fa245220541c28fdceed51cdc8bfac4539b56bff4552c309",
+      "discovery_readme_sha256": "1477d42f2df05671fa245220541c28fdceed51cdc8bfac4539b56bff4552c309",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [],
+      "reference_count": 0,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
       "repository": "CyberWei922/shadowrocket-proxy-rules",
       "readme_url": "https://raw.githubusercontent.com/CyberWei922/shadowrocket-proxy-rules/main/README.md",
       "readme_sha256": "0c8d594392b93837566da57222ffd2aa5f42568c252fd937ba001e6517f793fd",
@@ -1378,6 +1389,17 @@
         "sukkaw/surge"
       ],
       "reference_count": 3,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "haokun-1/shadowrocket-rules",
+      "readme_url": "https://raw.githubusercontent.com/haokun-1/shadowrocket-rules/main/README.md",
+      "readme_sha256": "58a63ea542242d7418f7d359ed19985982616f8a92c14b03ff2048e9b4a2b3d0",
+      "discovery_readme_sha256": "58a63ea542242d7418f7d359ed19985982616f8a92c14b03ff2048e9b4a2b3d0",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [],
+      "reference_count": 0,
       "lineage_status": "unverified",
       "status": "audited_reference_inventory"
     },

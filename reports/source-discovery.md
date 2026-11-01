@@ -1,6 +1,6 @@
 # Automated source discovery
 
-- Candidate repositories retained: **179**
+- Candidate repositories retained: **182**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
@@ -9,7 +9,7 @@
 ### [ACL4SSR/ACL4SSR](https://github.com/ACL4SSR/ACL4SSR)
 
 - Description: SSR 去广告ACL规则/SS完整GFWList规则/Clash规则碎片，Telegram频道订阅地址
-- Stars: 6889; archived: False; fork: False
+- Stars: 6888; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 3
 - Curated seed links: 3
@@ -129,6 +129,15 @@
 - Search queries: adblock domain list
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
+
+### [Criogaid/shadowrocket-config](https://github.com/Criogaid/shadowrocket-config)
+
+- Description: Shadowrocket configuration for mainland China with generated rule sets and reviewed scripts
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/Criogaid/shadowrocket-config/main/dist/shadowrocket.conf
 
 ### [CyberWei922/shadowrocket-proxy-rules](https://github.com/CyberWei922/shadowrocket-proxy-rules)
 
@@ -347,7 +356,7 @@
 ### [Loyalsoldier/v2ray-rules-dat](https://github.com/Loyalsoldier/v2ray-rules-dat)
 
 - Description: 🦄 🎃 👻 V2Ray 路由规则文件加强版，可代替 V2Ray 官方 geoip.dat 和 geosite.dat，适用于 V2Ray、Xray-core、mihomo(Clash-Meta)、hysteria、Trojan-Go 和 leaf。Enhanced edition of V2Ray rules dat files, applicable to V2Ray, Xray-core, mihomo(Clash-Meta), hysteria, Trojan-Go and leaf.
-- Stars: 20983; archived: False; fork: False
+- Stars: 20984; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 3
 - Curated seed links: 3
@@ -413,6 +422,14 @@
   - https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/proxy-special.list
   - https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/reject-special.list
   - https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/v2rayA.txt
+
+### [Remix123/routingrulehub](https://github.com/Remix123/routingrulehub)
+
+- Description: Daily Mihomo and Shadowrocket rule outputs derived from Johnshall sr_cnip.conf with split-DNS guidance
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
 
 ### [RoboInterativo/firefox-proxy-extension](https://github.com/RoboInterativo/firefox-proxy-extension)
 
@@ -695,7 +712,7 @@
 ### [blackmatrix7/ios_rule_script](https://github.com/blackmatrix7/ios_rule_script)
 
 - Description: 分流规则、重写写规则及脚本。
-- Stars: 28494; archived: False; fork: False
+- Stars: 28495; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 2
 - Curated seed links: 2
@@ -924,6 +941,15 @@
 - README / curated seed rule-list links: 1
 - Curated seed links: 0
   - https://raw.githubusercontent.com/granden/home-network-rules/main/home-network.conf
+
+### [haokun-1/shadowrocket-rules](https://github.com/haokun-1/shadowrocket-rules)
+
+- Description: Auto-updated, sanitized Shadowrocket ad-blocking and China routing rules
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/haokun-1/shadowrocket-rules/main/dist/Shadowrocket_CN_Direct_AdBlock.conf
 
 ### [harmonsir/Shadowrocket-rules](https://github.com/harmonsir/Shadowrocket-rules)
 
@@ -1490,7 +1516,7 @@
 ### [v2fly/domain-list-community](https://github.com/v2fly/domain-list-community)
 
 - Description: Community managed domain list. Generate geosite.dat for V2Ray.
-- Stars: 9802; archived: False; fork: False
+- Stars: 9803; archived: False; fork: False
 - Search queries: geosite domain
 - README / curated seed rule-list links: 0
 - Curated seed links: 0

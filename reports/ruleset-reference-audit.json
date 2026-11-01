@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "config_path": "shadowrocket/ss.conf",
   "config_rule_set_reference_count": 3,
   "references": [
@@ -44,6 +44,8 @@
       "valid_domain_lines": 18
     }
   },
+  "cross_file_duplicates": [],
+  "cross_policy_conflicts": [],
   "errors": [],
   "passed": true,
   "scope": "read-only; does not edit config, DNS, MITM, or RULE-SET references"

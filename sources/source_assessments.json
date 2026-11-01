@@ -2,9 +2,9 @@
   "schema_version": 1,
   "assessment_count": 50,
   "drift_summary": {
-    "new_source_files": 11,
+    "new_source_files": 0,
     "changed_source_files": 0,
-    "added_domain_count": 26,
+    "added_domain_count": 0,
     "removed_domain_count": 0,
     "policy_changes": 0
   },
@@ -30,7 +30,7 @@
       "policy_evidence": "none",
       "activation_eligible": false,
       "repository": "blackmatrix7/ios_rule_script",
-      "stars": 28494,
+      "stars": 28495,
       "archived": false,
       "drift": {
         "status": "unchanged",
@@ -59,7 +59,7 @@
       "policy_evidence": "none",
       "activation_eligible": false,
       "repository": "blackmatrix7/ios_rule_script",
-      "stars": 28494,
+      "stars": 28495,
       "archived": false,
       "drift": {
         "status": "unchanged",
@@ -109671,7 +109671,7 @@
       "policy_evidence": "ambiguous",
       "activation_eligible": false,
       "repository": "Loyalsoldier/v2ray-rules-dat",
-      "stars": 20983,
+      "stars": 20984,
       "archived": false,
       "drift": {
         "status": "unchanged",
@@ -136192,7 +136192,7 @@
       "policy_evidence": "ambiguous",
       "activation_eligible": false,
       "repository": "Loyalsoldier/v2ray-rules-dat",
-      "stars": 20983,
+      "stars": 20984,
       "archived": false,
       "drift": {
         "status": "unchanged",
@@ -137306,7 +137306,7 @@
       "policy_evidence": "README_policy_reference",
       "activation_eligible": false,
       "repository": "ACL4SSR/ACL4SSR",
-      "stars": 6889,
+      "stars": 6888,
       "archived": false,
       "drift": {
         "status": "unchanged",
@@ -144104,7 +144104,7 @@
       "policy_evidence": "README_policy_reference",
       "activation_eligible": false,
       "repository": "ACL4SSR/ACL4SSR",
-      "stars": 6889,
+      "stars": 6888,
       "archived": false,
       "drift": {
         "status": "unchanged",
@@ -144442,7 +144442,7 @@
       "policy_evidence": "README_policy_reference",
       "activation_eligible": false,
       "repository": "ACL4SSR/ACL4SSR",
-      "stars": 6889,
+      "stars": 6888,
       "archived": false,
       "drift": {
         "status": "unchanged",
@@ -299665,7 +299665,7 @@
       "stars": 1181,
       "archived": false,
       "drift": {
-        "status": "baseline_initialized",
+        "status": "unchanged",
         "added_domain_count": 0,
         "removed_domain_count": 0,
         "policy_changed": false
@@ -299696,7 +299696,7 @@
       "stars": 1181,
       "archived": false,
       "drift": {
-        "status": "baseline_initialized",
+        "status": "unchanged",
         "added_domain_count": 0,
         "removed_domain_count": 0,
         "policy_changed": false
@@ -299727,7 +299727,7 @@
       "stars": 1181,
       "archived": false,
       "drift": {
-        "status": "baseline_initialized",
+        "status": "unchanged",
         "added_domain_count": 0,
         "removed_domain_count": 0,
         "policy_changed": false
@@ -299758,7 +299758,7 @@
       "stars": 1181,
       "archived": false,
       "drift": {
-        "status": "baseline_initialized",
+        "status": "unchanged",
         "added_domain_count": 0,
         "removed_domain_count": 0,
         "policy_changed": false
@@ -299789,7 +299789,7 @@
       "stars": 1181,
       "archived": false,
       "drift": {
-        "status": "baseline_initialized",
+        "status": "unchanged",
         "added_domain_count": 0,
         "removed_domain_count": 0,
         "policy_changed": false
@@ -299822,8 +299822,8 @@
       "stars": 1181,
       "archived": false,
       "drift": {
-        "status": "baseline_initialized",
-        "added_domain_count": 1,
+        "status": "unchanged",
+        "added_domain_count": 0,
         "removed_domain_count": 0,
         "policy_changed": false
       }
@@ -299851,7 +299851,7 @@
       "stars": 1181,
       "archived": false,
       "drift": {
-        "status": "baseline_initialized",
+        "status": "unchanged",
         "added_domain_count": 0,
         "removed_domain_count": 0,
         "policy_changed": false
@@ -299880,7 +299880,7 @@
       "stars": 1181,
       "archived": false,
       "drift": {
-        "status": "baseline_initialized",
+        "status": "unchanged",
         "added_domain_count": 0,
         "removed_domain_count": 0,
         "policy_changed": false
@@ -299926,8 +299926,8 @@
       "stars": 1181,
       "archived": false,
       "drift": {
-        "status": "baseline_initialized",
-        "added_domain_count": 14,
+        "status": "unchanged",
+        "added_domain_count": 0,
         "removed_domain_count": 0,
         "policy_changed": false
       }
@@ -299971,8 +299971,8 @@
       "stars": 1181,
       "archived": false,
       "drift": {
-        "status": "baseline_initialized",
-        "added_domain_count": 11,
+        "status": "unchanged",
+        "added_domain_count": 0,
         "removed_domain_count": 0,
         "policy_changed": false
       }
@@ -300000,7 +300000,7 @@
       "stars": 1181,
       "archived": false,
       "drift": {
-        "status": "baseline_initialized",
+        "status": "unchanged",
         "added_domain_count": 0,
         "removed_domain_count": 0,
         "policy_changed": false

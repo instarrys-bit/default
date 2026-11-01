@@ -27,17 +27,17 @@
 | Jovanykoch/rules | domain-only | DIRECT | 6751 | unchanged | README_policy_reference |
 | Jovanykoch/rules | domain-only | — | 957 | unchanged | ambiguous |
 | GMOogway/shadowrocket-rules | unsupported_or_too_small | — | 0 | unchanged | none |
-| PaPerseller/chn-iplist | unsupported_or_too_small | — | 0 | baseline_initialized | none |
-| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | baseline_initialized | README_policy_reference |
-| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | baseline_initialized | README_policy_reference |
-| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | baseline_initialized | README_policy_reference |
-| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | baseline_initialized | README_policy_reference |
-| PaPerseller/chn-iplist | unsupported_or_too_small | DIRECT | 1 | baseline_initialized | README_policy_reference |
-| PaPerseller/chn-iplist | unsupported_or_too_small | — | 0 | baseline_initialized | none |
-| PaPerseller/chn-iplist | unsupported_or_too_small | — | 0 | baseline_initialized | none |
-| PaPerseller/chn-iplist | unsupported_or_too_small | PROXY | 14 | baseline_initialized | README_policy_reference |
-| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 11 | baseline_initialized | README_policy_reference |
-| PaPerseller/chn-iplist | unsupported_or_too_small | — | 0 | baseline_initialized | none |
+| PaPerseller/chn-iplist | unsupported_or_too_small | — | 0 | unchanged | none |
+| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | unchanged | README_policy_reference |
+| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | unchanged | README_policy_reference |
+| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | unchanged | README_policy_reference |
+| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | unchanged | README_policy_reference |
+| PaPerseller/chn-iplist | unsupported_or_too_small | DIRECT | 1 | unchanged | README_policy_reference |
+| PaPerseller/chn-iplist | unsupported_or_too_small | — | 0 | unchanged | none |
+| PaPerseller/chn-iplist | unsupported_or_too_small | — | 0 | unchanged | none |
+| PaPerseller/chn-iplist | unsupported_or_too_small | PROXY | 14 | unchanged | README_policy_reference |
+| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 11 | unchanged | README_policy_reference |
+| PaPerseller/chn-iplist | unsupported_or_too_small | — | 0 | unchanged | none |
 | Vann-Dev/proxy-list | unsupported_or_too_small | PROXY | 1 | unchanged | README_policy_reference |
 | Vann-Dev/proxy-list | unsupported_or_too_small | PROXY | 1 | unchanged | README_policy_reference |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | ambiguous |
@@ -59,9 +59,9 @@
 
 ## Source update drift
 
-- New source files: 11
+- New source files: 0
 - Changed source files: 0
-- Added domain entries: 26
+- Added domain entries: 0
 - Removed domain entries: 0
 - Policy changes: 0
 
