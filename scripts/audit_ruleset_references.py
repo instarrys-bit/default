@@ -15,7 +15,7 @@ REPORT_MD = ROOT / "reports" / "ruleset-reference-audit.md"
 EXPECTED_REPO_PATH = "/instarrys-bit/default/main/rulesets/"
 POLICY_BY_FILE = {"direct.list": "DIRECT", "proxy.list": "PROXY", "reject.list": "REJECT"}
 DOMAIN_LINE = re.compile(r"^(DOMAIN|DOMAIN-SUFFIX),([A-Za-z0-9.-]+)$", re.IGNORECASE)
-DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)(?:\\.(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?))+$")
+DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)(?:\.(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?))+$")
 
 def extract_rule_set_references(config_text: str) -> list[dict]:
     refs, in_rules = [], False

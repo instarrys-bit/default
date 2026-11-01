@@ -124,20 +124,13 @@ def inspect_suffix_scope(domain: str, policy: str, rules, conditional, protected
     """Fail closed when a suffix would cover a differently routed or protected host."""
     domain = domain.lower().rstrip(".")
     policy = policy.upper()
-    for rule in rules.rules:
-        intersects = (
-            rule.domain == domain
-            or rule.domain.endswith("." + domain)
-            or (
-                rule.kind == "DOMAIN-SUFFIX"
-                and (domain.endswith("." + rule.domain) or domain == rule.domain)
-            )
+    analysis = analyze_candidate(domain, True, rules)
+    conflicting = sorted(analysis["scope_policies"] - {policy})
+    if conflicting:
+        return "CONFLICT", (
+            "Suffix scope has different effective first-match policies: "
+            + ", ".join(conflicting)
         )
-        if intersects and rule.policy != policy:
-            return "CONFLICT", (
-                "Suffix scope intersects existing " + rule.kind + " "
-                + rule.domain + " => " + rule.policy + " (line " + str(rule.line) + ")"
-            )
     for _, raw in conditional:
         for kind, match in re.findall(r"(DOMAIN-SUFFIX|DOMAIN),([A-Za-z0-9.-]+)", raw, re.I):
             match = match.lower().strip(".")

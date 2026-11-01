@@ -15,6 +15,7 @@ REPORT_MD = ROOT / "reports" / "ruleset-config-overlap-audit.md"
 DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$", re.I)
 DOMAIN_ATOM_RE = re.compile(r"(DOMAIN-SUFFIX|DOMAIN),([A-Za-z0-9.-]+)", re.I)
 POLICIES = {"DIRECT", "PROXY", "REJECT"}
+from domain_rule_engine import DomainRule, RuleIndex, analyze_candidate
 
 
 def domain_matches(domain: str, kind: str, target: str) -> bool:
@@ -66,24 +67,46 @@ def scope_intersects(candidate_scope: str, domain: str, kind: str, target: str) 
 
 
 def match_candidate(domain: str, policy: str, rules: list[tuple[int, str]], scope: str = "exact_candidate") -> dict:
+    if scope == "suffix_candidate":
+        parsed = []
+        for number, line in rules:
+            fields = [part.strip() for part in line.split(",")]
+            if len(fields) >= 3 and fields[0].upper() in {"DOMAIN", "DOMAIN-SUFFIX"}:
+                parsed.append(DomainRule(fields[0].upper(), fields[1].lower(), fields[2].upper(), number, line))
+        analysis = analyze_candidate(domain, True, RuleIndex(parsed))
+        winners = analysis["scope_winners"]
+        policies = analysis["scope_policies"]
+        if any(value != policy for value in policies):
+            first = next((winner for winner in winners.values() if winner.policy != policy), None)
+            return {
+                "status": "CONFLICT", "line": first.line if first else None,
+                "rule": first.raw if first else None,
+                "effective_policy": first.policy if first else None,
+                "reason": "Prior first-match rules produce a conflicting policy within suffix scope"
+            }
+        if policies:
+            apex = analysis["apex_winner"]
+            fully_covered = bool(
+                apex and apex.kind == "DOMAIN-SUFFIX"
+                and (domain == apex.domain or domain.endswith("." + apex.domain))
+                and all(winner.policy == policy for winner in winners.values())
+            )
+            first = next(iter(winners.values()))
+            return {
+                "status": "ALREADY_COVERED" if fully_covered else "POTENTIAL_MATCH",
+                "line": first.line, "rule": first.raw, "effective_policy": policy,
+                "reason": "Prior first-match rules intersect candidate suffix scope"
+            }
     for number, line in rules:
         fields = [part.strip() for part in line.split(",")]
         kind = fields[0].upper()
         if kind in {"DOMAIN", "DOMAIN-SUFFIX"} and len(fields) >= 3:
-            if scope_intersects(scope, domain, kind, fields[1]):
+            if domain_matches(domain, kind, fields[1]):
                 matched_policy = fields[2].upper()
-                covers_entire_suffix = (
-                    scope == "suffix_candidate"
-                    and kind == "DOMAIN-SUFFIX"
-                    and (domain == fields[1].lower() or domain.endswith("." + fields[1].lower()))
-                )
-                status = "ALREADY_COVERED" if matched_policy == policy and (scope != "suffix_candidate" or covers_entire_suffix) else (
-                    "POTENTIAL_MATCH" if matched_policy == policy else "CONFLICT"
-                )
                 return {
-                    "status": status,
+                    "status": "ALREADY_COVERED" if matched_policy == policy else "CONFLICT",
                     "line": number, "rule": line, "effective_policy": matched_policy,
-                    "reason": "Prior first-match exact/suffix domain rule intersects candidate scope"
+                    "reason": "Prior first-match exact/suffix domain rule"
                 }
         elif kind == "DOMAIN-KEYWORD" and len(fields) >= 3:
             if fields[1].lower() in domain:
