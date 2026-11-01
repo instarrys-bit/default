@@ -32,10 +32,10 @@
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list": [
+        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list": [
+        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list": [
@@ -758,13 +758,13 @@
           "PROXY",
           "REJECT"
         ],
+        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list": [
+          "DIRECT"
+        ],
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list": [
           "DIRECT",
           "PROXY",
           "REJECT"
-        ],
-        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list": [
-          "DIRECT"
         ]
       },
       "seeded_source_urls": [
@@ -896,7 +896,7 @@
         "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt": [
+        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
@@ -906,7 +906,7 @@
           "PROXY",
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt": [
+        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
@@ -1246,48 +1246,48 @@
         "https://raw.githubusercontent.com/Seanyim/tailrocket/main/sr_top500_custom.conf"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_cnip.conf": [
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_proxy_banad.conf": [
           "DIRECT",
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_cnip_ad.conf": [
-          "DIRECT",
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_backcn.conf": [
-          "DIRECT"
-        ],
-        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_adb.conf": [
-          "DIRECT"
-        ],
-        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_top500_whitelist_ad.conf": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_top500_banlist_ad.conf": [
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_backcn_ad.conf": [
           "DIRECT"
         ],
         "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_top500_whitelist.conf": [
           "DIRECT",
           "PROXY"
         ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_cnip.conf": [
+          "DIRECT",
+          "PROXY"
+        ],
         "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_top500_banlist.conf": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_direct_banad.conf": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_cnip_ad.conf": [
+          "DIRECT",
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_top500_whitelist_ad.conf": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/lazy.conf": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_top500_banlist_ad.conf": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_backcn.conf": [
           "DIRECT"
         ],
         "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/lazy_group.conf": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_backcn_ad.conf": [
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_adb.conf": [
           "DIRECT"
-        ],
-        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/lazy.conf": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_direct_banad.conf": [
-          "DIRECT"
-        ],
-        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_proxy_banad.conf": [
-          "DIRECT",
-          "PROXY"
         ]
       },
       "search_queries": [
@@ -1373,10 +1373,10 @@
         "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http.txt": [
+        "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https.txt": [
+        "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http.txt": [
           "PROXY"
         ]
       },
@@ -2451,8 +2451,8 @@
       "html_url": "https://github.com/hl2guide/combined-adblock-lists",
       "description": "A domain blocklist and allowlist for use in AdGuard Home or similar.",
       "default_branch": "main",
-      "updated_at": "2026-11-01T07:58:05Z",
-      "pushed_at": "2026-11-01T07:58:01Z",
+      "updated_at": "2026-11-01T09:04:20Z",
+      "pushed_at": "2026-11-01T09:00:51Z",
       "stars": 17,
       "archived": false,
       "fork": false,
@@ -3366,10 +3366,10 @@
         "https://raw.githubusercontent.com/shankangk/AntiLeak-AdBlock/main/output/sr_ad_antileak.conf"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/shankangk/AntiLeak-AdBlock/main/output/Mini-AntiLeak.conf": [
+        "https://raw.githubusercontent.com/shankangk/AntiLeak-AdBlock/main/output/sr_ad_antileak.conf": [
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/shankangk/AntiLeak-AdBlock/main/output/sr_ad_antileak.conf": [
+        "https://raw.githubusercontent.com/shankangk/AntiLeak-AdBlock/main/output/Mini-AntiLeak.conf": [
           "REJECT"
         ]
       },
@@ -3633,40 +3633,40 @@
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/telegram.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/netflix.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
-          "PROXY"
-        ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/tools.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/torrent.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/telegram.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
           "PROXY"
         ]
       },
