@@ -17,13 +17,14 @@
 - `sources/`：域名来源、确定性审核账本、策略与主配置保护元数据
 - `scripts/`：域名采集、确定性证据审核、冲突检测、规则集构建和质量验证
 - `data/`、`reports/`、`dist/`：采集数据、审计报告和构建产物
-- `modules/adblock/`：自有广告处理模块及其运行脚本；第三方衍生代码的许可证与来源声明随目录保留
+- `modules/AdBlock.sgmodule`：用户维护的广告处理模块
+- `modules/adblock/`：模块运行脚本及第三方衍生代码的许可证与来源声明
 
 ## 可选模块的使用边界
 
 迁移到仓库不代表已启用或已验证其设备端效果：
 
-- `modules/adblock/Targeted_App_AdBlock_Ultimate.sgmodule`：用户维护的定向广告处理模块。
+- `modules/AdBlock.sgmodule`：用户维护的定向广告处理模块。
 - `modules/adblock/Social_Adblock.js`：社交与搜索响应处理脚本。
 - `modules/adblock/scripts/youtube_initplayback_observer.js`：仅在本地记录 YouTube initplayback 主机名，不保存完整 URL，也不发起网络请求。
 - `modules/adblock/scripts/youtube_protobuf_response_filter.js`：YouTube Protobuf 响应处理脚本；其代码基于 Maasea 上游脚本修改，来源与许可证声明保留在文件及目录中。
