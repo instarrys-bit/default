@@ -12,7 +12,7 @@ from lifecycle_gate import count_published_rules, update_lifecycle_state
 class LifecycleGateTests(unittest.TestCase):
     def make_rulesets(self, root, count):
         directory = root / "rulesets"
-        directory.mkdir(parents=True)
+        directory.mkdir(parents=True, exist_ok=True)
         for name in ("direct", "proxy", "reject"):
             (directory / (name + ".list")).write_text("", encoding="utf-8")
         for index in range(count):
