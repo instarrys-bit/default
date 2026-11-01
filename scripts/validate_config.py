@@ -14,7 +14,7 @@ POLICIES = {"DIRECT", "PROXY", "REJECT"}
 KNOWN_TYPES = {
     "AND", "OR", "NOT", "DOMAIN", "DOMAIN-SUFFIX", "DOMAIN-KEYWORD",
     "IP-CIDR", "IP-CIDR6", "IP-ASN", "GEOIP", "RULE-SET",
-    "USER-AGENT", "URL-REGEX", "FINAL",
+    "USER-AGENT", "URL-REGEX", "FINAL", "DST-PORT",
 }
 DOMAIN_RE = re.compile(
     r"^(?=.{1,253}$)[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?"
@@ -96,7 +96,9 @@ def validate(path):
             continue
 
         if stripped in seen:
-            errors.append((line_no, f"duplicate active rule (first at line {seen[stripped]})", raw))
+            # Duplicate rules are redundant, but not a syntax failure: Shadowrocket
+            # applies first-match order and the user-owned config is not auto-edited.
+            print(f"WARNING: {path}:{line_no}: duplicate rule; first occurrence at line {seen[stripped]}")
         else:
             seen[stripped] = line_no
 
@@ -120,6 +122,20 @@ def validate(path):
         if rule_type == "FINAL":
             if len(fields) != 2 or fields[1].upper() not in POLICIES:
                 errors.append((line_no, "FINAL must be FINAL,DIRECT|PROXY|REJECT", raw))
+            continue
+
+        if rule_type == "DST-PORT":
+            if len(fields) < 3:
+                errors.append((line_no, "DST-PORT must include port and policy", raw))
+            else:
+                try:
+                    port = int(fields[1])
+                    if not 1 <= port <= 65535:
+                        raise ValueError
+                except ValueError:
+                    errors.append((line_no, "DST-PORT port must be an integer from 1 to 65535", raw))
+                if fields[2].upper() not in POLICIES:
+                    errors.append((line_no, "invalid DST-PORT policy", raw))
             continue
 
         if len(fields) < 3:
