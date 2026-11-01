@@ -51,7 +51,7 @@ class RuleSetReferenceAuditTests(unittest.TestCase):
             for name in ("direct.list", "proxy.list", "reject.list"):
                 (root / name).write_text("", encoding="utf-8")
             manifest = {"outputs": ["direct.list", "proxy.list", "reject.list"], "rule_count": {"DIRECT": 0, "PROXY": 0, "REJECT": 0}}
-            config = "\\n".join([
+            config = "\n".join([
                 "[Rule]",
                 "RULE-SET,https://example.com/other/direct.list,DIRECT",
                 "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list,PROXY",
@@ -69,7 +69,7 @@ class RuleSetReferenceAuditTests(unittest.TestCase):
                 (root / name).write_text("", encoding="utf-8")
             manifest = {"outputs": ["direct.list", "proxy.list", "reject.list"], "rule_count": {"DIRECT": 0, "PROXY": 0, "REJECT": 0}}
             direct = "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list,DIRECT"
-            config = "\\n".join(["[Rule]", direct, direct,
+            config = "\n".join(["[Rule]", direct, direct,
                 "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list,PROXY",
                 "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/reject.list,REJECT"])
             report = inspect(config, manifest, root)
