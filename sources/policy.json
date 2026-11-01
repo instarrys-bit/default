@@ -143,7 +143,7 @@
   },
   "managed_config_guard": {
     "path": "shadowrocket/ss.conf",
-    "approved_git_blob_sha": "aa3492487c2a2cc5a32f4a1fa3e76953315a22e2",
+    "approved_git_blob_sha": "49eb4507e77390aa2d66041cdc2d44bcb5edf00f",
     "immutable": true,
     "description": "Current user-managed subscription file; automation must not modify it."
   }
