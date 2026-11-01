@@ -226,12 +226,14 @@
   },
   "rule_count": {
     "DIRECT": 32,
-    "PROXY": 122,
-    "REJECT": 22
+    "PROXY": 119,
+    "REJECT": 18
   },
-  "published_rule_total": 176,
+  "published_rule_total": 169,
   "max_published_rules": 30000,
   "queued_rule_total": 0,
+  "baseline_conflict_hold_count": 0,
+  "baseline_conflict_hold_sample": [],
   "pending_queue": "rulesets/pending_queue.json",
   "rule_lifecycle": {
     "DIRECT": {
@@ -246,23 +248,23 @@
       "baseline_initialized": false
     },
     "PROXY": {
-      "previous_count": 122,
-      "current_count": 122,
+      "previous_count": 119,
+      "current_count": 119,
       "added_count": 0,
       "removed_count": 0,
-      "previous_sha256": "67c983b8554583dc4cf2fe46192321e106905b9c694eba7afcf13af115dce199",
-      "current_sha256": "67c983b8554583dc4cf2fe46192321e106905b9c694eba7afcf13af115dce199",
+      "previous_sha256": "8ace33f3ef2c6b94cf72d8c3591c8c546540e2c41ac51ab3f06ecafeb4ae6eb8",
+      "current_sha256": "8ace33f3ef2c6b94cf72d8c3591c8c546540e2c41ac51ab3f06ecafeb4ae6eb8",
       "added_sample": [],
       "removed_sample": [],
       "baseline_initialized": false
     },
     "REJECT": {
-      "previous_count": 22,
-      "current_count": 22,
+      "previous_count": 18,
+      "current_count": 18,
       "added_count": 0,
       "removed_count": 0,
-      "previous_sha256": "dd9957ad001253447cf61965e4e2cb316be4838f046e7e853e14f91b71c7a5e2",
-      "current_sha256": "dd9957ad001253447cf61965e4e2cb316be4838f046e7e853e14f91b71c7a5e2",
+      "previous_sha256": "f8a0192db1a1bc04dd67afc85807d6c433e670f801ede178ff87c4c748f94a40",
+      "current_sha256": "f8a0192db1a1bc04dd67afc85807d6c433e670f801ede178ff87c4c748f94a40",
       "added_sample": [],
       "removed_sample": [],
       "baseline_initialized": false

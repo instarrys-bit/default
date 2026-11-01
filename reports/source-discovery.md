@@ -18,7 +18,7 @@
 ### [ACL4SSR/ACL4SSR](https://github.com/ACL4SSR/ACL4SSR)
 
 - Description: SSR 去广告ACL规则/SS完整GFWList规则/Clash规则碎片，Telegram频道订阅地址
-- Stars: 6889; archived: False; fork: False
+- Stars: 6891; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 3
 - Curated seed links: 3
@@ -739,7 +739,7 @@
 ### [blackmatrix7/ios_rule_script](https://github.com/blackmatrix7/ios_rule_script)
 
 - Description: 分流规则、重写写规则及脚本。
-- Stars: 28497; archived: False; fork: False
+- Stars: 28498; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 2
 - Curated seed links: 2

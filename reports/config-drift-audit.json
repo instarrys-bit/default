@@ -46,5 +46,6 @@
     "The automation reads this file and does not modify it.",
     "DNS values and MITM state are reported as observed facts, not rewritten or inferred.",
     "Static checks cannot verify runtime behavior inside the Shadowrocket app."
-  ]
+  ],
+  "owner_approved_change_pending_registration": false
 }
