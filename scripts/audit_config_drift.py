@@ -42,11 +42,19 @@ def git_blob_sha(data: bytes) -> str:
     return hashlib.sha1(b"blob " + str(len(data)).encode("ascii") + bytes([0]) + data).hexdigest()
 
 
-def build_report(config_bytes: bytes, expected_blob_sha: str, config_path: str) -> dict:
+def build_report(config_bytes: bytes, expected_blob_sha: str, config_path: str,
+                 expected_dns: dict[str, str] | None = None) -> dict:
     text = config_bytes.decode("utf-8-sig")
     sections = parse_config(text)
     general = sections.get("General", {})
     dns_snapshot = {key: general[key] for key in DNS_KEYS if key in general}
+    expected_dns = expected_dns or {}
+    dns_drift = {}
+    for key, expected_value in expected_dns.items():
+        expected_values = [part.strip() for part in str(expected_value).split(",") if part.strip()]
+        actual_values = dns_snapshot.get(key, [])
+        if [x.strip() for x in actual_values] != expected_values:
+            dns_drift[key] = {"expected": expected_values, "actual": actual_values}
     mitm_enabled = any(value.lower() == "true" for value in sections.get("MITM", {}).get("enable", []))
     actual_blob_sha = git_blob_sha(config_bytes)
     return {
@@ -62,6 +70,8 @@ def build_report(config_bytes: bytes, expected_blob_sha: str, config_path: str) 
         "rule_line_count": len(sections.get("Rule", {}).get("__raw_lines__", [])),
         "url_rewrite_line_count": len(sections.get("URL Rewrite", {}).get("__raw_lines__", [])),
         "dns_snapshot": dns_snapshot,
+        "dns_invariants_match": not dns_drift,
+        "dns_drift": dns_drift,
         "mitm_section_present": "MITM" in sections,
         "mitm_enabled": mitm_enabled,
         "limitations": [
@@ -81,7 +91,8 @@ def main() -> int:
     guard = policy["managed_config_guard"]
     config_path = guard["path"]
     config_bytes = (ROOT / config_path).read_bytes()
-    result = build_report(config_bytes, guard["approved_git_blob_sha"], config_path)
+    result = build_report(config_bytes, guard["approved_git_blob_sha"], config_path,
+                          policy.get("dns_invariants", {}))
     pending_owner_registration = bool(
         args.allow_owner_push_change
         and not result["baseline_matches_registered_blob"]
@@ -101,7 +112,8 @@ def main() -> int:
         f"- Rule lines: **{result['rule_line_count']}**",
         f"- URL Rewrite lines: **{result['url_rewrite_line_count']}**",
         f"- MITM section present: **{result['mitm_section_present']}**",
-        f"- MITM enabled: **{result['mitm_enabled']}**", "",
+        f"- MITM enabled: **{result['mitm_enabled']}**",
+        f"- DNS invariants match policy: **{result['dns_invariants_match']}**", "",
         "## DNS snapshot (observed; not changed)", ""
     ]
     if result["dns_snapshot"]:
@@ -109,6 +121,11 @@ def main() -> int:
             lines.append(f"- `{key}`: " + " | ".join(f"`{value}`" for value in values))
     else:
         lines.append("No recognized DNS settings found in [General].")
+    if result["dns_drift"]:
+        lines.extend(["", "## DNS invariant drift", ""])
+        for key, drift in result["dns_drift"].items():
+            lines.append(f"- `{key}` expected: " + " | ".join(f"`{x}`" for x in drift["expected"]))
+            lines.append("  actual: " + " | ".join(f"`{x}`" for x in drift["actual"]))
     lines.extend(["", "## Interpretation", "",
         "All checks use the current user-managed `shadowrocket/ss.conf` as the sole authority.",
         "A registered-hash mismatch means the config changed without its baseline record being updated; it does not authorize the automation to rewrite the config.",
@@ -116,6 +133,8 @@ def main() -> int:
     REPORT_MD.write_text("\n".join(lines), encoding="utf-8")
     print(json.dumps({
         "baseline_matches_registered_blob": result["baseline_matches_registered_blob"],
+        "dns_invariants_match": result["dns_invariants_match"],
+        "dns_drift_keys": list(result["dns_drift"]),
         "owner_approved_change_pending_registration": pending_owner_registration,
         "section_count": result["section_count"],
         "rule_line_count": result["rule_line_count"],
@@ -123,7 +142,7 @@ def main() -> int:
         "mitm_section_present": result["mitm_section_present"],
         "mitm_enabled": result["mitm_enabled"]
     }, ensure_ascii=False))
-    return 0 if result["baseline_matches_registered_blob"] or pending_owner_registration else 1
+    return 0 if (result["baseline_matches_registered_blob"] or pending_owner_registration) and result["dns_invariants_match"] else 1
 
 
 if __name__ == "__main__":
