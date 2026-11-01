@@ -175,6 +175,9 @@ def main():
                 "queued_at":datetime.now(timezone.utc).isoformat(),
                 "reason":"Approved rule waiting for published capacity"
             })
+    for policy in POLICIES:
+        for scope,domain in rule_sets[policy]:
+            queue_map.pop((policy,scope,domain),None)
     capacity=max(0,30000-previous_rule_count)
     promoted=[]
     for key in sorted(queue_map, key=lambda x:(int(queue_map[x].get("priority",1)),str(queue_map[x].get("queued_at","")),x[0],x[2],x[1])):
