@@ -115,11 +115,11 @@ class RuleSetReferenceAuditTests(unittest.TestCase):
     def test_suffix_domain_rules_are_accepted_and_counted(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            (root / "direct.list").write_text("DOMAIN-SUFFIX,example.cn\\nDOMAIN,api.example.cn\\n", encoding="utf-8")
+            (root / "direct.list").write_text("DOMAIN-SUFFIX,example.cn\nDOMAIN,api.example.cn\n", encoding="utf-8")
             (root / "proxy.list").write_text("", encoding="utf-8")
             (root / "reject.list").write_text("", encoding="utf-8")
             manifest = {"outputs": ["direct.list", "proxy.list", "reject.list"], "rule_count": {"DIRECT": 2, "PROXY": 0, "REJECT": 0}}
-            config = "\\n".join([
+            config = "\n".join([
                 "[Rule]",
                 "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list,DIRECT",
                 "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list,PROXY",
@@ -133,11 +133,11 @@ class RuleSetReferenceAuditTests(unittest.TestCase):
     def test_cross_scope_policy_conflict_is_detected(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            (root / "direct.list").write_text("DOMAIN-SUFFIX,example.com\\n", encoding="utf-8")
-            (root / "proxy.list").write_text("DOMAIN,api.example.com\\n", encoding="utf-8")
+            (root / "direct.list").write_text("DOMAIN-SUFFIX,example.com\n", encoding="utf-8")
+            (root / "proxy.list").write_text("DOMAIN,api.example.com\n", encoding="utf-8")
             (root / "reject.list").write_text("", encoding="utf-8")
             manifest = {"outputs": ["direct.list", "proxy.list", "reject.list"], "rule_count": {"DIRECT": 1, "PROXY": 1, "REJECT": 0}}
-            config = "\\n".join([
+            config = "\n".join([
                 "[Rule]",
                 "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list,DIRECT",
                 "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list,PROXY",
