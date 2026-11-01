@@ -22,7 +22,9 @@ def parse_config(text: str) -> dict[str, dict[str, list[str]]]:
             current = line[1:-1]
             sections.setdefault(current, {})
             continue
-        if current is not None and "=" in line:
+        if current in {"Rule", "URL Rewrite"}:
+            sections.setdefault(current, {}).setdefault("__raw_lines__", []).append(line)
+        elif current is not None and "=" in line:
             key, value = line.split("=", 1)
             key = key.strip().lower()
             sections.setdefault(current, {}).setdefault(key, []).append(value.strip())
