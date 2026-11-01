@@ -162,10 +162,26 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
     if not isinstance(archive.get("items"), list):
         raise ValueError("config conflict archive has invalid items structure")
 
-    active_by_key = {
-        (str(item.get("policy", "")).upper(), str(item.get("rule", ""))): item
-        for item in archive["items"] if not item.get("restored_at")
-    }
+    # Archive entries are tied to a particular config snapshot. Re-evaluate
+    # them against the current authoritative config; an old conflict must not
+    # suppress a rule forever after the user removes or changes that config rule.
+    active_by_key = {}
+    for item in archive["items"]:
+        if item.get("restored_at") or item.get("superseded_at"):
+            continue
+        archived_policy = str(item.get("policy", "")).upper()
+        archived_line = str(item.get("rule", ""))
+        if archived_policy not in POLICIES:
+            raise ValueError("invalid policy in config-conflict archive")
+        current_result = classify_rule(archived_policy, archived_line, prior_rules, skip_entries)
+        if current_result["status"] == "NO_CONFLICT":
+            item["superseded_at"] = timestamp
+            item["superseded_by_config_blob_sha"] = config_blob_sha
+            item["superseded_reason"] = "Current ss.conf no longer overlaps this archived external rule; it may be reconsidered by the normal evidence gate."
+            archive_changed = True
+            continue
+        key = (archived_policy, archived_line)
+        active_by_key[key] = item
     removed = []
     suppressed_active_archive = []
     published_removed = 0
@@ -349,8 +365,8 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "retained_for_review_count": len(retained_review),
         "restored": restored,
         "restore_refused": restore_refused,
-        "active_archive_count": sum(1 for x in archive["items"] if not x.get("restored_at")),
-        "policy": "Every provable exact/suffix scope overlap with ss.conf or skip-proxy is removed from published and queued external rules, regardless of whether the policy matches. The earliest applicable config rule is recorded as precedence evidence. Keyword/regex/conditional overlaps that cannot be proven from static domain scope are retained and reported; no speculative deletion is allowed.",
+        "active_archive_count": sum(1 for x in archive["items"] if not x.get("restored_at") and not x.get("superseded_at")),
+        "policy": "Every provable exact/suffix scope overlap with ss.conf or skip-proxy is removed from published and queued external rules, regardless of whether the policy matches. The earliest applicable config rule is recorded as precedence evidence. Historical archive entries are rechecked against the current config and superseded when the overlap no longer exists. Keyword/regex/conditional overlaps that cannot be proven from static domain scope are retained and reported; no speculative deletion is allowed.",
         "errors": [],
     }
     report_json.parent.mkdir(parents=True, exist_ok=True)
