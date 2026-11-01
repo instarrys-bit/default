@@ -10,6 +10,7 @@ on:
       - "sources/policy.json"\n      - "shadowrocket/ss.conf"
       - "sources/domain_sources.json"
       - "sources/protected_domains.json"
+      - "sources/request_domain_observations.json"
       - "scripts/**"
       - "tests/**"
       - ".github/workflows/auto_sync.yml"
@@ -41,7 +42,7 @@ jobs:
 
       - name: Compile and run deterministic review tests
         run: |
-          python3 -m py_compile scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py
+          python3 -m py_compile scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/import_request_observations.py
           python3 -m unittest discover -s tests -v
 
       - name: Discover candidate source repositories (non-activating)
@@ -56,6 +57,9 @@ jobs:
 
       - name: Verify immutable uploaded baseline
         run: python3 scripts/verify_baseline.py --baseline-only
+
+      - name: Import observed request hostnames as unclassified candidates
+        run: python3 scripts/import_request_observations.py
 
       - name: Collect and cross-check domain-only sources
         run: python3 scripts/collect_domains.py
