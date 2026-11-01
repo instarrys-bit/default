@@ -96,7 +96,9 @@ def main():
     work=[]
     for policy in POLICIES:
         for line in sorted(rules[policy]):
-            if not line.startswith(("DOMAIN,","DOMAIN-SUFFIX,")): continue
+            if not line.startswith("DOMAIN,"):
+                # Suffix-root DNS status does not establish whether its subdomains are valid.
+                continue
             domain=line.split(",",1)[1].lower().strip(".")
             identity=rid(policy.upper(),line)
             if not restore_only and not protected(domain,protected_cfg) and identity not in restored_keys:
@@ -144,7 +146,7 @@ def main():
         manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n")
     REPORT.mkdir(parents=True,exist_ok=True)
     options=[{"id":x["id"],"policy":x["policy"],"rule":x["rule"],"removed_at":x["removed_at"]} for x in archive["items"] if not x.get("restored_at")]
-    report={"created_at":timestamp,"triggered_milestones":state.get("due_milestones",[]),"monthly_review":state.get("monthly_review_due",False),"deleted":deleted,"active_or_nodata_count":active,"unknown_retained_count":unknown,"restored":restored,"restore_ids_not_found":missing,"restoration_options":options,"policy":"Only confirmed NXDOMAIN on both independent resolvers for A and AAAA, twice at least 30 days apart. Protected major-company suffixes are never auto-deleted. Resolver errors, missing evidence and source disappearance are retained."}
+    report={"created_at":timestamp,"triggered_milestones":state.get("due_milestones",[]),"monthly_review":state.get("monthly_review_due",False),"deleted":deleted,"active_or_nodata_count":active,"unknown_retained_count":unknown,"restored":restored,"restore_ids_not_found":missing,"restoration_options":options,"policy":"Only exact DOMAIN hosts confirmed NXDOMAIN by both independent resolvers for A and AAAA, twice at least 30 days apart. Suffix rules are retained because a suffix root can lack DNS records while subdomains remain valid. Protected major-company suffixes are also retained. Resolver errors, missing evidence and source disappearance are retained."}
     (REPORT/"latest.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n")
     lines=["# Lifecycle audit",f"Completed: {timestamp}",f"Milestones: {report['triggered_milestones']}",f"Deleted: {len(deleted)}",f"Active/NODATA retained: {active}",f"Unknown retained: {unknown}",f"Restored: {len(restored)}","## Deleted entries"]
     lines += [f"- {x['id']} | {x['policy']} | {x['rule']} | first confirmation {x['first_confirmed_at']}" for x in deleted] or ["- None"]
