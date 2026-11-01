@@ -57,7 +57,7 @@ def main():
     if not state.get("due_milestones") and not state.get("monthly_review_due"):
         REPORT.mkdir(parents=True,exist_ok=True)
         idle={"status":"not_due","published_rule_count":state.get("published_rule_count",0),"next_milestone":state.get("next_milestone",5000),"max_published_rules":30000}
-        (REPORT/"latest.json").write_text(json.dumps(idle,ensure_ascii=False,indent=2)+"\\n")
+        (REPORT/"latest.json").write_text(json.dumps(idle,ensure_ascii=False,indent=2)+"\n")
         (REPORT/"latest.md").write_text("# Lifecycle audit\\n\\nNo lifecycle review is due. Daily incremental review and publishing continue.\\n")
         print(json.dumps(idle)); return
     timestamp=datetime.now(timezone.utc).isoformat()
@@ -134,7 +134,7 @@ def main():
         manifest["published_rule_total"]=sum(manifest["rule_count"].values())
         manifest["queued_rule_total"]=len(queue.get("items",[]))
         manifest["lifecycle_last_audit_at"]=timestamp
-        manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\\n")
+        manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n")
     REPORT.mkdir(parents=True,exist_ok=True)
     options=[{"id":x["id"],"policy":x["policy"],"rule":x["rule"],"removed_at":x["removed_at"]} for x in archive["items"] if not x.get("restored_at")]
     report={"created_at":timestamp,"triggered_milestones":state.get("due_milestones",[]),"monthly_review":state.get("monthly_review_due",False),"deleted":deleted,"active_or_nodata_count":active,"unknown_retained_count":unknown,"restored":restored,"restore_ids_not_found":missing,"restoration_options":options,"policy":"Only confirmed NXDOMAIN on both independent resolvers for A and AAAA, twice at least 30 days apart. Protected major-company suffixes are never auto-deleted. Resolver errors, missing evidence and source disappearance are retained."}
