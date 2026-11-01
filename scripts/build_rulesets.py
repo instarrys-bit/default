@@ -52,7 +52,7 @@ def main():
         policy=str(item.get("policy","")).upper()
         if not DOMAIN_RE.fullmatch(domain) or policy not in POLICIES:
             raise ValueError("invalid approved domain or policy: "+domain)
-        if item.get("decision_engine")!="deterministic-domain-audit/2.1":
+        if item.get("decision_engine")!="deterministic-domain-audit/3.0":
             raise ValueError("approved record was not produced by the current deterministic reviewer: "+domain)
         if domain in seen:
             raise ValueError("duplicate or cross-policy approved domain: "+domain)
@@ -74,7 +74,9 @@ def main():
                 continue
             if ev.get("url")!=src.get("url"):
                 continue
-            if ev.get("lineage_status")!="verified" or ev.get("lineage_status")!=src.get("lineage_status"):
+            if ev.get("lineage_status") not in {"verified","partial","unverified"} or ev.get("lineage_status")!=src.get("lineage_status"):
+                continue
+            if src.get("policy_evidence") is not None and ev.get("policy_evidence")!=src.get("policy_evidence"):
                 continue
             if ev.get("upstream_repositories")!=src.get("upstream_repositories",[]):
                 continue
@@ -84,14 +86,14 @@ def main():
         groups={str(ev["independence_group"]) for ev in valid if ev.get("independence_group")}
         required=set(required_by_policy.get(policy,[]))
         confidence=float(item.get("confidence",0))
-        if (not required or not required.issubset(source_ids) or len(source_ids)<minimum
+        if (not required.issubset(source_ids) or len(source_ids)<minimum
             or len(publishers)<minimum or len(groups)<minimum or confidence<threshold):
             raise ValueError("approved record no longer meets current evidence gate: "+domain)
         if int(item.get("source_count",0))<minimum:
             raise ValueError("approved record source count below minimum: "+domain)
         if any(item.get(key)!="PASS" for key in ("duplicate_check","conflict_check","risk_check")):
             raise ValueError("approved record failed a local safety gate: "+domain)
-        local_status,reason=inspect(domain,index,conditional,base,protected)
+        local_status,reason=inspect(domain,index,conditional,base,protected,policy)
         if local_status:
             raise ValueError("approved record now overlaps baseline ("+str(local_status)+"): "+domain+" / "+str(reason))
         seen[domain]=policy
@@ -110,7 +112,7 @@ def main():
         "current_source_snapshot":"data/candidates.json",
         "artifact_scope":"standalone_rulesets_only",
         "outputs":["direct.list","proxy.list","reject.list"],
-        "review_engine":"deterministic-domain-audit/2.1",
+        "review_engine":"deterministic-domain-audit/3.0",
         "minimum_independent_sources":minimum,
         "minimum_confidence_score":threshold,
         "required_sources_by_policy":required_by_policy,
@@ -137,8 +139,9 @@ def main():
         "import_instruction":"Optionally reference each published raw list URL in the user-managed Shadowrocket [Rule] section with RULE-SET,<raw URL>,<matching policy>. This automation does not edit the user config.",
         "limitations":[
             "Only exact DOMAIN candidates with current policy-labelled evidence and all local gates passing are published.",
-            "The configured sources currently support REJECT only; DIRECT and PROXY remain unavailable until dedicated policy-labelled sources are configured.",
-            "Publisher corroboration does not prove complete upstream independence; shared data lineage remains possible.",
+            "A domain is published only when at least two distinct configured publishers and source groups agree on its routing policy; a single-source candidate remains under review.",
+            "Lineage status is retained as provenance metadata, not a blanket publication veto; source overlap is a correlation signal, not proof of identical domain ancestry.",
+            "Broad single-label suffixes are excluded; only exact-domain entries are emitted.",
             "Static checks do not replace Shadowrocket device testing."
         ]
     }

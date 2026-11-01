@@ -31,12 +31,11 @@ class SourceRegistryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate_registry(bad)
 
-    def test_unrequired_enabled_policy_source_fails_closed(self):
+    def test_policy_can_use_any_two_matching_sources_without_static_required_list(self):
         bad=json.loads(json.dumps(self.config))
-        bad["sources"].append({"id":"c","publisher":"publisher-c","independence_group":"group-c","url":"https://raw.githubusercontent.com/c/list","classification":"DIRECT","format":"domain-only","role":"primary_candidate_source","lineage_status":"verified","lineage_evidence_url":"https://github.com/a/provenance","upstream_repositories":[],"weight":0.4})
+        bad["sources"].append({"id":"c","publisher":"publisher-c","independence_group":"group-c","url":"https://raw.githubusercontent.com/c/list","classification":"DIRECT","format":"domain-only","role":"primary_candidate_source","lineage_status":"unverified","upstream_repositories":[],"weight":0.4})
         bad["scoring"]["source_weights"]["c"]=0.4
-        with self.assertRaises(ValueError):
-            validate_registry(bad)
+        self.assertIn("c",validate_registry(bad))
 
     def test_same_publisher_cannot_count_as_independent(self):
         bad=json.loads(json.dumps(self.config))
@@ -63,7 +62,7 @@ class SourceRegistryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate_registry(bad)
 
-    def test_unverified_source_lineage_is_accepted_but_not_publishable(self):
+    def test_unverified_source_lineage_is_retained_as_metadata(self):
         bad=json.loads(json.dumps(self.config))
         bad["sources"][0]["lineage_status"]="unverified"
         self.assertIn("a",validate_registry(bad))
@@ -106,9 +105,9 @@ class EvidenceGateTests(unittest.TestCase):
         self.assertEqual(len(publishers),2)
         self.assertEqual(len(groups),2)
 
-    def test_unverified_lineage_cannot_qualify(self):
-        evidence=[dict(self.evidence[0],lineage_status="unverified"),self.evidence[1]]
-        self.assertFalse(evidence_gate(evidence,self.weights,2,0.8,{"sr-adblock-domain-lite","hagezi-domains-pro"})[-1])
+    def test_unverified_lineage_can_qualify_when_two_publishers_agree(self):
+        evidence=[dict(self.evidence[0],lineage_status="unverified"),dict(self.evidence[1],lineage_status="partial")]
+        self.assertTrue(evidence_gate(evidence,self.weights,2,0.8,())[-1])
 
     def test_one_source_is_held(self):
         evidence=[self.evidence[0],dict(self.evidence[1],currently_listed=False)]
@@ -174,6 +173,7 @@ class SourceIntegrityTests(unittest.TestCase):
             "api.example.com": "exact_candidate",
             "example.org": "suffix_candidate",
         })
+        self.assertEqual(parse_shadowrocket_domain_rules(b"DOMAIN-SUFFIX,cn\\nDOMAIN-SUFFIX,example.cn\\n", {"classification":"DIRECT"}), {"example.cn":"suffix_candidate"})
 
     def test_shadowrocket_parser_rejects_explicit_policy_mismatch(self):
         from collect_domains import parse_shadowrocket_domain_rules
@@ -197,6 +197,12 @@ class SourceIntegrityTests(unittest.TestCase):
 
     def test_domain_list_regex_accepts_valid_fqdn(self):
         self.assertEqual(parse_domain_list(b'example.com')['example.com'], 'exact_candidate')
+
+    def test_domain_list_deduplicates_repeated_entries(self):
+        self.assertEqual(parse_domain_list(b'example.com\\nexample.com\\n'), {'example.com':'exact_candidate'})
+
+    def test_domain_list_skips_single_label_artifacts(self):
+        self.assertEqual(parse_domain_list(b'example.com\\nalibaba\\n'), {'example.com':'exact_candidate'})
 
     def test_small_source_change_is_allowed(self):
         added, removed = check_source_delta(set('abcdefghij'), set('abcdefghiX'), 'test', ratio=0.10, minimum_absolute=2)

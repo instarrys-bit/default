@@ -25,7 +25,8 @@
         "external:peter-lowe"
       ],
       "lineage_note": "Public sources.yaml lists five domain-layer input projects; README says lite output keeps domains present in at least two upstreams. Johnshall input itself documents EasyList China, 乘风规则 and Peter Lowe lineage. The build does not expose per-domain provenance, so completeness and item-level ancestry remain partial.",
-      "lineage_evidence_url": "https://github.com/ithtelab/sr-adblock/blob/main/config/sources.yaml"
+      "lineage_evidence_url": "https://github.com/ithtelab/sr-adblock/blob/main/config/sources.yaml",
+      "policy_evidence": "documented_policy"
     },
     {
       "id": "hagezi-domains-pro",
@@ -108,26 +109,97 @@
         "zakird/crux-top-lists"
       ],
       "lineage_note": "Public sources.md enumerates upstream inputs, and FAQ explains that entries are evaluated and combined with project-maintained data rather than copied wholesale. This is a broad input inventory, not item-level lineage for the Pro output; complete domain-to-upstream mapping remains unavailable.",
-      "lineage_evidence_url": "https://github.com/HaGeZi/dns-blocklists/blob/main/sources.md"
+      "lineage_evidence_url": "https://github.com/HaGeZi/dns-blocklists/blob/main/sources.md",
+      "policy_evidence": "documented_policy"
+    },
+    {
+      "id": "acl4ssr-china-domain",
+      "publisher": "ACL4SSR/ACL4SSR",
+      "role": "primary_candidate_source",
+      "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list",
+      "format": "shadowrocket-domain-rules",
+      "weight": 0.4,
+      "classification": "DIRECT",
+      "minimum_entries": 500,
+      "independence_group": "acl4ssr-direct",
+      "lineage_status": "unverified",
+      "policy_evidence": "documented_policy",
+      "upstream_repositories": [],
+      "lineage_note": "README explicitly labels ChinaDomain.list as a domestic direct-routing list. Publisher-level upstream lineage is not fully established.",
+      "lineage_evidence_url": "https://github.com/ACL4SSR/ACL4SSR/blob/master/README.md",
+      "bootstrap_enqueue": true
+    },
+    {
+      "id": "clashfx-cn-apps-direct",
+      "publisher": "Clash-FX/cn-apps-direct-domains",
+      "role": "independent_policy_corroboration",
+      "url": "https://raw.githubusercontent.com/Clash-FX/cn-apps-direct-domains/main/apps-direct-domains.list",
+      "format": "shadowrocket-domain-rules",
+      "weight": 0.4,
+      "classification": "DIRECT",
+      "minimum_entries": 100,
+      "independence_group": "clashfx-direct",
+      "lineage_status": "unverified",
+      "policy_evidence": "explicit_action",
+      "upstream_repositories": [],
+      "lineage_note": "Source entries carry explicit DIRECT actions. Complete item-level upstream ancestry is not published.",
+      "lineage_evidence_url": "https://github.com/Clash-FX/cn-apps-direct-domains/blob/main/README.md"
+    },
+    {
+      "id": "acl4ssr-proxy-lite",
+      "publisher": "ACL4SSR/ACL4SSR",
+      "role": "primary_candidate_source",
+      "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list",
+      "format": "shadowrocket-domain-rules",
+      "weight": 0.4,
+      "classification": "PROXY",
+      "minimum_entries": 250,
+      "independence_group": "acl4ssr-proxy",
+      "lineage_status": "unverified",
+      "policy_evidence": "documented_policy",
+      "upstream_repositories": [],
+      "lineage_note": "README explicitly describes ProxyLite.list as a proxy list. Complete item-level upstream ancestry is not established.",
+      "lineage_evidence_url": "https://github.com/ACL4SSR/ACL4SSR/blob/master/README.md",
+      "bootstrap_enqueue": true
+    },
+    {
+      "id": "sve1r-global-proxy",
+      "publisher": "sve1r/Rules-For-Quantumult-X",
+      "role": "independent_policy_corroboration",
+      "url": "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Region/Global.list",
+      "format": "quantumult-domain-rules",
+      "weight": 0.4,
+      "classification": "PROXY",
+      "minimum_entries": 500,
+      "independence_group": "sve1r-global",
+      "lineage_status": "unverified",
+      "policy_evidence": "explicit_action",
+      "policy_action_map": {
+        "OUTSIDE": "PROXY"
+      },
+      "upstream_repositories": [],
+      "lineage_note": "Global.list uses HOST/HOST-SUFFIX entries with the documented OutSide group mapped to PROXY. Complete item-level upstream ancestry is not published.",
+      "lineage_evidence_url": "https://github.com/sve1r/Rules-For-Quantumult-X/blob/main/README.md"
     }
   ],
   "scoring": {
     "minimum_independent_sources": 2,
     "minimum_confidence": 0.8,
-    "classification": "REJECT",
-    "independence_basis": "Require both separately maintained configured project publishers and distinct source groups. sr-adblock-domain-lite documents a two-upstream inclusion criterion; complete cross-project upstream data lineage is not fully audited, so corroboration is not a guarantee of zero shared ancestry.",
-    "confidence_interpretation": "Operational configured-source score (0.4 + 0.4), not a probability of correctness.",
+    "classification": "MULTI_POLICY",
+    "independence_basis": "Each published domain needs matching current evidence from at least two distinct publishers and source groups. Publisher-level lineage is recorded separately; incomplete lineage is not a blanket veto. Source overlap is a correlation signal, not proof that a specific domain has shared ancestry.",
+    "confidence_interpretation": "Operational corroboration score from current configured publisher evidence (0.4 per source); not a probability of correctness.",
     "source_weights": {
       "sr-adblock-domain-lite": 0.4,
-      "hagezi-domains-pro": 0.4
+      "hagezi-domains-pro": 0.4,
+      "acl4ssr-china-domain": 0.4,
+      "clashfx-cn-apps-direct": 0.4,
+      "acl4ssr-proxy-lite": 0.4,
+      "sve1r-global-proxy": 0.4
     },
     "required_sources_by_policy": {
       "DIRECT": [],
       "PROXY": [],
-      "REJECT": [
-        "sr-adblock-domain-lite",
-        "hagezi-domains-pro"
-      ]
+      "REJECT": []
     },
     "minimum_independent_publishers": 2
   }

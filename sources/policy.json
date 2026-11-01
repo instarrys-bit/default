@@ -14,7 +14,7 @@
     "PROXY",
     "REJECT"
   ],
-  "external_source_mode": "domain-only",
+  "external_source_mode": "policy-labelled-domain-sources",
   "external_sources": [
     {
       "id": "sr-adblock-domain-lite",
@@ -22,10 +22,77 @@
       "capture_enabled": true,
       "format": "domain-only",
       "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
-      "allow_leading_dot": true,
+      "classification": "REJECT",
+      "role": "primary_candidate_source",
+      "policy_evidence": "documented_policy",
       "import_enabled": false,
-      "policy_assignment_enabled": false,
-      "note": "仅采集域名候选；达到置信度门槛后按自动审核规则处理。上游规则策略、模块、脚本、MITM、DNS、Rewrite 一律不直接采纳。"
+      "policy_assignment_enabled": true,
+      "note": "仅采集域名并按登记策略核验；不采纳来源脚本、模块、MITM、DNS 或 Rewrite。"
+    },
+    {
+      "id": "hagezi-domains-pro",
+      "enabled": true,
+      "capture_enabled": true,
+      "format": "adblock-domain-rules",
+      "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+      "classification": "REJECT",
+      "role": "independent_adblock_corroboration",
+      "policy_evidence": "documented_policy",
+      "import_enabled": false,
+      "policy_assignment_enabled": true,
+      "note": "仅采集域名并按登记策略核验；不采纳来源脚本、模块、MITM、DNS 或 Rewrite。"
+    },
+    {
+      "id": "acl4ssr-china-domain",
+      "enabled": true,
+      "capture_enabled": true,
+      "format": "shadowrocket-domain-rules",
+      "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list",
+      "classification": "DIRECT",
+      "role": "primary_candidate_source",
+      "policy_evidence": "documented_policy",
+      "import_enabled": false,
+      "policy_assignment_enabled": true,
+      "note": "仅采集域名并按登记策略核验；不采纳来源脚本、模块、MITM、DNS 或 Rewrite。"
+    },
+    {
+      "id": "clashfx-cn-apps-direct",
+      "enabled": true,
+      "capture_enabled": true,
+      "format": "shadowrocket-domain-rules",
+      "url": "https://raw.githubusercontent.com/Clash-FX/cn-apps-direct-domains/main/apps-direct-domains.list",
+      "classification": "DIRECT",
+      "role": "independent_policy_corroboration",
+      "policy_evidence": "explicit_action",
+      "import_enabled": false,
+      "policy_assignment_enabled": true,
+      "note": "仅采集域名并按登记策略核验；不采纳来源脚本、模块、MITM、DNS 或 Rewrite。"
+    },
+    {
+      "id": "acl4ssr-proxy-lite",
+      "enabled": true,
+      "capture_enabled": true,
+      "format": "shadowrocket-domain-rules",
+      "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list",
+      "classification": "PROXY",
+      "role": "primary_candidate_source",
+      "policy_evidence": "documented_policy",
+      "import_enabled": false,
+      "policy_assignment_enabled": true,
+      "note": "仅采集域名并按登记策略核验；不采纳来源脚本、模块、MITM、DNS 或 Rewrite。"
+    },
+    {
+      "id": "sve1r-global-proxy",
+      "enabled": true,
+      "capture_enabled": true,
+      "format": "quantumult-domain-rules",
+      "url": "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Region/Global.list",
+      "classification": "PROXY",
+      "role": "independent_policy_corroboration",
+      "policy_evidence": "explicit_action",
+      "import_enabled": false,
+      "policy_assignment_enabled": true,
+      "note": "仅采集域名并按登记策略核验；不采纳来源脚本、模块、MITM、DNS 或 Rewrite。"
     }
   ],
   "dns_invariants": {
@@ -39,17 +106,17 @@
   },
   "release_policy": {
     "automatic_config_rewrite": false,
-    "automatic_policy_inference": true,
+    "automatic_policy_inference": false,
     "minimum_independent_evidence_sources": 2,
     "minimum_confidence": 0.8,
     "publish_only_after_all_checks": true,
     "rule_scope": "DOMAIN only; DOMAIN-SUFFIX is never generated automatically",
-    "approval_rule": "Rules are assigned only by deterministic, machine-verifiable source agreement and local safety gates. No AI, model API, or manual per-domain review is used. Unsupported policy classes remain unpublished.",
+    "approval_rule": "A domain is assigned only when at least two distinct configured publishers and source groups currently list the exact domain under the same declared policy, and all deterministic local checks pass. Incomplete lineage is recorded but is not a blanket veto. No AI, model API, or manual per-domain review is used.",
     "minimum_met_criteria": 2,
     "approval_criteria": [
       {
         "id": "multi_publisher_policy_evidence",
-        "description": "Both configured current policy-labelled sources must list the exact candidate and agree on REJECT; evidence publisher and group identifiers must match source configuration."
+        "description": "At least two distinct current publisher sources and source groups list the exact domain under the same DIRECT, PROXY or REJECT policy; source identity, policy-evidence type and snapshot hash must match the registry."
       },
       {
         "id": "local_safety_veto",
@@ -60,16 +127,16 @@
       "Any exact or suffix rule with a different effective policy blocks publication",
       "Any unresolved conditional AND/OR/NOT overlap blocks publication",
       "Any critical-function protection-list match blocks publication",
-      "Any skip-proxy direct-bypass match blocks publication",
-      "Any malformed source, invalid domain, duplicate ledger key or failed validator blocks publication"
+      "Any malformed source snapshot, excessive source drift, duplicate ledger key or failed validator pauses the batch",
+      "Single-label root suffix entries are excluded; duplicate entries are deduplicated"
     ],
-    "review_status": "Candidates below confidence 0.80 or with fewer than two independent credible sources remain REVIEW; conflicts and critical-function risks are held.",
+    "review_status": "A single-source candidate or a candidate below the two-publisher corroboration threshold remains REVIEW; cross-policy conflicts and critical-function risks are held.",
     "publish_gate": "No automatic writes to original or canonical baseline. Derived output only.",
-    "decision_engine": "deterministic-domain-audit/2.1",
+    "decision_engine": "deterministic-domain-audit/3.0",
     "confidence_interpretation": "Operational evidence score, not a statistical probability or guarantee of safe blocking.",
     "publication_mode": "deterministic-evidence-reviewed-derived-rulesets",
-    "direct_proxy_policy": "DIRECT and PROXY remain REVIEW until dedicated policy-labelled source sets with independent publisher corroboration are configured.",
-    "review_engine": "deterministic-domain-audit/2.1",
+    "direct_proxy_policy": "DIRECT and PROXY are active through the registered ACL4SSR/Clash-FX and ACL4SSR/sve1r source pairs; only domain-level corroborated entries are eligible for publication.",
+    "review_engine": "deterministic-domain-audit/3.0",
     "automation_mode": "fully_hosted_deterministic",
     "manual_review_required": false,
     "model_api_calls": 0

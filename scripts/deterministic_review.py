@@ -39,13 +39,15 @@ def validate_evidence(evidence, source_map, current_hashes, policy):
             continue
         if item.get("lineage_status")!=source.get("lineage_status"):
             continue
+        if source.get("policy_evidence") is not None and item.get("policy_evidence")!=source.get("policy_evidence"):
+            continue
         if item.get("upstream_repositories")!=source.get("upstream_repositories",[]):
             continue
         valid.append(item)
     return valid
 
 def evidence_gate(evidence, source_weights, minimum, threshold, required_sources=()):
-    current=[item for item in evidence if item.get("source_id") and item.get("currently_listed") is True and item.get("lineage_status")=="verified"]
+    current=[item for item in evidence if item.get("source_id") and item.get("currently_listed") is True and item.get("lineage_status") in {"verified","partial","unverified"}]
     source_ids={str(item.get("source_id")) for item in current}
     publishers={str(item.get("publisher")) for item in current if item.get("publisher")}
     groups={str(item.get("independence_group")) for item in current if item.get("independence_group")}
@@ -66,11 +68,12 @@ def parse_skip_proxy(text):
 def overlaps(domain, rule_domain):
     rule_domain=rule_domain.lower().strip(".")
     return domain==rule_domain or domain.endswith("."+rule_domain)
-def inspect(domain,rules,conditional,base,protected):
+def inspect(domain,rules,conditional,base,protected,candidate_policy=None):
     hits=rules.matches_host(domain)
     if hits:
         winner=hits[0]
-        return ("DUPLICATE" if winner.policy=="REJECT" else "CONFLICT",
+        status="ALREADY_COVERED" if candidate_policy and winner.policy==candidate_policy else "CONFLICT"
+        return (status,
                 "Existing first-match "+winner.kind+" "+winner.domain+" => "+winner.policy+" (line "+str(winner.line)+")")
     for _,raw in conditional:
         for kind,match in COND_RE.findall(raw):
@@ -90,7 +93,7 @@ def inspect(domain,rules,conditional,base,protected):
             fields=line.split(",",2)
             if len(fields)==3 and fields[1].lower() in domain:
                 pol=fields[2].strip().upper()
-                return ("ALREADY_COVERED" if pol=="REJECT" else "CONFLICT"),"Matches existing DOMAIN-KEYWORD => "+pol
+                return ("ALREADY_COVERED" if candidate_policy==pol else "CONFLICT"),"Matches existing DOMAIN-KEYWORD => "+pol
         if upper.startswith("URL-REGEX,"):
             fields=line.rsplit(",",1)
             if len(fields)!=2: return "REVIEW","Malformed URL-REGEX cannot be evaluated"
@@ -99,13 +102,13 @@ def inspect(domain,rules,conditional,base,protected):
             probes=("http://"+domain+"/","https://"+domain+"/","http://"+domain+"/multifetch?dms=","http://"+domain+"/fetch?dm=","http://"+domain+"/d?dn=","http://"+domain+"/httpdns/")
             if any(pattern.search(x) for x in probes):
                 pol=fields[1].strip().upper()
-                return ("ALREADY_COVERED" if pol=="REJECT" else "CONFLICT"),"Matches existing URL-REGEX => "+pol
+                return ("ALREADY_COVERED" if candidate_policy==pol else "CONFLICT"),"Matches existing URL-REGEX => "+pol
     for item in parse_skip_proxy(base):
         if "/" in item or ":" in item: continue
         if item.startswith("*."):
             root=item[2:]
-            if domain==root or domain.endswith("."+root): return "CONFLICT","Matches skip-proxy direct-bypass entry "+item
-        elif domain==item: return "CONFLICT","Matches skip-proxy direct-bypass entry "+item
+            if domain==root or domain.endswith("."+root): return ("ALREADY_COVERED" if candidate_policy=="DIRECT" else "CONFLICT"),"Matches skip-proxy direct-bypass entry "+item
+        elif domain==item: return ("ALREADY_COVERED" if candidate_policy=="DIRECT" else "CONFLICT"),"Matches skip-proxy direct-bypass entry "+item
     return None,None
 def main():
     source_cfg=json.loads(POLICY.read_text(encoding="utf-8"))
@@ -162,14 +165,14 @@ def main():
             evidence=validate_evidence(raw_evidence,source_map,current_hashes,policy)
             required_sources=set(score_cfg.get("required_sources_by_policy",{}).get(policy,[]))
             confidence,source_ids,publishers,groups,qualified=evidence_gate(evidence,source_weights,minimum,threshold,required_sources)
-            status,reason=inspect(domain,index,conditional,base,protected)
+            status,reason=inspect(domain,index,conditional,base,protected,policy)
             if status is None:
                 if item.get("source_entry_type")=="suffix_candidate":
                     status="REVIEW"; reason="Source marks suffix-wide scope; automatic rules are exact DOMAIN only"
                 elif not qualified:
                     status="REVIEW"; reason="Current source identity, publisher, policy, independence or confidence evidence is below configured threshold"
                 else:
-                    status="APPROVED"; reason="Explicit "+policy+" policy corroborated by configured independent publishers; all local gates passed"
+                    status="APPROVED"; reason="Policy evidence agrees across distinct configured publishers; source lineage is recorded separately and all local gates passed"
         review_map[domain]={
             "domain":domain,"source_entry_type":item.get("source_entry_type","exact_candidate"),"candidate_policies":sorted(candidate_policies),"classification":policy,"policy":policy,"confidence":confidence,
             "status":status,"reason":reason,"evidence":evidence,"source_count":len(source_ids),"publisher_count":len(publishers),"independence_group_count":len(groups),
@@ -177,7 +180,7 @@ def main():
             "duplicate_check":"PASS" if status not in {"DUPLICATE","ALREADY_COVERED"} else status,
             "conflict_check":"PASS" if status not in {"CONFLICT","POLICY_CONFLICT","REVIEW"} else status,
             "risk_check":"VETO" if status=="RISK_HOLD" else "PASS",
-            "decision_engine":"deterministic-domain-audit/2.1","reviewed_at":now,
+            "decision_engine":"deterministic-domain-audit/3.0","reviewed_at":now,
             "config_baseline":"uploaded-immutable-baseline"
         }
         run_counts[status]=run_counts.get(status,0)+1
@@ -185,7 +188,7 @@ def main():
     total_counts={}
     for item in reviews: total_counts[item["status"]]=total_counts.get(item["status"],0)+1
     OUTPUT.write_text(json.dumps({
-        "schema_version":2,"engine":"deterministic-domain-audit/2.1","updated_at":now,
+        "schema_version":3,"engine":"deterministic-domain-audit/3.0","updated_at":now,
         "source_snapshot":collected.get("sources",[]),"run_counts":run_counts,
         "counts":total_counts,"reviews":reviews
     },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")

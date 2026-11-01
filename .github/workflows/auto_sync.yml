@@ -9,6 +9,7 @@ on:
     paths:
       - "sources/policy.json"
       - "sources/domain_sources.json"
+      - "sources/protected_domains.json"
       - "scripts/**"
       - "tests/**"
       - ".github/workflows/auto_sync.yml"
@@ -38,7 +39,7 @@ jobs:
 
       - name: Compile and run deterministic review tests
         run: |
-          python3 -m py_compile scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py
+          python3 -m py_compile scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py
           python3 -m unittest discover -s tests -v
 
       - name: Discover candidate source repositories (non-activating)
@@ -70,7 +71,7 @@ jobs:
           python3 scripts/build_source_candidates.py
           cat reports/source-candidate-matrix.md >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Run deterministic duplicate, conflict, confidence and risk review
+      - name: Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services
         run: python3 scripts/deterministic_review.py
 
       - name: Build standalone DIRECT, PROXY and REJECT rule sets
@@ -93,7 +94,7 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
-            python3 -m py_compile scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py
+            python3 -m py_compile scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py
             python3 -m unittest discover -s tests -v
             GITHUB_TOKEN=${{ github.token }} python3 scripts/discover_sources.py
             python3 scripts/assess_sources.py

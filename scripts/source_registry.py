@@ -7,6 +7,7 @@ POLICIES={"DIRECT","PROXY","REJECT"}
 FORMATS={"domain-only","adblock-domain-rules","shadowrocket-domain-rules","quantumult-domain-rules"}
 ROLES={"primary_candidate_source","independent_adblock_corroboration","independent_policy_corroboration"}
 LINEAGE_STATES={"verified","partial","unverified"}
+POLICY_EVIDENCE_STATES={"explicit_action","documented_policy"}
 
 def validate_registry(config):
     sources=config.get("sources")
@@ -28,6 +29,8 @@ def validate_registry(config):
             raise ValueError("source has an unsupported collection role: "+sid)
         if source.get("lineage_status") not in LINEAGE_STATES:
             raise ValueError("source lineage_status must be verified, partial or unverified: "+sid)
+        if source.get("policy_evidence") is not None and source.get("policy_evidence") not in POLICY_EVIDENCE_STATES:
+            raise ValueError("source policy_evidence must be explicit_action or documented_policy: "+sid)
         upstreams=source.get("upstream_repositories",[])
         if not isinstance(upstreams,list) or len(upstreams)!=len(set(upstreams)) or any(not isinstance(x,str) or not x.strip() for x in upstreams):
             raise ValueError("source upstream_repositories must be a unique list of repository names: "+sid)
@@ -75,8 +78,6 @@ def validate_registry(config):
                         and str(source.get("classification","")).upper()==policy}
         if policy_sources and not any(by_id[sid].get("role")=="primary_candidate_source" for sid in policy_sources):
             raise ValueError("enabled "+policy+" policy has no primary candidate source")
-        if policy_sources and not policy_sources.issubset(set(required)):
-            raise ValueError("all enabled "+policy+" sources must be explicitly required before they can authorize publication")
         if required:
             publishers={by_id[sid]["publisher"] for sid in required}
             groups={by_id[sid]["independence_group"] for sid in required}

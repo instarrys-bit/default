@@ -173,3 +173,13 @@ The scheduled source discovery now seeds these previously researched repositorie
 - Goahead-zfc provides a useful DIRECT and PROXY candidate pair with explicit README RULE-SET references, but it is one publisher and its domestic-apps list includes IP rules that are ignored by the domain-only pipeline.
 
 No DIRECT or PROXY source is activated from this assessment. The existing automatic evidence gate requires two independent, verified source publishers for each policy. Publisher labels, list names, README policy claims, and separate URLs are not proof of independent data lineage. The next automated step is to compare these candidates' upstream inventories and domain-level overlap, then keep only sources whose provenance and policy semantics can be established without guessing.
+
+
+## 2026-11-01 — domain-level corroboration activation
+
+The active registry now uses a domain-level, two-publisher evidence gate rather than requiring complete item-level lineage before any publication. Selected sources:
+
+- DIRECT: ACL4SSR `ChinaDomain.list` (documented direct policy) + Clash-FX `apps-direct-domains.list` (explicit DIRECT action).
+- PROXY: ACL4SSR `ProxyLite.list` (documented proxy policy) + sve1r `Global.list` (explicit `OutSide` action mapped to PROXY).
+
+Measured source overlap: 73 domains between the two DIRECT feeds (60.8% of the smaller set), and 120 domains between ACL4SSR ProxyLite and sve1r Global (38.3% of the smaller set). These are correlation measurements, not proof of shared upstream ancestry. Only matching domains can pass the two-publisher gate. Broad single-label suffixes are excluded. First-run primary sources seed their existing entries once; subsequent runs enqueue only changes.

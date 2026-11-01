@@ -18,7 +18,7 @@ LEGACY_SNAPSHOTS={
 }
 MAX_BYTES=30_000_000
 MAX_CHANGE_RATIO=0.10
-MIN_CHANGE_ABSOLUTE=1000
+MIN_CHANGE_ABSOLUTE=10
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
 
 def fetch(url):
@@ -57,10 +57,15 @@ def parse_domain_list(data,allow_leading_dot=False):
             value=value[1:]
         value=value.lower().rstrip(".")
         if not DOMAIN_RE.fullmatch(value):
+            if "." not in value:
+                continue
             raise ValueError(f"unsupported/non-domain line {number}: {raw[:120]!r}")
+        scope="suffix_candidate" if is_suffix else "exact_candidate"
         if value in result:
-            raise ValueError(f"duplicate domain in source: {value}")
-        result[value]="suffix_candidate" if is_suffix else "exact_candidate"
+            if result[value]!=scope:
+                raise ValueError(f"same domain appears with conflicting DOMAIN scope: {value}")
+            continue
+        result[value]=scope
     if not result:
         raise ValueError("domain-only source yielded no domains")
     return result
@@ -99,6 +104,8 @@ def parse_shadowrocket_domain_rules(data,source):
             raise ValueError(f"malformed {kind} rule at line {number}")
         domain=fields[1].lower().rstrip(".")
         if not DOMAIN_RE.fullmatch(domain):
+            if kind=="DOMAIN-SUFFIX" and "." not in domain:
+                continue
             raise ValueError(f"invalid domain in {kind} rule at line {number}: {fields[1]!r}")
         if len(fields)==3:
             action=fields[2].upper()
@@ -134,6 +141,8 @@ def parse_quantumult_domain_rules(data,source):
             raise ValueError(f"malformed {kind} rule at line {number}")
         domain=fields[1].lower().rstrip(".")
         if not DOMAIN_RE.fullmatch(domain):
+            if kind=="HOST-SUFFIX" and "." not in domain:
+                continue
             raise ValueError(f"invalid domain in {kind} rule at line {number}: {fields[1]!r}")
         raw_action=fields[2].upper()
         action=aliases.get(raw_action,raw_action)
@@ -198,7 +207,7 @@ def main():
             raise ValueError(f"{sid} unexpectedly small or truncated: {len(domains)} < {minimum}")
         previous=read_snapshot(sid)
         if previous is None:
-            added=set()
+            added=set(domains) if source.get("bootstrap_enqueue",False) and source.get("role")=="primary_candidate_source" else set()
             removed=set()
             bootstrap=True
         else:
@@ -234,6 +243,7 @@ def main():
                 "publisher":source["publisher"],
                 "independence_group":source["independence_group"],
                 "lineage_status":source["lineage_status"],
+                "policy_evidence":source.get("policy_evidence","documented_policy"),
                 "upstream_repositories":source.get("upstream_repositories",[]),
                 "classification":policy,
                 "url":source["url"],
