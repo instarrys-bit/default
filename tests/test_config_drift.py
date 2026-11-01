@@ -14,12 +14,12 @@ class ConfigDriftTests(unittest.TestCase):
         self.assertEqual(parsed["MITM"]["enable"], ["true"])
 
     def test_rule_lines_preserve_regex_commas(self):
-        parsed = parse_config(r"""[Rule]
-URL-REGEX,^http://host/path\\?,REJECT
+        parsed = parse_config("""[Rule]
+URL-REGEX,^http://host/(a,b),REJECT
 [URL Rewrite]
 ^http://host/a,b _ reject
 """)
-        self.assertEqual(parsed["Rule"]["__raw_lines__"], ["URL-REGEX,^http://host/path\\?,REJECT"])
+        self.assertEqual(parsed["Rule"]["__raw_lines__"], ["URL-REGEX,^http://host/(a,b),REJECT"])
         self.assertEqual(parsed["URL Rewrite"]["__raw_lines__"], ["^http://host/a,b _ reject"])
 
     def test_compare_detects_dns_change_and_added_mitm(self):
