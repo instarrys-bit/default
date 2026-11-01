@@ -1,6 +1,8 @@
 import copy
 import sys
 import unittest
+import hashlib
+from unittest.mock import patch
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -40,14 +42,21 @@ def candidate(repo="new/direct", policy="DIRECT", drift="unchanged", evidence="R
             "policy_evidence": evidence,
             "domain_count": count,
             "domain_fingerprint_count": count,
-            "sha256": "b" * 64,
+            "sha256": hashlib.sha256("\\n".join(f"d{i}.example" for i in range(count)).encode()).hexdigest(),
             "drift": {"status": drift}
         }]
     }
 
 
 class AutoActivationTests(unittest.TestCase):
-    def test_stable_strong_candidate_activates_without_lineage_veto(self):
+    @patch("auto_activate_sources.urlopen")
+    def test_stable_strong_candidate_activates_without_lineage_veto(self, mocked_urlopen):
+        payload = "\\n".join(f"d{i}.example" for i in range(150)).encode()
+        class Response:
+            def __enter__(self): return self
+            def __exit__(self, *args): return False
+            def read(self): return payload
+        mocked_urlopen.return_value = Response()
         registry, activated, decisions = activate(base_registry(), {"candidates": [candidate()]}, "2026-11-01T00:00:00+00:00")
         self.assertEqual(len(activated), 1)
         source = next(x for x in registry["sources"] if x["id"] == activated[0]["id"])
