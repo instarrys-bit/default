@@ -138,7 +138,7 @@
     "immutable": true,
     "description": "Authoritative user-managed Shadowrocket config baseline. Read-only for automation; derived rule audits must evaluate against this file.",
     "last_user_approved_baseline_update": {
-      "previous_blob_sha": "4b9f3a60522322b820139774bf65cab9f54ca7c9",
+      "previous_blob_sha": "27cbdb3263d8d2633ce03e326ee178b885eb48a8",
       "new_blob_sha": "4b9f3a60522322b820139774bf65cab9f54ca7c9",
       "reason": "Reconciled the registered baseline and DNS invariants to the current authoritative ss.conf as explicitly directed; the config file itself was not modified.",
       "actor": "instarrys-bit",
