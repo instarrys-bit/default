@@ -52,8 +52,13 @@ def build_report(config_bytes: bytes, expected_blob_sha: str, config_path: str,
     dns_drift = {}
     for key, expected_value in expected_dns.items():
         expected_values = [part.strip() for part in str(expected_value).split(",") if part.strip()]
-        actual_values = dns_snapshot.get(key, [])
-        if [x.strip() for x in actual_values] != expected_values:
+        actual_values = [
+            part.strip()
+            for raw_value in dns_snapshot.get(key, [])
+            for part in str(raw_value).split(",")
+            if part.strip()
+        ]
+        if actual_values != expected_values:
             dns_drift[key] = {"expected": expected_values, "actual": actual_values}
     mitm_enabled = any(value.lower() == "true" for value in sections.get("MITM", {}).get("enable", []))
     actual_blob_sha = git_blob_sha(config_bytes)
