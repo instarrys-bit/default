@@ -1364,8 +1364,10 @@
 - Description: Shadowrocket 多订阅分流：AI 独立出口、常规服务规则集与自动同步更新。
 - Stars: 0; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/sxpwxy/shadowrocket-rules/main/config/Shadowrocket-mirror.conf
+  - https://raw.githubusercontent.com/sxpwxy/shadowrocket-rules/main/config/Shadowrocket.conf
 
 ### [team-cloudchaser/domain-db](https://github.com/team-cloudchaser/domain-db)
 
