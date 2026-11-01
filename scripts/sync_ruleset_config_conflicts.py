@@ -162,6 +162,8 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
     if not isinstance(archive.get("items"), list):
         raise ValueError("config conflict archive has invalid items structure")
 
+    archive_changed = False
+
     # Archive entries are tied to a particular config snapshot. Re-evaluate
     # them against the current authoritative config; an old conflict must not
     # suppress a rule forever after the user removes or changes that config rule.
@@ -186,7 +188,6 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
     suppressed_active_archive = []
     published_removed = 0
     pending_removed = 0
-    archive_changed = False
     queue_changed = False
     retained_review = []
     restored = []
