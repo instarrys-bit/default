@@ -36,6 +36,14 @@ def query(endpoint,domain,kind):
         return None
 
 
+def deletion_confirmed(history):
+    if len(history)<2 or any(x.get("status")!="CONFIRMED_NXDOMAIN_OBSERVATION" for x in history[-2:]):
+        return False
+    first=datetime.fromisoformat(history[-2]["checked_at"].replace("Z","+00:00"))
+    second=datetime.fromisoformat(history[-1]["checked_at"].replace("Z","+00:00"))
+    return second-first>=timedelta(days=30)
+
+
 def inspect(domain):
     result={}
     for resolver,endpoint in RESOLVERS:
@@ -108,12 +116,7 @@ def main():
         if result["status"]=="CONFIRMED_NXDOMAIN_OBSERVATION":
             if not history or history[-1].get("checked_at","")[:10]!=timestamp[:10]:
                 history.append({"checked_at":timestamp,"status":result["status"],"resolver_status":result["resolver_status"]})
-            eligible=False
-            if len(history)>=2:
-                first=datetime.fromisoformat(history[-2]["checked_at"].replace("Z","+00:00"))
-                second=datetime.fromisoformat(history[-1]["checked_at"].replace("Z","+00:00"))
-                eligible=second-first>=timedelta(days=30)
-            if eligible and key not in archived:
+            if deletion_confirmed(history) and key not in archived:
                 rules[policy].discard(line)
                 entry={"id":key,"policy":policy,"rule":line,"domain":domain,"removed_at":timestamp,"first_confirmed_at":history[-2]["checked_at"],"reason":"Two independent DoH resolvers returned NXDOMAIN for A and AAAA on observations at least 30 days apart"}
                 archive["items"].append(entry); deleted.append(entry); archived.add(key)
