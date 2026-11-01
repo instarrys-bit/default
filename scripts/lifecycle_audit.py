@@ -154,8 +154,8 @@ def main():
         for policy in POLICIES:
             before_lines=published_before[policy]
             after_lines=rules[policy]
-            before_text="\\n".join(sorted(before_lines))+("\\n" if before_lines else "")
-            after_text="\\n".join(sorted(after_lines))+("\\n" if after_lines else "")
+            before_text="\n".join(sorted(before_lines))+("\n" if before_lines else "")
+            after_text="\n".join(sorted(after_lines))+("\n" if after_lines else "")
             lifecycle_delta[policy.upper()]={"previous_count":len(before_lines),"current_count":len(after_lines),"added_count":len(after_lines-before_lines),"removed_count":len(before_lines-after_lines),"previous_sha256":hashlib.sha256(before_text.encode()).hexdigest(),"current_sha256":hashlib.sha256(after_text.encode()).hexdigest(),"added_sample":sorted(after_lines-before_lines)[:10],"removed_sample":sorted(before_lines-after_lines)[:10]}
         manifest["rule_lifecycle"]=lifecycle_delta
         manifest["lifecycle_audit_summary"]={"completed_at":timestamp,"deleted_count":len(deleted),"restored_count":len(restored),"unknown_retained_count":unknown,"protected_retained_count":protected_count,"suffix_retained_count":suffix_retained_count}
