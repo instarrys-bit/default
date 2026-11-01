@@ -152,15 +152,15 @@ class EvidenceProvenanceTests(unittest.TestCase):
 
 class UrlRegexScopeTests(unittest.TestCase):
     def base(self,rule):
-        return "[General]\\nskip-proxy = \\n[Rule]\\n"+rule+"\\n[Host]\\n"
+        return "[General]\nskip-proxy = \n[Rule]\n"+rule+"\n[Host]\n"
 
     def test_generic_url_path_filter_does_not_conflict_with_every_domain(self):
-        base=self.base(r"URL-REGEX,^http:\\/\\/[^\\/]+\\/multifetch\\?dms=,REJECT")
+        base=self.base(r"URL-REGEX,^http:\/\/[^\/]+\/multifetch\?dms=,REJECT")
         status,reason=inspect("example.com",RuleIndex([]),[],base,{},"DIRECT")
         self.assertIsNone(status)
 
     def test_host_specific_url_regex_only_conflicts_with_matching_host(self):
-        base=self.base(r"URL-REGEX,^http:\\/\\/api\\.bilibili\\.com\\/x\\/vip\\/ads\\/,REJECT")
+        base=self.base(r"URL-REGEX,^http:\/\/api\.bilibili\.com\/x\/vip\/ads\/,REJECT")
         status,reason=inspect("api.bilibili.com",RuleIndex([]),[],base,{},"DIRECT")
         self.assertEqual(status,"CONFLICT")
         status,reason=inspect("example.com",RuleIndex([]),[],base,{},"DIRECT")
