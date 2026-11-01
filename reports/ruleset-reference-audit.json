@@ -4,19 +4,19 @@
   "config_rule_set_reference_count": 3,
   "references": [
     {
-      "line": 2260,
+      "line": 2259,
       "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/reject.list",
       "file": "reject.list",
       "policy": "REJECT"
     },
     {
-      "line": 2261,
+      "line": 2260,
       "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list",
       "file": "proxy.list",
       "policy": "PROXY"
     },
     {
-      "line": 2262,
+      "line": 2261,
       "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list",
       "file": "direct.list",
       "policy": "DIRECT"
@@ -81,15 +81,15 @@
       "layer_1": 28,
       "layer_2": 655,
       "layer_3": 700,
-      "layer_4": 1462,
-      "layer_5": 2161,
-      "original_rules_end": 2228,
-      "external_rulesets": 2259,
-      "geoip_asn_start": 2263,
-      "geoip_asn_cn": 2288,
-      "geoip_cn_rule": 2322,
-      "layer_6": 2323,
-      "final_rule": 2326
+      "layer_4": 1461,
+      "layer_5": 2160,
+      "original_rules_end": 2227,
+      "external_rulesets": 2258,
+      "geoip_asn_start": 2262,
+      "geoip_asn_cn": 2287,
+      "geoip_cn_rule": 2321,
+      "layer_6": 2322,
+      "final_rule": 2325
     },
     "passed": true
   },
