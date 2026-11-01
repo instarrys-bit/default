@@ -1,0 +1,596 @@
+{
+  "schema_version": 1,
+  "feed_count": 10,
+  "publisher_counts": {
+    "DIRECT": 3,
+    "PROXY": 3,
+    "REJECT": 1
+  },
+  "overlaps": [
+    {
+      "policy": "DIRECT",
+      "publishers": [
+        "ACL4SSR/ACL4SSR",
+        "Clash-FX/cn-apps-direct-domains"
+      ],
+      "left_count": 605,
+      "right_count": 120,
+      "overlap_count": 73,
+      "jaccard": 0.111963,
+      "smaller_set_overlap": 0.608333,
+      "shared_domain_sample": [
+        "10010.com",
+        "126.net",
+        "127.net",
+        "163.com",
+        "163yun.com",
+        "360buyimg.com",
+        "360safe.com",
+        "71.am",
+        "95516.com",
+        "abchina.com",
+        "acgvideo.com",
+        "alicdn.com",
+        "alipay.com",
+        "alipayobjects.com",
+        "aliyuncs.com",
+        "aliyundrive.com",
+        "amap.com",
+        "autonavi.com",
+        "b23.tv",
+        "baidu.com",
+        "baidupcs.com",
+        "bdimg.com",
+        "bdstatic.com",
+        "biliapi.com",
+        "biliapi.net",
+        "bilibili.com",
+        "bilivideo.cn",
+        "bilivideo.com",
+        "bytedance.com",
+        "cmbchina.com",
+        "dianping.com",
+        "dingtalk.com",
+        "douyin.com",
+        "douyincdn.com",
+        "ele.me",
+        "gtimg.com",
+        "hdslb.com",
+        "hitv.com",
+        "iesdouyin.com",
+        "iqiyi.com",
+        "iqiyipic.com",
+        "jd.com",
+        "kuaishou.com",
+        "kugou.com",
+        "meituan.com",
+        "meituan.net",
+        "mgtv.com",
+        "pinduoduo.com",
+        "qq.com",
+        "sandai.net"
+      ]
+    },
+    {
+      "policy": "DIRECT",
+      "publishers": [
+        "ACL4SSR/ACL4SSR",
+        "Jovanykoch/rules"
+      ],
+      "left_count": 605,
+      "right_count": 6751,
+      "overlap_count": 439,
+      "jaccard": 0.063467,
+      "smaller_set_overlap": 0.72562,
+      "shared_domain_sample": [
+        "00cdn.com",
+        "10010.com",
+        "115.com",
+        "126.com",
+        "126.net",
+        "127.net",
+        "163.com",
+        "163yun.com",
+        "1688.com",
+        "17173.com",
+        "178.com",
+        "17k.com",
+        "21cn.com",
+        "360.com",
+        "360buy.com",
+        "360buyimg.com",
+        "360doc.com",
+        "360kuai.com",
+        "360safe.com",
+        "36kr.com",
+        "3dmgame.com",
+        "423down.com",
+        "4399.com",
+        "4399pk.com",
+        "5054399.com",
+        "51cto.com",
+        "51job.com",
+        "51jobcdn.com",
+        "56.com",
+        "58.com",
+        "71.am",
+        "71edge.com",
+        "8686c.com",
+        "88cdn.com",
+        "95516.com",
+        "abchina.com",
+        "acg.tv",
+        "acgvideo.com",
+        "air-matters.com",
+        "aixifan.com",
+        "aliapp.org",
+        "alibaba.com",
+        "alibabachengdun.com",
+        "alibabausercontent.com",
+        "alicdn.com",
+        "alicloudccp.com",
+        "aliexpress.com",
+        "aliimg.com",
+        "alikunlun.com",
+        "alipay.com"
+      ]
+    },
+    {
+      "policy": "DIRECT",
+      "publishers": [
+        "Clash-FX/cn-apps-direct-domains",
+        "Jovanykoch/rules"
+      ],
+      "left_count": 120,
+      "right_count": 6751,
+      "overlap_count": 83,
+      "jaccard": 0.012227,
+      "smaller_set_overlap": 0.691667,
+      "shared_domain_sample": [
+        "10010.com",
+        "126.net",
+        "127.net",
+        "163.com",
+        "163yun.com",
+        "360buyimg.com",
+        "360safe.com",
+        "71.am",
+        "95516.com",
+        "abchina.com",
+        "acgvideo.com",
+        "alicdn.com",
+        "alipan.com",
+        "alipay.com",
+        "alipayobjects.com",
+        "aliyundrive.com",
+        "amap.com",
+        "autonavi.com",
+        "b23.tv",
+        "baidu.com",
+        "baidupcs.com",
+        "bankcomm.com",
+        "bdimg.com",
+        "bdstatic.com",
+        "biliapi.com",
+        "biliapi.net",
+        "bilibili.com",
+        "bilivideo.com",
+        "bytedance.com",
+        "ccb.com",
+        "chinamobile.com",
+        "chinaunicom.com",
+        "cmbchina.com",
+        "dianping.com",
+        "dingtalk.com",
+        "dingtalkapps.com",
+        "douyin.com",
+        "douyincdn.com",
+        "ele.me",
+        "feishucdn.com",
+        "gtimg.com",
+        "hdslb.com",
+        "hitv.com",
+        "iesdouyin.com",
+        "iqiyi.com",
+        "iqiyipic.com",
+        "jd.com",
+        "jdcdn.com",
+        "ksapisrv.com",
+        "kuaishou.com"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "ACL4SSR/ACL4SSR",
+        "gatework/surge-rules"
+      ],
+      "left_count": 6816,
+      "right_count": 4451,
+      "overlap_count": 3786,
+      "jaccard": 0.506082,
+      "smaller_set_overlap": 0.850595,
+      "shared_domain_sample": [
+        "000webhost.com",
+        "0rz.tw",
+        "1-apple.com.tw",
+        "1000giri.net",
+        "10beasts.net",
+        "10musume.com",
+        "12bet.com",
+        "12vpn.com",
+        "12vpn.net",
+        "1337x.to",
+        "141jj.com",
+        "1688.com.au",
+        "173ng.com",
+        "18board.com",
+        "18comic.org",
+        "1984bbs.com",
+        "1991way.com",
+        "1e100.net",
+        "1lib.sk",
+        "1point3acres.com",
+        "1pondo.tv",
+        "2008xianzhang.info",
+        "2021hkcharter.com",
+        "2047.name",
+        "2047.one",
+        "2049bbs.xyz",
+        "233abc.com",
+        "24hrs.ca",
+        "32red.com",
+        "36rain.com",
+        "404museum.com",
+        "466453.com",
+        "4bluestones.biz",
+        "4everproxy.com",
+        "4rbtv.com",
+        "4shared.com",
+        "4sqi.net",
+        "500px.com",
+        "500px.org",
+        "51.ca",
+        "51jav.org",
+        "51luoben.com",
+        "5278.cc",
+        "611study.com",
+        "611study.icu",
+        "63i.com",
+        "666pool.cn",
+        "69shuba.cx",
+        "6do.news",
+        "6do.world"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "ACL4SSR/ACL4SSR",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 6816,
+      "right_count": 574,
+      "overlap_count": 371,
+      "jaccard": 0.052857,
+      "smaller_set_overlap": 0.646341,
+      "shared_domain_sample": [
+        "4shared.com",
+        "4sqi.net",
+        "accountkit.com",
+        "adobedtm.com",
+        "akamaihd.net",
+        "allconnected.co",
+        "amazon.com",
+        "amazonaws.com",
+        "amplitude.com",
+        "ampproject.org",
+        "ancsconf.org",
+        "android-x86.org",
+        "android.com",
+        "androidify.com",
+        "angularjs.org",
+        "anthonycalzadilla.com",
+        "aol.com",
+        "aolcdn.com",
+        "apigee.com",
+        "apk-dl.com",
+        "apkpure.com",
+        "app-measurement.com",
+        "appdownloader.net",
+        "appledaily.com",
+        "appshopper.com",
+        "appspot.com",
+        "archive.is",
+        "archive.org",
+        "archives.gov",
+        "armorgames.com",
+        "aspnetcdn.com",
+        "avgle.com",
+        "awsstatic.com",
+        "azureedge.net",
+        "azurewebsites.net",
+        "badoo.com",
+        "bbtoystore.com",
+        "betvictor.com",
+        "bigsound.org",
+        "bing.com",
+        "bit.do",
+        "bit.ly",
+        "bitcointalk.org",
+        "bitshare.com",
+        "bkrtx.com",
+        "blogcdn.com",
+        "blogger.com",
+        "bloglovin.com",
+        "blogsmithmedia.com",
+        "blogspot.com"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "gatework/surge-rules",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 4451,
+      "right_count": 574,
+      "overlap_count": 245,
+      "jaccard": 0.051255,
+      "smaller_set_overlap": 0.426829,
+      "shared_domain_sample": [
+        "4shared.com",
+        "4sqi.net",
+        "accountkit.com",
+        "akamaihd.net",
+        "allconnected.co",
+        "ampproject.org",
+        "ancsconf.org",
+        "android-x86.org",
+        "android.com",
+        "androidify.com",
+        "angularjs.org",
+        "anthonycalzadilla.com",
+        "apigee.com",
+        "apkpure.com",
+        "appledaily.com",
+        "appshopper.com",
+        "appspot.com",
+        "archive.is",
+        "archive.org",
+        "archives.gov",
+        "avgle.com",
+        "azurewebsites.net",
+        "betvictor.com",
+        "bit.do",
+        "bit.ly",
+        "bitcointalk.org",
+        "bitshare.com",
+        "blogger.com",
+        "bloglovin.com",
+        "blogspot.com",
+        "blogspot.hk",
+        "bloomberg.com",
+        "books.com.tw",
+        "boxun.com",
+        "cachefly.net",
+        "cbc.ca",
+        "certificate-transparency.org",
+        "chrome.com",
+        "chromecast.com",
+        "chromestatus.com",
+        "crashlytics.com",
+        "data-vocabulary.org",
+        "db.tt",
+        "deja.com",
+        "digisfera.com",
+        "disconnect.me",
+        "disqus.com",
+        "docker.com",
+        "doub.io",
+        "duckduckgo.com"
+      ]
+    }
+  ],
+  "cross_policy_conflict_domain_count": 28,
+  "cross_policy_conflict_sample": [
+    {
+      "domain": "2mdn.net",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "app-measurement.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "certs.apple.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "crl.apple.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "dytt8.net",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "globalsign.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "google-analytics.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "googleanalytics.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "googlesyndication.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "guzzoni-apple-com.v.aaplimg.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "helpshift.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "hotmail.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "ip138.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "manhuaren.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "mesu.apple.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "ocsp.apple.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "ocsp2.apple.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "oklink.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "playstation.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "playstation.net",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "playstationnetwork.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "recaptcha.net",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "simplecd.me",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "sony.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "sonyentertainmentnetwork.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "steamserver.net",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "ubnt.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "valid.apple.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    }
+  ],
+  "activation_count": 0,
+  "activation_policy": "Audit-only. Overlap is not proof of common ancestry or independent provenance; no source is activated."
+}

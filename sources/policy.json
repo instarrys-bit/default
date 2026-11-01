@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "canonical_config": {
+    "path": "sources/baseline/ss.conf",
+    "approved_git_blob_sha": "bd3a08178c5ecf314420d00ca2b5d6dbb85974c7",
+    "uploaded_sha256": "f2a2a91d4853ea83fb55d406659c1cde4f3d29092a9e08d4a3a80e00015446c8",
+    "uploaded_file": "ss(1).conf",
+    "uploaded_bytes": 90490,
+    "uploaded_lines": 2402,
+    "immutable": true
+  },
+  "allowed_policy_outputs": [
+    "DIRECT",
+    "PROXY",
+    "REJECT"
+  ],
+  "external_source_mode": "domain-only",
+  "external_sources": [
+    {
+      "id": "sr-adblock-domain-lite",
+      "enabled": true,
+      "capture_enabled": true,
+      "format": "domain-only",
+      "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+      "allow_leading_dot": true,
+      "import_enabled": false,
+      "policy_assignment_enabled": false,
+      "note": "仅采集域名候选；达到置信度门槛后按自动审核规则处理。上游规则策略、模块、脚本、MITM、DNS、Rewrite 一律不直接采纳。"
+    }
+  ],
+  "dns_invariants": {
+    "dns-server": "https://dns.quad9.net/dns-query#proxy, https://dns.google/dns-query#proxy, https://cloudflare-dns.com/dns-query#proxy",
+    "fallback-dns-server": "https://cloudflare-dns.com/dns-query#proxy, https://dns.google/dns-query#proxy",
+    "direct-dns-server": "https://doh.pub/dns-query, https://dns.alidns.com/dns-query",
+    "proxy-dns-server": "https://dns.quad9.net/dns-query#proxy, https://dns.google/dns-query#proxy, https://cloudflare-dns.com/dns-query#proxy",
+    "dns-direct-system": "false",
+    "dns-direct-fallback-proxy": "false",
+    "hijack-dns": ":53"
+  },
+  "release_policy": {
+    "automatic_config_rewrite": false,
+    "automatic_policy_inference": true,
+    "minimum_independent_evidence_sources": 2,
+    "minimum_confidence": 0.8,
+    "publish_only_after_all_checks": true,
+    "rule_scope": "DOMAIN only; DOMAIN-SUFFIX is never generated automatically",
+    "approval_rule": "Rules are assigned only by deterministic, machine-verifiable source agreement and local safety gates. No AI, model API, or manual per-domain review is used. Unsupported policy classes remain unpublished.",
+    "minimum_met_criteria": 2,
+    "approval_criteria": [
+      {
+        "id": "multi_publisher_policy_evidence",
+        "description": "Both configured current policy-labelled sources must list the exact candidate and agree on REJECT; evidence publisher and group identifiers must match source configuration."
+      },
+      {
+        "id": "local_safety_veto",
+        "description": "Existing first-match domain rules, conditional AND/OR/NOT rules, DOMAIN-KEYWORD, URL-REGEX, skip-proxy and protected-domain checks must all pass."
+      }
+    ],
+    "mandatory_vetoes": [
+      "Any exact or suffix rule with a different effective policy blocks publication",
+      "Any unresolved conditional AND/OR/NOT overlap blocks publication",
+      "Any critical-function protection-list match blocks publication",
+      "Any skip-proxy direct-bypass match blocks publication",
+      "Any malformed source, invalid domain, duplicate ledger key or failed validator blocks publication"
+    ],
+    "review_status": "Candidates below confidence 0.80 or with fewer than two independent credible sources remain REVIEW; conflicts and critical-function risks are held.",
+    "publish_gate": "No automatic writes to original or canonical baseline. Derived output only.",
+    "decision_engine": "deterministic-domain-audit/2.1",
+    "confidence_interpretation": "Operational evidence score, not a statistical probability or guarantee of safe blocking.",
+    "publication_mode": "deterministic-evidence-reviewed-derived-rulesets",
+    "direct_proxy_policy": "DIRECT and PROXY remain REVIEW until dedicated policy-labelled source sets with independent publisher corroboration are configured.",
+    "review_engine": "deterministic-domain-audit/2.1",
+    "automation_mode": "fully_hosted_deterministic",
+    "manual_review_required": false,
+    "model_api_calls": 0
+  },
+  "managed_config_guard": {
+    "path": "shadowrocket/ss.conf",
+    "approved_git_blob_sha": "aa3492487c2a2cc5a32f4a1fa3e76953315a22e2",
+    "immutable": true,
+    "description": "Current user-managed subscription file; automation must not modify it."
+  }
+}

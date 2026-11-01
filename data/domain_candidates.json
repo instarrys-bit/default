@@ -1,0 +1,475 @@
+{
+  "schema_version": 2,
+  "updated_at": "2026-11-01T05:52:11.504814+00:00",
+  "candidates": [
+    {
+      "domain": "39d83s.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "a-remad.qm989.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "activity-ag.awemeughun.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "ad-cdn.qingting.fm",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "ad.21cn.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "ad.api.moji.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "ad.mcloud.139.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "adapi.izuiyou.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "adbehavior.ximalaya.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "adcdn.tencentmusic.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "adcdn6.tencentmusic.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "adclick.tencentmusic.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "adexpo.tencentmusic.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "adlaunch.qingting.fm",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "ads-shopping.shouqianba.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "ads.play.cbsi.video",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "ads.reembed.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "ads.snapchat.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "ads.storm8.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "ads.yahoo.de",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "adsehera.ximalaya.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "adsfilebssdlbig.tx.kugou.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "adv-adlog.variflight.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "adv-ads.variflight.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "advertise.baicizhan.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "advertise.baicizhan.org",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "adwbs.ximalaya.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "adx.op.cp18.ott.cibntv.net",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "amdc.m.youku.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "api-ad.kajicam.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "api.iqiyi.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "apis.alenable.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "apiv4-iyes.youku.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "business-cdn.shouji.sogou.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "business.msstatic.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "cdn-new-ad.wtzw.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "cr-status.iqiyi.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "data-hoisin.coocaa.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "ddfs-public.ddimg.mobi",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "dflow.bz.mgtv.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "encounter.bz.mgtv.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "floor.bz.mgtv.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "ggadoffline.miguvideo.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "ggic03.miguvideo.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "ggmk.miguvideo.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "ggx03.miguvideo.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "huyafile.msstatic.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "icloud-amap.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "kad.gotokeep.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "layer.bz.mgtv.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "livep.l.t002.ottcn.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "livewebbs2.msstatic.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "livewebbs2pcdn.msstatic.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "log.51wnl-cq.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "mob.bz.mgtv.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "msync-im1-vip6-std.easemob.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "pl.cp31.ott.cibntv.net",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "pp-cdnfile2pcdn.msstatic.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "r.51wnl-cq.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "rc-topic-api.bz.mgtv.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "richmanapi.jxedt.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "richmanmain.jxedt.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "richmanrules.jxedt.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "rttrack.ddxq.mobi",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "safebrowsing.g.applimg.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "trackercollect.ddxq.mobi",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "vip.bz.mgtv.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    }
+  ]
+}

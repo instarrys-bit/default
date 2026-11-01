@@ -1,0 +1,148 @@
+name: Shadowrocket Deterministic Domain Audit (Immutable Baseline)
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "sources/policy.json"
+      - "sources/domain_sources.json"
+      - "scripts/**"
+      - "tests/**"
+      - ".github/workflows/auto_sync.yml"
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: shadowrocket-main-writer
+  cancel-in-progress: false
+
+jobs:
+  audit-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Compile and run deterministic review tests
+        run: |
+          python3 -m py_compile scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py
+          python3 -m unittest discover -s tests -v
+
+      - name: Discover candidate source repositories (non-activating)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 scripts/discover_sources.py
+
+      - name: Assess discovered rule-list syntax and policy claims
+        run: |
+          python3 scripts/assess_sources.py
+          cat reports/source-assessment.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Verify immutable uploaded baseline
+        run: python3 scripts/verify_baseline.py
+
+      - name: Collect and cross-check domain-only sources
+        run: python3 scripts/collect_domains.py
+
+      - name: Audit public source lineage and shared upstreams
+        run: python3 scripts/audit_source_lineage.py
+
+      - name: Audit domain-level policy-source overlap and contradictions
+        run: |
+          python3 scripts/audit_policy_source_overlap.py
+          cat reports/policy-source-overlap.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Build automated source candidate and lineage matrix
+        run: |
+          python3 scripts/build_source_candidates.py
+          cat reports/source-candidate-matrix.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Run deterministic duplicate, conflict, confidence and risk review
+        run: python3 scripts/deterministic_review.py
+
+      - name: Build standalone DIRECT, PROXY and REJECT rule sets
+        run: python3 scripts/build_rulesets.py
+
+      - name: Validate Shadowrocket config structure
+        run: python3 scripts/validate_config.py
+
+      - name: Run read-only full-source regression audit
+        run: |
+          python3 scripts/audit_external_domains.py
+          cat reports/external-domain-audit.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Recompute from latest main and publish audit outputs safely
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3; do
+            echo "Recompute attempt $attempt from latest origin/main"
+            git fetch origin main
+            git reset --hard origin/main
+
+            python3 -m py_compile scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py
+            python3 -m unittest discover -s tests -v
+            GITHUB_TOKEN=${{ github.token }} python3 scripts/discover_sources.py
+            python3 scripts/assess_sources.py
+            python3 scripts/verify_baseline.py
+            python3 scripts/collect_domains.py
+            python3 scripts/audit_source_lineage.py
+            python3 scripts/audit_policy_source_overlap.py
+            python3 scripts/build_source_candidates.py
+            python3 scripts/deterministic_review.py
+            python3 scripts/build_rulesets.py
+            python3 scripts/validate_config.py
+            python3 scripts/audit_external_domains.py
+
+            git add sources/domain_reviews.json reports/external-domain-audit.md reports/source-lineage-audit.json reports/source-discovery.md reports/source-assessment.md reports/source-candidate-matrix.md reports/policy-source-overlap.md sources/policy_source_overlap.json sources/discovered_sources.json sources/source_assessments.json sources/source_candidates.json data/domain_candidates.json data/primary_snapshot.txt data/secondary_snapshot.txt data/source_snapshots/ rulesets/
+            if git diff --cached --quiet; then
+              echo "No audit output changes after recomputing against latest main."
+              exit 0
+            fi
+
+            git commit -m "Run deterministic Shadowrocket domain audit"
+            if git push origin HEAD:main; then
+              echo "Audit outputs published successfully."
+              exit 0
+            fi
+            echo "Push raced with another writer; next attempt will discard local outputs and recompute from latest main."
+            sleep $((attempt * 3))
+          done
+          echo "Unable to publish after three clean recomputation attempts."
+          exit 1
+
+  notify-failure:
+    if: ${{ failure() && needs.audit-only.result == 'failure' }}
+    needs: audit-only
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Open or update automation incident
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          title="Shadowrocket automation failure"
+          body="The scheduled deterministic pipeline failed.\n\nRun: $RUN_URL\nCommit: $COMMIT_SHA\n\nPlease inspect the failed job and logs. This issue is maintained automatically."
+          existing="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
+          if [ -n "$existing" ] && [ "$existing" != "null" ]; then
+            gh issue comment "$existing" --repo "$REPO" --body "$body"
+          else
+            gh issue create --repo "$REPO" --title "$title" --body "$body"
+          fi

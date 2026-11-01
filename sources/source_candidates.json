@@ -1,0 +1,556 @@
+{
+  "schema_version": 1,
+  "candidate_count": 7,
+  "activation_count": 0,
+  "minimum_independent_publishers": 2,
+  "policy_summary": {
+    "DIRECT": {
+      "candidate_publishers": 3,
+      "verified_publishers": 0,
+      "independent_verified_groups": 0,
+      "candidate_files": 3,
+      "cross_policy_conflict_count": 2,
+      "activation_ready": false
+    },
+    "PROXY": {
+      "candidate_publishers": 3,
+      "verified_publishers": 0,
+      "independent_verified_groups": 0,
+      "candidate_files": 4,
+      "cross_policy_conflict_count": 1,
+      "activation_ready": false
+    },
+    "REJECT": {
+      "candidate_publishers": 1,
+      "verified_publishers": 0,
+      "independent_verified_groups": 0,
+      "candidate_files": 3,
+      "cross_policy_conflict_count": 1,
+      "activation_ready": false
+    }
+  },
+  "same_policy_domain_overlap": [
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "Jovanykoch/rules",
+        "ACL4SSR/ACL4SSR"
+      ],
+      "shared_domain_count": 439,
+      "overlap_of_smaller": 0.7256,
+      "jaccard": 0.0635,
+      "relation": "high_overlap"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "Jovanykoch/rules",
+        "Clash-FX/cn-apps-direct-domains"
+      ],
+      "shared_domain_count": 83,
+      "overlap_of_smaller": 0.6917,
+      "jaccard": 0.0122,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "ACL4SSR/ACL4SSR",
+        "Clash-FX/cn-apps-direct-domains"
+      ],
+      "shared_domain_count": 73,
+      "overlap_of_smaller": 0.6083,
+      "jaccard": 0.112,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "ACL4SSR/ACL4SSR",
+        "gatework/surge-rules"
+      ],
+      "shared_domain_count": 3786,
+      "overlap_of_smaller": 0.8506,
+      "jaccard": 0.5061,
+      "relation": "high_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "ACL4SSR/ACL4SSR",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "shared_domain_count": 371,
+      "overlap_of_smaller": 0.6463,
+      "jaccard": 0.0529,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "gatework/surge-rules",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "shared_domain_count": 245,
+      "overlap_of_smaller": 0.4268,
+      "jaccard": 0.0513,
+      "relation": "partial_overlap"
+    }
+  ],
+  "cross_policy_conflicts": [
+    {
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ],
+      "shared_domain_count": 21
+    },
+    {
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ],
+      "shared_domain_count": 7
+    }
+  ],
+  "candidates": [
+    {
+      "repository": "Jovanykoch/rules",
+      "policy": "DIRECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list",
+          "parser": "domain-only",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 6751,
+          "duplicate_domain_lines": 0,
+          "sha256": "2d756875ee2384e9d4050664dc23ac79a1d2af7a6b5ec0190d20ba1adb3834c5",
+          "domain_fingerprint_count": 6751,
+          "drift": {
+            "status": "unchanged",
+            "added_domain_count": 0,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 6,
+      "readme_shared_reference_peers": [
+        {
+          "repository": "GMOogway/shadowrocket-rules",
+          "references": [
+            "felixonmars/dnsmasq-china-list",
+            "gfwlist/gfwlist",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "Loyalsoldier/v2ray-rules-dat",
+          "references": [
+            "felixonmars/dnsmasq-china-list",
+            "gfwlist/gfwlist",
+            "loyalsoldier/geoip",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "bgpeer/rules",
+          "references": [
+            "loyalsoldier/geoip"
+          ]
+        },
+        {
+          "repository": "crayonluffy/shadowrocket-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "gatework/surge-rules",
+          "references": [
+            "felixonmars/dnsmasq-china-list",
+            "loyalsoldier/geoip",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "kaonimei/Shadowrocket-ADBlock-Rules",
+          "references": [
+            "felixonmars/dnsmasq-china-list",
+            "gfwlist/gfwlist"
+          ]
+        },
+        {
+          "repository": "poohyeban/shadowrocket-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "tkgeeked/clash-rules-for-shadowrocket",
+          "references": [
+            "felixonmars/dnsmasq-china-list",
+            "gfwlist/gfwlist",
+            "v2fly/domain-list-community"
+          ]
+        }
+      ],
+      "archived": false,
+      "policy_evidence_types": [
+        "README_policy_reference"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 6751,
+      "domain_fingerprint_count": 6751,
+      "domain_set_sha256": "455609878fe23aa0220355509a0157b7d75f93c58bf24457f553c46529fee9d9",
+      "file_count": 1,
+      "activation_eligible": false,
+      "activation_blockers": [
+        "lineage_not_verified",
+        "possible_shared_readme_references_require_review"
+      ]
+    },
+    {
+      "repository": "ACL4SSR/ACL4SSR",
+      "policy": "DIRECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 605,
+          "duplicate_domain_lines": 1,
+          "sha256": "362edd1f605742b360eaf138f151d7eea96cc17f20ef12da73acbfb80c350e08",
+          "domain_fingerprint_count": 605,
+          "drift": {
+            "status": "unchanged",
+            "added_domain_count": 0,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 4,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "README_policy_reference"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 605,
+      "domain_fingerprint_count": 605,
+      "domain_set_sha256": "c64d116e3bed25861d3981b2bd2755782a129a78a5613f5ab44e3f592bed26a5",
+      "file_count": 1,
+      "activation_eligible": false,
+      "activation_blockers": [
+        "lineage_not_verified"
+      ]
+    },
+    {
+      "repository": "Clash-FX/cn-apps-direct-domains",
+      "policy": "DIRECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/Clash-FX/cn-apps-direct-domains/main/apps-direct-domains.list",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 120,
+          "duplicate_domain_lines": 0,
+          "sha256": "0a8a3a1bf8360495456da557bdbf22f5af8996dd7886dd82966a968491d8c27e",
+          "domain_fingerprint_count": 120,
+          "drift": {
+            "status": "unchanged",
+            "added_domain_count": 0,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 2,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "explicit_third_field"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 120,
+      "domain_fingerprint_count": 120,
+      "domain_set_sha256": "d8a821041a17d9c7f1879daccd95001413bc8cdc66af1f4b1c8e982e09d80a2b",
+      "file_count": 1,
+      "activation_eligible": false,
+      "activation_blockers": [
+        "lineage_not_verified"
+      ]
+    },
+    {
+      "repository": "ACL4SSR/ACL4SSR",
+      "policy": "PROXY",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 6766,
+          "duplicate_domain_lines": 101,
+          "sha256": "72d5f97cb3adedd7ef632962effda4aa3b9953da20427cd6050d55d1184de5ea",
+          "domain_fingerprint_count": 6766,
+          "drift": {
+            "status": "unchanged",
+            "added_domain_count": 0,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 306,
+          "duplicate_domain_lines": 7,
+          "sha256": "3792437f9641479c671ed57e4d3aa81505c5f7dc5d9087fdeabe76551ecda671",
+          "domain_fingerprint_count": 306,
+          "drift": {
+            "status": "unchanged",
+            "added_domain_count": 0,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 4,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "README_policy_reference"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 7072,
+      "domain_fingerprint_count": 6816,
+      "domain_set_sha256": "4e8609dc1ad3ef3981febe8f9cebf390cb484ba38c56ace882e15be6cb27fd1e",
+      "file_count": 2,
+      "activation_eligible": false,
+      "activation_blockers": [
+        "lineage_not_verified"
+      ]
+    },
+    {
+      "repository": "gatework/surge-rules",
+      "policy": "PROXY",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt",
+          "parser": "domain-only",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 4451,
+          "duplicate_domain_lines": 0,
+          "sha256": "b8323cbd838d959e82746528c88cf18c14d3b011a921269de9e4f3dbccf6cf51",
+          "domain_fingerprint_count": 4451,
+          "drift": {
+            "status": "unchanged",
+            "added_domain_count": 0,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 5,
+      "readme_shared_reference_peers": [
+        {
+          "repository": "GMOogway/shadowrocket-rules",
+          "references": [
+            "felixonmars/dnsmasq-china-list",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "Jovanykoch/rules",
+          "references": [
+            "felixonmars/dnsmasq-china-list",
+            "loyalsoldier/geoip",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "Loyalsoldier/v2ray-rules-dat",
+          "references": [
+            "felixonmars/dnsmasq-china-list",
+            "loyalsoldier/geoip",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "bgpeer/rules",
+          "references": [
+            "loyalsoldier/geoip",
+            "loyalsoldier/v2ray-rules-dat"
+          ]
+        },
+        {
+          "repository": "crayonluffy/shadowrocket-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "kaonimei/Shadowrocket-ADBlock-Rules",
+          "references": [
+            "felixonmars/dnsmasq-china-list"
+          ]
+        },
+        {
+          "repository": "poohyeban/shadowrocket-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "tkgeeked/clash-rules-for-shadowrocket",
+          "references": [
+            "17mon/china_ip_list",
+            "felixonmars/dnsmasq-china-list",
+            "loyalsoldier/v2ray-rules-dat",
+            "v2fly/domain-list-community"
+          ]
+        }
+      ],
+      "archived": false,
+      "policy_evidence_types": [
+        "README_policy_reference"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 4451,
+      "domain_fingerprint_count": 4451,
+      "domain_set_sha256": "23a1706c9c73fcab35a109e455e1f64e7203355dfbf52df6f80d6e4d456fee74",
+      "file_count": 1,
+      "activation_eligible": false,
+      "activation_blockers": [
+        "lineage_not_verified",
+        "possible_shared_readme_references_require_review"
+      ]
+    },
+    {
+      "repository": "sve1r/Rules-For-Quantumult-X",
+      "policy": "PROXY",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Region/Global.list",
+          "parser": "quantumult-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 574,
+          "duplicate_domain_lines": 234,
+          "sha256": "9dbd5581cb3b553036f09fc458ef7c91a6414b3968194ecf4c10f43c703471ec",
+          "domain_fingerprint_count": 574,
+          "drift": {
+            "status": "unchanged",
+            "added_domain_count": 0,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 2,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "explicit_third_field"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 574,
+      "domain_fingerprint_count": 574,
+      "domain_set_sha256": "d354ce142f9e9c8136a8da3d37a208dd448fa61a0ac24869b272a783a159eaae",
+      "file_count": 1,
+      "activation_eligible": false,
+      "activation_blockers": [
+        "lineage_not_verified"
+      ]
+    },
+    {
+      "repository": "RzMY/IOS-AntiRevoke-DNS-Rules",
+      "policy": "REJECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/RzMY/IOS-AntiRevoke-DNS-Rules/main/output/RevokeGuard_Loon.txt",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 38,
+          "duplicate_domain_lines": 0,
+          "sha256": "5519a4db7a572d97b600562a50e930b99e8568ae1ffa387d6862245dfed5c195",
+          "domain_fingerprint_count": 38,
+          "drift": {
+            "status": "unchanged",
+            "added_domain_count": 0,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/RzMY/IOS-AntiRevoke-DNS-Rules/main/output/RevokeGuard_Shadowrocket.txt",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 38,
+          "duplicate_domain_lines": 0,
+          "sha256": "5519a4db7a572d97b600562a50e930b99e8568ae1ffa387d6862245dfed5c195",
+          "domain_fingerprint_count": 38,
+          "drift": {
+            "status": "unchanged",
+            "added_domain_count": 0,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/RzMY/IOS-AntiRevoke-DNS-Rules/main/output/RevokeGuard_Surge.txt",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 38,
+          "duplicate_domain_lines": 0,
+          "sha256": "5519a4db7a572d97b600562a50e930b99e8568ae1ffa387d6862245dfed5c195",
+          "domain_fingerprint_count": 38,
+          "drift": {
+            "status": "unchanged",
+            "added_domain_count": 0,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 0,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "explicit_third_field"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 114,
+      "domain_fingerprint_count": 38,
+      "domain_set_sha256": "ba9d6ae0275d70776e464ee98f7fe4fd47188b954af9aeddb10905275904717f",
+      "file_count": 3,
+      "activation_eligible": false,
+      "activation_blockers": [
+        "lineage_not_verified"
+      ]
+    }
+  ],
+  "activation_policy": "This matrix never edits the active source registry. Two independent verified publishers per policy remain mandatory."
+}

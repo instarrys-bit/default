@@ -1,0 +1,189 @@
+{
+  "schema_version": 2,
+  "source_ledger": "sources/domain_reviews.json",
+  "current_source_snapshot": "data/candidates.json",
+  "artifact_scope": "standalone_rulesets_only",
+  "outputs": [
+    "direct.list",
+    "proxy.list",
+    "reject.list"
+  ],
+  "review_engine": "deterministic-domain-audit/2.1",
+  "minimum_independent_sources": 2,
+  "minimum_confidence_score": 0.8,
+  "required_sources_by_policy": {
+    "DIRECT": [],
+    "PROXY": [],
+    "REJECT": [
+      "sr-adblock-domain-lite",
+      "hagezi-domains-pro"
+    ]
+  },
+  "source_inventory": [
+    {
+      "id": "hagezi-domains-pro",
+      "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a",
+      "entries": 213387,
+      "classification": "REJECT",
+      "role": "independent_adblock_corroboration",
+      "lineage_status": "partial",
+      "upstream_repositories": [
+        "0xdaniellopez/tweetfeed",
+        "abpindo/indonesianadblockrules",
+        "abpvn/abpvn",
+        "adguardteam/adguardfilters",
+        "adguardteam/adguardsdnsfilter",
+        "adguardteam/filtersregistry",
+        "alexsannikov/adguardhome-filters",
+        "arfshl/anti-gambling-domains",
+        "arkynx/blocklists",
+        "assoechap/stalkerware-indicators",
+        "badmojr/1hosts",
+        "bet-blocker/bet-blocker",
+        "betterwebleon/slovenian-list",
+        "bigdargon/hostsvn",
+        "brave/adblock-lists",
+        "cbuijs/ut1",
+        "cchevy/macedonian-pi-hole-blocklist",
+        "chainapsis/phishing-block-list",
+        "clsfo/reflect4-blocklist",
+        "codeberg:khodekiaa/persianblocker",
+        "codeberg:rasping532/rasping532-filters",
+        "codeberg:xruffkez/dnsbunker_dnsbl",
+        "damengzhu/banad",
+        "dandelionsprout/adfilt",
+        "dandelionsprout/swedish-list-for-adblock-plus",
+        "deepspaceharbor/macedonian-adblock-filters",
+        "dibdot/doh-ip-blocklists",
+        "dnsbunker/cti",
+        "drsdavidsoft/additional-hosts",
+        "durablenapkin/scamblocklist",
+        "easylist-thailand/easylist-thailand",
+        "easylist/easylist",
+        "filteringdev/filterslists-ko",
+        "finnish-easylist-addition/finnish-easylist-addition",
+        "gioxx/xfiles",
+        "gitlab:phishdestroy/destroylist",
+        "gitlab:quidsup/notrack-annoyance-blocklist",
+        "gitlab:quidsup/notrack-blocklists",
+        "hakame-kun/ublock-filters-indonesia",
+        "hectorm/hmirror",
+        "iam-py-test/my_filters_001",
+        "jkrejcha/admiralist",
+        "kalabic/dns-blocklists-share",
+        "laniksj/ubo-filters",
+        "lassekongo83/frellwits-filter-lists",
+        "marco-acorte/antispam-it",
+        "masterkia/persianblocker",
+        "matomo-org/referrer-spam-list",
+        "metamask/eth-phishing-detect",
+        "migueldemoura/ublock-umatrix-rulesets",
+        "mikhailkasimov/validin-phish-feed",
+        "mtxadmin/ublock",
+        "omerdduran/turk-adfilter",
+        "peter-lowe:pgl.yoyo.org",
+        "phishing-database/phishing",
+        "polishfiltersteam/kadhosts",
+        "realodix/adblockid",
+        "remad0/turkhosts404",
+        "shadowwhisperer/blocklists",
+        "spmedia/crypto-scam-and-crypto-phishing-threat-intel-feed",
+        "symbuzzer/turkish-ad-hosts",
+        "tcptomato/road-block",
+        "tg-twilight/awavenue-ads-rule",
+        "ublockorigin/uassets",
+        "ukrainianfilters/lists",
+        "xinggsf/adblock-plus-rule",
+        "yous/youslist",
+        "zakird/crux-top-lists"
+      ],
+      "new_entries": 0,
+      "removed_entries": 0,
+      "baseline_initialized": false
+    },
+    {
+      "id": "sr-adblock-domain-lite",
+      "sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "entries": 56516,
+      "classification": "REJECT",
+      "role": "primary_candidate_source",
+      "lineage_status": "partial",
+      "upstream_repositories": [
+        "blackmatrix7/ios_rule_script",
+        "johnshall/shadowrocket-adblock-rules-forever",
+        "fmz200/wool_scripts",
+        "iab0x00/ProxyRules",
+        "LOWERTOP/Shadowrocket-First",
+        "external:easylist-china",
+        "external:乘风规则",
+        "external:peter-lowe"
+      ],
+      "new_entries": 0,
+      "removed_entries": 0,
+      "baseline_initialized": false
+    }
+  ],
+  "source_count": 2,
+  "policy_conflict_total": 0,
+  "lineage_verified_sources": 0,
+  "lineage_unverified_sources": 0,
+  "lineage_partial_sources": 2,
+  "lineage_not_fully_verified_sources": 2,
+  "source_candidate_summary": {
+    "DIRECT": {
+      "candidate_publishers": 3,
+      "verified_publishers": 0,
+      "independent_verified_groups": 0,
+      "candidate_files": 3,
+      "cross_policy_conflict_count": 2,
+      "activation_ready": false
+    },
+    "PROXY": {
+      "candidate_publishers": 3,
+      "verified_publishers": 0,
+      "independent_verified_groups": 0,
+      "candidate_files": 4,
+      "cross_policy_conflict_count": 1,
+      "activation_ready": false
+    },
+    "REJECT": {
+      "candidate_publishers": 1,
+      "verified_publishers": 0,
+      "independent_verified_groups": 0,
+      "candidate_files": 3,
+      "cross_policy_conflict_count": 1,
+      "activation_ready": false
+    }
+  },
+  "rule_count": {
+    "DIRECT": 0,
+    "PROXY": 0,
+    "REJECT": 0
+  },
+  "reviewed_total": 67,
+  "approved_total": 0,
+  "held_total": 67,
+  "status_count": {
+    "ALREADY_COVERED": 40,
+    "CONFLICT": 17,
+    "RISK_HOLD": 10
+  },
+  "deterministic_review_progress": {
+    "candidate_total": 67,
+    "approved_total": 0,
+    "held_total": 67,
+    "status_count": {
+      "ALREADY_COVERED": 40,
+      "CONFLICT": 17,
+      "RISK_HOLD": 10
+    }
+  },
+  "format": "Standalone Shadowrocket RULE-SET lists: DOMAIN,<domain>; policy is assigned by the RULE-SET reference.",
+  "import_instruction": "Optionally reference each published raw list URL in the user-managed Shadowrocket [Rule] section with RULE-SET,<raw URL>,<matching policy>. This automation does not edit the user config.",
+  "limitations": [
+    "Only exact DOMAIN candidates with current policy-labelled evidence and all local gates passing are published.",
+    "The configured sources currently support REJECT only; DIRECT and PROXY remain unavailable until dedicated policy-labelled sources are configured.",
+    "Publisher corroboration does not prove complete upstream independence; shared data lineage remains possible.",
+    "Static checks do not replace Shadowrocket device testing."
+  ]
+}

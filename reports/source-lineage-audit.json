@@ -1,0 +1,1116 @@
+{
+  "schema_version": 1,
+  "audited_at": "2026-11-01T05:52:13.933217+00:00",
+  "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
+  "source_count": 2,
+  "audited_source_count": 2,
+  "lineage_verified_count": 0,
+  "lineage_partial_count": 2,
+  "lineage_unverified_count": 0,
+  "shared_upstream_pairs": [
+    {
+      "sources": [
+        "sr-adblock-domain-lite",
+        "hagezi-domains-pro"
+      ],
+      "shared_upstreams": [
+        "peter-lowe"
+      ]
+    }
+  ],
+  "candidate_source_count": 22,
+  "candidate_readme_audited_count": 22,
+  "candidate_shared_reference_pairs": [
+    {
+      "repositories": [
+        "GMOogway/shadowrocket-rules",
+        "Jovanykoch/rules"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list",
+        "gfwlist/gfwlist",
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GMOogway/shadowrocket-rules",
+        "Loyalsoldier/v2ray-rules-dat"
+      ],
+      "shared_readme_references": [
+        "crazy-max/windowsspyblocker",
+        "felixonmars/dnsmasq-china-list",
+        "gfwlist/gfwlist",
+        "peter-lowe",
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GMOogway/shadowrocket-rules",
+        "crayonluffy/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GMOogway/shadowrocket-rules",
+        "gatework/surge-rules"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list",
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GMOogway/shadowrocket-rules",
+        "kaonimei/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list",
+        "gfwlist/gfwlist",
+        "loyalsoldier/cn-blocked-domain",
+        "peter-lowe"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GMOogway/shadowrocket-rules",
+        "poohyeban/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GMOogway/shadowrocket-rules",
+        "tkgeeked/clash-rules-for-shadowrocket"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list",
+        "gfwlist/gfwlist",
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Goahead-zfc/shadowrocket-rules",
+        "bgpeer/rules"
+      ],
+      "shared_readme_references": [
+        "blackmatrix7/ios_rule_script"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Goahead-zfc/shadowrocket-rules",
+        "crayonluffy/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "blackmatrix7/ios_rule_script"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Goahead-zfc/shadowrocket-rules",
+        "kaonimei/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_readme_references": [
+        "blackmatrix7/ios_rule_script"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Jovanykoch/rules",
+        "Loyalsoldier/v2ray-rules-dat"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list",
+        "gfwlist/gfwlist",
+        "loyalsoldier/geoip",
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Jovanykoch/rules",
+        "bgpeer/rules"
+      ],
+      "shared_readme_references": [
+        "loyalsoldier/geoip"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Jovanykoch/rules",
+        "crayonluffy/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Jovanykoch/rules",
+        "gatework/surge-rules"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list",
+        "loyalsoldier/geoip",
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Jovanykoch/rules",
+        "kaonimei/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list",
+        "gfwlist/gfwlist"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Jovanykoch/rules",
+        "poohyeban/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Jovanykoch/rules",
+        "tkgeeked/clash-rules-for-shadowrocket"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list",
+        "gfwlist/gfwlist",
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Loyalsoldier/v2ray-rules-dat",
+        "bgpeer/rules"
+      ],
+      "shared_readme_references": [
+        "loyalsoldier/geoip"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Loyalsoldier/v2ray-rules-dat",
+        "crayonluffy/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Loyalsoldier/v2ray-rules-dat",
+        "gatework/surge-rules"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list",
+        "loyalsoldier/geoip",
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Loyalsoldier/v2ray-rules-dat",
+        "kaonimei/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list",
+        "gfwlist/gfwlist",
+        "peter-lowe"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Loyalsoldier/v2ray-rules-dat",
+        "poohyeban/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Loyalsoldier/v2ray-rules-dat",
+        "tkgeeked/clash-rules-for-shadowrocket"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list",
+        "gfwlist/gfwlist",
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "bgpeer/rules",
+        "crayonluffy/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "blackmatrix7/ios_rule_script"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "bgpeer/rules",
+        "gatework/surge-rules"
+      ],
+      "shared_readme_references": [
+        "loyalsoldier/geoip",
+        "loyalsoldier/v2ray-rules-dat"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "bgpeer/rules",
+        "kaonimei/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_readme_references": [
+        "blackmatrix7/ios_rule_script"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "bgpeer/rules",
+        "tkgeeked/clash-rules-for-shadowrocket"
+      ],
+      "shared_readme_references": [
+        "loyalsoldier/v2ray-rules-dat"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "crayonluffy/shadowrocket-rules",
+        "gatework/surge-rules"
+      ],
+      "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "crayonluffy/shadowrocket-rules",
+        "kaonimei/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_readme_references": [
+        "blackmatrix7/ios_rule_script"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "crayonluffy/shadowrocket-rules",
+        "poohyeban/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "crayonluffy/shadowrocket-rules",
+        "tkgeeked/clash-rules-for-shadowrocket"
+      ],
+      "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "gatework/surge-rules",
+        "kaonimei/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "gatework/surge-rules",
+        "poohyeban/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "gatework/surge-rules",
+        "tkgeeked/clash-rules-for-shadowrocket"
+      ],
+      "shared_readme_references": [
+        "17mon/china_ip_list",
+        "felixonmars/dnsmasq-china-list",
+        "loyalsoldier/v2ray-rules-dat",
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "kaonimei/Shadowrocket-ADBlock-Rules",
+        "tkgeeked/clash-rules-for-shadowrocket"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list",
+        "gfwlist/gfwlist"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "poohyeban/shadowrocket-rules",
+        "tkgeeked/clash-rules-for-shadowrocket"
+      ],
+      "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "tkgeeked/clash-rules-for-shadowrocket",
+        "wcr1996/shadowrocket_rules"
+      ],
+      "shared_readme_references": [
+        "loyalsoldier/clash-rules"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    }
+  ],
+  "candidate_sources": [
+    {
+      "repository": "ACL4SSR/ACL4SSR",
+      "readme_url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/README.md",
+      "readme_sha256": "67026f98f57b2f7d332dcfb3cf0fa7bb018f01db6b05ea468411a2a7bec70b7a",
+      "discovery_readme_sha256": "67026f98f57b2f7d332dcfb3cf0fa7bb018f01db6b05ea468411a2a7bec70b7a",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "careywang/sub-web",
+        "googlehosts/hosts",
+        "neko-dev/neohosts",
+        "tindy2013/subconverter"
+      ],
+      "reference_count": 4,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "Clash-FX/cn-apps-direct-domains",
+      "readme_url": "https://raw.githubusercontent.com/Clash-FX/cn-apps-direct-domains/main/README.md",
+      "readme_sha256": "072a4ca47bf936236803746dcb61626ea11fcdec6a1728512290e888bdde29fc",
+      "discovery_readme_sha256": "072a4ca47bf936236803746dcb61626ea11fcdec6a1728512290e888bdde29fc",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "clash-fx/clashfx",
+        "clash-fx/cn-apps-direct"
+      ],
+      "reference_count": 2,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "DeepController/shadowrocket-rules-reversed",
+      "readme_url": "https://raw.githubusercontent.com/DeepController/shadowrocket-rules-reversed/master/README.md",
+      "readme_sha256": "6d68d2a72ecd29f4014cfffd16a6daf6cdbad6d6aa1a1f57410a0ee729e86784",
+      "discovery_readme_sha256": "6d68d2a72ecd29f4014cfffd16a6daf6cdbad6d6aa1a1f57410a0ee729e86784",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "gmoogway/shadowrocket-rules"
+      ],
+      "reference_count": 1,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "GMOogway/shadowrocket-rules",
+      "readme_url": "https://raw.githubusercontent.com/GMOogway/shadowrocket-rules/master/README.md",
+      "readme_sha256": "63db927ff0308329bcffecf7cdefd7979848a47fbf986f509dba600085207e5e",
+      "discovery_readme_sha256": "63db927ff0308329bcffecf7cdefd7979848a47fbf986f509dba600085207e5e",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "crazy-max/windowsspyblocker",
+        "felixonmars/dnsmasq-china-list",
+        "gfwlist/gfwlist",
+        "loyalsoldier/cn-blocked-domain",
+        "peter-lowe",
+        "v2fly/domain-list-community"
+      ],
+      "reference_count": 6,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "Goahead-zfc/shadowrocket-rules",
+      "readme_url": "https://raw.githubusercontent.com/Goahead-zfc/shadowrocket-rules/main/README.md",
+      "readme_sha256": "e0d92bf09ddaa3fdd703934cc5bac9eefc6d435be7653ffa3bd795695f6f7a49",
+      "discovery_readme_sha256": "e0d92bf09ddaa3fdd703934cc5bac9eefc6d435be7653ffa3bd795695f6f7a49",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "blackmatrix7/ios_rule_script"
+      ],
+      "reference_count": 1,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "Hackl0us/SS-Rule-Snippet",
+      "readme_url": "https://raw.githubusercontent.com/Hackl0us/SS-Rule-Snippet/main/README.md",
+      "readme_sha256": "e7164c03a7ad312cc59b1dea11de024d8da84bc76751b78a7b254bb710f0874f",
+      "discovery_readme_sha256": "e7164c03a7ad312cc59b1dea11de024d8da84bc76751b78a7b254bb710f0874f",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "crossutility/quantumult-x",
+        "dreamacro/clash",
+        "fndroid/clash_for_windows_pkg",
+        "gorhill/ublock",
+        "kr328/clashforandroid",
+        "vernesong/openclash",
+        "yichengchen/clashx"
+      ],
+      "reference_count": 7,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "Jovanykoch/rules",
+      "readme_url": "https://raw.githubusercontent.com/Jovanykoch/rules/main/README.md",
+      "readme_sha256": "8fb78f65606f9d768230fc25e44616bf79514ca19cd5bcc35c485855c81620fa",
+      "discovery_readme_sha256": "8fb78f65606f9d768230fc25e44616bf79514ca19cd5bcc35c485855c81620fa",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "astral-sh/uv",
+        "felixonmars/dnsmasq-china-list",
+        "gfwlist/gfwlist",
+        "hagezi/dns-blocklists",
+        "loyalsoldier/geoip",
+        "v2fly/domain-list-community"
+      ],
+      "reference_count": 6,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "Loyalsoldier/v2ray-rules-dat",
+      "readme_url": "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/master/README.md",
+      "readme_sha256": "3430521ecd4a2993368cc4fc1108f4dc56e44f15fe502f4c4a65e225f707c59d",
+      "discovery_readme_sha256": "3430521ecd4a2993368cc4fc1108f4dc56e44f15fe502f4c4a65e225f707c59d",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "apernet/hysteria",
+        "cokebar/gfwlist2dnsmasq",
+        "crazy-max/windowsspyblocker",
+        "eycorsican/leaf",
+        "felixonmars/dnsmasq-china-list",
+        "gaoyifan/china-operator-ip",
+        "gfwlist/gfwlist",
+        "loyalsoldier/domain-list-custom",
+        "loyalsoldier/geoip",
+        "metacubex/mihomo",
+        "p4gefau1t/trojan-go",
+        "peter-lowe",
+        "v2fly/domain-list-community",
+        "v2fly/v2ray-core",
+        "xtls/xray-core"
+      ],
+      "reference_count": 15,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "RzMY/IOS-AntiRevoke-DNS-Rules",
+      "readme_url": "https://raw.githubusercontent.com/RzMY/IOS-AntiRevoke-DNS-Rules/main/README.md",
+      "readme_sha256": "282ee576cad2e94536e705dc4ebc71e5117576cdb826a545f9310de3bdce0fd8",
+      "discovery_readme_sha256": "282ee576cad2e94536e705dc4ebc71e5117576cdb826a545f9310de3bdce0fd8",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [],
+      "reference_count": 0,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "Vann-Dev/proxy-list",
+      "readme_url": "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/README.md",
+      "readme_sha256": "771883da60450198c413b2ea69fb219f0406e541f6f15428ce54784fb7fab72d",
+      "discovery_readme_sha256": "771883da60450198c413b2ea69fb219f0406e541f6f15428ce54784fb7fab72d",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "iw4p/proxy-scraper"
+      ],
+      "reference_count": 1,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "aaakul/cf-cn-ip-list",
+      "readme_url": "https://raw.githubusercontent.com/aaakul/cf-cn-ip-list/main/README.md",
+      "readme_sha256": "202899418ec8f420606b32e1d8034b40372251e7fb4cbdcb93a6c079a28fd827",
+      "discovery_readme_sha256": "202899418ec8f420606b32e1d8034b40372251e7fb4cbdcb93a6c079a28fd827",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [],
+      "reference_count": 0,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "bgpeer/rules",
+      "readme_url": "https://raw.githubusercontent.com/bgpeer/rules/main/README.md",
+      "readme_sha256": "b2eefa50d80b90dcff94899596726aa74544502dd49837854d530d81146275ac",
+      "discovery_readme_sha256": "b2eefa50d80b90dcff94899596726aa74544502dd49837854d530d81146275ac",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "bgpeer/nodekit",
+        "blackmatrix7/...",
+        "blackmatrix7/ios_rule_script",
+        "loyalsoldier/geoip",
+        "loyalsoldier/v2ray-rules-dat"
+      ],
+      "reference_count": 5,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "blackmatrix7/ios_rule_script",
+      "readme_url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/README.md",
+      "readme_sha256": "22cf4c930b6341d747a5de1896367091421e64b43cc6ef4585075dd9a86e8ba7",
+      "discovery_readme_sha256": "22cf4c930b6341d747a5de1896367091421e64b43cc6ef4585075dd9a86e8ba7",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [],
+      "reference_count": 0,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "crayonluffy/shadowrocket-rules",
+      "readme_url": "https://raw.githubusercontent.com/crayonluffy/shadowrocket-rules/main/README.md",
+      "readme_sha256": "fd95f5a6d3be027a82eb1b2a2a79ab33dcdabfd29bd0a1cc69ff22541f9404bb",
+      "discovery_readme_sha256": "fd95f5a6d3be027a82eb1b2a2a79ab33dcdabfd29bd0a1cc69ff22541f9404bb",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "blackmatrix7/ios_rule_script",
+        "v2fly/domain-list-community",
+        "xiaolai/anthropic-claude-surge-rules-set"
+      ],
+      "reference_count": 3,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "gatework/surge-rules",
+      "readme_url": "https://raw.githubusercontent.com/gatework/surge-rules/master/README.md",
+      "readme_sha256": "b4d52430de25efd5bdf88cdbc656d066ed6f3f315b37167bfb0523bc389e2b3d",
+      "discovery_readme_sha256": "b4d52430de25efd5bdf88cdbc656d066ed6f3f315b37167bfb0523bc389e2b3d",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "17mon/china_ip_list",
+        "felixonmars/dnsmasq-china-list",
+        "loyalsoldier/geoip",
+        "loyalsoldier/v2ray-rules-dat",
+        "v2fly/domain-list-community"
+      ],
+      "reference_count": 5,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "henrysha1989/adh-rules",
+      "readme_url": "https://raw.githubusercontent.com/henrysha1989/adh-rules/main/README.md",
+      "readme_sha256": "4e5804d7ad9b84342298ed3e5be0e8f4c09e936d3dd607060b8309d5c3ebfe1b",
+      "discovery_readme_sha256": "4e5804d7ad9b84342298ed3e5be0e8f4c09e936d3dd607060b8309d5c3ebfe1b",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "henrysha1989/shadowrocket-adr-rules"
+      ],
+      "reference_count": 1,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "kaonimei/Shadowrocket-ADBlock-Rules",
+      "readme_url": "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/README.md",
+      "readme_sha256": "9f897b9a55abdf2dc9e1228eea103b9d7f526fed3ed7e86390dccedc51373250",
+      "discovery_readme_sha256": "9f897b9a55abdf2dc9e1228eea103b9d7f526fed3ed7e86390dccedc51373250",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "blackmatrix7/ios_rule_script",
+        "divineengine/profiles",
+        "felixonmars/dnsmasq-china-list",
+        "gfwlist/gfwlist",
+        "lowertop/shadowrocket",
+        "loyalsoldier/cn-blocked-domain",
+        "peter-lowe",
+        "xinggsf/adblock-plus-rule"
+      ],
+      "reference_count": 8,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "poohyeban/shadowrocket-rules",
+      "readme_url": "https://raw.githubusercontent.com/poohyeban/shadowrocket-rules/main/README.md",
+      "readme_sha256": "d50f6d7cbf311c8605a8fdad8e8f7f52bf97fb93ebf256760eaf351b945054ea",
+      "discovery_readme_sha256": "d50f6d7cbf311c8605a8fdad8e8f7f52bf97fb93ebf256760eaf351b945054ea",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "adguardteam/adguardsdnsfilter",
+        "p3terx/geolite.mmdb",
+        "sukkaw/surge",
+        "v2fly/domain-list-community"
+      ],
+      "reference_count": 4,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "sve1r/Rules-For-Quantumult-X",
+      "readme_url": "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/README.md",
+      "readme_sha256": "e8701d5e7e38b9c24fb16a381b9893edc1f490606abfe67a78b6aeedb3543755",
+      "discovery_readme_sha256": "e8701d5e7e38b9c24fb16a381b9893edc1f490606abfe67a78b6aeedb3543755",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "nobyda/scipts",
+        "privacy-protection-tools/anti-ad"
+      ],
+      "reference_count": 2,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "teslaproduuction/ClashDomainsList",
+      "readme_url": "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/README.md",
+      "readme_sha256": "5b5dcc233b9ba37c87c9b488b2f12e7a28a6c8cd6211bf1166ccfa9b7040ee58",
+      "discovery_readme_sha256": "5b5dcc233b9ba37c87c9b488b2f12e7a28a6c8cd6211bf1166ccfa9b7040ee58",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [],
+      "reference_count": 0,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "tkgeeked/clash-rules-for-shadowrocket",
+      "readme_url": "https://raw.githubusercontent.com/tkgeeked/clash-rules-for-shadowrocket/main/README.md",
+      "readme_sha256": "33ecbe09d6ec1cad6c944530f3ec7c5035851a4a8666ae36648a4f647257d3fd",
+      "discovery_readme_sha256": "33ecbe09d6ec1cad6c944530f3ec7c5035851a4a8666ae36648a4f647257d3fd",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "17mon/china_ip_list",
+        "felixonmars/dnsmasq-china-list",
+        "gfwlist/gfwlist",
+        "loyalsoldier/clash-rules",
+        "loyalsoldier/v2ray-rules-dat",
+        "v2fly/domain-list-community"
+      ],
+      "reference_count": 6,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "wcr1996/shadowrocket_rules",
+      "readme_url": "https://raw.githubusercontent.com/wcr1996/shadowrocket_rules/main/README.md",
+      "readme_sha256": "6ec1e9339da2d67af11f4a9091dea741554e85891d601513792aac90931068e7",
+      "discovery_readme_sha256": "6ec1e9339da2d67af11f4a9091dea741554e85891d601513792aac90931068e7",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "loyalsoldier/clash-rules"
+      ],
+      "reference_count": 1,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "sr-adblock-domain-lite",
+      "publisher": "ithtelab/sr-adblock",
+      "lineage_status": "partial",
+      "evidence_url": "https://github.com/ithtelab/sr-adblock/blob/main/config/sources.yaml",
+      "fetched_url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/main/config/sources.yaml",
+      "evidence_sha256": "85a241653eb49d40d1200b89909ac99d3ce67c9e2a37173d9b22c0b4fdd103ef",
+      "evidence_bytes": 18455,
+      "declared_upstream_count": 8,
+      "discovered_upstream_count": 6,
+      "declared_upstreams": [
+        "blackmatrix7/ios_rule_script",
+        "external:easylist-china",
+        "external:乘风规则",
+        "fmz200/wool_scripts",
+        "iab0x00/proxyrules",
+        "johnshall/shadowrocket-adblock-rules-forever",
+        "lowertop/shadowrocket-first",
+        "peter-lowe"
+      ],
+      "declared_and_discovered": [
+        "blackmatrix7/ios_rule_script",
+        "fmz200/wool_scripts",
+        "iab0x00/proxyrules",
+        "johnshall/shadowrocket-adblock-rules-forever",
+        "lowertop/shadowrocket-first",
+        "peter-lowe"
+      ],
+      "declared_not_in_document": [
+        "external:easylist-china",
+        "external:乘风规则"
+      ],
+      "discovered_not_registered": [],
+      "discovered_upstreams": [
+        "blackmatrix7/ios_rule_script",
+        "fmz200/wool_scripts",
+        "iab0x00/proxyrules",
+        "johnshall/shadowrocket-adblock-rules-forever",
+        "lowertop/shadowrocket-first",
+        "peter-lowe"
+      ],
+      "comparison_upstreams": [
+        "blackmatrix7/ios_rule_script",
+        "external:easylist-china",
+        "external:乘风规则",
+        "fmz200/wool_scripts",
+        "iab0x00/proxyrules",
+        "johnshall/shadowrocket-adblock-rules-forever",
+        "lowertop/shadowrocket-first",
+        "peter-lowe"
+      ],
+      "status": "audited"
+    },
+    {
+      "source_id": "hagezi-domains-pro",
+      "publisher": "hagezi/dns-blocklists",
+      "lineage_status": "partial",
+      "evidence_url": "https://github.com/HaGeZi/dns-blocklists/blob/main/sources.md",
+      "fetched_url": "https://raw.githubusercontent.com/HaGeZi/dns-blocklists/main/sources.md",
+      "evidence_sha256": "3465c5dc35c9c1e45d8ae7af03d39b0b2231143879128f3bf3598e8c233f45af",
+      "evidence_bytes": 24158,
+      "declared_upstream_count": 68,
+      "discovered_upstream_count": 68,
+      "declared_upstreams": [
+        "0xdaniellopez/tweetfeed",
+        "abpindo/indonesianadblockrules",
+        "abpvn/abpvn",
+        "adguardteam/adguardfilters",
+        "adguardteam/adguardsdnsfilter",
+        "adguardteam/filtersregistry",
+        "alexsannikov/adguardhome-filters",
+        "arfshl/anti-gambling-domains",
+        "arkynx/blocklists",
+        "assoechap/stalkerware-indicators",
+        "badmojr/1hosts",
+        "bet-blocker/bet-blocker",
+        "betterwebleon/slovenian-list",
+        "bigdargon/hostsvn",
+        "brave/adblock-lists",
+        "cbuijs/ut1",
+        "cchevy/macedonian-pi-hole-blocklist",
+        "chainapsis/phishing-block-list",
+        "clsfo/reflect4-blocklist",
+        "codeberg:khodekiaa/persianblocker",
+        "codeberg:rasping532/rasping532-filters",
+        "codeberg:xruffkez/dnsbunker_dnsbl",
+        "damengzhu/banad",
+        "dandelionsprout/adfilt",
+        "dandelionsprout/swedish-list-for-adblock-plus",
+        "deepspaceharbor/macedonian-adblock-filters",
+        "dibdot/doh-ip-blocklists",
+        "dnsbunker/cti",
+        "drsdavidsoft/additional-hosts",
+        "durablenapkin/scamblocklist",
+        "easylist-thailand/easylist-thailand",
+        "easylist/easylist",
+        "filteringdev/filterslists-ko",
+        "finnish-easylist-addition/finnish-easylist-addition",
+        "gioxx/xfiles",
+        "gitlab:phishdestroy/destroylist",
+        "gitlab:quidsup/notrack-annoyance-blocklist",
+        "gitlab:quidsup/notrack-blocklists",
+        "hakame-kun/ublock-filters-indonesia",
+        "hectorm/hmirror",
+        "iam-py-test/my_filters_001",
+        "jkrejcha/admiralist",
+        "kalabic/dns-blocklists-share",
+        "laniksj/ubo-filters",
+        "lassekongo83/frellwits-filter-lists",
+        "marco-acorte/antispam-it",
+        "masterkia/persianblocker",
+        "matomo-org/referrer-spam-list",
+        "metamask/eth-phishing-detect",
+        "migueldemoura/ublock-umatrix-rulesets",
+        "mikhailkasimov/validin-phish-feed",
+        "mtxadmin/ublock",
+        "omerdduran/turk-adfilter",
+        "peter-lowe",
+        "phishing-database/phishing",
+        "polishfiltersteam/kadhosts",
+        "realodix/adblockid",
+        "remad0/turkhosts404",
+        "shadowwhisperer/blocklists",
+        "spmedia/crypto-scam-and-crypto-phishing-threat-intel-feed",
+        "symbuzzer/turkish-ad-hosts",
+        "tcptomato/road-block",
+        "tg-twilight/awavenue-ads-rule",
+        "ublockorigin/uassets",
+        "ukrainianfilters/lists",
+        "xinggsf/adblock-plus-rule",
+        "yous/youslist",
+        "zakird/crux-top-lists"
+      ],
+      "declared_and_discovered": [
+        "0xdaniellopez/tweetfeed",
+        "abpindo/indonesianadblockrules",
+        "abpvn/abpvn",
+        "adguardteam/adguardfilters",
+        "adguardteam/adguardsdnsfilter",
+        "adguardteam/filtersregistry",
+        "alexsannikov/adguardhome-filters",
+        "arfshl/anti-gambling-domains",
+        "arkynx/blocklists",
+        "assoechap/stalkerware-indicators",
+        "badmojr/1hosts",
+        "bet-blocker/bet-blocker",
+        "betterwebleon/slovenian-list",
+        "bigdargon/hostsvn",
+        "brave/adblock-lists",
+        "cbuijs/ut1",
+        "cchevy/macedonian-pi-hole-blocklist",
+        "chainapsis/phishing-block-list",
+        "clsfo/reflect4-blocklist",
+        "codeberg:khodekiaa/persianblocker",
+        "codeberg:rasping532/rasping532-filters",
+        "codeberg:xruffkez/dnsbunker_dnsbl",
+        "damengzhu/banad",
+        "dandelionsprout/adfilt",
+        "dandelionsprout/swedish-list-for-adblock-plus",
+        "deepspaceharbor/macedonian-adblock-filters",
+        "dibdot/doh-ip-blocklists",
+        "dnsbunker/cti",
+        "drsdavidsoft/additional-hosts",
+        "durablenapkin/scamblocklist",
+        "easylist-thailand/easylist-thailand",
+        "easylist/easylist",
+        "filteringdev/filterslists-ko",
+        "finnish-easylist-addition/finnish-easylist-addition",
+        "gioxx/xfiles",
+        "gitlab:phishdestroy/destroylist",
+        "gitlab:quidsup/notrack-annoyance-blocklist",
+        "gitlab:quidsup/notrack-blocklists",
+        "hakame-kun/ublock-filters-indonesia",
+        "hectorm/hmirror",
+        "iam-py-test/my_filters_001",
+        "jkrejcha/admiralist",
+        "kalabic/dns-blocklists-share",
+        "laniksj/ubo-filters",
+        "lassekongo83/frellwits-filter-lists",
+        "marco-acorte/antispam-it",
+        "masterkia/persianblocker",
+        "matomo-org/referrer-spam-list",
+        "metamask/eth-phishing-detect",
+        "migueldemoura/ublock-umatrix-rulesets",
+        "mikhailkasimov/validin-phish-feed",
+        "mtxadmin/ublock",
+        "omerdduran/turk-adfilter",
+        "peter-lowe",
+        "phishing-database/phishing",
+        "polishfiltersteam/kadhosts",
+        "realodix/adblockid",
+        "remad0/turkhosts404",
+        "shadowwhisperer/blocklists",
+        "spmedia/crypto-scam-and-crypto-phishing-threat-intel-feed",
+        "symbuzzer/turkish-ad-hosts",
+        "tcptomato/road-block",
+        "tg-twilight/awavenue-ads-rule",
+        "ublockorigin/uassets",
+        "ukrainianfilters/lists",
+        "xinggsf/adblock-plus-rule",
+        "yous/youslist",
+        "zakird/crux-top-lists"
+      ],
+      "declared_not_in_document": [],
+      "discovered_not_registered": [],
+      "discovered_upstreams": [
+        "0xdaniellopez/tweetfeed",
+        "abpindo/indonesianadblockrules",
+        "abpvn/abpvn",
+        "adguardteam/adguardfilters",
+        "adguardteam/adguardsdnsfilter",
+        "adguardteam/filtersregistry",
+        "alexsannikov/adguardhome-filters",
+        "arfshl/anti-gambling-domains",
+        "arkynx/blocklists",
+        "assoechap/stalkerware-indicators",
+        "badmojr/1hosts",
+        "bet-blocker/bet-blocker",
+        "betterwebleon/slovenian-list",
+        "bigdargon/hostsvn",
+        "brave/adblock-lists",
+        "cbuijs/ut1",
+        "cchevy/macedonian-pi-hole-blocklist",
+        "chainapsis/phishing-block-list",
+        "clsfo/reflect4-blocklist",
+        "codeberg:khodekiaa/persianblocker",
+        "codeberg:rasping532/rasping532-filters",
+        "codeberg:xruffkez/dnsbunker_dnsbl",
+        "damengzhu/banad",
+        "dandelionsprout/adfilt",
+        "dandelionsprout/swedish-list-for-adblock-plus",
+        "deepspaceharbor/macedonian-adblock-filters",
+        "dibdot/doh-ip-blocklists",
+        "dnsbunker/cti",
+        "drsdavidsoft/additional-hosts",
+        "durablenapkin/scamblocklist",
+        "easylist-thailand/easylist-thailand",
+        "easylist/easylist",
+        "filteringdev/filterslists-ko",
+        "finnish-easylist-addition/finnish-easylist-addition",
+        "gioxx/xfiles",
+        "gitlab:phishdestroy/destroylist",
+        "gitlab:quidsup/notrack-annoyance-blocklist",
+        "gitlab:quidsup/notrack-blocklists",
+        "hakame-kun/ublock-filters-indonesia",
+        "hectorm/hmirror",
+        "iam-py-test/my_filters_001",
+        "jkrejcha/admiralist",
+        "kalabic/dns-blocklists-share",
+        "laniksj/ubo-filters",
+        "lassekongo83/frellwits-filter-lists",
+        "marco-acorte/antispam-it",
+        "masterkia/persianblocker",
+        "matomo-org/referrer-spam-list",
+        "metamask/eth-phishing-detect",
+        "migueldemoura/ublock-umatrix-rulesets",
+        "mikhailkasimov/validin-phish-feed",
+        "mtxadmin/ublock",
+        "omerdduran/turk-adfilter",
+        "peter-lowe",
+        "phishing-database/phishing",
+        "polishfiltersteam/kadhosts",
+        "realodix/adblockid",
+        "remad0/turkhosts404",
+        "shadowwhisperer/blocklists",
+        "spmedia/crypto-scam-and-crypto-phishing-threat-intel-feed",
+        "symbuzzer/turkish-ad-hosts",
+        "tcptomato/road-block",
+        "tg-twilight/awavenue-ads-rule",
+        "ublockorigin/uassets",
+        "ukrainianfilters/lists",
+        "xinggsf/adblock-plus-rule",
+        "yous/youslist",
+        "zakird/crux-top-lists"
+      ],
+      "comparison_upstreams": [
+        "0xdaniellopez/tweetfeed",
+        "abpindo/indonesianadblockrules",
+        "abpvn/abpvn",
+        "adguardteam/adguardfilters",
+        "adguardteam/adguardsdnsfilter",
+        "adguardteam/filtersregistry",
+        "alexsannikov/adguardhome-filters",
+        "arfshl/anti-gambling-domains",
+        "arkynx/blocklists",
+        "assoechap/stalkerware-indicators",
+        "badmojr/1hosts",
+        "bet-blocker/bet-blocker",
+        "betterwebleon/slovenian-list",
+        "bigdargon/hostsvn",
+        "brave/adblock-lists",
+        "cbuijs/ut1",
+        "cchevy/macedonian-pi-hole-blocklist",
+        "chainapsis/phishing-block-list",
+        "clsfo/reflect4-blocklist",
+        "codeberg:khodekiaa/persianblocker",
+        "codeberg:rasping532/rasping532-filters",
+        "codeberg:xruffkez/dnsbunker_dnsbl",
+        "damengzhu/banad",
+        "dandelionsprout/adfilt",
+        "dandelionsprout/swedish-list-for-adblock-plus",
+        "deepspaceharbor/macedonian-adblock-filters",
+        "dibdot/doh-ip-blocklists",
+        "dnsbunker/cti",
+        "drsdavidsoft/additional-hosts",
+        "durablenapkin/scamblocklist",
+        "easylist-thailand/easylist-thailand",
+        "easylist/easylist",
+        "filteringdev/filterslists-ko",
+        "finnish-easylist-addition/finnish-easylist-addition",
+        "gioxx/xfiles",
+        "gitlab:phishdestroy/destroylist",
+        "gitlab:quidsup/notrack-annoyance-blocklist",
+        "gitlab:quidsup/notrack-blocklists",
+        "hakame-kun/ublock-filters-indonesia",
+        "hectorm/hmirror",
+        "iam-py-test/my_filters_001",
+        "jkrejcha/admiralist",
+        "kalabic/dns-blocklists-share",
+        "laniksj/ubo-filters",
+        "lassekongo83/frellwits-filter-lists",
+        "marco-acorte/antispam-it",
+        "masterkia/persianblocker",
+        "matomo-org/referrer-spam-list",
+        "metamask/eth-phishing-detect",
+        "migueldemoura/ublock-umatrix-rulesets",
+        "mikhailkasimov/validin-phish-feed",
+        "mtxadmin/ublock",
+        "omerdduran/turk-adfilter",
+        "peter-lowe",
+        "phishing-database/phishing",
+        "polishfiltersteam/kadhosts",
+        "realodix/adblockid",
+        "remad0/turkhosts404",
+        "shadowwhisperer/blocklists",
+        "spmedia/crypto-scam-and-crypto-phishing-threat-intel-feed",
+        "symbuzzer/turkish-ad-hosts",
+        "tcptomato/road-block",
+        "tg-twilight/awavenue-ads-rule",
+        "ublockorigin/uassets",
+        "ukrainianfilters/lists",
+        "xinggsf/adblock-plus-rule",
+        "yous/youslist",
+        "zakird/crux-top-lists"
+      ],
+      "status": "audited"
+    }
+  ],
+  "publication_rule": "This report never upgrades lineage_status. Only independently reviewed, complete item-level provenance can qualify a source as verified."
+}

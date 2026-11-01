@@ -1,0 +1,51 @@
+name: Validate Shadowrocket config structure
+
+on:
+  push:
+    paths:
+      - "sources/baseline/ss.conf"
+      - "scripts/validate_config.py"
+      - "scripts/select_domain_rules.py"
+      - "scripts/collect_domains.py"
+      - "scripts/deterministic_review.py"
+      - "scripts/build_rulesets.py"
+      - "scripts/domain_rule_engine.py"
+      - "sources/domain_sources.json"
+      - "sources/policy.json"
+      - "tests/**"
+      - ".github/workflows/validate-config.yml"
+  pull_request:
+    paths:
+      - "sources/baseline/ss.conf"
+      - "scripts/validate_config.py"
+      - "scripts/select_domain_rules.py"
+      - "scripts/collect_domains.py"
+      - "scripts/deterministic_review.py"
+      - "scripts/build_rulesets.py"
+      - "scripts/domain_rule_engine.py"
+      - "sources/domain_sources.json"
+      - "sources/policy.json"
+      - "tests/**"
+      - ".github/workflows/validate-config.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  structural-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python scripts/verify_baseline.py
+      - run: python scripts/validate_config.py
+      - run: python scripts/select_domain_rules.py --self-test
+      - name: Validate deterministic evidence review
+        run: |
+          python -m py_compile scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/build_rulesets.py
+          python -m unittest discover -s tests -v
+          python -m json.tool sources/domain_sources.json >/dev/null
+          python -m json.tool sources/policy.json >/dev/null
+          python -m json.tool sources/domain_reviews.json >/dev/null

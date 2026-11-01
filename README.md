@@ -1,0 +1,100 @@
+# Shadowrocket 项目
+
+本仓库独立维护 Shadowrocket DIRECT、PROXY、REJECT 三类规则集及其托管自动化。主配置仅作为用户独立维护对象，不由规则集自动化修改。
+
+## 主配置
+
+- 主配置文件：[`shadowrocket/ss.conf`](shadowrocket/ss.conf)
+- 订阅地址：`https://raw.githubusercontent.com/instarrys-bit/default/main/shadowrocket/ss.conf`
+
+主配置是独立维护对象。迁移脚本和模块时，不自动启用它们，也不自动改动主配置中的 DNS、规则或 MITM 设置。
+
+## 项目目录
+
+- `.github/workflows/`：GitHub Actions 工作流
+- `shadowrocket/ss.conf`：主配置
+- `rulesets/`：DIRECT、PROXY、REJECT 规则集及清单
+- `sources/`：域名来源、确定性审核账本、策略与只读冲突检测基线
+- `scripts/`：域名采集、确定性证据审核、冲突检测、规则集构建和质量验证
+- `data/`、`reports/`、`dist/`：采集数据、审计报告和构建产物
+- `modules/adblock/`：社交与搜索广告处理脚本
+- `modules/maasea/`：Maasea 相关 YouTube 脚本、模块和许可证
+
+## 可选模块的使用边界
+
+迁移到仓库不代表已启用或已验证其设备端效果：
+
+- `modules/adblock/Social_Adblock.js`：独立脚本，尚未接入主配置。
+- `modules/maasea/youtube-ads.sgmodule`：独立模块。其响应体脚本针对 `youtubei.googleapis.com`，模块说明明确指出需要对该主机进行 HTTPS 解密；本项目主配置不因此启用 MITM。
+- `modules/maasea/youtube_request_local.js`：代码中包含对 `https://init-stream.maasea.workers.dev/` 的外部 Worker 依赖。使用前应单独审查其网络请求与数据处理。
+- `modules/maasea/youtube_response.js`：YouTube 响应处理脚本。
+
+这些模块不会因文件迁移而自动进入 `ss.conf`。在确认兼容性、隐私边界和设备端效果之前，不应直接启用。
+
+## 许可证与来源
+
+`modules/maasea/LICENSE-APACHE-2.0-Maasea` 随 Maasea 相关文件一并保留。使用、修改或再分发相关上游代码时，应阅读并遵守该许可证及各文件原有版权声明。
+
+
+## 确定性审核与自动发布
+
+唯一发布工作流为 `.github/workflows/auto_sync.yml`：支持手动运行，并按计划每 6 小时运行。全程纯确定性托管自动化，不包含 AI、LLM、模型 API、API Key 或人工逐条审核依赖。流程为来源采集、域名规范化、跨来源证据核验、重复/冲突/保护检查、三类规则集构建、静态验证、报告与版本提交。
+
+当前来源只支持 `REJECT`：只有 `sr-adblock-domain-lite` 和 HaGeZi Pro 同时收录、来源策略一致、来源标识与配置匹配、达到双发布者/双来源组门槛，并通过所有本地安全检查的精确域名，才可能进入 `rulesets/reject.list`。两个项目分别维护，但完整上游数据血缘尚未逐项审计；不能把双来源佐证解释为绝对独立。
+
+当前没有满足同等门槛的 `DIRECT` 或 `PROXY` 来源。因此脚本不会根据域名名称、TLD、IP 地理位置或 DNS 结果猜测策略；这两类候选保留待审核状态。后缀级候选也不会自动扩展为 `DOMAIN-SUFFIX`。
+
+证据不足、来源冲突/移除、已有规则覆盖、现有规则策略冲突、条件规则交叠或关键功能保护命中，均不会发布。旧 Gemini/GPT 审核账本及相关报告仅作为不可执行的历史记录保留，不被任何工作流、脚本或规则集构建读取；新的审核账本唯一为 `sources/domain_reviews.json`。
+
+审核账本：`sources/domain_reviews.json`。发布统计：`rulesets/manifest.json`。主配置 `shadowrocket/ss.conf` 与只读基线 `sources/baseline/ss.conf` 始终不被此流程修改。
+
+## 验证边界
+
+静态验证可以检查来源一致性、格式、规则覆盖和构建结果，但不能代替 Shadowrocket 设备端测试。任何新规则集都应先单独订阅、观察关键 App 和系统服务，再考虑长期使用。
+
+## DIRECT / PROXY source research
+
+The current source-provenance assessment is recorded in [`reports/direct-proxy-source-research.md`](reports/direct-proxy-source-research.md). Candidate lists are not activated merely because they are labelled China, Global, or Proxy; documented upstream overlap and policy semantics are checked first. The automated source-discovery and assessment inventories are stored in `sources/discovered_sources.json`, `sources/source_assessments.json`, and `reports/source-assessment.md`.
+
+## Deterministic multi-source collection
+
+The collector is registry-driven: it downloads every enabled source, dispatches only to explicitly supported parsers, verifies each source independently, and stores a separate snapshot under `data/source_snapshots/<source-id>.txt`. Only sources marked `primary_candidate_source` enqueue newly observed domains; other registered sources provide corroborating evidence. A domain present under more than one routing policy is held as `POLICY_CONFLICT`, never resolved by source order.
+
+Supported source formats are `domain-only` (including an explicitly enabled leading-dot suffix mode), `adblock-domain-rules`, and `shadowrocket-domain-rules`. The Shadowrocket parser extracts only exact `DOMAIN` and `DOMAIN-SUFFIX` entries; it never converts `DOMAIN-KEYWORD`, `USER-AGENT`, IP/CIDR, ASN, process or other rules into domains. If a source embeds an explicit third-field policy, it must match the registry classification. New formats must be implemented and covered by tests before they can be registered. Every enabled source must have a declared policy, publisher, independence group, parser format, role, HTTPS GitHub Raw URL, and scoring weight. Each policy's required source set must include every enabled source carrying that policy, with distinct publishers, independence groups, and URLs.
+
+New sources initialize a baseline without bulk-enqueuing their entire contents. Only subsequent additions from a primary candidate source enter the review queue. This avoids unexpectedly importing hundreds of thousands of entries when a source is first registered. Source snapshots are committed by the scheduled workflow so change detection survives runner replacement.
+
+
+### Automated source ancestry audit\n\n`scripts/audit_source_lineage.py` runs in every scheduled audit. It fetches each registered public provenance document, extracts referenced GitHub/Codeberg/GitLab repositories, compares discovered references with the registry, and reports newly discovered or stale declarations plus shared upstreams in `reports/source-lineage-audit.json`. It does not modify source policy or automatically declare lineage verified: repository-level link discovery is not proof of per-domain provenance. Failures to retrieve or parse a registered provenance document stop the audit rather than silently treating missing evidence as independence.\n\n### Source ancestry and publication gate
+
+Publisher names and separate repository URLs are not sufficient proof of independent evidence. Every registered source declares `lineage_status` and `upstream_repositories`. Only sources with `lineage_status: verified` contribute to the confidence threshold or qualify a domain for publication; this is enforced both by the reviewer and by the final rule-set builder. Unverified sources may still support discovery, coverage, duplicate and conflict analysis. Declared shared upstream repositories prevent sources from meeting the independence minimum. See the provenance report for current source status. The scheduled writer uses a normal fail-closed rebase; it never resolves output conflicts by preferring the automation branch.
+
+
+## Automated source discovery
+
+`scripts/discover_sources.py` searches GitHub on every scheduled run for repositories related to Shadowrocket rules, China domain lists, proxy/direct domain lists, geosite and adblock domains. It inspects public README files for repository-owned `.list`, `.txt` and `.conf` URLs, then stores candidate repositories and source links in `sources/discovered_sources.json` and `reports/source-discovery.md`.
+
+Discovery is intentionally non-activating. Search terms and repository names are not policy evidence. A candidate cannot enter `sources/domain_sources.json` until policy semantics, exact parser compatibility, publisher identity, lineage/overlap and update-drift checks pass. A GitHub API outage retains the previous inventory and does not interrupt the independent deterministic audit.
+
+The automation guards both the uploaded baseline and the current user-managed `shadowrocket/ss.conf` by Git blob SHA. An unapproved change to either file fails the integrity gate; the workflow never stages or commits `shadowrocket/ss.conf`.
+
+
+## Automated source assessment
+
+`scripts/assess_sources.py` runs after repository discovery. It fetches only rule-list URLs hosted by the discovered repository, checks supported domain syntax, counts exact and suffix domain rules, and records non-domain rules such as DOMAIN-KEYWORD, IP/CIDR and ASN as ignored. It recognizes a routing policy only when all domain rules carry one consistent explicit action or the README contains an exact RULE-SET URL/action reference. Mixed or incomplete policy evidence remains unclassified.
+
+Assessment results are stored in `sources/source_assessments.json` and `reports/source-assessment.md`. This stage never activates sources or modifies the trusted source registry.
+
+
+The source-discovery stage also rechecks curated candidate feeds from Hackl0us, sve1r, ACL4SSR, blackmatrix7, Loyalsoldier, Jovanykoch, gatework and Clash-FX. These seed URLs are discovery leads, not approved or active routing sources. Their policy meaning, parser compatibility and ancestry are reassessed on every scheduled run. README policy claims are accepted only when the specific list is described with an explicit routing meaning; conflicting descriptions remain ambiguous.
+
+
+## Automated source candidate matrix
+
+After lineage auditing, `scripts/build_source_candidates.py` joins parser assessments with policy evidence and possible shared README references. Multiple files from one repository count as one publisher. It reports DIRECT, PROXY and REJECT candidate publisher counts, verified publisher counts and activation blockers in `sources/source_candidates.json` and `reports/source-candidate-matrix.md`.
+
+The candidate matrix is informational and non-activating. It compares domain-set overlap using truncated SHA-256 fingerprints rather than publishing raw domain inventories, identifies near-duplicate and high-overlap source sets, and detects cross-policy conflicts. Near-duplicate and high-overlap publishers are conservatively grouped as correlated when counting independent evidence. It will not relax the two-independent-publisher rule or promote partial/unverified lineage.
+
+## Automated policy-source overlap audit
+
+`scripts/audit_policy_source_overlap.py` refetches policy-labelled candidate feeds, normalizes domain-only entries, unions files by publisher, calculates same-policy overlap, and reports domains that appear under conflicting policies. Its outputs are `sources/policy_source_overlap.json` and `reports/policy-source-overlap.md`. This is a correlation and conflict signal, not proof of common ancestry or correctness; it never activates sources or publishes rules.
