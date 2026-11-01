@@ -71,7 +71,7 @@ jobs:
           python3 scripts/build_source_candidates.py
           cat reports/source-candidate-matrix.md >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services
+      - name: "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services"
         run: python3 scripts/deterministic_review.py
 
       - name: Build standalone DIRECT, PROXY and REJECT rule sets
