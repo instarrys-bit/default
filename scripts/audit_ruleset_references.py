@@ -99,6 +99,7 @@ def inspect(config_text: str, manifest: dict, ruleset_dir: Path = RULESETS) -> d
 
     cross_file_duplicates = []
     cross_policy_conflicts = []
+    precedence_resolved_overlaps = []
     entries = [
         {"kind": kind, "domain": domain, "policy": policy}
         for (kind, domain), policies in domain_owners.items()
@@ -107,29 +108,49 @@ def inspect(config_text: str, manifest: dict, ruleset_dir: Path = RULESETS) -> d
     for key, policies in sorted(domain_owners.items()):
         if len(policies) > 1:
             cross_file_duplicates.append({"kind": key[0], "domain": key[1], "policies": policies})
+    policy_order = {
+        item["policy"]: index
+        for index, item in enumerate(sorted(observed, key=lambda x: x["line"]))
+    }
+
+    def intersects(left, right):
+        a, b = left["domain"], right["domain"]
+        if left["kind"] == "DOMAIN" and right["kind"] == "DOMAIN":
+            return a == b
+        if left["kind"] == "DOMAIN":
+            return a == b or a.endswith("." + b)
+        if right["kind"] == "DOMAIN":
+            return b == a or b.endswith("." + a)
+        return a == b or a.endswith("." + b) or b.endswith("." + a)
+
+    def contains(outer, inner):
+        if outer["kind"] == "DOMAIN":
+            return inner["kind"] == "DOMAIN" and outer["domain"] == inner["domain"]
+        return inner["domain"] == outer["domain"] or inner["domain"].endswith("." + outer["domain"])
+
     for i, left in enumerate(entries):
         for right in entries[i+1:]:
-            if left["policy"] == right["policy"]:
+            if left["policy"] == right["policy"] or not intersects(left, right):
                 continue
-            a, b = left["domain"], right["domain"]
-            intersects = (
-                (left["kind"] == "DOMAIN" and (a == b or (right["kind"] == "DOMAIN-SUFFIX" and (a == b or a.endswith("." + b)))))
-                or (right["kind"] == "DOMAIN" and (a == b or (left["kind"] == "DOMAIN-SUFFIX" and (b == a or b.endswith("." + a)))))
-                or (left["kind"] == "DOMAIN-SUFFIX" and right["kind"] == "DOMAIN-SUFFIX" and (a == b or a.endswith("." + b) or b.endswith("." + a)))
-            )
-            if intersects:
-                conflict = {"left": left, "right": right}
+            left_first = policy_order.get(left["policy"], 999) <= policy_order.get(right["policy"], 999)
+            earlier, later = (left, right) if left_first else (right, left)
+            if contains(earlier, later):
+                conflict = {"earlier": earlier, "later": later}
                 if conflict not in cross_policy_conflicts:
                     cross_policy_conflicts.append(conflict)
+            else:
+                resolved = {"earlier": earlier, "later": later}
+                if resolved not in precedence_resolved_overlaps:
+                    precedence_resolved_overlaps.append(resolved)
     for item in cross_file_duplicates:
         if len(set(item["policies"])) == 1:
             errors.append("cross-file duplicate domain scope under same policy: " + item["kind"] + "," + item["domain"])
     for item in cross_policy_conflicts:
         errors.append(
-            "cross-file scope conflict: " + item["left"]["kind"] + "," + item["left"]["domain"]
-            + " (" + item["left"]["policy"] + ") overlaps "
-            + item["right"]["kind"] + "," + item["right"]["domain"]
-            + " (" + item["right"]["policy"] + ")"
+            "cross-file scope conflict: earlier " + item["earlier"]["kind"] + "," + item["earlier"]["domain"]
+            + " (" + item["earlier"]["policy"] + ") contains later "
+            + item["later"]["kind"] + "," + item["later"]["domain"]
+            + " (" + item["later"]["policy"] + "); later rule cannot override first-match precedence"
         )
 
     return {
@@ -138,6 +159,7 @@ def inspect(config_text: str, manifest: dict, ruleset_dir: Path = RULESETS) -> d
         "managed_output_files": sorted(expected_files), "file_stats": file_stats,
         "cross_file_duplicates": cross_file_duplicates,
         "cross_policy_conflicts": cross_policy_conflicts,
+        "precedence_resolved_overlaps": precedence_resolved_overlaps,
         "errors": errors, "passed": not errors,
         "scope": "read-only; validates DOMAIN and DOMAIN-SUFFIX scopes, cross-policy scope intersections, and does not edit config, DNS, MITM, or RULE-SET references"
     }
@@ -157,6 +179,12 @@ def main() -> int:
     lines += [f"- {name}: {stats['line_count']} lines; policy {stats['policy']}" for name, stats in sorted(report["file_stats"].items())]
     lines += ["", "## Cross-file duplicates", ""]
     lines += ["- " + x["domain"] + ": " + ", ".join(x["policies"]) for x in report["cross_file_duplicates"]] or ["- None"]
+    lines += ["", "## Precedence-resolved overlaps", ""]
+    lines += [
+        f"- {x['earlier']['kind']},{x['earlier']['domain']} ({x['earlier']['policy']}) precedes "
+        f"{x['later']['kind']},{x['later']['domain']} ({x['later']['policy']})"
+        for x in report["precedence_resolved_overlaps"]
+    ] or ["- None"]
     lines += ["", "## Findings", ""]
     lines += [f"- {x}" for x in report["errors"]] or ["- No inconsistencies detected."]
     lines += ["", "Read-only audit; no config or RULE-SET references were changed.", ""]
