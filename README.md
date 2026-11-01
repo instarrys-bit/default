@@ -26,7 +26,7 @@
 
 - `modules/adblock/Social_Adblock.js`：独立脚本，尚未接入主配置。
 - `modules/maasea/youtube-ads.sgmodule`：独立模块。其响应体脚本针对 `youtubei.googleapis.com`，模块说明明确指出需要对该主机进行 HTTPS 解密；本项目主配置不因此启用 MITM。
-- `modules/maasea/youtube_request_local.js`：代码中包含对 `https://init-stream.maasea.workers.dev/` 的外部 Worker 依赖。使用前应单独审查其网络请求与数据处理。
+- `modules/maasea/youtube_request_local.js`：已从公开仓库移除。原脚本包含向第三方 Worker 传递 `clientKey` 和目标 URL 的逻辑，未纳入当前 YouTube 模块；如需恢复，必须先完成独立隐私与数据流审查。
 - `modules/maasea/youtube_response.js`：YouTube 响应处理脚本。
 
 这些模块不会因文件迁移而自动进入 `ss.conf`。在确认兼容性、隐私边界和设备端效果之前，不应直接启用。
@@ -38,7 +38,7 @@
 
 ## 确定性审核与自动发布
 
-唯一发布工作流为 `.github/workflows/auto_sync.yml`：支持手动运行，并按计划每 6 小时运行。全程纯确定性托管自动化，不包含 AI、LLM、模型 API、API Key 或人工逐条审核依赖。流程为来源采集、域名规范化、跨来源证据核验、重复/冲突/保护检查、三类规则集构建、静态验证、报告与版本提交。
+唯一发布工作流为 `.github/workflows/auto_sync.yml`：支持手动运行，并按计划每 6 小时运行。全程纯确定性托管自动化，不包含 AI、LLM、模型 API、API Key 或人工逐条审核依赖。流程为来源采集、域名规范化、跨来源证据核验、重复/冲突/保护检查、三类规则集构建、静态验证、报告与版本提交。安全边界采用独立作业：审计作业仅有 `contents: read` 且不保留 checkout 凭据；仅发布作业具有 `contents: write`，它不执行仓库 Python 脚本，只接收短期保留的白名单产物并再次核验基准提交后发布。失败通知作业单独拥有 `issues: write`。
 
 当前登记了三类策略来源：DIRECT 使用 ACL4SSR ChinaDomain 与 Clash-FX cn-apps-direct-domains；PROXY 使用 ACL4SSR ProxyLite 与 sve1r Global；REJECT 使用 sr-adblock-domain-lite 与 HaGeZi Pro。每个域名必须获得至少两个不同发布者、不同来源组的当前证据，策略一致并通过本地检查，才可进入对应规则集。来源血缘状态会完整记录，但 `partial` 或 `unverified` 不再一票否决域名；来源重叠是相关性提示，不等同于具体域名共享上游。
 

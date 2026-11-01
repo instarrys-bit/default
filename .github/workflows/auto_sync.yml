@@ -15,25 +15,27 @@ on:
       - ".github/workflows/auto_sync.yml"
 
 permissions:
-  contents: write
-  issues: write
+  contents: read
 
 concurrency:
   group: shadowrocket-main-writer
   cancel-in-progress: false
 
 jobs:
-  audit-only:
-    runs-on: ubuntu-latest
+  audit:
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
+          persist-credentials: false
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
 
@@ -85,50 +87,103 @@ jobs:
           python3 scripts/audit_external_domains.py
           cat reports/external-domain-audit.md >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Recompute from latest main and publish audit outputs safely
+      - name: Package allowlisted audit outputs
         run: |
+          tar -czf audit-output.tar.gz \
+            sources/domain_reviews.json \
+            reports/external-domain-audit.md \
+            reports/source-lineage-audit.json \
+            reports/source-discovery.md \
+            reports/source-assessment.md \
+            reports/source-candidate-matrix.md \
+            reports/policy-source-overlap.md \
+            sources/policy_source_overlap.json \
+            sources/discovered_sources.json \
+            sources/source_assessments.json \
+            sources/source_candidates.json \
+            data/domain_candidates.json \
+            data/primary_snapshot.txt \
+            data/secondary_snapshot.txt \
+            data/source_snapshots \
+            rulesets
+
+      - name: Upload allowlisted audit outputs
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: deterministic-audit-output
+          path: audit-output.tar.gz
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    needs: audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout exact audited commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Download audited outputs
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: deterministic-audit-output
+          path: audit-artifact
+
+      - name: Verify base commit and safely publish allowlisted outputs
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          if [ "$(git rev-parse origin/main)" != "$GITHUB_SHA" ]; then
+            echo "main changed while audit was running; refusing to publish stale output."
+            exit 1
+          fi
+
+          archive="audit-artifact/audit-output.tar.gz"
+          test -s "$archive"
+          if tar -tzf "$archive" | grep -E '(^/|(^|/)\.\.(/|$))'; then
+            echo "Unsafe path found in audit artifact."
+            exit 1
+          fi
+          tar -xzf "$archive" -C .
+
+          git add -- \
+            sources/domain_reviews.json \
+            reports/external-domain-audit.md \
+            reports/source-lineage-audit.json \
+            reports/source-discovery.md \
+            reports/source-assessment.md \
+            reports/source-candidate-matrix.md \
+            reports/policy-source-overlap.md \
+            sources/policy_source_overlap.json \
+            sources/discovered_sources.json \
+            sources/source_assessments.json \
+            sources/source_candidates.json \
+            data/domain_candidates.json \
+            data/primary_snapshot.txt \
+            data/secondary_snapshot.txt \
+            data/source_snapshots/ \
+            rulesets/
+
+          if git diff --cached --quiet; then
+            echo "No audit output changes."
+            exit 0
+          fi
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for attempt in 1 2 3; do
-            echo "Recompute attempt $attempt from latest origin/main"
-            git fetch origin main
-            git reset --hard origin/main
-
-            python3 -m py_compile scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py
-            python3 -m unittest discover -s tests -v
-            GITHUB_TOKEN=${{ github.token }} python3 scripts/discover_sources.py
-            python3 scripts/assess_sources.py
-            python3 scripts/verify_baseline.py
-            python3 scripts/collect_domains.py
-            python3 scripts/audit_source_lineage.py
-            python3 scripts/audit_policy_source_overlap.py
-            python3 scripts/build_source_candidates.py
-            python3 scripts/deterministic_review.py
-            python3 scripts/build_rulesets.py
-            python3 scripts/validate_config.py
-            python3 scripts/audit_external_domains.py
-
-            git add sources/domain_reviews.json reports/external-domain-audit.md reports/source-lineage-audit.json reports/source-discovery.md reports/source-assessment.md reports/source-candidate-matrix.md reports/policy-source-overlap.md sources/policy_source_overlap.json sources/discovered_sources.json sources/source_assessments.json sources/source_candidates.json data/domain_candidates.json data/primary_snapshot.txt data/secondary_snapshot.txt data/source_snapshots/ rulesets/
-            if git diff --cached --quiet; then
-              echo "No audit output changes after recomputing against latest main."
-              exit 0
-            fi
-
-            git commit -m "Run deterministic Shadowrocket domain audit"
-            if git push origin HEAD:main; then
-              echo "Audit outputs published successfully."
-              exit 0
-            fi
-            echo "Push raced with another writer; next attempt will discard local outputs and recompute from latest main."
-            sleep $((attempt * 3))
-          done
-          echo "Unable to publish after three clean recomputation attempts."
-          exit 1
+          git commit -m "Run deterministic Shadowrocket domain audit"
+          git push origin HEAD:main
 
   notify-failure:
-    if: ${{ failure() && needs.audit-only.result == 'failure' }}
-    needs: audit-only
-    runs-on: ubuntu-latest
+    if: ${{ always() && (needs.audit.result == 'failure' || needs.publish.result == 'failure') }}
+    needs: [audit, publish]
+    runs-on: ubuntu-24.04
     permissions:
       issues: write
     steps:
