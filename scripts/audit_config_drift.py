@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only comparison of the user-managed Shadowrocket config against the canonical baseline."""
+"""Read-only audit using the user's managed Shadowrocket config as the sole authority."""
 from __future__ import annotations
 import hashlib
 import json
@@ -9,6 +9,11 @@ ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = ROOT / "sources" / "policy.json"
 REPORT_JSON = ROOT / "reports" / "config-drift-audit.json"
 REPORT_MD = ROOT / "reports" / "config-drift-audit.md"
+DNS_KEYS = (
+    "dns-server", "fallback-dns-server", "direct-dns-server",
+    "proxy-dns-server", "dns-direct-system",
+    "dns-direct-fallback-proxy", "hijack-dns",
+)
 
 
 def parse_config(text: str) -> dict[str, dict[str, list[str]]]:
@@ -26,8 +31,7 @@ def parse_config(text: str) -> dict[str, dict[str, list[str]]]:
             sections.setdefault(current, {}).setdefault("__raw_lines__", []).append(line)
         elif current is not None and "=" in line:
             key, value = line.split("=", 1)
-            key = key.strip().lower()
-            sections.setdefault(current, {}).setdefault(key, []).append(value.strip())
+            sections.setdefault(current, {}).setdefault(key.strip().lower(), []).append(value.strip())
     return sections
 
 
@@ -35,91 +39,78 @@ def git_blob_sha(data: bytes) -> str:
     return hashlib.sha1(b"blob " + str(len(data)).encode("ascii") + bytes([0]) + data).hexdigest()
 
 
-def compare_sections(baseline: dict, managed: dict) -> list[dict]:
-    differences = []
-    for section in sorted(set(baseline) | set(managed)):
-        if section not in baseline:
-            differences.append({"section": section, "key": "*", "kind": "added_section",
-                                "baseline": None, "managed": None})
-            continue
-        if section not in managed:
-            differences.append({"section": section, "key": "*", "kind": "removed_section",
-                                "baseline": None, "managed": None})
-            continue
-        for key in sorted(set(baseline[section]) | set(managed[section])):
-            before = baseline[section].get(key)
-            after = managed[section].get(key)
-            if before != after:
-                kind = "added_key" if before is None else "removed_key" if after is None else "changed_value"
-                differences.append({"section": section, "key": key, "kind": kind,
-                                    "baseline": before, "managed": after})
-    return differences
+def build_report(config_bytes: bytes, expected_blob_sha: str, config_path: str) -> dict:
+    text = config_bytes.decode("utf-8-sig")
+    sections = parse_config(text)
+    general = sections.get("General", {})
+    dns_snapshot = {key: general[key] for key in DNS_KEYS if key in general}
+    mitm_enabled = any(value.lower() == "true" for value in sections.get("MITM", {}).get("enable", []))
+    actual_blob_sha = git_blob_sha(config_bytes)
+    return {
+        "schema_version": 2,
+        "mode": "read_only_user_config_baseline",
+        "baseline_path": config_path,
+        "baseline_sha256": hashlib.sha256(config_bytes).hexdigest(),
+        "baseline_git_blob_sha": actual_blob_sha,
+        "registered_baseline_git_blob_sha": expected_blob_sha,
+        "baseline_matches_registered_blob": actual_blob_sha == expected_blob_sha,
+        "section_names": list(sections),
+        "section_count": len(sections),
+        "rule_line_count": len(sections.get("Rule", {}).get("__raw_lines__", [])),
+        "url_rewrite_line_count": len(sections.get("URL Rewrite", {}).get("__raw_lines__", [])),
+        "dns_snapshot": dns_snapshot,
+        "mitm_section_present": "MITM" in sections,
+        "mitm_enabled": mitm_enabled,
+        "limitations": [
+            "The current shadowrocket/ss.conf is the sole policy and configuration reference for this audit.",
+            "The automation reads this file and does not modify it.",
+            "DNS values and MITM state are reported as observed facts, not rewritten or inferred.",
+            "Static checks cannot verify runtime behavior inside the Shadowrocket app."
+        ]
+    }
 
 
 def main() -> int:
     policy = json.loads(POLICY_PATH.read_text(encoding="utf-8"))
-    baseline_path = ROOT / policy["canonical_config"]["path"]
-    managed_path = ROOT / policy["managed_config_guard"]["path"]
-    baseline_bytes = baseline_path.read_bytes()
-    managed_bytes = managed_path.read_bytes()
-    baseline = parse_config(baseline_bytes.decode("utf-8-sig"))
-    managed = parse_config(managed_bytes.decode("utf-8-sig"))
-    differences = compare_sections(baseline, managed)
-    mitm_enabled = any(v.lower() == "true" for v in managed.get("MITM", {}).get("enable", []))
-    dns_keys = {"dns-server", "fallback-dns-server", "direct-dns-server", "proxy-dns-server",
-                "dns-direct-system", "dns-direct-fallback-proxy", "hijack-dns"}
-    dns_differences = [d for d in differences if d["section"].lower() == "general" and d["key"] in dns_keys]
-    result = {
-        "schema_version": 1,
-        "mode": "read_only",
-        "baseline_path": str(baseline_path.relative_to(ROOT)),
-        "managed_path": str(managed_path.relative_to(ROOT)),
-        "baseline_sha256": hashlib.sha256(baseline_bytes).hexdigest(),
-        "managed_sha256": hashlib.sha256(managed_bytes).hexdigest(),
-        "baseline_git_blob_sha": policy["canonical_config"]["approved_git_blob_sha"],
-        "managed_git_blob_sha": git_blob_sha(managed_bytes),
-        "managed_matches_registered_blob": git_blob_sha(managed_bytes) == policy["managed_config_guard"]["approved_git_blob_sha"],
-        "managed_config_differs_from_baseline": bool(differences),
-        "difference_count": len(differences),
-        "dns_difference_count": len(dns_differences),
-        "mitm_section_present": "MITM" in managed,
-        "mitm_enabled": mitm_enabled,
-        "differences": differences,
-        "limitations": [
-            "This report detects file-level configuration drift; it does not change the managed config.",
-            "Differences are observations, not automatic proof that a setting is wrong.",
-            "Static checks cannot verify runtime behavior inside Shadowrocket."
-        ]
-    }
+    guard = policy["managed_config_guard"]
+    config_path = guard["path"]
+    config_bytes = (ROOT / config_path).read_bytes()
+    result = build_report(config_bytes, guard["approved_git_blob_sha"], config_path)
     REPORT_JSON.parent.mkdir(parents=True, exist_ok=True)
     REPORT_JSON.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
     lines = [
-        "# Shadowrocket configuration drift audit", "",
-        "- Mode: read-only",
-        f"- Managed config SHA-256: `{result['managed_sha256']}`",
-        f"- Canonical baseline SHA-256: `{result['baseline_sha256']}`",
-        f"- Differences from baseline: **{len(differences)}**",
-        f"- DNS-related differences: **{len(dns_differences)}**",
+        "# Shadowrocket user-config baseline audit", "",
+        "- Mode: read-only; user-managed config is authoritative",
+        f"- Baseline file: `{config_path}`",
+        f"- Baseline Git blob SHA: `{result['baseline_git_blob_sha']}`",
+        f"- Registered baseline SHA matches: **{result['baseline_matches_registered_blob']}**",
+        f"- Sections: **{result['section_count']}**",
+        f"- Rule lines: **{result['rule_line_count']}**",
+        f"- URL Rewrite lines: **{result['url_rewrite_line_count']}**",
         f"- MITM section present: **{result['mitm_section_present']}**",
-        f"- MITM enabled: **{mitm_enabled}**", "",
-        "## Detected differences", ""
+        f"- MITM enabled: **{result['mitm_enabled']}**", "",
+        "## DNS snapshot (observed; not changed)", ""
     ]
-    if not differences:
-        lines.append("No differences detected.")
+    if result["dns_snapshot"]:
+        for key, values in result["dns_snapshot"].items():
+            lines.append(f"- `{key}`: " + " | ".join(f"`{value}`" for value in values))
     else:
-        lines.extend(["| Section | Key | Change | Baseline | Managed |", "|---|---|---|---|---|"])
-        for item in differences:
-            before = json.dumps(item["baseline"], ensure_ascii=False)
-            after = json.dumps(item["managed"], ensure_ascii=False)
-            lines.append(f"| {item['section']} | {item['key']} | {item['kind']} | {before} | {after} |")
+        lines.append("No recognized DNS settings found in [General].")
     lines.extend(["", "## Interpretation", "",
-        "This is an automatic, read-only drift report. It does not edit the user's config or rewrite DNS/MITM settings.",
-        "A difference is flagged for inspection; the automation does not assume the canonical baseline is the desired current runtime config.",
-        ""])
+        "All checks use the current user-managed config as the authority. The historical uploaded baseline is not used to judge whether this config is correct.",
+        "A registered-hash mismatch means the config changed without its baseline record being updated; it does not authorize the automation to rewrite the config.",
+        "DNS and MITM are reported only. No settings are added, removed, or changed.", ""])
     REPORT_MD.write_text("\n".join(lines), encoding="utf-8")
-    print(json.dumps({k: result[k] for k in ("difference_count", "dns_difference_count",
-                                               "mitm_section_present", "mitm_enabled")}, ensure_ascii=False))
-    return 0
+    print(json.dumps({
+        "baseline_matches_registered_blob": result["baseline_matches_registered_blob"],
+        "section_count": result["section_count"],
+        "rule_line_count": result["rule_line_count"],
+        "dns_keys_present": list(result["dns_snapshot"]),
+        "mitm_section_present": result["mitm_section_present"],
+        "mitm_enabled": result["mitm_enabled"]
+    }, ensure_ascii=False))
+    return 0 if result["baseline_matches_registered_blob"] else 1
 
 
 if __name__ == "__main__":
