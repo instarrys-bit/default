@@ -43,6 +43,18 @@ def main():
         if previous_path.exists():
             previous_published[policy]=set(x.strip() for x in previous_path.read_text(encoding="utf-8").splitlines() if x.strip() and not x.strip().startswith("#"))
     rule_sets={policy:set() for policy in POLICIES}
+    previous_rule_count=0
+    for policy in POLICIES:
+        for line in previous_published[policy]:
+            if line.startswith("DOMAIN,"):
+                rule_sets[policy].add(("exact_candidate",line[7:].lower()))
+            elif line.startswith("DOMAIN-SUFFIX,"):
+                rule_sets[policy].add(("suffix_candidate",line[14:].lower()))
+            else:
+                raise ValueError("unsupported existing published rule: "+line)
+            previous_rule_count+=1
+    if previous_rule_count>30000:
+        raise ValueError("existing published rules exceed the 30,000 hard cap; refusing destructive truncation")
     seen={}
     status_counts={}
     held=approved=0
@@ -93,6 +105,11 @@ def main():
         scope=str(item.get("source_entry_type","exact_candidate"))
         if scope not in {"exact_candidate","suffix_candidate"}:
             raise ValueError("unsupported approved domain scope: "+domain)
+        existing_line=("DOMAIN-SUFFIX," if scope=="suffix_candidate" else "DOMAIN,")+domain
+        if existing_line in previous_published[policy]:
+            seen[domain]=policy
+            approved+=1
+            continue
         if item.get("lifecycle_hold") and not lifecycle_active:
             held_line=("DOMAIN-SUFFIX," if scope=="suffix_candidate" else "DOMAIN,")+domain
             if held_line not in previous_published[policy]:
@@ -131,6 +148,47 @@ def main():
         approved+=1
 
     OUT.mkdir(parents=True,exist_ok=True)
+    queue_path=OUT/"pending_queue.json"
+    prior_queue=json.loads(queue_path.read_text(encoding="utf-8")) if queue_path.exists() else {"schema_version":1,"items":[]}
+    queue_map={}
+    for queued in prior_queue.get("items",[]):
+        key=(str(queued.get("policy","")).upper(),str(queued.get("scope","exact_candidate")),str(queued.get("domain","")).lower())
+        if key[0] in POLICIES and key[1] in {"exact_candidate","suffix_candidate"} and key[2]:
+            queue_map[key]=queued
+    for policy in POLICIES:
+        previous_keys=set()
+        for line in previous_published[policy]:
+            if line.startswith("DOMAIN-SUFFIX,"):
+                previous_keys.add(("suffix_candidate",line[14:].lower()))
+            elif line.startswith("DOMAIN,"):
+                previous_keys.add(("exact_candidate",line[7:].lower()))
+        for scope,domain in sorted(rule_sets[policy]):
+            if (scope,domain) not in previous_keys:
+                queue_map.setdefault((policy,scope,domain),{
+                    "policy":policy,"scope":scope,"domain":domain,
+                    "queued_at":datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    "reason":"Approved rule waiting for published capacity"
+                })
+    capacity=max(0,30000-previous_rule_count)
+    promoted=[]
+    for key in sorted(queue_map, key=lambda x:(str(queue_map[x].get("queued_at","")),x[0],x[2],x[1])):
+        if capacity<=0:
+            break
+        policy,scope,domain=key
+        rule_sets[policy].add((scope,domain))
+        promoted.append(key)
+        capacity-=1
+    for key in promoted:
+        queue_map.pop(key,None)
+    for policy in POLICIES:
+        for scope,domain in sorted(rule_sets[policy]):
+            queue_map.pop((policy,scope,domain),None)
+    queue_path.write_text(json.dumps({
+        "schema_version":1,
+        "max_published_rules":30000,
+        "queued_count":len(queue_map),
+        "items":[queue_map[key] for key in sorted(queue_map)]
+    },ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
     rule_lifecycle={}
     for policy in sorted(POLICIES):
         output_path=OUT/(policy.lower()+".list")
@@ -179,6 +237,10 @@ def main():
         "lineage_not_fully_verified_sources":sum(1 for x in current.get("sources",[]) if x.get("lineage_status")!="verified"),
         "source_candidate_summary": candidate_matrix.get("policy_summary", {}) if candidate_matrix else {},
         "rule_count":{policy:len(rule_sets[policy]) for policy in sorted(POLICIES)},
+        "published_rule_total":sum(len(rule_sets[policy]) for policy in POLICIES),
+        "max_published_rules":30000,
+        "queued_rule_total":len(queue_map),
+        "pending_queue":"rulesets/pending_queue.json",
         "rule_lifecycle":rule_lifecycle,
         "reviewed_total":len(reviews),
         "approved_total":approved,
