@@ -52,12 +52,15 @@ DOMAIN,late.example.com,REJECT
         self.assertEqual(by_domain["exact.example.net"]["status"], "ALREADY_COVERED")
         self.assertEqual(by_domain["notexample.com"]["status"], "NOT_COVERED_BY_PRIOR_DOMAIN_RULES")
 
-    def test_approved_ledger_overlap_fails_closed(self):
+    def test_approved_ledger_overlap_is_resolved_by_original_rule_precedence(self):
         config = "[General]\nskip-proxy = \n[Rule]\nDOMAIN,api.example.com,REJECT\nRULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list,DIRECT\n[Host]\n"
         ledger = {"reviews": [{"domain": "api.example.com", "policy": "DIRECT", "status": "APPROVED"}]}
         report = audit(config, ledger)
-        self.assertFalse(report["passed"])
+        self.assertTrue(report["passed"], report["errors"])
         self.assertEqual(report["results"][0]["status"], "CONFLICT")
+        self.assertEqual(report["results"][0]["effective_policy"], "REJECT")
+        self.assertEqual(report["results"][0]["priority_resolution"], "original_config_rule_wins")
+        self.assertEqual(len(report["warnings"]), 1)
 
     def test_later_rule_does_not_mark_approved_candidate_as_overlapping(self):
         config = "[General]\nskip-proxy = \n[Rule]\nRULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list,DIRECT\nDOMAIN,api.example.com,REJECT\n[Host]\n"

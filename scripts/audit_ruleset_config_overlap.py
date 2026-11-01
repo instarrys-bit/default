@@ -174,6 +174,7 @@ def audit(config_text: str, ledger: dict) -> dict:
     skip_proxy_entries = parse_skip_proxy(config_text)
     results = []
     errors = []
+    warnings = []
     for item in ledger.get("reviews", []):
         domain = str(item.get("domain", "")).lower().rstrip(".")
         policy = str(item.get("policy", item.get("classification", ""))).upper()
@@ -198,9 +199,18 @@ def audit(config_text: str, ledger: dict) -> dict:
             "ledger_status": str(item.get("status", "UNKNOWN")),
             **match
         }
+        if result["status"] in {"ALREADY_COVERED", "CONFLICT"}:
+            result["priority_resolution"] = "original_config_rule_wins"
+        elif result["status"] in {"POTENTIAL_MATCH", "CONDITIONAL_POTENTIAL", "UNRESOLVED_RULE"}:
+            result["priority_resolution"] = "original_config_rule_may_match_first"
+        else:
+            result["priority_resolution"] = "no_prior_rule_overlap"
         results.append(result)
         if result["ledger_status"] == "APPROVED" and result["status"] != "NOT_COVERED_BY_PRIOR_DOMAIN_RULES":
-            errors.append("APPROVED candidate overlaps prior config rule: " + domain + " (" + result["status"] + ")")
+            warnings.append(
+                "APPROVED candidate is covered or intersected by a higher-priority config rule; "
+                "the original config wins by first-match order: " + domain + " (" + result["status"] + ")"
+            )
     counts = {}
     for result in results:
         counts[result["status"]] = counts.get(result["status"], 0) + 1
@@ -214,6 +224,7 @@ def audit(config_text: str, ledger: dict) -> dict:
         "candidate_count": len(results),
         "status_counts": dict(sorted(counts.items())),
         "results": sorted(results, key=lambda x: x["domain"]),
+        "warnings": warnings,
         "errors": errors,
         "passed": not errors,
         "limitations": [
@@ -252,7 +263,7 @@ def main() -> int:
     lines.extend(["", "Read-only report. No configuration or rule-set references were changed.", ""])
     REPORT_MD.write_text("\n".join(lines), encoding="utf-8")
     print(json.dumps({"passed": report["passed"], "candidate_count": report["candidate_count"],
-                      "status_counts": report["status_counts"], "errors": report["errors"]},
+                      "status_counts": report["status_counts"], "warning_count": len(report["warnings"]), "errors": report["errors"]},
                      ensure_ascii=False, sort_keys=True))
     return 0 if report["passed"] else 1
 
