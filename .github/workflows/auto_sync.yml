@@ -173,6 +173,12 @@ jobs:
           fi
           tar -xzf "$archive" -C .
 
+          # The user-managed config is immutable: audit artifacts may never alter it.
+          git diff --quiet "$GITHUB_SHA" -- shadowrocket/ss.conf || {
+            echo "Protected config shadowrocket/ss.conf changed during audit packaging; refusing to publish."
+            exit 1
+          }
+
           git add -- \
             sources/domain_reviews.json \
             reports/external-domain-audit.md \
@@ -194,6 +200,12 @@ jobs:
             data/secondary_snapshot.txt \
             data/source_snapshots/ \
             rulesets/
+
+          # Explicitly fail if the protected config somehow entered the staged commit.
+          git diff --cached --quiet "$GITHUB_SHA" -- shadowrocket/ss.conf || {
+            echo "Protected config shadowrocket/ss.conf is staged; refusing to commit."
+            exit 1
+          }
 
           if git diff --cached --quiet; then
             echo "No audit output changes."
