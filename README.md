@@ -36,7 +36,11 @@
 `modules/maasea/LICENSE-APACHE-2.0-Maasea` 随 Maasea 相关文件一并保留。使用、修改或再分发相关上游代码时，应阅读并遵守该许可证及各文件原有版权声明。
 
 
-## GitHub-only 域名观察入口\n\n本项目不依赖 Cloudflare Worker 或 KV。需要补充设备观察到的域名时，可在 GitHub Actions 中手动运行 `GitHub-only observed-domain intake`，粘贴纯 hostname（每次最多 500 个），工作流会校验格式、合并到 `sources/request_domain_observations.json`，再触发确定性规则审核。该入口不接收完整 URL、查询参数、请求头、请求体或客户端标识。由于 GitHub Actions 不是常驻接收服务器，手机端不会自动实时推送；设备日志需要先提取 hostname，再通过 GitHub 工作流导入。\n\n## 确定性审核与自动发布
+## GitHub-only 域名观察入口
+
+本项目不依赖 Cloudflare Worker 或 KV。需要补充设备观察到的域名时，可在 GitHub Actions 中手动运行 `GitHub-only observed-domain intake`，粘贴纯 hostname（每次最多 500 个），工作流会校验格式、合并到 `sources/request_domain_observations.json`，再触发确定性规则审核。该入口不接收完整 URL、查询参数、请求头、请求体或客户端标识。由于 GitHub Actions 不是常驻接收服务器，手机端不会自动实时推送；设备日志需要先提取 hostname，再通过 GitHub 工作流导入。
+
+## 确定性审核与自动发布
 
 唯一发布工作流为 `.github/workflows/auto_sync.yml`：支持手动运行，并按计划每 6 小时运行。全程纯确定性托管自动化，不包含 AI、LLM、模型 API、API Key 或人工逐条审核依赖。流程为来源采集、域名规范化、跨来源证据核验、重复/冲突/保护检查、三类规则集构建、静态验证、报告与版本提交。安全边界采用独立作业：审计作业仅有 `contents: read` 且不保留 checkout 凭据；仅发布作业具有 `contents: write`，它不执行仓库 Python 脚本，只接收短期保留的白名单产物并再次核验基准提交后发布。失败通知作业单独拥有 `issues: write`。
 
@@ -65,7 +69,11 @@ Supported source formats are `domain-only` (including an explicitly enabled lead
 New sources initialize a baseline without bulk-enqueuing their entire contents by default. A primary source explicitly marked `bootstrap_enqueue` may seed its initial domain set once; subsequent runs enqueue only additions. Corroboration sources never enqueue candidates by themselves. Source snapshots are committed by the scheduled workflow so change detection survives runner replacement.
 
 
-### Automated source ancestry audit\n\n`scripts/audit_source_lineage.py` runs in every scheduled audit. It fetches each registered public provenance document, extracts referenced GitHub/Codeberg/GitLab repositories, compares discovered references with the registry, and reports newly discovered or stale declarations plus shared upstreams in `reports/source-lineage-audit.json`. It does not modify source policy or automatically declare lineage verified: repository-level link discovery is not proof of per-domain provenance. Failures to retrieve or parse a registered provenance document stop the audit rather than silently treating missing evidence as independence.\n\n### Source ancestry and publication gate
+### Automated source ancestry audit
+
+`scripts/audit_source_lineage.py` runs in every scheduled audit. It fetches each registered public provenance document, extracts referenced GitHub/Codeberg/GitLab repositories, compares discovered references with the registry, and reports newly discovered or stale declarations plus shared upstreams in `reports/source-lineage-audit.json`. It does not modify source policy or automatically declare lineage verified: repository-level link discovery is not proof of per-domain provenance. Failures to retrieve or parse a registered provenance document stop the audit rather than silently treating missing evidence as independence.
+
+### Source ancestry and publication gate
 
 Publisher names and separate repository URLs are not sufficient proof of independent evidence. Every registered source declares `lineage_status` and `upstream_repositories`. Sources with `verified`, `partial` or `unverified` lineage can contribute to domain-level corroboration when their current identity, hash and policy evidence match the registry. Lineage is disclosed in the ledger and reports; it is not a blanket publication veto. Distinct publisher identity and current per-domain agreement remain required. Declared shared upstream repositories prevent sources from meeting the independence minimum. See the provenance report for current source status. The scheduled writer uses a normal fail-closed rebase; it never resolves output conflicts by preferring the automation branch.
 
