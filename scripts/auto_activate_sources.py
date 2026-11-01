@@ -7,6 +7,8 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
+from urllib.request import Request, urlopen
+from collect_domains import parse_source
 from source_registry import validate_registry
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -76,6 +78,23 @@ def activate(registry: dict, matrix: dict, now: str | None = None) -> tuple[dict
             decisions.append({"repository": repository, "policy": policy, "decision": "held", "reason": "no supported file with 100+ unique domains and an unchanged second observation"})
             continue
         url = str(selected["url"])
+        # Re-parse the exact bytes with the production collector before registry admission.
+        # Candidate-matrix counts alone are not sufficient: parser incompatibility must never
+        # turn a newly activated source into a whole-pipeline outage.
+        try:
+            request = Request(url, headers={"User-Agent": "shadowrocket-source-admission/1.0"})
+            with urlopen(request, timeout=20) as response:
+                payload = response.read()
+            digest = hashlib.sha256(payload).hexdigest()
+            if digest != str(selected.get("sha256", "")):
+                raise ValueError("source bytes changed after assessment")
+            parser_source = {"id": "admission-probe", "format": selected["parser"], "classification": policy}
+            parsed_domains = parse_source(payload, parser_source)
+            if len(parsed_domains) < MIN_UNIQUE_DOMAINS:
+                raise ValueError("production parser yielded fewer than 100 unique domains")
+        except Exception as error:
+            decisions.append({"repository": repository, "policy": policy, "decision": "held", "reason": "production collector preflight failed: " + str(error)[:300]})
+            continue
         if (policy, repository) in existing_publishers or url in existing_urls:
             decisions.append({"repository": repository, "policy": policy, "decision": "already_registered", "reason": "publisher or URL is already registered"})
             continue
@@ -103,7 +122,7 @@ def activate(registry: dict, matrix: dict, now: str | None = None) -> tuple[dict
                 "engine": "deterministic-source-admission/1.0",
                 "activated_at": timestamp,
                 "candidate_domain_count": int(selected.get("domain_count", 0)),
-                "unique_domain_count": int(selected.get("domain_fingerprint_count", 0)),
+                "unique_domain_count": len(parsed_domains),
                 "domain_set_sha256": candidate.get("domain_set_sha256"),
                 "policy_evidence_source": evidence,
                 "lineage_warning": candidate.get("lineage_warning"),
