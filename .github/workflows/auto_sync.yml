@@ -16,6 +16,7 @@ on:
       - "scripts/**"
       - "tests/**"
       - ".github/workflows/auto_sync.yml"
+      - ".github/workflows/validate-config.yml"
 
 permissions:
   contents: read
