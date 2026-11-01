@@ -6,6 +6,8 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
 from deterministic_review import DOMAIN_RE, evidence_gate, inspect, validate_evidence
 from domain_rule_engine import RuleIndex
+from deterministic_review import CONFIG as REVIEW_CONFIG
+from build_rulesets import CONFIG as RULESET_CONFIG
 from collect_domains import bootstrap_source_domains, check_source_delta, parse_adblock, parse_domain_list, parse_source
 from source_registry import validate_registry
 
@@ -649,3 +651,10 @@ class HighOverlapIndependenceTests(unittest.TestCase):
 
 if __name__=="__main__":
     unittest.main(verbosity=2)
+
+
+class UserConfigBaselineTests(unittest.TestCase):
+    def test_domain_review_and_rule_builder_use_user_managed_config(self):
+        expected = ROOT / "shadowrocket" / "ss.conf"
+        self.assertEqual(REVIEW_CONFIG, expected)
+        self.assertEqual(RULESET_CONFIG, expected)
