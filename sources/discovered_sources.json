@@ -12,16 +12,16 @@
     "Surge direct proxy domain-set rules",
     "Quantumult X direct proxy domain rules"
   ],
-  "candidate_count": 174,
+  "candidate_count": 179,
   "candidates": [
     {
       "repository": "ACL4SSR/ACL4SSR",
       "html_url": "https://github.com/ACL4SSR/ACL4SSR",
       "description": "SSR 去广告ACL规则/SS完整GFWList规则/Clash规则碎片，Telegram频道订阅地址",
       "default_branch": "master",
-      "updated_at": "2026-11-01T06:31:48Z",
+      "updated_at": "2026-11-01T09:08:28Z",
       "pushed_at": "2026-11-01T03:45:37Z",
-      "stars": 6888,
+      "stars": 6889,
       "archived": false,
       "fork": false,
       "license": "CC-BY-SA-4.0",
@@ -35,11 +35,11 @@
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list": [
-          "PROXY"
-        ],
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list": [
           "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list": [
+          "PROXY"
         ]
       },
       "seeded_source_urls": [
@@ -696,6 +696,41 @@
       "seeded_source_urls": []
     },
     {
+      "repository": "Jeliren/shadowrocket-russia-direct",
+      "html_url": "https://github.com/Jeliren/shadowrocket-russia-direct",
+      "description": "Minimal auto-updating Shadowrocket DIRECT rules for Russian services and personal VPN exceptions",
+      "default_branch": "main",
+      "updated_at": "2026-11-01T09:12:57Z",
+      "pushed_at": "2026-11-01T09:12:53Z",
+      "stars": 0,
+      "archived": false,
+      "fork": false,
+      "license": "MIT",
+      "readme_sha256": "e997844f9934fd7159632c268aaebd931f3572456d522101e6e275b66bba644b",
+      "rule_list_urls": [
+        "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/china.conf",
+        "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/profile-next.conf",
+        "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/profile.conf"
+      ],
+      "readme_policy_claims": {
+        "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/china.conf": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/profile-next.conf": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/profile.conf": [
+          "DIRECT",
+          "PROXY",
+          "REJECT"
+        ]
+      },
+      "search_queries": [
+        "shadowrocket rules"
+      ],
+      "discovered_at": "2026-11-01T09:19:02.687251+00:00"
+    },
+    {
       "repository": "Jimunpopo/supply-chain-risk-disclosure-2018-2025",
       "html_url": "https://github.com/Jimunpopo/supply-chain-risk-disclosure-2018-2025",
       "description": "Research data and supporting documentation for seven domains of supply chain risk disclosure in Chinese listed firms, 2018–2025.",
@@ -753,18 +788,18 @@
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/gfw.list": [
-          "DIRECT",
-          "PROXY",
-          "REJECT"
+        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list": [
+          "DIRECT"
         ],
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list": [
           "DIRECT",
           "PROXY",
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list": [
-          "DIRECT"
+        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/gfw.list": [
+          "DIRECT",
+          "PROXY",
+          "REJECT"
         ]
       },
       "seeded_source_urls": [
@@ -896,12 +931,12 @@
         "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt": [
+        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt": [
+        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
@@ -1021,6 +1056,59 @@
       ],
       "discovered_at": "2026-11-01T05:18:11.389099+00:00",
       "seeded_source_urls": []
+    },
+    {
+      "repository": "PaPerseller/chn-iplist",
+      "html_url": "https://github.com/PaPerseller/chn-iplist",
+      "description": "Chnroutes rules for routers、Shadowrocket、Quantumult、acl、v2rayNG、v2rayN、pac、v2rayA、dae、RouterOS、v2ray、xray、sing-box config file.",
+      "default_branch": "master",
+      "updated_at": "2026-11-01T09:21:57Z",
+      "pushed_at": "2026-11-01T09:21:53Z",
+      "stars": 1181,
+      "archived": false,
+      "fork": false,
+      "license": "MIT",
+      "readme_sha256": "198a045cd6a93f72457b84e685b87fe4ab75b573d7233409a159b6949fe8ee73",
+      "rule_list_urls": [
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/Loon.conf",
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/Shadowrocket.conf",
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv4.txt",
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv6.txt",
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute.txt",
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/direct-special.list",
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/ipv6-cidr.list",
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/ipv6-cidr6.list",
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/proxy-special.list",
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/reject-special.list",
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/v2rayA.txt"
+      ],
+      "readme_policy_claims": {
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/Shadowrocket.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv4.txt": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv6.txt": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute.txt": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/direct-special.list": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/proxy-special.list": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/reject-special.list": [
+          "REJECT"
+        ]
+      },
+      "search_queries": [
+        "shadowrocket rules"
+      ],
+      "discovered_at": "2026-11-01T09:19:02.369452+00:00"
     },
     {
       "repository": "RoboInterativo/firefox-proxy-extension",
@@ -1760,9 +1848,9 @@
       "html_url": "https://github.com/blackmatrix7/ios_rule_script",
       "description": "分流规则、重写写规则及脚本。",
       "default_branch": "master",
-      "updated_at": "2026-11-01T07:29:41Z",
+      "updated_at": "2026-11-01T09:01:47Z",
       "pushed_at": "2026-10-27T21:45:44Z",
-      "stars": 28493,
+      "stars": 28494,
       "archived": false,
       "fork": false,
       "license": "GPL-2.0",
@@ -2044,8 +2132,8 @@
       "html_url": "https://github.com/deezertidal/shadowrocket-rules",
       "description": "小火箭 shadowrocket 配置文件 模块 脚本 module sgmodule 图文教程 规则 分流 破解 解锁",
       "default_branch": "main",
-      "updated_at": "2026-11-01T06:26:02Z",
-      "pushed_at": "2026-11-01T06:25:56Z",
+      "updated_at": "2026-11-01T09:25:39Z",
+      "pushed_at": "2026-11-01T09:25:33Z",
       "stars": 6782,
       "archived": false,
       "fork": false,
@@ -2299,18 +2387,18 @@
         "https://raw.githubusercontent.com/gatework/surge-rules/release/proxy.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt": [
-          "PROXY"
+        "https://raw.githubusercontent.com/gatework/surge-rules/release/direct.txt": [
+          "DIRECT",
+          "PROXY",
+          "REJECT"
         ],
         "https://raw.githubusercontent.com/gatework/surge-rules/release/proxy.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/gatework/surge-rules/release/direct.txt": [
-          "DIRECT",
-          "PROXY",
-          "REJECT"
+        "https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt": [
+          "PROXY"
         ]
       },
       "seeded_source_urls": [
@@ -2445,6 +2533,25 @@
       ],
       "discovered_at": "2026-11-01T05:18:16.881694+00:00",
       "seeded_source_urls": []
+    },
+    {
+      "repository": "hirosesuzu0619/shadowrocket-rules",
+      "html_url": "https://github.com/hirosesuzu0619/shadowrocket-rules",
+      "description": null,
+      "default_branch": "claude/rules-grouping-proxy-setup-ffszj4",
+      "updated_at": "2026-11-01T09:14:49Z",
+      "pushed_at": "2026-11-01T09:14:45Z",
+      "stars": 0,
+      "archived": false,
+      "fork": false,
+      "license": null,
+      "readme_sha256": null,
+      "rule_list_urls": [],
+      "readme_policy_claims": {},
+      "search_queries": [
+        "shadowrocket rules"
+      ],
+      "discovered_at": "2026-11-01T09:19:02.538912+00:00"
     },
     {
       "repository": "hl2guide/combined-adblock-lists",
@@ -2904,6 +3011,36 @@
       ],
       "discovered_at": "2026-11-01T05:18:16.115706+00:00",
       "seeded_source_urls": []
+    },
+    {
+      "repository": "miacmo/shadowrocket-uzcc-rules",
+      "html_url": "https://github.com/miacmo/shadowrocket-uzcc-rules",
+      "description": null,
+      "default_branch": "main",
+      "updated_at": "2026-11-01T09:29:24Z",
+      "pushed_at": "2026-11-01T09:29:19Z",
+      "stars": 1,
+      "archived": false,
+      "fork": false,
+      "license": "NOASSERTION",
+      "readme_sha256": "14135ae2ee3a98a5ad7c155cef43b00570f8c67c0b377721e9991a7fcdfb7a24",
+      "rule_list_urls": [
+        "https://raw.githubusercontent.com/miacmo/shadowrocket-uzcc-rules/main/sr_ai_proxy_hk.conf",
+        "https://raw.githubusercontent.com/miacmo/shadowrocket-uzcc-rules/main/sr_lazy_group_ai.conf"
+      ],
+      "readme_policy_claims": {
+        "https://raw.githubusercontent.com/miacmo/shadowrocket-uzcc-rules/main/sr_ai_proxy_hk.conf": [
+          "DIRECT",
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/miacmo/shadowrocket-uzcc-rules/main/sr_lazy_group_ai.conf": [
+          "REJECT"
+        ]
+      },
+      "search_queries": [
+        "shadowrocket rules"
+      ],
+      "discovered_at": "2026-11-01T09:19:01.713405+00:00"
     },
     {
       "repository": "mirninec/socks5-browser-configurator",
@@ -3564,13 +3701,13 @@
       "html_url": "https://github.com/sxpwxy/shadowrocket-rules",
       "description": "Shadowrocket 多订阅分流：AI 独立出口、常规服务规则集与自动同步更新。",
       "default_branch": "main",
-      "updated_at": "2026-11-01T07:58:49Z",
-      "pushed_at": "2026-11-01T07:58:45Z",
+      "updated_at": "2026-11-01T09:17:59Z",
+      "pushed_at": "2026-11-01T09:17:55Z",
       "stars": 0,
       "archived": false,
       "fork": false,
       "license": "GPL-2.0",
-      "readme_sha256": "400ca897585644144032614c3acc49b71ea8dc0e5539300682f06cc419a7599c",
+      "readme_sha256": "a4e0d74e6bb9c9423ffe983a948a82ef4ea7f56e7bc8406072917628d0b79799",
       "rule_list_urls": [
         "https://raw.githubusercontent.com/sxpwxy/shadowrocket-rules/main/config/Shadowrocket-mirror.conf",
         "https://raw.githubusercontent.com/sxpwxy/shadowrocket-rules/main/config/Shadowrocket.conf"
@@ -3633,7 +3770,13 @@
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt"
       ],
       "readme_policy_claims": {
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
+          "PROXY"
+        ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/tools.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/torrent.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
@@ -3642,31 +3785,25 @@
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/telegram.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/torrent.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/netflix.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
-          "PROXY"
-        ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
           "PROXY"
         ]
       },
@@ -3784,9 +3921,9 @@
       "html_url": "https://github.com/v2fly/domain-list-community",
       "description": "Community managed domain list. Generate geosite.dat for V2Ray.",
       "default_branch": "master",
-      "updated_at": "2026-11-01T07:56:36Z",
+      "updated_at": "2026-11-01T09:34:01Z",
       "pushed_at": "2026-11-01T07:46:31Z",
-      "stars": 9801,
+      "stars": 9802,
       "archived": false,
       "fork": false,
       "license": "MIT",
@@ -3862,6 +3999,25 @@
       ],
       "discovered_at": "2026-11-01T05:18:08.152095+00:00",
       "seeded_source_urls": []
+    },
+    {
+      "repository": "winstonjoey/shadowrocket-rules",
+      "html_url": "https://github.com/winstonjoey/shadowrocket-rules",
+      "description": null,
+      "default_branch": "main",
+      "updated_at": "2026-11-01T09:23:47Z",
+      "pushed_at": "2026-11-01T09:23:43Z",
+      "stars": 0,
+      "archived": false,
+      "fork": false,
+      "license": null,
+      "readme_sha256": null,
+      "rule_list_urls": [],
+      "readme_policy_claims": {},
+      "search_queries": [
+        "shadowrocket rules"
+      ],
+      "discovered_at": "2026-11-01T09:19:02.238414+00:00"
     },
     {
       "repository": "xiaobaoSHI/sr-custom-autoupdate",

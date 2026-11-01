@@ -1,6 +1,6 @@
 # Automated source discovery
 
-- Candidate repositories retained: **174**
+- Candidate repositories retained: **179**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
@@ -9,7 +9,7 @@
 ### [ACL4SSR/ACL4SSR](https://github.com/ACL4SSR/ACL4SSR)
 
 - Description: SSR 去广告ACL规则/SS完整GFWList规则/Clash规则碎片，Telegram频道订阅地址
-- Stars: 6888; archived: False; fork: False
+- Stars: 6889; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 3
 - Curated seed links: 3
@@ -266,6 +266,17 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [Jeliren/shadowrocket-russia-direct](https://github.com/Jeliren/shadowrocket-russia-direct)
+
+- Description: Minimal auto-updating Shadowrocket DIRECT rules for Russian services and personal VPN exceptions
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 3
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/china.conf
+  - https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/profile-next.conf
+  - https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/profile.conf
+
 ### [Jimunpopo/supply-chain-risk-disclosure-2018-2025](https://github.com/Jimunpopo/supply-chain-risk-disclosure-2018-2025)
 
 - Description: Research data and supporting documentation for seven domains of supply chain risk disclosure in Chinese listed firms, 2018–2025.
@@ -383,6 +394,25 @@
 - Search queries: China domain list
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
+
+### [PaPerseller/chn-iplist](https://github.com/PaPerseller/chn-iplist)
+
+- Description: Chnroutes rules for routers、Shadowrocket、Quantumult、acl、v2rayNG、v2rayN、pac、v2rayA、dae、RouterOS、v2ray、xray、sing-box config file.
+- Stars: 1181; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 11
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/Loon.conf
+  - https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/Shadowrocket.conf
+  - https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv4.txt
+  - https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv6.txt
+  - https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute.txt
+  - https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/direct-special.list
+  - https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/ipv6-cidr.list
+  - https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/ipv6-cidr6.list
+  - https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/proxy-special.list
+  - https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/reject-special.list
+  - https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/v2rayA.txt
 
 ### [RoboInterativo/firefox-proxy-extension](https://github.com/RoboInterativo/firefox-proxy-extension)
 
@@ -665,7 +695,7 @@
 ### [blackmatrix7/ios_rule_script](https://github.com/blackmatrix7/ios_rule_script)
 
 - Description: 分流规则、重写写规则及脚本。
-- Stars: 28493; archived: False; fork: False
+- Stars: 28494; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 2
 - Curated seed links: 2
@@ -928,6 +958,14 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [hirosesuzu0619/shadowrocket-rules](https://github.com/hirosesuzu0619/shadowrocket-rules)
+
+- Description: Not supplied
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
 ### [hl2guide/combined-adblock-lists](https://github.com/hl2guide/combined-adblock-lists)
 
 - Description: A domain blocklist and allowlist for use in AdGuard Home or similar.
@@ -1101,6 +1139,16 @@
 - Search queries: direct domain list
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
+
+### [miacmo/shadowrocket-uzcc-rules](https://github.com/miacmo/shadowrocket-uzcc-rules)
+
+- Description: Not supplied
+- Stars: 1; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 2
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/miacmo/shadowrocket-uzcc-rules/main/sr_ai_proxy_hk.conf
+  - https://raw.githubusercontent.com/miacmo/shadowrocket-uzcc-rules/main/sr_lazy_group_ai.conf
 
 ### [mirninec/socks5-browser-configurator](https://github.com/mirninec/socks5-browser-configurator)
 
@@ -1442,7 +1490,7 @@
 ### [v2fly/domain-list-community](https://github.com/v2fly/domain-list-community)
 
 - Description: Community managed domain list. Generate geosite.dat for V2Ray.
-- Stars: 9801; archived: False; fork: False
+- Stars: 9802; archived: False; fork: False
 - Search queries: geosite domain
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
@@ -1472,6 +1520,14 @@
 - Curated seed links: 0
   - https://raw.githubusercontent.com/wcr1996/shadowrocket_rules/main/blacklist.conf
   - https://raw.githubusercontent.com/wcr1996/shadowrocket_rules/main/whitelist.conf
+
+### [winstonjoey/shadowrocket-rules](https://github.com/winstonjoey/shadowrocket-rules)
+
+- Description: Not supplied
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
 
 ### [xiaobaoSHI/sr-custom-autoupdate](https://github.com/xiaobaoSHI/sr-custom-autoupdate)
 

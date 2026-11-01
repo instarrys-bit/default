@@ -27,6 +27,17 @@
 | Jovanykoch/rules | domain-only | DIRECT | 6751 | unchanged | README_policy_reference |
 | Jovanykoch/rules | domain-only | — | 957 | unchanged | ambiguous |
 | GMOogway/shadowrocket-rules | unsupported_or_too_small | — | 0 | unchanged | none |
+| PaPerseller/chn-iplist | unsupported_or_too_small | — | 0 | baseline_initialized | none |
+| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | baseline_initialized | README_policy_reference |
+| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | baseline_initialized | README_policy_reference |
+| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | baseline_initialized | README_policy_reference |
+| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | baseline_initialized | README_policy_reference |
+| PaPerseller/chn-iplist | unsupported_or_too_small | DIRECT | 1 | baseline_initialized | README_policy_reference |
+| PaPerseller/chn-iplist | unsupported_or_too_small | — | 0 | baseline_initialized | none |
+| PaPerseller/chn-iplist | unsupported_or_too_small | — | 0 | baseline_initialized | none |
+| PaPerseller/chn-iplist | unsupported_or_too_small | PROXY | 14 | baseline_initialized | README_policy_reference |
+| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 11 | baseline_initialized | README_policy_reference |
+| PaPerseller/chn-iplist | unsupported_or_too_small | — | 0 | baseline_initialized | none |
 | Vann-Dev/proxy-list | unsupported_or_too_small | PROXY | 1 | unchanged | README_policy_reference |
 | Vann-Dev/proxy-list | unsupported_or_too_small | PROXY | 1 | unchanged | README_policy_reference |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | ambiguous |
@@ -45,23 +56,12 @@
 | RzMY/IOS-AntiRevoke-DNS-Rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | RzMY/IOS-AntiRevoke-DNS-Rules | domain-only | — | 38 | unchanged | none |
 | RzMY/IOS-AntiRevoke-DNS-Rules | unsupported_or_too_small | REJECT | 2 | unchanged | explicit_third_field |
-| RzMY/IOS-AntiRevoke-DNS-Rules | unsupported_or_too_small | — | 0 | unchanged | none |
-| RzMY/IOS-AntiRevoke-DNS-Rules | unsupported_or_too_small | REJECT | 2 | unchanged | explicit_third_field |
-| RzMY/IOS-AntiRevoke-DNS-Rules | unsupported_or_too_small | REJECT | 2 | unchanged | explicit_third_field |
-| RzMY/IOS-AntiRevoke-DNS-Rules | unsupported_or_too_small | — | 0 | unchanged | none |
-| RzMY/IOS-AntiRevoke-DNS-Rules | unsupported_or_too_small | — | 2 | unchanged | none |
-| teslaproduuction/ClashDomainsList | unsupported_or_too_small | PROXY | 0 | unchanged | README_policy_reference |
-| teslaproduuction/ClashDomainsList | unsupported_or_too_small | PROXY | 0 | unchanged | README_policy_reference |
-| teslaproduuction/ClashDomainsList | unsupported_or_too_small | PROXY | 0 | unchanged | README_policy_reference |
-| teslaproduuction/ClashDomainsList | unsupported_or_too_small | PROXY | 0 | unchanged | README_policy_reference |
-| teslaproduuction/ClashDomainsList | unsupported_or_too_small | PROXY | 0 | unchanged | README_policy_reference |
-| teslaproduuction/ClashDomainsList | unsupported_or_too_small | PROXY | 0 | unchanged | README_policy_reference |
 
 ## Source update drift
 
-- New source files: 0
+- New source files: 11
 - Changed source files: 0
-- Added domain entries: 0
+- Added domain entries: 26
 - Removed domain entries: 0
 - Policy changes: 0
 
@@ -256,6 +256,105 @@
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
 
+### PaPerseller/chn-iplist
+
+- URL: https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/Loon.conf
+- SHA-256: 151f55f8ae95a3a95e14079e01485395ec5dfa79648468709fed4380de49eb84
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
+- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
+- Explicit action counts: {}
+- Policy evidence: none; candidate: none
+
+### PaPerseller/chn-iplist
+
+- URL: https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/Shadowrocket.conf
+- SHA-256: 90722922fafcd4140130f0430a0a696344eae1fccecab2403ac9788117cf451a
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
+- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
+- Explicit action counts: {}
+- Policy evidence: README_policy_reference; candidate: REJECT
+
+### PaPerseller/chn-iplist
+
+- URL: https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv4.txt
+- SHA-256: e64ac99382db107ccf83af75230a3c6698cf2ec83336126e81329493681e3561
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
+- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
+- Explicit action counts: {}
+- Policy evidence: README_policy_reference; candidate: REJECT
+
+### PaPerseller/chn-iplist
+
+- URL: https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv6.txt
+- SHA-256: cf0e7f0f72ceb30bda62e452d512d3591310a854b56eb366338f3a290a9d6090
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
+- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
+- Explicit action counts: {}
+- Policy evidence: README_policy_reference; candidate: REJECT
+
+### PaPerseller/chn-iplist
+
+- URL: https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute.txt
+- SHA-256: ca67a60c6b72b1a4378271a07dd752b42dfcc6bad43dbf810a9d792660214a52
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
+- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
+- Explicit action counts: {}
+- Policy evidence: README_policy_reference; candidate: REJECT
+
+### PaPerseller/chn-iplist
+
+- URL: https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/direct-special.list
+- SHA-256: 8a37d52be15378a6fee3f7c4a98280278f466f3016a0829e80552898a2280e1b
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 1; Adblock: 0; domain-only: 0; duplicate lines: 0
+- Ignored non-domain rules: DOMAIN-KEYWORD 2; IP/CIDR/ASN 31
+- Explicit action counts: {}
+- Policy evidence: README_policy_reference; candidate: DIRECT
+
+### PaPerseller/chn-iplist
+
+- URL: https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/ipv6-cidr.list
+- SHA-256: 429828bc6dd375c0276589640d37706217f64b2e9115cd615bb62c42b61c8cca
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
+- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 2018
+- Explicit action counts: {}
+- Policy evidence: none; candidate: none
+
+### PaPerseller/chn-iplist
+
+- URL: https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/ipv6-cidr6.list
+- SHA-256: ab20826ce00a3ec03f95048bf3f7154c788f69d9c7b886d0f7e5e780d94a61dc
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
+- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 2018
+- Explicit action counts: {}
+- Policy evidence: none; candidate: none
+
+### PaPerseller/chn-iplist
+
+- URL: https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/proxy-special.list
+- SHA-256: 3e4c721b23ed5a4da90771507447397ccecef6bc51055b76a7f79be6ff74fe90
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 14; Adblock: 0; domain-only: 0; duplicate lines: 0
+- Ignored non-domain rules: DOMAIN-KEYWORD 4; IP/CIDR/ASN 0
+- Explicit action counts: {}
+- Policy evidence: README_policy_reference; candidate: PROXY
+
+### PaPerseller/chn-iplist
+
+- URL: https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/reject-special.list
+- SHA-256: 72910d892e76f23858bd636b1e559132ba38358accea3302b94dddcfc38c5928
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 11; Adblock: 0; domain-only: 0; duplicate lines: 0
+- Ignored non-domain rules: DOMAIN-KEYWORD 5; IP/CIDR/ASN 0
+- Explicit action counts: {"UNSUPPORTED": 11}
+- Policy evidence: README_policy_reference; candidate: REJECT
+
+### PaPerseller/chn-iplist
+
+- URL: https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/v2rayA.txt
+- SHA-256: 43bad67fdb5c22e689927df717b65096d7555c484ccf8149b68188858dc4ce99
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
+- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
+- Explicit action counts: {}
+- Policy evidence: none; candidate: none
+
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http.txt
@@ -417,105 +516,6 @@
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {"REJECT": 2}
 - Policy evidence: explicit_third_field; candidate: REJECT
-
-### RzMY/IOS-AntiRevoke-DNS-Rules
-
-- URL: https://raw.githubusercontent.com/RzMY/IOS-AntiRevoke-DNS-Rules/main/output/enhanced/RevokeGuard_Enhanced_QuantumultX.txt
-- SHA-256: b872ec4ed6d06eea18e9e464f910ab1d1f85ffb11e2b4bae10d09ea50fe6cf6b
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
-- Explicit action counts: {}
-- Policy evidence: none; candidate: none
-
-### RzMY/IOS-AntiRevoke-DNS-Rules
-
-- URL: https://raw.githubusercontent.com/RzMY/IOS-AntiRevoke-DNS-Rules/main/output/enhanced/RevokeGuard_Enhanced_Shadowrocket.txt
-- SHA-256: 8bd52cafce5741f01873c6c363c0b18c166a45997003912114fcec887e9a22a8
-- Exact DOMAIN: 2; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
-- Explicit action counts: {"REJECT": 2}
-- Policy evidence: explicit_third_field; candidate: REJECT
-
-### RzMY/IOS-AntiRevoke-DNS-Rules
-
-- URL: https://raw.githubusercontent.com/RzMY/IOS-AntiRevoke-DNS-Rules/main/output/enhanced/RevokeGuard_Enhanced_Surge.txt
-- SHA-256: 8bd52cafce5741f01873c6c363c0b18c166a45997003912114fcec887e9a22a8
-- Exact DOMAIN: 2; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
-- Explicit action counts: {"REJECT": 2}
-- Policy evidence: explicit_third_field; candidate: REJECT
-
-### RzMY/IOS-AntiRevoke-DNS-Rules
-
-- URL: https://raw.githubusercontent.com/RzMY/IOS-AntiRevoke-DNS-Rules/main/output/enhanced/RevokeGuard_Enhanced_hosts.txt
-- SHA-256: c78bc9fb552da9be1ccef9d1999e3c156528676862eda4b7001e1e9562959c53
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
-- Explicit action counts: {}
-- Policy evidence: none; candidate: none
-
-### RzMY/IOS-AntiRevoke-DNS-Rules
-
-- URL: https://raw.githubusercontent.com/RzMY/IOS-AntiRevoke-DNS-Rules/main/output/enhanced/enhanced-domains.txt
-- SHA-256: bed46f12d0183a59a2b2340e6af27c49fddf2efe60f85a855283cd5d516d940d
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 2; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
-- Explicit action counts: {}
-- Policy evidence: none; candidate: none
-
-### teslaproduuction/ClashDomainsList
-
-- URL: https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt
-- SHA-256: cf8b7bcc02ae91fa72336921811ad0f7f69ab094d9f67546028d9401214abd2a
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
-- Explicit action counts: {}
-- Policy evidence: README_policy_reference; candidate: PROXY
-
-### teslaproduuction/ClashDomainsList
-
-- URL: https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt
-- SHA-256: e23df035c7c7ca1ce46a779bbbf276420f10d93ad545fb906774f317665c84de
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
-- Explicit action counts: {}
-- Policy evidence: README_policy_reference; candidate: PROXY
-
-### teslaproduuction/ClashDomainsList
-
-- URL: https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt
-- SHA-256: ecbf2af1591d510d833539d1e4c6613fe92030487cfb1c1b6e978ed6a2e71b49
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
-- Explicit action counts: {}
-- Policy evidence: README_policy_reference; candidate: PROXY
-
-### teslaproduuction/ClashDomainsList
-
-- URL: https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/netflix.txt
-- SHA-256: 298e15d002a40bd60610ff88bf0736551aa2b7982aefe14ff4fcd5f0a3263c84
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
-- Explicit action counts: {}
-- Policy evidence: README_policy_reference; candidate: PROXY
-
-### teslaproduuction/ClashDomainsList
-
-- URL: https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt
-- SHA-256: 9d6822ba588939dcc41bddfd6102639c549478eb3e5540eb43a8f637e9b3df02
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
-- Explicit action counts: {}
-- Policy evidence: README_policy_reference; candidate: PROXY
-
-### teslaproduuction/ClashDomainsList
-
-- URL: https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt
-- SHA-256: deca2f78f57a26f07e5903b10133534713fe32365ead752de1b235d19374f9c8
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
-- Explicit action counts: {}
-- Policy evidence: README_policy_reference; candidate: PROXY
 
 ## Activation gate
 

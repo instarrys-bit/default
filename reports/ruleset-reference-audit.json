@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "config_path": "shadowrocket/ss.conf",
+  "config_rule_set_reference_count": 3,
+  "references": [
+    {
+      "line": 653,
+      "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/reject.list",
+      "file": "reject.list",
+      "policy": "REJECT"
+    },
+    {
+      "line": 1455,
+      "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list",
+      "file": "direct.list",
+      "policy": "DIRECT"
+    },
+    {
+      "line": 2155,
+      "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list",
+      "file": "proxy.list",
+      "policy": "PROXY"
+    }
+  ],
+  "managed_output_files": [
+    "direct.list",
+    "proxy.list",
+    "reject.list"
+  ],
+  "file_stats": {
+    "direct.list": {
+      "policy": "DIRECT",
+      "line_count": 0,
+      "valid_domain_lines": 0
+    },
+    "proxy.list": {
+      "policy": "PROXY",
+      "line_count": 0,
+      "valid_domain_lines": 0
+    },
+    "reject.list": {
+      "policy": "REJECT",
+      "line_count": 18,
+      "valid_domain_lines": 18
+    }
+  },
+  "errors": [],
+  "passed": true,
+  "scope": "read-only; does not edit config, DNS, MITM, or RULE-SET references"
+}

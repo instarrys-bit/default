@@ -148,11 +148,23 @@
           ]
         },
         {
+          "repository": "Jeliren/shadowrocket-russia-direct",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
           "repository": "Loyalsoldier/v2ray-rules-dat",
           "references": [
             "felixonmars/dnsmasq-china-list",
             "gfwlist/gfwlist",
             "loyalsoldier/geoip",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "PaPerseller/chn-iplist",
+          "references": [
             "v2fly/domain-list-community"
           ]
         },
@@ -384,6 +396,12 @@
           ]
         },
         {
+          "repository": "Jeliren/shadowrocket-russia-direct",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
           "repository": "Jovanykoch/rules",
           "references": [
             "felixonmars/dnsmasq-china-list",
@@ -396,6 +414,14 @@
           "references": [
             "felixonmars/dnsmasq-china-list",
             "loyalsoldier/geoip",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "PaPerseller/chn-iplist",
+          "references": [
+            "17mon/china_ip_list",
+            "loyalsoldier/v2ray-rules-dat",
             "v2fly/domain-list-community"
           ]
         },
