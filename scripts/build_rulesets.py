@@ -175,6 +175,20 @@ def main():
                 "queued_at":datetime.now(timezone.utc).isoformat(),
                 "reason":"Approved rule waiting for published capacity"
             })
+    queued_domains={}
+    for key in list(queue_map):
+        policy,scope,domain=key
+        if not DOMAIN_RE.fullmatch(domain):
+            raise ValueError("invalid domain in pending queue: "+domain)
+        if domain in published_domain_policies:
+            if published_domain_policies[domain]!=policy:
+                raise ValueError("pending queue policy conflicts with a published rule: "+domain)
+            queue_map.pop(key,None)
+            continue
+        prior_key=queued_domains.get(domain)
+        if prior_key and prior_key!=(policy,scope):
+            raise ValueError("pending queue contains cross-policy or cross-scope duplicate: "+domain)
+        queued_domains[domain]=(policy,scope)
     for policy in POLICIES:
         for scope,domain in rule_sets[policy]:
             queue_map.pop((policy,scope,domain),None)
