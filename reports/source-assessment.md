@@ -38,8 +38,8 @@
 | PaPerseller/chn-iplist | unsupported_or_too_small | PROXY | 14 | unchanged | README_policy_reference |
 | PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 11 | unchanged | README_policy_reference |
 | PaPerseller/chn-iplist | unsupported_or_too_small | — | 0 | unchanged | none |
-| Vann-Dev/proxy-list | unsupported_or_too_small | PROXY | 1 | domain_set_changed | README_policy_reference |
-| Vann-Dev/proxy-list | unsupported_or_too_small | PROXY | 1 | domain_set_changed | README_policy_reference |
+| Vann-Dev/proxy-list | unsupported_or_too_small | PROXY | 1 | unchanged | README_policy_reference |
+| Vann-Dev/proxy-list | unsupported_or_too_small | PROXY | 1 | unchanged | README_policy_reference |
 | tickmao/Rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | tickmao/Rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | tickmao/Rules | unsupported_or_too_small | — | 0 | unchanged | none |
@@ -60,9 +60,9 @@
 ## Source update drift
 
 - New source files: 0
-- Changed source files: 2
-- Added domain entries: 2
-- Removed domain entries: 2
+- Changed source files: 0
+- Added domain entries: 0
+- Removed domain entries: 0
 - Policy changes: 0
 
 ## Assessment details

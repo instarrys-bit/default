@@ -3,9 +3,9 @@
   "assessment_count": 50,
   "drift_summary": {
     "new_source_files": 0,
-    "changed_source_files": 2,
-    "added_domain_count": 2,
-    "removed_domain_count": 2,
+    "changed_source_files": 0,
+    "added_domain_count": 0,
+    "removed_domain_count": 0,
     "policy_changes": 0
   },
   "activation_count": 0,
@@ -300033,12 +300033,10 @@
       "stars": 145,
       "archived": false,
       "drift": {
-        "status": "domain_set_changed",
-        "added_domain_count": 1,
-        "removed_domain_count": 1,
-        "policy_changed": false,
-        "previous_sha256": "796fae272f1ae67939f78a71179f9d34958a48c1f276a6d0481bb9d27b465f8a",
-        "current_sha256": "4e7689feea22bacdef502c02d03a24b0ddde3ba3bd954120d5940126f5662e1b"
+        "status": "unchanged",
+        "added_domain_count": 0,
+        "removed_domain_count": 0,
+        "policy_changed": false
       }
     },
     {
@@ -300068,12 +300066,10 @@
       "stars": 145,
       "archived": false,
       "drift": {
-        "status": "domain_set_changed",
-        "added_domain_count": 1,
-        "removed_domain_count": 1,
-        "policy_changed": false,
-        "previous_sha256": "fb91d6c8bca8505c76a324a5815c79109799b98263a4c649a840828da9b59651",
-        "current_sha256": "04e1b35bd6174dbf17ec353f1a1c77194d5bccf67d702af455ab1ad5b483a22e"
+        "status": "unchanged",
+        "added_domain_count": 0,
+        "removed_domain_count": 0,
+        "policy_changed": false
       }
     },
     {
