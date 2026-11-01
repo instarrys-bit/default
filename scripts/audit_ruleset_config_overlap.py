@@ -99,9 +99,34 @@ def match_candidate(domain: str, policy: str, rules: list[tuple[int, str]]) -> d
             "effective_policy": None, "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found"}
 
 
+def parse_skip_proxy(config_text: str) -> list[str]:
+    if config_text.count("[General]") != 1 or config_text.count("[Rule]") != 1:
+        raise ValueError("cannot isolate [General] section for skip-proxy audit")
+    block = config_text.split("[General]", 1)[1].split("[Rule]", 1)[0]
+    for raw in block.splitlines():
+        line = raw.strip()
+        if line.lower().startswith("skip-proxy") and "=" in line:
+            return [item.strip().lower() for item in line.split("=", 1)[1].split(",") if item.strip()]
+    return []
+
+
+def skip_proxy_match(domain: str, entries: list[str]) -> str | None:
+    for entry in entries:
+        if "/" in entry or ":" in entry:
+            continue
+        if entry.startswith("*."):
+            suffix = entry[2:]
+            if domain == suffix or domain.endswith("." + suffix):
+                return entry
+        elif domain == entry:
+            return entry
+    return None
+
+
 def audit(config_text: str, ledger: dict) -> dict:
     boundary = first_ruleset_line(config_text)
     rules = prior_rule_lines(config_text)
+    skip_proxy_entries = parse_skip_proxy(config_text)
     results = []
     errors = []
     for item in ledger.get("reviews", []):
@@ -113,6 +138,12 @@ def audit(config_text: str, ledger: dict) -> dict:
         if policy not in POLICIES:
             continue
         match = match_candidate(domain, policy, rules)
+        if match["status"] == "NOT_COVERED_BY_PRIOR_DOMAIN_RULES":
+            bypass = skip_proxy_match(domain, skip_proxy_entries)
+            if bypass:
+                match = {"status": "ALREADY_COVERED" if policy == "DIRECT" else "CONFLICT",
+                         "line": None, "rule": "skip-proxy = " + bypass,
+                         "effective_policy": "DIRECT", "reason": "Existing General skip-proxy entry"}
         result = {
             "domain": domain, "policy": policy,
             "ledger_status": str(item.get("status", "UNKNOWN")),
@@ -130,6 +161,7 @@ def audit(config_text: str, ledger: dict) -> dict:
         "config_is_read_only": True,
         "first_ruleset_line": boundary,
         "prior_rule_line_count": len(rules),
+        "skip_proxy_entry_count": len(skip_proxy_entries),
         "candidate_count": len(results),
         "status_counts": dict(sorted(counts.items())),
         "results": sorted(results, key=lambda x: x["domain"]),
