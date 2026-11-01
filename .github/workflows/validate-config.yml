@@ -5,7 +5,6 @@ on:
     paths:
       - "sources/baseline/ss.conf"
       - "shadowrocket/ss.conf"
-      - "shadowrocket/ss.conf"
       - "scripts/validate_config.py"
       - "scripts/audit_config_drift.py"
       - "scripts/select_domain_rules.py"
@@ -20,6 +19,7 @@ on:
   pull_request:
     paths:
       - "sources/baseline/ss.conf"
+      - "shadowrocket/ss.conf"
       - "scripts/validate_config.py"
       - "scripts/select_domain_rules.py"
       - "scripts/collect_domains.py"
@@ -43,7 +43,6 @@ jobs:
         with:
           python-version: "3.11"
       - run: python scripts/verify_baseline.py --baseline-only
-      - run: python scripts/audit_config_drift.py
       - run: python scripts/audit_config_drift.py
       - run: python scripts/validate_config.py
       - run: python scripts/select_domain_rules.py --self-test
