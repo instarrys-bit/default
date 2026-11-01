@@ -17,6 +17,114 @@ POLICY_BY_FILE = {"direct.list": "DIRECT", "proxy.list": "PROXY", "reject.list":
 DOMAIN_LINE = re.compile(r"^(DOMAIN|DOMAIN-SUFFIX),([A-Za-z0-9.-]+)$", re.IGNORECASE)
 DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)(?:\.(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?))+$")
 
+
+EXPECTED_RULESET_ORDER = [
+    ("reject.list", "REJECT"),
+    ("proxy.list", "PROXY"),
+    ("direct.list", "DIRECT"),
+]
+LAYOUT_MARKERS = {
+    "layer_1": "# === Layer 1:",
+    "layer_2": "# === Layer 2:",
+    "layer_3": "# === Layer 3:",
+    "layer_4": "# === Layer 4:",
+    "layer_5": "# === Layer 5:",
+    "original_rules_end": "# --- 5E.",
+    "external_rulesets": "# --- External Rule Sets:",
+    "geoip_asn_start": "# --- 5F-1.",
+    "geoip_asn_cn": "# --- 5F-2.",
+    "geoip_cn_rule": "GEOIP,CN,DIRECT",
+    "layer_6": "# === Layer 6:",
+    "final_rule": "FINAL,PROXY",
+}
+
+
+def inspect_rule_layout(config_text: str, observed: list[dict]) -> tuple[dict, list[str]]:
+    """Enforce original rules -> REJECT/PROXY/DIRECT -> ASN/GeoIP -> FINAL."""
+    lines = config_text.splitlines()
+    positions: dict[str, int] = {}
+    errors: list[str] = []
+
+    for key, marker in LAYOUT_MARKERS.items():
+        matches = [
+            index + 1 for index, raw in enumerate(lines)
+            if raw.strip().startswith(marker)
+        ]
+        if len(matches) != 1:
+            errors.append(f"layout marker {key!r} must appear exactly once; found {len(matches)}")
+        else:
+            positions[key] = matches[0]
+
+    expected_marker_order = [
+        "layer_1", "layer_2", "layer_3", "layer_4", "layer_5",
+        "original_rules_end", "external_rulesets", "geoip_asn_start",
+        "geoip_asn_cn", "geoip_cn_rule", "layer_6", "final_rule",
+    ]
+    if all(key in positions for key in expected_marker_order):
+        ordered_positions = [positions[key] for key in expected_marker_order]
+        if ordered_positions != sorted(ordered_positions):
+            errors.append("routing layer markers are not in original-rules -> rule-sets -> ASN/GeoIP -> FINAL order")
+
+    observed_order = [(item["file"], item["policy"]) for item in sorted(observed, key=lambda x: x["line"])]
+    if observed_order != EXPECTED_RULESET_ORDER:
+        errors.append(
+            "external RULE-SET order must be exactly REJECT -> PROXY -> DIRECT; "
+            f"observed={observed_order}"
+        )
+
+    ref_lines = [item["line"] for item in sorted(observed, key=lambda x: x["line"])]
+    if all(key in positions for key in ("original_rules_end", "external_rulesets", "geoip_asn_start")):
+        if not (
+            positions["original_rules_end"] < positions["external_rulesets"]
+            < (ref_lines[0] if ref_lines else 10**12)
+            <= (ref_lines[-1] if ref_lines else -1)
+            < positions["geoip_asn_start"]
+        ):
+            errors.append(
+                "all original explicit rules must precede the external RULE-SET block, "
+                "and all three external sets must precede the ASN/GeoIP fallback"
+            )
+
+        if ref_lines:
+            between = [
+                (index + 1, raw.strip())
+                for index, raw in enumerate(lines)
+                if ref_lines[-1] < index + 1 < positions["geoip_asn_start"]
+                and raw.strip()
+                and not raw.strip().startswith("#")
+                and not raw.strip().startswith("[")
+            ]
+            if between:
+                errors.append(
+                    "active routing rules appear between external RULE-SETs and ASN/GeoIP fallback: "
+                    + repr(between[:5])
+                )
+
+    active_rules = [
+        (index + 1, raw.strip())
+        for index, raw in enumerate(lines)
+        if raw.strip() and not raw.strip().startswith("#")
+        and raw.strip().upper().startswith((
+            "DOMAIN,", "DOMAIN-SUFFIX,", "DOMAIN-KEYWORD,", "IP-CIDR,",
+            "IP-CIDR6,", "IP-ASN,", "GEOIP,", "RULE-SET,", "FINAL,",
+            "AND,", "OR,", "NOT,", "URL-REGEX,",
+        ))
+    ]
+    final_lines = [line for line, raw in active_rules if raw.upper() == "FINAL,PROXY"]
+    if len(final_lines) != 1:
+        errors.append(f"FINAL,PROXY must appear exactly once; found {len(final_lines)}")
+    elif active_rules and active_rules[-1][0] != final_lines[0]:
+        errors.append("FINAL,PROXY must be the last active routing rule")
+
+    layout = {
+        "expected_ruleset_order": [f"{file}:{policy}" for file, policy in EXPECTED_RULESET_ORDER],
+        "observed_ruleset_order": [f"{file}:{policy}" for file, policy in observed_order],
+        "marker_lines": positions,
+        "passed": not errors,
+    }
+    return layout, errors
+
+
 def extract_rule_set_references(config_text: str) -> list[dict]:
     refs, in_rules = [], False
     for line_no, raw in enumerate(config_text.splitlines(), 1):
@@ -60,6 +168,9 @@ def inspect(config_text: str, manifest: dict, ruleset_dir: Path = RULESETS) -> d
         seen_urls.add(ref["url"])
         seen_files.add(filename)
         observed.append({"line": ref["line"], "url": ref["url"], "file": filename, "policy": ref["policy"]})
+
+    layout, layout_errors = inspect_rule_layout(config_text, observed)
+    errors.extend(layout_errors)
 
     expected_files = set(POLICY_BY_FILE)
     if seen_files != expected_files:
@@ -160,6 +271,7 @@ def inspect(config_text: str, manifest: dict, ruleset_dir: Path = RULESETS) -> d
         "cross_file_duplicates": cross_file_duplicates,
         "cross_policy_conflicts": cross_policy_conflicts,
         "precedence_resolved_overlaps": precedence_resolved_overlaps,
+        "layout": layout,
         "errors": errors, "passed": not errors,
         "scope": "read-only; validates DOMAIN and DOMAIN-SUFFIX scopes, cross-policy scope intersections, and does not edit config, DNS, MITM, or RULE-SET references"
     }
@@ -189,7 +301,7 @@ def main() -> int:
     lines += [f"- {x}" for x in report["errors"]] or ["- No inconsistencies detected."]
     lines += ["", "Read-only audit; no config or RULE-SET references were changed.", ""]
     REPORT_MD.write_text("\n".join(lines), encoding="utf-8")
-    print(json.dumps({"passed": report["passed"], "reference_count": report["config_rule_set_reference_count"], "errors": report["errors"]}, ensure_ascii=False))
+    print(json.dumps({"passed": report["passed"], "reference_count": report["config_rule_set_reference_count"], "layout": report["layout"], "errors": report["errors"]}, ensure_ascii=False))
     return 0 if report["passed"] else 1
 
 if __name__ == "__main__":
