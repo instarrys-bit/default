@@ -2,6 +2,7 @@
 """Build exact-domain RULE-SET lists only from deterministic evidence-approved records."""
 from __future__ import annotations
 import hashlib, json, re
+from datetime import datetime, timezone
 from pathlib import Path
 from deterministic_review import inspect, parse_skip_proxy, first_ruleset_line
 from domain_rule_engine import RuleIndex, load_domain_rules, inspect_suffix_scope
@@ -166,7 +167,7 @@ def main():
             if (scope,domain) not in previous_keys:
                 queue_map.setdefault((policy,scope,domain),{
                     "policy":policy,"scope":scope,"domain":domain,
-                    "queued_at":datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    "queued_at":datetime.now(timezone.utc).isoformat(),
                     "reason":"Approved rule waiting for published capacity"
                 })
     capacity=max(0,30000-previous_rule_count)
