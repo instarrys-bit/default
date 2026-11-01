@@ -2,7 +2,7 @@
 
 - Mode: read-only; user-managed config is authoritative
 - Baseline file: `shadowrocket/ss.conf`
-- Baseline Git blob SHA: `d949355d9f5ee547c68543ca81c9c4aad7a2904a`
+- Baseline Git blob SHA: `2349c0217fdfd8688d50047f42c2530e92ae100e`
 - Registered baseline SHA matches: **True**
 - Sections: **5**
 - Rule lines: **2279**

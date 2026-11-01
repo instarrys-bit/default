@@ -227,7 +227,7 @@
 - ithome.com (DIRECT): ALREADY_COVERED — line 979: Prior first-match exact/suffix domain rule
 - ixigua.com (DIRECT): ALREADY_COVERED — line 981: Prior first-match exact/suffix domain rule
 - jcloudcs.com (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
-- jd.com (DIRECT): CONFLICT — line 164: Prior first-match rules produce a conflicting policy within suffix scope
+- jd.com (DIRECT): CONFLICT — line 162: Prior first-match rules produce a conflicting policy within suffix scope
 - jd.hk (DIRECT): ALREADY_COVERED — line 727: Prior first-match exact/suffix domain rule
 - jdcloud.com (DIRECT): ALREADY_COVERED — line 1102: Prior first-match exact/suffix domain rule
 - jdpay.com (DIRECT): ALREADY_COVERED — line 892: Prior first-match exact/suffix domain rule
@@ -299,7 +299,7 @@
 - qidian.com (DIRECT): ALREADY_COVERED — line 1016: Prior first-match exact/suffix domain rule
 - qiniu.com (DIRECT): ALREADY_COVERED — line 912: Prior first-match exact/suffix domain rule
 - qiniucdn.com (DIRECT): ALREADY_COVERED — line 1208: Prior first-match exact/suffix domain rule
-- qq.com (DIRECT): CONFLICT — line 138: Prior first-match rules produce a conflicting policy within suffix scope
+- qq.com (DIRECT): CONFLICT — line 136: Prior first-match rules produce a conflicting policy within suffix scope
 - qunar.com (DIRECT): ALREADY_COVERED — line 914: Prior first-match exact/suffix domain rule
 - rc-topic-api.bz.mgtv.com (REJECT): CONFLICT — line 811: Prior first-match exact/suffix domain rule
 - realme.com (DIRECT): ALREADY_COVERED — line 1018: Prior first-match exact/suffix domain rule

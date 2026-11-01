@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "completed_at": "2026-11-01T16:42:12.641157+00:00",
+  "completed_at": "2026-11-01T16:43:36.989319+00:00",
   "config_path": "shadowrocket/ss.conf",
   "config_read_only": true,
-  "config_blob_sha": "d949355d9f5ee547c68543ca81c9c4aad7a2904a",
+  "config_blob_sha": "2349c0217fdfd8688d50047f42c2530e92ae100e",
   "first_ruleset_line": 2259,
   "higher_priority_rule_count": 2217,
   "published_before": {
