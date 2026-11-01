@@ -44,6 +44,8 @@ def main():
         if previous_path.exists():
             previous_published[policy]=set(x.strip() for x in previous_path.read_text(encoding="utf-8").splitlines() if x.strip() and not x.strip().startswith("#"))
     rule_sets={policy:set() for policy in POLICIES}
+    new_approved={policy:set() for policy in POLICIES}
+    published_domain_policies={}
     previous_rule_count=0
     for policy in POLICIES:
         for line in previous_published[policy]:
@@ -53,10 +55,14 @@ def main():
                 rule_sets[policy].add(("suffix_candidate",line[14:].lower()))
             else:
                 raise ValueError("unsupported existing published rule: "+line)
+            domain=line.split(",",1)[1].lower()
+            if domain in published_domain_policies and published_domain_policies[domain]!=policy:
+                raise ValueError("existing published domain appears under multiple policies: "+domain)
+            published_domain_policies[domain]=policy
             previous_rule_count+=1
     if previous_rule_count>30000:
         raise ValueError("existing published rules exceed the 30,000 hard cap; refusing destructive truncation")
-    seen={}
+    seen=dict(published_domain_policies)
     status_counts={}
     held=approved=0
     reviews=data.get("reviews",[])
@@ -76,7 +82,7 @@ def main():
         engine=str(item.get("decision_engine",""))
         if engine not in {"deterministic-domain-audit/3.0","deterministic-domain-audit/4.0"}:
             raise ValueError("approved record was not produced by a supported deterministic reviewer: "+domain)
-        if domain in seen:
+        if domain in seen and seen[domain]!=policy:
             raise ValueError("duplicate or cross-policy approved domain: "+domain)
         valid=[]
         for ev in item.get("evidence",[]):
@@ -106,9 +112,7 @@ def main():
         scope=str(item.get("source_entry_type","exact_candidate"))
         if scope not in {"exact_candidate","suffix_candidate"}:
             raise ValueError("unsupported approved domain scope: "+domain)
-        existing_line=("DOMAIN-SUFFIX," if scope=="suffix_candidate" else "DOMAIN,")+domain
-        if existing_line in previous_published[policy]:
-            seen[domain]=policy
+        if domain in published_domain_policies:
             approved+=1
             continue
         if item.get("lifecycle_hold") and not lifecycle_active:
@@ -145,7 +149,7 @@ def main():
         if local_status:
             raise ValueError("approved record now overlaps baseline ("+str(local_status)+"): "+domain+" / "+str(reason))
         seen[domain]=policy
-        rule_sets[policy].add((scope,domain))
+        new_approved[policy].add((scope,domain))
         approved+=1
 
     OUT.mkdir(parents=True,exist_ok=True)
