@@ -178,7 +178,7 @@ class SourceIntegrityTests(unittest.TestCase):
     def test_quantumult_parser_accepts_trailing_rule_options(self):
         from collect_domains import parse_quantumult_domain_rules
         parsed=parse_quantumult_domain_rules(
-            b"host-suffix,ptt.cc,OutSide,force-remote-dns\\n",
+            b"host-suffix,ptt.cc,OutSide,force-remote-dns\n",
             {"classification":"PROXY","policy_action_map":{"OUTSIDE":"PROXY"}},
         )
         self.assertEqual(parsed,{"ptt.cc":"suffix_candidate"})
