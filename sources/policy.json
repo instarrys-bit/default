@@ -134,14 +134,14 @@
   },
   "managed_config_guard": {
     "path": "shadowrocket/ss.conf",
-    "approved_git_blob_sha": "4b9f3a60522322b820139774bf65cab9f54ca7c9",
+    "approved_git_blob_sha": "1e8763924c0ce4cf9d1c0ac93676105645302e9c",
     "immutable": true,
     "description": "Authoritative user-managed Shadowrocket config baseline. Read-only for automation; derived rule audits must evaluate against this file.",
     "last_user_approved_baseline_update": {
-      "previous_blob_sha": "27cbdb3263d8d2633ce03e326ee178b885eb48a8",
-      "new_blob_sha": "4b9f3a60522322b820139774bf65cab9f54ca7c9",
-      "reason": "Reconciled the registered baseline and DNS invariants to the current authoritative ss.conf as explicitly directed; the config file itself was not modified.",
-      "actor": "instarrys-bit",
+      "previous_blob_sha": "4b9f3a60522322b820139774bf65cab9f54ca7c9",
+      "new_blob_sha": "1e8763924c0ce4cf9d1c0ac93676105645302e9c",
+      "reason": "用户于 2026-11-02 明确授权清理主配置中的完全重复规则及被前置策略完全覆盖的失效规则；仅清理 [Rule] 规则行，未调整其他配置段。",
+      "actor": "user-approved via ChatGPT",
       "registered_at": "2026-11-02"
     }
   }
