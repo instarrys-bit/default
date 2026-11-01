@@ -8,9 +8,9 @@
 
 ## References
 
-- line 1993: reject.list -> REJECT
-- line 1994: direct.list -> DIRECT
-- line 1995: proxy.list -> PROXY
+- line 1753: reject.list -> REJECT
+- line 1754: direct.list -> DIRECT
+- line 1755: proxy.list -> PROXY
 
 ## Generated file counts
 

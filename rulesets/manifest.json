@@ -248,15 +248,13 @@
       "baseline_initialized": false
     },
     "PROXY": {
-      "previous_count": 63,
+      "previous_count": 64,
       "current_count": 64,
-      "added_count": 1,
+      "added_count": 0,
       "removed_count": 0,
-      "previous_sha256": "20f3441fdf474be809e4aa3d1c84cbd6ef4748f69f95e46616c40211b2c48bbb",
+      "previous_sha256": "8347013121571ebef8a7d59f29cdcbe7c5878a94410693f0eab385f60b3ae1d5",
       "current_sha256": "8347013121571ebef8a7d59f29cdcbe7c5878a94410693f0eab385f60b3ae1d5",
-      "added_sample": [
-        "DOMAIN-SUFFIX,edgekey.net"
-      ],
+      "added_sample": [],
       "removed_sample": [],
       "baseline_initialized": false
     },
