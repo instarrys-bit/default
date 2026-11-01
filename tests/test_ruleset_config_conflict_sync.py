@@ -45,9 +45,10 @@ class ConfigConflictSyncTests(unittest.TestCase):
         self.assertEqual(result["status"], "CONFLICT")
         self.assertEqual(result["effective_policy"], "PROXY")
 
-    def test_exact_same_policy_is_not_a_conflict(self):
+    def test_exact_same_policy_scope_overlap_is_removed(self):
         result = self.classify("DIRECT", "DOMAIN,api.example.com", ["DOMAIN,api.example.com,DIRECT"])
-        self.assertEqual(result["status"], "NO_CONFLICT")
+        self.assertEqual(result["status"], "CONFLICT")
+        self.assertEqual(result["effective_policy"], "DIRECT")
 
     def test_suffix_is_removed_when_descendant_has_conflicting_explicit_policy(self):
         result = self.classify(
@@ -63,7 +64,7 @@ class ConfigConflictSyncTests(unittest.TestCase):
         direct = self.classify("DIRECT", "DOMAIN,api.example.com", [], "*.example.com")
         self.assertEqual(proxy["status"], "CONFLICT")
         self.assertEqual(reject["status"], "CONFLICT")
-        self.assertEqual(direct["status"], "NO_CONFLICT")
+        self.assertEqual(direct["status"], "CONFLICT")
 
     def test_keyword_overlap_is_retained_for_review_not_deleted(self):
         result = self.classify(
@@ -100,7 +101,6 @@ class ConfigConflictSyncTests(unittest.TestCase):
                 config_with_rules([
                     "DOMAIN,api.example.com,PROXY",
                     "DOMAIN,queued.example.com,DIRECT",
-                    "DOMAIN,keep.example.com,DIRECT",
                 ]),
                 direct="DOMAIN,api.example.com\nDOMAIN,keep.example.com\n",
                 queue=queue,
@@ -136,7 +136,7 @@ class ConfigConflictSyncTests(unittest.TestCase):
             archive = json.loads((root / "rulesets" / "config_conflict_archive.json").read_text())
             item_id = archive["items"][0]["id"]
             (root / "shadowrocket" / "ss.conf").write_text(
-                config_with_rules(["DOMAIN,api.example.com,DIRECT"]), encoding="utf-8"
+                config_with_rules([]), encoding="utf-8"
             )
             restored = sync(root=root, restore_ids=[item_id], now="2026-11-02T00:00:00+00:00")
             self.assertEqual(len(restored["restored"]), 1)
