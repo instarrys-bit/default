@@ -821,7 +821,7 @@
 ### [deezertidal/shadowrocket-rules](https://github.com/deezertidal/shadowrocket-rules)
 
 - Description: 小火箭 shadowrocket 配置文件 模块 脚本 module sgmodule 图文教程 规则 分流 破解 解锁
-- Stars: 6782; archived: False; fork: False
+- Stars: 6783; archived: False; fork: False
 - Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
