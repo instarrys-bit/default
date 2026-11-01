@@ -14,7 +14,7 @@
 
 - direct.list: 0 lines; policy DIRECT
 - proxy.list: 0 lines; policy PROXY
-- reject.list: 18 lines; policy REJECT
+- reject.list: 24 lines; policy REJECT
 
 ## Cross-file duplicates
 

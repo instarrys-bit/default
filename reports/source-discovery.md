@@ -1,10 +1,19 @@
 # Automated source discovery
 
-- Candidate repositories retained: **183**
+- Candidate repositories retained: **186**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
 ## Candidate repositories
+
+### [34wolf/shadowrocket-rules](https://github.com/34wolf/shadowrocket-rules)
+
+- Description: Not supplied
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/34wolf/shadowrocket-rules/main/output/my_shadowrocket.conf
 
 ### [ACL4SSR/ACL4SSR](https://github.com/ACL4SSR/ACL4SSR)
 
@@ -580,6 +589,15 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [X1-1U/Zzshi3-Shadowrocket-Rules](https://github.com/X1-1U/Zzshi3-Shadowrocket-Rules)
+
+- Description: Self-hosted Shadowrocket rules with automatic upstream updates every 7 days.
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/X1-1U/Zzshi3-Shadowrocket-Rules/main/Shadowrocket-Rules.conf
+
 ### [aaakul/cf-cn-ip-list](https://github.com/aaakul/cf-cn-ip-list)
 
 - Description: 用于Shadowrocket/Clash/Surge/Stash等软件分流与规则匹配的自动更新 Cloudflare 中国大陆 IP 列表。  Auto-updated Cloudflare China Mainland IP list for use in Shadowrocket/Clash/Surge/Stash routing and rule matching
@@ -821,7 +839,7 @@
 ### [deezertidal/shadowrocket-rules](https://github.com/deezertidal/shadowrocket-rules)
 
 - Description: 小火箭 shadowrocket 配置文件 模块 脚本 module sgmodule 图文教程 规则 分流 破解 解锁
-- Stars: 6783; archived: False; fork: False
+- Stars: 6784; archived: False; fork: False
 - Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
@@ -1381,6 +1399,14 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [soizo/proxy-rules](https://github.com/soizo/proxy-rules)
+
+- Description: Convert Shadowrocket rule modules into Mihomo providers
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
 ### [sr00t3d/directadmin-checkwp-admin](https://github.com/sr00t3d/directadmin-checkwp-admin)
 
 - Description: checkwpadmin.sh is a security auditing tool developed for DirectAdmin servers. Its critical objective is to scan all user accounts, identify WordPress installations, and list users with Administrator privileges who are not part of the team whitelist (e.g.: root@domain or dev@domain).
@@ -1524,7 +1550,7 @@
 ### [v2fly/domain-list-community](https://github.com/v2fly/domain-list-community)
 
 - Description: Community managed domain list. Generate geosite.dat for V2Ray.
-- Stars: 9803; archived: False; fork: False
+- Stars: 9804; archived: False; fork: False
 - Search queries: geosite domain
 - README / curated seed rule-list links: 0
 - Curated seed links: 0

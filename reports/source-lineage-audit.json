@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-01T10:19:52.729147+00:00",
+  "audited_at": "2026-11-01T10:29:12.301295+00:00",
   "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
   "source_count": 6,
   "audited_source_count": 6,
@@ -30,8 +30,8 @@
       ]
     }
   ],
-  "candidate_source_count": 36,
-  "candidate_readme_audited_count": 36,
+  "candidate_source_count": 38,
+  "candidate_readme_audited_count": 38,
   "candidate_shared_reference_pairs": [
     {
       "repositories": [
@@ -1037,6 +1037,17 @@
   ],
   "candidate_sources": [
     {
+      "repository": "34wolf/shadowrocket-rules",
+      "readme_url": "https://raw.githubusercontent.com/34wolf/shadowrocket-rules/main/README.md",
+      "readme_sha256": "1277f494aec0118880618b8f0b3fdccb292670e2f6e753df745f21e07dea2ec9",
+      "discovery_readme_sha256": "1277f494aec0118880618b8f0b3fdccb292670e2f6e753df745f21e07dea2ec9",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [],
+      "reference_count": 0,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
       "repository": "ACL4SSR/ACL4SSR",
       "readme_url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/README.md",
       "readme_sha256": "67026f98f57b2f7d332dcfb3cf0fa7bb018f01db6b05ea468411a2a7bec70b7a",
@@ -1277,6 +1288,17 @@
         "iw4p/proxy-scraper"
       ],
       "reference_count": 1,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "X1-1U/Zzshi3-Shadowrocket-Rules",
+      "readme_url": "https://raw.githubusercontent.com/X1-1U/Zzshi3-Shadowrocket-Rules/main/README.md",
+      "readme_sha256": "99c0b4d5c149cc84c969db2fd55b48bd334d355cf057019990c646efbc0dbce3",
+      "discovery_readme_sha256": "99c0b4d5c149cc84c969db2fd55b48bd334d355cf057019990c646efbc0dbce3",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [],
+      "reference_count": 0,
       "lineage_status": "unverified",
       "status": "audited_reference_inventory"
     },

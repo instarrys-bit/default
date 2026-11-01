@@ -40,8 +40,8 @@
     },
     "reject.list": {
       "policy": "REJECT",
-      "line_count": 18,
-      "valid_domain_lines": 18
+      "line_count": 24,
+      "valid_domain_lines": 24
     }
   },
   "cross_file_duplicates": [],

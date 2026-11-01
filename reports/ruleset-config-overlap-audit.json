@@ -56,7 +56,7 @@
     {
       "domain": "126.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -66,7 +66,7 @@
     {
       "domain": "126.net",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -76,7 +76,7 @@
     {
       "domain": "127.net",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -96,7 +96,7 @@
     {
       "domain": "163.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -106,7 +106,7 @@
     {
       "domain": "163yun.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -116,7 +116,7 @@
     {
       "domain": "1688.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -156,7 +156,7 @@
     {
       "domain": "1e100.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "CONDITIONAL_POTENTIAL",
       "line": 28,
       "rule": "AND,((DOMAIN-SUFFIX,1e100.net),(PROTOCOL,UDP)),REJECT",
@@ -166,7 +166,7 @@
     {
       "domain": "1password.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -176,7 +176,7 @@
     {
       "domain": "21cn.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -206,7 +206,7 @@
     {
       "domain": "360buyimg.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -376,7 +376,7 @@
     {
       "domain": "8686c.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -416,7 +416,7 @@
     {
       "domain": "a248.e.akamai.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -456,7 +456,7 @@
     {
       "domain": "acg.tv",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -466,7 +466,7 @@
     {
       "domain": "acgvideo.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -496,7 +496,7 @@
     {
       "domain": "ad.21cn.com",
       "policy": "REJECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "APPROVED",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -536,7 +536,7 @@
     {
       "domain": "adbehavior.ximalaya.com",
       "policy": "REJECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "APPROVED",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -646,7 +646,7 @@
     {
       "domain": "ads.snapchat.com",
       "policy": "REJECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "RISK_HOLD",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -676,7 +676,7 @@
     {
       "domain": "adsehera.ximalaya.com",
       "policy": "REJECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "APPROVED",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -736,7 +736,7 @@
     {
       "domain": "adwbs.ximalaya.com",
       "policy": "REJECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "APPROVED",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -766,7 +766,7 @@
     {
       "domain": "air-matters.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -776,7 +776,7 @@
     {
       "domain": "air-matters.io",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -786,7 +786,7 @@
     {
       "domain": "aixifan.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -806,7 +806,7 @@
     {
       "domain": "alibaba.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -816,7 +816,7 @@
     {
       "domain": "alibabachengdun.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -826,7 +826,7 @@
     {
       "domain": "alibabacloud.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -836,7 +836,7 @@
     {
       "domain": "alibabausercontent.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -846,7 +846,7 @@
     {
       "domain": "alicdn.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -866,7 +866,7 @@
     {
       "domain": "aliexpress.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -886,7 +886,7 @@
     {
       "domain": "alikunlun.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -926,7 +926,7 @@
     {
       "domain": "aliyun.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -946,7 +946,7 @@
     {
       "domain": "aliyuncs.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1006,7 +1006,7 @@
     {
       "domain": "amap.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1016,7 +1016,7 @@
     {
       "domain": "amazon.co.jp",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1026,7 +1026,7 @@
     {
       "domain": "amazon.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1036,7 +1036,7 @@
     {
       "domain": "amazonaws.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1046,7 +1046,7 @@
     {
       "domain": "amdc.m.youku.com",
       "policy": "REJECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "APPROVED",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1056,7 +1056,7 @@
     {
       "domain": "amemv.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1066,7 +1066,7 @@
     {
       "domain": "ampproject.org",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1076,7 +1076,7 @@
     {
       "domain": "android.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1086,7 +1086,7 @@
     {
       "domain": "anthropic.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1106,7 +1106,7 @@
     {
       "domain": "apache.org",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1126,7 +1126,7 @@
     {
       "domain": "api.iqiyi.com",
       "policy": "REJECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "RISK_HOLD",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1146,7 +1146,7 @@
     {
       "domain": "apiv4-iyes.youku.com",
       "policy": "REJECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "RISK_HOLD",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1196,7 +1196,7 @@
     {
       "domain": "appspot.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1256,7 +1256,7 @@
     {
       "domain": "auth.wo.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1266,7 +1266,7 @@
     {
       "domain": "auth.wosms.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1276,7 +1276,7 @@
     {
       "domain": "autonavi.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1286,7 +1286,7 @@
     {
       "domain": "awsstatic.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1316,7 +1316,7 @@
     {
       "domain": "b23.tv",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1356,7 +1356,7 @@
     {
       "domain": "baidu.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1366,7 +1366,7 @@
     {
       "domain": "baidubcr.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1396,7 +1396,7 @@
     {
       "domain": "baike.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1426,7 +1426,7 @@
     {
       "domain": "bbc.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1436,7 +1436,7 @@
     {
       "domain": "bcebos.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1456,7 +1456,7 @@
     {
       "domain": "bdimg.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1466,7 +1466,7 @@
     {
       "domain": "bdstatic.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1476,7 +1476,7 @@
     {
       "domain": "bdurl.net",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1486,7 +1486,7 @@
     {
       "domain": "bdxiguaimg.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1496,7 +1496,7 @@
     {
       "domain": "bdxiguastatic.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1506,7 +1506,7 @@
     {
       "domain": "bigfun.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1516,7 +1516,7 @@
     {
       "domain": "bigfunapp.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1526,7 +1526,7 @@
     {
       "domain": "biliapi.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1536,7 +1536,7 @@
     {
       "domain": "biliapi.net",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1556,7 +1556,7 @@
     {
       "domain": "bilibili.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1566,7 +1566,7 @@
     {
       "domain": "biligame.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1596,7 +1596,7 @@
     {
       "domain": "bilivideo.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1606,7 +1606,7 @@
     {
       "domain": "bilivideo.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1616,7 +1616,7 @@
     {
       "domain": "bing.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1666,7 +1666,7 @@
     {
       "domain": "blogcdn.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1676,7 +1676,7 @@
     {
       "domain": "blogger.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1686,7 +1686,7 @@
     {
       "domain": "blogsmithmedia.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1696,7 +1696,7 @@
     {
       "domain": "blogspot.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1706,7 +1706,7 @@
     {
       "domain": "blogspot.hk",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1716,7 +1716,7 @@
     {
       "domain": "blogspot.jp",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1726,7 +1726,7 @@
     {
       "domain": "bloomberg.cn",
       "policy": "PROXY",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1736,7 +1736,7 @@
     {
       "domain": "bloomberg.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1796,7 +1796,7 @@
     {
       "domain": "business-cdn.shouji.sogou.com",
       "policy": "REJECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "RISK_HOLD",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1836,7 +1836,7 @@
     {
       "domain": "bytedance.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1866,7 +1866,7 @@
     {
       "domain": "bytednsdoc.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1886,7 +1886,7 @@
     {
       "domain": "bytegoofy.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1896,7 +1896,7 @@
     {
       "domain": "byteimg.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1906,7 +1906,7 @@
     {
       "domain": "bytescm.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1916,7 +1916,7 @@
     {
       "domain": "bytetos.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1936,7 +1936,7 @@
     {
       "domain": "c-ctrip.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1946,7 +1946,7 @@
     {
       "domain": "c.gle",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1956,7 +1956,7 @@
     {
       "domain": "cachefly.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1966,7 +1966,7 @@
     {
       "domain": "camera360.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1976,7 +1976,7 @@
     {
       "domain": "cctv.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -1986,7 +1986,7 @@
     {
       "domain": "cctvpic.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2046,7 +2046,7 @@
     {
       "domain": "challenges.cloudflare.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2106,7 +2106,7 @@
     {
       "domain": "chinaso.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2116,7 +2116,7 @@
     {
       "domain": "chinaz.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2136,7 +2136,7 @@
     {
       "domain": "chuimg.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2156,7 +2156,7 @@
     {
       "domain": "claude.ai",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2176,7 +2176,7 @@
     {
       "domain": "clouddn.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2186,7 +2186,7 @@
     {
       "domain": "cloudfront.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2206,7 +2206,7 @@
     {
       "domain": "cm.steampowered.com",
       "policy": "DIRECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2326,7 +2326,7 @@
     {
       "domain": "cr-status.iqiyi.com",
       "policy": "REJECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2346,7 +2346,7 @@
     {
       "domain": "csgo.wmsj.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2356,7 +2356,7 @@
     {
       "domain": "ctrip.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2366,7 +2366,7 @@
     {
       "domain": "d1q6f0aelx0por.cloudfront.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2376,7 +2376,7 @@
     {
       "domain": "d2wy8f7a9ursnm.cloudfront.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2386,7 +2386,7 @@
     {
       "domain": "d36jcksde1wxzq.cloudfront.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2466,7 +2466,7 @@
     {
       "domain": "dfcfw.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2476,7 +2476,7 @@
     {
       "domain": "dflow.bz.mgtv.com",
       "policy": "REJECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2496,7 +2496,7 @@
     {
       "domain": "dianping.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2506,7 +2506,7 @@
     {
       "domain": "didialift.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2516,7 +2516,7 @@
     {
       "domain": "didiglobal.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2526,7 +2526,7 @@
     {
       "domain": "dilidili.wang",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2536,7 +2536,7 @@
     {
       "domain": "dingtalk.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2556,7 +2556,7 @@
     {
       "domain": "discord.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2566,7 +2566,7 @@
     {
       "domain": "discord.gg",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2576,7 +2576,7 @@
     {
       "domain": "discord.media",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2586,7 +2586,7 @@
     {
       "domain": "discordapp.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2596,7 +2596,7 @@
     {
       "domain": "discordapp.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2616,7 +2616,7 @@
     {
       "domain": "disquscdn.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2626,7 +2626,7 @@
     {
       "domain": "dl.steam.clngaa.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2646,7 +2646,7 @@
     {
       "domain": "dns.alidns.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2656,7 +2656,7 @@
     {
       "domain": "docker.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2686,7 +2686,7 @@
     {
       "domain": "doh.360.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2696,7 +2696,7 @@
     {
       "domain": "doh.pub",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2706,7 +2706,7 @@
     {
       "domain": "dota2.wmsj.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2716,7 +2716,7 @@
     {
       "domain": "douban.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2726,7 +2726,7 @@
     {
       "domain": "doubanio.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2736,7 +2736,7 @@
     {
       "domain": "douyin.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2746,7 +2746,7 @@
     {
       "domain": "douyincdn.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2756,7 +2756,7 @@
     {
       "domain": "douyinpic.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2766,7 +2766,7 @@
     {
       "domain": "douyinstatic.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2776,7 +2776,7 @@
     {
       "domain": "douyinvod.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2786,7 +2786,7 @@
     {
       "domain": "douyu.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2806,7 +2806,7 @@
     {
       "domain": "douyucdn.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2836,7 +2836,7 @@
     {
       "domain": "dpfile.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2846,7 +2846,7 @@
     {
       "domain": "dropbox.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2866,7 +2866,7 @@
     {
       "domain": "dropboxstatic.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2876,7 +2876,7 @@
     {
       "domain": "dropboxusercontent.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2896,7 +2896,7 @@
     {
       "domain": "duckduckgo.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2906,7 +2906,7 @@
     {
       "domain": "duokan.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2926,7 +2926,7 @@
     {
       "domain": "dxycdn.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2946,7 +2946,7 @@
     {
       "domain": "eastmoney.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2966,7 +2966,7 @@
     {
       "domain": "edgecastcdn.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2976,7 +2976,7 @@
     {
       "domain": "edgekey.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -2996,7 +2996,7 @@
     {
       "domain": "edgesuite.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3026,7 +3026,7 @@
     {
       "domain": "ele.me",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3036,7 +3036,7 @@
     {
       "domain": "elemecdn.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3056,7 +3056,7 @@
     {
       "domain": "encounter.bz.mgtv.com",
       "policy": "REJECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3086,7 +3086,7 @@
     {
       "domain": "eurekavpt.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3106,7 +3106,7 @@
     {
       "domain": "facebook.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3166,7 +3166,7 @@
     {
       "domain": "fb.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3176,7 +3176,7 @@
     {
       "domain": "fb.me",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3186,7 +3186,7 @@
     {
       "domain": "fbcdn.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3196,7 +3196,7 @@
     {
       "domain": "fbcdn.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3206,7 +3206,7 @@
     {
       "domain": "feelgood.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3216,7 +3216,7 @@
     {
       "domain": "feiliao.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3226,7 +3226,7 @@
     {
       "domain": "feng.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3236,7 +3236,7 @@
     {
       "domain": "fengkongcloud.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3256,7 +3256,7 @@
     {
       "domain": "firebaseio.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3266,7 +3266,7 @@
     {
       "domain": "flickr.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3286,7 +3286,7 @@
     {
       "domain": "floor.bz.mgtv.com",
       "policy": "REJECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3316,7 +3316,7 @@
     {
       "domain": "frdic.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3396,7 +3396,7 @@
     {
       "domain": "geetest.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3406,7 +3406,7 @@
     {
       "domain": "geilicdn.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3456,7 +3456,7 @@
     {
       "domain": "ggpht.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "CONDITIONAL_POTENTIAL",
       "line": 30,
       "rule": "AND,((DOMAIN-SUFFIX,ggpht.com),(PROTOCOL,UDP)),REJECT",
@@ -3486,7 +3486,7 @@
     {
       "domain": "gifshow.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3496,7 +3496,7 @@
     {
       "domain": "github.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3506,7 +3506,7 @@
     {
       "domain": "github.io",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3526,7 +3526,7 @@
     {
       "domain": "githubassets.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3536,7 +3536,7 @@
     {
       "domain": "githubusercontent.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3546,7 +3546,7 @@
     {
       "domain": "gitlab.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3556,7 +3556,7 @@
     {
       "domain": "gitlab.io",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3576,7 +3576,7 @@
     {
       "domain": "godic.net",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3596,7 +3596,7 @@
     {
       "domain": "goo.gl",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3606,7 +3606,7 @@
     {
       "domain": "googleapis.cn",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "CONDITIONAL_POTENTIAL",
       "line": 34,
       "rule": "AND,((DOMAIN-SUFFIX,googleapis.cn),(PROTOCOL,UDP)),REJECT",
@@ -3636,7 +3636,7 @@
     {
       "domain": "gstatic.cn",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "CONDITIONAL_POTENTIAL",
       "line": 38,
       "rule": "AND,((DOMAIN-SUFFIX,gstatic.cn),(PROTOCOL,UDP)),REJECT",
@@ -3646,7 +3646,7 @@
     {
       "domain": "gstatic.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "CONDITIONAL_POTENTIAL",
       "line": 39,
       "rule": "AND,((DOMAIN-SUFFIX,gstatic.com),(PROTOCOL,UDP)),REJECT",
@@ -3656,7 +3656,7 @@
     {
       "domain": "gtimg.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3676,7 +3676,7 @@
     {
       "domain": "gvt0.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3686,7 +3686,7 @@
     {
       "domain": "gvt1.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "CONDITIONAL_POTENTIAL",
       "line": 40,
       "rule": "AND,((DOMAIN-SUFFIX,gvt1.com),(PROTOCOL,UDP)),REJECT",
@@ -3766,7 +3766,7 @@
     {
       "domain": "hdslb.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3826,7 +3826,7 @@
     {
       "domain": "hichina.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3836,7 +3836,7 @@
     {
       "domain": "hicloud.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3846,7 +3846,7 @@
     {
       "domain": "hihonor.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3856,7 +3856,7 @@
     {
       "domain": "hitv.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3866,7 +3866,7 @@
     {
       "domain": "hmrz.wo.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3896,7 +3896,7 @@
     {
       "domain": "hongxiu.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3906,7 +3906,7 @@
     {
       "domain": "hoyolab.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3936,7 +3936,7 @@
     {
       "domain": "huawei.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -3946,7 +3946,7 @@
     {
       "domain": "huaweicloud.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4026,7 +4026,7 @@
     {
       "domain": "huxiucdn.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4036,7 +4036,7 @@
     {
       "domain": "huya.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4066,7 +4066,7 @@
     {
       "domain": "ibytedapm.com",
       "policy": "DIRECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4106,7 +4106,7 @@
     {
       "domain": "id.mail.wo.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4116,7 +4116,7 @@
     {
       "domain": "idqqimg.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4126,7 +4126,7 @@
     {
       "domain": "iesdouyin.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4186,7 +4186,7 @@
     {
       "domain": "igamecj.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4206,7 +4206,7 @@
     {
       "domain": "images-amazon.com",
       "policy": "DIRECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4246,7 +4246,7 @@
     {
       "domain": "instagr.am",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4276,7 +4276,7 @@
     {
       "domain": "ip138.com",
       "policy": "PROXY",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4286,7 +4286,7 @@
     {
       "domain": "ipip.net",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4296,7 +4296,7 @@
     {
       "domain": "iqiyi.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4306,7 +4306,7 @@
     {
       "domain": "iqiyipic.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4336,7 +4336,7 @@
     {
       "domain": "ithome.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4366,7 +4366,7 @@
     {
       "domain": "ixigua.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4386,7 +4386,7 @@
     {
       "domain": "jcloudcs.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4396,7 +4396,7 @@
     {
       "domain": "jd.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4406,7 +4406,7 @@
     {
       "domain": "jd.hk",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4416,7 +4416,7 @@
     {
       "domain": "jdcloud.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4426,7 +4426,7 @@
     {
       "domain": "jdpay.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4626,7 +4626,7 @@
     {
       "domain": "kat.cr",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4686,7 +4686,7 @@
     {
       "domain": "ksosoft.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4706,7 +4706,7 @@
     {
       "domain": "ksyun.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4716,7 +4716,7 @@
     {
       "domain": "ksyungslb.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4736,7 +4736,7 @@
     {
       "domain": "kuaishou.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4816,7 +4816,7 @@
     {
       "domain": "layer.bz.mgtv.com",
       "policy": "REJECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "APPROVED",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4926,7 +4926,7 @@
     {
       "domain": "licdn.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4946,7 +4946,7 @@
     {
       "domain": "line-apps.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4956,7 +4956,7 @@
     {
       "domain": "line-cdn.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4966,7 +4966,7 @@
     {
       "domain": "line-scdn.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4976,7 +4976,7 @@
     {
       "domain": "line.me",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4986,7 +4986,7 @@
     {
       "domain": "line.naver.jp",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -4996,7 +4996,7 @@
     {
       "domain": "linkedin.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5016,7 +5016,7 @@
     {
       "domain": "livechina.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5096,7 +5096,7 @@
     {
       "domain": "llnwd.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5106,7 +5106,7 @@
     {
       "domain": "lofter.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5156,7 +5156,7 @@
     {
       "domain": "lxdns.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5176,7 +5176,7 @@
     {
       "domain": "maoyan.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5196,7 +5196,7 @@
     {
       "domain": "mdn.open.wo.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5216,7 +5216,7 @@
     {
       "domain": "medium.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5236,7 +5236,7 @@
     {
       "domain": "megaupload.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5256,7 +5256,7 @@
     {
       "domain": "meipai.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5266,7 +5266,7 @@
     {
       "domain": "meitu.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5276,7 +5276,7 @@
     {
       "domain": "meituan.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5286,7 +5286,7 @@
     {
       "domain": "meituan.net",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5296,7 +5296,7 @@
     {
       "domain": "meitudata.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5306,7 +5306,7 @@
     {
       "domain": "meizu.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5316,7 +5316,7 @@
     {
       "domain": "messenger.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5326,7 +5326,7 @@
     {
       "domain": "mgtv.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5336,7 +5336,7 @@
     {
       "domain": "mi-img.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5346,7 +5346,7 @@
     {
       "domain": "mi.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5396,7 +5396,7 @@
     {
       "domain": "miui.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5406,7 +5406,7 @@
     {
       "domain": "mob.bz.mgtv.com",
       "policy": "REJECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "RISK_HOLD",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5416,7 +5416,7 @@
     {
       "domain": "mobike.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5466,7 +5466,7 @@
     {
       "domain": "moke.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5526,7 +5526,7 @@
     {
       "domain": "mubu.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5546,7 +5546,7 @@
     {
       "domain": "mxhichina.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5556,7 +5556,7 @@
     {
       "domain": "myapp.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5566,7 +5566,7 @@
     {
       "domain": "myqcloud.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5606,7 +5606,7 @@
     {
       "domain": "netease.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5656,7 +5656,7 @@
     {
       "domain": "notion.so",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5706,7 +5706,7 @@
     {
       "domain": "oneclient.sfx.ms",
       "policy": "PROXY",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5736,7 +5736,7 @@
     {
       "domain": "onedrive.live.com",
       "policy": "PROXY",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5746,7 +5746,7 @@
     {
       "domain": "oneplus.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5766,7 +5766,7 @@
     {
       "domain": "open.e.189.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5776,7 +5776,7 @@
     {
       "domain": "openai.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5786,7 +5786,7 @@
     {
       "domain": "opencloud.wostore.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5796,7 +5796,7 @@
     {
       "domain": "openvpn.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5806,7 +5806,7 @@
     {
       "domain": "oppo.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5826,7 +5826,7 @@
     {
       "domain": "oppomobile.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5836,7 +5836,7 @@
     {
       "domain": "oracle.com",
       "policy": "DIRECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5856,7 +5856,7 @@
     {
       "domain": "ourdvs.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5916,7 +5916,7 @@
     {
       "domain": "periscope.tv",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5936,7 +5936,7 @@
     {
       "domain": "photos.live.com",
       "policy": "PROXY",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5966,7 +5966,7 @@
     {
       "domain": "pinduoduo.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -5976,7 +5976,7 @@
     {
       "domain": "ping.pe",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6006,7 +6006,7 @@
     {
       "domain": "pixiv.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6116,7 +6116,7 @@
     {
       "domain": "pscp.tv",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6126,7 +6126,7 @@
     {
       "domain": "pstatp.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6156,7 +6156,7 @@
     {
       "domain": "qcloud.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6176,7 +6176,7 @@
     {
       "domain": "qdaily.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6196,7 +6196,7 @@
     {
       "domain": "qhimg.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6206,7 +6206,7 @@
     {
       "domain": "qhres.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6236,7 +6236,7 @@
     {
       "domain": "qidian.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6266,7 +6266,7 @@
     {
       "domain": "qiniu.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6276,7 +6276,7 @@
     {
       "domain": "qiniucdn.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6326,7 +6326,7 @@
     {
       "domain": "qq.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6376,7 +6376,7 @@
     {
       "domain": "qunar.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6446,7 +6446,7 @@
     {
       "domain": "rc-topic-api.bz.mgtv.com",
       "policy": "REJECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "RISK_HOLD",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6476,7 +6476,7 @@
     {
       "domain": "realme.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6486,7 +6486,7 @@
     {
       "domain": "reddit.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6596,7 +6596,7 @@
     {
       "domain": "ruguoapp.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6636,7 +6636,7 @@
     {
       "domain": "sankuai.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6676,7 +6676,7 @@
     {
       "domain": "sfx.ms",
       "policy": "PROXY",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6716,7 +6716,7 @@
     {
       "domain": "sina.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6726,7 +6726,7 @@
     {
       "domain": "sina.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6736,7 +6736,7 @@
     {
       "domain": "sina.com.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6746,7 +6746,7 @@
     {
       "domain": "sinaapp.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6766,7 +6766,7 @@
     {
       "domain": "sinaimg.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6786,7 +6786,7 @@
     {
       "domain": "skydrive.wns.windows.com",
       "policy": "PROXY",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6826,7 +6826,7 @@
     {
       "domain": "smtcdns.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6846,7 +6846,7 @@
     {
       "domain": "smzdm.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6856,7 +6856,7 @@
     {
       "domain": "snapdrop.net",
       "policy": "DIRECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6866,7 +6866,7 @@
     {
       "domain": "sndcdn.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6876,7 +6876,7 @@
     {
       "domain": "snssdk.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6886,7 +6886,7 @@
     {
       "domain": "snwx.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6906,7 +6906,7 @@
     {
       "domain": "sogo.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6916,7 +6916,7 @@
     {
       "domain": "sogou.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6926,7 +6926,7 @@
     {
       "domain": "sogoucdn.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6936,7 +6936,7 @@
     {
       "domain": "sohu-inc.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6946,7 +6946,7 @@
     {
       "domain": "sohu.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6956,7 +6956,7 @@
     {
       "domain": "sohucs.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -6986,7 +6986,7 @@
     {
       "domain": "soku.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7026,7 +7026,7 @@
     {
       "domain": "soundcloud.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7056,7 +7056,7 @@
     {
       "domain": "spoprod-a.akamaihd.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7086,7 +7086,7 @@
     {
       "domain": "sspai.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7096,7 +7096,7 @@
     {
       "domain": "st.dl.bscstorage.net",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7106,7 +7106,7 @@
     {
       "domain": "st.dl.eccdnx.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7116,7 +7116,7 @@
     {
       "domain": "st.dl.pinyuncloud.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7126,7 +7126,7 @@
     {
       "domain": "stackoverflow.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7156,7 +7156,7 @@
     {
       "domain": "staticflickr.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7166,7 +7166,7 @@
     {
       "domain": "steam-chat.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7176,7 +7176,7 @@
     {
       "domain": "steambroadcast.akamaized.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7196,7 +7196,7 @@
     {
       "domain": "steamcommunity-a.akamaihd.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7206,7 +7206,7 @@
     {
       "domain": "steamcommunity.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7216,7 +7216,7 @@
     {
       "domain": "steamcontent.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7226,7 +7226,7 @@
     {
       "domain": "steamgames.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7236,7 +7236,7 @@
     {
       "domain": "steampipe.akamaized.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7256,7 +7256,7 @@
     {
       "domain": "steampowered.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7266,7 +7266,7 @@
     {
       "domain": "steampowered.com.8686c.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7286,7 +7286,7 @@
     {
       "domain": "steamstat.us",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7296,7 +7296,7 @@
     {
       "domain": "steamstatic.com",
       "policy": "PROXY",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7306,7 +7306,7 @@
     {
       "domain": "steamstatic.com.8686c.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7316,7 +7316,7 @@
     {
       "domain": "steamstore-a.akamaihd.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7326,7 +7326,7 @@
     {
       "domain": "steamusercontent-a.akamaihd.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7336,7 +7336,7 @@
     {
       "domain": "steamusercontent.com",
       "policy": "DIRECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7346,7 +7346,7 @@
     {
       "domain": "steamuserimages-a.akamaihd.net",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7356,7 +7356,7 @@
     {
       "domain": "storage.live.com",
       "policy": "PROXY",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7366,7 +7366,7 @@
     {
       "domain": "storage.msn.com",
       "policy": "PROXY",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7386,7 +7386,7 @@
     {
       "domain": "symauth.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7396,7 +7396,7 @@
     {
       "domain": "symcb.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7406,7 +7406,7 @@
     {
       "domain": "symcd.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7426,7 +7426,7 @@
     {
       "domain": "t.co",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7436,7 +7436,7 @@
     {
       "domain": "t.me",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7466,7 +7466,7 @@
     {
       "domain": "taobao.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7506,7 +7506,7 @@
     {
       "domain": "tbcache.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7516,7 +7516,7 @@
     {
       "domain": "tbcdn.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7536,7 +7536,7 @@
     {
       "domain": "tdesktop.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7546,7 +7546,7 @@
     {
       "domain": "teamviewer.com",
       "policy": "DIRECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7576,7 +7576,7 @@
     {
       "domain": "telegra.ph",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7586,7 +7586,7 @@
     {
       "domain": "telegram.me",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7596,7 +7596,7 @@
     {
       "domain": "telegram.org",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7606,7 +7606,7 @@
     {
       "domain": "telesco.pe",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7626,7 +7626,7 @@
     {
       "domain": "tencent.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7696,7 +7696,7 @@
     {
       "domain": "thefacebook.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7706,7 +7706,7 @@
     {
       "domain": "thepiratebay.org",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7746,7 +7746,7 @@
     {
       "domain": "tianyancha.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7786,7 +7786,7 @@
     {
       "domain": "tmall.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7796,7 +7796,7 @@
     {
       "domain": "tmall.hk",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7826,7 +7826,7 @@
     {
       "domain": "toutiao.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7856,7 +7856,7 @@
     {
       "domain": "toutiaocdn.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7906,7 +7906,7 @@
     {
       "domain": "toutiaoimg.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7926,7 +7926,7 @@
     {
       "domain": "trip.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -7986,7 +7986,7 @@
     {
       "domain": "tumblr.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8036,7 +8036,7 @@
     {
       "domain": "twimg.co",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8046,7 +8046,7 @@
     {
       "domain": "twimg.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "CONDITIONAL_POTENTIAL",
       "line": 42,
       "rule": "AND,((DOMAIN-SUFFIX,twimg.com),(PROTOCOL,UDP)),REJECT",
@@ -8056,7 +8056,7 @@
     {
       "domain": "twimg.org",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8066,7 +8066,7 @@
     {
       "domain": "twitch.tv",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8086,7 +8086,7 @@
     {
       "domain": "ucweb.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8096,7 +8096,7 @@
     {
       "domain": "udache.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8136,7 +8136,7 @@
     {
       "domain": "upaiyun.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8146,7 +8146,7 @@
     {
       "domain": "upyun.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8166,7 +8166,7 @@
     {
       "domain": "v2ex.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8206,7 +8206,7 @@
     {
       "domain": "vimeo.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8216,7 +8216,7 @@
     {
       "domain": "vine.co",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8226,7 +8226,7 @@
     {
       "domain": "vip.bz.mgtv.com",
       "policy": "REJECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "RISK_HOLD",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8256,7 +8256,7 @@
     {
       "domain": "vivo.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8306,7 +8306,7 @@
     {
       "domain": "weather.com",
       "policy": "DIRECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8326,7 +8326,7 @@
     {
       "domain": "weibo.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8336,7 +8336,7 @@
     {
       "domain": "weibo.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8346,7 +8346,7 @@
     {
       "domain": "weibocdn.cn",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8356,7 +8356,7 @@
     {
       "domain": "weibocdn.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8366,7 +8366,7 @@
     {
       "domain": "weico.cc",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8376,7 +8376,7 @@
     {
       "domain": "weidian.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8456,7 +8456,7 @@
     {
       "domain": "wikimedia.org",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8476,7 +8476,7 @@
     {
       "domain": "wikipedia.org",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8556,7 +8556,7 @@
     {
       "domain": "wscdns.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8576,7 +8576,7 @@
     {
       "domain": "x.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "CONDITIONAL_POTENTIAL",
       "line": 45,
       "rule": "AND,((DOMAIN-SUFFIX,x.com),(PROTOCOL,UDP)),REJECT",
@@ -8596,7 +8596,7 @@
     {
       "domain": "xhscdn.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8606,7 +8606,7 @@
     {
       "domain": "xiachufang.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8616,7 +8616,7 @@
     {
       "domain": "xiami.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8626,7 +8626,7 @@
     {
       "domain": "xiami.net",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8636,7 +8636,7 @@
     {
       "domain": "xiaohongshu.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8666,7 +8666,7 @@
     {
       "domain": "xiaomi.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8676,7 +8676,7 @@
     {
       "domain": "xiaomi.net",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8696,7 +8696,7 @@
     {
       "domain": "ximalaya.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8706,7 +8706,7 @@
     {
       "domain": "xinhuanet.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8746,7 +8746,7 @@
     {
       "domain": "xmcdn.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8756,7 +8756,7 @@
     {
       "domain": "xn--ngstr-lra8j.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8856,7 +8856,7 @@
     {
       "domain": "yangkeduo.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8866,7 +8866,7 @@
     {
       "domain": "ydstatic.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8936,7 +8936,7 @@
     {
       "domain": "ykimg.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8956,7 +8956,7 @@
     {
       "domain": "youku.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -8966,7 +8966,7 @@
     {
       "domain": "youtu.be",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "CONDITIONAL_POTENTIAL",
       "line": 46,
       "rule": "AND,((DOMAIN-SUFFIX,youtu.be),(PROTOCOL,UDP)),REJECT",
@@ -9016,7 +9016,7 @@
     {
       "domain": "yt.be",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -9026,7 +9026,7 @@
     {
       "domain": "ytimg.com",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "CONDITIONAL_POTENTIAL",
       "line": 52,
       "rule": "AND,((DOMAIN-SUFFIX,ytimg.com),(PROTOCOL,UDP)),REJECT",
@@ -9046,7 +9046,7 @@
     {
       "domain": "yunjiasu-cdn.net",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -9056,7 +9056,7 @@
     {
       "domain": "yximgs.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -9106,7 +9106,7 @@
     {
       "domain": "zhangzishi.cc",
       "policy": "DIRECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -9156,7 +9156,7 @@
     {
       "domain": "zhihu.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -9166,7 +9166,7 @@
     {
       "domain": "zhimg.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -9196,7 +9196,7 @@
     {
       "domain": "zhuihd.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -9206,7 +9206,7 @@
     {
       "domain": "zijieapi.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -9216,7 +9216,7 @@
     {
       "domain": "zijieimg.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -9226,7 +9226,7 @@
     {
       "domain": "zimuzu.io",
       "policy": "DIRECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -9236,7 +9236,7 @@
     {
       "domain": "zimuzu.tv",
       "policy": "DIRECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -9256,7 +9256,7 @@
     {
       "domain": "zjcdn.com",
       "policy": "DIRECT",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -9306,7 +9306,7 @@
     {
       "domain": "zmz2019.com",
       "policy": "DIRECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -9316,7 +9316,7 @@
     {
       "domain": "zmzapi.com",
       "policy": "DIRECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -9326,7 +9326,7 @@
     {
       "domain": "zmzapi.net",
       "policy": "DIRECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -9336,7 +9336,7 @@
     {
       "domain": "zmzfile.com",
       "policy": "DIRECT",
-      "ledger_status": "CONFLICT",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,
@@ -9346,7 +9346,7 @@
     {
       "domain": "zoom.us",
       "policy": "PROXY",
-      "ledger_status": "ALREADY_COVERED",
+      "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
       "line": null,
       "rule": null,

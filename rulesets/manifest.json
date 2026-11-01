@@ -209,30 +209,30 @@
   "rule_count": {
     "DIRECT": 0,
     "PROXY": 0,
-    "REJECT": 18
+    "REJECT": 24
   },
   "reviewed_total": 978,
-  "approved_total": 18,
-  "held_total": 960,
+  "approved_total": 24,
+  "held_total": 954,
   "status_count": {
-    "ALREADY_COVERED": 377,
-    "APPROVED": 18,
-    "CONFLICT": 43,
+    "ALREADY_COVERED": 10,
+    "APPROVED": 24,
+    "CONFLICT": 1,
     "POLICY_CONFLICT": 43,
-    "REVIEW": 487,
-    "RISK_HOLD": 10
+    "REVIEW": 883,
+    "RISK_HOLD": 17
   },
   "deterministic_review_progress": {
     "candidate_total": 978,
-    "approved_total": 18,
-    "held_total": 960,
+    "approved_total": 24,
+    "held_total": 954,
     "status_count": {
-      "ALREADY_COVERED": 377,
-      "APPROVED": 18,
-      "CONFLICT": 43,
+      "ALREADY_COVERED": 10,
+      "APPROVED": 24,
+      "CONFLICT": 1,
       "POLICY_CONFLICT": 43,
-      "REVIEW": 487,
-      "RISK_HOLD": 10
+      "REVIEW": 883,
+      "RISK_HOLD": 17
     }
   },
   "format": "Standalone Shadowrocket RULE-SET lists: DOMAIN,<domain>; policy is assigned by the RULE-SET reference.",
