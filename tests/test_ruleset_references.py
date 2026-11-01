@@ -80,11 +80,11 @@ class RuleSetReferenceAuditTests(unittest.TestCase):
     def test_cross_file_policy_conflict_is_detected(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            (root / "direct.list").write_text("DOMAIN,shared.example\\n", encoding="utf-8")
-            (root / "proxy.list").write_text("DOMAIN,shared.example\\n", encoding="utf-8")
+            (root / "direct.list").write_text("DOMAIN,shared.example\n", encoding="utf-8")
+            (root / "proxy.list").write_text("DOMAIN,shared.example\n", encoding="utf-8")
             (root / "reject.list").write_text("", encoding="utf-8")
             manifest = {"outputs": ["direct.list", "proxy.list", "reject.list"], "rule_count": {"DIRECT": 1, "PROXY": 1, "REJECT": 0}}
-            config = "\\n".join([
+            config = "\n".join([
                 "[Rule]",
                 "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list,DIRECT",
                 "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list,PROXY",
@@ -94,14 +94,14 @@ class RuleSetReferenceAuditTests(unittest.TestCase):
             self.assertFalse(report["passed"])
             self.assertEqual(len(report["cross_policy_conflicts"]), 1)
 
-    def test_same_policy_cross_file_duplicate_is_reported(self):
+    def test_cross_file_duplicate_under_different_policies_is_reported(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            (root / "direct.list").write_text("DOMAIN,shared.example\\n", encoding="utf-8")
+            (root / "direct.list").write_text("DOMAIN,shared.example\n", encoding="utf-8")
             (root / "proxy.list").write_text("", encoding="utf-8")
-            (root / "reject.list").write_text("DOMAIN,shared.example\\n", encoding="utf-8")
+            (root / "reject.list").write_text("DOMAIN,shared.example\n", encoding="utf-8")
             manifest = {"outputs": ["direct.list", "proxy.list", "reject.list"], "rule_count": {"DIRECT": 1, "PROXY": 0, "REJECT": 1}}
-            config = "\\n".join([
+            config = "\n".join([
                 "[Rule]",
                 "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list,DIRECT",
                 "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list,PROXY",
