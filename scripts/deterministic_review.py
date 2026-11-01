@@ -104,11 +104,12 @@ def inspect(domain,rules,conditional,base,protected,candidate_policy=None):
             # Only compare a candidate when the regex identifies a concrete hostname pattern.
             if r"[^\\/]+" in pattern_text:
                 continue
-            host_match=re.match(r"^\\^https?:\\/\\/(.+?)(?:\\/|$)",pattern_text)
-            if not host_match:
+            prefixes=(r"^http:\\/\\/",r"^https?:\\/\\/")
+            prefix=next((item for item in prefixes if pattern_text.startswith(item)),None)
+            if not prefix:
                 continue
-            host_pattern=host_match.group(1)
-            if not re.search(r"\\\\\\.[A-Za-z0-9-]+\\\\\\.[A-Za-z0-9-]+$",host_pattern):
+            host_pattern=pattern_text[len(prefix):].split(r"\\/",1)[0]
+            if not re.search(r"\\\.[A-Za-z0-9-]+\\\.[A-Za-z0-9-]+$",host_pattern):
                 continue
             try: host_regex=re.compile(r"^(?:"+host_pattern+r")$")
             except re.error: return "REVIEW","Existing URL-REGEX host pattern cannot be compiled"
