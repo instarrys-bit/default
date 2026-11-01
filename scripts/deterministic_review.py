@@ -11,6 +11,8 @@ POLICY=ROOT/"sources/domain_sources.json"
 PROTECTED=ROOT/"sources/protected_domains.json"
 CANDIDATES=ROOT/"data/candidates.json"
 OUTPUT=ROOT/"sources/domain_reviews.json"
+LIFECYCLE_STATE=ROOT/"rulesets/lifecycle_state.json"
+RULESET_DIR=ROOT/"rulesets"
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
 COND_RE=re.compile(r"(DOMAIN-SUFFIX|DOMAIN),([A-Za-z0-9.-]+)",re.I)
 def fail(msg): raise SystemExit("ERROR: "+msg)
@@ -183,6 +185,19 @@ def main():
     else:
         prior={"schema_version":1,"reviews":[]}
     review_map={x["domain"]:x for x in prior.get("reviews",[])}
+    lifecycle_state=json.loads(LIFECYCLE_STATE.read_text(encoding="utf-8")) if LIFECYCLE_STATE.exists() else {}
+    lifecycle_active=bool(lifecycle_state.get("active"))
+    published_identities=set()
+    for policy_name in ("direct","proxy","reject"):
+        list_path=RULESET_DIR/(policy_name+".list")
+        if not list_path.exists():
+            continue
+        for raw in list_path.read_text(encoding="utf-8").splitlines():
+            line=raw.strip()
+            if line.startswith("DOMAIN,"):
+                published_identities.add((policy_name.upper(),line[7:],"exact_candidate"))
+            elif line.startswith("DOMAIN-SUFFIX,"):
+                published_identities.add((policy_name.upper(),line[14:],"suffix_candidate"))
     run_counts={}
     for item in collected.get("candidates",[]):
         domain=str(item.get("domain","")).lower().rstrip(".")
@@ -236,7 +251,7 @@ def main():
                     status="REVIEW"; reason="Current source identity, publisher, policy, independence, scope or confidence evidence is below configured threshold"
                 else:
                     status="APPROVED"; reason="Policy and domain scope evidence agree across distinct configured publishers; lineage is recorded separately and is not a blanket veto; all local gates passed"
-        review_map[domain]={
+        new_record={
             "domain":domain,"source_entry_type":source_entry_type,"candidate_policies":sorted(candidate_policies),"classification":policy,"policy":policy,"confidence":confidence,
             "status":status,"reason":reason,"evidence":evidence,"source_count":len(source_ids),"publisher_count":len(publishers),"independence_group_count":len(groups),
             "rejected_evidence_count":len(raw_evidence)-len(evidence),
@@ -246,6 +261,19 @@ def main():
             "decision_engine":"deterministic-domain-audit/4.0","reviewed_at":now,
             "config_baseline":"uploaded-immutable-baseline"
         }
+        previous_record=review_map.get(domain)
+        previous_policy=str(previous_record.get("policy","")).upper() if previous_record else ""
+        previous_scope=str(previous_record.get("source_entry_type","exact_candidate")) if previous_record else "exact_candidate"
+        was_published=(previous_policy,domain,previous_scope) in published_identities
+        if (not lifecycle_active and status=="REVIEW" and previous_record
+            and previous_record.get("status")=="APPROVED" and was_published):
+            new_record=dict(previous_record)
+            new_record["lifecycle_hold"]={
+                "status":"HELD_UNTIL_LIFECYCLE_ACTIVATION",
+                "reason":"Temporary evidence insufficiency does not remove an already-published rule before the 5,000-rule lifecycle gate activates.",
+                "checked_at":now
+            }
+        review_map[domain]=new_record
         run_counts[status]=run_counts.get(status,0)+1
     reviews=sorted(review_map.values(),key=lambda x:x["domain"])
     total_counts={}
