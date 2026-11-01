@@ -87,10 +87,10 @@
     }
   ],
   "dns_invariants": {
-    "dns-server": "https://dns.quad9.net/dns-query#proxy, https://dns.google/dns-query#proxy, https://cloudflare-dns.com/dns-query#proxy",
-    "fallback-dns-server": "https://cloudflare-dns.com/dns-query#proxy, https://dns.google/dns-query#proxy",
-    "direct-dns-server": "https://doh.pub/dns-query, https://dns.alidns.com/dns-query",
-    "proxy-dns-server": "https://dns.quad9.net/dns-query#proxy, https://dns.google/dns-query#proxy, https://cloudflare-dns.com/dns-query#proxy",
+    "dns-server": "https://dns.quad9.net/dns-query#proxy&no-h3, https://dns.google/dns-query#proxy&no-h3",
+    "fallback-dns-server": "https://cloudflare-dns.com/dns-query#no-h3",
+    "direct-dns-server": "https://doh.pub/dns-query#no-h3, https://dns.alidns.com/dns-query#no-h3",
+    "proxy-dns-server": "https://dns.quad9.net/dns-query#no-h3, https://dns.google/dns-query#no-h3",
     "dns-direct-system": "false",
     "dns-direct-fallback-proxy": "false",
     "hijack-dns": ":53"
@@ -134,16 +134,15 @@
   },
   "managed_config_guard": {
     "path": "shadowrocket/ss.conf",
-    "approved_git_blob_sha": "27cbdb3263d8d2633ce03e326ee178b885eb48a8",
+    "approved_git_blob_sha": "4b9f3a60522322b820139774bf65cab9f54ca7c9",
     "immutable": true,
     "description": "Authoritative user-managed Shadowrocket config baseline. Read-only for automation; derived rule audits must evaluate against this file.",
     "last_user_approved_baseline_update": {
-      "previous_blob_sha": "986b1da6d2a51004224215910dd8fbaf900ceb39",
-      "new_blob_sha": "27cbdb3263d8d2633ce03e326ee178b885eb48a8",
-      "reason": "Repository owner pushed an ss.conf change; register that exact user-approved file version. Automation does not edit ss.conf.",
+      "previous_blob_sha": "27cbdb3263d8d2633ce03e326ee178b885eb48a8",
+      "new_blob_sha": "4b9f3a60522322b820139774bf65cab9f54ca7c9",
+      "reason": "Reconciled the registered baseline and DNS invariants to the current authoritative ss.conf as explicitly directed; the config file itself was not modified.",
       "actor": "instarrys-bit",
-      "commit_sha": "92359ea1030893c73880f185ac504c2f8bb2ce7e",
-      "registered_at": "2026-11-01T16:53:56.985081+00:00"
+      "registered_at": "2026-11-02"
     }
   }
 }

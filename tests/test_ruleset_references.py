@@ -78,18 +78,21 @@ class RuleSetReferenceAuditTests(unittest.TestCase):
             self.assertTrue(report["passed"], report["errors"])
             self.assertTrue(report["layout"]["passed"])
 
-    def test_wrong_external_priority_order_fails(self):
+    def test_actual_config_order_is_authoritative(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             empty_rulesets(root)
-            wrong = [
+            actual = [
                 ("reject.list", "REJECT"),
                 ("direct.list", "DIRECT"),
                 ("proxy.list", "PROXY"),
             ]
-            report = inspect(make_config(wrong), empty_manifest(), root)
-            self.assertFalse(report["passed"])
-            self.assertTrue(any("REJECT -> PROXY -> DIRECT" in x for x in report["errors"]))
+            report = inspect(make_config(actual), empty_manifest(), root)
+            self.assertTrue(report["passed"], report["errors"])
+            self.assertEqual(
+                report["layout"]["observed_ruleset_order"],
+                ["reject.list:REJECT", "direct.list:DIRECT", "proxy.list:PROXY"],
+            )
 
     def test_external_rule_sets_after_geoip_fail(self):
         with tempfile.TemporaryDirectory() as tmp:

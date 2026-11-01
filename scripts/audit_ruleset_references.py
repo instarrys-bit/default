@@ -18,11 +18,11 @@ DOMAIN_LINE = re.compile(r"^(DOMAIN|DOMAIN-SUFFIX),([A-Za-z0-9.-]+)$", re.IGNORE
 DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)(?:\.(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?))+$")
 
 
-EXPECTED_RULESET_ORDER = [
+REQUIRED_RULESET_PAIRS = {
     ("reject.list", "REJECT"),
     ("proxy.list", "PROXY"),
     ("direct.list", "DIRECT"),
-]
+}
 LAYOUT_MARKERS = {
     "layer_1": "# === Layer 1:",
     "layer_2": "# === Layer 2:",
@@ -40,7 +40,7 @@ LAYOUT_MARKERS = {
 
 
 def inspect_rule_layout(config_text: str, observed: list[dict]) -> tuple[dict, list[str]]:
-    """Enforce original rules -> REJECT/PROXY/DIRECT -> ASN/GeoIP -> FINAL."""
+    """Enforce original rules -> config-ordered RULE-SETs -> ASN/GeoIP -> FINAL."""
     lines = config_text.splitlines()
     positions: dict[str, int] = {}
     errors: list[str] = []
@@ -66,11 +66,13 @@ def inspect_rule_layout(config_text: str, observed: list[dict]) -> tuple[dict, l
             errors.append("routing layer markers are not in original-rules -> rule-sets -> ASN/GeoIP -> FINAL order")
 
     observed_order = [(item["file"], item["policy"]) for item in sorted(observed, key=lambda x: x["line"])]
-    if observed_order != EXPECTED_RULESET_ORDER:
+    if len(observed_order) != 3 or set(observed_order) != REQUIRED_RULESET_PAIRS:
         errors.append(
-            "external RULE-SET order must be exactly REJECT -> PROXY -> DIRECT; "
+            "external RULE-SET references must contain each managed file/policy pair exactly once; "
             f"observed={observed_order}"
         )
+    # The actual order in ss.conf is authoritative. It is recorded and used
+    # for precedence checks below; the validator must not impose a second order.
 
     ref_lines = [item["line"] for item in sorted(observed, key=lambda x: x["line"])]
     if all(key in positions for key in ("original_rules_end", "external_rulesets", "geoip_asn_start")):
@@ -121,7 +123,7 @@ def inspect_rule_layout(config_text: str, observed: list[dict]) -> tuple[dict, l
         errors.append("FINAL,PROXY must be the last active routing rule")
 
     layout = {
-        "expected_ruleset_order": [f"{file}:{policy}" for file, policy in EXPECTED_RULESET_ORDER],
+        "expected_ruleset_order": "authoritative order from shadowrocket/ss.conf",
         "observed_ruleset_order": [f"{file}:{policy}" for file, policy in observed_order],
         "marker_lines": positions,
         "passed": not errors,

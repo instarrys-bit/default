@@ -22,14 +22,10 @@ on:
   pull_request:
     paths:
       - "shadowrocket/ss.conf"
-      - "scripts/validate_config.py"
-      - "scripts/select_domain_rules.py"
-      - "scripts/collect_domains.py"
-      - "scripts/deterministic_review.py"
-      - "scripts/build_rulesets.py"
-      - "scripts/domain_rule_engine.py"
+      - "scripts/**"
       - "sources/domain_sources.json"
       - "sources/policy.json"
+      - "sources/protected_domains.json"
       - "tests/**"
       - ".github/workflows/validate-config.yml"
 

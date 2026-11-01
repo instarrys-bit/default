@@ -6,6 +6,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from deterministic_review import inspect, parse_skip_proxy, first_ruleset_line
 from domain_rule_engine import RuleIndex, load_domain_rules, inspect_suffix_scope
+from audit_ruleset_config_overlap import prior_rule_lines
+from sync_ruleset_config_conflicts import classify_rule
 from source_registry import validate_registry
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -34,6 +36,8 @@ def main():
         raise ValueError("current source snapshot does not match enabled source registry entries")
     protected=json.loads(PROTECTED.read_text(encoding="utf-8"))
     base=CONFIG.read_text(encoding="utf-8")
+    config_prior_rules=prior_rule_lines(base)
+    config_skip_proxy=parse_skip_proxy(base)
     rules,conditional,_=load_domain_rules(CONFIG)
     index=RuleIndex(rules)
     lifecycle_state=json.loads(LIFECYCLE_STATE.read_text(encoding="utf-8")) if LIFECYCLE_STATE.exists() else {}
@@ -154,6 +158,21 @@ def main():
             raise ValueError("approved record source count below minimum: "+domain)
         if any(item.get(key)!="PASS" for key in ("duplicate_check","conflict_check","risk_check")):
             raise ValueError("approved record failed a local safety gate: "+domain)
+        # Apply the exact same config-scope gate to newly approved candidates
+        # before they enter the queue or published output. This is broader than
+        # policy-conflict detection: same-policy scope overlaps are also excluded.
+        candidate_line=("DOMAIN-SUFFIX," if scope=="suffix_candidate" else "DOMAIN,")+domain
+        scope_result=classify_rule(policy,candidate_line,config_prior_rules,config_skip_proxy)
+        if scope_result["status"]!="NO_CONFLICT":
+            held+=1
+            baseline_conflict_holds.append({
+                "domain":domain,"policy":policy,"scope":scope,
+                "status":scope_result["status"],"reason":scope_result["reason"],
+                "config_line":scope_result.get("config_line"),
+                "config_rule":scope_result.get("config_rule"),
+                "effective_config_policy":scope_result.get("effective_policy")
+            })
+            continue
         if scope=="suffix_candidate":
             local_status,reason=inspect_suffix_scope(
                 domain,policy,index,conditional,protected,parse_skip_proxy(base),first_ruleset_line(base)
