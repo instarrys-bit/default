@@ -134,14 +134,14 @@
   },
   "managed_config_guard": {
     "path": "shadowrocket/ss.conf",
-    "approved_git_blob_sha": "1e8763924c0ce4cf9d1c0ac93676105645302e9c",
+    "approved_git_blob_sha": "c469ea4203cf0d0e35c0d3a1864e85a05bfb74f1",
     "immutable": true,
     "description": "Authoritative user-managed Shadowrocket config baseline. Read-only for automation; derived rule audits must evaluate against this file.",
     "last_user_approved_baseline_update": {
-      "previous_blob_sha": "4b9f3a60522322b820139774bf65cab9f54ca7c9",
-      "new_blob_sha": "1e8763924c0ce4cf9d1c0ac93676105645302e9c",
-      "reason": "用户于 2026-11-02 明确授权清理主配置中的完全重复规则及被前置策略完全覆盖的失效规则；仅清理 [Rule] 规则行，未调整其他配置段。",
-      "actor": "user-approved via ChatGPT",
+      "previous_blob_sha": "1e8763924c0ce4cf9d1c0ac93676105645302e9c",
+      "new_blob_sha": "c469ea4203cf0d0e35c0d3a1864e85a05bfb74f1",
+      "reason": "User authorized autonomous P1 maintenance in conversation on 2026-11-02: scope existing domain-specific UDP blocks to UDP destination port 443 and remove a small selected set of generic TLD routing heuristics. DNS and unrelated configuration sections remain unchanged.",
+      "actor": "user-authorized via ChatGPT",
       "registered_at": "2026-11-02"
     }
   }
