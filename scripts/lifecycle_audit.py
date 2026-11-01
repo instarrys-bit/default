@@ -91,7 +91,7 @@ def main():
             if not line.startswith(("DOMAIN,","DOMAIN-SUFFIX,")): continue
             domain=line.split(",",1)[1].lower().strip(".")
             identity=rid(policy.upper(),line)
-            if not protected(domain,protected_cfg) and identity not in restored_keys:
+            if not restore_only and not protected(domain,protected_cfg) and identity not in restored_keys:
                 work.append((identity,policy,line,domain))
     def run(item):
         key,policy,line,domain=item
@@ -148,9 +148,12 @@ def main():
     lines += ["## Selectable restore IDs"]+[f"- {x['id']} | {x['policy']} | {x['rule']}" for x in options]
     lines += ["","To restore, run the workflow manually and paste selected IDs into restore_ids."]
     (REPORT/"latest.md").write_text("\n".join(lines)+"\n")
-    from lifecycle_gate import complete_lifecycle_review
-    done=complete_lifecycle_review(ROOT,timestamp)
-    print(json.dumps({"status":"completed","deleted":len(deleted),"restored":restored,"state":done},ensure_ascii=False))
+    if due:
+        from lifecycle_gate import complete_lifecycle_review
+        done=complete_lifecycle_review(ROOT,timestamp)
+    else:
+        done=state
+    print(json.dumps({"status":"completed" if due else "restore_only","deleted":len(deleted),"restored":restored,"state":done},ensure_ascii=False))
 
 
 if __name__=="__main__":
