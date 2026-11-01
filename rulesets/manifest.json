@@ -215,11 +215,11 @@
   "approved_total": 18,
   "held_total": 960,
   "status_count": {
-    "ALREADY_COVERED": 379,
+    "ALREADY_COVERED": 377,
     "APPROVED": 18,
     "CONFLICT": 43,
     "POLICY_CONFLICT": 43,
-    "REVIEW": 485,
+    "REVIEW": 487,
     "RISK_HOLD": 10
   },
   "deterministic_review_progress": {
@@ -227,11 +227,11 @@
     "approved_total": 18,
     "held_total": 960,
     "status_count": {
-      "ALREADY_COVERED": 379,
+      "ALREADY_COVERED": 377,
       "APPROVED": 18,
       "CONFLICT": 43,
       "POLICY_CONFLICT": 43,
-      "REVIEW": 485,
+      "REVIEW": 487,
       "RISK_HOLD": 10
     }
   },
