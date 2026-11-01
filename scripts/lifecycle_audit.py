@@ -117,8 +117,12 @@ def main():
                 rules[policy].discard(line)
                 entry={"id":key,"policy":policy,"rule":line,"domain":domain,"removed_at":timestamp,"first_confirmed_at":history[-2]["checked_at"],"reason":"Two independent DoH resolvers returned NXDOMAIN for A and AAAA on observations at least 30 days apart"}
                 archive["items"].append(entry); deleted.append(entry); archived.add(key)
-        elif result["status"]=="DNS_EXISTS_OR_NODATA": active+=1
-        else: unknown+=1
+        elif result["status"]=="DNS_EXISTS_OR_NODATA":
+            active+=1
+            history=[]
+        else:
+            unknown+=1
+            history=[]
         obs.setdefault("items",{})[key]={"policy":policy,"rule":line,"domain":domain,"last_status":result["status"],"history":history,"checked_at":timestamp}
 
     for policy in POLICIES:
