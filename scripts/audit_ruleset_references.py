@@ -67,6 +67,7 @@ def inspect(config_text: str, manifest: dict, ruleset_dir: Path = RULESETS) -> d
         errors.append("manifest outputs do not match the three managed RULE-SET files")
 
     file_stats = {}
+    domain_owners = {}
     manifest_counts = manifest.get("rule_count", {})
     for filename, policy in POLICY_BY_FILE.items():
         path = ruleset_dir / filename
@@ -79,14 +80,32 @@ def inspect(config_text: str, manifest: dict, ruleset_dir: Path = RULESETS) -> d
             errors.append(f"{filename} contains {len(lines)-len(domains)} non-exact DOMAIN entries")
         if len(domains) != len(set(domains)):
             errors.append(f"{filename} contains duplicate domains")
+        for domain in sorted(set(domains)):
+            domain_owners.setdefault(domain, []).append(policy)
         if len(lines) != int(manifest_counts.get(policy, -1)):
             errors.append(f"{filename} line count {len(lines)} differs from manifest {policy} count {manifest_counts.get(policy)}")
         file_stats[filename] = {"policy": policy, "line_count": len(lines), "valid_domain_lines": len(domains)}
 
+    cross_file_duplicates = []
+    cross_policy_conflicts = []
+    for domain, policies in sorted(domain_owners.items()):
+        if len(policies) > 1:
+            item = {"domain": domain, "policies": policies}
+            cross_file_duplicates.append(item)
+            if len(set(policies)) > 1:
+                cross_policy_conflicts.append(item)
+    for item in cross_file_duplicates:
+        if len(set(item["policies"])) > 1:
+            errors.append("cross-file policy conflict for " + item["domain"] + ": " + ", ".join(item["policies"]))
+        else:
+            errors.append("cross-file duplicate domain under same policy: " + item["domain"] + " (" + item["policies"][0] + ")")
+
     return {
-        "schema_version": 1, "config_path": "shadowrocket/ss.conf",
+        "schema_version": 2, "config_path": "shadowrocket/ss.conf",
         "config_rule_set_reference_count": len(refs), "references": observed,
         "managed_output_files": sorted(expected_files), "file_stats": file_stats,
+        "cross_file_duplicates": cross_file_duplicates,
+        "cross_policy_conflicts": cross_policy_conflicts,
         "errors": errors, "passed": not errors,
         "scope": "read-only; does not edit config, DNS, MITM, or RULE-SET references"
     }
@@ -104,6 +123,8 @@ def main() -> int:
     lines += [f"- line {x['line']}: {x['file']} -> {x['policy']}" for x in report["references"]]
     lines += ["", "## Generated file counts", ""]
     lines += [f"- {name}: {stats['line_count']} lines; policy {stats['policy']}" for name, stats in sorted(report["file_stats"].items())]
+    lines += ["", "## Cross-file duplicates", ""]
+    lines += ["- " + x["domain"] + ": " + ", ".join(x["policies"]) for x in report["cross_file_duplicates"]] or ["- None"]
     lines += ["", "## Findings", ""]
     lines += [f"- {x}" for x in report["errors"]] or ["- No inconsistencies detected."]
     lines += ["", "Read-only audit; no config or RULE-SET references were changed.", ""]
