@@ -1,6 +1,6 @@
 # Automated source discovery
 
-- Candidate repositories retained: **195**
+- Candidate repositories retained: **197**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
@@ -381,6 +381,15 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [MattMin/shadowrocket-config](https://github.com/MattMin/shadowrocket-config)
+
+- Description: shadowrocket config and rules
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/MattMin/shadowrocket-config/master/shadowrocket.conf
+
 ### [MrDevAnony/DynX-AntiBan-Domains](https://github.com/MrDevAnony/DynX-AntiBan-Domains)
 
 - Description: Allowed domains to change GeoLocation in AntiBan dns (DynX) for iranian users.
@@ -730,7 +739,7 @@
 ### [blackmatrix7/ios_rule_script](https://github.com/blackmatrix7/ios_rule_script)
 
 - Description: 分流规则、重写写规则及脚本。
-- Stars: 28495; archived: False; fork: False
+- Stars: 28496; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 2
 - Curated seed links: 2
@@ -992,6 +1001,14 @@
 - README / curated seed rule-list links: 1
 - Curated seed links: 0
   - https://raw.githubusercontent.com/haokun-1/shadowrocket-rules/main/dist/Shadowrocket_CN_Direct_AdBlock.conf
+
+### [haoyan-yam/proxy-rules](https://github.com/haoyan-yam/proxy-rules)
+
+- Description: Stash + Shadowrocket 统一分流规则
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
 
 ### [harmonsir/Shadowrocket-rules](https://github.com/harmonsir/Shadowrocket-rules)
 
@@ -1627,7 +1644,7 @@
 ### [v2fly/domain-list-community](https://github.com/v2fly/domain-list-community)
 
 - Description: Community managed domain list. Generate geosite.dat for V2Ray.
-- Stars: 9804; archived: False; fork: False
+- Stars: 9805; archived: False; fork: False
 - Search queries: geosite domain
 - README / curated seed rule-list links: 0
 - Curated seed links: 0

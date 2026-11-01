@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-01T13:06:16.479082+00:00",
+  "audited_at": "2026-11-01T13:45:42.960785+00:00",
   "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
   "source_count": 6,
   "audited_source_count": 6,
@@ -30,8 +30,8 @@
       ]
     }
   ],
-  "candidate_source_count": 40,
-  "candidate_readme_audited_count": 40,
+  "candidate_source_count": 41,
+  "candidate_readme_audited_count": 41,
   "candidate_shared_reference_pairs": [
     {
       "repositories": [
@@ -229,6 +229,16 @@
     {
       "repositories": [
         "Goahead-zfc/shadowrocket-rules",
+        "MattMin/shadowrocket-config"
+      ],
+      "shared_readme_references": [
+        "blackmatrix7/ios_rule_script"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Goahead-zfc/shadowrocket-rules",
         "Seanyim/tailrocket"
       ],
       "shared_readme_references": [
@@ -549,6 +559,46 @@
         "felixonmars/dnsmasq-china-list",
         "gfwlist/gfwlist",
         "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "MattMin/shadowrocket-config",
+        "Seanyim/tailrocket"
+      ],
+      "shared_readme_references": [
+        "blackmatrix7/ios_rule_script"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "MattMin/shadowrocket-config",
+        "bgpeer/rules"
+      ],
+      "shared_readme_references": [
+        "blackmatrix7/ios_rule_script"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "MattMin/shadowrocket-config",
+        "crayonluffy/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "blackmatrix7/ios_rule_script"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "MattMin/shadowrocket-config",
+        "kaonimei/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_readme_references": [
+        "blackmatrix7/ios_rule_script"
       ],
       "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
     },
@@ -1346,6 +1396,21 @@
         "xtls/xray-core"
       ],
       "reference_count": 15,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "MattMin/shadowrocket-config",
+      "readme_url": "https://raw.githubusercontent.com/MattMin/shadowrocket-config/master/README.md",
+      "readme_sha256": "7a085fee05d8c28645bf7f4392bade126b34580e7ca999da51bd955c79887d07",
+      "discovery_readme_sha256": "7a085fee05d8c28645bf7f4392bade126b34580e7ca999da51bd955c79887d07",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "blackmatrix7/ios_rule_script",
+        "iab0x00/proxyrules",
+        "tg-twilight/awavenue-ads-rule"
+      ],
+      "reference_count": 3,
       "lineage_status": "unverified",
       "status": "audited_reference_inventory"
     },
