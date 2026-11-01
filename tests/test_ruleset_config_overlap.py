@@ -4,7 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from audit_ruleset_config_overlap import audit, first_ruleset_line, match_candidate, prior_rule_lines
+from audit_ruleset_config_overlap import audit, first_ruleset_line, match_candidate, prior_rule_lines, skip_proxy_match
 
 
 class RulesetConfigOverlapTests(unittest.TestCase):
