@@ -23,6 +23,7 @@ from audit_ruleset_config_overlap import (
     parse_skip_proxy,
     match_candidate,
     skip_proxy_match,
+    scope_intersects,
 )
 
 
@@ -48,6 +49,52 @@ def classify_rule(policy: str, line: str, prior_rules: list[tuple[int, str]], sk
     policy = policy.upper()
     kind, domain, scope = parse_rule_line(policy, line)
     match = match_candidate(domain, policy, prior_rules, scope)
+
+    # Any provable exact/suffix scope intersection is excluded from external
+    # rule sets, even when the effective policy happens to be identical.
+    # The first-match result is retained as evidence; ss.conf remains read-only.
+    first_scope_overlap = None
+    for number, raw_rule in prior_rules:
+        fields = [part.strip() for part in raw_rule.split(",")]
+        if len(fields) >= 3 and fields[0].upper() in {"DOMAIN", "DOMAIN-SUFFIX"}:
+            if scope_intersects(scope, domain, fields[0].upper(), fields[1]):
+                first_scope_overlap = (number, raw_rule, fields[2].upper())
+                break
+    if first_scope_overlap:
+        number, raw_rule, raw_policy = first_scope_overlap
+        # Prefer an earlier conditional/keyword/regex match when the parser
+        # can identify one; otherwise record the first explicit scope overlap.
+        if match.get("line") is not None and match["line"] <= number:
+            config_line = match.get("line")
+            config_rule = match.get("rule")
+            effective_policy = match.get("effective_policy")
+            reason = match.get("reason", "Earlier first-match config rule intersects this scope")
+        else:
+            config_line = number
+            config_rule = raw_rule
+            effective_policy = raw_policy
+            reason = "External rule scope intersects an earlier exact/suffix rule in ss.conf; config wins by first-match order"
+        return {
+            "status": "CONFLICT",
+            "domain": domain,
+            "scope": scope,
+            "effective_policy": effective_policy,
+            "config_line": config_line,
+            "config_rule": config_rule,
+            "reason": reason,
+        }
+
+    bypass = skip_proxy_match(domain, skip_entries, scope)
+    if bypass:
+        return {
+            "status": "CONFLICT",
+            "domain": domain,
+            "scope": scope,
+            "effective_policy": "DIRECT",
+            "config_line": None,
+            "config_rule": "skip-proxy = " + bypass,
+            "reason": "External rule scope intersects ss.conf skip-proxy; config bypass takes precedence",
+        }
     if match["status"] == "CONFLICT":
         return {
             "status": "CONFLICT",
@@ -57,17 +104,6 @@ def classify_rule(policy: str, line: str, prior_rules: list[tuple[int, str]], sk
             "config_line": match.get("line"),
             "config_rule": match.get("rule"),
             "reason": match.get("reason", "Earlier user-config rule has a different effective policy"),
-        }
-    bypass = skip_proxy_match(domain, skip_entries, scope)
-    if policy != "DIRECT" and bypass:
-        return {
-            "status": "CONFLICT",
-            "domain": domain,
-            "scope": scope,
-            "effective_policy": "DIRECT",
-            "config_line": None,
-            "config_rule": "skip-proxy = " + bypass,
-            "reason": "User-config skip-proxy bypasses this domain before the proxy/reject rule-set can apply",
         }
     if match["status"] in {"POTENTIAL_MATCH", "CONDITIONAL_POTENTIAL", "UNRESOLVED_RULE"}:
         return {
@@ -232,7 +268,9 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         restored.append({"id": restore_id, "policy": policy, "rule": line, "destination": destination})
         active_by_key.pop((policy, line), None)
 
-    # Remove definite conflicts from published lists; ambiguous matches are retained and reported.
+    # Remove every provable scope overlap from published lists, regardless of whether
+    # the external policy matches ss.conf. Ambiguous keyword/regex/conditional
+    # overlaps remain held for reporting rather than speculative deletion.
     for policy in POLICIES:
         for line in sorted(list(rule_lines[policy])):
             if (policy, line) in active_by_key:
@@ -312,7 +350,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "restored": restored,
         "restore_refused": restore_refused,
         "active_archive_count": sum(1 for x in archive["items"] if not x.get("restored_at")),
-        "policy": "Only provable first-match policy conflicts and non-DIRECT skip-proxy conflicts are removed. Same-policy overlaps are retained. Keyword/regex/conditional or otherwise unresolved overlaps are retained and reported; no speculative deletion is allowed.",
+        "policy": "Every provable exact/suffix scope overlap with ss.conf or skip-proxy is removed from published and queued external rules, regardless of whether the policy matches. The earliest applicable config rule is recorded as precedence evidence. Keyword/regex/conditional overlaps that cannot be proven from static domain scope are retained and reported; no speculative deletion is allowed.",
         "errors": [],
     }
     report_json.parent.mkdir(parents=True, exist_ok=True)
@@ -350,7 +388,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
     lines.extend("- Refused " + x["id"] + ": " + x["reason"] for x in restore_refused)
     lines.extend([
         "",
-        "The script never writes to shadowrocket/ss.conf. A config-conflict archive entry is not restored automatically; restoration is opt-in and rechecked against the current config.",
+        "The script never writes to shadowrocket/ss.conf. A config-scope archive entry is not restored automatically; restoration is opt-in and rechecked against all exact/suffix overlaps and skip-proxy entries.",
         "",
     ])
     report_md.parent.mkdir(parents=True, exist_ok=True)
