@@ -1,14 +1,5 @@
 {
   "schema_version": 1,
-  "canonical_config": {
-    "path": "sources/baseline/ss.conf",
-    "approved_git_blob_sha": "bd3a08178c5ecf314420d00ca2b5d6dbb85974c7",
-    "uploaded_sha256": "f2a2a91d4853ea83fb55d406659c1cde4f3d29092a9e08d4a3a80e00015446c8",
-    "uploaded_file": "ss(1).conf",
-    "uploaded_bytes": 90490,
-    "uploaded_lines": 2402,
-    "immutable": true
-  },
   "allowed_policy_outputs": [
     "DIRECT",
     "PROXY",
@@ -131,7 +122,7 @@
       "Single-label root suffix entries are excluded; duplicate entries are deduplicated"
     ],
     "review_status": "A single-source candidate or a candidate below the two-publisher corroboration threshold remains REVIEW; cross-policy conflicts and critical-function risks are held.",
-    "publish_gate": "No automatic writes to original or canonical baseline. Derived output only.",
+    "publish_gate": "No automatic writes to the user-managed shadowrocket/ss.conf. Derived rule-set outputs only.",
     "decision_engine": "deterministic-domain-audit/4.0",
     "confidence_interpretation": "Operational evidence score, not a statistical probability or guarantee of safe blocking.",
     "publication_mode": "deterministic-evidence-reviewed-derived-rulesets",
