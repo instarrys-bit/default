@@ -45,7 +45,7 @@ jobs:
 
       - name: Compile and run deterministic review tests
         run: |
-          python3 -m py_compile scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/import_request_observations.py
+          python3 -m py_compile scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/import_request_observations.py
           python3 -m unittest discover -s tests -v
 
       - name: Discover candidate source repositories (non-activating)
@@ -94,6 +94,11 @@ jobs:
           python3 scripts/audit_ruleset_references.py
           cat reports/ruleset-reference-audit.md >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Audit candidate overlap with user config precedence (read-only)
+        run: |
+          python3 scripts/audit_ruleset_config_overlap.py
+          cat reports/ruleset-config-overlap-audit.md >> "$GITHUB_STEP_SUMMARY"
+
       - name: Audit managed config drift (read-only)
         run: |
           python3 scripts/audit_config_drift.py
@@ -113,6 +118,8 @@ jobs:
             reports/config-drift-audit.json \
             reports/ruleset-reference-audit.md \
             reports/ruleset-reference-audit.json \
+            reports/ruleset-config-overlap-audit.md \
+            reports/ruleset-config-overlap-audit.json \
             reports/source-lineage-audit.json \
             reports/source-discovery.md \
             reports/source-assessment.md \
