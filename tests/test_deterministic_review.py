@@ -173,7 +173,7 @@ class SourceIntegrityTests(unittest.TestCase):
             "api.example.com": "exact_candidate",
             "example.org": "suffix_candidate",
         })
-        self.assertEqual(parse_shadowrocket_domain_rules(b"DOMAIN-SUFFIX,cn\\nDOMAIN-SUFFIX,example.cn\\n", {"classification":"DIRECT"}), {"example.cn":"suffix_candidate"})
+        self.assertEqual(parse_shadowrocket_domain_rules(b"DOMAIN-SUFFIX,cn\nDOMAIN-SUFFIX,example.cn\n", {"classification":"DIRECT"}), {"example.cn":"suffix_candidate"})
 
     def test_shadowrocket_parser_rejects_explicit_policy_mismatch(self):
         from collect_domains import parse_shadowrocket_domain_rules
@@ -199,10 +199,10 @@ class SourceIntegrityTests(unittest.TestCase):
         self.assertEqual(parse_domain_list(b'example.com')['example.com'], 'exact_candidate')
 
     def test_domain_list_deduplicates_repeated_entries(self):
-        self.assertEqual(parse_domain_list(b'example.com\\nexample.com\\n'), {'example.com':'exact_candidate'})
+        self.assertEqual(parse_domain_list(b'example.com\nexample.com\n'), {'example.com':'exact_candidate'})
 
     def test_domain_list_skips_single_label_artifacts(self):
-        self.assertEqual(parse_domain_list(b'example.com\\nalibaba\\n'), {'example.com':'exact_candidate'})
+        self.assertEqual(parse_domain_list(b'example.com\nalibaba\n'), {'example.com':'exact_candidate'})
 
     def test_small_source_change_is_allowed(self):
         added, removed = check_source_delta(set('abcdefghij'), set('abcdefghiX'), 'test', ratio=0.10, minimum_absolute=2)
