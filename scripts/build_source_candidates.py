@@ -142,7 +142,7 @@ def build_matrix(assessments: dict, lineage: dict) -> dict:
     return {
         "schema_version": 1,
         "candidate_count": len(candidates),
-        "activation_count": sum(1 for x in candidates if x["activation_eligible"]),
+        "eligible_candidate_count": sum(1 for x in candidates if x["activation_eligible"]),
         "minimum_independent_publishers": 2,
         "policy_summary": by_policy,
         "same_policy_domain_overlap": overlap_pairs,
@@ -157,7 +157,7 @@ def render_report(data: dict) -> str:
         "",
         "This report combines parser compatibility, explicit policy evidence and README reference overlap. It does not activate sources.",
         "",
-        "| Policy | Candidate publishers | Verified publishers | Candidate files | Ready |",
+        "| Policy | Candidate publishers | Eligible publishers | Candidate files | Ready |",
         "|---|---:|---:|---:|---|",
     ]
     for policy, summary in data["policy_summary"].items():
@@ -197,7 +197,7 @@ def render_report(data: dict) -> str:
     rows.extend([
         "## Safety rule",
         "",
-        "Publisher count is repository-level, not file-level: several files from one repository count as one publisher. Domain overlap uses salted-free truncated SHA-256 fingerprints, not raw domain names. Near-identical source sets are grouped as one possible publisher lineage; high overlap is a correlation warning, not proof of common ancestry. README hyperlinks are only possible shared-reference signals. No candidate is activated without verified lineage and strong policy evidence.",
+        "Publisher count is repository-level, not file-level: several files from one repository count as one publisher. Domain overlap uses salted-free truncated SHA-256 fingerprints, not raw domain names. Near-identical source sets are grouped as one possible publisher lineage; high overlap is a correlation warning, not proof of common ancestry. README hyperlinks are only possible shared-reference signals. Lineage gaps and shared README references are provenance/correlation warnings, not vetoes. Strong policy evidence, non-archived publishers, independent-publisher checks and domain-level safety gates remain mandatory. This matrix does not auto-edit the active source registry.",
         "",
     ])
     return "\n".join(rows)
@@ -212,7 +212,7 @@ def main() -> int:
     REPORT.write_text(render_report(result), encoding="utf-8")
     print(json.dumps({
         "candidate_publishers": result["candidate_count"],
-        "activation_count": result["activation_count"],
+        "eligible_candidate_count": result["eligible_candidate_count"],
         "by_policy": result["policy_summary"],
     }, ensure_ascii=False, sort_keys=True))
     return 0
