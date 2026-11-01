@@ -7,7 +7,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "sources/policy.json"
+      - "sources/policy.json"\n      - "shadowrocket/ss.conf"
       - "sources/domain_sources.json"
       - "sources/protected_domains.json"
       - "scripts/**"

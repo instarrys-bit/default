@@ -16,7 +16,7 @@ POLICIES = {"DIRECT", "PROXY", "REJECT"}
 KNOWN_TYPES = {
     "AND", "OR", "NOT", "DOMAIN", "DOMAIN-SUFFIX", "DOMAIN-KEYWORD",
     "IP-CIDR", "IP-CIDR6", "IP-ASN", "GEOIP", "RULE-SET",
-    "USER-AGENT", "FINAL",
+    "USER-AGENT", "URL-REGEX", "FINAL",
 }
 DOMAIN_RE = re.compile(
     r"^(?=.{1,253}$)[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?"
@@ -105,6 +105,18 @@ def validate(path):
         if rule_type in {"AND", "OR", "NOT"}:
             if not CONDITIONAL_RE.fullmatch(stripped):
                 errors.append((line_no, "invalid conditional-rule structure", raw))
+            continue
+
+        if rule_type == "URL-REGEX":
+            if len(fields) != 3:
+                errors.append((line_no, "URL-REGEX must have pattern and policy fields", raw))
+            else:
+                try:
+                    re.compile(fields[1])
+                except re.error as exc:
+                    errors.append((line_no, f"invalid URL-REGEX pattern: {exc}", raw))
+                if fields[2].upper() not in POLICIES:
+                    errors.append((line_no, "invalid URL-REGEX policy", raw))
             continue
 
         if rule_type == "FINAL":
