@@ -44,6 +44,13 @@ def check_source_delta(previous,current,label,ratio=MAX_CHANGE_RATIO,minimum_abs
         raise ValueError(f"{label} source drift exceeds automatic safety limit: {len(added)} added + {len(removed)} removed = {changed}; limit {allowed}")
     return added,removed
 
+def bootstrap_source_domains(source,source_id,bootstrapped_sources,domains,added):
+    """Seed a primary source once even when a snapshot already exists from an earlier run."""
+    if source.get("bootstrap_enqueue",False) and source.get("role")=="primary_candidate_source" and source_id not in bootstrapped_sources:
+        bootstrapped_sources.add(source_id)
+        return set(domains),True
+    return set(added),False
+
 def parse_domain_list(data,allow_leading_dot=False):
     result={}
     for number,raw in enumerate(data.decode("utf-8-sig").splitlines(),1):
@@ -188,7 +195,8 @@ def read_snapshot(source_id):
 
 def main():
     cfg=json.loads(SOURCES.read_text(encoding="utf-8"))
-    buf=json.loads(BUFFER.read_text(encoding="utf-8")) if BUFFER.exists() else {"candidates":[]}
+    buf=json.loads(BUFFER.read_text(encoding="utf-8")) if BUFFER.exists() else {"candidates":[],"bootstrapped_sources":[]}
+    bootstrapped_sources=set(buf.get("bootstrapped_sources",[]))
     by_id=validate_registry(cfg)
     enabled=[source for source in cfg["sources"] if source.get("enabled",True) is not False]
     if not enabled:
@@ -207,14 +215,15 @@ def main():
             raise ValueError(f"{sid} unexpectedly small or truncated: {len(domains)} < {minimum}")
         previous=read_snapshot(sid)
         if previous is None:
-            added=set(domains) if source.get("bootstrap_enqueue",False) and source.get("role")=="primary_candidate_source" else set()
+            added=set()
             removed=set()
             bootstrap=True
         else:
             added,removed=check_source_delta(previous,set(domains),sid)
             bootstrap=False
+        added,bootstrap_enqueued=bootstrap_source_domains(source,sid,bootstrapped_sources,set(domains),added)
         source_data[sid]={"source":source,"sha256":digest,"domains":domains,"previous":previous}
-        deltas[sid]={"added":added,"removed":removed,"bootstrap":bootstrap}
+        deltas[sid]={"added":added,"removed":removed,"bootstrap":bootstrap,"bootstrap_enqueued":bootstrap_enqueued}
     queue={x["domain"]:x for x in buf.get("candidates",[])}
     # Only explicitly designated candidate sources enqueue new entries.
     for sid,info in source_data.items():
@@ -266,13 +275,13 @@ def main():
     for sid,info in source_data.items():
         path=snapshot_path(sid)
         path.write_text("\n".join(sorted(info["domains"]))+"\n",encoding="utf-8")
-    BUFFER.write_text(json.dumps({"schema_version":2,"updated_at":now,"candidates":list(queue.values())},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    BUFFER.write_text(json.dumps({"schema_version":2,"updated_at":now,"bootstrapped_sources":sorted(bootstrapped_sources),"candidates":list(queue.values())},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     OUTPUT.parent.mkdir(parents=True,exist_ok=True)
     OUTPUT.write_text(json.dumps({
         "schema_version":2,
         "collected_at":now,
         "source_count":len(source_data),
-        "sources":[{"id":sid,"sha256":info["sha256"],"entries":len(info["domains"]),"classification":info["source"]["classification"],"role":info["source"].get("role"),"lineage_status":info["source"]["lineage_status"],"upstream_repositories":info["source"].get("upstream_repositories",[]),"new_entries":len(deltas[sid]["added"]),"removed_entries":len(deltas[sid]["removed"]),"baseline_initialized":deltas[sid]["bootstrap"]} for sid,info in sorted(source_data.items())],
+        "sources":[{"id":sid,"sha256":info["sha256"],"entries":len(info["domains"]),"classification":info["source"]["classification"],"role":info["source"].get("role"),"lineage_status":info["source"]["lineage_status"],"upstream_repositories":info["source"].get("upstream_repositories",[]),"new_entries":len(deltas[sid]["added"]),"removed_entries":len(deltas[sid]["removed"]),"baseline_initialized":deltas[sid]["bootstrap"],"bootstrap_enqueued":deltas[sid]["bootstrap_enqueued"]} for sid,info in sorted(source_data.items())],
         "candidate_count":len(rows),
         "policy_conflict_count":sum(1 for row in rows if row["classification"]=="CONFLICT"),
         "candidates":rows

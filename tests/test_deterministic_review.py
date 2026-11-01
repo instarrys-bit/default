@@ -5,7 +5,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
 from deterministic_review import DOMAIN_RE, evidence_gate, validate_evidence
-from collect_domains import check_source_delta, parse_adblock, parse_domain_list, parse_source
+from collect_domains import bootstrap_source_domains, check_source_delta, parse_adblock, parse_domain_list, parse_source
 from source_registry import validate_registry
 
 class SourceRegistryTests(unittest.TestCase):
@@ -211,6 +211,23 @@ class SourceIntegrityTests(unittest.TestCase):
 
     def test_domain_list_skips_single_label_artifacts(self):
         self.assertEqual(parse_domain_list(b'example.com\nalibaba\n'), {'example.com':'exact_candidate'})
+
+    def test_primary_bootstrap_seeds_existing_snapshot_once(self):
+        source={"role":"primary_candidate_source","bootstrap_enqueue":True}
+        seen=set()
+        domains={"one.example","two.example"}
+        first,seeded=bootstrap_source_domains(source,"primary",seen,domains,set())
+        self.assertTrue(seeded)
+        self.assertEqual(first,domains)
+        second,seeded_again=bootstrap_source_domains(source,"primary",seen,domains,set())
+        self.assertFalse(seeded_again)
+        self.assertEqual(second,set())
+
+    def test_corroboration_source_does_not_seed_candidates(self):
+        source={"role":"independent_policy_corroboration","bootstrap_enqueue":True}
+        queued,seeded=bootstrap_source_domains(source,"corroborator",set(),{"one.example"},set())
+        self.assertFalse(seeded)
+        self.assertEqual(queued,set())
 
     def test_small_source_change_is_allowed(self):
         added, removed = check_source_delta(set('abcdefghij'), set('abcdefghiX'), 'test', ratio=0.10, minimum_absolute=2)
