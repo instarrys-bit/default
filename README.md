@@ -52,6 +52,8 @@
 
 审核账本：`sources/domain_reviews.json`。发布统计：`rulesets/manifest.json`。主配置 `shadowrocket/ss.conf` 与只读基线 `sources/baseline/ss.conf` 始终不被此流程修改。
 
+每次构建还会在 `rulesets/manifest.json` 的 `rule_lifecycle` 中记录 DIRECT、PROXY、REJECT 三类规则集各自的前后数量、增加/移除数量、前后 SHA-256 和最多 10 条变化样例。该记录只用于审计动态变化，不改变证据门槛；输出目录严格只允许 `direct.list`、`proxy.list`、`reject.list` 三个策略文件。
+
 ## 验证边界
 
 静态验证可以检查来源一致性、格式、规则覆盖和构建结果，但不能代替 Shadowrocket 设备端测试。任何新规则集都应先单独订阅、观察关键 App 和系统服务，再考虑长期使用。
