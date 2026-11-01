@@ -14,7 +14,11 @@ class ConfigDriftTests(unittest.TestCase):
         self.assertEqual(parsed["MITM"]["enable"], ["true"])
 
     def test_rule_lines_preserve_regex_commas(self):
-        parsed = parse_config("[Rule]\\nURL-REGEX,^http://host/path\\?,REJECT\\n[URL Rewrite]\\n^http://host/a,b _ reject\\n")
+        parsed = parse_config(r"""[Rule]
+URL-REGEX,^http://host/path\\?,REJECT
+[URL Rewrite]
+^http://host/a,b _ reject
+""")
         self.assertEqual(parsed["Rule"]["__raw_lines__"], ["URL-REGEX,^http://host/path\\?,REJECT"])
         self.assertEqual(parsed["URL Rewrite"]["__raw_lines__"], ["^http://host/a,b _ reject"])
 
