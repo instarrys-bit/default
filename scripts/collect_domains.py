@@ -137,7 +137,7 @@ def parse_quantumult_domain_rules(data,source):
         kind=fields[0].upper()
         if kind not in {"HOST","HOST-SUFFIX"}:
             continue
-        if len(fields)!=3:
+        if len(fields)<3:
             raise ValueError(f"malformed {kind} rule at line {number}")
         domain=fields[1].lower().rstrip(".")
         if not DOMAIN_RE.fullmatch(domain):

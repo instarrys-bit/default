@@ -175,6 +175,14 @@ class SourceIntegrityTests(unittest.TestCase):
         })
         self.assertEqual(parse_shadowrocket_domain_rules(b"DOMAIN-SUFFIX,cn\nDOMAIN-SUFFIX,example.cn\n", {"classification":"DIRECT"}), {"example.cn":"suffix_candidate"})
 
+    def test_quantumult_parser_accepts_trailing_rule_options(self):
+        from collect_domains import parse_quantumult_domain_rules
+        parsed=parse_quantumult_domain_rules(
+            b"host-suffix,ptt.cc,OutSide,force-remote-dns\\n",
+            {"classification":"PROXY","policy_action_map":{"OUTSIDE":"PROXY"}},
+        )
+        self.assertEqual(parsed,{"ptt.cc":"suffix_candidate"})
+
     def test_shadowrocket_parser_rejects_explicit_policy_mismatch(self):
         from collect_domains import parse_shadowrocket_domain_rules
         with self.assertRaises(ValueError):
