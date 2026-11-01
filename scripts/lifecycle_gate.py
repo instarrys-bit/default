@@ -44,10 +44,12 @@ def update_lifecycle_state(root: Path = ROOT, now: str | None = None) -> dict:
     count = count_published_rules(root)
     high_water = max(int(previous.get("published_high_water_mark", previous.get("published_rule_count", 0))), count)
     next_milestone = int(previous.get("next_milestone", MILESTONE))
-    due_milestones = []
-    while high_water >= next_milestone:
-        due_milestones.append(next_milestone)
-        next_milestone += MILESTONE
+    due_milestones = list(previous.get("pending_milestones", []))
+    milestone = next_milestone
+    while high_water >= milestone:
+        if milestone not in due_milestones:
+            due_milestones.append(milestone)
+        milestone += MILESTONE
     last_monthly = previous.get("last_monthly_review_at")
     monthly_due = False
     if count >= MAX_PUBLISHED:
@@ -64,6 +66,7 @@ def update_lifecycle_state(root: Path = ROOT, now: str | None = None) -> dict:
         "published_rule_count": count,
         "published_high_water_mark": high_water,
         "next_milestone": next_milestone,
+        "pending_milestones": due_milestones,
         "due_milestones": due_milestones,
         "monthly_review_interval_days": MONTH_DAYS,
         "monthly_review_due": monthly_due,
@@ -76,6 +79,26 @@ def update_lifecycle_state(root: Path = ROOT, now: str | None = None) -> dict:
     }
     directory.mkdir(parents=True, exist_ok=True)
     state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return state
+
+
+def complete_lifecycle_review(root: Path = ROOT, now: str | None = None) -> dict:
+    directory = root / "rulesets"
+    state_path = directory / "lifecycle_state.json"
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+    timestamp = now or datetime.now(timezone.utc).isoformat()
+    pending = sorted({int(x) for x in state.get("pending_milestones", [])})
+    if pending:
+        state["next_milestone"] = max(pending) + MILESTONE
+        state["pending_milestones"] = []
+        state["due_milestones"] = []
+    if state.get("monthly_review_due") or int(state.get("published_rule_count", 0)) >= MAX_PUBLISHED:
+        state["last_monthly_review_at"] = timestamp
+    state["last_successful_review_at"] = timestamp
+    state["monthly_review_due"] = False
+    state["status"] = "capacity_queue_only" if int(state.get("published_rule_count", 0)) >= MAX_PUBLISHED else "normal_incremental"
+    state["updated_at"] = timestamp
+    state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
     return state
 
 
