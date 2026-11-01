@@ -295,7 +295,7 @@
 ### [Isaaker/Spotify-AdsList](https://github.com/Isaaker/Spotify-AdsList)
 
 - Description: A simple list to block all Spotify advertising domains | [ℹ️ Project Archived]
-- Stars: 271; archived: True; fork: False
+- Stars: 270; archived: True; fork: False
 - Search queries: adblock domain list
 - README / curated seed rule-list links: 0
 - Curated seed links: 0

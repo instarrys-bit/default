@@ -226,10 +226,10 @@
   },
   "rule_count": {
     "DIRECT": 15,
-    "PROXY": 63,
+    "PROXY": 64,
     "REJECT": 10
   },
-  "published_rule_total": 88,
+  "published_rule_total": 89,
   "max_published_rules": 30000,
   "queued_rule_total": 0,
   "baseline_conflict_hold_count": 0,
@@ -237,33 +237,25 @@
   "pending_queue": "rulesets/pending_queue.json",
   "rule_lifecycle": {
     "DIRECT": {
-      "previous_count": 11,
+      "previous_count": 15,
       "current_count": 15,
-      "added_count": 4,
+      "added_count": 0,
       "removed_count": 0,
-      "previous_sha256": "dac77fed1aad6b5486e91daebe291d1ba7e2255fe51624cbbecca15babe2b708",
+      "previous_sha256": "c9222fcb981ebea636d4766cec628bd7e0a34b58093da6ea47083d8ee8413074",
       "current_sha256": "c9222fcb981ebea636d4766cec628bd7e0a34b58093da6ea47083d8ee8413074",
-      "added_sample": [
-        "DOMAIN-SUFFIX,127.net",
-        "DOMAIN-SUFFIX,hdslb.com",
-        "DOMAIN-SUFFIX,hitv.com",
-        "DOMAIN-SUFFIX,xhscdn.com"
-      ],
+      "added_sample": [],
       "removed_sample": [],
       "baseline_initialized": false
     },
     "PROXY": {
-      "previous_count": 59,
-      "current_count": 63,
-      "added_count": 4,
+      "previous_count": 63,
+      "current_count": 64,
+      "added_count": 1,
       "removed_count": 0,
-      "previous_sha256": "b677591c85b7102717b49556d38e983a15d294e3849f20fee1393491fb3bb2fb",
-      "current_sha256": "20f3441fdf474be809e4aa3d1c84cbd6ef4748f69f95e46616c40211b2c48bbb",
+      "previous_sha256": "20f3441fdf474be809e4aa3d1c84cbd6ef4748f69f95e46616c40211b2c48bbb",
+      "current_sha256": "8347013121571ebef8a7d59f29cdcbe7c5878a94410693f0eab385f60b3ae1d5",
       "added_sample": [
-        "DOMAIN-SUFFIX,amazonaws.com",
-        "DOMAIN-SUFFIX,ggpht.com",
-        "DOMAIN-SUFFIX,gstatic.com",
-        "DOMAIN-SUFFIX,hockeyapp.net"
+        "DOMAIN-SUFFIX,edgekey.net"
       ],
       "removed_sample": [],
       "baseline_initialized": false
@@ -281,8 +273,8 @@
     }
   },
   "reviewed_total": 978,
-  "approved_total": 88,
-  "held_total": 890,
+  "approved_total": 89,
+  "held_total": 889,
   "status_count": {
     "ALREADY_COVERED": 354,
     "APPROVED": 91,
@@ -293,8 +285,8 @@
   },
   "deterministic_review_progress": {
     "candidate_total": 978,
-    "approved_total": 88,
-    "held_total": 890,
+    "approved_total": 89,
+    "held_total": 889,
     "status_count": {
       "ALREADY_COVERED": 354,
       "APPROVED": 91,

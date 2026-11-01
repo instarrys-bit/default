@@ -1,6 +1,6 @@
 # External domain source audit
 
-- Audit time: 2026-11-01T21:52:02.112318+00:00
+- Audit time: 2026-11-01T21:53:19.763083+00:00
 - Source: https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list
 - Git blob SHA-1: `ec23c2d1280ea4a59717816716b8ccb569dac624`
 - Candidate entries: 56516
