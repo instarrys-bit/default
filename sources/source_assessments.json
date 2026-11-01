@@ -3,9 +3,9 @@
   "assessment_count": 50,
   "drift_summary": {
     "new_source_files": 0,
-    "changed_source_files": 0,
-    "added_domain_count": 0,
-    "removed_domain_count": 0,
+    "changed_source_files": 2,
+    "added_domain_count": 2,
+    "removed_domain_count": 2,
     "policy_changes": 0
   },
   "activation_count": 0,
@@ -300008,16 +300008,16 @@
     },
     {
       "url": "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http.txt",
-      "sha256": "796fae272f1ae67939f78a71179f9d34958a48c1f276a6d0481bb9d27b465f8a",
-      "bytes": 19213,
-      "substantive_lines": 1013,
+      "sha256": "4e7689feea22bacdef502c02d03a24b0ddde3ba3bd954120d5940126f5662e1b",
+      "bytes": 18414,
+      "substantive_lines": 974,
       "parser_candidate": "unsupported_or_too_small",
       "exact_domain_count": 0,
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 1,
       "domain_fingerprints": [
-        "7cef06426738579f80b9e3e048cd4afe"
+        "11f832a41ce302140da3fcb25b761098"
       ],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -300033,16 +300033,18 @@
       "stars": 145,
       "archived": false,
       "drift": {
-        "status": "unchanged",
-        "added_domain_count": 0,
-        "removed_domain_count": 0,
-        "policy_changed": false
+        "status": "domain_set_changed",
+        "added_domain_count": 1,
+        "removed_domain_count": 1,
+        "policy_changed": false,
+        "previous_sha256": "796fae272f1ae67939f78a71179f9d34958a48c1f276a6d0481bb9d27b465f8a",
+        "current_sha256": "4e7689feea22bacdef502c02d03a24b0ddde3ba3bd954120d5940126f5662e1b"
       }
     },
     {
       "url": "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https.txt",
-      "sha256": "fb91d6c8bca8505c76a324a5815c79109799b98263a4c649a840828da9b59651",
-      "bytes": 1944,
+      "sha256": "04e1b35bd6174dbf17ec353f1a1c77194d5bccf67d702af455ab1ad5b483a22e",
+      "bytes": 1932,
       "substantive_lines": 101,
       "parser_candidate": "unsupported_or_too_small",
       "exact_domain_count": 0,
@@ -300050,7 +300052,7 @@
       "adblock_domain_count": 0,
       "domain_only_count": 1,
       "domain_fingerprints": [
-        "7cef06426738579f80b9e3e048cd4afe"
+        "11f832a41ce302140da3fcb25b761098"
       ],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -300066,10 +300068,12 @@
       "stars": 145,
       "archived": false,
       "drift": {
-        "status": "unchanged",
-        "added_domain_count": 0,
-        "removed_domain_count": 0,
-        "policy_changed": false
+        "status": "domain_set_changed",
+        "added_domain_count": 1,
+        "removed_domain_count": 1,
+        "policy_changed": false,
+        "previous_sha256": "fb91d6c8bca8505c76a324a5815c79109799b98263a4c649a840828da9b59651",
+        "current_sha256": "04e1b35bd6174dbf17ec353f1a1c77194d5bccf67d702af455ab1ad5b483a22e"
       }
     },
     {

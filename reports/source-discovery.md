@@ -1,6 +1,6 @@
 # Automated source discovery
 
-- Candidate repositories retained: **194**
+- Candidate repositories retained: **195**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
@@ -1395,6 +1395,14 @@
 - Description: A bash script to update DNS entries direct in INWX domain list
 - Stars: 0; archived: False; fork: False
 - Search queries: direct domain list
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
+### [qianzhouyang/shadowrocket-rules](https://github.com/qianzhouyang/shadowrocket-rules)
+
+- Description: Not supplied
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 

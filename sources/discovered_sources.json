@@ -12,7 +12,7 @@
     "Surge direct proxy domain-set rules",
     "Quantumult X direct proxy domain rules"
   ],
-  "candidate_count": 194,
+  "candidate_count": 195,
   "candidates": [
     {
       "repository": "34wolf/shadowrocket-rules",
@@ -57,10 +57,10 @@
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list": [
           "DIRECT"
         ],
-        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list": [
+        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list": [
+        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list": [
           "PROXY"
         ]
       },
@@ -763,6 +763,9 @@
         "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/profile.conf"
       ],
       "readme_policy_claims": {
+        "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/china.conf": [
+          "DIRECT"
+        ],
         "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/profile-next.conf": [
           "DIRECT"
         ],
@@ -770,9 +773,6 @@
           "DIRECT",
           "PROXY",
           "REJECT"
-        ],
-        "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/china.conf": [
-          "DIRECT"
         ]
       },
       "search_queries": [
@@ -839,6 +839,11 @@
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list"
       ],
       "readme_policy_claims": {
+        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/gfw.list": [
+          "DIRECT",
+          "PROXY",
+          "REJECT"
+        ],
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list": [
           "DIRECT",
           "PROXY",
@@ -846,11 +851,6 @@
         ],
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list": [
           "DIRECT"
-        ],
-        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/gfw.list": [
-          "DIRECT",
-          "PROXY",
-          "REJECT"
         ]
       },
       "seeded_source_urls": [
@@ -1521,8 +1521,8 @@
       "html_url": "https://github.com/Vann-Dev/proxy-list",
       "description": "List of public proxies, and checked to some domain like Google, Facebook, Twitter",
       "default_branch": "main",
-      "updated_at": "2026-11-01T05:19:59Z",
-      "pushed_at": "2026-11-01T05:19:56Z",
+      "updated_at": "2026-11-01T13:01:41Z",
+      "pushed_at": "2026-11-01T13:01:38Z",
       "stars": 145,
       "archived": false,
       "fork": false,
@@ -2521,9 +2521,6 @@
         "https://raw.githubusercontent.com/gatework/surge-rules/release/proxy.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt": [
-          "PROXY"
-        ],
         "https://raw.githubusercontent.com/gatework/surge-rules/release/direct.txt": [
           "DIRECT",
           "PROXY",
@@ -2533,6 +2530,9 @@
           "DIRECT",
           "PROXY",
           "REJECT"
+        ],
+        "https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt": [
+          "PROXY"
         ]
       },
       "seeded_source_urls": [
@@ -3672,6 +3672,25 @@
       "seeded_source_urls": []
     },
     {
+      "repository": "qianzhouyang/shadowrocket-rules",
+      "html_url": "https://github.com/qianzhouyang/shadowrocket-rules",
+      "description": null,
+      "default_branch": "main",
+      "updated_at": "2026-11-01T13:00:41Z",
+      "pushed_at": "2026-11-01T13:00:37Z",
+      "stars": 0,
+      "archived": false,
+      "fork": false,
+      "license": null,
+      "readme_sha256": "682d8603c1730404b5e81f174614b9d684219fe2985e159038e2762ccb4f018a",
+      "rule_list_urls": [],
+      "readme_policy_claims": {},
+      "search_queries": [
+        "shadowrocket rules"
+      ],
+      "discovered_at": "2026-11-01T13:02:11.956701+00:00"
+    },
+    {
       "repository": "quantum-fox/OpenWRT-VM-PROXY-ads",
       "html_url": "https://github.com/quantum-fox/OpenWRT-VM-PROXY-ads",
       "description": "Списки рекламных и трекерных доменов (RU и мир), сборка в Xray geosite. | Ad and tracker domain lists (Russian and global) for OpenWRT-VM-PROXY, built into Xray/v2ray geosite files.",
@@ -4075,40 +4094,40 @@
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/torrent.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/netflix.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/tools.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
-          "PROXY"
-        ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/telegram.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/torrent.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
           "PROXY"
         ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/netflix.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
+          "PROXY"
+        ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/tools.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt": [
           "PROXY"
         ]
       },
@@ -4271,8 +4290,8 @@
       "html_url": "https://github.com/vialan-art/My-Shadowrocket-Rules",
       "description": null,
       "default_branch": "main",
-      "updated_at": "2026-11-01T05:18:51Z",
-      "pushed_at": "2026-11-01T05:18:46Z",
+      "updated_at": "2026-11-01T12:57:55Z",
+      "pushed_at": "2026-11-01T12:57:50Z",
       "stars": 0,
       "archived": false,
       "fork": false,
