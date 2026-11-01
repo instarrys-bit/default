@@ -36,6 +36,8 @@ def main():
         raise ValueError("current source snapshot does not match enabled source registry entries")
     protected=json.loads(PROTECTED.read_text(encoding="utf-8"))
     base=CONFIG.read_text(encoding="utf-8")
+    config_prior_rules=prior_rule_lines(base)
+    config_skip_proxy=parse_skip_proxy(base)
     rules,conditional,_=load_domain_rules(CONFIG)
     index=RuleIndex(rules)
     lifecycle_state=json.loads(LIFECYCLE_STATE.read_text(encoding="utf-8")) if LIFECYCLE_STATE.exists() else {}
@@ -160,7 +162,7 @@ def main():
         # before they enter the queue or published output. This is broader than
         # policy-conflict detection: same-policy scope overlaps are also excluded.
         candidate_line=("DOMAIN-SUFFIX," if scope=="suffix_candidate" else "DOMAIN,")+domain
-        scope_result=classify_rule(policy,candidate_line,prior_rule_lines(base),parse_skip_proxy(base))
+        scope_result=classify_rule(policy,candidate_line,config_prior_rules,config_skip_proxy)
         if scope_result["status"]!="NO_CONFLICT":
             held+=1
             baseline_conflict_holds.append({
