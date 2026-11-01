@@ -259,7 +259,7 @@ def main():
             "conflict_check":"PASS" if status not in {"CONFLICT","POLICY_CONFLICT","REVIEW"} else status,
             "risk_check":"VETO" if status=="RISK_HOLD" else "PASS",
             "decision_engine":"deterministic-domain-audit/4.0","reviewed_at":now,
-            "config_baseline":"uploaded-immutable-baseline"
+            "config_authority":"shadowrocket/ss.conf"
         }
         previous_record=review_map.get(domain)
         previous_policy=str(previous_record.get("policy","")).upper() if previous_record else ""
