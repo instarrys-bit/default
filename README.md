@@ -108,3 +108,18 @@ The candidate matrix is informational and non-activating. It compares domain-set
 ## Automated policy-source overlap audit
 
 `scripts/audit_policy_source_overlap.py` refetches policy-labelled candidate feeds, normalizes domain-only entries, unions files by publisher, calculates same-policy overlap, and reports domains that appear under conflicting policies. Its outputs are `sources/policy_source_overlap.json` and `reports/policy-source-overlap.md`. This is a correlation and conflict signal, not proof of common ancestry or correctness; it never activates sources or publishes rules.
+
+
+## Deterministic source admission
+
+The source-candidate matrix is consumed by `scripts/auto_activate_sources.py`. Admission is fully deterministic and uses no AI review. It requires strong explicit policy evidence, a non-archived publisher, a supported parser, at least 100 unique domains, an unchanged second observation, and a fresh fetch whose SHA-256 matches the assessed bytes. The exact bytes are then parsed with the production collector before the source registry is changed. Parser failures, drift, weak policy claims and archived publishers remain held as candidates. Lineage uncertainty and shared README references are recorded as warnings rather than automatic vetoes. Newly admitted sources are persisted in the source registry and activation log.
+
+## Rule publication capacity and lifecycle
+
+The three published lists are DIRECT, PROXY and REJECT only. Publication has a hard ceiling of 30,000 unique rules across all three lists. Approved additions that do not fit are stored in `rulesets/pending_queue.json`; the queue is persistent and is promoted in priority/FIFO order when capacity becomes available. Existing published entries are retained by normal builds. Only a lifecycle deletion recorded in `rulesets/deletion_archive.json` can remove an existing entry.
+
+A lifecycle audit is scheduled for every 5,000-rule published-count milestone (5,000, 10,000, 15,000, 20,000, 25,000 and 30,000). A milestone remains pending until its audit completes successfully. Once the published list reaches 30,000, the system also performs a lifecycle audit every 30 days. The 30,000 cap pauses publication, not candidate discovery, deterministic review, or queue storage.
+
+Lifecycle deletion is deliberately conservative. A rule is eligible only after both Cloudflare and Google DNS-over-HTTPS resolvers return NXDOMAIN for both A and AAAA queries on two separate observations at least 30 days apart, with no intervening DNS recovery. Resolver errors, timeouts, missing evidence, source disappearance, lineage changes, or a single NXDOMAIN observation never authorize deletion. Major technology, cloud, CDN, identity, and Chinese platform suffixes are protected from automatic deletion. All removals are archived with the original policy, rule, timestamps and evidence in `rulesets/deletion_archive.json`; a per-run report is written to `reports/lifecycle/latest.md` and `latest.json`.
+
+To restore a removed entry, copy its ID from the report's selectable recovery list and start the GitHub Actions workflow manually with that ID (or comma-separated IDs) in the `restore_ids` input. A restoration is returned to its original policy when space exists; otherwise it enters the front of the pending queue. The restoration is not re-deleted during the same run. The user-managed `shadowrocket/ss.conf` remains read-only throughout.
