@@ -102,7 +102,7 @@ def main():
         prior=obs.get("items",{}).get(key,{})
         history=list(prior.get("history",[]))
         if result["status"]=="CONFIRMED_NXDOMAIN_OBSERVATION":
-            if not history or history[-1].get("status")!=result["status"]:
+            if not history or history[-1].get("checked_at","")[:10]!=timestamp[:10]:
                 history.append({"checked_at":timestamp,"status":result["status"],"resolver_status":result["resolver_status"]})
             eligible=False
             if len(history)>=2:
@@ -123,6 +123,14 @@ def main():
     obs_path.write_text(json.dumps(obs,ensure_ascii=False,indent=2)+"\n")
     archive_path.write_text(json.dumps(archive,ensure_ascii=False,indent=2)+"\n")
     queue_path.write_text(json.dumps(queue,ensure_ascii=False,indent=2)+"\n")
+    manifest_path=DIR/"manifest.json"
+    if manifest_path.exists():
+        manifest=json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["rule_count"]={p:sum(1 for line in rules[p] if line.startswith(("DOMAIN,","DOMAIN-SUFFIX,"))) for p in POLICIES}
+        manifest["published_rule_total"]=sum(manifest["rule_count"].values())
+        manifest["queued_rule_total"]=len(queue.get("items",[]))
+        manifest["lifecycle_last_audit_at"]=timestamp
+        manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\\n")
     REPORT.mkdir(parents=True,exist_ok=True)
     options=[{"id":x["id"],"policy":x["policy"],"rule":x["rule"],"removed_at":x["removed_at"]} for x in archive["items"] if not x.get("restored_at")]
     report={"created_at":timestamp,"triggered_milestones":state.get("due_milestones",[]),"monthly_review":state.get("monthly_review_due",False),"deleted":deleted,"active_or_nodata_count":active,"unknown_retained_count":unknown,"restored":restored,"restore_ids_not_found":missing,"restoration_options":options,"policy":"Only confirmed NXDOMAIN on both independent resolvers for A and AAAA, twice at least 30 days apart. Protected major-company suffixes are never auto-deleted. Resolver errors, missing evidence and source disappearance are retained."}
