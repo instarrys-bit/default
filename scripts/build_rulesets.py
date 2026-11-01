@@ -211,7 +211,7 @@ def main():
         "max_published_rules":30000,
         "queued_count":len(queue_map),
         "items":[queue_map[key] for key in sorted(queue_map)]
-    },ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+    },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     rule_lifecycle={}
     for policy in sorted(POLICIES):
         output_path=OUT/(policy.lower()+".list")
