@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-01T06:40:51.206113+00:00",
+  "audited_at": "2026-11-01T07:57:54.341719+00:00",
   "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
   "source_count": 6,
   "audited_source_count": 6,
@@ -30,9 +30,59 @@
       ]
     }
   ],
-  "candidate_source_count": 26,
-  "candidate_readme_audited_count": 26,
+  "candidate_source_count": 30,
+  "candidate_readme_audited_count": 30,
   "candidate_shared_reference_pairs": [
+    {
+      "repositories": [
+        "CyberWei922/shadowrocket-proxy-rules",
+        "Seanyim/tailrocket"
+      ],
+      "shared_readme_references": [
+        "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "CyberWei922/shadowrocket-proxy-rules",
+        "corneliusztw/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "CyberWei922/shadowrocket-proxy-rules",
+        "hrd201/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "CyberWei922/shadowrocket-proxy-rules",
+        "shankangk/AntiLeak-AdBlock"
+      ],
+      "shared_readme_references": [
+        "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "CyberWei922/shadowrocket-proxy-rules",
+        "sweet0416/shadowrocket-personal-rules"
+      ],
+      "shared_readme_references": [
+        "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
     {
       "repositories": [
         "GMOogway/shadowrocket-rules",
@@ -343,6 +393,16 @@
     {
       "repositories": [
         "Seanyim/tailrocket",
+        "corneliusztw/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Seanyim/tailrocket",
         "crayonluffy/shadowrocket-rules"
       ],
       "shared_readme_references": [
@@ -370,6 +430,16 @@
         "gfwlist/gfwlist",
         "lowertop/shadowrocket",
         "loyalsoldier/cn-blocked-domain"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Seanyim/tailrocket",
+        "shankangk/AntiLeak-AdBlock"
+      ],
+      "shared_readme_references": [
+        "johnshall/shadowrocket-adblock-rules-forever"
       ],
       "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
     },
@@ -431,6 +501,57 @@
       ],
       "shared_readme_references": [
         "loyalsoldier/v2ray-rules-dat"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "corneliusztw/shadowrocket-rules",
+        "hrd201/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "corneliusztw/shadowrocket-rules",
+        "shankangk/AntiLeak-AdBlock"
+      ],
+      "shared_readme_references": [
+        "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "corneliusztw/shadowrocket-rules",
+        "sweet0416/shadowrocket-personal-rules"
+      ],
+      "shared_readme_references": [
+        "en/actions",
+        "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "corneliusztw/shadowrocket-rules",
+        "tkgeeked/clash-rules-for-shadowrocket"
+      ],
+      "shared_readme_references": [
+        "loyalsoldier/clash-rules"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "corneliusztw/shadowrocket-rules",
+        "wcr1996/shadowrocket_rules"
+      ],
+      "shared_readme_references": [
+        "loyalsoldier/clash-rules"
       ],
       "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
     },
@@ -520,6 +641,16 @@
     {
       "repositories": [
         "hrd201/shadowrocket-rules",
+        "shankangk/AntiLeak-AdBlock"
+      ],
+      "shared_readme_references": [
+        "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "hrd201/shadowrocket-rules",
         "sweet0416/shadowrocket-personal-rules"
       ],
       "shared_readme_references": [
@@ -545,6 +676,16 @@
       ],
       "shared_readme_references": [
         "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "shankangk/AntiLeak-AdBlock",
+        "sweet0416/shadowrocket-personal-rules"
+      ],
+      "shared_readme_references": [
+        "johnshall/shadowrocket-adblock-rules-forever"
       ],
       "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
     },
@@ -587,6 +728,19 @@
         "clash-fx/cn-apps-direct"
       ],
       "reference_count": 2,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "CyberWei922/shadowrocket-proxy-rules",
+      "readme_url": "https://raw.githubusercontent.com/CyberWei922/shadowrocket-proxy-rules/main/README.md",
+      "readme_sha256": "0c8d594392b93837566da57222ffd2aa5f42568c252fd937ba001e6517f793fd",
+      "discovery_readme_sha256": "0c8d594392b93837566da57222ffd2aa5f42568c252fd937ba001e6517f793fd",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "reference_count": 1,
       "lineage_status": "unverified",
       "status": "audited_reference_inventory"
     },
@@ -751,6 +905,17 @@
       "status": "audited_reference_inventory"
     },
     {
+      "repository": "abclq/shadowrocket-rules",
+      "readme_url": "https://raw.githubusercontent.com/abclq/shadowrocket-rules/main/README.md",
+      "readme_sha256": "f0fa8f6efb3995224493e9ed2bce7631b0d606d62ba0d238846e21d39da36ede",
+      "discovery_readme_sha256": "f0fa8f6efb3995224493e9ed2bce7631b0d606d62ba0d238846e21d39da36ede",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [],
+      "reference_count": 0,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
       "repository": "bgpeer/rules",
       "readme_url": "https://raw.githubusercontent.com/bgpeer/rules/main/README.md",
       "readme_sha256": "b2eefa50d80b90dcff94899596726aa74544502dd49837854d530d81146275ac",
@@ -775,6 +940,21 @@
       "readme_changed_since_discovery": false,
       "referenced_repositories": [],
       "reference_count": 0,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "corneliusztw/shadowrocket-rules",
+      "readme_url": "https://raw.githubusercontent.com/corneliusztw/shadowrocket-rules/main/README.md",
+      "readme_sha256": "ee70092c9c0d399214134e8a6a02bc44115dc177e0df199eeafd2ab85e886a85",
+      "discovery_readme_sha256": "ee70092c9c0d399214134e8a6a02bc44115dc177e0df199eeafd2ab85e886a85",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "en/actions",
+        "johnshall/shadowrocket-adblock-rules-forever",
+        "loyalsoldier/clash-rules"
+      ],
+      "reference_count": 3,
       "lineage_status": "unverified",
       "status": "audited_reference_inventory"
     },
@@ -884,6 +1064,19 @@
         "v2fly/domain-list-community"
       ],
       "reference_count": 4,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "shankangk/AntiLeak-AdBlock",
+      "readme_url": "https://raw.githubusercontent.com/shankangk/AntiLeak-AdBlock/main/README.md",
+      "readme_sha256": "6b383980f4fbc371db82b70c37cd328a139e085be2f8ddbd69acd41c23fa7ac8",
+      "discovery_readme_sha256": "6b383980f4fbc371db82b70c37cd328a139e085be2f8ddbd69acd41c23fa7ac8",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "reference_count": 1,
       "lineage_status": "unverified",
       "status": "audited_reference_inventory"
     },

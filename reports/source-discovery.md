@@ -1,6 +1,6 @@
 # Automated source discovery
 
-- Candidate repositories retained: **165**
+- Candidate repositories retained: **174**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
@@ -130,6 +130,15 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [CyberWei922/shadowrocket-proxy-rules](https://github.com/CyberWei922/shadowrocket-proxy-rules)
+
+- Description: Not supplied
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/CyberWei922/shadowrocket-proxy-rules/main/dist/sr_proxy_banad_custom.conf
+
 ### [DNSBunker/NRD](https://github.com/DNSBunker/NRD)
 
 - Description: A daily updated list of newly registered domains from the past 14 and 30 days for blocking, monitoring and analysis.
@@ -171,6 +180,14 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [FakeHipper/Hipper-Proxy-Rules](https://github.com/FakeHipper/Hipper-Proxy-Rules)
+
+- Description: Shadowrocket 与 Mihomo 公开规则框架；节点凭据保留本地，GitHub Actions 核验并发布更新。
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
 ### [GMOogway/shadowrocket-rules](https://github.com/GMOogway/shadowrocket-rules)
 
 - Description: 小火箭规则🚀，小火箭模块，小火箭配置，shadowrocket规则，shadowrocket rules，最全面的直连（DIRECT）、代理（PROXY）、屏蔽（REJECT）规则，自动构建，每日更新
@@ -185,6 +202,14 @@
 - Description: Geosite to Surge rule converter  Upstream: https://github.com/v2fly/domain-list-community
 - Stars: 3; archived: False; fork: False
 - Search queries: geosite domain
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
+### [GarlandQian/rule-foundry-release](https://github.com/GarlandQian/rule-foundry-release)
+
+- Description: Generated proxy rule-set artifacts for Mihomo, Surge, Loon, Quantumult X, Egern, and Shadowrocket.
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
@@ -332,6 +357,14 @@
 - Description: Allowed domains to change GeoLocation in AntiBan dns (DynX) for iranian users.
 - Stars: 87; archived: False; fork: False
 - Search queries: proxy domain list
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
+### [NZNL31/Shadowrocket-Ad-DNS-Leak-Rules](https://github.com/NZNL31/Shadowrocket-Ad-DNS-Leak-Rules)
+
+- Description: Shadowrocket 规则，Ad广告过滤兼容DNS信息保护。
+- Stars: 31; archived: False; fork: False
+- Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
@@ -509,6 +542,15 @@
 - Curated seed links: 0
   - https://raw.githubusercontent.com/aaakul/cf-cn-ip-list/main/List/cf_cn_ip.txt
 
+### [abclq/shadowrocket-rules](https://github.com/abclq/shadowrocket-rules)
+
+- Description: Shadowrocket 线上分流规则（自建补丁版）— 修好 QUIC/UDP 漏代理 + 补齐 hark 等未收录域名，国内可直连拉取
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/abclq/shadowrocket-rules/main/sr-lazy.conf
+
 ### [ahmedronyfaisal/business-listing-directory-framework-2026](https://github.com/ahmedronyfaisal/business-listing-directory-framework-2026)
 
 - Description: Technical SEO inventory of 150+ high-authority business listing directories for 2026. A systematic framework for building domain authority and search integrity.
@@ -623,7 +665,7 @@
 ### [blackmatrix7/ios_rule_script](https://github.com/blackmatrix7/ios_rule_script)
 
 - Description: 分流规则、重写写规则及脚本。
-- Stars: 28494; archived: False; fork: False
+- Stars: 28493; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 2
 - Curated seed links: 2
@@ -709,6 +751,15 @@
 - Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
+
+### [corneliusztw/shadowrocket-rules](https://github.com/corneliusztw/shadowrocket-rules)
+
+- Description: Not supplied
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/corneliusztw/shadowrocket-rules/main/sr_cnip.conf
 
 ### [crayonluffy/shadowrocket-rules](https://github.com/crayonluffy/shadowrocket-rules)
 
@@ -1059,6 +1110,14 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [mofanxt/shadowrocket-rules](https://github.com/mofanxt/shadowrocket-rules)
+
+- Description: 流量与 DNS 同一套规则分流。适用于 Shadowrocket 与 FlClash。  国内服务、系统更新和游戏下载走直连，社区、协作等服务走代理；DNS 也按同一套规则选择解析方式：国内域名用国内加密 DNS 获得就近线路，海外域名不经国内 DNS，减少污染与查询泄露。
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
 ### [mohavise/mohavise-adblock-core](https://github.com/mohavise/mohavise-adblock-core)
 
 - Description: Canonical adblock source pipeline that merges upstream blocklists, custom blocks, and allowlists into one clean domain list.
@@ -1222,6 +1281,16 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [shankangk/AntiLeak-AdBlock](https://github.com/shankangk/AntiLeak-AdBlock)
+
+- Description: Shadowrocket 防 DNS 泄露与广告过滤规则 | Anti-DNS-Leak & AdBlock rules with daily auto-update.
+- Stars: 1; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 2
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/shankangk/AntiLeak-AdBlock/main/output/Mini-AntiLeak.conf
+  - https://raw.githubusercontent.com/shankangk/AntiLeak-AdBlock/main/output/sr_ad_antileak.conf
+
 ### [shoaibdigitallogix/awesome-saas-directories](https://github.com/shoaibdigitallogix/awesome-saas-directories)
 
 - Description: A curated list of directories worth submitting your SaaS or AI tool to,  with domain rating, dofollow status, cost and review time. Verified monthly.
@@ -1289,6 +1358,14 @@
 - README / curated seed rule-list links: 1
 - Curated seed links: 0
   - https://raw.githubusercontent.com/sweet0416/shadowrocket-personal-rules/main/dist/shadowrocket_personal.conf
+
+### [sxpwxy/shadowrocket-rules](https://github.com/sxpwxy/shadowrocket-rules)
+
+- Description: Shadowrocket 多订阅分流：AI 独立出口、常规服务规则集与自动同步更新。
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
 
 ### [team-cloudchaser/domain-db](https://github.com/team-cloudchaser/domain-db)
 
@@ -1363,7 +1440,7 @@
 ### [v2fly/domain-list-community](https://github.com/v2fly/domain-list-community)
 
 - Description: Community managed domain list. Generate geosite.dat for V2Ray.
-- Stars: 9799; archived: False; fork: False
+- Stars: 9801; archived: False; fork: False
 - Search queries: geosite domain
 - README / curated seed rule-list links: 0
 - Curated seed links: 0

@@ -1,0 +1,236 @@
+{
+  "schema_version": 1,
+  "mode": "read_only",
+  "baseline_path": "sources/baseline/ss.conf",
+  "managed_path": "shadowrocket/ss.conf",
+  "baseline_sha256": "f2a2a91d4853ea83fb55d406659c1cde4f3d29092a9e08d4a3a80e00015446c8",
+  "managed_sha256": "165680967a319b9e8df630ba6fa4181c545c56aca94b7432cd8031080e5b2224",
+  "baseline_git_blob_sha": "bd3a08178c5ecf314420d00ca2b5d6dbb85974c7",
+  "managed_git_blob_sha": "6fd417b8d6c41f1e112014828e4849adc9be280c",
+  "managed_matches_registered_blob": false,
+  "managed_config_differs_from_baseline": true,
+  "difference_count": 23,
+  "dns_difference_count": 4,
+  "mitm_section_present": true,
+  "mitm_enabled": true,
+  "differences": [
+    {
+      "section": "General",
+      "key": "block-quic",
+      "kind": "added_key",
+      "baseline": null,
+      "managed": [
+        "all-proxy"
+      ]
+    },
+    {
+      "section": "General",
+      "key": "bypass-system",
+      "kind": "removed_key",
+      "baseline": [
+        "true"
+      ],
+      "managed": null
+    },
+    {
+      "section": "General",
+      "key": "compatibility-mode",
+      "kind": "added_key",
+      "baseline": null,
+      "managed": [
+        "3"
+      ]
+    },
+    {
+      "section": "General",
+      "key": "direct-dns-server",
+      "kind": "changed_value",
+      "baseline": [
+        "https://doh.pub/dns-query#no-h3, https://dns.alidns.com/dns-query#no-h3, https://sm2.doh.pub/dns-query#no-h3, https://doh.360.cn/dns-query#no-h3"
+      ],
+      "managed": [
+        "https://doh.pub/dns-query#no-h3, https://dns.alidns.com/dns-query#no-h3, https://sm2.doh.pub/dns-query#no-h3"
+      ]
+    },
+    {
+      "section": "General",
+      "key": "dns-server",
+      "kind": "changed_value",
+      "baseline": [
+        "https://dns.quad9.net/dns-query#proxy&no-h3, https://cloudflare-dns.com/dns-query#proxy&no-h3, https://dns.google/dns-query#proxy&no-h3"
+      ],
+      "managed": [
+        "https://dns.google/dns-query#proxy&ecs=114.114.114.0/24|2400:3200::/32&ecs-override=true&no-h3, https://dns.quad9.net/dns-query#proxy&no-h3, https://cloudflare-dns.com/dns-query#proxy&no-h3"
+      ]
+    },
+    {
+      "section": "General",
+      "key": "fallback-dns-server",
+      "kind": "changed_value",
+      "baseline": [
+        "https://cloudflare-dns.com/dns-query#proxy&no-h3, https://dns.google/dns-query#proxy&no-h3, https://dns.quad9.net/dns-query#proxy&no-h3"
+      ],
+      "managed": [
+        "https://doh.pub/dns-query#no-h3, https://dns.alidns.com/dns-query#no-h3"
+      ]
+    },
+    {
+      "section": "General",
+      "key": "proxy-dns-server",
+      "kind": "changed_value",
+      "baseline": [
+        "https://doh.pub/dns-query#no-h3, https://dns.alidns.com/dns-query#no-h3, https://sm2.doh.pub/dns-query#no-h3, https://doh.360.cn/dns-query#no-h3"
+      ],
+      "managed": [
+        "https://dns.quad9.net/dns-query#proxy&no-h3, https://dns.google/dns-query#proxy&no-h3, https://cloudflare-dns.com/dns-query#proxy&no-h3"
+      ]
+    },
+    {
+      "section": "Host",
+      "key": "8888.google",
+      "kind": "removed_key",
+      "baseline": [
+        "8.8.8.8"
+      ],
+      "managed": null
+    },
+    {
+      "section": "Host",
+      "key": "cloudflare-dns.com",
+      "kind": "removed_key",
+      "baseline": [
+        "1.1.1.1"
+      ],
+      "managed": null
+    },
+    {
+      "section": "Host",
+      "key": "dns.google",
+      "kind": "removed_key",
+      "baseline": [
+        "8.8.8.8"
+      ],
+      "managed": null
+    },
+    {
+      "section": "Host",
+      "key": "dns.google.com",
+      "kind": "removed_key",
+      "baseline": [
+        "8.8.8.8"
+      ],
+      "managed": null
+    },
+    {
+      "section": "Host",
+      "key": "dns.quad9.net",
+      "kind": "removed_key",
+      "baseline": [
+        "9.9.9.9"
+      ],
+      "managed": null
+    },
+    {
+      "section": "Host",
+      "key": "dns10.quad9.net",
+      "kind": "removed_key",
+      "baseline": [
+        "149.112.112.112"
+      ],
+      "managed": null
+    },
+    {
+      "section": "Host",
+      "key": "dns11.quad9.net",
+      "kind": "removed_key",
+      "baseline": [
+        "9.9.9.11"
+      ],
+      "managed": null
+    },
+    {
+      "section": "Host",
+      "key": "dns64.dns.google",
+      "kind": "removed_key",
+      "baseline": [
+        "8.8.8.8"
+      ],
+      "managed": null
+    },
+    {
+      "section": "Host",
+      "key": "dns9.quad9.net",
+      "kind": "removed_key",
+      "baseline": [
+        "9.9.9.9"
+      ],
+      "managed": null
+    },
+    {
+      "section": "Host",
+      "key": "doh.360.cn",
+      "kind": "removed_key",
+      "baseline": [
+        "101.226.4.6"
+      ],
+      "managed": null
+    },
+    {
+      "section": "Host",
+      "key": "one.one.one.one",
+      "kind": "removed_key",
+      "baseline": [
+        "1.1.1.1"
+      ],
+      "managed": null
+    },
+    {
+      "section": "MITM",
+      "key": "*",
+      "kind": "added_section",
+      "baseline": null,
+      "managed": null
+    },
+    {
+      "section": "Rule",
+      "key": "url-regex,^http:\\/\\/([0-9.]+|\\[[0-9a-fa-f:]+\\])\\/d(\\?dn",
+      "kind": "removed_key",
+      "baseline": [
+        "|$),REJECT"
+      ],
+      "managed": null
+    },
+    {
+      "section": "Rule",
+      "key": "url-regex,^http:\\/\\/([0-9.]+|\\[[0-9a-fa-f:]+\\])\\/fetch\\?dm",
+      "kind": "removed_key",
+      "baseline": [
+        ",REJECT"
+      ],
+      "managed": null
+    },
+    {
+      "section": "Rule",
+      "key": "url-regex,^http:\\/\\/[^\\/]+\\/multifetch\\?dms",
+      "kind": "removed_key",
+      "baseline": [
+        ",REJECT"
+      ],
+      "managed": null
+    },
+    {
+      "section": "URL Rewrite",
+      "key": "^http:\\/\\/([0-9.]+|\\[[0-9a-fa-f:]+\\])\\/d(\\?dn",
+      "kind": "removed_key",
+      "baseline": [
+        "|$) _ reject"
+      ],
+      "managed": null
+    }
+  ],
+  "limitations": [
+    "This report detects file-level configuration drift; it does not change the managed config.",
+    "Differences are observations, not automatic proof that a setting is wrong.",
+    "Static checks cannot verify runtime behavior inside Shadowrocket."
+  ]
+}

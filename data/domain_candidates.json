@@ -1,11 +1,136 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-01T06:40:48.078362+00:00",
+  "updated_at": "2026-11-01T07:57:50.798178+00:00",
   "bootstrapped_sources": [
     "acl4ssr-china-domain",
     "acl4ssr-proxy-lite"
   ],
   "candidates": [
+    {
+      "domain": "00cdn.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "10010.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "115.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "12306.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "126.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "126.net",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "127.net",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "13th.tech",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "163.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "163yun.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "1688.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "17173.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "178.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "17k.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "1e100.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "1password.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "21cn.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "2mdn.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "360.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "360buy.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "360buyimg.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "360doc.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "360kuai.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "360safe.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "36kr.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
     {
       "domain": "39d83s.com",
       "source_id": "sr-adblock-domain-lite",
@@ -14,11 +139,126 @@
       "first_seen": "2026-10-31T14:47:37.646707+00:00"
     },
     {
+      "domain": "3dmgame.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "423down.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "4399.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "4399pk.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "4sqi.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "5054399.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "51cto.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "51job.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "51jobcdn.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "56.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "58.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "71.am",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "71edge.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "8686c.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "88cdn.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "8teenxxx.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "95516.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "a-remad.qm989.com",
       "source_id": "sr-adblock-domain-lite",
       "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
       "source_entry_type": "exact_candidate",
       "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "a248.e.akamai.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "abchina.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "abercrombie.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "acfun.tv",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "acg.tv",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "acgvideo.com",
+      "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
       "domain": "activity-ag.awemeughun.com",
@@ -98,11 +338,21 @@
       "first_seen": "2026-10-31T14:47:37.646707+00:00"
     },
     {
+      "domain": "adguard.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "adlaunch.qingting.fm",
       "source_id": "sr-adblock-domain-lite",
       "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
       "source_entry_type": "exact_candidate",
       "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "adobedtm.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
       "domain": "ads-shopping.shouqianba.com",
@@ -203,486 +453,8 @@
       "first_seen": "2026-10-31T14:47:37.646707+00:00"
     },
     {
-      "domain": "amdc.m.youku.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "api-ad.kajicam.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "api.iqiyi.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "apis.alenable.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "apiv4-iyes.youku.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "business-cdn.shouji.sogou.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "business.msstatic.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "cdn-new-ad.wtzw.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "cr-status.iqiyi.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "data-hoisin.coocaa.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "ddfs-public.ddimg.mobi",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "dflow.bz.mgtv.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "encounter.bz.mgtv.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "floor.bz.mgtv.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "ggadoffline.miguvideo.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "ggic03.miguvideo.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "ggmk.miguvideo.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "ggx03.miguvideo.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "huyafile.msstatic.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "icloud-amap.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "kad.gotokeep.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "layer.bz.mgtv.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "livep.l.t002.ottcn.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "livewebbs2.msstatic.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "livewebbs2pcdn.msstatic.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "log.51wnl-cq.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "mob.bz.mgtv.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "msync-im1-vip6-std.easemob.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "pl.cp31.ott.cibntv.net",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "pp-cdnfile2pcdn.msstatic.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "r.51wnl-cq.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "rc-topic-api.bz.mgtv.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "richmanapi.jxedt.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "richmanmain.jxedt.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "richmanrules.jxedt.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "rttrack.ddxq.mobi",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "safebrowsing.g.applimg.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "trackercollect.ddxq.mobi",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "vip.bz.mgtv.com",
-      "source_id": "sr-adblock-domain-lite",
-      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
-      "source_entry_type": "exact_candidate",
-      "first_seen": "2026-10-31T14:47:37.646707+00:00"
-    },
-    {
-      "domain": "00cdn.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "10010.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "115.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "12306.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "126.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "126.net",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "127.net",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "13th.tech",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "163.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "163yun.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "1688.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "17173.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "178.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "17k.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "21cn.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "360.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "360buy.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "360buyimg.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "360doc.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "360kuai.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "360safe.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "36kr.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "3dmgame.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "423down.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "4399.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "4399pk.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "5054399.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "51cto.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "51job.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "51jobcdn.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "56.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "58.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "71.am",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "71edge.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "8686c.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "88cdn.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "95516.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "abchina.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "abercrombie.com",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "acfun.tv",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "acg.tv",
-      "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "acgvideo.com",
-      "source_id": "acl4ssr-china-domain",
+      "domain": "ahcdn.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -816,8 +588,108 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "amazon.co.jp",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "amazon.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "amazonaws.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "amdc.m.youku.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
       "domain": "amemv.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "amplitude.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "ampproject.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "android.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "anthropic.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "aolcdn.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "apache.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "api-ad.kajicam.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "api.iqiyi.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "apis.alenable.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "apiv4-iyes.youku.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "apkmirror.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "apkpure.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "app-measurement.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "app-measurement.net",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -826,13 +698,33 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "appspot.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "appvipshop.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "archive.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "armorgames.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "asklink.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "aspnetcdn.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -848,6 +740,21 @@
     {
       "domain": "autonavi.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "awsstatic.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "azureedge.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "azurewebsites.net",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -901,13 +808,33 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "bandwagonhost.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "baomitu.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "bbc.co",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "bbc.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "bcebos.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "bcvcdn.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -991,6 +918,11 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "bing.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "biqudu.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -1001,13 +933,68 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "bit.no.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "bitauto.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "bkrtx.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "blogcdn.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "blogger.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "blogsmithmedia.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "blogspot.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "blogspot.hk",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "blogspot.jp",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "bloomberg.cn",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "bloomberg.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "bokecc.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "bongacams.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1018,6 +1005,35 @@
     {
       "domain": "bosszhipin.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "box.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "btlibrary.me",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "business-cdn.shouji.sogou.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "business.msstatic.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "buzzsprout.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1081,6 +1097,16 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "c.gle",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "cachefly.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "camera360.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -1096,8 +1122,25 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "cdn-new-ad.wtzw.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "cdninstagram.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "cdnmama.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "cdnst.net",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1106,8 +1149,18 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "challenges.cloudflare.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "chaoxing.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "chaturbate.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1151,8 +1204,23 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "claude.ai",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "cloudcone.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "clouddn.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "cloudfront.net",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1201,6 +1269,16 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "comodoca.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "compose-spec.io",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "config.cmpassport.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -1214,6 +1292,13 @@
       "domain": "coolapkmarket.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "cr-status.iqiyi.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
     },
     {
       "domain": "csdn.net",
@@ -1231,8 +1316,35 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "d1q6f0aelx0por.cloudfront.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "d2wy8f7a9ursnm.cloudfront.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "d36jcksde1wxzq.cloudfront.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "dangdang.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "data-hoisin.coocaa.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "daum.net",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1241,9 +1353,33 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "ddfs-public.ddimg.mobi",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "dditscdn.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "deskconnect.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "dfcfw.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "dflow.bz.mgtv.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
     },
     {
       "domain": "dhrest.com",
@@ -1276,6 +1412,46 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "discord.co",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "discord.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "discord.gg",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "discord.media",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "discordapp.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "discordapp.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "disqus.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "disquscdn.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "dl.steam.clngaa.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -1288,6 +1464,21 @@
     {
       "domain": "dns.alidns.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "docker.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "docker.io",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "dockerhub.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1371,6 +1562,36 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "dropbox.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "dropboxapi.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "dropboxstatic.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "dropboxusercontent.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "dubox.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "duckduckgo.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "duokan.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -1411,8 +1632,33 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "edgecastcdn.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "edgekey.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "edgesrv.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "edgesuite.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "elastic.co",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "elastic.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1431,6 +1677,13 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "encounter.bz.mgtv.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
       "domain": "enrichgw.10010.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -1446,8 +1699,28 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "eurekavpt.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "ewqcxz.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "facebook.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "fanatical.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "fanbox.cc",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1458,6 +1731,31 @@
     {
       "domain": "fantasy.tv",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "fastmail.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "fb.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "fb.me",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "fbcdn.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "fbcdn.net",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1486,6 +1784,33 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "firebaseio.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "flickr.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "flipboard.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "floor.bz.mgtv.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "flzbcdn.xyz",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "foxmail.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -1501,6 +1826,16 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "g.co",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "gameloft.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "ganji.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -1508,6 +1843,16 @@
     {
       "domain": "ganjistatic1.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "garena.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "gcr.io",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1521,6 +1866,44 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "gfx.ms",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "ggadoffline.miguvideo.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "ggic03.miguvideo.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "ggmk.miguvideo.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "ggpht.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "ggx03.miguvideo.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
       "domain": "ghpym.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -1528,6 +1911,41 @@
     {
       "domain": "gifshow.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "github.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "github.io",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "githubapp.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "githubassets.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "githubusercontent.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "gitlab.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "gitlab.io",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1541,8 +1959,38 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "gongm.in",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "goo.gl",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "googleapis.cn",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "googleapis.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "got001.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "gstatic.cn",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "gstatic.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1553,6 +2001,26 @@
     {
       "domain": "guazi.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "gvt0.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "gvt1.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "gvt2.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "gvt3.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1651,6 +2119,11 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "hockeyapp.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "hollisterco.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -1658,6 +2131,11 @@
     {
       "domain": "hongxiu.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "hoyolab.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1683,6 +2161,16 @@
     {
       "domain": "huaweishop.net",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "hulu.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "humblebundle.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1716,6 +2204,13 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "huyafile.msstatic.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
       "domain": "hwccpc.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -1728,6 +2223,23 @@
     {
       "domain": "iciba.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "icloud-amap.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "icntv.xyz",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "id.heroku.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1801,6 +2313,31 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "inoreader.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "instagr.am",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "instagram.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "io.io",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "ip138.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "ipip.net",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -1816,6 +2353,11 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "issuu.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "it168.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -1826,6 +2368,11 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "iwara.tv",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "ixdzs.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -1833,6 +2380,11 @@
     {
       "domain": "ixigua.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "ixquick.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1891,6 +2443,11 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "jitpack.io",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "jmstatic.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -1901,13 +2458,40 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "jtvnw.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "jumei.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "kad.gotokeep.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
       "domain": "kaikeba.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "kakao.co.kr",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "kakao.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "kakaocdn.net",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -1926,8 +2510,28 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "kat.cr",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "kik.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "knewone.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "kobo.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "kobobooks.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2006,6 +2610,13 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "layer.bz.mgtv.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
       "domain": "le.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -2056,9 +2667,85 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "licdn.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "lin.ee",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "line-apps.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "line-cdn.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "line-scdn.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "line.me",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "line.naver.jp",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "linkedin.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "live.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "livechina.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "livefilestore.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "livejasmin.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "livep.l.t002.ottcn.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "livewebbs2.msstatic.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "livewebbs2pcdn.msstatic.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
     },
     {
       "domain": "lizhi.fm",
@@ -2076,9 +2763,21 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "llnwd.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "lofter.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "log.51wnl-cq.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
     },
     {
       "domain": "log.cmpassport.com",
@@ -2106,13 +2805,43 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "macrumors.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "maoyan.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "maven.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "mdn.open.wo.cn",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "mediawiki.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "medium.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "mega.nz",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "megaupload.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2156,6 +2885,11 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "messenger.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "mgtv.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -2173,6 +2907,11 @@
     {
       "domain": "miaopai.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "microsoftpersonalcontent.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2194,6 +2933,13 @@
       "domain": "mmstat.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "mob.bz.mgtv.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
     },
     {
       "domain": "mob.com",
@@ -2251,8 +2997,20 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "msync-im1-vip6-std.easemob.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
       "domain": "mubu.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "mvnrepository.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2271,8 +3029,18 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "myteamspeak.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "myunlu.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "netdna-cdn.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2281,8 +3049,28 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "neulion.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "nhncorp.jp",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "nintendo.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "nishub1.10010.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "notion.so",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2291,13 +3079,43 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "nsstatic.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "nuomi.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "nytstyle.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "ocnttv.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "oneclient.sfx.ms",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "onedns.net",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "onedrive.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "onedrive.live.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2316,8 +3134,18 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "openai.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "opencloud.wostore.cn",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "openvpn.net",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2351,6 +3179,11 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "overcast.fm",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "p2cdn.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -2376,8 +3209,65 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "periscope.tv",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "phncdn.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "photos.live.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "phprcdn.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "picjs.xyz",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "pinduoduo.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "ping.pe",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "pinimg.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "pinterest.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "pixiv.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "pl.cp31.ott.cibntv.net",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "playartifact.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2401,6 +3291,28 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "pornhub.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "pornhubpremium.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "potato.im",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "pp-cdnfile2pcdn.msstatic.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
       "domain": "pplive.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -2416,8 +3328,23 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "prfct.co",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "pscp.tv",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "pstatp.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "pximg.net",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2536,6 +3463,11 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "quay.io",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "qunar.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -2543,6 +3475,11 @@
     {
       "domain": "qunarzz.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "quora.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2561,14 +3498,79 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "r.51wnl-cq.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "rc-topic-api.bz.mgtv.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "rdtcdn.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "readdle.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "realme.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "reddit.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "redhat.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "redtube.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
       "domain": "repaik.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "resilio.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "richmanapi.jxedt.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "richmanmain.jxedt.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
+      "domain": "richmanrules.jxedt.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
     },
     {
       "domain": "rrys.tv",
@@ -2581,6 +3583,13 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "rttrack.ddxq.mobi",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
       "domain": "ruguoapp.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -2589,6 +3598,13 @@
       "domain": "runoob.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "safebrowsing.g.applimg.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
     },
     {
       "domain": "sandai.net",
@@ -2601,6 +3617,11 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "sb-cd.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "segmentfault.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -2608,6 +3629,16 @@
     {
       "domain": "sf-express.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "sfx.ms",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "shadowsocks.org",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2656,6 +3687,26 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "skydrive.wns.windows.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "slack-edge.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "smartdnsproxy.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "smartmailcloud.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "smtcdns.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -2673,6 +3724,11 @@
     {
       "domain": "snapdrop.net",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "sndcdn.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2736,6 +3792,11 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "sonatype.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "sony.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -2753,6 +3814,36 @@
     {
       "domain": "soufunimg.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "soundcloud.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "sourcegraph.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "spankbang.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "spoprod-a.akamaihd.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "spring.io",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "spring.net",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2776,6 +3867,16 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "stackoverflow.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "startpage.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "startssl.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -2786,8 +3887,33 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "staticflickr.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "steam-chat.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "steambroadcast.akamaized.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "steamchina.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "steamcommunity-a.akamaihd.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "steamcommunity.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2796,8 +3922,23 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "steamgames.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "steampipe.akamaized.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "steampipe.steamcontent.tnkjmec.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "steampowered.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2806,8 +3947,33 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "steamserver.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "steamstat.us",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "steamstatic.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "steamstatic.com.8686c.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "steamstore-a.akamaihd.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "steamusercontent-a.akamaihd.net",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2816,13 +3982,58 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "steamuserimages-a.akamaihd.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "storage.live.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "storage.msn.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "suning.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "symauth.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "symcb.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "symcd.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "synology.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "t.co",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "t.me",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "t66y.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2841,6 +4052,16 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "tap.io",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "taptap.tw",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "tbcache.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -2856,6 +4077,11 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "tdesktop.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "teamviewer.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -2863,6 +4089,31 @@
     {
       "domain": "tebex.io",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "teddysun.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "telegra.ph",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "telegram.me",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "telegram.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "telesco.pe",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2886,8 +4137,38 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "terabox.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "teraboxcdn.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "textnow.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "textnow.me",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "th-sjy.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "thefacebook.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "thepiratebay.org",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -2941,6 +4222,11 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "torproject.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "toutiao.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -2991,8 +4277,20 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "trackercollect.ddxq.mobi",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
+    },
+    {
       "domain": "trip.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "trustasiassl.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -3001,8 +4299,28 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "ttvnw.net",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "tudou.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "tumbex.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "tumblr.co",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "tumblr.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -3013,6 +4331,41 @@
     {
       "domain": "tuniucdn.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "tvb.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "twdvd.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "twimg.co",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "twimg.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "twimg.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "twitch.tv",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "txmblr.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -3031,8 +4384,18 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "underlords.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "unrealengine.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "unsplash.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -3056,9 +4419,41 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "v2ex.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "valvesoftware.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "videocc.net",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "vikacg.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "vimeo.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "vine.co",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "vip.bz.mgtv.com",
+      "source_id": "sr-adblock-domain-lite",
+      "source_sha256": "48a27d8a7b52c0ce2abcfae93c18be9a49e7c7756e59f629684b036f6865a935",
+      "source_entry_type": "exact_candidate",
+      "first_seen": "2026-10-31T14:47:37.646707+00:00"
     },
     {
       "domain": "vip.com",
@@ -3083,6 +4478,11 @@
     {
       "domain": "vmallres.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "vox-cdn.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -3151,6 +4551,61 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "wikibooks.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "wikidata.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "wikileaks.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "wikimedia.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "wikinews.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "wikipedia.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "wikiquote.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "wikisource.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "wikiversity.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "wikivoyage.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "wiktionary.org",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "wmsjsteam.com",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -3171,8 +4626,18 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "x.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "xdrig.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "xhamster.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -3256,6 +4721,21 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "xn--ngstr-lra8j.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "xnxx-cdn.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "xnxx.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "xslb.net",
       "source_id": "acl4ssr-china-domain",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
@@ -3268,6 +4748,16 @@
     {
       "domain": "xunlei.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "xvideos-cdn.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "xvideos.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -3341,8 +4831,38 @@
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
+      "domain": "youtu.be",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "youtube-nocookie.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "youtube.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "ypncdn.com",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
       "domain": "ys168.com",
       "source_id": "acl4ssr-china-domain",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "yt.be",
+      "source_id": "acl4ssr-proxy-lite",
+      "first_seen": "2026-11-01T06:36:04.023807+00:00"
+    },
+    {
+      "domain": "ytimg.com",
+      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
@@ -3498,1526 +5018,6 @@
     {
       "domain": "zmzfile.com",
       "source_id": "acl4ssr-china-domain",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "1e100.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "1password.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "2mdn.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "4sqi.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "8teenxxx.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "a248.e.akamai.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "adguard.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "adobedtm.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "ahcdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "amazon.co.jp",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "amazon.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "amazonaws.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "amplitude.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "ampproject.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "android.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "anthropic.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "aolcdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "apache.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "apkmirror.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "apkpure.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "app-measurement.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "app-measurement.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "appspot.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "archive.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "armorgames.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "aspnetcdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "awsstatic.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "azureedge.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "azurewebsites.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "bandwagonhost.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "bbc.co",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "bbc.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "bcvcdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "bing.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "bit.no.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "bkrtx.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "blogcdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "blogger.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "blogsmithmedia.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "blogspot.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "blogspot.hk",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "blogspot.jp",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "bloomberg.cn",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "bloomberg.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "bongacams.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "box.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "btlibrary.me",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "buzzsprout.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "c.gle",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "cachefly.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "cdninstagram.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "cdnst.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "challenges.cloudflare.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "chaturbate.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "claude.ai",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "cloudcone.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "cloudfront.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "comodoca.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "compose-spec.io",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "d1q6f0aelx0por.cloudfront.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "d2wy8f7a9ursnm.cloudfront.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "d36jcksde1wxzq.cloudfront.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "daum.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "dditscdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "deskconnect.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "discord.co",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "discord.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "discord.gg",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "discord.media",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "discordapp.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "discordapp.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "disqus.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "disquscdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "docker.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "docker.io",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "dockerhub.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "dropbox.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "dropboxapi.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "dropboxstatic.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "dropboxusercontent.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "dubox.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "duckduckgo.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "edgecastcdn.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "edgekey.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "edgesuite.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "elastic.co",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "elastic.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "eurekavpt.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "facebook.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "fanatical.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "fanbox.cc",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "fastmail.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "fb.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "fb.me",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "fbcdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "fbcdn.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "firebaseio.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "flickr.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "flipboard.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "flzbcdn.xyz",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "g.co",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "gameloft.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "garena.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "gcr.io",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "gfx.ms",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "ggpht.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "github.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "github.io",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "githubapp.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "githubassets.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "githubusercontent.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "gitlab.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "gitlab.io",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "gongm.in",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "goo.gl",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "googleapis.cn",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "googleapis.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "gstatic.cn",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "gstatic.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "gvt0.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "gvt1.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "gvt2.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "gvt3.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "hockeyapp.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "hoyolab.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "hulu.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "humblebundle.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "icntv.xyz",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "id.heroku.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "inoreader.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "instagr.am",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "instagram.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "io.io",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "ip138.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "issuu.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "iwara.tv",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "ixquick.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "jitpack.io",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "jtvnw.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "kakao.co.kr",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "kakao.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "kakaocdn.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "kat.cr",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "kik.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "kobo.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "kobobooks.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "licdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "lin.ee",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "line-apps.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "line-cdn.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "line-scdn.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "line.me",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "line.naver.jp",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "linkedin.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "live.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "livefilestore.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "livejasmin.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "llnwd.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "macrumors.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "maven.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "mediawiki.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "medium.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "mega.nz",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "megaupload.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "messenger.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "microsoftpersonalcontent.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "mvnrepository.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "myteamspeak.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "netdna-cdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "neulion.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "nhncorp.jp",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "nintendo.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "notion.so",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "nsstatic.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "nytstyle.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "ocnttv.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "oneclient.sfx.ms",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "onedrive.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "onedrive.live.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "openai.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "openvpn.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "overcast.fm",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "periscope.tv",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "phncdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "photos.live.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "phprcdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "picjs.xyz",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "ping.pe",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "pinimg.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "pinterest.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "pixiv.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "playartifact.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "pornhub.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "pornhubpremium.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "potato.im",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "prfct.co",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "pscp.tv",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "pximg.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "quay.io",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "quora.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "rdtcdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "readdle.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "reddit.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "redhat.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "redtube.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "resilio.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "sb-cd.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "sfx.ms",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "shadowsocks.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "skydrive.wns.windows.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "slack-edge.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "smartdnsproxy.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "smartmailcloud.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "sndcdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "sonatype.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "soundcloud.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "sourcegraph.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "spankbang.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "spoprod-a.akamaihd.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "spring.io",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "spring.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "stackoverflow.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "startpage.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "staticflickr.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "steam-chat.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "steambroadcast.akamaized.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "steamcommunity-a.akamaihd.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "steamcommunity.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "steamgames.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "steampipe.akamaized.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "steampowered.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "steamserver.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "steamstat.us",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "steamstatic.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "steamstore-a.akamaihd.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "steamusercontent-a.akamaihd.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "steamuserimages-a.akamaihd.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "storage.live.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "storage.msn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "symauth.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "symcb.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "symcd.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "t.co",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "t.me",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "t66y.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "tap.io",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "taptap.tw",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "tdesktop.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "teddysun.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "telegra.ph",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "telegram.me",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "telegram.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "telesco.pe",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "terabox.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "teraboxcdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "textnow.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "textnow.me",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "thefacebook.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "thepiratebay.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "torproject.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "trustasiassl.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "ttvnw.net",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "tumbex.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "tumblr.co",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "tumblr.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "tvb.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "twdvd.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "twimg.co",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "twimg.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "twimg.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "twitch.tv",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "txmblr.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "underlords.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "unsplash.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "v2ex.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "valvesoftware.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "vikacg.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "vimeo.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "vine.co",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "vox-cdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "wikibooks.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "wikidata.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "wikileaks.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "wikimedia.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "wikinews.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "wikipedia.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "wikiquote.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "wikisource.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "wikiversity.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "wikivoyage.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "wiktionary.org",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "x.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "xhamster.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "xn--ngstr-lra8j.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "xnxx-cdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "xnxx.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "xvideos-cdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "xvideos.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "youtu.be",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "youtube-nocookie.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "youtube.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "ypncdn.com",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "yt.be",
-      "source_id": "acl4ssr-proxy-lite",
-      "first_seen": "2026-11-01T06:36:04.023807+00:00"
-    },
-    {
-      "domain": "ytimg.com",
-      "source_id": "acl4ssr-proxy-lite",
       "first_seen": "2026-11-01T06:36:04.023807+00:00"
     },
     {
