@@ -29,5 +29,10 @@ class SuffixScopeSafetyTests(unittest.TestCase):
         self.assertEqual(status, "REVIEW")
 
 
+    def test_proxy_suffix_is_held_when_it_intersects_skip_proxy_bypass(self):
+        rules = RuleIndex([])
+        status, _ = inspect_suffix_scope("example.com", "PROXY", rules, [], {}, ["*.sub.example.com"])
+        self.assertEqual(status, "CONFLICT")
+
 if __name__ == "__main__":
     unittest.main()

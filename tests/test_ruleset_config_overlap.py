@@ -79,6 +79,10 @@ DOMAIN,late.example.com,REJECT
         covering = match_candidate("sub.example.com", "DIRECT", [(2, "DOMAIN-SUFFIX,example.com,DIRECT")], "suffix_candidate")
         self.assertEqual(covering["status"], "ALREADY_COVERED")
 
+    def test_suffix_candidate_detects_skip_proxy_descendant_bypass(self):
+        matched = skip_proxy_match("example.com", ["api.example.com"], "suffix_candidate")
+        self.assertEqual(matched, "api.example.com")
+
 if __name__ == "__main__":
     unittest.main()
 

@@ -224,7 +224,9 @@ def main():
                 confidence,source_ids,publishers,groups,qualified=evidence_gate(evidence,source_weights,minimum,threshold,required_sources)
             scope_status,scope_reason=(None,None)
             if source_entry_type=="suffix_candidate":
-                scope_status,scope_reason=inspect_suffix_scope(domain,policy,index,conditional,protected)
+                scope_status,scope_reason=inspect_suffix_scope(
+                    domain,policy,index,conditional,protected,parse_skip_proxy(base),first_ruleset_line(base)
+                )
             if scope_status:
                 status,reason=scope_status,scope_reason
             else:

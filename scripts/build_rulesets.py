@@ -3,7 +3,7 @@
 from __future__ import annotations
 import json, re
 from pathlib import Path
-from deterministic_review import inspect
+from deterministic_review import inspect, parse_skip_proxy, first_ruleset_line
 from domain_rule_engine import RuleIndex, load_domain_rules, inspect_suffix_scope
 from source_registry import validate_registry
 
@@ -102,7 +102,9 @@ def main():
         if any(item.get(key)!="PASS" for key in ("duplicate_check","conflict_check","risk_check")):
             raise ValueError("approved record failed a local safety gate: "+domain)
         if scope=="suffix_candidate":
-            local_status,reason=inspect_suffix_scope(domain,policy,index,conditional,protected)
+            local_status,reason=inspect_suffix_scope(
+                domain,policy,index,conditional,protected,parse_skip_proxy(base),first_ruleset_line(base)
+            )
             if local_status:
                 raise ValueError("approved suffix scope intersects baseline ("+str(local_status)+"): "+domain+" / "+str(reason))
         local_status,reason=inspect(domain,index,conditional,base,protected,policy,candidate_suffix=(scope=="suffix_candidate"))

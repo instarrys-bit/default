@@ -120,10 +120,13 @@ def analyze_candidate(domain: str, is_suffix: bool, rules):
 
 
 
-def inspect_suffix_scope(domain: str, policy: str, rules, conditional, protected):
+def inspect_suffix_scope(domain: str, policy: str, rules, conditional, protected, skip_proxy=(), rule_boundary=None):
     """Fail closed when a suffix would cover a differently routed or protected host."""
     domain = domain.lower().rstrip(".")
     policy = policy.upper()
+    if rule_boundary is not None:
+        rules = RuleIndex([rule for rule in rules.rules if rule.line < rule_boundary])
+        conditional = [(line, raw) for line, raw in conditional if line < rule_boundary]
     analysis = analyze_candidate(domain, True, rules)
     conflicting = sorted(analysis["scope_policies"] - {policy})
     if conflicting:
@@ -153,4 +156,19 @@ def inspect_suffix_scope(domain: str, policy: str, rules, conditional, protected
             or domain.endswith("." + suffix)
         ):
             return "RISK_HOLD", "Suffix scope intersects protected suffix " + suffix
+    if policy != "DIRECT":
+        for entry in skip_proxy:
+            entry = entry.lower().strip()
+            if "/" in entry or ":" in entry:
+                continue
+            if entry.startswith("*."):
+                suffix = entry[2:]
+                intersects = (
+                    suffix == domain or suffix.endswith("." + domain)
+                    or domain.endswith("." + suffix)
+                )
+            else:
+                intersects = entry == domain or entry.endswith("." + domain)
+            if intersects:
+                return "CONFLICT", "Suffix scope intersects direct-bypass skip-proxy entry " + entry
     return None, None

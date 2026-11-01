@@ -153,15 +153,17 @@ def parse_skip_proxy(config_text: str) -> list[str]:
     return []
 
 
-def skip_proxy_match(domain: str, entries: list[str]) -> str | None:
+def skip_proxy_match(domain: str, entries: list[str], scope: str = "exact_candidate") -> str | None:
     for entry in entries:
         if "/" in entry or ":" in entry:
             continue
         if entry.startswith("*."):
             suffix = entry[2:]
-            if domain == suffix or domain.endswith("." + suffix):
+            if domain == suffix or domain.endswith("." + suffix) or (
+                scope == "suffix_candidate" and suffix.endswith("." + domain)
+            ):
                 return entry
-        elif domain == entry:
+        elif domain == entry or (scope == "suffix_candidate" and entry.endswith("." + domain)):
             return entry
     return None
 
@@ -186,7 +188,7 @@ def audit(config_text: str, ledger: dict) -> dict:
             continue
         match = match_candidate(domain, policy, rules, scope)
         if match["status"] == "NOT_COVERED_BY_PRIOR_DOMAIN_RULES":
-            bypass = skip_proxy_match(domain, skip_proxy_entries)
+            bypass = skip_proxy_match(domain, skip_proxy_entries, scope)
             if bypass:
                 match = {"status": "ALREADY_COVERED" if policy == "DIRECT" else "CONFLICT",
                          "line": None, "rule": "skip-proxy = " + bypass,
