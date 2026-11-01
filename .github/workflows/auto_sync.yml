@@ -6,6 +6,11 @@ on:
     - cron: "0 20 * * *"
     # Beijing time: every day at 04:00.
   workflow_dispatch:
+    inputs:
+      restore_ids:
+        description: 'Comma-separated lifecycle deletion IDs to restore (optional)'
+        required: false
+        type: string
   push:
     branches: [main]
     paths:
@@ -47,7 +52,7 @@ jobs:
 
       - name: Compile and run deterministic review tests
         run: |
-          python3 -m py_compile scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/import_request_observations.py scripts/lifecycle_gate.py scripts/auto_activate_sources.py
+          python3 -m py_compile scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/import_request_observations.py scripts/lifecycle_gate.py scripts/lifecycle_audit.py scripts/auto_activate_sources.py
           python3 -m unittest discover -s tests -v
 
       - name: Discover candidate source repositories (non-activating)
@@ -87,14 +92,21 @@ jobs:
       - name: Collect and cross-check all enabled domain sources
         run: python3 scripts/collect_domains.py
 
-      - name: Evaluate the 5,000-published-rule lifecycle activation gate
-        run: python3 scripts/lifecycle_gate.py
-
       - name: "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services"
         run: python3 scripts/deterministic_review.py
 
       - name: Build standalone DIRECT, PROXY and REJECT rule sets
         run: python3 scripts/build_rulesets.py
+
+      - name: Evaluate lifecycle milestones and monthly capacity review
+        run: python3 scripts/lifecycle_gate.py
+
+      - name: Run conservative lifecycle audit and selectable restoration
+        env:
+          LIFECYCLE_RESTORE_IDS: ${{ github.event.inputs.restore_ids || '' }}
+        run: |
+          python3 scripts/lifecycle_audit.py
+          if [ -f reports/lifecycle/latest.md ]; then cat reports/lifecycle/latest.md >> "$GITHUB_STEP_SUMMARY"; fi
 
       - name: Validate Shadowrocket config structure
         run: python3 scripts/validate_config.py
@@ -125,6 +137,7 @@ jobs:
             sources/domain_reviews.json \
             sources/domain_sources.json \
             sources/source_activation_log.json \
+            reports/lifecycle \
             reports/external-domain-audit.md \
             reports/config-drift-audit.md \
             reports/config-drift-audit.json \
@@ -139,6 +152,7 @@ jobs:
             reports/source-assessment.md \
             reports/source-candidate-matrix.md \
             reports/source-activation.md \
+            reports/lifecycle \
             reports/policy-source-overlap.md \
             sources/policy_source_overlap.json \
             sources/discovered_sources.json \
