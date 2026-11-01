@@ -12,13 +12,17 @@
 
 ## Generated file counts
 
-- direct.list: 0 lines; policy DIRECT
-- proxy.list: 0 lines; policy PROXY
-- reject.list: 24 lines; policy REJECT
+- direct.list: 32 lines; policy DIRECT
+- proxy.list: 119 lines; policy PROXY
+- reject.list: 22 lines; policy REJECT
 
 ## Cross-file duplicates
 
 - None
+
+## Precedence-resolved overlaps
+
+- DOMAIN,adsfilebssdlbig.tx.kugou.com (REJECT) precedes DOMAIN-SUFFIX,kugou.com (DIRECT)
 
 ## Findings
 

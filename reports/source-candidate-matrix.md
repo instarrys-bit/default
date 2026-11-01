@@ -4,9 +4,9 @@ This report combines parser compatibility, explicit policy evidence and README r
 
 | Policy | Candidate publishers | Verified publishers | Candidate files | Ready |
 |---|---:|---:|---:|---|
-| DIRECT | 3 | 0 | 3 | no |
-| PROXY | 3 | 0 | 4 | no |
-| REJECT | 1 | 0 | 3 | no |
+| DIRECT | 3 | 3 | 3 | yes |
+| PROXY | 3 | 3 | 4 | yes |
+| REJECT | 1 | 1 | 2 | no |
 
 ## Same-policy source overlap
 
@@ -29,9 +29,9 @@ This report combines parser compatibility, explicit policy evidence and README r
 - Domain entries across candidate files: 6751
 - Policy evidence: README_policy_reference
 - Lineage: unverified (audited_reference_inventory)
-- Possible shared README-reference peers: GMOogway/shadowrocket-rules, Jeliren/shadowrocket-russia-direct, Loyalsoldier/v2ray-rules-dat, PaPerseller/chn-iplist, Seanyim/tailrocket, bgpeer/rules, crayonluffy/shadowrocket-rules, gatework/surge-rules, kaonimei/Shadowrocket-ADBlock-Rules, poohyeban/shadowrocket-rules, tkgeeked/clash-rules-for-shadowrocket
-- Activation eligible: False
-- Blockers: lineage_not_verified, possible_shared_readme_references_require_review
+- Possible shared README-reference peers: GMOogway/shadowrocket-rules, Jeliren/shadowrocket-russia-direct, Loyalsoldier/v2ray-rules-dat, PaPerseller/chn-iplist, Seanyim/tailrocket, bgpeer/rules, crayonluffy/shadowrocket-rules, gatework/surge-rules, jhz1022/Shadowrocket-Rules, kaonimei/Shadowrocket-ADBlock-Rules, poohyeban/shadowrocket-rules, tkgeeked/clash-rules-for-shadowrocket
+- Activation eligible: True
+- Blockers: none
 
   - domain-only: https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list (6751 domain entries)
 
@@ -41,8 +41,8 @@ This report combines parser compatibility, explicit policy evidence and README r
 - Policy evidence: README_policy_reference
 - Lineage: unverified (audited_reference_inventory)
 - Possible shared README-reference peers: none found
-- Activation eligible: False
-- Blockers: lineage_not_verified
+- Activation eligible: True
+- Blockers: none
 
   - shadowrocket-domain-rules: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list (605 domain entries)
 
@@ -52,8 +52,8 @@ This report combines parser compatibility, explicit policy evidence and README r
 - Policy evidence: explicit_third_field
 - Lineage: unverified (audited_reference_inventory)
 - Possible shared README-reference peers: none found
-- Activation eligible: False
-- Blockers: lineage_not_verified
+- Activation eligible: True
+- Blockers: none
 
   - shadowrocket-domain-rules: https://raw.githubusercontent.com/Clash-FX/cn-apps-direct-domains/main/apps-direct-domains.list (120 domain entries)
 
@@ -63,8 +63,8 @@ This report combines parser compatibility, explicit policy evidence and README r
 - Policy evidence: README_policy_reference
 - Lineage: unverified (audited_reference_inventory)
 - Possible shared README-reference peers: none found
-- Activation eligible: False
-- Blockers: lineage_not_verified
+- Activation eligible: True
+- Blockers: none
 
   - shadowrocket-domain-rules: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list (6766 domain entries)
   - shadowrocket-domain-rules: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list (306 domain entries)
@@ -74,9 +74,9 @@ This report combines parser compatibility, explicit policy evidence and README r
 - Domain entries across candidate files: 4451
 - Policy evidence: README_policy_reference
 - Lineage: unverified (audited_reference_inventory)
-- Possible shared README-reference peers: GMOogway/shadowrocket-rules, Jeliren/shadowrocket-russia-direct, Jovanykoch/rules, Loyalsoldier/v2ray-rules-dat, PaPerseller/chn-iplist, bgpeer/rules, crayonluffy/shadowrocket-rules, kaonimei/Shadowrocket-ADBlock-Rules, poohyeban/shadowrocket-rules, tkgeeked/clash-rules-for-shadowrocket
-- Activation eligible: False
-- Blockers: lineage_not_verified, possible_shared_readme_references_require_review
+- Possible shared README-reference peers: GMOogway/shadowrocket-rules, Jeliren/shadowrocket-russia-direct, Jovanykoch/rules, Loyalsoldier/v2ray-rules-dat, PaPerseller/chn-iplist, bgpeer/rules, crayonluffy/shadowrocket-rules, jhz1022/Shadowrocket-Rules, kaonimei/Shadowrocket-ADBlock-Rules, poohyeban/shadowrocket-rules, tkgeeked/clash-rules-for-shadowrocket
+- Activation eligible: True
+- Blockers: none
 
   - domain-only: https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt (4451 domain entries)
 
@@ -86,23 +86,22 @@ This report combines parser compatibility, explicit policy evidence and README r
 - Policy evidence: explicit_third_field
 - Lineage: unverified (audited_reference_inventory)
 - Possible shared README-reference peers: none found
-- Activation eligible: False
-- Blockers: lineage_not_verified
+- Activation eligible: True
+- Blockers: none
 
   - quantumult-domain-rules: https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Region/Global.list (574 domain entries)
 
 ### REJECT — RzMY/IOS-AntiRevoke-DNS-Rules
 
-- Domain entries across candidate files: 114
+- Domain entries across candidate files: 76
 - Policy evidence: explicit_third_field
 - Lineage: unverified (audited_reference_inventory)
 - Possible shared README-reference peers: none found
-- Activation eligible: False
-- Blockers: lineage_not_verified
+- Activation eligible: True
+- Blockers: none
 
   - shadowrocket-domain-rules: https://raw.githubusercontent.com/RzMY/IOS-AntiRevoke-DNS-Rules/main/output/RevokeGuard_Loon.txt (38 domain entries)
   - shadowrocket-domain-rules: https://raw.githubusercontent.com/RzMY/IOS-AntiRevoke-DNS-Rules/main/output/RevokeGuard_Shadowrocket.txt (38 domain entries)
-  - shadowrocket-domain-rules: https://raw.githubusercontent.com/RzMY/IOS-AntiRevoke-DNS-Rules/main/output/RevokeGuard_Surge.txt (38 domain entries)
 
 ## Safety rule
 

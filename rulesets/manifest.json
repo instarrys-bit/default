@@ -8,7 +8,7 @@
     "proxy.list",
     "reject.list"
   ],
-  "review_engine": "deterministic-domain-audit/3.0",
+  "review_engine": "deterministic-domain-audit/4.0",
   "minimum_independent_sources": 2,
   "minimum_confidence_score": 0.8,
   "required_sources_by_policy": {
@@ -58,8 +58,8 @@
     },
     {
       "id": "hagezi-domains-pro",
-      "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a",
-      "entries": 213387,
+      "sha256": "b9bc08ed37376f9b2f6def507bb7a5aab1eb857d860a687506c019a699585fdd",
+      "entries": 211739,
       "classification": "REJECT",
       "role": "independent_adblock_corroboration",
       "lineage_status": "partial",
@@ -133,8 +133,8 @@
         "yous/youslist",
         "zakird/crux-top-lists"
       ],
-      "new_entries": 0,
-      "removed_entries": 0,
+      "new_entries": 1270,
+      "removed_entries": 2918,
       "baseline_initialized": false,
       "bootstrap_enqueued": false
     },
@@ -175,7 +175,7 @@
     }
   ],
   "source_count": 6,
-  "policy_conflict_total": 43,
+  "policy_conflict_total": 44,
   "lineage_verified_sources": 0,
   "lineage_unverified_sources": 4,
   "lineage_partial_sources": 2,
@@ -183,65 +183,65 @@
   "source_candidate_summary": {
     "DIRECT": {
       "candidate_publishers": 3,
-      "verified_publishers": 0,
-      "independent_verified_groups": 0,
+      "verified_publishers": 3,
+      "independent_verified_groups": 2,
       "candidate_files": 3,
       "cross_policy_conflict_count": 2,
-      "activation_ready": false
+      "activation_ready": true
     },
     "PROXY": {
       "candidate_publishers": 3,
-      "verified_publishers": 0,
-      "independent_verified_groups": 0,
+      "verified_publishers": 3,
+      "independent_verified_groups": 2,
       "candidate_files": 4,
       "cross_policy_conflict_count": 1,
-      "activation_ready": false
+      "activation_ready": true
     },
     "REJECT": {
       "candidate_publishers": 1,
-      "verified_publishers": 0,
-      "independent_verified_groups": 0,
-      "candidate_files": 3,
+      "verified_publishers": 1,
+      "independent_verified_groups": 1,
+      "candidate_files": 2,
       "cross_policy_conflict_count": 1,
       "activation_ready": false
     }
   },
   "rule_count": {
-    "DIRECT": 0,
-    "PROXY": 0,
-    "REJECT": 24
+    "DIRECT": 32,
+    "PROXY": 119,
+    "REJECT": 22
   },
   "reviewed_total": 978,
-  "approved_total": 24,
-  "held_total": 954,
+  "approved_total": 173,
+  "held_total": 805,
   "status_count": {
-    "ALREADY_COVERED": 10,
-    "APPROVED": 24,
-    "CONFLICT": 1,
-    "POLICY_CONFLICT": 43,
-    "REVIEW": 883,
-    "RISK_HOLD": 17
+    "ALREADY_COVERED": 3,
+    "APPROVED": 173,
+    "CONFLICT": 38,
+    "POLICY_CONFLICT": 44,
+    "REVIEW": 701,
+    "RISK_HOLD": 19
   },
   "deterministic_review_progress": {
     "candidate_total": 978,
-    "approved_total": 24,
-    "held_total": 954,
+    "approved_total": 173,
+    "held_total": 805,
     "status_count": {
-      "ALREADY_COVERED": 10,
-      "APPROVED": 24,
-      "CONFLICT": 1,
-      "POLICY_CONFLICT": 43,
-      "REVIEW": 883,
-      "RISK_HOLD": 17
+      "ALREADY_COVERED": 3,
+      "APPROVED": 173,
+      "CONFLICT": 38,
+      "POLICY_CONFLICT": 44,
+      "REVIEW": 701,
+      "RISK_HOLD": 19
     }
   },
-  "format": "Standalone Shadowrocket RULE-SET lists: DOMAIN,<domain>; policy is assigned by the RULE-SET reference.",
+  "format": "Standalone Shadowrocket domain RULE-SET lists: DOMAIN,<domain> and DOMAIN-SUFFIX,<domain>; source scope is preserved and policy is assigned by the RULE-SET reference.",
   "import_instruction": "Optionally reference each published raw list URL in the user-managed Shadowrocket [Rule] section with RULE-SET,<raw URL>,<matching policy>. This automation does not edit the user config.",
   "limitations": [
-    "Only exact DOMAIN candidates with current policy-labelled evidence and all local gates passing are published.",
+    "All supported domain scopes are eligible: exact DOMAIN requires corroborated current domain evidence; DOMAIN-SUFFIX requires at least two independent current publishers explicitly listing the same suffix scope. Source scope is preserved.",
     "A domain is published only when at least two distinct configured publishers and source groups agree on its routing policy; a single-source candidate remains under review.",
     "Lineage status is retained as provenance metadata, not a blanket publication veto; source overlap is a correlation signal, not proof of identical domain ancestry.",
-    "Broad single-label suffixes are excluded; only exact-domain entries are emitted.",
+    "Single-label root suffixes are excluded during source parsing. Suffix publication is blocked when it intersects conflicting baseline rules, conditional rules, or protected hosts/suffixes.",
     "Static checks do not replace Shadowrocket device testing."
   ]
 }

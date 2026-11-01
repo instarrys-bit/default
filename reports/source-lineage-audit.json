@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-01T10:29:12.301295+00:00",
+  "audited_at": "2026-11-01T12:39:30.457069+00:00",
   "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
   "source_count": 6,
   "audited_source_count": 6,
@@ -30,8 +30,8 @@
       ]
     }
   ],
-  "candidate_source_count": 38,
-  "candidate_readme_audited_count": 38,
+  "candidate_source_count": 40,
+  "candidate_readme_audited_count": 40,
   "candidate_shared_reference_pairs": [
     {
       "repositories": [
@@ -184,6 +184,16 @@
     {
       "repositories": [
         "GMOogway/shadowrocket-rules",
+        "jhz1022/Shadowrocket-Rules"
+      ],
+      "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GMOogway/shadowrocket-rules",
         "kaonimei/Shadowrocket-ADBlock-Rules"
       ],
       "shared_readme_references": [
@@ -309,6 +319,16 @@
     {
       "repositories": [
         "Jeliren/shadowrocket-russia-direct",
+        "jhz1022/Shadowrocket-Rules"
+      ],
+      "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Jeliren/shadowrocket-russia-direct",
         "poohyeban/shadowrocket-rules"
       ],
       "shared_readme_references": [
@@ -387,6 +407,16 @@
       "shared_readme_references": [
         "felixonmars/dnsmasq-china-list",
         "loyalsoldier/geoip",
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Jovanykoch/rules",
+        "jhz1022/Shadowrocket-Rules"
+      ],
+      "shared_readme_references": [
         "v2fly/domain-list-community"
       ],
       "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
@@ -473,6 +503,17 @@
       "shared_readme_references": [
         "felixonmars/dnsmasq-china-list",
         "loyalsoldier/geoip",
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Loyalsoldier/v2ray-rules-dat",
+        "jhz1022/Shadowrocket-Rules"
+      ],
+      "shared_readme_references": [
+        "gaoyifan/china-operator-ip",
         "v2fly/domain-list-community"
       ],
       "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
@@ -570,6 +611,18 @@
       ],
       "shared_readme_references": [
         "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "PaPerseller/chn-iplist",
+        "jhz1022/Shadowrocket-Rules"
+      ],
+      "shared_readme_references": [
+        "gaoyifan/china-operator-ip",
+        "loyalsoldier/v2ray-rules-dat",
+        "v2fly/domain-list-community"
       ],
       "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
     },
@@ -752,6 +805,16 @@
     {
       "repositories": [
         "bgpeer/rules",
+        "jhz1022/Shadowrocket-Rules"
+      ],
+      "shared_readme_references": [
+        "loyalsoldier/v2ray-rules-dat"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "bgpeer/rules",
         "kaonimei/Shadowrocket-ADBlock-Rules"
       ],
       "shared_readme_references": [
@@ -776,6 +839,16 @@
       ],
       "shared_readme_references": [
         "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "corneliusztw/shadowrocket-rules",
+        "jhz1022/Shadowrocket-Rules"
+      ],
+      "shared_readme_references": [
+        "loyalsoldier/clash-rules"
       ],
       "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
     },
@@ -853,6 +926,16 @@
     {
       "repositories": [
         "crayonluffy/shadowrocket-rules",
+        "jhz1022/Shadowrocket-Rules"
+      ],
+      "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "crayonluffy/shadowrocket-rules",
         "kaonimei/Shadowrocket-ADBlock-Rules"
       ],
       "shared_readme_references": [
@@ -876,6 +959,17 @@
         "tkgeeked/clash-rules-for-shadowrocket"
       ],
       "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "gatework/surge-rules",
+        "jhz1022/Shadowrocket-Rules"
+      ],
+      "shared_readme_references": [
+        "loyalsoldier/v2ray-rules-dat",
         "v2fly/domain-list-community"
       ],
       "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
@@ -950,6 +1044,38 @@
       ],
       "shared_readme_references": [
         "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "jhz1022/Shadowrocket-Rules",
+        "poohyeban/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "jhz1022/Shadowrocket-Rules",
+        "tkgeeked/clash-rules-for-shadowrocket"
+      ],
+      "shared_readme_references": [
+        "loyalsoldier/clash-rules",
+        "loyalsoldier/v2ray-rules-dat",
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "jhz1022/Shadowrocket-Rules",
+        "wcr1996/shadowrocket_rules"
+      ],
+      "shared_readme_references": [
+        "loyalsoldier/clash-rules"
       ],
       "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
     },
@@ -1167,8 +1293,8 @@
     {
       "repository": "Jeliren/shadowrocket-russia-direct",
       "readme_url": "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/README.md",
-      "readme_sha256": "e997844f9934fd7159632c268aaebd931f3572456d522101e6e275b66bba644b",
-      "discovery_readme_sha256": "e997844f9934fd7159632c268aaebd931f3572456d522101e6e275b66bba644b",
+      "readme_sha256": "9b68ebde3d269d414fe22aac14ef0bb4bd6e6289aa62663741272eb92e25cea8",
+      "discovery_readme_sha256": "9b68ebde3d269d414fe22aac14ef0bb4bd6e6289aa62663741272eb92e25cea8",
       "readme_changed_since_discovery": false,
       "referenced_repositories": [
         "itdoginfo/allow-domains",
@@ -1452,6 +1578,23 @@
       "status": "audited_reference_inventory"
     },
     {
+      "repository": "jhz1022/Shadowrocket-Rules",
+      "readme_url": "https://raw.githubusercontent.com/jhz1022/Shadowrocket-Rules/main/README.md",
+      "readme_sha256": "c00812fcdd908f12413225ccddf47215462c6fa682d1f74b66881b222166a4b5",
+      "discovery_readme_sha256": "c00812fcdd908f12413225ccddf47215462c6fa682d1f74b66881b222166a4b5",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "gaoyifan/china-operator-ip",
+        "loyalsoldier/clash-rules",
+        "loyalsoldier/v2ray-rules-dat",
+        "publicsuffix/list",
+        "v2fly/domain-list-community"
+      ],
+      "reference_count": 5,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
       "repository": "kaonimei/Shadowrocket-ADBlock-Rules",
       "readme_url": "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/README.md",
       "readme_sha256": "9f897b9a55abdf2dc9e1228eea103b9d7f526fed3ed7e86390dccedc51373250",
@@ -1560,6 +1703,17 @@
       "readme_url": "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/README.md",
       "readme_sha256": "5b5dcc233b9ba37c87c9b488b2f12e7a28a6c8cd6211bf1166ccfa9b7040ee58",
       "discovery_readme_sha256": "5b5dcc233b9ba37c87c9b488b2f12e7a28a6c8cd6211bf1166ccfa9b7040ee58",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [],
+      "reference_count": 0,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "tickmao/Rules",
+      "readme_url": "https://raw.githubusercontent.com/tickmao/Rules/master/README.md",
+      "readme_sha256": "aa46308553e28dd53ce28739bcfe548222b04c4df662b347039b1794a8095204",
+      "discovery_readme_sha256": "aa46308553e28dd53ce28739bcfe548222b04c4df662b347039b1794a8095204",
       "readme_changed_since_discovery": false,
       "referenced_repositories": [],
       "reference_count": 0,

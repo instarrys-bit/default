@@ -2,7 +2,7 @@
 
 This report compares normalized domain sets across discovered publisher feeds. It is informational only: overlap does not prove common ancestry, and low overlap does not prove independence.
 
-- Feeds fetched: **10**
+- Feeds fetched: **9**
 - Cross-policy conflict domains: **28**
 
 | Policy | Publisher A | Publisher B | A domains | B domains | Shared | Smaller-set overlap | Jaccard |

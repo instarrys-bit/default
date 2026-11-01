@@ -1,6 +1,6 @@
 # Automated source discovery
 
-- Candidate repositories retained: **186**
+- Candidate repositories retained: **194**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
@@ -683,7 +683,7 @@
 ### [armanlife/iran-blocked-domains](https://github.com/armanlife/iran-blocked-domains)
 
 - Description: List of domains blocked in Iran, ranked by importanc
-- Stars: 57; archived: False; fork: False
+- Stars: 58; archived: False; fork: False
 - Search queries: geosite domain
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
@@ -836,6 +836,22 @@
   - https://raw.githubusercontent.com/crayonluffy/shadowrocket-rules/main/configs/adblock.conf
   - https://raw.githubusercontent.com/crayonluffy/shadowrocket-rules/main/configs/ai-only.conf
 
+### [danielgzd/proxy-rules](https://github.com/danielgzd/proxy-rules)
+
+- Description: Clash、Loon、Shadowrocket 等代理工具的规则与配置集合
+- Stars: 3; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
+### [ddranic/ios-proxy-rules](https://github.com/ddranic/ios-proxy-rules)
+
+- Description: Auto-generated iOS proxy rules for Shadowrocket, Surge, Loon, Stash, sing-box and Clash.
+- Stars: 5; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
 ### [deezertidal/shadowrocket-rules](https://github.com/deezertidal/shadowrocket-rules)
 
 - Description: 小火箭 shadowrocket 配置文件 模块 脚本 module sgmodule 图文教程 规则 分流 破解 解锁
@@ -948,6 +964,14 @@
 - Description: Ad blocking domain lists list for use with Diversion
 - Stars: 0; archived: False; fork: False
 - Search queries: adblock domain list
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
+### [gooddday002/shadowrocket-safe-rules](https://github.com/gooddday002/shadowrocket-safe-rules)
+
+- Description: Validated Shadowrocket rule mirror with fail-closed automatic updates
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
@@ -1075,6 +1099,15 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [jhz1022/Shadowrocket-Rules](https://github.com/jhz1022/Shadowrocket-Rules)
+
+- Description: Self-maintained Shadowrocket rules: mainland direct, default proxy, daily validated GitHub Actions builds.
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/jhz1022/Shadowrocket-Rules/main/dist/Shadowrocket.conf
+
 ### [kaonimei/Shadowrocket-ADBlock-Rules](https://github.com/kaonimei/Shadowrocket-ADBlock-Rules)
 
 - Description: 提供丰富的 Shadowrocket 规则，拥有广告过滤功能。每日 8 时重新构建规则。
@@ -1144,6 +1177,14 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [lucifer-holly/shadowrocket-rules](https://github.com/lucifer-holly/shadowrocket-rules)
+
+- Description: Not supplied
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
 ### [ly-huang/shadowrocket-rules-assistant](https://github.com/ly-huang/shadowrocket-rules-assistant)
 
 - Description: Native macOS Shadowrocket rules manager with a lightweight Chrome/Edge extension
@@ -1201,6 +1242,14 @@
 - Curated seed links: 0
   - https://raw.githubusercontent.com/miacmo/shadowrocket-uzcc-rules/main/sr_ai_proxy_hk.conf
   - https://raw.githubusercontent.com/miacmo/shadowrocket-uzcc-rules/main/sr_lazy_group_ai.conf
+
+### [minkaka/shadowrocket-rules](https://github.com/minkaka/shadowrocket-rules)
+
+- Description: Not supplied
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
 
 ### [mirninec/socks5-browser-configurator](https://github.com/mirninec/socks5-browser-configurator)
 
@@ -1373,6 +1422,14 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [sbunkov/shadowrocket-configuration](https://github.com/sbunkov/shadowrocket-configuration)
+
+- Description: Configs, rules and modules.
+- Stars: 6; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
 ### [seedmonn/zkeen-patcher](https://github.com/seedmonn/zkeen-patcher)
 
 - Description: Patcher tool for zkeen geosite/geoip .dat files with v2fly domain-list-community integration
@@ -1504,6 +1561,18 @@
   - https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt
   - https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt
   - https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt
+
+### [tickmao/Rules](https://github.com/tickmao/Rules)
+
+- Description: :popcorn: [个人自用配置] Ownuse for QuantumultX、Surge、Loon、Clash、Shadowrocket、Shadowsocks
+- Stars: 92; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 4
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/tickmao/Rules/master/Loon/Loon.conf
+  - https://raw.githubusercontent.com/tickmao/Rules/master/QuantumultX/QuantumultX.conf
+  - https://raw.githubusercontent.com/tickmao/Rules/master/Shadowrocket/Shadowrocket.conf
+  - https://raw.githubusercontent.com/tickmao/Rules/master/Surge/Surge.conf
 
 ### [tientrananhhung/adblock-list](https://github.com/tientrananhhung/adblock-list)
 

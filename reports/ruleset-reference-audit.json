@@ -30,23 +30,43 @@
   "file_stats": {
     "direct.list": {
       "policy": "DIRECT",
-      "line_count": 0,
-      "valid_domain_lines": 0
+      "line_count": 32,
+      "valid_domain_lines": 32,
+      "exact_domain_lines": 0,
+      "suffix_domain_lines": 32
     },
     "proxy.list": {
       "policy": "PROXY",
-      "line_count": 0,
-      "valid_domain_lines": 0
+      "line_count": 119,
+      "valid_domain_lines": 119,
+      "exact_domain_lines": 0,
+      "suffix_domain_lines": 119
     },
     "reject.list": {
       "policy": "REJECT",
-      "line_count": 24,
-      "valid_domain_lines": 24
+      "line_count": 22,
+      "valid_domain_lines": 22,
+      "exact_domain_lines": 22,
+      "suffix_domain_lines": 0
     }
   },
   "cross_file_duplicates": [],
   "cross_policy_conflicts": [],
+  "precedence_resolved_overlaps": [
+    {
+      "earlier": {
+        "kind": "DOMAIN",
+        "domain": "adsfilebssdlbig.tx.kugou.com",
+        "policy": "REJECT"
+      },
+      "later": {
+        "kind": "DOMAIN-SUFFIX",
+        "domain": "kugou.com",
+        "policy": "DIRECT"
+      }
+    }
+  ],
   "errors": [],
   "passed": true,
-  "scope": "read-only; does not edit config, DNS, MITM, or RULE-SET references"
+  "scope": "read-only; validates DOMAIN and DOMAIN-SUFFIX scopes, cross-policy scope intersections, and does not edit config, DNS, MITM, or RULE-SET references"
 }

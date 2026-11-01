@@ -40,6 +40,10 @@
 | PaPerseller/chn-iplist | unsupported_or_too_small | — | 0 | unchanged | none |
 | Vann-Dev/proxy-list | unsupported_or_too_small | PROXY | 1 | unchanged | README_policy_reference |
 | Vann-Dev/proxy-list | unsupported_or_too_small | PROXY | 1 | unchanged | README_policy_reference |
+| tickmao/Rules | unsupported_or_too_small | — | 0 | baseline_initialized | none |
+| tickmao/Rules | unsupported_or_too_small | — | 0 | baseline_initialized | none |
+| tickmao/Rules | unsupported_or_too_small | — | 0 | baseline_initialized | none |
+| tickmao/Rules | unsupported_or_too_small | — | 0 | baseline_initialized | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | ambiguous |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | ambiguous |
 | bgpeer/rules | fetch_or_validation_error | — | 0 | unavailable | none |
@@ -52,14 +56,10 @@
 | RzMY/IOS-AntiRevoke-DNS-Rules | shadowrocket-domain-rules | REJECT | 38 | unchanged | explicit_third_field |
 | RzMY/IOS-AntiRevoke-DNS-Rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | RzMY/IOS-AntiRevoke-DNS-Rules | shadowrocket-domain-rules | REJECT | 38 | unchanged | explicit_third_field |
-| RzMY/IOS-AntiRevoke-DNS-Rules | shadowrocket-domain-rules | REJECT | 38 | unchanged | explicit_third_field |
-| RzMY/IOS-AntiRevoke-DNS-Rules | unsupported_or_too_small | — | 0 | unchanged | none |
-| RzMY/IOS-AntiRevoke-DNS-Rules | domain-only | — | 38 | unchanged | none |
-| RzMY/IOS-AntiRevoke-DNS-Rules | unsupported_or_too_small | REJECT | 2 | unchanged | explicit_third_field |
 
 ## Source update drift
 
-- New source files: 0
+- New source files: 4
 - Changed source files: 0
 - Added domain entries: 0
 - Removed domain entries: 0
@@ -373,6 +373,42 @@
 - Explicit action counts: {}
 - Policy evidence: README_policy_reference; candidate: PROXY
 
+### tickmao/Rules
+
+- URL: https://raw.githubusercontent.com/tickmao/Rules/master/Loon/Loon.conf
+- SHA-256: 6ff07e8b499ff29315a0902bb0c04270e1432457bf43ebac23e2faac0121c934
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
+- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
+- Explicit action counts: {}
+- Policy evidence: none; candidate: none
+
+### tickmao/Rules
+
+- URL: https://raw.githubusercontent.com/tickmao/Rules/master/QuantumultX/QuantumultX.conf
+- SHA-256: b3a1604dee6cdc9c2c5eaf2967d4df15b3f590d0d96c79a93157e56bf64b34e5
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
+- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
+- Explicit action counts: {}
+- Policy evidence: none; candidate: none
+
+### tickmao/Rules
+
+- URL: https://raw.githubusercontent.com/tickmao/Rules/master/Shadowrocket/Shadowrocket.conf
+- SHA-256: 8dda3cba70c21db5478db01adacfecee8e4ad7698ecb79ef12755e14812a0507
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
+- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
+- Explicit action counts: {}
+- Policy evidence: none; candidate: none
+
+### tickmao/Rules
+
+- URL: https://raw.githubusercontent.com/tickmao/Rules/master/Surge/Surge.conf
+- SHA-256: 45860b996eae7418f99ce85fdfc681d9d6f956a2fb93a4080169d212d445b5a5
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
+- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
+- Explicit action counts: {}
+- Policy evidence: none; candidate: none
+
 ### bgpeer/rules
 
 - URL: https://raw.githubusercontent.com/bgpeer/rules/main/QX.conf
@@ -479,42 +515,6 @@
 - Exact DOMAIN: 38; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {"REJECT": 38}
-- Policy evidence: explicit_third_field; candidate: REJECT
-
-### RzMY/IOS-AntiRevoke-DNS-Rules
-
-- URL: https://raw.githubusercontent.com/RzMY/IOS-AntiRevoke-DNS-Rules/main/output/RevokeGuard_Surge.txt
-- SHA-256: 5519a4db7a572d97b600562a50e930b99e8568ae1ffa387d6862245dfed5c195
-- Exact DOMAIN: 38; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
-- Explicit action counts: {"REJECT": 38}
-- Policy evidence: explicit_third_field; candidate: REJECT
-
-### RzMY/IOS-AntiRevoke-DNS-Rules
-
-- URL: https://raw.githubusercontent.com/RzMY/IOS-AntiRevoke-DNS-Rules/main/output/RevokeGuard_hosts.txt
-- SHA-256: 8f3134ea38fa62554b439d8593949100b8ea5d97c55d917566293f725c7e043a
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
-- Explicit action counts: {}
-- Policy evidence: none; candidate: none
-
-### RzMY/IOS-AntiRevoke-DNS-Rules
-
-- URL: https://raw.githubusercontent.com/RzMY/IOS-AntiRevoke-DNS-Rules/main/output/domains.txt
-- SHA-256: c8e5cdca90b555c39f43e5b0d96acc702fb592bb7c70357f629e830a113c601d
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 38; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
-- Explicit action counts: {}
-- Policy evidence: none; candidate: none
-
-### RzMY/IOS-AntiRevoke-DNS-Rules
-
-- URL: https://raw.githubusercontent.com/RzMY/IOS-AntiRevoke-DNS-Rules/main/output/enhanced/RevokeGuard_Enhanced_Loon.txt
-- SHA-256: 8bd52cafce5741f01873c6c363c0b18c166a45997003912114fcec887e9a22a8
-- Exact DOMAIN: 2; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
-- Explicit action counts: {"REJECT": 2}
 - Policy evidence: explicit_third_field; candidate: REJECT
 
 ## Activation gate
