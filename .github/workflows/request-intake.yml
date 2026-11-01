@@ -1,0 +1,68 @@
+name: Sync YouTube request-domain observations
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: request-domain-intake
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: true
+
+      - name: Fetch domain-only observations
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --max-time 30 \
+            https://sr-domain-intake.inner-archetype.workers.dev/v1/export \
+            -o /tmp/request-observations.json
+          python3 - <<'PY'
+          import json, re
+          from pathlib import Path
+          payload = json.loads(Path("/tmp/request-observations.json").read_text())
+          if payload.get("schema_version") != 1 or not isinstance(payload.get("observations"), list):
+              raise SystemExit("Invalid intake response schema")
+          pattern = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
+          for row in payload["observations"]:
+              if not isinstance(row, dict) or not pattern.fullmatch(str(row.get("domain", ""))):
+                  raise SystemExit("Invalid domain-only observation")
+          target = Path("sources/request_domain_observations.json")
+          current = json.loads(target.read_text()) if target.exists() else {"schema_version": 1, "observations": []}
+          merged = {row["domain"]: row for row in current.get("observations", [])}
+          for row in payload["observations"]:
+              old = merged.get(row["domain"], {})
+              merged[row["domain"]] = {
+                  "domain": row["domain"],
+                  "first_seen": old.get("first_seen") or row.get("first_seen"),
+                  "last_seen": max(old.get("last_seen", ""), row.get("last_seen", "")),
+                  "observations": max(int(old.get("observations", 0)), int(row.get("observations", 0)))
+              }
+          result = {"schema_version": 1, "observations": [merged[k] for k in sorted(merged)]}
+          target.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
+          print(f"Synced {len(result['observations'])} unique observed hostnames.")
+          PY
+
+      - name: Commit updated observation ledger
+        run: |
+          set -euo pipefail
+          git add -- sources/request_domain_observations.json
+          if git diff --cached --quiet; then
+            echo "No new observations."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Sync YouTube request-domain observations"
+          git push origin HEAD:main
