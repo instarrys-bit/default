@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Collect policy-labelled domain evidence from every enabled registered source."""
 from __future__ import annotations
-import hashlib,json,re,sys,urllib.request
+import hashlib,json,re,sys,time,urllib.error,urllib.request
 from pathlib import Path
 from urllib.parse import urlparse
 from datetime import datetime,timezone
@@ -26,14 +26,27 @@ def fetch(url):
     if parsed.scheme!="https" or parsed.hostname!="raw.githubusercontent.com" or parsed.username or parsed.password or parsed.port not in (None,443):
         raise ValueError("source URL must be HTTPS raw.githubusercontent.com: "+url)
     req=urllib.request.Request(url,headers={"User-Agent":"Shadowrocket-Deterministic-Audit/1.3"})
-    with urllib.request.urlopen(req,timeout=90) as response:
-        final=urlparse(response.geturl())
-        if response.status!=200 or final.scheme!="https" or final.hostname!="raw.githubusercontent.com":
-            raise ValueError("unexpected source response: "+response.geturl())
-        data=response.read(MAX_BYTES+1)
-    if len(data)>MAX_BYTES:
-        raise ValueError("source exceeds byte limit: "+url)
-    return data
+    transient_http={408,425,429,500,502,503,504}
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req,timeout=90) as response:
+                final=urlparse(response.geturl())
+                if response.status!=200 or final.scheme!="https" or final.hostname!="raw.githubusercontent.com":
+                    raise ValueError("unexpected source response: "+response.geturl())
+                data=response.read(MAX_BYTES+1)
+            if len(data)>MAX_BYTES:
+                raise ValueError("source exceeds byte limit: "+url)
+            return data
+        except urllib.error.HTTPError as error:
+            if error.code not in transient_http or attempt==2:
+                raise
+        except (urllib.error.URLError,TimeoutError) as error:
+            if attempt==2:
+                raise
+        delay=2**(attempt+1)
+        print(f"Transient source fetch failure; retry {attempt+2}/3 in {delay}s: {url}",file=sys.stderr)
+        time.sleep(delay)
+    raise RuntimeError("unreachable source fetch retry state")
 
 def check_source_delta(previous,current,label,ratio=MAX_CHANGE_RATIO,minimum_absolute=MIN_CHANGE_ABSOLUTE):
     added=current-previous
