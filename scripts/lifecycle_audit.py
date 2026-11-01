@@ -55,7 +55,11 @@ def main():
     state_path=DIR/"lifecycle_state.json"
     state=json.loads(state_path.read_text())
     if not state.get("due_milestones") and not state.get("monthly_review_due"):
-        print(json.dumps({"status":"not_due"})); return
+        REPORT.mkdir(parents=True,exist_ok=True)
+        idle={"status":"not_due","published_rule_count":state.get("published_rule_count",0),"next_milestone":state.get("next_milestone",5000),"max_published_rules":30000}
+        (REPORT/"latest.json").write_text(json.dumps(idle,ensure_ascii=False,indent=2)+"\\n")
+        (REPORT/"latest.md").write_text("# Lifecycle audit\\n\\nNo lifecycle review is due. Daily incremental review and publishing continue.\\n")
+        print(json.dumps(idle)); return
     timestamp=datetime.now(timezone.utc).isoformat()
     protected_cfg=json.loads((ROOT/"sources/protected_domains.json").read_text())
     rules={p:set(x.strip() for x in (DIR/(p+".list")).read_text().splitlines() if x.strip() and not x.startswith("#")) for p in POLICIES}
