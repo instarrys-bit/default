@@ -3,7 +3,7 @@
   "assessment_count": 50,
   "drift_summary": {
     "new_source_files": 0,
-    "changed_source_files": 1,
+    "changed_source_files": 0,
     "added_domain_count": 0,
     "removed_domain_count": 0,
     "policy_changes": 0
@@ -30,7 +30,7 @@
       "policy_evidence": "none",
       "activation_eligible": false,
       "repository": "blackmatrix7/ios_rule_script",
-      "stars": 28496,
+      "stars": 28497,
       "archived": false,
       "drift": {
         "status": "unchanged",
@@ -59,7 +59,7 @@
       "policy_evidence": "none",
       "activation_eligible": false,
       "repository": "blackmatrix7/ios_rule_script",
-      "stars": 28496,
+      "stars": 28497,
       "archived": false,
       "drift": {
         "status": "unchanged",
@@ -109671,7 +109671,7 @@
       "policy_evidence": "ambiguous",
       "activation_eligible": false,
       "repository": "Loyalsoldier/v2ray-rules-dat",
-      "stars": 20985,
+      "stars": 20984,
       "archived": false,
       "drift": {
         "status": "unchanged",
@@ -136192,7 +136192,7 @@
       "policy_evidence": "ambiguous",
       "activation_eligible": false,
       "repository": "Loyalsoldier/v2ray-rules-dat",
-      "stars": 20985,
+      "stars": 20984,
       "archived": false,
       "drift": {
         "status": "unchanged",
@@ -299696,9 +299696,9 @@
       "stars": 1181,
       "archived": false,
       "drift": {
-        "status": "content_changed_baseline_schema_unavailable",
-        "added_domain_count": null,
-        "removed_domain_count": null,
+        "status": "unchanged",
+        "added_domain_count": 0,
+        "removed_domain_count": 0,
         "policy_changed": false
       }
     },

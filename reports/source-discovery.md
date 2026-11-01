@@ -1,6 +1,6 @@
 # Automated source discovery
 
-- Candidate repositories retained: **200**
+- Candidate repositories retained: **201**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
@@ -365,7 +365,7 @@
 ### [Loyalsoldier/v2ray-rules-dat](https://github.com/Loyalsoldier/v2ray-rules-dat)
 
 - Description: 🦄 🎃 👻 V2Ray 路由规则文件加强版，可代替 V2Ray 官方 geoip.dat 和 geosite.dat，适用于 V2Ray、Xray-core、mihomo(Clash-Meta)、hysteria、Trojan-Go 和 leaf。Enhanced edition of V2Ray rules dat files, applicable to V2Ray, Xray-core, mihomo(Clash-Meta), hysteria, Trojan-Go and leaf.
-- Stars: 20985; archived: False; fork: False
+- Stars: 20984; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 3
 - Curated seed links: 3
@@ -739,7 +739,7 @@
 ### [blackmatrix7/ios_rule_script](https://github.com/blackmatrix7/ios_rule_script)
 
 - Description: 分流规则、重写写规则及脚本。
-- Stars: 28496; archived: False; fork: False
+- Stars: 28497; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 2
 - Curated seed links: 2
@@ -1329,6 +1329,14 @@
 - Description: Pi-hole-ready adlist generated from the shared Mohavise adblock core domain list.
 - Stars: 0; archived: False; fork: False
 - Search queries: adblock domain list
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
+### [moshall/myself_rules](https://github.com/moshall/myself_rules)
+
+- Description: 个人维护的Quanx和Shadowrocket规则
+- Stars: 2; archived: False; fork: False
+- Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 

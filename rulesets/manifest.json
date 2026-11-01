@@ -269,27 +269,27 @@
     }
   },
   "reviewed_total": 978,
-  "approved_total": 176,
-  "held_total": 802,
+  "approved_total": 91,
+  "held_total": 887,
   "status_count": {
-    "ALREADY_COVERED": 3,
-    "APPROVED": 176,
-    "CONFLICT": 35,
+    "ALREADY_COVERED": 328,
+    "APPROVED": 91,
+    "CONFLICT": 79,
     "POLICY_CONFLICT": 44,
-    "REVIEW": 701,
-    "RISK_HOLD": 19
+    "REVIEW": 424,
+    "RISK_HOLD": 12
   },
   "deterministic_review_progress": {
     "candidate_total": 978,
-    "approved_total": 176,
-    "held_total": 802,
+    "approved_total": 91,
+    "held_total": 887,
     "status_count": {
-      "ALREADY_COVERED": 3,
-      "APPROVED": 176,
-      "CONFLICT": 35,
+      "ALREADY_COVERED": 328,
+      "APPROVED": 91,
+      "CONFLICT": 79,
       "POLICY_CONFLICT": 44,
-      "REVIEW": 701,
-      "RISK_HOLD": 19
+      "REVIEW": 424,
+      "RISK_HOLD": 12
     }
   },
   "format": "Standalone Shadowrocket domain RULE-SET lists: DOMAIN,<domain> and DOMAIN-SUFFIX,<domain>; source scope is preserved and policy is assigned by the RULE-SET reference.",

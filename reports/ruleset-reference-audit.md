@@ -3,12 +3,14 @@
 - Config authority: shadowrocket/ss.conf
 - RULE-SET references: 3
 - Result: PASS
+- External RULE-SET order: REJECT -> PROXY -> DIRECT
+- Placement audit: PASS
 
 ## References
 
-- line 653: reject.list -> REJECT
-- line 1458: direct.list -> DIRECT
-- line 2158: proxy.list -> PROXY
+- line 2258: reject.list -> REJECT
+- line 2259: proxy.list -> PROXY
+- line 2260: direct.list -> DIRECT
 
 ## Generated file counts
 

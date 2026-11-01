@@ -28,7 +28,7 @@
 | Jovanykoch/rules | domain-only | — | 957 | unchanged | ambiguous |
 | GMOogway/shadowrocket-rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | PaPerseller/chn-iplist | unsupported_or_too_small | — | 0 | unchanged | none |
-| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | content_changed_baseline_schema_unavailable | README_policy_reference |
+| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | unchanged | README_policy_reference |
 | PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | unchanged | README_policy_reference |
 | PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | unchanged | README_policy_reference |
 | PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | unchanged | README_policy_reference |
@@ -60,7 +60,7 @@
 ## Source update drift
 
 - New source files: 0
-- Changed source files: 1
+- Changed source files: 0
 - Added domain entries: 0
 - Removed domain entries: 0
 - Policy changes: 0
