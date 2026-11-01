@@ -218,7 +218,12 @@ def main():
     if not enabled:
         raise ValueError("no enabled sources are configured")
     now=datetime.now(timezone.utc).isoformat()
-    previous_output=json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {"sources":[]}
+    if OUTPUT.exists():
+        previous_output=json.loads(OUTPUT.read_text(encoding="utf-8"))
+    else:
+        manifest_path=ROOT/"rulesets/manifest.json"
+        previous_manifest=json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
+        previous_output={"sources":previous_manifest.get("source_inventory",[])}
     previous_hashes={str(x.get("id")):str(x.get("sha256")) for x in previous_output.get("sources",[]) if x.get("id") and x.get("sha256")}
     source_data={}
     deltas={}
