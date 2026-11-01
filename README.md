@@ -17,23 +17,23 @@
 - `sources/`：域名来源、确定性审核账本、策略与主配置保护元数据
 - `scripts/`：域名采集、确定性证据审核、冲突检测、规则集构建和质量验证
 - `data/`、`reports/`、`dist/`：采集数据、审计报告和构建产物
-- `modules/adblock/`：社交与搜索广告处理脚本
-- `modules/maasea/`：Maasea 相关 YouTube 脚本、模块和许可证
+- `modules/adblock/`：自有广告处理模块及其运行脚本；第三方衍生代码的许可证与来源声明随目录保留
 
 ## 可选模块的使用边界
 
 迁移到仓库不代表已启用或已验证其设备端效果：
 
-- `modules/adblock/Social_Adblock.js`：独立脚本，尚未接入主配置。
-- `modules/maasea/youtube-ads.sgmodule`：独立模块。其响应体脚本针对 `youtubei.googleapis.com`，模块说明明确指出需要对该主机进行 HTTPS 解密；本项目主配置不因此启用 MITM。
-- `modules/maasea/youtube_request_local.js`：不再保留 Worker 上传脚本；当前规则自动化不依赖该观察脚本。
-- `modules/maasea/youtube_response.js`：YouTube 响应处理脚本。
+- `modules/adblock/Targeted_App_AdBlock_Ultimate.sgmodule`：用户维护的定向广告处理模块。
+- `modules/adblock/Social_Adblock.js`：社交与搜索响应处理脚本。
+- `modules/adblock/scripts/youtube_initplayback_observer.js`：仅在本地记录 YouTube initplayback 主机名，不保存完整 URL，也不发起网络请求。
+- `modules/adblock/scripts/youtube_protobuf_response_filter.js`：YouTube Protobuf 响应处理脚本；其代码基于 Maasea 上游脚本修改，来源与许可证声明保留在文件及目录中。
+- 旧的独立 `youtube-ads.sgmodule` 已从当前目录结构移除，不再作为本项目发布模块。
 
 这些模块不会因文件迁移而自动进入 `ss.conf`。在确认兼容性、隐私边界和设备端效果之前，不应直接启用。
 
 ## 许可证与来源
 
-`modules/maasea/LICENSE-APACHE-2.0-Maasea` 随 Maasea 相关文件一并保留。使用、修改或再分发相关上游代码时，应阅读并遵守该许可证及各文件原有版权声明。
+`modules/adblock/LICENSE-APACHE-2.0-Maasea` 保留 Maasea 上游 Apache 2.0 许可证。使用、修改或再分发相关上游代码时，应阅读并遵守该许可证及各文件原有版权声明。
 
 
 ## GitHub-only 域名观察入口
