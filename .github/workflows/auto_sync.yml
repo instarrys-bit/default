@@ -152,7 +152,6 @@ jobs:
             reports/source-assessment.md \
             reports/source-candidate-matrix.md \
             reports/source-activation.md \
-            reports/lifecycle \
             reports/policy-source-overlap.md \
             sources/policy_source_overlap.json \
             sources/discovered_sources.json \
@@ -221,6 +220,7 @@ jobs:
             sources/domain_reviews.json \
             sources/domain_sources.json \
             sources/source_activation_log.json \
+            reports/lifecycle \
             reports/external-domain-audit.md \
             reports/config-drift-audit.md \
             reports/config-drift-audit.json \
