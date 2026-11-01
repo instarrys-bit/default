@@ -47,7 +47,7 @@ def main():
     archived_deleted={(str(x.get("policy","")).upper(),str(x.get("rule",""))) for x in deletion_archive.get("items",[]) if not x.get("restored_at")}
     config_archive_path=OUT/"config_conflict_archive.json"
     config_archive=json.loads(config_archive_path.read_text(encoding="utf-8")) if config_archive_path.exists() else {"items":[]}
-    config_conflict_archived={(str(x.get("policy","")).upper(),str(x.get("rule",""))) for x in config_archive.get("items",[]) if not x.get("restored_at")}
+    config_conflict_archived={(str(x.get("policy","")).upper(),str(x.get("rule",""))) for x in config_archive.get("items",[]) if not x.get("restored_at") and not x.get("superseded_at")}
     archived_deleted |= config_conflict_archived
     previous_published={policy:set() for policy in POLICIES}
     for policy in POLICIES:
