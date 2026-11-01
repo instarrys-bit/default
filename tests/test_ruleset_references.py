@@ -112,5 +112,40 @@ class RuleSetReferenceAuditTests(unittest.TestCase):
             self.assertEqual(len(report["cross_file_duplicates"]), 1)
             self.assertEqual(len(report["cross_policy_conflicts"]), 1)
 
+    def test_suffix_domain_rules_are_accepted_and_counted(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "direct.list").write_text("DOMAIN-SUFFIX,example.cn\\nDOMAIN,api.example.cn\\n", encoding="utf-8")
+            (root / "proxy.list").write_text("", encoding="utf-8")
+            (root / "reject.list").write_text("", encoding="utf-8")
+            manifest = {"outputs": ["direct.list", "proxy.list", "reject.list"], "rule_count": {"DIRECT": 2, "PROXY": 0, "REJECT": 0}}
+            config = "\\n".join([
+                "[Rule]",
+                "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list,DIRECT",
+                "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list,PROXY",
+                "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/reject.list,REJECT",
+            ])
+            report = inspect(config, manifest, root)
+            self.assertTrue(report["passed"], report["errors"])
+            self.assertEqual(report["file_stats"]["direct.list"]["suffix_domain_lines"], 1)
+            self.assertEqual(report["file_stats"]["direct.list"]["exact_domain_lines"], 1)
+
+    def test_cross_scope_policy_conflict_is_detected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "direct.list").write_text("DOMAIN-SUFFIX,example.com\\n", encoding="utf-8")
+            (root / "proxy.list").write_text("DOMAIN,api.example.com\\n", encoding="utf-8")
+            (root / "reject.list").write_text("", encoding="utf-8")
+            manifest = {"outputs": ["direct.list", "proxy.list", "reject.list"], "rule_count": {"DIRECT": 1, "PROXY": 1, "REJECT": 0}}
+            config = "\\n".join([
+                "[Rule]",
+                "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list,DIRECT",
+                "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list,PROXY",
+                "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/reject.list,REJECT",
+            ])
+            report = inspect(config, manifest, root)
+            self.assertFalse(report["passed"])
+            self.assertEqual(len(report["cross_policy_conflicts"]), 1)
+
 if __name__ == "__main__":
     unittest.main()

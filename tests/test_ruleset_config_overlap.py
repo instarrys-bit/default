@@ -67,5 +67,18 @@ DOMAIN,late.example.com,REJECT
         self.assertEqual(report["results"][0]["status"], "NOT_COVERED_BY_PRIOR_DOMAIN_RULES")
 
 
+    def test_suffix_candidate_detects_conflicting_descendant_exact_rule(self):
+        rules = [(2, "DOMAIN,api.example.com,PROXY")]
+        result = match_candidate("example.com", "DIRECT", rules, "suffix_candidate")
+        self.assertEqual(result["status"], "CONFLICT")
+
+    def test_suffix_candidate_only_treats_covering_suffix_as_fully_covered(self):
+        rules = [(2, "DOMAIN,example.com,DIRECT")]
+        partial = match_candidate("example.com", "DIRECT", rules, "suffix_candidate")
+        self.assertEqual(partial["status"], "POTENTIAL_MATCH")
+        covering = match_candidate("sub.example.com", "DIRECT", [(2, "DOMAIN-SUFFIX,example.com,DIRECT")], "suffix_candidate")
+        self.assertEqual(covering["status"], "ALREADY_COVERED")
+
 if __name__ == "__main__":
     unittest.main()
+

@@ -53,17 +53,37 @@ def prior_rule_lines(config_text: str) -> list[tuple[int, str]]:
     return result
 
 
-def match_candidate(domain: str, policy: str, rules: list[tuple[int, str]]) -> dict:
+def scope_intersects(candidate_scope: str, domain: str, kind: str, target: str) -> bool:
+    domain, target = domain.lower().strip("."), target.lower().strip(".")
+    if candidate_scope == "exact_candidate":
+        return domain_matches(domain, kind, target)
+    if kind == "DOMAIN":
+        return target == domain or target.endswith("." + domain)
+    return (
+        target == domain or target.endswith("." + domain)
+        or domain.endswith("." + target)
+    )
+
+
+def match_candidate(domain: str, policy: str, rules: list[tuple[int, str]], scope: str = "exact_candidate") -> dict:
     for number, line in rules:
         fields = [part.strip() for part in line.split(",")]
         kind = fields[0].upper()
         if kind in {"DOMAIN", "DOMAIN-SUFFIX"} and len(fields) >= 3:
-            if domain_matches(domain, kind, fields[1]):
+            if scope_intersects(scope, domain, kind, fields[1]):
                 matched_policy = fields[2].upper()
+                covers_entire_suffix = (
+                    scope == "suffix_candidate"
+                    and kind == "DOMAIN-SUFFIX"
+                    and (domain == fields[1].lower() or domain.endswith("." + fields[1].lower()))
+                )
+                status = "ALREADY_COVERED" if matched_policy == policy and (scope != "suffix_candidate" or covers_entire_suffix) else (
+                    "POTENTIAL_MATCH" if matched_policy == policy else "CONFLICT"
+                )
                 return {
-                    "status": "ALREADY_COVERED" if matched_policy == policy else "CONFLICT",
+                    "status": status,
                     "line": number, "rule": line, "effective_policy": matched_policy,
-                    "reason": "Prior first-match exact/suffix domain rule"
+                    "reason": "Prior first-match exact/suffix domain rule intersects candidate scope"
                 }
         elif kind == "DOMAIN-KEYWORD" and len(fields) >= 3:
             if fields[1].lower() in domain:
@@ -137,7 +157,11 @@ def audit(config_text: str, ledger: dict) -> dict:
             continue
         if policy not in POLICIES:
             continue
-        match = match_candidate(domain, policy, rules)
+        scope = str(item.get("source_entry_type", "exact_candidate"))
+        if scope not in {"exact_candidate", "suffix_candidate"}:
+            errors.append("Unsupported ledger scope for " + domain + ": " + scope)
+            continue
+        match = match_candidate(domain, policy, rules, scope)
         if match["status"] == "NOT_COVERED_BY_PRIOR_DOMAIN_RULES":
             bypass = skip_proxy_match(domain, skip_proxy_entries)
             if bypass:
@@ -145,7 +169,7 @@ def audit(config_text: str, ledger: dict) -> dict:
                          "line": None, "rule": "skip-proxy = " + bypass,
                          "effective_policy": "DIRECT", "reason": "Existing General skip-proxy entry"}
         result = {
-            "domain": domain, "policy": policy,
+            "domain": domain, "policy": policy, "source_entry_type": scope,
             "ledger_status": str(item.get("status", "UNKNOWN")),
             **match
         }
@@ -168,7 +192,7 @@ def audit(config_text: str, ledger: dict) -> dict:
         "errors": errors,
         "passed": not errors,
         "limitations": [
-            "Only rules before the first RULE-SET reference are considered as higher-priority rules.",
+            "Only rules before the first RULE-SET reference are considered as higher-priority rules. DOMAIN-SUFFIX candidates are checked against the full suffix scope, including exact descendant rules.",
             "AND/OR/NOT operands are flagged as potential matches; compound truth is not inferred.",
             "DOMAIN-KEYWORD and URL-REGEX matches are reported as potential, not guaranteed, coverage.",
             "IP-based and runtime DNS-dependent matches cannot be established from domain names alone.",

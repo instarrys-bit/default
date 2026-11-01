@@ -14,7 +14,8 @@ REPORT_JSON = ROOT / "reports" / "ruleset-reference-audit.json"
 REPORT_MD = ROOT / "reports" / "ruleset-reference-audit.md"
 EXPECTED_REPO_PATH = "/instarrys-bit/default/main/rulesets/"
 POLICY_BY_FILE = {"direct.list": "DIRECT", "proxy.list": "PROXY", "reject.list": "REJECT"}
-DOMAIN_LINE = re.compile(r"^DOMAIN,([A-Za-z0-9.-]+)$", re.IGNORECASE)
+DOMAIN_LINE = re.compile(r"^(DOMAIN|DOMAIN-SUFFIX),([A-Za-z0-9.-]+)$", re.IGNORECASE)
+DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)(?:\\.(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?))+$")
 
 def extract_rule_set_references(config_text: str) -> list[dict]:
     refs, in_rules = [], False
@@ -75,30 +76,61 @@ def inspect(config_text: str, manifest: dict, ruleset_dir: Path = RULESETS) -> d
             errors.append(f"missing generated ruleset file: {filename}")
             continue
         lines = [x.strip() for x in path.read_text(encoding="utf-8").splitlines() if x.strip()]
-        domains = [DOMAIN_LINE.fullmatch(x).group(1).lower() for x in lines if DOMAIN_LINE.fullmatch(x)]
-        if len(domains) != len(lines):
-            errors.append(f"{filename} contains {len(lines)-len(domains)} non-exact DOMAIN entries")
-        if len(domains) != len(set(domains)):
-            errors.append(f"{filename} contains duplicate domains")
-        for domain in sorted(set(domains)):
-            domain_owners.setdefault(domain, []).append(policy)
+        parsed = [DOMAIN_LINE.fullmatch(x) for x in lines]
+        valid = [(m.group(1).upper(), m.group(2).lower()) for m in parsed if m]
+        invalid_count = len(lines) - len(valid)
+        if invalid_count:
+            errors.append(f"{filename} contains {invalid_count} unsupported or malformed domain-scope entries")
+        for kind, domain in valid:
+            if not DOMAIN_RE.fullmatch(domain):
+                errors.append(f"{filename} contains invalid domain: {domain}")
+        if len(valid) != len(set(valid)):
+            errors.append(f"{filename} contains duplicate domain scopes")
+        for kind, domain in sorted(set(valid)):
+            domain_owners.setdefault((kind, domain), []).append(policy)
         if len(lines) != int(manifest_counts.get(policy, -1)):
             errors.append(f"{filename} line count {len(lines)} differs from manifest {policy} count {manifest_counts.get(policy)}")
-        file_stats[filename] = {"policy": policy, "line_count": len(lines), "valid_domain_lines": len(domains)}
+        file_stats[filename] = {
+            "policy": policy, "line_count": len(lines),
+            "valid_domain_lines": len(valid),
+            "exact_domain_lines": sum(1 for kind, _ in valid if kind == "DOMAIN"),
+            "suffix_domain_lines": sum(1 for kind, _ in valid if kind == "DOMAIN-SUFFIX"),
+        }
 
     cross_file_duplicates = []
     cross_policy_conflicts = []
-    for domain, policies in sorted(domain_owners.items()):
+    entries = [
+        {"kind": kind, "domain": domain, "policy": policy}
+        for (kind, domain), policies in domain_owners.items()
+        for policy in policies
+    ]
+    for key, policies in sorted(domain_owners.items()):
         if len(policies) > 1:
-            item = {"domain": domain, "policies": policies}
-            cross_file_duplicates.append(item)
-            if len(set(policies)) > 1:
-                cross_policy_conflicts.append(item)
+            cross_file_duplicates.append({"kind": key[0], "domain": key[1], "policies": policies})
+    for i, left in enumerate(entries):
+        for right in entries[i+1:]:
+            if left["policy"] == right["policy"]:
+                continue
+            a, b = left["domain"], right["domain"]
+            intersects = (
+                (left["kind"] == "DOMAIN" and (a == b or (right["kind"] == "DOMAIN-SUFFIX" and (a == b or a.endswith("." + b)))))
+                or (right["kind"] == "DOMAIN" and (a == b or (left["kind"] == "DOMAIN-SUFFIX" and (b == a or b.endswith("." + a)))))
+                or (left["kind"] == "DOMAIN-SUFFIX" and right["kind"] == "DOMAIN-SUFFIX" and (a == b or a.endswith("." + b) or b.endswith("." + a)))
+            )
+            if intersects:
+                conflict = {"left": left, "right": right}
+                if conflict not in cross_policy_conflicts:
+                    cross_policy_conflicts.append(conflict)
     for item in cross_file_duplicates:
-        if len(set(item["policies"])) > 1:
-            errors.append("cross-file policy conflict for " + item["domain"] + ": " + ", ".join(item["policies"]))
-        else:
-            errors.append("cross-file duplicate domain under same policy: " + item["domain"] + " (" + item["policies"][0] + ")")
+        if len(set(item["policies"])) == 1:
+            errors.append("cross-file duplicate domain scope under same policy: " + item["kind"] + "," + item["domain"])
+    for item in cross_policy_conflicts:
+        errors.append(
+            "cross-file scope conflict: " + item["left"]["kind"] + "," + item["left"]["domain"]
+            + " (" + item["left"]["policy"] + ") overlaps "
+            + item["right"]["kind"] + "," + item["right"]["domain"]
+            + " (" + item["right"]["policy"] + ")"
+        )
 
     return {
         "schema_version": 2, "config_path": "shadowrocket/ss.conf",
@@ -107,7 +139,7 @@ def inspect(config_text: str, manifest: dict, ruleset_dir: Path = RULESETS) -> d
         "cross_file_duplicates": cross_file_duplicates,
         "cross_policy_conflicts": cross_policy_conflicts,
         "errors": errors, "passed": not errors,
-        "scope": "read-only; does not edit config, DNS, MITM, or RULE-SET references"
+        "scope": "read-only; validates DOMAIN and DOMAIN-SUFFIX scopes, cross-policy scope intersections, and does not edit config, DNS, MITM, or RULE-SET references"
     }
 
 def main() -> int:
