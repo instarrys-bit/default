@@ -69,7 +69,7 @@ def main():
     obs=json.loads(obs_path.read_text()) if obs_path.exists() else {"items":{}}
     archive=json.loads(archive_path.read_text()) if archive_path.exists() else {"items":[]}
     queue=json.loads(queue_path.read_text()) if queue_path.exists() else {"items":[]}
-    restored=[]; missing=[]
+    restored=[]; missing=[]; restored_keys=set()
     for key in [x.strip() for x in os.environ.get("LIFECYCLE_RESTORE_IDS","").split(",") if x.strip()]:
         old=next((x for x in archive["items"] if x["id"]==key and not x.get("restored_at")),None)
         if not old: missing.append(key); continue
@@ -81,6 +81,8 @@ def main():
             queue["items"].append({"policy":policy,"scope":"suffix_candidate" if line.startswith("DOMAIN-SUFFIX,") else "exact_candidate","domain":line.split(",",1)[1],"queued_at":timestamp,"priority":0,"reason":"User-requested restoration"})
             destination="priority_queue"
         old["restored_at"]=timestamp; old["restore_destination"]=destination
+        restored_keys.add(key)
+        obs.setdefault("items",{}).pop(key,None)
         restored.append({"id":key,"policy":policy,"rule":line,"destination":destination})
 
     work=[]
@@ -88,7 +90,9 @@ def main():
         for line in sorted(rules[policy]):
             if not line.startswith(("DOMAIN,","DOMAIN-SUFFIX,")): continue
             domain=line.split(",",1)[1].lower().strip(".")
-            if not protected(domain,protected_cfg): work.append((rid(policy.upper(),line),policy,line,domain))
+            identity=rid(policy.upper(),line)
+            if not protected(domain,protected_cfg) and identity not in restored_keys:
+                work.append((identity,policy,line,domain))
     def run(item):
         key,policy,line,domain=item
         return key,policy,line,domain,inspect(domain)
