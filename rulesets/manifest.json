@@ -8,18 +8,51 @@
     "proxy.list",
     "reject.list"
   ],
-  "review_engine": "deterministic-domain-audit/2.1",
+  "review_engine": "deterministic-domain-audit/3.0",
   "minimum_independent_sources": 2,
   "minimum_confidence_score": 0.8,
   "required_sources_by_policy": {
     "DIRECT": [],
     "PROXY": [],
-    "REJECT": [
-      "sr-adblock-domain-lite",
-      "hagezi-domains-pro"
-    ]
+    "REJECT": []
   },
   "source_inventory": [
+    {
+      "id": "acl4ssr-china-domain",
+      "sha256": "362edd1f605742b360eaf138f151d7eea96cc17f20ef12da73acbfb80c350e08",
+      "entries": 605,
+      "classification": "DIRECT",
+      "role": "primary_candidate_source",
+      "lineage_status": "unverified",
+      "upstream_repositories": [],
+      "new_entries": 0,
+      "removed_entries": 0,
+      "baseline_initialized": false
+    },
+    {
+      "id": "acl4ssr-proxy-lite",
+      "sha256": "3792437f9641479c671ed57e4d3aa81505c5f7dc5d9087fdeabe76551ecda671",
+      "entries": 306,
+      "classification": "PROXY",
+      "role": "primary_candidate_source",
+      "lineage_status": "unverified",
+      "upstream_repositories": [],
+      "new_entries": 0,
+      "removed_entries": 0,
+      "baseline_initialized": false
+    },
+    {
+      "id": "clashfx-cn-apps-direct",
+      "sha256": "0a8a3a1bf8360495456da557bdbf22f5af8996dd7886dd82966a968491d8c27e",
+      "entries": 120,
+      "classification": "DIRECT",
+      "role": "independent_policy_corroboration",
+      "lineage_status": "unverified",
+      "upstream_repositories": [],
+      "new_entries": 0,
+      "removed_entries": 0,
+      "baseline_initialized": false
+    },
     {
       "id": "hagezi-domains-pro",
       "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a",
@@ -121,14 +154,26 @@
       "new_entries": 0,
       "removed_entries": 0,
       "baseline_initialized": false
+    },
+    {
+      "id": "sve1r-global-proxy",
+      "sha256": "9dbd5581cb3b553036f09fc458ef7c91a6414b3968194ecf4c10f43c703471ec",
+      "entries": 619,
+      "classification": "PROXY",
+      "role": "independent_policy_corroboration",
+      "lineage_status": "unverified",
+      "upstream_repositories": [],
+      "new_entries": 0,
+      "removed_entries": 0,
+      "baseline_initialized": false
     }
   ],
-  "source_count": 2,
+  "source_count": 6,
   "policy_conflict_total": 0,
   "lineage_verified_sources": 0,
-  "lineage_unverified_sources": 0,
+  "lineage_unverified_sources": 4,
   "lineage_partial_sources": 2,
-  "lineage_not_fully_verified_sources": 2,
+  "lineage_not_fully_verified_sources": 6,
   "source_candidate_summary": {
     "DIRECT": {
       "candidate_publishers": 3,
@@ -182,8 +227,9 @@
   "import_instruction": "Optionally reference each published raw list URL in the user-managed Shadowrocket [Rule] section with RULE-SET,<raw URL>,<matching policy>. This automation does not edit the user config.",
   "limitations": [
     "Only exact DOMAIN candidates with current policy-labelled evidence and all local gates passing are published.",
-    "The configured sources currently support REJECT only; DIRECT and PROXY remain unavailable until dedicated policy-labelled sources are configured.",
-    "Publisher corroboration does not prove complete upstream independence; shared data lineage remains possible.",
+    "A domain is published only when at least two distinct configured publishers and source groups agree on its routing policy; a single-source candidate remains under review.",
+    "Lineage status is retained as provenance metadata, not a blanket publication veto; source overlap is a correlation signal, not proof of identical domain ancestry.",
+    "Broad single-label suffixes are excluded; only exact-domain entries are emitted.",
     "Static checks do not replace Shadowrocket device testing."
   ]
 }

@@ -1,8 +1,44 @@
 {
-  "schema_version": 2,
-  "engine": "deterministic-domain-audit/2.1",
-  "updated_at": "2026-11-01T05:52:14.576008+00:00",
+  "schema_version": 3,
+  "engine": "deterministic-domain-audit/3.0",
+  "updated_at": "2026-11-01T06:32:39.537102+00:00",
   "source_snapshot": [
+    {
+      "id": "acl4ssr-china-domain",
+      "sha256": "362edd1f605742b360eaf138f151d7eea96cc17f20ef12da73acbfb80c350e08",
+      "entries": 605,
+      "classification": "DIRECT",
+      "role": "primary_candidate_source",
+      "lineage_status": "unverified",
+      "upstream_repositories": [],
+      "new_entries": 0,
+      "removed_entries": 0,
+      "baseline_initialized": false
+    },
+    {
+      "id": "acl4ssr-proxy-lite",
+      "sha256": "3792437f9641479c671ed57e4d3aa81505c5f7dc5d9087fdeabe76551ecda671",
+      "entries": 306,
+      "classification": "PROXY",
+      "role": "primary_candidate_source",
+      "lineage_status": "unverified",
+      "upstream_repositories": [],
+      "new_entries": 0,
+      "removed_entries": 0,
+      "baseline_initialized": false
+    },
+    {
+      "id": "clashfx-cn-apps-direct",
+      "sha256": "0a8a3a1bf8360495456da557bdbf22f5af8996dd7886dd82966a968491d8c27e",
+      "entries": 120,
+      "classification": "DIRECT",
+      "role": "independent_policy_corroboration",
+      "lineage_status": "unverified",
+      "upstream_repositories": [],
+      "new_entries": 0,
+      "removed_entries": 0,
+      "baseline_initialized": false
+    },
     {
       "id": "hagezi-domains-pro",
       "sha256": "b2704493954b71ff8ded3830dd760e5faec574d6abeab71d29d1aeef92e90a6a",
@@ -104,6 +140,18 @@
       "new_entries": 0,
       "removed_entries": 0,
       "baseline_initialized": false
+    },
+    {
+      "id": "sve1r-global-proxy",
+      "sha256": "9dbd5581cb3b553036f09fc458ef7c91a6414b3968194ecf4c10f43c703471ec",
+      "entries": 619,
+      "classification": "PROXY",
+      "role": "independent_policy_corroboration",
+      "lineage_status": "unverified",
+      "upstream_repositories": [],
+      "new_entries": 0,
+      "removed_entries": 0,
+      "baseline_initialized": false
     }
   ],
   "run_counts": {
@@ -125,7 +173,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -134,6 +182,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -150,15 +199,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -169,7 +218,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -178,6 +227,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -194,15 +244,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -213,7 +263,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -222,6 +272,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -238,15 +289,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -257,7 +308,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -266,6 +317,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -286,6 +338,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -362,15 +415,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -381,7 +434,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "CONFLICT",
       "reason": "Existing first-match DOMAIN-SUFFIX 21cn.com => DIRECT (line 811)",
       "evidence": [
@@ -390,6 +443,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -410,6 +464,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -486,15 +541,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -505,7 +560,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -514,6 +569,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -534,6 +590,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -610,15 +667,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -629,7 +686,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -638,6 +695,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -658,6 +716,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -734,15 +793,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -753,7 +812,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -762,6 +821,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -782,6 +842,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -858,15 +919,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -877,7 +938,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "CONFLICT",
       "reason": "Existing first-match DOMAIN-SUFFIX ximalaya.com => DIRECT (line 1254)",
       "evidence": [
@@ -886,6 +947,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -906,6 +968,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -982,15 +1045,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1001,7 +1064,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -1010,6 +1073,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -1030,6 +1094,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -1106,15 +1171,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1125,7 +1190,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -1134,6 +1199,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -1154,6 +1220,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -1230,15 +1297,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1249,7 +1316,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -1258,6 +1325,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -1278,6 +1346,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -1354,15 +1423,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1373,7 +1442,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -1382,6 +1451,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -1402,6 +1472,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -1478,15 +1549,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1497,7 +1568,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "RISK_HOLD",
       "reason": "Exact host is on the critical-function protection list",
       "evidence": [
@@ -1506,6 +1577,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -1522,15 +1594,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "PASS",
       "risk_check": "VETO",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1541,7 +1613,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -1550,6 +1622,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -1570,6 +1643,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -1646,15 +1720,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1665,7 +1739,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -1674,6 +1748,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -1690,15 +1765,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1709,7 +1784,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -1718,6 +1793,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -1734,15 +1810,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1753,7 +1829,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "CONFLICT",
       "reason": "Existing first-match DOMAIN-SUFFIX snapchat.com => PROXY (line 1896)",
       "evidence": [
@@ -1762,6 +1838,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -1782,6 +1859,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -1858,15 +1936,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1877,7 +1955,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -1886,6 +1964,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -1902,15 +1981,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1921,7 +2000,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -1930,6 +2009,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -1950,6 +2030,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -2026,15 +2107,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2045,7 +2126,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "CONFLICT",
       "reason": "Existing first-match DOMAIN-SUFFIX ximalaya.com => DIRECT (line 1254)",
       "evidence": [
@@ -2054,6 +2135,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -2074,6 +2156,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -2150,15 +2233,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2169,7 +2252,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -2178,6 +2261,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -2198,6 +2282,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -2274,15 +2359,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2293,7 +2378,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -2302,6 +2387,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -2318,15 +2404,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2337,7 +2423,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -2346,6 +2432,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -2362,15 +2449,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2381,7 +2468,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -2390,6 +2477,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -2410,6 +2498,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -2486,15 +2575,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2505,7 +2594,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -2514,6 +2603,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -2534,6 +2624,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -2610,15 +2701,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2629,7 +2720,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "CONFLICT",
       "reason": "Existing first-match DOMAIN-SUFFIX ximalaya.com => DIRECT (line 1254)",
       "evidence": [
@@ -2638,6 +2729,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -2658,6 +2750,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -2734,15 +2827,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2753,7 +2846,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -2762,6 +2855,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -2778,15 +2872,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2797,7 +2891,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "CONFLICT",
       "reason": "Existing first-match DOMAIN-SUFFIX youku.com => DIRECT (line 959)",
       "evidence": [
@@ -2806,6 +2900,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -2826,6 +2921,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -2902,15 +2998,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2921,7 +3017,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -2930,6 +3026,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -2946,15 +3043,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2965,7 +3062,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "CONFLICT",
       "reason": "Existing first-match DOMAIN-SUFFIX iqiyi.com => DIRECT (line 917)",
       "evidence": [
@@ -2974,6 +3071,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -2990,15 +3088,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3009,7 +3107,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -3018,6 +3116,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -3034,15 +3133,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3053,7 +3152,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "CONFLICT",
       "reason": "Existing first-match DOMAIN-SUFFIX youku.com => DIRECT (line 959)",
       "evidence": [
@@ -3062,6 +3161,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -3082,6 +3182,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -3158,15 +3259,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3177,7 +3278,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "CONFLICT",
       "reason": "Existing first-match DOMAIN-SUFFIX sogou.com => DIRECT (line 943)",
       "evidence": [
@@ -3186,6 +3287,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -3202,15 +3304,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3221,7 +3323,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "RISK_HOLD",
       "reason": "Exact host is on the critical-function protection list",
       "evidence": [
@@ -3230,6 +3332,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -3246,15 +3349,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "PASS",
       "risk_check": "VETO",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3265,7 +3368,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -3274,6 +3377,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -3294,6 +3398,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -3370,15 +3475,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3389,7 +3494,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "CONFLICT",
       "reason": "Existing first-match DOMAIN-SUFFIX iqiyi.com => DIRECT (line 917)",
       "evidence": [
@@ -3398,6 +3503,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -3414,15 +3520,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3433,7 +3539,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -3442,6 +3548,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -3458,15 +3565,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3477,7 +3584,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -3486,6 +3593,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -3502,15 +3610,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3521,7 +3629,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "CONFLICT",
       "reason": "Existing first-match DOMAIN-SUFFIX mgtv.com => DIRECT (line 838)",
       "evidence": [
@@ -3530,6 +3638,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -3546,15 +3655,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3565,7 +3674,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "CONFLICT",
       "reason": "Existing first-match DOMAIN-SUFFIX mgtv.com => DIRECT (line 838)",
       "evidence": [
@@ -3574,6 +3683,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -3590,15 +3700,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3609,7 +3719,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "CONFLICT",
       "reason": "Existing first-match DOMAIN-SUFFIX mgtv.com => DIRECT (line 838)",
       "evidence": [
@@ -3618,6 +3728,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -3634,15 +3745,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3653,7 +3764,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -3662,6 +3773,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -3678,15 +3790,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3697,7 +3809,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -3706,6 +3818,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -3722,15 +3835,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3741,7 +3854,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -3750,6 +3863,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -3766,15 +3880,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3785,7 +3899,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -3794,6 +3908,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -3814,6 +3929,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -3890,15 +4006,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3909,7 +4025,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -3918,6 +4034,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -3934,15 +4051,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3953,7 +4070,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "RISK_HOLD",
       "reason": "Exact host is on the critical-function protection list",
       "evidence": [
@@ -3962,6 +4079,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -3978,15 +4096,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "PASS",
       "risk_check": "VETO",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3997,7 +4115,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -4006,6 +4124,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -4026,6 +4145,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -4102,15 +4222,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4121,7 +4241,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "CONFLICT",
       "reason": "Existing first-match DOMAIN-SUFFIX mgtv.com => DIRECT (line 838)",
       "evidence": [
@@ -4130,6 +4250,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -4150,6 +4271,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -4226,15 +4348,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4245,7 +4367,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "RISK_HOLD",
       "reason": "Exact host is on the critical-function protection list",
       "evidence": [
@@ -4254,6 +4376,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -4270,15 +4393,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "PASS",
       "risk_check": "VETO",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4289,7 +4412,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "RISK_HOLD",
       "reason": "Exact host is on the critical-function protection list",
       "evidence": [
@@ -4298,6 +4421,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -4314,15 +4438,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "PASS",
       "risk_check": "VETO",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4333,7 +4457,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "RISK_HOLD",
       "reason": "Exact host is on the critical-function protection list",
       "evidence": [
@@ -4342,6 +4466,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -4362,6 +4487,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -4438,15 +4564,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "PASS",
       "risk_check": "VETO",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4457,7 +4583,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -4466,6 +4592,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -4482,15 +4609,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4501,7 +4628,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "CONFLICT",
       "reason": "Existing first-match DOMAIN-SUFFIX mgtv.com => DIRECT (line 838)",
       "evidence": [
@@ -4510,6 +4637,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -4526,15 +4654,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4545,7 +4673,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "RISK_HOLD",
       "reason": "Exact host is on the critical-function protection list",
       "evidence": [
@@ -4554,6 +4682,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -4570,15 +4699,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "PASS",
       "risk_check": "VETO",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4589,7 +4718,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "RISK_HOLD",
       "reason": "Exact host is on the critical-function protection list",
       "evidence": [
@@ -4598,6 +4727,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -4618,6 +4748,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -4694,15 +4825,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "PASS",
       "risk_check": "VETO",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4713,7 +4844,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "RISK_HOLD",
       "reason": "Exact host is on the critical-function protection list",
       "evidence": [
@@ -4722,6 +4853,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -4738,15 +4870,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "PASS",
       "risk_check": "VETO",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4757,7 +4889,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -4766,6 +4898,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -4786,6 +4919,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -4862,15 +4996,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4881,7 +5015,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "CONFLICT",
       "reason": "Existing first-match DOMAIN-SUFFIX mgtv.com => DIRECT (line 838)",
       "evidence": [
@@ -4890,6 +5024,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -4906,15 +5041,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4925,7 +5060,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -4934,6 +5069,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -4950,15 +5086,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4969,7 +5105,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -4978,6 +5114,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -4994,15 +5131,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -5013,7 +5150,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -5022,6 +5159,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -5038,15 +5176,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -5057,7 +5195,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -5066,6 +5204,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -5082,15 +5221,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -5101,7 +5240,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "RISK_HOLD",
       "reason": "Exact host is on the critical-function protection list",
       "evidence": [
@@ -5110,6 +5249,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -5126,15 +5266,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "PASS",
       "risk_check": "VETO",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -5145,7 +5285,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.8,
       "status": "ALREADY_COVERED",
       "reason": "Matches existing URL-REGEX => REJECT",
       "evidence": [
@@ -5154,6 +5294,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -5174,6 +5315,7 @@
           "publisher": "HaGeZi/dns-blocklists",
           "independence_group": "hagezi-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "0xdaniellopez/tweetfeed",
             "abpindo/indonesianadblockrules",
@@ -5250,15 +5392,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 2,
+      "publisher_count": 2,
+      "independence_group_count": 2,
       "rejected_evidence_count": 0,
       "duplicate_check": "ALREADY_COVERED",
       "conflict_check": "PASS",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -5269,7 +5411,7 @@
       ],
       "classification": "REJECT",
       "policy": "REJECT",
-      "confidence": 0,
+      "confidence": 0.4,
       "status": "CONFLICT",
       "reason": "Existing first-match DOMAIN-SUFFIX mgtv.com => DIRECT (line 838)",
       "evidence": [
@@ -5278,6 +5420,7 @@
           "publisher": "ithtelab/sr-adblock",
           "independence_group": "sr-adblock-curated",
           "lineage_status": "partial",
+          "policy_evidence": "documented_policy",
           "upstream_repositories": [
             "blackmatrix7/ios_rule_script",
             "johnshall/shadowrocket-adblock-rules-forever",
@@ -5294,15 +5437,15 @@
           "currently_listed": true
         }
       ],
-      "source_count": 0,
-      "publisher_count": 0,
-      "independence_group_count": 0,
+      "source_count": 1,
+      "publisher_count": 1,
+      "independence_group_count": 1,
       "rejected_evidence_count": 0,
       "duplicate_check": "PASS",
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
-      "decision_engine": "deterministic-domain-audit/2.1",
-      "reviewed_at": "2026-11-01T05:52:14.576008+00:00",
+      "decision_engine": "deterministic-domain-audit/3.0",
+      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     }
   ]

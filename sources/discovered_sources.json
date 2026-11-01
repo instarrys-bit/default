@@ -12,16 +12,16 @@
     "Surge direct proxy domain-set rules",
     "Quantumult X direct proxy domain rules"
   ],
-  "candidate_count": 154,
+  "candidate_count": 163,
   "candidates": [
     {
       "repository": "ACL4SSR/ACL4SSR",
       "html_url": "https://github.com/ACL4SSR/ACL4SSR",
       "description": "SSR 去广告ACL规则/SS完整GFWList规则/Clash规则碎片，Telegram频道订阅地址",
       "default_branch": "master",
-      "updated_at": "2026-11-01T04:23:19Z",
+      "updated_at": "2026-11-01T06:31:48Z",
       "pushed_at": "2026-11-01T03:45:37Z",
-      "stars": 6887,
+      "stars": 6888,
       "archived": false,
       "fork": false,
       "license": "CC-BY-SA-4.0",
@@ -51,6 +51,25 @@
         "curated_seed"
       ],
       "discovered_at": "2026-11-01T05:33:12.926880+00:00"
+    },
+    {
+      "repository": "AnonyJcy/shadowrocket-rules",
+      "html_url": "https://github.com/AnonyJcy/shadowrocket-rules",
+      "description": "每日全自动同步 Shadowrocket 去广告与分流规则，修复 WireGuard 与自建内网在 iOS 上的原生 Socket 路由穿透问题。",
+      "default_branch": "main",
+      "updated_at": "2026-11-01T06:29:44Z",
+      "pushed_at": "2026-11-01T06:29:39Z",
+      "stars": 3,
+      "archived": false,
+      "fork": false,
+      "license": "NOASSERTION",
+      "readme_sha256": "925157244168e4af187a23e01e00baf76b12827e292ca31bae97c0df88fbbb33",
+      "rule_list_urls": [],
+      "readme_policy_claims": {},
+      "search_queries": [
+        "shadowrocket rules"
+      ],
+      "discovered_at": "2026-11-01T06:32:16.843335+00:00"
     },
     {
       "repository": "Anton111111/rule-lists",
@@ -672,13 +691,13 @@
           "PROXY",
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list": [
-          "DIRECT"
-        ],
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list": [
           "DIRECT",
           "PROXY",
           "REJECT"
+        ],
+        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list": [
+          "DIRECT"
         ]
       },
       "seeded_source_urls": [
@@ -797,9 +816,9 @@
       "html_url": "https://github.com/Loyalsoldier/v2ray-rules-dat",
       "description": "🦄 🎃 👻 V2Ray 路由规则文件加强版，可代替 V2Ray 官方 geoip.dat 和 geosite.dat，适用于 V2Ray、Xray-core、mihomo(Clash-Meta)、hysteria、Trojan-Go 和 leaf。Enhanced edition of V2Ray rules dat files, applicable to V2Ray, Xray-core, mihomo(Clash-Meta), hysteria, Trojan-Go and leaf.",
       "default_branch": "master",
-      "updated_at": "2026-11-01T04:30:39Z",
+      "updated_at": "2026-11-01T06:08:14Z",
       "pushed_at": "2026-10-31T22:04:28Z",
-      "stars": 20982,
+      "stars": 20983,
       "archived": false,
       "fork": false,
       "license": "GPL-3.0",
@@ -815,12 +834,12 @@
           "PROXY",
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt": [
+        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt": [
+        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
@@ -1109,6 +1128,85 @@
       ],
       "discovered_at": "2026-11-01T05:18:17.888149+00:00",
       "seeded_source_urls": []
+    },
+    {
+      "repository": "Seanyim/tailrocket",
+      "html_url": "https://github.com/Seanyim/tailrocket",
+      "description": "Auto-updated Shadowrocket rules with minimal Tailscale routing.",
+      "default_branch": "main",
+      "updated_at": "2026-11-01T05:57:39Z",
+      "pushed_at": "2026-11-01T05:57:34Z",
+      "stars": 1,
+      "archived": false,
+      "fork": false,
+      "license": "MIT",
+      "readme_sha256": "2aa69e942d9a3a0be63474ae306dbb8dbc1121db7597dc16738e1a7a806551a0",
+      "rule_list_urls": [
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/lazy.conf",
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/lazy_group.conf",
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_ad_only.conf",
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_adb.conf",
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_backcn.conf",
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_backcn_ad.conf",
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_cnip.conf",
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_cnip_ad.conf",
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_direct_banad.conf",
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_proxy_banad.conf",
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_top500_banlist.conf",
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_top500_banlist_ad.conf",
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_top500_whitelist.conf",
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_top500_whitelist_ad.conf",
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/sr_top500_custom.conf"
+      ],
+      "readme_policy_claims": {
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/lazy.conf": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/lazy_group.conf": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_adb.conf": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_backcn.conf": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_backcn_ad.conf": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_cnip.conf": [
+          "DIRECT",
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_cnip_ad.conf": [
+          "DIRECT",
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_direct_banad.conf": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_proxy_banad.conf": [
+          "DIRECT",
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_top500_banlist.conf": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_top500_banlist_ad.conf": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_top500_whitelist.conf": [
+          "DIRECT",
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_top500_whitelist_ad.conf": [
+          "PROXY"
+        ]
+      },
+      "search_queries": [
+        "shadowrocket rules"
+      ],
+      "discovered_at": "2026-11-01T06:32:17.187048+00:00"
     },
     {
       "repository": "SystemJargon/nrd-lists",
@@ -1427,6 +1525,25 @@
       "seeded_source_urls": []
     },
     {
+      "repository": "atonnyshen/shadowrocket-rules",
+      "html_url": "https://github.com/atonnyshen/shadowrocket-rules",
+      "description": "Shadowrocket & Clash Optimized Profiles for Cross-Platform Sync",
+      "default_branch": "main",
+      "updated_at": "2026-11-01T06:22:49Z",
+      "pushed_at": "2026-11-01T06:22:46Z",
+      "stars": 0,
+      "archived": false,
+      "fork": false,
+      "license": null,
+      "readme_sha256": "b9a69f4fbe21743b262ef9fe47df8b472ed639212f5c80cc84da3f8bce91eedf",
+      "rule_list_urls": [],
+      "readme_policy_claims": {},
+      "search_queries": [
+        "shadowrocket rules"
+      ],
+      "discovered_at": "2026-11-01T06:32:17.045247+00:00"
+    },
+    {
       "repository": "best-directories/directory-submission-sites",
       "html_url": "https://github.com/best-directories/directory-submission-sites",
       "description": "Directory submission sites for 2026, scored for AI agents: 50 places to list your startup, SaaS or AI tool with Domain Rating and how easily an agent can submit. Picked from a checked list of 1,354.",
@@ -1526,9 +1643,9 @@
       "html_url": "https://github.com/blackmatrix7/ios_rule_script",
       "description": "分流规则、重写写规则及脚本。",
       "default_branch": "master",
-      "updated_at": "2026-11-01T05:05:44Z",
+      "updated_at": "2026-11-01T06:06:37Z",
       "pushed_at": "2026-10-27T21:45:44Z",
-      "stars": 28494,
+      "stars": 28493,
       "archived": false,
       "fork": false,
       "license": "GPL-2.0",
@@ -1784,8 +1901,8 @@
       "html_url": "https://github.com/deezertidal/shadowrocket-rules",
       "description": "小火箭 shadowrocket 配置文件 模块 脚本 module sgmodule 图文教程 规则 分流 破解 解锁",
       "default_branch": "main",
-      "updated_at": "2026-11-01T04:25:32Z",
-      "pushed_at": "2026-11-01T04:25:27Z",
+      "updated_at": "2026-11-01T06:26:02Z",
+      "pushed_at": "2026-11-01T06:25:56Z",
       "stars": 6782,
       "archived": false,
       "fork": false,
@@ -1982,6 +2099,25 @@
       "seeded_source_urls": []
     },
     {
+      "repository": "frostmage1250/proxy-rules-converter",
+      "html_url": "https://github.com/frostmage1250/proxy-rules-converter",
+      "description": "Mihomo and Shadowrocket rule converter",
+      "default_branch": "main",
+      "updated_at": "2026-11-01T06:29:27Z",
+      "pushed_at": "2026-11-01T06:29:23Z",
+      "stars": 0,
+      "archived": false,
+      "fork": false,
+      "license": null,
+      "readme_sha256": "5c5a3f337f1a99aa6f3108c665a1fccc71c73041465e2ed60226bcfee9f1d3db",
+      "rule_list_urls": [],
+      "readme_policy_claims": {},
+      "search_queries": [
+        "shadowrocket rules"
+      ],
+      "discovered_at": "2026-11-01T06:32:16.881851+00:00"
+    },
+    {
       "repository": "galaxytunnel2026/domain",
       "html_url": "https://github.com/galaxytunnel2026/domain",
       "description": "Galaxy VLESS Clean Proxy IP List🔰",
@@ -2064,6 +2200,44 @@
       "seeded_source_urls": []
     },
     {
+      "repository": "granden/home-network-rules",
+      "html_url": "https://github.com/granden/home-network-rules",
+      "description": "Shadowrocket routing configuration using maintained Sukka, DustinWin and MetaCubeX rules. No nodes or credentials.",
+      "default_branch": "main",
+      "updated_at": "2026-11-01T06:31:01Z",
+      "pushed_at": "2026-11-01T06:31:01Z",
+      "stars": 0,
+      "archived": false,
+      "fork": false,
+      "license": null,
+      "readme_sha256": null,
+      "rule_list_urls": [],
+      "readme_policy_claims": {},
+      "search_queries": [
+        "shadowrocket rules"
+      ],
+      "discovered_at": "2026-11-01T06:32:16.737787+00:00"
+    },
+    {
+      "repository": "harmonsir/Shadowrocket-rules",
+      "html_url": "https://github.com/harmonsir/Shadowrocket-rules",
+      "description": "一个基础版的Shadowrocket规则。主打懒人配置，简单高效，拒绝冗余。",
+      "default_branch": "main",
+      "updated_at": "2026-11-01T05:59:10Z",
+      "pushed_at": "2026-11-01T05:59:05Z",
+      "stars": 29,
+      "archived": false,
+      "fork": false,
+      "license": "MIT",
+      "readme_sha256": "cb82f5d08b6ac6e2a8f41329fe2c536bbe5814edf62610a1b656e4b6d121e3f8",
+      "rule_list_urls": [],
+      "readme_policy_claims": {},
+      "search_queries": [
+        "shadowrocket rules"
+      ],
+      "discovered_at": "2026-11-01T06:32:17.136788+00:00"
+    },
+    {
       "repository": "helmiau/clashrules",
       "html_url": "https://github.com/helmiau/clashrules",
       "description": "This repo containing some important rule providers of Clash for Windows/Linux/iOS/Android, such as games, media stream and etc.",
@@ -2143,6 +2317,27 @@
       ],
       "discovered_at": "2026-11-01T05:18:17.885491+00:00",
       "seeded_source_urls": []
+    },
+    {
+      "repository": "hrd201/shadowrocket-rules",
+      "html_url": "https://github.com/hrd201/shadowrocket-rules",
+      "description": null,
+      "default_branch": "main",
+      "updated_at": "2026-11-01T06:28:08Z",
+      "pushed_at": "2026-11-01T06:28:04Z",
+      "stars": 0,
+      "archived": false,
+      "fork": false,
+      "license": "NOASSERTION",
+      "readme_sha256": "72cde9072c3838c7f6a5b06718d785099c1dd0e120990d3070b349aa02330e29",
+      "rule_list_urls": [
+        "https://raw.githubusercontent.com/hrd201/shadowrocket-rules/main/hrd201-sr.conf"
+      ],
+      "readme_policy_claims": {},
+      "search_queries": [
+        "shadowrocket rules"
+      ],
+      "discovered_at": "2026-11-01T06:32:16.934208+00:00"
     },
     {
       "repository": "https-github-com-Rama24/peretesan.",
@@ -2426,8 +2621,8 @@
       "html_url": "https://github.com/love1017best/DirectDomainList",
       "description": null,
       "default_branch": "main",
-      "updated_at": "2026-10-31T06:19:05Z",
-      "pushed_at": "2026-10-31T06:19:01Z",
+      "updated_at": "2026-11-01T06:31:09Z",
+      "pushed_at": "2026-11-01T06:31:06Z",
       "stars": 0,
       "archived": false,
       "fork": false,
@@ -2660,6 +2855,25 @@
       ],
       "discovered_at": "2026-11-01T05:18:16.882657+00:00",
       "seeded_source_urls": []
+    },
+    {
+      "repository": "nikiz24/shadowrocket-sidestore-rules",
+      "html_url": "https://github.com/nikiz24/shadowrocket-sidestore-rules",
+      "description": "One-click Shadowrocket module: Johnshall CNIP ad-block rules, SideStore loopback, scoped MITM; no CA secrets.",
+      "default_branch": "main",
+      "updated_at": "2026-11-01T06:31:04Z",
+      "pushed_at": "2026-11-01T06:31:00Z",
+      "stars": 0,
+      "archived": false,
+      "fork": false,
+      "license": "NOASSERTION",
+      "readme_sha256": "7e9a8a6ce9c59830a5a24015dd4f5136bb71d205c596b23ee6cd7176d825dd70",
+      "rule_list_urls": [],
+      "readme_policy_claims": {},
+      "search_queries": [
+        "shadowrocket rules"
+      ],
+      "discovered_at": "2026-11-01T06:32:16.792269+00:00"
     },
     {
       "repository": "noonbaronfreeze/adblocker",
@@ -3083,10 +3297,10 @@
         "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Services/SNS/Weibo.list"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Region/Global.list": [
+        "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Region/China.list": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Region/China.list": [
+        "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Region/Global.list": [
           "PROXY"
         ]
       },
@@ -3098,6 +3312,31 @@
         "curated_seed"
       ],
       "discovered_at": "2026-11-01T05:33:12.207155+00:00"
+    },
+    {
+      "repository": "sweet0416/shadowrocket-personal-rules",
+      "html_url": "https://github.com/sweet0416/shadowrocket-personal-rules",
+      "description": "Public upstream Shadowrocket configuration with a minimal managed personal rules block",
+      "default_branch": "main",
+      "updated_at": "2026-11-01T06:21:09Z",
+      "pushed_at": "2026-11-01T06:21:05Z",
+      "stars": 0,
+      "archived": false,
+      "fork": false,
+      "license": "NOASSERTION",
+      "readme_sha256": "e89ddbf8d3e3a2c0e52cbea28d1d0e29e26d4bbedd8bc2ff049b50e4ddf06c4e",
+      "rule_list_urls": [
+        "https://raw.githubusercontent.com/sweet0416/shadowrocket-personal-rules/main/dist/shadowrocket_personal.conf"
+      ],
+      "readme_policy_claims": {
+        "https://raw.githubusercontent.com/sweet0416/shadowrocket-personal-rules/main/dist/shadowrocket_personal.conf": [
+          "PROXY"
+        ]
+      },
+      "search_queries": [
+        "shadowrocket rules"
+      ],
+      "discovered_at": "2026-11-01T06:32:17.094869+00:00"
     },
     {
       "repository": "team-cloudchaser/domain-db",
@@ -3146,40 +3385,40 @@
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/telegram.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/netflix.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/torrent.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/netflix.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/tools.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
           "PROXY"
         ]
       },
@@ -3297,8 +3536,8 @@
       "html_url": "https://github.com/v2fly/domain-list-community",
       "description": "Community managed domain list. Generate geosite.dat for V2Ray.",
       "default_branch": "master",
-      "updated_at": "2026-11-01T01:11:09Z",
-      "pushed_at": "2026-10-30T14:00:31Z",
+      "updated_at": "2026-11-01T06:30:42Z",
+      "pushed_at": "2026-11-01T06:31:06Z",
       "stars": 9799,
       "archived": false,
       "fork": false,

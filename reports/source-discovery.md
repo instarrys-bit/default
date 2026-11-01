@@ -1,6 +1,6 @@
 # Automated source discovery
 
-- Candidate repositories retained: **154**
+- Candidate repositories retained: **163**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
@@ -9,13 +9,21 @@
 ### [ACL4SSR/ACL4SSR](https://github.com/ACL4SSR/ACL4SSR)
 
 - Description: SSR 去广告ACL规则/SS完整GFWList规则/Clash规则碎片，Telegram频道订阅地址
-- Stars: 6887; archived: False; fork: False
+- Stars: 6888; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 3
 - Curated seed links: 3
   - https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list
   - https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list
   - https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list
+
+### [AnonyJcy/shadowrocket-rules](https://github.com/AnonyJcy/shadowrocket-rules)
+
+- Description: 每日全自动同步 Shadowrocket 去广告与分流规则，修复 WireGuard 与自建内网在 iOS 上的原生 Socket 路由穿透问题。
+- Stars: 3; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
 
 ### [Anton111111/rule-lists](https://github.com/Anton111111/rule-lists)
 
@@ -303,7 +311,7 @@
 ### [Loyalsoldier/v2ray-rules-dat](https://github.com/Loyalsoldier/v2ray-rules-dat)
 
 - Description: 🦄 🎃 👻 V2Ray 路由规则文件加强版，可代替 V2Ray 官方 geoip.dat 和 geosite.dat，适用于 V2Ray、Xray-core、mihomo(Clash-Meta)、hysteria、Trojan-Go 和 leaf。Enhanced edition of V2Ray rules dat files, applicable to V2Ray, Xray-core, mihomo(Clash-Meta), hysteria, Trojan-Go and leaf.
-- Stars: 20982; archived: False; fork: False
+- Stars: 20983; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 3
 - Curated seed links: 3
@@ -426,6 +434,29 @@
 - Search queries: adblock domain list
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
+
+### [Seanyim/tailrocket](https://github.com/Seanyim/tailrocket)
+
+- Description: Auto-updated Shadowrocket rules with minimal Tailscale routing.
+- Stars: 1; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 15
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/lazy.conf
+  - https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/lazy_group.conf
+  - https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_ad_only.conf
+  - https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_adb.conf
+  - https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_backcn.conf
+  - https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_backcn_ad.conf
+  - https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_cnip.conf
+  - https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_cnip_ad.conf
+  - https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_direct_banad.conf
+  - https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_proxy_banad.conf
+  - https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_top500_banlist.conf
+  - https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_top500_banlist_ad.conf
+  - https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_top500_whitelist.conf
+  - https://raw.githubusercontent.com/Seanyim/tailrocket/main/profiles/sr_top500_whitelist_ad.conf
+  - https://raw.githubusercontent.com/Seanyim/tailrocket/main/sr_top500_custom.conf
 
 ### [SystemJargon/nrd-lists](https://github.com/SystemJargon/nrd-lists)
 
@@ -550,6 +581,14 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [atonnyshen/shadowrocket-rules](https://github.com/atonnyshen/shadowrocket-rules)
+
+- Description: Shadowrocket & Clash Optimized Profiles for Cross-Platform Sync
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
 ### [best-directories/directory-submission-sites](https://github.com/best-directories/directory-submission-sites)
 
 - Description: Directory submission sites for 2026, scored for AI agents: 50 places to list your startup, SaaS or AI tool with Domain Rating and how easily an agent can submit. Picked from a checked list of 1,354.
@@ -584,7 +623,7 @@
 ### [blackmatrix7/ios_rule_script](https://github.com/blackmatrix7/ios_rule_script)
 
 - Description: 分流规则、重写写规则及脚本。
-- Stars: 28494; archived: False; fork: False
+- Stars: 28493; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 2
 - Curated seed links: 2
@@ -761,6 +800,14 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [frostmage1250/proxy-rules-converter](https://github.com/frostmage1250/proxy-rules-converter)
+
+- Description: Mihomo and Shadowrocket rule converter
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
 ### [galaxytunnel2026/domain](https://github.com/galaxytunnel2026/domain)
 
 - Description: Galaxy VLESS Clean Proxy IP List🔰
@@ -785,6 +832,22 @@
 - Description: Ad blocking domain lists list for use with Diversion
 - Stars: 0; archived: False; fork: False
 - Search queries: adblock domain list
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
+### [granden/home-network-rules](https://github.com/granden/home-network-rules)
+
+- Description: Shadowrocket routing configuration using maintained Sukka, DustinWin and MetaCubeX rules. No nodes or credentials.
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
+### [harmonsir/Shadowrocket-rules](https://github.com/harmonsir/Shadowrocket-rules)
+
+- Description: 一个基础版的Shadowrocket规则。主打懒人配置，简单高效，拒绝冗余。
+- Stars: 29; archived: False; fork: False
+- Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
@@ -820,6 +883,15 @@
 - Search queries: adblock domain list
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
+
+### [hrd201/shadowrocket-rules](https://github.com/hrd201/shadowrocket-rules)
+
+- Description: Not supplied
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/hrd201/shadowrocket-rules/main/hrd201-sr.conf
 
 ### [https-github-com-Rama24/peretesan.](https://github.com/https-github-com-Rama24/peretesan.)
 
@@ -1018,6 +1090,14 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [nikiz24/shadowrocket-sidestore-rules](https://github.com/nikiz24/shadowrocket-sidestore-rules)
+
+- Description: One-click Shadowrocket module: Johnshall CNIP ad-block rules, SideStore loopback, scoped MITM; no CA secrets.
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
 ### [noonbaronfreeze/adblocker](https://github.com/noonbaronfreeze/adblocker)
 
 - Description: A browser privacy landing repository for filter list notes, site allowlists, distraction control, and browsing setup documentation. Domain: https://adblocker.mirrorify.fun/
@@ -1191,6 +1271,15 @@
   - https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Region/China.list
   - https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Region/Global.list
   - https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Services/SNS/Weibo.list
+
+### [sweet0416/shadowrocket-personal-rules](https://github.com/sweet0416/shadowrocket-personal-rules)
+
+- Description: Public upstream Shadowrocket configuration with a minimal managed personal rules block
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/sweet0416/shadowrocket-personal-rules/main/dist/shadowrocket_personal.conf
 
 ### [team-cloudchaser/domain-db](https://github.com/team-cloudchaser/domain-db)
 

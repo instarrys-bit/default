@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-01T05:52:13.933217+00:00",
+  "audited_at": "2026-11-01T06:32:38.758793+00:00",
   "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
-  "source_count": 2,
-  "audited_source_count": 2,
+  "source_count": 6,
+  "audited_source_count": 6,
   "lineage_verified_count": 0,
   "lineage_partial_count": 2,
-  "lineage_unverified_count": 0,
+  "lineage_unverified_count": 4,
   "shared_upstream_pairs": [
     {
       "sources": [
@@ -16,10 +16,22 @@
       "shared_upstreams": [
         "peter-lowe"
       ]
+    },
+    {
+      "sources": [
+        "acl4ssr-china-domain",
+        "acl4ssr-proxy-lite"
+      ],
+      "shared_upstreams": [
+        "careywang/sub-web",
+        "googlehosts/hosts",
+        "neko-dev/neohosts",
+        "tindy2013/subconverter"
+      ]
     }
   ],
-  "candidate_source_count": 22,
-  "candidate_readme_audited_count": 22,
+  "candidate_source_count": 25,
+  "candidate_readme_audited_count": 25,
   "candidate_shared_reference_pairs": [
     {
       "repositories": [
@@ -44,6 +56,17 @@
         "gfwlist/gfwlist",
         "peter-lowe",
         "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GMOogway/shadowrocket-rules",
+        "Seanyim/tailrocket"
+      ],
+      "shared_readme_references": [
+        "gfwlist/gfwlist",
+        "loyalsoldier/cn-blocked-domain"
       ],
       "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
     },
@@ -106,6 +129,16 @@
     {
       "repositories": [
         "Goahead-zfc/shadowrocket-rules",
+        "Seanyim/tailrocket"
+      ],
+      "shared_readme_references": [
+        "blackmatrix7/ios_rule_script"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Goahead-zfc/shadowrocket-rules",
         "bgpeer/rules"
       ],
       "shared_readme_references": [
@@ -143,6 +176,16 @@
         "gfwlist/gfwlist",
         "loyalsoldier/geoip",
         "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Jovanykoch/rules",
+        "Seanyim/tailrocket"
+      ],
+      "shared_readme_references": [
+        "gfwlist/gfwlist"
       ],
       "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
     },
@@ -214,6 +257,16 @@
     {
       "repositories": [
         "Loyalsoldier/v2ray-rules-dat",
+        "Seanyim/tailrocket"
+      ],
+      "shared_readme_references": [
+        "gfwlist/gfwlist"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Loyalsoldier/v2ray-rules-dat",
         "bgpeer/rules"
       ],
       "shared_readme_references": [
@@ -274,6 +327,69 @@
         "felixonmars/dnsmasq-china-list",
         "gfwlist/gfwlist",
         "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Seanyim/tailrocket",
+        "bgpeer/rules"
+      ],
+      "shared_readme_references": [
+        "blackmatrix7/ios_rule_script"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Seanyim/tailrocket",
+        "crayonluffy/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "blackmatrix7/ios_rule_script"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Seanyim/tailrocket",
+        "hrd201/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Seanyim/tailrocket",
+        "kaonimei/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_readme_references": [
+        "blackmatrix7/ios_rule_script",
+        "gfwlist/gfwlist",
+        "lowertop/shadowrocket",
+        "loyalsoldier/cn-blocked-domain"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Seanyim/tailrocket",
+        "sweet0416/shadowrocket-personal-rules"
+      ],
+      "shared_readme_references": [
+        "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "Seanyim/tailrocket",
+        "tkgeeked/clash-rules-for-shadowrocket"
+      ],
+      "shared_readme_references": [
+        "gfwlist/gfwlist"
       ],
       "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
     },
@@ -388,6 +504,16 @@
         "felixonmars/dnsmasq-china-list",
         "loyalsoldier/v2ray-rules-dat",
         "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "hrd201/shadowrocket-rules",
+        "sweet0416/shadowrocket-personal-rules"
+      ],
+      "shared_readme_references": [
+        "johnshall/shadowrocket-adblock-rules-forever"
       ],
       "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
     },
@@ -574,6 +700,23 @@
       "status": "audited_reference_inventory"
     },
     {
+      "repository": "Seanyim/tailrocket",
+      "readme_url": "https://raw.githubusercontent.com/Seanyim/tailrocket/main/README.md",
+      "readme_sha256": "2aa69e942d9a3a0be63474ae306dbb8dbc1121db7597dc16738e1a7a806551a0",
+      "discovery_readme_sha256": "2aa69e942d9a3a0be63474ae306dbb8dbc1121db7597dc16738e1a7a806551a0",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "blackmatrix7/ios_rule_script",
+        "gfwlist/gfwlist",
+        "johnshall/shadowrocket-adblock-rules-forever",
+        "lowertop/shadowrocket",
+        "loyalsoldier/cn-blocked-domain"
+      ],
+      "reference_count": 5,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
       "repository": "Vann-Dev/proxy-list",
       "readme_url": "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/README.md",
       "readme_sha256": "771883da60450198c413b2ea69fb219f0406e541f6f15428ce54784fb7fab72d",
@@ -671,6 +814,19 @@
       "status": "audited_reference_inventory"
     },
     {
+      "repository": "hrd201/shadowrocket-rules",
+      "readme_url": "https://raw.githubusercontent.com/hrd201/shadowrocket-rules/main/README.md",
+      "readme_sha256": "72cde9072c3838c7f6a5b06718d785099c1dd0e120990d3070b349aa02330e29",
+      "discovery_readme_sha256": "72cde9072c3838c7f6a5b06718d785099c1dd0e120990d3070b349aa02330e29",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "reference_count": 1,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
       "repository": "kaonimei/Shadowrocket-ADBlock-Rules",
       "readme_url": "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/README.md",
       "readme_sha256": "9f897b9a55abdf2dc9e1228eea103b9d7f526fed3ed7e86390dccedc51373250",
@@ -715,6 +871,20 @@
       "referenced_repositories": [
         "nobyda/scipts",
         "privacy-protection-tools/anti-ad"
+      ],
+      "reference_count": 2,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "sweet0416/shadowrocket-personal-rules",
+      "readme_url": "https://raw.githubusercontent.com/sweet0416/shadowrocket-personal-rules/main/README.md",
+      "readme_sha256": "e89ddbf8d3e3a2c0e52cbea28d1d0e29e26d4bbedd8bc2ff049b50e4ddf06c4e",
+      "discovery_readme_sha256": "e89ddbf8d3e3a2c0e52cbea28d1d0e29e26d4bbedd8bc2ff049b50e4ddf06c4e",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "en/actions",
+        "johnshall/shadowrocket-adblock-rules-forever"
       ],
       "reference_count": 2,
       "lineage_status": "unverified",
@@ -1108,6 +1278,126 @@
         "xinggsf/adblock-plus-rule",
         "yous/youslist",
         "zakird/crux-top-lists"
+      ],
+      "status": "audited"
+    },
+    {
+      "source_id": "acl4ssr-china-domain",
+      "publisher": "acl4ssr/acl4ssr",
+      "lineage_status": "unverified",
+      "evidence_url": "https://github.com/ACL4SSR/ACL4SSR/blob/master/README.md",
+      "fetched_url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/README.md",
+      "evidence_sha256": "67026f98f57b2f7d332dcfb3cf0fa7bb018f01db6b05ea468411a2a7bec70b7a",
+      "evidence_bytes": 9163,
+      "declared_upstream_count": 0,
+      "discovered_upstream_count": 4,
+      "declared_upstreams": [],
+      "declared_and_discovered": [],
+      "declared_not_in_document": [],
+      "discovered_not_registered": [
+        "careywang/sub-web",
+        "googlehosts/hosts",
+        "neko-dev/neohosts",
+        "tindy2013/subconverter"
+      ],
+      "discovered_upstreams": [
+        "careywang/sub-web",
+        "googlehosts/hosts",
+        "neko-dev/neohosts",
+        "tindy2013/subconverter"
+      ],
+      "comparison_upstreams": [
+        "careywang/sub-web",
+        "googlehosts/hosts",
+        "neko-dev/neohosts",
+        "tindy2013/subconverter"
+      ],
+      "status": "audited"
+    },
+    {
+      "source_id": "clashfx-cn-apps-direct",
+      "publisher": "clash-fx/cn-apps-direct-domains",
+      "lineage_status": "unverified",
+      "evidence_url": "https://github.com/Clash-FX/cn-apps-direct-domains/blob/main/README.md",
+      "fetched_url": "https://raw.githubusercontent.com/Clash-FX/cn-apps-direct-domains/main/README.md",
+      "evidence_sha256": "072a4ca47bf936236803746dcb61626ea11fcdec6a1728512290e888bdde29fc",
+      "evidence_bytes": 3424,
+      "declared_upstream_count": 0,
+      "discovered_upstream_count": 2,
+      "declared_upstreams": [],
+      "declared_and_discovered": [],
+      "declared_not_in_document": [],
+      "discovered_not_registered": [
+        "clash-fx/clashfx",
+        "clash-fx/cn-apps-direct"
+      ],
+      "discovered_upstreams": [
+        "clash-fx/clashfx",
+        "clash-fx/cn-apps-direct"
+      ],
+      "comparison_upstreams": [
+        "clash-fx/clashfx",
+        "clash-fx/cn-apps-direct"
+      ],
+      "status": "audited"
+    },
+    {
+      "source_id": "acl4ssr-proxy-lite",
+      "publisher": "acl4ssr/acl4ssr",
+      "lineage_status": "unverified",
+      "evidence_url": "https://github.com/ACL4SSR/ACL4SSR/blob/master/README.md",
+      "fetched_url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/README.md",
+      "evidence_sha256": "67026f98f57b2f7d332dcfb3cf0fa7bb018f01db6b05ea468411a2a7bec70b7a",
+      "evidence_bytes": 9163,
+      "declared_upstream_count": 0,
+      "discovered_upstream_count": 4,
+      "declared_upstreams": [],
+      "declared_and_discovered": [],
+      "declared_not_in_document": [],
+      "discovered_not_registered": [
+        "careywang/sub-web",
+        "googlehosts/hosts",
+        "neko-dev/neohosts",
+        "tindy2013/subconverter"
+      ],
+      "discovered_upstreams": [
+        "careywang/sub-web",
+        "googlehosts/hosts",
+        "neko-dev/neohosts",
+        "tindy2013/subconverter"
+      ],
+      "comparison_upstreams": [
+        "careywang/sub-web",
+        "googlehosts/hosts",
+        "neko-dev/neohosts",
+        "tindy2013/subconverter"
+      ],
+      "status": "audited"
+    },
+    {
+      "source_id": "sve1r-global-proxy",
+      "publisher": "sve1r/rules-for-quantumult-x",
+      "lineage_status": "unverified",
+      "evidence_url": "https://github.com/sve1r/Rules-For-Quantumult-X/blob/main/README.md",
+      "fetched_url": "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/README.md",
+      "evidence_sha256": "e8701d5e7e38b9c24fb16a381b9893edc1f490606abfe67a78b6aeedb3543755",
+      "evidence_bytes": 13084,
+      "declared_upstream_count": 0,
+      "discovered_upstream_count": 2,
+      "declared_upstreams": [],
+      "declared_and_discovered": [],
+      "declared_not_in_document": [],
+      "discovered_not_registered": [
+        "nobyda/scipts",
+        "privacy-protection-tools/anti-ad"
+      ],
+      "discovered_upstreams": [
+        "nobyda/scipts",
+        "privacy-protection-tools/anti-ad"
+      ],
+      "comparison_upstreams": [
+        "nobyda/scipts",
+        "privacy-protection-tools/anti-ad"
       ],
       "status": "audited"
     }

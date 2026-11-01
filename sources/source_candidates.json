@@ -157,6 +157,12 @@
           ]
         },
         {
+          "repository": "Seanyim/tailrocket",
+          "references": [
+            "gfwlist/gfwlist"
+          ]
+        },
+        {
           "repository": "bgpeer/rules",
           "references": [
             "loyalsoldier/geoip"
