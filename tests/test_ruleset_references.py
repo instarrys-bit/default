@@ -45,5 +45,36 @@ class RuleSetReferenceAuditTests(unittest.TestCase):
             report = inspect(config, manifest, root)
             self.assertTrue(report["passed"], report["errors"])
 
+    def test_untrusted_host_and_wrong_path_are_detected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for name in ("direct.list", "proxy.list", "reject.list"):
+                (root / name).write_text("", encoding="utf-8")
+            manifest = {"outputs": ["direct.list", "proxy.list", "reject.list"], "rule_count": {"DIRECT": 0, "PROXY": 0, "REJECT": 0}}
+            config = "\\n".join([
+                "[Rule]",
+                "RULE-SET,https://example.com/other/direct.list,DIRECT",
+                "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list,PROXY",
+                "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/reject.list,REJECT",
+            ])
+            report = inspect(config, manifest, root)
+            self.assertFalse(report["passed"])
+            self.assertTrue(any("host must be raw.githubusercontent.com" in x for x in report["errors"]))
+            self.assertTrue(any("outside this repository" in x for x in report["errors"]))
+
+    def test_duplicate_reference_is_detected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for name in ("direct.list", "proxy.list", "reject.list"):
+                (root / name).write_text("", encoding="utf-8")
+            manifest = {"outputs": ["direct.list", "proxy.list", "reject.list"], "rule_count": {"DIRECT": 0, "PROXY": 0, "REJECT": 0}}
+            direct = "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list,DIRECT"
+            config = "\\n".join(["[Rule]", direct, direct,
+                "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list,PROXY",
+                "RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/reject.list,REJECT"])
+            report = inspect(config, manifest, root)
+            self.assertFalse(report["passed"])
+            self.assertTrue(any("duplicate RULE-SET URL" in x for x in report["errors"]))
+
 if __name__ == "__main__":
     unittest.main()
