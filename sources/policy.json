@@ -134,16 +134,16 @@
   },
   "managed_config_guard": {
     "path": "shadowrocket/ss.conf",
-    "approved_git_blob_sha": "2349c0217fdfd8688d50047f42c2530e92ae100e",
+    "approved_git_blob_sha": "986b1da6d2a51004224215910dd8fbaf900ceb39",
     "immutable": true,
     "description": "Authoritative user-managed Shadowrocket config baseline. Read-only for automation; derived rule audits must evaluate against this file.",
     "last_user_approved_baseline_update": {
-      "previous_blob_sha": "d949355d9f5ee547c68543ca81c9c4aad7a2904a",
-      "new_blob_sha": "2349c0217fdfd8688d50047f42c2530e92ae100e",
+      "previous_blob_sha": "2349c0217fdfd8688d50047f42c2530e92ae100e",
+      "new_blob_sha": "986b1da6d2a51004224215910dd8fbaf900ceb39",
       "reason": "Repository owner pushed an ss.conf change; register that exact user-approved file version. Automation does not edit ss.conf.",
       "actor": "instarrys-bit",
-      "commit_sha": "c9e3905328c22a6d1a218c2c9b05308c1e300245",
-      "registered_at": "2026-11-01T16:43:36.888135+00:00"
+      "commit_sha": "1d7541e099a2d0df5a8e9ba9c56e25fc61615255",
+      "registered_at": "2026-11-01T16:51:07.541860+00:00"
     }
   }
 }
