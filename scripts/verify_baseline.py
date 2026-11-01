@@ -53,7 +53,6 @@ def main() -> int:
             return 0
         raise ValueError(f"User config baseline mismatch for {guard['path']}: {actual}; expected {expected}")
     print(f"PASS: {guard['path']} is the registered user config baseline ({actual}).")
-    print("The historical uploaded config is archival only and is not used as the authority for current checks.")
     return 0
 
 
