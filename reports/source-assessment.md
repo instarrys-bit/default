@@ -8,8 +8,8 @@
 |---|---|---|---:|---|---|
 | blackmatrix7/ios_rule_script | unsupported_or_too_small | — | 0 | unchanged | none |
 | blackmatrix7/ios_rule_script | unsupported_or_too_small | — | 0 | unchanged | none |
-| Loyalsoldier/v2ray-rules-dat | domain-only | — | 109581 | domain_set_changed | ambiguous |
-| Loyalsoldier/v2ray-rules-dat | domain-only | — | 26496 | domain_set_changed | ambiguous |
+| Loyalsoldier/v2ray-rules-dat | domain-only | — | 109581 | unchanged | ambiguous |
+| Loyalsoldier/v2ray-rules-dat | domain-only | — | 26496 | unchanged | ambiguous |
 | Loyalsoldier/v2ray-rules-dat | fetch_or_validation_error | — | 0 | unavailable | none |
 | Hackl0us/SS-Rule-Snippet | shadowrocket-domain-rules | — | 118 | unchanged | ambiguous |
 | Hackl0us/SS-Rule-Snippet | shadowrocket-domain-rules | — | 272 | unchanged | none |
@@ -60,8 +60,8 @@
 ## Source update drift
 
 - New source files: 0
-- Changed source files: 2
-- Added domain entries: 12
+- Changed source files: 0
+- Added domain entries: 0
 - Removed domain entries: 0
 - Policy changes: 0
 
