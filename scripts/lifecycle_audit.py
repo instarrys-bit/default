@@ -71,6 +71,7 @@ def main():
     timestamp=datetime.now(timezone.utc).isoformat()
     protected_cfg=json.loads((ROOT/"sources/protected_domains.json").read_text())
     rules={p:set(x.strip() for x in (DIR/(p+".list")).read_text().splitlines() if x.strip() and not x.startswith("#")) for p in POLICIES}
+    published_before={p:set(values) for p,values in rules.items()}
     obs_path=DIR/"lifecycle_observations.json"
     archive_path=DIR/"deletion_archive.json"
     queue_path=DIR/"pending_queue.json"
@@ -149,6 +150,15 @@ def main():
         manifest["rule_count"]={p:sum(1 for line in rules[p] if line.startswith(("DOMAIN,","DOMAIN-SUFFIX,"))) for p in POLICIES}
         manifest["published_rule_total"]=sum(manifest["rule_count"].values())
         manifest["queued_rule_total"]=len(queue.get("items",[]))
+        lifecycle_delta={}
+        for policy in POLICIES:
+            before_lines=published_before[policy]
+            after_lines=rules[policy]
+            before_text="\\n".join(sorted(before_lines))+("\\n" if before_lines else "")
+            after_text="\\n".join(sorted(after_lines))+("\\n" if after_lines else "")
+            lifecycle_delta[policy.upper()]={"previous_count":len(before_lines),"current_count":len(after_lines),"added_count":len(after_lines-before_lines),"removed_count":len(before_lines-after_lines),"previous_sha256":hashlib.sha256(before_text.encode()).hexdigest(),"current_sha256":hashlib.sha256(after_text.encode()).hexdigest(),"added_sample":sorted(after_lines-before_lines)[:10],"removed_sample":sorted(before_lines-after_lines)[:10]}
+        manifest["rule_lifecycle"]=lifecycle_delta
+        manifest["lifecycle_audit_summary"]={"completed_at":timestamp,"deleted_count":len(deleted),"restored_count":len(restored),"unknown_retained_count":unknown,"protected_retained_count":protected_count,"suffix_retained_count":suffix_retained_count}
         manifest["lifecycle_last_audit_at"]=timestamp
         manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n")
     REPORT.mkdir(parents=True,exist_ok=True)
