@@ -38,7 +38,7 @@
 
 ## 确定性审核与自动发布
 
-唯一发布工作流为 `.github/workflows/auto_sync.yml`：支持手动运行，并按计划每 6 小时运行。全程纯确定性托管自动化，不包含 AI、LLM、模型 API、API Key 或人工逐条审核依赖。流程为来源采集、域名规范化、跨来源证据核验、重复/冲突/保护检查、三类规则集构建、静态验证、报告与版本提交。
+唯一发布工作流为 `.github/workflows/auto_sync.yml`：支持手动运行，并按计划每 6 小时运行。全程纯确定性托管自动化，不包含 AI、LLM、模型 API、API Key 或人工逐条审核依赖。流程为来源采集、域名规范化、跨来源证据核验、重复/冲突/保护检查、三类规则集构建、静态验证、报告与版本提交。安全边界采用独立作业：审计作业仅有 `contents: read` 且不保留 checkout 凭据；仅发布作业具有 `contents: write`，它不执行仓库 Python 脚本，只接收短期保留的白名单产物并再次核验基准提交后发布。失败通知作业单独拥有 `issues: write`。
 
 当前登记了三类策略来源：DIRECT 使用 ACL4SSR ChinaDomain 与 Clash-FX cn-apps-direct-domains；PROXY 使用 ACL4SSR ProxyLite 与 sve1r Global；REJECT 使用 sr-adblock-domain-lite 与 HaGeZi Pro。每个域名必须获得至少两个不同发布者、不同来源组的当前证据，策略一致并通过本地检查，才可进入对应规则集。来源血缘状态会完整记录，但 `partial` 或 `unverified` 不再一票否决域名；来源重叠是相关性提示，不等同于具体域名共享上游。
 
