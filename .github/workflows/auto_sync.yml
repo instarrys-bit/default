@@ -195,6 +195,8 @@ jobs:
             reports/config-drift-audit.json \
             reports/ruleset-reference-audit.md \
             reports/ruleset-reference-audit.json \
+            reports/ruleset-config-overlap-audit.md \
+            reports/ruleset-config-overlap-audit.json \
             reports/source-lineage-audit.json \
             reports/source-discovery.md \
             reports/source-assessment.md \
