@@ -7,6 +7,7 @@ on:
       - "scripts/validate_config.py"
       - "scripts/audit_config_drift.py"
       - "scripts/audit_ruleset_references.py"
+      - "scripts/audit_ruleset_config_overlap.py"
       - "scripts/select_domain_rules.py"
       - "scripts/collect_domains.py"
       - "scripts/deterministic_review.py"
@@ -44,11 +45,12 @@ jobs:
       - run: python scripts/verify_baseline.py
       - run: python scripts/audit_config_drift.py
       - run: python scripts/audit_ruleset_references.py
+      - run: python scripts/audit_ruleset_config_overlap.py
       - run: python scripts/validate_config.py
       - run: python scripts/select_domain_rules.py --self-test
       - name: Validate deterministic evidence review
         run: |
-          python -m py_compile scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/validate_config.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/build_rulesets.py
+          python -m py_compile scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/validate_config.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/build_rulesets.py
           python -m unittest discover -s tests -v
           python -m json.tool sources/domain_sources.json >/dev/null
           python -m json.tool sources/policy.json >/dev/null
