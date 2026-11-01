@@ -14,6 +14,7 @@ CURRENT_SNAPSHOT=ROOT/"data/candidates.json"
 CONFIG=ROOT/"shadowrocket/ss.conf"
 PROTECTED=ROOT/"sources/protected_domains.json"
 OUT=ROOT/"rulesets"
+LIFECYCLE_STATE=OUT/"lifecycle_state.json"
 POLICIES={"DIRECT","PROXY","REJECT"}
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
 
@@ -34,6 +35,13 @@ def main():
     base=CONFIG.read_text(encoding="utf-8")
     rules,conditional,_=load_domain_rules(CONFIG)
     index=RuleIndex(rules)
+    lifecycle_state=json.loads(LIFECYCLE_STATE.read_text(encoding="utf-8")) if LIFECYCLE_STATE.exists() else {}
+    lifecycle_active=bool(lifecycle_state.get("active"))
+    previous_published={policy:set() for policy in POLICIES}
+    for policy in POLICIES:
+        previous_path=OUT/(policy.lower()+".list")
+        if previous_path.exists():
+            previous_published[policy]=set(x.strip() for x in previous_path.read_text(encoding="utf-8").splitlines() if x.strip() and not x.strip().startswith("#"))
     rule_sets={policy:set() for policy in POLICIES}
     seen={}
     status_counts={}
@@ -85,6 +93,14 @@ def main():
         scope=str(item.get("source_entry_type","exact_candidate"))
         if scope not in {"exact_candidate","suffix_candidate"}:
             raise ValueError("unsupported approved domain scope: "+domain)
+        if item.get("lifecycle_hold") and not lifecycle_active:
+            held_line=("DOMAIN-SUFFIX," if scope=="suffix_candidate" else "DOMAIN,")+domain
+            if held_line not in previous_published[policy]:
+                raise ValueError("lifecycle-held rule is not present in the previous published artifact: "+domain)
+            seen[domain]=policy
+            rule_sets[policy].add((scope,domain))
+            approved+=1
+            continue
         if scope=="suffix_candidate":
             if engine!="deterministic-domain-audit/4.0":
                 raise ValueError("legacy exact-only review cannot publish suffix scope: "+domain)
