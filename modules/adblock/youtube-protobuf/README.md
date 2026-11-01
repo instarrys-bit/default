@@ -44,3 +44,8 @@ The baseline audit is recorded in [AUDIT.md](./AUDIT.md). At minimum, migration 
 6. Run static syntax checks and fixture tests.
 7. Test on Shadowrocket with YouTube before changing the module's script-path.
 8. Only then propose a separate production switch. No automatic switch is authorized by this staging branch.
+
+
+## Repository-branded baseline
+
+A repository-branded copy is staged at `instarrys_youtube_protobuf_filter.js`. It changes the project header and user-facing diagnostic labels while preserving the upstream attribution and license notice. It is not yet wired into the production module and has not been device-tested. The original production script remains the comparison baseline.
