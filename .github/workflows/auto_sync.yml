@@ -1,3 +1,4 @@
+# Request observations enter only as unclassified candidates; trusted source evidence controls policy.
 name: Shadowrocket Deterministic Domain Audit (Immutable Baseline)
 
 on:
