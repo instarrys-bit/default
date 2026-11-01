@@ -8,6 +8,8 @@ on:
       - "scripts/audit_config_drift.py"
       - "scripts/audit_ruleset_references.py"
       - "scripts/audit_ruleset_config_overlap.py"
+      - "scripts/sync_ruleset_config_conflicts.py"
+      - "scripts/register_config_baseline.py"
       - "scripts/select_domain_rules.py"
       - "scripts/collect_domains.py"
       - "scripts/deterministic_review.py"
@@ -37,20 +39,24 @@ permissions:
 jobs:
   structural-check:
     runs-on: ubuntu-24.04
+    env:
+      GITHUB_BEFORE: ${{ github.event.before }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
-      - run: python scripts/verify_baseline.py
-      - run: python scripts/audit_config_drift.py
+      - run: python scripts/verify_baseline.py --allow-owner-push-change
+      - run: python scripts/audit_config_drift.py --allow-owner-push-change
       - run: python scripts/audit_ruleset_references.py
       - run: python scripts/audit_ruleset_config_overlap.py
       - run: python scripts/validate_config.py
       - run: python scripts/select_domain_rules.py --self-test
       - name: Validate deterministic evidence review
         run: |
-          python -m py_compile scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/validate_config.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/build_rulesets.py
+          python -m py_compile scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/validate_config.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/build_rulesets.py
           python -m unittest discover -s tests -v
           python -m json.tool sources/domain_sources.json >/dev/null
           python -m json.tool sources/policy.json >/dev/null

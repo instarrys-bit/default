@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Read-only audit using the user's managed Shadowrocket config as the sole authority."""
 from __future__ import annotations
+import argparse
 import hashlib
 import json
+import sys
 from pathlib import Path
+from verify_baseline import owner_approved_push_changed_config
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = ROOT / "sources" / "policy.json"
@@ -71,11 +74,20 @@ def build_report(config_bytes: bytes, expected_blob_sha: str, config_path: str) 
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--allow-owner-push-change', action='store_true')
+    args = parser.parse_args()
     policy = json.loads(POLICY_PATH.read_text(encoding="utf-8"))
     guard = policy["managed_config_guard"]
     config_path = guard["path"]
     config_bytes = (ROOT / config_path).read_bytes()
     result = build_report(config_bytes, guard["approved_git_blob_sha"], config_path)
+    pending_owner_registration = bool(
+        args.allow_owner_push_change
+        and not result["baseline_matches_registered_blob"]
+        and owner_approved_push_changed_config()
+    )
+    result["owner_approved_change_pending_registration"] = pending_owner_registration
     REPORT_JSON.parent.mkdir(parents=True, exist_ok=True)
     REPORT_JSON.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
@@ -104,13 +116,14 @@ def main() -> int:
     REPORT_MD.write_text("\n".join(lines), encoding="utf-8")
     print(json.dumps({
         "baseline_matches_registered_blob": result["baseline_matches_registered_blob"],
+        "owner_approved_change_pending_registration": pending_owner_registration,
         "section_count": result["section_count"],
         "rule_line_count": result["rule_line_count"],
         "dns_keys_present": list(result["dns_snapshot"]),
         "mitm_section_present": result["mitm_section_present"],
         "mitm_enabled": result["mitm_enabled"]
     }, ensure_ascii=False))
-    return 0 if result["baseline_matches_registered_blob"] else 1
+    return 0 if result["baseline_matches_registered_blob"] or pending_owner_registration else 1
 
 
 if __name__ == "__main__":

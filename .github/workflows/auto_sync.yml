@@ -11,6 +11,10 @@ on:
         description: 'Comma-separated lifecycle deletion IDs to restore (optional)'
         required: false
         type: string
+      restore_conflict_ids:
+        description: 'Comma-separated config-conflict archive IDs to restore after rechecking ss.conf (optional)'
+        required: false
+        type: string
   push:
     branches: [main]
     paths:
@@ -42,7 +46,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Set up Python
@@ -52,7 +56,7 @@ jobs:
 
       - name: Compile and run deterministic review tests
         run: |
-          python3 -m py_compile scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/import_request_observations.py scripts/lifecycle_gate.py scripts/lifecycle_audit.py scripts/auto_activate_sources.py
+          python3 -m py_compile scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/import_request_observations.py scripts/lifecycle_gate.py scripts/lifecycle_audit.py scripts/auto_activate_sources.py
           python3 -m unittest discover -s tests -v
 
       - name: Discover candidate source repositories (non-activating)
@@ -65,8 +69,23 @@ jobs:
           python3 scripts/assess_sources.py
           cat reports/source-assessment.md >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Register repository-owner-approved ss.conf changes (never edit the config)
+        if: github.event_name == 'push'
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          GITHUB_BEFORE: ${{ github.event.before }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: python3 scripts/register_config_baseline.py
       - name: Verify registered user config baseline
         run: python3 scripts/verify_baseline.py --baseline-only
+      - name: Remove published and queued rules that conflict with ss.conf
+        env:
+          RULESET_CONFIG_RESTORE_IDS: ${{ github.event.inputs.restore_conflict_ids || '' }}
+        run: |
+          python3 scripts/sync_ruleset_config_conflicts.py
+          cat reports/ruleset-config-conflict-sync.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Import observed request hostnames as unclassified candidates
         run: python3 scripts/import_request_observations.py
@@ -143,10 +162,13 @@ jobs:
             reports/config-drift-audit.json \
             reports/ruleset-reference-audit.md \
             reports/ruleset-reference-audit.json \
+            reports/ruleset-config-conflict-sync.md \
+            reports/ruleset-config-conflict-sync.json \
+            sources/policy.json \
             reports/ruleset-config-overlap-audit.md \
             reports/ruleset-config-overlap-audit.json \
-            reports/ruleset-config-overlap-audit.md \
-            reports/ruleset-config-overlap-audit.json \
+            reports/ruleset-config-conflict-sync.md \
+            reports/ruleset-config-conflict-sync.json \
             reports/source-lineage-audit.json \
             reports/source-discovery.md \
             reports/source-assessment.md \
@@ -217,6 +239,7 @@ jobs:
           }
 
           git add -- \
+            sources/policy.json \
             sources/domain_reviews.json \
             sources/domain_sources.json \
             sources/source_activation_log.json \
@@ -228,6 +251,8 @@ jobs:
             reports/ruleset-reference-audit.json \
             reports/ruleset-config-overlap-audit.md \
             reports/ruleset-config-overlap-audit.json \
+            reports/ruleset-config-conflict-sync.md \
+            reports/ruleset-config-conflict-sync.json \
             reports/source-lineage-audit.json \
             reports/source-discovery.md \
             reports/source-assessment.md \

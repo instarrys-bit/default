@@ -41,6 +41,10 @@ def main():
     archive_path=OUT/"deletion_archive.json"
     deletion_archive=json.loads(archive_path.read_text(encoding="utf-8")) if archive_path.exists() else {"items":[]}
     archived_deleted={(str(x.get("policy","")).upper(),str(x.get("rule",""))) for x in deletion_archive.get("items",[]) if not x.get("restored_at")}
+    config_archive_path=OUT/"config_conflict_archive.json"
+    config_archive=json.loads(config_archive_path.read_text(encoding="utf-8")) if config_archive_path.exists() else {"items":[]}
+    config_conflict_archived={(str(x.get("policy","")).upper(),str(x.get("rule",""))) for x in config_archive.get("items",[]) if not x.get("restored_at")}
+    archived_deleted |= config_conflict_archived
     previous_published={policy:set() for policy in POLICIES}
     for policy in POLICIES:
         previous_path=OUT/(policy.lower()+".list")
@@ -50,6 +54,7 @@ def main():
     new_approved={policy:set() for policy in POLICIES}
     published_domain_policies={}
     previous_rule_count=0
+    baseline_conflict_holds=[]
     for policy in POLICIES:
         for line in previous_published[policy]:
             if line.startswith("DOMAIN,"):
@@ -116,6 +121,9 @@ def main():
         if scope not in {"exact_candidate","suffix_candidate"}:
             raise ValueError("unsupported approved domain scope: "+domain)
         archived_line=("DOMAIN-SUFFIX," if scope=="suffix_candidate" else "DOMAIN,")+domain
+        if (policy,archived_line) in config_conflict_archived:
+            held+=1
+            continue
         if (policy,archived_line) in archived_deleted:
             held+=1
             continue
@@ -151,10 +159,14 @@ def main():
                 domain,policy,index,conditional,protected,parse_skip_proxy(base),first_ruleset_line(base)
             )
             if local_status:
-                raise ValueError("approved suffix scope intersects baseline ("+str(local_status)+"): "+domain+" / "+str(reason))
+                held+=1
+                baseline_conflict_holds.append({"domain":domain,"policy":policy,"scope":scope,"status":local_status,"reason":reason})
+                continue
         local_status,reason=inspect(domain,index,conditional,base,protected,policy,candidate_suffix=(scope=="suffix_candidate"))
         if local_status:
-            raise ValueError("approved record now overlaps baseline ("+str(local_status)+"): "+domain+" / "+str(reason))
+            held+=1
+            baseline_conflict_holds.append({"domain":domain,"policy":policy,"scope":scope,"status":local_status,"reason":reason})
+            continue
         seen[domain]=policy
         new_approved[policy].add((scope,domain))
         approved+=1
@@ -263,6 +275,8 @@ def main():
         "published_rule_total":sum(len(rule_sets[policy]) for policy in POLICIES),
         "max_published_rules":30000,
         "queued_rule_total":len(queue_map),
+        "baseline_conflict_hold_count":len(baseline_conflict_holds),
+        "baseline_conflict_hold_sample":baseline_conflict_holds[:100],
         "pending_queue":"rulesets/pending_queue.json",
         "rule_lifecycle":rule_lifecycle,
         "reviewed_total":len(reviews),
