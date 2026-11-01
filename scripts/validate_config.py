@@ -8,10 +8,8 @@ from pathlib import Path
 import re
 import sys
 
-CONFIGS = (
-    Path("sources/baseline/ss.conf"),
-    Path("shadowrocket/ss.conf"),
-)
+# The user's current managed config is the only authoritative validation target.
+CONFIGS = (Path("shadowrocket/ss.conf"),)
 POLICIES = {"DIRECT", "PROXY", "REJECT"}
 KNOWN_TYPES = {
     "AND", "OR", "NOT", "DOMAIN", "DOMAIN-SUFFIX", "DOMAIN-KEYWORD",
