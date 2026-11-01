@@ -109,7 +109,7 @@
 ### [Chocolate4U/Iran-sing-box-rules](https://github.com/Chocolate4U/Iran-sing-box-rules)
 
 - Description: Enhanced sing-box and sing-box-clients routing rules with built-in Iranian domains and a focus on security and adblocking.
-- Stars: 348; archived: False; fork: False
+- Stars: 349; archived: False; fork: False
 - Search queries: geosite domain
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
@@ -357,7 +357,7 @@
 ### [Loyalsoldier/surge-rules](https://github.com/Loyalsoldier/surge-rules)
 
 - Description: 🦄 🎃 👻 Surge 规则集(DOMAIN-SET 和 RULE-SET)，适用于 Surge for iOS 和 Surge for Mac 客户端。
-- Stars: 3174; archived: False; fork: False
+- Stars: 3176; archived: False; fork: False
 - Search queries: geosite domain
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
@@ -1676,7 +1676,7 @@
 ### [v2fly/domain-list-community](https://github.com/v2fly/domain-list-community)
 
 - Description: Community managed domain list. Generate geosite.dat for V2Ray.
-- Stars: 9805; archived: False; fork: False
+- Stars: 9806; archived: False; fork: False
 - Search queries: geosite domain
 - README / curated seed rule-list links: 0
 - Curated seed links: 0

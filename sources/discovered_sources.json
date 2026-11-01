@@ -54,14 +54,14 @@
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list": [
-          "PROXY"
-        ],
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list": [
           "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list": [
+          "PROXY"
         ]
       },
       "seeded_source_urls": [
@@ -279,9 +279,9 @@
       "html_url": "https://github.com/Chocolate4U/Iran-sing-box-rules",
       "description": "Enhanced sing-box and sing-box-clients routing rules with built-in Iranian domains and a focus on security and adblocking.",
       "default_branch": "main",
-      "updated_at": "2026-10-31T17:12:49Z",
+      "updated_at": "2026-11-01T16:22:42Z",
       "pushed_at": "2026-11-01T11:51:18Z",
-      "stars": 348,
+      "stars": 349,
       "archived": false,
       "fork": false,
       "license": "GPL-3.0",
@@ -839,13 +839,13 @@
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list": [
-          "DIRECT"
-        ],
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list": [
           "DIRECT",
           "PROXY",
           "REJECT"
+        ],
+        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list": [
+          "DIRECT"
         ],
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/gfw.list": [
           "DIRECT",
@@ -949,9 +949,9 @@
       "html_url": "https://github.com/Loyalsoldier/surge-rules",
       "description": "🦄 🎃 👻 Surge 规则集(DOMAIN-SET 和 RULE-SET)，适用于 Surge for iOS 和 Surge for Mac 客户端。",
       "default_branch": "master",
-      "updated_at": "2026-11-01T13:14:33Z",
+      "updated_at": "2026-11-01T16:32:19Z",
       "pushed_at": "2026-10-31T22:32:18Z",
-      "stars": 3174,
+      "stars": 3176,
       "archived": false,
       "fork": false,
       "license": "GPL-3.0",
@@ -987,12 +987,12 @@
           "PROXY",
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt": [
+        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt": [
+        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
@@ -1156,19 +1156,19 @@
         "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/v2rayA.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/reject-special.list": [
-          "REJECT"
-        ],
         "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/direct-special.list": [
           "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/reject-special.list": [
+          "REJECT"
         ],
         "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv6.txt": [
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/Shadowrocket.conf": [
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute.txt": [
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute.txt": [
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/Shadowrocket.conf": [
           "REJECT"
         ],
         "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/proxy-special.list": [
@@ -1964,7 +1964,7 @@
       "html_url": "https://github.com/blackmatrix7/ios_rule_script",
       "description": "分流规则、重写写规则及脚本。",
       "default_branch": "master",
-      "updated_at": "2026-11-01T15:28:27Z",
+      "updated_at": "2026-11-01T16:25:30Z",
       "pushed_at": "2026-10-27T21:45:44Z",
       "stars": 28498,
       "archived": false,
@@ -2308,8 +2308,8 @@
       "html_url": "https://github.com/deezertidal/shadowrocket-rules",
       "description": "小火箭 shadowrocket 配置文件 模块 脚本 module sgmodule 图文教程 规则 分流 破解 解锁",
       "default_branch": "main",
-      "updated_at": "2026-11-01T15:25:48Z",
-      "pushed_at": "2026-11-01T15:25:43Z",
+      "updated_at": "2026-11-01T16:25:43Z",
+      "pushed_at": "2026-11-01T16:25:37Z",
       "stars": 6784,
       "archived": false,
       "fork": false,
@@ -2583,13 +2583,13 @@
         "https://raw.githubusercontent.com/gatework/surge-rules/release/proxy.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt": [
-          "PROXY"
-        ],
         "https://raw.githubusercontent.com/gatework/surge-rules/release/direct.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
+        ],
+        "https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt": [
+          "PROXY"
         ],
         "https://raw.githubusercontent.com/gatework/surge-rules/release/proxy.txt": [
           "DIRECT",
@@ -4223,34 +4223,34 @@
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/telegram.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
-          "PROXY"
-        ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
           "PROXY"
         ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
+          "PROXY"
+        ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/torrent.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/tools.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt": [
           "PROXY"
         ]
       },
@@ -4393,9 +4393,9 @@
       "html_url": "https://github.com/v2fly/domain-list-community",
       "description": "Community managed domain list. Generate geosite.dat for V2Ray.",
       "default_branch": "master",
-      "updated_at": "2026-11-01T13:29:42Z",
+      "updated_at": "2026-11-01T16:21:27Z",
       "pushed_at": "2026-11-01T07:46:31Z",
-      "stars": 9805,
+      "stars": 9806,
       "archived": false,
       "fork": false,
       "license": "MIT",
