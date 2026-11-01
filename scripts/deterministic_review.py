@@ -97,12 +97,24 @@ def inspect(domain,rules,conditional,base,protected,candidate_policy=None):
         if upper.startswith("URL-REGEX,"):
             fields=line.rsplit(",",1)
             if len(fields)!=2: return "REVIEW","Malformed URL-REGEX cannot be evaluated"
-            try: pattern=re.compile(fields[0][len("URL-REGEX,"):])
+            pattern_text=fields[0][len("URL-REGEX,"):]
+            try: re.compile(pattern_text)
             except re.error: return "REVIEW","Existing URL-REGEX cannot be compiled"
-            probes=("http://"+domain+"/","https://"+domain+"/","http://"+domain+"/multifetch?dms=","http://"+domain+"/fetch?dm=","http://"+domain+"/d?dn=","http://"+domain+"/httpdns/")
-            if any(pattern.search(x) for x in probes):
+            # URL path filters with a generic host (for example [^/]+/multifetch) are not domain rules.
+            # Only compare a candidate when the regex identifies a concrete hostname pattern.
+            if r"[^\\/]+" in pattern_text:
+                continue
+            host_match=re.match(r"^\\^https?:\\/\\/(.+?)(?:\\/|$)",pattern_text)
+            if not host_match:
+                continue
+            host_pattern=host_match.group(1)
+            if not re.search(r"\\\\\\.[A-Za-z0-9-]+\\\\\\.[A-Za-z0-9-]+$",host_pattern):
+                continue
+            try: host_regex=re.compile(r"^(?:"+host_pattern+r")$")
+            except re.error: return "REVIEW","Existing URL-REGEX host pattern cannot be compiled"
+            if host_regex.fullmatch(domain):
                 pol=fields[1].strip().upper()
-                return ("ALREADY_COVERED" if candidate_policy==pol else "CONFLICT"),"Matches existing URL-REGEX => "+pol
+                return ("ALREADY_COVERED" if candidate_policy==pol else "CONFLICT"),"Matches host-specific URL-REGEX => "+pol
     for item in parse_skip_proxy(base):
         if "/" in item or ":" in item: continue
         if item.startswith("*."):

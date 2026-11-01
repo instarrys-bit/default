@@ -4,7 +4,8 @@ import unittest
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
-from deterministic_review import DOMAIN_RE, evidence_gate, validate_evidence
+from deterministic_review import DOMAIN_RE, evidence_gate, inspect, validate_evidence
+from domain_rule_engine import RuleIndex
 from collect_domains import bootstrap_source_domains, check_source_delta, parse_adblock, parse_domain_list, parse_source
 from source_registry import validate_registry
 
@@ -147,6 +148,23 @@ class EvidenceProvenanceTests(unittest.TestCase):
     def test_wrong_policy_or_url_is_discarded(self):
         evidence=[dict(self.evidence[0],classification="DIRECT"),dict(self.evidence[1],url="https://example.invalid/list")]
         self.assertEqual(validate_evidence(evidence,self.source_map,self.hashes,"REJECT"),[])
+
+
+class UrlRegexScopeTests(unittest.TestCase):
+    def base(self,rule):
+        return "[General]\\nskip-proxy = \\n[Rule]\\n"+rule+"\\n[Host]\\n"
+
+    def test_generic_url_path_filter_does_not_conflict_with_every_domain(self):
+        base=self.base(r"URL-REGEX,^http:\\/\\/[^\\/]+\\/multifetch\\?dms=,REJECT")
+        status,reason=inspect("example.com",RuleIndex([]),[],base,{},"DIRECT")
+        self.assertIsNone(status)
+
+    def test_host_specific_url_regex_only_conflicts_with_matching_host(self):
+        base=self.base(r"URL-REGEX,^http:\\/\\/api\\.bilibili\\.com\\/x\\/vip\\/ads\\/,REJECT")
+        status,reason=inspect("api.bilibili.com",RuleIndex([]),[],base,{},"DIRECT")
+        self.assertEqual(status,"CONFLICT")
+        status,reason=inspect("example.com",RuleIndex([]),[],base,{},"DIRECT")
+        self.assertIsNone(status)
 
 
 class SourceIntegrityTests(unittest.TestCase):
