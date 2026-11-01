@@ -78,6 +78,9 @@ def activate(registry: dict, matrix: dict, now: str | None = None) -> tuple[dict
             decisions.append({"repository": repository, "policy": policy, "decision": "held", "reason": "no supported file with 100+ unique domains and an unchanged second observation"})
             continue
         url = str(selected["url"])
+        if (policy, repository) in existing_publishers or url in existing_urls:
+            decisions.append({"repository": repository, "policy": policy, "decision": "already_registered", "reason": "publisher or URL is already registered"})
+            continue
         # Re-parse the exact bytes with the production collector before registry admission.
         # Candidate-matrix counts alone are not sufficient: parser incompatibility must never
         # turn a newly activated source into a whole-pipeline outage.
@@ -94,9 +97,6 @@ def activate(registry: dict, matrix: dict, now: str | None = None) -> tuple[dict
                 raise ValueError("production parser yielded fewer than 100 unique domains")
         except Exception as error:
             decisions.append({"repository": repository, "policy": policy, "decision": "held", "reason": "production collector preflight failed: " + str(error)[:300]})
-            continue
-        if (policy, repository) in existing_publishers or url in existing_urls:
-            decisions.append({"repository": repository, "policy": policy, "decision": "already_registered", "reason": "publisher or URL is already registered"})
             continue
         sid = source_id_for(repository, policy)
         if sid in existing:
