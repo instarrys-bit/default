@@ -27,7 +27,7 @@
 - `modules/AdBlock.sgmodule`：用户维护的定向广告处理模块。
 - `modules/adblock/scripts/Social_Adblock.js`：社交与搜索响应处理脚本。
 - `modules/adblock/scripts/youtube_initplayback_observer.js`：仅在本地记录 YouTube initplayback 主机名，不保存完整 URL，也不发起网络请求。
-- `modules/adblock/scripts/youtube_protobuf_response_filter.js`：YouTube Protobuf 响应处理脚本；其代码基于 Maasea 上游脚本修改，来源与许可证声明保留在文件及目录中。
+- `modules/adblock/youtube-protobuf/instarrys_youtube_protobuf_filter.js`：项目维护的 YouTube Protobuf 响应处理脚本；属于基于 Maasea 上游代码的派生版本，必要来源说明与 Apache 2.0 许可证继续保留。
 - 旧的独立 `youtube-ads.sgmodule` 已从当前目录结构移除，不再作为本项目发布模块。
 
 这些模块不会因文件迁移而自动进入 `ss.conf`。在确认兼容性、隐私边界和设备端效果之前，不应直接启用。
