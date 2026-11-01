@@ -92,7 +92,7 @@ def complete_lifecycle_review(root: Path = ROOT, now: str | None = None) -> dict
         state["next_milestone"] = max(pending) + MILESTONE
         state["pending_milestones"] = []
         state["due_milestones"] = []
-    if state.get("monthly_review_due") or int(state.get("published_rule_count", 0)) >= MAX_PUBLISHED:
+    if state.get("monthly_review_due"):
         state["last_monthly_review_at"] = timestamp
     state["last_successful_review_at"] = timestamp
     state["monthly_review_due"] = False
