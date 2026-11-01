@@ -25,9 +25,10 @@
       "role": "primary_candidate_source",
       "lineage_status": "unverified",
       "upstream_repositories": [],
-      "new_entries": 0,
+      "new_entries": 605,
       "removed_entries": 0,
-      "baseline_initialized": false
+      "baseline_initialized": false,
+      "bootstrap_enqueued": true
     },
     {
       "id": "acl4ssr-proxy-lite",
@@ -37,9 +38,10 @@
       "role": "primary_candidate_source",
       "lineage_status": "unverified",
       "upstream_repositories": [],
-      "new_entries": 0,
+      "new_entries": 306,
       "removed_entries": 0,
-      "baseline_initialized": false
+      "baseline_initialized": false,
+      "bootstrap_enqueued": true
     },
     {
       "id": "clashfx-cn-apps-direct",
@@ -51,7 +53,8 @@
       "upstream_repositories": [],
       "new_entries": 0,
       "removed_entries": 0,
-      "baseline_initialized": false
+      "baseline_initialized": false,
+      "bootstrap_enqueued": false
     },
     {
       "id": "hagezi-domains-pro",
@@ -132,7 +135,8 @@
       ],
       "new_entries": 0,
       "removed_entries": 0,
-      "baseline_initialized": false
+      "baseline_initialized": false,
+      "bootstrap_enqueued": false
     },
     {
       "id": "sr-adblock-domain-lite",
@@ -153,7 +157,8 @@
       ],
       "new_entries": 0,
       "removed_entries": 0,
-      "baseline_initialized": false
+      "baseline_initialized": false,
+      "bootstrap_enqueued": false
     },
     {
       "id": "sve1r-global-proxy",
@@ -165,11 +170,12 @@
       "upstream_repositories": [],
       "new_entries": 0,
       "removed_entries": 0,
-      "baseline_initialized": false
+      "baseline_initialized": false,
+      "bootstrap_enqueued": false
     }
   ],
   "source_count": 6,
-  "policy_conflict_total": 0,
+  "policy_conflict_total": 43,
   "lineage_verified_sources": 0,
   "lineage_unverified_sources": 4,
   "lineage_partial_sources": 2,
@@ -205,21 +211,25 @@
     "PROXY": 0,
     "REJECT": 0
   },
-  "reviewed_total": 67,
+  "reviewed_total": 978,
   "approved_total": 0,
-  "held_total": 67,
+  "held_total": 978,
   "status_count": {
-    "ALREADY_COVERED": 40,
-    "CONFLICT": 17,
+    "ALREADY_COVERED": 406,
+    "CONFLICT": 516,
+    "POLICY_CONFLICT": 43,
+    "REVIEW": 3,
     "RISK_HOLD": 10
   },
   "deterministic_review_progress": {
-    "candidate_total": 67,
+    "candidate_total": 978,
     "approved_total": 0,
-    "held_total": 67,
+    "held_total": 978,
     "status_count": {
-      "ALREADY_COVERED": 40,
-      "CONFLICT": 17,
+      "ALREADY_COVERED": 406,
+      "CONFLICT": 516,
+      "POLICY_CONFLICT": 43,
+      "REVIEW": 3,
       "RISK_HOLD": 10
     }
   },

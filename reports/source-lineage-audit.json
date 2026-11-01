@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-01T06:33:47.650860+00:00",
+  "audited_at": "2026-11-01T06:36:07.078015+00:00",
   "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
   "source_count": 6,
   "audited_source_count": 6,
@@ -30,8 +30,8 @@
       ]
     }
   ],
-  "candidate_source_count": 25,
-  "candidate_readme_audited_count": 25,
+  "candidate_source_count": 26,
+  "candidate_readme_audited_count": 26,
   "candidate_shared_reference_pairs": [
     {
       "repositories": [
@@ -509,6 +509,16 @@
     },
     {
       "repositories": [
+        "granden/home-network-rules",
+        "poohyeban/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "sukkaw/surge"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
         "hrd201/shadowrocket-rules",
         "sweet0416/shadowrocket-personal-rules"
       ],
@@ -797,6 +807,21 @@
         "v2fly/domain-list-community"
       ],
       "reference_count": 5,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "granden/home-network-rules",
+      "readme_url": "https://raw.githubusercontent.com/granden/home-network-rules/main/README.md",
+      "readme_sha256": "273b9c9d595808425289086a5e12420591e640b3d80655a7d500cff8bd8ec90a",
+      "discovery_readme_sha256": "273b9c9d595808425289086a5e12420591e640b3d80655a7d500cff8bd8ec90a",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "dustinwin/ruleset_geodata",
+        "metacubex/meta-rules-dat.",
+        "sukkaw/surge"
+      ],
+      "reference_count": 3,
       "lineage_status": "unverified",
       "status": "audited_reference_inventory"
     },

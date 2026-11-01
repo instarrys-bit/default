@@ -1,6 +1,6 @@
 # Automated source discovery
 
-- Candidate repositories retained: **163**
+- Candidate repositories retained: **165**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
@@ -840,8 +840,9 @@
 - Description: Shadowrocket routing configuration using maintained Sukka, DustinWin and MetaCubeX rules. No nodes or credentials.
 - Stars: 0; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/granden/home-network-rules/main/home-network.conf
 
 ### [harmonsir/Shadowrocket-rules](https://github.com/harmonsir/Shadowrocket-rules)
 
@@ -930,6 +931,14 @@
 - Description: Daily-built China direct rule-sets (sing-box srs + Surge DOMAIN-SET), aggregated from Loyalsoldier 4-source list
 - Stars: 0; archived: False; fork: False
 - Search queries: China direct domain rules list, China domain list, direct domain list
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
+### [jfox52/ruleset](https://github.com/jfox52/ruleset)
+
+- Description: Ruleset files for Shadowrocket
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
@@ -1384,6 +1393,14 @@
 - Curated seed links: 0
   - https://raw.githubusercontent.com/wcr1996/shadowrocket_rules/main/blacklist.conf
   - https://raw.githubusercontent.com/wcr1996/shadowrocket_rules/main/whitelist.conf
+
+### [xiaobaoSHI/sr-custom-autoupdate](https://github.com/xiaobaoSHI/sr-custom-autoupdate)
+
+- Description: Personal Shadowrocket config auto-updated from Johnshall rules
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
 
 ### [yolanda-w98/Knowledge-enhanced-AI-models-for-domain-specific-application-a-survey](https://github.com/yolanda-w98/Knowledge-enhanced-AI-models-for-domain-specific-application-a-survey)
 
