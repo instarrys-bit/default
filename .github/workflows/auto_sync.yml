@@ -214,6 +214,7 @@ jobs:
             sources/source_assessments.json \
             sources/source_candidates.json \
             data/domain_candidates.json \
+            data/candidates.json \
             data/source_pending.json \
             data/primary_snapshot.txt \
             data/secondary_snapshot.txt \
