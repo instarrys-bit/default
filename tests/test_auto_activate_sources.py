@@ -42,7 +42,7 @@ def candidate(repo="new/direct", policy="DIRECT", drift="unchanged", evidence="R
             "policy_evidence": evidence,
             "domain_count": count,
             "domain_fingerprint_count": count,
-            "sha256": hashlib.sha256("\\n".join(f"d{i}.example" for i in range(count)).encode()).hexdigest(),
+            "sha256": hashlib.sha256("\n".join(f"d{i}.example" for i in range(count)).encode()).hexdigest(),
             "drift": {"status": drift}
         }]
     }
@@ -51,7 +51,7 @@ def candidate(repo="new/direct", policy="DIRECT", drift="unchanged", evidence="R
 class AutoActivationTests(unittest.TestCase):
     @patch("auto_activate_sources.urlopen")
     def test_stable_strong_candidate_activates_without_lineage_veto(self, mocked_urlopen):
-        payload = "\\n".join(f"d{i}.example" for i in range(150)).encode()
+        payload = "\n".join(f"d{i}.example" for i in range(150)).encode()
         class Response:
             def __enter__(self): return self
             def __exit__(self, *args): return False
