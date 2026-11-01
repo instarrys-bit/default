@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build exact-domain RULE-SET lists only from deterministic evidence-approved records."""
 from __future__ import annotations
-import json, re
+import hashlib, json, re
 from pathlib import Path
 from deterministic_review import inspect, parse_skip_proxy, first_ruleset_line
 from domain_rule_engine import RuleIndex, load_domain_rules, inspect_suffix_scope
@@ -115,9 +115,33 @@ def main():
         approved+=1
 
     OUT.mkdir(parents=True,exist_ok=True)
+    rule_lifecycle={}
     for policy in sorted(POLICIES):
+        output_path=OUT/(policy.lower()+".list")
+        existed=output_path.exists()
+        previous_lines=set(output_path.read_text(encoding="utf-8").splitlines()) if existed else set()
         lines=[("DOMAIN-SUFFIX," if scope=="suffix_candidate" else "DOMAIN,")+domain for scope,domain in sorted(rule_sets[policy])]
-        (OUT/(policy.lower()+".list")).write_text("\n".join(lines)+("\n" if lines else ""),encoding="utf-8")
+        current_lines=set(lines)
+        added=sorted(current_lines-previous_lines)
+        removed=sorted(previous_lines-current_lines)
+        previous_text="\n".join(sorted(previous_lines))+("\n" if previous_lines else "")
+        current_text="\n".join(lines)+("\n" if lines else "")
+        rule_lifecycle[policy]={
+            "previous_count":len(previous_lines),
+            "current_count":len(current_lines),
+            "added_count":len(added),
+            "removed_count":len(removed),
+            "previous_sha256":hashlib.sha256(previous_text.encode("utf-8")).hexdigest(),
+            "current_sha256":hashlib.sha256(current_text.encode("utf-8")).hexdigest(),
+            "added_sample":added[:10],
+            "removed_sample":removed[:10],
+            "baseline_initialized":not existed
+        }
+        output_path.write_text(current_text,encoding="utf-8")
+    expected_outputs={policy.lower()+".list" for policy in POLICIES}
+    actual_outputs={item.name for item in OUT.glob("*.list")}
+    if actual_outputs!=expected_outputs:
+        raise ValueError("rule-set output directory contains unexpected or missing policy lists")
     candidate_matrix_path=ROOT/"sources/source_candidates.json"
     candidate_matrix=json.loads(candidate_matrix_path.read_text(encoding="utf-8")) if candidate_matrix_path.exists() else {}
     manifest={
@@ -139,6 +163,7 @@ def main():
         "lineage_not_fully_verified_sources":sum(1 for x in current.get("sources",[]) if x.get("lineage_status")!="verified"),
         "source_candidate_summary": candidate_matrix.get("policy_summary", {}) if candidate_matrix else {},
         "rule_count":{policy:len(rule_sets[policy]) for policy in sorted(POLICIES)},
+        "rule_lifecycle":rule_lifecycle,
         "reviewed_total":len(reviews),
         "approved_total":approved,
         "held_total":held,
