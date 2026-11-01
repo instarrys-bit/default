@@ -82,6 +82,11 @@ jobs:
       - name: Validate Shadowrocket config structure
         run: python3 scripts/validate_config.py
 
+      - name: Audit managed config drift (read-only)
+        run: |
+          python3 scripts/audit_config_drift.py
+          cat reports/config-drift-audit.md >> "$GITHUB_STEP_SUMMARY"
+
       - name: Run read-only full-source regression audit
         run: |
           python3 scripts/audit_external_domains.py
@@ -92,6 +97,8 @@ jobs:
           tar -czf audit-output.tar.gz \
             sources/domain_reviews.json \
             reports/external-domain-audit.md \
+            reports/config-drift-audit.md \
+            reports/config-drift-audit.json \
             reports/source-lineage-audit.json \
             reports/source-discovery.md \
             reports/source-assessment.md \
