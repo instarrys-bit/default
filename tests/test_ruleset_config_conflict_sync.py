@@ -78,7 +78,7 @@ class ConfigConflictSyncTests(unittest.TestCase):
             "RULE-SET,https://example.invalid/reject.list,REJECT" + chr(10) + "DOMAIN,api.example.com,PROXY",
         )
         rules = prior_rule_lines(config)
-        self.assertEqual(first_ruleset_line(config), 4)
+        self.assertEqual(first_ruleset_line(config), 5)
         self.assertEqual(len(rules), 0)
         result = classify_rule("DIRECT", "DOMAIN,api.example.com", rules, [])
         self.assertEqual(result["status"], "NO_CONFLICT")
