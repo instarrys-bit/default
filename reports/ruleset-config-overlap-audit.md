@@ -108,7 +108,7 @@
 - camera360.com (DIRECT): ALREADY_COVERED — line 1249: Prior first-match exact/suffix domain rule
 - cctv.com (DIRECT): ALREADY_COVERED — line 792: Prior first-match exact/suffix domain rule
 - cctvpic.com (DIRECT): ALREADY_COVERED — line 1072: Prior first-match exact/suffix domain rule
-- cdninstagram.com (PROXY): CONDITIONAL_POTENTIAL — line 53: Prior compound rule contains a matching domain operand; other operands are not evaluated
+- cdninstagram.com (PROXY): CONDITIONAL_POTENTIAL — line 52: Prior compound rule contains a matching domain operand; other operands are not evaluated
 - challenges.cloudflare.com (PROXY): ALREADY_COVERED — line 1463: Prior first-match exact/suffix domain rule
 - chinaso.com (DIRECT): ALREADY_COVERED — line 1079: Prior first-match exact/suffix domain rule
 - chinaz.com (DIRECT): ALREADY_COVERED — line 956: Prior first-match exact/suffix domain rule
@@ -192,9 +192,9 @@
 - gitlab.io (PROXY): ALREADY_COVERED — line 1613: Prior first-match exact/suffix domain rule
 - godic.net (DIRECT): ALREADY_COVERED — line 882: Prior first-match exact/suffix domain rule
 - goo.gl (PROXY): ALREADY_COVERED — line 1497: Prior first-match rules intersect candidate suffix scope
-- googleapis.cn (PROXY): CONDITIONAL_POTENTIAL — line 36: Prior compound rule contains a matching domain operand; other operands are not evaluated
-- googleapis.com (PROXY): CONDITIONAL_POTENTIAL — line 37: Prior compound rule contains a matching domain operand; other operands are not evaluated
-- gstatic.cn (PROXY): CONDITIONAL_POTENTIAL — line 40: Prior compound rule contains a matching domain operand; other operands are not evaluated
+- googleapis.cn (PROXY): CONDITIONAL_POTENTIAL — line 35: Prior compound rule contains a matching domain operand; other operands are not evaluated
+- googleapis.com (PROXY): CONDITIONAL_POTENTIAL — line 36: Prior compound rule contains a matching domain operand; other operands are not evaluated
+- gstatic.cn (PROXY): CONDITIONAL_POTENTIAL — line 39: Prior compound rule contains a matching domain operand; other operands are not evaluated
 - gstatic.com (PROXY): ALREADY_COVERED — line 1762: Prior first-match rules intersect candidate suffix scope
 - gtimg.com (DIRECT): ALREADY_COVERED — line 883: Prior first-match rules intersect candidate suffix scope
 - gvt0.com (PROXY): ALREADY_COVERED — line 1553: Prior first-match rules intersect candidate suffix scope
@@ -219,7 +219,7 @@
 - igamecj.com (DIRECT): ALREADY_COVERED — line 1100: Prior first-match exact/suffix domain rule
 - images-amazon.com (DIRECT): POTENTIAL_MATCH — line 2133: Prior DOMAIN-KEYWORD may match this candidate
 - instagr.am (PROXY): ALREADY_COVERED — line 1692: Prior first-match exact/suffix domain rule
-- instagram.com (PROXY): CONDITIONAL_POTENTIAL — line 52: Prior compound rule contains a matching domain operand; other operands are not evaluated
+- instagram.com (PROXY): CONDITIONAL_POTENTIAL — line 51: Prior compound rule contains a matching domain operand; other operands are not evaluated
 - ip138.com (PROXY): CONFLICT — line 889: Prior first-match exact/suffix domain rule
 - ipip.net (DIRECT): ALREADY_COVERED — line 805: Prior first-match exact/suffix domain rule
 - iqiyi.com (DIRECT): CONFLICT — line 266: Prior first-match rules produce a conflicting policy within suffix scope
@@ -381,7 +381,7 @@
 - trip.com (DIRECT): ALREADY_COVERED — line 831: Prior first-match exact/suffix domain rule
 - tumblr.com (PROXY): ALREADY_COVERED — line 1731: Prior first-match rules intersect candidate suffix scope
 - twimg.co (PROXY): ALREADY_COVERED — line 1577: Prior first-match rules intersect candidate suffix scope
-- twimg.com (PROXY): CONDITIONAL_POTENTIAL — line 44: Prior compound rule contains a matching domain operand; other operands are not evaluated
+- twimg.com (PROXY): CONDITIONAL_POTENTIAL — line 43: Prior compound rule contains a matching domain operand; other operands are not evaluated
 - twimg.org (PROXY): ALREADY_COVERED — line 1644: Prior first-match exact/suffix domain rule
 - twitch.tv (PROXY): ALREADY_COVERED — line 1645: Prior first-match rules intersect candidate suffix scope
 - ucweb.com (DIRECT): ALREADY_COVERED — line 922: Prior first-match exact/suffix domain rule
@@ -405,7 +405,7 @@
 - wikimedia.org (PROXY): ALREADY_COVERED — line 1942: Prior first-match rules intersect candidate suffix scope
 - wikipedia.org (PROXY): ALREADY_COVERED — line 1944: Prior first-match rules intersect candidate suffix scope
 - wscdns.com (DIRECT): ALREADY_COVERED — line 1037: Prior first-match exact/suffix domain rule
-- x.com (PROXY): CONDITIONAL_POTENTIAL — line 47: Prior compound rule contains a matching domain operand; other operands are not evaluated
+- x.com (PROXY): CONDITIONAL_POTENTIAL — line 46: Prior compound rule contains a matching domain operand; other operands are not evaluated
 - xhscdn.com (DIRECT): CONFLICT — line 436: Prior first-match rules produce a conflicting policy within suffix scope
 - xiachufang.com (DIRECT): ALREADY_COVERED — line 1334: Prior first-match exact/suffix domain rule
 - xiami.com (DIRECT): ALREADY_COVERED — line 927: Prior first-match rules intersect candidate suffix scope
@@ -421,9 +421,9 @@
 - ydstatic.com (DIRECT): ALREADY_COVERED — line 1228: Prior first-match exact/suffix domain rule
 - ykimg.com (DIRECT): CONFLICT — line 197: Prior first-match rules produce a conflicting policy within suffix scope
 - youku.com (DIRECT): CONFLICT — line 499: Prior first-match rules produce a conflicting policy within suffix scope
-- youtu.be (PROXY): CONDITIONAL_POTENTIAL — line 48: Prior compound rule contains a matching domain operand; other operands are not evaluated
-- youtube-nocookie.com (PROXY): CONDITIONAL_POTENTIAL — line 49: Prior compound rule contains a matching domain operand; other operands are not evaluated
-- youtube.com (PROXY): CONDITIONAL_POTENTIAL — line 50: Prior compound rule contains a matching domain operand; other operands are not evaluated
+- youtu.be (PROXY): CONDITIONAL_POTENTIAL — line 47: Prior compound rule contains a matching domain operand; other operands are not evaluated
+- youtube-nocookie.com (PROXY): CONDITIONAL_POTENTIAL — line 48: Prior compound rule contains a matching domain operand; other operands are not evaluated
+- youtube.com (PROXY): CONDITIONAL_POTENTIAL — line 49: Prior compound rule contains a matching domain operand; other operands are not evaluated
 - yt.be (PROXY): ALREADY_COVERED — line 1490: Prior first-match exact/suffix domain rule
 - ytimg.com (PROXY): ALREADY_COVERED — line 1655: Prior first-match rules intersect candidate suffix scope
 - yunjiasu-cdn.net (DIRECT): ALREADY_COVERED — line 1391: Prior first-match exact/suffix domain rule
