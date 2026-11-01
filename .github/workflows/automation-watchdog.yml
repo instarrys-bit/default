@@ -1,0 +1,54 @@
+name: Shadowrocket automation watchdog
+
+on:
+  schedule:
+    - cron: "30 22 * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: shadowrocket-automation-watchdog
+  cancel-in-progress: false
+
+jobs:
+  health-check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Detect stale successful audit and recover
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=20")"
+
+          if jq -e '[.workflow_runs[] | select(.status == "queued" or .status == "in_progress")] | length > 0' <<< "$runs" >/dev/null; then
+            echo "The deterministic audit is already queued or running; no duplicate dispatch."
+            exit 0
+          fi
+
+          last_success="$(jq -r '[.workflow_runs[] | select(.conclusion == "success")] | sort_by(.created_at) | last | .created_at // empty' <<< "$runs")"
+          age_seconds="$(python3 - "$last_success" <<'PY'
+          import sys
+          from datetime import datetime, timezone
+          value = sys.argv[1]
+          if not value:
+              print(10**9)
+          else:
+              stamp = datetime.fromisoformat(value.replace("Z", "+00:00"))
+              print(max(0, int((datetime.now(timezone.utc) - stamp).total_seconds())))
+          PY
+          )"
+
+          # Daily audit is scheduled at 20:00 UTC. A 25-hour threshold tolerates
+          # ordinary queue delays while recovering a missed or persistently failed run.
+          if [ "$age_seconds" -gt 90000 ]; then
+            echo "Last successful audit is stale (${age_seconds}s); dispatching recovery run."
+            gh workflow run auto_sync.yml --ref main --repo "$REPO"
+          else
+            echo "Last successful audit is healthy (${age_seconds}s ago)."
+          fi
