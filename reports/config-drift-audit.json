@@ -2,9 +2,9 @@
   "schema_version": 2,
   "mode": "read_only_user_config_baseline",
   "baseline_path": "shadowrocket/ss.conf",
-  "baseline_sha256": "7b8be9dceb383bc90a02e176a18ac09ca164c8e7f4cb86fca2d653d8b0e6befa",
-  "baseline_git_blob_sha": "83df6faea8525943ba32722d5ba4fc2f04d24ee0",
-  "registered_baseline_git_blob_sha": "83df6faea8525943ba32722d5ba4fc2f04d24ee0",
+  "baseline_sha256": "3d2d172a0186292f416646fc6e4bfac33194781723d9a8a68d4d9eb8bcea01bb",
+  "baseline_git_blob_sha": "d949355d9f5ee547c68543ca81c9c4aad7a2904a",
+  "registered_baseline_git_blob_sha": "d949355d9f5ee547c68543ca81c9c4aad7a2904a",
   "baseline_matches_registered_blob": true,
   "section_names": [
     "General",

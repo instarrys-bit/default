@@ -1,6 +1,6 @@
 # External domain source audit
 
-- Audit time: 2026-11-01T16:37:39.339715+00:00
+- Audit time: 2026-11-01T16:42:29.646475+00:00
 - Source: https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list
 - Git blob SHA-1: `ec23c2d1280ea4a59717816716b8ccb569dac624`
 - Candidate entries: 56516
@@ -29,13 +29,13 @@ These are not same-host rule collisions. They indicate that different hosts with
 | `baidustatic.com` | DIRECT / line 1343 / baidustatic.com; REJECT / line 417 / cpro.baidustatic.com |
 | `biz.weibo.com` | DIRECT / line 925 / weibo.com; REJECT / line 307 / c.biz.weibo.com; REJECT / line 354 / zc.biz.weibo.com; REJECT / line 358 / alv.biz.weibo.com; REJECT / line 415 / c.wcpt.biz.weibo.com; REJECT / line 482 / adstrategy.biz.weibo.com |
 | `cupid.iqiyi.com` | DIRECT / line 890 / iqiyi.com; REJECT / line 395 / api.cupid.iqiyi.com; REJECT / line 431 / msga.cupid.iqiyi.com |
-| `d.meituan.net` | DIRECT / line 1114 / meituan.net; REJECT / line 99 / al-log.d.meituan.net; REJECT / line 118 / metrics-picture.d.meituan.net; REJECT / line 123 / data-sdk-uuid-log.d.meituan.net; REJECT / line 125 / maplocatesdksnapshot.d.meituan.net |
+| `d.meituan.net` | DIRECT / line 1114 / meituan.net; REJECT / line 97 / al-log.d.meituan.net; REJECT / line 116 / metrics-picture.d.meituan.net; REJECT / line 121 / data-sdk-uuid-log.d.meituan.net; REJECT / line 123 / maplocatesdksnapshot.d.meituan.net |
 | `domob.cn` | DIRECT / line 714 / cn; REJECT / line 204 / sd.domob.cn |
 | `e.kuaishou.cn` | DIRECT / line 714 / cn; REJECT / line 384 / open.e.kuaishou.cn |
 | `l.qq.com` | DIRECT / line 741 / qq.com; REJECT / line 209 / us.l.qq.com |
 | `l.youku.com` | DIRECT / line 932 / youku.com; REJECT / line 251 / p.l.youku.com; REJECT / line 254 / r.l.youku.com; REJECT / line 262 / v.l.youku.com |
 | `leju.sina.com.cn` | DIRECT / line 714 / cn; REJECT / line 412 / adm.leju.sina.com.cn |
-| `rqd.qq.com` | DIRECT / line 741 / qq.com; REJECT / line 88 / android.rqd.qq.com |
+| `rqd.qq.com` | DIRECT / line 741 / qq.com; REJECT / line 86 / android.rqd.qq.com |
 | `segment.io` | PROXY / line 1724 / segment.io; REJECT / line 278 / api.segment.io |
 
 ## Same-host shadowed rules
@@ -46,7 +46,7 @@ The earliest matching original rule determines the effective domain-rule policy.
 
 | Candidate | Winner | Later matching rules |
 |---|---|---|
-| `09mk.cn` | REJECT line 127 (DOMAIN-SUFFIX 09mk.cn) | DIRECT line 714 (DOMAIN-SUFFIX cn) |
+| `09mk.cn` | REJECT line 125 (DOMAIN-SUFFIX 09mk.cn) | DIRECT line 714 (DOMAIN-SUFFIX cn) |
 | `a-dxk.play.api.3g.youku.com` | REJECT line 499 (DOMAIN-SUFFIX a-dxk.play.api.3g.youku.com) | DIRECT line 932 (DOMAIN-SUFFIX youku.com) |
 | `actives.youku.com` | REJECT line 355 (DOMAIN-SUFFIX actives.youku.com) | DIRECT line 932 (DOMAIN-SUFFIX youku.com) |
 | `ad.12306.cn` | REJECT line 177 (DOMAIN-SUFFIX ad.12306.cn) | DIRECT line 714 (DOMAIN-SUFFIX cn) |
@@ -54,7 +54,7 @@ The earliest matching original rule determines the effective domain-rule policy.
 | `ad.api.mobile.youku.com` | REJECT line 468 (DOMAIN-SUFFIX ad.api.mobile.youku.com) | DIRECT line 932 (DOMAIN-SUFFIX youku.com) |
 | `ad.e.waimai.sankuai.com` | REJECT line 469 (DOMAIN-SUFFIX ad.e.waimai.sankuai.com) | DIRECT line 1125 (DOMAIN-SUFFIX sankuai.com) |
 | `ad.intl.xiaomi.com` | REJECT line 373 (DOMAIN-SUFFIX ad.intl.xiaomi.com) | DIRECT line 1041 (DOMAIN-SUFFIX xiaomi.com) |
-| `ad.jiemian.com` | REJECT line 66 (DOMAIN ad.jiemian.com) | DIRECT line 1105 (DOMAIN-SUFFIX jiemian.com) |
+| `ad.jiemian.com` | REJECT line 65 (DOMAIN ad.jiemian.com) | DIRECT line 1105 (DOMAIN-SUFFIX jiemian.com) |
 | `ad.m.iqiyi.com` | REJECT line 266 (DOMAIN-SUFFIX ad.m.iqiyi.com) | DIRECT line 890 (DOMAIN-SUFFIX iqiyi.com) |
 | `ad.mobile.youku.com` | REJECT line 392 (DOMAIN-SUFFIX ad.mobile.youku.com) | DIRECT line 932 (DOMAIN-SUFFIX youku.com) |
 | `ad.qq.com` | REJECT line 138 (DOMAIN-SUFFIX ad.qq.com) | DIRECT line 741 (DOMAIN-SUFFIX qq.com) |
@@ -85,7 +85,7 @@ The earliest matching original rule determines the effective domain-rule policy.
 | `adstextview.qq.com` | REJECT line 376 (DOMAIN-SUFFIX adstextview.qq.com) | DIRECT line 741 (DOMAIN-SUFFIX qq.com) |
 | `adsview.qq.com` | REJECT line 275 (DOMAIN-SUFFIX adsview.qq.com) | DIRECT line 741 (DOMAIN-SUFFIX qq.com) |
 | `adsview2.qq.com` | REJECT line 304 (DOMAIN-SUFFIX adsview2.qq.com) | DIRECT line 741 (DOMAIN-SUFFIX qq.com) |
-| `aduu.cn` | REJECT line 128 (DOMAIN-SUFFIX aduu.cn) | DIRECT line 714 (DOMAIN-SUFFIX cn) |
+| `aduu.cn` | REJECT line 126 (DOMAIN-SUFFIX aduu.cn) | DIRECT line 714 (DOMAIN-SUFFIX cn) |
 | `adv.app.qq.com` | REJECT line 276 (DOMAIN-SUFFIX adv.app.qq.com) | DIRECT line 741 (DOMAIN-SUFFIX qq.com) |
 | `adver.qq.com` | REJECT line 212 (DOMAIN-SUFFIX adver.qq.com) | DIRECT line 741 (DOMAIN-SUFFIX qq.com) |
 | `adview.cn` | REJECT line 141 (DOMAIN-SUFFIX adview.cn) | DIRECT line 714 (DOMAIN-SUFFIX cn) |
@@ -112,7 +112,7 @@ The earliest matching original rule determines the effective domain-rule policy.
 | `dns.jd.com` | REJECT line 164 (DOMAIN-SUFFIX dns.jd.com) | DIRECT line 735 (DOMAIN-SUFFIX jd.com) |
 | `dp.im.weibo.cn` | REJECT line 283 (DOMAIN-SUFFIX dp.im.weibo.cn) | DIRECT line 714 (DOMAIN-SUFFIX cn) |
 | `dreport.meituan.net` | REJECT line 400 (DOMAIN-SUFFIX dreport.meituan.net) | DIRECT line 1114 (DOMAIN-SUFFIX meituan.net) |
-| `dualstack-logs.amap.com` | REJECT line 107 (DOMAIN dualstack-logs.amap.com) | DIRECT line 785 (DOMAIN-SUFFIX amap.com) |
+| `dualstack-logs.amap.com` | REJECT line 105 (DOMAIN dualstack-logs.amap.com) | DIRECT line 785 (DOMAIN-SUFFIX amap.com) |
 | `duclick.baidu.com` | REJECT line 363 (DOMAIN-SUFFIX duclick.baidu.com) | DIRECT line 854 (DOMAIN-SUFFIX baidu.com) |
 | `e.kuaishou.com` | REJECT line 284 (DOMAIN-SUFFIX e.kuaishou.com) | DIRECT line 1192 (DOMAIN-SUFFIX kuaishou.com) |
 | `e.qq.com` | REJECT line 133 (DOMAIN-SUFFIX e.qq.com) | DIRECT line 741 (DOMAIN-SUFFIX qq.com) |
@@ -149,7 +149,7 @@ The earliest matching original rule determines the effective domain-rule policy.
 | `l.ykimg.com` | REJECT line 197 (DOMAIN-SUFFIX l.ykimg.com) | DIRECT line 931 (DOMAIN-SUFFIX ykimg.com) |
 | `location.ximalaya.com` | REJECT line 449 (DOMAIN-SUFFIX location.ximalaya.com) | DIRECT line 1226 (DOMAIN-SUFFIX ximalaya.com) |
 | `log.aliyuncs.com` | REJECT line 342 (DOMAIN-SUFFIX log.aliyuncs.com) | DIRECT line 1156 (DOMAIN-SUFFIX aliyuncs.com) |
-| `logs.amap.com` | REJECT line 63 (DOMAIN logs.amap.com) | DIRECT line 785 (DOMAIN-SUFFIX amap.com) |
+| `logs.amap.com` | REJECT line 62 (DOMAIN logs.amap.com) | DIRECT line 785 (DOMAIN-SUFFIX amap.com) |
 | `lstat.youku.com` | REJECT line 317 (DOMAIN-SUFFIX lstat.youku.com) | DIRECT line 932 (DOMAIN-SUFFIX youku.com) |
 | `m.yes.youku.com` | REJECT line 319 (DOMAIN-SUFFIX m.yes.youku.com) | DIRECT line 932 (DOMAIN-SUFFIX youku.com) |
 | `maizhenai.cn` | REJECT line 222 (DOMAIN-SUFFIX maizhenai.cn) | DIRECT line 714 (DOMAIN-SUFFIX cn) |
@@ -163,8 +163,8 @@ The earliest matching original rule determines the effective domain-rule policy.
 | `newspush.sinajs.cn` | REJECT line 383 (DOMAIN-SUFFIX newspush.sinajs.cn) | DIRECT line 714 (DOMAIN-SUFFIX cn) |
 | `nex.163.com` | REJECT line 200 (DOMAIN-SUFFIX nex.163.com) | DIRECT line 750 (DOMAIN-SUFFIX 163.com) |
 | `nsclick.baidu.com` | REJECT line 369 (DOMAIN-SUFFIX nsclick.baidu.com) | DIRECT line 854 (DOMAIN-SUFFIX baidu.com) |
-| `oth.eve.mdt.qq.com` | REJECT line 91 (DOMAIN oth.eve.mdt.qq.com) | DIRECT line 741 (DOMAIN-SUFFIX qq.com) |
-| `oth.str.mdt.qq.com` | REJECT line 92 (DOMAIN oth.str.mdt.qq.com) | DIRECT line 741 (DOMAIN-SUFFIX qq.com) |
+| `oth.eve.mdt.qq.com` | REJECT line 89 (DOMAIN oth.eve.mdt.qq.com) | DIRECT line 741 (DOMAIN-SUFFIX qq.com) |
+| `oth.str.mdt.qq.com` | REJECT line 90 (DOMAIN oth.str.mdt.qq.com) | DIRECT line 741 (DOMAIN-SUFFIX qq.com) |
 | `p-log.ykimg.com` | REJECT line 320 (DOMAIN-SUFFIX p-log.ykimg.com) | DIRECT line 931 (DOMAIN-SUFFIX ykimg.com) |
 | `paomifen.cn` | REJECT line 202 (DOMAIN-SUFFIX paomifen.cn) | DIRECT line 714 (DOMAIN-SUFFIX cn) |
 | `paopao.iqiyi.com` | REJECT line 345 (DOMAIN-SUFFIX paopao.iqiyi.com) | DIRECT line 890 (DOMAIN-SUFFIX iqiyi.com) |
@@ -175,7 +175,7 @@ The earliest matching original rule determines the effective domain-rule policy.
 | `promote.biz.weibo.cn` | REJECT line 433 (DOMAIN-SUFFIX promote.biz.weibo.cn) | DIRECT line 714 (DOMAIN-SUFFIX cn) |
 | `push.m.youku.com` | REJECT line 347 (DOMAIN-SUFFIX push.m.youku.com) | DIRECT line 932 (DOMAIN-SUFFIX youku.com) |
 | `rcd.iqiyi.com` | REJECT line 255 (DOMAIN-SUFFIX rcd.iqiyi.com) | DIRECT line 890 (DOMAIN-SUFFIX iqiyi.com) |
-| `rmonitor.qq.com` | REJECT line 74 (DOMAIN rmonitor.qq.com) | DIRECT line 741 (DOMAIN-SUFFIX qq.com) |
+| `rmonitor.qq.com` | REJECT line 72 (DOMAIN rmonitor.qq.com) | DIRECT line 741 (DOMAIN-SUFFIX qq.com) |
 | `s.p.youku.com` | REJECT line 257 (DOMAIN-SUFFIX s.p.youku.com) | DIRECT line 932 (DOMAIN-SUFFIX youku.com) |
 | `sax.sina.cn` | REJECT line 203 (DOMAIN-SUFFIX sax.sina.cn) | DIRECT line 714 (DOMAIN-SUFFIX cn) |
 | `sax.sina.com.cn` | REJECT line 321 (DOMAIN-SUFFIX sax.sina.com.cn) | DIRECT line 714 (DOMAIN-SUFFIX cn) |
