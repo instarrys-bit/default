@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "engine": "deterministic-domain-audit/3.0",
-  "updated_at": "2026-11-01T06:32:39.537102+00:00",
+  "updated_at": "2026-11-01T06:33:48.673796+00:00",
   "source_snapshot": [
     {
       "id": "acl4ssr-china-domain",
@@ -207,7 +207,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -252,7 +252,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -297,7 +297,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -423,7 +423,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -549,7 +549,7 @@
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -675,7 +675,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -801,7 +801,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -927,7 +927,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1053,7 +1053,7 @@
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1179,7 +1179,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1305,7 +1305,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1431,7 +1431,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1557,7 +1557,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1602,7 +1602,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1728,7 +1728,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1773,7 +1773,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1818,7 +1818,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1944,7 +1944,7 @@
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -1989,7 +1989,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2115,7 +2115,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2241,7 +2241,7 @@
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2367,7 +2367,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2412,7 +2412,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2457,7 +2457,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2583,7 +2583,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2709,7 +2709,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2835,7 +2835,7 @@
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -2880,7 +2880,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3006,7 +3006,7 @@
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3051,7 +3051,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3096,7 +3096,7 @@
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3141,7 +3141,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3267,7 +3267,7 @@
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3312,7 +3312,7 @@
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3357,7 +3357,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3483,7 +3483,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3528,7 +3528,7 @@
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3573,7 +3573,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3618,7 +3618,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3663,7 +3663,7 @@
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3708,7 +3708,7 @@
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3753,7 +3753,7 @@
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3798,7 +3798,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3843,7 +3843,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -3888,7 +3888,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4014,7 +4014,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4059,7 +4059,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4104,7 +4104,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4230,7 +4230,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4356,7 +4356,7 @@
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4401,7 +4401,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4446,7 +4446,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4572,7 +4572,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4617,7 +4617,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4662,7 +4662,7 @@
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4707,7 +4707,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4833,7 +4833,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -4878,7 +4878,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -5004,7 +5004,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -5049,7 +5049,7 @@
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -5094,7 +5094,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -5139,7 +5139,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -5184,7 +5184,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -5229,7 +5229,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -5274,7 +5274,7 @@
       "conflict_check": "PASS",
       "risk_check": "VETO",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -5400,7 +5400,7 @@
       "conflict_check": "PASS",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     },
     {
@@ -5445,7 +5445,7 @@
       "conflict_check": "CONFLICT",
       "risk_check": "PASS",
       "decision_engine": "deterministic-domain-audit/3.0",
-      "reviewed_at": "2026-11-01T06:32:39.537102+00:00",
+      "reviewed_at": "2026-11-01T06:33:48.673796+00:00",
       "config_baseline": "uploaded-immutable-baseline"
     }
   ]
