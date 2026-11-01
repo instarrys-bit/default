@@ -98,7 +98,7 @@ def complete_lifecycle_review(root: Path = ROOT, now: str | None = None) -> dict
     state["monthly_review_due"] = False
     state["status"] = "capacity_queue_only" if int(state.get("published_rule_count", 0)) >= MAX_PUBLISHED else "normal_incremental"
     state["updated_at"] = timestamp
-    state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return state
 
 
