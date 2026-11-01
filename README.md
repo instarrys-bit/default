@@ -26,7 +26,7 @@
 
 - `modules/adblock/Social_Adblock.js`：独立脚本，尚未接入主配置。
 - `modules/maasea/youtube-ads.sgmodule`：独立模块。其响应体脚本针对 `youtubei.googleapis.com`，模块说明明确指出需要对该主机进行 HTTPS 解密；本项目主配置不因此启用 MITM。
-- `modules/maasea/youtube_request_local.js`：代码中包含对 `https://init-stream.maasea.workers.dev/` 的外部 Worker 依赖。使用前应单独审查其网络请求与数据处理。
+- `modules/maasea/youtube_request_local.js`：已从公开仓库移除。原脚本包含向第三方 Worker 传递 `clientKey` 和目标 URL 的逻辑，未纳入当前 YouTube 模块；如需恢复，必须先完成独立隐私与数据流审查。
 - `modules/maasea/youtube_response.js`：YouTube 响应处理脚本。
 
 这些模块不会因文件迁移而自动进入 `ss.conf`。在确认兼容性、隐私边界和设备端效果之前，不应直接启用。
