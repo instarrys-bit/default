@@ -42,13 +42,13 @@
 
 ## 确定性审核与自动发布
 
-唯一发布工作流为 `.github/workflows/auto_sync.yml`：支持手动运行，并按每周一北京时间 04:00 自动运行。全程纯确定性托管自动化，不包含 AI、LLM、模型 API、API Key 或人工逐条审核依赖。流程为来源采集、域名规范化、跨来源证据核验、重复/冲突/保护检查、三类规则集构建、静态验证、报告与版本提交。安全边界采用独立作业：审计作业仅有 `contents: read` 且不保留 checkout 凭据；仅发布作业具有 `contents: write`，它不执行仓库 Python 脚本，只接收短期保留的白名单产物并再次核验基准提交后发布。失败通知作业单独拥有 `issues: write`。
+唯一发布工作流为 `.github/workflows/auto_sync.yml`：支持手动运行，并按每天北京时间 04:00 自动运行。全程纯确定性托管自动化，不包含 AI、LLM、模型 API、API Key 或人工逐条审核依赖。流程为来源采集、域名规范化、跨来源证据核验、重复/冲突/保护检查、三类规则集构建、静态验证、报告与版本提交。安全边界采用独立作业：审计作业仅有 `contents: read` 且不保留 checkout 凭据；仅发布作业具有 `contents: write`，它不执行仓库 Python 脚本，只接收短期保留的白名单产物并再次核验基准提交后发布。失败通知作业单独拥有 `issues: write`。
 
 当前登记了三类策略来源：DIRECT 使用 ACL4SSR ChinaDomain 与 Clash-FX cn-apps-direct-domains；PROXY 使用 ACL4SSR ProxyLite 与 sve1r Global；REJECT 使用 sr-adblock-domain-lite 与 HaGeZi Pro。每个域名必须获得至少两个不同发布者、不同来源组的当前证据，策略一致并通过本地检查，才可进入对应规则集。来源血缘状态会完整记录，但 `partial` 或 `unverified` 不再一票否决域名；来源重叠是相关性提示，不等同于具体域名共享上游。
 
 单一来源、策略证据不足、跨策略冲突、条件规则交叠或关键服务风险命中的域名不会直接发布；单源候选进入观察状态，跨策略冲突隔离。脚本不会根据域名名称、TLD、IP 地理位置或 DNS 结果猜测策略；后缀级候选保留来源声明的范围；只有至少两个独立发布者明确提供相同后缀范围并通过范围冲突、条件规则、保护域名和配置优先级检查，才会生成 `DOMAIN-SUFFIX`。精确域名和后缀域名均可发布，不增加 DIRECT、PROXY、REJECT 之外的分流策略。
 
-证据不足、来源冲突/移除、已有规则覆盖、现有规则策略冲突、条件规则交叠或关键功能保护命中，均不会发布。旧 Gemini/GPT 审核账本及相关报告仅作为不可执行的历史记录保留，不被任何工作流、脚本或规则集构建读取；新的审核账本唯一为 `sources/domain_reviews.json`。
+证据不足、来源冲突/移除、已有规则覆盖、现有规则策略冲突、条件规则交叠或关键功能保护命中，均不会发布。历史 Gemini/GPT 审核流程已退役；其账本和待审队列不参与任何当前工作流、脚本或规则集构建。当前唯一审核账本为 `sources/domain_reviews.json`，规则判断完全由可测试的确定性证据与安全门槛完成。
 
 审核账本：`sources/domain_reviews.json`。发布统计：`rulesets/manifest.json`。主配置 `shadowrocket/ss.conf` 与只读基线 `sources/baseline/ss.conf` 始终不被此流程修改。
 
