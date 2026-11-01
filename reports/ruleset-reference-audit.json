@@ -37,10 +37,10 @@
     },
     "proxy.list": {
       "policy": "PROXY",
-      "line_count": 119,
-      "valid_domain_lines": 119,
+      "line_count": 122,
+      "valid_domain_lines": 122,
       "exact_domain_lines": 0,
-      "suffix_domain_lines": 119
+      "suffix_domain_lines": 122
     },
     "reject.list": {
       "policy": "REJECT",

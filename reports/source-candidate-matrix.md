@@ -2,7 +2,7 @@
 
 This report combines parser compatibility, explicit policy evidence and README reference overlap. It does not activate sources.
 
-| Policy | Candidate publishers | Verified publishers | Candidate files | Ready |
+| Policy | Candidate publishers | Eligible publishers | Candidate files | Ready |
 |---|---:|---:|---:|---|
 | DIRECT | 3 | 3 | 3 | yes |
 | PROXY | 3 | 3 | 4 | yes |
@@ -105,4 +105,4 @@ This report combines parser compatibility, explicit policy evidence and README r
 
 ## Safety rule
 
-Publisher count is repository-level, not file-level: several files from one repository count as one publisher. Domain overlap uses salted-free truncated SHA-256 fingerprints, not raw domain names. Near-identical source sets are grouped as one possible publisher lineage; high overlap is a correlation warning, not proof of common ancestry. README hyperlinks are only possible shared-reference signals. No candidate is activated without verified lineage and strong policy evidence.
+Publisher count is repository-level, not file-level: several files from one repository count as one publisher. Domain overlap uses salted-free truncated SHA-256 fingerprints, not raw domain names. Near-identical source sets are grouped as one possible publisher lineage; high overlap is a correlation warning, not proof of common ancestry. README hyperlinks are only possible shared-reference signals. Lineage gaps and shared README references are provenance/correlation warnings, not vetoes. Strong policy evidence, non-archived publishers, independent-publisher checks and domain-level safety gates remain mandatory. This matrix does not auto-edit the active source registry.

@@ -13,6 +13,7 @@ DOMAIN-SUFFIX,awsstatic.com
 DOMAIN-SUFFIX,azureedge.net
 DOMAIN-SUFFIX,azurewebsites.net
 DOMAIN-SUFFIX,bandwagonhost.com
+DOMAIN-SUFFIX,bing.com
 DOMAIN-SUFFIX,blogcdn.com
 DOMAIN-SUFFIX,blogger.com
 DOMAIN-SUFFIX,blogsmithmedia.com
@@ -30,6 +31,7 @@ DOMAIN-SUFFIX,disquscdn.com
 DOMAIN-SUFFIX,docker.com
 DOMAIN-SUFFIX,duckduckgo.com
 DOMAIN-SUFFIX,edgecastcdn.net
+DOMAIN-SUFFIX,edgekey.net
 DOMAIN-SUFFIX,edgesuite.net
 DOMAIN-SUFFIX,eurekavpt.com
 DOMAIN-SUFFIX,fastmail.com
@@ -80,6 +82,7 @@ DOMAIN-SUFFIX,pixiv.net
 DOMAIN-SUFFIX,potato.im
 DOMAIN-SUFFIX,pximg.net
 DOMAIN-SUFFIX,quora.com
+DOMAIN-SUFFIX,sfx.ms
 DOMAIN-SUFFIX,shadowsocks.org
 DOMAIN-SUFFIX,slack-edge.com
 DOMAIN-SUFFIX,smartmailcloud.com

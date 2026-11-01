@@ -2,7 +2,7 @@
   "schema_version": 1,
   "assessment_count": 50,
   "drift_summary": {
-    "new_source_files": 4,
+    "new_source_files": 0,
     "changed_source_files": 0,
     "added_domain_count": 0,
     "removed_domain_count": 0,
@@ -300095,7 +300095,7 @@
       "stars": 92,
       "archived": false,
       "drift": {
-        "status": "baseline_initialized",
+        "status": "unchanged",
         "added_domain_count": 0,
         "removed_domain_count": 0,
         "policy_changed": false
@@ -300124,7 +300124,7 @@
       "stars": 92,
       "archived": false,
       "drift": {
-        "status": "baseline_initialized",
+        "status": "unchanged",
         "added_domain_count": 0,
         "removed_domain_count": 0,
         "policy_changed": false
@@ -300153,7 +300153,7 @@
       "stars": 92,
       "archived": false,
       "drift": {
-        "status": "baseline_initialized",
+        "status": "unchanged",
         "added_domain_count": 0,
         "removed_domain_count": 0,
         "policy_changed": false
@@ -300182,7 +300182,7 @@
       "stars": 92,
       "archived": false,
       "drift": {
-        "status": "baseline_initialized",
+        "status": "unchanged",
         "added_domain_count": 0,
         "removed_domain_count": 0,
         "policy_changed": false

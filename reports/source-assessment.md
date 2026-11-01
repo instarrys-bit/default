@@ -40,10 +40,10 @@
 | PaPerseller/chn-iplist | unsupported_or_too_small | — | 0 | unchanged | none |
 | Vann-Dev/proxy-list | unsupported_or_too_small | PROXY | 1 | unchanged | README_policy_reference |
 | Vann-Dev/proxy-list | unsupported_or_too_small | PROXY | 1 | unchanged | README_policy_reference |
-| tickmao/Rules | unsupported_or_too_small | — | 0 | baseline_initialized | none |
-| tickmao/Rules | unsupported_or_too_small | — | 0 | baseline_initialized | none |
-| tickmao/Rules | unsupported_or_too_small | — | 0 | baseline_initialized | none |
-| tickmao/Rules | unsupported_or_too_small | — | 0 | baseline_initialized | none |
+| tickmao/Rules | unsupported_or_too_small | — | 0 | unchanged | none |
+| tickmao/Rules | unsupported_or_too_small | — | 0 | unchanged | none |
+| tickmao/Rules | unsupported_or_too_small | — | 0 | unchanged | none |
+| tickmao/Rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | ambiguous |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | ambiguous |
 | bgpeer/rules | fetch_or_validation_error | — | 0 | unavailable | none |
@@ -59,7 +59,7 @@
 
 ## Source update drift
 
-- New source files: 4
+- New source files: 0
 - Changed source files: 0
 - Added domain entries: 0
 - Removed domain entries: 0
