@@ -12,6 +12,7 @@ SOURCES=ROOT/"sources/domain_sources.json"
 BUFFER=ROOT/"data/domain_candidates.json"
 SNAPSHOT_DIR=ROOT/"data/source_snapshots"
 OUTPUT=ROOT/"data/candidates.json"
+PENDING=ROOT/"data/source_pending.json"
 LEGACY_SNAPSHOTS={
     "sr-adblock-domain-lite":ROOT/"data/primary_snapshot.txt",
     "hagezi-domains-pro":ROOT/"data/secondary_snapshot.txt",
@@ -209,38 +210,75 @@ def read_snapshot(source_id):
 def main():
     cfg=json.loads(SOURCES.read_text(encoding="utf-8"))
     buf=json.loads(BUFFER.read_text(encoding="utf-8")) if BUFFER.exists() else {"candidates":[],"bootstrapped_sources":[]}
+    pending_data=json.loads(PENDING.read_text(encoding="utf-8")) if PENDING.exists() else {"schema_version":1,"sources":{}}
+    pending_sources=dict(pending_data.get("sources",{}))
     bootstrapped_sources=set(buf.get("bootstrapped_sources",[]))
     by_id=validate_registry(cfg)
     enabled=[source for source in cfg["sources"] if source.get("enabled",True) is not False]
     if not enabled:
         raise ValueError("no enabled sources are configured")
     now=datetime.now(timezone.utc).isoformat()
+    previous_output=json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {"sources":[]}
+    previous_hashes={str(x.get("id")):str(x.get("sha256")) for x in previous_output.get("sources",[]) if x.get("id") and x.get("sha256")}
     source_data={}
     deltas={}
-    # Fetch and validate every source before mutating any snapshot or candidate buffer.
+    quarantined=[]
+    # Isolate established sources with fetch, parse, or abnormal-delta failures.
+    # A large update is accepted only after the exact same payload is observed twice.
     for source in enabled:
         sid=source["id"]
-        payload=fetch(source["url"])
-        digest=hashlib.sha256(payload).hexdigest()
-        domains=parse_source(payload,source)
-        minimum=int(source.get("minimum_entries",1))
-        if len(domains)<minimum:
-            raise ValueError(f"{sid} unexpectedly small or truncated: {len(domains)} < {minimum}")
         previous=read_snapshot(sid)
+        try:
+            payload=fetch(source["url"])
+            digest=hashlib.sha256(payload).hexdigest()
+            domains=parse_source(payload,source)
+            minimum=int(source.get("minimum_entries",1))
+            if len(domains)<minimum:
+                raise ValueError(f"{sid} unexpectedly small or truncated: {len(domains)} < {minimum}")
+        except (OSError,urllib.error.URLError,TimeoutError,ValueError) as error:
+            pending_sources.pop(sid,None)
+            prior_digest=previous_hashes.get(sid)
+            if previous is None or not prior_digest:
+                raise ValueError(f"{sid} has no committed baseline; cannot safely isolate its first collection failure: {error}") from error
+            source_data[sid]={"source":source,"sha256":prior_digest,"domains":{},"previous":previous,"stale":True,"error":str(error)[:500]}
+            deltas[sid]={"added":set(),"removed":set(),"bootstrap":False,"bootstrap_enqueued":False}
+            quarantined.append(sid)
+            continue
+
         if previous is None:
             added=set()
             removed=set()
             bootstrap=True
+            pending_sources.pop(sid,None)
         else:
-            added,removed=check_source_delta(previous,set(domains),sid)
+            try:
+                added,removed=check_source_delta(previous,set(domains),sid)
+                pending_sources.pop(sid,None)
+            except ValueError as error:
+                pending=pending_sources.get(sid,{})
+                confirmations=int(pending.get("confirmations",0))+1 if pending.get("sha256")==digest else 1
+                if confirmations<2:
+                    pending_sources[sid]={"sha256":digest,"confirmations":confirmations,"entries":len(domains),"first_seen":pending.get("first_seen",now),"last_seen":now}
+                    prior_digest=previous_hashes.get(sid)
+                    if not prior_digest:
+                        raise ValueError(f"{sid} has an abnormal first delta but no committed hash baseline") from error
+                    source_data[sid]={"source":source,"sha256":prior_digest,"domains":{},"previous":previous,"stale":True,"error":str(error)[:500],"pending_confirmations":confirmations}
+                    deltas[sid]={"added":set(),"removed":set(),"bootstrap":False,"bootstrap_enqueued":False}
+                    quarantined.append(sid)
+                    continue
+                # Stable, repeated content is allowed through the normal policy/evidence gates.
+                added=set(domains)-previous
+                removed=previous-set(domains)
+                pending_sources.pop(sid,None)
             bootstrap=False
         added,bootstrap_enqueued=bootstrap_source_domains(source,sid,bootstrapped_sources,set(domains),added)
-        source_data[sid]={"source":source,"sha256":digest,"domains":domains,"previous":previous}
+        source_data[sid]={"source":source,"sha256":digest,"domains":domains,"previous":previous,"stale":False}
         deltas[sid]={"added":added,"removed":removed,"bootstrap":bootstrap,"bootstrap_enqueued":bootstrap_enqueued}
+
     queue={x["domain"]:x for x in buf.get("candidates",[])}
     # Only explicitly designated candidate sources enqueue new entries.
     for sid,info in source_data.items():
-        if info["source"].get("role")!="primary_candidate_source":
+        if info["stale"] or info["source"].get("role")!="primary_candidate_source":
             continue
         for domain in sorted(deltas[sid]["added"]):
             if domain not in queue:
@@ -273,7 +311,6 @@ def main():
                 "sha256":info["sha256"],
                 "currently_listed":True
             })
-        # Any cross-policy listing is an explicit conflict, never a winner-takes-all classification.
         classification=next(iter(policies)) if len(policies)==1 else ("CONFLICT" if policies else str(item.get("classification","REVIEW")).upper())
         source_entry_type="suffix_candidate" if "suffix_candidate" in scopes else "exact_candidate"
         rows.append({
@@ -284,27 +321,32 @@ def main():
             "evidence":evidence,
             "first_seen":item.get("first_seen")
         })
-    # Persist snapshots only after every configured source has passed parsing and drift checks.
     SNAPSHOT_DIR.mkdir(parents=True,exist_ok=True)
     for sid,info in source_data.items():
+        if info["stale"]:
+            continue
         path=snapshot_path(sid)
         path.write_text("\n".join(sorted(info["domains"]))+"\n",encoding="utf-8")
     BUFFER.write_text(json.dumps({"schema_version":2,"updated_at":now,"bootstrapped_sources":sorted(bootstrapped_sources),"candidates":list(queue.values())},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    PENDING.parent.mkdir(parents=True,exist_ok=True)
+    PENDING.write_text(json.dumps({"schema_version":1,"updated_at":now,"sources":pending_sources},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     OUTPUT.parent.mkdir(parents=True,exist_ok=True)
     OUTPUT.write_text(json.dumps({
-        "schema_version":2,
+        "schema_version":3,
         "collected_at":now,
         "source_count":len(source_data),
-        "sources":[{"id":sid,"sha256":info["sha256"],"entries":len(info["domains"]),"classification":info["source"]["classification"],"role":info["source"].get("role"),"lineage_status":info["source"]["lineage_status"],"upstream_repositories":info["source"].get("upstream_repositories",[]),"new_entries":len(deltas[sid]["added"]),"removed_entries":len(deltas[sid]["removed"]),"baseline_initialized":deltas[sid]["bootstrap"],"bootstrap_enqueued":deltas[sid]["bootstrap_enqueued"]} for sid,info in sorted(source_data.items())],
+        "quarantined_source_count":len(quarantined),
+        "quarantined_sources":sorted(quarantined),
+        "sources":[{"id":sid,"sha256":info["sha256"],"entries":len(info["previous"]) if info["stale"] and info["previous"] is not None else len(info["domains"]),"classification":info["source"]["classification"],"role":info["source"].get("role"),"lineage_status":info["source"]["lineage_status"],"upstream_repositories":info["source"].get("upstream_repositories",[]),"status":"STALE_QUARANTINED" if info["stale"] else "CURRENT","error":info.get("error"),"pending_confirmations":info.get("pending_confirmations",0),"new_entries":len(deltas[sid]["added"]),"removed_entries":len(deltas[sid]["removed"]),"baseline_initialized":deltas[sid]["bootstrap"],"bootstrap_enqueued":deltas[sid]["bootstrap_enqueued"]} for sid,info in sorted(source_data.items())],
         "candidate_count":len(rows),
         "policy_conflict_count":sum(1 for row in rows if row["classification"]=="CONFLICT"),
         "candidates":rows
     },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("Multi-source collection complete: "+json.dumps({
-        sid:{"entries":len(info["domains"]),"added":len(deltas[sid]["added"]),"removed":len(deltas[sid]["removed"]),"baseline_initialized":deltas[sid]["bootstrap"]}
+        sid:{"entries":len(info["previous"]) if info["stale"] and info["previous"] is not None else len(info["domains"]),"added":len(deltas[sid]["added"]),"removed":len(deltas[sid]["removed"]),"status":"STALE_QUARANTINED" if info["stale"] else "CURRENT","baseline_initialized":deltas[sid]["bootstrap"]}
         for sid,info in sorted(source_data.items())
     },ensure_ascii=False,sort_keys=True))
-    print(f"Queued candidates: {len(rows)}; cross-policy conflicts: {sum(1 for row in rows if row['classification']=='CONFLICT')}; no candidate cap.")
+    print(f"Queued candidates: {len(rows)}; cross-policy conflicts: {sum(1 for row in rows if row['classification']=='CONFLICT')}; quarantined sources: {len(quarantined)}; no candidate cap.")
 if __name__=="__main__":
     try:
         main()
