@@ -1,11 +1,19 @@
 {
-  "schema_version": 1,
-  "threshold": 5000,
+  "schema_version": 2,
+  "milestone_interval": 5000,
+  "max_published_rules": 30000,
   "count_basis": "unique_published_rules_across_DIRECT_PROXY_REJECT",
   "published_rule_count": 176,
-  "active": false,
-  "status": "suspended_below_threshold",
-  "activated_at": null,
-  "updated_at": "2026-11-01T13:58:45.964283+00:00",
-  "semantics": "Activation is latched once the published total first reaches 5,000; it does not depend on additions, removals, or daily changes."
+  "published_high_water_mark": 176,
+  "next_milestone": 5000,
+  "pending_milestones": [],
+  "due_milestones": [],
+  "monthly_review_interval_days": 30,
+  "monthly_review_due": false,
+  "queue_mode": false,
+  "status": "normal_incremental",
+  "last_successful_review_at": null,
+  "last_monthly_review_at": null,
+  "updated_at": "2026-11-01T14:40:08.945148+00:00",
+  "deletion_policy": "Only separately verified lifecycle-invalid decisions may remove rules. Evidence loss, source disappearance, lineage changes, conflicts or missing observations are not deletion evidence."
 }

@@ -3,7 +3,7 @@
   "assessment_count": 50,
   "drift_summary": {
     "new_source_files": 0,
-    "changed_source_files": 0,
+    "changed_source_files": 1,
     "added_domain_count": 0,
     "removed_domain_count": 0,
     "policy_changes": 0
@@ -109671,7 +109671,7 @@
       "policy_evidence": "ambiguous",
       "activation_eligible": false,
       "repository": "Loyalsoldier/v2ray-rules-dat",
-      "stars": 20984,
+      "stars": 20985,
       "archived": false,
       "drift": {
         "status": "unchanged",
@@ -136192,7 +136192,7 @@
       "policy_evidence": "ambiguous",
       "activation_eligible": false,
       "repository": "Loyalsoldier/v2ray-rules-dat",
-      "stars": 20984,
+      "stars": 20985,
       "archived": false,
       "drift": {
         "status": "unchanged",
@@ -299673,8 +299673,8 @@
     },
     {
       "url": "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/Shadowrocket.conf",
-      "sha256": "90722922fafcd4140130f0430a0a696344eae1fccecab2403ac9788117cf451a",
-      "bytes": 4155,
+      "sha256": "b7215e60ab7eb0015bf06868aec58361845bf62019a19493e0eefd5d241cecac",
+      "bytes": 4154,
       "substantive_lines": 53,
       "parser_candidate": "unsupported_or_too_small",
       "exact_domain_count": 0,
@@ -299696,9 +299696,9 @@
       "stars": 1181,
       "archived": false,
       "drift": {
-        "status": "unchanged",
-        "added_domain_count": 0,
-        "removed_domain_count": 0,
+        "status": "content_changed_baseline_schema_unavailable",
+        "added_domain_count": null,
+        "removed_domain_count": null,
         "policy_changed": false
       }
     },

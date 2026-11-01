@@ -10,13 +10,13 @@
       "policy": "REJECT"
     },
     {
-      "line": 1455,
+      "line": 1458,
       "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list",
       "file": "direct.list",
       "policy": "DIRECT"
     },
     {
-      "line": 2155,
+      "line": 2158,
       "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list",
       "file": "proxy.list",
       "policy": "PROXY"

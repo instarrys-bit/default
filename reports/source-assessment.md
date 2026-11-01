@@ -28,7 +28,7 @@
 | Jovanykoch/rules | domain-only | — | 957 | unchanged | ambiguous |
 | GMOogway/shadowrocket-rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | PaPerseller/chn-iplist | unsupported_or_too_small | — | 0 | unchanged | none |
-| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | unchanged | README_policy_reference |
+| PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | content_changed_baseline_schema_unavailable | README_policy_reference |
 | PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | unchanged | README_policy_reference |
 | PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | unchanged | README_policy_reference |
 | PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 0 | unchanged | README_policy_reference |
@@ -60,7 +60,7 @@
 ## Source update drift
 
 - New source files: 0
-- Changed source files: 0
+- Changed source files: 1
 - Added domain entries: 0
 - Removed domain entries: 0
 - Policy changes: 0
@@ -268,7 +268,7 @@
 ### PaPerseller/chn-iplist
 
 - URL: https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/Shadowrocket.conf
-- SHA-256: 90722922fafcd4140130f0430a0a696344eae1fccecab2403ac9788117cf451a
+- SHA-256: b7215e60ab7eb0015bf06868aec58361845bf62019a19493e0eefd5d241cecac
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}

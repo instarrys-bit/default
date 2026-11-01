@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "activations": [],
+  "last_evaluated_at": "2026-11-01T14:40:05.845317+00:00",
+  "last_decisions": [
+    {
+      "repository": "Jovanykoch/rules",
+      "policy": "DIRECT",
+      "decision": "held",
+      "reason": "production collector preflight failed: leading-dot suffix not permitted at line 524"
+    },
+    {
+      "repository": "ACL4SSR/ACL4SSR",
+      "policy": "DIRECT",
+      "decision": "already_registered",
+      "reason": "publisher or URL is already registered"
+    },
+    {
+      "repository": "Clash-FX/cn-apps-direct-domains",
+      "policy": "DIRECT",
+      "decision": "already_registered",
+      "reason": "publisher or URL is already registered"
+    },
+    {
+      "repository": "ACL4SSR/ACL4SSR",
+      "policy": "PROXY",
+      "decision": "already_registered",
+      "reason": "publisher or URL is already registered"
+    },
+    {
+      "repository": "gatework/surge-rules",
+      "policy": "PROXY",
+      "decision": "held",
+      "reason": "production collector preflight failed: leading-dot suffix not permitted at line 1"
+    },
+    {
+      "repository": "sve1r/Rules-For-Quantumult-X",
+      "policy": "PROXY",
+      "decision": "already_registered",
+      "reason": "publisher or URL is already registered"
+    },
+    {
+      "repository": "RzMY/IOS-AntiRevoke-DNS-Rules",
+      "policy": "REJECT",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    }
+  ]
+}

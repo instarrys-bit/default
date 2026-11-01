@@ -229,6 +229,10 @@
     "PROXY": 122,
     "REJECT": 22
   },
+  "published_rule_total": 176,
+  "max_published_rules": 30000,
+  "queued_rule_total": 0,
+  "pending_queue": "rulesets/pending_queue.json",
   "rule_lifecycle": {
     "DIRECT": {
       "previous_count": 32,
