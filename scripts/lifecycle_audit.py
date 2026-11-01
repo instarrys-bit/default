@@ -118,7 +118,7 @@ def main():
         for row in pool.map(run,work): results[row[0]]=row[1:]
 
     deleted=[]; active=0; unknown=0
-    archived={x["id"] for x in archive["items"]}
+    archived={x["id"] for x in archive["items"] if not x.get("restored_at")}
     for key,(policy,line,domain,result) in results.items():
         prior=obs.get("items",{}).get(key,{})
         history=list(prior.get("history",[]))
