@@ -110,7 +110,7 @@ def main() -> int:
     else:
         lines.append("No recognized DNS settings found in [General].")
     lines.extend(["", "## Interpretation", "",
-        "All checks use the current user-managed config as the authority. The historical uploaded baseline is not used to judge whether this config is correct.",
+        "All checks use the current user-managed `shadowrocket/ss.conf` as the sole authority.",
         "A registered-hash mismatch means the config changed without its baseline record being updated; it does not authorize the automation to rewrite the config.",
         "DNS and MITM are reported only. No settings are added, removed, or changed.", ""])
     REPORT_MD.write_text("\n".join(lines), encoding="utf-8")
