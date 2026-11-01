@@ -131,8 +131,8 @@ def build_matrix(assessments: dict, lineage: dict) -> dict:
         independent_groups = len({find(x["repository"]) for x in eligible}) if eligible else 0
         by_policy[policy] = {
             "candidate_publishers": len({x["repository"] for x in group}),
-            "verified_publishers": len({x["repository"] for x in eligible}),
-            "independent_verified_groups": independent_groups,
+            "eligible_publishers": len({x["repository"] for x in eligible}),
+            "independent_eligible_groups": independent_groups,
             "candidate_files": sum(x["file_count"] for x in group),
             "cross_policy_conflict_count": sum(1 for x in cross_policy_conflicts if policy in x["policies"]),
             "activation_ready": independent_groups >= 2,
@@ -161,7 +161,7 @@ def render_report(data: dict) -> str:
         "|---|---:|---:|---:|---|",
     ]
     for policy, summary in data["policy_summary"].items():
-        rows.append(f"| {policy} | {summary['candidate_publishers']} | {summary['verified_publishers']} | {summary['candidate_files']} | {'yes' if summary['activation_ready'] else 'no'} |")
+        rows.append(f"| {policy} | {summary['candidate_publishers']} | {summary['eligible_publishers']} | {summary['candidate_files']} | {'yes' if summary['activation_ready'] else 'no'} |")
     rows.extend(["", "## Same-policy source overlap", ""])
     if data.get("same_policy_domain_overlap"):
         for pair in data["same_policy_domain_overlap"]:
