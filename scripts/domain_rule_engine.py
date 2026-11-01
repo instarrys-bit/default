@@ -144,7 +144,7 @@ def inspect_suffix_scope(domain: str, policy: str, rules, conditional, protected
             intersects = (
                 domain == match
                 or domain.endswith("." + match)
-                or (kind.upper() == "DOMAIN-SUFFIX" and match.endswith("." + domain))
+                or match.endswith("." + domain)
             )
             if intersects:
                 return "REVIEW", "Suffix scope intersects an existing conditional domain rule"

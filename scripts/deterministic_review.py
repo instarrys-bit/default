@@ -79,7 +79,7 @@ def first_ruleset_line(text):
             return number
     return None
 
-def inspect(domain,rules,conditional,base,protected,candidate_policy=None):
+def inspect(domain,rules,conditional,base,protected,candidate_policy=None,candidate_suffix=False):
     boundary=first_ruleset_line(base)
     if boundary is not None:
         rules=RuleIndex([rule for rule in rules.rules if rule.line<boundary])
@@ -87,9 +87,10 @@ def inspect(domain,rules,conditional,base,protected,candidate_policy=None):
     hits=rules.matches_host(domain)
     if hits:
         winner=hits[0]
-        status="ALREADY_COVERED" if candidate_policy and winner.policy==candidate_policy else "CONFLICT"
-        return (status,
-                "Existing first-match "+winner.kind+" "+winner.domain+" => "+winner.policy+" (line "+str(winner.line)+")")
+        if not (candidate_suffix and winner.kind=="DOMAIN" and winner.domain==domain and winner.policy==candidate_policy):
+            status="ALREADY_COVERED" if candidate_policy and winner.policy==candidate_policy else "CONFLICT"
+            return (status,
+                    "Existing first-match "+winner.kind+" "+winner.domain+" => "+winner.policy+" (line "+str(winner.line)+")")
     for _,raw in conditional:
         for kind,match in COND_RE.findall(raw):
             match=match.lower().strip(".")
@@ -111,7 +112,9 @@ def inspect(domain,rules,conditional,base,protected,candidate_policy=None):
             fields=line.split(",",2)
             if len(fields)==3 and fields[1].lower() in domain:
                 pol=fields[2].strip().upper()
-                return ("ALREADY_COVERED" if candidate_policy==pol else "CONFLICT"),"Matches existing DOMAIN-KEYWORD => "+pol
+                result="ALREADY_COVERED" if candidate_policy==pol else "CONFLICT"
+                if candidate_suffix and result=="ALREADY_COVERED": result="REVIEW"
+                return result,"Matches existing DOMAIN-KEYWORD => "+pol
         if upper.startswith("URL-REGEX,"):
             fields=line.rsplit(",",1)
             if len(fields)!=2: return "REVIEW","Malformed URL-REGEX cannot be evaluated"
@@ -135,13 +138,21 @@ def inspect(domain,rules,conditional,base,protected,candidate_policy=None):
             except re.error: return "REVIEW","Existing URL-REGEX host pattern cannot be compiled"
             if host_regex.fullmatch(domain):
                 pol=fields[1].strip().upper()
-                return ("ALREADY_COVERED" if candidate_policy==pol else "CONFLICT"),"Matches host-specific URL-REGEX => "+pol
+                result="ALREADY_COVERED" if candidate_policy==pol else "CONFLICT"
+                if candidate_suffix and result=="ALREADY_COVERED": result="REVIEW"
+                return result,"Matches host-specific URL-REGEX => "+pol
     for item in parse_skip_proxy(base):
         if "/" in item or ":" in item: continue
         if item.startswith("*."):
             root=item[2:]
-            if domain==root or domain.endswith("."+root): return ("ALREADY_COVERED" if candidate_policy=="DIRECT" else "CONFLICT"),"Matches skip-proxy direct-bypass entry "+item
-        elif domain==item: return ("ALREADY_COVERED" if candidate_policy=="DIRECT" else "CONFLICT"),"Matches skip-proxy direct-bypass entry "+item
+            if domain==root or domain.endswith("."+root):
+                result="ALREADY_COVERED" if candidate_policy=="DIRECT" else "CONFLICT"
+                if candidate_suffix and result=="ALREADY_COVERED": result="REVIEW"
+                return result,"Matches skip-proxy direct-bypass entry "+item
+        elif domain==item:
+            result="ALREADY_COVERED" if candidate_policy=="DIRECT" else "CONFLICT"
+            if candidate_suffix and result=="ALREADY_COVERED": result="REVIEW"
+            return result,"Matches skip-proxy direct-bypass entry "+item
     return None,None
 def main():
     source_cfg=json.loads(POLICY.read_text(encoding="utf-8"))
@@ -217,7 +228,7 @@ def main():
             if scope_status:
                 status,reason=scope_status,scope_reason
             else:
-                status,reason=inspect(domain,index,conditional,base,protected,policy)
+                status,reason=inspect(domain,index,conditional,base,protected,policy,candidate_suffix=(source_entry_type=="suffix_candidate"))
             if status is None:
                 if not qualified:
                     status="REVIEW"; reason="Current source identity, publisher, policy, independence, scope or confidence evidence is below configured threshold"

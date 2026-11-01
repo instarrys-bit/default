@@ -52,8 +52,9 @@ def main():
         policy=str(item.get("policy","")).upper()
         if not DOMAIN_RE.fullmatch(domain) or policy not in POLICIES:
             raise ValueError("invalid approved domain or policy: "+domain)
-        if item.get("decision_engine")!="deterministic-domain-audit/4.0":
-            raise ValueError("approved record was not produced by the current deterministic reviewer: "+domain)
+        engine=str(item.get("decision_engine",""))
+        if engine not in {"deterministic-domain-audit/3.0","deterministic-domain-audit/4.0"}:
+            raise ValueError("approved record was not produced by a supported deterministic reviewer: "+domain)
         if domain in seen:
             raise ValueError("duplicate or cross-policy approved domain: "+domain)
         valid=[]
@@ -85,6 +86,8 @@ def main():
         if scope not in {"exact_candidate","suffix_candidate"}:
             raise ValueError("unsupported approved domain scope: "+domain)
         if scope=="suffix_candidate":
+            if engine!="deterministic-domain-audit/4.0":
+                raise ValueError("legacy exact-only review cannot publish suffix scope: "+domain)
             valid=[ev for ev in valid if ev.get("entry_type")=="suffix_candidate"]
         source_ids={str(ev["source_id"]) for ev in valid}
         publishers={str(ev["publisher"]) for ev in valid if ev.get("publisher")}
@@ -102,7 +105,7 @@ def main():
             local_status,reason=inspect_suffix_scope(domain,policy,index,conditional,protected)
             if local_status:
                 raise ValueError("approved suffix scope intersects baseline ("+str(local_status)+"): "+domain+" / "+str(reason))
-        local_status,reason=inspect(domain,index,conditional,base,protected,policy)
+        local_status,reason=inspect(domain,index,conditional,base,protected,policy,candidate_suffix=(scope=="suffix_candidate"))
         if local_status:
             raise ValueError("approved record now overlaps baseline ("+str(local_status)+"): "+domain+" / "+str(reason))
         seen[domain]=policy

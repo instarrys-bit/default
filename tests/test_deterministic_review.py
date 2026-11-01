@@ -522,7 +522,7 @@ class SourceAssessmentTests(unittest.TestCase):
 
 
 class SourceCandidateMatrixTests(unittest.TestCase):
-    def test_multiple_files_from_one_repository_count_as_one_publisher(self):
+    def test_multiple_files_from_one_repository_count_as_one_publisher_and_unverified_lineage_is_not_a_veto(self):
         from build_source_candidates import build_matrix
         assessments = {"assessments": [
             {"repository":"one/rules","policy_candidate":"DIRECT","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"README_RULE-SET_reference","exact_domain_count":10,"suffix_domain_count":20,"adblock_domain_count":0,"domain_only_count":0,"url":"https://raw.githubusercontent.com/one/rules/main/a.list","archived":False},
@@ -536,9 +536,9 @@ class SourceCandidateMatrixTests(unittest.TestCase):
         result = build_matrix(assessments, lineage)
         self.assertEqual(result["policy_summary"]["DIRECT"]["candidate_publishers"], 2)
         self.assertEqual(result["policy_summary"]["DIRECT"]["candidate_files"], 3)
-        self.assertEqual(result["activation_count"], 0)
+        self.assertEqual(result["activation_count"], 2)
 
-    def test_possible_shared_readme_references_are_recorded_as_blockers(self):
+    def test_possible_shared_readme_references_are_recorded_as_warnings_not_blockers(self):
         from build_source_candidates import build_matrix
         assessments = {"assessments": [
             {"repository":"one/rules","policy_candidate":"PROXY","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":1,"suffix_domain_count":2,"adblock_domain_count":0,"domain_only_count":0,"url":"https://raw.githubusercontent.com/one/rules/main/a.list","archived":False},
@@ -547,8 +547,9 @@ class SourceCandidateMatrixTests(unittest.TestCase):
                    "candidate_shared_reference_pairs":[{"repositories":["one/rules","two/rules"],"shared_readme_references":["common/upstream"]}]}
         result = build_matrix(assessments, lineage)
         item = result["candidates"][0]
-        self.assertIn("possible_shared_readme_references_require_review", item["activation_blockers"])
-        self.assertFalse(item["activation_eligible"])
+        self.assertNotIn("possible_shared_readme_references_require_review", item["activation_blockers"])
+        self.assertEqual(item["lineage_warning"], "possible_shared_readme_references; correlation signal only")
+        self.assertTrue(item["activation_eligible"])
 
 
     def test_readme_policy_claim_detects_documented_source_table_semantics(self):
