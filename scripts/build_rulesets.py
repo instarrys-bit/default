@@ -38,11 +38,14 @@ def main():
     index=RuleIndex(rules)
     lifecycle_state=json.loads(LIFECYCLE_STATE.read_text(encoding="utf-8")) if LIFECYCLE_STATE.exists() else {}
     lifecycle_active=bool(lifecycle_state.get("active"))
+    archive_path=OUT/"deletion_archive.json"
+    deletion_archive=json.loads(archive_path.read_text(encoding="utf-8")) if archive_path.exists() else {"items":[]}
+    archived_deleted={(str(x.get("policy","")).upper(),str(x.get("rule",""))) for x in deletion_archive.get("items",[]) if not x.get("restored_at")}
     previous_published={policy:set() for policy in POLICIES}
     for policy in POLICIES:
         previous_path=OUT/(policy.lower()+".list")
         if previous_path.exists():
-            previous_published[policy]=set(x.strip() for x in previous_path.read_text(encoding="utf-8").splitlines() if x.strip() and not x.strip().startswith("#"))
+            previous_published[policy]=set(x.strip() for x in previous_path.read_text(encoding="utf-8").splitlines() if x.strip() and not x.strip().startswith("#") and (policy.upper(),x.strip()) not in archived_deleted)
     rule_sets={policy:set() for policy in POLICIES}
     new_approved={policy:set() for policy in POLICIES}
     published_domain_policies={}
@@ -112,6 +115,10 @@ def main():
         scope=str(item.get("source_entry_type","exact_candidate"))
         if scope not in {"exact_candidate","suffix_candidate"}:
             raise ValueError("unsupported approved domain scope: "+domain)
+        archived_line=("DOMAIN-SUFFIX," if scope=="suffix_candidate" else "DOMAIN,")+domain
+        if (policy,archived_line) in archived_deleted:
+            held+=1
+            continue
         if domain in published_domain_policies:
             approved+=1
             continue
@@ -159,7 +166,8 @@ def main():
     for queued in prior_queue.get("items",[]):
         key=(str(queued.get("policy","")).upper(),str(queued.get("scope","exact_candidate")),str(queued.get("domain","")).lower())
         if key[0] in POLICIES and key[1] in {"exact_candidate","suffix_candidate"} and key[2]:
-            queue_map[key]=queued
+            if (key[0],("DOMAIN-SUFFIX," if key[1]=="suffix_candidate" else "DOMAIN,")+key[2]) not in archived_deleted:
+                queue_map[key]=queued
     for policy in POLICIES:
         for scope,domain in sorted(new_approved[policy]):
             queue_map.setdefault((policy,scope,domain),{
@@ -169,7 +177,7 @@ def main():
             })
     capacity=max(0,30000-previous_rule_count)
     promoted=[]
-    for key in sorted(queue_map, key=lambda x:(str(queue_map[x].get("queued_at","")),x[0],x[2],x[1])):
+    for key in sorted(queue_map, key=lambda x:(int(queue_map[x].get("priority",1)),str(queue_map[x].get("queued_at","")),x[0],x[2],x[1])):
         if capacity<=0:
             break
         policy,scope,domain=key
