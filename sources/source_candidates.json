@@ -148,6 +148,13 @@
           ]
         },
         {
+          "repository": "GrandpaNiuu/cn-direct-rules",
+          "references": [
+            "felixonmars/dnsmasq-china-list",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
           "repository": "Jeliren/shadowrocket-russia-direct",
           "references": [
             "v2fly/domain-list-community"
@@ -391,6 +398,13 @@
       "readme_shared_reference_peers": [
         {
           "repository": "GMOogway/shadowrocket-rules",
+          "references": [
+            "felixonmars/dnsmasq-china-list",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "GrandpaNiuu/cn-direct-rules",
           "references": [
             "felixonmars/dnsmasq-china-list",
             "v2fly/domain-list-community"

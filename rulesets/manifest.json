@@ -225,11 +225,11 @@
     }
   },
   "rule_count": {
-    "DIRECT": 32,
-    "PROXY": 119,
-    "REJECT": 18
+    "DIRECT": 15,
+    "PROXY": 63,
+    "REJECT": 10
   },
-  "published_rule_total": 169,
+  "published_rule_total": 88,
   "max_published_rules": 30000,
   "queued_rule_total": 0,
   "baseline_conflict_hold_count": 0,
@@ -237,61 +237,71 @@
   "pending_queue": "rulesets/pending_queue.json",
   "rule_lifecycle": {
     "DIRECT": {
-      "previous_count": 32,
-      "current_count": 32,
-      "added_count": 0,
+      "previous_count": 11,
+      "current_count": 15,
+      "added_count": 4,
       "removed_count": 0,
-      "previous_sha256": "3a517a5582c407949c3d3167c77b086c45512750e208c9946d42384eaa007181",
-      "current_sha256": "3a517a5582c407949c3d3167c77b086c45512750e208c9946d42384eaa007181",
-      "added_sample": [],
+      "previous_sha256": "dac77fed1aad6b5486e91daebe291d1ba7e2255fe51624cbbecca15babe2b708",
+      "current_sha256": "c9222fcb981ebea636d4766cec628bd7e0a34b58093da6ea47083d8ee8413074",
+      "added_sample": [
+        "DOMAIN-SUFFIX,127.net",
+        "DOMAIN-SUFFIX,hdslb.com",
+        "DOMAIN-SUFFIX,hitv.com",
+        "DOMAIN-SUFFIX,xhscdn.com"
+      ],
       "removed_sample": [],
       "baseline_initialized": false
     },
     "PROXY": {
-      "previous_count": 119,
-      "current_count": 119,
-      "added_count": 0,
+      "previous_count": 59,
+      "current_count": 63,
+      "added_count": 4,
       "removed_count": 0,
-      "previous_sha256": "8ace33f3ef2c6b94cf72d8c3591c8c546540e2c41ac51ab3f06ecafeb4ae6eb8",
-      "current_sha256": "8ace33f3ef2c6b94cf72d8c3591c8c546540e2c41ac51ab3f06ecafeb4ae6eb8",
-      "added_sample": [],
+      "previous_sha256": "b677591c85b7102717b49556d38e983a15d294e3849f20fee1393491fb3bb2fb",
+      "current_sha256": "20f3441fdf474be809e4aa3d1c84cbd6ef4748f69f95e46616c40211b2c48bbb",
+      "added_sample": [
+        "DOMAIN-SUFFIX,amazonaws.com",
+        "DOMAIN-SUFFIX,ggpht.com",
+        "DOMAIN-SUFFIX,gstatic.com",
+        "DOMAIN-SUFFIX,hockeyapp.net"
+      ],
       "removed_sample": [],
       "baseline_initialized": false
     },
     "REJECT": {
-      "previous_count": 18,
-      "current_count": 18,
+      "previous_count": 10,
+      "current_count": 10,
       "added_count": 0,
       "removed_count": 0,
-      "previous_sha256": "f8a0192db1a1bc04dd67afc85807d6c433e670f801ede178ff87c4c748f94a40",
-      "current_sha256": "f8a0192db1a1bc04dd67afc85807d6c433e670f801ede178ff87c4c748f94a40",
+      "previous_sha256": "de0f64fee89213efab6dc5d2719121ddce5140335aca4da3cc3c56ee568f9947",
+      "current_sha256": "de0f64fee89213efab6dc5d2719121ddce5140335aca4da3cc3c56ee568f9947",
       "added_sample": [],
       "removed_sample": [],
       "baseline_initialized": false
     }
   },
   "reviewed_total": 978,
-  "approved_total": 91,
-  "held_total": 887,
+  "approved_total": 88,
+  "held_total": 890,
   "status_count": {
-    "ALREADY_COVERED": 328,
+    "ALREADY_COVERED": 354,
     "APPROVED": 91,
-    "CONFLICT": 79,
+    "CONFLICT": 86,
     "POLICY_CONFLICT": 44,
-    "REVIEW": 424,
-    "RISK_HOLD": 12
+    "REVIEW": 394,
+    "RISK_HOLD": 9
   },
   "deterministic_review_progress": {
     "candidate_total": 978,
-    "approved_total": 91,
-    "held_total": 887,
+    "approved_total": 88,
+    "held_total": 890,
     "status_count": {
-      "ALREADY_COVERED": 328,
+      "ALREADY_COVERED": 354,
       "APPROVED": 91,
-      "CONFLICT": 79,
+      "CONFLICT": 86,
       "POLICY_CONFLICT": 44,
-      "REVIEW": 424,
-      "RISK_HOLD": 12
+      "REVIEW": 394,
+      "RISK_HOLD": 9
     }
   },
   "format": "Standalone Shadowrocket domain RULE-SET lists: DOMAIN,<domain> and DOMAIN-SUFFIX,<domain>; source scope is preserved and policy is assigned by the RULE-SET reference.",

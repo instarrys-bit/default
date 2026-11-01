@@ -1,6 +1,6 @@
 # Automated source discovery
 
-- Candidate repositories retained: **202**
+- Candidate repositories retained: **208**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
@@ -242,6 +242,30 @@
   - https://raw.githubusercontent.com/Goahead-zfc/shadowrocket-rules/main/domestic-apps-ruleset.list
   - https://raw.githubusercontent.com/Goahead-zfc/shadowrocket-rules/main/social-media-ruleset.list
 
+### [GrandpaNiuu/cn-direct-rules](https://github.com/GrandpaNiuu/cn-direct-rules)
+
+- Description: Automatically maintained mainland China DIRECT rules for Shadowrocket, Surge, Loon, Clash, Mihomo and Stash.
+- Stars: 3; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 16
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn-domain.conf
+  - https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn-ip.conf
+  - https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn-ipv4.conf
+  - https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn-ipv6.conf
+  - https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn-max-domain.conf
+  - https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn-max.conf
+  - https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn.conf
+  - https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/operators/cernet.conf
+  - https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/operators/chinanet.conf
+  - https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/operators/cmcc.conf
+  - https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/operators/cstnet.conf
+  - https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/operators/unicom.conf
+  - https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/registry/cn-allocated.conf
+  - https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/rule-set/cn-max.list
+  - https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/rule-set/cn.list
+  - https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/shadowrocket/cn-direct.conf
+
 ### [HackkScript/Active-Directory-User-Info-Extractor](https://github.com/HackkScript/Active-Directory-User-Info-Extractor)
 
 - Description: This Python script automates the process of retrieving detailed user account information from an Active Directory (AD) domain using the net user /domain command. It processes a list of usernames, gathers relevant information (such as full name, password set/expiry times, last logon, etc.), and saves the results to an Excel spreadsheet.
@@ -365,7 +389,7 @@
 ### [Loyalsoldier/v2ray-rules-dat](https://github.com/Loyalsoldier/v2ray-rules-dat)
 
 - Description: 🦄 🎃 👻 V2Ray 路由规则文件加强版，可代替 V2Ray 官方 geoip.dat 和 geosite.dat，适用于 V2Ray、Xray-core、mihomo(Clash-Meta)、hysteria、Trojan-Go 和 leaf。Enhanced edition of V2Ray rules dat files, applicable to V2Ray, Xray-core, mihomo(Clash-Meta), hysteria, Trojan-Go and leaf.
-- Stars: 20984; archived: False; fork: False
+- Stars: 20985; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 3
 - Curated seed links: 3
@@ -389,6 +413,14 @@
 - README / curated seed rule-list links: 1
 - Curated seed links: 0
   - https://raw.githubusercontent.com/MattMin/shadowrocket-config/master/shadowrocket.conf
+
+### [MikeHuang01/MikeHuang01-Rules](https://github.com/MikeHuang01/MikeHuang01-Rules)
+
+- Description: QuantumultX 与 Shadowrocket 去广告、直连及分流规则，按客户端维护并自动去重。
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
 
 ### [MrDevAnony/DynX-AntiBan-Domains](https://github.com/MrDevAnony/DynX-AntiBan-Domains)
 
@@ -1119,7 +1151,7 @@
 ### [hxehex/russia-mobile-internet-whitelist](https://github.com/hxehex/russia-mobile-internet-whitelist)
 
 - Description: a list of domains and ips that stay live in russia when the mobile internet gets restricted
-- Stars: 3819; archived: False; fork: False
+- Stars: 3820; archived: False; fork: False
 - Search queries: proxy domain list
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
@@ -1521,6 +1553,14 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [skylark36/Rules](https://github.com/skylark36/Rules)
+
+- Description: 🛫️ 🎵 Shadowrocket Rules: block ads, proxy, netease music unblock.
+- Stars: 115; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
 ### [soizo/proxy-rules](https://github.com/soizo/proxy-rules)
 
 - Description: Convert Shadowrocket rule modules into Mihomo providers
@@ -1598,6 +1638,14 @@
 - Curated seed links: 0
   - https://raw.githubusercontent.com/sxpwxy/shadowrocket-rules/main/config/Shadowrocket-mirror.conf
   - https://raw.githubusercontent.com/sxpwxy/shadowrocket-rules/main/config/Shadowrocket.conf
+
+### [tbrzr/dns-block-test](https://github.com/tbrzr/dns-block-test)
+
+- Description: Open list of 54 ad, tracker and malware domains plus a script to test whether your DNS blocker (Pi-hole, AdGuard Home, NextDNS) blocks them
+- Stars: 0; archived: False; fork: False
+- Search queries: adblock domain list
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
 
 ### [team-cloudchaser/domain-db](https://github.com/team-cloudchaser/domain-db)
 
@@ -1684,7 +1732,7 @@
 ### [v2fly/domain-list-community](https://github.com/v2fly/domain-list-community)
 
 - Description: Community managed domain list. Generate geosite.dat for V2Ray.
-- Stars: 9806; archived: False; fork: False
+- Stars: 9807; archived: False; fork: False
 - Search queries: geosite domain
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
@@ -1702,6 +1750,14 @@
 - Description: # Loon全局配置 by nzw9314 # YouTube去广告请删除hostname 后的.bak # GitHub主页(https://github.com/nzw9314) # TG通知频道 (https://t.me/nzw9314News)  [General] ipv6 = false skip-proxy = 10.0.0.0/8,127.0.0.0/8,169.254.0.0/16,192.0.2.0/24,192.168.0.0/16,198.51.100.0/24,224.0.0.0/4,*.local,localhostlocal bypass-tun = 10.0.0.0/8,127.0.0.0/8,169.254.0.0/16,192.0.2.0/24,192.168.0.0/16,198.51.100.0/24,224.0.0.0/4 # [DNS] => DNS 服务器 dns-server = system,1.2.4.8,119.29.29.29,223.5.5.5 allow-udp-proxy = true host = 127.0.0.1  [Remote Proxy] # 订阅节点 # 别名 = 订阅URL ✈️机场1 = https://example/server-complete.txt ✈️机场2 = https://example2/server-complete.txt  [Remote Filter] # 筛选订阅节点，筛选后的结果可加入到策略组中，目前支持三种筛选方式 # NodeSelect: 使用在UI上选择的节点。 # NameKeyword: 根据提供的关键词对订阅中所有节点的名称进行筛选，使用筛选后的节点。 # NameRegex: 根据提供的正则表达式对订阅中所有节点的名称进行筛选，使用筛选后的节点。 𝐏𝐚𝐲𝐏𝐚𝐥 = NodeSelect,✈️机场1,✈️机场2 𝐍𝐞𝐭𝐟𝐥𝐢𝐱 = NameKeyword,✈️机场1,✈️机场2, FilterKey = Netflix 🇭🇰香港 = NameRegex,✈️机场1,✈️机场2, FilterKey = 香港|HK 🇯🇵日本 = NameRegex,✈️机场1,✈️机场2, FilterKey = 日本|JP 🇰🇷韩国 = NameRegex,✈️机场1,✈️机场2, FilterKey = 韩国|KR 🇺🇸美国 = NameRegex,✈️机场1,✈️机场2, FilterKey = 美国|US Other = NameRegex,✈️机场1,✈️机场2, FilterKey = ^(?!.*(HK|JP|US|KR|香港|日本|韩国|美国)).*$  [Proxy] # 本地节点  # 内置 DIRECT、REJECT 策略  # 节点名称 = 协议，服务器地址，服务器端口，加密协议，密码， 1 = Shadowsocks,1.2.3.4,443,aes-128-gcm,"”password“" 2 = Shadowsocks,1.2.3.4,443,aes-128-gcm,"”password“" 3 = ShadowsocksR,1.2.3.4,443,aes-256-cfb,"”password“",auth_aes128_md5,{},tls1.2_ticket_auth,{} 4 = ShadowsocksR,1.2.3.4,10076,aes-128-cfb,"”password“",auth_aes128_md5,{},tls1.2_ticket_auth,{} # vmess # 节点名称 = 协议，服务器地址，端口，加密方式，UUID，传输方式:(tcp/ws),path：websocket握手header中的path，host：websocket握手header中的path，over-tls:是否tls，tls-name：远端w服务器域名，skip-cert-verify：是否跳过证书校验（默认否） #5 = vmess, 1.2.3.4, 10086, aes-128-gcm,”uuid“,transport:ws,path:/,host:icloud.com,over-tls:true,tls-name:youtTlsServerName.com,skip-cert-verify:false  # 解锁网易云音乐灰色歌曲 🎧 = http,106.52.127.72,19951  [Proxy Group] # 策略组  # 节点选项 🕹𝐅𝐢𝐧𝐚𝐥 = select,🔰𝐏𝐫𝐨𝐱𝐲,🎯𝐃𝐢𝐫𝐞𝐜𝐭 🔰𝐏𝐫𝐨𝐱𝐲 = select,♻️𝐀𝐮𝐭𝐨,🌀𝐒𝐞𝐥𝐞𝐜𝐭,🔴𝐅𝐚𝐥𝐥𝐛𝐚𝐜𝐤  # url-test模式，给提供的url发出http header请求，根据返回结果，选择测速最快的节点，默认间隔600s，测速超时时间5s，为了避免资源浪费，建议节点数不要过多，只支持单个节点和远端节点，其他会被忽略 ♻️𝐀𝐮𝐭𝐨 = url-test,🇭🇰香港,🇯🇵日本,🇰🇷韩国,🇺🇸美国,url = http://bing.com/,interval = 600  # select模式,手动选择模式 🌀𝐒𝐞𝐥𝐞𝐜𝐭 = select,🇭🇰香港,🇯🇵日本,🇰🇷韩国,🇺🇸美国  # fallback模式，和url-test类似，不同的是会根据顺序返回第一个可用的节点，为了避免资源浪费，建议节点数不要过多，只支持单个节点和远端节点，其他会被忽略 🔴𝐅𝐚𝐥𝐥𝐛𝐚𝐜𝐤 = fallback,🇭🇰香港,🇯🇵日本,🇰🇷韩国,🇺🇸美国,REJECT,url = http://bing.com/,interval = 600  🎵𝐓𝐢𝐤𝐓𝐨𝐤 = select,🔰𝐏𝐫𝐨𝐱𝐲,🎯𝐃𝐢𝐫𝐞𝐜𝐭 🖥𝐍𝐞𝐭𝐟𝐥𝐢𝐱 = select,𝐍𝐞𝐭𝐟𝐥𝐢𝐱,🎯𝐃𝐢𝐫𝐞𝐜𝐭 💳𝐏𝐚𝐲𝐏𝐚𝐥 = select,𝐏𝐚𝐲𝐏𝐚𝐥,🎯𝐃𝐢𝐫𝐞𝐜𝐭 📱𝐓𝐞𝐥𝐞𝐠𝐫𝐚𝐦 = select,🔰𝐏𝐫𝐨𝐱𝐲,🎯𝐃𝐢𝐫𝐞𝐜𝐭 🎬𝐘𝐨𝐮𝐓𝐮𝐛𝐞 = select,🔰𝐏𝐫𝐨𝐱𝐲,🎯𝐃𝐢𝐫𝐞𝐜𝐭 🔞𝐏𝐨𝐫𝐧𝐇𝐮𝐛 = select,🔰𝐏𝐫𝐨𝐱𝐲,🎯𝐃𝐢𝐫𝐞𝐜𝐭  # 🔓网易云音乐灰色歌曲,需要节点支持解锁 🎧𝐍𝐞𝐭𝐞𝐚𝐬𝐞𝐌𝐮𝐬𝐢𝐜 = select,🎯𝐃𝐢𝐫𝐞𝐜𝐭,🎧,🔰𝐏𝐫𝐨𝐱𝐲  # 网络测速 🚀𝐒𝐩𝐞𝐞𝐝𝐓𝐞𝐬𝐭 = select,🔰𝐏𝐫𝐨𝐱𝐲,🎯𝐃𝐢𝐫𝐞𝐜𝐭  # 苹果服务 🍎𝐀𝐩𝐩𝐥𝐞 = select,🎯𝐃𝐢𝐫𝐞𝐜𝐭,🔰𝐏𝐫𝐨𝐱𝐲  # 白名单模式 PROXY，黑名单模式 DIRECT  # 广告拦截 🚫𝐀𝐝 𝐁𝐥𝐨𝐜𝐤 = select,⛔️𝐑𝐞𝐣𝐞𝐜𝐭,🎯𝐃𝐢𝐫𝐞𝐜𝐭  # 直接连接 🎯𝐃𝐢𝐫𝐞𝐜𝐭 = select,DIRECT  # 拦截 ⛔️𝐑𝐞𝐣𝐞𝐜𝐭 = select,REJECT  # SSID # 别名 = ssid，默认 = 策略， 蜂窝 = 策略， ssid名称 = 策略 #SSID = ssid, default = PROXY, cellular = DIRECT, ”DivineEngine“ = PROXY  [Rule] # 本地规则 # Type:DOMAIN-SUFFIX,DOMAIN,DOMAIN-KEYWORD,USER-AGENT,URL-REGEX,IP-CIDR # Strategy:DIRECT,Proxy,REJECT # Options:force-remote-dns(Default:false),no-resolve  #  𝐍𝐞𝐭𝐞𝐚𝐬𝐞𝐌𝐮𝐬𝐢𝐜 DOMAIN-SUFFIX,music.126.net,DIRECT  # GeoIP China GEOIP,CN,🎯𝐃𝐢𝐫𝐞𝐜𝐭 FINAL, 🕹𝐅𝐢𝐧𝐚𝐥  [Remote Rule]  # 订阅规则 https://raw.githubusercontent.com/eHpo1/Rules/master/Surge4/Ruleset/Liby.list,🚫𝐀𝐝 𝐁𝐥𝐨𝐜𝐤 # BlockOTA https://raw.githubusercontent.com/nzw9314/Surge/master/Ruleset/BlockOTA.list,🚫𝐀𝐝 𝐁𝐥𝐨𝐜𝐤 # Antirevoke https://raw.githubusercontent.com/nzw9314/Surge/master/Ruleset/Antirevoke.list,🚫𝐀𝐝 𝐁𝐥𝐨𝐜𝐤 # > TikTok https://raw.githubusercontent.com/nzw9314/Surge/master/Ruleset/TikTok.list,🎵𝐓𝐢𝐤𝐓𝐨𝐤 # > Youtube https://raw.githubusercontent.com/eHpo1/Rules/master/Surge4/Ruleset/Sub/YouTube.list,🎬𝐘𝐨𝐮𝐓𝐮𝐛𝐞 # > Netflix https://raw.githubusercontent.com/eHpo1/Rules/master/Surge4/Ruleset/Sub/Netflix.list,🖥𝐍𝐞𝐭𝐟𝐥𝐢𝐱 # > PronHub https://raw.githubusercontent.com/eHpo1/Rules/master/Surge4/Ruleset/Sub/Pornhub.list,🔞𝐏𝐨𝐫𝐧𝐇𝐮𝐛 # Telegram https://raw.githubusercontent.com/eHpo1/Rules/master/Surge4/Ruleset/Sub/Telegram.list,📱𝐓𝐞𝐥𝐞𝐠𝐫𝐚𝐦 # > PayPal https://raw.githubusercontent.com/eHpo1/Rules/master/Surge4/Ruleset/Sub/PayPal.list,💳𝐏𝐚𝐲𝐏𝐚𝐥 # > Outlook、Gmail https://raw.githubusercontent.com/nzw9314/Surge/master/Ruleset/Mail.list,🔰𝐏𝐫𝐨𝐱𝐲 # > GoogleDrive https://raw.githubusercontent.com/nzw9314/Surge/master/Ruleset/GoogleDrive.list,🔰𝐏𝐫𝐨𝐱𝐲 # Speedtest https://raw.githubusercontent.com/eHpo1/Rules/master/Surge4/Ruleset/Sub/Speedtest.list,🚀𝐒𝐩𝐞𝐞𝐝𝐓𝐞𝐬𝐭  # >Unlock NeteaseMusic https://raw.githubusercontent.com/nzw9314/Surge/master/Ruleset/UnlockNeteaseMusic.list,🎧𝐍𝐞𝐭𝐞𝐚𝐬𝐞𝐌𝐮𝐬𝐢𝐜  https://raw.githubusercontent.com/eHpo1/Rules/master/Surge4/Ruleset/Apple_CDN.list,🍎𝐀𝐩𝐩𝐥𝐞 https://raw.githubusercontent.com/eHpo1/Rules/master/Surge4/Ruleset/Apple_API.list,🍎𝐀𝐩𝐩𝐥𝐞  https://raw.githubusercontent.com/eHpo1/Rules/master/Surge4/Ruleset/AsianMedia.list,🎯𝐃𝐢𝐫𝐞𝐜𝐭 https://raw.githubusercontent.com/eHpo1/Rules/master/Surge4/Ruleset/GlobalMedia.list,🔰𝐏𝐫𝐨𝐱𝐲  https://raw.githubusercontent.com/eHpo1/Rules/master/Surge4/Ruleset/Domestic.list,🎯𝐃𝐢𝐫𝐞𝐜𝐭 https://raw.githubusercontent.com/eHpo1/Rules/master/Surge4/Ruleset/Global.list,🔰𝐏𝐫𝐨𝐱𝐲  [URL Rewrite] # 本地重写  # > TikTok Unlock (By Choler) # 区域请修改下方国家代码，默认为日本 JP  (?<=_region=)CN(?=&) JP 307 (?<=&app_version=)16..(?=.?.?&) 1 307 (?<=\?version_code=)16..(?=.?.?&) 1 307  # > 抖音 去广告&水印 # 需配合脚本使用 ^https?:\/\/[\w-]+\.amemv\.com\/aweme\/v\d\/feed\/ https://aweme.snssdk.com/aweme/v1/feed/ header ^https?:\/\/[\w-]+\.amemv\.com\/aweme\/v\d\/aweme\/post\/ https://aweme.snssdk.com/aweme/v1/aweme/post/ header ^https?:\/\/[\w-]+\.amemv\.com\/aweme\/v\d\/follow\/feed\/ https://aweme.snssdk.com/aweme/v1/follow/feed/ header ^https?:\/\/[\w-]+\.amemv\.com\/aweme\/v\d\/nearby\/feed\/ https://aweme.snssdk.com/aweme/v1/nearby/feed/ header ^https?:\/\/[\w-]+\.amemv\.com\/aweme\/v\d\/search\/item\/ https://aweme.snssdk.com/aweme/v1/search/item/ header ^https?:\/\/[\w-]+\.amemv\.com\/aweme\/v\d\/general\/search\/single\/ https://aweme.snssdk.com/aweme/v1/general/search/single/ header ^https?:\/\/[\w-]+\.amemv\.com\/aweme\/v\d\/hot/search\/video\/list\/ https://aweme.snssdk.com/aweme/v1/hot/search/video/list/ header  enable = true  [Remote Rewrite] #订阅重写 去广告 by eHpo # 格式：订阅url，别名(可选) https://raw.githubusercontent.com/eHpo1/Rules/master/Loon/Rewrite.conf,eHpo https://raw.githubusercontent.com/nzw9314/Loon/master/Q-Search_All_in_one.conf,Q-Search_All_in_one [Script] # 本地脚本 enable = true  [Remote Script] # 远程脚本 https://raw.githubusercontent.com/nzw9314/Loon/master/Task.conf,签到 https://raw.githubusercontent.com/nzw9314/Loon/master/Script.conf,脚本 https://raw.githubusercontent.com/nzw9314/Loon/master/Cookie.conf,Cookie  [MITM] enable = true hostname = *.googlevideo.com.bak skip-server-cert-verify = true ca-p12 = MIIJrgIBAzCCCXgGCSqGSIb3DQEHAaCCCWkEggllMIIJYTCCA/8GCSqGSIb3DQEHBqCCA/AwggPsAgEAMIID5QYJKoZIhvcNAQcBMBwGCiqGSIb3DQEMAQYwDgQIYl/myyqpUtwCAggAgIIDuMYEzEUgSxIUScp1vSSooV2iePmy4Q7YP8cfnhaatGNnX+CC9/rDdPgDuz7k1D/7hYdaOsTKpXU9aUAxHvg9SLAWFm5dL4g/9MVk7Id8qCPMYbO2H+lQTChEN8iTpWdq+qlAC8VpqY1TTXhQTkCKF3cT+S68xZUMFDuX95INBUswjN+imGIYVKFBp4s0K7UDFpF0BMUD5HwR9U/QFsZ+ScCaNj/Y1p95LWPllUkeeb67uTOeXc55yEM+O8W/SGjJhgjdnvPgetCfLMc6RWREK0SNAGMzHibuvHHHm0fIBg5zwE+DjDdefwYMUghpQVl+0gSeASjsvP9mSgtm9+horQCw/ef0a3FxcKsmTzSE6o4dx37fEckEouYN/Ni+OWnKWb6eXeaL6yVD4gLDmEwV8lmgBG4OjYcdY9jeIBFkDzbG70eUvmj6/1olUtnOnkGY5ZMvCGhVr8K4ZJ80xuykgxgPI/5enNZZiS9cAuk85xAN+XeDvmQdIHF9TxMRyLGJyWUkczjV3DSPkqZ2hMFJRuOF5zbhZlCcJgkEdCYbb4sebYnGKOEVnfceFVK1yv33Hp+BcQDmqEm+gssrtNhJGCWtqTjT28WeGxGgAWOaY2e+isVJG6TvU1D+tHCl09WyLKM671a63jY6QvpWwRpSMkbcrGEMhQRo2IMrxhwkia9vkk+eDYRt4jJcG8gRAWB0crXuYMM/t0gxDKTiVF7aS0XEHWMkH7ATWFI/+Yta4dsVLAOACnTCarD80RH/xV5JK1KiAn5pSzy13fRwvYcHAluJ/7JHphVUtNYroNgfzdt5n65B7qD5PU4ykhVMfflZXom17VGwUqf750kx0fowU23XCUyWoifoGBbkR9mgGHBqZyMZHv+Z9iWPmpqJcfjL9UBX91Ulzg74IQocvNTHMVu3cLXx63OiQ6k4+FYZcvTiJyYpu7N36I/nLz61L3D2d8LaYLHAcvnsClfC6QRVVAU/wvQnhp2/oPh/l19KBX7QUnBKPU1oFLEV8y1G87IbN/LDJ0SUroS/McCojANgutTpKQJT+5jlid+GxZkEi4CXlTAUfu6/lioLdJugycPEKHu49zAmbDw8lUy5QRUbyjWrZk8tLu2bKzaxg5A21N9N/zKt9uXmcN5J/O1L8WIcAIXDytAmkyw7ez45EF631i6k2uJeuIxtBwRfwDyuw4FwKrsqw197FoqsvsMb68Tak2vVtzgs/rSQ1PL3acsLQ0CBZ9/Do1WxAb8azc4ko36JE7e0xtM43qswggVaBgkqhkiG9w0BBwGgggVLBIIFRzCCBUMwggU/BgsqhkiG9w0BDAoBAqCCBO4wggTqMBwGCiqGSIb3DQEMAQMwDgQI3rZrdI9fPuMCAggABIIEyGZyUi/orJ8LMBdjZFQaCNXECddtwPuKPg+QxAzpxC0/VSgdtHsOR/v8koAJgddmGJUDwLXGVcuasJ7YlhdIKpnvSzNBB7qjJoQBQ5dMsXVfcJaRwbhjMExjZyvUjCKH21lJ7yaxGQORtmIXTpx0FPQUprJtghF/C2ejA9QSW+SCjYY64dkvUovvXMDaddKWq+i0lOGKi0hvCjGiLobIovBpSfjX1EYTK5pmpBtWKro5Wnm/Q5r/OBU2+PyzlFCZdMdov7bIcUwnz4D1Oypn6woQol8N9AqgQL52pMweL8k0fK8YH3eChE5EP0JNc1X0vRTHhKiAB0Su5vjSVa5QU4ZBTCdNdwM7rr2NJMzMjF8g4y7fXMTVXdPUi1QeYihOqmcU2i0pmrk4zPeobGfzLIcgRSLf9qeP2r9Gw3yt3rjJMHgbx6QvBZ+5GZ8/iooQTbLjUj83QfdGeidkD+Auba9f8cPDiurDF+Pjt2FotaT3Vqx38qlaprBdlk7H1yVZtY2G5Y5pquiyPK/C+QwrXYWEocsJIAvAb3xhXalqkUs6ZmKTVQqlpUR0L/ogRmeJ0OxHYKbqy4Rg2eIcHogPEK2Xa2iiPFmG6AbWUnE8mmH5PunCPGuhcOxFYZAkpf96//c0J9ry52pcvR15ZIvmZdSLrhjD4pD+CElUKFS6izafXSyFQpjNuQI2aCnMNS/AFSe3kH6naARoOUnXFC7Wz+e69nOKs6G84/gV3xD4klk5vCza32e55MtUD9SX09+q9XItarBeBYCn3XCZk1sZADmg8gHxZzgEj3mA7slqsRnx7E80lz1UlHU4FSLkeMEU2u9/K1QA6VZzFfFRXtitZuam2Di98zCyftyb0D0DwlywSab/ww7VrROnBq3sozc7uo7eEiT8Jx9qd2kGNF+r9KI6QePBtATJzsgCNoPHNTdA7DNX4opD0bNsRtFHQLW3b9k1PeeAix1agcrqsDVV2PsWn9Qae9vY4zqwkNY+hjlmt2CRPG/5pX8COVn+dzqGHTksFg/NgVZsAj8NK4ZGf+QSRxSUo/5sYbu61Pj6TpyEIjOEPM+ylXdhziKhDTfw4GkrmTjlrQQ9T+7pqC86nYS8HH9ZcET+SecZK8kMPe7pwbzwHPWsl+OqHTP01KvEAogOL8fAZ7LsbaHlPoLHkHDQzxeep6ZKDnoCphjsf4oqSlcQzNh383mAr0YTPY8SaVV5G6Hh9mCHQqKWWmXhNd8rN/kqZn0H7KvfMJW2BGVWgCvYaE5m5sodhHYjSMGzgauV7O9DL3H+Az2Ztz0K2hj11xsz/C7nRVNOgV02rDvIEHw0asBPq2gYPC4OG/HutK+etT87z+tLftGO9V5+TMcIc4JKaNVOUg814DP59yo/WptH346rHwY7AqvgmEi6LJ1LLP9W6+HH1k3Fk6WEpOtDJS3YqV4EjswXGCtLXu6y/IvqLkyvT7NIZi/BYFf39xwJDvD5SbLM2jhCShG/HsD0/4qfqeGA/x4LLaM9Lyl091XeKWtY9XpP9nZzfgOJkk2rsBH29jS5d8lLkz+GhdzrROPIgHn+yaSsp8vIwr8L9h27+6/95kbUiQugOWEWdO/ZO+X/iyhThallmiNbJP+Qv3abUJgzcTE+MBcGCSqGSIb3DQEJFDEKHggAZQBIAHAAbzAjBgkqhkiG9w0BCRUxFgQU5gr9fNKSpq6pZ3g5Hca/uXOuY+cwLTAhMAkGBSsOAwIaBQAEFKXWG0IDj30Q2VfVGNWcVJ8iipuZBAgHvSM3D+pSUA== ca-passphrase = eHpoj
 - Stars: 37; archived: False; fork: False
 - Search queries: China direct domain rules list, China domain list
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
+### [wangXiaohgithub/proxy](https://github.com/wangXiaohgithub/proxy)
+
+- Description: Shadowrocket rules for v2rayN and v2rayNG with reproducible external resources and verified QR import
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
@@ -1736,6 +1792,14 @@
 - Description: This repository serves as the official resource list for the survey paper "Knowledge-enhanced AI models for domain-specific application: a survey", published in Science China Information Sciences.
 - Stars: 1; archived: False; fork: False
 - Search queries: China domain list
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
+### [zhouzhouprogram/Shadowrocket-ADBlock-Rules](https://github.com/zhouzhouprogram/Shadowrocket-ADBlock-Rules)
+
+- Description: 提供多款 Shadowrocket 规则，带广告过滤功能。用于 iOS 未越狱设备选择性地自动翻墙。
+- Stars: 877; archived: False; fork: False
+- Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 

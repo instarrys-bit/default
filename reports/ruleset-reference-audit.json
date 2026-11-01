@@ -4,22 +4,22 @@
   "config_rule_set_reference_count": 3,
   "references": [
     {
-      "line": 2259,
+      "line": 1993,
       "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/reject.list",
       "file": "reject.list",
       "policy": "REJECT"
     },
     {
-      "line": 2260,
-      "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list",
-      "file": "proxy.list",
-      "policy": "PROXY"
-    },
-    {
-      "line": 2261,
+      "line": 1994,
       "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list",
       "file": "direct.list",
       "policy": "DIRECT"
+    },
+    {
+      "line": 1995,
+      "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list",
+      "file": "proxy.list",
+      "policy": "PROXY"
     }
   ],
   "managed_output_files": [
@@ -30,66 +30,49 @@
   "file_stats": {
     "direct.list": {
       "policy": "DIRECT",
-      "line_count": 32,
-      "valid_domain_lines": 32,
+      "line_count": 15,
+      "valid_domain_lines": 15,
       "exact_domain_lines": 0,
-      "suffix_domain_lines": 32
+      "suffix_domain_lines": 15
     },
     "proxy.list": {
       "policy": "PROXY",
-      "line_count": 119,
-      "valid_domain_lines": 119,
+      "line_count": 63,
+      "valid_domain_lines": 63,
       "exact_domain_lines": 0,
-      "suffix_domain_lines": 119
+      "suffix_domain_lines": 63
     },
     "reject.list": {
       "policy": "REJECT",
-      "line_count": 18,
-      "valid_domain_lines": 18,
-      "exact_domain_lines": 18,
+      "line_count": 10,
+      "valid_domain_lines": 10,
+      "exact_domain_lines": 10,
       "suffix_domain_lines": 0
     }
   },
   "cross_file_duplicates": [],
   "cross_policy_conflicts": [],
-  "precedence_resolved_overlaps": [
-    {
-      "earlier": {
-        "kind": "DOMAIN",
-        "domain": "adsfilebssdlbig.tx.kugou.com",
-        "policy": "REJECT"
-      },
-      "later": {
-        "kind": "DOMAIN-SUFFIX",
-        "domain": "kugou.com",
-        "policy": "DIRECT"
-      }
-    }
-  ],
+  "precedence_resolved_overlaps": [],
   "layout": {
-    "expected_ruleset_order": [
-      "reject.list:REJECT",
-      "proxy.list:PROXY",
-      "direct.list:DIRECT"
-    ],
+    "expected_ruleset_order": "authoritative order from shadowrocket/ss.conf",
     "observed_ruleset_order": [
       "reject.list:REJECT",
-      "proxy.list:PROXY",
-      "direct.list:DIRECT"
+      "direct.list:DIRECT",
+      "proxy.list:PROXY"
     ],
     "marker_lines": {
-      "layer_1": 27,
-      "layer_2": 655,
-      "layer_3": 701,
-      "layer_4": 1461,
-      "layer_5": 2160,
-      "original_rules_end": 2227,
-      "external_rulesets": 2258,
-      "geoip_asn_start": 2262,
-      "geoip_asn_cn": 2287,
-      "geoip_cn_rule": 2321,
-      "layer_6": 2322,
-      "final_rule": 2325
+      "layer_1": 30,
+      "layer_2": 611,
+      "layer_3": 647,
+      "layer_4": 1333,
+      "layer_5": 1897,
+      "original_rules_end": 1967,
+      "external_rulesets": 1992,
+      "geoip_asn_start": 1996,
+      "geoip_asn_cn": 2021,
+      "geoip_cn_rule": 2074,
+      "layer_6": 2075,
+      "final_rule": 2076
     },
     "passed": true
   },

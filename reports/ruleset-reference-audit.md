@@ -3,20 +3,20 @@
 - Config authority: shadowrocket/ss.conf
 - RULE-SET references: 3
 - Result: PASS
-- External RULE-SET order: REJECT -> PROXY -> DIRECT
+- External RULE-SET order: REJECT -> DIRECT -> PROXY
 - Placement audit: PASS
 
 ## References
 
-- line 2259: reject.list -> REJECT
-- line 2260: proxy.list -> PROXY
-- line 2261: direct.list -> DIRECT
+- line 1993: reject.list -> REJECT
+- line 1994: direct.list -> DIRECT
+- line 1995: proxy.list -> PROXY
 
 ## Generated file counts
 
-- direct.list: 32 lines; policy DIRECT
-- proxy.list: 119 lines; policy PROXY
-- reject.list: 18 lines; policy REJECT
+- direct.list: 15 lines; policy DIRECT
+- proxy.list: 63 lines; policy PROXY
+- reject.list: 10 lines; policy REJECT
 
 ## Cross-file duplicates
 
@@ -24,7 +24,7 @@
 
 ## Precedence-resolved overlaps
 
-- DOMAIN,adsfilebssdlbig.tx.kugou.com (REJECT) precedes DOMAIN-SUFFIX,kugou.com (DIRECT)
+- None
 
 ## Findings
 

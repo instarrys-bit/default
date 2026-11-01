@@ -29,7 +29,7 @@ This report combines parser compatibility, explicit policy evidence and README r
 - Domain entries across candidate files: 6751
 - Policy evidence: README_policy_reference
 - Lineage: unverified (audited_reference_inventory)
-- Possible shared README-reference peers: GMOogway/shadowrocket-rules, Jeliren/shadowrocket-russia-direct, Loyalsoldier/v2ray-rules-dat, PaPerseller/chn-iplist, Seanyim/tailrocket, bgpeer/rules, crayonluffy/shadowrocket-rules, gatework/surge-rules, jhz1022/Shadowrocket-Rules, kaonimei/Shadowrocket-ADBlock-Rules, poohyeban/shadowrocket-rules, tkgeeked/clash-rules-for-shadowrocket
+- Possible shared README-reference peers: GMOogway/shadowrocket-rules, GrandpaNiuu/cn-direct-rules, Jeliren/shadowrocket-russia-direct, Loyalsoldier/v2ray-rules-dat, PaPerseller/chn-iplist, Seanyim/tailrocket, bgpeer/rules, crayonluffy/shadowrocket-rules, gatework/surge-rules, jhz1022/Shadowrocket-Rules, kaonimei/Shadowrocket-ADBlock-Rules, poohyeban/shadowrocket-rules, tkgeeked/clash-rules-for-shadowrocket
 - Activation eligible: True
 - Blockers: none
 
@@ -74,7 +74,7 @@ This report combines parser compatibility, explicit policy evidence and README r
 - Domain entries across candidate files: 4451
 - Policy evidence: README_policy_reference
 - Lineage: unverified (audited_reference_inventory)
-- Possible shared README-reference peers: GMOogway/shadowrocket-rules, Jeliren/shadowrocket-russia-direct, Jovanykoch/rules, Loyalsoldier/v2ray-rules-dat, PaPerseller/chn-iplist, bgpeer/rules, crayonluffy/shadowrocket-rules, jhz1022/Shadowrocket-Rules, kaonimei/Shadowrocket-ADBlock-Rules, poohyeban/shadowrocket-rules, tkgeeked/clash-rules-for-shadowrocket
+- Possible shared README-reference peers: GMOogway/shadowrocket-rules, GrandpaNiuu/cn-direct-rules, Jeliren/shadowrocket-russia-direct, Jovanykoch/rules, Loyalsoldier/v2ray-rules-dat, PaPerseller/chn-iplist, bgpeer/rules, crayonluffy/shadowrocket-rules, jhz1022/Shadowrocket-Rules, kaonimei/Shadowrocket-ADBlock-Rules, poohyeban/shadowrocket-rules, tkgeeked/clash-rules-for-shadowrocket
 - Activation eligible: True
 - Blockers: none
 

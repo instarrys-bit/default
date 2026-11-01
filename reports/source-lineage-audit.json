@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-01T16:54:04.628750+00:00",
+  "audited_at": "2026-11-01T21:51:53.280754+00:00",
   "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
   "source_count": 6,
   "audited_source_count": 6,
@@ -30,8 +30,8 @@
       ]
     }
   ],
-  "candidate_source_count": 41,
-  "candidate_readme_audited_count": 41,
+  "candidate_source_count": 42,
+  "candidate_readme_audited_count": 42,
   "candidate_shared_reference_pairs": [
     {
       "repositories": [
@@ -100,6 +100,17 @@
       ],
       "shared_readme_references": [
         "johnshall/shadowrocket-adblock-rules-forever"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GMOogway/shadowrocket-rules",
+        "GrandpaNiuu/cn-direct-rules"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list",
+        "v2fly/domain-list-community"
       ],
       "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
     },
@@ -273,6 +284,113 @@
       ],
       "shared_readme_references": [
         "blackmatrix7/ios_rule_script"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GrandpaNiuu/cn-direct-rules",
+        "Jeliren/shadowrocket-russia-direct"
+      ],
+      "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GrandpaNiuu/cn-direct-rules",
+        "Jovanykoch/rules"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list",
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GrandpaNiuu/cn-direct-rules",
+        "Loyalsoldier/v2ray-rules-dat"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list",
+        "gaoyifan/china-operator-ip",
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GrandpaNiuu/cn-direct-rules",
+        "PaPerseller/chn-iplist"
+      ],
+      "shared_readme_references": [
+        "gaoyifan/china-operator-ip",
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GrandpaNiuu/cn-direct-rules",
+        "crayonluffy/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GrandpaNiuu/cn-direct-rules",
+        "gatework/surge-rules"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list",
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GrandpaNiuu/cn-direct-rules",
+        "jhz1022/Shadowrocket-Rules"
+      ],
+      "shared_readme_references": [
+        "gaoyifan/china-operator-ip",
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GrandpaNiuu/cn-direct-rules",
+        "kaonimei/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GrandpaNiuu/cn-direct-rules",
+        "poohyeban/shadowrocket-rules"
+      ],
+      "shared_readme_references": [
+        "v2fly/domain-list-community"
+      ],
+      "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+    },
+    {
+      "repositories": [
+        "GrandpaNiuu/cn-direct-rules",
+        "tkgeeked/clash-rules-for-shadowrocket"
+      ],
+      "shared_readme_references": [
+        "felixonmars/dnsmasq-china-list",
+        "v2fly/domain-list-community"
       ],
       "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
     },
@@ -1318,6 +1436,25 @@
         "blackmatrix7/ios_rule_script"
       ],
       "reference_count": 1,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "GrandpaNiuu/cn-direct-rules",
+      "readme_url": "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/README.md",
+      "readme_sha256": "e781614556de4c9d37d2aa8c35c466e4f4864b4fae07ab7ac225c5ce2f17fd8c",
+      "discovery_readme_sha256": "e781614556de4c9d37d2aa8c35c466e4f4864b4fae07ab7ac225c5ce2f17fd8c",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [
+        "felixonmars/dnsmasq-china-list",
+        "fernvenue/chn-cidr-list",
+        "gaoyifan/china-operator-ip",
+        "lowertop/shadowrocket-first",
+        "misakaio/chnroutes2",
+        "missuo/asn-china",
+        "v2fly/domain-list-community"
+      ],
+      "reference_count": 7,
       "lineage_status": "unverified",
       "status": "audited_reference_inventory"
     },
