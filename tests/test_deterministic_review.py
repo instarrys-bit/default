@@ -536,7 +536,7 @@ class SourceCandidateMatrixTests(unittest.TestCase):
         result = build_matrix(assessments, lineage)
         self.assertEqual(result["policy_summary"]["DIRECT"]["candidate_publishers"], 2)
         self.assertEqual(result["policy_summary"]["DIRECT"]["candidate_files"], 3)
-        self.assertEqual(result["activation_count"], 2)
+        self.assertEqual(result["eligible_candidate_count"], 2)
 
     def test_possible_shared_readme_references_are_recorded_as_warnings_not_blockers(self):
         from build_source_candidates import build_matrix
@@ -597,7 +597,7 @@ class SourceCandidateMatrixTests(unittest.TestCase):
         ]}
         result = build_matrix(assessments, lineage)
         self.assertEqual(result["same_policy_domain_overlap"][0]["relation"], "near_duplicate")
-        self.assertEqual(result["policy_summary"]["DIRECT"]["independent_verified_groups"], 1)
+        self.assertEqual(result["policy_summary"]["DIRECT"]["independent_eligible_groups"], 1)
         self.assertFalse(result["policy_summary"]["DIRECT"]["activation_ready"])
 
     def test_cross_policy_domain_overlap_is_reported_without_raw_domains(self):
@@ -677,7 +677,7 @@ class HighOverlapIndependenceTests(unittest.TestCase):
         ]}
         result = build_matrix(assessments, lineage)
         self.assertEqual(result["same_policy_domain_overlap"][0]["relation"], "high_overlap")
-        self.assertEqual(result["policy_summary"]["DIRECT"]["independent_verified_groups"], 1)
+        self.assertEqual(result["policy_summary"]["DIRECT"]["independent_eligible_groups"], 1)
         self.assertFalse(result["policy_summary"]["DIRECT"]["activation_ready"])
 
 
