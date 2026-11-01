@@ -102,14 +102,16 @@ def inspect(domain,rules,conditional,base,protected,candidate_policy=None):
             except re.error: return "REVIEW","Existing URL-REGEX cannot be compiled"
             # URL path filters with a generic host (for example [^/]+/multifetch) are not domain rules.
             # Only compare a candidate when the regex identifies a concrete hostname pattern.
-            if r"[^\\/]+" in pattern_text:
+            slash=chr(92)+"/"
+            if "[^"+slash+"]+" in pattern_text:
                 continue
-            prefixes=(r"^http:\\/\\/",r"^https?:\\/\\/")
+            prefixes=("^http:"+slash+slash,"^https?:"+slash+slash)
             prefix=next((item for item in prefixes if pattern_text.startswith(item)),None)
             if not prefix:
                 continue
-            host_pattern=pattern_text[len(prefix):].split(r"\\/",1)[0]
-            if not re.search(r"\\\.[A-Za-z0-9-]+\\\.[A-Za-z0-9-]+$",host_pattern):
+            host_pattern=pattern_text[len(prefix):].split(slash,1)[0]
+            host_literal=host_pattern.replace(chr(92)+".",".")
+            if host_literal.count(".")<2:
                 continue
             try: host_regex=re.compile(r"^(?:"+host_pattern+r")$")
             except re.error: return "REVIEW","Existing URL-REGEX host pattern cannot be compiled"
