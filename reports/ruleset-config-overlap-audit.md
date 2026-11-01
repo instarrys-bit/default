@@ -8,14 +8,20 @@
 
 ## Status counts
 
+- ALREADY_COVERED: 10
 - CONDITIONAL_POTENTIAL: 15
 - CONFLICT: 1
-- NOT_COVERED_BY_PRIOR_DOMAIN_RULES: 919
+- NOT_COVERED_BY_PRIOR_DOMAIN_RULES: 909
 
 ## Findings
 
 - 1e100.net (PROXY): CONDITIONAL_POTENTIAL — line 28: Prior compound rule contains a matching domain operand; other operands are not evaluated
+- 95516.com (DIRECT): ALREADY_COVERED — line None: Existing General skip-proxy entry
+- abchina.com (DIRECT): ALREADY_COVERED — line None: Existing General skip-proxy entry
+- alipay.com (DIRECT): ALREADY_COVERED — line None: Existing General skip-proxy entry
+- alipayobjects.com (DIRECT): ALREADY_COVERED — line None: Existing General skip-proxy entry
 - cdninstagram.com (PROXY): CONDITIONAL_POTENTIAL — line 51: Prior compound rule contains a matching domain operand; other operands are not evaluated
+- cmbchina.com (DIRECT): ALREADY_COVERED — line None: Existing General skip-proxy entry
 - ggpht.com (PROXY): CONDITIONAL_POTENTIAL — line 30: Prior compound rule contains a matching domain operand; other operands are not evaluated
 - googleapis.cn (PROXY): CONDITIONAL_POTENTIAL — line 34: Prior compound rule contains a matching domain operand; other operands are not evaluated
 - googleapis.com (PROXY): CONDITIONAL_POTENTIAL — line 35: Prior compound rule contains a matching domain operand; other operands are not evaluated
@@ -24,7 +30,12 @@
 - gvt1.com (PROXY): CONDITIONAL_POTENTIAL — line 40: Prior compound rule contains a matching domain operand; other operands are not evaluated
 - hockeyapp.net (PROXY): CONFLICT — line 244: Prior first-match exact/suffix domain rule
 - instagram.com (PROXY): CONDITIONAL_POTENTIAL — line 50: Prior compound rule contains a matching domain operand; other operands are not evaluated
+- sf-express.com (DIRECT): ALREADY_COVERED — line None: Existing General skip-proxy entry
+- tencent-cloud.net (DIRECT): ALREADY_COVERED — line None: Existing General skip-proxy entry
+- tenpay.com (DIRECT): ALREADY_COVERED — line None: Existing General skip-proxy entry
 - twimg.com (PROXY): CONDITIONAL_POTENTIAL — line 42: Prior compound rule contains a matching domain operand; other operands are not evaluated
+- wechat.com (DIRECT): ALREADY_COVERED — line None: Existing General skip-proxy entry
+- weixin.com (DIRECT): ALREADY_COVERED — line None: Existing General skip-proxy entry
 - x.com (PROXY): CONDITIONAL_POTENTIAL — line 45: Prior compound rule contains a matching domain operand; other operands are not evaluated
 - youtu.be (PROXY): CONDITIONAL_POTENTIAL — line 46: Prior compound rule contains a matching domain operand; other operands are not evaluated
 - youtube-nocookie.com (PROXY): CONDITIONAL_POTENTIAL — line 47: Prior compound rule contains a matching domain operand; other operands are not evaluated

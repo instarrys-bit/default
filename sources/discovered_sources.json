@@ -12,7 +12,7 @@
     "Surge direct proxy domain-set rules",
     "Quantumult X direct proxy domain rules"
   ],
-  "candidate_count": 182,
+  "candidate_count": 183,
   "candidates": [
     {
       "repository": "ACL4SSR/ACL4SSR",
@@ -744,13 +744,13 @@
         "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/profile-next.conf": [
           "DIRECT"
         ],
+        "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/china.conf": [
+          "DIRECT"
+        ],
         "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/profile.conf": [
           "DIRECT",
           "PROXY",
           "REJECT"
-        ],
-        "https://raw.githubusercontent.com/Jeliren/shadowrocket-russia-direct/main/china.conf": [
-          "DIRECT"
         ]
       },
       "search_queries": [
@@ -817,11 +817,6 @@
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list": [
-          "DIRECT",
-          "PROXY",
-          "REJECT"
-        ],
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/gfw.list": [
           "DIRECT",
           "PROXY",
@@ -829,6 +824,11 @@
         ],
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list": [
           "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list": [
+          "DIRECT",
+          "PROXY",
+          "REJECT"
         ]
       },
       "seeded_source_urls": [
@@ -965,12 +965,12 @@
           "PROXY",
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt": [
+        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt": [
+        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
@@ -1112,22 +1112,22 @@
         "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/v2rayA.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/proxy-special.list": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/reject-special.list": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv6.txt": [
-          "REJECT"
-        ],
         "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv4.txt": [
           "REJECT"
+        ],
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/Shadowrocket.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/proxy-special.list": [
+          "PROXY"
         ],
         "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/direct-special.list": [
           "DIRECT"
         ],
-        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/Shadowrocket.conf": [
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute-ipv6.txt": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/reject-special.list": [
           "REJECT"
         ],
         "https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/chnroute.txt": [
@@ -3006,6 +3006,25 @@
       "seeded_source_urls": []
     },
     {
+      "repository": "mahlenko/shadowrocket-rules-v2fly",
+      "html_url": "https://github.com/mahlenko/shadowrocket-rules-v2fly",
+      "description": null,
+      "default_branch": "main",
+      "updated_at": "2026-11-01T10:18:25Z",
+      "pushed_at": "2026-11-01T10:18:21Z",
+      "stars": 2,
+      "archived": false,
+      "fork": false,
+      "license": null,
+      "readme_sha256": "292a6cdf1df3eeb8c780e1b48ad211b74ab4221286587a5bfab0e798fb713c9f",
+      "rule_list_urls": [],
+      "readme_policy_claims": {},
+      "search_queries": [
+        "shadowrocket rules"
+      ],
+      "discovered_at": "2026-11-01T10:19:19.397701+00:00"
+    },
+    {
       "repository": "mambalabsdev/mcp-partner-member-directory-extractor",
       "html_url": "https://github.com/mambalabsdev/mcp-partner-member-directory-extractor",
       "description": "MCP server for Partner and Member Directory Extractor. Turn a vendor partner directory (PartnerPage, Shopify Partner Directory) or a trade body member list into one company row per listing with website, domain, tier, tags, and location. Runs on Apify. Clay-ready output.",
@@ -3577,10 +3596,10 @@
         "https://raw.githubusercontent.com/shankangk/AntiLeak-AdBlock/main/output/sr_ad_antileak.conf"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/shankangk/AntiLeak-AdBlock/main/output/sr_ad_antileak.conf": [
+        "https://raw.githubusercontent.com/shankangk/AntiLeak-AdBlock/main/output/Mini-AntiLeak.conf": [
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/shankangk/AntiLeak-AdBlock/main/output/Mini-AntiLeak.conf": [
+        "https://raw.githubusercontent.com/shankangk/AntiLeak-AdBlock/main/output/sr_ad_antileak.conf": [
           "REJECT"
         ]
       },
@@ -3844,40 +3863,40 @@
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/telegram.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/torrent.txt": [
-          "PROXY"
-        ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/netflix.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/tools.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/telegram.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/torrent.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/tools.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/netflix.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
           "PROXY"
         ]
       },

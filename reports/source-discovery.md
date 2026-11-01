@@ -1,6 +1,6 @@
 # Automated source discovery
 
-- Candidate repositories retained: **182**
+- Candidate repositories retained: **183**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
@@ -1130,6 +1130,14 @@
 
 - Description: Native macOS Shadowrocket rules manager with a lightweight Chrome/Edge extension
 - Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
+### [mahlenko/shadowrocket-rules-v2fly](https://github.com/mahlenko/shadowrocket-rules-v2fly)
+
+- Description: Not supplied
+- Stars: 2; archived: False; fork: False
 - Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0

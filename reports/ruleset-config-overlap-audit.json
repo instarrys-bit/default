@@ -4,11 +4,13 @@
   "config_is_read_only": true,
   "first_ruleset_line": 653,
   "prior_rule_line_count": 623,
+  "skip_proxy_entry_count": 146,
   "candidate_count": 935,
   "status_counts": {
+    "ALREADY_COVERED": 10,
     "CONDITIONAL_POTENTIAL": 15,
     "CONFLICT": 1,
-    "NOT_COVERED_BY_PRIOR_DOMAIN_RULES": 919
+    "NOT_COVERED_BY_PRIOR_DOMAIN_RULES": 909
   },
   "results": [
     {
@@ -395,11 +397,11 @@
       "domain": "95516.com",
       "policy": "DIRECT",
       "ledger_status": "ALREADY_COVERED",
-      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "status": "ALREADY_COVERED",
       "line": null,
-      "rule": null,
-      "effective_policy": null,
-      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found"
+      "rule": "skip-proxy = 95516.com",
+      "effective_policy": "DIRECT",
+      "reason": "Existing General skip-proxy entry"
     },
     {
       "domain": "a-remad.qm989.com",
@@ -425,11 +427,11 @@
       "domain": "abchina.com",
       "policy": "DIRECT",
       "ledger_status": "ALREADY_COVERED",
-      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "status": "ALREADY_COVERED",
       "line": null,
-      "rule": null,
-      "effective_policy": null,
-      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found"
+      "rule": "skip-proxy = abchina.com",
+      "effective_policy": "DIRECT",
+      "reason": "Existing General skip-proxy entry"
     },
     {
       "domain": "abercrombie.com",
@@ -895,21 +897,21 @@
       "domain": "alipay.com",
       "policy": "DIRECT",
       "ledger_status": "ALREADY_COVERED",
-      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "status": "ALREADY_COVERED",
       "line": null,
-      "rule": null,
-      "effective_policy": null,
-      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found"
+      "rule": "skip-proxy = alipay.com",
+      "effective_policy": "DIRECT",
+      "reason": "Existing General skip-proxy entry"
     },
     {
       "domain": "alipayobjects.com",
       "policy": "DIRECT",
       "ledger_status": "ALREADY_COVERED",
-      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "status": "ALREADY_COVERED",
       "line": null,
-      "rule": null,
-      "effective_policy": null,
-      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found"
+      "rule": "skip-proxy = alipayobjects.com",
+      "effective_policy": "DIRECT",
+      "reason": "Existing General skip-proxy entry"
     },
     {
       "domain": "alisoft.com",
@@ -2215,11 +2217,11 @@
       "domain": "cmbchina.com",
       "policy": "DIRECT",
       "ledger_status": "ALREADY_COVERED",
-      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "status": "ALREADY_COVERED",
       "line": null,
-      "rule": null,
-      "effective_policy": null,
-      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found"
+      "rule": "skip-proxy = cmbchina.com",
+      "effective_policy": "DIRECT",
+      "reason": "Existing General skip-proxy entry"
     },
     {
       "domain": "cmpassport.com",
@@ -6665,11 +6667,11 @@
       "domain": "sf-express.com",
       "policy": "DIRECT",
       "ledger_status": "ALREADY_COVERED",
-      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "status": "ALREADY_COVERED",
       "line": null,
-      "rule": null,
-      "effective_policy": null,
-      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found"
+      "rule": "skip-proxy = sf-express.com",
+      "effective_policy": "DIRECT",
+      "reason": "Existing General skip-proxy entry"
     },
     {
       "domain": "sfx.ms",
@@ -7615,11 +7617,11 @@
       "domain": "tencent-cloud.net",
       "policy": "DIRECT",
       "ledger_status": "ALREADY_COVERED",
-      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "status": "ALREADY_COVERED",
       "line": null,
-      "rule": null,
-      "effective_policy": null,
-      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found"
+      "rule": "skip-proxy = tencent-cloud.net",
+      "effective_policy": "DIRECT",
+      "reason": "Existing General skip-proxy entry"
     },
     {
       "domain": "tencent.com",
@@ -7635,11 +7637,11 @@
       "domain": "tenpay.com",
       "policy": "DIRECT",
       "ledger_status": "ALREADY_COVERED",
-      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "status": "ALREADY_COVERED",
       "line": null,
-      "rule": null,
-      "effective_policy": null,
-      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found"
+      "rule": "skip-proxy = tenpay.com",
+      "effective_policy": "DIRECT",
+      "reason": "Existing General skip-proxy entry"
     },
     {
       "domain": "terabox.com",
@@ -8315,11 +8317,11 @@
       "domain": "wechat.com",
       "policy": "DIRECT",
       "ledger_status": "ALREADY_COVERED",
-      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "status": "ALREADY_COVERED",
       "line": null,
-      "rule": null,
-      "effective_policy": null,
-      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found"
+      "rule": "skip-proxy = wechat.com",
+      "effective_policy": "DIRECT",
+      "reason": "Existing General skip-proxy entry"
     },
     {
       "domain": "weibo.cn",
@@ -8405,11 +8407,11 @@
       "domain": "weixin.com",
       "policy": "DIRECT",
       "ledger_status": "ALREADY_COVERED",
-      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "status": "ALREADY_COVERED",
       "line": null,
-      "rule": null,
-      "effective_policy": null,
-      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found"
+      "rule": "skip-proxy = weixin.com",
+      "effective_policy": "DIRECT",
+      "reason": "Existing General skip-proxy entry"
     },
     {
       "domain": "weiyun.com",
