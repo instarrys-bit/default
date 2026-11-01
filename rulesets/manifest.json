@@ -25,10 +25,10 @@
       "role": "primary_candidate_source",
       "lineage_status": "unverified",
       "upstream_repositories": [],
-      "new_entries": 605,
+      "new_entries": 0,
       "removed_entries": 0,
       "baseline_initialized": false,
-      "bootstrap_enqueued": true
+      "bootstrap_enqueued": false
     },
     {
       "id": "acl4ssr-proxy-lite",
@@ -38,10 +38,10 @@
       "role": "primary_candidate_source",
       "lineage_status": "unverified",
       "upstream_repositories": [],
-      "new_entries": 306,
+      "new_entries": 0,
       "removed_entries": 0,
       "baseline_initialized": false,
-      "bootstrap_enqueued": true
+      "bootstrap_enqueued": false
     },
     {
       "id": "clashfx-cn-apps-direct",
