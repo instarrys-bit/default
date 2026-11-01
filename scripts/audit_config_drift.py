@@ -29,6 +29,10 @@ def parse_config(text: str) -> dict[str, dict[str, list[str]]]:
     return sections
 
 
+def git_blob_sha(data: bytes) -> str:
+    return hashlib.sha1(b"blob " + str(len(data)).encode("ascii") + bytes([0]) + data).hexdigest()
+
+
 def compare_sections(baseline: dict, managed: dict) -> list[dict]:
     differences = []
     for section in sorted(set(baseline) | set(managed)):
@@ -71,7 +75,8 @@ def main() -> int:
         "baseline_sha256": hashlib.sha256(baseline_bytes).hexdigest(),
         "managed_sha256": hashlib.sha256(managed_bytes).hexdigest(),
         "baseline_git_blob_sha": policy["canonical_config"]["approved_git_blob_sha"],
-        "managed_matches_registered_blob": False,
+        "managed_git_blob_sha": git_blob_sha(managed_bytes),
+        "managed_matches_registered_blob": git_blob_sha(managed_bytes) == policy["managed_config_guard"]["approved_git_blob_sha"],
         "managed_config_differs_from_baseline": bool(differences),
         "difference_count": len(differences),
         "dns_difference_count": len(dns_differences),
