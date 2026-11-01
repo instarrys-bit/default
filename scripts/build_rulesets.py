@@ -161,19 +161,12 @@ def main():
         if key[0] in POLICIES and key[1] in {"exact_candidate","suffix_candidate"} and key[2]:
             queue_map[key]=queued
     for policy in POLICIES:
-        previous_keys=set()
-        for line in previous_published[policy]:
-            if line.startswith("DOMAIN-SUFFIX,"):
-                previous_keys.add(("suffix_candidate",line[14:].lower()))
-            elif line.startswith("DOMAIN,"):
-                previous_keys.add(("exact_candidate",line[7:].lower()))
-        for scope,domain in sorted(rule_sets[policy]):
-            if (scope,domain) not in previous_keys:
-                queue_map.setdefault((policy,scope,domain),{
-                    "policy":policy,"scope":scope,"domain":domain,
-                    "queued_at":datetime.now(timezone.utc).isoformat(),
-                    "reason":"Approved rule waiting for published capacity"
-                })
+        for scope,domain in sorted(new_approved[policy]):
+            queue_map.setdefault((policy,scope,domain),{
+                "policy":policy,"scope":scope,"domain":domain,
+                "queued_at":datetime.now(timezone.utc).isoformat(),
+                "reason":"Approved rule waiting for published capacity"
+            })
     capacity=max(0,30000-previous_rule_count)
     promoted=[]
     for key in sorted(queue_map, key=lambda x:(str(queue_map[x].get("queued_at","")),x[0],x[2],x[1])):
