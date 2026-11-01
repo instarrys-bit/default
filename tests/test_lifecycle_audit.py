@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
-from lifecycle_audit import inspect, protected, rid
+from lifecycle_audit import inspect, protected, rid, deletion_confirmed
 
 
 class LifecycleAuditSafetyTests(unittest.TestCase):
@@ -27,6 +27,30 @@ class LifecycleAuditSafetyTests(unittest.TestCase):
         config={"protected_exact":[],"protected_suffixes":[]}
         for domain in ("api.google.com","login.microsoft.com","cdn.apple.com","foo.aliyun.com","api.tencent.com","img.bytedance.com"):
             self.assertTrue(protected(domain,config),domain)
+
+    def test_one_nxdomain_observation_never_deletes(self):
+        history=[{"checked_at":"2026-11-01T00:00:00+00:00","status":"CONFIRMED_NXDOMAIN_OBSERVATION"}]
+        self.assertFalse(deletion_confirmed(history))
+
+    def test_two_nxdomain_observations_need_at_least_30_days(self):
+        short=[
+            {"checked_at":"2026-11-01T00:00:00+00:00","status":"CONFIRMED_NXDOMAIN_OBSERVATION"},
+            {"checked_at":"2026-11-30T00:00:00+00:00","status":"CONFIRMED_NXDOMAIN_OBSERVATION"}
+        ]
+        enough=[
+            {"checked_at":"2026-11-01T00:00:00+00:00","status":"CONFIRMED_NXDOMAIN_OBSERVATION"},
+            {"checked_at":"2026-12-01T00:00:00+00:00","status":"CONFIRMED_NXDOMAIN_OBSERVATION"}
+        ]
+        self.assertFalse(deletion_confirmed(short))
+        self.assertTrue(deletion_confirmed(enough))
+
+    def test_intervening_dns_recovery_breaks_deletion_confirmation(self):
+        history=[
+            {"checked_at":"2026-11-01T00:00:00+00:00","status":"CONFIRMED_NXDOMAIN_OBSERVATION"},
+            {"checked_at":"2026-11-15T00:00:00+00:00","status":"DNS_EXISTS_OR_NODATA"},
+            {"checked_at":"2026-12-15T00:00:00+00:00","status":"CONFIRMED_NXDOMAIN_OBSERVATION"}
+        ]
+        self.assertFalse(deletion_confirmed(history))
 
     def test_deletion_ids_are_stable_and_policy_specific(self):
         self.assertEqual(rid("DIRECT","DOMAIN,api.example"),rid("DIRECT","DOMAIN,api.example"))
