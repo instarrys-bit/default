@@ -109,7 +109,7 @@ class RuleSetReferenceAuditTests(unittest.TestCase):
             )
             report = inspect(config, empty_manifest(), root)
             self.assertFalse(report["passed"])
-            self.assertTrue(any("before the ASN/GeoIP fallback" in x for x in report["errors"]))
+            self.assertTrue(any("must precede the ASN/GeoIP fallback" in x for x in report["errors"]))
 
     def test_original_explicit_rule_after_external_block_fails(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -119,6 +119,16 @@ class RuleSetReferenceAuditTests(unittest.TestCase):
             report = inspect(config, empty_manifest(), root)
             self.assertFalse(report["passed"])
             self.assertTrue(any("active routing rules appear between external RULE-SETs" in x for x in report["errors"]))
+
+
+    def test_missing_layout_marker_fails(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            empty_rulesets(root)
+            config = make_config().replace("# --- 5E. final original explicit IP rules ---\n", "")
+            report = inspect(config, empty_manifest(), root)
+            self.assertFalse(report["passed"])
+            self.assertTrue(any("original_rules_end" in x for x in report["errors"]))
 
     def test_policy_mismatch_is_detected(self):
         with tempfile.TemporaryDirectory() as tmp:

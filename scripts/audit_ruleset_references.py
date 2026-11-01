@@ -100,16 +100,20 @@ def inspect_rule_layout(config_text: str, observed: list[dict]) -> tuple[dict, l
                     + repr(between[:5])
                 )
 
-    active_rules = [
-        (index + 1, raw.strip())
-        for index, raw in enumerate(lines)
-        if raw.strip() and not raw.strip().startswith("#")
-        and raw.strip().upper().startswith((
-            "DOMAIN,", "DOMAIN-SUFFIX,", "DOMAIN-KEYWORD,", "IP-CIDR,",
-            "IP-CIDR6,", "IP-ASN,", "GEOIP,", "RULE-SET,", "FINAL,",
-            "AND,", "OR,", "NOT,", "URL-REGEX,",
-        ))
-    ]
+    active_rules = []
+    in_rule_section = False
+    active_prefixes = (
+        "DOMAIN,", "DOMAIN-SUFFIX,", "DOMAIN-KEYWORD,", "IP-CIDR,",
+        "IP-CIDR6,", "IP-ASN,", "GEOIP,", "RULE-SET,", "FINAL,",
+        "AND,", "OR,", "NOT,", "URL-REGEX,",
+    )
+    for index, raw in enumerate(lines):
+        stripped = raw.strip()
+        if stripped.startswith("[") and stripped.endswith("]"):
+            in_rule_section = stripped[1:-1].strip().lower() == "rule"
+            continue
+        if in_rule_section and stripped and not stripped.startswith("#") and stripped.upper().startswith(active_prefixes):
+            active_rules.append((index + 1, stripped))
     final_lines = [line for line, raw in active_rules if raw.upper() == "FINAL,PROXY"]
     if len(final_lines) != 1:
         errors.append(f"FINAL,PROXY must appear exactly once; found {len(final_lines)}")
@@ -284,7 +288,9 @@ def main() -> int:
         "# RULE-SET reference audit", "",
         "- Config authority: shadowrocket/ss.conf",
         f"- RULE-SET references: {report['config_rule_set_reference_count']}",
-        f"- Result: {'PASS' if report['passed'] else 'FAIL'}", "", "## References", ""
+        f"- Result: {'PASS' if report['passed'] else 'FAIL'}",
+        f"- External RULE-SET order: {' -> '.join(item.split(':', 1)[1] for item in report['layout']['observed_ruleset_order'])}",
+        f"- Placement audit: {'PASS' if report['layout']['passed'] else 'FAIL'}", "", "## References", ""
     ]
     lines += [f"- line {x['line']}: {x['file']} -> {x['policy']}" for x in report["references"]]
     lines += ["", "## Generated file counts", ""]
