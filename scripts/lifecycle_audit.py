@@ -11,7 +11,7 @@ REPORT=ROOT/"reports/lifecycle"
 POLICIES=("direct","proxy","reject")
 RESOLVERS=(("cloudflare","https://cloudflare-dns.com/dns-query"),("google","https://dns.google/resolve"))
 TYPES=("A","AAAA")
-PROTECTED=("apple.com","icloud.com","google.com","googleapis.com","gstatic.com","youtube.com","microsoft.com","live.com","office.com","windows.net","azure.com","amazon.com","amazonaws.com","cloudfront.net","tencent.com","qq.com","weixin.qq.com","wechat.com","alibaba.com","alibabagroup.com","aliyun.com","taobao.com","tmall.com","jd.com","bytedance.com","douyin.com","volcengine.com","baidu.com","bilibili.com","netease.com","163.com","mi.com","xiaomi.com","weibo.com","meituan.com","pinduoduo.com","cmbchina.com","icbc.com.cn","abchina.com","ccb.com")
+PROTECTED=("apple.com","icloud.com","icloud-content.com","google.com","googleapis.com","gstatic.com","youtube.com","microsoft.com","live.com","office.com","windows.net","azure.com","github.com","githubusercontent.com","githubassets.com","cloudflare.com","cloudflare-dns.com","fastly.net","akamai.net","akamaihd.net","amazon.com","amazonaws.com","cloudfront.net","facebook.com","meta.com","instagram.com","whatsapp.com","tencent.com","qq.com","weixin.qq.com","wechat.com","alibaba.com","alibabagroup.com","aliyun.com","taobao.com","tmall.com","jd.com","bytedance.com","douyin.com","volcengine.com","baidu.com","bilibili.com","netease.com","163.com","mi.com","xiaomi.com","weibo.com","meituan.com","pinduoduo.com","cmbchina.com","icbc.com.cn","abchina.com","ccb.com","openai.com","telegram.org","discord.com","steampowered.com","steamcommunity.com")
 
 
 def rid(policy,line):
