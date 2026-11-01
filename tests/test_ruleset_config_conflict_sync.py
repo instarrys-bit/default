@@ -117,6 +117,31 @@ class ConfigConflictSyncTests(unittest.TestCase):
             self.assertEqual(report["pending_queue_removed_count"], 1)
             self.assertTrue(report["config_read_only"])
 
+    def test_old_archive_entry_is_superseded_when_current_config_no_longer_overlaps(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            make_root(root, config_with_rules([]))
+            archive_path = root / "rulesets" / "config_conflict_archive.json"
+            archive_path.write_text(json.dumps({
+                "schema_version": 1,
+                "items": [{
+                    "id": "cfg-old-entry",
+                    "policy": "PROXY",
+                    "rule": "DOMAIN,api.example.com",
+                    "domain": "api.example.com",
+                    "scope": "exact_candidate",
+                    "origin": "published_ruleset",
+                    "removed_at": "2026-10-01T00:00:00+00:00",
+                    "config_blob_sha": "old-config-sha",
+                    "restored_at": None
+                }]
+            }), encoding="utf-8")
+            report = sync(root=root, now="2026-11-02T00:00:00+00:00")
+            saved = json.loads(archive_path.read_text(encoding="utf-8"))
+            self.assertEqual(report["active_archive_count"], 0)
+            self.assertEqual(saved["items"][0]["superseded_at"], "2026-11-02T00:00:00+00:00")
+            self.assertIn("no longer overlaps", saved["items"][0]["superseded_reason"])
+
     def test_restore_is_refused_while_conflict_remains(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
