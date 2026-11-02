@@ -34,7 +34,8 @@ permissions:
 
 concurrency:
   group: shadowrocket-main-writer
-  cancel-in-progress: true
+  # Keep the active audit; stale-commit guards stop obsolete runs safely.
+  cancel-in-progress: false
 
 jobs:
   audit:
