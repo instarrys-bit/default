@@ -26,7 +26,8 @@ def base_registry():
     }
 
 
-def candidate(repo="new/direct", policy="DIRECT", drift="unchanged", evidence="README_policy_reference", count=150, archived=False):
+def candidate(repo="new/direct", policy="DIRECT", drift="unchanged", evidence="README_policy_reference", count=150, archived=False, leading_dot=False):
+    payload = "\\n".join(("." if leading_dot else "") + f"d{i}.example" for i in range(count)).encode()
     return {
         "repository": repo,
         "policy": policy,
@@ -63,6 +64,19 @@ class AutoActivationTests(unittest.TestCase):
         self.assertEqual(source["lineage_status"], "unverified")
         self.assertTrue(source["bootstrap_enqueue"])
         self.assertEqual(source["role"], "primary_candidate_source")
+
+    @patch("auto_activate_sources.urlopen")
+    def test_leading_dot_source_is_enabled_only_with_assessment_metadata(self, mocked_urlopen):
+        payload = "\\n".join(f".d{i}.example" for i in range(150)).encode()
+        class Response:
+            def __enter__(self): return self
+            def __exit__(self, *args): return False
+            def read(self): return payload
+        mocked_urlopen.return_value = Response()
+        registry, activated, _ = activate(base_registry(), {"candidates": [candidate(leading_dot=True)]})
+        self.assertEqual(len(activated), 1)
+        source = next(x for x in registry["sources"] if x["id"] == activated[0]["id"])
+        self.assertTrue(source["allow_leading_dot"])
 
     def test_first_observation_is_not_activated(self):
         _, activated, _ = activate(base_registry(), {"candidates": [candidate(drift="baseline_initialized")]})
