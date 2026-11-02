@@ -91,6 +91,14 @@ def _read_state(body: str) -> tuple[dict[str, Any] | None, re.Match[str] | None]
     return state, match
 
 
+def resolve_source_sha(body: str, fallback_sha: str) -> str:
+    """Keep a persisted incident's original identity; use fallback only for legacy issues."""
+    state, _ = _read_state(body)
+    if state is not None:
+        return str(state.get("source_sha", ""))
+    return fallback_sha
+
+
 def transition_incident(
     body: str,
     *,
@@ -189,6 +197,7 @@ def main() -> int:
     parser.add_argument("--body-file", required=True, type=Path)
     parser.add_argument("--workflow", required=True)
     parser.add_argument("--source-sha", required=True)
+    parser.add_argument("--source-sha-from-state", action="store_true")
     parser.add_argument("--classification", required=True)
     parser.add_argument("--event-id", required=True)
     parser.add_argument("--target-state", required=True, choices=sorted(STATES - {"HEALTHY"}))
@@ -197,10 +206,11 @@ def main() -> int:
     args = parser.parse_args()
 
     body = args.body_file.read_text(encoding="utf-8")
+    source_sha = resolve_source_sha(body, args.source_sha) if args.source_sha_from_state else args.source_sha
     updated, state = transition_incident(
         body,
         workflow=args.workflow,
-        source_sha=args.source_sha,
+        source_sha=source_sha,
         classification=args.classification,
         event_id=args.event_id,
         target_state=args.target_state,
