@@ -12,12 +12,11 @@ on:
   push:
     branches: [main]
     paths:
-      - ".github/workflows/**"
+      # Only manifest-affecting rule-set changes and this watchdog's own edits.
+      # Source/code/config changes are handled by their owning workflows; triggering here
+      # would compete with the deterministic audit in the shared main-writer queue.
       - "rulesets/**"
-      - "sources/**"
-      - "scripts/**"
-      - "tests/**"
-      - "shadowrocket/ss.conf"
+      - ".github/workflows/automation-watchdog.yml"
 
 permissions:
   actions: write
