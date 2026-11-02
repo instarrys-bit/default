@@ -56,7 +56,7 @@ jobs:
 
       - name: Compile and run deterministic review tests
         run: |
-          python3 -m py_compile scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/import_request_observations.py scripts/lifecycle_gate.py scripts/lifecycle_audit.py scripts/auto_activate_sources.py
+          python3 -m py_compile scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/import_request_observations.py scripts/lifecycle_gate.py scripts/lifecycle_audit.py scripts/auto_activate_sources.py scripts/build_project_status.py
           python3 -m unittest discover -s tests -v
 
       - name: Discover candidate source repositories (non-activating)
@@ -150,6 +150,11 @@ jobs:
           python3 scripts/audit_external_domains.py
           cat reports/external-domain-audit.md >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Build consolidated project status
+        run: |
+          python3 scripts/build_project_status.py
+          cat reports/project-status.md >> "$GITHUB_STEP_SUMMARY"
+
       - name: Package allowlisted audit outputs
         run: |
           tar -czf audit-output.tar.gz \
@@ -157,6 +162,8 @@ jobs:
             sources/domain_sources.json \
             sources/source_activation_log.json \
             reports/lifecycle \
+            reports/project-status.md \
+            reports/project-status.json \
             reports/external-domain-audit.md \
             reports/config-drift-audit.md \
             reports/config-drift-audit.json \
@@ -244,6 +251,8 @@ jobs:
             sources/domain_sources.json \
             sources/source_activation_log.json \
             reports/lifecycle \
+            reports/project-status.md \
+            reports/project-status.json \
             reports/external-domain-audit.md \
             reports/config-drift-audit.md \
             reports/config-drift-audit.json \
