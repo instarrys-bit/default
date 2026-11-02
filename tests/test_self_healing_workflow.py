@@ -154,12 +154,15 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn("timed_out|startup_failure)", watchdog)
         self.assertNotIn("failure|timed_out|startup_failure)", watchdog)
         self.assertIn("scripts/watchdog_recovery_policy.py", watchdog)
-        self.assertIn("RETRYABLE_CONCLUSIONS = {\"timed_out\", \"startup_failure\"}", policy)
+        self.assertIn("RETRYABLE_CONCLUSIONS = {\"timed_out\", \"startup_failure\", \"cancelled\"}", policy)
         self.assertIn("max_retries: int = 2", policy)
         self.assertIn("base_cooldown: timedelta = timedelta(minutes=15)", policy)
         self.assertNotIn("gh run cancel", watchdog.split("  manifest-integrity:", 1)[0])
         self.assertIn("persist-credentials: false", watchdog)
         self.assertNotIn("shadowrocket/ss.conf", policy)
+        stale_watcher = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")
+        self.assertIn("scripts/watchdog_recovery_policy.py --source-run-id 0 --source-sha", stale_watcher)
+        self.assertIn("Scheduled recovery suppressed", stale_watcher)
 
 
 if __name__ == "__main__":
