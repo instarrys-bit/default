@@ -178,7 +178,7 @@ class ConfigConflictSyncTests(unittest.TestCase):
     def test_restore_refuses_cross_policy_overlap_and_reports_selectable_id(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            make_root(root, config_with_rules([]), direct="DOMAIN-SUFFIX,example.com\\n")
+            make_root(root, config_with_rules([]), direct="DOMAIN-SUFFIX,example.com\n")
             archive_path = root / "rulesets" / "config_conflict_archive.json"
             archive_path.write_text(json.dumps({
                 "schema_version": 1,
