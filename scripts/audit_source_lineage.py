@@ -68,17 +68,36 @@ def audit_registry(config: dict, fetcher=fetch_text, candidates: list[dict] | No
     sources = config.get("sources", [])
     inventories = []
     for source in sources:
-        sid = source["id"]
+        sid = source.get("id", "unknown")
         evidence_url = source.get("lineage_evidence_url", "")
+        publisher = str(source.get("publisher", "")).lower()
         if not evidence_url:
-            raise ValueError("source is missing lineage evidence URL: " + sid)
-        raw_url = raw_evidence_url(evidence_url)
-        payload = fetcher(raw_url)
-        text = payload.decode("utf-8-sig", errors="replace")
+            inventories.append({
+                "source_id": sid,
+                "publisher": publisher,
+                "lineage_status": source.get("lineage_status", "unverified"),
+                "evidence_url": None,
+                "status": "missing_evidence_url",
+                "error": "source has no public lineage evidence URL",
+            })
+            continue
+        try:
+            raw_url = raw_evidence_url(evidence_url)
+            payload = fetcher(raw_url)
+            text = payload.decode("utf-8-sig", errors="replace")
+        except (OSError, ValueError, UnicodeError) as exc:
+            inventories.append({
+                "source_id": sid,
+                "publisher": publisher,
+                "lineage_status": source.get("lineage_status", "unverified"),
+                "evidence_url": evidence_url,
+                "status": "evidence_unavailable",
+                "error": str(exc)[:500],
+            })
+            continue
         discovered = extract_upstreams(text)
         declared_raw = {str(x).lower() for x in source.get("upstream_repositories", [])}
         # Ignore the configured publisher itself when treating references as upstreams.
-        publisher = str(source.get("publisher", "")).lower()
         discovered.discard(publisher)
         declared = {normalize_upstream(x) for x in declared_raw}
         discovered = {normalize_upstream(x) for x in discovered}
