@@ -147,7 +147,7 @@ jobs:
           gh run cancel "$stale_id" --repo "$REPO"
           sleep 10
           remaining="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=20")"
-          if jq -e '[.workflow_runs[] | select(.status == "queued" or .status == "in_progress")] | length == 0' <<< "$remaining" >/dev/null; then
+          if jq -e --argjson stale "$stale_id" '[.workflow_runs[] | select((.status == "queued" or .status == "in_progress") and .id != $stale)] | length == 0' <<< "$remaining" >/dev/null; then
             gh workflow run auto_sync.yml --ref main --repo "$REPO"
             gh issue create \
               --repo "$REPO" \
