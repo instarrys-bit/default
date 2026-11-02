@@ -6,7 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from incident_state import BLOCK_RE, IncidentStateError, incident_key, transition_incident
+from incident_state import BLOCK_RE, IncidentStateError, incident_key, resolve_source_sha, transition_incident
 
 
 SHA = "a" * 40
@@ -287,6 +287,18 @@ class IncidentStateTests(unittest.TestCase):
                 event_id="next-event",
                 target_state="VERIFYING",
             )
+
+    def test_recovery_uses_persisted_source_sha_and_legacy_fallback(self):
+        body, _ = transition_incident(
+            "Failure summary",
+            workflow="deterministic_audit",
+            source_sha=SHA,
+            classification="TEST_FAILURE",
+            event_id="failure-run-101",
+            target_state="MANUAL_INTERVENTION",
+        )
+        self.assertEqual(resolve_source_sha(body, "b" * 40), SHA)
+        self.assertEqual(resolve_source_sha("Legacy issue without state", "b" * 40), "b" * 40)
 
 if __name__ == "__main__":
     unittest.main()
