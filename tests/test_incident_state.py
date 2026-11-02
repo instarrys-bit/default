@@ -66,8 +66,17 @@ class IncidentStateTests(unittest.TestCase):
                 event_id="verified-run-202",
                 target_state="RECOVERED",
             )
-        recovered_body, recovered = transition_incident(
+        verifying_body, verifying = transition_incident(
             body,
+            workflow="deterministic_audit",
+            source_sha=SHA,
+            classification="TEST_FAILURE",
+            event_id="verifying-run-201",
+            target_state="VERIFYING",
+        )
+        self.assertEqual(verifying["state"], "VERIFYING")
+        recovered_body, recovered = transition_incident(
+            verifying_body,
             workflow="deterministic_audit",
             source_sha=SHA,
             classification="TEST_FAILURE",
@@ -76,7 +85,7 @@ class IncidentStateTests(unittest.TestCase):
             verification_url="https://github.com/example/recovery-run",
         )
         self.assertEqual(recovered["state"], "RECOVERED")
-        self.assertEqual(recovered["revision"], 2)
+        self.assertEqual(recovered["revision"], 4)
         self.assertEqual(recovered["verification"]["event_id"], "verified-run-202")
         self.assertIn("RECOVERED", recovered_body)
 
