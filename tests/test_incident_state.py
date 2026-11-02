@@ -148,5 +148,38 @@ class IncidentStateTests(unittest.TestCase):
             )
 
 
+    def test_verification_phase_must_precede_recovered(self):
+        body, _ = transition_incident(
+            "Failure summary",
+            workflow="deterministic_audit",
+            source_sha=SHA,
+            classification="TEST_FAILURE",
+            event_id="failure-run-101",
+            target_state="MANUAL_INTERVENTION",
+        )
+        verifying_body, verifying = transition_incident(
+            body,
+            workflow="deterministic_audit",
+            source_sha=SHA,
+            classification="TEST_FAILURE",
+            event_id="verification-run-202",
+            target_state="VERIFYING",
+        )
+        self.assertEqual(verifying["state"], "VERIFYING")
+        _, recovered = transition_incident(
+            verifying_body,
+            workflow="deterministic_audit",
+            source_sha=SHA,
+            classification="TEST_FAILURE",
+            event_id="verified-run-303",
+            target_state="RECOVERED",
+            verification_url="https://github.com/example/verified-run",
+        )
+        self.assertEqual(
+            recovered["history"][-2:],
+            ["VERIFYING", "RECOVERED"],
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
