@@ -30,20 +30,27 @@ concurrency:
 
 jobs:
   health-check:
+    outputs:
+      block_manifest: ${{ steps.stale-recovery.outputs.block_manifest }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Recover failed scheduled or push-triggered audit once
-        if: ${{ github.event_name == 'workflow_run' }}
+        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           SOURCE_EVENT: ${{ github.event.workflow_run.event }}
           SOURCE_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
           SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+          SOURCE_WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
         run: |
           set -euo pipefail
           # A recovery run is workflow_dispatch; ignore its completion to prevent retry loops.
+          if [ "$SOURCE_WORKFLOW_NAME" != "Shadowrocket Deterministic Domain Audit (User Config Baseline)" ]; then
+            echo "This watchdog recovery path only retries the deterministic domain audit; validator failures are handled by self-healing diagnosis."
+            exit 0
+          fi
           case "$SOURCE_CONCLUSION" in
             failure|timed_out|startup_failure)
               ;;
@@ -58,12 +65,12 @@ jobs:
           fi
 
           runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=20")"
-          if jq -e --argjson source "$SOURCE_RUN_ID" '[.workflow_runs[] | select(.id > $source)] | length > 0' <<< "$runs" >/dev/null; then
-            echo "A newer deterministic audit already exists; no duplicate recovery."
+          current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
+          if jq -e --argjson source "$SOURCE_RUN_ID" --arg sha "$current_sha" '[.workflow_runs[] | select(.head_branch == "main" and .head_sha == $sha and .id > $source and (.status != "completed" or .conclusion == "success"))] | length > 0' <<< "$runs" >/dev/null; then
+            echo "A newer current-main deterministic audit already exists; no duplicate recovery."
             exit 0
           fi
-          current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
-          if jq -e --arg sha "$current_sha" '[.workflow_runs[] | select(.head_sha == $sha and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
+          if jq -e --arg sha "$current_sha" '[.workflow_runs[] | select(.head_branch == "main" and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
             echo "A deterministic audit for current main ($current_sha) is already queued or running; no duplicate recovery."
             exit 0
           fi
@@ -72,7 +79,7 @@ jobs:
           gh workflow run auto_sync.yml --ref main --repo "$REPO"
 
       - name: Report degraded source discovery health
-        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success' }}
+        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
@@ -102,6 +109,7 @@ jobs:
             fi
           fi
       - name: Detect stale successful audit and recover
+        id: stale-recovery
         if: ${{ github.event_name != 'workflow_run' }}
         env:
           GH_TOKEN: ${{ github.token }}
@@ -110,12 +118,15 @@ jobs:
           set -euo pipefail
           runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=20")"
 
-          if jq -e '[.workflow_runs[] | select(.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress")] | length > 0' <<< "$runs" >/dev/null; then
-            echo "The deterministic audit is already queued or running; no duplicate dispatch."
+          current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
+          if jq -e '[.workflow_runs[] | select(.head_branch == "main" and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
+            echo "A main-branch deterministic audit is already queued or running; no duplicate dispatch."
+            echo "block_manifest=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          last_success="$(jq -r '[.workflow_runs[] | select(.conclusion == "success")] | sort_by(.created_at) | last | .created_at // empty' <<< "$runs")"
+          last_success="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .created_at // empty' <<< "$runs")"
+          last_success_sha="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .head_sha // empty' <<< "$runs")"
           age_seconds="$(python3 - "$last_success" <<'PY'
           import sys
           from datetime import datetime, timezone
@@ -130,21 +141,31 @@ jobs:
 
           # Weekly audit is scheduled at 20:00 UTC on Sunday. An 8-day threshold
           # tolerates queue delays while recovering a missed scheduled run.
-          if [ "$age_seconds" -gt 691200 ]; then
-            echo "Last successful audit is stale (${age_seconds}s); dispatching recovery run."
+          audit_base_stale=0
+          if [ -z "$last_success_sha" ]; then
+            audit_base_stale=1
+          elif [ "$last_success_sha" != "$current_sha" ]; then
+            compare_json="$(gh api "repos/$REPO/compare/$last_success_sha...$current_sha" 2>/dev/null || true)"
+            if [ -z "$compare_json" ] || ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null || ! jq -e '[.files[].filename | select(startswith("docs/") | not)] | length == 0' <<< "$compare_json" >/dev/null; then
+              audit_base_stale=1
+            fi
+          fi
+
+          if [ "$audit_base_stale" = "1" ] || [ "$age_seconds" -gt 691200 ]; then
+            echo "Last successful audit is stale or contains non-documentation changes since its audited commit (age=${age_seconds}s, audited=$last_success_sha, current=$current_sha); dispatching recovery run."
             gh workflow run auto_sync.yml --ref main --repo "$REPO"
+            echo "block_manifest=true" >> "$GITHUB_OUTPUT"
           else
-            echo "Last successful audit is healthy (${age_seconds}s ago)."
+            echo "Last successful audit is healthy; any intervening main changes are documentation-only (${age_seconds}s ago)."
+            echo "block_manifest=false" >> "$GITHUB_OUTPUT"
           fi
 
   manifest-integrity:
-    if: >-
-      ${{
-        github.event_name == 'push' ||
-        github.event_name == 'schedule' ||
-        github.event_name == 'workflow_dispatch' ||
-        (github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success')
-      }}
+    needs: [health-check]
+    concurrency:
+      group: shadowrocket-main-writer
+      cancel-in-progress: false
+    if: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && needs.health-check.outputs.block_manifest != 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     permissions:
@@ -196,6 +217,22 @@ jobs:
           python3 scripts/verify_published_rulesets.py --ref origin/main | tee /tmp/published-integrity.json
           cat /tmp/published-integrity.json >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Close recovered manifest integrity incidents
+        if: ${{ steps.refresh.outcome == 'success' && steps.publish.outcome == 'success' && steps.verify.outcome == 'success' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          for title in "RULE-SET manifest metadata repair failed" "Published RULE-SET integrity mismatch"; do
+            issue="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title | jq --arg title "$title" -r '.[] | select(.title == $title) | .number' | head -n 1)"
+            if [ -n "$issue" ]; then
+              gh issue comment "$issue" --repo "$REPO" --body "Manifest refresh, publication and independent verification now succeed. Recovery run: $RUN_URL"
+              gh issue close "$issue" --repo "$REPO"
+            fi
+          done
+
       - name: Dispatch one bounded reconciliation audit on mismatch
         if: ${{ steps.refresh.outcome == 'success' && steps.verify.outcome == 'failure' && !(github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch') }}
         env:
@@ -234,7 +271,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           set -euo pipefail
           title="Published RULE-SET integrity mismatch"
