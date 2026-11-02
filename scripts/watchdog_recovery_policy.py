@@ -39,7 +39,7 @@ def decide_recovery(
             continue
         if run.get("status") != "completed" or run.get("conclusion") not in RETRYABLE_CONCLUSIONS:
             continue
-        stamp = run.get("created_at")
+        stamp = run.get("updated_at") or run.get("created_at")
         if not stamp:
             continue
         try:
