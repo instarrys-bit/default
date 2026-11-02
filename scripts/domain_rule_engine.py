@@ -129,7 +129,8 @@ def inspect_suffix_scope(domain: str, policy: str, rules, conditional, protected
     # Exact or child-suffix rules are narrower exceptions and do not suppress it.
     covering = [
         rule for rule in rules.rules
-        if rule.kind == "DOMAIN-SUFFIX"
+        if rule.policy != "REJECT"
+        and rule.kind == "DOMAIN-SUFFIX"
         and (domain == rule.domain or domain.endswith("." + rule.domain))
     ]
     if covering:
@@ -142,6 +143,8 @@ def inspect_suffix_scope(domain: str, policy: str, rules, conditional, protected
 
     # Conditional rules remain a conservative review hold, not a precedence test.
     for _, raw in conditional:
+        if raw.rsplit(",", 1)[-1].strip().upper() == "REJECT":
+            continue
         for kind, match in re.findall(r"(DOMAIN-SUFFIX|DOMAIN),([A-Za-z0-9.-]+)", raw, re.I):
             match = match.lower().strip(".")
             if kind.upper() == "DOMAIN":
