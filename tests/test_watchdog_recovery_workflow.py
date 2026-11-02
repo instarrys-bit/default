@@ -21,6 +21,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('[ "$SOURCE_EVENT" != "schedule" ]', workflow)
         self.assertIn('[ "$SOURCE_EVENT" != "push" ]', workflow)
         self.assertIn("gh workflow run auto_sync.yml --ref main --repo \"$REPO\"", workflow)
+        self.assertIn('select(.id > $source)', workflow)
 
     def test_workflow_dispatch_recovery_does_not_recursively_retry(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
