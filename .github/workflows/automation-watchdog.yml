@@ -43,6 +43,7 @@ jobs:
           SOURCE_EVENT: ${{ github.event.workflow_run.event }}
           SOURCE_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
           SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+          SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
           SOURCE_WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
         run: |
           set -euo pipefail
@@ -52,7 +53,7 @@ jobs:
             exit 0
           fi
           case "$SOURCE_CONCLUSION" in
-            failure|timed_out|startup_failure)
+            timed_out|startup_failure)
               ;;
             *)
               echo "No automatic recovery required for event=$SOURCE_EVENT conclusion=$SOURCE_CONCLUSION."
@@ -75,7 +76,15 @@ jobs:
             exit 0
           fi
 
-          echo "Source run $SOURCE_RUN_ID failed; dispatching one workflow_dispatch recovery attempt."
+          decision="$(python3 scripts/watchdog_recovery_policy.py --source-run-id "$SOURCE_RUN_ID" --source-sha "$SOURCE_SHA" <<< "$runs")"
+          echo "$decision" | jq -r '"Recovery policy: " + .reason + "; prior retryable failures=" + (.prior_retryable_failures|tostring) + "; retry=" + (.retry_number|tostring) + "/" + (.max_retries|tostring) + "."'
+          if [ "$(jq -r '.allowed' <<< "$decision")" != "true" ]; then
+            echo "$decision" >> "$GITHUB_STEP_SUMMARY"
+            echo "Automatic retry suppressed by bounded recovery policy."
+            exit 0
+          fi
+
+          echo "Source run $SOURCE_RUN_ID failed with a retryable infrastructure conclusion; dispatching bounded workflow_dispatch recovery."
           gh workflow run auto_sync.yml --ref main --repo "$REPO"
 
       - name: Report degraded source discovery health
