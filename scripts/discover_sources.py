@@ -15,11 +15,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "sources/discovered_sources.json"
 REPORT = ROOT / "reports/source-discovery.md"
-MAX_README_BYTES = 800_000
+MAX_README_BYTES = 1_500_000
 # GitHub repository search allows up to 100 results per query. Keep a broad but
 # bounded first-page scan; discovery is a lead generator, never an activation gate.
-MAX_REPOS_PER_QUERY = 50
-MAX_README_REPOSITORIES = 120
+MAX_REPOS_PER_QUERY = 100
+MAX_README_REPOSITORIES = 300
 QUERIES = [
     "shadowrocket rules",
     "China domain list",
@@ -41,7 +41,6 @@ QUERIES = [
     "anti tracker domain blocklist",
     "malware phishing domain blocklist",
     "telemetry tracking domains list",
-    "Apple services domain list",
     "Google services domain list",
     "Microsoft services domain list",
     "streaming services domain rules",
@@ -49,6 +48,40 @@ QUERIES = [
     "hosts adblock domain list",
     "privacy DNS blocklist",
     "domain routing rules DIRECT PROXY REJECT",
+    "open source domain ruleset",
+    "GitHub domain list repository",
+    "GitHub domain rules collection",
+    "domain-list-community rules",
+    "geosite.dat domain lists",
+    "geoip domain routing rules",
+    "DNS filtering blocklist domains",
+    "DNS sinkhole domain list",
+    "tracking protection domains list",
+    "privacy protection blocklist",
+    "advertising domains blocklist",
+    "malicious domains threat intelligence list",
+    "phishing domains feed",
+    "scam domains blocklist",
+    "cryptocurrency mining domains blocklist",
+    "telemetry domains blocklist",
+    "analytics domains list",
+    "China CDN domains list",
+    "China ISP domains list",
+    "China websites domain list",
+    "Chinese internet services domains",
+    "国内域名规则",
+    "国内直连域名列表",
+    "国外代理域名列表",
+    "广告拦截域名列表",
+    "恶意域名黑名单",
+    "开源分流规则",
+    "域名数据集",
+    "网络规则集",
+    "域名黑名单",
+    "域名白名单",
+    "DNS过滤规则",
+    "隐私追踪拦截列表",
+    "开源广告过滤规则",
 ]
 LIST_EXTENSIONS = (".list", ".txt", ".conf")
 SEED_SOURCE_URLS = {
