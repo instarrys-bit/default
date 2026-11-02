@@ -7,6 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSESSMENTS = ROOT / "sources/source_assessments.json"
+RUNTIME_ASSESSMENTS = ROOT / "data/source_assessments_runtime.json"
 LINEAGE = ROOT / "reports/source-lineage-audit.json"
 OUTPUT = ROOT / "sources/source_candidates.json"
 REPORT = ROOT / "reports/source-candidate-matrix.md"
@@ -204,7 +205,8 @@ def render_report(data: dict) -> str:
     return "\n".join(rows)
 
 def main() -> int:
-    assessments = json.loads(ASSESSMENTS.read_text(encoding="utf-8"))
+    assessment_path = RUNTIME_ASSESSMENTS if RUNTIME_ASSESSMENTS.exists() else ASSESSMENTS
+    assessments = json.loads(assessment_path.read_text(encoding="utf-8"))
     lineage = json.loads(LINEAGE.read_text(encoding="utf-8"))
     result = build_matrix(assessments, lineage)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
