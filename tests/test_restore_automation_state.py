@@ -23,7 +23,7 @@ class RestoreAutomationStateTests(unittest.TestCase):
                 ("data/source_snapshots/source.txt", "example.com\n"),
             ])
             result=restore_state(archive, root/"repo")
-            self.assertEqual(result["restored_files"], 3)
+            self.assertEqual(result["restored_files"], 4)
             self.assertTrue((root/"repo/data/candidates.json").exists())
             self.assertTrue((root/"repo/sources/domain_reviews.json").exists())
             self.assertFalse((root/"repo/rulesets/direct.list").exists())
