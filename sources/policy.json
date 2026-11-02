@@ -111,12 +111,12 @@
       },
       {
         "id": "local_safety_veto",
-        "description": "Existing first-match domain rules, conditional AND/OR/NOT rules, DOMAIN-KEYWORD, URL-REGEX, skip-proxy and protected-domain checks must all pass."
+        "description": "Full-scope DOMAIN/DOMAIN-SUFFIX coverage, conditional AND/OR/NOT overlap, DOMAIN-KEYWORD, URL-REGEX, skip-proxy and protected-domain checks must pass. Rule order and first-match precedence are not evaluated."
       }
     ],
     "mandatory_vetoes": [
-      "Any exact or suffix rule with a different effective policy blocks publication",
-      "Any unresolved conditional AND/OR/NOT overlap blocks publication",
+      "A fully covering explicit DOMAIN or DOMAIN-SUFFIX scope with a different policy blocks publication",
+      "Mixed-policy full-scope coverage is held for review without selecting a winner",
       "Any critical-function protection-list match blocks publication",
       "Any malformed source snapshot, excessive source drift, duplicate ledger key or failed validator pauses the batch",
       "Single-label root suffix entries are excluded; duplicate entries are deduplicated"
