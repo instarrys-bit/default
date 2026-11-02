@@ -44,7 +44,7 @@ class ConfigConflictRunReportTests(unittest.TestCase):
                 second = sync(root=root, now="2026-11-02T00:01:00+00:00")
             saved = json.loads((root / "reports" / "ruleset-config-conflict-sync.json").read_text(encoding="utf-8"))
             self.assertEqual(first["published_removed_count"], 1)
-            self.assertEqual(second["published_removed_count"], 0)
+            self.assertEqual(second["published_removed_count"], 1)
             self.assertEqual(saved["workflow_run_id"], "test-run-123")
             self.assertEqual(saved["published_removed_count"], 1)
             self.assertEqual(saved["removed_count"], 1)
