@@ -163,17 +163,17 @@ class UrlRegexScopeTests(unittest.TestCase):
         status,reason=inspect("example.com",RuleIndex([]),[],base,{},"DIRECT")
         self.assertIsNone(status)
 
-    def test_host_specific_url_regex_only_conflicts_with_matching_host(self):
+    def test_user_managed_reject_url_regex_is_not_used_for_automatic_conflict_decisions(self):
         base=self.base(r"URL-REGEX,^http:\/\/api\.bilibili\.com\/x\/vip\/ads\/,REJECT")
         status,reason=inspect("api.bilibili.com",RuleIndex([]),[],base,{},"DIRECT")
-        self.assertEqual(status,"CONFLICT")
+        self.assertIsNone(status)
         status,reason=inspect("example.com",RuleIndex([]),[],base,{},"DIRECT")
         self.assertIsNone(status)
 
 
 
 class ConfigScopeCoverageTests(unittest.TestCase):
-    def test_rules_after_first_ruleset_are_included_without_ordering(self):
+    def test_reject_rules_after_first_ruleset_are_excluded_from_automatic_conflict_decisions(self):
         base = """[General]
 skip-proxy =
 [Rule]
@@ -186,10 +186,10 @@ AND,((DOMAIN-SUFFIX,late.example.com),(GEOIP,CN)),REJECT
         rules = RuleIndex([DomainRule("DOMAIN", "late.example.com", "REJECT", 5, "DOMAIN,late.example.com,REJECT")])
         conditional = [(7, "AND,((DOMAIN-SUFFIX,late.example.com),(GEOIP,CN)),REJECT")]
         status, reason = inspect("late.example.com", rules, conditional, base, {}, "DIRECT")
-        self.assertEqual(status, "CONFLICT")
-        self.assertIn("rule order is not evaluated", reason)
+        self.assertIsNone(status)
+        self.assertIsNone(reason)
 
-    def test_explicit_parent_suffix_scope_covers_exact_candidate(self):
+    def test_user_managed_reject_parent_suffix_is_not_used_for_automatic_conflict_decisions(self):
         base = """[General]
 skip-proxy =
 [Rule]
@@ -199,7 +199,8 @@ RULE-SET,https://example.invalid/proxy.list,PROXY
 """
         rules = RuleIndex([DomainRule("DOMAIN-SUFFIX", "example.com", "REJECT", 4, "DOMAIN-SUFFIX,example.com,REJECT")])
         status, reason = inspect("api.example.com", rules, [], base, {}, "DIRECT")
-        self.assertEqual(status, "CONFLICT")
+        self.assertIsNone(status)
+        self.assertIsNone(reason)
 
     def test_parent_suffix_candidate_is_not_blocked_by_exact_child_reject_exception(self):
         base = """[General]
