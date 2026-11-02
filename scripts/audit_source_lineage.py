@@ -172,14 +172,14 @@ def audit_registry(config: dict, fetcher=fetch_text, candidates: list[dict] | No
             "shared_readme_references": pair["shared"],
             "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
         }
-        for pair in shared_reference_pairs(candidate_docs, "repository", "referenced_repositories", "audited_reference_inventory")
+        for pair in shared_reference_pairs(candidate_docs, "referenced_repositories", "audited_reference_inventory")
     ]
     shared = [
         {
             "sources": [inventories[pair["left"]]["source_id"], inventories[pair["right"]]["source_id"]],
             "shared_upstreams": pair["shared"],
         }
-        for pair in shared_reference_pairs(inventories, "source_id", "comparison_upstreams", "audited")
+        for pair in shared_reference_pairs(inventories, "comparison_upstreams", "audited")
     ]
     return {
         "schema_version": 1,
