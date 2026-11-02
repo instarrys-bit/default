@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T00:56:52.314194+00:00",
+  "generated_at": "2026-11-02T00:59:53.898475+00:00",
   "health": "PASS",
   "integrity": {
     "config_baseline_match": true,
@@ -68,6 +68,8 @@
   "review": {
     "candidate_count": 11583,
     "approved_count": 431,
+    "ledger_approved_count": 434,
+    "approved_not_published_count": 3,
     "held_count": 11152,
     "status_counts": {
       "ALREADY_COVERED": 2168,
