@@ -167,27 +167,31 @@ jobs:
           fi
 
 
-  resolve-baseline-incident:
+  resolve-validator-incidents:
     if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Validate Shadowrocket config against user baseline' && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 3
     permissions:
       issues: write
     steps:
-      - name: Close recovered config-baseline incident
+      - name: Close recovered validator incidents
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.event.workflow_run.html_url }}
         run: |
           set -euo pipefail
-          issue="$(gh issue list --repo "$REPO" --state open --search '"Self-healing incident: CONFIG_BASELINE_MISMATCH" in:title' --json number --jq '.[0].number')"
-          if [ -n "$issue" ] && [ "$issue" != "null" ]; then
-            gh issue comment "$issue" --repo "$REPO" --body "Config-baseline validation recovered. The protected config was not modified. Successful validation: $RUN_URL"
-            gh issue close "$issue" --repo "$REPO"
-          else
-            echo "No open config-baseline incident to resolve."
-          fi
+          for classification in CONFIG_BASELINE_MISMATCH TEST_FAILURE PYTHON_IMPORT_FAILURE; do
+            issues="$(gh issue list --repo "$REPO" --state open --search "Self-healing incident $classification in:title" --json number --jq '.[].number')"
+            if [ -z "$issues" ]; then
+              continue
+            fi
+            while IFS= read -r issue; do
+              [ -n "$issue" ] || continue
+              gh issue comment "$issue" --repo "$REPO" --body "A subsequent config-baseline validation succeeded. The protected config was not modified. Successful validation: $RUN_URL"
+              gh issue close "$issue" --repo "$REPO"
+            done <<< "$issues"
+          done
 
   stale-run-watch:
     if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}

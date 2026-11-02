@@ -63,8 +63,8 @@ class SelfHealingWorkflowTests(unittest.TestCase):
     def test_config_validator_failures_are_monitored_and_incidents_are_resolved_on_recovery(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn('      - "Validate Shadowrocket config against user baseline"', workflow)
-        self.assertIn("resolve-baseline-incident:", workflow)
-        self.assertIn("CONFIG_BASELINE_MISMATCH", workflow)
+        self.assertIn("resolve-validator-incidents:", workflow)
+        self.assertIn("CONFIG_BASELINE_MISMATCH TEST_FAILURE PYTHON_IMPORT_FAILURE", workflow)
         self.assertIn("The protected config was not modified.", workflow)
 
     def test_baseline_registration_has_owner_history_credentials(self):
