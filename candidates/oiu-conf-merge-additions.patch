@@ -1,0 +1,8 @@
+# Additive candidate patch only
+# Target: shadowrocket/ss.conf
+# Base blob SHA reviewed: a6b2f0e6e41da13572dfca8e8119212118df5bcb
+# Apply manually only after approval.
+# This patch contains no [MITM] directives and does not modify any existing line.
+
+[Host]
++dns.alidns.com = 223.5.5.5, 223.6.6.6, 2400:3200::1, 2400:3200:baba::1
