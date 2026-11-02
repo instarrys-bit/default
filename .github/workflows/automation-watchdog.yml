@@ -127,3 +127,68 @@ jobs:
           else
             echo "Last successful audit is healthy (${age_seconds}s ago)."
           fi
+
+  manifest-integrity:
+    if: >-
+      ${{
+        github.event_name == 'schedule' ||
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+      }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      actions: write
+      contents: read
+      issues: write
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify published rulesets, manifest and protected baseline
+        id: verify
+        run: |
+          set -euo pipefail
+          python3 scripts/verify_published_rulesets.py --ref HEAD | tee /tmp/published-integrity.json
+          cat /tmp/published-integrity.json >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Dispatch one bounded reconciliation audit on mismatch
+        if: ${{ failure() && steps.verify.outcome == 'failure' && !(github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch') }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=20")"
+          if jq -e '[.workflow_runs[] | select(.status == "queued" or .status == "in_progress")] | length > 0' <<< "$runs" >/dev/null; then
+            echo "A deterministic audit is already active; no duplicate reconciliation dispatch."
+            exit 0
+          fi
+          echo "Published ruleset integrity mismatch detected; dispatching one reconciliation audit."
+          gh workflow run auto_sync.yml --ref main --repo "$REPO"
+
+      - name: Open bounded integrity incident if reconciliation did not repair
+        if: ${{ failure() && steps.verify.outcome == 'failure' && github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          set -euo pipefail
+          title="Published RULE-SET integrity mismatch"
+          body="The bounded reconciliation audit completed, but published ruleset verification still fails. No further automatic dispatch will be made, preventing a retry loop.\n\nRun: $RUN_URL\n\nInspect the verify-published-rulesets step and repair the underlying cause before another publication."
+          issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
+          if [ -n "$issue" ] && [ "$issue" != "null" ]; then
+            gh issue comment "$issue" --repo "$REPO" --body "$body"
+          else
+            gh issue create --repo "$REPO" --title "$title" --body "$body"
+          fi
