@@ -6,7 +6,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 from datetime import datetime,timezone
 from source_registry import validate_registry
-from json_document_store import read_document, write_document
+from json_document_store import read_document, write_document, manifest_path
 
 ROOT=Path(__file__).resolve().parents[1]
 SOURCES=ROOT/"sources/domain_sources.json"
@@ -267,7 +267,7 @@ def main():
     if not enabled:
         raise ValueError("no enabled sources are configured")
     now=datetime.now(timezone.utc).isoformat()
-    if OUTPUT.exists():
+    if OUTPUT.exists() or manifest_path(OUTPUT).exists():
         previous_output=read_document(OUTPUT,"candidates",{"candidates":[]})
     else:
         manifest_path=ROOT/"rulesets/manifest.json"
