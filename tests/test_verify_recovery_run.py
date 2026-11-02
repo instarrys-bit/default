@@ -78,6 +78,13 @@ class VerifyRecoveryRunTests(unittest.TestCase):
         self.assertIn("run_not_completed", result["reasons"])
         self.assertIn("run_not_successful", result["reasons"])
 
+
+    def test_accepts_paginated_jobs_payload(self):
+        jobs = successful_jobs()
+        pages = [{"total_count": 1, "jobs": jobs["jobs"][:1]}, {"total_count": 1, "jobs": jobs["jobs"][1:]}]
+        result = verify_recovery_run(successful_run(), pages)
+        self.assertTrue(result["verified"])
+
     def test_rejects_invalid_jobs_payload(self):
         result = verify_recovery_run(successful_run(), {})
         self.assertFalse(result["verified"])
