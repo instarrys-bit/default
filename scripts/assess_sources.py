@@ -17,7 +17,8 @@ INPUT = ROOT / "sources/discovered_sources.json"
 OUTPUT = ROOT / "sources/source_assessments.json"
 REPORT = ROOT / "reports/source-assessment.md"
 MAX_BYTES = 2_000_000
-MAX_URLS = 50
+# Bounded expanded scan; the workflow timeout remains the hard execution ceiling.
+MAX_URLS = 250
 DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
 DOMAIN_RULE_RE = re.compile(r"^(DOMAIN|DOMAIN-SUFFIX),([^,\s]+)(?:,([^,\s]+))?$", re.I)
 QX_DOMAIN_RULE_RE = re.compile(r"^(HOST|HOST-SUFFIX),([^,\s]+),([^,\s]+)$", re.I)
