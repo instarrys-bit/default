@@ -257,7 +257,7 @@ class IncidentStateTests(unittest.TestCase):
             target_state="MANUAL_INTERVENTION",
         )
         state_match = __import__("re").search(
-            r"<!-- shadowrocket-incident-state:v1\\n(.*?)\\n-->",
+            r"<!-- shadowrocket-incident-state:v1\n(.*?)\n-->",
             body,
             __import__("re").DOTALL,
         )
