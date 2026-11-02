@@ -122,6 +122,7 @@ jobs:
           fi
 
           last_success="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .created_at // empty' <<< "$runs")"
+          last_success_sha="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .head_sha // empty' <<< "$runs")"
           age_seconds="$(python3 - "$last_success" <<'PY'
           import sys
           from datetime import datetime, timezone
@@ -136,8 +137,8 @@ jobs:
 
           # Weekly audit is scheduled at 20:00 UTC on Sunday. An 8-day threshold
           # tolerates queue delays while recovering a missed scheduled run.
-          if [ "$age_seconds" -gt 691200 ]; then
-            echo "Last successful audit is stale (${age_seconds}s); dispatching recovery run."
+          if [ "$last_success_sha" != "$current_sha" ] || [ "$age_seconds" -gt 691200 ]; then
+            echo "Last successful audit is stale or does not match current main (age=${age_seconds}s, audited=$last_success_sha, current=$current_sha); dispatching recovery run."
             gh workflow run auto_sync.yml --ref main --repo "$REPO"
           else
             echo "Last successful audit is healthy (${age_seconds}s ago)."
