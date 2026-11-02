@@ -29,7 +29,7 @@ class LifecycleAuditSafetyTests(unittest.TestCase):
 
     def test_major_company_suffixes_are_protected(self):
         config={"protected_exact":[],"protected_suffixes":[]}
-        for domain in ("api.google.com","login.microsoft.com","cdn.apple.com","foo.aliyun.com","api.tencent.com","img.bytedance.com","api.huawei.com","static.jd.com","cdn.xiaohongshu.com","api.alipay.com","api.tencentcloud.com","bank.example.com"):
+        for domain in ("api.google.com","login.microsoft.com","cdn.apple.com","foo.aliyun.com","api.tencent.com","img.bytedance.com","api.huawei.com","static.jd.com","cdn.xiaohongshu.com","api.alipay.com","api.tencentcloud.com","api.pingan.com"):
             self.assertTrue(protected(domain,config),domain)
 
     def test_one_nxdomain_observation_never_deletes(self):
