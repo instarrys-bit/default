@@ -20,7 +20,6 @@ POLICIES = ("DIRECT", "PROXY", "REJECT")
 from audit_ruleset_config_overlap import (
     all_rule_lines,
     parse_skip_proxy,
-    scope_covers_candidate,
     prepare_rules,
     find_covering_rules,
     skip_proxy_match,
@@ -422,7 +421,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "active_archive_count": sum(1 for x in archive["items"] if not x.get("restored_at") and not x.get("superseded_at")),
         "restoration_option_count": len(restoration_options),
         "restoration_options": restoration_options,
-        "policy": "Only candidates fully covered by an explicit DOMAIN or DOMAIN-SUFFIX scope in ss.conf, or fully covered by skip-proxy, are removed from published and queued external rules. Narrower exact or child-suffix exceptions do not remove broader parent suffix candidates. Rule order and precedence are never evaluated. Historical archive entries are rechecked against current full-scope coverage and superseded when coverage no longer exists. Keyword, regex, conditional, and partial overlaps are not evaluated or deleted.",
+        "policy": "Only candidates fully covered by an explicit DIRECT/PROXY DOMAIN or DOMAIN-SUFFIX scope in ss.conf, or fully covered by skip-proxy, are removed from published and queued external rules. Narrower exact or child-suffix exceptions do not remove broader parent suffix candidates. REJECT rules in ss.conf are excluded from automated analysis; blocking decisions remain user-owned. Rule order and precedence are never evaluated. Historical archive entries are rechecked against current full-scope coverage and superseded when coverage no longer exists. Keyword, regex, conditional, and partial overlaps are not evaluated or deleted.",
         "errors": [],
     }
     run_id = os.environ.get("GITHUB_RUN_ID", "").strip() if os.environ.get("RULESET_CONFIG_REPORT_AGGREGATION") == "1" else ""
