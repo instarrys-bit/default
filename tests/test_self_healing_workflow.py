@@ -15,6 +15,8 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn("id: publish-repair", workflow)
         self.assertIn("always() && steps.supersession.outputs.stale != 'true'", workflow)
         self.assertIn("steps.publish-repair.outcome == 'failure'", workflow)
+        self.assertIn("steps.diagnosis.outputs.classification == 'WORKFLOW_TIMEOUT'", workflow)
+        self.assertIn("github.event.workflow_run.conclusion == 'startup_failure'", workflow)
         self.assertIn("gh workflow run self-healing-tests.yml --ref \"$BRANCH\"", workflow)
         self.assertNotIn("gh pr merge", workflow)
         self.assertIn("No speculative code changes were made.", workflow)
