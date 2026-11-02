@@ -68,7 +68,7 @@ jobs:
             echo "A newer current-main deterministic audit already exists; no duplicate recovery."
             exit 0
           fi
-          if jq -e --arg sha "$current_sha" '[.workflow_runs[] | select(.head_branch == "main" and .head_sha == $sha and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
+          if jq -e --arg sha "$current_sha" '[.workflow_runs[] | select(.head_branch == "main" and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
             echo "A deterministic audit for current main ($current_sha) is already queued or running; no duplicate recovery."
             exit 0
           fi
@@ -137,11 +137,21 @@ jobs:
 
           # Weekly audit is scheduled at 20:00 UTC on Sunday. An 8-day threshold
           # tolerates queue delays while recovering a missed scheduled run.
-          if [ "$last_success_sha" != "$current_sha" ] || [ "$age_seconds" -gt 691200 ]; then
-            echo "Last successful audit is stale or does not match current main (age=${age_seconds}s, audited=$last_success_sha, current=$current_sha); dispatching recovery run."
+          audit_base_stale=0
+          if [ -z "$last_success_sha" ]; then
+            audit_base_stale=1
+          elif [ "$last_success_sha" != "$current_sha" ]; then
+            compare_json="$(gh api "repos/$REPO/compare/$last_success_sha...$current_sha" 2>/dev/null || true)"
+            if [ -z "$compare_json" ] || ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null || ! jq -e '[.files[].filename | select(startswith("docs/") | not)] | length == 0' <<< "$compare_json" >/dev/null; then
+              audit_base_stale=1
+            fi
+          fi
+
+          if [ "$audit_base_stale" = "1" ] || [ "$age_seconds" -gt 691200 ]; then
+            echo "Last successful audit is stale or contains non-documentation changes since its audited commit (age=${age_seconds}s, audited=$last_success_sha, current=$current_sha); dispatching recovery run."
             gh workflow run auto_sync.yml --ref main --repo "$REPO"
           else
-            echo "Last successful audit is healthy (${age_seconds}s ago)."
+            echo "Last successful audit is healthy; any intervening main changes are documentation-only (${age_seconds}s ago)."
           fi
 
   manifest-integrity:
