@@ -12,9 +12,23 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn('[ "$REPAIR_ID" != "refresh_ruleset_manifest" ]', workflow)
         self.assertIn("gh pr create", workflow)
+        self.assertIn("id: publish-repair", workflow)
+        self.assertIn("always() && steps.supersession.outputs.stale != 'true'", workflow)
+        self.assertIn("steps.publish-repair.outcome == 'failure'", workflow)
+        self.assertIn("steps.diagnosis.outputs.classification == 'WORKFLOW_TIMEOUT'", workflow)
+        self.assertIn("github.event.workflow_run.conclusion == 'startup_failure'", workflow)
         self.assertIn("gh workflow run self-healing-tests.yml --ref \"$BRANCH\"", workflow)
         self.assertNotIn("gh pr merge", workflow)
         self.assertIn("No speculative code changes were made.", workflow)
+
+    def test_self_healing_agent_failures_are_reported_and_recovered_per_workflow(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn("  report-agent-failure:", workflow)
+        self.assertIn("needs.diagnose-and-repair.result == 'failure'", workflow)
+        self.assertIn("shadowrocket-automation:agent_failure;workflow=deterministic_audit", workflow)
+        self.assertIn("shadowrocket-automation:agent_failure;workflow=config_validator", workflow)
+        self.assertIn("The deterministic audit and publish have recovered", workflow)
+        self.assertIn("The config-baseline validator has recovered", workflow)
 
     def test_stale_watchdog_threshold_exceeds_main_job_timeout(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
@@ -78,7 +92,7 @@ class SelfHealingWorkflowTests(unittest.TestCase):
     def test_superseded_failures_are_suppressed_when_a_newer_run_is_active_or_successful(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("Check whether a newer run supersedes this failure", workflow)
-        self.assertIn("select(.id > $failed)", workflow)
+        self.assertIn('select(.head_branch == "main" and .id > $failed)', workflow)
         self.assertIn('select(.status != "completed" or .conclusion == "success")', workflow)
         self.assertIn("steps.supersession.outputs.stale != 'true'", workflow)
 
@@ -87,16 +101,18 @@ class SelfHealingWorkflowTests(unittest.TestCase):
     def test_stale_watch_cancels_superseded_audits_before_timeout(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn('run.get("head_sha") != current_main', workflow)
+        self.assertIn('repos/$REPO/compare/$run_sha...$current_main', workflow)
+        self.assertIn('only docs/ changed after its audited commit', workflow)
         self.assertIn('gh run cancel "$stale_id"', workflow)
         self.assertIn('gh workflow run auto_sync.yml --ref main', workflow)
         self.assertIn('An audit is still queued, cancelling, or running', workflow)
 
 
 
-    def test_watchdog_runs_immediately_when_its_own_workflow_changes(self):
+    def test_hourly_watchdog_is_the_recovery_entrypoint_without_self_triggering_pushes(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn('      - ".github/workflows/self-healing-agent.yml"', workflow)
-        self.assertIn("github.event_name == 'push'", workflow)
+        self.assertIn('    - cron: "0 * * * *"', workflow)
+        self.assertNotIn("  push:", workflow)
 
 
 
