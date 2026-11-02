@@ -132,7 +132,7 @@ class LifecycleAuditSafetyTests(unittest.TestCase):
             rules=root/"rulesets"
             (root/"sources").mkdir()
             rules.mkdir()
-            (rules/"direct.list").write_text("DOMAIN,expired.example\\nDOMAIN,api.google.com\\n",encoding="utf-8")
+            (rules/"direct.list").write_text("DOMAIN,expired.example\nDOMAIN,api.google.com\n",encoding="utf-8")
             for policy in ("proxy","reject"):
                 (rules/(policy+".list")).write_text("",encoding="utf-8")
             state={"due_milestones":[5000],"monthly_review_due":False,"published_rule_count":5000}
