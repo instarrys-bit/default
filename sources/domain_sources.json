@@ -195,7 +195,7 @@
       "lineage_status": "unverified",
       "policy_evidence": "documented_policy",
       "upstream_repositories": [],
-      "lineage_note": "Automatically admitted by deterministic parser, policy-evidence, publisher, size and two-observation stability gates. Lineage remains unverified; shared README references and domain overlap are correlation warnings, not automatic vetoes.",
+      "lineage_note": "README documents generation from domain-list-community and GFWList; source file is a generated domain set, so item-level upstream attribution remains unavailable.",
       "bootstrap_enqueue": true,
       "auto_activation": {
         "engine": "deterministic-source-admission/1.0",
@@ -206,7 +206,8 @@
         "policy_evidence_source": "README_policy_reference",
         "lineage_warning": "possible_shared_readme_references; correlation signal only",
         "shared_readme_reference_peer_count": 13
-      }
+      },
+      "lineage_evidence_url": "https://github.com/Jovanykoch/rules/blob/main/README.md"
     },
     {
       "id": "auto-gatework-surge-rules-da7f8038",
@@ -222,7 +223,7 @@
       "lineage_status": "unverified",
       "policy_evidence": "documented_policy",
       "upstream_repositories": [],
-      "lineage_note": "Automatically admitted by deterministic parser, policy-evidence, publisher, size and two-observation stability gates. Lineage remains unverified; shared README references and domain overlap are correlation warnings, not automatic vetoes.",
+      "lineage_note": "README is inventoried for public upstream references; no per-domain source attribution is inferred.",
       "bootstrap_enqueue": true,
       "auto_activation": {
         "engine": "deterministic-source-admission/1.0",
@@ -233,7 +234,8 @@
         "policy_evidence_source": "README_policy_reference",
         "lineage_warning": "possible_shared_readme_references; correlation signal only",
         "shared_readme_reference_peer_count": 12
-      }
+      },
+      "lineage_evidence_url": "https://github.com/gatework/surge-rules/blob/master/README.md"
     }
   ],
   "scoring": {
