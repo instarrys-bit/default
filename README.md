@@ -124,3 +124,10 @@ A lifecycle audit is scheduled for every 5,000-rule published-count milestone (5
 Lifecycle deletion is deliberately conservative. An exact DOMAIN host is eligible only after both Cloudflare and Google DNS-over-HTTPS resolvers return NXDOMAIN for both A and AAAA queries on two separate observations at least 30 days apart, with no intervening DNS recovery. DOMAIN-SUFFIX rules are retained because a suffix root can lack DNS records while valid subdomains still exist. Resolver errors, timeouts, missing evidence, source disappearance, lineage changes, or a single NXDOMAIN observation never authorize deletion. Major technology, cloud, CDN, identity, and Chinese platform suffixes are protected from automatic deletion. All removals are archived with the original policy, rule, timestamps and evidence in `rulesets/deletion_archive.json`; a per-run report is written to `reports/lifecycle/latest.md` and `latest.json`.
 
 To restore a removed entry, copy its ID from the report's selectable recovery list and start the GitHub Actions workflow manually with that ID (or comma-separated IDs) in the `restore_ids` input. A restoration is returned to its original policy when space exists; otherwise it enters the front of the pending queue. The restoration is not re-deleted during the same run. The user-managed `shadowrocket/ss.conf` remains read-only throughout.
+
+
+## 自动化状态与恢复报告
+
+每次成功审计都会生成统一总览：`reports/project-status.md` 与 `reports/project-status.json`，汇总三类规则数量、30,000 条容量、待发布队列、来源健康、候选审核、生命周期节点、主配置基线和恢复库存。该报告只读，不修改主配置。
+
+配置冲突移除记录保存在 `rulesets/config_conflict_archive.json`，报告 `reports/ruleset-config-conflict-sync.md` 会列出可选恢复 ID。若确认某项属于误删，可在 GitHub Actions 手动运行时填写 `restore_conflict_ids`；恢复前会重新检查当前 `ss.conf`、skip-proxy、已发布规则及待发布队列的跨策略重叠，不满足条件就拒绝恢复。生命周期删除使用独立的 `restore_ids` 输入，二者不能混用。
