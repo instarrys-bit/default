@@ -123,7 +123,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$branch"
-          git add .github/workflows/auto_sync.yml
+          git add -- .github/workflows/auto_sync.yml tests/test_workflow_config_guard_order.py
           git commit -m "Self-heal: reconcile final ruleset manifest counts"
           echo "changed=true" >> "$GITHUB_OUTPUT"
           echo "branch=$branch" >> "$GITHUB_OUTPUT"
