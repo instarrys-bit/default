@@ -39,3 +39,12 @@ A later successful full audit and publication may close the corresponding fault 
 ## Persistence
 
 Source snapshots and project ledgers must survive runner replacement. A successful workflow run does not prove every source is healthy or every device behavior is correct; consult reports and perform target-device validation.
+## Observed-domain intake
+
+The manual GitHub Actions workflow `GitHub-only observed-domain intake` accepts up to 500 plain hostnames per submission. It validates and merges them into `sources/request_domain_observations.json`, then triggers deterministic review. It must not accept full URLs, query strings, request headers, request bodies, or client identifiers.
+
+This is not a continuously listening service. Device logs must first be reduced to hostnames and then imported manually; no automatic real-time phone push is provided.
+
+## Watchdog behavior
+
+The documented watchdog runs daily. If no successful run has completed within 25 hours and no job is currently in progress, it dispatches one replacement audit. This is a recovery trigger, not a guarantee that an external workflow will always succeed.
