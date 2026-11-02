@@ -10,7 +10,9 @@ AUTO_SYNC = ROOT / ".github" / "workflows" / "auto_sync.yml"
 class SelfHealingWorkflowTests(unittest.TestCase):
     def test_repair_is_bounded_and_does_not_auto_merge(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn('[ "$REPAIR_ID" != "refresh_ruleset_manifest" ]', workflow)
+        self.assertIn("fix_stale_audit_concurrency_contract", workflow)
+        self.assertIn("refresh_ruleset_manifest)", workflow)
+        self.assertIn("Unknown repair id at PR publication", workflow)
         self.assertIn("gh pr create", workflow)
         self.assertIn("id: publish-repair", workflow)
         self.assertIn("always() && steps.supersession.outputs.stale != 'true'", workflow)
