@@ -8,6 +8,7 @@ from __future__ import annotations
 import hashlib, json, sys
 from datetime import datetime, timezone
 from pathlib import Path
+from json_document_store import read_document, write_document
 
 ROOT = Path(__file__).resolve().parents[1]
 REVIEWS = ROOT / "sources/domain_reviews.json"
@@ -178,14 +179,14 @@ def build(review_data, registry_data, snapshot_data, previous, published, pendin
 def main():
     now = datetime.now(timezone.utc).isoformat()
     result = build(
-        read_json(REVIEWS, {"reviews": []}),
+        read_document(REVIEWS, "reviews", {"reviews": []}),
         read_json(REGISTRY, {"sources": []}),
         read_json(SNAPSHOT, {"sources": []}),
-        read_json(OUTPUT, {"rules": []}),
+        read_document(OUTPUT, "rules", {"rules": []}),
         published_map(), pending_map(),
         archived_ids(DELETION_ARCHIVE), archived_ids(CONFLICT_ARCHIVE), now
     )
-    OUTPUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_document(OUTPUT, result, "rules")
     print(f"Rule provenance ledger: {result['rule_count']} rules; source snapshots: {len(result['source_snapshot_hashes'])}; output: {OUTPUT.relative_to(ROOT)}")
 
 if __name__ == "__main__":
