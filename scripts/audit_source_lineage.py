@@ -65,7 +65,7 @@ def normalize_upstream(value: str) -> str:
         return "peter-lowe"
     return value
 
-def audit_registry(config: dict, fetcher=fetch_text, candidates: list[dict] | None = None) -> dict:
+def audit_registry(config: dict, fetcher=fetch_text, candidates: list[dict] | None = None, previous_report: dict | None = None) -> dict:
     sources = config.get("sources", [])
     inventories = []
     for source in sources:
@@ -122,6 +122,7 @@ def audit_registry(config: dict, fetcher=fetch_text, candidates: list[dict] | No
             "status": "audited"
         })
     candidate_docs = []
+    previous_candidate_docs = {str(x.get("repository")): x for x in (previous_report or {}).get("candidate_sources", []) if x.get("repository")}
     for candidate in candidates or []:
         repository = str(candidate.get("repository", ""))
         if not repository or not candidate.get("rule_list_urls"):
@@ -202,7 +203,8 @@ def audit_registry(config: dict, fetcher=fetch_text, candidates: list[dict] | No
 def main():
     config = json.loads(REGISTRY.read_text(encoding="utf-8"))
     candidates = read_document(DISCOVERY, "candidates", {"candidates": []}).get("candidates", [])
-    report = audit_registry(config, candidates=candidates)
+    previous_report = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {}
+    report = audit_registry(config, candidates=candidates, previous_report=previous_report)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({
