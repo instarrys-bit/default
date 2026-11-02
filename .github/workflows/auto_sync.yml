@@ -586,7 +586,7 @@ jobs:
           RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          issues="$(gh issue list --repo "$REPO" --state open --search '"Shadowrocket automation failure" in:title' --json number,title,body --jq --argjson run_id "$RUN_ID" '.[] | select(.title | startswith("Shadowrocket automation failure (run ")) | select(.body | contains("shadowrocket-automation:workflow=auto_sync;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=auto_sync;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
+          issues="$(gh issue list --repo "$REPO" --state open --search '"Shadowrocket automation failure" in:title' --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select(.title | startswith("Shadowrocket automation failure (run ")) | select(.body | contains("shadowrocket-automation:workflow=auto_sync;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=auto_sync;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
           if [ -z "$issues" ]; then
             echo "No earlier, explicitly linked auto_sync incident to resolve."
             exit 0
