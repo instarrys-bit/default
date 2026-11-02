@@ -215,7 +215,7 @@ jobs:
           RUN_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           set -euo pipefail
-          issues="$(gh issue list --repo "$REPO" --state open --search '"Self-healing incident" in:title' --json number,title --jq '.[] | select(.title == "Self-healing incident: UNCLASSIFIED_STEP_FAILURE" or .title == "Self-healing incident: TEST_FAILURE") | .number')"
+          issues="$(gh issue list --repo "$REPO" --state open --search '"Self-healing incident" in:title' --json number,title --jq '.[] | select((.title | startswith("Self-healing incident: UNCLASSIFIED_STEP_FAILURE")) or (.title | startswith("Self-healing incident: TEST_FAILURE"))) | .number')"
           if [ -z "$issues" ]; then
             echo "No open deterministic-audit test/failure incidents to resolve."
             exit 0
