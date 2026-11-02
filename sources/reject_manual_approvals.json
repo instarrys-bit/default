@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "description": "Human-maintained allowlist. New REJECT rules are not published unless their exact DOMAIN or DOMAIN-SUFFIX line is explicitly listed here. Existing published REJECT rules are preserved as the starting baseline.",
+  "approved_rules": []
+}
