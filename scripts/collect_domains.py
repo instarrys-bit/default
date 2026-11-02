@@ -193,6 +193,53 @@ def parse_source(data,source):
         return parse_quantumult_domain_rules(data,source)
     raise ValueError("unsupported source format for "+str(source.get("id"))+": "+str(fmt))
 
+def parse_source_line_numbers(data,source):
+    """Map each parsed domain to its first original line number in the exact source snapshot."""
+    fmt=source.get("format")
+    result={}
+    text=data.decode("utf-8-sig")
+    expected=str(source.get("classification","")).upper()
+    aliases={str(k).upper():str(v).upper() for k,v in source.get("policy_action_map",{}).items()}
+    for number,raw in enumerate(text.splitlines(),1):
+        value=raw.strip()
+        if not value or value.startswith(("#","!","[","@@")):
+            continue
+        if fmt=="domain-only":
+            suffix=value.startswith(".")
+            domain=(value[1:] if suffix else value).lower().rstrip(".")
+            scope="suffix_candidate" if suffix else "exact_candidate"
+            if DOMAIN_RE.fullmatch(domain):
+                result.setdefault(domain,{"entry_type":scope,"line_number":number})
+        elif fmt=="adblock-domain-rules":
+            match=re.match(r"^\\|\\|([a-z0-9.-]+)\\^",value.lower())
+            if match:
+                domain=match.group(1).rstrip(".")
+                if DOMAIN_RE.fullmatch(domain):
+                    result.setdefault(domain,{"entry_type":"exact_candidate","line_number":number})
+        elif fmt=="shadowrocket-domain-rules":
+            fields=[x.strip() for x in value.split("#",1)[0].split(",")]
+            kind=fields[0].upper()
+            if kind not in {"DOMAIN","DOMAIN-SUFFIX"} or len(fields)<2:
+                continue
+            domain=fields[1].lower().rstrip(".")
+            if not DOMAIN_RE.fullmatch(domain):
+                continue
+            if len(fields)==3 and fields[2].upper()!=expected:
+                continue
+            scope="suffix_candidate" if kind=="DOMAIN-SUFFIX" else "exact_candidate"
+            result.setdefault(domain,{"entry_type":scope,"line_number":number})
+        elif fmt=="quantumult-domain-rules":
+            fields=[x.strip() for x in value.split("#",1)[0].split(",")]
+            kind=fields[0].upper()
+            if kind not in {"HOST","HOST-SUFFIX"} or len(fields)<3:
+                continue
+            domain=fields[1].lower().rstrip(".")
+            action=aliases.get(fields[2].upper(),fields[2].upper())
+            if DOMAIN_RE.fullmatch(domain) and action==expected:
+                scope="suffix_candidate" if kind=="HOST-SUFFIX" else "exact_candidate"
+                result.setdefault(domain,{"entry_type":scope,"line_number":number})
+    return result
+
 def snapshot_path(source_id):
     if not re.fullmatch(r"[a-z0-9][a-z0-9._-]{0,79}",source_id):
         raise ValueError("unsafe source ID for snapshot filename: "+source_id)
@@ -245,7 +292,7 @@ def main():
             prior_digest=previous_hashes.get(sid)
             if previous is None or not prior_digest:
                 raise ValueError(f"{sid} has no committed baseline; cannot safely isolate its first collection failure: {error}") from error
-            source_data[sid]={"source":source,"sha256":prior_digest,"domains":{},"previous":previous,"stale":True,"error":str(error)[:500]}
+            source_data[sid]={"source":source,"sha256":prior_digest,"domains":{},"line_numbers":{},"previous":previous,"stale":True,"error":str(error)[:500]}
             deltas[sid]={"added":set(),"removed":set(),"bootstrap":False,"bootstrap_enqueued":False}
             quarantined.append(sid)
             continue
@@ -267,7 +314,7 @@ def main():
                     prior_digest=previous_hashes.get(sid)
                     if not prior_digest:
                         raise ValueError(f"{sid} has an abnormal first delta but no committed hash baseline") from error
-                    source_data[sid]={"source":source,"sha256":prior_digest,"domains":{},"previous":previous,"stale":True,"error":str(error)[:500],"pending_confirmations":confirmations}
+                    source_data[sid]={"source":source,"sha256":prior_digest,"domains":{},"line_numbers":{},"previous":previous,"stale":True,"error":str(error)[:500],"pending_confirmations":confirmations}
                     deltas[sid]={"added":set(),"removed":set(),"bootstrap":False,"bootstrap_enqueued":False}
                     quarantined.append(sid)
                     continue
@@ -277,7 +324,10 @@ def main():
                 pending_sources.pop(sid,None)
             bootstrap=False
         added,bootstrap_enqueued=bootstrap_source_domains(source,sid,bootstrapped_sources,set(domains),added)
-        source_data[sid]={"source":source,"sha256":digest,"domains":domains,"previous":previous,"stale":False}
+        line_numbers=parse_source_line_numbers(payload,source)
+        if set(line_numbers)!=set(domains):
+            raise ValueError(f"{sid} parsed-domain line provenance is incomplete: {len(domains)-len(set(line_numbers))} entries lack source-line locations")
+        source_data[sid]={"source":source,"sha256":digest,"domains":domains,"line_numbers":line_numbers,"previous":previous,"stale":False}
         deltas[sid]={"added":added,"removed":removed,"bootstrap":bootstrap,"bootstrap_enqueued":bootstrap_enqueued}
 
     queue={x["domain"]:x for x in buf.get("candidates",[])}
@@ -314,7 +364,8 @@ def main():
                 "classification":policy,
                 "url":source["url"],
                 "sha256":info["sha256"],
-                "currently_listed":True
+                "currently_listed":True,
+                "line_number":info["line_numbers"].get(domain,{}).get("line_number")
             })
         classification=next(iter(policies)) if len(policies)==1 else ("CONFLICT" if policies else str(item.get("classification","REVIEW")).upper())
         source_entry_type="suffix_candidate" if "suffix_candidate" in scopes else "exact_candidate"
