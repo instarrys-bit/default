@@ -23,6 +23,7 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
         self.assertGreaterEqual(discovery.MAX_README_REPOSITORIES, 1_500)
         self.assertGreaterEqual(discovery.MAX_SEARCH_PAGES, 10)
         self.assertGreaterEqual(discovery.MAX_TREE_REPOSITORIES, 500)
+        self.assertGreaterEqual(discovery.MAX_TREE_SCAN_WORKERS, 2)
         self.assertGreaterEqual(discovery.MAX_TREE_ENTRIES_PER_REPOSITORY, 3_000)
         self.assertGreaterEqual(discovery.MAX_README_BYTES, 1_000_000)
         self.assertIn("open source domain ruleset", discovery.QUERIES)
