@@ -7,6 +7,7 @@ from datetime import datetime,timezone
 from domain_rule_engine import RuleIndex,load_domain_rules,inspect_suffix_scope
 from source_registry import validate_registry
 from review_cursor import snapshot_digest,resume_index,checkpoint
+from audit_ruleset_config_overlap import scope_covers_candidate
 ROOT=Path(__file__).resolve().parents[1]
 CONFIG=ROOT/"shadowrocket/ss.conf"
 POLICY=ROOT/"sources/domain_sources.json"
@@ -146,67 +147,81 @@ def first_ruleset_line(text):
             return number
     return None
 
-_PREPARED_RULE_INDEX = {}
-
-
-def prepared_rule_index(rules, conditional, boundary):
-    key = (id(rules), boundary)
-    cached = _PREPARED_RULE_INDEX.get(key)
-    if cached is not None and cached[0] is rules:
-        return cached[1], cached[2]
-    filtered_rules = RuleIndex([rule for rule in rules.rules if rule.line < boundary])
-    filtered_conditional = [(line, raw) for line, raw in conditional if line < boundary]
-    _PREPARED_RULE_INDEX.clear()
-    _PREPARED_RULE_INDEX[key] = (rules, filtered_rules, filtered_conditional)
-    return filtered_rules, filtered_conditional
-
-
 @lru_cache(maxsize=8)
 def special_rule_lines(text):
-    boundary = first_ruleset_line(text)
     rule_block = section(text, "[Rule]", "[Host]")
-    if boundary is not None:
-        rule_start = text.split("[Rule]", 1)[0].count("\n") + 2
-        rule_block = "\n".join(raw for offset, raw in enumerate(rule_block.splitlines()) if rule_start + offset < boundary)
-    return tuple(line.strip() for line in rule_block.splitlines() if line.strip() and line.strip().upper().startswith(("DOMAIN-KEYWORD,", "URL-REGEX,")))
-
+    return tuple(
+        line.strip() for line in rule_block.splitlines()
+        if line.strip() and line.strip().upper().startswith(("DOMAIN-KEYWORD,", "URL-REGEX,"))
+    )
 def inspect(domain,rules,conditional,base,protected,candidate_policy=None,candidate_suffix=False):
-    boundary=first_ruleset_line(base)
-    if boundary is not None:
-        rules,conditional=prepared_rule_index(rules,conditional,boundary)
-    hits=rules.matches_host(domain)
-    if hits:
-        winner=hits[0]
-        if not (candidate_suffix and winner.kind=="DOMAIN" and winner.domain==domain and winner.policy==candidate_policy):
-            status="ALREADY_COVERED" if candidate_policy and winner.policy==candidate_policy else "CONFLICT"
-            return (status,
-                    "Existing first-match "+winner.kind+" "+winner.domain+" => "+winner.policy+" (line "+str(winner.line)+")")
+    domain = domain.lower().rstrip(".")
+    candidate_policy = str(candidate_policy or "").upper()
+    candidate_scope = "suffix_candidate" if candidate_suffix else "exact_candidate"
+
+    # Compare complete scopes only. No first-match winner or rule ordering is used.
+    covering = [
+        rule for rule in rules.rules
+        if scope_covers_candidate(candidate_scope, domain, rule.kind, rule.domain)
+    ]
+    if covering:
+        policies = {rule.policy for rule in covering}
+        evidence = "; ".join(
+            rule.kind + " " + rule.domain + " => " + rule.policy
+            for rule in covering
+        )
+        if len(policies) > 1:
+            return "REVIEW", "Multiple explicit config scopes fully cover the candidate with different policies; no winner is selected: " + evidence
+        covered_policy = next(iter(policies))
+        status = "ALREADY_COVERED" if candidate_policy == covered_policy else "CONFLICT"
+        return status, "Explicit config scope fully covers candidate (" + evidence + "); rule order is not evaluated"
+
     for _,raw in conditional:
         for kind,match in COND_RE.findall(raw):
             match=match.lower().strip(".")
-            applies=(domain==match or (kind.upper()=="DOMAIN-SUFFIX" and domain.endswith("."+match)))
-            if applies: return "REVIEW","Candidate intersects an existing conditional AND/OR/NOT domain rule"
+            if candidate_suffix:
+                applies = (
+                    match == domain or match.endswith("." + domain)
+                    if kind.upper() == "DOMAIN"
+                    else match == domain or match.endswith("." + domain) or domain.endswith("." + match)
+                )
+            else:
+                applies = domain == match or (kind.upper() == "DOMAIN-SUFFIX" and domain.endswith("." + match))
+            if applies:
+                return "REVIEW","Candidate scope intersects an existing conditional AND/OR/NOT domain rule"
+
     for entry in protected.get("protected_exact",[]):
-        if domain==entry.lower(): return "RISK_HOLD","Exact host is on the critical-function protection list"
+        host = entry.lower().strip(".")
+        if host == domain or (candidate_suffix and host.endswith("." + domain)):
+            return "RISK_HOLD","Candidate scope intersects the critical-function protection list at " + host
     for suffix in protected.get("protected_suffixes",[]):
-        if overlaps(domain,suffix): return "RISK_HOLD","Candidate intersects protected suffix "+suffix
+        suffix = suffix.lower().strip(".")
+        intersects = (
+            domain == suffix or domain.endswith("." + suffix)
+            or (candidate_suffix and suffix.endswith("." + domain))
+        )
+        if intersects:
+            return "RISK_HOLD","Candidate intersects protected suffix " + suffix
+
     for line in special_rule_lines(base):
         upper=line.upper()
         if upper.startswith("DOMAIN-KEYWORD,"):
             fields=line.split(",",2)
             if len(fields)==3 and fields[1].lower() in domain:
+                if candidate_suffix:
+                    return "REVIEW","Suffix candidate may intersect existing DOMAIN-KEYWORD rule"
                 pol=fields[2].strip().upper()
                 result="ALREADY_COVERED" if candidate_policy==pol else "CONFLICT"
-                if candidate_suffix and result=="ALREADY_COVERED": result="REVIEW"
                 return result,"Matches existing DOMAIN-KEYWORD => "+pol
         if upper.startswith("URL-REGEX,"):
             fields=line.rsplit(",",1)
-            if len(fields)!=2: return "REVIEW","Malformed URL-REGEX cannot be evaluated"
+            if len(fields)!=2:
+                return "REVIEW","Malformed URL-REGEX cannot be evaluated"
             pattern_text=fields[0][len("URL-REGEX,"):]
-            try: re.compile(pattern_text)
-            except re.error: return "REVIEW","Existing URL-REGEX cannot be compiled"
-            # URL path filters with a generic host (for example [^/]+/multifetch) are not domain rules.
-            # Only compare a candidate when the regex identifies a concrete hostname pattern.
+            try:
+                re.compile(pattern_text)
+            except re.error:
+                return "REVIEW","Existing URL-REGEX cannot be compiled"
             slash=chr(92)+"/"
             if "[^"+slash+"]+" in pattern_text:
                 continue
@@ -218,26 +233,30 @@ def inspect(domain,rules,conditional,base,protected,candidate_policy=None,candid
             host_literal=host_pattern.replace(chr(92)+".",".")
             if host_literal.count(".")<2:
                 continue
-            try: host_regex=re.compile(r"^(?:"+host_pattern+r")$")
-            except re.error: return "REVIEW","Existing URL-REGEX host pattern cannot be compiled"
+            try:
+                host_regex=re.compile(r"^(?:"+host_pattern+r")$")
+            except re.error:
+                return "REVIEW","Existing URL-REGEX host pattern cannot be compiled"
             if host_regex.fullmatch(domain):
+                if candidate_suffix:
+                    return "REVIEW","Suffix candidate may intersect host-specific URL-REGEX"
                 pol=fields[1].strip().upper()
                 result="ALREADY_COVERED" if candidate_policy==pol else "CONFLICT"
-                if candidate_suffix and result=="ALREADY_COVERED": result="REVIEW"
                 return result,"Matches host-specific URL-REGEX => "+pol
+
     for item in parse_skip_proxy(base):
-        if "/" in item or ":" in item: continue
+        if "/" in item or ":" in item:
+            continue
         if item.startswith("*."):
-            root=item[2:]
-            if domain==root or domain.endswith("."+root):
-                result="ALREADY_COVERED" if candidate_policy=="DIRECT" else "CONFLICT"
-                if candidate_suffix and result=="ALREADY_COVERED": result="REVIEW"
-                return result,"Matches skip-proxy direct-bypass entry "+item
-        elif domain==item:
+            root=item[2:].strip(".")
+            applies = domain == root or domain.endswith("." + root)
+        else:
+            applies = not candidate_suffix and domain == item
+        if applies:
             result="ALREADY_COVERED" if candidate_policy=="DIRECT" else "CONFLICT"
-            if candidate_suffix and result=="ALREADY_COVERED": result="REVIEW"
-            return result,"Matches skip-proxy direct-bypass entry "+item
+            return result,"Matches fully covering skip-proxy direct-bypass entry "+item
     return None,None
+
 def main():
     source_cfg=json.loads(POLICY.read_text(encoding="utf-8"))
     protected=json.loads(PROTECTED.read_text(encoding="utf-8"))
