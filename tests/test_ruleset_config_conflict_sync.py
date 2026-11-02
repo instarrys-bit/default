@@ -84,6 +84,29 @@ class ConfigConflictSyncTests(unittest.TestCase):
         result = classify_rule("DIRECT", "DOMAIN,api.example.com", rules, [])
         self.assertEqual(result["status"], "NO_CONFLICT")
 
+    def test_config_change_without_conflict_leaves_rule_sets_untouched(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            direct_before = "DOMAIN,keep.example.com\\n"
+            proxy_before = "DOMAIN-SUFFIX,foreign.example.net\\n"
+            reject_before = "DOMAIN,ad.example.org\\n"
+            make_root(
+                root,
+                config_with_rules(["DOMAIN-SUFFIX,unrelated.example.com,PROXY"]),
+                direct=direct_before,
+                proxy=proxy_before,
+                reject=reject_before,
+            )
+            report = sync(root=root, now="2026-11-02T00:00:00+00:00")
+            self.assertEqual(report["removed_count"], 0)
+            self.assertEqual(report["retained_for_review_count"], 0)
+            self.assertEqual((root / "rulesets" / "direct.list").read_text(), direct_before)
+            self.assertEqual((root / "rulesets" / "proxy.list").read_text(), proxy_before)
+            self.assertEqual((root / "rulesets" / "reject.list").read_text(), reject_before)
+            archive = json.loads((root / "rulesets" / "config_conflict_archive.json").read_text())
+            self.assertEqual(archive["items"], [])
+
+
     def test_sync_removes_published_and_queued_conflicts_and_archives_them(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
