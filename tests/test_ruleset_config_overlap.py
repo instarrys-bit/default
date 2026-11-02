@@ -4,119 +4,85 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from audit_ruleset_config_overlap import audit, first_ruleset_line, match_candidate, prepare_rules, prior_rule_lines, skip_proxy_match
+from audit_ruleset_config_overlap import (
+    all_rule_lines,
+    audit,
+    first_ruleset_line,
+    match_candidate,
+    prior_rule_lines,
+    scope_covers_candidate,
+    skip_proxy_match,
+)
 
 
 class RulesetConfigOverlapTests(unittest.TestCase):
-    def test_only_rules_before_first_ruleset_are_considered(self):
+    def test_legacy_prior_rule_helper_stops_at_first_ruleset(self):
         config = """[Rule]
 DOMAIN,api.example.com,DIRECT
-RULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list,PROXY
+RULE-SET,https://example.invalid/proxy.list,PROXY
 DOMAIN,late.example.com,REJECT
 [Host]
 """
-        rules = prior_rule_lines(config)
-        self.assertEqual(rules, [(2, "DOMAIN,api.example.com,DIRECT")])
+        self.assertEqual(prior_rule_lines(config), [(2, "DOMAIN,api.example.com,DIRECT")])
         self.assertEqual(first_ruleset_line(config), 3)
 
-    def test_domain_suffix_uses_dns_label_boundary(self):
-        rules = [(2, "DOMAIN-SUFFIX,example.com,DIRECT")]
-        self.assertEqual(match_candidate("api.example.com", "DIRECT", rules)["status"], "ALREADY_COVERED")
-        self.assertEqual(match_candidate("notexample.com", "DIRECT", rules)["status"], "NOT_COVERED_BY_PRIOR_DOMAIN_RULES")
+    def test_scope_audit_reads_all_rule_lines_without_ordering(self):
+        config = """[Rule]
+RULE-SET,https://example.invalid/proxy.list,PROXY
+DOMAIN,late.example.com,REJECT
+[Host]
+"""
+        self.assertEqual(all_rule_lines(config), [
+            (2, "RULE-SET,https://example.invalid/proxy.list,PROXY"),
+            (3, "DOMAIN,late.example.com,REJECT"),
+        ])
 
-    def test_conflicting_first_match_is_reported(self):
+    def test_exact_candidate_is_covered_by_exact_or_parent_suffix(self):
+        self.assertTrue(scope_covers_candidate("exact_candidate", "api.example.com", "DOMAIN", "api.example.com"))
+        self.assertTrue(scope_covers_candidate("exact_candidate", "api.example.com", "DOMAIN-SUFFIX", "example.com"))
+
+    def test_child_exact_exception_does_not_cover_parent_suffix_candidate(self):
+        self.assertFalse(scope_covers_candidate("suffix_candidate", "example.com", "DOMAIN", "api.example.com"))
+        self.assertFalse(scope_covers_candidate("suffix_candidate", "example.com", "DOMAIN-SUFFIX", "api.example.com"))
+
+    def test_parent_suffix_covers_full_suffix_candidate(self):
+        self.assertTrue(scope_covers_candidate("suffix_candidate", "example.com", "DOMAIN-SUFFIX", "example.com"))
+        self.assertTrue(scope_covers_candidate("suffix_candidate", "api.example.com", "DOMAIN-SUFFIX", "example.com"))
+
+    def test_mixed_policy_coverage_is_reported_without_selecting_a_winner(self):
         rules = [
-            (2, "DOMAIN-SUFFIX,example.com,PROXY"),
-            (3, "DOMAIN,api.example.com,DIRECT"),
+            (2, "DOMAIN-SUFFIX,example.com,DIRECT"),
+            (3, "DOMAIN,api.example.com,REJECT"),
         ]
         result = match_candidate("api.example.com", "DIRECT", rules)
-        self.assertEqual(result["status"], "CONFLICT")
-        self.assertEqual(result["line"], 2)
+        self.assertEqual(result["status"], "MIXED_POLICY_COVERAGE")
+        self.assertIsNone(result["effective_policy"])
+        self.assertEqual(len(result["matches"]), 2)
+        self.assertIn("not evaluated", result["reason"])
 
-    def test_keyword_and_conditional_are_potential_not_definite(self):
+    def test_keyword_and_conditional_rules_are_not_evaluated(self):
         keyword = match_candidate("api.example.com", "DIRECT", [(2, "DOMAIN-KEYWORD,example,REJECT")])
-        self.assertEqual(keyword["status"], "POTENTIAL_MATCH")
         conditional = match_candidate("api.example.com", "DIRECT", [(2, "AND,((DOMAIN-SUFFIX,example.com),(GEOIP,CN)),DIRECT")])
-        self.assertEqual(conditional["status"], "CONDITIONAL_POTENTIAL")
+        self.assertEqual(keyword["status"], "NOT_COVERED_BY_CONFIG_SCOPE")
+        self.assertEqual(conditional["status"], "NOT_COVERED_BY_CONFIG_SCOPE")
 
-    def test_skip_proxy_is_counted_as_direct_coverage(self):
-        config = "[General]\nskip-proxy = *.example.com,exact.example.net,192.168.0.0/16\n[Rule]\nRULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list,DIRECT\n[Host]\n"
-        ledger = {"reviews": [
-            {"domain": "api.example.com", "policy": "PROXY", "status": "REVIEW"},
-            {"domain": "exact.example.net", "policy": "DIRECT", "status": "REVIEW"},
-            {"domain": "notexample.com", "policy": "DIRECT", "status": "REVIEW"}
-        ]}
-        report = audit(config, ledger)
-        by_domain = {item["domain"]: item for item in report["results"]}
-        self.assertEqual(by_domain["api.example.com"]["status"], "CONFLICT")
-        self.assertEqual(by_domain["exact.example.net"]["status"], "ALREADY_COVERED")
-        self.assertEqual(by_domain["notexample.com"]["status"], "NOT_COVERED_BY_PRIOR_DOMAIN_RULES")
+    def test_skip_proxy_exact_entry_does_not_cover_parent_suffix(self):
+        self.assertIsNone(skip_proxy_match("example.com", ["api.example.com"], "suffix_candidate"))
+        self.assertEqual(skip_proxy_match("api.example.com", ["*.example.com"], "exact_candidate"), "*.example.com")
 
-    def test_approved_ledger_overlap_is_resolved_by_original_rule_precedence(self):
-        config = "[General]\nskip-proxy = \n[Rule]\nDOMAIN,api.example.com,REJECT\nRULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list,DIRECT\n[Host]\n"
+    def test_skip_proxy_wildcard_parent_covers_suffix_candidate(self):
+        self.assertEqual(skip_proxy_match("example.com", ["*.example.com"], "suffix_candidate"), "*.example.com")
+        self.assertIsNone(skip_proxy_match("example.com", ["*.api.example.com"], "suffix_candidate"))
+
+    def test_audit_reports_scope_coverage_without_precedence_fields(self):
+        config = "[General]\nskip-proxy = \n[Rule]\nDOMAIN,api.example.com,REJECT\nRULE-SET,https://example.invalid/direct.list,DIRECT\n[Host]\n"
         ledger = {"reviews": [{"domain": "api.example.com", "policy": "DIRECT", "status": "APPROVED"}]}
         report = audit(config, ledger)
         self.assertTrue(report["passed"], report["errors"])
         self.assertEqual(report["results"][0]["status"], "CONFLICT")
-        self.assertEqual(report["results"][0]["effective_policy"], "REJECT")
-        self.assertEqual(report["results"][0]["priority_resolution"], "original_config_rule_wins")
-        self.assertEqual(len(report["warnings"]), 1)
+        self.assertNotIn("priority_resolution", report["results"][0])
+        self.assertIn("No rule order", " ".join(report["limitations"]))
 
-    def test_later_rule_does_not_mark_approved_candidate_as_overlapping(self):
-        config = "[General]\nskip-proxy = \n[Rule]\nRULE-SET,https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list,DIRECT\nDOMAIN,api.example.com,REJECT\n[Host]\n"
-        ledger = {"reviews": [{"domain": "api.example.com", "policy": "DIRECT", "status": "APPROVED"}]}
-        report = audit(config, ledger)
-        self.assertTrue(report["passed"], report["errors"])
-        self.assertEqual(report["results"][0]["status"], "NOT_COVERED_BY_PRIOR_DOMAIN_RULES")
-
-
-    def test_suffix_candidate_detects_conflicting_descendant_exact_rule(self):
-        rules = [(2, "DOMAIN,api.example.com,PROXY")]
-        result = match_candidate("example.com", "DIRECT", rules, "suffix_candidate")
-        self.assertEqual(result["status"], "CONFLICT")
-
-    def test_suffix_candidate_only_treats_covering_suffix_as_fully_covered(self):
-        rules = [(2, "DOMAIN,example.com,DIRECT")]
-        partial = match_candidate("example.com", "DIRECT", rules, "suffix_candidate")
-        self.assertEqual(partial["status"], "POTENTIAL_MATCH")
-        covering = match_candidate("sub.example.com", "DIRECT", [(2, "DOMAIN-SUFFIX,example.com,DIRECT")], "suffix_candidate")
-        self.assertEqual(covering["status"], "ALREADY_COVERED")
-
-    def test_suffix_candidate_detects_skip_proxy_descendant_bypass(self):
-        matched = skip_proxy_match("example.com", ["api.example.com"], "suffix_candidate")
-        self.assertEqual(matched, "api.example.com")
-
-
-    def test_prepared_index_preserves_first_match_across_rule_types(self):
-        rules = [
-            (2, "DOMAIN-KEYWORD,api,REJECT"),
-            (3, "DOMAIN-SUFFIX,example.com,DIRECT"),
-        ]
-        prepared = prepare_rules(rules)
-        result = match_candidate("api.example.com", "DIRECT", rules, prepared_rules=prepared)
-        self.assertEqual(result["status"], "POTENTIAL_MATCH")
-        self.assertEqual(result["line"], 2)
-
-    def test_prepared_suffix_index_detects_descendant_conflict(self):
-        rules = [
-            (2, "DOMAIN,api.example.com,PROXY"),
-            (3, "DOMAIN-SUFFIX,example.com,DIRECT"),
-        ]
-        prepared = prepare_rules(rules)
-        result = match_candidate("example.com", "DIRECT", rules, "suffix_candidate", prepared)
-        self.assertEqual(result["status"], "CONFLICT")
-        self.assertEqual(result["line"], 2)
-
-    def test_prepared_regex_is_reused_and_keeps_rule_order(self):
-        rules = [
-            (2, "DOMAIN-SUFFIX,example.com,DIRECT"),
-            (3, "URL-REGEX,api\\\\.example\\\\.com,REJECT"),
-        ]
-        prepared = prepare_rules(rules)
-        result = match_candidate("api.example.com", "REJECT", rules, prepared_rules=prepared)
-        self.assertEqual(result["status"], "CONFLICT")
-        self.assertEqual(result["line"], 2)
 
 if __name__ == "__main__":
     unittest.main()
-
