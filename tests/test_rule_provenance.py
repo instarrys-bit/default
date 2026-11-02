@@ -25,7 +25,6 @@ class RuleProvenanceTests(unittest.TestCase):
         result = build(self.review,self.registry,self.snapshot,{"rules":[]},{},{},{},{}, "now")
         rule = result["rules"][0]
         self.assertEqual([x["source_id"] for x in rule["sources"]],["a"])
-        self.assertEqual(rule["sources"][0]["evidence_grade"],"snapshot_membership")
         self.assertEqual(rule["sources"][0]["line_number"],42)
         self.assertEqual(rule["sources"][0]["evidence_grade"],"exact_file_line")
 
