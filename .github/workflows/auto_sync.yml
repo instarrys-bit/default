@@ -69,6 +69,17 @@ jobs:
           python3 scripts/assess_sources.py
           python3 scripts/append_step_summary.py --input reports/source-assessment.md
 
+      - name: Preserve complete source assessment report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: source-assessment-report
+          path: |
+            reports/source-assessment.md
+            sources/source_assessments.json
+          if-no-files-found: ignore
+          retention-days: 7
+
       - name: Register repository-owner-approved ss.conf changes (never edit the config)
         if: github.event_name == 'push'
         env:
