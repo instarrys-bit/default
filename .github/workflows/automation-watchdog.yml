@@ -72,18 +72,19 @@ jobs:
           gh workflow run auto_sync.yml --ref main --repo "$REPO"
 
       - name: Report degraded source discovery health
-        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' }}
+        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.event.workflow_run.html_url }}
         run: |
           set -euo pipefail
-          payload="$(gh api "repos/$REPO/contents/reports/project-status.json")"
-          health="$(jq -r '.content | @base64d | fromjson | .health' <<< "$payload")"
-          search_errors="$(jq -r '.content | @base64d | fromjson | .source_discovery.search_error_count // 0' <<< "$payload")"
-          tree_errors="$(jq -r '.content | @base64d | fromjson | .source_discovery.tree_error_count // 0' <<< "$payload")"
-          coverage_stalled="$(jq -r '.content | @base64d | fromjson | .coverage.stalled // false' <<< "$payload")"
+          encoded="$(gh api "repos/$REPO/contents/reports/project-status.json" --jq .content)"
+          decoded="$(python3 -c 'import base64,sys; raw="".join(sys.stdin.read().split()); print(base64.b64decode(raw).decode("utf-8"))' <<< "$encoded")"
+          health="$(jq -r '.health' <<< "$decoded")"
+          search_errors="$(jq -r '.source_discovery.search_error_count // 0' <<< "$decoded")"
+          tree_errors="$(jq -r '.source_discovery.tree_error_count // 0' <<< "$decoded")"
+          coverage_stalled="$(jq -r '.coverage.stalled // false' <<< "$decoded")"
           title="Shadowrocket source discovery degraded health"
           if [ "$health" = "CHECK" ] || [ "$health" = "FAIL" ]; then
             body="Project health is $health after a successful workflow.\n\nSearch errors: $search_errors\nTree scan errors: $tree_errors\nCoverage stalled: $coverage_stalled\nRun: $RUN_URL\n\nThe affected source inventory remains non-activating until it passes deterministic review. Inspect reports/project-status.json and reports/source-discovery.md."
@@ -142,7 +143,7 @@ jobs:
         github.event_name == 'push' ||
         github.event_name == 'schedule' ||
         github.event_name == 'workflow_dispatch' ||
-        (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+        (github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success')
       }}
     runs-on: ubuntu-24.04
     timeout-minutes: 8
