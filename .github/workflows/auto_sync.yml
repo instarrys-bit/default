@@ -34,7 +34,7 @@ permissions:
 
 concurrency:
   group: shadowrocket-main-writer
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   audit:
@@ -125,6 +125,15 @@ jobs:
           fi
       - name: "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services"
         run: python3 scripts/deterministic_review.py
+
+      - name: Preserve resumable review cursor checkpoint
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: review-cursor-checkpoint
+          path: sources/review_cursor.json
+          if-no-files-found: ignore
+          retention-days: 90
 
       - name: Build standalone DIRECT, PROXY and REJECT rule sets
         run: python3 scripts/build_rulesets.py
@@ -356,6 +365,53 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Run deterministic Shadowrocket domain audit"
+          git push origin HEAD:main
+
+  persist-review-cursor:
+    needs: audit
+    if: ${{ always() && needs.audit.result == 'failure' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          persist-credentials: true
+      - name: Download failed-run cursor checkpoint
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: review-cursor-checkpoint
+          path: cursor-artifact
+      - name: Validate and persist in-progress cursor only
+        run: |
+          set -euo pipefail
+          test -s cursor-artifact/review_cursor.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("cursor-artifact/review_cursor.json")
+          d=json.loads(p.read_text(encoding="utf-8"))
+          if d.get("schema_version") != 1 or d.get("status") != "in_progress":
+              raise SystemExit("No resumable in-progress review cursor; nothing to persist.")
+          digest=str(d.get("snapshot_sha256",""))
+          if len(digest) != 64 or any(ch not in "0123456789abcdef" for ch in digest):
+              raise SystemExit("Invalid cursor snapshot digest.")
+          if not isinstance(d.get("next_index"),int) or d["next_index"] < 1:
+              raise SystemExit("Cursor has no completed checkpoint; nothing to persist.")
+          Path("sources").mkdir(exist_ok=True)
+          Path("sources/review_cursor.json").write_text(json.dumps(d,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+          PY
+          git add -- sources/review_cursor.json
+          if git diff --cached --quiet; then
+            echo "No new review cursor checkpoint to persist."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Persist interrupted deterministic review cursor"
           git push origin HEAD:main
 
   notify-failure:
