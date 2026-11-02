@@ -416,7 +416,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "active_archive_count": sum(1 for x in archive["items"] if not x.get("restored_at") and not x.get("superseded_at")),
         "restoration_option_count": len(restoration_options),
         "restoration_options": restoration_options,
-        "policy": "Every provable exact/suffix scope overlap with ss.conf or skip-proxy is removed from published and queued external rules, regardless of whether the policy matches. The earliest applicable config rule is recorded as precedence evidence. Historical archive entries are rechecked against the current config and superseded when the overlap no longer exists. Keyword/regex/conditional overlaps that cannot be proven from static domain scope are retained and reported; no speculative deletion is allowed.",
+        "policy": "Only candidates fully covered by an explicit DOMAIN or DOMAIN-SUFFIX scope in ss.conf, or fully covered by skip-proxy, are removed from published and queued external rules. Narrower exact or child-suffix exceptions do not remove broader parent suffix candidates. Rule order and precedence are never evaluated. Historical archive entries are rechecked against current full-scope coverage and superseded when coverage no longer exists. Keyword, regex, conditional, and partial overlaps are not evaluated or deleted.",
         "errors": [],
     }
     run_id = os.environ.get("GITHUB_RUN_ID", "").strip() if os.environ.get("RULESET_CONFIG_REPORT_AGGREGATION") == "1" else ""
@@ -448,7 +448,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "- Explicit config rule lines inspected: " + str(len(config_rules)),
         "- Published rules removed: " + str(report["published_removed_count"]),
         "- Pending queue entries removed: " + str(report["pending_queue_removed_count"]),
-        "- Ambiguous overlaps retained for review: " + str(report["retained_for_review_count"]),
+        "- Partial or unsupported overlaps retained unchanged: " + str(report["retained_for_review_count"]),
         "- Restored: " + str(len(restored)),
         "",
         "## Removed rules",
@@ -460,7 +460,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
     ) if removed else lines.append("- None")
     lines.extend(["", "## Already archived entries suppressed"])
     lines.extend("- " + x["policy"] + " | " + x["rule"] + " | " + x["origin"] for x in suppressed_active_archive) if suppressed_active_archive else lines.append("- None")
-    lines.extend(["", "## Retained ambiguous overlaps"])
+    lines.extend(["", "## Retained partial / unsupported overlaps"])
     lines.extend(
         "- " + x["policy"] + " | " + x["rule"] + " | " + x["status"] + " | " + x["reason"]
         for x in retained_review
@@ -478,7 +478,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
     ) if restoration_options else lines.append("- None")
     lines.extend([
         "",
-        "The script never writes to shadowrocket/ss.conf. A config-scope archive entry is not restored automatically; restoration is opt-in and rechecked against exact/suffix overlaps, skip-proxy entries, and cross-policy published/queued rules.",
+        "The script never writes to shadowrocket/ss.conf. A config-scope archive entry is not restored automatically; restoration is opt-in and rechecked against full-scope config coverage, skip-proxy entries, and cross-policy published/queued rules.",
         "Paste selected IDs into the workflow_dispatch input restore_conflict_ids.",
         "",
     ])
