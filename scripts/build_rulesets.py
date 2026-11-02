@@ -122,7 +122,7 @@ def main():
         if not DOMAIN_RE.fullmatch(domain) or policy not in POLICIES:
             raise ValueError("invalid approved domain or policy: "+domain)
         engine=str(item.get("decision_engine",""))
-        if engine not in {"deterministic-domain-audit/3.0","deterministic-domain-audit/4.0"}:
+        if engine not in {"deterministic-domain-audit/3.0","deterministic-domain-audit/4.0","deterministic-domain-audit/4.1"}:
             raise ValueError("approved record was not produced by a supported deterministic reviewer: "+domain)
         if domain in seen and seen[domain]!=policy:
             raise ValueError("duplicate or cross-policy approved domain: "+domain)
@@ -173,7 +173,7 @@ def main():
             approved+=1
             continue
         if scope=="suffix_candidate":
-            if engine!="deterministic-domain-audit/4.0":
+            if engine not in {"deterministic-domain-audit/4.0","deterministic-domain-audit/4.1"}:
                 raise ValueError("legacy exact-only review cannot publish suffix scope: "+domain)
             valid=[ev for ev in valid if ev.get("entry_type")=="suffix_candidate"]
         source_ids={str(ev["source_id"]) for ev in valid}
@@ -298,7 +298,7 @@ def main():
         "current_source_snapshot":"data/candidates.json",
         "artifact_scope":"standalone_rulesets_only",
         "outputs":["direct.list","proxy.list","reject.list"],
-        "review_engine":"deterministic-domain-audit/4.0",
+        "review_engine":"deterministic-domain-audit/4.1",
         "minimum_independent_sources":minimum,
         "minimum_confidence_score":threshold,
         "required_sources_by_policy":required_by_policy,
