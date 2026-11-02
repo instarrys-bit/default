@@ -52,7 +52,7 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         target.write_text(content, encoding="utf-8")
         git(self.work, "add", path)
         git(self.work, "commit", "-m", message)
-        git(self.work, "push", "origin", "main")
+        git(self.work, "push", "origin", "HEAD:main")
         git(self.work, "checkout", "--detach", self.base)
 
     def test_docs_only_change_rebases_to_current_main(self):
