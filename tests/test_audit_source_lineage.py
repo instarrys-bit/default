@@ -36,6 +36,42 @@ class SourceLineageIsolationTests(unittest.TestCase):
         self.assertEqual(report["sources"][0]["lineage_status"], "unverified")
         self.assertEqual(report["lineage_verified_count"], 0)
 
+    def test_shared_reference_index_preserves_pairwise_overlap_without_comparing_unrelated_rows(self):
+        records = [
+            {"repository": "one/a", "status": "ok", "refs": ["x", "y", "x"]},
+            {"repository": "two/b", "status": "ok", "refs": ["y", "z"]},
+            {"repository": "three/c", "status": "ok", "refs": ["z"]},
+            {"repository": "four/d", "status": "error", "refs": ["x", "z"]},
+        ]
+        pairs = shared_reference_pairs(records, "refs", "ok")
+        self.assertEqual(pairs, [
+            {"left": 0, "right": 1, "shared": ["y"]},
+            {"left": 1, "right": 2, "shared": ["z"]},
+        ])
+
+    def test_candidate_readme_is_reused_when_discovery_hash_matches(self):
+        config = {"sources": []}
+        candidates = [{
+            "repository": "example/rules",
+            "default_branch": "main",
+            "readme_sha256": "a" * 64,
+            "rule_list_urls": ["https://raw.githubusercontent.com/example/rules/main/list.list"],
+        }]
+        prior = {"candidate_sources": [{
+            "repository": "example/rules",
+            "readme_url": "https://raw.githubusercontent.com/example/rules/main/README.md",
+            "readme_sha256": "a" * 64,
+            "referenced_repositories": ["upstream/base"],
+            "reference_count": 1,
+            "lineage_status": "unverified",
+            "status": "audited_reference_inventory",
+        }]}
+        def unexpected_fetch(url):
+            raise AssertionError("unchanged README should be served from the validated prior snapshot")
+        report = audit_registry(config, fetcher=unexpected_fetch, candidates=candidates, previous_report=prior)
+        self.assertEqual(report["candidate_readme_audited_count"], 1)
+        self.assertEqual(report["candidate_sources"][0]["referenced_repositories"], ["upstream/base"])
+
 
 if __name__ == "__main__":
     unittest.main()
