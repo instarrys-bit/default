@@ -89,9 +89,9 @@ jobs:
           PY
           )"
 
-          # Daily audit is scheduled at 20:00 UTC. A 25-hour threshold tolerates
-          # ordinary queue delays while recovering a missed or persistently failed run.
-          if [ "$age_seconds" -gt 90000 ]; then
+          # Weekly audit is scheduled at 20:00 UTC on Sunday. An 8-day threshold
+          # tolerates queue delays while recovering a missed scheduled run.
+          if [ "$age_seconds" -gt 691200 ]; then
             echo "Last successful audit is stale (${age_seconds}s); dispatching recovery run."
             gh workflow run auto_sync.yml --ref main --repo "$REPO"
           else
