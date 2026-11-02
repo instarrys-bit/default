@@ -56,5 +56,19 @@ class DiagnoseWorkflowFailureTests(unittest.TestCase):
         self.assertEqual(result["evidence"], [])
 
 
+    def test_config_baseline_mismatch_is_reported_without_authorizing_config_edits(self):
+        result = diagnose(
+            "ERROR: User config baseline mismatch for shadowrocket/ss.conf: "
+            + "2e528134059b629605d20b52481516dd16a53580; expected "
+            + "315b8fbd168b834df9dbc52b551b823221c5d99f\n"
+            + "##[error]Process completed with exit code 1.",
+            "456",
+        )
+        self.assertEqual(result["classification"], "CONFIG_BASELINE_MISMATCH")
+        self.assertIsNone(result["repair_id"])
+        self.assertFalse(result["automatic_code_change_allowed"])
+        self.assertEqual(len(result["evidence"]), 1)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -60,5 +60,20 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("git add shadowrocket/ss.conf", workflow)
 
 
+    def test_config_validator_failures_are_monitored_and_incidents_are_resolved_on_recovery(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn('      - "Validate Shadowrocket config against user baseline"', workflow)
+        self.assertIn("resolve-baseline-incident:", workflow)
+        self.assertIn("CONFIG_BASELINE_MISMATCH", workflow)
+        self.assertIn("The protected config was not modified.", workflow)
+
+    def test_baseline_registration_has_owner_history_credentials(self):
+        workflow = AUTO_SYNC.read_text(encoding="utf-8")
+        self.assertGreaterEqual(workflow.count("GH_TOKEN: ${{ github.token }}"), 2)
+        self.assertGreaterEqual(workflow.count("GITHUB_REPOSITORY: ${{ github.repository }}"), 2)
+        self.assertIn("owner_approved_config_history", (ROOT / "scripts" / "register_config_baseline.py").read_text(encoding="utf-8"))
+
+
+
 if __name__ == "__main__":
     unittest.main()

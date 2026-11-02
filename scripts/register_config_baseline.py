@@ -35,6 +35,46 @@ def owner_approved_push_changed_config() -> bool:
     return "shadowrocket/ss.conf" in result.stdout.splitlines()
 
 
+def owner_approved_config_history(guard: dict) -> list[str]:
+    """Recover interrupted registration only from owner-authored config commits."""
+    if os.environ.get("GITHUB_EVENT_NAME") != "push":
+        return []
+    actor = os.environ.get("GITHUB_ACTOR", "")
+    owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "")
+    ref = os.environ.get("GITHUB_REF", "")
+    after = os.environ.get("GITHUB_SHA", "")
+    repo = os.environ.get("GITHUB_REPOSITORY", "")
+    baseline_commit = str(guard.get("last_user_approved_baseline_update", {}).get("commit_sha", ""))
+    if (
+        not actor or actor != owner or ref != "refs/heads/main"
+        or not after or not repo or not baseline_commit
+        or set(after) == {"0"} or set(baseline_commit) == {"0"}
+    ):
+        return []
+    ancestry = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", baseline_commit, after],
+        cwd=ROOT, check=False, capture_output=True, text=True,
+    )
+    if ancestry.returncode != 0:
+        return []
+    history = subprocess.run(
+        ["git", "log", "--format=%H", f"{baseline_commit}..{after}", "--", str(guard["path"])],
+        cwd=ROOT, check=True, capture_output=True, text=True,
+    )
+    commits = [line.strip() for line in history.stdout.splitlines() if line.strip()]
+    if not commits:
+        return []
+    # Git author text can be forged. Require GitHub's account association for every commit.
+    for commit_sha in commits:
+        author = subprocess.run(
+            ["gh", "api", f"repos/{repo}/commits/{commit_sha}", "--jq", ".author.login // empty"],
+            cwd=ROOT, check=True, capture_output=True, text=True,
+        ).stdout.strip()
+        if author != owner:
+            return []
+    return commits
+
+
 def main() -> int:
     policy = json.loads(POLICY.read_text(encoding="utf-8"))
     guard = policy["managed_config_guard"]
@@ -43,10 +83,12 @@ def main() -> int:
     previous = str(guard["approved_git_blob_sha"])
     changed = actual != previous
 
-    if not owner_approved_push_changed_config():
+    direct_push_approval = owner_approved_push_changed_config()
+    recovered_commits = [] if direct_push_approval else owner_approved_config_history(guard)
+    if not direct_push_approval and not recovered_commits:
         if changed:
             raise ValueError(
-                "ss.conf differs from the approved baseline, but this run is not an owner-authored push changing ss.conf; refusing automatic approval."
+                "ss.conf differs from the approved baseline, but no current or recoverable owner-approved config change was verified; refusing automatic approval."
             )
         print(json.dumps({"registered": False, "reason": "no owner-approved ss.conf change", "blob_sha": actual}))
         return 0
@@ -56,10 +98,17 @@ def main() -> int:
         return 0
 
     guard["approved_git_blob_sha"] = actual
+    approval_mode = "owner_push_changed_config" if direct_push_approval else "recovered_owner_authored_config_history"
     guard["last_user_approved_baseline_update"] = {
         "previous_blob_sha": previous,
         "new_blob_sha": actual,
-        "reason": "Repository owner pushed an ss.conf change; register that exact user-approved file version. Automation does not edit ss.conf.",
+        "reason": (
+            "Register the exact config version from an owner-authored push."
+            if direct_push_approval else
+            "Recover an interrupted registration after verifying every intervening ss.conf-changing commit is associated with the repository owner on GitHub. Automation does not edit ss.conf."
+        ),
+        "approval_mode": approval_mode,
+        "config_change_commits": recovered_commits,
         "actor": os.environ.get("GITHUB_ACTOR"),
         "commit_sha": os.environ.get("GITHUB_SHA"),
         "registered_at": datetime.now(timezone.utc).isoformat(),
@@ -71,6 +120,8 @@ def main() -> int:
         "previous_blob_sha": previous,
         "new_blob_sha": actual,
         "actor": os.environ.get("GITHUB_ACTOR"),
+        "approval_mode": approval_mode,
+        "config_change_commits": recovered_commits,
         "config_file_modified": False,
     }, ensure_ascii=False, sort_keys=True))
     return 0

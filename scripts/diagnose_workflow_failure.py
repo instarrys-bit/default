@@ -30,6 +30,11 @@ def diagnose(log_text: str, run_id: str = "") -> dict:
     repair_id = None
     evidence = []
     stale_match = STALE_AUDIT_PATTERN.search(log_text)
+    baseline_match = re.search(
+        r"User config baseline mismatch for shadowrocket/ss\.conf:\s*([0-9a-f]{40});\s*expected\s*([0-9a-f]{40})",
+        log_text,
+        re.IGNORECASE,
+    )
     if stale_match:
         code = "STALE_SUPERSEDED"
         summary = (
@@ -37,6 +42,13 @@ def diagnose(log_text: str, run_id: str = "") -> dict:
             "No code repair or incident is needed."
         )
         evidence = [stale_match.group(0)]
+    elif baseline_match:
+        code = "CONFIG_BASELINE_MISMATCH"
+        summary = (
+            "The current ss.conf blob differs from its registered baseline. "
+            "The config remains read-only; only verified repository-owner config history may be registered."
+        )
+        evidence = [baseline_match.group(0)]
     elif re.search(r"differs from manifest .* count None", log_text, re.IGNORECASE):
         code = "RULESET_MANIFEST_COUNT_MISSING"
         summary = "The final RULE-SET audit could not read a policy count from the manifest."

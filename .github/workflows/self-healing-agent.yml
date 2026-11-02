@@ -2,7 +2,9 @@ name: Shadowrocket self-healing agent
 
 on:
   workflow_run:
-    workflows: ["Shadowrocket Deterministic Domain Audit (User Config Baseline)"]
+    workflows:
+      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
+      - "Validate Shadowrocket config against user baseline"
     types: [completed]
   schedule:
     - cron: "0 * * * *"
@@ -20,7 +22,7 @@ concurrency:
 
 jobs:
   diagnose-and-repair:
-    if: ${{ github.event_name == 'workflow_run' && (github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'timed_out') }}
+    if: ${{ github.event_name == 'workflow_run' && (github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'timed_out' || github.event.workflow_run.conclusion == 'startup_failure') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -123,10 +125,39 @@ jobs:
           set -euo pipefail
           classification="$(python3 -c 'import json; print(json.load(open("reports/self-healing/diagnosis.json"))["classification"])')"
           body="$(cat reports/self-healing/diagnosis.json)"
-          gh issue create \
-            --repo "$REPO" \
-            --title "Self-healing incident: $classification (run $RUN_ID)" \
-            --body "Failed workflow: $RUN_URL\n\nAutomatic repair was not applied, or the allowlisted repair is already present. No speculative code changes were made.\n\nDiagnosis:\n\n```json\n$body\n```"
+          title="Self-healing incident: $classification"
+          existing="$(gh issue list --repo "$REPO" --state open --search "\\"$title\\" in:title" --json number --jq '.[0].number')"
+          if [ -n "$existing" ] && [ "$existing" != "null" ]; then
+            gh issue comment "$existing" --repo "$REPO" --body "Repeated failure for run $RUN_ID: $RUN_URL\\n\\n```json\\n$body\\n```"
+          else
+            gh issue create \
+              --repo "$REPO" \
+              --title "$title" \
+              --body "Failed workflow run $RUN_ID: $RUN_URL\\n\\nAutomatic repair was not applied. No speculative code changes were made.\\n\\nDiagnosis:\\n\\n```json\\n$body\\n```"
+          fi
+
+
+  resolve-baseline-incident:
+    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Validate Shadowrocket config against user baseline' && github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      issues: write
+    steps:
+      - name: Close recovered config-baseline incident
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          set -euo pipefail
+          issue="$(gh issue list --repo "$REPO" --state open --search '"Self-healing incident: CONFIG_BASELINE_MISMATCH" in:title' --json number --jq '.[0].number')"
+          if [ -n "$issue" ] && [ "$issue" != "null" ]; then
+            gh issue comment "$issue" --repo "$REPO" --body "Config-baseline validation recovered. The protected config was not modified. Successful validation: $RUN_URL"
+            gh issue close "$issue" --repo "$REPO"
+          else
+            echo "No open config-baseline incident to resolve."
+          fi
 
   stale-run-watch:
     if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
