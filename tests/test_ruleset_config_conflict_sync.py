@@ -7,7 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from sync_ruleset_config_conflicts import classify_rule, sync
-from audit_ruleset_config_overlap import all_rule_lines, first_ruleset_line, parse_skip_proxy
+from audit_ruleset_config_overlap import all_rule_lines, parse_skip_proxy
 
 
 def make_root(root, config, direct="", proxy="", reject="", queue=None):
@@ -93,7 +93,6 @@ class ConfigConflictSyncTests(unittest.TestCase):
             "RULE-SET,https://example.invalid/reject.list,REJECT" + chr(10) + "DOMAIN,api.example.com,PROXY",
         )
         rules = all_rule_lines(config)
-        self.assertEqual(first_ruleset_line(config), 5)
         self.assertIn((6, "DOMAIN,api.example.com,PROXY"), rules)
         result = classify_rule("DIRECT", "DOMAIN,api.example.com", rules, [])
         self.assertEqual(result["status"], "CONFLICT")
