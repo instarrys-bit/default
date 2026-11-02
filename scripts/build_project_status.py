@@ -236,6 +236,7 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
         f"- 累计自动激活来源：{len(activation.get('activations', []))}；本轮新增：{activated_last_run}",
         f"- 自动发现仓库：{result['sources']['discovered_repository_count']}；评估文件：{result['sources']['assessed_file_count']}",
         f"- 候选域名：{candidate_count}；审核账本 APPROVED：{ledger_approved}；实际发布：{approved}；未发布差额：{approved_not_published}（ss.conf 优先级冲突 {len(unpublished_approved['baseline_conflict'])}；配置冲突归档 {len(unpublished_approved['config_conflict_archive'])}；其他 {len(unpublished_approved['other'])}）；暂缓/拒绝：{held}",
+        f"- 未发布规则明细：ss.conf 首匹配冲突 [{', '.join(x['rule'] for x in unpublished_approved['baseline_conflict']) or '无'}]；配置冲突归档 [{', '.join(x['rule'] for x in unpublished_approved['config_conflict_archive']) or '无'}]；其他 [{', '.join(x['rule'] for x in unpublished_approved['other']) or '无'}]",
         f"- 各策略独立来源组：DIRECT {source_groups['DIRECT']}，PROXY {source_groups['PROXY']}，REJECT {source_groups['REJECT']}（最低要求 {minimum_groups}）",
         f"- 血缘审计：已审计 {result['sources']['lineage_audited_count']}；已验证 {result['sources']['lineage_verified_count']}；部分 {result['sources']['lineage_partial_count']}；未验证 {result['sources']['lineage_unverified_count']}。血缘不确定性是来源说明，不作为一票否决。", "",
         "## 3. 生命周期与容量管理", "",
