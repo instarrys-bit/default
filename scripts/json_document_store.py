@@ -10,8 +10,8 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-MAX_FILE_BYTES = 50 * 1024 * 1024
-SHARD_TARGET_BYTES = 45 * 1024 * 1024
+MAX_FILE_BYTES = 50_000_000
+SHARD_TARGET_BYTES = 45_000_000
 MANIFEST_SUFFIX = ".manifest.json"
 
 
@@ -49,6 +49,8 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
             return json.loads(path.read_text(encoding="utf-8"))
         return default if default is not None else {collection_key: []}
 
+    if manifest_file.stat().st_size > MAX_FILE_BYTES:
+        raise ValueError(f"shard manifest exceeds {MAX_FILE_BYTES} bytes: {manifest_file}")
     manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
     if manifest.get("schema_version") != 1 or manifest.get("format") != "jsonl-shards-v1":
         raise ValueError(f"unsupported shard manifest: {manifest_file}")
@@ -95,6 +97,8 @@ def write_document(path: Path, payload: dict, collection_key: str) -> dict:
 
     # Estimate compact size without constructing an unbounded serialized document.
     metadata_bytes = _compact_bytes(metadata)
+    if len(metadata_bytes) > MAX_FILE_BYTES:
+        raise ValueError("document metadata exceeds the 50 MB single-file limit")
     estimate = len(metadata_bytes) + len(collection_key.encode("utf-8")) + 16
     for record in records:
         estimate += len(_compact_bytes(record)) + 1
@@ -168,7 +172,10 @@ def write_document(path: Path, payload: dict, collection_key: str) -> dict:
             "metadata": metadata,
             "shards": shard_entries,
         }
-        _atomic_write(manifest_file, (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").encode("utf-8"))
+        manifest_bytes = (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+        if len(manifest_bytes) > MAX_FILE_BYTES:
+            raise ValueError("shard manifest exceeds the 50 MB single-file limit")
+        _atomic_write(manifest_file, manifest_bytes)
         # The manifest is authoritative only after its atomic replacement.
         if path.exists():
             path.unlink()
