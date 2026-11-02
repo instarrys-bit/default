@@ -74,14 +74,14 @@
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list": [
-          "PROXY"
-        ],
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list": [
           "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list": [
+          "PROXY"
         ]
       },
       "seeded_source_urls": [
@@ -934,9 +934,9 @@
       "html_url": "https://github.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever",
       "description": "提供多款 Shadowrocket 规则，拥有强劲的广告过滤功能。每日 8 时重新构建规则。",
       "default_branch": "release",
-      "updated_at": "2026-11-02T01:24:18Z",
+      "updated_at": "2026-11-02T02:16:57Z",
       "pushed_at": "2026-11-01T23:02:46Z",
-      "stars": 31752,
+      "stars": 31753,
       "archived": false,
       "fork": false,
       "license": "NOASSERTION",
@@ -987,7 +987,7 @@
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list": [
+        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/gfw.list": [
           "DIRECT",
           "PROXY",
           "REJECT"
@@ -995,7 +995,7 @@
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list": [
           "DIRECT"
         ],
-        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/gfw.list": [
+        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list": [
           "DIRECT",
           "PROXY",
           "REJECT"
@@ -1130,17 +1130,17 @@
         "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt"
       ],
       "readme_policy_claims": {
+        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt": [
+          "DIRECT",
+          "PROXY",
+          "REJECT"
+        ],
         "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
         ],
         "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt": [
-          "DIRECT",
-          "PROXY",
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
@@ -2773,9 +2773,6 @@
         "https://raw.githubusercontent.com/gatework/surge-rules/release/proxy.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt": [
-          "PROXY"
-        ],
         "https://raw.githubusercontent.com/gatework/surge-rules/release/proxy.txt": [
           "DIRECT",
           "PROXY",
@@ -2785,6 +2782,9 @@
           "DIRECT",
           "PROXY",
           "REJECT"
+        ],
+        "https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt": [
+          "PROXY"
         ]
       },
       "seeded_source_urls": [
@@ -3261,43 +3261,43 @@
         "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_whitelist_ad.conf"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/lazy.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_cnip_ad.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_banlist.conf": [
-          "REJECT"
-        ],
         "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_backcn.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/lazy_group.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_banlist_ad.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_proxy_banad.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_whitelist_ad.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_cnip.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_direct_banad.conf": [
           "REJECT"
         ],
         "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_ad_only.conf": [
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_backcn_ad.conf": [
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_cnip.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_whitelist_ad.conf": [
           "REJECT"
         ],
         "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_whitelist.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_direct_banad.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_proxy_banad.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_banlist.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_banlist_ad.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/lazy.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/lazy_group.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_cnip_ad.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_backcn_ad.conf": [
           "REJECT"
         ]
       },
@@ -4576,37 +4576,37 @@
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/torrent.txt": [
-          "PROXY"
-        ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/telegram.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/tools.txt": [
           "PROXY"
         ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/torrent.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
+          "PROXY"
+        ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/netflix.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/telegram.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
           "PROXY"
         ]
       },

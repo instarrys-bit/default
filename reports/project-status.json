@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T02:17:11.411912+00:00",
+  "generated_at": "2026-11-02T02:22:43.620355+00:00",
   "health": "PASS",
   "integrity": {
     "config_baseline_match": true,
@@ -64,6 +64,13 @@
     "lineage_partial_count": 2,
     "lineage_unverified_count": 6,
     "lineage_verified_count": 0
+  },
+  "rule_provenance": {
+    "rule_count": 11298,
+    "exact_file_line_evidence_count": 12298,
+    "snapshot_membership_evidence_count": 2,
+    "missing_line_number_count": 2,
+    "rules_without_current_review_count": 0
   },
   "review": {
     "candidate_count": 11583,
