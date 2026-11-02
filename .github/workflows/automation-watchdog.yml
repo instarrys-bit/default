@@ -149,7 +149,7 @@ jobs:
     timeout-minutes: 8
     permissions:
       actions: write
-      contents: read
+      contents: write
       issues: write
     steps:
       - name: Checkout current main
@@ -157,23 +157,47 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
-          persist-credentials: false
+          persist-credentials: true
 
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
 
+      - name: Reconcile manifest metadata from committed rule files
+        id: refresh
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          python3 scripts/refresh_ruleset_manifest.py
+
+      - name: Publish manifest-only metadata repair
+        id: publish
+        if: ${{ steps.refresh.outcome == 'success' }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- rulesets/manifest.json; then
+            echo "Manifest metadata already matches the committed rule files and active reviewer."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- rulesets/manifest.json
+          git diff --cached --check
+          git commit -m "Reconcile published RULE-SET manifest metadata"
+          git push origin HEAD:main
+          git fetch origin main
+
       - name: Verify published rulesets, manifest and protected baseline
         id: verify
         continue-on-error: true
         run: |
           set -euo pipefail
-          python3 scripts/verify_published_rulesets.py --ref HEAD | tee /tmp/published-integrity.json
+          python3 scripts/verify_published_rulesets.py --ref origin/main | tee /tmp/published-integrity.json
           cat /tmp/published-integrity.json >> "$GITHUB_STEP_SUMMARY"
 
       - name: Dispatch one bounded reconciliation audit on mismatch
-        if: ${{ steps.verify.outcome == 'failure' && !(github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch') }}
+        if: ${{ steps.refresh.outcome == 'success' && steps.verify.outcome == 'failure' && !(github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch') }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
@@ -187,6 +211,23 @@ jobs:
           fi
           echo "No current-main audit is active. Dispatching one bounded reconciliation audit for $current_sha."
           gh workflow run auto_sync.yml --ref main --repo "$REPO"
+
+      - name: Open manifest metadata repair incident
+        if: ${{ always() && (steps.refresh.outcome == 'failure' || steps.publish.outcome == 'failure') }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          title="RULE-SET manifest metadata repair failed"
+          body="Watchdog could not safely reconcile manifest metadata from the committed DIRECT/PROXY/REJECT files. No rule file or ss.conf was modified.\n\nRun: $RUN_URL\n\nInspect the manifest refresh or manifest-only publish step. The issue is intentionally fail-closed; no source rebuild was dispatched."
+          issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
+          if [ -n "$issue" ] && [ "$issue" != "null" ]; then
+            gh issue comment "$issue" --repo "$REPO" --body "$body"
+          else
+            gh issue create --repo "$REPO" --title "$title" --body "$body"
+          fi
 
       - name: Open bounded integrity incident if reconciliation did not repair
         if: ${{ steps.verify.outcome == 'failure' && (github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch')) }}
