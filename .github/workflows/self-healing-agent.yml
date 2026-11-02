@@ -312,11 +312,16 @@ jobs:
           PY
           )"
 
-          if [ "$cancelled_any" = "1" ] || [ "$last_success_sha" != "$current_main" ] || [ "$age_seconds" -gt 691200 ]; then
+          if [ "$timed_out_any" = "1" ] || [ "$last_success_sha" != "$current_main" ] || [ "$age_seconds" -gt 691200 ]; then
             echo "No current-main audit is active and the last successful audit is stale or superseded; dispatching one replacement."
             gh workflow run auto_sync.yml --ref main --repo "$REPO"
           else
             echo "The latest successful audit matches current main and is within the eight-day health window."
+            issue="$(gh issue list --repo "$REPO" --state open --search "stalled audit in:title" --json number,title --jq '.[0].number')"
+            if [ -n "$issue" ] && [ "$issue" != "null" ]; then
+              gh issue comment "$issue" --repo "$REPO" --body "A successful audit now matches current main $current_main and is within the eight-day health window."
+              gh issue close "$issue" --repo "$REPO"
+            fi
           fi
 
           if [ "$timed_out_any" = "1" ]; then
