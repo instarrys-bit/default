@@ -39,7 +39,7 @@ class ConfigConflictRunReportTests(unittest.TestCase):
                 json.dumps({"schema_version": 1, "max_published_rules": 30000, "queued_count": 0, "items": []}),
                 encoding="utf-8"
             )
-            with patch.dict("os.environ", {"GITHUB_RUN_ID": "test-run-123"}):
+            with patch.dict("os.environ", {"GITHUB_RUN_ID": "test-run-123", "RULESET_CONFIG_REPORT_AGGREGATION": "1"}):
                 first = sync(root=root, now="2026-11-02T00:00:00+00:00")
                 second = sync(root=root, now="2026-11-02T00:01:00+00:00")
             saved = json.loads((root / "reports" / "ruleset-config-conflict-sync.json").read_text(encoding="utf-8"))
