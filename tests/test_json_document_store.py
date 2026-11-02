@@ -70,6 +70,23 @@ class JsonDocumentStoreTests(unittest.TestCase):
                         store.write_document(path, second, "reviews")
                 self.assertEqual(store.read_document(path, "reviews"), first)
 
+    def test_iter_document_records_streams_shards_and_matches_read_document(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            payload = {"schema_version": 1, "reviews": [{"id": i, "payload": "q" * 900} for i in range(7)]}
+            with patch.object(store, "MAX_FILE_BYTES", 4096), patch.object(store, "SHARD_TARGET_BYTES", 1200):
+                store.write_document(path, payload, "reviews")
+                streamed = list(store.iter_document_records(path, "reviews"))
+                self.assertEqual(streamed, payload["reviews"])
+                self.assertEqual(len(streamed), len(store.read_document(path, "reviews")["reviews"]))
+
+    def test_iter_document_records_reads_legacy_json(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            records = [{"domain": "one.example"}, {"domain": "two.example"}]
+            path.write_text(json.dumps({"reviews": records}), encoding="utf-8")
+            self.assertEqual(list(store.iter_document_records(path, "reviews")), records)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
