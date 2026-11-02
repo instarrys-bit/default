@@ -99,13 +99,40 @@ class LifecycleAuditSafetyTests(unittest.TestCase):
             saved=json.loads((rules/"deletion_archive.json").read_text(encoding="utf-8"))
             self.assertIsNotNone(saved["items"][0].get("restored_at"))
 
-    def test_due_lifecycle_run_reaches_completion_hook(self):
+    def test_restore_refuses_cross_policy_published_overlap(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)
             rules=root/"rulesets"
             (root/"sources").mkdir()
             rules.mkdir()
             (rules/"direct.list").write_text("DOMAIN,old.example\\n",encoding="utf-8")
+            (rules/"proxy.list").write_text("",encoding="utf-8")
+            (rules/"reject.list").write_text("",encoding="utf-8")
+            (rules/"lifecycle_state.json").write_text(json.dumps({
+                "due_milestones":[],"monthly_review_due":False,"published_rule_count":1
+            }),encoding="utf-8")
+            (rules/"deletion_archive.json").write_text(json.dumps({"items":[{
+                "id":"restore-proxy","policy":"proxy","rule":"DOMAIN,old.example","domain":"old.example"
+            }]}),encoding="utf-8")
+            (rules/"pending_queue.json").write_text(json.dumps({"items":[]}),encoding="utf-8")
+            (root/"sources/protected_domains.json").write_text(json.dumps({
+                "protected_exact":[],"protected_suffixes":[]
+            }),encoding="utf-8")
+            with patch.object(lifecycle_audit,"ROOT",root), patch.object(lifecycle_audit,"DIR",rules), patch.object(lifecycle_audit,"REPORT",root/"reports/lifecycle"), patch.dict(os.environ,{"LIFECYCLE_RESTORE_IDS":"restore-proxy"}), patch("lifecycle_audit.inspect",side_effect=AssertionError("restore-only must not run DNS deletion checks")):
+                lifecycle_audit.main()
+            self.assertEqual((rules/"proxy.list").read_text(encoding="utf-8"),"")
+            report=json.loads((root/"reports/lifecycle/latest.json").read_text(encoding="utf-8"))
+            self.assertEqual(len(report["restore_refused"]),1)
+            archive=json.loads((rules/"deletion_archive.json").read_text(encoding="utf-8"))
+            self.assertIsNone(archive["items"][0].get("restored_at"))
+
+    def test_due_lifecycle_run_reaches_completion_hook(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            rules=root/"rulesets"
+            (root/"sources").mkdir()
+            rules.mkdir()
+            (rules/"direct.list").write_text("DOMAIN,old.example\n",encoding="utf-8")
             for policy in ("proxy","reject"):
                 (rules/(policy+".list")).write_text("",encoding="utf-8")
             state={"due_milestones":[5000],"monthly_review_due":False,"published_rule_count":5000}
