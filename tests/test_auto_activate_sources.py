@@ -65,6 +65,7 @@ class AutoActivationTests(unittest.TestCase):
         self.assertEqual(source["lineage_status"], "unverified")
         self.assertTrue(source["bootstrap_enqueue"])
         self.assertEqual(source["role"], "primary_candidate_source")
+        self.assertEqual(source["lineage_evidence_url"], "https://github.com/new/direct/blob/main/domains.list")
 
     @patch("auto_activate_sources.urlopen")
     def test_leading_dot_source_is_enabled_only_with_assessment_metadata(self, mocked_urlopen):
