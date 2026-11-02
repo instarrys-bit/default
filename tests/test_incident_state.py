@@ -96,7 +96,7 @@ class IncidentStateTests(unittest.TestCase):
                 source_sha=SHA,
                 classification="TEST_FAILURE",
                 event_id="verify-run-1",
-                target_state="VERIFYING",
+                target_state="DETECTED",
             )
 
     def test_legacy_issue_can_be_bootstrapped_only_with_recovery_evidence(self):
