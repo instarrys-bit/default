@@ -22,11 +22,13 @@ MAX_PUBLISHED_RULES = 30_000
 
 def _read_rules(path: Path) -> tuple[list[str], str]:
     raw = path.read_text(encoding="utf-8")
-    lines = [line.strip() for line in raw.splitlines() if line.strip() and not line.lstrip().startswith("#")]
-    if any(not DOMAIN_LINE.fullmatch(line) for line in lines):
+    lines = [line.strip() for line in raw.splitlines() if line.strip()]
+    parsed = [DOMAIN_LINE.fullmatch(line) for line in lines]
+    if any(match is None for match in parsed):
         raise ValueError(f"{path.name} contains an unsupported or malformed rule")
-    if len(lines) != len(set(lines)):
-        raise ValueError(f"{path.name} contains duplicate rules")
+    normalized = [(match.group(1).upper(), match.group(2).lower()) for match in parsed]
+    if len(normalized) != len(set(normalized)):
+        raise ValueError(f"{path.name} contains duplicate domain scopes")
     canonical = "\n".join(lines) + ("\n" if lines else "")
     return lines, hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
