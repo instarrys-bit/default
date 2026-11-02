@@ -34,7 +34,8 @@ permissions:
 
 concurrency:
   group: shadowrocket-main-writer
-  cancel-in-progress: true
+  # Keep the active audit; stale-commit guards stop obsolete runs safely.
+  cancel-in-progress: false
 
 jobs:
   audit:
@@ -558,10 +559,11 @@ jobs:
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           COMMIT_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
         run: |
-          title="Shadowrocket automation failure"
-          body="The scheduled deterministic pipeline failed.\n\nRun: $RUN_URL\nCommit: $COMMIT_SHA\n\nPlease inspect the failed job and logs. This issue is maintained automatically."
-          existing="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
+          title="Shadowrocket automation failure (run $RUN_ID)"
+          body="The deterministic pipeline failed.\n\nRun: $RUN_URL\nCommit: $COMMIT_SHA\n\n<!-- shadowrocket-automation:workflow=auto_sync;run_id=$RUN_ID -->\n\nPlease inspect the failed job and logs. This issue is maintained automatically."
+          existing="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title | jq --arg title "$title" -r '.[] | select(.title == $title) | .number' | head -n 1)"
           if [ -n "$existing" ] && [ "$existing" != "null" ]; then
             gh issue comment "$existing" --repo "$REPO" --body "$body"
           else
@@ -581,15 +583,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          issues="$(gh issue list --repo "$REPO" --state open --search '"Shadowrocket automation failure" in:title' --json number --jq '.[].number')"
+          issues="$(gh issue list --repo "$REPO" --state open --search '"Shadowrocket automation failure" in:title' --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select(.title | startswith("Shadowrocket automation failure (run ")) | select(.body | contains("shadowrocket-automation:workflow=auto_sync;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=auto_sync;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
           if [ -z "$issues" ]; then
-            echo "No open automation incident to resolve."
+            echo "No earlier, explicitly linked auto_sync incident to resolve."
             exit 0
           fi
           while IFS= read -r issue; do
             [ -n "$issue" ] || continue
-            gh issue comment "$issue" --repo "$REPO" --body "A subsequent deterministic audit and publish succeeded. Recovery run: $RUN_URL"
+            gh issue comment "$issue" --repo "$REPO" --body "A later full deterministic audit and publish succeeded. Recovery run: $RUN_URL"
             gh issue close "$issue" --repo "$REPO"
           done <<< "$issues"
