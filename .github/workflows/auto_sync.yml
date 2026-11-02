@@ -468,6 +468,13 @@ jobs:
             if [[ -e "$pattern" ]]; then git add -- "$pattern"; fi
           done
 
+          # When a legacy monolith has been replaced by a manifest, stage its deletion.
+          for base in sources/discovered_sources.json sources/source_assessments.json sources/source_candidates.json; do
+            if [[ ! -e "$base" ]] && git ls-files --error-unmatch "$base" >/dev/null 2>&1; then
+              git add -u -- "$base"
+            fi
+          done
+
           # Explicitly fail if the protected config somehow entered the staged commit.
           git diff --cached --quiet "$GITHUB_SHA" -- shadowrocket/ss.conf || {
             echo "Protected config shadowrocket/ss.conf is staged; refusing to commit."
