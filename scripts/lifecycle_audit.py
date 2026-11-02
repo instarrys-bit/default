@@ -42,7 +42,7 @@ def scope_intersects_rule(left,right):
         if len(fields)!=2 or fields[0] not in {"DOMAIN","DOMAIN-SUFFIX"}:
             return None
         domain=fields[1].lower().strip(".")
-        if not re.fullmatch(r"(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+",domain):
+        if not re.fullmatch(r"(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+",domain):
             return None
         return fields[0],domain
     a=parse(left); b=parse(right)
