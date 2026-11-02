@@ -11,7 +11,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
     def test_watchdog_observes_completed_main_audit_runs(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("workflow_run:", workflow)
-        self.assertIn('workflows: ["Shadowrocket Deterministic Domain Audit (User Config Baseline)"]', workflow)
+        self.assertIn('      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"', workflow)
+        self.assertIn('      - "Validate Shadowrocket config against user baseline"', workflow)
         self.assertIn("types: [completed]", workflow)
 
     def test_failed_timed_out_or_startup_failed_scheduled_or_push_runs_trigger_one_recovery(self):
