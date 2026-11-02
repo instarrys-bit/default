@@ -131,6 +131,42 @@ def _archive_id(policy: str, line: str, config_blob_sha: str) -> str:
     return "cfg-" + hashlib.sha256(raw.encode("utf-8")).hexdigest()[:20]
 
 
+def _merge_report_for_run(previous: dict, current: dict) -> dict:
+    """Preserve every sync pass report within one GitHub Actions run."""
+    if previous.get("config_blob_sha") != current.get("config_blob_sha"):
+        raise ValueError("ss.conf changed during one workflow run; refusing to merge conflict reports")
+
+    merged = dict(current)
+    merged["published_before"] = previous.get("published_before", current["published_before"])
+    merged["sync_passes"] = list(previous.get("sync_passes", []))
+
+    def merge_records(field: str, keys: tuple[str, ...]) -> list[dict]:
+        records: dict[tuple, dict] = {}
+        for item in list(previous.get(field, [])) + list(current.get(field, [])):
+            key = tuple(item.get(name) for name in keys)
+            records[key] = item
+        return list(records.values())
+
+    merged["removed"] = merge_records("removed", ("id",))
+    merged["suppressed_active_archive"] = merge_records("suppressed_active_archive", ("policy", "rule", "origin"))
+    merged["retained_for_review"] = merge_records("retained_for_review", ("policy", "rule", "origin", "status", "config_line"))
+    merged["restored"] = merge_records("restored", ("id",))
+    merged["restore_refused"] = merge_records("restore_refused", ("id", "reason"))
+    for field in ("published_removed_count", "published_added_count", "pending_queue_removed_count", "removed_count"):
+        merged[field] = int(previous.get(field, 0)) + int(current.get(field, 0))
+    merged["retained_for_review_count"] = len(merged["retained_for_review"])
+    merged["sync_passes"].append({
+        "completed_at": current["completed_at"],
+        "published_before": current["published_before"],
+        "published_after": current["published_after"],
+        "published_removed_count": current["published_removed_count"],
+        "pending_queue_removed_count": current["pending_queue_removed_count"],
+        "retained_for_review_count": current["retained_for_review_count"],
+        "restored_count": len(current["restored"]),
+        "restore_refused_count": len(current["restore_refused"]),
+    })
+    return merged
+
 def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | None = None) -> dict:
     root = Path(root)
     rules_dir = root / "rulesets"
@@ -413,6 +449,25 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "policy": "Every provable exact/suffix scope overlap with ss.conf or skip-proxy is removed from published and queued external rules, regardless of whether the policy matches. The earliest applicable config rule is recorded as precedence evidence. Historical archive entries are rechecked against the current config and superseded when the overlap no longer exists. Keyword/regex/conditional overlaps that cannot be proven from static domain scope are retained and reported; no speculative deletion is allowed.",
         "errors": [],
     }
+    run_id = os.environ.get("GITHUB_RUN_ID", "").strip()
+    if run_id:
+        report["workflow_run_id"] = run_id
+        if report_json.exists():
+            previous_report = json.loads(report_json.read_text(encoding="utf-8"))
+            if previous_report.get("workflow_run_id") == run_id:
+                report = _merge_report_for_run(previous_report, report)
+
+    if not report.get("sync_passes"):
+        report["sync_passes"] = [{
+            "completed_at": report["completed_at"],
+            "published_before": report["published_before"],
+            "published_after": report["published_after"],
+            "published_removed_count": report["published_removed_count"],
+            "pending_queue_removed_count": report["pending_queue_removed_count"],
+            "retained_for_review_count": report["retained_for_review_count"],
+            "restored_count": len(report["restored"]),
+            "restore_refused_count": len(report["restore_refused"]),
+        }]
     report_json.parent.mkdir(parents=True, exist_ok=True)
     report_json.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     lines = [
