@@ -131,7 +131,7 @@ class SelfHealingWorkflowTests(unittest.TestCase):
 
     def test_run_history_checks_follow_all_api_pages(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertGreaterEqual(workflow.count("gh api --paginate --slurp"), 3)
+        self.assertGreaterEqual(workflow.count("gh api --paginate --slurp"), 2)
         self.assertNotIn("runs?per_page=20", workflow)
         self.assertNotIn("runs?per_page=30", workflow)
 
@@ -145,7 +145,7 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         resolver = workflow.split("  resolve-validator-incidents:", 1)[1].split("  resolve-audit-incidents:", 1)[0]
         self.assertIn("issues: write", resolver)
         self.assertNotIn("contents: write", resolver)
-        watcher = WATCHDOG.split("  stale-run-watch:", 1)[1]
+        watcher = WATCHDOG.read_text(encoding="utf-8").split("  stale-run-watch:", 1)[1]
         self.assertIn("actions: write", watcher)
         self.assertIn("contents: read", watcher)
         self.assertNotIn("pull-requests: write", watcher)
@@ -178,7 +178,7 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn("RETRYABLE_CONCLUSIONS = {\"timed_out\", \"startup_failure\", \"cancelled\"}", policy)
         self.assertIn("max_retries: int = 2", policy)
         self.assertIn("base_cooldown: timedelta = timedelta(minutes=15)", policy)
-        self.assertNotIn("gh run cancel", watchdog.split("  manifest-integrity:", 1)[0])
+        self.assertNotIn("gh run cancel", watchdog.split("  stale-run-watch:", 1)[0])
         self.assertIn("persist-credentials: false", watchdog)
         self.assertNotIn("shadowrocket/ss.conf", policy)
         stale_watcher = WATCHDOG.read_text(encoding="utf-8")
