@@ -9,12 +9,16 @@ WORKFLOW = ROOT / ".github" / "workflows" / "auto_sync.yml"
 class WorkflowConfigGuardOrderTests(unittest.TestCase):
     def test_stale_audit_guard_runs_before_expensive_domain_review(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
+        early_guard = workflow.index("Stop stale audit before discovery and source downloads")
+        discovery = workflow.index("Discover candidate source repositories (non-activating)")
         guard = workflow.index("Stop stale audit before expensive deterministic review")
         review = workflow.index("Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services")
+        self.assertLess(early_guard, discovery)
         self.assertLess(guard, review)
         self.assertIn('current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"', workflow)
+        self.assertIn('Stopping before source discovery.', workflow)
         self.assertIn('Refusing to spend resources on stale review inputs.', workflow)
-        self.assertIn("cancel-in-progress: false", workflow)
+        self.assertIn("cancel-in-progress: true", workflow)
         self.assertIn("group: shadowrocket-main-writer", workflow)
         self.assertIn("Independently verify committed remote rulesets", workflow)
         self.assertLess(workflow.index("git push origin HEAD:main"), workflow.index("Independently verify committed remote rulesets"))
