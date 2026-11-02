@@ -113,10 +113,12 @@ jobs:
         run: python3 scripts/collect_domains.py
 
       - name: Stop stale audit before expensive deterministic review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          git fetch origin main
-          current_main="$(git rev-parse origin/main)"
+          current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"
           if [ "$current_main" != "$GITHUB_SHA" ]; then
             echo "Audit commit $GITHUB_SHA is stale; current main is $current_main. Refusing to spend resources on stale review inputs." >&2
             exit 1

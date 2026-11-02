@@ -12,7 +12,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         guard = workflow.index("Stop stale audit before expensive deterministic review")
         review = workflow.index("Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services")
         self.assertLess(guard, review)
-        self.assertIn('current_main="$(git rev-parse origin/main)"', workflow)
+        self.assertIn('current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"', workflow)
         self.assertIn('Refusing to spend resources on stale review inputs.', workflow)
 
     def test_config_conflicts_are_checked_before_and_after_rule_mutations(self):
