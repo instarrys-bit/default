@@ -15,6 +15,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn('current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"', workflow)
         self.assertIn('Refusing to spend resources on stale review inputs.', workflow)
         self.assertIn("cancel-in-progress: false", workflow)
+        self.assertIn("group: shadowrocket-main-writer", workflow)
         self.assertIn("Independently verify committed remote rulesets", workflow)
         self.assertLess(workflow.index("git push origin HEAD:main"), workflow.index("Independently verify committed remote rulesets"))
 
