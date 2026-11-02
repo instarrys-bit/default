@@ -14,6 +14,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertLess(guard, review)
         self.assertIn('current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"', workflow)
         self.assertIn('Refusing to spend resources on stale review inputs.', workflow)
+        self.assertIn("cancel-in-progress: true", workflow)
 
     def test_config_conflicts_are_checked_before_and_after_rule_mutations(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
