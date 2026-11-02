@@ -29,22 +29,29 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
 
-      - name: Diagnose failed workflow
-        id: diagnosis
+      - name: Download failed workflow logs
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           RUN_ID: ${{ github.event.workflow_run.id }}
         run: |
           set -euo pipefail
-          mkdir -p reports/self-healing
           gh run view "$RUN_ID" --repo "$REPO" --log-failed > /tmp/failed-run.log
+
+      - name: Diagnose failed workflow
+        id: diagnosis
+        env:
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+          mkdir -p reports/self-healing
           python3 scripts/diagnose_workflow_failure.py \
             --log /tmp/failed-run.log \
             --run-id "$RUN_ID" \
@@ -55,8 +62,6 @@ jobs:
       - name: Apply allowlisted repair and run tests
         id: repair
         env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
           RUN_ID: ${{ github.event.workflow_run.id }}
           REPAIR_ID: ${{ steps.diagnosis.outputs.repair_id }}
         run: |
@@ -83,14 +88,26 @@ jobs:
           git checkout -b "$branch"
           git add .github/workflows/auto_sync.yml
           git commit -m "Self-heal: reconcile final ruleset manifest counts"
-          git push origin "$branch"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+
+      - name: Publish repair pull request
+        if: ${{ steps.repair.outputs.changed == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ steps.repair.outputs.branch }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+          gh auth setup-git
+          git push origin "$BRANCH"
           gh pr create \
             --repo "$REPO" \
             --base main \
-            --head "$branch" \
+            --head "$BRANCH" \
             --title "Self-heal: reconcile final RULE-SET manifest counts" \
-            --body "Automated, allowlisted repair proposed after workflow run $RUN_ID.\n\n- Diagnosis: RULESET_MANIFEST_COUNT_MISSING or RULESET_MANIFEST_COUNT_MISMATCH.\n- Change: restore the deterministic final-manifest reconciliation step.\n- Validation: Python compilation and the repository unittest suite passed.\n- Safety: no changes to shadowrocket/ss.conf, DNS, MITM, or routing policy.\n\nThis PR is not auto-merged; normal review and CI remain required."
-          echo "changed=true" >> "$GITHUB_OUTPUT"
+            --body "Automated, allowlisted repair proposed after workflow run $RUN_ID.\n\n- Diagnosis: RULESET_MANIFEST_COUNT_MISSING or RULESET_MANIFEST_COUNT_MISMATCH.\n- Change: restore the deterministic final-manifest reconciliation step.\n- Validation: Python compilation and the repository unittest suite passed before publishing this PR.\n- Safety: no changes to shadowrocket/ss.conf, DNS, MITM, or routing policy.\n\nThis PR is not auto-merged."
 
       - name: Open incident when no safe repair applies
         if: ${{ steps.repair.outputs.changed != 'true' }}
@@ -99,7 +116,6 @@ jobs:
           REPO: ${{ github.repository }}
           RUN_ID: ${{ github.event.workflow_run.id }}
           RUN_URL: ${{ github.event.workflow_run.html_url }}
-          REPAIR_ID: ${{ steps.diagnosis.outputs.repair_id }}
         run: |
           set -euo pipefail
           classification="$(python3 -c 'import json; print(json.load(open("reports/self-healing/diagnosis.json"))["classification"])')"
