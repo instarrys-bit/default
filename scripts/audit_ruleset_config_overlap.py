@@ -91,7 +91,7 @@ def prepare_rules(rules: list[tuple[int, str]]) -> RuleIndex:
             continue
         domain = fields[1].lower().strip(".")
         policy = fields[2].upper()
-        if policy in POLICIES:
+        if policy in {"DIRECT", "PROXY"}:
             parsed.append(DomainRule(fields[0].upper(), domain, policy, number, line))
     return RuleIndex(parsed)
 
@@ -215,7 +215,8 @@ def audit(config_text: str, ledger: dict) -> dict:
         "errors": errors,
         "passed": not errors,
         "limitations": [
-            "Only explicit DOMAIN and DOMAIN-SUFFIX scopes are compared.",
+            "Only explicit DIRECT/PROXY DOMAIN and DOMAIN-SUFFIX scopes are compared.",
+            "REJECT rules in ss.conf are excluded from automated analysis; blocking decisions remain user-owned.",
             "A narrower exact or child-suffix exception does not suppress a broader suffix candidate.",
             "No rule order, first-match winner, or precedence is evaluated.",
             "DOMAIN-KEYWORD, URL-REGEX, compound rules, IP rules, and runtime DNS-dependent matches are not evaluated.",
