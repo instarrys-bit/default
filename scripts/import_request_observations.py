@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OBSERVATIONS = ROOT / "sources/request_domain_observations.json"
 BUFFER = ROOT / "data/domain_candidates.json"
+MAX_CANDIDATE_RECORDS = 30_000_000
 DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
 
 def main() -> None:
@@ -33,6 +34,8 @@ def main() -> None:
             }
             added += 1
     buffer["schema_version"] = 2
+    if len(queue) > MAX_CANDIDATE_RECORDS:
+        raise ValueError(f"candidate retention exceeds hard limit: {len(queue):,} > {MAX_CANDIDATE_RECORDS:,}")
     buffer["candidates"] = sorted(queue.values(), key=lambda x: x["domain"])
     BUFFER.parent.mkdir(parents=True, exist_ok=True)
     BUFFER.write_text(json.dumps(buffer, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

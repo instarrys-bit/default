@@ -17,7 +17,8 @@ LEGACY_SNAPSHOTS={
     "sr-adblock-domain-lite":ROOT/"data/primary_snapshot.txt",
     "hagezi-domains-pro":ROOT/"data/secondary_snapshot.txt",
 }
-MAX_BYTES=30_000_000
+MAX_SOURCE_BYTES=90_000_000
+MAX_CANDIDATE_RECORDS=30_000_000
 MAX_CHANGE_RATIO=0.10
 MIN_CHANGE_ABSOLUTE=10
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
@@ -34,9 +35,9 @@ def fetch(url):
                 final=urlparse(response.geturl())
                 if response.status!=200 or final.scheme!="https" or final.hostname!="raw.githubusercontent.com":
                     raise ValueError("unexpected source response: "+response.geturl())
-                data=response.read(MAX_BYTES+1)
-            if len(data)>MAX_BYTES:
-                raise ValueError("source exceeds byte limit: "+url)
+                data=response.read(MAX_SOURCE_BYTES+1)
+            if len(data)>MAX_SOURCE_BYTES:
+                raise ValueError("source exceeds 90 MB safety limit: "+url)
             return data
         except urllib.error.HTTPError as error:
             if error.code not in transient_http or attempt==2:
@@ -331,6 +332,8 @@ def main():
         deltas[sid]={"added":added,"removed":removed,"bootstrap":bootstrap,"bootstrap_enqueued":bootstrap_enqueued}
 
     queue={x["domain"]:x for x in buf.get("candidates",[])}
+    if len(queue)>MAX_CANDIDATE_RECORDS:
+        raise ValueError(f"candidate retention exceeds hard limit: {len(queue):,} > {MAX_CANDIDATE_RECORDS:,}")
     # Only explicitly designated candidate sources enqueue new entries.
     for sid,info in source_data.items():
         if info["stale"] or info["source"].get("role")!="primary_candidate_source":
@@ -338,6 +341,8 @@ def main():
         for domain in sorted(deltas[sid]["added"]):
             if domain not in queue:
                 queue[domain]={"domain":domain,"source_id":sid,"first_seen":now}
+    if len(queue)>MAX_CANDIDATE_RECORDS:
+        raise ValueError(f"candidate retention exceeds hard limit: {len(queue):,} > {MAX_CANDIDATE_RECORDS:,}")
     rows=[]
     for domain,item in sorted(queue.items()):
         if not DOMAIN_RE.fullmatch(domain):
@@ -377,6 +382,8 @@ def main():
             "evidence":evidence,
             "first_seen":item.get("first_seen")
         })
+    if len(rows)>MAX_CANDIDATE_RECORDS:
+        raise ValueError(f"candidate review input exceeds hard limit: {len(rows):,} > {MAX_CANDIDATE_RECORDS:,}")
     SNAPSHOT_DIR.mkdir(parents=True,exist_ok=True)
     for sid,info in source_data.items():
         if info["stale"]:
@@ -402,7 +409,7 @@ def main():
         sid:{"entries":len(info["previous"]) if info["stale"] and info["previous"] is not None else len(info["domains"]),"added":len(deltas[sid]["added"]),"removed":len(deltas[sid]["removed"]),"status":"STALE_QUARANTINED" if info["stale"] else "CURRENT","baseline_initialized":deltas[sid]["bootstrap"]}
         for sid,info in sorted(source_data.items())
     },ensure_ascii=False,sort_keys=True))
-    print(f"Queued candidates: {len(rows)}; cross-policy conflicts: {sum(1 for row in rows if row['classification']=='CONFLICT')}; quarantined sources: {len(quarantined)}; no candidate cap.")
+    print(f"Queued candidates: {len(rows)}; cross-policy conflicts: {sum(1 for row in rows if row['classification']=='CONFLICT')}; quarantined sources: {len(quarantined)}; cap {MAX_CANDIDATE_RECORDS:,}.")
 if __name__=="__main__":
     try:
         main()

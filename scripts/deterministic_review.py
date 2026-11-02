@@ -18,6 +18,7 @@ SOURCE_MATRIX=ROOT/"sources/source_candidates.json"
 LINEAGE_REPORT=ROOT/"reports/source-lineage-audit.json"
 LIFECYCLE_STATE=ROOT/"rulesets/lifecycle_state.json"
 RULESET_DIR=ROOT/"rulesets"
+MAX_REVIEW_RECORDS=30_000_000
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
 COND_RE=re.compile(r"(DOMAIN-SUFFIX|DOMAIN),([A-Za-z0-9.-]+)",re.I)
 def fail(msg): raise SystemExit("ERROR: "+msg)
@@ -267,6 +268,8 @@ def main():
     else:
         prior={"schema_version":1,"reviews":[]}
     review_map={x["domain"]:x for x in prior.get("reviews",[])}
+    if len(review_map)>MAX_REVIEW_RECORDS:
+        fail(f"historical review ledger exceeds hard limit: {len(review_map):,} > {MAX_REVIEW_RECORDS:,}")
     lifecycle_state=json.loads(LIFECYCLE_STATE.read_text(encoding="utf-8")) if LIFECYCLE_STATE.exists() else {}
     lifecycle_active=bool(lifecycle_state.get("active"))
     published_identities=set()
@@ -282,10 +285,12 @@ def main():
                 published_identities.add((policy_name.upper(),line[14:],"suffix_candidate"))
     run_counts={}
     candidates=collected.get("candidates",[])
+    if len(candidates)>MAX_REVIEW_RECORDS:
+        fail(f"candidate review input exceeds hard limit: {len(candidates):,} > {MAX_REVIEW_RECORDS:,}")
     snapshot_sha256=snapshot_digest(collected.get("sources",[]),candidates)
     cursor_state=json.loads(CURSOR.read_text(encoding="utf-8")) if CURSOR.exists() else {}
     start_index=resume_index(cursor_state,snapshot_sha256,len(candidates))
-    batch_size=250
+    batch_size=5000
     for candidate_index,item in enumerate(candidates[start_index:],start=start_index):
         domain=str(item.get("domain","")).lower().rstrip(".")
         if not DOMAIN_RE.fullmatch(domain): fail("invalid candidate domain: "+domain)
@@ -360,6 +365,8 @@ def main():
                 "reason":"Temporary evidence insufficiency does not remove an already-published rule before the 5,000-rule lifecycle gate activates.",
                 "checked_at":now
             }
+        if domain not in review_map and len(review_map)>=MAX_REVIEW_RECORDS:
+            fail(f"historical review ledger would exceed hard limit: {MAX_REVIEW_RECORDS:,}")
         review_map[domain]=new_record
         run_counts[status]=run_counts.get(status,0)+1
         if (candidate_index+1)%batch_size==0 or candidate_index+1==len(candidates):
@@ -379,7 +386,7 @@ def main():
     atomic_json(CURSOR,{**checkpoint(snapshot_sha256,len(candidates),len(candidates),batch_size,"complete"),"updated_at":now,"last_checkpoint_domain":candidates[-1].get("domain") if candidates else None})
     print("Deterministic review complete: "+json.dumps(run_counts,ensure_ascii=False,sort_keys=True))
     print("Review cursor: "+json.dumps({"status":"complete","candidate_count":len(candidates),"snapshot_sha256":snapshot_sha256,"correlated_publisher_pairs":len(correlated_pairs)},sort_keys=True))
-    print("Historical ledger entries: "+str(len(reviews))+"; candidates reviewed this run: "+str(len(collected.get("candidates",[])))+" (no 100-item cap).")
+    print("Historical ledger entries: "+str(len(reviews))+"; candidates reviewed this run: "+str(len(collected.get("candidates",[])))+" (hard ceiling: 30,000,000).")
 if __name__=="__main__":
     try: main()
     except (OSError,KeyError,ValueError,json.JSONDecodeError) as e: print("ERROR: "+str(e),file=sys.stderr); raise SystemExit(1)
