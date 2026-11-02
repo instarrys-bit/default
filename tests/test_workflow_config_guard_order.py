@@ -25,12 +25,14 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertEqual(workflow.count("python3 scripts/sync_ruleset_config_conflicts.py"), 2)
 
-    def test_publisher_allows_only_docs_changes_and_rebases_before_publish(self):
+    def test_publisher_uses_dedicated_safe_base_guard(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn('git merge-base --is-ancestor "$GITHUB_SHA" origin/main', workflow)
-        self.assertIn("docs/*)", workflow)
-        self.assertIn('git reset --hard origin/main', workflow)
-        self.assertIn("Non-documentation input or repository state changed during audit", workflow)
+        self.assertIn("bash scripts/verify_publish_base.sh", workflow)
+        guard = (ROOT / "scripts" / "verify_publish_base.sh").read_text(encoding="utf-8")
+        self.assertIn('git merge-base --is-ancestor "$GITHUB_SHA" origin/main', guard)
+        self.assertIn("docs/*)", guard)
+        self.assertIn('git reset --hard origin/main', guard)
+        self.assertIn("Non-documentation input or repository state changed during audit", guard)
 
     def test_publisher_explicitly_protects_user_managed_config(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
