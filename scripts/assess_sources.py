@@ -338,7 +338,7 @@ def compact_assessment_result(result: dict) -> dict:
     return compact
 
 def main() -> int:
-    discovery = json.loads(INPUT.read_text(encoding="utf-8"))
+    discovery = read_document(INPUT, "candidates", {"candidates": []})
     previous_data = read_document(OUTPUT, "assessments", {"assessments": []})
     previous_by_url = {x.get("url"): x for x in previous_data.get("assessments", []) if x.get("url")}
     previous_cursor = previous_data.get("next_cursor_url")
