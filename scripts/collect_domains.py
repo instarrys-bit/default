@@ -211,7 +211,7 @@ def parse_source_line_numbers(data,source):
             if DOMAIN_RE.fullmatch(domain):
                 result.setdefault(domain,{"entry_type":scope,"line_number":number})
         elif fmt=="adblock-domain-rules":
-            match=re.match(r"^\\|\\|([a-z0-9.-]+)\\^",value.lower())
+            match=re.match(r"^\|\|([a-z0-9.-]+)\^",value.lower())
             if match:
                 domain=match.group(1).rstrip(".")
                 if DOMAIN_RE.fullmatch(domain):
