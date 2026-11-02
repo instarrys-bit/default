@@ -226,10 +226,10 @@
   },
   "rule_count": {
     "DIRECT": 15,
-    "PROXY": 64,
+    "PROXY": 66,
     "REJECT": 10
   },
-  "published_rule_total": 89,
+  "published_rule_total": 91,
   "max_published_rules": 30000,
   "queued_rule_total": 0,
   "baseline_conflict_hold_count": 0,
@@ -249,12 +249,15 @@
     },
     "PROXY": {
       "previous_count": 64,
-      "current_count": 64,
-      "added_count": 0,
+      "current_count": 66,
+      "added_count": 2,
       "removed_count": 0,
       "previous_sha256": "8347013121571ebef8a7d59f29cdcbe7c5878a94410693f0eab385f60b3ae1d5",
-      "current_sha256": "8347013121571ebef8a7d59f29cdcbe7c5878a94410693f0eab385f60b3ae1d5",
-      "added_sample": [],
+      "current_sha256": "680a96b6ad48cdf83258b9e78b4ba9249626d9dc40f19e1fb1fc666c8db59dc7",
+      "added_sample": [
+        "DOMAIN-SUFFIX,gcr.io",
+        "DOMAIN-SUFFIX,io.io"
+      ],
       "removed_sample": [],
       "baseline_initialized": false
     },
@@ -271,26 +274,26 @@
     }
   },
   "reviewed_total": 978,
-  "approved_total": 89,
-  "held_total": 889,
+  "approved_total": 91,
+  "held_total": 887,
   "status_count": {
-    "ALREADY_COVERED": 354,
-    "APPROVED": 91,
-    "CONFLICT": 86,
+    "ALREADY_COVERED": 339,
+    "APPROVED": 93,
+    "CONFLICT": 83,
     "POLICY_CONFLICT": 44,
-    "REVIEW": 394,
+    "REVIEW": 410,
     "RISK_HOLD": 9
   },
   "deterministic_review_progress": {
     "candidate_total": 978,
-    "approved_total": 89,
-    "held_total": 889,
+    "approved_total": 91,
+    "held_total": 887,
     "status_count": {
-      "ALREADY_COVERED": 354,
-      "APPROVED": 91,
-      "CONFLICT": 86,
+      "ALREADY_COVERED": 339,
+      "APPROVED": 93,
+      "CONFLICT": 83,
       "POLICY_CONFLICT": 44,
-      "REVIEW": 394,
+      "REVIEW": 410,
       "RISK_HOLD": 9
     }
   },

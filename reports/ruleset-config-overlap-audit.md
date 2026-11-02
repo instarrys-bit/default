@@ -1,472 +1,453 @@
 # RULE-SET / user-config overlap audit
 
 - Authority: read-only shadowrocket/ss.conf
-- First RULE-SET line: 1993
-- Earlier active rules: 1948
+- First RULE-SET line: 1718
+- Earlier active rules: 1672
 - Ledger candidates: 934
 - Result: PASS
 
 ## Status counts
 
-- ALREADY_COVERED: 352
+- ALREADY_COVERED: 335
 - CONDITIONAL_POTENTIAL: 6
-- CONFLICT: 86
-- NOT_COVERED_BY_PRIOR_DOMAIN_RULES: 483
-- POTENTIAL_MATCH: 7
+- CONFLICT: 83
+- NOT_COVERED_BY_PRIOR_DOMAIN_RULES: 502
+- POTENTIAL_MATCH: 8
 
 ## Findings
 
-- 10010.com (DIRECT): CONFLICT — line 391: Prior first-match rules produce a conflicting policy within suffix scope
-- 126.net (DIRECT): ALREADY_COVERED — line 702: Prior first-match rules intersect candidate suffix scope
-- 13th.tech (DIRECT): CONFLICT — line 1446: Prior first-match exact/suffix domain rule
-- 163.com (DIRECT): ALREADY_COVERED — line 703: Prior first-match rules intersect candidate suffix scope
-- 17173.com (DIRECT): ALREADY_COVERED — line 814: Prior first-match exact/suffix domain rule
-- 17k.com (DIRECT): ALREADY_COVERED — line 815: Prior first-match exact/suffix domain rule
+- 10010.com (DIRECT): CONFLICT — line 380: Prior first-match rules produce a conflicting policy within suffix scope
+- 126.net (DIRECT): ALREADY_COVERED — line 1233: Prior first-match rules intersect candidate suffix scope
+- 13th.tech (DIRECT): CONFLICT — line 730: Prior first-match exact/suffix domain rule
+- 163.com (DIRECT): ALREADY_COVERED — line 1234: Prior first-match rules intersect candidate suffix scope
+- 17173.com (DIRECT): ALREADY_COVERED — line 1337: Prior first-match exact/suffix domain rule
+- 17k.com (DIRECT): ALREADY_COVERED — line 1338: Prior first-match exact/suffix domain rule
 - 1e100.net (PROXY): CONDITIONAL_POTENTIAL — line 32: Prior compound rule contains a matching domain operand; other operands are not evaluated
-- 1password.com (PROXY): ALREADY_COVERED — line 1669: Prior first-match exact/suffix domain rule
-- 21cn.com (DIRECT): ALREADY_COVERED — line 817: Prior first-match exact/suffix domain rule
-- 36kr.com (DIRECT): ALREADY_COVERED — line 818: Prior first-match exact/suffix domain rule
-- 4399.com (DIRECT): ALREADY_COVERED — line 819: Prior first-match exact/suffix domain rule
-- 51job.com (DIRECT): ALREADY_COVERED — line 821: Prior first-match exact/suffix domain rule
-- 51jobcdn.com (DIRECT): ALREADY_COVERED — line 822: Prior first-match exact/suffix domain rule
-- 58.com (DIRECT): ALREADY_COVERED — line 823: Prior first-match exact/suffix domain rule
+- 1password.com (PROXY): ALREADY_COVERED — line 946: Prior first-match exact/suffix domain rule
+- 21cn.com (DIRECT): ALREADY_COVERED — line 1340: Prior first-match exact/suffix domain rule
+- 36kr.com (DIRECT): ALREADY_COVERED — line 1341: Prior first-match exact/suffix domain rule
+- 4399.com (DIRECT): ALREADY_COVERED — line 1342: Prior first-match exact/suffix domain rule
+- 51job.com (DIRECT): ALREADY_COVERED — line 1343: Prior first-match exact/suffix domain rule
+- 51jobcdn.com (DIRECT): ALREADY_COVERED — line 1344: Prior first-match exact/suffix domain rule
+- 58.com (DIRECT): ALREADY_COVERED — line 1345: Prior first-match exact/suffix domain rule
 - 95516.com (DIRECT): ALREADY_COVERED — line None: Existing General skip-proxy entry
-- a248.e.akamai.net (PROXY): ALREADY_COVERED — line 1543: Prior first-match exact/suffix domain rule
+- a248.e.akamai.net (PROXY): ALREADY_COVERED — line 824: Prior first-match exact/suffix domain rule
 - abchina.com (DIRECT): ALREADY_COVERED — line None: Existing General skip-proxy entry
-- acfun.tv (DIRECT): ALREADY_COVERED — line 828: Prior first-match exact/suffix domain rule
-- ad-cdn.qingting.fm (REJECT): CONFLICT — line 927: Prior first-match exact/suffix domain rule
-- ad.21cn.com (REJECT): ALREADY_COVERED — line 459: Prior first-match exact/suffix domain rule
-- ad.api.moji.com (REJECT): CONFLICT — line 1138: Prior first-match exact/suffix domain rule
-- adbehavior.ximalaya.com (REJECT): CONFLICT — line 698: Prior first-match exact/suffix domain rule
-- adguard.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match exact/suffix domain rule
-- adlaunch.qingting.fm (REJECT): CONFLICT — line 927: Prior first-match exact/suffix domain rule
-- ads.play.cbsi.video (REJECT): CONFLICT — line 1474: Prior first-match exact/suffix domain rule
-- ads.snapchat.com (REJECT): CONFLICT — line 1629: Prior first-match exact/suffix domain rule
-- ads.yahoo.de (REJECT): CONFLICT — line 1348: Prior first-match exact/suffix domain rule
-- adsehera.ximalaya.com (REJECT): CONFLICT — line 698: Prior first-match exact/suffix domain rule
-- adsfilebssdlbig.tx.kugou.com (REJECT): CONFLICT — line 718: Prior first-match exact/suffix domain rule
-- advertise.baicizhan.com (REJECT): CONFLICT — line 835: Prior first-match exact/suffix domain rule
-- advertise.baicizhan.org (REJECT): CONFLICT — line 1344: Prior first-match exact/suffix domain rule
-- adwbs.ximalaya.com (REJECT): CONFLICT — line 698: Prior first-match exact/suffix domain rule
-- air-matters.io (DIRECT): CONFLICT — line 1351: Prior first-match exact/suffix domain rule
-- algocasts.io (DIRECT): CONFLICT — line 1351: Prior first-match exact/suffix domain rule
+- acfun.tv (DIRECT): ALREADY_COVERED — line 1348: Prior first-match exact/suffix domain rule
+- ad-cdn.qingting.fm (REJECT): CONFLICT — line 1442: Prior first-match exact/suffix domain rule
+- ad.21cn.com (REJECT): ALREADY_COVERED — line 448: Prior first-match exact/suffix domain rule
+- ad.api.moji.com (REJECT): CONFLICT — line 1569: Prior first-match exact/suffix domain rule
+- adbehavior.ximalaya.com (REJECT): CONFLICT — line 1229: Prior first-match exact/suffix domain rule
+- adguard.org (PROXY): ALREADY_COVERED — line 647: Prior first-match exact/suffix domain rule
+- adlaunch.qingting.fm (REJECT): CONFLICT — line 1442: Prior first-match exact/suffix domain rule
+- ads.play.cbsi.video (REJECT): CONFLICT — line 758: Prior first-match exact/suffix domain rule
+- ads.snapchat.com (REJECT): CONFLICT — line 906: Prior first-match exact/suffix domain rule
+- ads.yahoo.de (REJECT): CONFLICT — line 649: Prior first-match exact/suffix domain rule
+- adsehera.ximalaya.com (REJECT): CONFLICT — line 1229: Prior first-match exact/suffix domain rule
+- adsfilebssdlbig.tx.kugou.com (REJECT): CONFLICT — line 1249: Prior first-match exact/suffix domain rule
+- advertise.baicizhan.com (REJECT): CONFLICT — line 1354: Prior first-match exact/suffix domain rule
+- advertise.baicizhan.org (REJECT): CONFLICT — line 647: Prior first-match exact/suffix domain rule
+- adwbs.ximalaya.com (REJECT): CONFLICT — line 1229: Prior first-match exact/suffix domain rule
+- alibaba.com (DIRECT): ALREADY_COVERED — line 1177: Prior first-match exact/suffix domain rule
 - alicdn.com (DIRECT): CONFLICT — line 111: Prior first-match rules produce a conflicting policy within suffix scope
-- alipay.com (DIRECT): CONFLICT — line 470: Prior first-match rules produce a conflicting policy within suffix scope
+- alipay.com (DIRECT): CONFLICT — line 459: Prior first-match rules produce a conflicting policy within suffix scope
 - alipayobjects.com (DIRECT): ALREADY_COVERED — line None: Existing General skip-proxy entry
-- aliyun.com (DIRECT): ALREADY_COVERED — line 705: Prior first-match exact/suffix domain rule
-- aliyuncs.com (DIRECT): CONFLICT — line 224: Prior first-match rules produce a conflicting policy within suffix scope
-- allawntech.com (DIRECT): CONFLICT — line 144: Prior first-match exact/suffix domain rule
-- amap.com (DIRECT): ALREADY_COVERED — line 830: Prior first-match rules intersect candidate suffix scope
-- amazon.co.jp (PROXY): ALREADY_COVERED — line 1353: Prior first-match exact/suffix domain rule
-- amazon.com (PROXY): CONFLICT — line 386: Prior first-match rules produce a conflicting policy within suffix scope
-- amdc.m.youku.com (REJECT): CONFLICT — line 700: Prior first-match exact/suffix domain rule
-- amemv.com (DIRECT): ALREADY_COVERED — line 649: Prior first-match exact/suffix domain rule
-- ampproject.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match rules intersect candidate suffix scope
-- anthropic.com (PROXY): ALREADY_COVERED — line 1674: Prior first-match exact/suffix domain rule
-- apache.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match exact/suffix domain rule
-- api.iqiyi.com (REJECT): CONFLICT — line 671: Prior first-match exact/suffix domain rule
-- apiv4-iyes.youku.com (REJECT): CONFLICT — line 700: Prior first-match exact/suffix domain rule
-- archive.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match rules intersect candidate suffix scope
-- auth.wo.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match exact/suffix domain rule
-- babytree.com (DIRECT): ALREADY_COVERED — line 834: Prior first-match exact/suffix domain rule
-- baicizhan.com (DIRECT): ALREADY_COVERED — line 835: Prior first-match exact/suffix domain rule
-- baidu.com (DIRECT): CONFLICT — line 472: Prior first-match rules produce a conflicting policy within suffix scope
-- baidupcs.com (DIRECT): CONFLICT — line 407: Prior first-match rules produce a conflicting policy within suffix scope
-- bandwagonhost.com (PROXY): ALREADY_COVERED — line 1678: Prior first-match rules intersect candidate suffix scope
-- bbc.com (PROXY): ALREADY_COVERED — line 1835: Prior first-match exact/suffix domain rule
-- bdimg.com (DIRECT): POTENTIAL_MATCH — line 1085: Prior first-match rules intersect candidate suffix scope
-- bigfun.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match exact/suffix domain rule
-- bigfunapp.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match exact/suffix domain rule
-- biliapi.com (DIRECT): ALREADY_COVERED — line 837: Prior first-match rules intersect candidate suffix scope
-- biliapi.net (DIRECT): ALREADY_COVERED — line 838: Prior first-match rules intersect candidate suffix scope
-- bilibili.co (DIRECT): CONFLICT — line 1365: Prior first-match exact/suffix domain rule
-- bilibili.com (DIRECT): CONFLICT — line 473: Prior first-match rules produce a conflicting policy within suffix scope
-- biliintl.co (DIRECT): CONFLICT — line 1365: Prior first-match exact/suffix domain rule
-- bilivideo.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match rules intersect candidate suffix scope
-- bilivideo.com (DIRECT): ALREADY_COVERED — line 839: Prior first-match rules intersect candidate suffix scope
-- bing.com (PROXY): ALREADY_COVERED — line 1513: Prior first-match rules intersect candidate suffix scope
-- blogsmithmedia.com (PROXY): ALREADY_COVERED — line 1840: Prior first-match rules intersect candidate suffix scope
-- blogspot.jp (PROXY): ALREADY_COVERED — line 1353: Prior first-match exact/suffix domain rule
-- bloomberg.cn (PROXY): CONFLICT — line 658: Prior first-match exact/suffix domain rule
-- bloomberg.com (PROXY): ALREADY_COVERED — line 1551: Prior first-match rules intersect candidate suffix scope
-- box.com (PROXY): ALREADY_COVERED — line 1682: Prior first-match rules intersect candidate suffix scope
-- btlibrary.me (PROXY): ALREADY_COVERED — line 1355: Prior first-match exact/suffix domain rule
-- business-cdn.shouji.sogou.com (REJECT): CONFLICT — line 687: Prior first-match exact/suffix domain rule
+- aliyun.com (DIRECT): ALREADY_COVERED — line 1236: Prior first-match exact/suffix domain rule
+- aliyuncs.com (DIRECT): CONFLICT — line 214: Prior first-match rules produce a conflicting policy within suffix scope
+- allawntech.com (DIRECT): CONFLICT — line 134: Prior first-match exact/suffix domain rule
+- amap.com (DIRECT): ALREADY_COVERED — line 1349: Prior first-match rules intersect candidate suffix scope
+- amazon.co.jp (PROXY): ALREADY_COVERED — line 653: Prior first-match exact/suffix domain rule
+- amazon.com (PROXY): CONFLICT — line 375: Prior first-match rules produce a conflicting policy within suffix scope
+- amdc.m.youku.com (REJECT): CONFLICT — line 1231: Prior first-match exact/suffix domain rule
+- amemv.com (DIRECT): ALREADY_COVERED — line 1180: Prior first-match exact/suffix domain rule
+- ampproject.org (PROXY): ALREADY_COVERED — line 647: Prior first-match rules intersect candidate suffix scope
+- anthropic.com (PROXY): ALREADY_COVERED — line 951: Prior first-match exact/suffix domain rule
+- apache.org (PROXY): ALREADY_COVERED — line 647: Prior first-match exact/suffix domain rule
+- api.iqiyi.com (REJECT): CONFLICT — line 1202: Prior first-match exact/suffix domain rule
+- apiv4-iyes.youku.com (REJECT): CONFLICT — line 1231: Prior first-match exact/suffix domain rule
+- archive.org (PROXY): ALREADY_COVERED — line 647: Prior first-match rules intersect candidate suffix scope
+- auth.wo.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
+- babytree.com (DIRECT): ALREADY_COVERED — line 1353: Prior first-match exact/suffix domain rule
+- baicizhan.com (DIRECT): ALREADY_COVERED — line 1354: Prior first-match exact/suffix domain rule
+- baidu.com (DIRECT): CONFLICT — line 461: Prior first-match rules produce a conflicting policy within suffix scope
+- baidupcs.com (DIRECT): CONFLICT — line 396: Prior first-match rules produce a conflicting policy within suffix scope
+- bandwagonhost.com (PROXY): ALREADY_COVERED — line 955: Prior first-match rules intersect candidate suffix scope
+- bbc.com (PROXY): ALREADY_COVERED — line 1110: Prior first-match exact/suffix domain rule
+- bdimg.com (DIRECT): POTENTIAL_MATCH — line 1548: Prior first-match rules intersect candidate suffix scope
+- bigfun.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
+- bigfunapp.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
+- biliapi.com (DIRECT): ALREADY_COVERED — line 1356: Prior first-match rules intersect candidate suffix scope
+- biliapi.net (DIRECT): ALREADY_COVERED — line 1357: Prior first-match rules intersect candidate suffix scope
+- bilibili.co (DIRECT): CONFLICT — line 664: Prior first-match exact/suffix domain rule
+- bilibili.com (DIRECT): CONFLICT — line 462: Prior first-match rules produce a conflicting policy within suffix scope
+- biliintl.co (DIRECT): CONFLICT — line 664: Prior first-match exact/suffix domain rule
+- bilivideo.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match rules intersect candidate suffix scope
+- bilivideo.com (DIRECT): ALREADY_COVERED — line 1358: Prior first-match rules intersect candidate suffix scope
+- bing.com (PROXY): ALREADY_COVERED — line 796: Prior first-match rules intersect candidate suffix scope
+- blogsmithmedia.com (PROXY): ALREADY_COVERED — line 1115: Prior first-match rules intersect candidate suffix scope
+- blogspot.jp (PROXY): ALREADY_COVERED — line 653: Prior first-match exact/suffix domain rule
+- bloomberg.cn (PROXY): CONFLICT — line 1189: Prior first-match exact/suffix domain rule
+- bloomberg.com (PROXY): ALREADY_COVERED — line 831: Prior first-match rules intersect candidate suffix scope
+- box.com (PROXY): ALREADY_COVERED — line 959: Prior first-match rules intersect candidate suffix scope
+- btlibrary.me (PROXY): ALREADY_COVERED — line 655: Prior first-match exact/suffix domain rule
+- business-cdn.shouji.sogou.com (REJECT): CONFLICT — line 1218: Prior first-match exact/suffix domain rule
 - bytedance.com (DIRECT): CONFLICT — line 91: Prior first-match rules produce a conflicting policy within suffix scope
-- c-ctrip.com (DIRECT): ALREADY_COVERED — line 840: Prior first-match exact/suffix domain rule
-- camera360.com (DIRECT): ALREADY_COVERED — line 841: Prior first-match exact/suffix domain rule
-- cctv.com (DIRECT): ALREADY_COVERED — line 656: Prior first-match exact/suffix domain rule
-- cctvpic.com (DIRECT): ALREADY_COVERED — line 847: Prior first-match exact/suffix domain rule
-- cdninstagram.com (PROXY): POTENTIAL_MATCH — line 1894: Prior DOMAIN-KEYWORD may match this candidate
-- cdnst.net (PROXY): ALREADY_COVERED — line 1555: Prior first-match rules intersect candidate suffix scope
-- challenges.cloudflare.com (PROXY): ALREADY_COVERED — line 1336: Prior first-match exact/suffix domain rule
-- chinaplay.store (DIRECT): CONFLICT — line 1471: Prior first-match exact/suffix domain rule
-- chinaso.com (DIRECT): ALREADY_COVERED — line 842: Prior first-match exact/suffix domain rule
-- chinaz.com (DIRECT): ALREADY_COVERED — line 844: Prior first-match exact/suffix domain rule
-- claude.ai (PROXY): ALREADY_COVERED — line 1346: Prior first-match exact/suffix domain rule
-- cloudcone.com (PROXY): ALREADY_COVERED — line 1559: Prior first-match exact/suffix domain rule
-- cmbchina.com (DIRECT): ALREADY_COVERED — line None: Existing General skip-proxy entry
-- compose-spec.io (PROXY): ALREADY_COVERED — line 1351: Prior first-match exact/suffix domain rule
-- coolapk.com (DIRECT): ALREADY_COVERED — line 846: Prior first-match exact/suffix domain rule
-- cr-status.iqiyi.com (REJECT): CONFLICT — line 671: Prior first-match exact/suffix domain rule
-- csdn.net (DIRECT): ALREADY_COVERED — line 659: Prior first-match exact/suffix domain rule
-- csgo.wmsj.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match exact/suffix domain rule
-- ctrip.com (DIRECT): ALREADY_COVERED — line 848: Prior first-match exact/suffix domain rule
-- dbankcdn.com (DIRECT): ALREADY_COVERED — line 660: Prior first-match exact/suffix domain rule
-- dflow.bz.mgtv.com (REJECT): CONFLICT — line 679: Prior first-match exact/suffix domain rule
-- dianping.com (DIRECT): CONFLICT — line 479: Prior first-match rules produce a conflicting policy within suffix scope
-- didialift.com (DIRECT): ALREADY_COVERED — line 995: Prior first-match exact/suffix domain rule
-- didiglobal.com (DIRECT): ALREADY_COVERED — line 1045: Prior first-match exact/suffix domain rule
-- dilidili.wang (DIRECT): CONFLICT — line 1448: Prior first-match exact/suffix domain rule
-- dingtalk.com (DIRECT): CONFLICT — line 412: Prior first-match rules produce a conflicting policy within suffix scope
-- discord.co (PROXY): ALREADY_COVERED — line 1365: Prior first-match exact/suffix domain rule
-- discord.com (PROXY): ALREADY_COVERED — line 1506: Prior first-match exact/suffix domain rule
-- discord.gg (PROXY): ALREADY_COVERED — line 1507: Prior first-match exact/suffix domain rule
-- discord.media (PROXY): ALREADY_COVERED — line 1462: Prior first-match exact/suffix domain rule
-- disqus.com (PROXY): ALREADY_COVERED — line 1697: Prior first-match rules intersect candidate suffix scope
-- disquscdn.com (PROXY): ALREADY_COVERED — line 1568: Prior first-match rules intersect candidate suffix scope
-- dns.alidns.com (DIRECT): ALREADY_COVERED — line 707: Prior first-match exact/suffix domain rule
-- docker.com (PROXY): ALREADY_COVERED — line 1529: Prior first-match rules intersect candidate suffix scope
-- docker.io (PROXY): ALREADY_COVERED — line 1351: Prior first-match exact/suffix domain rule
-- doh.360.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match exact/suffix domain rule
-- doh.pub (DIRECT): ALREADY_COVERED — line 708: Prior first-match exact/suffix domain rule
-- dota2.wmsj.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match exact/suffix domain rule
-- douban.com (DIRECT): ALREADY_COVERED — line 662: Prior first-match exact/suffix domain rule
-- doubanio.com (DIRECT): ALREADY_COVERED — line 1048: Prior first-match exact/suffix domain rule
-- douyin.com (DIRECT): ALREADY_COVERED — line 663: Prior first-match rules intersect candidate suffix scope
-- douyincdn.com (DIRECT): ALREADY_COVERED — line 998: Prior first-match rules intersect candidate suffix scope
-- douyucdn.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match exact/suffix domain rule
-- douyutv.com (DIRECT): ALREADY_COVERED — line 664: Prior first-match exact/suffix domain rule
-- dropbox.com (PROXY): ALREADY_COVERED — line 1698: Prior first-match exact/suffix domain rule
-- duckduckgo.com (PROXY): ALREADY_COVERED — line 1514: Prior first-match rules intersect candidate suffix scope
-- dxycdn.com (DIRECT): ALREADY_COVERED — line 1050: Prior first-match exact/suffix domain rule
-- eastday.com (DIRECT): ALREADY_COVERED — line 854: Prior first-match exact/suffix domain rule
-- eastmoney.com (DIRECT): ALREADY_COVERED — line 855: Prior first-match exact/suffix domain rule
-- edgesuite.net (PROXY): ALREADY_COVERED — line 1569: Prior first-match rules intersect candidate suffix scope
-- elastic.co (PROXY): ALREADY_COVERED — line 1365: Prior first-match exact/suffix domain rule
-- ele.me (DIRECT): ALREADY_COVERED — line 856: Prior first-match rules intersect candidate suffix scope
-- elemecdn.com (DIRECT): ALREADY_COVERED — line 857: Prior first-match exact/suffix domain rule
-- element-plus.org (DIRECT): CONFLICT — line 1344: Prior first-match exact/suffix domain rule
-- encounter.bz.mgtv.com (REJECT): CONFLICT — line 679: Prior first-match exact/suffix domain rule
-- epicgames.dev (DIRECT): CONFLICT — line 1366: Prior first-match exact/suffix domain rule
-- eurekavpt.com (PROXY): ALREADY_COVERED — line 1570: Prior first-match rules intersect candidate suffix scope
-- ewqcxz.com (DIRECT): ALREADY_COVERED — line 1053: Prior first-match exact/suffix domain rule
-- facebook.com (PROXY): ALREADY_COVERED — line 1502: Prior first-match exact/suffix domain rule
-- fanbox.cc (PROXY): ALREADY_COVERED — line 1364: Prior first-match exact/suffix domain rule
-- fang.com (DIRECT): ALREADY_COVERED — line 860: Prior first-match exact/suffix domain rule
-- fb.me (PROXY): ALREADY_COVERED — line 1355: Prior first-match rules intersect candidate suffix scope
-- fbcdn.net (PROXY): ALREADY_COVERED — line 1503: Prior first-match rules intersect candidate suffix scope
-- feelgood.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match exact/suffix domain rule
-- feng.com (DIRECT): ALREADY_COVERED — line 861: Prior first-match exact/suffix domain rule
-- fengkongcloud.com (DIRECT): ALREADY_COVERED — line 862: Prior first-match exact/suffix domain rule
-- fir.im (DIRECT): ALREADY_COVERED — line 864: Prior first-match exact/suffix domain rule
-- flickr.com (PROXY): ALREADY_COVERED — line 1703: Prior first-match rules intersect candidate suffix scope
-- flipboard.com (PROXY): ALREADY_COVERED — line 1704: Prior first-match rules intersect candidate suffix scope
-- floor.bz.mgtv.com (REJECT): CONFLICT — line 679: Prior first-match exact/suffix domain rule
-- flzbcdn.xyz (PROXY): ALREADY_COVERED — line 1345: Prior first-match exact/suffix domain rule
-- frdic.com (DIRECT): ALREADY_COVERED — line 1058: Prior first-match exact/suffix domain rule
-- fresh-ideas.cc (DIRECT): ALREADY_COVERED — line 1059: Prior first-match exact/suffix domain rule
-- g.co (PROXY): ALREADY_COVERED — line 1365: Prior first-match rules intersect candidate suffix scope
-- ganji.com (DIRECT): ALREADY_COVERED — line 867: Prior first-match exact/suffix domain rule
-- gcr.io (PROXY): ALREADY_COVERED — line 1351: Prior first-match rules intersect candidate suffix scope
-- geetest.com (DIRECT): ALREADY_COVERED — line 869: Prior first-match exact/suffix domain rule
-- geilicdn.com (DIRECT): ALREADY_COVERED — line 666: Prior first-match exact/suffix domain rule
-- ggadoffline.miguvideo.com (REJECT): CONFLICT — line 1010: Prior first-match exact/suffix domain rule
-- ggic03.miguvideo.com (REJECT): CONFLICT — line 1010: Prior first-match exact/suffix domain rule
-- ggmk.miguvideo.com (REJECT): CONFLICT — line 1010: Prior first-match exact/suffix domain rule
-- ggx03.miguvideo.com (REJECT): CONFLICT — line 1010: Prior first-match exact/suffix domain rule
-- github.com (PROXY): ALREADY_COVERED — line 1494: Prior first-match exact/suffix domain rule
-- github.io (PROXY): ALREADY_COVERED — line 1351: Prior first-match exact/suffix domain rule
-- githubapp.com (PROXY): POTENTIAL_MATCH — line 1891: Prior DOMAIN-KEYWORD may match this candidate
-- githubassets.com (PROXY): POTENTIAL_MATCH — line 1891: Prior DOMAIN-KEYWORD may match this candidate
-- githubusercontent.com (PROXY): ALREADY_COVERED — line 1495: Prior first-match exact/suffix domain rule
-- gitlab.com (PROXY): ALREADY_COVERED — line 1530: Prior first-match exact/suffix domain rule
-- gitlab.io (PROXY): ALREADY_COVERED — line 1351: Prior first-match exact/suffix domain rule
-- godic.net (DIRECT): ALREADY_COVERED — line 872: Prior first-match exact/suffix domain rule
-- gongm.in (PROXY): ALREADY_COVERED — line 1350: Prior first-match rules intersect candidate suffix scope
-- googleapis.cn (PROXY): ALREADY_COVERED — line 636: Prior first-match exact/suffix domain rule
-- googleapis.com (PROXY): POTENTIAL_MATCH — line 1890: Prior DOMAIN-KEYWORD may match this candidate
-- gstatic.cn (PROXY): CONFLICT — line 658: Prior first-match exact/suffix domain rule
+- c-ctrip.com (DIRECT): ALREADY_COVERED — line 1359: Prior first-match exact/suffix domain rule
+- camera360.com (DIRECT): ALREADY_COVERED — line 1360: Prior first-match exact/suffix domain rule
+- cctv.com (DIRECT): ALREADY_COVERED — line 1187: Prior first-match exact/suffix domain rule
+- cctvpic.com (DIRECT): ALREADY_COVERED — line 1366: Prior first-match exact/suffix domain rule
+- cdninstagram.com (PROXY): POTENTIAL_MATCH — line 1168: Prior DOMAIN-KEYWORD may match this candidate
+- cdnst.net (PROXY): ALREADY_COVERED — line 835: Prior first-match rules intersect candidate suffix scope
+- challenges.cloudflare.com (PROXY): ALREADY_COVERED — line 639: Prior first-match exact/suffix domain rule
+- chinaplay.store (DIRECT): CONFLICT — line 755: Prior first-match exact/suffix domain rule
+- chinaso.com (DIRECT): ALREADY_COVERED — line 1361: Prior first-match exact/suffix domain rule
+- chinaz.com (DIRECT): ALREADY_COVERED — line 1363: Prior first-match exact/suffix domain rule
+- claude.ai (PROXY): ALREADY_COVERED — line 761: Prior first-match exact/suffix domain rule
+- cloudcone.com (PROXY): ALREADY_COVERED — line 839: Prior first-match exact/suffix domain rule
+- cmbchina.com (DIRECT): ALREADY_COVERED — line 1176: Prior first-match rules intersect candidate suffix scope
+- coolapk.com (DIRECT): ALREADY_COVERED — line 1365: Prior first-match exact/suffix domain rule
+- cr-status.iqiyi.com (REJECT): CONFLICT — line 1202: Prior first-match exact/suffix domain rule
+- csdn.net (DIRECT): ALREADY_COVERED — line 1190: Prior first-match exact/suffix domain rule
+- csgo.wmsj.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
+- ctrip.com (DIRECT): ALREADY_COVERED — line 1367: Prior first-match exact/suffix domain rule
+- dbankcdn.com (DIRECT): ALREADY_COVERED — line 1191: Prior first-match exact/suffix domain rule
+- dflow.bz.mgtv.com (REJECT): CONFLICT — line 1210: Prior first-match exact/suffix domain rule
+- dianping.com (DIRECT): CONFLICT — line 468: Prior first-match rules produce a conflicting policy within suffix scope
+- didialift.com (DIRECT): ALREADY_COVERED — line 1496: Prior first-match exact/suffix domain rule
+- didiglobal.com (DIRECT): ALREADY_COVERED — line 1528: Prior first-match exact/suffix domain rule
+- dilidili.wang (DIRECT): CONFLICT — line 732: Prior first-match exact/suffix domain rule
+- dingtalk.com (DIRECT): CONFLICT — line 401: Prior first-match rules produce a conflicting policy within suffix scope
+- discord.co (PROXY): ALREADY_COVERED — line 664: Prior first-match exact/suffix domain rule
+- discord.com (PROXY): ALREADY_COVERED — line 789: Prior first-match exact/suffix domain rule
+- discord.gg (PROXY): ALREADY_COVERED — line 790: Prior first-match exact/suffix domain rule
+- discord.media (PROXY): ALREADY_COVERED — line 746: Prior first-match exact/suffix domain rule
+- disqus.com (PROXY): ALREADY_COVERED — line 973: Prior first-match rules intersect candidate suffix scope
+- disquscdn.com (PROXY): ALREADY_COVERED — line 848: Prior first-match rules intersect candidate suffix scope
+- dns.alidns.com (DIRECT): ALREADY_COVERED — line 1238: Prior first-match exact/suffix domain rule
+- docker.com (PROXY): ALREADY_COVERED — line 811: Prior first-match rules intersect candidate suffix scope
+- doh.360.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
+- doh.pub (DIRECT): CONFLICT — line 685: Prior first-match exact/suffix domain rule
+- dota2.wmsj.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
+- douban.com (DIRECT): ALREADY_COVERED — line 1193: Prior first-match exact/suffix domain rule
+- doubanio.com (DIRECT): ALREADY_COVERED — line 1531: Prior first-match exact/suffix domain rule
+- douyin.com (DIRECT): ALREADY_COVERED — line 1194: Prior first-match rules intersect candidate suffix scope
+- douyincdn.com (DIRECT): ALREADY_COVERED — line 1498: Prior first-match rules intersect candidate suffix scope
+- douyucdn.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
+- douyutv.com (DIRECT): ALREADY_COVERED — line 1195: Prior first-match exact/suffix domain rule
+- dropbox.com (PROXY): ALREADY_COVERED — line 974: Prior first-match exact/suffix domain rule
+- duckduckgo.com (PROXY): ALREADY_COVERED — line 797: Prior first-match rules intersect candidate suffix scope
+- dxycdn.com (DIRECT): ALREADY_COVERED — line 1532: Prior first-match exact/suffix domain rule
+- eastday.com (DIRECT): ALREADY_COVERED — line 1373: Prior first-match exact/suffix domain rule
+- eastmoney.com (DIRECT): ALREADY_COVERED — line 1374: Prior first-match exact/suffix domain rule
+- edgesuite.net (PROXY): ALREADY_COVERED — line 849: Prior first-match rules intersect candidate suffix scope
+- elastic.co (PROXY): ALREADY_COVERED — line 664: Prior first-match exact/suffix domain rule
+- ele.me (DIRECT): CONFLICT — line 655: Prior first-match rules produce a conflicting policy within suffix scope
+- elemecdn.com (DIRECT): ALREADY_COVERED — line 1375: Prior first-match exact/suffix domain rule
+- element-plus.org (DIRECT): CONFLICT — line 647: Prior first-match exact/suffix domain rule
+- encounter.bz.mgtv.com (REJECT): CONFLICT — line 1210: Prior first-match exact/suffix domain rule
+- eurekavpt.com (PROXY): ALREADY_COVERED — line 850: Prior first-match rules intersect candidate suffix scope
+- ewqcxz.com (DIRECT): ALREADY_COVERED — line 1535: Prior first-match exact/suffix domain rule
+- facebook.com (PROXY): ALREADY_COVERED — line 785: Prior first-match exact/suffix domain rule
+- fanbox.cc (PROXY): ALREADY_COVERED — line 663: Prior first-match exact/suffix domain rule
+- fang.com (DIRECT): ALREADY_COVERED — line 1378: Prior first-match exact/suffix domain rule
+- fb.me (PROXY): ALREADY_COVERED — line 655: Prior first-match rules intersect candidate suffix scope
+- fbcdn.net (PROXY): ALREADY_COVERED — line 786: Prior first-match rules intersect candidate suffix scope
+- feelgood.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
+- feng.com (DIRECT): ALREADY_COVERED — line 1379: Prior first-match exact/suffix domain rule
+- fengkongcloud.com (DIRECT): ALREADY_COVERED — line 1380: Prior first-match exact/suffix domain rule
+- fir.im (DIRECT): ALREADY_COVERED — line 1382: Prior first-match exact/suffix domain rule
+- flickr.com (PROXY): ALREADY_COVERED — line 979: Prior first-match rules intersect candidate suffix scope
+- flipboard.com (PROXY): ALREADY_COVERED — line 980: Prior first-match rules intersect candidate suffix scope
+- floor.bz.mgtv.com (REJECT): CONFLICT — line 1210: Prior first-match exact/suffix domain rule
+- frdic.com (DIRECT): ALREADY_COVERED — line 1536: Prior first-match exact/suffix domain rule
+- fresh-ideas.cc (DIRECT): CONFLICT — line 663: Prior first-match exact/suffix domain rule
+- g.co (PROXY): ALREADY_COVERED — line 664: Prior first-match rules intersect candidate suffix scope
+- ganji.com (DIRECT): ALREADY_COVERED — line 1385: Prior first-match exact/suffix domain rule
+- geetest.com (DIRECT): ALREADY_COVERED — line 1386: Prior first-match exact/suffix domain rule
+- geilicdn.com (DIRECT): ALREADY_COVERED — line 1197: Prior first-match exact/suffix domain rule
+- ggadoffline.miguvideo.com (REJECT): CONFLICT — line 1508: Prior first-match exact/suffix domain rule
+- ggic03.miguvideo.com (REJECT): CONFLICT — line 1508: Prior first-match exact/suffix domain rule
+- ggmk.miguvideo.com (REJECT): CONFLICT — line 1508: Prior first-match exact/suffix domain rule
+- ggx03.miguvideo.com (REJECT): CONFLICT — line 1508: Prior first-match exact/suffix domain rule
+- github.com (PROXY): ALREADY_COVERED — line 777: Prior first-match exact/suffix domain rule
+- github.io (PROXY): POTENTIAL_MATCH — line 1165: Prior DOMAIN-KEYWORD may match this candidate
+- githubapp.com (PROXY): POTENTIAL_MATCH — line 1165: Prior DOMAIN-KEYWORD may match this candidate
+- githubassets.com (PROXY): POTENTIAL_MATCH — line 1165: Prior DOMAIN-KEYWORD may match this candidate
+- githubusercontent.com (PROXY): ALREADY_COVERED — line 778: Prior first-match exact/suffix domain rule
+- gitlab.com (PROXY): ALREADY_COVERED — line 812: Prior first-match exact/suffix domain rule
+- godic.net (DIRECT): ALREADY_COVERED — line 1389: Prior first-match exact/suffix domain rule
+- gongm.in (PROXY): ALREADY_COVERED — line 651: Prior first-match rules intersect candidate suffix scope
+- googleapis.cn (PROXY): ALREADY_COVERED — line 625: Prior first-match exact/suffix domain rule
+- googleapis.com (PROXY): POTENTIAL_MATCH — line 1164: Prior DOMAIN-KEYWORD may match this candidate
+- gstatic.cn (PROXY): CONFLICT — line 1189: Prior first-match exact/suffix domain rule
 - gtimg.com (DIRECT): CONFLICT — line 96: Prior first-match rules produce a conflicting policy within suffix scope
 - gvt1.com (PROXY): CONDITIONAL_POTENTIAL — line 35: Prior compound rule contains a matching domain operand; other operands are not evaluated
-- hao123.com (DIRECT): ALREADY_COVERED — line 1067: Prior first-match exact/suffix domain rule
-- haosou.com (DIRECT): ALREADY_COVERED — line 1068: Prior first-match exact/suffix domain rule
-- hicloud.com (DIRECT): ALREADY_COVERED — line 878: Prior first-match exact/suffix domain rule
-- hmrz.wo.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match exact/suffix domain rule
-- hongxiu.com (DIRECT): ALREADY_COVERED — line 879: Prior first-match exact/suffix domain rule
-- huawei.com (DIRECT): ALREADY_COVERED — line 711: Prior first-match exact/suffix domain rule
-- hulu.com (PROXY): ALREADY_COVERED — line 1590: Prior first-match exact/suffix domain rule
-- hupu.com (DIRECT): ALREADY_COVERED — line 883: Prior first-match exact/suffix domain rule
-- huya.com (DIRECT): ALREADY_COVERED — line 669: Prior first-match exact/suffix domain rule
-- icntv.xyz (PROXY): ALREADY_COVERED — line 1345: Prior first-match exact/suffix domain rule
-- id.mail.wo.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match exact/suffix domain rule
-- iesdouyin.com (DIRECT): ALREADY_COVERED — line 1081: Prior first-match rules intersect candidate suffix scope
-- ifeng.com (DIRECT): ALREADY_COVERED — line 887: Prior first-match exact/suffix domain rule
-- ifengimg.com (DIRECT): ALREADY_COVERED — line 888: Prior first-match exact/suffix domain rule
-- infzm.com (DIRECT): ALREADY_COVERED — line 889: Prior first-match exact/suffix domain rule
-- inoreader.com (PROXY): ALREADY_COVERED — line 1596: Prior first-match exact/suffix domain rule
-- instagram.com (PROXY): ALREADY_COVERED — line 1500: Prior first-match exact/suffix domain rule
-- io.io (PROXY): ALREADY_COVERED — line 1351: Prior first-match rules intersect candidate suffix scope
-- ip138.com (PROXY): CONFLICT — line 890: Prior first-match exact/suffix domain rule
-- ipip.net (DIRECT): ALREADY_COVERED — line 891: Prior first-match exact/suffix domain rule
-- iqiyi.com (DIRECT): CONFLICT — line 427: Prior first-match rules produce a conflicting policy within suffix scope
-- iqiyipic.com (DIRECT): ALREADY_COVERED — line 1092: Prior first-match rules intersect candidate suffix scope
-- it168.com (DIRECT): ALREADY_COVERED — line 1093: Prior first-match exact/suffix domain rule
-- ithome.com (DIRECT): ALREADY_COVERED — line 714: Prior first-match exact/suffix domain rule
-- ixigua.com (DIRECT): ALREADY_COVERED — line 1096: Prior first-match exact/suffix domain rule
-- jd.com (DIRECT): CONFLICT — line 491: Prior first-match rules produce a conflicting policy within suffix scope
-- jd.hk (DIRECT): ALREADY_COVERED — line 1098: Prior first-match exact/suffix domain rule
-- jdpay.com (DIRECT): ALREADY_COVERED — line 1099: Prior first-match exact/suffix domain rule
-- jianshu.com (DIRECT): ALREADY_COVERED — line 894: Prior first-match exact/suffix domain rule
-- jianshu.io (DIRECT): ALREADY_COVERED — line 895: Prior first-match exact/suffix domain rule
-- jianshuapi.com (DIRECT): ALREADY_COVERED — line 896: Prior first-match exact/suffix domain rule
-- jiathis.com (DIRECT): ALREADY_COVERED — line 898: Prior first-match exact/suffix domain rule
-- jitpack.io (PROXY): ALREADY_COVERED — line 1351: Prior first-match exact/suffix domain rule
-- kad.gotokeep.com (REJECT): CONFLICT — line 873: Prior first-match exact/suffix domain rule
-- kakao.co.kr (PROXY): ALREADY_COVERED — line 1354: Prior first-match rules intersect candidate suffix scope
-- kakao.com (PROXY): ALREADY_COVERED — line 1601: Prior first-match rules intersect candidate suffix scope
-- kaola.com (DIRECT): ALREADY_COVERED — line 673: Prior first-match exact/suffix domain rule
-- kuaidi100.com (DIRECT): ALREADY_COVERED — line 1108: Prior first-match exact/suffix domain rule
+- hao123.com (DIRECT): ALREADY_COVERED — line 1539: Prior first-match exact/suffix domain rule
+- haosou.com (DIRECT): ALREADY_COVERED — line 1540: Prior first-match exact/suffix domain rule
+- hicloud.com (DIRECT): ALREADY_COVERED — line 1395: Prior first-match exact/suffix domain rule
+- hmrz.wo.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
+- hongxiu.com (DIRECT): ALREADY_COVERED — line 1396: Prior first-match exact/suffix domain rule
+- huawei.com (DIRECT): ALREADY_COVERED — line 1242: Prior first-match exact/suffix domain rule
+- hulu.com (PROXY): ALREADY_COVERED — line 868: Prior first-match exact/suffix domain rule
+- hupu.com (DIRECT): ALREADY_COVERED — line 1400: Prior first-match exact/suffix domain rule
+- huya.com (DIRECT): ALREADY_COVERED — line 1200: Prior first-match exact/suffix domain rule
+- id.mail.wo.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
+- iesdouyin.com (DIRECT): ALREADY_COVERED — line 1547: Prior first-match rules intersect candidate suffix scope
+- ifeng.com (DIRECT): ALREADY_COVERED — line 1404: Prior first-match exact/suffix domain rule
+- ifengimg.com (DIRECT): ALREADY_COVERED — line 1405: Prior first-match exact/suffix domain rule
+- infzm.com (DIRECT): ALREADY_COVERED — line 1406: Prior first-match exact/suffix domain rule
+- inoreader.com (PROXY): ALREADY_COVERED — line 874: Prior first-match exact/suffix domain rule
+- instagram.com (PROXY): ALREADY_COVERED — line 783: Prior first-match exact/suffix domain rule
+- ip138.com (PROXY): CONFLICT — line 1407: Prior first-match exact/suffix domain rule
+- ipip.net (DIRECT): ALREADY_COVERED — line 1408: Prior first-match exact/suffix domain rule
+- iqiyi.com (DIRECT): CONFLICT — line 416: Prior first-match rules produce a conflicting policy within suffix scope
+- iqiyipic.com (DIRECT): ALREADY_COVERED — line 1551: Prior first-match rules intersect candidate suffix scope
+- it168.com (DIRECT): ALREADY_COVERED — line 1552: Prior first-match exact/suffix domain rule
+- ithome.com (DIRECT): ALREADY_COVERED — line 1245: Prior first-match exact/suffix domain rule
+- ixigua.com (DIRECT): ALREADY_COVERED — line 1554: Prior first-match exact/suffix domain rule
+- jd.com (DIRECT): CONFLICT — line 480: Prior first-match rules produce a conflicting policy within suffix scope
+- jd.hk (DIRECT): ALREADY_COVERED — line 1555: Prior first-match exact/suffix domain rule
+- jdpay.com (DIRECT): ALREADY_COVERED — line 1556: Prior first-match exact/suffix domain rule
+- jianshu.com (DIRECT): ALREADY_COVERED — line 1410: Prior first-match exact/suffix domain rule
+- jianshu.io (DIRECT): ALREADY_COVERED — line 1411: Prior first-match exact/suffix domain rule
+- jianshuapi.com (DIRECT): ALREADY_COVERED — line 1412: Prior first-match exact/suffix domain rule
+- jiathis.com (DIRECT): ALREADY_COVERED — line 1414: Prior first-match exact/suffix domain rule
+- kad.gotokeep.com (REJECT): CONFLICT — line 1390: Prior first-match exact/suffix domain rule
+- kakao.co.kr (PROXY): ALREADY_COVERED — line 654: Prior first-match rules intersect candidate suffix scope
+- kakao.com (PROXY): ALREADY_COVERED — line 878: Prior first-match rules intersect candidate suffix scope
+- kaola.com (DIRECT): ALREADY_COVERED — line 1204: Prior first-match exact/suffix domain rule
+- kuaidi100.com (DIRECT): ALREADY_COVERED — line 1560: Prior first-match exact/suffix domain rule
 - kuaishou.com (DIRECT): CONFLICT — line 90: Prior first-match rules produce a conflicting policy within suffix scope
-- kugou.com (DIRECT): CONFLICT — line 422: Prior first-match rules produce a conflicting policy within suffix scope
-- landiannews.com (DIRECT): ALREADY_COVERED — line 906: Prior first-match exact/suffix domain rule
-- laomo.me (DIRECT): CONFLICT — line 1355: Prior first-match exact/suffix domain rule
-- layer.bz.mgtv.com (REJECT): CONFLICT — line 679: Prior first-match exact/suffix domain rule
-- le.com (DIRECT): ALREADY_COVERED — line 719: Prior first-match exact/suffix domain rule
-- lecloud.com (DIRECT): ALREADY_COVERED — line 1114: Prior first-match exact/suffix domain rule
-- lemicp.com (DIRECT): ALREADY_COVERED — line 908: Prior first-match exact/suffix domain rule
-- letitfly.me (DIRECT): CONFLICT — line 1355: Prior first-match exact/suffix domain rule
-- letv.com (DIRECT): ALREADY_COVERED — line 720: Prior first-match exact/suffix domain rule
-- letvcloud.com (DIRECT): ALREADY_COVERED — line 1117: Prior first-match exact/suffix domain rule
-- letvimg.com (DIRECT): ALREADY_COVERED — line 1118: Prior first-match exact/suffix domain rule
-- line-apps.com (PROXY): ALREADY_COVERED — line 1718: Prior first-match exact/suffix domain rule
-- line-cdn.net (PROXY): ALREADY_COVERED — line 1719: Prior first-match exact/suffix domain rule
-- line.me (PROXY): ALREADY_COVERED — line 1355: Prior first-match exact/suffix domain rule
-- line.naver.jp (PROXY): ALREADY_COVERED — line 1353: Prior first-match exact/suffix domain rule
-- linkedin.com (PROXY): ALREADY_COVERED — line 1603: Prior first-match rules intersect candidate suffix scope
-- live.net (PROXY): POTENTIAL_MATCH — line 1788: Prior first-match rules intersect candidate suffix scope
-- lizhi.io (DIRECT): CONFLICT — line 1351: Prior first-match exact/suffix domain rule
-- lofter.com (DIRECT): ALREADY_COVERED — line 721: Prior first-match exact/suffix domain rule
-- macrumors.com (PROXY): ALREADY_COVERED — line 1604: Prior first-match rules intersect candidate suffix scope
-- maoyan.com (DIRECT): ALREADY_COVERED — line 913: Prior first-match exact/suffix domain rule
-- maven.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match rules intersect candidate suffix scope
-- mdn.open.wo.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match exact/suffix domain rule
-- mediawiki.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match exact/suffix domain rule
-- medium.com (PROXY): ALREADY_COVERED — line 1511: Prior first-match rules intersect candidate suffix scope
-- mega.nz (PROXY): ALREADY_COVERED — line 1775: Prior first-match rules intersect candidate suffix scope
-- meilishuo.com (DIRECT): ALREADY_COVERED — line 722: Prior first-match exact/suffix domain rule
-- meituan.com (DIRECT): CONFLICT — line 500: Prior first-match rules produce a conflicting policy within suffix scope
+- kugou.com (DIRECT): CONFLICT — line 411: Prior first-match rules produce a conflicting policy within suffix scope
+- landiannews.com (DIRECT): ALREADY_COVERED — line 1421: Prior first-match exact/suffix domain rule
+- laomo.me (DIRECT): CONFLICT — line 655: Prior first-match exact/suffix domain rule
+- layer.bz.mgtv.com (REJECT): CONFLICT — line 1210: Prior first-match exact/suffix domain rule
+- le.com (DIRECT): ALREADY_COVERED — line 1250: Prior first-match exact/suffix domain rule
+- lecloud.com (DIRECT): ALREADY_COVERED — line 1562: Prior first-match exact/suffix domain rule
+- lemicp.com (DIRECT): ALREADY_COVERED — line 1423: Prior first-match exact/suffix domain rule
+- letitfly.me (DIRECT): CONFLICT — line 655: Prior first-match exact/suffix domain rule
+- letv.com (DIRECT): ALREADY_COVERED — line 1251: Prior first-match exact/suffix domain rule
+- letvcloud.com (DIRECT): ALREADY_COVERED — line 1563: Prior first-match exact/suffix domain rule
+- letvimg.com (DIRECT): ALREADY_COVERED — line 1564: Prior first-match exact/suffix domain rule
+- line-apps.com (PROXY): ALREADY_COVERED — line 993: Prior first-match exact/suffix domain rule
+- line-cdn.net (PROXY): ALREADY_COVERED — line 994: Prior first-match exact/suffix domain rule
+- line.me (PROXY): ALREADY_COVERED — line 655: Prior first-match exact/suffix domain rule
+- line.naver.jp (PROXY): ALREADY_COVERED — line 653: Prior first-match exact/suffix domain rule
+- linkedin.com (PROXY): ALREADY_COVERED — line 880: Prior first-match rules intersect candidate suffix scope
+- live.net (PROXY): POTENTIAL_MATCH — line 1063: Prior first-match rules intersect candidate suffix scope
+- lofter.com (DIRECT): ALREADY_COVERED — line 1252: Prior first-match exact/suffix domain rule
+- macrumors.com (PROXY): ALREADY_COVERED — line 881: Prior first-match rules intersect candidate suffix scope
+- maoyan.com (DIRECT): ALREADY_COVERED — line 1428: Prior first-match exact/suffix domain rule
+- maven.org (PROXY): ALREADY_COVERED — line 647: Prior first-match rules intersect candidate suffix scope
+- mdn.open.wo.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
+- mediawiki.org (PROXY): ALREADY_COVERED — line 647: Prior first-match exact/suffix domain rule
+- medium.com (PROXY): ALREADY_COVERED — line 794: Prior first-match rules intersect candidate suffix scope
+- mega.nz (PROXY): ALREADY_COVERED — line 1050: Prior first-match rules intersect candidate suffix scope
+- meilishuo.com (DIRECT): ALREADY_COVERED — line 1253: Prior first-match exact/suffix domain rule
+- meituan.com (DIRECT): CONFLICT — line 489: Prior first-match rules produce a conflicting policy within suffix scope
 - meituan.net (DIRECT): CONFLICT — line 116: Prior first-match rules produce a conflicting policy within suffix scope
-- meizu.com (DIRECT): ALREADY_COVERED — line 723: Prior first-match exact/suffix domain rule
-- mgtv.com (DIRECT): CONFLICT — line 501: Prior first-match rules produce a conflicting policy within suffix scope
-- mi-img.com (DIRECT): ALREADY_COVERED — line 677: Prior first-match exact/suffix domain rule
-- mi.com (DIRECT): ALREADY_COVERED — line 678: Prior first-match exact/suffix domain rule
-- miaopai.com (DIRECT): ALREADY_COVERED — line 724: Prior first-match exact/suffix domain rule
-- miguvideo.com (DIRECT): ALREADY_COVERED — line 1010: Prior first-match exact/suffix domain rule
-- miui.com (DIRECT): ALREADY_COVERED — line 680: Prior first-match exact/suffix domain rule
-- mob.bz.mgtv.com (REJECT): CONFLICT — line 679: Prior first-match exact/suffix domain rule
-- mobike.com (DIRECT): ALREADY_COVERED — line 725: Prior first-match exact/suffix domain rule
-- mogu.com (DIRECT): ALREADY_COVERED — line 1135: Prior first-match exact/suffix domain rule
-- mogucdn.com (DIRECT): ALREADY_COVERED — line 1136: Prior first-match exact/suffix domain rule
-- mogujie.com (DIRECT): ALREADY_COVERED — line 727: Prior first-match exact/suffix domain rule
-- moji.com (DIRECT): ALREADY_COVERED — line 1138: Prior first-match exact/suffix domain rule
-- msftconnecttest.com (DIRECT): ALREADY_COVERED — line 1141: Prior first-match exact/suffix domain rule
-- msftncsi.com (DIRECT): ALREADY_COVERED — line 1142: Prior first-match exact/suffix domain rule
-- mubu.com (DIRECT): ALREADY_COVERED — line 918: Prior first-match exact/suffix domain rule
-- netease.com (DIRECT): ALREADY_COVERED — line 681: Prior first-match exact/suffix domain rule
-- nhncorp.jp (PROXY): ALREADY_COVERED — line 1353: Prior first-match exact/suffix domain rule
-- notion.so (PROXY): ALREADY_COVERED — line 1487: Prior first-match rules intersect candidate suffix scope
-- nuomi.com (DIRECT): ALREADY_COVERED — line 731: Prior first-match exact/suffix domain rule
-- oneclient.sfx.ms (PROXY): ALREADY_COVERED — line 1623: Prior first-match exact/suffix domain rule
-- onlinedown.net (DIRECT): ALREADY_COVERED — line 922: Prior first-match exact/suffix domain rule
-- open.e.189.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match exact/suffix domain rule
-- openai.com (PROXY): ALREADY_COVERED — line 1478: Prior first-match exact/suffix domain rule
-- opencloud.wostore.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match exact/suffix domain rule
-- openvpn.net (PROXY): ALREADY_COVERED — line 1726: Prior first-match rules intersect candidate suffix scope
-- oppo.com (DIRECT): ALREADY_COVERED — line 682: Prior first-match exact/suffix domain rule
-- oppoer.me (DIRECT): CONFLICT — line 1355: Prior first-match exact/suffix domain rule
-- oracle.com (DIRECT): ALREADY_COVERED — line 1149: Prior first-match exact/suffix domain rule
-- periscope.tv (PROXY): ALREADY_COVERED — line 1614: Prior first-match rules intersect candidate suffix scope
-- picjs.xyz (PROXY): ALREADY_COVERED — line 1345: Prior first-match exact/suffix domain rule
-- pinduoduo.com (DIRECT): ALREADY_COVERED — line 683: Prior first-match rules intersect candidate suffix scope
-- pinimg.com (PROXY): ALREADY_COVERED — line 1729: Prior first-match rules intersect candidate suffix scope
-- pinterest.com (PROXY): ALREADY_COVERED — line 1730: Prior first-match rules intersect candidate suffix scope
-- pixiv.net (PROXY): ALREADY_COVERED — line 1618: Prior first-match rules intersect candidate suffix scope
-- pornhub.com (PROXY): ALREADY_COVERED — line 1731: Prior first-match exact/suffix domain rule
-- pornhubpremium.com (PROXY): ALREADY_COVERED — line 1782: Prior first-match exact/suffix domain rule
-- potato.im (PROXY): ALREADY_COVERED — line 1620: Prior first-match rules intersect candidate suffix scope
-- pptv.com (DIRECT): ALREADY_COVERED — line 1013: Prior first-match exact/suffix domain rule
-- pstatp.com (DIRECT): ALREADY_COVERED — line 924: Prior first-match exact/suffix domain rule
-- qbox.me (DIRECT): CONFLICT — line 1355: Prior first-match exact/suffix domain rule
-- qcloud.com (DIRECT): ALREADY_COVERED — line 925: Prior first-match exact/suffix domain rule
-- qdaily.com (DIRECT): ALREADY_COVERED — line 926: Prior first-match exact/suffix domain rule
-- qdmm.com (DIRECT): ALREADY_COVERED — line 1157: Prior first-match exact/suffix domain rule
-- qhimg.com (DIRECT): ALREADY_COVERED — line 1158: Prior first-match exact/suffix domain rule
-- qhres.com (DIRECT): ALREADY_COVERED — line 1159: Prior first-match exact/suffix domain rule
-- qidian.com (DIRECT): ALREADY_COVERED — line 1160: Prior first-match exact/suffix domain rule
-- qin.io (DIRECT): CONFLICT — line 1351: Prior first-match exact/suffix domain rule
-- qiyi.com (DIRECT): ALREADY_COVERED — line 733: Prior first-match exact/suffix domain rule
-- qiyipic.com (DIRECT): ALREADY_COVERED — line 734: Prior first-match exact/suffix domain rule
-- qq.com (DIRECT): CONFLICT — line 506: Prior first-match rules produce a conflicting policy within suffix scope
-- qqmail.com (DIRECT): ALREADY_COVERED — line 1166: Prior first-match exact/suffix domain rule
-- qqurl.com (DIRECT): ALREADY_COVERED — line 1167: Prior first-match exact/suffix domain rule
-- quay.io (PROXY): ALREADY_COVERED — line 1351: Prior first-match exact/suffix domain rule
-- qunar.com (DIRECT): ALREADY_COVERED — line 1168: Prior first-match exact/suffix domain rule
-- qunarzz.com (DIRECT): ALREADY_COVERED — line 1169: Prior first-match exact/suffix domain rule
-- quora.com (PROXY): ALREADY_COVERED — line 1622: Prior first-match rules intersect candidate suffix scope
-- qwen.ai (DIRECT): CONFLICT — line 1346: Prior first-match exact/suffix domain rule
-- rc-topic-api.bz.mgtv.com (REJECT): CONFLICT — line 679: Prior first-match exact/suffix domain rule
-- reddit.com (PROXY): ALREADY_COVERED — line 1508: Prior first-match rules intersect candidate suffix scope
-- ruguoapp.com (DIRECT): ALREADY_COVERED — line 1172: Prior first-match exact/suffix domain rule
-- runoob.com (DIRECT): ALREADY_COVERED — line 932: Prior first-match exact/suffix domain rule
-- sandai.net (DIRECT): ALREADY_COVERED — line 1311: Prior first-match rules intersect candidate suffix scope
-- sankuai.com (DIRECT): ALREADY_COVERED — line 933: Prior first-match exact/suffix domain rule
-- segmentfault.com (DIRECT): ALREADY_COVERED — line 738: Prior first-match exact/suffix domain rule
-- sf-express.com (DIRECT): ALREADY_COVERED — line 934: Prior first-match exact/suffix domain rule
-- sfx.ms (PROXY): ALREADY_COVERED — line 1623: Prior first-match rules intersect candidate suffix scope
-- shadowsocks.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match rules intersect candidate suffix scope
-- simplecd.me (DIRECT): CONFLICT — line 1355: Prior first-match exact/suffix domain rule
-- sina.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match exact/suffix domain rule
-- sina.com (DIRECT): ALREADY_COVERED — line 1178: Prior first-match rules intersect candidate suffix scope
-- sina.com.cn (DIRECT): CONFLICT — line 508: Prior first-match rules produce a conflicting policy within suffix scope
-- sinaapp.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match exact/suffix domain rule
-- sinaapp.com (DIRECT): ALREADY_COVERED — line 1181: Prior first-match exact/suffix domain rule
-- sinaimg.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match rules intersect candidate suffix scope
-- smartmailcloud.com (PROXY): ALREADY_COVERED — line 1628: Prior first-match rules intersect candidate suffix scope
-- smzdm.com (DIRECT): ALREADY_COVERED — line 1187: Prior first-match exact/suffix domain rule
-- snssdk.com (DIRECT): ALREADY_COVERED — line 741: Prior first-match exact/suffix domain rule
-- so.com (DIRECT): ALREADY_COVERED — line 1189: Prior first-match rules intersect candidate suffix scope
-- sogo.com (DIRECT): ALREADY_COVERED — line 742: Prior first-match exact/suffix domain rule
-- sogou.com (DIRECT): CONFLICT — line 510: Prior first-match rules produce a conflicting policy within suffix scope
-- sogoucdn.com (DIRECT): ALREADY_COVERED — line 1191: Prior first-match exact/suffix domain rule
-- sohu.com (DIRECT): ALREADY_COVERED — line 686: Prior first-match exact/suffix domain rule
-- soku.com (DIRECT): ALREADY_COVERED — line 1193: Prior first-match exact/suffix domain rule
-- sonatype.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match exact/suffix domain rule
-- soso.com (DIRECT): ALREADY_COVERED — line 1194: Prior first-match exact/suffix domain rule
-- soundcloud.com (PROXY): ALREADY_COVERED — line 1737: Prior first-match rules intersect candidate suffix scope
-- spring.io (PROXY): ALREADY_COVERED — line 1351: Prior first-match exact/suffix domain rule
-- sspai.com (DIRECT): ALREADY_COVERED — line 937: Prior first-match exact/suffix domain rule
-- startpage.com (PROXY): ALREADY_COVERED — line 1739: Prior first-match rules intersect candidate suffix scope
-- startssl.com (DIRECT): ALREADY_COVERED — line 938: Prior first-match exact/suffix domain rule
-- steambroadcast.akamaized.net (PROXY): ALREADY_COVERED — line 1670: Prior first-match exact/suffix domain rule
-- steamcommunity.com (PROXY): ALREADY_COVERED — line 1849: Prior first-match rules intersect candidate suffix scope
-- steampipe.akamaized.net (PROXY): ALREADY_COVERED — line 1670: Prior first-match exact/suffix domain rule
-- steamstat.us (PROXY): ALREADY_COVERED — line 1361: Prior first-match exact/suffix domain rule
-- steamstatic.com (PROXY): ALREADY_COVERED — line 1792: Prior first-match exact/suffix domain rule
-- suning.com (DIRECT): ALREADY_COVERED — line 745: Prior first-match exact/suffix domain rule
-- t.co (PROXY): ALREADY_COVERED — line 1365: Prior first-match rules intersect candidate suffix scope
-- t.me (PROXY): ALREADY_COVERED — line 1355: Prior first-match rules intersect candidate suffix scope
-- taobao.com (DIRECT): CONFLICT — line 368: Prior first-match rules produce a conflicting policy within suffix scope
-- taobaocdn.com (DIRECT): ALREADY_COVERED — line 1203: Prior first-match exact/suffix domain rule
-- tap.io (PROXY): ALREADY_COVERED — line 1351: Prior first-match exact/suffix domain rule
-- taptap.tw (PROXY): ALREADY_COVERED — line 1359: Prior first-match exact/suffix domain rule
-- tbcache.com (DIRECT): ALREADY_COVERED — line 1204: Prior first-match exact/suffix domain rule
-- tbcdn.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match exact/suffix domain rule
-- teamviewer.com (DIRECT): CONFLICT — line 1634: Prior first-match exact/suffix domain rule
-- tebex.io (DIRECT): CONFLICT — line 1351: Prior first-match exact/suffix domain rule
-- telegra.ph (PROXY): ALREADY_COVERED — line 1741: Prior first-match rules intersect candidate suffix scope
-- telegram.me (PROXY): ALREADY_COVERED — line 1355: Prior first-match exact/suffix domain rule
-- telegram.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match exact/suffix domain rule
+- meizu.com (DIRECT): ALREADY_COVERED — line 1254: Prior first-match exact/suffix domain rule
+- mgtv.com (DIRECT): CONFLICT — line 490: Prior first-match rules produce a conflicting policy within suffix scope
+- mi-img.com (DIRECT): ALREADY_COVERED — line 1208: Prior first-match exact/suffix domain rule
+- mi.com (DIRECT): ALREADY_COVERED — line 1209: Prior first-match exact/suffix domain rule
+- miaopai.com (DIRECT): ALREADY_COVERED — line 1255: Prior first-match exact/suffix domain rule
+- miguvideo.com (DIRECT): ALREADY_COVERED — line 1508: Prior first-match exact/suffix domain rule
+- miui.com (DIRECT): ALREADY_COVERED — line 1211: Prior first-match exact/suffix domain rule
+- mob.bz.mgtv.com (REJECT): CONFLICT — line 1210: Prior first-match exact/suffix domain rule
+- mobike.com (DIRECT): ALREADY_COVERED — line 1256: Prior first-match exact/suffix domain rule
+- mogu.com (DIRECT): ALREADY_COVERED — line 1567: Prior first-match exact/suffix domain rule
+- mogucdn.com (DIRECT): ALREADY_COVERED — line 1568: Prior first-match exact/suffix domain rule
+- mogujie.com (DIRECT): ALREADY_COVERED — line 1258: Prior first-match exact/suffix domain rule
+- moji.com (DIRECT): ALREADY_COVERED — line 1569: Prior first-match exact/suffix domain rule
+- msftconnecttest.com (DIRECT): ALREADY_COVERED — line 1571: Prior first-match exact/suffix domain rule
+- msftncsi.com (DIRECT): ALREADY_COVERED — line 1572: Prior first-match exact/suffix domain rule
+- mubu.com (DIRECT): ALREADY_COVERED — line 1433: Prior first-match exact/suffix domain rule
+- netease.com (DIRECT): ALREADY_COVERED — line 1212: Prior first-match exact/suffix domain rule
+- nhncorp.jp (PROXY): ALREADY_COVERED — line 653: Prior first-match exact/suffix domain rule
+- notion.so (PROXY): ALREADY_COVERED — line 770: Prior first-match rules intersect candidate suffix scope
+- nuomi.com (DIRECT): ALREADY_COVERED — line 1261: Prior first-match exact/suffix domain rule
+- oneclient.sfx.ms (PROXY): ALREADY_COVERED — line 900: Prior first-match exact/suffix domain rule
+- onlinedown.net (DIRECT): ALREADY_COVERED — line 1437: Prior first-match exact/suffix domain rule
+- open.e.189.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
+- openai.com (PROXY): ALREADY_COVERED — line 762: Prior first-match exact/suffix domain rule
+- opencloud.wostore.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
+- openvpn.net (PROXY): ALREADY_COVERED — line 1001: Prior first-match rules intersect candidate suffix scope
+- oppo.com (DIRECT): ALREADY_COVERED — line 1213: Prior first-match exact/suffix domain rule
+- oppoer.me (DIRECT): CONFLICT — line 655: Prior first-match exact/suffix domain rule
+- oracle.com (DIRECT): ALREADY_COVERED — line 1573: Prior first-match exact/suffix domain rule
+- periscope.tv (PROXY): ALREADY_COVERED — line 891: Prior first-match rules intersect candidate suffix scope
+- pinduoduo.com (DIRECT): ALREADY_COVERED — line 1214: Prior first-match rules intersect candidate suffix scope
+- pinimg.com (PROXY): ALREADY_COVERED — line 1004: Prior first-match rules intersect candidate suffix scope
+- pinterest.com (PROXY): ALREADY_COVERED — line 1005: Prior first-match rules intersect candidate suffix scope
+- pixiv.net (PROXY): ALREADY_COVERED — line 895: Prior first-match rules intersect candidate suffix scope
+- pornhub.com (PROXY): ALREADY_COVERED — line 1006: Prior first-match exact/suffix domain rule
+- pornhubpremium.com (PROXY): ALREADY_COVERED — line 1057: Prior first-match exact/suffix domain rule
+- potato.im (PROXY): ALREADY_COVERED — line 897: Prior first-match rules intersect candidate suffix scope
+- pptv.com (DIRECT): ALREADY_COVERED — line 1511: Prior first-match exact/suffix domain rule
+- pstatp.com (DIRECT): ALREADY_COVERED — line 1439: Prior first-match exact/suffix domain rule
+- qbox.me (DIRECT): CONFLICT — line 655: Prior first-match exact/suffix domain rule
+- qcloud.com (DIRECT): ALREADY_COVERED — line 1440: Prior first-match exact/suffix domain rule
+- qdaily.com (DIRECT): ALREADY_COVERED — line 1441: Prior first-match exact/suffix domain rule
+- qdmm.com (DIRECT): ALREADY_COVERED — line 1576: Prior first-match exact/suffix domain rule
+- qhimg.com (DIRECT): ALREADY_COVERED — line 1577: Prior first-match exact/suffix domain rule
+- qhres.com (DIRECT): ALREADY_COVERED — line 1578: Prior first-match exact/suffix domain rule
+- qidian.com (DIRECT): ALREADY_COVERED — line 1579: Prior first-match exact/suffix domain rule
+- qiyi.com (DIRECT): ALREADY_COVERED — line 1263: Prior first-match exact/suffix domain rule
+- qiyipic.com (DIRECT): ALREADY_COVERED — line 1264: Prior first-match exact/suffix domain rule
+- qq.com (DIRECT): CONFLICT — line 495: Prior first-match rules produce a conflicting policy within suffix scope
+- qqmail.com (DIRECT): ALREADY_COVERED — line 1581: Prior first-match exact/suffix domain rule
+- qqurl.com (DIRECT): ALREADY_COVERED — line 1582: Prior first-match exact/suffix domain rule
+- qunar.com (DIRECT): ALREADY_COVERED — line 1583: Prior first-match exact/suffix domain rule
+- qunarzz.com (DIRECT): ALREADY_COVERED — line 1584: Prior first-match exact/suffix domain rule
+- quora.com (PROXY): ALREADY_COVERED — line 899: Prior first-match rules intersect candidate suffix scope
+- rc-topic-api.bz.mgtv.com (REJECT): CONFLICT — line 1210: Prior first-match exact/suffix domain rule
+- reddit.com (PROXY): ALREADY_COVERED — line 791: Prior first-match rules intersect candidate suffix scope
+- ruguoapp.com (DIRECT): ALREADY_COVERED — line 1585: Prior first-match exact/suffix domain rule
+- runoob.com (DIRECT): ALREADY_COVERED — line 1447: Prior first-match exact/suffix domain rule
+- sandai.net (DIRECT): ALREADY_COVERED — line 1608: Prior first-match rules intersect candidate suffix scope
+- sankuai.com (DIRECT): ALREADY_COVERED — line 1448: Prior first-match exact/suffix domain rule
+- segmentfault.com (DIRECT): ALREADY_COVERED — line 1267: Prior first-match exact/suffix domain rule
+- sf-express.com (DIRECT): ALREADY_COVERED — line 1449: Prior first-match exact/suffix domain rule
+- sfx.ms (PROXY): ALREADY_COVERED — line 900: Prior first-match rules intersect candidate suffix scope
+- shadowsocks.org (PROXY): ALREADY_COVERED — line 647: Prior first-match rules intersect candidate suffix scope
+- simplecd.me (DIRECT): CONFLICT — line 655: Prior first-match exact/suffix domain rule
+- sina.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
+- sina.com (DIRECT): ALREADY_COVERED — line 1586: Prior first-match rules intersect candidate suffix scope
+- sina.com.cn (DIRECT): CONFLICT — line 497: Prior first-match rules produce a conflicting policy within suffix scope
+- sinaapp.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
+- sinaapp.com (DIRECT): ALREADY_COVERED — line 1588: Prior first-match exact/suffix domain rule
+- sinaimg.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match rules intersect candidate suffix scope
+- smartmailcloud.com (PROXY): ALREADY_COVERED — line 905: Prior first-match rules intersect candidate suffix scope
+- smzdm.com (DIRECT): ALREADY_COVERED — line 1591: Prior first-match exact/suffix domain rule
+- snssdk.com (DIRECT): ALREADY_COVERED — line 1270: Prior first-match exact/suffix domain rule
+- so.com (DIRECT): ALREADY_COVERED — line 1592: Prior first-match rules intersect candidate suffix scope
+- sogo.com (DIRECT): ALREADY_COVERED — line 1271: Prior first-match exact/suffix domain rule
+- sogou.com (DIRECT): CONFLICT — line 499: Prior first-match rules produce a conflicting policy within suffix scope
+- sogoucdn.com (DIRECT): ALREADY_COVERED — line 1593: Prior first-match exact/suffix domain rule
+- sohu.com (DIRECT): ALREADY_COVERED — line 1217: Prior first-match exact/suffix domain rule
+- soku.com (DIRECT): ALREADY_COVERED — line 1594: Prior first-match exact/suffix domain rule
+- sonatype.org (PROXY): ALREADY_COVERED — line 647: Prior first-match exact/suffix domain rule
+- soso.com (DIRECT): ALREADY_COVERED — line 1595: Prior first-match exact/suffix domain rule
+- soundcloud.com (PROXY): ALREADY_COVERED — line 1012: Prior first-match rules intersect candidate suffix scope
+- sspai.com (DIRECT): ALREADY_COVERED — line 1451: Prior first-match exact/suffix domain rule
+- startpage.com (PROXY): ALREADY_COVERED — line 1014: Prior first-match rules intersect candidate suffix scope
+- startssl.com (DIRECT): ALREADY_COVERED — line 1452: Prior first-match exact/suffix domain rule
+- steambroadcast.akamaized.net (PROXY): ALREADY_COVERED — line 947: Prior first-match exact/suffix domain rule
+- steamcommunity.com (PROXY): ALREADY_COVERED — line 1124: Prior first-match rules intersect candidate suffix scope
+- steampipe.akamaized.net (PROXY): ALREADY_COVERED — line 947: Prior first-match exact/suffix domain rule
+- steamstat.us (PROXY): ALREADY_COVERED — line 661: Prior first-match exact/suffix domain rule
+- steamstatic.com (PROXY): ALREADY_COVERED — line 1067: Prior first-match exact/suffix domain rule
+- suning.com (DIRECT): ALREADY_COVERED — line 1274: Prior first-match exact/suffix domain rule
+- t.co (PROXY): ALREADY_COVERED — line 664: Prior first-match rules intersect candidate suffix scope
+- t.me (PROXY): ALREADY_COVERED — line 655: Prior first-match rules intersect candidate suffix scope
+- taobao.com (DIRECT): CONFLICT — line 357: Prior first-match rules produce a conflicting policy within suffix scope
+- taobaocdn.com (DIRECT): ALREADY_COVERED — line 1596: Prior first-match exact/suffix domain rule
+- taptap.tw (PROXY): ALREADY_COVERED — line 659: Prior first-match exact/suffix domain rule
+- tbcache.com (DIRECT): ALREADY_COVERED — line 1597: Prior first-match exact/suffix domain rule
+- tbcdn.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
+- teamviewer.com (DIRECT): CONFLICT — line 911: Prior first-match exact/suffix domain rule
+- telegra.ph (PROXY): ALREADY_COVERED — line 1016: Prior first-match rules intersect candidate suffix scope
+- telegram.me (PROXY): ALREADY_COVERED — line 655: Prior first-match exact/suffix domain rule
+- telegram.org (PROXY): ALREADY_COVERED — line 647: Prior first-match exact/suffix domain rule
 - tencent-cloud.net (DIRECT): ALREADY_COVERED — line None: Existing General skip-proxy entry
-- tencent.com (DIRECT): ALREADY_COVERED — line 689: Prior first-match exact/suffix domain rule
-- tenpay.com (DIRECT): ALREADY_COVERED — line 749: Prior first-match exact/suffix domain rule
-- textnow.me (PROXY): ALREADY_COVERED — line 1355: Prior first-match rules intersect candidate suffix scope
-- thefacebook.com (PROXY): POTENTIAL_MATCH — line 1893: Prior DOMAIN-KEYWORD may match this candidate
-- thepiratebay.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match rules intersect candidate suffix scope
-- tianqi.com (DIRECT): ALREADY_COVERED — line 1016: Prior first-match exact/suffix domain rule
-- tianqistatic.com (DIRECT): ALREADY_COVERED — line 942: Prior first-match exact/suffix domain rule
-- tianyancha.com (DIRECT): ALREADY_COVERED — line 750: Prior first-match exact/suffix domain rule
-- tietuku.com (DIRECT): ALREADY_COVERED — line 943: Prior first-match exact/suffix domain rule
-- tiexue.net (DIRECT): ALREADY_COVERED — line 944: Prior first-match exact/suffix domain rule
-- tmall.com (DIRECT): ALREADY_COVERED — line 690: Prior first-match rules intersect candidate suffix scope
-- tmall.hk (DIRECT): ALREADY_COVERED — line 753: Prior first-match exact/suffix domain rule
-- torproject.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match rules intersect candidate suffix scope
-- toutiao.com (DIRECT): CONFLICT — line 514: Prior first-match rules produce a conflicting policy within suffix scope
-- tumblr.co (PROXY): ALREADY_COVERED — line 1365: Prior first-match rules intersect candidate suffix scope
-- tumblr.com (PROXY): ALREADY_COVERED — line 1640: Prior first-match rules intersect candidate suffix scope
-- tuniu.com (DIRECT): ALREADY_COVERED — line 754: Prior first-match exact/suffix domain rule
-- tuniucdn.com (DIRECT): ALREADY_COVERED — line 755: Prior first-match exact/suffix domain rule
-- twimg.co (PROXY): ALREADY_COVERED — line 1365: Prior first-match rules intersect candidate suffix scope
+- tencent.com (DIRECT): ALREADY_COVERED — line 1220: Prior first-match exact/suffix domain rule
+- tenpay.com (DIRECT): ALREADY_COVERED — line 1276: Prior first-match exact/suffix domain rule
+- textnow.me (PROXY): ALREADY_COVERED — line 655: Prior first-match rules intersect candidate suffix scope
+- thefacebook.com (PROXY): POTENTIAL_MATCH — line 1167: Prior DOMAIN-KEYWORD may match this candidate
+- thepiratebay.org (PROXY): ALREADY_COVERED — line 647: Prior first-match rules intersect candidate suffix scope
+- tianqi.com (DIRECT): ALREADY_COVERED — line 1514: Prior first-match exact/suffix domain rule
+- tianqistatic.com (DIRECT): ALREADY_COVERED — line 1456: Prior first-match exact/suffix domain rule
+- tianyancha.com (DIRECT): ALREADY_COVERED — line 1277: Prior first-match exact/suffix domain rule
+- tietuku.com (DIRECT): ALREADY_COVERED — line 1457: Prior first-match exact/suffix domain rule
+- tiexue.net (DIRECT): ALREADY_COVERED — line 1458: Prior first-match exact/suffix domain rule
+- tmall.com (DIRECT): ALREADY_COVERED — line 1221: Prior first-match rules intersect candidate suffix scope
+- tmall.hk (DIRECT): ALREADY_COVERED — line 1280: Prior first-match exact/suffix domain rule
+- torproject.org (PROXY): ALREADY_COVERED — line 647: Prior first-match rules intersect candidate suffix scope
+- toutiao.com (DIRECT): CONFLICT — line 503: Prior first-match rules produce a conflicting policy within suffix scope
+- tumblr.co (PROXY): ALREADY_COVERED — line 664: Prior first-match rules intersect candidate suffix scope
+- tumblr.com (PROXY): ALREADY_COVERED — line 917: Prior first-match rules intersect candidate suffix scope
+- tuniu.com (DIRECT): ALREADY_COVERED — line 1281: Prior first-match exact/suffix domain rule
+- tuniucdn.com (DIRECT): ALREADY_COVERED — line 1282: Prior first-match exact/suffix domain rule
+- twimg.co (PROXY): ALREADY_COVERED — line 664: Prior first-match rules intersect candidate suffix scope
 - twimg.com (PROXY): CONDITIONAL_POTENTIAL — line 42: Prior compound rule contains a matching domain operand; other operands are not evaluated
-- twimg.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match exact/suffix domain rule
-- twitch.tv (PROXY): ALREADY_COVERED — line 1528: Prior first-match rules intersect candidate suffix scope
-- unrealengine.com (DIRECT): CONFLICT — line 1869: Prior first-match exact/suffix domain rule
-- upaiyun.com (DIRECT): ALREADY_COVERED — line 948: Prior first-match exact/suffix domain rule
-- upyun.com (DIRECT): ALREADY_COVERED — line 759: Prior first-match exact/suffix domain rule
-- v2ex.com (PROXY): CONFLICT — line 949: Prior first-match rules produce a conflicting policy within suffix scope
-- vimeo.com (PROXY): ALREADY_COVERED — line 1652: Prior first-match rules intersect candidate suffix scope
-- vine.co (PROXY): ALREADY_COVERED — line 1365: Prior first-match rules intersect candidate suffix scope
-- vip.bz.mgtv.com (REJECT): CONFLICT — line 679: Prior first-match exact/suffix domain rule
-- vip.com (DIRECT): ALREADY_COVERED — line 952: Prior first-match exact/suffix domain rule
-- vivo.com (DIRECT): ALREADY_COVERED — line 694: Prior first-match exact/suffix domain rule
-- wandoujia.com (DIRECT): ALREADY_COVERED — line 760: Prior first-match exact/suffix domain rule
-- wechat.com (DIRECT): ALREADY_COVERED — line 1231: Prior first-match rules intersect candidate suffix scope
-- weibo.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match exact/suffix domain rule
-- weibo.com (DIRECT): CONFLICT — line 516: Prior first-match rules produce a conflicting policy within suffix scope
-- weibocdn.cn (DIRECT): ALREADY_COVERED — line 658: Prior first-match exact/suffix domain rule
-- weico.cc (DIRECT): ALREADY_COVERED — line 954: Prior first-match exact/suffix domain rule
-- weixin.com (DIRECT): ALREADY_COVERED — line 696: Prior first-match rules intersect candidate suffix scope
-- weiyun.com (DIRECT): ALREADY_COVERED — line 956: Prior first-match exact/suffix domain rule
-- wikibooks.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match exact/suffix domain rule
-- wikidata.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match exact/suffix domain rule
-- wikileaks.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match rules intersect candidate suffix scope
-- wikimedia.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match rules intersect candidate suffix scope
-- wikinews.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match exact/suffix domain rule
-- wikipedia.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match rules intersect candidate suffix scope
-- wikiquote.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match exact/suffix domain rule
-- wikisource.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match exact/suffix domain rule
-- wikiversity.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match exact/suffix domain rule
-- wikivoyage.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match exact/suffix domain rule
-- wiktionary.org (PROXY): ALREADY_COVERED — line 1344: Prior first-match exact/suffix domain rule
-- wscdns.com (DIRECT): ALREADY_COVERED — line 765: Prior first-match exact/suffix domain rule
+- twimg.org (PROXY): ALREADY_COVERED — line 647: Prior first-match exact/suffix domain rule
+- twitch.tv (PROXY): ALREADY_COVERED — line 810: Prior first-match rules intersect candidate suffix scope
+- unrealengine.com (DIRECT): CONFLICT — line 1143: Prior first-match exact/suffix domain rule
+- upaiyun.com (DIRECT): ALREADY_COVERED — line 1462: Prior first-match exact/suffix domain rule
+- upyun.com (DIRECT): ALREADY_COVERED — line 1284: Prior first-match exact/suffix domain rule
+- v2ex.com (PROXY): CONFLICT — line 1463: Prior first-match rules produce a conflicting policy within suffix scope
+- vimeo.com (PROXY): ALREADY_COVERED — line 929: Prior first-match rules intersect candidate suffix scope
+- vine.co (PROXY): ALREADY_COVERED — line 664: Prior first-match rules intersect candidate suffix scope
+- vip.bz.mgtv.com (REJECT): CONFLICT — line 1210: Prior first-match exact/suffix domain rule
+- vip.com (DIRECT): ALREADY_COVERED — line 1466: Prior first-match exact/suffix domain rule
+- vivo.com (DIRECT): ALREADY_COVERED — line 1225: Prior first-match exact/suffix domain rule
+- wandoujia.com (DIRECT): ALREADY_COVERED — line 1285: Prior first-match exact/suffix domain rule
+- wechat.com (DIRECT): ALREADY_COVERED — line 1598: Prior first-match rules intersect candidate suffix scope
+- weibo.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
+- weibo.com (DIRECT): CONFLICT — line 505: Prior first-match rules produce a conflicting policy within suffix scope
+- weibocdn.cn (DIRECT): ALREADY_COVERED — line 1189: Prior first-match exact/suffix domain rule
+- weico.cc (DIRECT): CONFLICT — line 663: Prior first-match exact/suffix domain rule
+- weixin.com (DIRECT): ALREADY_COVERED — line 1227: Prior first-match rules intersect candidate suffix scope
+- weiyun.com (DIRECT): ALREADY_COVERED — line 1469: Prior first-match exact/suffix domain rule
+- wikibooks.org (PROXY): ALREADY_COVERED — line 647: Prior first-match exact/suffix domain rule
+- wikidata.org (PROXY): ALREADY_COVERED — line 647: Prior first-match exact/suffix domain rule
+- wikileaks.org (PROXY): ALREADY_COVERED — line 647: Prior first-match rules intersect candidate suffix scope
+- wikimedia.org (PROXY): ALREADY_COVERED — line 647: Prior first-match rules intersect candidate suffix scope
+- wikinews.org (PROXY): ALREADY_COVERED — line 647: Prior first-match exact/suffix domain rule
+- wikipedia.org (PROXY): ALREADY_COVERED — line 647: Prior first-match rules intersect candidate suffix scope
+- wikiquote.org (PROXY): ALREADY_COVERED — line 647: Prior first-match exact/suffix domain rule
+- wikisource.org (PROXY): ALREADY_COVERED — line 647: Prior first-match exact/suffix domain rule
+- wikiversity.org (PROXY): ALREADY_COVERED — line 647: Prior first-match exact/suffix domain rule
+- wikivoyage.org (PROXY): ALREADY_COVERED — line 647: Prior first-match exact/suffix domain rule
+- wiktionary.org (PROXY): ALREADY_COVERED — line 647: Prior first-match exact/suffix domain rule
+- wscdns.com (DIRECT): ALREADY_COVERED — line 1290: Prior first-match exact/suffix domain rule
 - x.com (PROXY): CONDITIONAL_POTENTIAL — line 44: Prior compound rule contains a matching domain operand; other operands are not evaluated
-- xhamster.com (PROXY): ALREADY_COVERED — line 1756: Prior first-match exact/suffix domain rule
-- xiachufang.com (DIRECT): ALREADY_COVERED — line 766: Prior first-match exact/suffix domain rule
-- xiami.com (DIRECT): ALREADY_COVERED — line 767: Prior first-match rules intersect candidate suffix scope
-- xiami.net (DIRECT): ALREADY_COVERED — line 768: Prior first-match rules intersect candidate suffix scope
-- xiaohongshu.com (DIRECT): ALREADY_COVERED — line 769: Prior first-match rules intersect candidate suffix scope
-- xiaojukeji.com (DIRECT): ALREADY_COVERED — line 770: Prior first-match exact/suffix domain rule
-- xiaomi.com (DIRECT): ALREADY_COVERED — line 697: Prior first-match exact/suffix domain rule
-- xiaomi.net (DIRECT): ALREADY_COVERED — line 771: Prior first-match exact/suffix domain rule
-- ximalaya.com (DIRECT): ALREADY_COVERED — line 698: Prior first-match exact/suffix domain rule
-- xinhuanet.com (DIRECT): ALREADY_COVERED — line 964: Prior first-match exact/suffix domain rule
-- xip.io (DIRECT): CONFLICT — line 1351: Prior first-match exact/suffix domain rule
-- xitek.com (DIRECT): ALREADY_COVERED — line 965: Prior first-match exact/suffix domain rule
-- xiumi.us (DIRECT): ALREADY_COVERED — line 966: Prior first-match exact/suffix domain rule
-- xnxx.com (PROXY): ALREADY_COVERED — line 1757: Prior first-match exact/suffix domain rule
-- xueqiu.com (DIRECT): ALREADY_COVERED — line 967: Prior first-match exact/suffix domain rule
-- xunlei.com (DIRECT): CONFLICT — line 519: Prior first-match rules produce a conflicting policy within suffix scope
-- xvideos.com (PROXY): ALREADY_COVERED — line 1758: Prior first-match rules intersect candidate suffix scope
-- yach.me (DIRECT): CONFLICT — line 1355: Prior first-match exact/suffix domain rule
-- ydstatic.com (DIRECT): ALREADY_COVERED — line 774: Prior first-match exact/suffix domain rule
-- yhd.com (DIRECT): ALREADY_COVERED — line 777: Prior first-match exact/suffix domain rule
-- yihaodianimg.com (DIRECT): ALREADY_COVERED — line 779: Prior first-match exact/suffix domain rule
-- yinxiang.com (DIRECT): ALREADY_COVERED — line 780: Prior first-match exact/suffix domain rule
-- yinyuetai.com (DIRECT): ALREADY_COVERED — line 1027: Prior first-match exact/suffix domain rule
-- yixia.com (DIRECT): ALREADY_COVERED — line 781: Prior first-match exact/suffix domain rule
-- ykimg.com (DIRECT): ALREADY_COVERED — line 783: Prior first-match rules intersect candidate suffix scope
-- youdao.com (DIRECT): ALREADY_COVERED — line 786: Prior first-match exact/suffix domain rule
-- youku.com (DIRECT): CONFLICT — line 418: Prior first-match rules produce a conflicting policy within suffix scope
+- xhamster.com (PROXY): ALREADY_COVERED — line 1031: Prior first-match exact/suffix domain rule
+- xiachufang.com (DIRECT): ALREADY_COVERED — line 1291: Prior first-match exact/suffix domain rule
+- xiami.com (DIRECT): ALREADY_COVERED — line 1292: Prior first-match rules intersect candidate suffix scope
+- xiami.net (DIRECT): ALREADY_COVERED — line 1293: Prior first-match rules intersect candidate suffix scope
+- xiaohongshu.com (DIRECT): ALREADY_COVERED — line 1294: Prior first-match rules intersect candidate suffix scope
+- xiaojukeji.com (DIRECT): ALREADY_COVERED — line 1295: Prior first-match exact/suffix domain rule
+- xiaomi.com (DIRECT): ALREADY_COVERED — line 1228: Prior first-match exact/suffix domain rule
+- xiaomi.net (DIRECT): ALREADY_COVERED — line 1296: Prior first-match exact/suffix domain rule
+- ximalaya.com (DIRECT): ALREADY_COVERED — line 1229: Prior first-match exact/suffix domain rule
+- xinhuanet.com (DIRECT): ALREADY_COVERED — line 1476: Prior first-match exact/suffix domain rule
+- xitek.com (DIRECT): ALREADY_COVERED — line 1477: Prior first-match exact/suffix domain rule
+- xiumi.us (DIRECT): CONFLICT — line 661: Prior first-match exact/suffix domain rule
+- xnxx.com (PROXY): ALREADY_COVERED — line 1032: Prior first-match exact/suffix domain rule
+- xueqiu.com (DIRECT): ALREADY_COVERED — line 1478: Prior first-match exact/suffix domain rule
+- xunlei.com (DIRECT): CONFLICT — line 508: Prior first-match rules produce a conflicting policy within suffix scope
+- xvideos.com (PROXY): ALREADY_COVERED — line 1033: Prior first-match rules intersect candidate suffix scope
+- yach.me (DIRECT): CONFLICT — line 655: Prior first-match exact/suffix domain rule
+- ydstatic.com (DIRECT): ALREADY_COVERED — line 1299: Prior first-match exact/suffix domain rule
+- yhd.com (DIRECT): ALREADY_COVERED — line 1302: Prior first-match exact/suffix domain rule
+- yihaodianimg.com (DIRECT): ALREADY_COVERED — line 1304: Prior first-match exact/suffix domain rule
+- yinxiang.com (DIRECT): ALREADY_COVERED — line 1305: Prior first-match exact/suffix domain rule
+- yinyuetai.com (DIRECT): ALREADY_COVERED — line 1522: Prior first-match exact/suffix domain rule
+- yixia.com (DIRECT): ALREADY_COVERED — line 1306: Prior first-match exact/suffix domain rule
+- ykimg.com (DIRECT): ALREADY_COVERED — line 1308: Prior first-match rules intersect candidate suffix scope
+- youdao.com (DIRECT): ALREADY_COVERED — line 1311: Prior first-match exact/suffix domain rule
+- youku.com (DIRECT): CONFLICT — line 407: Prior first-match rules produce a conflicting policy within suffix scope
 - youtube.com (PROXY): CONDITIONAL_POTENTIAL — line 45: Prior compound rule contains a matching domain operand; other operands are not evaluated
 - ytimg.com (PROXY): CONDITIONAL_POTENTIAL — line 46: Prior compound rule contains a matching domain operand; other operands are not evaluated
-- yunjiasu-cdn.net (DIRECT): ALREADY_COVERED — line 977: Prior first-match exact/suffix domain rule
-- yy.com (DIRECT): ALREADY_COVERED — line 788: Prior first-match exact/suffix domain rule
-- yystatic.com (DIRECT): ALREADY_COVERED — line 789: Prior first-match exact/suffix domain rule
-- zealer.com (DIRECT): ALREADY_COVERED — line 982: Prior first-match exact/suffix domain rule
-- zhangzishi.cc (DIRECT): CONFLICT — line 1364: Prior first-match exact/suffix domain rule
-- zhanqi.tv (DIRECT): ALREADY_COVERED — line 790: Prior first-match exact/suffix domain rule
-- zhaopin.com (DIRECT): ALREADY_COVERED — line 791: Prior first-match exact/suffix domain rule
-- zhenguanyu.biz (DIRECT): CONFLICT — line 1363: Prior first-match exact/suffix domain rule
-- zhihu.com (DIRECT): CONFLICT — line 521: Prior first-match rules produce a conflicting policy within suffix scope
-- zhimg.com (DIRECT): ALREADY_COVERED — line 793: Prior first-match rules intersect candidate suffix scope
-- zhipin.com (DIRECT): ALREADY_COVERED — line 810: Prior first-match exact/suffix domain rule
-- zhongsou.com (DIRECT): ALREADY_COVERED — line 795: Prior first-match exact/suffix domain rule
-- zijieapi.com (DIRECT): ALREADY_COVERED — line 797: Prior first-match exact/suffix domain rule
-- zimuzu.io (DIRECT): ALREADY_COVERED — line 1033: Prior first-match exact/suffix domain rule
-- zimuzu.tv (DIRECT): ALREADY_COVERED — line 798: Prior first-match exact/suffix domain rule
-- zjbyte.com (DIRECT): ALREADY_COVERED — line 1034: Prior first-match exact/suffix domain rule
-- zoom.us (PROXY): ALREADY_COVERED — line 1361: Prior first-match exact/suffix domain rule
-- zoomgov.com (PROXY): ALREADY_COVERED — line 1760: Prior first-match exact/suffix domain rule
+- yunjiasu-cdn.net (DIRECT): ALREADY_COVERED — line 1485: Prior first-match exact/suffix domain rule
+- yy.com (DIRECT): ALREADY_COVERED — line 1313: Prior first-match exact/suffix domain rule
+- yystatic.com (DIRECT): ALREADY_COVERED — line 1314: Prior first-match exact/suffix domain rule
+- zealer.com (DIRECT): ALREADY_COVERED — line 1489: Prior first-match exact/suffix domain rule
+- zhangzishi.cc (DIRECT): CONFLICT — line 663: Prior first-match exact/suffix domain rule
+- zhanqi.tv (DIRECT): ALREADY_COVERED — line 1315: Prior first-match exact/suffix domain rule
+- zhaopin.com (DIRECT): ALREADY_COVERED — line 1316: Prior first-match exact/suffix domain rule
+- zhenguanyu.biz (DIRECT): CONFLICT — line 662: Prior first-match exact/suffix domain rule
+- zhihu.com (DIRECT): CONFLICT — line 510: Prior first-match rules produce a conflicting policy within suffix scope
+- zhimg.com (DIRECT): ALREADY_COVERED — line 1317: Prior first-match rules intersect candidate suffix scope
+- zhipin.com (DIRECT): ALREADY_COVERED — line 1333: Prior first-match exact/suffix domain rule
+- zhongsou.com (DIRECT): ALREADY_COVERED — line 1318: Prior first-match exact/suffix domain rule
+- zijieapi.com (DIRECT): ALREADY_COVERED — line 1320: Prior first-match exact/suffix domain rule
+- zimuzu.io (DIRECT): ALREADY_COVERED — line 1525: Prior first-match exact/suffix domain rule
+- zimuzu.tv (DIRECT): ALREADY_COVERED — line 1321: Prior first-match exact/suffix domain rule
+- zjbyte.com (DIRECT): ALREADY_COVERED — line 1526: Prior first-match exact/suffix domain rule
+- zoom.us (PROXY): ALREADY_COVERED — line 661: Prior first-match exact/suffix domain rule
+- zoomgov.com (PROXY): ALREADY_COVERED — line 1035: Prior first-match exact/suffix domain rule
 
 ## Errors
 

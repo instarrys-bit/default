@@ -722,7 +722,10 @@
       "config_rule": "DOMAIN-SUFFIX,io,PROXY",
       "effective_config_policy": "PROXY",
       "reason": "Prior first-match rules intersect candidate suffix scope",
-      "restored_at": null
+      "restored_at": null,
+      "superseded_at": "2026-11-02T00:00:46.771443+00:00",
+      "superseded_by_config_blob_sha": "a6b2f0e6e41da13572dfca8e8119212118df5bcb",
+      "superseded_reason": "Current ss.conf no longer overlaps this archived external rule; it may be reconsidered by the normal evidence gate."
     },
     {
       "id": "cfg-51224575a61978f3ff5c",
@@ -752,7 +755,10 @@
       "config_rule": "DOMAIN-SUFFIX,io,PROXY",
       "effective_config_policy": "PROXY",
       "reason": "Prior first-match rules intersect candidate suffix scope",
-      "restored_at": null
+      "restored_at": null,
+      "superseded_at": "2026-11-02T00:00:46.771443+00:00",
+      "superseded_by_config_blob_sha": "a6b2f0e6e41da13572dfca8e8119212118df5bcb",
+      "superseded_reason": "Current ss.conf no longer overlaps this archived external rule; it may be reconsidered by the normal evidence gate."
     },
     {
       "id": "cfg-60655fd0afb65de36560",
@@ -1445,5 +1451,5 @@
       "restored_at": null
     }
   ],
-  "updated_at": "2026-11-01T21:53:06.670976+00:00"
+  "updated_at": "2026-11-02T00:00:46.771443+00:00"
 }

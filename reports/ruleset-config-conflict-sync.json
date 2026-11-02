@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "completed_at": "2026-11-01T23:50:25.698027+00:00",
+  "completed_at": "2026-11-02T00:00:46.771443+00:00",
   "config_path": "shadowrocket/ss.conf",
   "config_read_only": true,
-  "config_blob_sha": "4b9f3a60522322b820139774bf65cab9f54ca7c9",
-  "first_ruleset_line": 1993,
-  "higher_priority_rule_count": 1948,
+  "config_blob_sha": "a6b2f0e6e41da13572dfca8e8119212118df5bcb",
+  "first_ruleset_line": 1718,
+  "higher_priority_rule_count": 1672,
   "published_before": {
     "DIRECT": 15,
     "PROXY": 64,
@@ -30,7 +30,7 @@
       "domain": "thefacebook.com",
       "scope": "suffix_candidate",
       "effective_policy": "PROXY",
-      "config_line": 1893,
+      "config_line": 1167,
       "config_rule": "DOMAIN-KEYWORD,facebook,PROXY",
       "reason": "Prior DOMAIN-KEYWORD may match this candidate"
     }
@@ -38,7 +38,7 @@
   "retained_for_review_count": 1,
   "restored": [],
   "restore_refused": [],
-  "active_archive_count": 95,
+  "active_archive_count": 93,
   "policy": "Every provable exact/suffix scope overlap with ss.conf or skip-proxy is removed from published and queued external rules, regardless of whether the policy matches. The earliest applicable config rule is recorded as precedence evidence. Historical archive entries are rechecked against the current config and superseded when the overlap no longer exists. Keyword/regex/conditional overlaps that cannot be proven from static domain scope are retained and reported; no speculative deletion is allowed.",
   "errors": []
 }

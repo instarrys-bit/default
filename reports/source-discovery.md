@@ -1554,7 +1554,7 @@
 ### [ruijzhan/chnroute](https://github.com/ruijzhan/chnroute)
 
 - Description: Continuously updated list of Chinese IP addresses and gfwlist domain names
-- Stars: 303; archived: False; fork: False
+- Stars: 305; archived: False; fork: False
 - Search queries: China domain list
 - README / curated seed rule-list links: 0
 - Curated seed links: 0

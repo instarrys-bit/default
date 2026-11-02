@@ -4,22 +4,22 @@
   "config_rule_set_reference_count": 3,
   "references": [
     {
-      "line": 1993,
+      "line": 1718,
       "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/reject.list",
       "file": "reject.list",
       "policy": "REJECT"
     },
     {
-      "line": 1994,
-      "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list",
-      "file": "direct.list",
-      "policy": "DIRECT"
-    },
-    {
-      "line": 1995,
+      "line": 1719,
       "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list",
       "file": "proxy.list",
       "policy": "PROXY"
+    },
+    {
+      "line": 1720,
+      "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list",
+      "file": "direct.list",
+      "policy": "DIRECT"
     }
   ],
   "managed_output_files": [
@@ -37,10 +37,10 @@
     },
     "proxy.list": {
       "policy": "PROXY",
-      "line_count": 64,
-      "valid_domain_lines": 64,
+      "line_count": 66,
+      "valid_domain_lines": 66,
       "exact_domain_lines": 0,
-      "suffix_domain_lines": 64
+      "suffix_domain_lines": 66
     },
     "reject.list": {
       "policy": "REJECT",
@@ -57,22 +57,22 @@
     "expected_ruleset_order": "authoritative order from shadowrocket/ss.conf",
     "observed_ruleset_order": [
       "reject.list:REJECT",
-      "direct.list:DIRECT",
-      "proxy.list:PROXY"
+      "proxy.list:PROXY",
+      "direct.list:DIRECT"
     ],
     "marker_lines": {
       "layer_1": 30,
-      "layer_2": 611,
-      "layer_3": 647,
-      "layer_4": 1333,
-      "layer_5": 1897,
-      "original_rules_end": 1967,
-      "external_rulesets": 1992,
-      "geoip_asn_start": 1996,
-      "geoip_asn_cn": 2021,
-      "geoip_cn_rule": 2074,
-      "layer_6": 2075,
-      "final_rule": 2076
+      "layer_2": 600,
+      "layer_3": 636,
+      "layer_4": 1171,
+      "layer_5": 1629,
+      "original_rules_end": 1692,
+      "external_rulesets": 1717,
+      "geoip_asn_start": 1721,
+      "geoip_asn_cn": 1746,
+      "geoip_cn_rule": 1799,
+      "layer_6": 1800,
+      "final_rule": 1801
     },
     "passed": true
   },
