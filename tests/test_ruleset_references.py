@@ -94,7 +94,7 @@ class RuleSetReferenceAuditTests(unittest.TestCase):
                 ["reject.list:REJECT", "direct.list:DIRECT", "proxy.list:PROXY"],
             )
 
-    def test_external_rule_sets_after_geoip_fail(self):
+    def test_rule_set_position_is_observed_without_automatic_precedence_judgment(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             empty_rulesets(root)
@@ -111,17 +111,20 @@ class RuleSetReferenceAuditTests(unittest.TestCase):
                 "\n".join(block) + "\nFINAL,PROXY\n[Host]",
             )
             report = inspect(config, empty_manifest(), root)
-            self.assertFalse(report["passed"])
-            self.assertTrue(any("must precede the ASN/GeoIP fallback" in x for x in report["errors"]))
+            self.assertTrue(report["passed"], report["errors"])
+            self.assertEqual(
+                report["layout"]["observed_ruleset_order"],
+                ["reject.list:REJECT", "proxy.list:PROXY", "direct.list:DIRECT"],
+            )
 
-    def test_original_explicit_rule_after_external_block_fails(self):
+    def test_explicit_rule_position_after_rule_sets_is_not_a_precedence_failure(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             empty_rulesets(root)
             config = make_config(extra_after_sets="DOMAIN,late-manual.example,DIRECT")
             report = inspect(config, empty_manifest(), root)
-            self.assertFalse(report["passed"])
-            self.assertTrue(any("active routing rules appear between external RULE-SETs" in x for x in report["errors"]))
+            self.assertTrue(report["passed"], report["errors"])
+            self.assertEqual(len(report["references"]), 3)
 
 
     def test_missing_layout_marker_fails(self):
@@ -168,8 +171,9 @@ class RuleSetReferenceAuditTests(unittest.TestCase):
                 "rule_count": {"DIRECT": 1, "PROXY": 1, "REJECT": 0},
             }
             report = inspect(make_config(), manifest, root)
-            self.assertFalse(report["passed"])
-            self.assertEqual(len(report["cross_policy_conflicts"]), 1)
+            self.assertTrue(report["passed"], report["errors"])
+            self.assertEqual(len(report["cross_policy_conflicts"]), 0)
+            self.assertEqual(len(report["cross_policy_scope_overlaps"]), 1)
 
     def test_cross_scope_policy_conflict_is_detected(self):
         with tempfile.TemporaryDirectory() as tmp:
