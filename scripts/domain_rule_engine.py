@@ -121,33 +121,45 @@ def analyze_candidate(domain: str, is_suffix: bool, rules):
 
 
 def inspect_suffix_scope(domain: str, policy: str, rules, conditional, protected, skip_proxy=(), rule_boundary=None):
-    """Fail closed when a suffix would cover a differently routed or protected host."""
+    """Check full-scope coverage and safety holds without evaluating rule order."""
     domain = domain.lower().rstrip(".")
     policy = policy.upper()
-    if rule_boundary is not None:
-        rules = RuleIndex([rule for rule in rules.rules if rule.line < rule_boundary])
-        conditional = [(line, raw) for line, raw in conditional if line < rule_boundary]
-    analysis = analyze_candidate(domain, True, rules)
-    conflicting = sorted(analysis["scope_policies"] - {policy})
-    if conflicting:
-        return "CONFLICT", (
-            "Suffix scope has different effective first-match policies: "
-            + ", ".join(conflicting)
-        )
+
+    # Only a parent/equal DOMAIN-SUFFIX rule covers the complete suffix scope.
+    # Exact or child-suffix rules are narrower exceptions and do not suppress it.
+    covering = [
+        rule for rule in rules.rules
+        if rule.kind == "DOMAIN-SUFFIX"
+        and (domain == rule.domain or domain.endswith("." + rule.domain))
+    ]
+    if covering:
+        policies = {rule.policy for rule in covering}
+        if len(policies) > 1:
+            return "REVIEW", "Multiple fully covering config suffix scopes declare different policies; no winner is selected"
+        covered_policy = next(iter(policies))
+        if covered_policy != policy:
+            return "CONFLICT", "A fully covering config suffix scope declares a different policy; rule order is not evaluated"
+
+    # Conditional rules remain a conservative review hold, not a precedence test.
     for _, raw in conditional:
         for kind, match in re.findall(r"(DOMAIN-SUFFIX|DOMAIN),([A-Za-z0-9.-]+)", raw, re.I):
             match = match.lower().strip(".")
-            intersects = (
-                domain == match
-                or domain.endswith("." + match)
-                or match.endswith("." + domain)
-            )
+            if kind.upper() == "DOMAIN":
+                intersects = match == domain or match.endswith("." + domain)
+            else:
+                intersects = (
+                    match == domain
+                    or match.endswith("." + domain)
+                    or domain.endswith("." + match)
+                )
             if intersects:
                 return "REVIEW", "Suffix scope intersects an existing conditional domain rule"
+
     for host in protected.get("protected_exact", []):
         host = host.lower().strip(".")
         if host == domain or host.endswith("." + domain):
             return "RISK_HOLD", "Suffix scope would include protected exact host " + host
+
     for suffix in protected.get("protected_suffixes", []):
         suffix = suffix.lower().strip(".")
         if (
@@ -156,19 +168,16 @@ def inspect_suffix_scope(domain: str, policy: str, rules, conditional, protected
             or domain.endswith("." + suffix)
         ):
             return "RISK_HOLD", "Suffix scope intersects protected suffix " + suffix
+
+    # A single exact skip-proxy host is only a narrower exception. A wildcard
+    # parent is the only skip-proxy entry that can cover the whole suffix.
     if policy != "DIRECT":
         for entry in skip_proxy:
             entry = entry.lower().strip()
-            if "/" in entry or ":" in entry:
+            if "/" in entry or ":" in entry or not entry.startswith("*."):
                 continue
-            if entry.startswith("*."):
-                suffix = entry[2:]
-                intersects = (
-                    suffix == domain or suffix.endswith("." + domain)
-                    or domain.endswith("." + suffix)
-                )
-            else:
-                intersects = entry == domain or entry.endswith("." + domain)
-            if intersects:
-                return "CONFLICT", "Suffix scope intersects direct-bypass skip-proxy entry " + entry
+            suffix = entry[2:].strip(".")
+            if domain == suffix or domain.endswith("." + suffix):
+                return "CONFLICT", "Suffix scope is fully covered by direct-bypass skip-proxy entry " + entry
+
     return None, None
