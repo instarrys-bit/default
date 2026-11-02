@@ -16,9 +16,9 @@ STEP = """      - name: Reconcile final RULE-SET manifest counts
         run: python3 scripts/refresh_ruleset_manifest.py
 
 """
-STALE_ASSERTION = 'self.assertIn("cancel-in-progress: true", workflow)'
+STALE_ASSERTION = '        self.assertIn("cancel-in-progress: true", workflow)'
 CURRENT_ASSERTIONS = (
-    'self.assertIn("cancel-in-progress: false", workflow)\n'
+    '        self.assertIn("cancel-in-progress: false", workflow)\n'
     '        self.assertIn("Keep the active audit; stale-commit guards stop obsolete runs safely.", workflow)'
 )
 
