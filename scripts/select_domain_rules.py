@@ -11,7 +11,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
-from domain_rule_engine import RuleIndex, analyze_candidate, load_domain_rules
+from domain_rule_engine import load_domain_rules
+from audit_ruleset_config_overlap import scope_covers_candidate
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "shadowrocket" / "ss.conf"
@@ -97,23 +98,11 @@ def load_approvals(candidates: dict[str, bool]) -> dict[str, dict[str, str]]:
 
 
 def self_test() -> None:
-    from domain_rule_engine import DomainRule, matches_host, analyze_candidate
-    sample = [
-        DomainRule("DOMAIN-SUFFIX", "shop.example.com", "DIRECT", 5, ""),
-        DomainRule("DOMAIN-SUFFIX", "example.com", "PROXY", 10, ""),
-        DomainRule("DOMAIN", "ads.example.com", "REJECT", 20, ""),
-        DomainRule("DOMAIN", "exact.test", "REJECT", 40, ""),
-        DomainRule("DOMAIN", "exact.test", "DIRECT", 50, ""),
-    ]
-    assert matches_host("api.example.com", sample)[0].policy == "PROXY"
-    assert matches_host("ads.example.com", sample)[0].policy == "PROXY"
-    assert matches_host("exact.test", sample)[0].policy == "REJECT"
-    varied = analyze_candidate("example.com", True, sample)
-    assert varied["scope_policies"] == {"PROXY", "DIRECT"}
-    exact = analyze_candidate("exact.test", False, sample)
-    assert exact["apex_winner"].policy == "REJECT"
-    assert len(exact["apex_hits"]) == 2
-    print("PASS: ordered first-match, suffix scope, and shadowing tests")
+    assert scope_covers_candidate("exact_candidate", "api.example.com", "DOMAIN-SUFFIX", "example.com")
+    assert scope_covers_candidate("suffix_candidate", "example.com", "DOMAIN-SUFFIX", "example.com")
+    assert not scope_covers_candidate("suffix_candidate", "example.com", "DOMAIN", "api.example.com")
+    assert not scope_covers_candidate("suffix_candidate", "example.com", "DOMAIN-SUFFIX", "api.example.com")
+    print("PASS: full-scope coverage only; no precedence or REJECT config analysis")
 
 
 def main() -> None:
@@ -123,35 +112,44 @@ def main() -> None:
         return
     candidates = load_candidates()
     rules, conditional, ignored = load_domain_rules(CONFIG)
-    rule_index = RuleIndex(rules)
+    # REJECT decisions in ss.conf are user-owned and excluded from this tool.
+    rules = [rule for rule in rules if rule.policy in {"DIRECT", "PROXY"}]
+    conditional = [item for item in conditional if item[1].rsplit(",", 1)[-1].strip().upper() != "REJECT"]
     approvals = load_approvals(candidates)
     stats = defaultdict(int)
     review, pending, generated = [], [], []
 
     for domain, is_suffix in candidates.items():
-        result = analyze_candidate(domain, is_suffix, rule_index)
-        policies = result["scope_policies"]
+        scope = "suffix_candidate" if is_suffix else "exact_candidate"
+        matches = [
+            rule for rule in rules
+            if scope_covers_candidate(scope, domain, rule.kind, rule.domain)
+        ]
         approval = approvals.get(domain)
-        if len(policies) > 1:
-            stats["suffix_scope_policy_variation"] += 1
-            winners = sorted({(r.policy, r.line, r.domain) for r in result["scope_winners"].values()})
-            evidence = "; ".join(f"{p} line {line} ({rule_domain})" for p, line, rule_domain in winners)
-            review.append((domain, "source suffix spans different effective policies", evidence))
+        if matches:
+            policies = {rule.policy for rule in matches}
+            evidence = "; ".join(
+                f"{rule.kind},{rule.domain} => {rule.policy} (line {rule.line})"
+                for rule in matches
+            )
+            if len(policies) > 1:
+                stats["mixed_scope_policy_coverage"] += 1
+                review.append((domain, "multiple fully covering config scopes carry different policies; no winner selected", evidence))
+            else:
+                config_policy = next(iter(policies))
+                stats["fully_covered_by_config_scope"] += 1
+                if approval and approval["policy"] != config_policy:
+                    stats["approval_disagrees_with_config_scope"] += 1
+                    review.append((domain, f"approval {approval['policy']} differs from fully covering config scope {config_policy}", evidence))
             continue
-        winner = result["apex_winner"]
-        if winner:
-            stats["already_governed_by_original_config"] += 1
-            if approval and approval["policy"] != winner.policy:
-                stats["approval_disagrees_with_original_config"] += 1
-                review.append((domain, f"approval {approval['policy']} disagrees with original first-match {winner.policy}",
-                               f"line {winner.line}: {winner.kind} {winner.domain}"))
-            continue
+
         if approval is None:
-            stats["unreviewed_no_existing_domain_rule"] += 1
+            stats["unreviewed_without_full_scope_coverage"] += 1
             pending.append(domain)
             continue
-        generated.append(f"DOMAIN,{domain},{approval['policy']}")
-        stats["approved_new_exact_rules"] += 1
+        kind = "DOMAIN-SUFFIX" if is_suffix else "DOMAIN"
+        generated.append(f"{kind},{domain},{approval['policy']}")
+        stats["approved_new_rules"] += 1
 
     generated.sort()
     review.sort()
@@ -160,32 +158,33 @@ def main() -> None:
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text("\n".join(generated) + ("\n" if generated else ""), encoding="utf-8")
     report = [
-        "# Domain rule selector audit", "",
+        "# Domain rule selector scope audit", "",
         f"- Audit time: {datetime.now(timezone.utc).isoformat()}",
         f"- Pinned source SHA-1: `{EXPECTED_GIT_BLOB_SHA1}`",
         f"- Candidate count: {len(candidates)}",
-        f"- Ordered unconditional DOMAIN / DOMAIN-SUFFIX rules parsed: {len(rules)}",
-        f"- Conditional composite rules containing DOMAIN terms (not flattened): {len(conditional)}",
+        f"- Explicit DIRECT/PROXY DOMAIN / DOMAIN-SUFFIX config rules parsed: {len(rules)}",
+        f"- Non-REJECT conditional composite rules containing DOMAIN terms (not flattened): {len(conditional)}",
         f"- Malformed or unsupported simple domain rules held aside: {len(ignored)}",
         f"- Explicit approvals: {len(approvals)}", "",
         "## Results", "", "| Classification | Count |", "|---|---:|",
     ]
-    for key in ("already_governed_by_original_config", "suffix_scope_policy_variation",
-                "approval_disagrees_with_original_config", "unreviewed_no_existing_domain_rule",
-                "approved_new_exact_rules"):
+    for key in ("fully_covered_by_config_scope", "mixed_scope_policy_coverage",
+                "approval_disagrees_with_config_scope", "unreviewed_without_full_scope_coverage",
+                "approved_new_rules"):
         report.append(f"| {key} | {stats[key]} |")
-    report += ["", "## Review queue", "", "| Candidate | Reason | Original config evidence |", "|---|---|---|"]
+    report += ["", "## Review queue", "", "| Candidate | Reason | Config scope evidence |", "|---|---|---|"]
     report += [f"| `{domain}` | {reason} | {evidence} |" for domain, reason, evidence in review]
     report += [
         "", "## Pending candidates", "",
-        f"Unreviewed candidates without an existing unconditional domain-rule match: {len(pending)}. No policy is inferred and none are emitted.",
+        f"Unreviewed candidates without a fully covering DIRECT/PROXY config scope: {len(pending)}. No policy is inferred and none are emitted.",
         "", "## Output contract", "",
-        "- Only `DOMAIN,<domain>,DIRECT|PROXY|REJECT` is generated.",
-        "- The first matching unconditional DOMAIN or DOMAIN-SUFFIX rule in canonical ss.conf determines the existing effective domain policy.",
-        "- Later matching rules are shadowed by original rule order; they do not override the winner.",
-        "- Source suffix scopes with different effective policies are quarantined for review.",
-        "- Conditional AND/OR/NOT rules are kept separate and are not treated as unconditional domain rules.",
-        "- No upstream policy is adopted; every new rule requires an explicit approval and evidence note.",
+        "- Only DOMAIN or DOMAIN-SUFFIX entries with an explicitly approved DIRECT/PROXY/REJECT policy are generated.",
+        "- A candidate is covered only by a single explicit DIRECT/PROXY config scope that fully contains its complete source scope.",
+        "- Child exact or child-suffix exceptions do not suppress broader suffix candidates.",
+        "- REJECT rules in ss.conf are excluded from automated analysis; blocking decisions remain user-owned.",
+        "- Mixed-policy coverage is held for review without selecting a winner.",
+        "- No rule order, first-match policy, or precedence is inferred.",
+        "- Conditional AND/OR/NOT rules are counted but are not flattened into unconditional domain rules.",
         "- Existing ss.conf, DNS, nodes, rule order, and subscription are never modified.",
         f"- Generated rules file: `{OUTPUT.relative_to(ROOT)}` ({len(generated)} rules)", "",
     ]
