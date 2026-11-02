@@ -126,14 +126,13 @@ jobs:
           classification="$(python3 -c 'import json; print(json.load(open("reports/self-healing/diagnosis.json"))["classification"])')"
           body="$(cat reports/self-healing/diagnosis.json)"
           title="Self-healing incident: $classification"
-          existing="$(gh issue list --repo "$REPO" --state open --search "\\"$title\\" in:title" --json number --jq '.[0].number')"
+          existing="$(gh issue list --repo "$REPO" --state open --search "$classification in:title" --json number --jq '.[0].number')"
           if [ -n "$existing" ] && [ "$existing" != "null" ]; then
-            gh issue comment "$existing" --repo "$REPO" --body "Repeated failure for run $RUN_ID: $RUN_URL\\n\\n```json\\n$body\\n```"
+            body_text="$(printf 'Repeated failure for run %s: %s\\n\\n```json\\n%s\\n```\\n' "$RUN_ID" "$RUN_URL" "$body")"
+            gh issue comment "$existing" --repo "$REPO" --body "$body_text"
           else
-            gh issue create \
-              --repo "$REPO" \
-              --title "$title" \
-              --body "Failed workflow run $RUN_ID: $RUN_URL\\n\\nAutomatic repair was not applied. No speculative code changes were made.\\n\\nDiagnosis:\\n\\n```json\\n$body\\n```"
+            body_text="$(printf 'Failed workflow run %s: %s\\n\\nAutomatic repair was not applied. No speculative code changes were made.\\n\\nDiagnosis:\\n\\n```json\\n%s\\n```\\n' "$RUN_ID" "$RUN_URL" "$body")"
+            gh issue create --repo "$REPO" --title "$title" --body "$body_text"
           fi
 
 
