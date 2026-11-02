@@ -223,7 +223,6 @@ jobs:
             body_text="$(printf 'Repeated failure for run %s: %s\\n\\n\x60\x60\x60json\\n%s\\n\x60\x60\x60\\n' "$RUN_ID" "$RUN_URL" "$body")"
             body_text="$(printf '%s\\n\\n%s' "$marker" "$body_text")"
             gh issue comment "$existing" --repo "$REPO" --body "$body_text"
-            gh issue edit "$existing" --repo "$REPO" --body "$body_text"
           else
             body_text="$(printf 'Failed workflow run %s: %s\\n\\nAutomatic repair was not applied. No speculative code changes were made.\\n\\nDiagnosis:\\n\\n\x60\x60\x60json\\n%s\\n\x60\x60\x60\\n' "$RUN_ID" "$RUN_URL" "$body")"
             body_text="$(printf '%s\\n\\n%s' "$marker" "$body_text")"
