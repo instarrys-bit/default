@@ -25,6 +25,25 @@ DOMAIN_RE=re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:
 COND_RE=re.compile(r"(DOMAIN-SUFFIX|DOMAIN),([A-Za-z0-9.-]+)",re.I)
 def fail(msg): raise SystemExit("ERROR: "+msg)
 
+
+def stable_fingerprint(value) -> str:
+    encoded=json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(",",":")).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+def review_context_fingerprint(source_cfg,protected,config,current_hashes,correlated_pairs,lifecycle_active,published_identities):
+    return stable_fingerprint({
+        "source_registry":source_cfg,
+        "protected_domains":protected,
+        "user_config":config,
+        "source_hashes":current_hashes,
+        "correlated_publisher_pairs":sorted(tuple(sorted(pair)) for pair in correlated_pairs),
+        "lifecycle_active":bool(lifecycle_active),
+        "published_identities":sorted(published_identities),
+    })
+
+def candidate_review_fingerprint(candidate,context_sha256):
+    return stable_fingerprint({"candidate":candidate,"context_sha256":context_sha256})
+
 def validate_evidence(evidence, source_map, current_hashes, policy):
     """Keep only current evidence whose identity and policy match the trusted source registry."""
     valid=[]
@@ -300,13 +319,24 @@ def main():
     candidates=collected.get("candidates",[])
     if len(candidates)>MAX_REVIEW_RECORDS:
         fail(f"candidate review input exceeds hard limit: {len(candidates):,} > {MAX_REVIEW_RECORDS:,}")
-    snapshot_sha256=snapshot_digest(collected.get("sources",[]),candidates)
+    context_sha256=review_context_fingerprint(
+        source_cfg,protected,config,current_hashes,correlated_pairs,lifecycle_active,published_identities
+    )
+    snapshot_sha256=stable_fingerprint({
+        "candidate_snapshot":snapshot_digest(collected.get("sources",[]),candidates),
+        "review_context":context_sha256,
+    })
     cursor_state=json.loads(CURSOR.read_text(encoding="utf-8")) if CURSOR.exists() else {}
     start_index=resume_index(cursor_state,snapshot_sha256,len(candidates))
     batch_size=5000
     for candidate_index,item in enumerate(candidates[start_index:],start=start_index):
         domain=str(item.get("domain","")).lower().rstrip(".")
         if not DOMAIN_RE.fullmatch(domain): fail("invalid candidate domain: "+domain)
+        previous_record=review_map.get(domain)
+        input_fingerprint=candidate_review_fingerprint(item,context_sha256)
+        if previous_record and previous_record.get("review_fingerprint")==input_fingerprint:
+            run_counts["UNCHANGED"]=run_counts.get("UNCHANGED",0)+1
+            continue
         policy=str(item.get("classification","")).upper()
         raw_evidence=item.get("evidence",[])
         candidate_policies={str(x).upper() for x in item.get("candidate_policies",[])}
@@ -364,9 +394,9 @@ def main():
             "conflict_check":"PASS" if status not in {"CONFLICT","POLICY_CONFLICT","REVIEW"} else status,
             "risk_check":"VETO" if status=="RISK_HOLD" else "PASS",
             "decision_engine":"deterministic-domain-audit/4.1","reviewed_at":now,
+            "review_fingerprint":input_fingerprint,
             "config_authority":"shadowrocket/ss.conf"
         }
-        previous_record=review_map.get(domain)
         previous_policy=str(previous_record.get("policy","")).upper() if previous_record else ""
         previous_scope=str(previous_record.get("source_entry_type","exact_candidate")) if previous_record else "exact_candidate"
         was_published=(previous_policy,domain,previous_scope) in published_identities
