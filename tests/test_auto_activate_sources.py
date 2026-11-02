@@ -43,7 +43,8 @@ def candidate(repo="new/direct", policy="DIRECT", drift="unchanged", evidence="R
             "policy_evidence": evidence,
             "domain_count": count,
             "domain_fingerprint_count": count,
-            "sha256": hashlib.sha256("\n".join(f"d{i}.example" for i in range(count)).encode()).hexdigest(),
+            "sha256": hashlib.sha256(payload).hexdigest(),
+            "leading_dot_domain_count": count if leading_dot else 0,
             "drift": {"status": drift}
         }]
     }
