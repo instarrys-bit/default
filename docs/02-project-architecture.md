@@ -39,3 +39,14 @@ Each entry declares its responsibility, capabilities, invocation model, inputs, 
 A new Python component or workflow must be registered in the same change. CI fails closed if a program file is missing from the registry, a stale path remains, or a workflow invokes/dispatches a program without declaring that dependency.
 
 Registration is a prerequisite for future cross-program orchestration, not an automatic permission grant. Independent entry points remain available. The workflow's job-level permissions remain authoritative, and registration alone never authorizes publication, rule activation, or edits to `shadowrocket/ss.conf`.
+
+
+## Cross-program task protocol
+
+The general task queue is stored in automation/task_queue.json. It is separate from rulesets/pending_queue.json, which remains the domain-rule candidate queue.
+
+Each task carries a stable task ID, idempotency key, trace ID, requester and target program IDs, capability, UTC timestamps, priority, status, bounded retry budget, input, lease, result, and last error. The validator checks that the target is registered, advertises the requested capability, is enabled for orchestration, and explicitly allows the requester.
+
+All current programs default to orchestration disabled with an empty caller allowlist. Registration does not make a program callable. Enabling a target requires an explicit allowlist and bounded timeout/retry policy.
+
+This stage defines and validates the durable contract only. It does not dispatch tasks, claim leases, run workers, retry tasks, or guarantee exactly-once execution. Those runtime behaviors require a separate scheduler implementation and tests.
