@@ -225,7 +225,7 @@
 ### [GMOogway/shadowrocket-rules](https://github.com/GMOogway/shadowrocket-rules)
 
 - Description: 小火箭规则🚀，小火箭模块，小火箭配置，shadowrocket规则，shadowrocket rules，最全面的直连（DIRECT）、代理（PROXY）、屏蔽（REJECT）规则，自动构建，每日更新
-- Stars: 5690; archived: False; fork: False
+- Stars: 5693; archived: False; fork: False
 - Search queries: shadowrocket rules
 - README / curated seed rule-list links: 1
 - Curated seed links: 0

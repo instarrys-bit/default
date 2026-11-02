@@ -19,9 +19,9 @@
 | sve1r/Rules-For-Quantumult-X | quantumult-domain-rules | — | 249 | unchanged | ambiguous |
 | sve1r/Rules-For-Quantumult-X | quantumult-domain-rules | PROXY | 574 | unchanged | explicit_third_field |
 | sve1r/Rules-For-Quantumult-X | unsupported_or_too_small | — | 16 | unchanged | ambiguous |
-| gatework/surge-rules | domain-only | — | 110088 | unchanged | ambiguous |
+| gatework/surge-rules | domain-only | — | 110091 | domain_set_changed | ambiguous |
 | gatework/surge-rules | domain-only | PROXY | 4451 | unchanged | README_policy_reference |
-| gatework/surge-rules | domain-only | — | 27254 | unchanged | ambiguous |
+| gatework/surge-rules | domain-only | — | 27263 | domain_set_changed | ambiguous |
 | Clash-FX/cn-apps-direct-domains | shadowrocket-domain-rules | DIRECT | 120 | unchanged | explicit_third_field |
 | Jovanykoch/rules | domain-only | — | 4367 | unchanged | ambiguous |
 | Jovanykoch/rules | domain-only | DIRECT | 6751 | unchanged | README_policy_reference |
@@ -60,8 +60,8 @@
 ## Source update drift
 
 - New source files: 0
-- Changed source files: 0
-- Added domain entries: 0
+- Changed source files: 2
+- Added domain entries: 12
 - Removed domain entries: 0
 - Policy changes: 0
 
@@ -187,8 +187,8 @@
 ### gatework/surge-rules
 
 - URL: https://raw.githubusercontent.com/gatework/surge-rules/release/direct.txt
-- SHA-256: 0b9cc2038a64aa90431973660f33594a0b1e094f6c813a6ce18305e03b66b228
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 110088; duplicate lines: 0
+- SHA-256: dfd5d08ddef4adcb555f99bf27ebaaad5da220ed820af720a8ee266c71d5a936
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 110091; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: ambiguous; candidate: none
@@ -205,8 +205,8 @@
 ### gatework/surge-rules
 
 - URL: https://raw.githubusercontent.com/gatework/surge-rules/release/proxy.txt
-- SHA-256: 670b9a2416a011bbdd9c23c909bdf6e8f43e56fa2b7071a4af7b9594065b3cbd
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 27254; duplicate lines: 0
+- SHA-256: f8e61ef09a2844ab8da50cbf89f9367197a08716020c5333daf4c67ceb188711
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 27263; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: ambiguous; candidate: none

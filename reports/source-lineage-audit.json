@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-02T01:37:41.213733+00:00",
+  "audited_at": "2026-11-02T01:50:37.011263+00:00",
   "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
   "source_count": 8,
   "audited_source_count": 8,
@@ -1422,8 +1422,8 @@
     {
       "repository": "GMOogway/shadowrocket-rules",
       "readme_url": "https://raw.githubusercontent.com/GMOogway/shadowrocket-rules/master/README.md",
-      "readme_sha256": "63db927ff0308329bcffecf7cdefd7979848a47fbf986f509dba600085207e5e",
-      "discovery_readme_sha256": "63db927ff0308329bcffecf7cdefd7979848a47fbf986f509dba600085207e5e",
+      "readme_sha256": "b56e866b3f847323871a0df47961cfb927b67f8f023297120eb199c15c14e068",
+      "discovery_readme_sha256": "b56e866b3f847323871a0df47961cfb927b67f8f023297120eb199c15c14e068",
       "readme_changed_since_discovery": false,
       "referenced_repositories": [
         "crazy-max/windowsspyblocker",
