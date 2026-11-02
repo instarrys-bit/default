@@ -194,8 +194,8 @@ jobs:
           RUN_ID: ${{ github.event.workflow_run.id }}
         run: |
           set -euo pipefail
-          for classification in CONFIG_BASELINE_MISMATCH TEST_FAILURE PYTHON_IMPORT_FAILURE; do
-            issues="$(gh issue list --repo "$REPO" --state open --search "Self-healing incident $classification in:title" --json number,title,body | jq --arg classification "$classification" --argjson run_id "$RUN_ID" '.[] | select(.title == ("Self-healing incident: " + $classification + " (config_validator)")) | select(.body | contains("shadowrocket-automation:workflow=config_validator;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=config_validator;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
+          for classification in CONFIG_BASELINE_MISMATCH TEST_FAILURE PYTHON_IMPORT_FAILURE WORKFLOW_TIMEOUT UNCLASSIFIED_STEP_FAILURE; do
+            issues="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title,body | jq --arg classification "$classification" --argjson run_id "$RUN_ID" '.[] | select(.title == ("Self-healing incident: " + $classification + " (config_validator)")) | select(.body | contains("shadowrocket-automation:workflow=config_validator;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=config_validator;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
             if [ -z "$issues" ]; then
               continue
             fi
@@ -223,7 +223,7 @@ jobs:
           RUN_ID: ${{ github.event.workflow_run.id }}
         run: |
           set -euo pipefail
-          issues="$(gh issue list --repo "$REPO" --state open --search '"Self-healing incident" in:title' --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select((.title == "Self-healing incident: UNCLASSIFIED_STEP_FAILURE (deterministic_audit)") or (.title == "Self-healing incident: TEST_FAILURE (deterministic_audit)")) | select(.body | contains("shadowrocket-automation:workflow=deterministic_audit;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=deterministic_audit;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
+          issues="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select(.title | test("^Self-healing incident: (UNCLASSIFIED_STEP_FAILURE|TEST_FAILURE|PYTHON_IMPORT_FAILURE|WORKFLOW_TIMEOUT|CONFIG_BASELINE_MISMATCH|RULESET_MANIFEST_COUNT_MISSING|RULESET_MANIFEST_COUNT_MISMATCH) \\(deterministic_audit\\)$")) | select(.body | contains("shadowrocket-automation:workflow=deterministic_audit;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=deterministic_audit;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
           if [ -z "$issues" ]; then
             echo "No open deterministic-audit test/failure incidents to resolve."
             exit 0
