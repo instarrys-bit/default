@@ -48,6 +48,7 @@ def build_matrix(assessments: dict, lineage: dict) -> dict:
             "parser": item["parser_candidate"],
             "policy_evidence": item["policy_evidence"],
             "domain_count": item["exact_domain_count"] + item["suffix_domain_count"] + item["adblock_domain_count"] + item["domain_only_count"],
+            "leading_dot_domain_count": item.get("leading_dot_domain_count", 0),
             "duplicate_domain_lines": item.get("duplicate_domain_lines", 0),
             "sha256": item.get("sha256"),
             "domain_fingerprint_count": len(item.get("domain_fingerprints", [])),
