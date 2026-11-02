@@ -175,6 +175,34 @@ class ConfigConflictSyncTests(unittest.TestCase):
             self.assertEqual(len(second["restored"]), 0)
             self.assertEqual(len(second["restore_refused"]), 1)
 
+    def test_restore_refuses_cross_policy_overlap_and_reports_selectable_id(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            make_root(root, config_with_rules([]), direct="DOMAIN-SUFFIX,example.com\\n")
+            archive_path = root / "rulesets" / "config_conflict_archive.json"
+            archive_path.write_text(json.dumps({
+                "schema_version": 1,
+                "items": [{
+                    "id": "cfg-cross-policy",
+                    "policy": "PROXY",
+                    "rule": "DOMAIN,api.example.com",
+                    "domain": "api.example.com",
+                    "scope": "exact_candidate",
+                    "origin": "published_ruleset",
+                    "removed_at": "2026-10-01T00:00:00+00:00",
+                    "config_blob_sha": "old-config-sha",
+                    "restored_at": None
+                }]
+            }), encoding="utf-8")
+            report = sync(root=root, restore_ids=["cfg-cross-policy"], now="2026-11-02T00:00:00+00:00")
+            self.assertEqual(len(report["restored"]), 0)
+            self.assertEqual(len(report["restore_refused"]), 1)
+            self.assertEqual(report["restore_refused"][0]["reason"], "restoration would create a cross-policy overlap")
+            self.assertEqual(report["restoration_option_count"], 1)
+            self.assertEqual(report["restoration_options"][0]["id"], "cfg-cross-policy")
+            self.assertIn("cfg-cross-policy", (root / "reports" / "ruleset-config-conflict-sync.md").read_text())
+            self.assertEqual((root / "rulesets" / "proxy.list").read_text(encoding="utf-8"), "")
+
     def test_restore_succeeds_after_config_conflict_is_removed(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
