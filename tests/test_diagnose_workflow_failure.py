@@ -30,6 +30,17 @@ class DiagnoseWorkflowFailureTests(unittest.TestCase):
         self.assertIsNone(result["repair_id"])
         self.assertFalse(result["automatic_code_change_allowed"])
 
+    def test_stale_concurrency_test_contract_has_a_narrow_allowlisted_repair(self):
+        result = diagnose(
+            "##[group]Run python3 -m unittest tests.test_workflow_config_guard_order\n"
+            "FAIL: test_stale_audit_guard_runs_before_expensive_domain_review\n"
+            "AssertionError: 'cancel-in-progress: true' not found in workflow containing cancel-in-progress: false\n"
+            "##[error]Process completed with exit code 1.\n"
+        )
+        self.assertEqual(result["classification"], "WORKFLOW_TEST_CONTRACT_MISMATCH")
+        self.assertEqual(result["repair_id"], "fix_stale_audit_concurrency_contract")
+        self.assertTrue(result["automatic_code_change_allowed"])
+
     def test_timeout_is_classified_without_code_repair(self):
         result = diagnose("Job exceeded maximum execution time")
         self.assertEqual(result["classification"], "WORKFLOW_TIMEOUT")
