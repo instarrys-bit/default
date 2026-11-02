@@ -29,7 +29,7 @@ class LifecycleAuditSafetyTests(unittest.TestCase):
 
     def test_major_company_suffixes_are_protected(self):
         config={"protected_exact":[],"protected_suffixes":[]}
-        for domain in ("api.google.com","login.microsoft.com","cdn.apple.com","foo.aliyun.com","api.tencent.com","img.bytedance.com"):
+        for domain in ("api.google.com","login.microsoft.com","cdn.apple.com","foo.aliyun.com","api.tencent.com","img.bytedance.com","api.huawei.com","static.jd.com","cdn.xiaohongshu.com","api.alipay.com","api.tencentcloud.com","bank.example.com"):
             self.assertTrue(protected(domain,config),domain)
 
     def test_one_nxdomain_observation_never_deletes(self):
@@ -55,6 +55,15 @@ class LifecycleAuditSafetyTests(unittest.TestCase):
         ]
         history.append({"checked_at":"2026-12-01T00:00:00+00:00","status":"CONFIRMED_NXDOMAIN_OBSERVATION"})
         self.assertTrue(deletion_confirmed(history))
+
+    def test_recovery_anywhere_in_history_breaks_deletion_confirmation(self):
+        history=[
+            {"checked_at":"2026-11-01T00:00:00+00:00","status":"CONFIRMED_NXDOMAIN_OBSERVATION"},
+            {"checked_at":"2026-11-15T00:00:00+00:00","status":"DNS_EXISTS_OR_NODATA"},
+            {"checked_at":"2026-12-01T00:00:00+00:00","status":"CONFIRMED_NXDOMAIN_OBSERVATION"},
+            {"checked_at":"2026-12-02T00:00:00+00:00","status":"CONFIRMED_NXDOMAIN_OBSERVATION"}
+        ]
+        self.assertFalse(deletion_confirmed(history))
 
     def test_intervening_dns_recovery_breaks_deletion_confirmation(self):
         history=[
