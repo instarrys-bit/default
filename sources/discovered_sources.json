@@ -12,7 +12,7 @@
     "Surge direct proxy domain-set rules",
     "Quantumult X direct proxy domain rules"
   ],
-  "candidate_count": 217,
+  "candidate_count": 218,
   "candidates": [
     {
       "repository": "123xjjj/shadowrocket-rules",
@@ -74,11 +74,11 @@
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list": [
-          "DIRECT"
-        ],
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list": [
           "PROXY"
+        ],
+        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list": [
+          "DIRECT"
         ],
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list": [
           "PROXY"
@@ -987,15 +987,15 @@
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list": [
-          "DIRECT"
-        ],
-        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/gfw.list": [
+        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list": [
           "DIRECT",
           "PROXY",
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list": [
+        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/gfw.list": [
           "DIRECT",
           "PROXY",
           "REJECT"
@@ -1353,6 +1353,27 @@
       "seeded_source_urls": []
     },
     {
+      "repository": "QmQsun/Shadowrocket-Rules",
+      "html_url": "https://github.com/QmQsun/Shadowrocket-Rules",
+      "description": "Ad-blocking rules for Shadowrocket on iOS.",
+      "default_branch": "main",
+      "updated_at": "2026-11-02T01:55:40Z",
+      "pushed_at": "2026-11-02T01:55:36Z",
+      "stars": 0,
+      "archived": false,
+      "fork": false,
+      "license": "NOASSERTION",
+      "readme_sha256": "9b76cba1de68e772f4c4136cfdcb16153f0d9f45cf69439b0f73ae75990699be",
+      "rule_list_urls": [
+        "https://raw.githubusercontent.com/QmQsun/Shadowrocket-Rules/main/sr_ios_adblock.conf"
+      ],
+      "readme_policy_claims": {},
+      "search_queries": [
+        "shadowrocket rules"
+      ],
+      "discovered_at": "2026-11-02T02:04:18.421169+00:00"
+    },
+    {
       "repository": "Remix123/routingrulehub",
       "html_url": "https://github.com/Remix123/routingrulehub",
       "description": "Daily Mihomo and Shadowrocket rule outputs derived from Johnshall sr_cnip.conf with split-DNS guidance",
@@ -1691,9 +1712,9 @@
       "html_url": "https://github.com/VPSDance/ai-proxy-rules",
       "description": "AI 服务分流规则聚合: 多源合并 | 按 provider   精修 | 每日自动同步. 覆盖 OpenAI / Anthropic / Gemini / Cursor / Copilot 等主流 AI 服务, 适配   Clash / Mihomo / sing-box / Surge 等主流客户端.",
       "default_branch": "main",
-      "updated_at": "2026-11-01T01:41:57Z",
-      "pushed_at": "2026-11-01T01:41:54Z",
-      "stars": 671,
+      "updated_at": "2026-11-02T01:58:50Z",
+      "pushed_at": "2026-11-02T01:58:46Z",
+      "stars": 672,
       "archived": false,
       "fork": false,
       "license": "MIT",
@@ -2751,15 +2772,15 @@
         "https://raw.githubusercontent.com/gatework/surge-rules/release/proxy.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/gatework/surge-rules/release/proxy.txt": [
+        "https://raw.githubusercontent.com/gatework/surge-rules/release/direct.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/gatework/surge-rules/release/direct.txt": [
+        "https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/gatework/surge-rules/release/proxy.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
@@ -3216,8 +3237,8 @@
       "html_url": "https://github.com/kaonimei/Shadowrocket-ADBlock-Rules",
       "description": "提供丰富的 Shadowrocket 规则，拥有广告过滤功能。每日 8 时重新构建规则。",
       "default_branch": "main",
-      "updated_at": "2026-11-01T01:43:50Z",
-      "pushed_at": "2026-11-01T01:43:46Z",
+      "updated_at": "2026-11-02T01:59:54Z",
+      "pushed_at": "2026-11-02T01:59:50Z",
       "stars": 0,
       "archived": false,
       "fork": false,
@@ -3239,13 +3260,31 @@
         "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_whitelist_ad.conf"
       ],
       "readme_policy_claims": {
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_banlist_ad.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_ad_only.conf": [
+          "REJECT"
+        ],
         "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/lazy_group.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_backcn_ad.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_whitelist.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_whitelist_ad.conf": [
           "REJECT"
         ],
         "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/lazy.conf": [
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_backcn.conf": [
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_direct_banad.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_cnip.conf": [
           "REJECT"
         ],
         "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_banlist.conf": [
@@ -3254,28 +3293,10 @@
         "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_cnip_ad.conf": [
           "REJECT"
         ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_backcn.conf": [
+          "REJECT"
+        ],
         "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_proxy_banad.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_cnip.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_whitelist_ad.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_backcn_ad.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_ad_only.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_whitelist.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_banlist_ad.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_direct_banad.conf": [
           "REJECT"
         ]
       },
@@ -3511,8 +3532,8 @@
       "html_url": "https://github.com/marvolo666/Shadowrocket-ADBlock-Rules-Forever",
       "description": "提供多款 Shadowrocket 规则，拥有强劲的广告过滤功能。每日 8 时重新构建规则。",
       "default_branch": "release",
-      "updated_at": "2026-11-01T01:48:55Z",
-      "pushed_at": "2026-11-01T01:48:51Z",
+      "updated_at": "2026-11-02T02:03:41Z",
+      "pushed_at": "2026-11-02T02:03:36Z",
       "stars": 0,
       "archived": false,
       "fork": false,
@@ -4415,10 +4436,10 @@
         "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Services/SNS/Weibo.list"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Region/China.list": [
+        "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Region/Global.list": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Region/Global.list": [
+        "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Region/China.list": [
           "PROXY"
         ]
       },
@@ -4551,13 +4572,10 @@
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/tools.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/netflix.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/telegram.txt": [
@@ -4566,25 +4584,28 @@
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/torrent.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/tools.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/torrent.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
           "PROXY"
         ]
       },
@@ -4808,8 +4829,8 @@
       "html_url": "https://github.com/wcr1996/shadowrocket_rules",
       "description": "适用于iOS应用Shadowrocket的代理规则。",
       "default_branch": "main",
-      "updated_at": "2026-11-01T01:44:49Z",
-      "pushed_at": "2026-11-01T01:44:45Z",
+      "updated_at": "2026-11-02T02:00:19Z",
+      "pushed_at": "2026-11-02T02:00:14Z",
       "stars": 29,
       "archived": false,
       "fork": false,

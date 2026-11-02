@@ -1,6 +1,6 @@
 # Automated source discovery
 
-- Candidate repositories retained: **217**
+- Candidate repositories retained: **218**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
@@ -497,6 +497,15 @@
   - https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/ruleset/reject-special.list
   - https://raw.githubusercontent.com/PaPerseller/chn-iplist/master/v2rayA.txt
 
+### [QmQsun/Shadowrocket-Rules](https://github.com/QmQsun/Shadowrocket-Rules)
+
+- Description: Ad-blocking rules for Shadowrocket on iOS.
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/QmQsun/Shadowrocket-Rules/main/sr_ios_adblock.conf
+
 ### [Remix123/routingrulehub](https://github.com/Remix123/routingrulehub)
 
 - Description: Daily Mihomo and Shadowrocket rule outputs derived from Johnshall sr_cnip.conf with split-DNS guidance
@@ -631,7 +640,7 @@
 ### [VPSDance/ai-proxy-rules](https://github.com/VPSDance/ai-proxy-rules)
 
 - Description: AI 服务分流规则聚合: 多源合并 | 按 provider   精修 | 每日自动同步. 覆盖 OpenAI / Anthropic / Gemini / Cursor / Copilot 等主流 AI 服务, 适配   Clash / Mihomo / sing-box / Surge 等主流客户端.
-- Stars: 671; archived: False; fork: False
+- Stars: 672; archived: False; fork: False
 - Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
