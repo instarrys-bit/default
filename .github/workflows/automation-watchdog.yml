@@ -176,11 +176,12 @@ jobs:
         run: |
           set -euo pipefail
           runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=20")"
-          if jq -e '[.workflow_runs[] | select(.status == "queued" or .status == "in_progress")] | length > 0' <<< "$runs" >/dev/null; then
-            echo "A deterministic audit is already active; no duplicate reconciliation dispatch."
+          current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
+          if jq -e --arg sha "$current_sha" '[.workflow_runs[] | select(.head_sha == $sha and (.status == "queued" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
+            echo "A deterministic audit for current main ($current_sha) is already queued or running; waiting for its completion."
             exit 0
           fi
-          echo "Published ruleset integrity mismatch detected; dispatching one reconciliation audit."
+          echo "No current-main audit is active. Dispatching one bounded reconciliation audit for $current_sha."
           gh workflow run auto_sync.yml --ref main --repo "$REPO"
 
       - name: Open bounded integrity incident if reconciliation did not repair
