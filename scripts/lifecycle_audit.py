@@ -215,8 +215,10 @@ def main():
     (REPORT/"latest.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n")
     lines=["# Lifecycle audit",f"Completed: {timestamp}",f"Milestones: {report['triggered_milestones']}",f"Deleted: {len(deleted)}",f"Active/NODATA retained: {active}",f"Unknown retained: {unknown}",f"Protected major-company hosts retained: {protected_count}",f"Suffix rules retained without DNS-root deletion checks: {suffix_retained_count}",f"Restored: {len(restored)}",f"Restoration refused: {len(restore_refused)}","## Deleted entries"]
     lines += [f"- {x['id']} | {x['policy']} | {x['rule']} | first confirmation {x['first_confirmed_at']}" for x in deleted] or ["- None"]
-    lines += ["## Restoration refused"]+[f"- {x['id']} | {x['reason']} | {x.get('conflict','')}" for x in restore_refused] or ["- None"]
-    lines += ["## Selectable restore IDs"]+[f"- {x['id']} | {x['policy']} | {x['rule']}" for x in options]
+    lines += ["## Restoration refused"]
+    lines += [f"- {x['id']} | {x['reason']} | {x.get('conflict','')}" for x in restore_refused] or ["- None"]
+    lines += ["## Selectable restore IDs"]
+    lines += [f"- {x['id']} | {x['policy']} | {x['rule']}" for x in options] or ["- None"]
     lines += ["","To restore, run the workflow manually and paste selected IDs into restore_ids."]
     (REPORT/"latest.md").write_text("\n".join(lines)+"\n")
     if due:
