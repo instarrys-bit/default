@@ -6,13 +6,16 @@ on:
       - ".github/workflows/self-healing-agent.yml"
       - ".github/workflows/self-healing-tests.yml"
       - ".github/workflows/auto_sync.yml"
+      - ".github/workflows/automation-watchdog.yml"
       - "scripts/apply_safe_repair.py"
       - "scripts/diagnose_workflow_failure.py"
       - "scripts/refresh_ruleset_manifest.py"
+      - "scripts/watchdog_recovery_policy.py"
       - "tests/test_apply_safe_repair.py"
       - "tests/test_diagnose_workflow_failure.py"
       - "tests/test_refresh_ruleset_manifest.py"
       - "tests/test_self_healing_workflow.py"
+      - "tests/test_watchdog_recovery_policy.py"
   workflow_dispatch:
 
 permissions:
@@ -32,7 +35,9 @@ jobs:
           python3 -m py_compile \
             scripts/apply_safe_repair.py \
             scripts/diagnose_workflow_failure.py \
-            scripts/refresh_ruleset_manifest.py
+            scripts/refresh_ruleset_manifest.py \\\n            scripts/watchdog_recovery_policy.py
+      - name: Test bounded watchdog recovery policy
+        run: python3 -m unittest discover -s tests -p "test_watchdog_recovery_policy.py" -v
       - name: Test manifest reconciliation
         run: python3 -m unittest discover -s tests -p "test_refresh_ruleset_manifest.py" -v
       - name: Test failure diagnosis
