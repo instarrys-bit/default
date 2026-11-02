@@ -3,11 +3,18 @@
 from __future__ import annotations
 import hashlib
 import json
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICIES = ("DIRECT", "PROXY", "REJECT")
+DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
+
+
+def valid_rule_line(line: str) -> bool:
+    fields = line.split(",", 1)
+    return len(fields) == 2 and fields[0] in {"DOMAIN", "DOMAIN-SUFFIX"} and bool(DOMAIN_RE.fullmatch(fields[1].lower().rstrip(".")))
 
 
 def read_json(path: Path, default):
@@ -45,7 +52,7 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
         values = {x.strip() for x in path.read_text(encoding="utf-8").splitlines() if x.strip() and not x.lstrip().startswith("#")} if path.exists() else set()
         rules[name] = values
         for line in values:
-            if not line.startswith(("DOMAIN,", "DOMAIN-SUFFIX,")):
+            if not valid_rule_line(line):
                 invalid_lines.append({"policy": name, "line": line})
 
     counts = {name: len(rules[name]) for name in POLICIES}
@@ -97,7 +104,7 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
     group_gaps = {name: max(0, minimum_groups - source_groups[name]) for name in POLICIES}
 
     integrity_ok = config_match and manifest_match and policy_invariant and total <= maximum
-    health = "PASS" if integrity_ok and not degraded_sources else ("CHECK" if integrity_ok else "FAIL")
+    health = "PASS" if integrity_ok and not degraded_sources and not any(group_gaps.values()) and not due else ("CHECK" if integrity_ok else "FAIL")
     generated_at = now or datetime.now(timezone.utc).isoformat()
 
     result = {
