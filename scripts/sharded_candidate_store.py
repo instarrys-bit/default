@@ -162,6 +162,12 @@ def append_records(root: Path, records: Iterable[dict], *, shard_records: int = 
                             count += 1
                     raw.flush()
                     os.fsync(raw.fileno())
+                compressed_size = os.path.getsize(temp_name)
+                if compressed_size > DEFAULT_MAX_SHARD_BYTES:
+                    raise ValueError(
+                        f"compressed shard exceeds {DEFAULT_MAX_SHARD_BYTES} bytes; "
+                        "reduce --shard-records before retrying"
+                    )
                 os.replace(temp_name, target)
             finally:
                 if os.path.exists(temp_name):
