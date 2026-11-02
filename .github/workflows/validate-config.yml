@@ -17,6 +17,7 @@ on:
       - "scripts/collect_domains.py"
       - "scripts/deterministic_review.py"
       - "scripts/build_rulesets.py"
+      - "scripts/json_document_store.py"
       - "scripts/domain_rule_engine.py"
       - "sources/domain_sources.json"
       - "sources/policy.json"
@@ -65,9 +66,12 @@ jobs:
       - run: python scripts/select_domain_rules.py --self-test
       - name: Validate deterministic evidence review
         run: |
-          python -m py_compile scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/validate_config.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/build_rulesets.py
+          python -m py_compile scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/validate_config.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/json_document_store.py scripts/build_rulesets.py
           python -m unittest discover -s tests -v
           python -m json.tool sources/domain_sources.json >/dev/null
           python -m json.tool sources/policy.json >/dev/null
           python -m json.tool sources/reject_manual_approvals.json >/dev/null
-          python -m json.tool sources/domain_reviews.json >/dev/null
+          if [ -f sources/domain_reviews.json ]; then python -m json.tool sources/domain_reviews.json >/dev/null; fi
+          if [ -f sources/domain_reviews.json.manifest.json ]; then
+            PYTHONPATH=scripts python -c 'from pathlib import Path; from json_document_store import read_document; read_document(Path("sources/domain_reviews.json"), "reviews")' >/dev/null
+          fi
