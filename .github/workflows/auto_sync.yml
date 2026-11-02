@@ -337,6 +337,7 @@ jobs:
             sources/discovered_sources.json*
             sources/source_assessments.json*
             sources/source_candidates.json*
+            data/domain_candidates.json*
             data/candidates.json*
           )
           tar -czf audit-output.tar.gz \
