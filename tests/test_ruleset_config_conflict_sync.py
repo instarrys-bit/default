@@ -49,7 +49,7 @@ class ConfigConflictSyncTests(unittest.TestCase):
     def test_exact_same_policy_scope_overlap_is_removed(self):
         result = self.classify("DIRECT", "DOMAIN,api.example.com", ["DOMAIN,api.example.com,DIRECT"])
         self.assertEqual(result["status"], "CONFLICT")
-        self.assertEqual(result["effective_policy"], "DIRECT")
+        self.assertIsNone(result["effective_policy"])
 
     def test_parent_suffix_is_retained_when_config_has_exact_child_exception(self):
         result = self.classify(
