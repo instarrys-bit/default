@@ -19,9 +19,9 @@ POLICIES = ("DIRECT", "PROXY", "REJECT")
 
 from audit_ruleset_config_overlap import (
     first_ruleset_line,
-    prior_rule_lines,
+    all_rule_lines,
     parse_skip_proxy,
-    match_candidate,
+    scope_covers_candidate,
     skip_proxy_match,
     scope_intersects,
 )
@@ -45,43 +45,34 @@ def make_rule(policy: str, scope: str, domain: str) -> str:
     return kind + "," + domain.lower().rstrip(".")
 
 
-def classify_rule(policy: str, line: str, prior_rules: list[tuple[int, str]], skip_entries: list[str]) -> dict:
+def classify_rule(policy: str, line: str, config_rules: list[tuple[int, str]], skip_entries: list[str]) -> dict:
     policy = policy.upper()
     kind, domain, scope = parse_rule_line(policy, line)
-    match = match_candidate(domain, policy, prior_rules, scope)
 
-    # Any provable exact/suffix scope intersection is excluded from external
-    # rule sets, even when the effective policy happens to be identical.
-    # The first-match result is retained as evidence; ss.conf remains read-only.
-    first_scope_overlap = None
-    for number, raw_rule in prior_rules:
+    # Only full-scope containment is considered. A narrower exact/child-suffix
+    # exception must not remove a broader parent suffix rule. No rule order,
+    # first-match winner, or precedence is inferred.
+    covering_rules = []
+    for number, raw_rule in config_rules:
         fields = [part.strip() for part in raw_rule.split(",")]
-        if len(fields) >= 3 and fields[0].upper() in {"DOMAIN", "DOMAIN-SUFFIX"}:
-            if scope_intersects(scope, domain, fields[0].upper(), fields[1]):
-                first_scope_overlap = (number, raw_rule, fields[2].upper())
-                break
-    if first_scope_overlap:
-        number, raw_rule, raw_policy = first_scope_overlap
-        # Prefer an earlier conditional/keyword/regex match when the parser
-        # can identify one; otherwise record the first explicit scope overlap.
-        if match.get("line") is not None and match["line"] <= number:
-            config_line = match.get("line")
-            config_rule = match.get("rule")
-            effective_policy = match.get("effective_policy")
-            reason = match.get("reason", "Earlier first-match config rule intersects this scope")
-        else:
-            config_line = number
-            config_rule = raw_rule
-            effective_policy = raw_policy
-            reason = "External rule scope intersects an earlier exact/suffix rule in ss.conf; config wins by first-match order"
+        if len(fields) < 3 or fields[0].upper() not in {"DOMAIN", "DOMAIN-SUFFIX"}:
+            continue
+        if scope_covers_candidate(scope, domain, fields[0].upper(), fields[1]):
+            covering_rules.append((number, raw_rule, fields[2].upper()))
+
+    if covering_rules:
+        evidence = "; ".join(
+            f"L{number}: {raw_rule} [{rule_policy}]"
+            for number, raw_rule, rule_policy in covering_rules
+        )
         return {
             "status": "CONFLICT",
             "domain": domain,
             "scope": scope,
-            "effective_policy": effective_policy,
-            "config_line": config_line,
-            "config_rule": config_rule,
-            "reason": reason,
+            "effective_policy": None,
+            "config_line": None,
+            "config_rule": evidence,
+            "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
         }
 
     bypass = skip_proxy_match(domain, skip_entries, scope)
@@ -90,41 +81,21 @@ def classify_rule(policy: str, line: str, prior_rules: list[tuple[int, str]], sk
             "status": "CONFLICT",
             "domain": domain,
             "scope": scope,
-            "effective_policy": "DIRECT",
+            "effective_policy": None,
             "config_line": None,
             "config_rule": "skip-proxy = " + bypass,
-            "reason": "External rule scope intersects ss.conf skip-proxy; config bypass takes precedence",
+            "reason": "Existing skip-proxy entry fully covers the candidate scope; rule order is not evaluated",
         }
-    if match["status"] == "CONFLICT":
-        return {
-            "status": "CONFLICT",
-            "domain": domain,
-            "scope": scope,
-            "effective_policy": match.get("effective_policy"),
-            "config_line": match.get("line"),
-            "config_rule": match.get("rule"),
-            "reason": match.get("reason", "Earlier user-config rule has a different effective policy"),
-        }
-    if match["status"] in {"POTENTIAL_MATCH", "CONDITIONAL_POTENTIAL", "UNRESOLVED_RULE"}:
-        return {
-            "status": "REVIEW",
-            "domain": domain,
-            "scope": scope,
-            "effective_policy": match.get("effective_policy"),
-            "config_line": match.get("line"),
-            "config_rule": match.get("rule"),
-            "reason": match.get("reason", "A possible overlap exists but is not provable"),
-        }
+
     return {
         "status": "NO_CONFLICT",
         "domain": domain,
         "scope": scope,
-        "effective_policy": match.get("effective_policy"),
-        "config_line": match.get("line"),
-        "config_rule": match.get("rule"),
-        "reason": "No provable higher-priority conflicting user-config rule",
+        "effective_policy": None,
+        "config_line": None,
+        "config_rule": None,
+        "reason": "No explicit user-config scope fully covers this candidate",
     }
-
 
 def _archive_id(policy: str, line: str, config_blob_sha: str) -> str:
     raw = policy.upper() + "|" + line + "|" + config_blob_sha
@@ -180,8 +151,8 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
     config_text = config_bytes.decode("utf-8-sig")
     boundary = first_ruleset_line(config_text)
     if boundary is None:
-        raise ValueError("no RULE-SET boundary found; refusing to infer config priority")
-    prior_rules = prior_rule_lines(config_text)
+        raise ValueError("no RULE-SET reference found; refusing to reconcile standalone rulesets")
+    config_rules = all_rule_lines(config_text)
     skip_entries = parse_skip_proxy(config_text)
     config_blob_sha = hashlib.sha1(
         b"blob " + str(len(config_bytes)).encode("ascii") + bytes([0]) + config_bytes
@@ -211,7 +182,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         archived_line = str(item.get("rule", ""))
         if archived_policy not in POLICIES:
             raise ValueError("invalid policy in config-conflict archive")
-        current_result = classify_rule(archived_policy, archived_line, prior_rules, skip_entries)
+        current_result = classify_rule(archived_policy, archived_line, config_rules, skip_entries)
         if current_result["status"] == "NO_CONFLICT":
             item["superseded_at"] = timestamp
             item["superseded_by_config_blob_sha"] = config_blob_sha
@@ -287,7 +258,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
             restore_refused.append({"id": restore_id, "reason": "invalid archived policy"})
             continue
         try:
-            result = classify_rule(policy, line, prior_rules, skip_entries)
+            result = classify_rule(policy, line, config_rules, skip_entries)
         except ValueError as exc:
             restore_refused.append({"id": restore_id, "reason": str(exc)})
             continue
@@ -351,9 +322,8 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         restored.append({"id": restore_id, "policy": policy, "rule": line, "destination": destination})
         active_by_key.pop((policy, line), None)
 
-    # Remove every provable scope overlap from published lists, regardless of whether
-    # the external policy matches ss.conf. Ambiguous keyword/regex/conditional
-    # overlaps remain held for reporting rather than speculative deletion.
+    # Remove only candidates fully covered by explicit user-config scopes.
+    # Narrower child exceptions do not suppress broader suffix candidates.
     for policy in POLICIES:
         for line in sorted(list(rule_lines[policy])):
             if (policy, line) in active_by_key:
@@ -361,7 +331,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
                 published_removed += 1
                 suppressed_active_archive.append({"policy": policy, "rule": line, "origin": "published_ruleset"})
                 continue
-            result = classify_rule(policy, line, prior_rules, skip_entries)
+            result = classify_rule(policy, line, config_rules, skip_entries)
             if result["status"] == "CONFLICT":
                 rule_lines[policy].remove(line)
                 published_removed += 1
@@ -369,7 +339,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
             elif result["status"] == "REVIEW":
                 retained_review.append({"policy": policy, "rule": line, **result})
 
-    # Apply the same precedence filter to queued rules so they cannot be promoted later.
+    # Apply the same full-scope coverage filter to queued rules so they cannot be promoted later.
     kept_queue = []
     for queued in queue.get("items", []):
         policy = str(queued.get("policy", "")).upper()
@@ -383,7 +353,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
             queue_changed = True
             suppressed_active_archive.append({"policy": policy, "rule": line, "origin": "pending_queue"})
             continue
-        result = classify_rule(policy, line, prior_rules, skip_entries)
+        result = classify_rule(policy, line, config_rules, skip_entries)
         if result["status"] == "CONFLICT":
             pending_removed += 1
             queue_changed = True
@@ -430,7 +400,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "config_read_only": True,
         "config_blob_sha": config_blob_sha,
         "first_ruleset_line": boundary,
-        "higher_priority_rule_count": len(prior_rules),
+        "config_rule_line_count": len(config_rules),
         "published_before": before_counts,
         "published_after": after_counts,
         "published_removed_count": published_removed,
@@ -475,7 +445,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "",
         "- Config: " + report["config_path"] + " (read-only)",
         "- Config blob SHA: " + config_blob_sha,
-        "- Higher-priority config rules inspected: " + str(len(prior_rules)),
+        "- Explicit config rule lines inspected: " + str(len(config_rules)),
         "- Published rules removed: " + str(report["published_removed_count"]),
         "- Pending queue entries removed: " + str(report["pending_queue_removed_count"]),
         "- Ambiguous overlaps retained for review: " + str(report["retained_for_review_count"]),
