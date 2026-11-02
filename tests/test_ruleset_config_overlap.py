@@ -4,7 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from audit_ruleset_config_overlap import audit, first_ruleset_line, match_candidate, prior_rule_lines, skip_proxy_match
+from audit_ruleset_config_overlap import audit, first_ruleset_line, match_candidate, prepare_rules, prior_rule_lines, skip_proxy_match
 
 
 class RulesetConfigOverlapTests(unittest.TestCase):
@@ -85,6 +85,37 @@ DOMAIN,late.example.com,REJECT
     def test_suffix_candidate_detects_skip_proxy_descendant_bypass(self):
         matched = skip_proxy_match("example.com", ["api.example.com"], "suffix_candidate")
         self.assertEqual(matched, "api.example.com")
+
+
+    def test_prepared_index_preserves_first_match_across_rule_types(self):
+        rules = [
+            (2, "DOMAIN-KEYWORD,api,REJECT"),
+            (3, "DOMAIN-SUFFIX,example.com,DIRECT"),
+        ]
+        prepared = prepare_rules(rules)
+        result = match_candidate("api.example.com", "DIRECT", rules, prepared_rules=prepared)
+        self.assertEqual(result["status"], "POTENTIAL_MATCH")
+        self.assertEqual(result["line"], 2)
+
+    def test_prepared_suffix_index_detects_descendant_conflict(self):
+        rules = [
+            (2, "DOMAIN,api.example.com,PROXY"),
+            (3, "DOMAIN-SUFFIX,example.com,DIRECT"),
+        ]
+        prepared = prepare_rules(rules)
+        result = match_candidate("example.com", "DIRECT", rules, "suffix_candidate", prepared)
+        self.assertEqual(result["status"], "CONFLICT")
+        self.assertEqual(result["line"], 2)
+
+    def test_prepared_regex_is_reused_and_keeps_rule_order(self):
+        rules = [
+            (2, "DOMAIN-SUFFIX,example.com,DIRECT"),
+            (3, "URL-REGEX,api\\\\.example\\\\.com,REJECT"),
+        ]
+        prepared = prepare_rules(rules)
+        result = match_candidate("api.example.com", "REJECT", rules, prepared_rules=prepared)
+        self.assertEqual(result["status"], "ALREADY_COVERED")
+        self.assertEqual(result["line"], 2)
 
 if __name__ == "__main__":
     unittest.main()
