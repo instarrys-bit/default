@@ -103,8 +103,7 @@ class ConfigConflictSyncTests(unittest.TestCase):
             self.assertEqual((root / "rulesets" / "direct.list").read_text(), direct_before)
             self.assertEqual((root / "rulesets" / "proxy.list").read_text(), proxy_before)
             self.assertEqual((root / "rulesets" / "reject.list").read_text(), reject_before)
-            archive = json.loads((root / "rulesets" / "config_conflict_archive.json").read_text())
-            self.assertEqual(archive["items"], [])
+            self.assertFalse((root / "rulesets" / "config_conflict_archive.json").exists())
 
 
     def test_sync_removes_published_and_queued_conflicts_and_archives_them(self):
