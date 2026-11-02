@@ -1,6 +1,10 @@
 name: Shadowrocket self-healing agent
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/self-healing-agent.yml"
   workflow_run:
     workflows:
       - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
@@ -194,7 +198,7 @@ jobs:
           done
 
   stale-run-watch:
-    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:

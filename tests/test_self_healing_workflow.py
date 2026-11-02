@@ -93,5 +93,12 @@ class SelfHealingWorkflowTests(unittest.TestCase):
 
 
 
+    def test_watchdog_runs_immediately_when_its_own_workflow_changes(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn('      - ".github/workflows/self-healing-agent.yml"', workflow)
+        self.assertIn("github.event_name == 'push'", workflow)
+
+
+
 if __name__ == "__main__":
     unittest.main()
