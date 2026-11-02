@@ -1,6 +1,6 @@
 # Automated source discovery
 
-- Candidate repositories retained: **215**
+- Candidate repositories retained: **216**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
@@ -1832,6 +1832,14 @@
 
 - Description: Not supplied
 - Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
+### [wxglenovo/2Shadowrocket-to-AdGuard-Home](https://github.com/wxglenovo/2Shadowrocket-to-AdGuard-Home)
+
+- Description: 把多个广告规则源合并去重，产出文件放在 dist/clash_ad_rules.txt，推送到仓库。
+- Stars: 1; archived: False; fork: False
 - Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
