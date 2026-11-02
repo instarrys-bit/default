@@ -88,6 +88,8 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
     candidate_count = len(candidates) if isinstance(candidates, list) else int(snapshot.get("candidate_count", 0))
     status_counts = manifest.get("status_count", manifest.get("deterministic_review_progress", {}).get("status_count", {}))
     approved = int(manifest.get("approved_total", manifest.get("deterministic_review_progress", {}).get("approved_total", 0)))
+    ledger_approved = int(status_counts.get("APPROVED", approved))
+    approved_not_published = max(0, ledger_approved - approved)
     held = int(manifest.get("held_total", manifest.get("deterministic_review_progress", {}).get("held_total", 0)))
 
     conflict_items = conflict_archive.get("items", [])
@@ -153,6 +155,8 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
         },
         "review": {
             "candidate_count": candidate_count, "approved_count": approved,
+            "ledger_approved_count": ledger_approved,
+            "approved_not_published_count": approved_not_published,
             "held_count": held, "status_counts": status_counts,
         },
         "recovery": {
@@ -188,7 +192,7 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
         f"- 本轮降级/隔离来源：{len(degraded_sources)}",
         f"- 累计自动激活来源：{len(activation.get('activations', []))}；本轮新增：{activated_last_run}",
         f"- 自动发现仓库：{result['sources']['discovered_repository_count']}；评估文件：{result['sources']['assessed_file_count']}",
-        f"- 候选域名：{candidate_count}；通过：{approved}；暂缓/拒绝：{held}",
+        f"- 候选域名：{candidate_count}；审核账本 APPROVED：{ledger_approved}；实际发布：{approved}；未发布差额：{approved_not_published}；暂缓/拒绝：{held}",
         f"- 各策略独立来源组：DIRECT {source_groups['DIRECT']}，PROXY {source_groups['PROXY']}，REJECT {source_groups['REJECT']}（最低要求 {minimum_groups}）",
         f"- 血缘审计：已审计 {result['sources']['lineage_audited_count']}；已验证 {result['sources']['lineage_verified_count']}；部分 {result['sources']['lineage_partial_count']}；未验证 {result['sources']['lineage_unverified_count']}。血缘不确定性是来源说明，不作为一票否决。", "",
         "## 3. 生命周期与容量管理", "",
