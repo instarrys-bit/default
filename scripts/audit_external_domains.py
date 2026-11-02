@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only audit of a pinned external domain list against canonical ss.conf."""
+"""Read-only scope-coverage audit of a pinned external domain list against ss.conf."""
 from __future__ import annotations
 
 import hashlib
@@ -8,7 +8,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
-from domain_rule_engine import RuleIndex, analyze_candidate, load_domain_rules
+from domain_rule_engine import load_domain_rules
+from audit_ruleset_config_overlap import scope_covers_candidate, scope_intersects
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "shadowrocket" / "ss.conf"
@@ -19,7 +20,7 @@ OUTPUT = ROOT / "reports" / "external-domain-audit.md"
 
 
 def git_blob_sha1(data: bytes) -> str:
-    return hashlib.sha1(f"blob {len(data)}\0".encode("ascii") + data).hexdigest()
+    return hashlib.sha1(f"blob {len(data)}\\0".encode("ascii") + data).hexdigest()
 
 
 def load_candidates(data: bytes):
@@ -36,8 +37,8 @@ def load_candidates(data: bytes):
         labels = domain.split(".")
         if (len(domain) > 253 or len(labels) < 2 or
             any(not label or len(label) > 63 or label.startswith("-") or
-                label.endswith("-") or not label.replace("-", "").isalnum() or
-                not label.isascii() for label in labels)):
+            label.endswith("-") or not label.replace("-", "").isalnum() or
+            not label.isascii() for label in labels)):
             raise ValueError(f"invalid domain at source line {number}: {raw!r}")
         key = domain.lower()
         if key in seen:
@@ -48,79 +49,89 @@ def load_candidates(data: bytes):
 
 
 def main() -> int:
-    request = urllib.request.Request(SOURCE_URL, headers={"User-Agent": "Shadowrocket-domain-audit/2.0"})
+    request = urllib.request.Request(SOURCE_URL, headers={"User-Agent": "Shadowrocket-domain-audit/3.0"})
     with urllib.request.urlopen(request, timeout=45) as response:
         final = urlparse(response.geturl())
         if response.status != 200 or final.scheme != "https" or final.hostname != "raw.githubusercontent.com":
             raise SystemExit(f"ERROR: unexpected download response: {response.geturl()}")
         data = response.read(MAX_BYTES + 1)
     if len(data) > MAX_BYTES:
-        raise SystemExit("ERROR: source exceeds the 2 MB safety limit")
+        raise SystemExit("ERROR: source exceeds the configured byte limit")
     actual_sha = git_blob_sha1(data)
     candidates = load_candidates(data)
     if len(candidates) < MIN_EXPECTED_ENTRIES:
         raise SystemExit(f"ERROR: source unexpectedly small or truncated: {len(candidates)} entries")
+
     rules, conditional, ignored = load_domain_rules(CONFIG)
-    rule_index = RuleIndex(rules)
-    apex_policy_counts = {"DIRECT": 0, "PROXY": 0, "REJECT": 0}
-    apex_covered = 0
-    suffix_scope_varied = []
-    shadowed_same_host = []
+    covered_by_policy = {"DIRECT": 0, "PROXY": 0, "REJECT": 0}
+    mixed_coverage = []
+    partial_overlaps = []
+    uncovered = 0
     for domain, is_suffix in candidates:
-        result = analyze_candidate(domain, is_suffix, rule_index)
-        winner = result["apex_winner"]
-        if winner:
-            apex_covered += 1
-            apex_policy_counts[winner.policy] += 1
-        if is_suffix and len(result["scope_policies"]) > 1:
-            winners = sorted({(r.policy, r.line, r.domain) for r in result["scope_winners"].values()})
-            suffix_scope_varied.append((domain, winners))
-        hit_policies = {r.policy for r in result["apex_hits"]}
-        if len(hit_policies) > 1:
-            shadowed_same_host.append((domain, result["apex_hits"][0], result["apex_hits"][1:]))
+        scope = "suffix_candidate" if is_suffix else "exact_candidate"
+        full_matches = [
+            rule for rule in rules
+            if scope_covers_candidate(scope, domain, rule.kind, rule.domain)
+        ]
+        partial_matches = [
+            rule for rule in rules
+            if scope_intersects(scope, domain, rule.kind, rule.domain)
+            and not scope_covers_candidate(scope, domain, rule.kind, rule.domain)
+        ]
+        if full_matches:
+            policies = {rule.policy for rule in full_matches}
+            if len(policies) == 1:
+                covered_by_policy[next(iter(policies))] += 1
+            else:
+                mixed_coverage.append((domain, sorted({
+                    (rule.kind, rule.domain, rule.policy) for rule in full_matches
+                })))
+        elif partial_matches:
+            partial_overlaps.append((domain, sorted({
+                (rule.kind, rule.domain, rule.policy) for rule in partial_matches
+            })))
+        else:
+            uncovered += 1
 
     report = [
-        "# External domain source audit", "",
+        "# External domain source scope audit", "",
         f"- Audit time: {datetime.now(timezone.utc).isoformat()}",
         f"- Source: {SOURCE_URL}",
         f"- Git blob SHA-1: `{actual_sha}`",
         f"- Candidate entries: {len(candidates)}",
-        f"- Existing unconditional DOMAIN / DOMAIN-SUFFIX rules parsed: {len(rules)}",
-        f"- Conditional composite rules containing DOMAIN terms (not flattened): {len(conditional)}",
+        f"- Explicit DOMAIN / DOMAIN-SUFFIX config rules: {len(rules)}",
+        f"- Conditional composite rules (not evaluated for precedence): {len(conditional)}",
         f"- Malformed or unsupported simple domain rules held aside: {len(ignored)}",
-        f"- Candidates whose apex is governed by an existing domain rule: {apex_covered}",
-        "", "## Apex effective policy (first matching original rule wins)", "",
-        "| Effective policy | Candidate apexes |", "|---|---:|",
+        f"- Fully covered candidate scopes: {sum(covered_by_policy.values()) + len(mixed_coverage)}",
+        f"- Partially intersecting suffix candidates: {len(partial_overlaps)}",
+        f"- No full-scope coverage: {uncovered}",
+        "", "## Full-scope coverage by configured policy", "",
+        "| Config policy | Candidate scopes |", "|---|---:|",
     ]
-    for policy, count in apex_policy_counts.items():
+    for policy, count in covered_by_policy.items():
         report.append(f"| {policy} | {count} |")
     report += [
-        "", "## Source-suffix scope policy variation", "",
-        f"Candidates whose source suffix scope intersects multiple effective policies: {len(suffix_scope_varied)}",
-        "",
-        "These are not same-host rule collisions. They indicate that different hosts within one source suffix would be governed by different first-match rules. The source suffix is not eligible for automatic policy assignment.",
-        "", "| Candidate suffix | Effective policy boundaries (policy / config line / rule domain) |",
-        "|---|---|",
+        "", "## Mixed-policy full-scope coverage", "",
+        f"Candidates covered by explicit scopes carrying more than one policy: {len(mixed_coverage)}",
+        "", "| Candidate | Covering config scopes |", "|---|---|",
     ]
-    for domain, winners in suffix_scope_varied:
-        detail = "; ".join(f"{p} / line {line} / {rule_domain}" for p, line, rule_domain in winners)
+    for domain, matches in mixed_coverage:
+        detail = "; ".join(f"{kind},{rule_domain} => {policy}" for kind, rule_domain, policy in matches)
         report.append(f"| `{domain}` | {detail} |")
     report += [
-        "", "## Same-host shadowed rules", "",
-        f"Candidate apexes with later matching rules carrying another policy: {len(shadowed_same_host)}",
-        "",
-        "The earliest matching original rule determines the effective domain-rule policy. Later matches are recorded as shadowed; they are not treated as an unresolved conflict.",
-        "", "| Candidate | Winner | Later matching rules |", "|---|---|---|",
+        "", "## Partial overlaps / narrower exceptions", "",
+        f"Candidates with a narrower or partial config overlap: {len(partial_overlaps)}",
+        "", "| Candidate scope | Intersecting config scopes |", "|---|---|",
     ]
-    for domain, winner, later in shadowed_same_host:
-        detail = "; ".join(f"{r.policy} line {r.line} ({r.kind} {r.domain})" for r in later)
-        report.append(f"| `{domain}` | {winner.policy} line {winner.line} ({winner.kind} {winner.domain}) | {detail} |")
+    for domain, matches in partial_overlaps:
+        detail = "; ".join(f"{kind},{rule_domain} => {policy}" for kind, rule_domain, policy in matches)
+        report.append(f"| `{domain}` | {detail} |")
     report += [
         "", "## Interpretation and safety boundary", "",
-        "- The canonical ss.conf is authoritative; original rule order is preserved.",
-        "- The effective policy for an exact host is the first matching unconditional DOMAIN or DOMAIN-SUFFIX rule.",
-        "- Conditional AND/OR/NOT rules are not flattened into unconditional domain rules; protocol and other conditions remain conditional.",
-        "- Source suffix entries are checked at the apex and at existing rule boundaries beneath the suffix. Different winners across subdomains are scope variation, not a same-host collision.",
+        "- This report records scope coverage and partial intersections only; it does not infer a winning policy.",
+        "- A child exact or child-suffix exception does not fully cover a broader source suffix candidate.",
+        "- Mixed-policy coverage is reported without selecting a winner.",
+        "- Conditional rules are counted but not evaluated here; the deterministic reviewer applies its separate conservative REVIEW hold.",
         "- No external policy is inferred, and no candidate is imported into ss.conf.",
         "- No existing rule, DNS setting, node, rule order, or subscription is modified.",
         "- The source hash is recorded each run; additions and removals are compared against the rolling snapshot by the collector. Format or size anomalies fail closed.", "",
