@@ -1,17 +1,11 @@
 name: Shadowrocket self-healing agent
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/self-healing-agent.yml"
   workflow_run:
     workflows:
       - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
       - "Validate Shadowrocket config against user baseline"
     types: [completed]
-  schedule:
-    - cron: "0 * * * *"
   workflow_dispatch:
 
 permissions:
