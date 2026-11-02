@@ -4,6 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 WATCHDOG = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
+AUTO_SYNC = ROOT / ".github" / "workflows" / "auto_sync.yml"
 
 
 class WatchdogRecoveryWorkflowTests(unittest.TestCase):
@@ -27,6 +28,14 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("A recovery run is workflow_dispatch; ignore its completion to prevent retry loops.", workflow)
         self.assertIn("github.event_name == 'workflow_run'", workflow)
+
+    def test_successful_audit_writes_and_publishes_a_durable_heartbeat(self):
+        workflow = AUTO_SYNC.read_text(encoding="utf-8")
+        self.assertIn("Write successful audit heartbeat", workflow)
+        self.assertIn('"status": "audit_passed"', workflow)
+        self.assertIn('"modified_by_automation": False', workflow)
+        self.assertIn("reports/automation/heartbeat.json", workflow)
+        self.assertIn("git add --", workflow)
 
 
 if __name__ == "__main__":
