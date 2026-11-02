@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import json,re,sys
+import hashlib,json,re,sys
 from functools import lru_cache
 from pathlib import Path
 from datetime import datetime,timezone
@@ -12,6 +12,8 @@ POLICY=ROOT/"sources/domain_sources.json"
 PROTECTED=ROOT/"sources/protected_domains.json"
 CANDIDATES=ROOT/"data/candidates.json"
 OUTPUT=ROOT/"sources/domain_reviews.json"
+CURSOR=ROOT/"sources/review_cursor.json"
+SOURCE_MATRIX=ROOT/"sources/source_candidates.json"
 LIFECYCLE_STATE=ROOT/"rulesets/lifecycle_state.json"
 RULESET_DIR=ROOT/"rulesets"
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
@@ -49,15 +51,41 @@ def validate_evidence(evidence, source_map, current_hashes, policy):
         valid.append(item)
     return valid
 
-def evidence_gate(evidence, source_weights, minimum, threshold, required_sources=()):
+def evidence_gate(evidence, source_weights, minimum, threshold, required_sources=(), correlated_pairs=()):
+    """Count highly correlated publishers as one evidence group; unknown lineage is not a veto."""
     current=[item for item in evidence if item.get("source_id") and item.get("currently_listed") is True and item.get("lineage_status") in {"verified","partial","unverified"}]
     source_ids={str(item.get("source_id")) for item in current}
     publishers={str(item.get("publisher")) for item in current if item.get("publisher")}
-    groups={str(item.get("independence_group")) for item in current if item.get("independence_group")}
+    parent={publisher:publisher for publisher in publishers}
+    def find(value):
+        while parent[value] != value:
+            parent[value]=parent[parent[value]]
+            value=parent[value]
+        return value
+    for left,right in correlated_pairs:
+        if left in parent and right in parent: parent[find(left)]=find(right)
+    groups={find(str(item.get("publisher"))) for item in current if item.get("publisher")}
     confidence=round(min(1.0,sum(float(source_weights.get(source_id,0)) for source_id in source_ids)),2)
     required=set(required_sources)
     qualified=(len(source_ids)>=minimum and len(publishers)>=minimum and len(groups)>=minimum and required.issubset(source_ids) and confidence>=threshold)
     return confidence,source_ids,publishers,groups,qualified
+
+def load_correlated_publishers():
+    """Read same-policy high/near-duplicate relationships from the source candidate matrix."""
+    if not SOURCE_MATRIX.exists(): return set()
+    matrix=json.loads(SOURCE_MATRIX.read_text(encoding="utf-8"))
+    pairs=set()
+    for item in matrix.get("same_policy_domain_overlap",[]):
+        if item.get("relation") not in {"high_overlap","near_duplicate"}: continue
+        repos=item.get("repositories",[])
+        if len(repos)==2 and repos[0]!=repos[1]: pairs.add(tuple(sorted((str(repos[0]),str(repos[1])))))
+    return pairs
+
+def atomic_json(path,payload):
+    path.parent.mkdir(parents=True,exist_ok=True)
+    temporary=path.with_suffix(path.suffix+".tmp")
+    temporary.write_text(json.dumps(payload,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+    temporary.replace(path)
 @lru_cache(maxsize=8)
 def section(text,name,next_name):
     if text.count(name)!=1 or text.count(next_name)!=1: fail("cannot isolate "+name)
@@ -201,6 +229,7 @@ def main():
     source_weights=score_cfg["source_weights"]
     minimum=int(score_cfg["minimum_independent_sources"])
     now=datetime.now(timezone.utc).isoformat()
+    correlated_pairs=load_correlated_publishers()
     if OUTPUT.exists():
         prior=json.loads(OUTPUT.read_text(encoding="utf-8"))
     else:
@@ -220,7 +249,14 @@ def main():
             elif line.startswith("DOMAIN-SUFFIX,"):
                 published_identities.add((policy_name.upper(),line[14:],"suffix_candidate"))
     run_counts={}
-    for item in collected.get("candidates",[]):
+    candidates=collected.get("candidates",[])
+    snapshot_sha256=hashlib.sha256(json.dumps({"sources":collected.get("sources",[]),"candidates":candidates},ensure_ascii=False,sort_keys=True,separators=(",",":")).encode("utf-8")).hexdigest()
+    cursor_state=json.loads(CURSOR.read_text(encoding="utf-8")) if CURSOR.exists() else {}
+    start_index=0
+    if cursor_state.get("snapshot_sha256")==snapshot_sha256 and cursor_state.get("status")=="in_progress":
+        start_index=max(0,min(int(cursor_state.get("next_index",0)),len(candidates)))
+    batch_size=250
+    for candidate_index,item in enumerate(candidates[start_index:],start=start_index):
         domain=str(item.get("domain","")).lower().rstrip(".")
         if not DOMAIN_RE.fullmatch(domain): fail("invalid candidate domain: "+domain)
         policy=str(item.get("classification","")).upper()
@@ -233,7 +269,7 @@ def main():
                 evidence.extend(validate_evidence(raw_evidence,source_map,current_hashes,evidence_policy))
             unique={(x.get("source_id"),x.get("sha256")):x for x in evidence}
             evidence=list(unique.values())
-            confidence,source_ids,publishers,groups,_=evidence_gate(evidence,source_weights,minimum,threshold,())
+            confidence,source_ids,publishers,groups,_=evidence_gate(evidence,source_weights,minimum,threshold,(),correlated_pairs)
             status="POLICY_CONFLICT"
             reason="The same domain is listed by sources assigning different routing policies: "+", ".join(sorted(candidate_policies))
             policy="CONFLICT"
@@ -247,7 +283,7 @@ def main():
             required_sources=set(score_cfg.get("required_sources_by_policy",{}).get(policy,[]))
             suffix_evidence=[x for x in evidence if x.get("entry_type")=="suffix_candidate"]
             suffix_confidence,suffix_source_ids,suffix_publishers,suffix_groups,suffix_qualified=evidence_gate(
-                suffix_evidence,source_weights,minimum,threshold,required_sources
+                suffix_evidence,source_weights,minimum,threshold,required_sources,correlated_pairs
             )
             if suffix_qualified:
                 source_entry_type="suffix_candidate"
@@ -257,7 +293,7 @@ def main():
                 )
             else:
                 source_entry_type="exact_candidate"
-                confidence,source_ids,publishers,groups,qualified=evidence_gate(evidence,source_weights,minimum,threshold,required_sources)
+                confidence,source_ids,publishers,groups,qualified=evidence_gate(evidence,source_weights,minimum,threshold,required_sources,correlated_pairs)
             scope_status,scope_reason=(None,None)
             if source_entry_type=="suffix_candidate":
                 scope_status,scope_reason=inspect_suffix_scope(
@@ -295,16 +331,24 @@ def main():
                 "checked_at":now
             }
         review_map[domain]=new_record
+        if (candidate_index+1)%batch_size==0 or candidate_index+1==len(candidates):
+            partial_reviews=sorted(review_map.values(),key=lambda x:x["domain"])
+            partial_counts={}
+            for record in partial_reviews: partial_counts[record["status"]]=partial_counts.get(record["status"],0)+1
+            atomic_json(OUTPUT,{"schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,"source_snapshot":collected.get("sources",[]),"run_counts":run_counts,"counts":partial_counts,"reviews":partial_reviews})
+            atomic_json(CURSOR,{"schema_version":1,"snapshot_sha256":snapshot_sha256,"candidate_count":len(candidates),"next_index":candidate_index+1,"batch_size":batch_size,"status":"in_progress","updated_at":now,"last_checkpoint_domain":domain})
         run_counts[status]=run_counts.get(status,0)+1
     reviews=sorted(review_map.values(),key=lambda x:x["domain"])
     total_counts={}
     for item in reviews: total_counts[item["status"]]=total_counts.get(item["status"],0)+1
     OUTPUT.write_text(json.dumps({
-        "schema_version":3,"engine":"deterministic-domain-audit/4.0","updated_at":now,
+        "schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,
         "source_snapshot":collected.get("sources",[]),"run_counts":run_counts,
         "counts":total_counts,"reviews":reviews
     },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    atomic_json(CURSOR,{"schema_version":1,"snapshot_sha256":snapshot_sha256,"candidate_count":len(candidates),"next_index":len(candidates),"batch_size":batch_size,"status":"complete","updated_at":now,"last_checkpoint_domain":candidates[-1].get("domain") if candidates else None})
     print("Deterministic review complete: "+json.dumps(run_counts,ensure_ascii=False,sort_keys=True))
+    print("Review cursor: "+json.dumps({"status":"complete","candidate_count":len(candidates),"snapshot_sha256":snapshot_sha256,"correlated_publisher_pairs":len(correlated_pairs)},sort_keys=True))
     print("Historical ledger entries: "+str(len(reviews))+"; candidates reviewed this run: "+str(len(collected.get("candidates",[])))+" (no 100-item cap).")
 if __name__=="__main__":
     try: main()
