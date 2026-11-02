@@ -23,10 +23,10 @@ class ApplySafeRepairTests(unittest.TestCase):
             "      - name: Build append-only rule-level provenance ledger\n"
             "        run: python3 scripts/build_rule_provenance.py\n"
         )
-        (root / ".github/workflows/auto_sync.yml").write_text(workflow + "concurrency:\\n  cancel-in-progress: false\\n", encoding="utf-8")
+        (root / ".github/workflows/auto_sync.yml").write_text(workflow + "concurrency:\n  cancel-in-progress: false\n", encoding="utf-8")
         (root / "tests").mkdir()
         (root / "tests/test_workflow_config_guard_order.py").write_text(
-            '        self.assertIn("cancel-in-progress: true", workflow)\\n', encoding="utf-8"
+            '        self.assertIn("cancel-in-progress: true", workflow)\n', encoding="utf-8"
         )
         return root
 
