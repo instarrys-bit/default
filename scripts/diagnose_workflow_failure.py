@@ -11,7 +11,7 @@ from pathlib import Path
 
 STALE_AUDIT_PATTERN = re.compile(
     r"Audit commit ([0-9a-f]{7,40}) is stale; current main is "
-    r"([0-9a-f]{7,40})\. Refusing to spend resources on stale review inputs\.",
+    r"([0-9a-f]{7,40})\. (?:Refusing to spend resources on stale review inputs|Stopping before source discovery)\.",
     re.IGNORECASE,
 )
 
