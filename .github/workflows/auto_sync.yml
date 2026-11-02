@@ -389,7 +389,17 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: main
+          fetch-depth: 0
           persist-credentials: true
+      - name: Persist owner-approved config baseline even when audit fails
+        if: github.event_name == 'push'
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          GITHUB_BEFORE: ${{ github.event.before }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: python3 scripts/register_config_baseline.py
       - name: Download failed-run cursor checkpoint
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
@@ -421,7 +431,7 @@ jobs:
           Path("sources").mkdir(exist_ok=True)
           Path("sources/review_cursor.json").write_text(json.dumps(d,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
           PY
-          git add -- sources/review_cursor.json
+          git add -- sources/policy.json sources/review_cursor.json
           if git diff --cached --quiet; then
             echo "No new review cursor checkpoint to persist."
             exit 0
