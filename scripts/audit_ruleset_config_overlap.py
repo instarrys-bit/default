@@ -15,18 +15,6 @@ DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(
 POLICIES = {"DIRECT", "PROXY", "REJECT"}
 
 
-def first_ruleset_line(config_text: str) -> int | None:
-    in_rules = False
-    for number, raw in enumerate(config_text.splitlines(), 1):
-        line = raw.strip()
-        if line.startswith("[") and line.endswith("]"):
-            in_rules = line[1:-1].strip().lower() == "rule"
-            continue
-        if in_rules and line and not line.startswith("#") and line.upper().startswith("RULE-SET,"):
-            return number
-    return None
-
-
 def all_rule_lines(config_text: str) -> list[tuple[int, str]]:
     """Return all active [Rule] entries without assigning precedence."""
     in_rules = False
@@ -39,15 +27,6 @@ def all_rule_lines(config_text: str) -> list[tuple[int, str]]:
         if in_rules and line and not line.startswith("#"):
             result.append((number, line))
     return result
-
-
-def prior_rule_lines(config_text: str) -> list[tuple[int, str]]:
-    """Legacy helper retained for callers; scope audits must use all_rule_lines."""
-    boundary = first_ruleset_line(config_text)
-    return [
-        (number, line) for number, line in all_rule_lines(config_text)
-        if boundary is not None and number < boundary
-    ]
 
 
 def scope_covers_candidate(candidate_scope: str, domain: str, rule_kind: str, target: str) -> bool:
