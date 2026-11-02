@@ -103,11 +103,19 @@ jobs:
           REPAIR_ID: ${{ steps.diagnosis.outputs.repair_id }}
         run: |
           set -euo pipefail
-          if [ "$REPAIR_ID" != "refresh_ruleset_manifest" ]; then
-            echo "No allowlisted automatic code repair applies; preserving diagnosis for incident reporting."
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
+          case "$REPAIR_ID" in
+            refresh_ruleset_manifest)
+              PR_TITLE="Self-heal: reconcile final RULE-SET manifest counts"
+              ;;
+            fix_stale_audit_concurrency_contract)
+              PR_TITLE="Self-heal: correct stale audit concurrency test contract"
+              ;;
+            *)
+              echo "No allowlisted automatic code repair applies; preserving diagnosis for incident reporting."
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+              ;;
+          esac
 
           python3 scripts/apply_safe_repair.py --diagnosis reports/self-healing/diagnosis.json
           python3 -m py_compile scripts/refresh_ruleset_manifest.py scripts/diagnose_workflow_failure.py scripts/apply_safe_repair.py
@@ -124,7 +132,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$branch"
           git add -- .github/workflows/auto_sync.yml tests/test_workflow_config_guard_order.py
-          git commit -m "Self-heal: reconcile final ruleset manifest counts"
+          git commit -m "$PR_TITLE"
           echo "changed=true" >> "$GITHUB_OUTPUT"
           echo "branch=$branch" >> "$GITHUB_OUTPUT"
 
