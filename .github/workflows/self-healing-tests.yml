@@ -35,7 +35,8 @@ jobs:
           python3 -m py_compile \
             scripts/apply_safe_repair.py \
             scripts/diagnose_workflow_failure.py \
-            scripts/refresh_ruleset_manifest.py \\\n            scripts/watchdog_recovery_policy.py
+            scripts/refresh_ruleset_manifest.py \\
+            scripts/watchdog_recovery_policy.py
       - name: Test bounded watchdog recovery policy
         run: python3 -m unittest discover -s tests -p "test_watchdog_recovery_policy.py" -v
       - name: Test manifest reconciliation
