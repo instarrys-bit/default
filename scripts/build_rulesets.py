@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from deterministic_review import inspect, parse_skip_proxy, evidence_gate, load_correlated_publishers
 from domain_rule_engine import RuleIndex, load_domain_rules, inspect_suffix_scope
-from audit_ruleset_config_overlap import all_rule_lines
+from audit_ruleset_config_overlap import all_rule_lines, prepare_rules
 from sync_ruleset_config_conflicts import classify_rule
 from source_registry import validate_registry
 
@@ -93,6 +93,7 @@ def main():
     protected=json.loads(PROTECTED.read_text(encoding="utf-8"))
     base=CONFIG.read_text(encoding="utf-8")
     config_rules=all_rule_lines(base)
+    prepared_config_rules=prepare_rules(config_rules)
     config_skip_proxy=parse_skip_proxy(base)
     rules,conditional,_=load_domain_rules(CONFIG)
     index=RuleIndex(rules)
@@ -221,7 +222,7 @@ def main():
         # before they enter the queue or published output. This is broader than
         # policy-conflict detection: same-policy scope overlaps are also excluded.
         candidate_line=("DOMAIN-SUFFIX," if scope=="suffix_candidate" else "DOMAIN,")+domain
-        scope_result=classify_rule(policy,candidate_line,config_rules,config_skip_proxy)
+        scope_result=classify_rule(policy,candidate_line,config_rules,config_skip_proxy,prepared_config_rules)
         if scope_result["status"]!="NO_CONFLICT":
             held+=1
             baseline_conflict_holds.append({
