@@ -63,6 +63,8 @@ def main() -> int:
         raise SystemExit(f"ERROR: source unexpectedly small or truncated: {len(candidates)} entries")
 
     rules, conditional, ignored = load_domain_rules(CONFIG)
+    rules = [rule for rule in rules if rule.policy != "REJECT"]
+    conditional = [item for item in conditional if item[1].rsplit(",", 1)[-1].strip().upper() != "REJECT"]
     rule_index = RuleIndex(rules)
     covered_by_policy = {"DIRECT": 0, "PROXY": 0, "REJECT": 0}
     mixed_coverage = []
@@ -104,7 +106,7 @@ def main() -> int:
         f"- Source: {SOURCE_URL}",
         f"- Git blob SHA-1: `{actual_sha}`",
         f"- Candidate entries: {len(candidates)}",
-        f"- Explicit DOMAIN / DOMAIN-SUFFIX config rules: {len(rules)}",
+        f"- Explicit DIRECT/PROXY DOMAIN / DOMAIN-SUFFIX config rules: {len(rules)}",
         f"- Conditional composite rules (not evaluated for precedence): {len(conditional)}",
         f"- Malformed or unsupported simple domain rules held aside: {len(ignored)}",
         f"- Fully covered candidate scopes: {sum(covered_by_policy.values()) + len(mixed_coverage)}",
