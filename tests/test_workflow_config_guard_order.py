@@ -107,5 +107,15 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("rule order is not evaluated", sync)
 
 
+    def test_unattended_audits_do_not_resolve_config_or_ruleset_precedence(self):
+        external = (ROOT / "scripts" / "audit_external_domains.py").read_text(encoding="utf-8")
+        self.assertIn("scope_covers_candidate", external)
+        self.assertNotIn("analyze_candidate", external)
+        references = (ROOT / "scripts" / "audit_ruleset_references.py").read_text(encoding="utf-8")
+        self.assertIn("cross_policy_scope_overlaps", references)
+        self.assertNotIn("policy_order", references)
+        self.assertNotIn("precedence_resolved_overlaps", references)
+
+
 if __name__ == "__main__":
     unittest.main()
