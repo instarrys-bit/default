@@ -263,6 +263,36 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
                 "config_rule": result.get("config_rule"),
             })
             continue
+        kind, domain, scope = parse_rule_line(policy, line)
+        cross_policy_conflict = None
+        for other_policy in POLICIES:
+            if other_policy == policy:
+                continue
+            for existing_line in rule_lines[other_policy]:
+                existing_kind, existing_domain, existing_scope = parse_rule_line(other_policy, existing_line)
+                if scope_intersects(scope, domain, existing_kind, existing_domain):
+                    cross_policy_conflict = {"policy": other_policy, "rule": existing_line, "origin": "published_ruleset"}
+                    break
+            if cross_policy_conflict:
+                break
+        if cross_policy_conflict is None:
+            for queued in queue.get("items", []):
+                queued_policy = str(queued.get("policy", "")).upper()
+                if queued_policy not in POLICIES or queued_policy == policy:
+                    continue
+                queued_scope = str(queued.get("scope", "exact_candidate"))
+                queued_domain = str(queued.get("domain", "")).lower().rstrip(".")
+                queued_kind = "DOMAIN-SUFFIX" if queued_scope == "suffix_candidate" else "DOMAIN"
+                if scope_intersects(scope, domain, queued_kind, queued_domain):
+                    cross_policy_conflict = {"policy": queued_policy, "rule": make_rule(queued_policy, queued_scope, queued_domain), "origin": "pending_queue"}
+                    break
+        if cross_policy_conflict:
+            restore_refused.append({
+                "id": restore_id,
+                "reason": "restoration would create a cross-policy overlap",
+                "conflict": cross_policy_conflict,
+            })
+            continue
         total = sum(len(values) for values in rule_lines.values())
         if item.get("origin") == "pending_queue" or total >= 30000:
             kind, domain, scope = parse_rule_line(policy, line)
@@ -346,6 +376,17 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         queue["updated_at"] = timestamp
         queue_path.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
+    restoration_options = [
+        {
+            "id": item["id"],
+            "policy": item["policy"],
+            "rule": item["rule"],
+            "origin": item.get("origin"),
+            "removed_at": item.get("removed_at"),
+            "status": "superseded_config_overlap" if item.get("superseded_at") else "active_config_overlap",
+        }
+        for item in archive["items"] if not item.get("restored_at")
+    ]
     report = {
         "schema_version": 1,
         "completed_at": timestamp,
@@ -367,6 +408,8 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "restored": restored,
         "restore_refused": restore_refused,
         "active_archive_count": sum(1 for x in archive["items"] if not x.get("restored_at") and not x.get("superseded_at")),
+        "restoration_option_count": len(restoration_options),
+        "restoration_options": restoration_options,
         "policy": "Every provable exact/suffix scope overlap with ss.conf or skip-proxy is removed from published and queued external rules, regardless of whether the policy matches. The earliest applicable config rule is recorded as precedence evidence. Historical archive entries are rechecked against the current config and superseded when the overlap no longer exists. Keyword/regex/conditional overlaps that cannot be proven from static domain scope are retained and reported; no speculative deletion is allowed.",
         "errors": [],
     }
@@ -402,7 +445,12 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "- Restored " + x["id"] + " to " + x["destination"] + ": " + x["rule"]
         for x in restored
     ) if restored else lines.append("- None")
-    lines.extend("- Refused " + x["id"] + ": " + x["reason"] for x in restore_refused)
+    lines.extend("- Refused " + x["id"] + ": " + x["reason"] for x in restore_refused) if restore_refused else lines.append("- None")
+    lines.extend(["", "## Selectable restoration IDs"])
+    lines.extend(
+        "- " + x["id"] + " | " + x["policy"] + " | " + x["rule"] + " | " + x["status"]
+        for x in restoration_options
+    ) if restoration_options else lines.append("- None")
     lines.extend([
         "",
         "The script never writes to shadowrocket/ss.conf. A config-scope archive entry is not restored automatically; restoration is opt-in and rechecked against all exact/suffix overlaps and skip-proxy entries.",
