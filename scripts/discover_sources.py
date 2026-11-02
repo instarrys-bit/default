@@ -15,9 +15,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "sources/discovered_sources.json"
 REPORT = ROOT / "reports/source-discovery.md"
-MAX_README_BYTES = 600_000
-MAX_REPOS_PER_QUERY = 25
-MAX_README_REPOSITORIES = 60
+MAX_README_BYTES = 800_000
+# GitHub repository search allows up to 100 results per query. Keep a broad but
+# bounded first-page scan; discovery is a lead generator, never an activation gate.
+MAX_REPOS_PER_QUERY = 50
+MAX_README_REPOSITORIES = 120
 QUERIES = [
     "shadowrocket rules",
     "China domain list",
@@ -29,6 +31,24 @@ QUERIES = [
     "GFW proxy domain rules list",
     "Surge direct proxy domain-set rules",
     "Quantumult X direct proxy domain rules",
+    "sing-box rule-set domain",
+    "Clash domain rule providers",
+    "v2ray domain-list-community",
+    "dnsmasq China domain list",
+    "China app domains list",
+    "China services direct domain rules",
+    "global proxy domains ruleset",
+    "anti tracker domain blocklist",
+    "malware phishing domain blocklist",
+    "telemetry tracking domains list",
+    "Apple services domain list",
+    "Google services domain list",
+    "Microsoft services domain list",
+    "streaming services domain rules",
+    "adguard DNS filter domains",
+    "hosts adblock domain list",
+    "privacy DNS blocklist",
+    "domain routing rules DIRECT PROXY REJECT",
 ]
 LIST_EXTENSIONS = (".list", ".txt", ".conf")
 SEED_SOURCE_URLS = {
