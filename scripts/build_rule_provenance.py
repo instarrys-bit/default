@@ -181,7 +181,7 @@ def main():
     result = build(
         read_document(REVIEWS, "reviews", {"reviews": []}),
         read_json(REGISTRY, {"sources": []}),
-        read_json(SNAPSHOT, {"sources": []}),
+        read_document(SNAPSHOT, "candidates", {"sources": [], "candidates": []}),
         read_document(OUTPUT, "rules", {"rules": []}),
         published_map(), pending_map(),
         archived_ids(DELETION_ARCHIVE), archived_ids(CONFLICT_ARCHIVE), now
