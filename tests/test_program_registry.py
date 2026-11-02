@@ -80,6 +80,14 @@ class ProgramRegistryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unregistered program files"):
             validate_registry(root, registry)
 
+    def test_rejects_unregistered_nested_program(self):
+        root, registry = self.make_repo()
+        nested = root / "scripts" / "nested"
+        nested.mkdir()
+        (nested / "new_component.py").write_text("pass\\n", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "unregistered program files"):
+            validate_registry(root, registry)
+
     def test_rejects_workflow_call_without_declared_dependency(self):
         root, registry = self.make_repo(dependency=False)
         with self.assertRaisesRegex(ValueError, "script dependency mismatch"):

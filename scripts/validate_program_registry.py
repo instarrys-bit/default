@@ -16,7 +16,7 @@ ID_RE = re.compile(r"^[a-z][a-z0-9_]{1,79}$")
 def discover_program_paths(root: Path) -> set[str]:
     scripts = {
         path.relative_to(root).as_posix()
-        for path in (root / "scripts").glob("*.py")
+        for path in (root / "scripts").rglob("*.py")
         if path.is_file()
     }
     workflows = {
