@@ -1,13 +1,29 @@
 {
   "schema_version": 1,
-  "activations": [],
-  "last_evaluated_at": "2026-11-02T00:31:50.528644+00:00",
+  "activations": [
+    {
+      "id": "auto-jovanykoch-rules-9660520d",
+      "repository": "Jovanykoch/rules",
+      "policy": "DIRECT",
+      "url": "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list",
+      "unique_domains": 6751
+    },
+    {
+      "id": "auto-gatework-surge-rules-da7f8038",
+      "repository": "gatework/surge-rules",
+      "policy": "PROXY",
+      "url": "https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt",
+      "unique_domains": 4451
+    }
+  ],
+  "last_evaluated_at": "2026-11-02T00:37:34.674526+00:00",
   "last_decisions": [
     {
       "repository": "Jovanykoch/rules",
       "policy": "DIRECT",
-      "decision": "held",
-      "reason": "production collector preflight failed: leading-dot suffix not permitted at line 524"
+      "decision": "activated",
+      "reason": "strong policy evidence, non-archived publisher, supported parser, 100+ unique domains and unchanged second observation",
+      "source_id": "auto-jovanykoch-rules-9660520d"
     },
     {
       "repository": "ACL4SSR/ACL4SSR",
@@ -30,8 +46,9 @@
     {
       "repository": "gatework/surge-rules",
       "policy": "PROXY",
-      "decision": "held",
-      "reason": "production collector preflight failed: leading-dot suffix not permitted at line 1"
+      "decision": "activated",
+      "reason": "strong policy evidence, non-archived publisher, supported parser, 100+ unique domains and unchanged second observation",
+      "source_id": "auto-gatework-surge-rules-da7f8038"
     },
     {
       "repository": "sve1r/Rules-For-Quantumult-X",

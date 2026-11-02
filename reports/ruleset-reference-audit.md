@@ -14,8 +14,8 @@
 
 ## Generated file counts
 
-- direct.list: 15 lines; policy DIRECT
-- proxy.list: 66 lines; policy PROXY
+- direct.list: 216 lines; policy DIRECT
+- proxy.list: 205 lines; policy PROXY
 - reject.list: 10 lines; policy REJECT
 
 ## Cross-file duplicates

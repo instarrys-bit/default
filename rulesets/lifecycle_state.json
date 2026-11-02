@@ -3,8 +3,8 @@
   "milestone_interval": 5000,
   "max_published_rules": 30000,
   "count_basis": "unique_published_rules_across_DIRECT_PROXY_REJECT",
-  "published_rule_count": 91,
-  "published_high_water_mark": 176,
+  "published_rule_count": 431,
+  "published_high_water_mark": 431,
   "next_milestone": 5000,
   "pending_milestones": [],
   "due_milestones": [],
@@ -14,6 +14,6 @@
   "status": "normal_incremental",
   "last_successful_review_at": null,
   "last_monthly_review_at": null,
-  "updated_at": "2026-11-02T00:31:56.068836+00:00",
+  "updated_at": "2026-11-02T00:38:26.590830+00:00",
   "deletion_policy": "Only separately verified lifecycle-invalid decisions may remove rules. Evidence loss, source disappearance, lineage changes, conflicts or missing observations are not deletion evidence."
 }

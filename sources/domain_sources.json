@@ -180,6 +180,60 @@
       "upstream_repositories": [],
       "lineage_note": "Global.list uses HOST/HOST-SUFFIX entries with the documented OutSide group mapped to PROXY. Complete item-level upstream ancestry is not published.",
       "lineage_evidence_url": "https://github.com/sve1r/Rules-For-Quantumult-X/blob/main/README.md"
+    },
+    {
+      "id": "auto-jovanykoch-rules-9660520d",
+      "publisher": "Jovanykoch/rules",
+      "role": "primary_candidate_source",
+      "url": "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list",
+      "format": "domain-only",
+      "weight": 0.4,
+      "classification": "DIRECT",
+      "minimum_entries": 100,
+      "allow_leading_dot": true,
+      "independence_group": "Jovanykoch/rules",
+      "lineage_status": "unverified",
+      "policy_evidence": "documented_policy",
+      "upstream_repositories": [],
+      "lineage_note": "Automatically admitted by deterministic parser, policy-evidence, publisher, size and two-observation stability gates. Lineage remains unverified; shared README references and domain overlap are correlation warnings, not automatic vetoes.",
+      "bootstrap_enqueue": true,
+      "auto_activation": {
+        "engine": "deterministic-source-admission/1.0",
+        "activated_at": "2026-11-02T00:37:34.560701+00:00",
+        "candidate_domain_count": 6751,
+        "unique_domain_count": 6751,
+        "domain_set_sha256": "455609878fe23aa0220355509a0157b7d75f93c58bf24457f553c46529fee9d9",
+        "policy_evidence_source": "README_policy_reference",
+        "lineage_warning": "possible_shared_readme_references; correlation signal only",
+        "shared_readme_reference_peer_count": 13
+      }
+    },
+    {
+      "id": "auto-gatework-surge-rules-da7f8038",
+      "publisher": "gatework/surge-rules",
+      "role": "primary_candidate_source",
+      "url": "https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt",
+      "format": "domain-only",
+      "weight": 0.4,
+      "classification": "PROXY",
+      "minimum_entries": 100,
+      "allow_leading_dot": true,
+      "independence_group": "gatework/surge-rules",
+      "lineage_status": "unverified",
+      "policy_evidence": "documented_policy",
+      "upstream_repositories": [],
+      "lineage_note": "Automatically admitted by deterministic parser, policy-evidence, publisher, size and two-observation stability gates. Lineage remains unverified; shared README references and domain overlap are correlation warnings, not automatic vetoes.",
+      "bootstrap_enqueue": true,
+      "auto_activation": {
+        "engine": "deterministic-source-admission/1.0",
+        "activated_at": "2026-11-02T00:37:34.560701+00:00",
+        "candidate_domain_count": 4451,
+        "unique_domain_count": 4451,
+        "domain_set_sha256": "23a1706c9c73fcab35a109e455e1f64e7203355dfbf52df6f80d6e4d456fee74",
+        "policy_evidence_source": "README_policy_reference",
+        "lineage_warning": "possible_shared_readme_references; correlation signal only",
+        "shared_readme_reference_peer_count": 12
+      }
     }
   ],
   "scoring": {
@@ -194,7 +248,9 @@
       "acl4ssr-china-domain": 0.4,
       "clashfx-cn-apps-direct": 0.4,
       "acl4ssr-proxy-lite": 0.4,
-      "sve1r-global-proxy": 0.4
+      "sve1r-global-proxy": 0.4,
+      "auto-jovanykoch-rules-9660520d": 0.4,
+      "auto-gatework-surge-rules-da7f8038": 0.4
     },
     "required_sources_by_policy": {
       "DIRECT": [],

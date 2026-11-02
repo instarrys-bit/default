@@ -50,6 +50,38 @@
       "bootstrap_enqueued": false
     },
     {
+      "id": "auto-gatework-surge-rules-da7f8038",
+      "sha256": "b8323cbd838d959e82746528c88cf18c14d3b011a921269de9e4f3dbccf6cf51",
+      "entries": 4451,
+      "classification": "PROXY",
+      "role": "primary_candidate_source",
+      "lineage_status": "unverified",
+      "upstream_repositories": [],
+      "status": "CURRENT",
+      "error": null,
+      "pending_confirmations": 0,
+      "new_entries": 4451,
+      "removed_entries": 0,
+      "baseline_initialized": true,
+      "bootstrap_enqueued": true
+    },
+    {
+      "id": "auto-jovanykoch-rules-9660520d",
+      "sha256": "2d756875ee2384e9d4050664dc23ac79a1d2af7a6b5ec0190d20ba1adb3834c5",
+      "entries": 6751,
+      "classification": "DIRECT",
+      "role": "primary_candidate_source",
+      "lineage_status": "unverified",
+      "upstream_repositories": [],
+      "status": "CURRENT",
+      "error": null,
+      "pending_confirmations": 0,
+      "new_entries": 6751,
+      "removed_entries": 0,
+      "baseline_initialized": true,
+      "bootstrap_enqueued": true
+    },
+    {
       "id": "clashfx-cn-apps-direct",
       "sha256": "0a8a3a1bf8360495456da557bdbf22f5af8996dd7886dd82966a968491d8c27e",
       "entries": 120,
@@ -192,12 +224,12 @@
       "bootstrap_enqueued": false
     }
   ],
-  "source_count": 6,
-  "policy_conflict_total": 44,
+  "source_count": 8,
+  "policy_conflict_total": 285,
   "lineage_verified_sources": 0,
-  "lineage_unverified_sources": 4,
+  "lineage_unverified_sources": 6,
   "lineage_partial_sources": 2,
-  "lineage_not_fully_verified_sources": 6,
+  "lineage_not_fully_verified_sources": 8,
   "source_candidate_summary": {
     "DIRECT": {
       "candidate_publishers": 3,
@@ -225,36 +257,69 @@
     }
   },
   "rule_count": {
-    "DIRECT": 15,
-    "PROXY": 66,
+    "DIRECT": 216,
+    "PROXY": 205,
     "REJECT": 10
   },
-  "published_rule_total": 91,
+  "published_rule_total": 431,
   "max_published_rules": 30000,
   "queued_rule_total": 0,
-  "baseline_conflict_hold_count": 0,
-  "baseline_conflict_hold_sample": [],
+  "baseline_conflict_hold_count": 1,
+  "baseline_conflict_hold_sample": [
+    {
+      "domain": "akamaihd.net",
+      "policy": "PROXY",
+      "scope": "suffix_candidate",
+      "status": "CONFLICT",
+      "reason": "Prior first-match rules intersect candidate suffix scope",
+      "config_line": 1137,
+      "config_rule": "DOMAIN-SUFFIX,origin-a.akamaihd.net,PROXY",
+      "effective_config_policy": "PROXY"
+    }
+  ],
   "pending_queue": "rulesets/pending_queue.json",
   "rule_lifecycle": {
     "DIRECT": {
       "previous_count": 15,
-      "current_count": 15,
-      "added_count": 0,
+      "current_count": 216,
+      "added_count": 201,
       "removed_count": 0,
       "previous_sha256": "c9222fcb981ebea636d4766cec628bd7e0a34b58093da6ea47083d8ee8413074",
-      "current_sha256": "c9222fcb981ebea636d4766cec628bd7e0a34b58093da6ea47083d8ee8413074",
-      "added_sample": [],
+      "current_sha256": "51243bedd7ec8b8756eb3e2ecca4b971b4ab489ecbce9d7aeec1ad94cb79eb18",
+      "added_sample": [
+        "DOMAIN,dl.steam.clngaa.com",
+        "DOMAIN,st.dl.bscstorage.net",
+        "DOMAIN,st.dl.eccdnx.com",
+        "DOMAIN,st.dl.pinyuncloud.com",
+        "DOMAIN,wmsjsteam.com",
+        "DOMAIN,xz.pphimalayanrt.com",
+        "DOMAIN-SUFFIX,00cdn.com",
+        "DOMAIN-SUFFIX,115.com",
+        "DOMAIN-SUFFIX,126.com",
+        "DOMAIN-SUFFIX,1688.com"
+      ],
       "removed_sample": [],
       "baseline_initialized": false
     },
     "PROXY": {
       "previous_count": 66,
-      "current_count": 66,
-      "added_count": 0,
+      "current_count": 205,
+      "added_count": 139,
       "removed_count": 0,
       "previous_sha256": "680a96b6ad48cdf83258b9e78b4ba9249626d9dc40f19e1fb1fc666c8db59dc7",
-      "current_sha256": "680a96b6ad48cdf83258b9e78b4ba9249626d9dc40f19e1fb1fc666c8db59dc7",
-      "added_sample": [],
+      "current_sha256": "1be8ecc699ee8ae38542203c2bdb7b546c93016c931ce8a31064eb0d5bd83011",
+      "added_sample": [
+        "DOMAIN-SUFFIX,4shared.com",
+        "DOMAIN-SUFFIX,abc.xyz",
+        "DOMAIN-SUFFIX,accountkit.com",
+        "DOMAIN-SUFFIX,androidify.com",
+        "DOMAIN-SUFFIX,anthonycalzadilla.com",
+        "DOMAIN-SUFFIX,apigee.com",
+        "DOMAIN-SUFFIX,apkmirror.com",
+        "DOMAIN-SUFFIX,appledaily.com",
+        "DOMAIN-SUFFIX,appshopper.com",
+        "DOMAIN-SUFFIX,autodraw.com"
+      ],
       "removed_sample": [],
       "baseline_initialized": false
     },
@@ -270,28 +335,28 @@
       "baseline_initialized": false
     }
   },
-  "reviewed_total": 978,
-  "approved_total": 91,
-  "held_total": 887,
+  "reviewed_total": 11583,
+  "approved_total": 431,
+  "held_total": 11152,
   "status_count": {
-    "ALREADY_COVERED": 339,
-    "APPROVED": 93,
-    "CONFLICT": 83,
-    "POLICY_CONFLICT": 44,
-    "REVIEW": 410,
-    "RISK_HOLD": 9
+    "ALREADY_COVERED": 2168,
+    "APPROVED": 434,
+    "CONFLICT": 544,
+    "POLICY_CONFLICT": 285,
+    "REVIEW": 8141,
+    "RISK_HOLD": 11
   },
   "deterministic_review_progress": {
-    "candidate_total": 978,
-    "approved_total": 91,
-    "held_total": 887,
+    "candidate_total": 11583,
+    "approved_total": 431,
+    "held_total": 11152,
     "status_count": {
-      "ALREADY_COVERED": 339,
-      "APPROVED": 93,
-      "CONFLICT": 83,
-      "POLICY_CONFLICT": 44,
-      "REVIEW": 410,
-      "RISK_HOLD": 9
+      "ALREADY_COVERED": 2168,
+      "APPROVED": 434,
+      "CONFLICT": 544,
+      "POLICY_CONFLICT": 285,
+      "REVIEW": 8141,
+      "RISK_HOLD": 11
     }
   },
   "format": "Standalone Shadowrocket domain RULE-SET lists: DOMAIN,<domain> and DOMAIN-SUFFIX,<domain>; source scope is preserved and policy is assigned by the RULE-SET reference.",

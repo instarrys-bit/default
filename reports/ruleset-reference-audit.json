@@ -30,17 +30,17 @@
   "file_stats": {
     "direct.list": {
       "policy": "DIRECT",
-      "line_count": 15,
-      "valid_domain_lines": 15,
-      "exact_domain_lines": 0,
-      "suffix_domain_lines": 15
+      "line_count": 216,
+      "valid_domain_lines": 216,
+      "exact_domain_lines": 6,
+      "suffix_domain_lines": 210
     },
     "proxy.list": {
       "policy": "PROXY",
-      "line_count": 66,
-      "valid_domain_lines": 66,
+      "line_count": 205,
+      "valid_domain_lines": 205,
       "exact_domain_lines": 0,
-      "suffix_domain_lines": 66
+      "suffix_domain_lines": 205
     },
     "reject.list": {
       "policy": "REJECT",

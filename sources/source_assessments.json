@@ -20,6 +20,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 9,
@@ -49,6 +50,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 36,
@@ -78,6 +80,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 109581,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [
         "00028df1e50893e90576c69d804b61e8",
         "0003acf3b369c84884b56dfc49446f14",
@@ -109693,6 +109696,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 26496,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [
         "00030f5407482f7b58d86eb6af414217",
         "000336869022d2021ae9c098181db9e8",
@@ -136247,6 +136251,7 @@
       "suffix_domain_count": 118,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [
         "00b10e2893584186dea4a9dbe7c0682b",
         "029d5d8e1df2cd10ce3c14ba98a183ac",
@@ -136398,6 +136403,7 @@
       "suffix_domain_count": 272,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [
         "00681ce94851b7273691ae9117f41f58",
         "00d3a183f1d20ad5a529ec49c18eac89",
@@ -136700,6 +136706,7 @@
       "suffix_domain_count": 582,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [
         "003517bdcd29057b9483b1247f6028f7",
         "00ad71effc7da1f8d9701abc5b2b11d6",
@@ -137337,6 +137344,7 @@
       "suffix_domain_count": 6759,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [
         "000a40285e83bf64982b808c12c22ed6",
         "0013fc23a9436ee4d8bb83f8932ab545",
@@ -144135,6 +144143,7 @@
       "suffix_domain_count": 297,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [
         "0044551e581071c9d1db6a8e76c56b39",
         "00681ce94851b7273691ae9117f41f58",
@@ -144473,6 +144482,7 @@
       "suffix_domain_count": 249,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [
         "029d5d8e1df2cd10ce3c14ba98a183ac",
         "033736107911a57187129e18b4402ae5",
@@ -144756,6 +144766,7 @@
       "suffix_domain_count": 574,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [
         "0044551e581071c9d1db6a8e76c56b39",
         "00681ce94851b7273691ae9117f41f58",
@@ -145364,6 +145375,7 @@
       "suffix_domain_count": 15,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [
         "13bad2fdd8d2da009c40d15bccc254fc",
         "20fc4e5e6deab22f484a2dfafec66737",
@@ -145413,6 +145425,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 110088,
+      "leading_dot_domain_count": 109578,
       "domain_fingerprints": [
         "00028df1e50893e90576c69d804b61e8",
         "0003acf3b369c84884b56dfc49446f14",
@@ -255535,6 +255548,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 4451,
+      "leading_dot_domain_count": 4451,
       "domain_fingerprints": [
         "001a1704d7dc295f8cf6170ac6a9a1cd",
         "001fd90ccd4167ec749db974c08210a2",
@@ -260018,6 +260032,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 27254,
+      "leading_dot_domain_count": 26487,
       "domain_fingerprints": [
         "00030f5407482f7b58d86eb6af414217",
         "000336869022d2021ae9c098181db9e8",
@@ -287306,6 +287321,7 @@
       "suffix_domain_count": 120,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [
         "011700b0283a76135383a66b2ba4cd0b",
         "03b0309eec3ed8c50e790dd1e1ccf1ae",
@@ -287460,6 +287476,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 4367,
+      "leading_dot_domain_count": 4102,
       "domain_fingerprints": [
         "001a1704d7dc295f8cf6170ac6a9a1cd",
         "001fd90ccd4167ec749db974c08210a2",
@@ -291861,6 +291878,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 6751,
+      "leading_dot_domain_count": 6228,
       "domain_fingerprints": [
         "000669a2b32a5cdb9941ea1cf0b3f1dd",
         "000972eaf5c3cd977171fe07b38bf7be",
@@ -298644,6 +298662,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 957,
+      "leading_dot_domain_count": 802,
       "domain_fingerprints": [
         "0066150d6be454e8ad37d3ed02eebbca",
         "0087168e6b31c1453515d7ac87439414",
@@ -299635,6 +299654,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -299664,6 +299684,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -299693,6 +299714,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -299724,6 +299746,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -299755,6 +299778,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -299786,6 +299810,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -299817,6 +299842,7 @@
       "suffix_domain_count": 1,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [
         "8669e450df049bc785da382bb5b876a6"
       ],
@@ -299850,6 +299876,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -299879,6 +299906,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -299908,6 +299936,7 @@
       "suffix_domain_count": 14,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [
         "040e49eeca924515e9d87b8fb8e85f1c",
         "0e9bb0c158ff5d38d545f6ae86b16cd1",
@@ -299954,6 +299983,7 @@
       "suffix_domain_count": 11,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [
         "086707fa47096e80c96f460b24e7878f",
         "206b1ae4a084d779cbaeca9008465f61",
@@ -299999,6 +300029,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -300028,6 +300059,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 1,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [
         "df56e31b17a6c92db0b9a3c4b4424caa"
       ],
@@ -300061,6 +300093,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 1,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [
         "df56e31b17a6c92db0b9a3c4b4424caa"
       ],
@@ -300094,6 +300127,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -300123,6 +300157,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -300152,6 +300187,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -300181,6 +300217,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -300210,6 +300247,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -300242,6 +300280,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -300298,6 +300337,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -300329,6 +300369,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -300360,6 +300401,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -300464,6 +300506,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [
         "0ca99b3b0d75690db48d4ddc182d34f2",
         "0d4ea1d41848bbf372275cae628f8b46",
@@ -300534,6 +300577,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [],
       "duplicate_domain_lines": 0,
       "domain_keyword_rules_ignored": 0,
@@ -300563,6 +300607,7 @@
       "suffix_domain_count": 0,
       "adblock_domain_count": 0,
       "domain_only_count": 0,
+      "leading_dot_domain_count": 0,
       "domain_fingerprints": [
         "0ca99b3b0d75690db48d4ddc182d34f2",
         "0d4ea1d41848bbf372275cae628f8b46",

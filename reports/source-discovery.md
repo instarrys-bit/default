@@ -338,7 +338,7 @@
 ### [Johnshall/Shadowrocket-ADBlock-Rules-Forever](https://github.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever)
 
 - Description: 提供多款 Shadowrocket 规则，拥有强劲的广告过滤功能。每日 8 时重新构建规则。
-- Stars: 31750; archived: False; fork: False
+- Stars: 31751; archived: False; fork: False
 - Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
@@ -397,7 +397,7 @@
 ### [Loyalsoldier/surge-rules](https://github.com/Loyalsoldier/surge-rules)
 
 - Description: 🦄 🎃 👻 Surge 规则集(DOMAIN-SET 和 RULE-SET)，适用于 Surge for iOS 和 Surge for Mac 客户端。
-- Stars: 3176; archived: False; fork: False
+- Stars: 3175; archived: False; fork: False
 - Search queries: geosite domain
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
