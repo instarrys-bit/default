@@ -30,6 +30,8 @@ concurrency:
 
 jobs:
   health-check:
+    outputs:
+      block_manifest: ${{ steps.stale-recovery.outputs.block_manifest }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -107,6 +109,7 @@ jobs:
             fi
           fi
       - name: Detect stale successful audit and recover
+        id: stale-recovery
         if: ${{ github.event_name != 'workflow_run' }}
         env:
           GH_TOKEN: ${{ github.token }}
@@ -118,6 +121,7 @@ jobs:
           current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
           if jq -e '[.workflow_runs[] | select(.head_branch == "main" and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
             echo "A main-branch deterministic audit is already queued or running; no duplicate dispatch."
+            echo "block_manifest=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -150,15 +154,18 @@ jobs:
           if [ "$audit_base_stale" = "1" ] || [ "$age_seconds" -gt 691200 ]; then
             echo "Last successful audit is stale or contains non-documentation changes since its audited commit (age=${age_seconds}s, audited=$last_success_sha, current=$current_sha); dispatching recovery run."
             gh workflow run auto_sync.yml --ref main --repo "$REPO"
+            echo "block_manifest=true" >> "$GITHUB_OUTPUT"
           else
             echo "Last successful audit is healthy; any intervening main changes are documentation-only (${age_seconds}s ago)."
+            echo "block_manifest=false" >> "$GITHUB_OUTPUT"
           fi
 
   manifest-integrity:
+    needs: [health-check]
     concurrency:
       group: shadowrocket-main-writer
       cancel-in-progress: false
-    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && needs.health-check.outputs.block_manifest != 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     permissions:
