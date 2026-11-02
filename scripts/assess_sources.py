@@ -65,6 +65,7 @@ def assess_payload(payload: bytes, url: str, policy_claims: list[str]) -> dict:
     duplicate_domain_lines = 0
     adblock = set()
     domain_only = set()
+    leading_dot_domain_count = 0
     for line in substantive:
         match = DOMAIN_RULE_RE.fullmatch(line)
         if match:
@@ -115,8 +116,16 @@ def assess_payload(payload: bytes, url: str, policy_claims: list[str]) -> dict:
         if ad and DOMAIN_RE.fullmatch(ad.group(1).rstrip(".")):
             adblock.add(ad.group(1).rstrip("."))
             continue
-        if DOMAIN_RE.fullmatch(line.lower().lstrip(".")):
-            domain_only.add(line.lower().lstrip("."))
+        normalized = line.lower()
+        if normalized.startswith("."):
+            domain = normalized[1:].rstrip(".")
+            if not domain.startswith(".") and DOMAIN_RE.fullmatch(domain):
+                domain_only.add(domain)
+                leading_dot_domain_count += 1
+        else:
+            domain = normalized.rstrip(".")
+            if DOMAIN_RE.fullmatch(domain):
+                domain_only.add(domain)
     domain_rule_count = len(exact) + len(suffix)
     explicit_actions = {x for x in actions if x in {"DIRECT", "PROXY", "REJECT"}}
     complete_explicit_action = (
@@ -168,6 +177,7 @@ def assess_payload(payload: bytes, url: str, policy_claims: list[str]) -> dict:
         "suffix_domain_count": len(suffix),
         "adblock_domain_count": len(adblock),
         "domain_only_count": len(domain_only),
+        "leading_dot_domain_count": leading_dot_domain_count,
         "domain_fingerprints": sorted(
             hashlib.sha256(domain.encode("utf-8")).hexdigest()[:32]
             for domain in (exact | suffix | adblock | domain_only)
