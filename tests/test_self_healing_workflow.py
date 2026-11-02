@@ -100,5 +100,22 @@ class SelfHealingWorkflowTests(unittest.TestCase):
 
 
 
+    def test_permissions_are_scoped_to_the_jobs_that_need_them(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        top_level = workflow.split("jobs:", 1)[0]
+        self.assertIn("permissions:\\n  contents: read", top_level)
+        self.assertNotIn("contents: write", top_level)
+        diagnose = workflow.split("  diagnose-and-repair:", 1)[1].split("  resolve-validator-incidents:", 1)[0]
+        self.assertIn("contents: write", diagnose)
+        resolver = workflow.split("  resolve-validator-incidents:", 1)[1].split("  stale-run-watch:", 1)[0]
+        self.assertIn("issues: write", resolver)
+        self.assertNotIn("contents: write", resolver)
+        watcher = workflow.split("  stale-run-watch:", 1)[1]
+        self.assertIn("actions: write", watcher)
+        self.assertIn("contents: read", watcher)
+        self.assertNotIn("pull-requests: write", watcher)
+
+
+
 if __name__ == "__main__":
     unittest.main()
