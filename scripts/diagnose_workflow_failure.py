@@ -35,7 +35,23 @@ def diagnose(log_text: str, run_id: str = "") -> dict:
         log_text,
         re.IGNORECASE,
     )
-    if stale_match:
+    if (
+        "test_stale_audit_guard_runs_before_expensive_domain_review" in log_text
+        and "cancel-in-progress: true" in log_text
+        and "cancel-in-progress: false" in log_text
+    ):
+        code = "WORKFLOW_TEST_CONTRACT_MISMATCH"
+        summary = (
+            "The static test expects cancellation of the active audit, while the workflow "
+            "intentionally preserves it and relies on stale-commit guards."
+        )
+        repair_id = "fix_stale_audit_concurrency_contract"
+        evidence = [
+            line.strip() for line in lines
+            if "test_stale_audit_guard_runs_before_expensive_domain_review" in line
+            or "cancel-in-progress:" in line
+        ][:10]
+    elif stale_match:
         code = "STALE_SUPERSEDED"
         summary = (
             "This audit was safely superseded by a newer main commit. "
