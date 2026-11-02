@@ -1,1 +1,3 @@
-# Lifecycle audit\n\nNo lifecycle review is due. Daily incremental review and publishing continue.\n
+# Lifecycle audit
+
+No lifecycle review is due. Daily incremental review and publishing continue.

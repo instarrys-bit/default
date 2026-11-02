@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-02T00:17:22.038701+00:00",
+  "audited_at": "2026-11-02T00:25:11.289284+00:00",
   "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
   "source_count": 6,
   "audited_source_count": 6,
@@ -30,8 +30,8 @@
       ]
     }
   ],
-  "candidate_source_count": 42,
-  "candidate_readme_audited_count": 42,
+  "candidate_source_count": 43,
+  "candidate_readme_audited_count": 43,
   "candidate_shared_reference_pairs": [
     {
       "repositories": [
@@ -1855,6 +1855,17 @@
         "johnshall/shadowrocket-adblock-rules-forever"
       ],
       "reference_count": 1,
+      "lineage_status": "unverified",
+      "status": "audited_reference_inventory"
+    },
+    {
+      "repository": "smkieye/smkie-shadowrocket-rules",
+      "readme_url": "https://raw.githubusercontent.com/smkieye/smkie-shadowrocket-rules/main/README.md",
+      "readme_sha256": "514fedf0c013aca29f93ce3f37a9b15d4e9ed17fac873eb18ab80d4d5b2fac50",
+      "discovery_readme_sha256": "514fedf0c013aca29f93ce3f37a9b15d4e9ed17fac873eb18ab80d4d5b2fac50",
+      "readme_changed_since_discovery": false,
+      "referenced_repositories": [],
+      "reference_count": 0,
       "lineage_status": "unverified",
       "status": "audited_reference_inventory"
     },

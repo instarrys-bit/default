@@ -38,8 +38,8 @@
 | PaPerseller/chn-iplist | unsupported_or_too_small | PROXY | 14 | unchanged | README_policy_reference |
 | PaPerseller/chn-iplist | unsupported_or_too_small | REJECT | 11 | unchanged | README_policy_reference |
 | PaPerseller/chn-iplist | unsupported_or_too_small | — | 0 | unchanged | none |
-| Vann-Dev/proxy-list | unsupported_or_too_small | PROXY | 1 | unchanged | README_policy_reference |
-| Vann-Dev/proxy-list | unsupported_or_too_small | PROXY | 1 | unchanged | README_policy_reference |
+| Vann-Dev/proxy-list | unsupported_or_too_small | PROXY | 1 | domain_set_changed | README_policy_reference |
+| Vann-Dev/proxy-list | unsupported_or_too_small | PROXY | 1 | domain_set_changed | README_policy_reference |
 | tickmao/Rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | tickmao/Rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | tickmao/Rules | unsupported_or_too_small | — | 0 | unchanged | none |
@@ -60,9 +60,9 @@
 ## Source update drift
 
 - New source files: 0
-- Changed source files: 0
-- Added domain entries: 0
-- Removed domain entries: 0
+- Changed source files: 2
+- Added domain entries: 2
+- Removed domain entries: 2
 - Policy changes: 0
 
 ## Assessment details
@@ -358,7 +358,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http.txt
-- SHA-256: 6f5a4e10707a8fe09ec8a51d947f65f69ad209216664912cd2af9017ccb7971d
+- SHA-256: 7ec58875b8883ec1d9e314e58a733d70dc91bf2256d17cd426f9936e4a1380f1
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 1; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -367,7 +367,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https.txt
-- SHA-256: fb27e1f8529f782fe6e7769d40e236d5b772784f1f7297058be54d371fb9412a
+- SHA-256: ae9168de208bbda2eaf8bf647ec7abec668115aacaa9492a96b4b1c7d9f8fb0b
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 1; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}

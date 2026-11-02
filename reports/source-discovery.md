@@ -1,6 +1,6 @@
 # Automated source discovery
 
-- Candidate repositories retained: **214**
+- Candidate repositories retained: **215**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
@@ -1608,6 +1608,15 @@
 - Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
+
+### [smkieye/smkie-shadowrocket-rules](https://github.com/smkieye/smkie-shadowrocket-rules)
+
+- Description: Automatically refreshed Shadowrocket rule sets and an owner-approved configuration for direct download
+- Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/smkieye/smkie-shadowrocket-rules/main/smkie-QCY.conf
 
 ### [soizo/proxy-rules](https://github.com/soizo/proxy-rules)
 
