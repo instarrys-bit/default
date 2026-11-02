@@ -7,6 +7,22 @@ sys.path.insert(0,str(ROOT/"scripts"))
 from audit_policy_source_overlap import extract_domains, build_report
 
 class PolicySourceOverlapTests(unittest.TestCase):
+    def test_source_size_limits_match_expanded_source_assessment(self):
+        import audit_policy_source_overlap as overlap
+        self.assertGreaterEqual(overlap.MAX_BYTES, 5_000_000)
+        self.assertGreaterEqual(overlap.MAX_TOTAL_BYTES, 250_000_000)
+
+    def test_aggregate_budget_is_enforced(self):
+        import audit_policy_source_overlap as overlap
+        old = overlap.MAX_TOTAL_BYTES
+        overlap.MAX_TOTAL_BYTES = 2
+        data = {"assessments": [{"policy_candidate":"DIRECT","parser_candidate":"domain-only","repository":"owner/repo","url":"https://example.test/list.txt"}]}
+        try:
+            with self.assertRaisesRegex(ValueError, "aggregate source overlap audit byte budget"):
+                overlap.build_report(data, fetcher=lambda url, repo: b"abc")
+        finally:
+            overlap.MAX_TOTAL_BYTES = old
+
     def test_domain_only_parser_ignores_keywords_and_ip_rules(self):
         payload=b"""
 DOMAIN,api.example.com
