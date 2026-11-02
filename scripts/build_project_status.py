@@ -67,7 +67,7 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
     lifecycle = read_json(rules_dir / "lifecycle_state.json", {})
     queue = read_json(rules_dir / "pending_queue.json", {"items": []})
     registry = read_json(root / "sources/domain_sources.json", {"sources": []})
-    snapshot = read_json(root / "data/candidates.json", {"candidates": [], "sources": {}})
+    snapshot = read_document(root / "data/candidates.json", "candidates", {"candidates": [], "sources": {}})
     activation = read_json(root / "sources/source_activation_log.json", {"activations": [], "last_decisions": []})
     discovered = read_document(root / "sources/discovered_sources.json", "candidates", {"candidates": []})
     assessments = read_document(root / "sources/source_assessments.json", "assessments", {"assessments": []})
