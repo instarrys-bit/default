@@ -100,6 +100,22 @@ class ProjectStatusTests(unittest.TestCase):
             self.assertTrue(status["integrity"]["config_baseline_match"])
             self.assertTrue((root / "reports/project-status.md").exists())
             self.assertTrue((root / "reports/project-status.json").exists())
+            save("sources/discovered_sources.json", {
+                "candidate_count": 10, "candidates": [],
+                "discovery_errors": [{"query": "query", "error": "HTTP 403"}],
+                "tree_errors": [{"repository": "empty/repo", "error": "HTTP 409"}],
+                "tree_repositories_scanned": 2, "tree_scan_complete_count": 8, "tree_scan_backlog_count": 2
+            })
+            save("sources/source_assessments.json", {
+                "assessments": [{}, {}, {}], "candidate_url_count": 12,
+                "assessed_this_run_count": 4, "deferred_this_run_count": 8, "budget_exhausted": True
+            })
+            status = build_status(root, now="2026-11-02T00:01:00+00:00")
+            self.assertEqual(status["health"], "CHECK")
+            self.assertEqual(status["source_discovery"]["search_error_count"], 1)
+            self.assertEqual(status["source_discovery"]["tree_scan_backlog_count"], 2)
+            self.assertEqual(status["source_assessment"]["deferred_this_run_count"], 8)
+            self.assertEqual(status["coverage"]["status"], "IN_PROGRESS")
 
 
 if __name__ == "__main__":

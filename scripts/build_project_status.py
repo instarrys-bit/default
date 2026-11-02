@@ -107,6 +107,15 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
     approved_config_sha = guard.get("approved_git_blob_sha")
     config_match = bool(actual_config_sha and approved_config_sha and actual_config_sha == approved_config_sha)
 
+    discovery_errors = discovered.get("discovery_errors", [])
+    tree_errors = discovered.get("tree_errors", [])
+    tree_scan_backlog = int(discovered.get("tree_scan_backlog_count", 0))
+    tree_scanned_this_run = int(discovered.get("tree_repositories_scanned", 0))
+    tree_scan_complete = int(discovered.get("tree_scan_complete_count", 0))
+    assessment_candidate_urls = int(assessments.get("candidate_url_count", len(assessments.get("assessments", []))))
+    assessed_this_run = int(assessments.get("assessed_this_run_count", len(assessments.get("assessments", []))))
+    assessment_deferred = int(assessments.get("deferred_this_run_count", max(0, assessment_candidate_urls - assessed_this_run)))
+    assessment_budget_exhausted = bool(assessments.get("budget_exhausted", False))
     source_rows = registry.get("sources", [])
     source_groups = {
         name: len({
@@ -157,7 +166,8 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
     group_gaps = {name: max(0, minimum_groups - source_groups[name]) for name in POLICIES}
 
     integrity_ok = config_match and manifest_match and policy_invariant and total <= maximum
-    health = "PASS" if integrity_ok and not degraded_sources and not any(group_gaps.values()) and not due else ("CHECK" if integrity_ok else "FAIL")
+    discovery_degraded = bool(discovery_errors or tree_errors)
+    health = "PASS" if integrity_ok and not degraded_sources and not any(group_gaps.values()) and not due and not discovery_degraded else ("CHECK" if integrity_ok else "FAIL")
     generated_at = now or datetime.now(timezone.utc).isoformat()
 
     result = {
@@ -203,6 +213,25 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
             "lineage_partial_count": int(lineage.get("lineage_partial_count", 0)),
             "lineage_unverified_count": int(lineage.get("lineage_unverified_count", 0)),
             "lineage_verified_count": int(lineage.get("lineage_verified_count", 0)),
+        },
+        "source_discovery": {
+            "search_error_count": len(discovery_errors),
+            "tree_error_count": len(tree_errors),
+            "tree_scanned_this_run": tree_scanned_this_run,
+            "tree_scan_complete_count": tree_scan_complete,
+            "tree_scan_backlog_count": tree_scan_backlog,
+        },
+        "source_assessment": {
+            "historical_file_count": len(assessments.get("assessments", [])),
+            "candidate_url_count": assessment_candidate_urls,
+            "assessed_this_run_count": assessed_this_run,
+            "deferred_this_run_count": assessment_deferred,
+            "budget_exhausted": assessment_budget_exhausted,
+        },
+        "coverage": {
+            "status": "IN_PROGRESS" if tree_scan_backlog or assessment_deferred else "COMPLETE",
+            "tree_scan_backlog_count": tree_scan_backlog,
+            "assessment_deferred_count": assessment_deferred,
         },
         "rule_provenance": provenance_summary,
         "review": {
