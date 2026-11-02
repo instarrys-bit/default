@@ -40,6 +40,13 @@ class ConfigScopeCoverageTests(unittest.TestCase):
         self.assertIn("L3:", result["config_rule"])
         self.assertIn("L9:", result["config_rule"])
 
+    def test_reject_config_scope_is_not_a_sync_input(self):
+        result = classify_rule(
+            "DIRECT", "DOMAIN,api.example.com",
+            [(4, "DOMAIN,api.example.com,REJECT")], []
+        )
+        self.assertEqual(result["status"], "NO_CONFLICT")
+
     def test_disjoint_scope_is_not_removed(self):
         result = classify_rule(
             "PROXY", "DOMAIN-SUFFIX,example.net",
