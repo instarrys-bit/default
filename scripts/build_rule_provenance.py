@@ -169,7 +169,7 @@ def build(review_data, registry_data, snapshot_data, previous, published, pendin
         "rule_count": len(current),
         "source_snapshot_hashes": dict(sorted(snapshot_hashes.items())),
         "evidence_limits": {
-            "line_number": "null means the collector does not retain original upstream line offsets; snapshot membership is not falsely labelled line-level proof.",
+            "line_number": "Current collection records original upstream line numbers for supported formats. Null is retained only for legacy evidence or entries without a recoverable original line; it is not represented as exact-file-line proof.",
             "lineage": "Repository-wide README/source references are not item-level ancestry and do not independently verify a rule's upstream origin."
         },
         "rules": sorted(current.values(), key=lambda x: x["rule_id"])
