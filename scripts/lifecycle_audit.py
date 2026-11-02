@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Conservative DNS lifecycle audit, deletion archive, and restore-by-ID."""
 from __future__ import annotations
-import concurrent.futures, hashlib, json, os, urllib.parse, urllib.request
+import concurrent.futures, hashlib, json, os, re, urllib.parse, urllib.request
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
@@ -34,6 +34,28 @@ def query(endpoint,domain,kind):
         return int(data.get("Status"))
     except Exception:
         return None
+
+
+def scope_intersects_rule(left,right):
+    def parse(line):
+        fields=line.split(",",1)
+        if len(fields)!=2 or fields[0] not in {"DOMAIN","DOMAIN-SUFFIX"}:
+            return None
+        domain=fields[1].lower().strip(".")
+        if not re.fullmatch(r"(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+",domain):
+            return None
+        return fields[0],domain
+    a=parse(left); b=parse(right)
+    if not a or not b:
+        return False
+    kind_a,domain_a=a; kind_b,domain_b=b
+    if domain_a==domain_b:
+        return True
+    if kind_a=="DOMAIN-SUFFIX" and (domain_b.endswith("."+domain_a)):
+        return True
+    if kind_b=="DOMAIN-SUFFIX" and (domain_a.endswith("."+domain_b)):
+        return True
+    return False
 
 
 def deletion_confirmed(history):
@@ -81,12 +103,35 @@ def main():
     obs=json.loads(obs_path.read_text()) if obs_path.exists() else {"items":{}}
     archive=json.loads(archive_path.read_text()) if archive_path.exists() else {"items":[]}
     queue=json.loads(queue_path.read_text()) if queue_path.exists() else {"items":[]}
-    restored=[]; missing=[]; restored_keys=set()
+    restored=[]; missing=[]; restore_refused=[]; restored_keys=set()
     for key in requested:
         old=next((x for x in archive["items"] if x["id"]==key and not x.get("restored_at")),None)
         if not old: missing.append(key); continue
+        line=str(old.get("rule",""))
+        policy=str(old.get("policy","")).lower()
+        if policy not in POLICIES or not scope_intersects_rule(line,line):
+            restore_refused.append({"id":key,"reason":"archived rule or policy is malformed"})
+            continue
+        conflict=None
+        for other_policy in POLICIES:
+            if other_policy!=policy:
+                match=next((existing for existing in rules[other_policy] if scope_intersects_rule(line,existing)),None)
+                if match:
+                    conflict={"policy":other_policy,"rule":match}
+                    break
+        if conflict is None:
+            for queued in queue.get("items",[]):
+                queued_policy=str(queued.get("policy","")).lower()
+                queued_scope=str(queued.get("scope","exact_candidate"))
+                queued_domain=str(queued.get("domain","")).lower()
+                queued_line=("DOMAIN-SUFFIX," if queued_scope=="suffix_candidate" else "DOMAIN,")+queued_domain
+                if queued_policy in POLICIES and queued_policy!=policy and scope_intersects_rule(line,queued_line):
+                    conflict={"policy":queued_policy,"rule":queued_line,"location":"pending_queue"}
+                    break
+        if conflict:
+            restore_refused.append({"id":key,"reason":"restoration would create a cross-policy overlap","conflict":conflict})
+            continue
         total=sum(map(len,rules.values()))
-        line=old["rule"]; policy=old["policy"]
         if total<30000:
             rules[policy].add(line); destination="published"
         else:
@@ -166,10 +211,11 @@ def main():
         manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n")
     REPORT.mkdir(parents=True,exist_ok=True)
     options=[{"id":x["id"],"policy":x["policy"],"rule":x["rule"],"removed_at":x["removed_at"]} for x in archive["items"] if not x.get("restored_at")]
-    report={"created_at":timestamp,"triggered_milestones":state.get("due_milestones",[]),"monthly_review":state.get("monthly_review_due",False),"deleted":deleted,"active_or_nodata_count":active,"unknown_retained_count":unknown,"protected_count":protected_count,"suffix_retained_count":suffix_retained_count,"restored":restored,"restore_ids_not_found":missing,"restoration_options":options,"policy":"Only exact DOMAIN hosts confirmed NXDOMAIN by both independent resolvers for A and AAAA, twice at least 30 days apart. Suffix rules are retained because a suffix root can lack DNS records while subdomains remain valid. Protected major-company suffixes are also retained. Resolver errors, missing evidence and source disappearance are retained."}
+    report={"created_at":timestamp,"triggered_milestones":state.get("due_milestones",[]),"monthly_review":state.get("monthly_review_due",False),"deleted":deleted,"active_or_nodata_count":active,"unknown_retained_count":unknown,"protected_count":protected_count,"suffix_retained_count":suffix_retained_count,"restored":restored,"restore_ids_not_found":missing,"restore_refused":restore_refused,"restoration_options":options,"policy":"Only exact DOMAIN hosts confirmed NXDOMAIN by both independent resolvers for A and AAAA, twice at least 30 days apart. Suffix rules are retained because a suffix root can lack DNS records while subdomains remain valid. Protected major-company suffixes are also retained. Resolver errors, missing evidence and source disappearance are retained."}
     (REPORT/"latest.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n")
-    lines=["# Lifecycle audit",f"Completed: {timestamp}",f"Milestones: {report['triggered_milestones']}",f"Deleted: {len(deleted)}",f"Active/NODATA retained: {active}",f"Unknown retained: {unknown}",f"Protected major-company hosts retained: {protected_count}",f"Suffix rules retained without DNS-root deletion checks: {suffix_retained_count}",f"Restored: {len(restored)}","## Deleted entries"]
+    lines=["# Lifecycle audit",f"Completed: {timestamp}",f"Milestones: {report['triggered_milestones']}",f"Deleted: {len(deleted)}",f"Active/NODATA retained: {active}",f"Unknown retained: {unknown}",f"Protected major-company hosts retained: {protected_count}",f"Suffix rules retained without DNS-root deletion checks: {suffix_retained_count}",f"Restored: {len(restored)}",f"Restoration refused: {len(restore_refused)}","## Deleted entries"]
     lines += [f"- {x['id']} | {x['policy']} | {x['rule']} | first confirmation {x['first_confirmed_at']}" for x in deleted] or ["- None"]
+    lines += ["## Restoration refused"]+[f"- {x['id']} | {x['reason']} | {x.get('conflict','')}" for x in restore_refused] or ["- None"]
     lines += ["## Selectable restore IDs"]+[f"- {x['id']} | {x['policy']} | {x['rule']}" for x in options]
     lines += ["","To restore, run the workflow manually and paste selected IDs into restore_ids."]
     (REPORT/"latest.md").write_text("\n".join(lines)+"\n")
