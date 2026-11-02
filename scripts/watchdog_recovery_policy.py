@@ -40,11 +40,6 @@ def decide_recovery(
             continue
         if run.get("status") != "completed":
             continue
-        if run.get("conclusion") == "failure":
-            non_retryable.append(run)
-            continue
-        if run.get("conclusion") not in RETRYABLE_CONCLUSIONS:
-            continue
         stamp = run.get("updated_at") or run.get("created_at")
         if not stamp:
             continue
@@ -52,7 +47,12 @@ def decide_recovery(
             created = _timestamp(stamp)
         except (TypeError, ValueError):
             continue
-        if now - window <= created <= now:
+        if not (now - window <= created <= now):
+            continue
+        if run.get("conclusion") == "failure":
+            non_retryable.append(run)
+            continue
+        if run.get("conclusion") in RETRYABLE_CONCLUSIONS:
             prior.append((created, run))
 
     prior.sort(key=lambda item: item[0])
