@@ -87,6 +87,12 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
         selected = discovery.select_tree_scan_repositories(inventory, 2)
         self.assertEqual([name for name, _ in selected], ["owner/new", "owner/truncated"])
 
+    def test_github_api_rate_limit_retry_uses_retry_after_or_reset(self):
+        discovery = load_script("discover_sources")
+        self.assertEqual(discovery.api_retry_delay({"Retry-After": "7"}, 0, now=100), 7.0)
+        self.assertEqual(discovery.api_retry_delay({"X-RateLimit-Remaining": "0", "X-RateLimit-Reset": "112"}, 0, now=100), 12.0)
+        self.assertEqual(discovery.api_retry_delay({}, 2, now=100), 8.0)
+
     def test_tree_discovery_filters_paths_and_reports_truncation(self):
         discovery = load_script("discover_sources")
         tree = {

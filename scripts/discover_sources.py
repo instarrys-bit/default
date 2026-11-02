@@ -152,6 +152,21 @@ SEED_SOURCE_URLS = {
 SENSITIVE_PATH_RE = re.compile(r"(?:porn|adult|nsfw|xxx|sex[-_]?content)", re.I)
 RELEVANCE_RE = re.compile(r"(?:shadowrocket|domain|geosite|rules?|blocklist|adblock|dns|proxy|direct|china|gfw|clash|sing[-_]?box|v2ray|surge|loon|quantumult|hosts)", re.I)
 
+def api_retry_delay(headers, attempt: int, now: float | None = None) -> float:
+    retry_after = headers.get("Retry-After") if headers else None
+    remaining = headers.get("X-RateLimit-Remaining") if headers else None
+    reset = headers.get("X-RateLimit-Reset") if headers else None
+    try:
+        if retry_after:
+            delay = float(retry_after)
+        elif remaining == "0" and reset:
+            delay = max(1.0, float(reset) - (time.time() if now is None else now))
+        else:
+            delay = min(60.0, 2.0 ** (attempt + 1))
+    except (TypeError, ValueError):
+        delay = min(60.0, 2.0 ** (attempt + 1))
+    return min(90.0, max(1.0, delay))
+
 def request_json(url: str, token: str = "") -> dict:
     headers = {
         "Accept": "application/vnd.github+json",
@@ -170,16 +185,7 @@ def request_json(url: str, token: str = "") -> dict:
         except urllib.error.HTTPError as exc:
             if exc.code not in {403, 429, 500, 502, 503, 504} or attempt == 5:
                 raise
-            retry_after = exc.headers.get("Retry-After") if exc.headers else None
-            remaining = exc.headers.get("X-RateLimit-Remaining") if exc.headers else None
-            reset = exc.headers.get("X-RateLimit-Reset") if exc.headers else None
-            if retry_after:
-                delay = float(retry_after)
-            elif remaining == "0" and reset:
-                delay = max(1.0, float(reset) - time.time())
-            else:
-                delay = min(60.0, 2.0 ** (attempt + 1))
-            time.sleep(min(90.0, max(1.0, delay)))
+            time.sleep(api_retry_delay(exc.headers, attempt))
         except urllib.error.URLError:
             if attempt == 5:
                 raise
