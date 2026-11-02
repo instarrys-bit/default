@@ -91,7 +91,8 @@ def activate(registry: dict, matrix: dict, now: str | None = None) -> tuple[dict
             digest = hashlib.sha256(payload).hexdigest()
             if digest != str(selected.get("sha256", "")):
                 raise ValueError("source bytes changed after assessment")
-            parser_source = {"id": "admission-probe", "format": selected["parser"], "classification": policy}
+            allow_leading_dot = int(selected.get("leading_dot_domain_count", 0)) > 0
+            parser_source = {"id": "admission-probe", "format": selected["parser"], "classification": policy, "allow_leading_dot": allow_leading_dot}
             parsed_domains = parse_source(payload, parser_source)
             if len(parsed_domains) < MIN_UNIQUE_DOMAINS:
                 raise ValueError("production parser yielded fewer than 100 unique domains")
@@ -112,6 +113,7 @@ def activate(registry: dict, matrix: dict, now: str | None = None) -> tuple[dict
             "weight": WEIGHT,
             "classification": policy,
             "minimum_entries": MIN_UNIQUE_DOMAINS,
+            "allow_leading_dot": allow_leading_dot,
             "independence_group": repository,
             "lineage_status": "unverified",
             "policy_evidence": "explicit_action" if evidence == "explicit_third_field" else "documented_policy",
