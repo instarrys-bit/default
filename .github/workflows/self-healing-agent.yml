@@ -315,20 +315,31 @@ jobs:
               if not run_id:
                   continue
               if run.get("head_sha") != current_main:
-                  print(run_id, "superseded")
+                  print(run_id, "superseded", run.get("head_sha", ""))
                   continue
               stamp = run.get("run_started_at") or run.get("created_at")
               if not stamp:
                   continue
               started = datetime.fromisoformat(stamp.replace("Z", "+00:00"))
               if (now - started).total_seconds() > 21600:
-                  print(run_id, "timeout")
+                  print(run_id, "timeout", run.get("head_sha", ""))
           ' "$current_main" <<< "$runs")"
 
           timed_out_any=0
           if [ -n "$stale_lines" ]; then
-            while read -r stale_id reason; do
+            while read -r stale_id reason run_sha; do
               [ -n "$stale_id" ] || continue
+              if [ "$reason" = "superseded" ]; then
+                compare_json="$(gh api "repos/$REPO/compare/$run_sha...$current_main" 2>/dev/null || true)"
+                if [ -z "$compare_json" ] || ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null; then
+                  echo "Could not safely classify changes after audit $stale_id; leaving it active for the publish-base guard."
+                  continue
+                fi
+                if jq -e '[.files[].filename | select(startswith("docs/") | not)] | length == 0' <<< "$compare_json" >/dev/null; then
+                  echo "Audit $stale_id remains publishable: only docs/ changed after its audited commit."
+                  continue
+                fi
+              fi
               echo "Cancelling audit $stale_id ($reason); current main is $current_main."
               gh run cancel "$stale_id" --repo "$REPO" || true
               if [ "$reason" = "timeout" ]; then timed_out_any=1; fi
