@@ -171,9 +171,8 @@ class RuleSetReferenceAuditTests(unittest.TestCase):
                 "rule_count": {"DIRECT": 1, "PROXY": 1, "REJECT": 0},
             }
             report = inspect(make_config(), manifest, root)
-            self.assertTrue(report["passed"], report["errors"])
-            self.assertEqual(len(report["cross_policy_conflicts"]), 0)
-            self.assertEqual(len(report["cross_policy_scope_overlaps"]), 1)
+            self.assertFalse(report["passed"])
+            self.assertEqual(len(report["cross_policy_conflicts"]), 1)
 
     def test_cross_scope_policy_conflict_is_detected(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -186,8 +185,9 @@ class RuleSetReferenceAuditTests(unittest.TestCase):
                 "rule_count": {"DIRECT": 1, "PROXY": 1, "REJECT": 0},
             }
             report = inspect(make_config(), manifest, root)
-            self.assertFalse(report["passed"])
-            self.assertEqual(len(report["cross_policy_conflicts"]), 1)
+            self.assertTrue(report["passed"], report["errors"])
+            self.assertEqual(len(report["cross_policy_conflicts"]), 0)
+            self.assertEqual(len(report["cross_policy_scope_overlaps"]), 1)
 
 
 if __name__ == "__main__":
