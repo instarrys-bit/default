@@ -338,7 +338,7 @@
 ### [Johnshall/Shadowrocket-ADBlock-Rules-Forever](https://github.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever)
 
 - Description: 提供多款 Shadowrocket 规则，拥有强劲的广告过滤功能。每日 8 时重新构建规则。
-- Stars: 31751; archived: False; fork: False
+- Stars: 31752; archived: False; fork: False
 - Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
