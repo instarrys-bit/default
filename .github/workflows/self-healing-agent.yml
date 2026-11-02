@@ -198,45 +198,86 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:
-      - name: Cancel only an audit older than its timeout plus grace period
+      - name: Cancel superseded or stalled audits and recover current main
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=20")"
-          stale_id="$(python3 -c '
+          current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"
+          runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=30")"
+
+          stale_lines="$(python3 -c '
           import json, sys
           from datetime import datetime, timezone
-          payload=json.load(sys.stdin)
-          now=datetime.now(timezone.utc)
+          current_main = sys.argv[1]
+          payload = json.load(sys.stdin)
+          now = datetime.now(timezone.utc)
           for run in payload.get("workflow_runs", []):
-              if run.get("status") != "in_progress":
+              if run.get("status") == "completed":
                   continue
-              stamp=run.get("run_started_at") or run.get("created_at")
+              run_id = run.get("id")
+              if not run_id:
+                  continue
+              if run.get("head_sha") != current_main:
+                  print(run_id, "superseded")
+                  continue
+              stamp = run.get("run_started_at") or run.get("created_at")
               if not stamp:
                   continue
-              started=datetime.fromisoformat(stamp.replace("Z","+00:00"))
-              if (now-started).total_seconds() > 21600:
-                  print(run["id"])
-                  break
-          ' <<< "$runs")"
+              started = datetime.fromisoformat(stamp.replace("Z", "+00:00"))
+              if (now - started).total_seconds() > 21600:
+                  print(run_id, "timeout")
+          ' "$current_main" <<< "$runs")"
 
-          if [ -z "$stale_id" ]; then
-            echo "No audit has exceeded the six-hour stale-run threshold."
+          cancelled_any=0
+          timed_out_any=0
+          if [ -n "$stale_lines" ]; then
+            while read -r stale_id reason; do
+              [ -n "$stale_id" ] || continue
+              echo "Cancelling audit $stale_id ($reason); current main is $current_main."
+              gh run cancel "$stale_id" --repo "$REPO" || true
+              cancelled_any=1
+              if [ "$reason" = "timeout" ]; then timed_out_any=1; fi
+            done <<< "$stale_lines"
+            sleep 10
+            runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=30")"
+          fi
+
+          active_count="$(jq '[.workflow_runs[] | select(.status != "completed")] | length' <<< "$runs")"
+          if [ "$active_count" -gt 0 ]; then
+            echo "An audit is still queued, cancelling, or running; no replacement will be dispatched."
             exit 0
           fi
 
-          echo "Audit $stale_id exceeded the five-hour job timeout plus one-hour grace period."
-          gh run cancel "$stale_id" --repo "$REPO"
-          sleep 10
-          remaining="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=20")"
-          if jq -e --argjson stale "$stale_id" '[.workflow_runs[] | select((.status == "queued" or .status == "in_progress") and .id != $stale)] | length == 0' <<< "$remaining" >/dev/null; then
+          last_success="$(jq -r '[.workflow_runs[] | select(.conclusion == "success")] | sort_by(.created_at) | last | .created_at // empty' <<< "$runs")"
+          last_success_sha="$(jq -r '[.workflow_runs[] | select(.conclusion == "success")] | sort_by(.created_at) | last | .head_sha // empty' <<< "$runs")"
+          age_seconds="$(python3 - "$last_success" <<'PY'
+          import sys
+          from datetime import datetime, timezone
+          value = sys.argv[1]
+          if not value:
+              print(10**9)
+          else:
+              stamp = datetime.fromisoformat(value.replace("Z", "+00:00"))
+              print(max(0, int((datetime.now(timezone.utc) - stamp).total_seconds())))
+          PY
+          )"
+
+          if [ "$cancelled_any" = "1" ] || [ "$last_success_sha" != "$current_main" ] || [ "$age_seconds" -gt 691200 ]; then
+            echo "No current-main audit is active and the last successful audit is stale or superseded; dispatching one replacement."
             gh workflow run auto_sync.yml --ref main --repo "$REPO"
-            gh issue create \
-              --repo "$REPO" \
-              --title "Self-healing incident: stale audit run $stale_id" \
-              --body "The watchdog found audit run $stale_id still in progress after six hours, cancelled it, and dispatched one replacement run. Inspect the original run logs before changing code."
           else
-            echo "Another audit is active; no replacement was dispatched."
+            echo "The latest successful audit matches current main and is within the eight-day health window."
+          fi
+
+          if [ "$timed_out_any" = "1" ]; then
+            title="Self-healing incident: stalled audit"
+            existing="$(gh issue list --repo "$REPO" --state open --search "stalled audit in:title" --json number --jq '.[0].number')"
+            body_text="$(printf 'The watchdog cancelled an audit that exceeded six hours and dispatched a replacement on current main %s.\\n' "$current_main")"
+            if [ -n "$existing" ] && [ "$existing" != "null" ]; then
+              gh issue comment "$existing" --repo "$REPO" --body "$body_text"
+            else
+              gh issue create --repo "$REPO" --title "$title" --body "$body_text"
+            fi
           fi
