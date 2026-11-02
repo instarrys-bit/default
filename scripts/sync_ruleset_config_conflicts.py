@@ -449,7 +449,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "policy": "Every provable exact/suffix scope overlap with ss.conf or skip-proxy is removed from published and queued external rules, regardless of whether the policy matches. The earliest applicable config rule is recorded as precedence evidence. Historical archive entries are rechecked against the current config and superseded when the overlap no longer exists. Keyword/regex/conditional overlaps that cannot be proven from static domain scope are retained and reported; no speculative deletion is allowed.",
         "errors": [],
     }
-    run_id = os.environ.get("GITHUB_RUN_ID", "").strip()
+    run_id = os.environ.get("GITHUB_RUN_ID", "").strip() if os.environ.get("RULESET_CONFIG_REPORT_AGGREGATION") == "1" else ""
     if run_id:
         report["workflow_run_id"] = run_id
         if report_json.exists():
