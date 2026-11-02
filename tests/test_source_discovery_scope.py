@@ -39,11 +39,11 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
     def test_tree_scans_rotate_unscanned_and_failed_repositories_first(self):
         discovery = load_script("discover_sources")
         inventory = {
-            "owner/recent": {"stars": 10, "tree_scanned_at": "2026-11-02T00:00:00+00:00", "tree_scan_status": "complete"},
+            "owner/recent": {"stars": 10, "tree_scanned_at": "2026-11-02T00:00:00+00:00", "tree_scan_status": "complete", "updated_at": "rev1", "tree_scanned_updated_at": "rev1", "default_branch": "main", "tree_scanned_default_branch": "main"},
             "owner/never-a": {"stars": 1},
             "owner/failed": {"stars": 0, "tree_scanned_at": "2026-11-01T00:00:00+00:00", "tree_scan_status": "error"},
             "owner/never-b": {"stars": 20},
-            "owner/old": {"stars": 5, "tree_scanned_at": "2026-10-01T00:00:00+00:00", "tree_scan_status": "complete"},
+            "owner/old": {"stars": 5, "tree_scanned_at": "2026-10-01T00:00:00+00:00", "tree_scan_status": "complete", "updated_at": "rev0", "tree_scanned_updated_at": "rev0", "default_branch": "main", "tree_scanned_default_branch": "main"},
         }
         selected = discovery.select_tree_scan_repositories(inventory, 3)
         self.assertEqual([name for name, _ in selected], [
@@ -114,6 +114,39 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
         self.assertGreaterEqual(assessment.MAX_URLS, 5_000)
         self.assertGreaterEqual(assessment.MAX_TOTAL_BYTES, 250_000_000)
         self.assertGreaterEqual(assessment.MAX_BYTES, 5_000_000)
+
+    def test_completed_tree_scan_is_skipped_until_repository_revision_changes(self):
+        discovery = load_script("discover_sources")
+        inventory = {
+            "owner/unchanged": {
+                "stars": 3, "tree_scanned_at": "2026-11-02T00:00:00+00:00",
+                "tree_scan_status": "complete", "updated_at": "rev1",
+                "tree_scanned_updated_at": "rev1", "default_branch": "main",
+                "tree_scanned_default_branch": "main",
+            },
+            "owner/changed": {
+                "stars": 2, "tree_scanned_at": "2026-11-02T00:00:00+00:00",
+                "tree_scan_status": "complete", "updated_at": "rev2",
+                "tree_scanned_updated_at": "rev1", "default_branch": "main",
+                "tree_scanned_default_branch": "main",
+            },
+        }
+        self.assertEqual([name for name, _ in discovery.select_tree_scan_repositories(inventory, 10)], ["owner/changed"])
+
+    def test_readme_snapshot_reuses_same_repository_revision(self):
+        discovery = load_script("discover_sources")
+        repo = {"full_name": "owner/repo", "default_branch": "main", "updated_at": "rev1"}
+        previous = {
+            "default_branch": "main", "updated_at": "rev1", "readme_sha256": "a" * 64,
+            "readme_rule_list_urls": ["cached.list"], "readme_policy_claims": {"cached.list": ["DIRECT"]},
+        }
+        with patch.object(discovery, "fetch_readme", side_effect=AssertionError("unexpected README fetch")):
+            readme, digest, urls, claims, cached = discovery.readme_snapshot(repo, previous)
+        self.assertEqual(readme, "")
+        self.assertEqual(digest, "a" * 64)
+        self.assertEqual(urls, ["cached.list"])
+        self.assertEqual(claims, {"cached.list": ["DIRECT"]})
+        self.assertTrue(cached)
 
 if __name__ == "__main__":
     unittest.main()
