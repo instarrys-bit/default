@@ -38,9 +38,9 @@ class PublishBaseIntegrationTests(unittest.TestCase):
     def tearDown(self):
         self.temp.cleanup()
 
-    def run_guard(self):
+    def run_guard(self, audited_sha=None):
         env = os.environ.copy()
-        env["GITHUB_SHA"] = self.base
+        env["GITHUB_SHA"] = audited_sha or self.base
         return subprocess.run(
             ["bash", str(VERIFY_SCRIPT)], cwd=self.work, env=env,
             text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
@@ -78,7 +78,7 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         git(self.work, "checkout", "--detach", self.base)
         self.add_remote_commit("docs/guide.md", "remote docs\n", "remote docs update")
         git(self.work, "checkout", "--detach", local_commit)
-        result = self.run_guard()
+        result = self.run_guard(audited_sha=local_commit)
         self.assertNotEqual(result.returncode, 0, result.stdout)
         self.assertIn("not an ancestor", result.stdout)
         self.assertEqual(git(self.work, "rev-parse", "HEAD"), local_commit)
