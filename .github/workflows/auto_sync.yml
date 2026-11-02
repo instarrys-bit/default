@@ -67,7 +67,7 @@ jobs:
       - name: Assess discovered rule-list syntax and policy claims
         run: |
           python3 scripts/assess_sources.py
-          cat reports/source-assessment.md >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/append_step_summary.py --input reports/source-assessment.md
 
       - name: Register repository-owner-approved ss.conf changes (never edit the config)
         if: github.event_name == 'push'
@@ -86,7 +86,7 @@ jobs:
           RULESET_CONFIG_REPORT_AGGREGATION: "1"
         run: |
           python3 scripts/sync_ruleset_config_conflicts.py
-          cat reports/ruleset-config-conflict-sync.md >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/append_step_summary.py --input reports/ruleset-config-conflict-sync.md
 
       - name: Import observed request hostnames as unclassified candidates
         run: python3 scripts/import_request_observations.py
@@ -97,17 +97,17 @@ jobs:
       - name: Audit domain-level policy-source overlap and contradictions
         run: |
           python3 scripts/audit_policy_source_overlap.py
-          cat reports/policy-source-overlap.md >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/append_step_summary.py --input reports/policy-source-overlap.md
 
       - name: Build automated source candidate and lineage matrix
         run: |
           python3 scripts/build_source_candidates.py
-          cat reports/source-candidate-matrix.md >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/append_step_summary.py --input reports/source-candidate-matrix.md
 
       - name: Admit stable policy-evidenced sources without AI review
         run: |
           python3 scripts/auto_activate_sources.py
-          cat reports/source-activation.md >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/append_step_summary.py --input reports/source-activation.md
 
       - name: Collect and cross-check all enabled domain sources
         run: python3 scripts/collect_domains.py
@@ -146,14 +146,14 @@ jobs:
           LIFECYCLE_RESTORE_IDS: ${{ github.event.inputs.restore_ids || '' }}
         run: |
           python3 scripts/lifecycle_audit.py
-          if [ -f reports/lifecycle/latest.md ]; then cat reports/lifecycle/latest.md >> "$GITHUB_STEP_SUMMARY"; fi
+          if [ -f reports/lifecycle/latest.md ]; then python3 scripts/append_step_summary.py --input reports/lifecycle/latest.md; fi
 
       - name: Enforce final ss.conf precedence after all rule mutations
         env:
           RULESET_CONFIG_REPORT_AGGREGATION: "1"
         run: |
           python3 scripts/sync_ruleset_config_conflicts.py
-          cat reports/ruleset-config-conflict-sync.md >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/append_step_summary.py --input reports/ruleset-config-conflict-sync.md
       - name: Reconcile final RULE-SET manifest counts
         run: python3 scripts/refresh_ruleset_manifest.py
 
@@ -166,27 +166,27 @@ jobs:
       - name: Audit RULE-SET references against generated outputs (read-only)
         run: |
           python3 scripts/audit_ruleset_references.py
-          cat reports/ruleset-reference-audit.md >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/append_step_summary.py --input reports/ruleset-reference-audit.md
 
       - name: Audit candidate overlap with user config precedence (read-only)
         run: |
           python3 scripts/audit_ruleset_config_overlap.py
-          cat reports/ruleset-config-overlap-audit.md >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/append_step_summary.py --input reports/ruleset-config-overlap-audit.md
 
       - name: Audit managed config drift (read-only)
         run: |
           python3 scripts/audit_config_drift.py
-          cat reports/config-drift-audit.md >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/append_step_summary.py --input reports/config-drift-audit.md
 
       - name: Run read-only full-source regression audit
         run: |
           python3 scripts/audit_external_domains.py
-          cat reports/external-domain-audit.md >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/append_step_summary.py --input reports/external-domain-audit.md
 
       - name: Build consolidated project status
         run: |
           python3 scripts/build_project_status.py
-          cat reports/project-status.md >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/append_step_summary.py --input reports/project-status.md
 
       - name: Write successful audit heartbeat
         env:
@@ -375,7 +375,7 @@ jobs:
           set -euo pipefail
           git fetch origin main
           python3 scripts/verify_published_rulesets.py --ref origin/main | tee /tmp/publish-verification.json
-          cat /tmp/publish-verification.json >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/append_step_summary.py --input /tmp/publish-verification.json
 
   persist-review-cursor:
     needs: audit
