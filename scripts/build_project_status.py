@@ -6,6 +6,7 @@ import json
 import re
 from datetime import datetime, timezone
 from pathlib import Path
+from json_document_store import read_document
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICIES = ("DIRECT", "PROXY", "REJECT")
@@ -66,13 +67,13 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
     lifecycle = read_json(rules_dir / "lifecycle_state.json", {})
     queue = read_json(rules_dir / "pending_queue.json", {"items": []})
     registry = read_json(root / "sources/domain_sources.json", {"sources": []})
-    snapshot = read_json(root / "data/candidates.json", {"candidates": [], "sources": {}})
+    snapshot = read_document(root / "data/candidates.json", "candidates", {"candidates": [], "sources": {}})
     activation = read_json(root / "sources/source_activation_log.json", {"activations": [], "last_decisions": []})
-    discovered = read_json(root / "sources/discovered_sources.json", {"candidates": []})
-    assessments = read_json(root / "sources/source_assessments.json", {"assessments": []})
-    source_matrix = read_json(root / "sources/source_candidates.json", {"candidates": []})
-    review_ledger = read_json(root / "sources/domain_reviews.json", {"reviews": []})
-    provenance_ledger = read_json(root / "sources/rule_provenance.json", {"rules": []})
+    discovered = read_document(root / "sources/discovered_sources.json", "candidates", {"candidates": []})
+    assessments = read_document(root / "sources/source_assessments.json", "assessments", {"assessments": []})
+    source_matrix = read_document(root / "sources/source_candidates.json", "candidates", {"candidates": []})
+    review_ledger = read_document(root / "sources/domain_reviews.json", "reviews", {"reviews": []})
+    provenance_ledger = read_document(root / "sources/rule_provenance.json", "rules", {"rules": []})
     lineage = read_json(root / "reports/source-lineage-audit.json", {})
     policy = read_json(root / "sources/policy.json", {})
     conflict_archive = read_json(rules_dir / "config_conflict_archive.json", {"items": []})

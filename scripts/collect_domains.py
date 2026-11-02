@@ -6,6 +6,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 from datetime import datetime,timezone
 from source_registry import validate_registry
+from json_document_store import read_document, write_document, manifest_path
 
 ROOT=Path(__file__).resolve().parents[1]
 SOURCES=ROOT/"sources/domain_sources.json"
@@ -257,7 +258,7 @@ def read_snapshot(source_id):
 
 def main():
     cfg=json.loads(SOURCES.read_text(encoding="utf-8"))
-    buf=json.loads(BUFFER.read_text(encoding="utf-8")) if BUFFER.exists() else {"candidates":[],"bootstrapped_sources":[]}
+    buf=read_document(BUFFER,"candidates",{"candidates":[],"bootstrapped_sources":[]})
     pending_data=json.loads(PENDING.read_text(encoding="utf-8")) if PENDING.exists() else {"schema_version":1,"sources":{}}
     pending_sources=dict(pending_data.get("sources",{}))
     bootstrapped_sources=set(buf.get("bootstrapped_sources",[]))
@@ -266,8 +267,8 @@ def main():
     if not enabled:
         raise ValueError("no enabled sources are configured")
     now=datetime.now(timezone.utc).isoformat()
-    if OUTPUT.exists():
-        previous_output=json.loads(OUTPUT.read_text(encoding="utf-8"))
+    if OUTPUT.exists() or manifest_path(OUTPUT).exists():
+        previous_output=read_document(OUTPUT,"candidates",{"candidates":[]})
     else:
         manifest_path=ROOT/"rulesets/manifest.json"
         previous_manifest=json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
@@ -390,11 +391,11 @@ def main():
             continue
         path=snapshot_path(sid)
         path.write_text("\n".join(sorted(info["domains"]))+"\n",encoding="utf-8")
-    BUFFER.write_text(json.dumps({"schema_version":2,"updated_at":now,"bootstrapped_sources":sorted(bootstrapped_sources),"candidates":list(queue.values())},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    write_document(BUFFER,{"schema_version":2,"updated_at":now,"bootstrapped_sources":sorted(bootstrapped_sources),"candidates":list(queue.values())},"candidates")
     PENDING.parent.mkdir(parents=True,exist_ok=True)
     PENDING.write_text(json.dumps({"schema_version":1,"updated_at":now,"sources":pending_sources},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     OUTPUT.parent.mkdir(parents=True,exist_ok=True)
-    OUTPUT.write_text(json.dumps({
+    write_document(OUTPUT,{
         "schema_version":3,
         "collected_at":now,
         "source_count":len(source_data),
@@ -404,7 +405,7 @@ def main():
         "candidate_count":len(rows),
         "policy_conflict_count":sum(1 for row in rows if row["classification"]=="CONFLICT"),
         "candidates":rows
-    },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    },"candidates")
     print("Multi-source collection complete: "+json.dumps({
         sid:{"entries":len(info["previous"]) if info["stale"] and info["previous"] is not None else len(info["domains"]),"added":len(deltas[sid]["added"]),"removed":len(deltas[sid]["removed"]),"status":"STALE_QUARANTINED" if info["stale"] else "CURRENT","baseline_initialized":deltas[sid]["bootstrap"]}
         for sid,info in sorted(source_data.items())

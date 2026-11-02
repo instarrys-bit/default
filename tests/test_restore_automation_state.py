@@ -36,6 +36,22 @@ class RestoreAutomationStateTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "incomplete"):
                 restore_state(archive, root/"repo")
 
+
+    def test_restores_sharded_review_ledger_and_manifest_parts(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            archive = root / "state.tar.gz"
+            entries = [
+                ("data/candidates.json.manifest.json", '{"schema_version":1}'),
+                ("sources/domain_reviews.json.manifest.json", '{"schema_version":1}'),
+                ("sources/domain_reviews.json.parts-abcd/part-000000.jsonl", '{"domain":"example.com"}\\n'),
+            ]
+            self.make_archive(archive, entries)
+            result = restore_state(archive, root / "repo")
+            self.assertEqual(result["restored_files"], 3)
+            self.assertTrue((root / "repo/sources/domain_reviews.json.manifest.json").exists())
+            self.assertTrue((root / "repo/sources/domain_reviews.json.parts-abcd/part-000000.jsonl").exists())
+
     def test_rejects_path_traversal(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp); archive=root/"state.tar.gz"

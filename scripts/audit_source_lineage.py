@@ -12,6 +12,7 @@ import re
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
+from json_document_store import read_document
 from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -201,7 +202,7 @@ def audit_registry(config: dict, fetcher=fetch_text, candidates: list[dict] | No
 
 def main():
     config = json.loads(REGISTRY.read_text(encoding="utf-8"))
-    candidates = json.loads(DISCOVERY.read_text(encoding="utf-8")).get("candidates", []) if DISCOVERY.exists() else []
+    candidates = read_document(DISCOVERY, "candidates", {"candidates": []}).get("candidates", [])
     report = audit_registry(config, candidates=candidates)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

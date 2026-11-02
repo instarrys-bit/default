@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 from collect_domains import parse_source
 from source_registry import validate_registry
+from json_document_store import read_document
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "sources/domain_sources.json"
@@ -56,7 +57,7 @@ def candidate_file(candidate: dict) -> dict | None:
 def activate(registry: dict, matrix: dict, now: str | None = None) -> tuple[dict, list[dict], list[dict]]:
     timestamp = now or datetime.now(timezone.utc).isoformat()
     existing = validate_registry(registry)
-    discovered_data = json.loads(DISCOVERED.read_text(encoding="utf-8")) if DISCOVERED.exists() else {"candidates": []}
+    discovered_data = read_document(DISCOVERED, "candidates", {"candidates": []})
     discovered_by_repo = {str(x.get("repository", "")).lower(): x for x in discovered_data.get("candidates", [])}
     existing_publishers = {
         (str(source.get("classification", "")).upper(), str(source.get("publisher", "")))
@@ -161,7 +162,7 @@ def activate(registry: dict, matrix: dict, now: str | None = None) -> tuple[dict
 
 def main() -> None:
     registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
-    matrix = json.loads(MATRIX.read_text(encoding="utf-8"))
+    matrix = read_document(MATRIX, "candidates", {"candidates": []})
     registry, activated, decisions = activate(registry, matrix)
     REGISTRY.write_text(json.dumps(registry, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     prior = json.loads(LOG.read_text(encoding="utf-8")) if LOG.exists() else {"schema_version": 1, "activations": []}

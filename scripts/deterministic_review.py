@@ -7,6 +7,7 @@ from datetime import datetime,timezone
 from domain_rule_engine import RuleIndex,load_domain_rules,inspect_suffix_scope
 from source_registry import validate_registry
 from review_cursor import snapshot_digest,resume_index,checkpoint
+from json_document_store import read_document,write_document
 from audit_ruleset_config_overlap import scope_covers_candidate
 ROOT=Path(__file__).resolve().parents[1]
 CONFIG=ROOT/"shadowrocket/ss.conf"
@@ -96,7 +97,7 @@ def evidence_gate(evidence, source_weights, minimum, threshold, required_sources
 
 def load_correlated_publishers():
     """Read same-policy high/near-duplicate relationships from the source candidate matrix."""
-    matrix=json.loads(SOURCE_MATRIX.read_text(encoding="utf-8")) if SOURCE_MATRIX.exists() else {}
+    matrix=read_document(SOURCE_MATRIX,"candidates",{"candidates":[]})
     pairs=set()
     for item in matrix.get("same_policy_domain_overlap",[]):
         if item.get("relation") not in {"high_overlap","near_duplicate"}: continue
@@ -253,7 +254,7 @@ def inspect(domain,rules,conditional,base,protected,candidate_policy=None,candid
 def main():
     source_cfg=json.loads(POLICY.read_text(encoding="utf-8"))
     protected=json.loads(PROTECTED.read_text(encoding="utf-8"))
-    collected=json.loads(CANDIDATES.read_text(encoding="utf-8"))
+    collected=read_document(CANDIDATES,"candidates",{"candidates":[],"sources":[]})
     config=CONFIG.read_text(encoding="utf-8")
     base=config
     rules,conditional,ignored=load_domain_rules(CONFIG)
@@ -276,7 +277,7 @@ def main():
     now=datetime.now(timezone.utc).isoformat()
     correlated_pairs=load_correlated_publishers()
     if OUTPUT.exists():
-        prior=json.loads(OUTPUT.read_text(encoding="utf-8"))
+        prior=read_document(OUTPUT,"reviews",{"schema_version":1,"reviews":[]})
     else:
         prior={"schema_version":1,"reviews":[]}
     review_map={x["domain"]:x for x in prior.get("reviews",[])}
@@ -385,16 +386,16 @@ def main():
             partial_reviews=sorted(review_map.values(),key=lambda x:x["domain"])
             partial_counts={}
             for record in partial_reviews: partial_counts[record["status"]]=partial_counts.get(record["status"],0)+1
-            atomic_json(OUTPUT,{"schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,"source_snapshot":collected.get("sources",[]),"run_counts":run_counts,"counts":partial_counts,"reviews":partial_reviews})
+            write_document(OUTPUT,{"schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,"source_snapshot":collected.get("sources",[]),"run_counts":run_counts,"counts":partial_counts,"reviews":partial_reviews},"reviews")
             atomic_json(CURSOR,{**checkpoint(snapshot_sha256,len(candidates),candidate_index+1,batch_size),"updated_at":now,"last_checkpoint_domain":domain})
     reviews=sorted(review_map.values(),key=lambda x:x["domain"])
     total_counts={}
     for item in reviews: total_counts[item["status"]]=total_counts.get(item["status"],0)+1
-    OUTPUT.write_text(json.dumps({
+    write_document(OUTPUT,{
         "schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,
         "source_snapshot":collected.get("sources",[]),"run_counts":run_counts,
         "counts":total_counts,"reviews":reviews
-    },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    },"reviews")
     atomic_json(CURSOR,{**checkpoint(snapshot_sha256,len(candidates),len(candidates),batch_size,"complete"),"updated_at":now,"last_checkpoint_domain":candidates[-1].get("domain") if candidates else None})
     print("Deterministic review complete: "+json.dumps(run_counts,ensure_ascii=False,sort_keys=True))
     print("Review cursor: "+json.dumps({"status":"complete","candidate_count":len(candidates),"snapshot_sha256":snapshot_sha256,"correlated_publisher_pairs":len(correlated_pairs)},sort_keys=True))

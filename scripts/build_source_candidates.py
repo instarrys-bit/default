@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 from collections import defaultdict
 from pathlib import Path
+from json_document_store import read_document, write_document
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSESSMENTS = ROOT / "sources/source_assessments.json"
@@ -206,12 +207,12 @@ def render_report(data: dict) -> str:
 
 def main() -> int:
     assessment_path = RUNTIME_ASSESSMENTS if RUNTIME_ASSESSMENTS.exists() else ASSESSMENTS
-    assessments = json.loads(assessment_path.read_text(encoding="utf-8"))
+    assessments = read_document(assessment_path, "assessments", {"assessments": []})
     lineage = json.loads(LINEAGE.read_text(encoding="utf-8"))
     result = build_matrix(assessments, lineage)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_document(OUTPUT, result, "candidates")
     REPORT.write_text(render_report(result), encoding="utf-8")
     print(json.dumps({
         "candidate_publishers": result["candidate_count"],

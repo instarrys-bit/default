@@ -3,6 +3,7 @@
 from __future__ import annotations
 import json, re
 from pathlib import Path
+from json_document_store import read_document, write_document
 
 ROOT = Path(__file__).resolve().parents[1]
 OBSERVATIONS = ROOT / "sources/request_domain_observations.json"
@@ -17,7 +18,7 @@ def main() -> None:
     incoming = json.loads(OBSERVATIONS.read_text(encoding="utf-8"))
     if incoming.get("schema_version") != 1 or not isinstance(incoming.get("observations"), list):
         raise ValueError("unsupported request observation schema")
-    buffer = json.loads(BUFFER.read_text(encoding="utf-8")) if BUFFER.exists() else {"schema_version": 2, "candidates": [], "bootstrapped_sources": []}
+    buffer = read_document(BUFFER, "candidates", {"schema_version": 2, "candidates": [], "bootstrapped_sources": []})
     queue = {str(x["domain"]).lower(): x for x in buffer.get("candidates", [])}
     added = 0
     for item in incoming["observations"]:
@@ -38,7 +39,7 @@ def main() -> None:
         raise ValueError(f"candidate retention exceeds hard limit: {len(queue):,} > {MAX_CANDIDATE_RECORDS:,}")
     buffer["candidates"] = sorted(queue.values(), key=lambda x: x["domain"])
     BUFFER.parent.mkdir(parents=True, exist_ok=True)
-    BUFFER.write_text(json.dumps(buffer, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_document(BUFFER, buffer, "candidates")
     print(f"Imported {added} new observed hostnames; no routing policy assigned.")
 
 if __name__ == "__main__":

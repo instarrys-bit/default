@@ -11,6 +11,7 @@ import urllib.parse
 import urllib.request
 from collections import defaultdict
 from pathlib import Path
+from json_document_store import read_document
 
 ROOT = Path(__file__).resolve().parents[1]
 INPUT = ROOT / "sources/source_assessments.json"
@@ -87,7 +88,7 @@ def build_report(assessments: dict, fetcher=fetch) -> dict:
     return {"schema_version":1,"feed_count":len(feeds),"total_bytes_read":total_bytes,"max_file_bytes":MAX_BYTES,"max_total_bytes":MAX_TOTAL_BYTES,"publisher_counts":{p:len({r for q,r in grouped if q==p}) for p in ("DIRECT","PROXY","REJECT")},"overlaps":overlaps,"cross_policy_conflict_domain_count":len(contradictions),"cross_policy_conflict_sample":contradictions[:200],"activation_count":0,"activation_policy":"Audit-only. Overlap is not proof of common ancestry or independent provenance; no source is activated."}
 
 def main():
-    data=json.loads(INPUT.read_text(encoding="utf-8"))
+    data=read_document(INPUT,"assessments",{"assessments":[]})
     result=build_report(data)
     OUTPUT.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     rows=["# Policy source overlap audit","","This report compares normalized domain sets across discovered publisher feeds. It is informational only: overlap does not prove common ancestry, and low overlap does not prove independence.","",f"- Feeds fetched: **{result['feed_count']}**",f"- Cross-policy conflict domains: **{result['cross_policy_conflict_domain_count']}**","", "| Policy | Publisher A | Publisher B | A domains | B domains | Shared | Smaller-set overlap | Jaccard |","|---|---|---|---:|---:|---:|---:|---:|"]

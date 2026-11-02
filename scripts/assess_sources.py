@@ -11,6 +11,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
+from json_document_store import read_document, write_document
 from datetime import datetime, timezone
 from datetime import datetime, timezone
 
@@ -337,8 +338,8 @@ def compact_assessment_result(result: dict) -> dict:
     return compact
 
 def main() -> int:
-    discovery = json.loads(INPUT.read_text(encoding="utf-8"))
-    previous_data = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {"assessments": []}
+    discovery = read_document(INPUT, "candidates", {"candidates": []})
+    previous_data = read_document(OUTPUT, "assessments", {"assessments": []})
     previous_by_url = {x.get("url"): x for x in previous_data.get("assessments", []) if x.get("url")}
     previous_cursor = previous_data.get("next_cursor_url")
     candidate_urls = flatten_candidate_urls(discovery.get("candidates", []))
@@ -419,8 +420,8 @@ def main() -> int:
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     RUNTIME_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
-    RUNTIME_OUTPUT.write_text(json.dumps(result, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
-    OUTPUT.write_text(json.dumps(compact_assessment_result(persistent), ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+    write_document(RUNTIME_OUTPUT, result, "assessments")
+    write_document(OUTPUT, compact_assessment_result(persistent), "assessments")
     REPORT.write_text(render_report(assessments, drift_summary), encoding="utf-8")
     print(json.dumps({
         "assessed": len(assessments),
