@@ -300,15 +300,8 @@ jobs:
             while IFS= read -r issue; do
               [ -n "$issue" ] || continue
               gh issue view "$issue" --repo "$REPO" --json body --jq .body > /tmp/incident-body.md
-              python3 scripts/incident_state.py \\
-                --body-file /tmp/incident-body.md \\
-                --workflow config_validator \\
-                --source-sha "$RUN_SHA" \\
-                --classification "$classification" \\
-                --event-id "validator-success-$RUN_ID-$issue" \\
-                --target-state RECOVERED \\
-                --verification-url "$RUN_URL" \\
-                --out /tmp/incident-state-body.md
+              python3 scripts/incident_state.py \\\n                --body-file /tmp/incident-body.md \\\n                --workflow config_validator \\\n                --source-sha "$RUN_SHA" \\\n                --classification "$classification" \\\n                --event-id "validator-verifying-$RUN_ID-$issue" \\\n                --target-state VERIFYING \\\n                --out /tmp/incident-verifying-body.md
+              python3 scripts/incident_state.py \\\n                --body-file /tmp/incident-verifying-body.md \\\n                --workflow config_validator \\\n                --source-sha "$RUN_SHA" \\\n                --classification "$classification" \\\n                --event-id "validator-success-$RUN_ID-$issue" \\\n                --target-state RECOVERED \\\n                --verification-url "$RUN_URL" \\\n                --out /tmp/incident-state-body.md
               gh issue edit "$issue" --repo "$REPO" --body-file /tmp/incident-state-body.md
               gh issue comment "$issue" --repo "$REPO" --body "A subsequent config-baseline validation succeeded. The protected config was not modified. Successful validation: $RUN_URL"
               gh issue close "$issue" --repo "$REPO"
@@ -347,6 +340,16 @@ jobs:
           set -euo pipefail
           gh api "repos/$REPO/actions/runs/$RUN_ID" > /tmp/recovery-run.json
           gh api --paginate --slurp "repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100" > /tmp/recovery-jobs.json
+          pending_issues="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select(.title | test("^Self-healing incident: (UNCLASSIFIED_STEP_FAILURE|TEST_FAILURE|PYTHON_IMPORT_FAILURE|WORKFLOW_TIMEOUT|CONFIG_BASELINE_MISMATCH|RULESET_MANIFEST_COUNT_MISSING|RULESET_MANIFEST_COUNT_MISMATCH) \\(deterministic_audit(; [0-9a-f]{8})?\\)$")) | select(.body | contains("shadowrocket-automation:workflow=deterministic_audit;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=deterministic_audit;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
+          while IFS= read -r issue; do
+            [ -n "$issue" ] || continue
+            issue_title="$(gh issue view "$issue" --repo "$REPO" --json title --jq .title)"
+            classification="${issue_title#Self-healing incident: }"
+            classification="$(sed -E 's/ \(deterministic_audit(; [0-9a-f]{8})?\)$//' <<< "$classification")"
+            gh issue view "$issue" --repo "$REPO" --json body --jq .body > /tmp/incident-body.md
+            python3 scripts/incident_state.py \\\n              --body-file /tmp/incident-body.md \\\n              --workflow deterministic_audit \\\n              --source-sha "$RUN_SHA" \\\n              --classification "$classification" \\\n              --event-id "audit-verifying-$RUN_ID-$issue" \\\n              --target-state VERIFYING \\\n              --out /tmp/incident-verifying-body.md
+            gh issue edit "$issue" --repo "$REPO" --body-file /tmp/incident-verifying-body.md
+          done <<< "$pending_issues"
           python3 scripts/verify_recovery_run.py --run /tmp/recovery-run.json --jobs /tmp/recovery-jobs.json | tee /tmp/recovery-verification.json
           cat /tmp/recovery-verification.json >> "$GITHUB_STEP_SUMMARY"
           issues="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select(.title | test("^Self-healing incident: (UNCLASSIFIED_STEP_FAILURE|TEST_FAILURE|PYTHON_IMPORT_FAILURE|WORKFLOW_TIMEOUT|CONFIG_BASELINE_MISMATCH|RULESET_MANIFEST_COUNT_MISSING|RULESET_MANIFEST_COUNT_MISMATCH) \\(deterministic_audit(; [0-9a-f]{8})?\\)$")) | select(.body | contains("shadowrocket-automation:workflow=deterministic_audit;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=deterministic_audit;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
