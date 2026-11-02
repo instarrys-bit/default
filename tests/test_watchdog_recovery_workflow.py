@@ -16,7 +16,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("types: [completed]", workflow)
         self.assertIn("github.event.workflow_run.head_branch == 'main'", workflow)
         self.assertIn('last_success_sha="$(jq -r', workflow)
-        self.assertIn('[ "$last_success_sha" != "$current_sha" ]', workflow)
+        self.assertIn('repos/$REPO/compare/$last_success_sha...$current_sha', workflow)
+        self.assertIn('only intervening main changes are documentation-only', workflow)
 
     def test_failed_timed_out_or_startup_failed_scheduled_or_push_runs_trigger_one_recovery(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
