@@ -307,7 +307,7 @@ jobs:
           }
           with open("reports/automation/state_store.json", "w", encoding="utf-8") as stream:
               json.dump(record, stream, ensure_ascii=False, indent=2)
-              stream.write("\\n")
+              stream.write("\n")
           PY
 
       - name: Package allowlisted audit outputs
@@ -358,7 +358,7 @@ jobs:
           name: deterministic-audit-output
           path: audit-output.tar.gz
           if-no-files-found: error
-          retention-days: 1
+          retention-days: 90
 
   publish:
     needs: audit
@@ -400,15 +400,13 @@ jobs:
 
           git add -- \
             sources/policy.json \
-            sources/domain_reviews.json \
-            sources/review_cursor.json \
-            sources/rule_provenance.json \
             sources/domain_sources.json \
             sources/source_activation_log.json \
             reports/lifecycle \
             reports/project-status.md \
             reports/project-status.json \
             reports/automation/heartbeat.json \
+            reports/automation/state_store.json \
             reports/external-domain-audit.md \
             reports/config-drift-audit.md \
             reports/config-drift-audit.json \
@@ -428,12 +426,6 @@ jobs:
             sources/discovered_sources.json \
             sources/source_assessments.json \
             sources/source_candidates.json \
-            data/domain_candidates.json \
-            data/candidates.json \
-            data/source_pending.json \
-            data/primary_snapshot.txt \
-            data/secondary_snapshot.txt \
-            data/source_snapshots/ \
             rulesets/
 
           # Explicitly fail if the protected config somehow entered the staged commit.
