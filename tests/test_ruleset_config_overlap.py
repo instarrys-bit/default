@@ -40,7 +40,7 @@ DOMAIN,late.example.com,REJECT
     def test_mixed_policy_coverage_is_reported_without_selecting_a_winner(self):
         rules = [
             (2, "DOMAIN-SUFFIX,example.com,DIRECT"),
-            (3, "DOMAIN,api.example.com,REJECT"),
+            (3, "DOMAIN,api.example.com,PROXY"),
         ]
         result = match_candidate("api.example.com", "DIRECT", rules)
         self.assertEqual(result["status"], "MIXED_POLICY_COVERAGE")
@@ -63,7 +63,7 @@ DOMAIN,late.example.com,REJECT
         self.assertIsNone(skip_proxy_match("example.com", ["*.api.example.com"], "suffix_candidate"))
 
     def test_audit_reports_scope_coverage_without_precedence_fields(self):
-        config = "[General]\nskip-proxy = \n[Rule]\nDOMAIN,api.example.com,REJECT\nRULE-SET,https://example.invalid/direct.list,DIRECT\n[Host]\n"
+        config = "[General]\nskip-proxy = \n[Rule]\nDOMAIN,api.example.com,PROXY\nRULE-SET,https://example.invalid/direct.list,DIRECT\n[Host]\n"
         ledger = {"reviews": [{"domain": "api.example.com", "policy": "DIRECT", "status": "APPROVED"}]}
         report = audit(config, ledger)
         self.assertTrue(report["passed"], report["errors"])
