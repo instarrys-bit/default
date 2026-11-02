@@ -18,7 +18,6 @@ REPORT_MD = ROOT / "reports" / "ruleset-config-conflict-sync.md"
 POLICIES = ("DIRECT", "PROXY", "REJECT")
 
 from audit_ruleset_config_overlap import (
-    first_ruleset_line,
     all_rule_lines,
     parse_skip_proxy,
     scope_covers_candidate,
@@ -149,10 +148,12 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
 
     config_bytes = config_path.read_bytes()
     config_text = config_bytes.decode("utf-8-sig")
-    boundary = first_ruleset_line(config_text)
-    if boundary is None:
-        raise ValueError("no RULE-SET reference found; refusing to reconcile standalone rulesets")
     config_rules = all_rule_lines(config_text)
+    ruleset_reference_count = sum(
+        1 for _, line in config_rules if line.split(",", 1)[0].strip().upper() == "RULE-SET"
+    )
+    if ruleset_reference_count == 0:
+        raise ValueError("no RULE-SET reference found; refusing to reconcile standalone rulesets")
     explicit_config_rules = [
         (number, line) for number, line in config_rules
         if line.split(",", 1)[0].strip().upper() in {"DOMAIN", "DOMAIN-SUFFIX"}
@@ -403,7 +404,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "config_path": "shadowrocket/ss.conf",
         "config_read_only": True,
         "config_blob_sha": config_blob_sha,
-        "first_ruleset_line": boundary,
+        "ruleset_reference_count": ruleset_reference_count,
         "config_rule_line_count": len(explicit_config_rules),
         "published_before": before_counts,
         "published_after": after_counts,
