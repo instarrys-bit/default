@@ -7,7 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from sync_ruleset_config_conflicts import classify_rule, sync
-from audit_ruleset_config_overlap import prior_rule_lines, first_ruleset_line, parse_skip_proxy
+from audit_ruleset_config_overlap import all_rule_lines, first_ruleset_line, parse_skip_proxy
 
 
 def make_root(root, config, direct="", proxy="", reject="", queue=None):
@@ -38,25 +38,39 @@ def config_with_rules(rules, skip_proxy=""):
 class ConfigConflictSyncTests(unittest.TestCase):
     def classify(self, policy, line, rules, skip=""):
         config = config_with_rules(rules, skip)
-        return classify_rule(policy, line, prior_rule_lines(config), parse_skip_proxy(config))
+        return classify_rule(policy, line, all_rule_lines(config), parse_skip_proxy(config))
 
     def test_exact_different_policy_is_removed(self):
         result = self.classify("DIRECT", "DOMAIN,api.example.com", ["DOMAIN,api.example.com,PROXY"])
         self.assertEqual(result["status"], "CONFLICT")
-        self.assertEqual(result["effective_policy"], "PROXY")
+        self.assertIsNone(result["effective_policy"])
+        self.assertIn("[PROXY]", result["config_rule"])
 
     def test_exact_same_policy_scope_overlap_is_removed(self):
         result = self.classify("DIRECT", "DOMAIN,api.example.com", ["DOMAIN,api.example.com,DIRECT"])
         self.assertEqual(result["status"], "CONFLICT")
         self.assertEqual(result["effective_policy"], "DIRECT")
 
-    def test_suffix_is_removed_when_descendant_has_conflicting_explicit_policy(self):
+    def test_parent_suffix_is_retained_when_config_has_exact_child_exception(self):
         result = self.classify(
             "DIRECT", "DOMAIN-SUFFIX,example.com",
-            ["DOMAIN,api.example.com,PROXY"],
+            ["DOMAIN,api.example.com,REJECT"],
+        )
+        self.assertEqual(result["status"], "NO_CONFLICT")
+
+    def test_parent_suffix_is_retained_when_config_has_child_suffix_exception(self):
+        result = self.classify(
+            "DIRECT", "DOMAIN-SUFFIX,example.com",
+            ["DOMAIN-SUFFIX,api.example.com,REJECT"],
+        )
+        self.assertEqual(result["status"], "NO_CONFLICT")
+
+    def test_parent_suffix_is_removed_when_config_suffix_covers_full_scope(self):
+        result = self.classify(
+            "DIRECT", "DOMAIN-SUFFIX,example.com",
+            ["DOMAIN-SUFFIX,example.com,DIRECT"],
         )
         self.assertEqual(result["status"], "CONFLICT")
-        self.assertEqual(result["effective_policy"], "PROXY")
 
     def test_skip_proxy_conflicts_with_proxy_and_reject(self):
         proxy = self.classify("PROXY", "DOMAIN,api.example.com", [], "*.example.com")
@@ -66,23 +80,23 @@ class ConfigConflictSyncTests(unittest.TestCase):
         self.assertEqual(reject["status"], "CONFLICT")
         self.assertEqual(direct["status"], "CONFLICT")
 
-    def test_keyword_overlap_is_retained_for_review_not_deleted(self):
+    def test_keyword_overlap_is_not_evaluated_or_deleted(self):
         result = self.classify(
             "DIRECT", "DOMAIN,api.example.com",
             ["DOMAIN-KEYWORD,example,PROXY"],
         )
-        self.assertEqual(result["status"], "REVIEW")
+        self.assertEqual(result["status"], "NO_CONFLICT")
 
-    def test_rules_after_first_ruleset_are_not_higher_priority(self):
+    def test_scope_coverage_checks_all_config_rules_without_ordering(self):
         config = config_with_rules([]).replace(
             "RULE-SET,https://example.invalid/reject.list,REJECT",
             "RULE-SET,https://example.invalid/reject.list,REJECT" + chr(10) + "DOMAIN,api.example.com,PROXY",
         )
-        rules = prior_rule_lines(config)
+        rules = all_rule_lines(config)
         self.assertEqual(first_ruleset_line(config), 5)
-        self.assertEqual(len(rules), 0)
+        self.assertIn((6, "DOMAIN,api.example.com,PROXY"), rules)
         result = classify_rule("DIRECT", "DOMAIN,api.example.com", rules, [])
-        self.assertEqual(result["status"], "NO_CONFLICT")
+        self.assertEqual(result["status"], "CONFLICT")
 
     def test_config_change_without_conflict_leaves_rule_sets_untouched(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -138,6 +152,20 @@ class ConfigConflictSyncTests(unittest.TestCase):
             self.assertEqual(report["published_removed_count"], 1)
             self.assertEqual(report["pending_queue_removed_count"], 1)
             self.assertTrue(report["config_read_only"])
+
+    def test_sync_retains_parent_direct_when_config_has_exact_reject_exception(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            parent = "DOMAIN-SUFFIX,example.com\\n"
+            make_root(
+                root,
+                config_with_rules(["DOMAIN,api.example.com,REJECT"]),
+                direct=parent,
+            )
+            report = sync(root=root, now="2026-11-02T00:00:00+00:00")
+            self.assertEqual(report["published_removed_count"], 0)
+            self.assertEqual((root / "rulesets" / "direct.list").read_text(), parent)
+            self.assertFalse((root / "rulesets" / "config_conflict_archive.json").exists())
 
     def test_old_archive_entry_is_superseded_when_current_config_no_longer_overlaps(self):
         with tempfile.TemporaryDirectory() as tmp:
