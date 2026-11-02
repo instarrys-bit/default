@@ -50,8 +50,26 @@ def load_manifest(root: Path) -> dict:
     shards = manifest.get("shards")
     if not isinstance(shards, list):
         raise ValueError("candidate-store manifest shards must be a list")
-    if sum(int(s.get("record_count", -1)) for s in shards) != count:
-        raise ValueError("candidate-store manifest record count mismatch")
+    total = 0
+    paths = set()
+    for shard in shards:
+        if not isinstance(shard, dict):
+            raise ValueError("candidate-store shard entry must be an object")
+        relative = shard.get("path")
+        if not isinstance(relative, str) or not relative or Path(relative).is_absolute() or ".." in Path(relative).parts:
+            raise ValueError("candidate-store shard path is unsafe")
+        if relative in paths:
+            raise ValueError("duplicate candidate-store shard path")
+        paths.add(relative)
+        records = shard.get("record_count")
+        digest = shard.get("sha256")
+        if not isinstance(records, int) or records < 0:
+            raise ValueError("candidate-store shard record_count is invalid")
+        if not isinstance(digest, str) or len(digest) != 64 or any(ch not in "0123456789abcdef" for ch in digest):
+            raise ValueError("candidate-store shard checksum is invalid")
+        total += records
+    if total != count or manifest.get("shard_count") != len(shards):
+        raise ValueError("candidate-store manifest record/shard count mismatch")
     return manifest
 
 
