@@ -163,7 +163,7 @@ def request_json(url: str, token: str = "") -> dict:
     with urllib.request.urlopen(req, timeout=30) as response:
         if response.status != 200:
             raise ValueError("GitHub API returned HTTP " + str(response.status))
-        return json.loads(response.read(2_000_000).decode("utf-8"))
+        return json.loads(response.read(20_000_000).decode("utf-8"))
 
 def fetch_readme(owner: str, repo: str, branch: str) -> str:
     if not all(re.fullmatch(r"[A-Za-z0-9_.-]+", x) for x in (owner, repo, branch)):
