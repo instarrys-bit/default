@@ -155,7 +155,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         raise ValueError("no RULE-SET reference found; refusing to reconcile standalone rulesets")
     explicit_config_rules = [
         (number, line) for number, line in config_rules
-        if line.split(",", 1)[0].strip().upper() in {"DOMAIN", "DOMAIN-SUFFIX"}
+        if len(line.split(",")) >= 3 and line.split(",", 1)[0].strip().upper() in {"DOMAIN", "DOMAIN-SUFFIX"} and line.split(",")[2].strip().upper() in {"DIRECT", "PROXY"}
     ]
     skip_entries = parse_skip_proxy(config_text)
     prepared_config_rules = prepare_rules(config_rules)
