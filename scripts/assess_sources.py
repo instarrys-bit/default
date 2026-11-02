@@ -17,8 +17,9 @@ INPUT = ROOT / "sources/discovered_sources.json"
 OUTPUT = ROOT / "sources/source_assessments.json"
 REPORT = ROOT / "reports/source-assessment.md"
 MAX_BYTES = 5_000_000
-# Bounded expanded scan; the workflow timeout remains the hard execution ceiling.
-MAX_URLS = 1_000
+# Hard aggregate budget prevents URL-count expansion from becoming unbounded I/O.
+MAX_TOTAL_BYTES = 250_000_000
+MAX_URLS = 5_000
 DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
 DOMAIN_RULE_RE = re.compile(r"^(DOMAIN|DOMAIN-SUFFIX),([^,\s]+)(?:,([^,\s]+))?$", re.I)
 QX_DOMAIN_RULE_RE = re.compile(r"^(HOST|HOST-SUFFIX),([^,\s]+),([^,\s]+)$", re.I)
@@ -296,7 +297,7 @@ def main() -> int:
         reverse=True,
     )
     assessments = []
-    readme_cache = {}
+    total_bytes_read = 0
     for candidate in candidates:
         repository = candidate.get("repository", "")
         seeded = set(candidate.get("seeded_source_urls", []))
@@ -305,13 +306,14 @@ def main() -> int:
             continue
         owner, name = repository.split("/", 1)
         for url in urls:
-            if len(assessments) >= MAX_URLS:
+            if len(assessments) >= MAX_URLS or total_bytes_read >= MAX_TOTAL_BYTES:
                 break
             if SENSITIVE_PATH_RE.search(urllib.parse.urlparse(url).path):
                 continue
             try:
                 payload = fetch_raw(url, repository)
                 claims = candidate.get("readme_policy_claims", {}).get(url, [])
+                total_bytes_read += len(payload)
                 item = assess_payload(payload, url, claims)
                 item["repository"] = repository
                 item["stars"] = candidate.get("stars", 0)
@@ -342,6 +344,8 @@ def main() -> int:
     result = {
         "schema_version": 1,
         "assessment_count": len(assessments),
+        "total_bytes_read": total_bytes_read,
+        "assessment_capacity": {"max_urls": MAX_URLS, "max_file_bytes": MAX_BYTES, "max_total_bytes": MAX_TOTAL_BYTES},
         "drift_summary": drift_summary,
         "activation_count": 0,
         "assessments": assessments,
@@ -353,6 +357,7 @@ def main() -> int:
     REPORT.write_text(render_report(assessments, drift_summary), encoding="utf-8")
     print(json.dumps({
         "assessed": len(assessments),
+        "bytes_read": total_bytes_read,
         "parser_candidates": sum(1 for x in assessments if x.get("parser_candidate") in {"domain-only", "adblock-domain-rules", "shadowrocket-domain-rules", "quantumult-domain-rules"}),
         "policy_candidates": sum(1 for x in assessments if x.get("policy_candidate")),
         "activated": 0,
