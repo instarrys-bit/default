@@ -32,9 +32,9 @@ class JsonDocumentStoreTests(unittest.TestCase):
     def test_oversized_document_migrates_to_verified_jsonl_shards(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "ledger.json"
-            original = {"schema_version": 1, "reviews": [{"id": i, "payload": "x" * 50} for i in range(8)]}
+            original = {"schema_version": 1, "reviews": [{"id": i, "payload": "x" * 800} for i in range(8)]}
             path.write_text(json.dumps({"schema_version": 1, "reviews": []}), encoding="utf-8")
-            with patch.object(store, "MAX_FILE_BYTES", 256), patch.object(store, "SHARD_TARGET_BYTES", 120):
+            with patch.object(store, "MAX_FILE_BYTES", 4096), patch.object(store, "SHARD_TARGET_BYTES", 2000):
                 result = store.write_document(path, original, "reviews")
                 self.assertEqual(result["storage"], "jsonl-shards-v1")
                 self.assertGreater(result["shards"], 1)
@@ -44,13 +44,13 @@ class JsonDocumentStoreTests(unittest.TestCase):
                 manifest = json.loads(store.manifest_path(path).read_text(encoding="utf-8"))
                 shard_dir = path.parent / manifest["shard_directory"]
                 self.assertTrue(shard_dir.is_dir())
-                self.assertTrue(all(p.stat().st_size <= 256 for p in shard_dir.glob("*.jsonl")))
+                self.assertTrue(all(p.stat().st_size <= 4096 for p in shard_dir.glob("*.jsonl")))
 
     def test_shard_checksum_failure_fails_closed(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "ledger.json"
-            payload = {"reviews": [{"id": i, "payload": "z" * 40} for i in range(6)]}
-            with patch.object(store, "MAX_FILE_BYTES", 220), patch.object(store, "SHARD_TARGET_BYTES", 100):
+            payload = {"reviews": [{"id": i, "payload": "z" * 900} for i in range(6)]}
+            with patch.object(store, "MAX_FILE_BYTES", 4096), patch.object(store, "SHARD_TARGET_BYTES", 1000):
                 store.write_document(path, payload, "reviews")
                 manifest = json.loads(store.manifest_path(path).read_text(encoding="utf-8"))
                 shard = path.parent / manifest["shard_directory"] / manifest["shards"][0]["file"]
@@ -61,8 +61,8 @@ class JsonDocumentStoreTests(unittest.TestCase):
     def test_failed_manifest_swap_keeps_previous_version_readable(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "ledger.json"
-            first = {"reviews": [{"id": i, "payload": "a" * 40} for i in range(6)]}
-            second = {"reviews": [{"id": i, "payload": "b" * 40} for i in range(6)]}
+            first = {"reviews": [{"id": i, "payload": "a" * 900} for i in range(6)]}
+            second = {"reviews": [{"id": i, "payload": "b" * 900} for i in range(6)]}
             with patch.object(store, "MAX_FILE_BYTES", 220), patch.object(store, "SHARD_TARGET_BYTES", 100):
                 store.write_document(path, first, "reviews")
                 with patch.object(store, "_atomic_write", side_effect=OSError("simulated manifest failure")):
