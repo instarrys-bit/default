@@ -105,6 +105,15 @@ def transition_incident(
     else:
         if state.get("workflow") != workflow:
             raise IncidentStateError("workflow does not match the persisted incident")
+        if state.get("classification") != classification:
+            raise IncidentStateError("classification does not match the persisted incident")
+        expected_key = incident_key(
+            state.get("workflow", ""),
+            state.get("source_sha", ""),
+            state.get("classification", ""),
+        )
+        if state.get("incident_id") != expected_key:
+            raise IncidentStateError("persisted incident key does not match its identity fields")
         if not isinstance(state.get("processed_events"), list):
             raise IncidentStateError("processed event ledger is invalid")
 
