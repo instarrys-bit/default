@@ -7,6 +7,14 @@ WORKFLOW = ROOT / ".github" / "workflows" / "auto_sync.yml"
 
 
 class WorkflowConfigGuardOrderTests(unittest.TestCase):
+    def test_stale_audit_guard_runs_before_expensive_domain_review(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        guard = workflow.index("Stop stale audit before expensive deterministic review")
+        review = workflow.index("Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services")
+        self.assertLess(guard, review)
+        self.assertIn('current_main="$(git rev-parse origin/main)"', workflow)
+        self.assertIn('Refusing to spend resources on stale review inputs.', workflow)
+
     def test_config_conflicts_are_checked_before_and_after_rule_mutations(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         pre = workflow.index("Remove published and queued rules that conflict with ss.conf")
