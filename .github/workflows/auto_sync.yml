@@ -25,7 +25,9 @@ on:
       - "sources/request_domain_observations.json"
       - "sources/reject_manual_approvals.json"
       - "scripts/**"
+      - "!scripts/refresh_ruleset_manifest.py"
       - "tests/**"
+      - "!tests/test_refresh_ruleset_manifest.py"
 
 permissions:
   contents: read
