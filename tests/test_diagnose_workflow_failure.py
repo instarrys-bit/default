@@ -1,4 +1,5 @@
 import unittest
+import sys
 
 from diagnose_workflow_failure import diagnose
 
