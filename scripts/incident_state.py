@@ -19,7 +19,7 @@ TRANSITIONS = {
     "DIAGNOSING": {"RECOVERING", "MANUAL_INTERVENTION"},
     "RECOVERING": {"VERIFYING", "MANUAL_INTERVENTION"},
     "VERIFYING": {"RECOVERED", "RECOVERING", "MANUAL_INTERVENTION"},
-    "MANUAL_INTERVENTION": {"DIAGNOSING", "RECOVERING", "VERIFYING", "RECOVERED"},
+    "MANUAL_INTERVENTION": {"DIAGNOSING", "RECOVERING", "VERIFYING"},
     "RECOVERED": {"DETECTED"},
 }
 START = "<!-- shadowrocket-incident-state:v1"
@@ -44,9 +44,12 @@ def incident_key(workflow: str, source_sha: str, classification: str) -> str:
 
 
 def _read_state(body: str) -> tuple[dict[str, Any] | None, re.Match[str] | None]:
-    match = BLOCK_RE.search(body)
-    if not match:
+    matches = list(BLOCK_RE.finditer(body))
+    if not matches:
         return None, None
+    if len(matches) != 1:
+        raise IncidentStateError("incident body must contain exactly one state block")
+    match = matches[0]
     try:
         state = json.loads(match.group(1))
     except json.JSONDecodeError as exc:
@@ -55,9 +58,45 @@ def _read_state(body: str) -> tuple[dict[str, Any] | None, re.Match[str] | None]
         raise IncidentStateError("unsupported incident state schema")
     if state.get("state") not in STATES:
         raise IncidentStateError("unknown incident state")
-    if not isinstance(state.get("history"), list) or not state["history"]:
+
+    history = state.get("history")
+    if not isinstance(history, list) or not history:
         raise IncidentStateError("incident state history is missing")
+    if any(item not in STATES for item in history):
+        raise IncidentStateError("incident state history contains an unknown state")
+    if history[-1] != state["state"]:
+        raise IncidentStateError("incident state does not match the final history entry")
+    for previous, current in zip(history, history[1:]):
+        if current not in TRANSITIONS[previous]:
+            raise IncidentStateError("incident state history contains an illegal transition")
+
+    revision = state.get("revision")
+    if isinstance(revision, bool) or not isinstance(revision, int) or revision < 0:
+        raise IncidentStateError("incident revision must be a non-negative integer")
+
+    events = state.get("processed_events")
+    if not isinstance(events, list) or any(not isinstance(item, str) or not item for item in events):
+        raise IncidentStateError("processed event ledger is invalid")
+    if len(events) != len(set(events)):
+        raise IncidentStateError("processed event ledger contains duplicate event ids")
+
+    if state["state"] == "RECOVERED":
+        verification = state.get("verification")
+        if not isinstance(verification, dict):
+            raise IncidentStateError("recovered incident is missing verification evidence")
+        if not isinstance(verification.get("url"), str) or not verification["url"].strip():
+            raise IncidentStateError("recovered incident verification URL is invalid")
+        if verification.get("event_id") not in events:
+            raise IncidentStateError("recovered incident verification event is not recorded")
     return state, match
+
+
+def resolve_source_sha(body: str, fallback_sha: str) -> str:
+    """Keep a persisted incident's original identity; use fallback only for legacy issues."""
+    state, _ = _read_state(body)
+    if state is not None:
+        return str(state.get("source_sha", ""))
+    return fallback_sha
 
 
 def transition_incident(
@@ -76,6 +115,8 @@ def transition_incident(
         raise IncidentStateError("event_id is required")
     if target_state == "RECOVERED" and not verification_url:
         raise IncidentStateError("RECOVERED requires independent verification evidence")
+    # Validate the caller's identity even when a persisted state block exists.
+    requested_key = incident_key(workflow, source_sha, classification)
 
     state, match = _read_state(body)
     if state is None:
@@ -83,10 +124,12 @@ def transition_incident(
         if target_state == "MANUAL_INTERVENTION":
             history = ["DETECTED", "DIAGNOSING"]
             initial = "DIAGNOSING"
-        elif target_state in {"RECOVERING", "VERIFYING", "RECOVERED"}:
-            # Backward-compatible bootstrap for pre-state-machine incidents.
+        elif target_state in {"RECOVERING", "VERIFYING"}:
+            # Bootstrap legacy incidents through an explicit diagnosed state.
             history = ["DETECTED", "DIAGNOSING", "MANUAL_INTERVENTION"]
             initial = "MANUAL_INTERVENTION"
+        elif target_state == "RECOVERED":
+            raise IncidentStateError("RECOVERED requires a persisted VERIFYING state")
         else:
             history = ["HEALTHY"]
             initial = "HEALTHY"
@@ -97,7 +140,7 @@ def transition_incident(
             "source_sha": source_sha.lower(),
             "classification": classification,
             "state": initial,
-            "revision": 0,
+            "revision": len(history) - 1,
             "history": history,
             "processed_events": [],
             "verification": None,
@@ -107,12 +150,14 @@ def transition_incident(
             raise IncidentStateError("workflow does not match the persisted incident")
         if state.get("classification") != classification:
             raise IncidentStateError("classification does not match the persisted incident")
+        if state.get("source_sha") != source_sha.lower():
+            raise IncidentStateError("source SHA does not match the persisted incident")
         expected_key = incident_key(
             state.get("workflow", ""),
             state.get("source_sha", ""),
             state.get("classification", ""),
         )
-        if state.get("incident_id") != expected_key:
+        if state.get("incident_id") != expected_key or expected_key != requested_key:
             raise IncidentStateError("persisted incident key does not match its identity fields")
         if not isinstance(state.get("processed_events"), list):
             raise IncidentStateError("processed event ledger is invalid")
@@ -131,6 +176,8 @@ def transition_incident(
     state["history"].append(target_state)
     state["processed_events"].append(event_id)
     state["processed_events"] = state["processed_events"][-100:]
+    if target_state == "DETECTED":
+        state["verification"] = None
     if target_state == "RECOVERED":
         state["verification"] = {
             "url": verification_url,
@@ -150,6 +197,7 @@ def main() -> int:
     parser.add_argument("--body-file", required=True, type=Path)
     parser.add_argument("--workflow", required=True)
     parser.add_argument("--source-sha", required=True)
+    parser.add_argument("--source-sha-from-state", action="store_true")
     parser.add_argument("--classification", required=True)
     parser.add_argument("--event-id", required=True)
     parser.add_argument("--target-state", required=True, choices=sorted(STATES - {"HEALTHY"}))
@@ -158,10 +206,11 @@ def main() -> int:
     args = parser.parse_args()
 
     body = args.body_file.read_text(encoding="utf-8")
+    source_sha = resolve_source_sha(body, args.source_sha) if args.source_sha_from_state else args.source_sha
     updated, state = transition_incident(
         body,
         workflow=args.workflow,
-        source_sha=args.source_sha,
+        source_sha=source_sha,
         classification=args.classification,
         event_id=args.event_id,
         target_state=args.target_state,
