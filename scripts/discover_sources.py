@@ -344,6 +344,21 @@ def render_report(data: dict) -> str:
     ])
     return "\n".join(rows)
 
+def merge_tree_scan_inventory(existing: dict, discovered: dict[str, dict]) -> dict[str, dict]:
+    """Keep the full known repository inventory while refreshing current search results."""
+    inventory = {str(item.get("repository")): dict(item) for item in existing.get("candidates", []) if item.get("repository")}
+    for full_name, current in discovered.items():
+        merged = dict(inventory.get(full_name, {}))
+        merged.update(current)
+        old = inventory.get(full_name, {})
+        merged["rule_list_urls"] = sorted(set(old.get("rule_list_urls", [])) | set(current.get("rule_list_urls", [])))
+        merged["search_queries"] = sorted(set(old.get("search_queries", [])) | set(current.get("search_queries", [])))
+        old_claims = old.get("readme_policy_claims", {})
+        new_claims = current.get("readme_policy_claims", {})
+        merged["readme_policy_claims"] = {url: sorted(set(old_claims.get(url, [])) | set(new_claims.get(url, []))) for url in set(old_claims) | set(new_claims)}
+        inventory[full_name] = merged
+    return inventory
+
 def select_tree_scan_repositories(discovered: dict[str, dict], limit: int = MAX_TREE_REPOSITORIES) -> list[tuple[str, dict]]:
     """Rotate bounded tree scans so every discovered repository is eventually inspected."""
     def priority(entry: tuple[str, dict]) -> tuple[int, str, int, str]:
@@ -352,7 +367,7 @@ def select_tree_scan_repositories(discovered: dict[str, dict], limit: int = MAX_
         status = str(item.get("tree_scan_status") or "")
         if not scanned_at:
             tier = 0
-        elif status == "error":
+        elif status in {"error", "truncated"}:
             tier = 1
         else:
             tier = 2
@@ -417,24 +432,6 @@ def main() -> int:
                 if len(items) < MAX_REPOS_PER_QUERY:
                     break
 
-        tree_errors = []
-        tree_truncated = []
-        tree_scan_batch = select_tree_scan_repositories(discovered, MAX_TREE_REPOSITORIES)
-        for full_name, item in tree_scan_batch:
-            owner, name = full_name.split("/", 1)
-            try:
-                tree_urls, truncated = discover_tree_urls(owner, name, item.get("default_branch") or "main", token)
-                item["rule_list_urls"] = sorted(set(item.get("rule_list_urls", [])) | set(tree_urls))
-                item["tree_scanned_at"] = datetime.now(timezone.utc).isoformat()
-                item["tree_scan_status"] = "truncated" if truncated else "complete"
-                item.pop("tree_scan_error", None)
-                if truncated:
-                    tree_truncated.append(full_name)
-            except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError) as exc:
-                item["tree_scanned_at"] = datetime.now(timezone.utc).isoformat()
-                item["tree_scan_status"] = "error"
-                item["tree_scan_error"] = str(exc)[:300]
-                tree_errors.append({"repository": full_name, "error": str(exc)})
 
         for full_name, seed_urls in SEED_SOURCE_URLS.items():
             owner, name = full_name.split("/", 1)
@@ -454,6 +451,9 @@ def main() -> int:
                     "fork": bool(repo_data.get("fork")),
                     "license": (repo_data.get("license") or {}).get("spdx_id") if isinstance(repo_data.get("license"), dict) else None,
                     "readme_sha256": hashlib.sha256(readme.encode("utf-8")).hexdigest() if readme else None,
+                    "tree_scanned_at": existing_by_repo.get(full_name, {}).get("tree_scanned_at"),
+                    "tree_scan_status": existing_by_repo.get(full_name, {}).get("tree_scan_status"),
+                    "tree_scan_error": existing_by_repo.get(full_name, {}).get("tree_scan_error"),
                     "rule_list_urls": extract_list_urls(readme, owner, name, branch),
                     "readme_policy_claims": {},
                     "seeded_source_urls": [],
@@ -473,7 +473,26 @@ def main() -> int:
                 url: sorted(set(previous_claims.get(url, [])) | set(seed_claims.get(url, [])))
                 for url in set(previous_claims) | set(seed_claims)
             }
-        merged = merge_candidates(existing, list(discovered.values()))
+        tree_inventory = merge_tree_scan_inventory(existing, discovered)
+        tree_errors = []
+        tree_truncated = []
+        tree_scan_batch = select_tree_scan_repositories(tree_inventory, MAX_TREE_REPOSITORIES)
+        for full_name, item in tree_scan_batch:
+            owner, name = full_name.split("/", 1)
+            try:
+                tree_urls, truncated = discover_tree_urls(owner, name, item.get("default_branch") or "main", token)
+                item["rule_list_urls"] = sorted(set(item.get("rule_list_urls", [])) | set(tree_urls))
+                item["tree_scanned_at"] = datetime.now(timezone.utc).isoformat()
+                item["tree_scan_status"] = "truncated" if truncated else "complete"
+                item.pop("tree_scan_error", None)
+                if truncated:
+                    tree_truncated.append(full_name)
+            except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError) as exc:
+                item["tree_scanned_at"] = datetime.now(timezone.utc).isoformat()
+                item["tree_scan_status"] = "error"
+                item["tree_scan_error"] = str(exc)[:300]
+                tree_errors.append({"repository": full_name, "error": str(exc)})
+        merged = merge_candidates(existing, list(tree_inventory.values()))
         merged["discovery_errors"] = discovery_errors
         merged["tree_errors"] = tree_errors
         merged["tree_truncated_repositories"] = tree_truncated
