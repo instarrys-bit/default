@@ -19,7 +19,7 @@ MAX_README_BYTES = 1_500_000
 # Paginated repository search plus bounded repository-tree scans.
 MAX_REPOS_PER_QUERY = 100
 MAX_SEARCH_PAGES = 10
-MAX_README_REPOSITORIES = 1_000
+MAX_README_REPOSITORIES = 1_500
 MAX_TREE_REPOSITORIES = 500
 MAX_TREE_ENTRIES_PER_REPOSITORY = 3_000
 QUERIES = [
@@ -344,9 +344,27 @@ def render_report(data: dict) -> str:
     ])
     return "\n".join(rows)
 
+def select_tree_scan_repositories(discovered: dict[str, dict], limit: int = MAX_TREE_REPOSITORIES) -> list[tuple[str, dict]]:
+    """Rotate bounded tree scans so every discovered repository is eventually inspected."""
+    def priority(entry: tuple[str, dict]) -> tuple[int, str, int, str]:
+        full_name, item = entry
+        scanned_at = str(item.get("tree_scanned_at") or "")
+        status = str(item.get("tree_scan_status") or "")
+        if not scanned_at:
+            tier = 0
+        elif status == "error":
+            tier = 1
+        else:
+            tier = 2
+        return (tier, scanned_at, -int(item.get("stars", 0)), full_name.lower())
+
+    return sorted(discovered.items(), key=priority)[:max(0, int(limit))]
+
+
 def main() -> int:
     token = os.environ.get("GITHUB_TOKEN", "")
     existing = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {"candidates": []}
+    existing_by_repo = {str(x.get("repository", "")): x for x in existing.get("candidates", []) if x.get("repository")}
     discovered: dict[str, dict] = {}
     discovery_errors: list[dict] = []
     try:
@@ -383,7 +401,10 @@ def main() -> int:
                             "archived": bool(repo_data.get("archived")),
                             "fork": bool(repo_data.get("fork")),
                             "license": (repo_data.get("license") or {}).get("spdx_id") if isinstance(repo_data.get("license"), dict) else None,
-                            "readme_sha256": hashlib.sha256(readme.encode("utf-8")).hexdigest() if readme else None,
+                            "readme_sha256": hashlib.sha256(readme.encode("utf-8")).hexdigest() if readme else existing_by_repo.get(full_name, {}).get("readme_sha256"),
+                            "tree_scanned_at": existing_by_repo.get(full_name, {}).get("tree_scanned_at"),
+                            "tree_scan_status": existing_by_repo.get(full_name, {}).get("tree_scan_status"),
+                            "tree_scan_error": existing_by_repo.get(full_name, {}).get("tree_scan_error"),
                             "rule_list_urls": extract_list_urls(readme, owner, name, branch),
                             "readme_policy_claims": {},
                             "search_queries": [],
@@ -398,14 +419,21 @@ def main() -> int:
 
         tree_errors = []
         tree_truncated = []
-        for full_name, item in list(discovered.items())[:MAX_TREE_REPOSITORIES]:
+        tree_scan_batch = select_tree_scan_repositories(discovered, MAX_TREE_REPOSITORIES)
+        for full_name, item in tree_scan_batch:
             owner, name = full_name.split("/", 1)
             try:
                 tree_urls, truncated = discover_tree_urls(owner, name, item.get("default_branch") or "main", token)
                 item["rule_list_urls"] = sorted(set(item.get("rule_list_urls", [])) | set(tree_urls))
+                item["tree_scanned_at"] = datetime.now(timezone.utc).isoformat()
+                item["tree_scan_status"] = "truncated" if truncated else "complete"
+                item.pop("tree_scan_error", None)
                 if truncated:
                     tree_truncated.append(full_name)
             except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError) as exc:
+                item["tree_scanned_at"] = datetime.now(timezone.utc).isoformat()
+                item["tree_scan_status"] = "error"
+                item["tree_scan_error"] = str(exc)[:300]
                 tree_errors.append({"repository": full_name, "error": str(exc)})
 
         for full_name, seed_urls in SEED_SOURCE_URLS.items():
@@ -450,7 +478,9 @@ def main() -> int:
         merged["tree_errors"] = tree_errors
         merged["tree_truncated_repositories"] = tree_truncated
         merged["search_pages_per_query"] = MAX_SEARCH_PAGES
-        merged["tree_repositories_scanned"] = min(len(discovered), MAX_TREE_REPOSITORIES)
+        merged["tree_repositories_scanned"] = len(tree_scan_batch)
+        merged["tree_scan_backlog_count"] = sum(1 for item in merged["candidates"] if not item.get("tree_scanned_at") or item.get("tree_scan_status") == "error")
+        merged["tree_scan_complete_count"] = sum(1 for item in merged["candidates"] if item.get("tree_scan_status") in {"complete", "truncated"})
     except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError) as exc:
         message = "Source discovery degraded; previous discovery inventory retained. " + str(exc)
         print("WARNING: " + message, file=sys.stderr)
@@ -465,7 +495,7 @@ def main() -> int:
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:
         with Path(summary).open("a", encoding="utf-8") as stream:
-            stream.write(f"## Source discovery\n\nRepositories seen: **{len(discovered)}**. Tree scans: **{min(len(discovered), MAX_TREE_REPOSITORIES)}**. Truncated trees: **{len(tree_truncated)}**. Candidates retained: **{merged['candidate_count']}**. Failed queries: **{len(discovery_errors)}**. No source was activated.\n")
+            stream.write(f"## Source discovery\n\nRepositories seen: **{len(discovered)}**. Tree scans this run: **{len(tree_scan_batch)}**. Tree-scan backlog: **{merged['tree_scan_backlog_count']}**. Truncated trees: **{len(tree_truncated)}**. Candidates retained: **{merged['candidate_count']}**. Failed queries: **{len(discovery_errors)}**. No source was activated.\n")
     print(json.dumps({"repositories_seen": len(discovered), "candidates_retained": merged["candidate_count"], "activated": 0}, sort_keys=True))
     return 0
 

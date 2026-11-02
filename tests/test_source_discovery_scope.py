@@ -20,7 +20,7 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
         discovery = load_script("discover_sources")
         self.assertGreaterEqual(len(discovery.QUERIES), 80)
         self.assertGreaterEqual(discovery.MAX_REPOS_PER_QUERY, 100)
-        self.assertGreaterEqual(discovery.MAX_README_REPOSITORIES, 1_000)
+        self.assertGreaterEqual(discovery.MAX_README_REPOSITORIES, 1_500)
         self.assertGreaterEqual(discovery.MAX_SEARCH_PAGES, 10)
         self.assertGreaterEqual(discovery.MAX_TREE_REPOSITORIES, 500)
         self.assertGreaterEqual(discovery.MAX_TREE_ENTRIES_PER_REPOSITORY, 3_000)
@@ -34,6 +34,25 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
         self.assertIn("国内域名规则", discovery.QUERIES)
         self.assertIn("开源分流规则", discovery.QUERIES)
         self.assertFalse(any("apple" in query.lower() for query in discovery.QUERIES))
+
+
+    def test_tree_scans_rotate_unscanned_and_failed_repositories_first(self):
+        discovery = load_script("discover_sources")
+        inventory = {
+            "owner/recent": {"stars": 10, "tree_scanned_at": "2026-11-02T00:00:00+00:00", "tree_scan_status": "complete"},
+            "owner/never-a": {"stars": 1},
+            "owner/failed": {"stars": 0, "tree_scanned_at": "2026-11-01T00:00:00+00:00", "tree_scan_status": "error"},
+            "owner/never-b": {"stars": 20},
+            "owner/old": {"stars": 5, "tree_scanned_at": "2026-10-01T00:00:00+00:00", "tree_scan_status": "complete"},
+        }
+        selected = discovery.select_tree_scan_repositories(inventory, 3)
+        self.assertEqual([name for name, _ in selected], [
+            "owner/never-b", "owner/never-a", "owner/failed"
+        ])
+        next_batch = discovery.select_tree_scan_repositories(inventory, 2)
+        self.assertEqual([name for name, _ in next_batch], [
+            "owner/never-b", "owner/never-a"
+        ])
 
     def test_tree_discovery_filters_paths_and_reports_truncation(self):
         discovery = load_script("discover_sources")
