@@ -49,6 +49,20 @@ class DiagnoseWorkflowFailureTests(unittest.TestCase):
         self.assertIsNone(result["repair_id"])
         self.assertEqual(len(result["evidence"]), 1)
 
+    def test_early_stale_guard_is_not_reported_as_a_failure_incident(self):
+        result = diagnose(
+            "##[group]Run set -euo pipefail\n"
+            "Audit commit 3569cc1df8e7070f526d3048c22aaa1101e752a8 is stale; "
+            "current main is 038cb4fb95075a9378b985a65d60aca55fd1029e. "
+            "Stopping before source discovery.\n"
+            "##[error]Process completed with exit code 1.\n",
+            "41415056174",
+        )
+        self.assertEqual(result["classification"], "STALE_SUPERSEDED")
+        self.assertIsNone(result["repair_id"])
+        self.assertFalse(result["automatic_code_change_allowed"])
+
+
     def test_empty_or_unusable_log_is_not_reported_as_incident(self):
         result = diagnose("downloaded log was empty")
         self.assertEqual(result["classification"], "INSUFFICIENT_FAILURE_EVIDENCE")
