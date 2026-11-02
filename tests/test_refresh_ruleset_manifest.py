@@ -13,6 +13,12 @@ from refresh_ruleset_manifest import refresh
 class RefreshRulesetManifestTests(unittest.TestCase):
     def make_root(self, counts=None):
         root = Path(tempfile.mkdtemp())
+        scripts = root / "scripts"
+        scripts.mkdir()
+        (scripts / "build_rulesets.py").write_text(
+            '"review_engine": "deterministic-domain-audit/4.1"\\n',
+            encoding="utf-8",
+        )
         rules = root / "rulesets"
         rules.mkdir()
         manifest = {
@@ -36,6 +42,16 @@ class RefreshRulesetManifestTests(unittest.TestCase):
         self.assertEqual(manifest["rule_count"], result["rule_count"])
         self.assertEqual(manifest["published_rule_total"], 3)
         self.assertEqual(manifest["rule_lifecycle"]["PROXY"]["current_count"], 2)
+
+    def test_synchronizes_reviewer_version_from_active_builder(self):
+        root = self.make_root()
+        manifest_path = root / "rulesets/manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["review_engine"] = "deterministic-domain-audit/4.0"
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        refresh(root)
+        updated = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(updated["review_engine"], "deterministic-domain-audit/4.1")
 
     def test_rejects_malformed_rule_without_rewriting_manifest(self):
         root = self.make_root({"DIRECT": 1, "PROXY": 2, "REJECT": 0})
