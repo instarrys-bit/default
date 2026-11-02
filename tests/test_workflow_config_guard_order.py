@@ -86,13 +86,14 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn('git diff --cached --quiet "$GITHUB_SHA" -- shadowrocket/ss.conf', workflow)
 
 
-    def test_unclassified_audit_incidents_close_only_after_full_audit_and_publish_success(self):
+    def test_audit_incidents_close_only_after_full_audit_and_publish_success(self):
         workflow = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")
         self.assertIn('"Shadowrocket Deterministic Domain Audit (User Config Baseline)"', workflow)
         self.assertIn("  resolve-audit-incidents:", workflow)
         resolver = workflow.split("  resolve-audit-incidents:", 1)[1].split("  stale-run-watch:", 1)[0]
         self.assertIn("github.event.workflow_run.conclusion == 'success'", resolver)
         self.assertIn("UNCLASSIFIED_STEP_FAILURE", resolver)
+        self.assertIn("TEST_FAILURE", resolver)
         self.assertIn("gh issue close", resolver)
 
 
