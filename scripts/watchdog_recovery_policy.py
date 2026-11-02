@@ -32,12 +32,18 @@ def decide_recovery(
         raise ValueError("retry limits and cooldown must be non-negative")
 
     prior = []
+    non_retryable = []
     for run in runs:
         if str(run.get("id", "")) == str(source_run_id):
             continue
         if run.get("head_branch") != "main" or run.get("head_sha") != source_sha:
             continue
-        if run.get("status") != "completed" or run.get("conclusion") not in RETRYABLE_CONCLUSIONS:
+        if run.get("status") != "completed":
+            continue
+        if run.get("conclusion") == "failure":
+            non_retryable.append(run)
+            continue
+        if run.get("conclusion") not in RETRYABLE_CONCLUSIONS:
             continue
         stamp = run.get("updated_at") or run.get("created_at")
         if not stamp:
@@ -56,11 +62,16 @@ def decide_recovery(
         "source_run_id": str(source_run_id),
         "source_sha": source_sha,
         "prior_retryable_failures": attempts_used,
+        "prior_non_retryable_failures": len(non_retryable),
         "max_retries": max_retries,
         "retry_number": attempts_used + 1,
         "cooldown_seconds": 0,
         "reason": "",
     }
+
+    if non_retryable:
+        result["reason"] = "non_retryable_failure_requires_diagnosis"
+        return result
 
     if attempts_used >= max_retries:
         result["reason"] = "retry_limit_reached"
