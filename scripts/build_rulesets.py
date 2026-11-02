@@ -4,7 +4,7 @@ from __future__ import annotations
 import hashlib, json, re
 from datetime import datetime, timezone
 from pathlib import Path
-from deterministic_review import inspect, parse_skip_proxy, first_ruleset_line
+from deterministic_review import inspect, parse_skip_proxy, first_ruleset_line, evidence_gate, load_correlated_publishers
 from domain_rule_engine import RuleIndex, load_domain_rules, inspect_suffix_scope
 from audit_ruleset_config_overlap import prior_rule_lines
 from sync_ruleset_config_conflicts import classify_rule
@@ -55,6 +55,7 @@ def main():
     data=json.loads(LEDGER.read_text(encoding="utf-8"))
     source_cfg=json.loads(SOURCE_FILE.read_text(encoding="utf-8"))
     source_map=validate_registry(source_cfg)
+    correlated_pairs=load_correlated_publishers()
     scoring=source_cfg.get("scoring",{})
     required_by_policy=scoring.get("required_sources_by_policy",{})
     minimum=int(scoring.get("minimum_independent_sources",2))
@@ -176,14 +177,13 @@ def main():
             if engine not in {"deterministic-domain-audit/4.0","deterministic-domain-audit/4.1"}:
                 raise ValueError("legacy exact-only review cannot publish suffix scope: "+domain)
             valid=[ev for ev in valid if ev.get("entry_type")=="suffix_candidate"]
-        source_ids={str(ev["source_id"]) for ev in valid}
-        publishers={str(ev["publisher"]) for ev in valid if ev.get("publisher")}
-        groups={str(ev["independence_group"]) for ev in valid if ev.get("independence_group")}
         required=set(required_by_policy.get(policy,[]))
         confidence=float(item.get("confidence",0))
-        if (not required.issubset(source_ids) or len(source_ids)<minimum
-            or len(publishers)<minimum or len(groups)<minimum or confidence<threshold):
-            raise ValueError("approved record no longer meets current evidence gate: "+domain)
+        _,source_ids,publishers,effective_groups,qualified=evidence_gate(
+            valid,scoring.get("source_weights",{}),minimum,threshold,required,correlated_pairs
+        )
+        if not qualified or confidence<threshold:
+            raise ValueError("approved record no longer meets current independent-evidence gate: "+domain)
         if int(item.get("source_count",0))<minimum:
             raise ValueError("approved record source count below minimum: "+domain)
         if any(item.get(key)!="PASS" for key in ("duplicate_check","conflict_check","risk_check")):
