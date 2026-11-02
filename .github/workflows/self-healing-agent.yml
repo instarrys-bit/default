@@ -47,6 +47,7 @@ jobs:
           REPO: ${{ github.repository }}
           WORKFLOW_ID: ${{ github.event.workflow_run.workflow_id }}
           FAILED_RUN_ID: ${{ github.event.workflow_run.id }}
+          FAILED_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           set -euo pipefail
           runs="$(gh api "repos/$REPO/actions/workflows/$WORKFLOW_ID/runs?per_page=20" 2>/dev/null || true)"
@@ -60,7 +61,18 @@ jobs:
             echo "A newer run is queued, active, or successful; suppressing this superseded failure."
             echo "stale=true" >> "$GITHUB_OUTPUT"
           else
-            echo "No newer active or successful run supersedes this failure."
+            current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"
+            if [ "$FAILED_SHA" != "$current_main" ]; then
+              compare_json="$(gh api "repos/$REPO/compare/$FAILED_SHA...$current_main" 2>/dev/null || true)"
+              if [ -n "$compare_json" ]; then
+                if ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null || ! jq -e '[.files[].filename | select(startswith("docs/") | not)] | length == 0' <<< "$compare_json" >/dev/null; then
+                  echo "The failed run's code inputs have been superseded by a newer main state; suppressing stale diagnosis."
+                  echo "stale=true" >> "$GITHUB_OUTPUT"
+                  exit 0
+                fi
+              fi
+            fi
+            echo "No newer run or non-documentation main change supersedes this failure."
             echo "stale=false" >> "$GITHUB_OUTPUT"
           fi
 
