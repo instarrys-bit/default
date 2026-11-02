@@ -111,11 +111,11 @@
       },
       {
         "id": "local_safety_veto",
-        "description": "Full-scope DOMAIN/DOMAIN-SUFFIX coverage, conditional AND/OR/NOT overlap, DOMAIN-KEYWORD, URL-REGEX, skip-proxy and protected-domain checks must pass. Rule order and first-match precedence are not evaluated."
+        "description": "Full-scope DIRECT/PROXY DOMAIN/DOMAIN-SUFFIX coverage, non-REJECT conditional AND/OR/NOT overlap, DOMAIN-KEYWORD, URL-REGEX, skip-proxy and protected-domain checks must pass. REJECT rules in ss.conf are excluded from automated analysis. Rule order and first-match precedence are not evaluated."
       }
     ],
     "mandatory_vetoes": [
-      "A fully covering explicit DOMAIN or DOMAIN-SUFFIX scope with a different policy blocks publication",
+      "A fully covering explicit DIRECT/PROXY DOMAIN or DOMAIN-SUFFIX scope with a different policy blocks publication",
       "Mixed-policy full-scope coverage is held for review without selecting a winner",
       "Any unresolved conditional AND/OR/NOT overlap blocks publication",
       "Any critical-function protection-list match blocks publication",
