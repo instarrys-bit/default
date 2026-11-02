@@ -16,7 +16,7 @@ class SuffixScopeSafetyTests(unittest.TestCase):
     def test_suffix_is_held_for_conflicting_ancestor_suffix_rule(self):
         rules = RuleIndex([DomainRule("DOMAIN-SUFFIX", "example.com", "PROXY", 10, "DOMAIN-SUFFIX,example.com,PROXY")])
         status, _ = inspect_suffix_scope("sub.example.com", "DIRECT", rules, [], {})
-        self.assertIsNone(status)
+        self.assertEqual(status, "CONFLICT")
 
     def test_suffix_is_held_when_it_would_cover_a_protected_exact_host(self):
         rules = RuleIndex([])
@@ -32,7 +32,7 @@ class SuffixScopeSafetyTests(unittest.TestCase):
     def test_proxy_suffix_ignores_narrower_skip_proxy_exception(self):
         rules = RuleIndex([])
         status, _ = inspect_suffix_scope("example.com", "PROXY", rules, [], {}, ["*.sub.example.com"])
-        self.assertEqual(status, "CONFLICT")
+        self.assertIsNone(status)
 
     def test_proxy_suffix_is_held_when_wildcard_parent_covers_full_scope(self):
         rules = RuleIndex([])
