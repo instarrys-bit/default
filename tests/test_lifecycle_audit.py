@@ -6,6 +6,10 @@ from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
 from lifecycle_audit import inspect, protected, rid, deletion_confirmed
+import lifecycle_audit
+import json
+import tempfile
+import os
 
 
 class LifecycleAuditSafetyTests(unittest.TestCase):
@@ -59,6 +63,51 @@ class LifecycleAuditSafetyTests(unittest.TestCase):
             {"checked_at":"2026-12-15T00:00:00+00:00","status":"CONFIRMED_NXDOMAIN_OBSERVATION"}
         ]
         self.assertFalse(deletion_confirmed(history))
+
+
+    def test_restore_id_works_without_waiting_for_lifecycle_due_date(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            rules=root/"rulesets"
+            (root/"sources").mkdir()
+            rules.mkdir()
+            for policy in ("direct","proxy","reject"):
+                (rules/(policy+".list")).write_text("",encoding="utf-8")
+            (rules/"lifecycle_state.json").write_text(json.dumps({
+                "due_milestones":[],"monthly_review_due":False,"published_rule_count":0
+            }),encoding="utf-8")
+            (rules/"deletion_archive.json").write_text(json.dumps({"items":[{
+                "id":"restore-me","policy":"direct","rule":"DOMAIN,old.example","domain":"old.example",
+                "removed_at":"2026-10-01T00:00:00+00:00"
+            }]}),encoding="utf-8")
+            (rules/"pending_queue.json").write_text(json.dumps({"items":[]}),encoding="utf-8")
+            (root/"sources/protected_domains.json").write_text(json.dumps({
+                "protected_exact":[],"protected_suffixes":[]
+            }),encoding="utf-8")
+            with patch.object(lifecycle_audit,"ROOT",root), patch.object(lifecycle_audit,"DIR",rules), patch.object(lifecycle_audit,"REPORT",root/"reports/lifecycle"), patch.dict(os.environ,{"LIFECYCLE_RESTORE_IDS":"restore-me"}), patch("lifecycle_audit.inspect",side_effect=AssertionError("restore-only must not run DNS deletion checks")):
+                lifecycle_audit.main()
+            self.assertIn("DOMAIN,old.example",(rules/"direct.list").read_text(encoding="utf-8"))
+            saved=json.loads((rules/"deletion_archive.json").read_text(encoding="utf-8"))
+            self.assertIsNotNone(saved["items"][0].get("restored_at"))
+
+    def test_due_lifecycle_run_reaches_completion_hook(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            rules=root/"rulesets"
+            (root/"sources").mkdir()
+            rules.mkdir()
+            (rules/"direct.list").write_text("DOMAIN,old.example\\n",encoding="utf-8")
+            for policy in ("proxy","reject"):
+                (rules/(policy+".list")).write_text("",encoding="utf-8")
+            state={"due_milestones":[5000],"monthly_review_due":False,"published_rule_count":5000}
+            (rules/"lifecycle_state.json").write_text(json.dumps(state),encoding="utf-8")
+            (rules/"pending_queue.json").write_text(json.dumps({"items":[]}),encoding="utf-8")
+            (root/"sources/protected_domains.json").write_text(json.dumps({
+                "protected_exact":[],"protected_suffixes":[]
+            }),encoding="utf-8")
+            with patch.object(lifecycle_audit,"ROOT",root), patch.object(lifecycle_audit,"DIR",rules), patch.object(lifecycle_audit,"REPORT",root/"reports/lifecycle"), patch.dict(os.environ,{"LIFECYCLE_RESTORE_IDS":""}), patch("lifecycle_audit.inspect",return_value={"status":"DNS_EXISTS_OR_NODATA","resolver_status":{}}), patch("lifecycle_gate.complete_lifecycle_review",return_value=state) as complete:
+                lifecycle_audit.main()
+            complete.assert_called_once()
 
     def test_deletion_ids_are_stable_and_policy_specific(self):
         self.assertEqual(rid("DIRECT","DOMAIN,api.example"),rid("DIRECT","DOMAIN,api.example"))
