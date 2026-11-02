@@ -5,7 +5,8 @@ import argparse, json, tarfile
 from pathlib import Path, PurePosixPath
 
 ALLOWED_FILES = {
-    "data/domain_candidates.json", "data/candidates.json", "data/candidates.json.manifest.json",
+    "data/domain_candidates.json", "data/domain_candidates.json.manifest.json",
+    "data/candidates.json", "data/candidates.json.manifest.json",
     "data/source_pending.json", "data/primary_snapshot.txt", "data/secondary_snapshot.txt",
     "sources/domain_reviews.json", "sources/domain_reviews.json.manifest.json",
     "sources/review_cursor.json", "sources/rule_provenance.json",
@@ -16,6 +17,7 @@ ALLOWED_FILES = {
 }
 ALLOWED_DIR_PREFIXES = (
     "data/source_snapshots/",
+    "data/domain_candidates.json.parts-",
     "data/candidates.json.parts-",
     "sources/domain_reviews.json.parts-",
     "sources/rule_provenance.json.parts-",
