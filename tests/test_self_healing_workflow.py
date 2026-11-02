@@ -75,5 +75,14 @@ class SelfHealingWorkflowTests(unittest.TestCase):
 
 
 
+    def test_superseded_failures_are_suppressed_when_a_newer_run_is_active_or_successful(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn("Check whether a newer run supersedes this failure", workflow)
+        self.assertIn("select(.id > $failed)", workflow)
+        self.assertIn('select(.status != "completed" or .conclusion == "success")', workflow)
+        self.assertIn("steps.supersession.outputs.stale != 'true'", workflow)
+
+
+
 if __name__ == "__main__":
     unittest.main()

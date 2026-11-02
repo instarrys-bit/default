@@ -38,7 +38,36 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Check whether a newer run supersedes this failure
+        id: supersession
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          WORKFLOW_ID: ${{ github.event.workflow_run.workflow_id }}
+          FAILED_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+          runs="$(gh api "repos/$REPO/actions/workflows/$WORKFLOW_ID/runs?per_page=20" 2>/dev/null || true)"
+          if [ -z "$runs" ]; then
+            echo "Supersession lookup unavailable; continuing with diagnosis."
+            echo "stale=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          newer_count="$(jq --argjson failed "$FAILED_RUN_ID" '[.workflow_runs[] | select(.id > $failed) | select(.status != "completed" or .conclusion == "success")] | length' <<< "$runs")"
+          if [ "$newer_count" -gt 0 ]; then
+            echo "A newer run is queued, active, or successful; suppressing this superseded failure."
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No newer active or successful run supersedes this failure."
+            echo "stale=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Record superseded failure without opening an incident
+        if: ${{ steps.supersession.outputs.stale == 'true' }}
+        run: echo "This failed run is superseded by a newer queued, active, or successful run." >> "$GITHUB_STEP_SUMMARY"
+
       - name: Download failed workflow logs
+        if: ${{ steps.supersession.outputs.stale != 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
@@ -48,6 +77,7 @@ jobs:
           gh run view "$RUN_ID" --repo "$REPO" --log-failed > /tmp/failed-run.log
 
       - name: Diagnose failed workflow
+        if: ${{ steps.supersession.outputs.stale != 'true' }}
         id: diagnosis
         env:
           RUN_ID: ${{ github.event.workflow_run.id }}
@@ -64,6 +94,7 @@ jobs:
           echo "failed_steps_count=$(python3 -c 'import json; print(len(json.load(open("reports/self-healing/diagnosis.json"))["failed_steps"]))')" >> "$GITHUB_OUTPUT"
 
       - name: Apply allowlisted repair and run tests
+        if: ${{ steps.supersession.outputs.stale != 'true' }}
         id: repair
         env:
           RUN_ID: ${{ github.event.workflow_run.id }}
@@ -115,7 +146,7 @@ jobs:
           gh workflow run self-healing-tests.yml --ref "$BRANCH" --repo "$REPO"
 
       - name: Open incident when no safe repair applies
-        if: ${{ steps.repair.outputs.changed != 'true' && steps.diagnosis.outputs.classification != 'STALE_SUPERSEDED' && steps.diagnosis.outputs.failed_steps_count != '0' }}
+        if: ${{ steps.supersession.outputs.stale != 'true' && steps.repair.outputs.changed != 'true' && steps.diagnosis.outputs.classification != 'STALE_SUPERSEDED' && steps.diagnosis.outputs.failed_steps_count != '0' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}

@@ -70,5 +70,17 @@ class DiagnoseWorkflowFailureTests(unittest.TestCase):
         self.assertEqual(len(result["evidence"]), 1)
 
 
+    def test_baseline_registration_failure_is_classified_as_config_baseline_mismatch(self):
+        result = diagnose(
+            "ERROR: ss.conf differs from the approved baseline, but this run is not an owner-authored push changing ss.conf; refusing automatic approval.\\n"
+            "##[error]Process completed with exit code 1.",
+            "789",
+        )
+        self.assertEqual(result["classification"], "CONFIG_BASELINE_MISMATCH")
+        self.assertIsNone(result["repair_id"])
+        self.assertFalse(result["automatic_code_change_allowed"])
+        self.assertTrue(any("ss.conf" in item for item in result["evidence"]))
+
+
 if __name__ == "__main__":
     unittest.main()
