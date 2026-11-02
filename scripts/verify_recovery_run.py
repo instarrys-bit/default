@@ -23,10 +23,16 @@ def verify_recovery_run(run: dict[str, Any], jobs_payload: dict[str, Any]) -> di
     if run.get("name") != AUDIT_WORKFLOW:
         reasons.append("unexpected_workflow")
 
-    jobs = jobs_payload.get("jobs")
-    if not isinstance(jobs, list):
-        jobs = []
-        reasons.append("jobs_payload_invalid")
+    if isinstance(jobs_payload, list):
+        pages = jobs_payload
+    else:
+        pages = [jobs_payload]
+    jobs: list[dict[str, Any]] = []
+    for page in pages:
+        if isinstance(page, dict) and isinstance(page.get("jobs"), list):
+            jobs.extend(job for job in page["jobs"] if isinstance(job, dict))
+        else:
+            reasons.append("jobs_payload_invalid")
 
     by_name = {job.get("name"): job for job in jobs if isinstance(job, dict)}
     audit = by_name.get("audit")
