@@ -48,6 +48,10 @@ DOMAIN,late.example.com,REJECT
         self.assertEqual(len(result["matches"]), 2)
         self.assertIn("not evaluated", result["reason"])
 
+    def test_reject_config_scope_is_excluded_from_automated_audit(self):
+        result = match_candidate("api.example.com", "DIRECT", [(2, "DOMAIN,api.example.com,REJECT")])
+        self.assertEqual(result["status"], "NOT_COVERED_BY_CONFIG_SCOPE")
+
     def test_keyword_and_conditional_rules_are_not_evaluated(self):
         keyword = match_candidate("api.example.com", "DIRECT", [(2, "DOMAIN-KEYWORD,example,REJECT")])
         conditional = match_candidate("api.example.com", "DIRECT", [(2, "AND,((DOMAIN-SUFFIX,example.com),(GEOIP,CN)),DIRECT")])
