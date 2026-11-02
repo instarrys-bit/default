@@ -82,7 +82,7 @@ jobs:
           retention-days: 7
 
       - name: Register repository-owner-approved ss.conf changes (never edit the config)
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
