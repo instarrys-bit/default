@@ -29,7 +29,11 @@ QX_DOMAIN_RULE_RE = re.compile(r"^(HOST|HOST-SUFFIX),([^,\s]+),([^,\s]+)$", re.I
 ADBLOCK_RE = re.compile(r"^\|\|([a-z0-9.-]+)\^")
 SENSITIVE_PATH_RE = re.compile(r"(?:porn|adult|nsfw|xxx|sex[-_]?content)", re.I)
 
-def fetch_raw(url: str, repository: str) -> bytes:
+class AssessmentBudgetExceeded(Exception):
+    pass
+
+
+def fetch_raw(url: str, repository: str, max_allowed_bytes: int | None = None) -> bytes:
     parsed = urllib.parse.urlparse(url)
     if parsed.scheme != "https" or parsed.hostname != "raw.githubusercontent.com" or parsed.username or parsed.password or parsed.port not in (None, 443):
         raise ValueError("assessment accepts only HTTPS raw.githubusercontent.com URLs")
@@ -39,12 +43,17 @@ def fetch_raw(url: str, repository: str) -> bytes:
     if SENSITIVE_PATH_RE.search(parsed.path):
         raise ValueError("sensitive path is excluded from assessment")
     request = urllib.request.Request(url, headers={"User-Agent": "Shadowrocket-Source-Assessor/1.0"})
+    limit = MAX_BYTES if max_allowed_bytes is None else min(MAX_BYTES, max(0, int(max_allowed_bytes)))
+    if limit <= 0:
+        raise AssessmentBudgetExceeded("aggregate assessment byte budget exhausted")
     with urllib.request.urlopen(request, timeout=10) as response:
         final = urllib.parse.urlparse(response.geturl())
         if response.status != 200 or final.scheme != "https" or final.hostname != "raw.githubusercontent.com":
             raise ValueError("unexpected rule-list response")
-        data = response.read(MAX_BYTES + 1)
-    if len(data) > MAX_BYTES:
+        data = response.read(limit + 1)
+    if len(data) > limit:
+        if max_allowed_bytes is not None and limit < MAX_BYTES:
+            raise AssessmentBudgetExceeded("source file deferred because it exceeds remaining aggregate byte budget")
         raise ValueError("rule-list exceeds assessment size limit")
     return data
 
@@ -342,10 +351,7 @@ def main() -> int:
         repository = candidate["repository"]
         url = candidate["url"]
         try:
-            payload = fetch_raw(url, repository)
-            if total_bytes_read + len(payload) > MAX_TOTAL_BYTES:
-                budget_exhausted = True
-                break
+            payload = fetch_raw(url, repository, MAX_TOTAL_BYTES - total_bytes_read)
             total_bytes_read += len(payload)
             item = assess_payload(payload, url, candidate["policy_claims"])
             item["repository"] = repository
@@ -353,6 +359,9 @@ def main() -> int:
             item["archived"] = candidate["archived"]
             item["assessed_at"] = batch_id
             assessments.append(item)
+        except AssessmentBudgetExceeded:
+            budget_exhausted = True
+            break
         except (OSError, urllib.error.URLError, ValueError) as exc:
             assessments.append({
                 "repository": repository, "url": url,
