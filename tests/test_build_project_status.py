@@ -7,10 +7,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from build_project_status import build_status, git_blob_sha
+from build_project_status import build_status, git_blob_sha, valid_rule_line
 
 
 class ProjectStatusTests(unittest.TestCase):
+    def test_rule_line_validation_rejects_malformed_domains(self):
+        self.assertTrue(valid_rule_line("DOMAIN,api.example.com"))
+        self.assertTrue(valid_rule_line("DOMAIN-SUFFIX,example.com"))
+        self.assertFalse(valid_rule_line("DOMAIN,not a domain"))
+        self.assertFalse(valid_rule_line("IP-CIDR,192.0.2.1"))
+
     def test_consolidated_report_checks_config_rules_sources_queue_and_recovery(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
