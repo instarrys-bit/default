@@ -257,11 +257,11 @@
     }
   },
   "rule_count": {
-    "DIRECT": 230,
+    "DIRECT": 216,
     "PROXY": 205,
     "REJECT": 6
   },
-  "published_rule_total": 441,
+  "published_rule_total": 427,
   "max_published_rules": 30000,
   "queued_rule_total": 0,
   "baseline_conflict_hold_count": 1,
@@ -281,23 +281,12 @@
   "rule_lifecycle": {
     "DIRECT": {
       "previous_count": 216,
-      "current_count": 230,
-      "added_count": 14,
+      "current_count": 216,
+      "added_count": 0,
       "removed_count": 0,
       "previous_sha256": "51243bedd7ec8b8756eb3e2ecca4b971b4ab489ecbce9d7aeec1ad94cb79eb18",
-      "current_sha256": "5d7847870d43c4285617727c77637b63cdd3161126dff4cc9f13e60cd4f4cf1f",
-      "added_sample": [
-        "DOMAIN-SUFFIX,37.com",
-        "DOMAIN-SUFFIX,37games.com",
-        "DOMAIN-SUFFIX,37wan.net",
-        "DOMAIN-SUFFIX,antgroup.com",
-        "DOMAIN-SUFFIX,duxiaoman.com",
-        "DOMAIN-SUFFIX,hopegoo.com",
-        "DOMAIN-SUFFIX,lilith.com",
-        "DOMAIN-SUFFIX,ly.com",
-        "DOMAIN-SUFFIX,mihoyo.com",
-        "DOMAIN-SUFFIX,perfectworld.com"
-      ],
+      "current_sha256": "7b66006c8b3ab1dbf3535eec97eef167c6d686fbe972402d0160eb77d79c1211",
+      "added_sample": [],
       "removed_sample": [],
       "baseline_initialized": false
     },
@@ -307,7 +296,7 @@
       "added_count": 0,
       "removed_count": 0,
       "previous_sha256": "1be8ecc699ee8ae38542203c2bdb7b546c93016c931ce8a31064eb0d5bd83011",
-      "current_sha256": "1be8ecc699ee8ae38542203c2bdb7b546c93016c931ce8a31064eb0d5bd83011",
+      "current_sha256": "8d24dce1a2c20337d61fe13ed20a5db5a573486a1462fc29f0a067a2f3f4d3b3",
       "added_sample": [],
       "removed_sample": [],
       "baseline_initialized": false
@@ -318,7 +307,7 @@
       "added_count": 0,
       "removed_count": 4,
       "previous_sha256": "de0f64fee89213efab6dc5d2719121ddce5140335aca4da3cc3c56ee568f9947",
-      "current_sha256": "4fc7bcf4efe4fa72e523d715207b9ed0af4a947b103f14c3035b1273b3b38140",
+      "current_sha256": "c3bd39e4ed523ee06edc5b956f97bb115c3e81e12b94627c3644ee379477958b",
       "added_sample": [],
       "removed_sample": [
         "DOMAIN,adcdn.tencentmusic.com",
