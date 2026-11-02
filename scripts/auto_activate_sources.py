@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "sources/domain_sources.json"
 MATRIX = ROOT / "sources/source_candidates.json"
 LOG = ROOT / "sources/source_activation_log.json"
+DISCOVERED = ROOT / "sources/discovered_sources.json"
 REPORT = ROOT / "reports/source-activation.md"
 POLICIES = {"DIRECT", "PROXY", "REJECT"}
 FORMATS = {"domain-only", "adblock-domain-rules", "shadowrocket-domain-rules", "quantumult-domain-rules"}
@@ -55,6 +56,8 @@ def candidate_file(candidate: dict) -> dict | None:
 def activate(registry: dict, matrix: dict, now: str | None = None) -> tuple[dict, list[dict], list[dict]]:
     timestamp = now or datetime.now(timezone.utc).isoformat()
     existing = validate_registry(registry)
+    discovered_data = json.loads(DISCOVERED.read_text(encoding="utf-8")) if DISCOVERED.exists() else {"candidates": []}
+    discovered_by_repo = {str(x.get("repository", "")).lower(): x for x in discovered_data.get("candidates", [])}
     existing_publishers = {
         (str(source.get("classification", "")).upper(), str(source.get("publisher", "")))
         for source in existing.values()
@@ -104,6 +107,17 @@ def activate(registry: dict, matrix: dict, now: str | None = None) -> tuple[dict
             decisions.append({"repository": repository, "policy": policy, "decision": "already_registered", "reason": "deterministic source ID already exists"})
             continue
         evidence = str(selected["policy_evidence"])
+        discovered_item = discovered_by_repo.get(repository.lower(), {})
+        evidence_branch = str(discovered_item.get("default_branch") or "")
+        if evidence_branch and discovered_item.get("readme_sha256"):
+            lineage_evidence_url = f"https://github.com/{repository}/blob/{evidence_branch}/README.md"
+        else:
+            parsed_source_url = urlparse(url)
+            source_parts = [x for x in parsed_source_url.path.split("/") if x]
+            if len(source_parts) < 4:
+                decisions.append({"repository": repository, "policy": policy, "decision": "held", "reason": "cannot construct a stable lineage evidence URL"})
+                continue
+            lineage_evidence_url = f"https://github.com/{repository}/blob/{source_parts[2]}/{'/'.join(source_parts[3:])}"
         source = {
             "id": sid,
             "publisher": repository,
@@ -116,6 +130,8 @@ def activate(registry: dict, matrix: dict, now: str | None = None) -> tuple[dict
             "allow_leading_dot": allow_leading_dot,
             "independence_group": repository,
             "lineage_status": "unverified",
+            "lineage_evidence_url": lineage_evidence_url,
+            "lineage_note": "Public README or source-file evidence is inventoried for provenance; no item-level domain ancestry is inferred and unverified lineage is not a publication veto.",
             "policy_evidence": "explicit_action" if evidence == "explicit_third_field" else "documented_policy",
             "upstream_repositories": [],
             "lineage_note": "Automatically admitted by deterministic parser, policy-evidence, publisher, size and two-observation stability gates. Lineage remains unverified; shared README references and domain overlap are correlation warnings, not automatic vetoes.",
