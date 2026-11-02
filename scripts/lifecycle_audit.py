@@ -41,7 +41,9 @@ def deletion_confirmed(history):
         return False
     first=datetime.fromisoformat(history[-2]["checked_at"].replace("Z","+00:00"))
     second=datetime.fromisoformat(history[-1]["checked_at"].replace("Z","+00:00"))
-    return second-first>=timedelta(days=30)
+    first=datetime.fromisoformat(history[0]["checked_at"].replace("Z","+00:00"))
+    last=datetime.fromisoformat(history[-1]["checked_at"].replace("Z","+00:00"))
+    return last-first>=timedelta(days=30)
 
 
 def inspect(domain):
@@ -62,7 +64,10 @@ def inspect(domain):
 def main():
     state_path=DIR/"lifecycle_state.json"
     state=json.loads(state_path.read_text())
-    if not state.get("due_milestones") and not state.get("monthly_review_due"):
+    requested={x.strip() for x in os.environ.get("LIFECYCLE_RESTORE_IDS","").split(",") if x.strip()}
+    due=bool(state.get("due_milestones") or state.get("monthly_review_due"))
+    restore_only=bool(requested) and not due
+    if not due and not requested:
         REPORT.mkdir(parents=True,exist_ok=True)
         idle={"status":"not_due","published_rule_count":state.get("published_rule_count",0),"next_milestone":state.get("next_milestone",5000),"max_published_rules":30000}
         (REPORT/"latest.json").write_text(json.dumps(idle,ensure_ascii=False,indent=2)+"\n")
@@ -79,7 +84,7 @@ def main():
     archive=json.loads(archive_path.read_text()) if archive_path.exists() else {"items":[]}
     queue=json.loads(queue_path.read_text()) if queue_path.exists() else {"items":[]}
     restored=[]; missing=[]; restored_keys=set()
-    for key in [x.strip() for x in os.environ.get("LIFECYCLE_RESTORE_IDS","").split(",") if x.strip()]:
+    for key in requested:
         old=next((x for x in archive["items"] if x["id"]==key and not x.get("restored_at")),None)
         if not old: missing.append(key); continue
         total=sum(map(len,rules.values()))
