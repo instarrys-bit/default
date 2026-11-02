@@ -11,7 +11,8 @@ class SelfHealingWorkflowTests(unittest.TestCase):
     def test_repair_is_bounded_and_does_not_auto_merge(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("fix_stale_audit_concurrency_contract", workflow)
-        self.assertIn("git add -- .github/workflows/auto_sync.yml tests/test_workflow_config_guard_order.py", workflow)
+        self.assertIn("git add -- .github/workflows/auto_sync.yml", workflow)
+        self.assertIn("git add -- tests/test_workflow_config_guard_order.py", workflow)
         self.assertIn("fix_stale_audit_concurrency_contract", (ROOT / "scripts" / "apply_safe_repair.py").read_text(encoding="utf-8"))
         self.assertIn("refresh_ruleset_manifest)", workflow)
         self.assertIn("Unknown repair id at PR publication", workflow)
@@ -73,8 +74,8 @@ class SelfHealingWorkflowTests(unittest.TestCase):
 
     def test_user_owned_config_is_never_added_to_repair_commit(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn('refresh_ruleset_manifest)\\n              git add -- .github/workflows/auto_sync.yml', workflow)
-        self.assertIn('fix_stale_audit_concurrency_contract)\\n              git add -- tests/test_workflow_config_guard_order.py', workflow)
+        self.assertIn("expected_staged_path=\".github/workflows/auto_sync.yml\"", workflow)
+        self.assertIn("expected_staged_path=\"tests/test_workflow_config_guard_order.py\"", workflow)
         self.assertIn('staged_paths="$(git diff --cached --name-only)"', workflow)
         self.assertNotIn("git add -A", workflow)
         self.assertNotIn("git add shadowrocket/ss.conf", workflow)
