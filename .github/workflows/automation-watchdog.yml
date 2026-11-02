@@ -36,8 +36,16 @@ jobs:
         run: |
           set -euo pipefail
           # A recovery run is workflow_dispatch; ignore its completion to prevent retry loops.
-          if [ "$SOURCE_CONCLUSION" != "failure" ] || { [ "$SOURCE_EVENT" != "schedule" ] && [ "$SOURCE_EVENT" != "push" ]; }; then
-            echo "No automatic recovery required for event=$SOURCE_EVENT conclusion=$SOURCE_CONCLUSION."
+          case "$SOURCE_CONCLUSION" in
+            failure|timed_out|startup_failure)
+              ;;
+            *)
+              echo "No automatic recovery required for event=$SOURCE_EVENT conclusion=$SOURCE_CONCLUSION."
+              exit 0
+              ;;
+          esac
+          if [ "$SOURCE_EVENT" != "schedule" ] && [ "$SOURCE_EVENT" != "push" ]; then
+            echo "No automatic recovery for source event=$SOURCE_EVENT."
             exit 0
           fi
 
