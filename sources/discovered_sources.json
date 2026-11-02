@@ -74,14 +74,14 @@
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list": [
-          "PROXY"
-        ],
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list": [
           "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list": [
+          "PROXY"
         ]
       },
       "seeded_source_urls": [
@@ -687,25 +687,13 @@
         "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/shadowrocket/cn-direct.conf"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/operators/chinanet.conf": [
+        "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/rule-set/cn-max.list": [
           "DIRECT"
         ],
-        "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn-ipv6.conf": [
-          "DIRECT"
-        ],
-        "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn-max.conf": [
-          "DIRECT"
-        ],
-        "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/rule-set/cn.list": [
-          "DIRECT"
-        ],
-        "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn.conf": [
+        "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/operators/cernet.conf": [
           "DIRECT"
         ],
         "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/operators/unicom.conf": [
-          "DIRECT"
-        ],
-        "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn-ip.conf": [
           "DIRECT"
         ],
         "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn-domain.conf": [
@@ -714,16 +702,25 @@
         "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/shadowrocket/cn-direct.conf": [
           "DIRECT"
         ],
+        "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn-max.conf": [
+          "DIRECT"
+        ],
         "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/operators/cmcc.conf": [
           "DIRECT"
         ],
-        "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn-max-domain.conf": [
-          "DIRECT"
-        ],
-        "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/operators/cernet.conf": [
-          "DIRECT"
-        ],
         "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/operators/cstnet.conf": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn-ipv6.conf": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn.conf": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/rule-set/cn.list": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn-max-domain.conf": [
           "DIRECT"
         ],
         "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/registry/cn-allocated.conf": [
@@ -732,7 +729,10 @@
         "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn-ipv4.conf": [
           "DIRECT"
         ],
-        "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/rule-set/cn-max.list": [
+        "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/operators/chinanet.conf": [
+          "DIRECT"
+        ],
+        "https://raw.githubusercontent.com/GrandpaNiuu/cn-direct-rules/main/dist/cn-ip.conf": [
           "DIRECT"
         ]
       },
@@ -767,9 +767,9 @@
       "html_url": "https://github.com/Hackl0us/SS-Rule-Snippet",
       "description": "搜集、整理、维护 Surge / Quantumult (X) / Shadowrocket / Surfboard / clash (Premium) 实用规则。",
       "default_branch": "main",
-      "updated_at": "2026-11-01T02:18:13Z",
+      "updated_at": "2026-11-02T00:53:44Z",
       "pushed_at": "2024-03-19T11:51:12Z",
-      "stars": 11215,
+      "stars": 11216,
       "archived": false,
       "fork": false,
       "license": "AGPL-3.0",
@@ -967,7 +967,7 @@
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/gfw.list": [
+        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list": [
           "DIRECT",
           "PROXY",
           "REJECT"
@@ -975,7 +975,7 @@
         "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list": [
           "DIRECT"
         ],
-        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list": [
+        "https://raw.githubusercontent.com/Jovanykoch/rules/rel/gfw.list": [
           "DIRECT",
           "PROXY",
           "REJECT"
@@ -1097,9 +1097,9 @@
       "html_url": "https://github.com/Loyalsoldier/v2ray-rules-dat",
       "description": "🦄 🎃 👻 V2Ray 路由规则文件加强版，可代替 V2Ray 官方 geoip.dat 和 geosite.dat，适用于 V2Ray、Xray-core、mihomo(Clash-Meta)、hysteria、Trojan-Go 和 leaf。Enhanced edition of V2Ray rules dat files, applicable to V2Ray, Xray-core, mihomo(Clash-Meta), hysteria, Trojan-Go and leaf.",
       "default_branch": "master",
-      "updated_at": "2026-11-01T18:29:53Z",
+      "updated_at": "2026-11-02T00:51:31Z",
       "pushed_at": "2026-11-01T22:04:37Z",
-      "stars": 20985,
+      "stars": 20986,
       "archived": false,
       "fork": false,
       "license": "GPL-3.0",
@@ -1110,17 +1110,17 @@
         "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt": [
-          "DIRECT",
-          "PROXY",
-          "REJECT"
-        ],
         "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
         ],
         "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt": [
+          "DIRECT",
+          "PROXY",
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
@@ -1703,10 +1703,10 @@
         "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https.txt": [
+        "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http.txt": [
+        "https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https.txt": [
           "PROXY"
         ]
       },
@@ -2054,29 +2054,29 @@
         "https://raw.githubusercontent.com/bgpeer/rules/main/geo/geosite/cn.list"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/bgpeer/rules/main/Surge.conf": [
-          "PROXY"
+        "https://raw.githubusercontent.com/bgpeer/rules/main/QX.conf": [
+          "DIRECT",
+          "REJECT"
         ],
         "https://raw.githubusercontent.com/bgpeer/rules/main/geo/geoip/cn.list": [
           "DIRECT",
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/bgpeer/rules/main/QX.conf": [
-          "DIRECT",
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/bgpeer/rules/main/QX/geosite/cn.list": [
+        "https://raw.githubusercontent.com/bgpeer/rules/main/geo/geosite/cn.list": [
           "DIRECT",
           "REJECT"
         ],
         "https://raw.githubusercontent.com/bgpeer/rules/main/Shadowrocket.conf": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/bgpeer/rules/main/geo/geosite/cn.list": [
+        "https://raw.githubusercontent.com/bgpeer/rules/main/Surge.conf": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/bgpeer/rules/main/QX/geoip/cn.list": [
           "DIRECT",
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/bgpeer/rules/main/QX/geoip/cn.list": [
+        "https://raw.githubusercontent.com/bgpeer/rules/main/QX/geosite/cn.list": [
           "DIRECT",
           "REJECT"
         ]
@@ -4395,10 +4395,10 @@
         "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Services/SNS/Weibo.list"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Region/China.list": [
+        "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Region/Global.list": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Region/Global.list": [
+        "https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Rules/Region/China.list": [
           "PROXY"
         ]
       },
@@ -4469,8 +4469,8 @@
       "html_url": "https://github.com/tbrzr/dns-block-test",
       "description": "Open list of 54 ad, tracker and malware domains plus a script to test whether your DNS blocker (Pi-hole, AdGuard Home, NextDNS) blocks them",
       "default_branch": "main",
-      "updated_at": "2026-11-01T23:09:51Z",
-      "pushed_at": "2026-11-01T23:09:47Z",
+      "updated_at": "2026-11-02T00:50:08Z",
+      "pushed_at": "2026-11-02T00:50:03Z",
       "stars": 0,
       "archived": false,
       "fork": false,
@@ -4531,25 +4531,13 @@
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
-          "PROXY"
-        ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/torrent.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/tools.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/netflix.txt": [
@@ -4558,13 +4546,25 @@
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/telegram.txt": [
           "PROXY"
         ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/tools.txt": [
+          "PROXY"
+        ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
           "PROXY"
         ]
       },

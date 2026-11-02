@@ -285,7 +285,7 @@
 ### [Hackl0us/SS-Rule-Snippet](https://github.com/Hackl0us/SS-Rule-Snippet)
 
 - Description: 搜集、整理、维护 Surge / Quantumult (X) / Shadowrocket / Surfboard / clash (Premium) 实用规则。
-- Stars: 11215; archived: False; fork: False
+- Stars: 11216; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 2
 - Curated seed links: 2
@@ -405,7 +405,7 @@
 ### [Loyalsoldier/v2ray-rules-dat](https://github.com/Loyalsoldier/v2ray-rules-dat)
 
 - Description: 🦄 🎃 👻 V2Ray 路由规则文件加强版，可代替 V2Ray 官方 geoip.dat 和 geosite.dat，适用于 V2Ray、Xray-core、mihomo(Clash-Meta)、hysteria、Trojan-Go 和 leaf。Enhanced edition of V2Ray rules dat files, applicable to V2Ray, Xray-core, mihomo(Clash-Meta), hysteria, Trojan-Go and leaf.
-- Stars: 20985; archived: False; fork: False
+- Stars: 20986; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 3
 - Curated seed links: 3

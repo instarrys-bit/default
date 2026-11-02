@@ -1,0 +1,89 @@
+{
+  "generated_at": "2026-11-02T00:56:52.314194+00:00",
+  "health": "PASS",
+  "integrity": {
+    "config_baseline_match": true,
+    "config_blob_sha": "a6b2f0e6e41da13572dfca8e8119212118df5bcb",
+    "approved_config_blob_sha": "a6b2f0e6e41da13572dfca8e8119212118df5bcb",
+    "manifest_matches_files": true,
+    "only_three_policy_outputs": true,
+    "invalid_rule_line_count": 0,
+    "published_count_within_cap": true
+  },
+  "rulesets": {
+    "counts": {
+      "DIRECT": 216,
+      "PROXY": 205,
+      "REJECT": 10
+    },
+    "published_total": 431,
+    "maximum": 30000,
+    "headroom": 29569,
+    "queue_count": 0,
+    "queue_mode": false,
+    "policies": [
+      "DIRECT",
+      "PROXY",
+      "REJECT"
+    ]
+  },
+  "lifecycle": {
+    "next_milestone": 5000,
+    "published_high_water_mark": 431,
+    "additional_published_rules_to_next_milestone": 4569,
+    "due": false,
+    "due_milestones": [],
+    "monthly_review_due": false,
+    "last_successful_review_at": null,
+    "last_monthly_review_at": null,
+    "deletion_archive_count": 0,
+    "deletion_restorable_count": 0,
+    "latest_report_status": "not_due"
+  },
+  "sources": {
+    "enabled_count": 8,
+    "current_count": 8,
+    "degraded_count": 0,
+    "degraded_ids": [],
+    "groups_by_policy": {
+      "DIRECT": 3,
+      "PROXY": 3,
+      "REJECT": 2
+    },
+    "missing_independent_groups": {
+      "DIRECT": 0,
+      "PROXY": 0,
+      "REJECT": 0
+    },
+    "discovered_repository_count": 215,
+    "assessed_file_count": 50,
+    "source_candidate_count": 7,
+    "activated_this_run": 0,
+    "cumulative_auto_activations": 2,
+    "lineage_audited_count": 8,
+    "lineage_partial_count": 2,
+    "lineage_unverified_count": 6,
+    "lineage_verified_count": 0
+  },
+  "review": {
+    "candidate_count": 11583,
+    "approved_count": 431,
+    "held_count": 11152,
+    "status_counts": {
+      "ALREADY_COVERED": 2168,
+      "APPROVED": 434,
+      "CONFLICT": 544,
+      "POLICY_CONFLICT": 285,
+      "REVIEW": 8141,
+      "RISK_HOLD": 11
+    }
+  },
+  "recovery": {
+    "config_conflict_archive_total": 96,
+    "config_conflict_active_count": 93,
+    "config_conflict_restorable_count": 96,
+    "config_conflict_report_options": 96,
+    "lifecycle_deletion_archive_total": 0,
+    "lifecycle_deletion_restorable_count": 0
+  }
+}

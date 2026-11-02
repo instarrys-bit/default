@@ -14,6 +14,6 @@
   "status": "normal_incremental",
   "last_successful_review_at": null,
   "last_monthly_review_at": null,
-  "updated_at": "2026-11-02T00:46:36.193055+00:00",
+  "updated_at": "2026-11-02T00:56:40.923881+00:00",
   "deletion_policy": "Only separately verified lifecycle-invalid decisions may remove rules. Evidence loss, source disappearance, lineage changes, conflicts or missing observations are not deletion evidence."
 }
