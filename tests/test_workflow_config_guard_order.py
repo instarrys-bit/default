@@ -37,12 +37,14 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
     def test_large_state_is_artifact_backed_not_committed_as_giant_json(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         publish = workflow.split("      - name: Verify base commit and safely publish allowlisted outputs", 1)[1]
-        git_add = publish.split("          git add --", 1)[1].split("          # Explicitly fail", 1)[0]
+        allowlist = publish.split("          publish_paths=(", 1)[1].split("          )", 1)[0]
         for path in ("sources/domain_reviews.json", "sources/review_cursor.json",
                      "sources/rule_provenance.json", "data/domain_candidates.json",
                      "data/candidates.json", "data/source_pending.json", "data/source_snapshots/"):
-            self.assertNotIn(path, git_add)
-        self.assertIn("reports/automation/state_store.json", git_add)
+            self.assertNotIn(path, allowlist)
+        self.assertIn("reports/automation/state_store.json", allowlist)
+        self.assertIn('if [[ -e "$path" ]]', publish)
+        self.assertIn('git add -- "$path"', publish)
 
     def test_config_conflicts_are_checked_before_and_after_rule_mutations(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
