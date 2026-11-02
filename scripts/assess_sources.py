@@ -15,6 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 INPUT = ROOT / "sources/discovered_sources.json"
 OUTPUT = ROOT / "sources/source_assessments.json"
+RUNTIME_OUTPUT = ROOT / "data/source_assessments_runtime.json"
 REPORT = ROOT / "reports/source-assessment.md"
 MAX_BYTES = 5_000_000
 # Hard aggregate budget prevents URL-count expansion from becoming unbounded I/O.
@@ -287,6 +288,16 @@ def render_report(assessments: list[dict], drift_summary: dict | None = None) ->
     ])
     return "\n".join(rows)
 
+def compact_assessment_result(result: dict) -> dict:
+    """Persist metadata only; keep per-domain fingerprints ephemeral for same-run analysis."""
+    compact = dict(result)
+    compact["assessments"] = [
+        {key: value for key, value in item.items() if key != "domain_fingerprints"}
+        for item in result.get("assessments", [])
+    ]
+    compact["fingerprints_storage"] = "ephemeral data/source_assessments_runtime.json; excluded from Git publication"
+    return compact
+
 def main() -> int:
     discovery = json.loads(INPUT.read_text(encoding="utf-8"))
     previous_data = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {"assessments": []}
@@ -352,8 +363,10 @@ def main() -> int:
         "activation_policy": "Assessment never edits or enables sources/domain_sources.json.",
     }
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    RUNTIME_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    RUNTIME_OUTPUT.write_text(json.dumps(result, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+    OUTPUT.write_text(json.dumps(compact_assessment_result(result), ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     REPORT.write_text(render_report(assessments, drift_summary), encoding="utf-8")
     print(json.dumps({
         "assessed": len(assessments),
