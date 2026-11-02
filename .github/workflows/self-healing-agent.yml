@@ -347,7 +347,7 @@ jobs:
             classification="${issue_title#Self-healing incident: }"
             classification="$(sed -E 's/ \(deterministic_audit(; [0-9a-f]{8})?\)$//' <<< "$classification")"
             gh issue view "$issue" --repo "$REPO" --json body --jq .body > /tmp/incident-body.md
-            python3 scripts/incident_state.py \\\n              --body-file /tmp/incident-body.md \\\n              --workflow deterministic_audit \\\n              --source-sha "$RUN_SHA" \\\n              --classification "$classification" \\\n              --event-id "audit-verifying-$RUN_ID-$issue" \\\n              --target-state VERIFYING \\\n              --out /tmp/incident-verifying-body.md
+            python3 scripts/incident_state.py --body-file /tmp/incident-body.md --workflow deterministic_audit --source-sha "$RUN_SHA" --classification "$classification" --event-id "audit-verifying-$RUN_ID-$issue" --target-state VERIFYING --out /tmp/incident-verifying-body.md
             gh issue edit "$issue" --repo "$REPO" --body-file /tmp/incident-verifying-body.md
           done <<< "$pending_issues"
           python3 scripts/verify_recovery_run.py --run /tmp/recovery-run.json --jobs /tmp/recovery-jobs.json | tee /tmp/recovery-verification.json
