@@ -15,8 +15,6 @@ on:
       - ".github/workflows/**"
       - "rulesets/**"
       - "sources/**"
-      - "data/**"
-      - "reports/**"
       - "scripts/**"
       - "tests/**"
       - "shadowrocket/ss.conf"
