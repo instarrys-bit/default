@@ -71,7 +71,7 @@ def main():
         REPORT.mkdir(parents=True,exist_ok=True)
         idle={"status":"not_due","published_rule_count":state.get("published_rule_count",0),"next_milestone":state.get("next_milestone",5000),"max_published_rules":30000}
         (REPORT/"latest.json").write_text(json.dumps(idle,ensure_ascii=False,indent=2)+"\n")
-        (REPORT/"latest.md").write_text("# Lifecycle audit\\n\\nNo lifecycle review is due. Daily incremental review and publishing continue.\\n")
+        (REPORT/"latest.md").write_text("# Lifecycle audit\n\nNo lifecycle review is due. Daily incremental review and publishing continue.\n")
         print(json.dumps(idle)); return
     timestamp=datetime.now(timezone.utc).isoformat()
     protected_cfg=json.loads((ROOT/"sources/protected_domains.json").read_text())
@@ -174,7 +174,7 @@ def main():
     lines += [f"- {x['id']} | {x['policy']} | {x['rule']} | first confirmation {x['first_confirmed_at']}" for x in deleted] or ["- None"]
     lines += ["## Selectable restore IDs"]+[f"- {x['id']} | {x['policy']} | {x['rule']}" for x in options]
     lines += ["","To restore, run the workflow manually and paste selected IDs into restore_ids."]
-    (REPORT/"latest.md").write_text("\n".join(lines)+"\n")
+        (REPORT/"latest.md").write_text("# Lifecycle audit\n\nNo lifecycle review is due. Daily incremental review and publishing continue.\n")
     if due:
         from lifecycle_gate import complete_lifecycle_review
         done=complete_lifecycle_review(ROOT,timestamp)
