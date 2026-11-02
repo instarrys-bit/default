@@ -205,7 +205,7 @@ RULE-SET,https://example.invalid/proxy.list,PROXY
         base = """[General]
 skip-proxy =
 [Rule]
-DOMAIN,api.example.com,REJECT
+DOMAIN,api.example.com,PROXY
 RULE-SET,https://example.invalid/direct.list,DIRECT
 [Host]
 """
@@ -226,7 +226,7 @@ RULE-SET,https://example.invalid/direct.list,DIRECT
 """
         rules = RuleIndex([
             DomainRule("DOMAIN-SUFFIX", "example.com", "DIRECT", 4, "DOMAIN-SUFFIX,example.com,DIRECT"),
-            DomainRule("DOMAIN", "api.example.com", "REJECT", 5, "DOMAIN,api.example.com,REJECT"),
+            DomainRule("DOMAIN", "api.example.com", "PROXY", 5, "DOMAIN,api.example.com,PROXY"),
         ])
         status, reason = inspect("api.example.com", rules, [], base, {}, "DIRECT")
         self.assertEqual(status, "REVIEW")
