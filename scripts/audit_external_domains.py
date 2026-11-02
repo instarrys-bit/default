@@ -20,7 +20,7 @@ OUTPUT = ROOT / "reports" / "external-domain-audit.md"
 
 
 def git_blob_sha1(data: bytes) -> str:
-    return hashlib.sha1(f"blob {len(data)}\\0".encode("ascii") + data).hexdigest()
+    return hashlib.sha1(f"blob {len(data)}\0".encode("ascii") + data).hexdigest()
 
 
 def load_candidates(data: bytes):
