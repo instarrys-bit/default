@@ -206,6 +206,7 @@ jobs:
           RUN_ID: ${{ github.event.workflow_run.id }}
           RUN_URL: ${{ github.event.workflow_run.html_url }}
           SOURCE_WORKFLOW: ${{ github.event.workflow_run.name }}
+          FAILED_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           set -euo pipefail
           case "$SOURCE_WORKFLOW" in
@@ -219,15 +220,27 @@ jobs:
           title="Self-healing incident: $classification ($workflow_key)"
           existing="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title | jq --arg title "$title" -r '.[] | select(.title == $title) | .number' | head -n 1)"
           if [ -n "$existing" ] && [ "$existing" != "null" ]; then
-            body_text="$(printf 'Repeated failure for run %s: %s\\n\\n```json\\n%s\\n```\\n' "$RUN_ID" "$RUN_URL" "$body")"
+            body_text="$(printf 'Repeated failure for run %s: %s\\n\\n\x60\x60\x60json\\n%s\\n\x60\x60\x60\\n' "$RUN_ID" "$RUN_URL" "$body")"
             body_text="$(printf '%s\\n\\n%s' "$marker" "$body_text")"
             gh issue comment "$existing" --repo "$REPO" --body "$body_text"
             gh issue edit "$existing" --repo "$REPO" --body "$body_text"
           else
-            body_text="$(printf 'Failed workflow run %s: %s\\n\\nAutomatic repair was not applied. No speculative code changes were made.\\n\\nDiagnosis:\\n\\n```json\\n%s\\n```\\n' "$RUN_ID" "$RUN_URL" "$body")"
+            body_text="$(printf 'Failed workflow run %s: %s\\n\\nAutomatic repair was not applied. No speculative code changes were made.\\n\\nDiagnosis:\\n\\n\x60\x60\x60json\\n%s\\n\x60\x60\x60\\n' "$RUN_ID" "$RUN_URL" "$body")"
             body_text="$(printf '%s\\n\\n%s' "$marker" "$body_text")"
-            gh issue create --repo "$REPO" --title "$title" --body "$body_text"
+            created_issue="$(gh issue create --repo "$REPO" --title "$title" --body "$body_text" --json number --jq .number)"
+            existing="$created_issue"
           fi
+
+          gh issue view "$existing" --repo "$REPO" --json body --jq .body > /tmp/incident-body.md
+          python3 scripts/incident_state.py \\
+            --body-file /tmp/incident-body.md \\
+            --workflow "$workflow_key" \\
+            --source-sha "$FAILED_SHA" \\
+            --classification "$classification" \\
+            --event-id "failure-run-$RUN_ID" \\
+            --target-state MANUAL_INTERVENTION \\
+            --out /tmp/incident-state-body.md
+          gh issue edit "$existing" --repo "$REPO" --body-file /tmp/incident-state-body.md
 
 
   report-agent-failure:
@@ -277,6 +290,7 @@ jobs:
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.event.workflow_run.html_url }}
           RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           set -euo pipefail
           for classification in CONFIG_BASELINE_MISMATCH TEST_FAILURE PYTHON_IMPORT_FAILURE WORKFLOW_TIMEOUT UNCLASSIFIED_STEP_FAILURE; do
@@ -286,6 +300,17 @@ jobs:
             fi
             while IFS= read -r issue; do
               [ -n "$issue" ] || continue
+              gh issue view "$issue" --repo "$REPO" --json body --jq .body > /tmp/incident-body.md
+              python3 scripts/incident_state.py \\
+                --body-file /tmp/incident-body.md \\
+                --workflow config_validator \\
+                --source-sha "$RUN_SHA" \\
+                --classification "$classification" \\
+                --event-id "validator-success-$RUN_ID-$issue" \\
+                --target-state RECOVERED \\
+                --verification-url "$RUN_URL" \\
+                --out /tmp/incident-state-body.md
+              gh issue edit "$issue" --repo "$REPO" --body-file /tmp/incident-state-body.md
               gh issue comment "$issue" --repo "$REPO" --body "A subsequent config-baseline validation succeeded. The protected config was not modified. Successful validation: $RUN_URL"
               gh issue close "$issue" --repo "$REPO"
             done <<< "$issues"
@@ -331,6 +356,20 @@ jobs:
           else
             while IFS= read -r issue; do
               [ -n "$issue" ] || continue
+              issue_title="$(gh issue view "$issue" --repo "$REPO" --json title --jq .title)"
+              classification="${issue_title#Self-healing incident: }"
+              classification="${classification% (deterministic_audit)}"
+              gh issue view "$issue" --repo "$REPO" --json body --jq .body > /tmp/incident-body.md
+              python3 scripts/incident_state.py \\
+                --body-file /tmp/incident-body.md \\
+                --workflow deterministic_audit \\
+                --source-sha "$RUN_SHA" \\
+                --classification "$classification" \\
+                --event-id "audit-success-$RUN_ID-$issue" \\
+                --target-state RECOVERED \\
+                --verification-url "$RUN_URL" \\
+                --out /tmp/incident-state-body.md
+              gh issue edit "$issue" --repo "$REPO" --body-file /tmp/incident-state-body.md
               gh issue comment "$issue" --repo "$REPO" --body "A subsequent full deterministic audit and publish completed successfully on commit $RUN_SHA. Recovery run: $RUN_URL"
               gh issue close "$issue" --repo "$REPO"
             done <<< "$issues"
