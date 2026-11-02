@@ -65,6 +65,25 @@ def normalize_upstream(value: str) -> str:
         return "peter-lowe"
     return value
 
+
+def shared_reference_pairs(records: list[dict], values_key: str, required_status: str) -> list[dict]:
+    """Return only record pairs sharing references, using an inverted index."""
+    inverted: dict[str, list[int]] = {}
+    for index, record in enumerate(records):
+        if record.get("status") != required_status:
+            continue
+        for value in set(str(x) for x in record.get(values_key, [])):
+            inverted.setdefault(value, []).append(index)
+    overlaps: dict[tuple[int, int], set[str]] = {}
+    for value, indexes in inverted.items():
+        for position, left in enumerate(indexes):
+            for right in indexes[position + 1:]:
+                overlaps.setdefault((left, right), set()).add(value)
+    return [
+        {"left": left, "right": right, "shared": sorted(values)}
+        for (left, right), values in sorted(overlaps.items())
+    ]
+
 def audit_registry(config: dict, fetcher=fetch_text, candidates: list[dict] | None = None, previous_report: dict | None = None) -> dict:
     sources = config.get("sources", [])
     inventories = []
