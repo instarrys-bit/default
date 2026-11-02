@@ -13,11 +13,11 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('workflows: ["Shadowrocket Deterministic Domain Audit (User Config Baseline)"]', workflow)
         self.assertIn("types: [completed]", workflow)
 
-    def test_only_failed_scheduled_or_push_runs_trigger_one_recovery(self):
+    def test_failed_timed_out_or_startup_failed_scheduled_or_push_runs_trigger_one_recovery(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn('SOURCE_CONCLUSION: ${{ github.event.workflow_run.conclusion }}', workflow)
         self.assertIn('SOURCE_EVENT: ${{ github.event.workflow_run.event }}', workflow)
-        self.assertIn('[ "$SOURCE_CONCLUSION" != "failure" ]', workflow)
+        self.assertIn('failure|timed_out|startup_failure)', workflow)
         self.assertIn('[ "$SOURCE_EVENT" != "schedule" ]', workflow)
         self.assertIn('[ "$SOURCE_EVENT" != "push" ]', workflow)
         self.assertIn("gh workflow run auto_sync.yml --ref main --repo \"$REPO\"", workflow)
