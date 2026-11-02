@@ -947,6 +947,7 @@
         "script_select_domain_rules",
         "script_sync_ruleset_config_conflicts",
         "script_validate_config",
+        "script_validate_program_registry",
         "script_verify_baseline"
       ],
       "dispatches": [],
