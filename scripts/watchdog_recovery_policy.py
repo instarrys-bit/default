@@ -90,7 +90,7 @@ def main() -> int:
     args = parser.parse_args()
 
     payload = json.load(sys.stdin)
-    runs = payload.get("workflow_runs", payload if isinstance(payload, list) else [])
+    runs = payload.get("workflow_runs", []) if isinstance(payload, dict) else payload
     if not isinstance(runs, list):
         raise SystemExit("workflow run input must be a list or contain workflow_runs")
     decision = decide_recovery(
