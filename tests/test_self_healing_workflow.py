@@ -12,6 +12,7 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn('[ "$REPAIR_ID" != "refresh_ruleset_manifest" ]', workflow)
         self.assertIn("gh pr create", workflow)
+        self.assertIn("gh workflow run self-healing-tests.yml --ref \"$BRANCH\"", workflow)
         self.assertNotIn("gh pr merge", workflow)
         self.assertIn("No speculative code changes were made.", workflow)
 
