@@ -1,0 +1,957 @@
+{
+  "schema_version": 1,
+  "registry_policy": {
+    "purpose": "Capability and dependency catalog for repository automation programs.",
+    "registration_required_for": "Any Python component under scripts/ and any GitHub Actions workflow under .github/workflows/.",
+    "collaboration_rule": "A program may run independently under its own entry point. Cross-program orchestration requires an explicit registry entry and declared workflow dependencies or dispatch targets.",
+    "permission_rule": "Registry declarations describe boundaries; they never grant permissions. The workflow job's least-privilege permissions remain authoritative.",
+    "activation_rule": "Registration is mandatory for CI acceptance, but does not by itself authorize automatic dispatch, rule activation, publication, or modification of shadowrocket/ss.conf."
+  },
+  "programs": [
+    {
+      "id": "script_append_step_summary",
+      "path": "scripts/append_step_summary.py",
+      "kind": "python_component",
+      "responsibility": "append GitHub Actions step summaries from structured report data",
+      "capabilities": [
+        "workflow_reporting"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_apply_safe_repair",
+      "path": "scripts/apply_safe_repair.py",
+      "kind": "python_component",
+      "responsibility": "apply only explicitly allowlisted deterministic repository repairs",
+      "capabilities": [
+        "allowlisted_repair"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_assess_sources",
+      "path": "scripts/assess_sources.py",
+      "kind": "python_component",
+      "responsibility": "assess candidate source availability, format, and evidence",
+      "capabilities": [
+        "source_assessment"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_audit_config_drift",
+      "path": "scripts/audit_config_drift.py",
+      "kind": "python_component",
+      "responsibility": "compare the user-managed configuration against its approved baseline",
+      "capabilities": [
+        "configuration_integrity"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_audit_external_domains",
+      "path": "scripts/audit_external_domains.py",
+      "kind": "python_component",
+      "responsibility": "audit external domain observations against current routing scope",
+      "capabilities": [
+        "external_domain_audit"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_audit_policy_source_overlap",
+      "path": "scripts/audit_policy_source_overlap.py",
+      "kind": "python_component",
+      "responsibility": "inspect policy-source overlap and declared source independence",
+      "capabilities": [
+        "source_independence_audit"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_audit_ruleset_config_overlap",
+      "path": "scripts/audit_ruleset_config_overlap.py",
+      "kind": "python_component",
+      "responsibility": "identify conflicts between published rulesets and the authoritative config",
+      "capabilities": [
+        "configuration_conflict_audit"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_audit_ruleset_references",
+      "path": "scripts/audit_ruleset_references.py",
+      "kind": "python_component",
+      "responsibility": "validate ruleset references and referenced artifacts",
+      "capabilities": [
+        "reference_validation"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_audit_source_lineage",
+      "path": "scripts/audit_source_lineage.py",
+      "kind": "python_component",
+      "responsibility": "inspect source lineage and upstream relationships",
+      "capabilities": [
+        "source_lineage_audit"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_auto_activate_sources",
+      "path": "scripts/auto_activate_sources.py",
+      "kind": "python_component",
+      "responsibility": "apply deterministic activation gates to eligible sources",
+      "capabilities": [
+        "source_activation_gate"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_build_project_status",
+      "path": "scripts/build_project_status.py",
+      "kind": "python_component",
+      "responsibility": "aggregate deterministic project and discovery health status",
+      "capabilities": [
+        "project_health_reporting"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_build_rule_provenance",
+      "path": "scripts/build_rule_provenance.py",
+      "kind": "python_component",
+      "responsibility": "generate provenance records for published rules",
+      "capabilities": [
+        "rule_provenance"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_build_rulesets",
+      "path": "scripts/build_rulesets.py",
+      "kind": "python_component",
+      "responsibility": "build the three policy-separated rulesets",
+      "capabilities": [
+        "ruleset_build"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_build_source_candidates",
+      "path": "scripts/build_source_candidates.py",
+      "kind": "python_component",
+      "responsibility": "build candidate source inventory from discovered repositories",
+      "capabilities": [
+        "candidate_generation"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_collect_domains",
+      "path": "scripts/collect_domains.py",
+      "kind": "python_component",
+      "responsibility": "fetch and normalize domains from enabled sources",
+      "capabilities": [
+        "domain_collection"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_deterministic_review",
+      "path": "scripts/deterministic_review.py",
+      "kind": "python_component",
+      "responsibility": "review domain candidates using deterministic evidence and safety gates",
+      "capabilities": [
+        "deterministic_evidence_review"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_diagnose_workflow_failure",
+      "path": "scripts/diagnose_workflow_failure.py",
+      "kind": "python_component",
+      "responsibility": "classify workflow failures from execution logs",
+      "capabilities": [
+        "workflow_diagnosis"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_discover_sources",
+      "path": "scripts/discover_sources.py",
+      "kind": "python_component",
+      "responsibility": "discover candidate public source repositories without activating them",
+      "capabilities": [
+        "source_discovery"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_domain_rule_engine",
+      "path": "scripts/domain_rule_engine.py",
+      "kind": "python_component",
+      "responsibility": "provide shared parsing, normalization, and matching primitives for domain rules",
+      "capabilities": [
+        "domain_rule_processing"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_import_request_observations",
+      "path": "scripts/import_request_observations.py",
+      "kind": "python_component",
+      "responsibility": "validate and import manually submitted hostname observations",
+      "capabilities": [
+        "manual_observation_intake"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_incident_state",
+      "path": "scripts/incident_state.py",
+      "kind": "python_component",
+      "responsibility": "validate and transition persisted incident lifecycle state",
+      "capabilities": [
+        "incident_lifecycle"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_json_document_store",
+      "path": "scripts/json_document_store.py",
+      "kind": "python_component",
+      "responsibility": "read and write validated large JSON or sharded JSONL documents",
+      "capabilities": [
+        "persistent_state_storage"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_lifecycle_audit",
+      "path": "scripts/lifecycle_audit.py",
+      "kind": "python_component",
+      "responsibility": "identify lifecycle candidates for conservative ruleset maintenance",
+      "capabilities": [
+        "ruleset_lifecycle_audit"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_lifecycle_gate",
+      "path": "scripts/lifecycle_gate.py",
+      "kind": "python_component",
+      "responsibility": "apply deterministic safety gates to lifecycle actions",
+      "capabilities": [
+        "ruleset_lifecycle_gate"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_refresh_ruleset_manifest",
+      "path": "scripts/refresh_ruleset_manifest.py",
+      "kind": "python_component",
+      "responsibility": "reconcile manifest metadata against published ruleset files",
+      "capabilities": [
+        "manifest_reconciliation"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_register_config_baseline",
+      "path": "scripts/register_config_baseline.py",
+      "kind": "python_component",
+      "responsibility": "register owner-approved configuration baseline changes",
+      "capabilities": [
+        "configuration_baseline_registration"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_restore_automation_state",
+      "path": "scripts/restore_automation_state.py",
+      "kind": "python_component",
+      "responsibility": "restore persisted automation state from validated artifacts",
+      "capabilities": [
+        "automation_state_restore"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_review_cursor",
+      "path": "scripts/review_cursor.py",
+      "kind": "python_component",
+      "responsibility": "manage deterministic review cursor state",
+      "capabilities": [
+        "review_cursor_management"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_select_domain_rules",
+      "path": "scripts/select_domain_rules.py",
+      "kind": "python_component",
+      "responsibility": "select and validate domain rules for the configured scope",
+      "capabilities": [
+        "domain_rule_selection"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_source_registry",
+      "path": "scripts/source_registry.py",
+      "kind": "python_component",
+      "responsibility": "validate the policy-labelled source registry and its evidence requirements",
+      "capabilities": [
+        "source_registry_validation"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_sync_ruleset_config_conflicts",
+      "path": "scripts/sync_ruleset_config_conflicts.py",
+      "kind": "python_component",
+      "responsibility": "synchronize ruleset conflicts against the read-only user configuration baseline",
+      "capabilities": [
+        "configuration_conflict_sync"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_validate_config",
+      "path": "scripts/validate_config.py",
+      "kind": "python_component",
+      "responsibility": "validate the Shadowrocket configuration structure and invariants",
+      "capabilities": [
+        "configuration_validation"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_validate_program_registry",
+      "path": "scripts/validate_program_registry.py",
+      "kind": "python_component",
+      "responsibility": "validate program registration, inventory, and orchestration dependencies",
+      "capabilities": [
+        "program_registry_validation"
+      ],
+      "invocation": "python_cli",
+      "inputs": [
+        "automation/program_registry.json",
+        "scripts/*.py",
+        " .github/workflows/*.yml and *.yaml"
+      ],
+      "outputs": [
+        "Validation summary or non-zero exit on registry drift"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Read-only repository inventory and registry validation; no GitHub token or repository write permission.",
+      "health_check": "Dedicated unit tests in tests/test_program_registry.py and required CI invocation."
+    },
+    {
+      "id": "script_verify_baseline",
+      "path": "scripts/verify_baseline.py",
+      "kind": "python_component",
+      "responsibility": "verify the approved configuration baseline",
+      "capabilities": [
+        "configuration_baseline_verification"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_verify_published_rulesets",
+      "path": "scripts/verify_published_rulesets.py",
+      "kind": "python_component",
+      "responsibility": "verify the published remote ruleset artifacts",
+      "capabilities": [
+        "publication_verification"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_verify_recovery_run",
+      "path": "scripts/verify_recovery_run.py",
+      "kind": "python_component",
+      "responsibility": "independently verify a completed audit and publication recovery run",
+      "capabilities": [
+        "recovery_independent_verification"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "script_watchdog_recovery_policy",
+      "path": "scripts/watchdog_recovery_policy.py",
+      "kind": "python_component",
+      "responsibility": "decide whether a failed audit qualifies for bounded infrastructure retry",
+      "capabilities": [
+        "bounded_recovery_policy"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+    },
+    {
+      "id": "workflow_auto_sync",
+      "path": ".github/workflows/auto_sync.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "scheduled and event-driven deterministic collection, review, ruleset build, validation, and publication",
+      "capabilities": [
+        "deterministic_audit"
+      ],
+      "invocation": "weekly schedule, relevant push, manual dispatch",
+      "inputs": [
+        "GitHub event payload",
+        "repository state and declared workflow inputs"
+      ],
+      "outputs": [
+        "workflow run result",
+        "reports, artifacts, and repository changes explicitly allowed by workflow jobs"
+      ],
+      "depends_on": [
+        "script_append_step_summary",
+        "script_apply_safe_repair",
+        "script_assess_sources",
+        "script_audit_config_drift",
+        "script_audit_external_domains",
+        "script_audit_policy_source_overlap",
+        "script_audit_ruleset_config_overlap",
+        "script_audit_ruleset_references",
+        "script_audit_source_lineage",
+        "script_auto_activate_sources",
+        "script_build_project_status",
+        "script_build_rule_provenance",
+        "script_build_rulesets",
+        "script_build_source_candidates",
+        "script_collect_domains",
+        "script_deterministic_review",
+        "script_diagnose_workflow_failure",
+        "script_discover_sources",
+        "script_domain_rule_engine",
+        "script_import_request_observations",
+        "script_json_document_store",
+        "script_lifecycle_audit",
+        "script_lifecycle_gate",
+        "script_refresh_ruleset_manifest",
+        "script_register_config_baseline",
+        "script_restore_automation_state",
+        "script_review_cursor",
+        "script_source_registry",
+        "script_sync_ruleset_config_conflicts",
+        "script_validate_config",
+        "script_verify_baseline",
+        "script_verify_published_rulesets"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
+      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured."
+    },
+    {
+      "id": "workflow_automation_watchdog",
+      "path": ".github/workflows/automation-watchdog.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "supervise audit health, bounded recovery, stale-run monitoring, and manifest integrity",
+      "capabilities": [
+        "top_level_supervision"
+      ],
+      "invocation": "hourly and daily schedule, workflow completion, relevant push, manual dispatch",
+      "inputs": [
+        "GitHub event payload",
+        "repository state and declared workflow inputs"
+      ],
+      "outputs": [
+        "workflow run result",
+        "reports, artifacts, and repository changes explicitly allowed by workflow jobs"
+      ],
+      "depends_on": [
+        "script_refresh_ruleset_manifest",
+        "script_verify_published_rulesets",
+        "script_watchdog_recovery_policy"
+      ],
+      "dispatches": [
+        "workflow_auto_sync"
+      ],
+      "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
+      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured."
+    },
+    {
+      "id": "workflow_request_intake",
+      "path": ".github/workflows/request-intake.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "accept and validate manually submitted hostname observations, then request deterministic audit",
+      "capabilities": [
+        "manual_observation_intake"
+      ],
+      "invocation": "manual dispatch",
+      "inputs": [
+        "GitHub event payload",
+        "repository state and declared workflow inputs"
+      ],
+      "outputs": [
+        "workflow run result",
+        "reports, artifacts, and repository changes explicitly allowed by workflow jobs"
+      ],
+      "depends_on": [],
+      "dispatches": [
+        "workflow_auto_sync"
+      ],
+      "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
+      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured."
+    },
+    {
+      "id": "workflow_self_healing_agent",
+      "path": ".github/workflows/self-healing-agent.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "diagnose supported workflow failures, propose allowlisted repairs, and manage incidents",
+      "capabilities": [
+        "failure_governance"
+      ],
+      "invocation": "workflow completion event",
+      "inputs": [
+        "GitHub event payload",
+        "repository state and declared workflow inputs"
+      ],
+      "outputs": [
+        "workflow run result",
+        "reports, artifacts, and repository changes explicitly allowed by workflow jobs"
+      ],
+      "depends_on": [
+        "script_apply_safe_repair",
+        "script_diagnose_workflow_failure",
+        "script_incident_state",
+        "script_refresh_ruleset_manifest",
+        "script_verify_recovery_run"
+      ],
+      "dispatches": [
+        "workflow_self_healing_tests"
+      ],
+      "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
+      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured."
+    },
+    {
+      "id": "workflow_self_healing_tests",
+      "path": ".github/workflows/self-healing-tests.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "validate self-healing repair proposals through deterministic tests",
+      "capabilities": [
+        "repair_validation"
+      ],
+      "invocation": "manual dispatch and repair workflow dispatch",
+      "inputs": [
+        "GitHub event payload",
+        "repository state and declared workflow inputs"
+      ],
+      "outputs": [
+        "workflow run result",
+        "reports, artifacts, and repository changes explicitly allowed by workflow jobs"
+      ],
+      "depends_on": [
+        "script_apply_safe_repair",
+        "script_diagnose_workflow_failure",
+        "script_incident_state",
+        "script_refresh_ruleset_manifest",
+        "script_verify_recovery_run",
+        "script_watchdog_recovery_policy"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
+      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured."
+    },
+    {
+      "id": "workflow_validate_config",
+      "path": ".github/workflows/validate-config.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "independently validate the user-managed configuration baseline and repository invariants",
+      "capabilities": [
+        "configuration_guard"
+      ],
+      "invocation": "relevant push and pull request",
+      "inputs": [
+        "GitHub event payload",
+        "repository state and declared workflow inputs"
+      ],
+      "outputs": [
+        "workflow run result",
+        "reports, artifacts, and repository changes explicitly allowed by workflow jobs"
+      ],
+      "depends_on": [
+        "script_audit_config_drift",
+        "script_audit_ruleset_config_overlap",
+        "script_audit_ruleset_references",
+        "script_build_rulesets",
+        "script_collect_domains",
+        "script_deterministic_review",
+        "script_domain_rule_engine",
+        "script_json_document_store",
+        "script_refresh_ruleset_manifest",
+        "script_register_config_baseline",
+        "script_select_domain_rules",
+        "script_sync_ruleset_config_conflicts",
+        "script_validate_config",
+        "script_verify_baseline"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
+      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured."
+    }
+  ]
+}

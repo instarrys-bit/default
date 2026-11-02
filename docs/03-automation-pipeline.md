@@ -55,3 +55,12 @@ The top-level Watchdog has two distinct audit-health checks:
 - A daily audit-freshness check uses an eight-day threshold for the weekly audit schedule. It dispatches a bounded replacement only when the latest successful audit is stale or its audited code inputs have been superseded.
 
 These are recovery triggers, not guarantees that GitHub Actions or external dependencies will always succeed.
+
+
+## Program registration and collaboration
+
+Every Python component in `scripts/` and every workflow in `.github/workflows/` is recorded in `automation/program_registry.json`. New program files must add a registry entry in the same change; workflow-to-script calls and workflow dispatches must also be declared. CI validates the inventory and dependency edges and rejects unregistered additions.
+
+Registration does not force programs into a central runtime. Each program keeps its own scheduled, event-driven, manual, or imported entry point. The registry is the contract for future coordination: Watchdog and any later scheduler may only consider registered capabilities and declared dependencies. Automatic invocation still requires an explicit dispatch policy and the target workflow's existing permissions.
+
+The registry is descriptive and fail-closed; it does not grant GitHub permissions, activate sources, approve domain rules, publish artifacts, or permit automation to modify `shadowrocket/ss.conf`.

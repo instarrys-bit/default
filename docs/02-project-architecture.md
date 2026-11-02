@@ -29,3 +29,13 @@
 Registries, ledgers, queues, archives, and snapshots are persistent project state, not disposable runner cache. Reports describe specific executions and do not override policy files or executable behavior.
 
 The manifest records publication counts and lifecycle changes. The automation's output directory is limited to `direct.list`, `proxy.list`, and `reject.list`.
+
+## Automation program capability registry
+
+`automation/program_registry.json` is the repository-wide catalog for every Python component under `scripts/` and every GitHub Actions workflow under `.github/workflows/`.
+
+Each entry declares its responsibility, capabilities, invocation model, inputs, outputs, dependencies, permission boundary, and health-check method. Workflow script calls and workflow dispatch targets are checked against the declared dependency graph.
+
+A new Python component or workflow must be registered in the same change. CI fails closed if a program file is missing from the registry, a stale path remains, or a workflow invokes/dispatches a program without declaring that dependency.
+
+Registration is a prerequisite for future cross-program orchestration, not an automatic permission grant. Independent entry points remain available. The workflow's job-level permissions remain authoritative, and registration alone never authorizes publication, rule activation, or edits to `shadowrocket/ss.conf`.
