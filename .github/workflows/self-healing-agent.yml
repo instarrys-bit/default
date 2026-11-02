@@ -58,6 +58,8 @@ jobs:
             --out reports/self-healing/diagnosis.json
           cat reports/self-healing/diagnosis.json >> "$GITHUB_STEP_SUMMARY"
           echo "repair_id=$(python3 -c 'import json; print(json.load(open("reports/self-healing/diagnosis.json")).get("repair_id") or "")')" >> "$GITHUB_OUTPUT"
+          echo "classification=$(python3 -c 'import json; print(json.load(open("reports/self-healing/diagnosis.json"))["classification"])')" >> "$GITHUB_OUTPUT"
+          echo "failed_steps_count=$(python3 -c 'import json; print(len(json.load(open("reports/self-healing/diagnosis.json"))["failed_steps"]))')" >> "$GITHUB_OUTPUT"
 
       - name: Apply allowlisted repair and run tests
         id: repair
@@ -111,7 +113,7 @@ jobs:
           gh workflow run self-healing-tests.yml --ref "$BRANCH" --repo "$REPO"
 
       - name: Open incident when no safe repair applies
-        if: ${{ steps.repair.outputs.changed != 'true' }}
+        if: ${{ steps.repair.outputs.changed != 'true' && steps.diagnosis.outputs.classification != 'STALE_SUPERSEDED' && steps.diagnosis.outputs.failed_steps_count != '0' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
