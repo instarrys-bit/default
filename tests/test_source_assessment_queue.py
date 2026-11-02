@@ -40,6 +40,18 @@ class AssessmentQueueTests(unittest.TestCase):
         self.assertEqual([x["url"] for x in flattened], ["seed", "z", "a"])
         self.assertEqual(len({x["url"] for x in flattened}), 3)
 
+    def test_parser_cache_requires_matching_content_hash_and_policy_claims(self):
+        assessor = load_assessor()
+        previous = {
+            "sha256": "a" * 64,
+            "readme_policy_claims": ["DIRECT"],
+            "parser_candidate": "domain-only",
+        }
+        self.assertTrue(assessor.assessment_cache_hit(previous, "a" * 64, ["DIRECT"]))
+        self.assertFalse(assessor.assessment_cache_hit(previous, "b" * 64, ["DIRECT"]))
+        self.assertFalse(assessor.assessment_cache_hit(previous, "a" * 64, ["PROXY"]))
+        self.assertFalse(assessor.assessment_cache_hit({"error": "offline"}, "a" * 64, ["DIRECT"]))
+
 
 if __name__ == "__main__":
     unittest.main()
