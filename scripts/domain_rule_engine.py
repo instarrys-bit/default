@@ -120,7 +120,7 @@ def analyze_candidate(domain: str, is_suffix: bool, rules):
 
 
 
-def inspect_suffix_scope(domain: str, policy: str, rules, conditional, protected, skip_proxy=(), rule_boundary=None):
+def inspect_suffix_scope(domain: str, policy: str, rules, conditional, protected, skip_proxy=()):
     """Check full-scope coverage and safety holds without evaluating rule order."""
     domain = domain.lower().rstrip(".")
     policy = policy.upper()
