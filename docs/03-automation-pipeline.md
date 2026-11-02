@@ -4,7 +4,7 @@
 
 The project is designed for deterministic unattended operation. The review and build pipeline must not depend on AI, LLM services, model APIs, API keys, or manual per-domain review.
 
-The principal publisher workflow is `.github/workflows/auto_sync.yml`. It runs weekly on Monday at 04:00 Beijing time, on relevant pushes, or by manual dispatch. A separate daily watchdog checks the latest successful run and may redispatch an audit when the configured health conditions are met.
+The principal publisher workflow is `.github/workflows/auto_sync.yml`. It runs weekly on Monday at 04:00 Beijing time, on relevant pushes, or by manual dispatch. A separate daily watchdog checks the latest successful run and dispatches recovery only when the last success is older than eight days; failed scheduled or push runs receive one immediate recovery attempt.
 
 Source discovery searches bilingual and open-source project keywords with up to 10 GitHub Search pages per query, reads up to 1,000 repository READMEs, and scans up to 500 repository Git Trees (up to 3,000 entries per tree) for `.list`, `.txt`, and `.conf` candidates. Discovery does not assign policy or activate sources. The assessor is bounded to 5,000 URLs, 5 MB per file, and 250 MB total read data; downstream overlap audit allows 30 MB per file and 500 MB total.
 
