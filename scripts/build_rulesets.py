@@ -86,7 +86,7 @@ def main():
     required_by_policy=scoring.get("required_sources_by_policy",{})
     minimum=int(scoring.get("minimum_independent_sources",2))
     threshold=float(scoring.get("minimum_confidence",0.8))
-    current=json.loads(CURRENT_SNAPSHOT.read_text(encoding="utf-8"))
+    current=read_document(CURRENT_SNAPSHOT,"candidates",{"candidates":[]})
     current_hashes={x["id"]:x["sha256"] for x in current.get("sources",[])}
     enabled_source_ids={sid for sid,source in source_map.items() if source.get("enabled",True) is not False}
     if set(current_hashes)!=enabled_source_ids:
