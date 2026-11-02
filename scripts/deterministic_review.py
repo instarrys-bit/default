@@ -14,6 +14,7 @@ CANDIDATES=ROOT/"data/candidates.json"
 OUTPUT=ROOT/"sources/domain_reviews.json"
 CURSOR=ROOT/"sources/review_cursor.json"
 SOURCE_MATRIX=ROOT/"sources/source_candidates.json"
+LINEAGE_REPORT=ROOT/"reports/source-lineage-audit.json"
 LIFECYCLE_STATE=ROOT/"rulesets/lifecycle_state.json"
 RULESET_DIR=ROOT/"rulesets"
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
@@ -99,6 +100,17 @@ def load_correlated_publishers():
         if item.get("relation") not in {"high_overlap","near_duplicate"}: continue
         repos=item.get("repositories",[])
         if len(repos)==2 and repos[0]!=repos[1]: pairs.add(tuple(sorted((str(repos[0]),str(repos[1])))))
+    # Shared upstream references are correlation warnings, not proof of common data ancestry.
+    if LINEAGE_REPORT.exists() and POLICY.exists():
+        lineage=json.loads(LINEAGE_REPORT.read_text(encoding="utf-8"))
+        registry=json.loads(POLICY.read_text(encoding="utf-8"))
+        publisher_by_id={str(item.get("id")):str(item.get("publisher")) for item in registry.get("sources",[])}
+        for item in lineage.get("shared_upstream_pairs",[]):
+            source_ids=item.get("sources",[])
+            if len(source_ids)!=2: continue
+            left=publisher_by_id.get(str(source_ids[0]))
+            right=publisher_by_id.get(str(source_ids[1]))
+            if left and right and left!=right: pairs.add(tuple(sorted((left,right))))
     return pairs
 
 def atomic_json(path,payload):
