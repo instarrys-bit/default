@@ -37,16 +37,21 @@ def owner_approved_push_changed_config() -> bool:
 
 def owner_approved_config_history(guard: dict) -> list[str]:
     """Recover interrupted registration only from owner-authored config commits."""
-    if os.environ.get("GITHUB_EVENT_NAME") != "push":
+    event = os.environ.get("GITHUB_EVENT_NAME", "")
+    if event not in {"push", "workflow_dispatch"}:
         return []
     actor = os.environ.get("GITHUB_ACTOR", "")
     owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "")
     ref = os.environ.get("GITHUB_REF", "")
+    if event == "push" and (not actor or actor != owner):
+        return []
+    if event == "workflow_dispatch" and ref != "refs/heads/main":
+        return []
     after = os.environ.get("GITHUB_SHA", "")
     repo = os.environ.get("GITHUB_REPOSITORY", "")
     baseline_commit = str(guard.get("last_user_approved_baseline_update", {}).get("commit_sha", ""))
     if (
-        not actor or actor != owner or ref != "refs/heads/main"
+        not owner or ref != "refs/heads/main"
         or not after or not repo or not baseline_commit
         or set(after) == {"0"} or set(baseline_commit) == {"0"}
     ):
