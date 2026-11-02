@@ -7,25 +7,13 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from audit_ruleset_config_overlap import (
     all_rule_lines,
     audit,
-    first_ruleset_line,
     match_candidate,
-    prior_rule_lines,
     scope_covers_candidate,
     skip_proxy_match,
 )
 
 
 class RulesetConfigOverlapTests(unittest.TestCase):
-    def test_legacy_prior_rule_helper_stops_at_first_ruleset(self):
-        config = """[Rule]
-DOMAIN,api.example.com,DIRECT
-RULE-SET,https://example.invalid/proxy.list,PROXY
-DOMAIN,late.example.com,REJECT
-[Host]
-"""
-        self.assertEqual(prior_rule_lines(config), [(2, "DOMAIN,api.example.com,DIRECT")])
-        self.assertEqual(first_ruleset_line(config), 3)
-
     def test_scope_audit_reads_all_rule_lines_without_ordering(self):
         config = """[Rule]
 RULE-SET,https://example.invalid/proxy.list,PROXY
