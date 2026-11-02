@@ -17,7 +17,7 @@ def verify_artifacts(manifest, queue, rule_files, policy, config_bytes):
     expected={p.lower()+".list" for p in POLICIES}
     if set(rule_files)!=expected:
         raise ValueError("remote rule-set file inventory is not exactly DIRECT/PROXY/REJECT")
-    if manifest.get("outputs")!=sorted(expected):
+    if set(manifest.get("outputs",[]))!=expected or len(manifest.get("outputs",[]))!=len(expected):
         raise ValueError("manifest output inventory does not match the three policy files")
     if int(manifest.get("max_published_rules",0))!=30000 or int(queue.get("max_published_rules",0))!=30000:
         raise ValueError("published capacity must remain exactly 30,000")
