@@ -325,7 +325,7 @@ def main():
     if actual_outputs!=expected_outputs:
         raise ValueError("rule-set output directory contains unexpected or missing policy lists")
     candidate_matrix_path=ROOT/"sources/source_candidates.json"
-    candidate_matrix=json.loads(candidate_matrix_path.read_text(encoding="utf-8")) if candidate_matrix_path.exists() else {}
+    candidate_matrix=read_document(candidate_matrix_path,"candidates",{"candidates":[]})
     manifest={
         "schema_version":2,
         "source_ledger":"sources/domain_reviews.json",
