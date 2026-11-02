@@ -6,6 +6,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 from datetime import datetime,timezone
 from source_registry import validate_registry
+from json_document_store import read_document, write_document
 
 ROOT=Path(__file__).resolve().parents[1]
 SOURCES=ROOT/"sources/domain_sources.json"
@@ -267,7 +268,7 @@ def main():
         raise ValueError("no enabled sources are configured")
     now=datetime.now(timezone.utc).isoformat()
     if OUTPUT.exists():
-        previous_output=json.loads(OUTPUT.read_text(encoding="utf-8"))
+        previous_output=read_document(OUTPUT,"candidates",{"candidates":[]})
     else:
         manifest_path=ROOT/"rulesets/manifest.json"
         previous_manifest=json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
@@ -394,7 +395,7 @@ def main():
     PENDING.parent.mkdir(parents=True,exist_ok=True)
     PENDING.write_text(json.dumps({"schema_version":1,"updated_at":now,"sources":pending_sources},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     OUTPUT.parent.mkdir(parents=True,exist_ok=True)
-    OUTPUT.write_text(json.dumps({
+    write_document(OUTPUT,{
         "schema_version":3,
         "collected_at":now,
         "source_count":len(source_data),
@@ -404,7 +405,7 @@ def main():
         "candidate_count":len(rows),
         "policy_conflict_count":sum(1 for row in rows if row["classification"]=="CONFLICT"),
         "candidates":rows
-    },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    },"candidates")
     print("Multi-source collection complete: "+json.dumps({
         sid:{"entries":len(info["previous"]) if info["stale"] and info["previous"] is not None else len(info["domains"]),"added":len(deltas[sid]["added"]),"removed":len(deltas[sid]["removed"]),"status":"STALE_QUARANTINED" if info["stale"] else "CURRENT","baseline_initialized":deltas[sid]["bootstrap"]}
         for sid,info in sorted(source_data.items())
