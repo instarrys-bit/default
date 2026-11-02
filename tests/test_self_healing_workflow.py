@@ -41,6 +41,11 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("GH_TOKEN", repair_step)
         self.assertIn("persist-credentials: false", workflow)
 
+    def test_missing_or_completed_review_cursor_is_a_successful_noop(self):
+        workflow = AUTO_SYNC.read_text(encoding="utf-8")
+        self.assertIn('print("Cursor is not in progress; no checkpoint needs persistence.")', workflow)
+        self.assertIn('print("Cursor has no completed checkpoint; nothing to persist.")', workflow)
+
     def test_user_owned_config_is_never_added_to_repair_commit(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("git add .github/workflows/auto_sync.yml", workflow)
