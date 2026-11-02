@@ -117,6 +117,7 @@
     "mandatory_vetoes": [
       "A fully covering explicit DOMAIN or DOMAIN-SUFFIX scope with a different policy blocks publication",
       "Mixed-policy full-scope coverage is held for review without selecting a winner",
+      "Any unresolved conditional AND/OR/NOT overlap blocks publication",
       "Any critical-function protection-list match blocks publication",
       "Any malformed source snapshot, excessive source drift, duplicate ledger key or failed validator pauses the batch",
       "Single-label root suffix entries are excluded; duplicate entries are deduplicated"
