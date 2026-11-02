@@ -180,6 +180,40 @@ jobs:
           fi
 
 
+  report-agent-failure:
+    needs: [diagnose-and-repair]
+    if: ${{ always() && github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'timed_out' || github.event.workflow_run.conclusion == 'startup_failure') && needs.diagnose-and-repair.result == 'failure' }}
+    permissions:
+      issues: write
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Open self-healing agent execution incident
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+          SOURCE_RUN_URL: ${{ github.event.workflow_run.html_url }}
+          SOURCE_WORKFLOW: ${{ github.event.workflow_run.name }}
+          AGENT_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          case "$SOURCE_WORKFLOW" in
+            "Shadowrocket Deterministic Domain Audit (User Config Baseline)") workflow_key="deterministic_audit" ;;
+            "Validate Shadowrocket config against user baseline") workflow_key="config_validator" ;;
+            *) echo "Unsupported source workflow; refusing to misclassify agent failure."; exit 1 ;;
+          esac
+          title="Self-healing agent failure: $workflow_key (source run $SOURCE_RUN_ID)"
+          marker="<!-- shadowrocket-automation:agent_failure;workflow=$workflow_key;source_run_id=$SOURCE_RUN_ID -->"
+          body="The self-healing agent itself failed while processing a main-branch workflow failure.\n\nSource run: $SOURCE_RUN_URL\nAgent run: $AGENT_RUN_URL\n\n$marker\n\nNo speculative project changes were made. Inspect the agent run logs and diagnosis/repair stage."
+          existing="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title | jq --arg title "$title" -r '.[] | select(.title == $title) | .number' | head -n 1)"
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "$REPO" --body "$body"
+            gh issue edit "$existing" --repo "$REPO" --body "$body"
+          else
+            gh issue create --repo "$REPO" --title "$title" --body "$body"
+          fi
+
   resolve-validator-incidents:
     permissions:
       issues: write
@@ -206,6 +240,12 @@ jobs:
               gh issue close "$issue" --repo "$REPO"
             done <<< "$issues"
           done
+          agent_issues="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select(.title | startswith("Self-healing agent failure: config_validator (source run ")) | select(.body | contains("shadowrocket-automation:agent_failure;workflow=config_validator;source_run_id=")) | select(((.body | capture("shadowrocket-automation:agent_failure;workflow=config_validator;source_run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
+          while IFS= read -r issue; do
+            [ -n "$issue" ] || continue
+            gh issue comment "$issue" --repo "$REPO" --body "The config-baseline validator has recovered on a later main-branch run: $RUN_URL"
+            gh issue close "$issue" --repo "$REPO"
+          done <<< "$agent_issues"
 
 
   resolve-audit-incidents:
@@ -234,6 +274,12 @@ jobs:
             gh issue comment "$issue" --repo "$REPO" --body "A subsequent full deterministic audit and publish completed successfully on commit $RUN_SHA. Recovery run: $RUN_URL"
             gh issue close "$issue" --repo "$REPO"
           done <<< "$issues"
+          agent_issues="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select(.title | startswith("Self-healing agent failure: deterministic_audit (source run ")) | select(.body | contains("shadowrocket-automation:agent_failure;workflow=deterministic_audit;source_run_id=")) | select(((.body | capture("shadowrocket-automation:agent_failure;workflow=deterministic_audit;source_run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
+          while IFS= read -r issue; do
+            [ -n "$issue" ] || continue
+            gh issue comment "$issue" --repo "$REPO" --body "The deterministic audit and publish have recovered on a later main-branch run: $RUN_URL"
+            gh issue close "$issue" --repo "$REPO"
+          done <<< "$agent_issues"
 
   stale-run-watch:
     permissions:
