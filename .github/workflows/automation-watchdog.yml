@@ -162,13 +162,14 @@ jobs:
 
       - name: Verify published rulesets, manifest and protected baseline
         id: verify
+        continue-on-error: true
         run: |
           set -euo pipefail
           python3 scripts/verify_published_rulesets.py --ref HEAD | tee /tmp/published-integrity.json
           cat /tmp/published-integrity.json >> "$GITHUB_STEP_SUMMARY"
 
       - name: Dispatch one bounded reconciliation audit on mismatch
-        if: ${{ failure() && steps.verify.outcome == 'failure' && !(github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch') }}
+        if: ${{ steps.verify.outcome == 'failure' && !(github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch') }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
@@ -183,7 +184,7 @@ jobs:
           gh workflow run auto_sync.yml --ref main --repo "$REPO"
 
       - name: Open bounded integrity incident if reconciliation did not repair
-        if: ${{ failure() && steps.verify.outcome == 'failure' && github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch' }}
+        if: ${{ steps.verify.outcome == 'failure' && (github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch')) }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
