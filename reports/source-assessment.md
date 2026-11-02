@@ -19,9 +19,9 @@
 | sve1r/Rules-For-Quantumult-X | quantumult-domain-rules | — | 249 | unchanged | ambiguous |
 | sve1r/Rules-For-Quantumult-X | quantumult-domain-rules | PROXY | 574 | unchanged | explicit_third_field |
 | sve1r/Rules-For-Quantumult-X | unsupported_or_too_small | — | 16 | unchanged | ambiguous |
-| gatework/surge-rules | domain-only | — | 110091 | domain_set_changed | ambiguous |
+| gatework/surge-rules | domain-only | — | 110091 | unchanged | ambiguous |
 | gatework/surge-rules | domain-only | PROXY | 4451 | unchanged | README_policy_reference |
-| gatework/surge-rules | domain-only | — | 27263 | domain_set_changed | ambiguous |
+| gatework/surge-rules | domain-only | — | 27263 | unchanged | ambiguous |
 | Clash-FX/cn-apps-direct-domains | shadowrocket-domain-rules | DIRECT | 120 | unchanged | explicit_third_field |
 | Jovanykoch/rules | domain-only | — | 4367 | unchanged | ambiguous |
 | Jovanykoch/rules | domain-only | DIRECT | 6751 | unchanged | README_policy_reference |
@@ -60,8 +60,8 @@
 ## Source update drift
 
 - New source files: 0
-- Changed source files: 2
-- Added domain entries: 12
+- Changed source files: 0
+- Added domain entries: 0
 - Removed domain entries: 0
 - Policy changes: 0
 
