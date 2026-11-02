@@ -414,35 +414,45 @@ jobs:
             exit 1
           }
 
-          git add -- \
-            sources/policy.json \
-            sources/domain_sources.json \
-            sources/source_activation_log.json \
-            reports/lifecycle \
-            reports/project-status.md \
-            reports/project-status.json \
-            reports/automation/heartbeat.json \
-            reports/automation/state_store.json \
-            reports/external-domain-audit.md \
-            reports/config-drift-audit.md \
-            reports/config-drift-audit.json \
-            reports/ruleset-reference-audit.md \
-            reports/ruleset-reference-audit.json \
-            reports/ruleset-config-overlap-audit.md \
-            reports/ruleset-config-overlap-audit.json \
-            reports/ruleset-config-conflict-sync.md \
-            reports/ruleset-config-conflict-sync.json \
-            reports/source-lineage-audit.json \
-            reports/source-discovery.md \
-            reports/source-assessment.md \
-            reports/source-candidate-matrix.md \
-            reports/source-activation.md \
-            reports/policy-source-overlap.md \
-            sources/policy_source_overlap.json \
-            sources/discovered_sources.json \
-            sources/source_assessments.json \
-            sources/source_candidates.json \
+          # Optional audit outputs are staged only when present in this run.
+          # Missing optional files must not abort an otherwise valid publication.
+          publish_paths=(
+            sources/policy.json
+            sources/domain_sources.json
+            sources/source_activation_log.json
+            reports/lifecycle
+            reports/project-status.md
+            reports/project-status.json
+            reports/automation/heartbeat.json
+            reports/automation/state_store.json
+            reports/external-domain-audit.md
+            reports/config-drift-audit.md
+            reports/config-drift-audit.json
+            reports/ruleset-reference-audit.md
+            reports/ruleset-reference-audit.json
+            reports/ruleset-config-overlap-audit.md
+            reports/ruleset-config-overlap-audit.json
+            reports/ruleset-config-conflict-sync.md
+            reports/ruleset-config-conflict-sync.json
+            reports/source-lineage-audit.json
+            reports/source-discovery.md
+            reports/source-assessment.md
+            reports/source-candidate-matrix.md
+            reports/source-activation.md
+            reports/policy-source-overlap.md
+            sources/policy_source_overlap.json
+            sources/discovered_sources.json
+            sources/source_assessments.json
+            sources/source_candidates.json
             rulesets/
+          )
+          for path in "${publish_paths[@]}"; do
+            if [[ -e "$path" ]]; then
+              git add -- "$path"
+            else
+              echo "Optional publish path absent; skipping: $path"
+            fi
+          done
 
           # Explicitly fail if the protected config somehow entered the staged commit.
           git diff --cached --quiet "$GITHUB_SHA" -- shadowrocket/ss.conf || {
