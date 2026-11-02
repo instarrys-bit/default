@@ -135,17 +135,6 @@ def parse_skip_proxy(text):
 def overlaps(domain, rule_domain):
     rule_domain=rule_domain.lower().strip(".")
     return domain==rule_domain or domain.endswith("."+rule_domain)
-@lru_cache(maxsize=8)
-def first_ruleset_line(text):
-    in_rules=False
-    for number,raw in enumerate(text.splitlines(),1):
-        line=raw.strip()
-        if line.startswith("[") and line.endswith("]"):
-            in_rules=line[1:-1].strip().lower()=="rule"
-            continue
-        if in_rules and line and not line.startswith("#") and line.upper().startswith("RULE-SET,"):
-            return number
-    return None
 
 @lru_cache(maxsize=8)
 def special_rule_lines(text):
@@ -351,7 +340,7 @@ def main():
             scope_status,scope_reason=(None,None)
             if source_entry_type=="suffix_candidate":
                 scope_status,scope_reason=inspect_suffix_scope(
-                    domain,policy,index,conditional,protected,parse_skip_proxy(base),first_ruleset_line(base)
+                    domain,policy,index,conditional,protected,parse_skip_proxy(base)
                 )
             if scope_status:
                 status,reason=scope_status,scope_reason
