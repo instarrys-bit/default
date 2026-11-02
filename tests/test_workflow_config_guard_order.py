@@ -96,5 +96,9 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("gh issue close", resolver)
 
 
+    def test_audit_incident_resolution_matches_titles_with_run_suffixes(self):
+        workflow = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")
+        self.assertIn('startswith("Self-healing incident: UNCLASSIFIED_STEP_FAILURE")', workflow)
+
 if __name__ == "__main__":
     unittest.main()
