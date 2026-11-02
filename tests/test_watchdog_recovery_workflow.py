@@ -11,6 +11,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
     def test_watchdog_observes_completed_main_audit_runs(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("workflow_run:", workflow)
+        self.assertIn('    - cron: "0 * * * *"', workflow)
         self.assertIn('      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"', workflow)
         self.assertIn('      - "Validate Shadowrocket config against user baseline"', workflow)
         self.assertIn("types: [completed]", workflow)
@@ -68,13 +69,15 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
     def test_existing_heartbeat_and_stale_run_monitor_cover_distinct_health_signals(self):
         audit = AUTO_SYNC.read_text(encoding="utf-8")
         healing = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("reports/automation/heartbeat.json", audit)
         self.assertIn("Write successful audit heartbeat", audit)
-        self.assertIn("stale-run-watch:", healing)
-        self.assertIn("run_started_at", healing)
-        self.assertIn("21600", healing)
-        self.assertIn("run.get(\"head_branch\") != \"main\"", healing)
-        self.assertIn("gh run cancel", healing)
+        self.assertIn("stale-run-watch:", watchdog)
+        self.assertNotIn("stale-run-watch:", healing)
+        self.assertIn("run_started_at", watchdog)
+        self.assertIn("21600", watchdog)
+        self.assertIn("run.get(\"head_branch\") != \"main\"", watchdog)
+        self.assertIn("gh run cancel", watchdog)
 
     def test_watchdog_deduplicates_all_active_run_states_before_dispatch(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")

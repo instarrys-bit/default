@@ -5,6 +5,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github" / "workflows" / "self-healing-agent.yml"
 AUTO_SYNC = ROOT / ".github" / "workflows" / "auto_sync.yml"
+WATCHDOG = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
 
 
 class SelfHealingWorkflowTests(unittest.TestCase):
@@ -36,10 +37,10 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn("The config-baseline validator has recovered", workflow)
 
     def test_stale_watchdog_threshold_exceeds_main_job_timeout(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
         auto_sync = AUTO_SYNC.read_text(encoding="utf-8")
         self.assertIn("timeout-minutes: 300", auto_sync)
-        self.assertIn("> 21600", workflow)
+        self.assertIn("> 21600", watchdog)
 
     def test_manifest_reconciliation_runs_after_final_config_scope_coverage(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
@@ -108,7 +109,7 @@ class SelfHealingWorkflowTests(unittest.TestCase):
 
 
     def test_stale_watch_cancels_superseded_audits_before_timeout(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
+        workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn('run.get("head_sha") != current_main', workflow)
         self.assertIn('repos/$REPO/compare/$run_sha...$current_main', workflow)
         self.assertIn('only docs/ changed after its audited commit', workflow)
@@ -120,8 +121,11 @@ class SelfHealingWorkflowTests(unittest.TestCase):
 
     def test_hourly_watchdog_is_the_recovery_entrypoint_without_self_triggering_pushes(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn('    - cron: "0 * * * *"', workflow)
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
+        self.assertNotIn('    - cron: "0 * * * *"', workflow)
+        self.assertIn('    - cron: "0 * * * *"', watchdog)
         self.assertNotIn("  push:", workflow)
+        self.assertNotIn("  stale-run-watch:", workflow)
 
 
 
@@ -138,10 +142,10 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("contents: write", top_level)
         diagnose = workflow.split("  diagnose-and-repair:", 1)[1].split("  resolve-validator-incidents:", 1)[0]
         self.assertIn("contents: write", diagnose)
-        resolver = workflow.split("  resolve-validator-incidents:", 1)[1].split("  stale-run-watch:", 1)[0]
+        resolver = workflow.split("  resolve-validator-incidents:", 1)[1].split("  resolve-audit-incidents:", 1)[0]
         self.assertIn("issues: write", resolver)
         self.assertNotIn("contents: write", resolver)
-        watcher = workflow.split("  stale-run-watch:", 1)[1]
+        watcher = WATCHDOG.split("  stale-run-watch:", 1)[1]
         self.assertIn("actions: write", watcher)
         self.assertIn("contents: read", watcher)
         self.assertNotIn("pull-requests: write", watcher)
@@ -150,7 +154,7 @@ class SelfHealingWorkflowTests(unittest.TestCase):
 
     def test_audit_incidents_close_only_after_independent_publish_verification(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        resolver = workflow.split("  resolve-audit-incidents:", 1)[1].split("  stale-run-watch:", 1)[0]
+        resolver = workflow.split("  resolve-audit-incidents:", 1)[1]
         self.assertIn('gh api "repos/$REPO/actions/runs/$RUN_ID"', resolver)
         self.assertIn('gh api --paginate --slurp "repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100"', resolver)
         self.assertIn("python3 scripts/verify_recovery_run.py", resolver)
@@ -177,7 +181,7 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("gh run cancel", watchdog.split("  manifest-integrity:", 1)[0])
         self.assertIn("persist-credentials: false", watchdog)
         self.assertNotIn("shadowrocket/ss.conf", policy)
-        stale_watcher = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")
+        stale_watcher = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("scripts/watchdog_recovery_policy.py --source-run-id 0 --source-sha", stale_watcher)
         self.assertIn("Scheduled recovery suppressed", stale_watcher)
 
