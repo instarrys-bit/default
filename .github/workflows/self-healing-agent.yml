@@ -199,6 +199,33 @@ jobs:
             done <<< "$issues"
           done
 
+
+  resolve-audit-incidents:
+    permissions:
+      issues: write
+    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Close recovered deterministic-audit incidents
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          RUN_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          issues="$(gh issue list --repo "$REPO" --state open --search '"UNCLASSIFIED_STEP_FAILURE" in:title' --json number,title --jq '.[] | select(.title == "Self-healing incident: UNCLASSIFIED_STEP_FAILURE") | .number')"
+          if [ -z "$issues" ]; then
+            echo "No open deterministic-audit self-healing incidents to resolve."
+            exit 0
+          fi
+          while IFS= read -r issue; do
+            [ -n "$issue" ] || continue
+            gh issue comment "$issue" --repo "$REPO" --body "A subsequent full deterministic audit and publish completed successfully on commit $RUN_SHA. Recovery run: $RUN_URL"
+            gh issue close "$issue" --repo "$REPO"
+          done <<< "$issues"
+
   stale-run-watch:
     permissions:
       actions: write
