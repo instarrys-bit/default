@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T19:28:40.662166+00:00",
+  "generated_at": "2026-11-02T21:59:40.999842+00:00",
   "health": "CHECK",
   "integrity": {
     "config_baseline_match": true,
@@ -57,12 +57,12 @@
     },
     "discovered_repository_count": 1557,
     "assessed_file_count": 9018,
-    "source_candidate_count": 14,
-    "activated_this_run": 3,
+    "source_candidate_count": 43,
+    "activated_this_run": 0,
     "cumulative_auto_activations": 7,
-    "lineage_audited_count": 8,
+    "lineage_audited_count": 11,
     "lineage_partial_count": 2,
-    "lineage_unverified_count": 8,
+    "lineage_unverified_count": 11,
     "lineage_verified_count": 0
   },
   "source_discovery": {

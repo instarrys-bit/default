@@ -60,10 +60,10 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 102241,
+      "new_entries": 0,
       "removed_entries": 0,
-      "baseline_initialized": true,
-      "bootstrap_enqueued": true
+      "baseline_initialized": false,
+      "bootstrap_enqueued": false
     },
     {
       "id": "auto-furkan-bayrak-lg-tv-blocklist-369778d8",
@@ -76,10 +76,10 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 115,
+      "new_entries": 0,
       "removed_entries": 0,
-      "baseline_initialized": true,
-      "bootstrap_enqueued": true
+      "baseline_initialized": false,
+      "bootstrap_enqueued": false
     },
     {
       "id": "auto-gatework-surge-rules-da7f8038",
@@ -156,10 +156,10 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 5546,
+      "new_entries": 0,
       "removed_entries": 0,
-      "baseline_initialized": true,
-      "bootstrap_enqueued": true
+      "baseline_initialized": false,
+      "bootstrap_enqueued": false
     },
     {
       "id": "clashfx-cn-apps-direct",
@@ -312,27 +312,27 @@
   "lineage_not_fully_verified_sources": 13,
   "source_candidate_summary": {
     "DIRECT": {
-      "candidate_publishers": 2,
-      "eligible_publishers": 0,
-      "independent_eligible_groups": 0,
-      "candidate_files": 3,
-      "cross_policy_conflict_count": 2,
-      "activation_ready": false
+      "candidate_publishers": 9,
+      "eligible_publishers": 6,
+      "independent_eligible_groups": 6,
+      "candidate_files": 14,
+      "cross_policy_conflict_count": 0,
+      "activation_ready": true
     },
     "PROXY": {
-      "candidate_publishers": 3,
-      "eligible_publishers": 3,
-      "independent_eligible_groups": 3,
-      "candidate_files": 6,
-      "cross_policy_conflict_count": 2,
+      "candidate_publishers": 13,
+      "eligible_publishers": 12,
+      "independent_eligible_groups": 12,
+      "candidate_files": 26,
+      "cross_policy_conflict_count": 0,
       "activation_ready": true
     },
     "REJECT": {
-      "candidate_publishers": 9,
-      "eligible_publishers": 5,
-      "independent_eligible_groups": 5,
-      "candidate_files": 47,
-      "cross_policy_conflict_count": 2,
+      "candidate_publishers": 21,
+      "eligible_publishers": 14,
+      "independent_eligible_groups": 14,
+      "candidate_files": 156,
+      "cross_policy_conflict_count": 0,
       "activation_ready": true
     }
   },
@@ -349,46 +349,24 @@
   "pending_queue": "rulesets/pending_queue.json",
   "rule_lifecycle": {
     "DIRECT": {
-      "previous_count": 133,
+      "previous_count": 143,
       "current_count": 143,
-      "added_count": 10,
+      "added_count": 0,
       "removed_count": 0,
-      "previous_sha256": "ab88d04857b0a19e6510179b69d10d51b8ac8087a27b2957eb532dd648f76035",
+      "previous_sha256": "c56eb38be10d0b8891526cc4bba2296593bee32db57906efc32a6cafb64fb799",
       "current_sha256": "c56eb38be10d0b8891526cc4bba2296593bee32db57906efc32a6cafb64fb799",
-      "added_sample": [
-        "DOMAIN-SUFFIX,178.com",
-        "DOMAIN-SUFFIX,3dmgame.com",
-        "DOMAIN-SUFFIX,allawntech.com",
-        "DOMAIN-SUFFIX,bdurl.net",
-        "DOMAIN-SUFFIX,dangdang.com",
-        "DOMAIN-SUFFIX,douyu.com",
-        "DOMAIN-SUFFIX,duowan.com",
-        "DOMAIN-SUFFIX,huaweicloud.com",
-        "DOMAIN-SUFFIX,ksyun.com",
-        "DOMAIN-SUFFIX,oppomobile.com"
-      ],
+      "added_sample": [],
       "removed_sample": [],
       "baseline_initialized": false
     },
     "PROXY": {
-      "previous_count": 246,
+      "previous_count": 3222,
       "current_count": 3222,
-      "added_count": 2976,
+      "added_count": 0,
       "removed_count": 0,
-      "previous_sha256": "b2900de41fd918de83e0c100be65899ac0f2bdfa5947313ea8e9678c41bba3e4",
+      "previous_sha256": "0ea3f0828b35a38297e19d24d57702af218347ec4ebf8fd912b90f4d51570c84",
       "current_sha256": "0ea3f0828b35a38297e19d24d57702af218347ec4ebf8fd912b90f4d51570c84",
-      "added_sample": [
-        "DOMAIN-SUFFIX,10beasts.net",
-        "DOMAIN-SUFFIX,10conditionsoflove.com",
-        "DOMAIN-SUFFIX,10musume.com",
-        "DOMAIN-SUFFIX,123av.com",
-        "DOMAIN-SUFFIX,12vpn.com",
-        "DOMAIN-SUFFIX,12vpn.net",
-        "DOMAIN-SUFFIX,1337x.to",
-        "DOMAIN-SUFFIX,141jj.com",
-        "DOMAIN-SUFFIX,141tube.com",
-        "DOMAIN-SUFFIX,1688.com.au"
-      ],
+      "added_sample": [],
       "removed_sample": [],
       "baseline_initialized": false
     },

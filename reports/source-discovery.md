@@ -1,6 +1,6 @@
 # Automated source discovery
 
-- Candidate repositories retained: **1557**
+- Candidate repositories retained: **1575**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
@@ -6749,16 +6749,89 @@
 - Description: 自用小火箭规则Shadowrocket rules
 - Stars: 0; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/DaXiong-sta/Shadowrocket_rules/main/Shadowrocket.conf
 
 ### [DanielEnki420/dns-blocklist-builder](https://github.com/DanielEnki420/dns-blocklist-builder)
 
 - Description: Generate DNS blocklists (dnsmasq, Pi-hole, AdGuard, Unbound) to block disinformation, propaganda & tracking. 11 categories, 402+ domains, 6 languages, 6 formats. No tracking, no dependencies, works offline.
 - Stars: 0; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 72
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/blocklist-all.adguard.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/blocklist-all.dnsmasq.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/blocklist-all.hosts.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/blocklist-all.pihole.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/blocklist-all.rpz.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/blocklist-all.unbound.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/antivax.adguard.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/antivax.dnsmasq.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/antivax.hosts.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/antivax.pihole.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/antivax.rpz.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/antivax.unbound.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/chinese_state.adguard.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/chinese_state.dnsmasq.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/chinese_state.hosts.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/chinese_state.pihole.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/chinese_state.rpz.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/chinese_state.unbound.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/climate_denial.adguard.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/climate_denial.dnsmasq.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/climate_denial.hosts.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/climate_denial.pihole.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/climate_denial.rpz.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/climate_denial.unbound.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/compact.adguard.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/compact.dnsmasq.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/compact.hosts.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/compact.pihole.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/compact.rpz.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/compact.unbound.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/conspiracy.adguard.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/conspiracy.dnsmasq.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/conspiracy.hosts.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/conspiracy.pihole.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/conspiracy.rpz.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/conspiracy.unbound.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/epoch.adguard.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/epoch.dnsmasq.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/epoch.hosts.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/epoch.pihole.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/epoch.rpz.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/epoch.unbound.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/farright_intl.adguard.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/farright_intl.dnsmasq.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/farright_intl.hosts.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/farright_intl.pihole.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/farright_intl.rpz.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/farright_intl.unbound.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/malware.adguard.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/malware.dnsmasq.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/malware.hosts.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/malware.pihole.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/malware.rpz.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/malware.unbound.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/phishing.adguard.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/phishing.dnsmasq.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/phishing.hosts.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/phishing.pihole.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/phishing.rpz.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/phishing.unbound.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/rt.adguard.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/rt.dnsmasq.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/rt.hosts.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/rt.pihole.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/rt.rpz.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/rt.unbound.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/tracking.adguard.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/tracking.dnsmasq.conf
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/tracking.hosts.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/tracking.pihole.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/tracking.rpz.txt
+  - https://raw.githubusercontent.com/DanielEnki420/dns-blocklist-builder/main/lists/by-category/tracking.unbound.conf
 
 ### [Dave-king-1/shadowrocket-rules](https://github.com/Dave-king-1/shadowrocket-rules)
 
@@ -6806,8 +6879,9 @@
 - Description: This GitHub repository contains a comprehensive list of all domains used in Yopmail, a temporary, disposable email service. This collection of domains is useful for filtering, testing, and integration purposes into systems that handle temporary emails.
 - Stars: 0; archived: False; fork: False
 - Search queries: GitHub domain list repository
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/DescobertasDigitais/Yopmail-Domain-List/main/yopmail-domain-list.txt
 
 ### [DeuKrom/cloudflare-zero-trust-adblock-updater](https://github.com/DeuKrom/cloudflare-zero-trust-adblock-updater)
 
@@ -6856,8 +6930,10 @@
 - Description: Lightweight Android DNS self-exclusion filter with a local 91,046-domain blocklist.
 - Stars: 0; archived: False; fork: False
 - Search queries: DNS filtering blocklist domains, privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/DopaLab/hosts-harbor/main/app/src/main/assets/domains.txt
+  - https://raw.githubusercontent.com/DopaLab/hosts-harbor/main/app/src/main/assets/hosts.txt
 
 ### [Dudoll/shadowrocket-rules](https://github.com/Dudoll/shadowrocket-rules)
 
@@ -6910,8 +6986,20 @@
 - Description: oisd - domain blocklist
 - Stars: 0; archived: False; fork: False
 - Search queries: OISD domain blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 12
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/EagleOne42/oisd/main/abp_basic.txt
+  - https://raw.githubusercontent.com/EagleOne42/oisd/main/abp_extra.txt
+  - https://raw.githubusercontent.com/EagleOne42/oisd/main/dbl_basic.txt
+  - https://raw.githubusercontent.com/EagleOne42/oisd/main/dbl_extra.txt
+  - https://raw.githubusercontent.com/EagleOne42/oisd/main/dblw_basic.txt
+  - https://raw.githubusercontent.com/EagleOne42/oisd/main/dblw_extra.txt
+  - https://raw.githubusercontent.com/EagleOne42/oisd/main/dnsmasq_basic.txt
+  - https://raw.githubusercontent.com/EagleOne42/oisd/main/dnsmasq_extra.txt
+  - https://raw.githubusercontent.com/EagleOne42/oisd/main/hosts_basic.txt
+  - https://raw.githubusercontent.com/EagleOne42/oisd/main/hosts_extra.txt
+  - https://raw.githubusercontent.com/EagleOne42/oisd/main/rpz_basic.txt
+  - https://raw.githubusercontent.com/EagleOne42/oisd/main/rpz_extra.txt
 
 ### [EastonSun/ProxyRules](https://github.com/EastonSun/ProxyRules)
 
@@ -6976,8 +7064,9 @@
 - Description: Blocking ads on a system level without needing an ad-block browser extension. This is a convenience script for using StevenBlack's unified hosts blacklist: https://github.com/StevenBlack/hosts
 - Stars: 0; archived: False; fork: False
 - Search queries: StevenBlack hosts
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/EldritchKitten/Host-Adblocking/master/README.TXT
 
 ### [Emersonmafra/f](https://github.com/Emersonmafra/f)
 
@@ -7232,6 +7321,15 @@
   - https://raw.githubusercontent.com/Farin25/DNS-blocklists/main/lists/scam.txt
   - https://raw.githubusercontent.com/Farin25/DNS-blocklists/main/lists/tracker.txt
 
+### [Flashyuan/Aliyun_firewall_updater](https://github.com/Flashyuan/Aliyun_firewall_updater)
+
+- Description: 这个小工具主要是为了对于动态公网IP或无公网IP情况下，自动将自己最近的出口IP与指定区域实例的防火墙规则绑定，做白名单ssh
+- Stars: 0; archived: False; fork: False
+- Search queries: 域名白名单
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/Flashyuan/Aliyun_firewall_updater/main/requirements.txt
+
 ### [Flo5k5/proxyware-blocklist](https://github.com/Flo5k5/proxyware-blocklist)
 
 - Description: DNS blocklist for proxyware & residential proxy services (AdGuard Home, Pi-hole, NextDNS)
@@ -7256,16 +7354,23 @@
 - Description: DNS blocklist targeting companies whose business model is built on misleading people to collect their data - consumer VPN industry and corporate ownership
 - Stars: 0; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/FrustratedN00b/deceptive-data-companies/master/deceptive-data-companies.txt
+  - https://raw.githubusercontent.com/FrustratedN00b/deceptive-data-companies/master/printable-blocklist.txt
 
 ### [GCJohnsonChev/IP-Address-and-DNS-Servers-Block-Lists](https://github.com/GCJohnsonChev/IP-Address-and-DNS-Servers-Block-Lists)
 
 - Description: GitHub Repository Storing Lists of IP Addresses, Network Ranges and Domain Name Servers For Network Blocking
 - Stars: 0; archived: False; fork: False
 - Search queries: GitHub domain list repository
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 5
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/GCJohnsonChev/IP-Address-and-DNS-Servers-Block-Lists/main/Continents/Central%20America/Placeholder.txt
+  - https://raw.githubusercontent.com/GCJohnsonChev/IP-Address-and-DNS-Servers-Block-Lists/main/Continents/North%20America/Countries/United%20States/States/New%20York/1.txt
+  - https://raw.githubusercontent.com/GCJohnsonChev/IP-Address-and-DNS-Servers-Block-Lists/main/Continents/South%20America/PlaceHolder.txt
+  - https://raw.githubusercontent.com/GCJohnsonChev/IP-Address-and-DNS-Servers-Block-Lists/main/Island%20Countries/PlaceHolder.txt
+  - https://raw.githubusercontent.com/GCJohnsonChev/IP-Address-and-DNS-Servers-Block-Lists/main/Land%20Masses/PlaceHolder.txt
 
 ### [GMOogway/shadowrocket-rules](https://github.com/GMOogway/shadowrocket-rules)
 
@@ -7711,8 +7816,13 @@
 - Description: EmpathyMachine is a Rust-based privacy proxy that combines HTTPS interception, DNS sinkholing, and blocklist-driven content rewrite tooling. It ships with a simple launcher, supports vendored dependencies for portability, and can fetch canonical blocklists like StevenBlack while honoring bypass rules for trusted hosts.
 - Stars: 0; archived: False; fork: False
 - Search queries: StevenBlack hosts, privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 5
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/GiantRavens/empathymachine/main/blocklists/custom.sample.txt
+  - https://raw.githubusercontent.com/GiantRavens/empathymachine/main/gui/requirements.txt
+  - https://raw.githubusercontent.com/GiantRavens/empathymachine/main/state/proxy-desired.txt
+  - https://raw.githubusercontent.com/GiantRavens/empathymachine/main/tests/fixtures/sample_hosts.txt
+  - https://raw.githubusercontent.com/GiantRavens/empathymachine/main/tests/fixtures/test_blocklist.txt
 
 ### [Glimmer2077/shadowrocket-rules](https://github.com/Glimmer2077/shadowrocket-rules)
 
@@ -8145,8 +8255,10 @@
 - Description: Real-Time Phishing Detection Platform powered by a 25-Feature Random Forest ML Classifier, Active Threat Feeds (VirusTotal/OpenPhish), Multi-Modal Analysis (URLs, Emails, QR Codes, Screenshot OCR), DNS/TLS/WHOIS Intelligence, MITRE ATT&CK Mapping, and Cookie-Isolated Persistent SQLite History.
 - Stars: 0; archived: False; fork: False
 - Search queries: OpenPhish phishing feed
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/Ishita-rastogi06/Phis-ShieldAI/main/requirements-dev.txt
+  - https://raw.githubusercontent.com/Ishita-rastogi06/Phis-ShieldAI/main/requirements.txt
 
 ### [JBongars/side-projects-guide](https://github.com/JBongars/side-projects-guide)
 
@@ -8318,8 +8430,9 @@
 - Description: Blocklist for Pi-hole featuring domains not included in the dbl.oisd.nl blocklist. 
 - Stars: 0; archived: False; fork: False
 - Search queries: OISD domain blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/JeshikaYT/jays-pihole-blocklist/master/blocklist.txt
 
 ### [JettShyung/Shadowrocket-Routing-Rules](https://github.com/JettShyung/Shadowrocket-Routing-Rules)
 
@@ -8358,8 +8471,18 @@
 - Description: Research data and supporting documentation for seven domains of supply chain risk disclosure in Chinese listed firms, 2018–2025.
 - Stars: 0; archived: False; fork: False
 - Search queries: China domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 10
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/Jimunpopo/supply-chain-risk-disclosure-2018-2025/main/06_risk_dictionaries/02_environmental/environmental_risk_terms.txt
+  - https://raw.githubusercontent.com/Jimunpopo/supply-chain-risk-disclosure-2018-2025/main/06_risk_dictionaries/02_environmental/environmental_seed_terms.txt
+  - https://raw.githubusercontent.com/Jimunpopo/supply-chain-risk-disclosure-2018-2025/main/06_risk_dictionaries/03_financial/financial_risk_terms.txt
+  - https://raw.githubusercontent.com/Jimunpopo/supply-chain-risk-disclosure-2018-2025/main/06_risk_dictionaries/03_financial/financial_seed_terms.txt
+  - https://raw.githubusercontent.com/Jimunpopo/supply-chain-risk-disclosure-2018-2025/main/06_risk_dictionaries/04_supply_demand/supply_demand_risk_terms.txt
+  - https://raw.githubusercontent.com/Jimunpopo/supply-chain-risk-disclosure-2018-2025/main/06_risk_dictionaries/04_supply_demand/supply_demand_seed_terms.txt
+  - https://raw.githubusercontent.com/Jimunpopo/supply-chain-risk-disclosure-2018-2025/main/06_risk_dictionaries/05_logistics/logistics_risk_terms.txt
+  - https://raw.githubusercontent.com/Jimunpopo/supply-chain-risk-disclosure-2018-2025/main/06_risk_dictionaries/05_logistics/logistics_seed_terms.txt
+  - https://raw.githubusercontent.com/Jimunpopo/supply-chain-risk-disclosure-2018-2025/main/06_risk_dictionaries/06_system/system_risk_terms.txt
+  - https://raw.githubusercontent.com/Jimunpopo/supply-chain-risk-disclosure-2018-2025/main/06_risk_dictionaries/06_system/system_seed_terms.txt
 
 ### [Jo-CRuiSe/siri-ai-rules](https://github.com/Jo-CRuiSe/siri-ai-rules)
 
@@ -8443,8 +8566,15 @@
 - Description: A collection of custom rules for network and proxy tools
 - Stars: 0; archived: False; fork: False
 - Search queries: curated_seed
-- README / curated seed rule-list links: 3
+- README / curated seed rule-list links: 10
 - Curated seed links: 3
+  - https://raw.githubusercontent.com/Jovanykoch/rules/main/example/example.conf
+  - https://raw.githubusercontent.com/Jovanykoch/rules/main/example/quanx.conf
+  - https://raw.githubusercontent.com/Jovanykoch/rules/main/source/apple-lite.list
+  - https://raw.githubusercontent.com/Jovanykoch/rules/main/source/github_surge.list
+  - https://raw.githubusercontent.com/Jovanykoch/rules/main/source/maintained.list
+  - https://raw.githubusercontent.com/Jovanykoch/rules/main/source/school.list
+  - https://raw.githubusercontent.com/Jovanykoch/rules/main/source/streaming-cn.list
   - https://raw.githubusercontent.com/Jovanykoch/rules/rel/gfw.list
   - https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list
   - https://raw.githubusercontent.com/Jovanykoch/rules/rel/reject.list
@@ -9415,8 +9545,16 @@
 - Description: 为 Surge / Quantumult X / Egern / sing-box / mihomo 自动构建的域名与 IP 分流规则集：每日聚合 v2fly/domain-list-community 等上游数据，发布到五个产物分支，可直接订阅
 - Stars: 0; archived: False; fork: False
 - Search queries: domain-list-community rules, v2fly domain-list-community, 域名数据集
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 8
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/KuGouGo/Rules/main/scripts/tests/fixtures/domain/expected/mixed.mihomo.txt
+  - https://raw.githubusercontent.com/KuGouGo/Rules/main/scripts/tests/fixtures/domain/expected/mixed.normalized.list
+  - https://raw.githubusercontent.com/KuGouGo/Rules/main/scripts/tests/fixtures/domain/expected/mixed.quanx.list
+  - https://raw.githubusercontent.com/KuGouGo/Rules/main/scripts/tests/fixtures/domain/expected/mixed.surge.list
+  - https://raw.githubusercontent.com/KuGouGo/Rules/main/scripts/tests/fixtures/domain/input/mixed.list
+  - https://raw.githubusercontent.com/KuGouGo/Rules/main/sources/custom/domain/apple-apns.list
+  - https://raw.githubusercontent.com/KuGouGo/Rules/main/sources/custom/domain/emby.list
+  - https://raw.githubusercontent.com/KuGouGo/Rules/main/sources/custom/ip/private.list
 
 ### [Kuroba-Sayuki/FuLing-AdRules](https://github.com/Kuroba-Sayuki/FuLing-AdRules)
 
@@ -9522,8 +9660,9 @@
 - Description: DNS blocklist for AdGuard Home (and compatible services) focused on stopping telemetry, tracking, and advertising from smart devices, smart TVs, and IoT products. Carefully curated to maximize privacy while minimizing breakage of essential device features.
 - Stars: 0; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/LaurentFough/SmartHouse-Blocklist/main/smarthouse-blocklist.txt
 
 ### [LaurentPerche/xbar-hosts-switcher](https://github.com/LaurentPerche/xbar-hosts-switcher)
 
@@ -9665,8 +9804,9 @@
 - Description: Domain blocklist for Snapchat advertising, analytics, API, and tracking endpoints.
 - Stars: 0; archived: False; fork: False
 - Search queries: advertising domains blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/LeonardSEO/snapchat_ads/main/blocklist.txt
 
 ### [LeventLei/shadowrocket-rules](https://github.com/LeventLei/shadowrocket-rules)
 
@@ -9746,8 +9886,9 @@
 - Description: DomainTransferProxy is a lightweight Minecraft Java Edition proxy that routes players to different backend servers based on the requested domain name. It supports both server list ping (status) and seamless login-phase transfer using the modern configuration transfer packet.
 - Stars: 0; archived: False; fork: False
 - Search queries: proxy domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/Linwendong83/DomainTransferProxy/main/requirements.txt
 
 ### [LoopeeDK/hosts](https://github.com/LoopeeDK/hosts)
 
@@ -9793,7 +9934,7 @@
 ### [Loyalsoldier/v2ray-rules-dat](https://github.com/Loyalsoldier/v2ray-rules-dat)
 
 - Description: 🦄 🎃 👻 V2Ray 路由规则文件加强版，可代替 V2Ray 官方 geoip.dat 和 geosite.dat，适用于 V2Ray、Xray-core、mihomo(Clash-Meta)、hysteria、Trojan-Go 和 leaf。Enhanced edition of V2Ray rules dat files, applicable to V2Ray, Xray-core, mihomo(Clash-Meta), hysteria, Trojan-Go and leaf.
-- Stars: 20989; archived: False; fork: False
+- Stars: 20990; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 3
 - Curated seed links: 3
@@ -9815,16 +9956,23 @@
 - Description: Small, frequently updated domain lists for selective tunnelling (xray geosite.dat + plain lists)
 - Stars: 0; archived: False; fork: False
 - Search queries: geosite domain, geosite.dat domain lists
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 6
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/Luccifer/xray-lists/main/lists/asn.txt
+  - https://raw.githubusercontent.com/Luccifer/xray-lists/main/lists/cidr.txt
+  - https://raw.githubusercontent.com/Luccifer/xray-lists/main/lists/exclude.txt
+  - https://raw.githubusercontent.com/Luccifer/xray-lists/main/lists/packages.txt
+  - https://raw.githubusercontent.com/Luccifer/xray-lists/main/lists/proxy.txt
+  - https://raw.githubusercontent.com/Luccifer/xray-lists/main/sources.txt
 
 ### [LuckPony/-LangGraph-Agent](https://github.com/LuckPony/-LangGraph-Agent)
 
 - Description: 用户用自然语言描述目标、关注漏洞、资产重要性和扫描约束，系统先用规则或 LangChain 结构化输出转成 Intent，再通过授权、域名白名单、私网和 DNS 策略门。策略通过后调用 Mock 或受控 Nuclei 扫描器。Nuclei、ZAP、Nessus 报告会被归一化成统一 Finding，通过稳定指纹去重，然后结合 CVSS、资产重要性、证据置信度做确定性风险评分。最后从 Chroma 检索修复基线，生成带验证步骤的建议。整个流程有 11 个 LangGraph 节点，每个节点有审计事件。项目提供 Django REST API、Swagger、Web 页面、Docker Compose 和端到端测试。”
 - Stars: 0; archived: False; fork: False
 - Search queries: 域名白名单
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/LuckPony/-LangGraph-Agent/master/requirements.txt
 
 ### [LuckyWuuuuu/route-rule](https://github.com/LuckyWuuuuu/route-rule)
 
@@ -10037,8 +10185,10 @@
 - Description: StevenBlack hosts-Liste als External Dynamic List (EDL) fuer Palo Alto PAN-OS - stuendlich aktualisiert
 - Stars: 0; archived: False; fork: False
 - Search queries: StevenBlack hosts
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/McMarius11/hosts2paloalto/main/data/allowlist.txt
+  - https://raw.githubusercontent.com/McMarius11/hosts2paloalto/main/data/no-collapse.txt
 
 ### [Measmonysuon/KH-shadowrocket_rules](https://github.com/Measmonysuon/KH-shadowrocket_rules)
 
@@ -22989,8 +23139,9 @@
 - Description: A rule-based traffic splitter for desktop: route TCP/UDP by domain, IP/CIDR, and GeoIP, with a built-in DNS stack designed to reduce poisoning. **macOS is the primary target** today; other platforms may be extended later.
 - Stars: 0; archived: False; fork: False
 - Search queries: geoip domain routing rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/dangaogit/dodo/main/frontend/src/assets/fonts/OFL.txt
 
 ### [danielgzd/proxy-rules](https://github.com/danielgzd/proxy-rules)
 
@@ -23007,8 +23158,9 @@
 - Description: A DNS Sinkhole server that blocks resolution for a given list of domains (hence the name “sinkhole”) and iteratively resolves any request for domains not included in that block-list.
 - Stars: 0; archived: False; fork: False
 - Search queries: DNS sinkhole domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/danielle-levy/DNS-Sinkhole-Server/main/README.txt
 
 ### [danielnagel/fritzbox-blacklist](https://github.com/danielnagel/fritzbox-blacklist)
 
@@ -23045,8 +23197,9 @@
 - Description: A smtp proxy server which blocks domains listed in a text file
 - Stars: 0; archived: False; fork: False
 - Search queries: proxy domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/danyalshah123/SMTP_PROXY-/main/block.txt
 
 ### [danzek/gadhash](https://github.com/danzek/gadhash)
 
@@ -23063,8 +23216,15 @@
 - Description: 自动维护中国大陆 IP、国内直连域名与 GFW 代理域名规则集
 - Stars: 0; archived: False; fork: False
 - Search queries: 国内域名规则
-- README / curated seed rule-list links: 7
+- README / curated seed rule-list links: 14
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/daveytang/ruleset/main/mosdns/custom-block-domain.txt
+  - https://raw.githubusercontent.com/daveytang/ruleset/main/mosdns/custom-cn-domain.txt
+  - https://raw.githubusercontent.com/daveytang/ruleset/main/mosdns/custom-cn-ip.txt
+  - https://raw.githubusercontent.com/daveytang/ruleset/main/mosdns/custom-remote-domain.txt
+  - https://raw.githubusercontent.com/daveytang/ruleset/main/mosdns/custom-remote-ip.txt
+  - https://raw.githubusercontent.com/daveytang/ruleset/main/mosdns/hosts.txt
+  - https://raw.githubusercontent.com/daveytang/ruleset/main/mosdns/tiktok-live-domain.txt
   - https://raw.githubusercontent.com/daveytang/ruleset/main/release/apple-cn.txt
   - https://raw.githubusercontent.com/daveytang/ruleset/main/release/direct-list.txt
   - https://raw.githubusercontent.com/daveytang/ruleset/main/release/gfw.txt
@@ -25458,6 +25618,15 @@
   - https://raw.githubusercontent.com/dhava-gautama/shadowrocket-rules-id/main/rule/IndonesiaWhatsApp.list
   - https://raw.githubusercontent.com/dhava-gautama/shadowrocket-rules-id/main/shadowrocket_id.conf
 
+### [digitalarche/public_feed](https://github.com/digitalarche/public_feed)
+
+- Description: OpenPhish Community Phishing Feed
+- Stars: 0; archived: False; fork: False
+- Search queries: OpenPhish phishing feed
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/digitalarche/public_feed/main/feed.txt
+
 ### [dishao123/rules_script](https://github.com/dishao123/rules_script)
 
 - Description: Quantumult X，Shadowrocket，Clash，Stash，Surge，Loon，Quan X，QX， 圈X，圈叉，小火箭，气球，色鸡，分流，重写，脚本，规则，插件，IOS去广告，解锁 VIP，破解会员，懒人配置，懒人规则
@@ -25806,6 +25975,15 @@ MNE-Python is BSD-licenced (3 clause):
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [dsad06095-byte/network-syslog-monitor](https://github.com/dsad06095-byte/network-syslog-monitor)
+
+- Description: 网络设备日志分析告警系统-实时采集交换机Syslog日志，通过可配置规则引擎识别接口抖动、环路、设备重启等异常
+- Stars: 0; archived: False; fork: False
+- Search queries: 网络规则集
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/dsad06095-byte/network-syslog-monitor/main/requirements.txt
+
 ### [dschaller/snitcher](https://github.com/dschaller/snitcher)
 
 - Description: This repository converts and hosts Little Snitch rule groups from StevenBlack/hosts.
@@ -25926,8 +26104,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Additional hosts for my use with StevenBlack
 - Stars: 0; archived: False; fork: False
 - Search queries: StevenBlack hosts
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/dylanarmstrong/hosts/master/license.txt
 
 ### [dzroot/adblock_list](https://github.com/dzroot/adblock_list)
 
@@ -26162,13 +26341,29 @@ MNE-Python is BSD-licenced (3 clause):
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [edso79/filtros-mx](https://github.com/edso79/filtros-mx)
+
+- Description: Filtros publicitarios para sitios mexicanos. Complemento de EasyList y EasyPrivacy, no sustituto.
+- Stars: 0; archived: False; fork: False
+- Search queries: EasyList EasyPrivacy
+- README / curated seed rule-list links: 5
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/edso79/filtros-mx/main/extension/tienda-descripcion-en.txt
+  - https://raw.githubusercontent.com/edso79/filtros-mx/main/extension/tienda-descripcion-pt.txt
+  - https://raw.githubusercontent.com/edso79/filtros-mx/main/extension/tienda-descripcion.txt
+  - https://raw.githubusercontent.com/edso79/filtros-mx/main/herramientas/extension/ubo/LICENSE.txt
+  - https://raw.githubusercontent.com/edso79/filtros-mx/main/mexico.txt
+
 ### [eiznem/pihole-blocklist](https://github.com/eiznem/pihole-blocklist)
 
 - Description: Custom Pi-hole blocklists and regex rules for blocking ads, trackers, telemetry, and unwanted domains across my network.
 - Stars: 0; archived: False; fork: False
 - Search queries: telemetry domains blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 3
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/eiznem/pihole-blocklist/main/cleanup-review.txt
+  - https://raw.githubusercontent.com/eiznem/pihole-blocklist/main/pihole-blocklist.txt
+  - https://raw.githubusercontent.com/eiznem/pihole-blocklist/main/pihole-regex-optional.txt
 
 ### [elapotts/Adding-Jennifer-Smith---Carolyn-Reilley-to-class](https://github.com/elapotts/Adding-Jennifer-Smith---Carolyn-Reilley-to-class)
 
@@ -26219,8 +26414,13 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: A personal proxy rules repository, mainly for Clash and Surge, with a file organization structure similar to @blackmatrix7/ios_rule_script repository.
 - Stars: 0; archived: False; fork: False
 - Search queries: blackmatrix7 ios_rule_script
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 5
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/ermengchao/proxy_rule_script/main/rule/Surge/AI/AI.list
+  - https://raw.githubusercontent.com/ermengchao/proxy_rule_script/main/rule/Surge/Direct/Direct.list
+  - https://raw.githubusercontent.com/ermengchao/proxy_rule_script/main/rule/Surge/Game/Game.list
+  - https://raw.githubusercontent.com/ermengchao/proxy_rule_script/main/rule/Surge/Proxy/Proxy.list
+  - https://raw.githubusercontent.com/ermengchao/proxy_rule_script/main/rule/Surge/Reject/Reject.list
 
 ### [eslavgor/sr-rules-mirror](https://github.com/eslavgor/sr-rules-mirror)
 
@@ -26339,8 +26539,10 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Generate a BIND RPZ zone from upstream ad/tracking blocklists
 - Stars: 0; archived: True; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/expeditioneer/bind-adblock/master/blocklists.conf
+  - https://raw.githubusercontent.com/expeditioneer/bind-adblock/master/requirements.txt
 
 ### [exposir/Shadowrocket-rules](https://github.com/exposir/Shadowrocket-rules)
 
@@ -28627,7 +28829,7 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: EZOBLOCKER's own DNS blocklists: domains we discover ourselves that public lists don't have yet. Ads, trackers, security (phishing, malware), gambling, adult, piracy, dating, social and bypass, one file per category in plain, hosts and adblock formats. Updated automatically. Works with Pi-hole, AdGuard Home, Blocky. https://ezoblocker.app
 - Stars: 0; archived: False; fork: False
 - Search queries: malware phishing domain blocklist
-- README / curated seed rule-list links: 590
+- README / curated seed rule-list links: 760
 - Curated seed links: 0
   - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/adblock/ads/adtech.txt
   - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/adblock/ads/all.txt
@@ -29211,14 +29413,184 @@ MNE-Python is BSD-licenced (3 clause):
   - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/hosts/trackers/all.txt
   - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/hosts/trackers/apps.txt
   - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/hosts/trackers/cname.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/ads/adtech.txt
   - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/ads/all.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/ads/apps.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/ads/prebid.txt
   - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/all.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/ae.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/ar.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/au.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/be.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/br.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/ca.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/ch.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/cl.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/co.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/cz.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/eg.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/gb.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/gr.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/id.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/ie.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/in.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/jp.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/kr.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/my.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/ng.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/ph.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/pk.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/pt.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/ru.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/sa.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/th.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/tr.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/ua.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/us.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/vn.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/bypass/countries/za.txt
   - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/all.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/ae.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/ar.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/at.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/au.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/be.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/br.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/ca.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/ch.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/cl.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/co.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/cz.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/de.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/eg.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/es.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/fr.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/gb.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/gr.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/id.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/ie.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/in.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/it.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/jp.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/kr.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/mx.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/my.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/ng.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/nl.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/ph.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/pk.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/pl.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/pt.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/ro.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/ru.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/sa.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/se.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/th.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/tr.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/ua.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/us.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/vn.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/countries/za.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/ct.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/dating/dating-chat.txt
   - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/all.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/ae.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/ar.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/at.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/au.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/be.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/br.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/ca.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/ch.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/cl.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/cn.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/co.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/cz.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/de.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/eg.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/es.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/fr.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/gb.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/gr.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/id.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/ie.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/il.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/in.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/india-bangladesh-and-pakistan.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/intl.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/it.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/jp.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/kr.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/mx.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/my.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/ng.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/nl.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/ph.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/pk.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/pl.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/pt.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/ro.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/ru.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/sa.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/se.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/th.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/tr.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/ua.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/us.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/vn.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/gambling/countries/za.txt
   - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/all.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/ae.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/ar.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/at.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/au.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/be.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/br.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/ca.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/ch.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/cl.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/co.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/cz.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/de.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/eg.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/es.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/fr.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/gb.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/gr.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/id.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/ie.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/in.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/it.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/jp.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/kr.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/mx.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/my.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/ng.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/nl.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/ph.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/pk.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/pl.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/pt.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/ru.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/sa.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/se.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/th.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/tr.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/ua.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/us.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/vn.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/countries/za.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/ct.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/piracy/piracy-sports.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/security/adint.txt
   - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/security/all.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/security/ct.txt
   - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/social/all.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/trackers/adint.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/trackers/adtech.txt
   - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/trackers/all.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/trackers/apps.txt
+  - https://raw.githubusercontent.com/ezoblocker/ezoblocker.app/main/lists/trackers/cname.txt
 
 ### [fahrenheitd99/iplist-geofiles](https://github.com/fahrenheitd99/iplist-geofiles)
 
@@ -29236,13 +29608,24 @@ MNE-Python is BSD-licenced (3 clause):
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [farahelnakhal/web_privacy_study](https://github.com/farahelnakhal/web_privacy_study)
+
+- Description: End-to-end web privacy measurement pipeline built on OpenWPM: crawls the Tranco top 100 with isolated browser profiles, then measures third-party tracking (EasyList/EasyPrivacy), tracking cookies, the tracker co-occurrence ecosystem, and Canvas/Audio fingerprinting.
+- Stars: 0; archived: False; fork: False
+- Search queries: EasyList EasyPrivacy
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/farahelnakhal/web_privacy_study/main/all_results/TERMINAL_PASTED_OUTPUT.txt
+
 ### [farshidmousavii/sentrydns](https://github.com/farshidmousavii/sentrydns)
 
 - Description: Adaptive split-DNS proxy with automatic learning — hijack detection, CDN optimization, and zero manual domain list management for Iranian network environments
 - Stars: 0; archived: False; fork: False
 - Search queries: proxy domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/farshidmousavii/sentrydns/main/data/iran-ranges.txt
+  - https://raw.githubusercontent.com/farshidmousavii/sentrydns/main/scripts/logrotate.conf
 
 ### [fatalwall/BridgeDirectConnect](https://github.com/fatalwall/BridgeDirectConnect)
 
@@ -29296,8 +29679,11 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Kit aberto para deixar Smart TVs LG mais rápidas, sem anúncios e com mais privacidade (guia PT-BR, blocklists DNS, CLI e launcher)
 - Stars: 0; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 3
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/fernandofasolo/tv-livre/main/blocklist/lg-ads.txt
+  - https://raw.githubusercontent.com/fernandofasolo/tv-livre/main/blocklist/lg-aggressive.txt
+  - https://raw.githubusercontent.com/fernandofasolo/tv-livre/main/blocklist/lg-tracking.txt
 
 ### [fernvenue/chn-domains-list](https://github.com/fernvenue/chn-domains-list)
 
@@ -29426,21 +29812,26 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Some of my personal DNS blocklists, for use in DNS blockers like AdGuardHome
 - Stars: 0; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/fishiatee/my-dns-blocklist/main/begone-mumuplayer.txt
 
 ### [fisventurous/fisphish](https://github.com/fisventurous/fisphish)
 
 - Description: Consolidated threat intelligence blocklist for Discord scams, Web3 crypto drainers, and malicious domains
 - Stars: 0; archived: False; fork: False
 - Search queries: scam domains blocklist
-- README / curated seed rule-list links: 5
+- README / curated seed rule-list links: 9
 - Curated seed links: 0
   - https://raw.githubusercontent.com/fisventurous/fisphish/main/data/casino-fraud.txt
   - https://raw.githubusercontent.com/fisventurous/fisphish/main/data/crypto-drainers.txt
   - https://raw.githubusercontent.com/fisventurous/fisphish/main/data/discord-scams.txt
   - https://raw.githubusercontent.com/fisventurous/fisphish/main/data/domains.txt
+  - https://raw.githubusercontent.com/fisventurous/fisphish/main/data/phishing-general.txt
+  - https://raw.githubusercontent.com/fisventurous/fisphish/main/data/roblox-gaming.txt
   - https://raw.githubusercontent.com/fisventurous/fisphish/main/data/steam-fraud.txt
+  - https://raw.githubusercontent.com/fisventurous/fisphish/main/sources/custom.txt
+  - https://raw.githubusercontent.com/fisventurous/fisphish/main/sources/whitelist.txt
 
 ### [fj-fj-fjf/v2fly-github](https://github.com/fj-fj-fjf/v2fly-github)
 
@@ -29485,29 +29876,72 @@ MNE-Python is BSD-licenced (3 clause):
   - https://raw.githubusercontent.com/fmSun686yu/skyline/main/src/Skyline.App/Resources/Help/zh-CN.txt
   - https://raw.githubusercontent.com/fmSun686yu/skyline/main/src/Skyline.App/Resources/Help/zh-TW.txt
 
+### [fnSakasakiNatsume/pre-data](https://github.com/fnSakasakiNatsume/pre-data)
+
+- Description: 基于scamsniffer域名黑名单爬取诈骗网站信息
+- Stars: 0; archived: False; fork: False
+- Search queries: 域名黑名单
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/fnSakasakiNatsume/pre-data/main/requirements.txt
+
 ### [forewing/shadowrocket-rules](https://github.com/forewing/shadowrocket-rules)
 
 - Description: Not supplied
 - Stars: 0; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/forewing/shadowrocket-rules/main/binance-proxy.conf
 
 ### [fourthyplayz/ZeroDNS](https://github.com/fourthyplayz/ZeroDNS)
 
 - Description: A lightweight, Python DNS proxy that blocks domains from a user‑supplied filter list (returning 0.0.0.0) while transparently forwarding all other queries to Cloudflare’s DNS (1.1.1.1). It runs as a simple UDP server on port 53, uses threading for high responsiveness, and provides colorful console logs to instantly differentiate and error
 - Stars: 0; archived: False; fork: False
 - Search queries: proxy domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/fourthyplayz/ZeroDNS/main/filters.txt
 
 ### [fox37x/qx-rules](https://github.com/fox37x/qx-rules)
 
 - Description: Quantumult X rules generated from blackmatrix7/ios_rule_script for China usage
 - Stars: 0; archived: False; fork: False
 - Search queries: blackmatrix7 ios_rule_script
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 32
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/QuantumultX/qx-minimal.conf
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/AdvertisingLite/AdvertisingLite.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/Anthropic/Anthropic.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/AppStore/AppStore.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/Apple/Apple.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/AppleID/AppleID.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/AppleMedia/AppleMedia.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/BiliBili/BiliBili.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/ChinaMax/ChinaMax.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/ChinaMedia/ChinaMedia.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/Claude/Claude.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/Direct/Direct.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/Disney/Disney.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/Facebook/Facebook.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/Gemini/Gemini.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/GitHub/GitHub.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/Global/Global.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/GlobalMedia/GlobalMedia.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/Google/Google.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/Instagram/Instagram.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/Lan/Lan.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/Microsoft/Microsoft.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/Netflix/Netflix.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/OneDrive/OneDrive.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/OpenAI/OpenAI.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/PayPal/PayPal.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/Proxy/Proxy.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/Spotify/Spotify.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/Telegram/Telegram.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/TikTok/TikTok.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/Twitter/Twitter.list
+  - https://raw.githubusercontent.com/fox37x/qx-rules/main/rules/QuantumultX/YouTube/YouTube.list
 
 ### [foxleoly/adguard-home-skill](https://github.com/foxleoly/adguard-home-skill)
 
@@ -29638,8 +30072,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: 去广告+代理规则
 - Stars: 0; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/fzu-h4cky/shadowrocket_rules_banAD/master/self.conf
 
 ### [g2rain/g2rain-gateway-webmvc](https://github.com/g2rain/g2rain-gateway-webmvc)
 
@@ -29663,8 +30098,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Galaxy VLESS Clean Proxy IP List🔰
 - Stars: 0; archived: False; fork: False
 - Search queries: proxy domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/galaxytunnel2026/domain/main/PROXYIP.txt
 
 ### [gan0928/meowssss-ultimate-dns-blocklist](https://github.com/gan0928/meowssss-ultimate-dns-blocklist)
 
@@ -29690,8 +30126,35 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: 个人维护的网络分流规则集，提供 LIST 与 YAML 格式。
 - Stars: 0; archived: False; fork: False
 - Search queries: 网络规则集
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 27
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/Bet.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/EU.LIST
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/GlobalProtect.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/Talkatone.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/ai-extra.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/ai-shared.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/antigravity.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/claude-extra.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/cohere.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/copilot.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/crypto.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/cursor.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/direct-services.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/emby.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/gemini-extra.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/google-extra.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/grok.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/huashan.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/huggingface.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/identity-verification.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/isp-bypass.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/meta-extra.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/mistral.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/openai-extra.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/perplexity.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/pre-huashan.list
+  - https://raw.githubusercontent.com/geekhuashan/Proxy-Rules/main/siri-extra.list
 
 ### [gege-circle/.github](https://github.com/gege-circle/.github)
 
@@ -29802,8 +30265,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Ad blocking domain lists list for use with Diversion
 - Stars: 0; archived: False; fork: False
 - Search queries: adblock domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/gmurdock/Adblocking/master/RawWhitelist.txt
 
 ### [goat-sec/Steam-and-Discord-Phishing-Database](https://github.com/goat-sec/Steam-and-Discord-Phishing-Database)
 
@@ -30196,13 +30660,23 @@ MNE-Python is BSD-licenced (3 clause):
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [ha6o/snmp-netpatrol](https://github.com/ha6o/snmp-netpatrol)
+
+- Description: 基于 pysnmp 的网络设备自动化巡检工具：指标采集 / 6 类告警规则引擎 / LLDP 拓扑发现 / MD+HTML 报告，含手写 BER 编码的 SNMP Agent 模拟器
+- Stars: 0; archived: False; fork: False
+- Search queries: 网络规则集
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/ha6o/snmp-netpatrol/main/requirements.txt
+
 ### [hack-protect-labs/crypto-nrd-feed](https://github.com/hack-protect-labs/crypto-nrd-feed)
 
 - Description: HackProtect Labs | Automated CTI feed tracking Newly Registered Domains (NRDs) targeting Web3, crypto exchanges, and DeFi platforms. Proactive intelligence for threat hunters and SOC teams to block phishing infrastructure early. TLP:CLEAR. Maintained by HackProtect Labs.
 - Stars: 0; archived: False; fork: False
 - Search queries: phishing domains feed
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/hack-protect-labs/crypto-nrd-feed/main/feed/domains.txt
 
 ### [hackerxiaow/agnes-ai-register](https://github.com/hackerxiaow/agnes-ai-register)
 
@@ -30218,7 +30692,7 @@ MNE-Python is BSD-licenced (3 clause):
 ### [hagezi/dns-blocklists](https://github.com/hagezi/dns-blocklists)
 
 - Description: DNS-Blocklists: For a better internet - keep the internet clean!
-- Stars: 28112; archived: False; fork: False
+- Stars: 28120; archived: False; fork: False
 - Search queries: privacy DNS blocklist, scam domains blocklist, telemetry domains blocklist
 - README / curated seed rule-list links: 180
 - Curated seed links: 0
@@ -30413,6 +30887,15 @@ MNE-Python is BSD-licenced (3 clause):
   - https://raw.githubusercontent.com/haijiaoliuhao91/MediaUnitedKit/master/Pods/FMDB/LICENSE.txt
   - https://raw.githubusercontent.com/haijiaoliuhao91/MediaUnitedKit/master/Pods/GPUImage/License.txt
 
+### [haisi-ai/Network-Baseline-Analysis](https://github.com/haisi-ai/Network-Baseline-Analysis)
+
+- Description: 规则表驱动的离线网络设备基线数据采集工具，通过TextFSM模板批量解析交换机/路由器/防火墙日志，自动提取设备资产信息，校验后以“一台设备一行”的格式输出Excel。
+- Stars: 0; archived: False; fork: False
+- Search queries: 网络规则集
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/haisi-ai/Network-Baseline-Analysis/main/version.txt
+
 ### [hamburg12/shadowrocket-rules](https://github.com/hamburg12/shadowrocket-rules)
 
 - Description: Not supplied
@@ -30533,6 +31016,42 @@ MNE-Python is BSD-licenced (3 clause):
 - Search queries: malware phishing domain blocklist
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
+
+### [havenoideal123/assertManager](https://github.com/havenoideal123/assertManager)
+
+- Description: 手动收集各大SRC平台主域名，通过程序自动处理以格式化存入数据库中，便于配合其它信息搜集工具进一步测试。
+- Stars: 0; archived: False; fork: False
+- Search queries: 域名数据集
+- README / curated seed rule-list links: 28
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/58.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/ali.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/anheng.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/baidu.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/bytedance.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/didi.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/duxiaoman.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/huawei.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/jd.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/kuaishou.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/lenovo.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/lixiang.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/mdl.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/meituan.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/momo.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/oppo.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/paypal_cn.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/pingan.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/shunfeng.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/tencent.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/tongcheng.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/vivo.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/xiaomi.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/xiecheng.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/yinlian.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/yuantong.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/asserts/zsxq.txt
+  - https://raw.githubusercontent.com/havenoideal123/assertManager/main/requirements.txt
 
 ### [he0xA1/route-prism](https://github.com/he0xA1/route-prism)
 
@@ -30758,13 +31277,1571 @@ MNE-Python is BSD-licenced (3 clause):
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [hezhijie0327/AdFilter](https://github.com/hezhijie0327/AdFilter)
+
+- Description: Combine muti-sources for Chinese adfilter
+- Stars: 0; archived: True; fork: False
+- Search queries: EasyList EasyPrivacy
+- README / curated seed rule-list links: 5
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/hezhijie0327/AdFilter/main/adfilter_adblock.txt
+  - https://raw.githubusercontent.com/hezhijie0327/AdFilter/main/adfilter_adguardhome.txt
+  - https://raw.githubusercontent.com/hezhijie0327/AdFilter/main/adfilter_dnsmasq.conf
+  - https://raw.githubusercontent.com/hezhijie0327/AdFilter/main/adfilter_domains.txt
+  - https://raw.githubusercontent.com/hezhijie0327/AdFilter/main/adfilter_smartdns.conf
+
 ### [hezhijie0327/Geosite2Domain](https://github.com/hezhijie0327/Geosite2Domain)
 
 - Description: Convert Geosite to plaintext rules
 - Stars: 0; archived: False; fork: False
 - Search queries: geosite domain
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1545
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-acg.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-ads-all.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-ads-and-telemetry.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-ads-ir.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-ads.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-ai-%21cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-ai-chat-%21cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-ai-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-ai-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-android-app-download.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-anticensorship.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-antivirus.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-automobile-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-bank-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-bank-ir.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-bank-jp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-bank-mm.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-bank-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-betting-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-blog-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-bourse-ir.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-browser-%21cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-cas.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-cdn-%21cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-cdn-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-collaborate-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-communication.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-companies.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-consent-management.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-container.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-cryptocurrency.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-ddns.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-dev-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-dev.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-documents-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-doh.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-ecommerce-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-ecommerce.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-education-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-education-ir.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-education-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-electronic-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-emby.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-enhance-gaming.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-enterprise-query-platform-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-entertainment-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-entertainment-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-entertainment.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-finance.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-flight-simulator.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-food-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-forums-ir.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-forums-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-forums.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-game-accelerator-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-game-platforms-download.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-games-%21cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-games-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-games.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-gov-ir.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-gov-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-hospital-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-httpdns-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-insurance-ir.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-ip-geo-detect.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-ipfs.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-ir.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-logistics-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-media-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-media-ir.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-media-ru-blocked.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-media-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-media.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-medicine-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-mobile-repair.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-mooc-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-netdisk-%21cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-netdisk-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-network-security-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-news-ir.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-novel.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-ntp-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-ntp-jp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-ntp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-number-verification-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-olympiad-in-informatics.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-orgs.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-outsource-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-password-management.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-payment-ir.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-proxy-tunnels.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-pt.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-public-tracker.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-remote-control.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-retail-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-scholar-%21cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-scholar-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-scholar-hk.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-scholar-ir.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-scholar-uk.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-securities-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-shopping-ir.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-social-media-%21cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-social-media-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-social-media-ir.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-speedtest.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-stun.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-tech-ir.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-tech-media-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-tech-media.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-telemetry.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-tm.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-travel-ir.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-travel-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-urlshortner.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-voip.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-vpnservices.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-web-archive.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/category/category-wiki-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/0x0.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/115.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/1337x.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/17zuoye.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/18comic.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/2ch.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/2gis.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/2kgames.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/36kr.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/4399.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/4chan.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/4pda.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/4plebs.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/51job.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/54647.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/58tongcheng.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/5ch.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/6park.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/7tv.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/800best.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/8btc.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/928plus.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/9news.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/9to5.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/aamgame.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/abc.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/abema.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/accuweather.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/acer.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/acfun.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/actalis.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/activision-blizzard.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/activision.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/adblock.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/adblockplus.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/addthis.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/addtoany.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/adguard.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/adidas.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/adjust.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/adobe-activation.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/adobe.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/aerogard.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/afdian.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/afp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/agilebits.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/agora.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/aiqicha.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/airbnb.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/airchina.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/airwick.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/aisiku.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/aixcoder.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/akamai.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/akiko.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/alibaba.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/alibabacloud.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/aligames.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/aliyun-drive.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/aliyun.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/aljazeera.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/alphabet.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/amap.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/amazon.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/amazontrust.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/amc.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/amd.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/amp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/amplitude.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/anaconda.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/anandtech.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/android.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/anexia.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/anime.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/anker.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/annas-archive.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/anon-v.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/anthropic.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ap.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/apa.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/aparat.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/apifox.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/apipost.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/apkcombo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/apkmirror.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/apkpure.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/apple-dev.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/apple-intelligence.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/apple-music.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/apple-pki.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/apple-podcasts.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/apple-tvplus.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/apple-update.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/apple.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/appledaily.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/applysquare.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/aptoide.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/archive.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/archiveofourown.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/archivetoday.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/archlinux.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/arphic.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/artstation.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/asahi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/askdiandian.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/asobo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/asproex.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/asus.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/atlassian.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/att.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/attwatchtv.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/autodesk.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/autoru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/auxgroup.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/avaxhome.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/aviasales.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/avito.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/avmoo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/awempire.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/aws-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/aws.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/azure.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/b3log.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bahamut.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/baidu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/baishancloud.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/baltamatica.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bamtech.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bandcamp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bandwagonhost.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bangumi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/barrons.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bbc.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bdsmhub.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/beats.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/beget.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/beisen.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bestbuy.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bestchange.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bestore.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bestv.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/betboom.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bethesda.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/betterexplained.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bilibili-cdn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bilibili-game.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bilibili.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bilibili2.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/binance.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bing.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bitauto.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bitflyer.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bitly.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bitrix.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bitsquare.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bitwarden.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bjyouth.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/blender.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/blizzard.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/blogspot.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bloomberg.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bluearchive.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bluepoch-games.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bluepoch.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bluesky.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/blurams.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bmw.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/boc.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bohemia.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bongacams.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/booking.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/books.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/boomerang.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bootcdn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bootstrap.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/borneoschematics.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/boslife.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/boxun.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/boylove.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/braveux.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/brazzers.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bridgestone.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/brightcove.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/brilliant.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/broadcom.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/btdig.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bttzyw.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bushiroad.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/buymeacoffee.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/buypass.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bybit.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bytedance-ai-%21cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/bytedance.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/c-span.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cabletv.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cainiao.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/calgoncarbon.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cambridge.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/camwhores.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/canon.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/canonical.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/canva.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/capitalonline.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/carrotquest.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cas.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/casimages.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/catchplay.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cbs.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ccb.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cctv.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cdek.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cdn77.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cdprojekt.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ceno.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cerebras.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cern.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/certinomis.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/certum.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/changyou.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/chaoxing.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/chatango.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/chatwhores.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cheetahmobile.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/chegg.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/chesscom.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/chinabroadnet.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/chinamobile.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/chinanews.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/chinapost.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/chinapower.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/chinaso.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/chinatelecom.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/chinatower.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/chinaunicom.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/chinaz.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cian.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cisco.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/citic.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/citizenlab.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cityu-hk.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ciweimao.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ck101.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/clarivate.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/clearasil.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/clearbit.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/clips4sale.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cloudcone.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cloudconvert.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cloudflare-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cloudflare-ipfs.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cloudflare.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cloudinary.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cloudns.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/clubhouse.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cmb.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cnb.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cnbc.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cnbeta.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cnblogs.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cnet.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cnki.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cnn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/code.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/codeberg.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/codecademy.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/codeforces.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/coding.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/coinone.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/collabora.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/colorfulclouds.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/comfy-ui-launcher.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/comfy.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/comodo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/comssone.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/connectivity-check.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/contentful.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/coolapk.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/coomer.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/copymanga.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/corel.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/costco.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/coupang.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/coursera.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cowlevel.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cowtransfer.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/craigslist.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/creativecommons.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/csdn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/csis.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ctexcel.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ctrip.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ctyun.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cuhk.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cuinc.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/curseforge.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cursor.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cuttly.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cybertrust.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cygames.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/cylink.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dailymail.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dailymotion.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dandanplay.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dandanzan.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dangdang.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dart.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dazn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dcard.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ddmaicai.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/debian.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/decryptipastore.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dedao.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/deepin.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/deepseek.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/deezer.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dell.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/demonoid.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/deppon.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/deribit.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dettol.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/deviantart.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dewu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/didi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/digicert.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/digitalocean.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/digitalplayground.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dingdatech.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dingtalk.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/discord.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/discourse.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/discoveryplus.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/discuz.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/disney.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/disqus.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/divar.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dji.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dlercloud.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dlsite.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dmit.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dmm.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dnspod.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/docker.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/doi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dola.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dongchedi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dongjiao.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/douban.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/doubao.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/douyin.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/douyu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dowjones.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dribbble.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dropbox.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/drweb.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dslreports.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dsn-host.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/duckduckgo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/duitang.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/duolingo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/duowan.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/durex.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/duyaoss.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dw.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dwion.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dyna.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dynu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/dzen.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ea.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/eastmoney.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/easylist.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ebay.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ebuyer.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/economist.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/eduhk.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/edx.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/egghead.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ehentai.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/electron.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/eleme.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/elevenlabs.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/elsevier.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/embark.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/embedly.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/embl.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/emojipedia.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/eneba.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/enfa.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/entermediadb.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/entrust.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/envato.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/envybox.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/epicbrowser.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/epicgames.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/epochmediagroup.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/erolabs.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/escapefromtarkov.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/eset.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/espn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/espressif.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/esri.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ethereum.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/everbright.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/evernote.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/f-droid.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/facebook-dev.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/facebook.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/faceit.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/falungong.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/familymart.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fandom.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fanfiction.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fans66.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fansta.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/farfetch.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/faronics.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fastlane.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fastly.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/faststone.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fcbox.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fedora.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/feedly.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/feishu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fengxing.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fflogs.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fibank.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ficbook.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/figma.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/filimo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/finish.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/firebase.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/firefox.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/flatpak.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/flibusta.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/flickr.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/flowus.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/flowwow.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/flutter.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fluxer.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/flyio.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/focuschina.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fonbet.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fontawesome.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fontexplorer.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fonts.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fontshop.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fontsinuse.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/forbes.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/formula1.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/forza.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fox.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fqnovel.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/framer.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/freebuff.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/freecodecamp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/freenode.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ft.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ftv.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/funpay.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/futu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/fzdm.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gaijin.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gamersky.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gamesplanet.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gandi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ganji.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gannett.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/garena.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gateio.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/geetest.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gemfury.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/genotek-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/geolocation-%21cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/geolocation-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gettyimages.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/getui.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gfycat.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ggsel.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/giffgaff.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gigabyte.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gimy.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gismeteo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gitbook.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gitee.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/github-copilot.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/github.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/github1s.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gitlab.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gitv.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/globalsign.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/globalvoices.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/globo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/glyphs.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gmo-internet.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/godaddy.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gofundme.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gog.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/golang.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/goodreads.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/google-deepmind.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/google-gemini.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/google-play.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/google-registry-tld.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/google-registry.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/google-scholar.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/google-trust-services.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/google.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/googlefcm.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/goproxy.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gracg.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/grapheneos.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gravatar.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/greatfire.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gree.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/groq.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/group-ib.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/growingio.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/gucci.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/guo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/guokr.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/habr.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/haier.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hainanairlines.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/haitang.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hamivideo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hanyi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/harpercollins.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hashicorp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/haskell.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/haveibeenpwned.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hbo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hcaptcha.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hdrezka.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/headhunter.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hentaichen.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hentaivn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/herogame.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/heroku.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hetzner.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/heyzo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hikvision.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hinet-eca.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hinet.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hisense.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hitun.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hkbn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hkbu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hkedcity.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hketgroup.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hkgolden.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hkt.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hku.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hkust.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hm.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/homebrew.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/homedepot.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hongkongpost.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/honor.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hooligapps.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hotstar.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hoyoverse.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hpe.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hsbc-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hsbc.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/huanghuagang.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/huawei-dev.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/huawei.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/huaweicloud.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hubblephone.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/huffpost.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hugecore.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/huggingface.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hujiang.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hulu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/humblebundle.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hunantv.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/huobi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hupu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hupun.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/hurricaneelectric.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/huya.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ibkr.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ibm.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/icable.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/icbc.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/icloud.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/icloudprivaterelay.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ideco-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/identrust.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/idg.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ieee.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ifanr.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ifast.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/iflytek.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ihuman.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/iina.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ikea.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/illgames.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/illusion-nonofficial.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/illusion.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/imagebam.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/imagecurl.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/imageshack.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/imagetwist.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/imdb.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/imgbb.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/imgix.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/imgur.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/imperialcollege.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/infowars.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/infrapedia.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/inoreader.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/inshot.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/insider.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/instagram.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/intel-dev.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/intel.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/intercom.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/internet-archive.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/intsig.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/intuit.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ipip.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/iqiyi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/isgd.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ishumei.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/itchio.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/itiger.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/itunes.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ixbt.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ixsystems.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/iyf.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jable.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/japonx.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/java.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/javbus.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/javcc.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/javdb.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/javwide.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jd.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jetbrains-ai.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jetbrains.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jfrog.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jianshu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jibencaozuo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jiemian.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jiguang.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jinshuju.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jiyukobo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jkf.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jlc.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/johren.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jquery.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jsdelivr.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jtexpress.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/juejin.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jushuitan.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/justav.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/justmysocks.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jutongbao.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/jwplayer.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kaggle.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kakao.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kanzhongguo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kaspersky.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kechuang.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/keep.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kemono.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kernel.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/keybase.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/khanacademy.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kick.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kindle.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kindle4rss.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kingkonglive.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kingsoft.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kinopoisk.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kinopub.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kkbox.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kktv.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kodi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kodik.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/konachan.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/konami.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kontur.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/koolearn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kraken.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ku6.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kuaidi100.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kuaikan.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kuaishou.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kuaiyikeji.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kubakuba.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kubernetes.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kucoin.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kugou.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kurogames.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kuwo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/kyodonews.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lagou.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/landian.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lantern.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lanzou.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/laracasts.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lark-global.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lark.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lastfm.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lastpass.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/launchpad.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lavteam.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/le.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lenovo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lethalhardcore.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/letsencrypt.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lg.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lianjia.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/liberapay.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/libgen.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/librewolf.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/liepin.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lifewire.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ligastavok.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lighter.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lihkg.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/likee.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/limelight.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/linakesi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/line.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/linguee.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/linkedin.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/linotype.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/linux.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/linuxdo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lisiku.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/litv.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/livejournal.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/liveperson.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lizhi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lkcoffee.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/localbitcoins.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/localizejs.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/logitech.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/londonreal.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/longbridge.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/louisvuitton.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lowiro.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ltn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lumion.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/lysol.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/madshi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mafengwo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/magnit.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mailcom.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mailru-group.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mailru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mainichi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/manhuagui.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/manhuaren.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/manorama.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/manoto.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/manus.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/maocloud.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mapbox.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/marvel.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mastercard.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/masterclass.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/matrix.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/matters.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mcdonalds.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mdn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/meadjohnson.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mediachinesegroup.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/medium.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/meduza.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mega.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/megafon.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/meipian.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/meitu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/meituan.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/meizu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/messenger.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/meta.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/metabrainz.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/metacritic.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/metart.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/miaomiaozhe.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/microsoft-dev.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/microsoft-pki.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/microsoft.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/midea.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mihoyo-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mihoyo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mikrotik.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mindbox.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mindgeek.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mini.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/miniso.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/miraheze.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/missav.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/misskey-universe.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/misskey.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mit.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mixi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mobile01.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mocha.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/modrinth.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mogujie.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mojang.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/moji.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/momo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mongodb.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/monotype.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/moonvy.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/morisawa.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mortein.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mosmetro.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/motorola.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/movefree.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/moxing.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mozilla.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/msi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/msn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mts-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mubi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mucinex.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mudvod.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/muji.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/musixmatch.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mvideo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mxroute.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mydirtyhobby.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/myfonts.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/myoffice-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/myradio.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mytvsuper.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/mzed.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/n26.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/n3ro.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/narwal.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nationalgeographic.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/naver.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nbcuniversal.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/neowin.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/netcraze.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/netcup.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/netease.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/netflav.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/netflix.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/netlify.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/neuralink.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/newegg.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/newgrounds.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/newscorp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/newsmax.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nexitally.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nexo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nexon.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nexusmods.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nga.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nginx.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ngrok.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nhk.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nic-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nicegram.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/niconico.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nike.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nikkan-gendai.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nikke.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nikkei.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nintendo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nist.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nixos.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nodejs.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nodeseek.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/noip.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nordstrom.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nordvpn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/notion.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/now.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nowcoder.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/npmjs.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nudevista.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nurofen.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nutaku.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nvidia.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nyaa.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nypost.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/nytimes.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/oan.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/oculus.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ogury.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ok.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/okaapps.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/okjike.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/okko.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/okx.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/olevod.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/onedrive.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/onekey.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/oneplus.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ookla-speedtest.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/op.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/openai.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/opencollective.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/openjsfoundation.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/openrec.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/opensourceinsights.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/openspeedtest.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/openstreetmap.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/openweather.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/openwrt.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/openx.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/oppo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/oracle.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/oreilly.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/organicmaps.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/origin.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/oschina.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/oskelly.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/osu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/otpbank.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/oup.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/overclockers-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ozon.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pagecdn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/panasonic.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pandanet.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/paofuyun.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/paskoocheh.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pastebin.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/patreon.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pawchive.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/paypal.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pbs.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pccw.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pchome.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pearson.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/peppy.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/perl.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/perplexity.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/petrochina.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pgyer.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/phoenix.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/picacg.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/picsee.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pikpak.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pinduoduo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pingan.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pingcap.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pinggy.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pingpe.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pingsx.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pinkcore.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pinterest.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/piratebay.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pixhost.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pixiv.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pixnet.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/playboy.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/playcover.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/playstation.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/plex.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/plutotv.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pocketcasts.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/poe.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/polocloud.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/polymer.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/polyu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/polyv.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/positive-technologies.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/postimages.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pptv.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/primevideo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/private.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/progress.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/projectpoi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/projectsekai.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/proquest.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/protonmail.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pstorage.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ptt.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pubg.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pubmatic.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/pugpig.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/purikonejp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/python.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/qcc.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/qcloud.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/qianxin.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/qihoo360.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/qimao.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/qingcloud.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/qingtingfm.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/qiniu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/qixin.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/qnap.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/qt.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/qualcomm.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/quantil.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/quip.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/quora.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/qwant.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/qweather.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/radiko.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/raiffeisenbank.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/rakuten.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/rarbg.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/razer.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/rb.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/reabble.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/readthedocs.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/reagroup.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/realclear.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/realitykings.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/realtype.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/rebrandly.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/reddit.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/redhat.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/redis.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/redotpay.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/redtube.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/regru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/remnawave.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/renren.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/reurl.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/reuters.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/rferl.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/riot.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/roblox.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/rockstar.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/roku.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/rossiyasegodnya.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/rostelecom.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/rsshub-3rd.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/rsshub.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/rt.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/rthk.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ruanmei.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ruby.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/rubychina.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ruleoflaw.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/rumble.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/rust.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ruten.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/rutracker.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/rutube.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/safepal.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sakurafrp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/salesforce.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/samsung.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sankei.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sb.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sber.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sberbank.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/scala.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/scaleflex.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/scenesource.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/schoopia.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/schwab.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sci-hub.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sci.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sciencedirect.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/scmp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/scp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/seasun.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/secom.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sectigo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/segment.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/segmentfault.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sehuatang.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/selectel.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sentry.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/servicepipe.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/setapp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/setn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sf-express.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/shadowsockscom.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/shanbay.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sharethis.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/shireyishunjian.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/shopee.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/shopify.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/shorturl.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/showtimeanytime.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/shuqi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/signal.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sina.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/singtaonewscorp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sinopec.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sitepoint.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/skillshare.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sky.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/skyeng.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/skyperfect.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/slack.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/slideshare.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sling.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/smartone.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/smena.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/smtiaojiaoshi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/smzdm.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/snap.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/snapcraft.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/snapp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/snk.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/snodehome.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/softbank.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/softether.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sogou.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sohu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sokolov.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sonemic.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sony.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sonypictures.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/soundcloud.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/soundofhope.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sourceforge.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sourcehut.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/soyjakparty.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/spacemail.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/spaceship.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/spacex.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/spankbang.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/speedtest.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/spiceworks.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/spotify.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/springer.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/squareup.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/squirrelvpn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sslcom.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ssrcloud.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/st.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/stackexchange.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/stackpath.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/stage1st.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/standardchartered.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/starbucks.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/starfieldtech.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/starplus.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/startpage.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/starworld.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/staticfile.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/steam.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/steaminventoryhelper.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/steamunlocked.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/steemit.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sto-express.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/straitsx.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/streamable.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/strepsils.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/strikingly.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/stripe.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/subscene.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/suishouji.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sumkoo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/suning.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/supercell.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/supersonic.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/surflite.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/suruga-ya.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/svp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/swag.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/swift.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/swisssign.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/sxl.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/symantec-pki.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/symantec.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/synology.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/t2-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/taboola.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/taihe.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/taikang.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tailscale.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/take-two.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/talkatone.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/taomee.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/taptap.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/target.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/taylorfrancis.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tbank-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tcl.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/teambition.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/teamspeak.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/teamviewer.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/technogym.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/techpowerup.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/techtimes.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ted.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/telegram.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/telekom.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/temp-mail.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tencent-dev.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tencent-games.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tencent-tme.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tencent.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tendcloud.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/terabox.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/termux.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tesla.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/test-ipv6.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/test.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tex.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tgbus.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/theboringcompany.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/theguardian.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/theinitium.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/thelinuxfoundation.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/thescoregroup.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/thesun.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/thetimes.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/thetype.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/thomsonreuters.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/threads.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tiancity.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tianyancha.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tidal.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tidelift.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tiktok.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tilda.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/timeweb.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tinyurl.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tld-%21cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tld-cn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tld-opennic.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tld-ru.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tmdb.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tmtpost.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tokyo-sports.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tokyo-toshokan.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tonec.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tongcheng.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tongfang.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tor.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/torproject.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/trackernetwork.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/trae.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/translatewiki.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/trello.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/trustasia.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/trustwallet.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/trustwave.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/truyen-hentai.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tsquare.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tube8.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tubi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tumblr.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tutanota.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tvb.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tvdb.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/tver.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/twca.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/twilio.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/twitch.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/twitter.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/typekit.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/typenetwork.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/typography.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/uber.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ubiquiti.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ubisoft.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ubuntu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ubuntukylin.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/uc.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ucloud.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ucoz.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/udacity.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/udemy.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/udn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/umeng.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/unext.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/unionpay.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/unity.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/unitychina.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/uoliv.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/upai.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/usersdrive.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/uu-chat.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/v2ray.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/v8.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vancl.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vanish.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vaptcha.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vatsim.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/veet.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vercel.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/verisign-pki.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/verisign.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/verizon.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vgtime.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/viber.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vilavpn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vimeo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/visa.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/visualarts.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/viu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vivo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vixengroup.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vk.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vmware.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/voanews.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vodafone.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vokino.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/volcengine.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/volmoe.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/volvo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/voxmedia.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vpngate.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vrcdn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vrchat.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vrzwk.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/vultr.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/w3schools.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wallhaven.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/walmart.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wanfang.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wangsu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wanmei.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wantmedia.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wargaming.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wasu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/watchout.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wbgames.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/weathercn.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/webex.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/webflow.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/webnovel.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/webtype.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/weiphone.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wenshushu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/westerndigital.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/whatsapp.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wholefoodsmarket.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/whoosh.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wikidot.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wikihow.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wikimedia.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wildberries.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/windsurf.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/windy.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wink.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/winline.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wise.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wisekey.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wish.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wistia.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wiwide.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wix.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wjx.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wolai.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/woolite.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wordpress.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wps.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wsj.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wwe.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/wynd.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/x.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/x5.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xai.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xbox.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xd.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xda.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xdty.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xedge.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xhamster.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xiaoheihe.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xiaohongshu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xiaomi-ai.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xiaomi-iot.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xiaomi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xiaoyuzhou.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ximalaya.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xingkongwuxianmedia.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xingrz.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xnxx.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xtom.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xueersi.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xueqiu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xunlei.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/xvideos.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/yahoo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/yandex.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ycombinator.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ymtc.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ynet.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ynoproject.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/yokaverse.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/yomiuri.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/yostar.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/youjizz.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/youku.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/youmind.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/youquan.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/youtube.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/youzan.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/yto-express.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/yuanbei.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/yuanfudao.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/yuewen.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/yuketang.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/yundaex.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/yunfanjiasu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/yunlaopo.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/yy.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/z-library.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/z3x-team.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zaobao.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zb.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zdns.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zee.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zeetv.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zendesk.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zeplin.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zhangtao.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zhihu.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zhimeishe.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zhubajie.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/ziroom.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zoho.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zoom.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zotero.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zscaler.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zte.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zto-express.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zuoyebang.txt
+  - https://raw.githubusercontent.com/hezhijie0327/Geosite2Domain/main/non-category/zynga.txt
 
 ### [hguandl/sing-chinalist](https://github.com/hguandl/sing-chinalist)
 
@@ -30788,8 +32865,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: shadowrocket rules
 - Stars: 0; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/hippoking/sr_rules/master/sr_routine.conf
 
 ### [hirosesuzu0619/shadowrocket-rules](https://github.com/hirosesuzu0619/shadowrocket-rules)
 
@@ -31004,16 +33082,19 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: lhie1规则生成 For Shadowrocket
 - Stars: 0; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/howforge/Rules-lhie1-SR/master/version.conf
 
 ### [hr3lxphr6j/coredns-ruledforward](https://github.com/hr3lxphr6j/coredns-ruledforward)
 
 - Description: Forwards DNS queries or returns empty (NODATA) by matching domain rules. Supports v2fly domain-list-community (dlc.dat), AdGuard Home filter rules, and inline domain-list-community-style rules.
 - Stars: 0; archived: False; fork: False
 - Search queries: adguard DNS filter domains, domain-list-community rules, v2fly domain-list-community
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/hr3lxphr6j/coredns-ruledforward/master/dist/systemd/coredns-sysusers.conf
+  - https://raw.githubusercontent.com/hr3lxphr6j/coredns-ruledforward/master/integration/fixtures/adguard.txt
 
 ### [hrd201/shadowrocket-rules](https://github.com/hrd201/shadowrocket-rules)
 
@@ -31067,16 +33148,2024 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Not supplied
 - Stars: 0; archived: False; fork: False
 - Search queries: geosite domain
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2007
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/0x0.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/115.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/1337x.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/17zuoye.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/18comic.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/2ch.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/2gis.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/2kgames.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/36kr%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/36kr.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/4399.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/4chan.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/4pda.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/4plebs.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/51job.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/54647.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/58tongcheng.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/5ch.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/6park.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/7tv.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/800best.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/8btc.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/928plus.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/9news.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/9to5.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aamgame.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/abc.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/abema.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/accuweather.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/acer%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/acer.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/acfun%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/acfun%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/acfun.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/actalis.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/activision-blizzard.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/activision.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/adblock.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/adblockplus.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/addthis.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/addtoany.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/adguard.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/adidas%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/adidas.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/adjust%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/adjust.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/adobe%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/adobe%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/adobe%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/adobe-activation.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/adobe.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aerogard%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aerogard.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/afdian.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/afp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/agilebits.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/agora.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aiqicha.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/airbnb.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/airchina%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/airchina.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/airwick%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/airwick.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aisiku.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aixcoder.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/akamai%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/akamai%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/akamai.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/akiko.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/alibaba%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/alibaba%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/alibaba%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/alibaba%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/alibaba.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/alibabacloud%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/alibabacloud%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/alibabacloud.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aligames.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aliyun%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aliyun%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aliyun%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aliyun-drive.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aliyun.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aljazeera.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/alphabet%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/alphabet%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/alphabet%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/alphabet%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/alphabet.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/amap%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/amap%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/amap.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/amazon%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/amazon%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/amazon.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/amazontrust.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/amc.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/amd%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/amd.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/amp%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/amp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/amplitude%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/amplitude%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/amplitude.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/anaconda.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/anandtech.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/android.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/anexia.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/anime.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/anker%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/anker.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/annas-archive.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/anon-v.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/anthropic.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ap.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apa.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aparat.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apifox.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apipost.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apkcombo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apkmirror.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apkpure.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apple%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apple%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apple-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apple-dev%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apple-dev.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apple-intelligence.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apple-music%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apple-music.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apple-pki%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apple-pki.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apple-podcasts%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apple-podcasts.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apple-tvplus.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apple-update.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/apple.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/appledaily.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/applysquare.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aptoide.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/archive.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/archiveofourown.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/archivetoday.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/archlinux.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/arphic.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/artstation.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/asahi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/askdiandian.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/asobo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/asproex.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/asus%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/asus.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/atlassian.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/att%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/att.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/attwatchtv.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/autodesk.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/autoru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/auxgroup%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/auxgroup.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/avaxhome.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aviasales.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/avito%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/avito%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/avito.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/avmoo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/awempire.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aws%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aws-cn%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aws-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/aws.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/azure%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/azure%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/azure.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/b3log.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bahamut.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/baidu%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/baidu%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/baidu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/baishancloud.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/baltamatica.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bamtech.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bandcamp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bandwagonhost.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bangumi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/barrons.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bbc.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bdsmhub.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/beats%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/beats.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/beget.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/beisen.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bestbuy%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bestbuy.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bestchange.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bestore.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bestv.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/betboom.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bethesda.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/betterexplained.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bilibili%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bilibili-cdn%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bilibili-cdn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bilibili-game.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bilibili.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bilibili2.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/biliintl.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/binance.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bing%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bing%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bing.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bitauto.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bitflyer.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bitly.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bitrix.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bitsquare.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bitwarden.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bjyouth.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/blender.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/blizzard.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/blogspot.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bloomberg.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bluearchive%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bluearchive.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bluepoch-games.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bluepoch.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bluesky.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/blurams.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bmw%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bmw.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/boc%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/boc.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bohemia.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bongacams.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/booking%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/booking.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/books.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/boomerang.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bootcdn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bootstrap.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/borneoschematics.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/boslife.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/boxun.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/boylove.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/braveux.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/brazzers.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bridgestone%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bridgestone.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/brightcove.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/brilliant.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/broadcom%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/broadcom.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/btdig.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bttzyw.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bushiroad.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/buymeacoffee.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/buypass.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bybit.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bytedance%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bytedance%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bytedance%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bytedance-ai-%21cn%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bytedance-ai-%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/bytedance.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/c-span.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cabletv.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cainiao%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cainiao%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cainiao.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/calgoncarbon%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/calgoncarbon.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cambridge.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/camwhores.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/canon%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/canon.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/canonical.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/canva.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/capitalonline.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/carrotquest%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/carrotquest.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cas.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/casimages.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/catchplay.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-acg.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ads%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ads%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ads-all%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ads-all%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ads-all.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ads-and-telemetry%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ads-and-telemetry%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ads-and-telemetry%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ads-and-telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ads-ir.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ai-%21cn%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ai-%21cn%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ai-%21cn%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ai-%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ai-chat-%21cn%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ai-chat-%21cn%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ai-chat-%21cn%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ai-chat-%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ai-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ai-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-android-app-download.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-anticensorship.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-antivirus%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-antivirus.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-automobile-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-bank-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-bank-ir.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-bank-jp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-bank-mm.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-bank-ru%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-bank-ru%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-bank-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-betting-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-blog-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-bourse-ir.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-browser-%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-cas%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-cas.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-cdn-%21cn%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-cdn-%21cn%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-cdn-%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-cdn-cn%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-cdn-cn%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-cdn-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-collaborate-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-communication%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-communication.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-companies%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-companies%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-companies%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-companies%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-companies.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-consent-management.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-container.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-cryptocurrency%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-cryptocurrency.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ddns.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-dev%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-dev%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-dev%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-dev-cn%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-dev-cn%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-dev-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-dev.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-documents-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-doh.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ecommerce%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ecommerce%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ecommerce%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ecommerce-ru%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ecommerce-ru%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ecommerce-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ecommerce.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-education-cn%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-education-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-education-ir.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-education-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-electronic-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-emby.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-enhance-gaming%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-enhance-gaming.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-enterprise-query-platform-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-entertainment%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-entertainment%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-entertainment%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-entertainment%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-entertainment-cn%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-entertainment-cn%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-entertainment-cn%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-entertainment-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-entertainment-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-entertainment.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-finance%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-finance%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-finance%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-finance.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-flight-simulator.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-food-cn%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-food-cn%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-food-cn%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-food-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-forums%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-forums%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-forums-ir.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-forums-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-forums.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-game-accelerator-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-game-platforms-download%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-game-platforms-download.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-games%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-games%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-games%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-games-%21cn%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-games-%21cn%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-games-%21cn%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-games-%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-games-cn%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-games-cn%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-games-cn%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-games-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-games.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-gov-ir.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-gov-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-hospital-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-httpdns-cn%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-httpdns-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-insurance-ir.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ip-geo-detect%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ip-geo-detect%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ip-geo-detect.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ipfs.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ir.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-logistics-cn%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-logistics-cn%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-logistics-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-media%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-media-cn%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-media-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-media-ir.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-media-ru-blocked.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-media-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-media.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-medicine-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-mobile-repair.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-mooc-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-netdisk-%21cn%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-netdisk-%21cn%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-netdisk-%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-netdisk-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-network-security-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-news-ir.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-novel.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ntp%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ntp-cn%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ntp-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ntp-jp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ntp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-number-verification-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-olympiad-in-informatics.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-orgs%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-orgs.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-outsource-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-password-management.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-payment-ir.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-proxy-tunnels.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-pt%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-pt.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-public-tracker.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-remote-control%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-remote-control.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-retail-ru%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-retail-ru%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-retail-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ru%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ru%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ru%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-scholar-%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-scholar-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-scholar-hk.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-scholar-ir.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-scholar-uk.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-securities-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-shopping-ir.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-social-media-%21cn%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-social-media-%21cn%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-social-media-%21cn%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-social-media-%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-social-media-cn%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-social-media-cn%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-social-media-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-social-media-ir.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-speedtest%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-speedtest%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-speedtest%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-speedtest.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-stun.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-tech-ir.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-tech-media%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-tech-media-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-tech-media.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-telemetry%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-telemetry%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-telemetry%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-tm.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-travel-ir.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-travel-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-urlshortner.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-voip.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-vpnservices.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-web-archive.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/category-wiki-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cbs.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ccb%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ccb.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cctv%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cctv.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cdek.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cdn77.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cdprojekt.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ceno.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cerebras.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cern.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/certinomis.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/certum.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/changyou.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/chaoxing.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/chatango.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/chatwhores.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cheetahmobile.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/chegg.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/chesscom.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/chinabroadnet.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/chinamobile%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/chinamobile.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/chinanews.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/chinapost.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/chinapower.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/chinaso.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/chinatelecom%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/chinatelecom.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/chinatower.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/chinaunicom%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/chinaunicom.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/chinaz.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cian.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cisco%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cisco.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/citic%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/citic.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/citizenlab.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cityu-hk.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ciweimao.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ck101.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/clarivate.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/clearasil%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/clearasil.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/clearbit%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/clearbit.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/clips4sale.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cloudcone.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cloudconvert.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cloudflare%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cloudflare%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cloudflare-cn%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cloudflare-cn%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cloudflare-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cloudflare-ipfs.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cloudflare.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cloudinary.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cloudns.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/clubhouse.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cmb%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cmb.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cnb.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cnbc.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cnbeta.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cnblogs.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cnet.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cnki.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cnn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/code.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/codeberg.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/codecademy.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/codeforces.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/coding.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/coinone.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/collabora.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/colorfulclouds.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/comfy-ui-launcher.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/comfy.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/comodo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/comssone.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/connectivity-check%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/connectivity-check.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/contentful.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/coolapk.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/coomer.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/copymanga.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/corel.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/costco.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/coupang.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/coursera.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cowlevel.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cowtransfer.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/craigslist.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/creativecommons.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/csdn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/csis.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ctexcel%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ctexcel.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ctrip%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ctrip.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ctyun.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cuhk.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cuinc.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/curseforge.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cursor.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cuttly.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cybertrust.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cygames.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/cylink.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dailymail.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dailymotion.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dandanplay.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dandanzan.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dangdang.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dart.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dazn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dcard.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ddmaicai.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/debian.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/decryptipastore.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dedao.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/deepin%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/deepin.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/deepseek.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/deezer.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dell%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dell.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/demonoid.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/deppon.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/deribit.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dettol%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dettol.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/deviantart.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dewu%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dewu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/didi%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/didi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/digicert%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/digicert.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/digitalocean.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/digitalplayground.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dingdatech.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dingtalk.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/discord.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/discourse.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/discoveryplus.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/discuz.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/disney%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/disney%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/disney%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/disney.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/disqus.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/divar.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dji.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dlercloud.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dlsite.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dmit.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dmm%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dmm.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dnspod.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/docker.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/doi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dola%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dola.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dongchedi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dongjiao.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/douban.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/doubao.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/douyin.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/douyu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dowjones.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dribbble.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dropbox.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/drweb.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dslreports.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dsn-host.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/duckduckgo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/duitang.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/duolingo%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/duolingo%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/duolingo%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/duolingo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/duowan.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/durex%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/durex.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/duyaoss.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dw.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dwion.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dyna.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dynu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dzen%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dzen%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/dzen.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ea.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/eastmoney%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/eastmoney.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/easylist.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ebay%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ebay.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ebuyer.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/economist.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/eduhk.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/edx.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/egghead.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ehentai.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/electron.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/eleme%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/eleme%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/eleme.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/elevenlabs.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/elsevier.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/embark.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/embedly.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/embl.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/emojipedia.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/eneba.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/enfa.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/entermediadb.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/entrust%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/entrust.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/envato.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/envybox.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/epicbrowser.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/epicgames%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/epicgames.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/epochmediagroup.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/erolabs.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/escapefromtarkov.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/eset%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/eset.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/espn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/espressif%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/espressif.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/esri.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ethereum.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/everbright.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/evernote.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/f-droid.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/facebook%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/facebook-dev.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/facebook.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/faceit.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/falungong.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/familymart%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/familymart.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fandom.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fanfiction.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fans66.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fansta.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/farfetch%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/farfetch.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/faronics.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fastlane.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fastly.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/faststone.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fcbox.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fedora.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/feedly.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/feishu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fengxing.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fflogs%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fflogs.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fibank.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ficbook.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/figma.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/filimo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/finish%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/finish.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/firebase%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/firebase%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/firebase.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/firefox.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/flatpak.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/flibusta.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/flickr.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/flowus.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/flowwow.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/flutter.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fluxer.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/flyio.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/focuschina.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fonbet.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fontawesome.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fontexplorer.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fonts.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fontshop.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fontsinuse.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/forbes.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/formula1.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/forza.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fox.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fqnovel%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fqnovel%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fqnovel.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/framer.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/freebuff.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/freecodecamp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/freenode.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ft.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ftv.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/funpay.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/futu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/fzdm.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gaijin.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gamersky%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gamersky.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gamesplanet.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gandi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ganji.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gannett.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/garena.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gateio.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/geetest.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gemfury.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/genotek-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/geolocation-%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/geolocation-cn%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/geolocation-cn%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/geolocation-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gettyimages.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/getui.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gfw.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gfycat.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ggsel.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/giffgaff.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gigabyte%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gigabyte.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gimy.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gismeteo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gitbook.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gitee.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/github%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/github-copilot%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/github-copilot.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/github.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/github1s.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gitlab.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gitv.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/globalsign%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/globalsign.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/globalvoices.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/globo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/glyphs.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gmo-internet%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gmo-internet.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/godaddy.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gofundme.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gog%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gog%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gog%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gog.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/golang.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/goodreads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/google%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/google%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/google%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/google%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/google-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/google-deepmind.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/google-gemini.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/google-play%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/google-play.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/google-registry-tld.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/google-registry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/google-scholar.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/google-trust-services%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/google-trust-services.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/google.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/googlefcm%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/googlefcm.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/goproxy.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gracg.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/grapheneos.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gravatar.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/greatfire.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gree.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/groq.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/group-ib.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/growingio.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gucci%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/gucci.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/guo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/guokr.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/habr.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/haier.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hainanairlines.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/haitang.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hamivideo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hanyi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/harpercollins.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hashicorp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/haskell.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/haveibeenpwned.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hbo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hcaptcha.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hdrezka.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/headhunter.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hentaichen.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hentaivn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/herogame.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/heroku.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hetzner%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hetzner%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hetzner.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/heyzo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hikvision.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hinet-eca.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hinet.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hisense.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hitun.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hkbn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hkbu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hkedcity.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hketgroup%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hketgroup.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hkgolden.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hkt.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hku.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hkust.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hm%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hm.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/homebrew.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/homedepot.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hongkongpost.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/honor.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hooligapps.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hotstar.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hoyoverse%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hoyoverse%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hoyoverse.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hp%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hpe.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hsbc-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hsbc.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/httpdns.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/huanghuagang.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/huawei%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/huawei%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/huawei-dev.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/huawei.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/huaweicloud%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/huaweicloud.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hubblephone.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/huffpost.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hugecore.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/huggingface.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hujiang.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hulu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/humblebundle.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hunantv%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hunantv%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hunantv.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/huobi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hupu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hupun.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/hurricaneelectric.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/huya.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ibkr.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ibm.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/icable.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/icbc%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/icbc.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/icloud%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/icloud.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/icloudprivaterelay.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ideco-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/identrust.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/idg.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ieee.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ifanr.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ifast%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ifast.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/iflytek.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ihuman.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/iina.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ikea%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ikea.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/illgames.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/illusion-nonofficial.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/illusion.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/imagebam.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/imagecurl.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/imageshack.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/imagetwist.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/imdb.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/imgbb.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/imgix.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/imgur.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/imperialcollege.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/infowars.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/infrapedia.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/inoreader.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/inshot.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/insider.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/instagram%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/instagram.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/intel%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/intel-dev.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/intel.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/intercom.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/internet-archive.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/intsig.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/intuit.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ipip%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ipip.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/iqiyi%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/iqiyi%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/iqiyi%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/iqiyi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/isgd.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ishumei.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/itchio.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/itiger.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/itunes%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/itunes.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ixbt.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ixsystems.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/iyf.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jable.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/japonx.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/java.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/javbus.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/javcc.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/javdb.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/javwide.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jd%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jd%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jd%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jd.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jetbrains%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jetbrains-ai.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jetbrains.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jfrog.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jianshu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jibencaozuo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jiemian.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jiguang.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jinshuju.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jiyukobo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jkf.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jlc.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/johren.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jquery.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jsdelivr.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jtexpress.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/juejin.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jushuitan.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/justav.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/justmysocks.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jutongbao.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/jwplayer.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kaggle.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kakao.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kanzhongguo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kaspersky%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kaspersky.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kechuang.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/keep.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kemono.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kernel.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/keybase.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/khanacademy.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kick.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kindle%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kindle.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kindle4rss.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kingkonglive.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kingsoft.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kinopoisk.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kinopub.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kkbox.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kktv.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kodi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kodik.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/konachan.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/konami.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kontur%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kontur%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kontur.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/koolearn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kraken.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ku6.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kuaidi100.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kuaikan.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kuaishou%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kuaishou%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kuaishou.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kuaiyikeji.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kubakuba.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kubernetes.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kucoin.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kugou%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kugou.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kurogames%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kurogames%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kurogames.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kuwo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/kyodonews.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lagou.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/landian.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lantern.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lanzou.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/laracasts.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lark-global.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lark.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lastfm.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lastpass.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/launchpad.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lavteam.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/le%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/le.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lenovo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lethalhardcore.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/letsencrypt.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lg.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lianjia.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/liberapay.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/libgen.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/librewolf.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/liepin.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lifewire.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ligastavok.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lighter.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lihkg.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/likee.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/limelight.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/linakesi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/line.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/linguee.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/linkedin%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/linkedin.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/linotype.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/linux.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/linuxdo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lisiku.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/litv.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/livejournal.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/liveperson.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lizhi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lkcoffee.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/localbitcoins.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/localizejs.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/logitech.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/londonreal.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/longbridge.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/louisvuitton%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/louisvuitton.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lowiro.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ltn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lumion.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lysol%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/lysol.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/madshi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mafengwo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/magnit.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mailcom.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mailru%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mailru%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mailru-group%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mailru-group%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mailru-group.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mailru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mainichi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/manhuagui.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/manhuaren.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/manorama.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/manoto.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/manus.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/maocloud.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mapbox%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mapbox.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/marvel.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mastercard%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mastercard.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/masterclass.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/matrix.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/matters.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mcdonalds%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mcdonalds.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mdn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/meadjohnson%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/meadjohnson.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mediachinesegroup.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/medium.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/meduza.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mega.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/megafon.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/meipian.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/meitu%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/meitu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/meituan.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/meizu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/messenger.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/meta%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/meta.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/metabrainz.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/metacritic.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/metart.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/miaomiaozhe.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/microsoft%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/microsoft%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/microsoft%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/microsoft-dev%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/microsoft-dev%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/microsoft-dev.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/microsoft-pki.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/microsoft.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/midea.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mihoyo%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mihoyo%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mihoyo%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mihoyo-cn%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mihoyo-cn%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mihoyo-cn%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mihoyo-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mihoyo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mikrotik.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mindbox%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mindbox%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mindbox.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mindgeek.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mini.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/miniso%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/miniso.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/miraheze.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/missav.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/misskey-universe.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/misskey.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mit.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mixi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mobile01.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mocha.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/modrinth.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mogujie.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mojang.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/moji%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/moji.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/momo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mongodb.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/monotype.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/moonvy.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/morisawa.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mortein%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mortein.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mosmetro.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/motorola.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/movefree%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/movefree.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/moxing.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mozilla%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mozilla%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mozilla.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/msi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/msn%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/msn%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/msn%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/msn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mts-ru%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mts-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mubi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mucinex.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mudvod.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/muji%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/muji.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/musixmatch.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mvideo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mxroute.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mydirtyhobby.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/myfonts.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/myoffice-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/myradio.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mytvsuper.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/mzed.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/n26.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/n3ro.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/narwal.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nationalgeographic.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/naver.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nbcuniversal.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/neowin.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/netcraze.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/netcup.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/netease%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/netease%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/netease%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/netease.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/netflav.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/netflix.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/netlify.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/neuralink.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/newegg.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/newgrounds.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/newscorp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/newsmax.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nexitally.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nexo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nexon.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nexusmods.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nga.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nginx.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ngrok.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nhk.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nic-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nicegram%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nicegram.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/niconico.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nike%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nike.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nikkan-gendai.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nikke.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nikkei.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nintendo%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nintendo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nist.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nixos.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nodejs.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nodeseek.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/noip.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nordstrom.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nordvpn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/notion.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/now.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nowcoder.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/npmjs.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nudevista.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nurofen%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nurofen.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nutaku.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nvidia%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nvidia.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nyaa.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nypost.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/nytimes.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/oan.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/oculus.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ogury%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ogury.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ok.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/okaapps%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/okaapps.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/okjike.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/okko.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/okx%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/okx.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/olevod.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/onedrive.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/onekey.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/oneplus%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/oneplus.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ookla-speedtest%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ookla-speedtest.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/op.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/openai%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/openai%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/openai.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/opencollective.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/openjsfoundation%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/openjsfoundation.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/openrec.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/opensourceinsights.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/openspeedtest.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/openstreetmap.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/openweather.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/openwrt.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/openx%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/openx.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/oppo%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/oppo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/oracle.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/oreilly%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/oreilly.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/organicmaps.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/origin.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/oschina.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/oskelly.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/osu%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/osu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/otpbank.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/oup.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/overclockers-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ozon%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ozon%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ozon.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pagecdn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/panasonic%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/panasonic.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pandanet.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/paofuyun.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/paskoocheh.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pastebin.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/patreon.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pawchive.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/paypal%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/paypal%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/paypal.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pbs.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pccw.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pchome.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pearson%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pearson.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/peppy%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/peppy.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/perl.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/perplexity.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/petrochina.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pgyer.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/phoenix.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/picacg%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/picacg.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/picsee.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pikpak%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pikpak%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pikpak.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pinduoduo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pingan%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pingan.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pingcap.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pinggy.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pingpe.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pingsx.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pinkcore.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pinterest.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/piratebay.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pixhost.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pixiv%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pixiv.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pixnet.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/playboy.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/playcover.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/playstation.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/plex.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/plutotv.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pocketcasts.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/poe.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/polocloud.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/polymer.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/polyu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/polyv.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/positive-technologies.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/postimages.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pptv.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/primevideo%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/primevideo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/private.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/progress.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/projectpoi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/projectsekai.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/proquest.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/protonmail.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pstorage.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ptt.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pubg.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pubmatic.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/pugpig.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/purikonejp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/python.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/qcc.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/qcloud%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/qcloud.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/qianxin.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/qihoo360%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/qihoo360.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/qimao.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/qingcloud.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/qingtingfm.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/qiniu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/qixin.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/qnap%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/qnap.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/qt.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/qualcomm%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/qualcomm.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/quantil.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/quip.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/quora.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/qwant.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/qweather.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/radiko.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/raiffeisenbank.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rakuten.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rarbg.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/razer%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/razer.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rb%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rb.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/reabble%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/reabble.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/readthedocs.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/reagroup.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/realclear.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/realitykings.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/realtype.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rebrandly.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/reddit.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/redhat.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/redis.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/redotpay.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/redtube.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/regru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/remnawave.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/renren.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/reurl.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/reuters.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rferl.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/riot%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/riot.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/roblox.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rockstar.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/roku.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rossiyasegodnya.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rostelecom%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rostelecom%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rostelecom.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rsshub-3rd.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rsshub.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rt.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rthk.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ruanmei.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ruby.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rubychina.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ruleoflaw.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rumble.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rust.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ruten.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rutracker.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/rutube.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/safepal.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sakurafrp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/salesforce.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/samsung%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/samsung%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/samsung.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sankei.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sb.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sber%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sber%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sber.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sberbank%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sberbank%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sberbank.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/scala.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/scaleflex.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/scenesource.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/schoopia.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/schwab.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sci-hub.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sci.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sciencedirect.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/scmp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/scp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/seasun.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/secom.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sectigo%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sectigo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/segment%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/segment.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/segmentfault.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sehuatang.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/selectel.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sentry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/servicepipe.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/setapp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/setn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sf-express.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/shadowsockscom.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/shanbay.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sharepoint.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sharethis.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/shireyishunjian.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/shopee%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/shopee.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/shopify.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/shorturl.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/showtimeanytime.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/shuqi%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/shuqi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/signal.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sina%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sina%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sina%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sina.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/singtaonewscorp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sinopec.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sitepoint.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/skillshare.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sky%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sky.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/skyeng.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/skyperfect.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/slack.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/slideshare.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sling.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/smartone.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/smena.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/smtiaojiaoshi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/smzdm.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/snap%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/snap.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/snapcraft.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/snapp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/snk.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/snodehome.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/softbank.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/softether.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sogou%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sogou.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sohu%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sohu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sokolov.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sonemic.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sony.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sonypictures.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/soundcloud.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/soundofhope.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sourceforge.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sourcehut.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/soyjakparty.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/spacemail.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/spaceship.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/spacex.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/spankbang.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/speedtest%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/speedtest.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/spiceworks.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/spotify%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/spotify.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/springer.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/squareup.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/squirrelvpn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sslcom%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sslcom.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ssrcloud.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/st%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/st.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/stackexchange.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/stackpath.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/stage1st.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/standardchartered.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/starbucks%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/starbucks.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/starfieldtech.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/starplus.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/startpage.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/starworld.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/staticfile.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/steam%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/steam.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/steaminventoryhelper.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/steamunlocked.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/steemit.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sto-express.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/straitsx.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/streamable.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/strepsils%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/strepsils.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/strikingly.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/stripe.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/subscene.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/suishouji.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sumkoo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/suning.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/supercell.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/supersonic%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/supersonic.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/surflite.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/suruga-ya.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/svp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/swag.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/swift%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/swift.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/swisssign.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/sxl.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/symantec-pki.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/symantec.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/synology%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/synology.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/t2-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/taboola.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/taihe.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/taikang.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tailscale.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/take-two.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/talkatone.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/taomee.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/taptap%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/taptap.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/target.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/taylorfrancis.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tbank-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tcl%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tcl.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/teambition.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/teamspeak.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/teamviewer%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/teamviewer.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/technogym.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/techpowerup.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/techtimes.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ted.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/telegram.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/telekom.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/temp-mail.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tencent%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tencent%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tencent%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tencent-dev%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tencent-dev%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tencent-dev.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tencent-games.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tencent-tme%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tencent-tme%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tencent-tme.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tencent.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tendcloud%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tendcloud.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/terabox.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/termux.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tesla%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tesla.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/test-ipv6%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/test-ipv6.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/test.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tex.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tgbus.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/theboringcompany.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/theguardian.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/theinitium.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/thelinuxfoundation%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/thelinuxfoundation.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/thescoregroup.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/thesun.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/thetimes.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/thetype%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/thetype.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/thomsonreuters.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/threads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tiancity.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tianyancha.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tidal.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tidelift.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tiktok%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tiktok%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tiktok.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tilda.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/timeweb.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tinyurl.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tld-%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tld-cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tld-opennic.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tld-ru.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tmdb.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tmtpost.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tokyo-sports.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tokyo-toshokan.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tonec.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tongcheng.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tongfang.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tor.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/torproject.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tracker.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/trackernetwork.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/trae.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/translatewiki.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/trello.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/trustasia.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/trustwallet.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/trustwave.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/truyen-hentai.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tsquare.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tube8.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tubi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tumblr.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tutanota.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tvb%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tvb.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tvdb.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/tver.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/twca.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/twilio.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/twitch.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/twitter%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/twitter.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/typekit.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/typenetwork.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/typography.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/uber.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ubiquiti%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ubiquiti.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ubisoft.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ubuntu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ubuntukylin.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/uc%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/uc.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ucloud.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ucoz.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/udacity.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/udemy.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/udn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/umeng%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/umeng%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/umeng.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/unext.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/unionpay.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/unity%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/unity%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/unity.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/unitychina%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/unitychina.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/uoliv.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/upai.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/usersdrive.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/uu-chat.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/v2ray.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/v8.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vancl.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vanish%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vanish.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vaptcha.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vatsim.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/veet%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/veet.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vercel.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/verisign-pki.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/verisign.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/verizon.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vgtime.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/viber.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vilavpn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vimeo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/visa%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/visa.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/visualarts.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/viu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vivo%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vivo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vixengroup.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vk%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vk%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vk.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vmware%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vmware.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/voanews.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vodafone.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vokino.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/volcengine%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/volcengine.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/volmoe.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/volvo%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/volvo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/voxmedia.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vpngate.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vrcdn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vrchat.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vrzwk.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/vultr.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/w3schools.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wallhaven.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/walmart%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/walmart.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wanfang.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wangsu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wanmei.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wantmedia.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wargaming.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wasu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/watchout.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wbgames.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/weathercn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/webex%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/webex.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/webflow.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/webnovel%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/webnovel.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/webtype.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/weiphone.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wenshushu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/westerndigital%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/westerndigital.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/whatsapp.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wholefoodsmarket.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/whoosh.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wikidot.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wikihow.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wikimedia.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wildberries%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wildberries%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wildberries.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/win-extra.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/win-spy.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/win-update.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/windsurf.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/windy.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wink.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/winline.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wise.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wisekey.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wish.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wistia.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wiwide.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wix.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wjx.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wolai.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/woolite%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/woolite.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wordpress.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wps.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wsj.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wwe.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/wynd.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/x%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/x.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/x5%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/x5%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/x5.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xai.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xbox%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xbox.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xd%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xd.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xda.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xdty.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xedge.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xhamster%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xhamster%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xhamster.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xiaoheihe.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xiaohongshu%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xiaohongshu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xiaomi%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xiaomi%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xiaomi%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xiaomi-ai.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xiaomi-iot.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xiaomi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xiaoyuzhou.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ximalaya%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ximalaya.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xingkongwuxianmedia.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xingrz.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xnxx.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xtom.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xueersi.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xueqiu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xunlei.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/xvideos.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yahoo%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yahoo%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yahoo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yandex%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yandex%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yandex%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yandex.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ycombinator.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ymtc.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ynet.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ynoproject.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yokaverse.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yomiuri.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yostar%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yostar.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/youjizz.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/youku%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/youku%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/youku%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/youku.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/youmind.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/youquan.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/youtube%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/youtube%40cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/youtube.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/youzan.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yto-express.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yuanbei.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yuanfudao.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yuewen%40%21cn.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yuewen.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yuketang.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yundaex.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yunfanjiasu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yunlaopo.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/yy.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/z-library.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/z3x-team.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zaobao.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zb.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zdns.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zee.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zeetv.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zendesk.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zeplin.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zhangtao.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zhihu%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zhihu%40telemetry.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zhihu.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zhimeishe.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zhubajie.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/ziroom.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zoho.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zoom.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zotero.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zscaler.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zte.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zto-express.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zuoyebang%40ads.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zuoyebang.txt
+  - https://raw.githubusercontent.com/huodongbin/geosite-domains/main/domains/zynga.txt
 
 ### [huzgnm/ru-direct](https://github.com/huzgnm/ru-direct)
 
 - Description: geosite.dat Xray/V2Ray: domain Nga đi DIRECT (ngân hàng, chính phủ, dịch vụ...)
 - Stars: 0; archived: False; fork: False
 - Search queries: geosite domain
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/huzgnm/ru-direct/main/ru-direct.txt
 
 ### [hxehex/russia-mobile-internet-whitelist](https://github.com/hxehex/russia-mobile-internet-whitelist)
 
@@ -31238,8 +35327,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Phishing URL analysis that explains its verdict instead of returning a number. Lexical, domain, TLS and passive HTML signals feed a calibrated model; probability, confidence, risk and heuristics stay four distinct numbers. CLI, HTML report, and a terminal triage queue.
 - Stars: 0; archived: False; fork: False
 - Search queries: phishing domains feed
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/igorkuchenbecker/pishing-detec/main/requirements.txt
 
 ### [iill392/youlong-BlockAds](https://github.com/iill392/youlong-BlockAds)
 
@@ -31370,8 +35460,10 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: List composed of several filters (Webs: Torrent, File Server, Movie Streaming, Games, Etc. EasyList and EasyPrivacy)
 - Stars: 0; archived: False; fork: False
 - Search queries: EasyList EasyPrivacy
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/indigo2121/HostsFilters/main/filtered_ilegalhostsblock.txt
+  - https://raw.githubusercontent.com/indigo2121/HostsFilters/main/ilegalhostsblock.txt
 
 ### [inmis/Pspms](https://github.com/inmis/Pspms)
 
@@ -31381,6 +35473,15 @@ MNE-Python is BSD-licenced (3 clause):
 - README / curated seed rule-list links: 1
 - Curated seed links: 0
   - https://raw.githubusercontent.com/inmis/Pspms/main/DayHint.txt
+
+### [inmis/Rhinms](https://github.com/inmis/Rhinms)
+
+- Description: 《房屋出租信息管理系统》是为房产中介公司发布租房、售房信息而专门开发的一套管理系统。  本系统在功能方面主要包括：  发布信息(发布出租信息、成交人信息、发布出售信息)；  发布信息查询统计(已审核、未审核、已租出、未租出、租期到期提醒)；  房屋出售查询(按小区名称查询、按所属区域查询、按几室几厅查询、按价格查询、按联系电话查询)；  系统设置(业务人员、站点设置、区域设置、电话黑名单)以上功能。
+- Stars: 0; archived: False; fork: False
+- Search queries: 域名黑名单
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/inmis/Rhinms/main/DayHint.txt
 
 ### [innerpeacez/my-shadowrocket-rules](https://github.com/innerpeacez/my-shadowrocket-rules)
 
@@ -31395,16 +35496,261 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Automatically fetches NetPatch Firewall group rules and converts them to Clash rule-provider format with daily updates via GitHub Actions. Supports domain rules (ads/malware/tracking) and 200+ country IP rulesets.
 - Stars: 0; archived: False; fork: False
 - Search queries: Clash domain rule providers
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 241
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/AD.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/AE.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/AF.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/AG.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/AI.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/AL.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/AM.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/AO.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/AP.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/AR.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/AS.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/AT.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/AU.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/AW.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/AX.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/AZ.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BA.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BB.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BD.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BE.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BF.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BG.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BH.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BI.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BJ.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BL.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BM.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BN.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BO.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BQ.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BR.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BS.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BT.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BW.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BY.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/BZ.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/CA.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/CD.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/CF.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/CG.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/CH.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/CI.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/CK.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/CL.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/CM.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/CN.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/CO.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/CR.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/CU.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/CV.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/CW.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/CY.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/CZ.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/DE.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/DJ.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/DK.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/DM.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/DO.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/DZ.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/EC.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/EE.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/EG.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/ER.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/ES.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/ET.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/EU.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/FI.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/FJ.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/FK.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/FM.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/FO.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/FR.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/GA.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/GB.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/GD.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/GE.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/GF.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/GG.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/GH.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/GI.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/GL.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/GM.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/GN.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/GP.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/GQ.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/GR.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/GT.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/GU.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/GW.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/GY.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/HK.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/HN.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/HR.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/HT.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/HU.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/ID.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/IE.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/IL.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/IM.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/IN.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/IO.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/IQ.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/IR.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/IS.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/IT.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/JE.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/JM.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/JO.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/JP.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/KE.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/KG.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/KH.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/KI.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/KM.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/KN.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/KP.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/KR.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/KW.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/KY.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/KZ.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/LA.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/LB.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/LC.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/LI.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/LK.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/LR.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/LS.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/LT.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/LU.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/LV.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/LY.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MA.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MC.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MD.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/ME.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MF.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MG.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MH.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MK.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/ML.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MM.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MN.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MO.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MP.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MQ.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MR.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MS.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MT.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MU.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MV.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MW.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MX.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MY.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/MZ.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/NA.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/NC.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/NE.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/NF.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/NG.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/NI.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/NL.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/NO.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/NP.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/NR.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/NU.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/NZ.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/OM.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/PA.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/PE.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/PF.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/PG.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/PH.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/PK.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/PL.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/PM.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/PR.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/PS.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/PT.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/PW.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/PY.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/QA.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/RE.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/RO.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/RS.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/RU.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/RW.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/SA.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/SB.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/SC.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/SD.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/SE.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/SG.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/SI.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/SK.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/SL.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/SM.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/SN.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/SO.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/SR.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/SS.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/ST.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/SV.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/SX.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/SY.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/SZ.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/TC.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/TD.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/TG.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/TH.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/TJ.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/TK.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/TL.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/TM.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/TN.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/TO.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/TR.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/TT.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/TV.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/TW.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/TZ.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/UA.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/UG.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/US.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/UY.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/UZ.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/VA.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/VC.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/VE.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/VG.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/VI.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/VN.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/VU.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/WF.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/WS.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/YE.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/YT.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/ZA.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/ZM.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/ZW.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/amt.txt
+  - https://raw.githubusercontent.com/inoribea/patchomo/master/output/classic/bdc.txt
 
 ### [intel-xeon/Threat-intelligence](https://github.com/intel-xeon/Threat-intelligence)
 
 - Description: List of Malicious Domain
 - Stars: 0; archived: False; fork: False
 - Search queries: malicious domains threat intelligence list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 4
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/intel-xeon/Threat-intelligence/main/feodoro_tracker_C2.txt
+  - https://raw.githubusercontent.com/intel-xeon/Threat-intelligence/main/host_file.txt
+  - https://raw.githubusercontent.com/intel-xeon/Threat-intelligence/main/log4j_ioc.txt
+  - https://raw.githubusercontent.com/intel-xeon/Threat-intelligence/main/malicious_domain.txt
 
 ### [iocium/feedback.dangerous.domains](https://github.com/iocium/feedback.dangerous.domains)
 
@@ -31487,8 +35833,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Little Snitch 6 blocklist for Apple, Microsoft, Spotify, WhatsApp, Brave, and third-party crash telemetry. 577 domains, 43 rules. Preserves macOS system updates.
 - Stars: 0; archived: False; fork: False
 - Search queries: telemetry domains blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/j3n0v4/apple-telemetry-blocklist/main/blocklist.txt
 
 ### [j5s/InfoScan2](https://github.com/j5s/InfoScan2)
 
@@ -31636,8 +35983,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Custom DNS blocklist for AdGuard Home (malware, phishing, C2)
 - Stars: 0; archived: False; fork: False
 - Search queries: malware phishing domain blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/jatuananh/evnnpc-blacklist-domain/main/malware.txt
 
 ### [javievv/proxy-rules](https://github.com/javievv/proxy-rules)
 
@@ -33629,16 +37977,44 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: PrimePiDomain Lease is a Pi Network marketplace for leasing and managing .pi domains. Users can browse, request leases, chat with owners, track payments, and list domains to earn. Admins gain analytics, dispute tools, and platform controls. Responsive purple‑themed design with Free, Pro, and Enterprise plans.
 - Stars: 0; archived: False; fork: False
 - Search queries: analytics domains list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/jocab0212/primepidomainlease/main/public/validation-key.txt
 
 ### [joelstephen97/scamshield-feed](https://github.com/joelstephen97/scamshield-feed)
 
 - Description: Daily-curated blocklist feed for the ScamShield extension (OpenPhish + URLhaus, Tranco FP guard)
 - Stars: 0; archived: False; fork: False
 - Search queries: OpenPhish phishing feed
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 27
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/data/exclusions.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/base/blocklist-project-phishing.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/base/durablenapkin-scamblocklist.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/base/global-anti-scam-org.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/base/hagezi-dyndns.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/base/hagezi-fake.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/base/hagezi-hoster.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/base/hagezi-nrd14-8.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/base/hagezi-nrd7.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/base/hagezi-tif-medium.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/base/jarelllama-scam-blocklist.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/base/malware-filter-phishing.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/base/phishdestroy.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/base/phishing-database.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/shrunk/blocklist-project-phishing.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/shrunk/durablenapkin-scamblocklist.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/shrunk/global-anti-scam-org.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/shrunk/hagezi-dyndns.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/shrunk/hagezi-fake.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/shrunk/hagezi-hoster.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/shrunk/hagezi-nrd14-8.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/shrunk/hagezi-nrd7.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/shrunk/hagezi-tif-medium.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/shrunk/jarelllama-scam-blocklist.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/shrunk/malware-filter-phishing.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/shrunk/phishdestroy.txt
+  - https://raw.githubusercontent.com/joelstephen97/scamshield-feed/main/test/fixtures/shrunk/phishing-database.txt
 
 ### [joeraog/qiao-rules](https://github.com/joeraog/qiao-rules)
 
@@ -33764,24 +38140,29 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: CLI to detect phishing domains using live feeds + heuristics; cache-first, tested with pytest; installable via phishdetector
 - Stars: 0; archived: False; fork: False
 - Search queries: phishing domains feed
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/kMendez05/PhishingDomainDetector/main/domains.txt
+  - https://raw.githubusercontent.com/kMendez05/PhishingDomainDetector/main/requirements.txt
 
 ### [kacpergumieniuk/mimicwatch](https://github.com/kacpergumieniuk/mimicwatch)
 
 - Description: Open feed of lookalike domains, cloned sites and copycat tokens impersonating Ethereum and Base projects, reviewed by a person and reported to wallet blocklists. MIT dataset.
 - Stars: 0; archived: False; fork: False
 - Search queries: phishing domains feed
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/kacpergumieniuk/mimicwatch/main/evidence/moonwell/moonwelldefi.pages.dev-html-head.txt
+  - https://raw.githubusercontent.com/kacpergumieniuk/mimicwatch/main/examples/aerodrome-extra-hosts.txt
 
 ### [kalagxw/shadowrocket-rules](https://github.com/kalagxw/shadowrocket-rules)
 
 - Description: Not supplied
 - Stars: 0; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/kalagxw/shadowrocket-rules/main/xx0801.conf
 
 ### [kamingchan/JigsawRules](https://github.com/kamingchan/JigsawRules)
 
@@ -33849,21 +38230,63 @@ MNE-Python is BSD-licenced (3 clause):
   - https://raw.githubusercontent.com/keiseoi/shadowrocket-rules/main/CustomStrategy.conf
   - https://raw.githubusercontent.com/keiseoi/shadowrocket-rules/main/GeolocationRule.list
 
+### [keksiqc/privacy](https://github.com/keksiqc/privacy)
+
+- Description: A repository for personal privacy guides and configuration files.
+- Stars: 0; archived: False; fork: False
+- Search queries: privacy DNS blocklist
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/keksiqc/privacy/main/configs/ublock.txt
+
+### [kenny273/Profiles](https://github.com/kenny273/Profiles)
+
+- Description: 自用网络工具配置文件，规则资源收集自各位大佬，感谢大佬们的付出！
+- Stars: 0; archived: False; fork: False
+- Search queries: 网络规则集
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/kenny273/Profiles/main/Loon/Loon_Profile.conf
+
 ### [kevinsetya1/urlfiltertools](https://github.com/kevinsetya1/urlfiltertools)
 
 - Description:   A Python tool that converts a list of URLs from an Excel file into wildcard-formatted domain entries, with automatic deduplication, IP & port support, and grouped output — ready for use in firewall rules or proxy allowlists.
 - Stars: 0; archived: False; fork: False
 - Search queries: proxy domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/kevinsetya1/urlfiltertools/main/wildcard_urls.txt
 
 ### [kevinzu007/zzxia-op-super-invincible-lollipop](https://github.com/kevinzu007/zzxia-op-super-invincible-lollipop)
 
 - Description: zzxia-op-super-invincible-lollipop是一套集环境搭建，代码构建、部署、发布及周边的运维工具箱。适用于微服务编排的docker集群的项目使用（k8s、swarm、docker-compose）。这些工具也可以独立使用，比如项目构建、部署发布、dns修改、服务器登录异常警报、数据库备份归档与还原、表格绘制、申请与续签（泛）域名证书等等，具体参考帮助。
 - Stars: 0; archived: False; fork: False
 - Search queries: 域名数据集
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 23
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/init/0-my_normal_envs.sample/config_files/pg_db.list
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/init/0-my_normal_envs.sample/config_files/project.list
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/init/0-my_normal_envs.sample/cp-my_normal_envs.sh.list
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/init/pg/setup/my-pg.conf
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/init/pg/setup/pg_hba.conf
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/init/pgbadger/pgbadger_report/readme.txt
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/rubbish/0-my_envs.sample/backup-center-project.list
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/rubbish/docker_registry/docker_registry-srv/data/blank.txt
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/rubbish/docker_registry/docker_registry-srv/readme.txt
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/rubbish/elasticsearch/elasticsearch-srv/readme.txt
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/rubbish/fluentd/readme.txt
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/rubbish/nexus/nexus-srv/nexus-data/blank.txt
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/rubbish/rocketmq/rocketmq-srv/conf/broker-a0/broker.conf
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/rubbish/rocketmq/rocketmq-srv/conf/broker-b0/broker.conf
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/rubbish/rocketmq/rocketmq-srv/readme.txt
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/rubbish/zabbix/agent/other-nginx/server-status.conf
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/rubbish/zabbix/agent/r.txt
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/rubbish/zabbix/agent/zabbix_agentd.conf
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/rubbish/zabbix/agent/zabbix_agentd.d/userparameter_nginx.conf
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/rubbish/zabbix/agent/zabbix_agentd.d/userparameter_postgresql.conf
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/rubbish/zabbix/server/zabbix_server.conf
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/tools/git-branch-op/project.list
+  - https://raw.githubusercontent.com/kevinzu007/zzxia-op-super-invincible-lollipop/develop/tools/git-repo-op/project.list
 
 ### [kfforfun/privitelists](https://github.com/kfforfun/privitelists)
 
@@ -33889,8 +38312,10 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: proxy pac for apple combined from hagezi/dns-blocklists
 - Stars: 0; archived: False; fork: False
 - Search queries: hagezi dns-blocklists
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/khmcgrath/pac/main/allowhost.txt
+  - https://raw.githubusercontent.com/khmcgrath/pac/main/blocklist1.txt
 
 ### [kinaka/ios_rule_script](https://github.com/kinaka/ios_rule_script)
 
@@ -33905,8 +38330,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: 以 Shadowrocket-ADBlock-Rules 所提供的規則為基礎，並加入 Whatsapp 支援
 - Stars: 0; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/kincaider/gfw-rules/master/rules.conf
 
 ### [kirichhub/Python-URL-Filter](https://github.com/kirichhub/Python-URL-Filter)
 
@@ -33947,8 +38373,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: This repo auto-syncs select controld folder files from hagezi/dns-blocklists twice daily using GitHub Actions, then pushes any domain changes directly to the Control D API. This can be customized to your liking
 - Stars: 0; archived: False; fork: False
 - Search queries: hagezi dns-blocklists
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/kometchtech/Control-D-Automation/main/requirements.txt
 
 ### [kongdayan/andi-proxy](https://github.com/kongdayan/andi-proxy)
 
@@ -34002,8 +38429,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Not supplied
 - Stars: 0; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/kungrainbow/shadowrocket-rules/main/shadowrocket.conf
 
 ### [kunkun0/shadowrocket-rules](https://github.com/kunkun0/shadowrocket-rules)
 
@@ -34061,16 +38489,19 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Automated phishing triage: parse .eml, extract IOCs (URLs/domains/IPs/hashes), score risk with local feeds & heuristics, and generate an analyst report.
 - Stars: 0; archived: False; fork: False
 - Search queries: phishing domains feed
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/laurenelizabethroberts/phishing-triage-automation/main/requirements.txt
 
 ### [lauyv/rdat](https://github.com/lauyv/rdat)
 
 - Description: Automatically generate and publish domain rules for Clash, Surge, Quantumult X, sing-box, and V2Ray GeoSite.
 - Stars: 0; archived: False; fork: False
 - Search queries: geosite domain
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/lauyv/rdat/main/example/quanx.conf
+  - https://raw.githubusercontent.com/lauyv/rdat/main/example/surge.conf
 
 ### [lavamini/unicorncross](https://github.com/lavamini/unicorncross)
 
@@ -34129,16 +38560,18 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: rule file for shadowrocket on iphone
 - Stars: 0; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/lclalalalala/shadowrocket_rule/master/rules_SR.conf
 
 ### [ldepandis/StevenBlack_AdGuard](https://github.com/ldepandis/StevenBlack_AdGuard)
 
 - Description: SteveBlack hosts file ported to AdGuard syntax
 - Stars: 0; archived: False; fork: False
 - Search queries: StevenBlack hosts
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/ldepandis/StevenBlack_AdGuard/main/dns_filters.txt
 
 ### [leaderen/Shadowrocket-ADBlock-Rules](https://github.com/leaderen/Shadowrocket-ADBlock-Rules)
 
@@ -34208,8 +38641,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: A list of scam and fraudulent website domains reported to TWNIC (Taiwan Network Information Center), for which DNS resolution was subsequently stopped. The data is intended for use in blocklists such as DNS filters, ad blockers, firewalls, and browser extensions.
 - Stars: 0; archived: False; fork: False
 - Search queries: DNS filtering blocklist domains, scam domains blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/lf94878964/Taiwan-Blocked-Domains/main/blocked_domains.txt
 
 ### [lhai36366/lhai36366](https://github.com/lhai36366/lhai36366)
 
@@ -34232,8 +38666,14 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: DNS Proxy with blocklists
 - Stars: 0; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 6
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/lindbergryan04/privacy-shield/main/blocklists/moderate.txt
+  - https://raw.githubusercontent.com/lindbergryan04/privacy-shield/main/blocklists/permissive.txt
+  - https://raw.githubusercontent.com/lindbergryan04/privacy-shield/main/blocklists/social.txt
+  - https://raw.githubusercontent.com/lindbergryan04/privacy-shield/main/blocklists/streaming.txt
+  - https://raw.githubusercontent.com/lindbergryan04/privacy-shield/main/blocklists/strict.txt
+  - https://raw.githubusercontent.com/lindbergryan04/privacy-shield/main/requirements.txt
 
 ### [linkerlin/BlackHolePy](https://github.com/linkerlin/BlackHolePy)
 
@@ -34267,8 +38707,43 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: zzxia-op-super-invincible-lollipop是一套集环境搭建，代码构建、部署、发布及周边的运维工具箱。适用于微服务编排的docker集群的项目使用（k8s、swarm、docker-compose）。这些工具也可以独立使用，比如项目构建、部署发布、dns修改、服务器登录异常警报、数据库备份归档与还原、表格绘制、申请与续签（泛）域名证书等等，具体参考帮助。
 - Stars: 0; archived: False; fork: False
 - Search queries: 域名数据集
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 18
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/liurenbao/zzxia-op-super-invincible-lollipop/develop/init/docker_registry/data/blank.txt
+  - https://raw.githubusercontent.com/liurenbao/zzxia-op-super-invincible-lollipop/develop/init/docker_registry/readme.txt
+  - https://raw.githubusercontent.com/liurenbao/zzxia-op-super-invincible-lollipop/develop/init/elasticsearch-srv/readme.txt
+  - https://raw.githubusercontent.com/liurenbao/zzxia-op-super-invincible-lollipop/develop/init/envs.sample/backup-center-project.list
+  - https://raw.githubusercontent.com/liurenbao/zzxia-op-super-invincible-lollipop/develop/init/envs.sample/pg_db.list
+  - https://raw.githubusercontent.com/liurenbao/zzxia-op-super-invincible-lollipop/develop/init/envs.sample/project.list
+  - https://raw.githubusercontent.com/liurenbao/zzxia-op-super-invincible-lollipop/develop/init/fluentd-srv/readme.txt
+  - https://raw.githubusercontent.com/liurenbao/zzxia-op-super-invincible-lollipop/develop/init/nexus/nexus-data/blank.txt
+  - https://raw.githubusercontent.com/liurenbao/zzxia-op-super-invincible-lollipop/develop/init/pg/setup/my-pg.conf
+  - https://raw.githubusercontent.com/liurenbao/zzxia-op-super-invincible-lollipop/develop/init/pg/setup/pg_hba.conf
+  - https://raw.githubusercontent.com/liurenbao/zzxia-op-super-invincible-lollipop/develop/init/zabbix/agent/other-nginx/server-status.conf
+  - https://raw.githubusercontent.com/liurenbao/zzxia-op-super-invincible-lollipop/develop/init/zabbix/agent/r.txt
+  - https://raw.githubusercontent.com/liurenbao/zzxia-op-super-invincible-lollipop/develop/init/zabbix/agent/zabbix_agentd.conf
+  - https://raw.githubusercontent.com/liurenbao/zzxia-op-super-invincible-lollipop/develop/init/zabbix/agent/zabbix_agentd.d/userparameter_nginx.conf
+  - https://raw.githubusercontent.com/liurenbao/zzxia-op-super-invincible-lollipop/develop/init/zabbix/agent/zabbix_agentd.d/userparameter_postgresql.conf
+  - https://raw.githubusercontent.com/liurenbao/zzxia-op-super-invincible-lollipop/develop/init/zabbix/server/zabbix_server.conf
+  - https://raw.githubusercontent.com/liurenbao/zzxia-op-super-invincible-lollipop/develop/op/git-branch-op/project.list
+  - https://raw.githubusercontent.com/liurenbao/zzxia-op-super-invincible-lollipop/develop/op/git-repo-op/project.list
+
+### [liutaob/taotao](https://github.com/liutaob/taotao)
+
+- Description: 分布式的B2C商城项目，主要服务数据库，mq等和集群如zk，solr等以及用到的FASTDFS都在本地，需要大量服务器域名，因此只在本地虚拟机作部署
+- Stars: 0; archived: False; fork: False
+- Search queries: 域名数据集
+- README / curated seed rule-list links: 9
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/liutaob/taotao/master/fastdfs_client/src/main/resources/fdfs_client.conf
+  - https://raw.githubusercontent.com/liutaob/taotao/master/taotao-manager-web/src/main/resources/resource/client.conf
+  - https://raw.githubusercontent.com/liutaob/taotao/master/taotao-manager-web/src/main/webapp/js/jquery-easyui-1.4.1/changelog.txt
+  - https://raw.githubusercontent.com/liutaob/taotao/master/taotao-manager-web/src/main/webapp/js/jquery-easyui-1.4.1/licence_gpl.txt
+  - https://raw.githubusercontent.com/liutaob/taotao/master/taotao-manager-web/src/main/webapp/js/jquery-easyui-1.4.1/readme.txt
+  - https://raw.githubusercontent.com/liutaob/taotao/master/taotao-manager-web/src/main/webapp/js/kindeditor-4.1.10/license.txt
+  - https://raw.githubusercontent.com/liutaob/taotao/master/taotao-order-web/src/main/webapp/js/jquery-easyui-1.4.1/changelog.txt
+  - https://raw.githubusercontent.com/liutaob/taotao/master/taotao-order-web/src/main/webapp/js/jquery-easyui-1.4.1/licence_gpl.txt
+  - https://raw.githubusercontent.com/liutaob/taotao/master/taotao-order-web/src/main/webapp/js/jquery-easyui-1.4.1/readme.txt
 
 ### [liuyu520/hosts_blacklist](https://github.com/liuyu520/hosts_blacklist)
 
@@ -34277,6 +38752,15 @@ MNE-Python is BSD-licenced (3 clause):
 - Search queries: 域名黑名单
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
+
+### [liuzhiqiang23/miniprogram-dev-deploy-notes](https://github.com/liuzhiqiang23/miniprogram-dev-deploy-notes)
+
+- Description: 微信小程序从本地开发到云服务器上线的全流程笔记：内网穿透 / 正式号注册 / 域名白名单 / ICP 备案 / nginx HTTPS / systemd 部署，附 24 条踩坑清单
+- Stars: 0; archived: False; fork: False
+- Search queries: 域名白名单
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/liuzhiqiang23/miniprogram-dev-deploy-notes/main/deploy/nginx-miniprogram.conf
 
 ### [lixiaoxiao9888-create/manju-laoli-skill](https://github.com/lixiaoxiao9888-create/manju-laoli-skill)
 
@@ -34333,8 +38817,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: List of Chinese domains
 - Stars: 0; archived: False; fork: False
 - Search queries: China domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/llxxyytt/cn_domains/main/gfw.txt
 
 ### [lolosssss/rules_for_clash_and_shadowrocket](https://github.com/lolosssss/rules_for_clash_and_shadowrocket)
 
@@ -34389,8 +38874,10 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Not supplied
 - Stars: 0; archived: False; fork: False
 - Search queries: direct domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/love1017best/DirectDomainList/main/DirectDomain.list
+  - https://raw.githubusercontent.com/love1017best/DirectDomainList/main/test_input.list
 
 ### [lovekeven/NetDevOps-Toolbox-V1](https://github.com/lovekeven/NetDevOps-Toolbox-V1)
 
@@ -36331,8 +40818,13 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Listas Unified hosts (adware + malware) + fakenews + gambling + porn extraidas de https://github.com/StevenBlack/hosts
 - Stars: 0; archived: False; fork: False
 - Search queries: StevenBlack hosts
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 5
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/marcosadriel/edl-lists/main/blocklists_ia.txt
+  - https://raw.githubusercontent.com/marcosadriel/edl-lists/main/list_to_block_sites_stevenblack_1-4.txt
+  - https://raw.githubusercontent.com/marcosadriel/edl-lists/main/list_to_block_sites_stevenblack_2-4.txt
+  - https://raw.githubusercontent.com/marcosadriel/edl-lists/main/list_to_block_sites_stevenblack_3-4.txt
+  - https://raw.githubusercontent.com/marcosadriel/edl-lists/main/list_to_block_sites_stevenblack_4-4.txt
 
 ### [marcusminus/Orthrus-BlockList](https://github.com/marcusminus/Orthrus-BlockList)
 
@@ -36411,16 +40903,19 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Pihole Domain block List
 - Stars: 0; archived: False; fork: False
 - Search queries: adblock domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/mateus-pd/pihole-mbhosts-adblock-list/main/hosts.txt
 
 ### [mathr0ck/terminallyonlineterminator](https://github.com/mathr0ck/terminallyonlineterminator)
 
 - Description: A personal hosts repository for all the domains StevenBlack's Porn block either missed focusing more on furry porn 
 - Stars: 0; archived: False; fork: False
 - Search queries: StevenBlack hosts
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/mathr0ck/terminallyonlineterminator/main/newhosts.txt
+  - https://raw.githubusercontent.com/mathr0ck/terminallyonlineterminator/main/newhosts2.txt
 
 ### [matoujin/shadowrocket-hy2](https://github.com/matoujin/shadowrocket-hy2)
 
@@ -36499,8 +40994,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: list of domains Firefox should not proxy during security testing
 - Stars: 0; archived: False; fork: False
 - Search queries: proxy domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/mcgyver5/do_not_proxy/master/domains.txt
 
 ### [mczerniawski/Active-Directory-CheckList](https://github.com/mczerniawski/Active-Directory-CheckList)
 
@@ -36611,8 +41107,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Lightweight self-hosted download station. Upload, download, share via tunnel. DNS-over-HTTPS, IP blocklist, Docker. Single binary, ~7MB.
 - Stars: 0; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/meumeu-dev/downbox/main/robots.txt
 
 ### [mezmer90/saas-directories](https://github.com/mezmer90/saas-directories)
 
@@ -36646,16 +41143,39 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: rule/Surge 镜像同步 blackmatrix7/ios_rule_script
 - Stars: 0; archived: False; fork: False
 - Search queries: blackmatrix7 ios_rule_script
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 15
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/mickeu/blackmatrix7-surge-mirror/main/rule/Surge/BiliBili/BiliBili.list
+  - https://raw.githubusercontent.com/mickeu/blackmatrix7-surge-mirror/main/rule/Surge/ChinaMax/ChinaMax_All.list
+  - https://raw.githubusercontent.com/mickeu/blackmatrix7-surge-mirror/main/rule/Surge/ChinaMedia/ChinaMedia.list
+  - https://raw.githubusercontent.com/mickeu/blackmatrix7-surge-mirror/main/rule/Surge/Claude/Claude.list
+  - https://raw.githubusercontent.com/mickeu/blackmatrix7-surge-mirror/main/rule/Surge/Disney/Disney.list
+  - https://raw.githubusercontent.com/mickeu/blackmatrix7-surge-mirror/main/rule/Surge/Game/Game.list
+  - https://raw.githubusercontent.com/mickeu/blackmatrix7-surge-mirror/main/rule/Surge/Global/Global_All.list
+  - https://raw.githubusercontent.com/mickeu/blackmatrix7-surge-mirror/main/rule/Surge/GlobalMedia/GlobalMedia_All.list
+  - https://raw.githubusercontent.com/mickeu/blackmatrix7-surge-mirror/main/rule/Surge/Lan/Lan.list
+  - https://raw.githubusercontent.com/mickeu/blackmatrix7-surge-mirror/main/rule/Surge/Microsoft/Microsoft.list
+  - https://raw.githubusercontent.com/mickeu/blackmatrix7-surge-mirror/main/rule/Surge/Netflix/Netflix.list
+  - https://raw.githubusercontent.com/mickeu/blackmatrix7-surge-mirror/main/rule/Surge/OpenAI/OpenAI.list
+  - https://raw.githubusercontent.com/mickeu/blackmatrix7-surge-mirror/main/rule/Surge/Spotify/Spotify.list
+  - https://raw.githubusercontent.com/mickeu/blackmatrix7-surge-mirror/main/rule/Surge/TikTok/TikTok.list
+  - https://raw.githubusercontent.com/mickeu/blackmatrix7-surge-mirror/main/rule/Surge/YouTube/YouTube.list
 
 ### [mickpletcher/PiHole-Blocklist](https://github.com/mickpletcher/PiHole-Blocklist)
 
 - Description: Curated Pi-hole blocklist and whitelist builder with validation and automated list generation.
 - Stars: 0; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 8
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/mickpletcher/PiHole-Blocklist/main/Lists/curated-blocklist-device.txt
+  - https://raw.githubusercontent.com/mickpletcher/PiHole-Blocklist/main/Lists/curated-blocklist-policy.txt
+  - https://raw.githubusercontent.com/mickpletcher/PiHole-Blocklist/main/Lists/curated-whitelist.txt
+  - https://raw.githubusercontent.com/mickpletcher/PiHole-Blocklist/main/candidate-blocklist-2.txt
+  - https://raw.githubusercontent.com/mickpletcher/PiHole-Blocklist/main/project-allowlist.txt
+  - https://raw.githubusercontent.com/mickpletcher/PiHole-Blocklist/main/project-denylist.txt
+  - https://raw.githubusercontent.com/mickpletcher/PiHole-Blocklist/main/tests/fixtures/cname-cloaking.txt
+  - https://raw.githubusercontent.com/mickpletcher/PiHole-Blocklist/main/validation-report.txt
 
 ### [mickpletcher/openclaw-pihole-unifi](https://github.com/mickpletcher/openclaw-pihole-unifi)
 
@@ -36687,8 +41207,10 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: A tool to generate a unified list of domains from different sources.
 - Stars: 0; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/milgradesec/listmgr/main/listmgr/src/test/resources/sources.conf
+  - https://raw.githubusercontent.com/milgradesec/listmgr/main/listmgr/src/test/resources/testdata.txt
 
 ### [minkaka/shadowrocket-rules](https://github.com/minkaka/shadowrocket-rules)
 
@@ -36700,6 +41222,15 @@ MNE-Python is BSD-licenced (3 clause):
   - https://raw.githubusercontent.com/minkaka/shadowrocket-rules/main/mike.conf
   - https://raw.githubusercontent.com/minkaka/shadowrocket-rules/main/rules/custom.list
   - https://raw.githubusercontent.com/minkaka/shadowrocket-rules/main/rules/external.list
+
+### [miraclecraft/miracle-ads-blocker](https://github.com/miraclecraft/miracle-ads-blocker)
+
+- Description: Miracle - Ads Blocker: a lightweight, open-source browser extension that blocks ads and trackers using EasyList & EasyPrivacy, hides leftover ad boxes, and skips YouTube ads. One-click on/off per site. Works in Edge, Chrome, Brave & more.
+- Stars: 0; archived: False; fork: False
+- Search queries: EasyList EasyPrivacy
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/miraclecraft/miracle-ads-blocker/main/filters/miracle-fixes.txt
 
 ### [mirninec/socks5-browser-configurator](https://github.com/mirninec/socks5-browser-configurator)
 
@@ -36750,8 +41281,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: A list of DNS polluted domain in China
 - Stars: 0; archived: False; fork: False
 - Search queries: China domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/moecao/dpclist/master/dcplist.txt
 
 ### [moegirlwangge/ads-blocklist](https://github.com/moegirlwangge/ads-blocklist)
 
@@ -36812,8 +41344,12 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Canonical adblock source pipeline that merges upstream blocklists, custom blocks, and allowlists into one clean domain list.
 - Stars: 0; archived: False; fork: False
 - Search queries: adblock domain list
-- README / curated seed rule-list links: 2
+- README / curated seed rule-list links: 6
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/mohavise/mohavise-adblock-core/main/config/allowlist-core.txt
+  - https://raw.githubusercontent.com/mohavise/mohavise-adblock-core/main/config/blocklist-custom.txt
+  - https://raw.githubusercontent.com/mohavise/mohavise-adblock-core/main/config/sources-adblock.txt
+  - https://raw.githubusercontent.com/mohavise/mohavise-adblock-core/main/config/sources.txt
   - https://raw.githubusercontent.com/mohavise/mohavise-adblock-core/main/core-adblock-domains.txt
   - https://raw.githubusercontent.com/mohavise/mohavise-adblock-core/main/core-domains.txt
 
@@ -36859,8 +41395,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: a version of conf forshadowrocket that mixed with hosts by @googlehosts and rules by @lhie1
 - Stars: 0; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/monolojue/Ergo-for-Shadowrocket/master/Ergo-for-Shadowrocket.conf
 
 ### [monxas/device-privacy-templates](https://github.com/monxas/device-privacy-templates)
 
@@ -37466,13 +42003,42 @@ MNE-Python is BSD-licenced (3 clause):
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [myy637277-art/hot-monitor](https://github.com/myy637277-art/hot-monitor)
+
+- Description: 本地运行的ai热点监控平台.从多个公开来源采集近一周热点,经特定规则以及大模型分析判断,最终合并热点流.可以指定监控的关键词,想要了解的方向.通过server酱自己指定时间以日报的形式推送到微信上
+- Stars: 0; archived: False; fork: False
+- Search queries: 开源分流规则
+- README / curated seed rule-list links: 3
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/myy637277-art/hot-monitor/main/.cursor/skills/ui-styling/LICENSE.txt
+  - https://raw.githubusercontent.com/myy637277-art/hot-monitor/main/.cursor/skills/ui-styling/scripts/requirements.txt
+  - https://raw.githubusercontent.com/myy637277-art/hot-monitor/main/.cursor/skills/ui-styling/scripts/tests/requirements.txt
+
 ### [n0ah37/geo2sites](https://github.com/n0ah37/geo2sites)
 
 - Description: Flatten [v2fly/domain-list-community](https://github.com/v2fly/domain-list-community) categories into a clean, newline-delimited domain list.
 - Stars: 0; archived: False; fork: False
 - Search queries: v2fly domain-list-community
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 18
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/n0ah37/geo2sites/main/quantumultx/apple.txt
+  - https://raw.githubusercontent.com/n0ah37/geo2sites/main/quantumultx/category-cryptocurrency.txt
+  - https://raw.githubusercontent.com/n0ah37/geo2sites/main/quantumultx/cn.txt
+  - https://raw.githubusercontent.com/n0ah37/geo2sites/main/quantumultx/disney.txt
+  - https://raw.githubusercontent.com/n0ah37/geo2sites/main/quantumultx/google-deepmind.txt
+  - https://raw.githubusercontent.com/n0ah37/geo2sites/main/quantumultx/ibkr.txt
+  - https://raw.githubusercontent.com/n0ah37/geo2sites/main/quantumultx/netflix.txt
+  - https://raw.githubusercontent.com/n0ah37/geo2sites/main/quantumultx/openai.txt
+  - https://raw.githubusercontent.com/n0ah37/geo2sites/main/quantumultx/private.txt
+  - https://raw.githubusercontent.com/n0ah37/geo2sites/main/rules/apple.txt
+  - https://raw.githubusercontent.com/n0ah37/geo2sites/main/rules/category-cryptocurrency.txt
+  - https://raw.githubusercontent.com/n0ah37/geo2sites/main/rules/cn.txt
+  - https://raw.githubusercontent.com/n0ah37/geo2sites/main/rules/disney.txt
+  - https://raw.githubusercontent.com/n0ah37/geo2sites/main/rules/google-deepmind.txt
+  - https://raw.githubusercontent.com/n0ah37/geo2sites/main/rules/ibkr.txt
+  - https://raw.githubusercontent.com/n0ah37/geo2sites/main/rules/netflix.txt
+  - https://raw.githubusercontent.com/n0ah37/geo2sites/main/rules/openai.txt
+  - https://raw.githubusercontent.com/n0ah37/geo2sites/main/rules/private.txt
 
 ### [nabirudd/raspberry-pi-pihole-dns-firewall](https://github.com/nabirudd/raspberry-pi-pihole-dns-firewall)
 
@@ -37608,8 +42174,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: 国内域名规则生成器
 - Stars: 0; archived: False; fork: False
 - Search queries: 国内域名规则
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/nichuanfang/domestic-rules-generator/main/routing.txt
 
 ### [nightwatch75/pihole-peek](https://github.com/nightwatch75/pihole-peek)
 
@@ -37624,8 +42191,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Plain-text domain and CIDR lists (ru, telegram, youtube) generated daily from runetfreedom geosite.dat/geoip.dat
 - Stars: 0; archived: False; fork: False
 - Search queries: geosite domain, geosite.dat domain lists
-- README / curated seed rule-list links: 10
+- README / curated seed rule-list links: 11
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/nihestver/ru-geo-lists/main/last-verified.txt
   - https://raw.githubusercontent.com/nihestver/ru-geo-lists/main/lists/ip-geo-detect.txt
   - https://raw.githubusercontent.com/nihestver/ru-geo-lists/main/lists/ru-domains.txt
   - https://raw.githubusercontent.com/nihestver/ru-geo-lists/main/lists/ru-ipv4.txt
@@ -37644,6 +42212,17 @@ MNE-Python is BSD-licenced (3 clause):
 - Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
+
+### [nikolaikushner/rinse](https://github.com/nikolaikushner/rinse)
+
+- Description: Ad-free YouTube and a cleaner web in Safari for iPhone, iPad and Mac: YouTube ad removal with background playback, plus content blockers built from EasyList, EasyPrivacy and RU AdList.
+- Stars: 0; archived: False; fork: False
+- Search queries: EasyList EasyPrivacy
+- README / curated seed rule-list links: 3
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/nikolaikushner/rinse/main/filters/invalid-selectors.txt
+  - https://raw.githubusercontent.com/nikolaikushner/rinse/main/filters/rinse.txt
+  - https://raw.githubusercontent.com/nikolaikushner/rinse/main/spikes/youtube-stream/videos.txt
 
 ### [ninoconnect2025-rgb/Rules](https://github.com/ninoconnect2025-rgb/Rules)
 
@@ -37704,12 +42283,13 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: 小火箭自用规则
 - Stars: 0; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 17
+- README / curated seed rule-list links: 18
 - Curated seed links: 0
   - https://raw.githubusercontent.com/nomad70/shadowrocket-rules/main/PlayfulSR.conf
   - https://raw.githubusercontent.com/nomad70/shadowrocket-rules/main/rules/ai-claude.list
   - https://raw.githubusercontent.com/nomad70/shadowrocket-rules/main/rules/ai-gemini.list
   - https://raw.githubusercontent.com/nomad70/shadowrocket-rules/main/rules/ai-openai.list
+  - https://raw.githubusercontent.com/nomad70/shadowrocket-rules/main/rules/custom-binance.list
   - https://raw.githubusercontent.com/nomad70/shadowrocket-rules/main/rules/custom-bybit.list
   - https://raw.githubusercontent.com/nomad70/shadowrocket-rules/main/rules/custom-us-shopping.list
   - https://raw.githubusercontent.com/nomad70/shadowrocket-rules/main/rules/direct-domestic.list
@@ -37737,8 +42317,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Rules file for Shadowrocket
 - Stars: 0; archived: True; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/nomyfan/srule/main/dist/gfw.list
 
 ### [noonbaronfreeze/adblocker](https://github.com/noonbaronfreeze/adblocker)
 
@@ -37773,8 +42354,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Curated DNS blocklist for TarpHole — optimized for Cloudflare Gateway (Hagezi Pro Mini, ~76k domains)
 - Stars: 0; archived: False; fork: False
 - Search queries: hagezi dns-blocklists
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/nprodromou/tarphole-blocklist/main/blocklist.txt
 
 ### [nthack/Shadowrocket-ADBlock-Rules-Easy](https://github.com/nthack/Shadowrocket-ADBlock-Rules-Easy)
 
@@ -49086,7 +53668,7 @@ MNE-Python is BSD-licenced (3 clause):
 ### [yokoffing/NextDNS-Config](https://github.com/yokoffing/NextDNS-Config)
 
 - Description: Setup guide for NextDNS, a DoH proxy with advanced capabilities
-- Stars: 3220; archived: False; fork: False
+- Stars: 3221; archived: False; fork: False
 - Search queries: privacy DNS blocklist
 - README / curated seed rule-list links: 0
 - Curated seed links: 0

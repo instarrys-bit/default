@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-02T19:19:29.087018+00:00",
+  "audited_at": "2026-11-02T21:52:21.163315+00:00",
   "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
-  "source_count": 10,
-  "audited_source_count": 8,
+  "source_count": 13,
+  "audited_source_count": 11,
   "lineage_verified_count": 0,
   "lineage_partial_count": 2,
-  "lineage_unverified_count": 8,
+  "lineage_unverified_count": 11,
   "shared_upstream_pairs": [
     {
       "sources": [
@@ -42676,7 +42676,7 @@
     {
       "repository": "RusdiEneri/blacklist-hosts",
       "readme_url": "https://raw.githubusercontent.com/RusdiEneri/blacklist-hosts/main/README.md",
-      "readme_sha256": "8567f9851e89bd8be3d94b68d649c42f7e22ab71c84346aec50bc9cfcccb5d76",
+      "readme_sha256": "e2753393bf2e0d8616d1d15b560bcc4d04538e7d0de417203af8e5af667ff836",
       "discovery_readme_sha256": null,
       "readme_changed_since_discovery": false,
       "referenced_repositories": [],
@@ -51293,6 +51293,78 @@
       "evidence_url": "https://github.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever/blob/release/README.md",
       "status": "evidence_unavailable",
       "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "source_id": "auto-nthack-shadowrocket-adblock-rules-easy-d42211d2",
+      "publisher": "nthack/shadowrocket-adblock-rules-easy",
+      "lineage_status": "unverified",
+      "evidence_url": "https://github.com/nthack/Shadowrocket-ADBlock-Rules-Easy/blob/master/README.md",
+      "fetched_url": "https://raw.githubusercontent.com/nthack/Shadowrocket-ADBlock-Rules-Easy/master/README.md",
+      "evidence_sha256": "934f76ccc0e844441b045508d991202cb485b73e322534b231a0148ddd410d8a",
+      "evidence_bytes": 4302,
+      "declared_upstream_count": 0,
+      "discovered_upstream_count": 1,
+      "declared_upstreams": [],
+      "declared_and_discovered": [],
+      "declared_not_in_document": [],
+      "discovered_not_registered": [
+        "h2y/shadowrocket-adblock-rules"
+      ],
+      "discovered_upstreams": [
+        "h2y/shadowrocket-adblock-rules"
+      ],
+      "comparison_upstreams": [
+        "h2y/shadowrocket-adblock-rules"
+      ],
+      "status": "audited"
+    },
+    {
+      "source_id": "auto-badmojr-1hosts-640464a4",
+      "publisher": "badmojr/1hosts",
+      "lineage_status": "unverified",
+      "evidence_url": "https://github.com/badmojr/1Hosts/blob/master/README.md",
+      "fetched_url": "https://raw.githubusercontent.com/badmojr/1Hosts/master/README.md",
+      "evidence_sha256": "128c9e8636e0d26c5a79f3bdf024d2d9c72f40d7ad7c8b7778d09ee1d1210ec3",
+      "evidence_bytes": 9133,
+      "declared_upstream_count": 0,
+      "discovered_upstream_count": 3,
+      "declared_upstreams": [],
+      "declared_and_discovered": [],
+      "declared_not_in_document": [],
+      "discovered_not_registered": [
+        "evilsocket/opensnitch",
+        "gorhill/ublock",
+        "yokoffing/nextdns-config"
+      ],
+      "discovered_upstreams": [
+        "evilsocket/opensnitch",
+        "gorhill/ublock",
+        "yokoffing/nextdns-config"
+      ],
+      "comparison_upstreams": [
+        "evilsocket/opensnitch",
+        "gorhill/ublock",
+        "yokoffing/nextdns-config"
+      ],
+      "status": "audited"
+    },
+    {
+      "source_id": "auto-furkan-bayrak-lg-tv-blocklist-369778d8",
+      "publisher": "furkan-bayrak/lg-tv-blocklist",
+      "lineage_status": "unverified",
+      "evidence_url": "https://github.com/furkan-bayrak/lg-tv-blocklist/blob/main/README.md",
+      "fetched_url": "https://raw.githubusercontent.com/furkan-bayrak/lg-tv-blocklist/main/README.md",
+      "evidence_sha256": "86b53d46a4f4bb8427ea3f4eea5289c32ac32b0d5dd2b3e1cdb84477b4b3e12f",
+      "evidence_bytes": 9618,
+      "declared_upstream_count": 0,
+      "discovered_upstream_count": 0,
+      "declared_upstreams": [],
+      "declared_and_discovered": [],
+      "declared_not_in_document": [],
+      "discovered_not_registered": [],
+      "discovered_upstreams": [],
+      "comparison_upstreams": [],
+      "status": "audited"
     }
   ],
   "publication_rule": "This report never upgrades lineage_status. Only independently reviewed, complete item-level provenance can qualify a source as verified."
