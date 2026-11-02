@@ -34,7 +34,7 @@ def load_reject_approvals(path=REJECT_APPROVALS):
         raise ValueError("reject manual-approval ledger approved_rules must be a list")
     approved=set()
     for line in entries:
-        if not isinstance(line,str) or not re.fullmatch(r"DOMAIN(?:-SUFFIX)?,[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+",line):
+        if not isinstance(line,str) or not re.fullmatch(r"DOMAIN(?:-SUFFIX)?,[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+",line,re.IGNORECASE):
             raise ValueError("invalid manually approved REJECT rule: "+str(line))
         normalized=line.split(",",1)[0].upper()+","+line.split(",",1)[1].lower().rstrip(".")
         if normalized in approved:
