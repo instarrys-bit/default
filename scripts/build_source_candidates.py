@@ -207,7 +207,7 @@ def render_report(data: dict) -> str:
 
 def main() -> int:
     assessment_path = RUNTIME_ASSESSMENTS if RUNTIME_ASSESSMENTS.exists() else ASSESSMENTS
-    assessments = (read_document(assessment_path, "assessments", {"assessments": []}) if assessment_path == ASSESSMENTS else json.loads(assessment_path.read_text(encoding="utf-8")) )
+    assessments = read_document(assessment_path, "assessments", {"assessments": []})
     lineage = json.loads(LINEAGE.read_text(encoding="utf-8"))
     result = build_matrix(assessments, lineage)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
