@@ -207,7 +207,7 @@ def audit(config_text: str, ledger: dict) -> dict:
         "schema_version": 2,
         "config_path": "shadowrocket/ss.conf",
         "config_is_read_only": True,
-        "config_rule_line_count": len(rules),
+        "config_rule_line_count": sum(1 for _, line in rules if line.split(",", 1)[0].strip().upper() in {"DOMAIN", "DOMAIN-SUFFIX"}),
         "skip_proxy_entry_count": len(skip_proxy_entries),
         "candidate_count": len(results),
         "status_counts": dict(sorted(counts.items())),
