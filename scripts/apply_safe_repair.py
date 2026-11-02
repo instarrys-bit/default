@@ -6,21 +6,46 @@ import argparse
 import json
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 REPAIR_ID = "refresh_ruleset_manifest"
+STALE_TEST_REPAIR_ID = "fix_stale_audit_concurrency_contract"
 WORKFLOW = Path(".github/workflows/auto_sync.yml")
+STALE_TEST_PATH = Path("tests/test_workflow_config_guard_order.py")
 SCRIPT_PATH = "scripts/refresh_ruleset_manifest.py"
 STEP = """      - name: Reconcile final RULE-SET manifest counts
         run: python3 scripts/refresh_ruleset_manifest.py
 
 """
-
+STALE_ASSERTION = 'self.assertIn("cancel-in-progress: true", workflow)'
+CURRENT_ASSERTIONS = (
+    'self.assertIn("cancel-in-progress: false", workflow)\n'
+    '        self.assertIn("Keep the active audit; stale-commit guards stop obsolete runs safely.", workflow)'
+)
 
 def apply(root: Path, diagnosis: dict) -> list[str]:
-    if diagnosis.get("repair_id") != REPAIR_ID or diagnosis.get("automatic_code_change_allowed") is not True:
+    repair_id = diagnosis.get("repair_id")
+    if diagnosis.get("automatic_code_change_allowed") is not True:
         raise ValueError("diagnosis does not authorize a known safe repair")
     root = Path(root)
+
+    if repair_id == STALE_TEST_REPAIR_ID:
+        workflow_path = root / WORKFLOW
+        if not workflow_path.is_file() or "cancel-in-progress: false" not in workflow_path.read_text(encoding="utf-8"):
+            raise ValueError("workflow does not contain the safe active-audit concurrency policy")
+        test_path = root / STALE_TEST_PATH
+        if not test_path.is_file():
+            raise ValueError("workflow contract test is missing; refusing to synthesize it")
+        test_text = test_path.read_text(encoding="utf-8")
+        count = test_text.count(STALE_ASSERTION)
+        if count == 1:
+            test_path.write_text(test_text.replace(STALE_ASSERTION, CURRENT_ASSERTIONS, 1), encoding="utf-8")
+            return [str(STALE_TEST_PATH)]
+        if count == 0 and CURRENT_ASSERTIONS in test_text:
+            return []
+        raise ValueError("stale concurrency assertion is missing or ambiguous; refusing a speculative edit")
+
+    if repair_id != REPAIR_ID:
+        raise ValueError("diagnosis does not authorize a known safe repair")
     if not (root / SCRIPT_PATH).is_file():
         raise ValueError("allowlisted repair script is missing; refusing to synthesize code")
     workflow_path = root / WORKFLOW
@@ -50,16 +75,14 @@ def apply(root: Path, diagnosis: dict) -> list[str]:
         workflow_path.write_text(text, encoding="utf-8")
     return changed
 
-
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--diagnosis", required=True)
     args = parser.parse_args()
     diagnosis = json.loads(Path(args.diagnosis).read_text(encoding="utf-8"))
     changed = apply(ROOT, diagnosis)
-    print(json.dumps({"repair_id": REPAIR_ID, "changed_files": changed}, ensure_ascii=False))
+    print(json.dumps({"repair_id": diagnosis.get("repair_id"), "changed_files": changed}, ensure_ascii=False))
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())
