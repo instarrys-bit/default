@@ -165,6 +165,46 @@ jobs:
           python3 scripts/build_project_status.py
           cat reports/project-status.md >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Write successful audit heartbeat
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          mkdir -p reports/automation
+          python3 - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+          record = {
+              "schema_version": 1,
+              "status": "audit_passed",
+              "workflow": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
+              "run_id": os.environ["GITHUB_RUN_ID"],
+              "run_attempt": int(os.environ["GITHUB_RUN_ATTEMPT"]),
+              "event": os.environ["GITHUB_EVENT_NAME"],
+              "source_commit": os.environ["GITHUB_SHA"],
+              "recorded_at_utc": datetime.now(timezone.utc).isoformat(),
+              "checks": {
+                  "deterministic_tests": "passed",
+                  "user_config_baseline": "passed",
+                  "config_conflict_sync": "passed",
+                  "lifecycle_audit": "passed",
+                  "three_policy_rule_sets": "passed",
+                  "config_validation": "passed",
+                  "source_and_rule_audits": "passed"
+              },
+              "protected_config": {
+                  "path": "shadowrocket/ss.conf",
+                  "modified_by_automation": False
+              }
+          }
+          with open("reports/automation/heartbeat.json", "w", encoding="utf-8") as stream:
+              json.dump(record, stream, ensure_ascii=False, indent=2)
+              stream.write("\n")
+          PY
+
       - name: Package allowlisted audit outputs
         run: |
           tar -czf audit-output.tar.gz \
@@ -175,6 +215,7 @@ jobs:
             reports/lifecycle \
             reports/project-status.md \
             reports/project-status.json \
+            reports/automation/heartbeat.json \
             reports/external-domain-audit.md \
             reports/config-drift-audit.md \
             reports/config-drift-audit.json \
@@ -260,6 +301,7 @@ jobs:
             reports/lifecycle \
             reports/project-status.md \
             reports/project-status.json \
+            reports/automation/heartbeat.json \
             reports/external-domain-audit.md \
             reports/config-drift-audit.md \
             reports/config-drift-audit.json \
