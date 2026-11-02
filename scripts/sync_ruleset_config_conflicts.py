@@ -21,6 +21,8 @@ from audit_ruleset_config_overlap import (
     all_rule_lines,
     parse_skip_proxy,
     scope_covers_candidate,
+    prepare_rules,
+    find_covering_rules,
     skip_proxy_match,
     scope_intersects,
 )
@@ -44,20 +46,18 @@ def make_rule(policy: str, scope: str, domain: str) -> str:
     return kind + "," + domain.lower().rstrip(".")
 
 
-def classify_rule(policy: str, line: str, config_rules: list[tuple[int, str]], skip_entries: list[str]) -> dict:
+def classify_rule(policy: str, line: str, config_rules: list[tuple[int, str]], skip_entries: list[str], prepared_rules=None) -> dict:
     policy = policy.upper()
     kind, domain, scope = parse_rule_line(policy, line)
 
     # Only full-scope containment is considered. A narrower exact/child-suffix
     # exception must not remove a broader parent suffix rule. No rule order,
     # first-match winner, or precedence is inferred.
-    covering_rules = []
-    for number, raw_rule in config_rules:
-        fields = [part.strip() for part in raw_rule.split(",")]
-        if len(fields) < 3 or fields[0].upper() not in {"DOMAIN", "DOMAIN-SUFFIX"}:
-            continue
-        if scope_covers_candidate(scope, domain, fields[0].upper(), fields[1]):
-            covering_rules.append((number, raw_rule, fields[2].upper()))
+    index = prepared_rules if prepared_rules is not None else prepare_rules(config_rules)
+    covering_rules = [
+        (rule.line, rule.raw, rule.policy)
+        for rule in find_covering_rules(domain, scope, index)
+    ]
 
     if covering_rules:
         evidence = "; ".join(
@@ -159,6 +159,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         if line.split(",", 1)[0].strip().upper() in {"DOMAIN", "DOMAIN-SUFFIX"}
     ]
     skip_entries = parse_skip_proxy(config_text)
+    prepared_config_rules = prepare_rules(config_rules)
     config_blob_sha = hashlib.sha1(
         b"blob " + str(len(config_bytes)).encode("ascii") + bytes([0]) + config_bytes
     ).hexdigest()
@@ -187,7 +188,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         archived_line = str(item.get("rule", ""))
         if archived_policy not in POLICIES:
             raise ValueError("invalid policy in config-conflict archive")
-        current_result = classify_rule(archived_policy, archived_line, config_rules, skip_entries)
+        current_result = classify_rule(archived_policy, archived_line, config_rules, skip_entries, prepared_config_rules)
         if current_result["status"] == "NO_CONFLICT":
             item["superseded_at"] = timestamp
             item["superseded_by_config_blob_sha"] = config_blob_sha
@@ -263,7 +264,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
             restore_refused.append({"id": restore_id, "reason": "invalid archived policy"})
             continue
         try:
-            result = classify_rule(policy, line, config_rules, skip_entries)
+            result = classify_rule(policy, line, config_rules, skip_entries, prepared_config_rules)
         except ValueError as exc:
             restore_refused.append({"id": restore_id, "reason": str(exc)})
             continue
