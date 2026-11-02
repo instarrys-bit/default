@@ -5,7 +5,9 @@ on:
     - cron: "30 22 * * *"
   workflow_dispatch:
   workflow_run:
-    workflows: ["Shadowrocket Deterministic Domain Audit (User Config Baseline)"]
+    workflows:
+      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
+      - "Validate Shadowrocket config against user baseline"
     types: [completed]
   push:
     branches: [main]
@@ -60,8 +62,9 @@ jobs:
             echo "A newer deterministic audit already exists; no duplicate recovery."
             exit 0
           fi
-          if jq -e '[.workflow_runs[] | select(.status == "queued" or .status == "in_progress")] | length > 0' <<< "$runs" >/dev/null; then
-            echo "A deterministic audit is already queued or running; no duplicate recovery."
+          current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
+          if jq -e --arg sha "$current_sha" '[.workflow_runs[] | select(.head_sha == $sha and (.status == "queued" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
+            echo "A deterministic audit for current main ($current_sha) is already queued or running; no duplicate recovery."
             exit 0
           fi
 
