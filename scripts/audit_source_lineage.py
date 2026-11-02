@@ -65,7 +65,26 @@ def normalize_upstream(value: str) -> str:
         return "peter-lowe"
     return value
 
-def audit_registry(config: dict, fetcher=fetch_text, candidates: list[dict] | None = None) -> dict:
+
+def shared_reference_pairs(records: list[dict], values_key: str, required_status: str) -> list[dict]:
+    """Return only record pairs sharing references, using an inverted index."""
+    inverted: dict[str, list[int]] = {}
+    for index, record in enumerate(records):
+        if record.get("status") != required_status:
+            continue
+        for value in set(str(x) for x in record.get(values_key, [])):
+            inverted.setdefault(value, []).append(index)
+    overlaps: dict[tuple[int, int], set[str]] = {}
+    for value, indexes in inverted.items():
+        for position, left in enumerate(indexes):
+            for right in indexes[position + 1:]:
+                overlaps.setdefault((left, right), set()).add(value)
+    return [
+        {"left": left, "right": right, "shared": sorted(values)}
+        for (left, right), values in sorted(overlaps.items())
+    ]
+
+def audit_registry(config: dict, fetcher=fetch_text, candidates: list[dict] | None = None, previous_report: dict | None = None) -> dict:
     sources = config.get("sources", [])
     inventories = []
     for source in sources:
@@ -122,6 +141,7 @@ def audit_registry(config: dict, fetcher=fetch_text, candidates: list[dict] | No
             "status": "audited"
         })
     candidate_docs = []
+    previous_candidate_docs = {str(x.get("repository")): x for x in (previous_report or {}).get("candidate_sources", []) if x.get("repository")}
     for candidate in candidates or []:
         repository = str(candidate.get("repository", ""))
         if not repository or not candidate.get("rule_list_urls"):
@@ -132,17 +152,25 @@ def audit_registry(config: dict, fetcher=fetch_text, candidates: list[dict] | No
         owner, repo = parts
         branch = str(candidate.get("default_branch") or "main")
         readme_url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/README.md"
+        cached = previous_candidate_docs.get(repository)
+        discovery_hash = str(candidate.get("readme_sha256") or "")
+        if (cached and cached.get("status") == "audited_reference_inventory"
+                and discovery_hash and cached.get("readme_sha256") == discovery_hash
+                and cached.get("readme_url") == readme_url):
+            candidate_docs.append({**cached, "discovery_readme_sha256": discovery_hash, "readme_changed_since_discovery": False})
+            continue
         try:
             payload = fetcher(readme_url)
             readme = payload.decode("utf-8-sig", errors="replace")
             discovered_refs = extract_upstreams(readme)
             discovered_refs.discard(repository.lower())
+            readme_hash = hashlib.sha256(payload).hexdigest()
             candidate_docs.append({
                 "repository": repository,
                 "readme_url": readme_url,
-                "readme_sha256": hashlib.sha256(payload).hexdigest(),
-                "discovery_readme_sha256": candidate.get("readme_sha256"),
-                "readme_changed_since_discovery": bool(candidate.get("readme_sha256") and candidate.get("readme_sha256") != hashlib.sha256(payload).hexdigest()),
+                "readme_sha256": readme_hash,
+                "discovery_readme_sha256": discovery_hash or None,
+                "readme_changed_since_discovery": bool(discovery_hash and discovery_hash != readme_hash),
                 "referenced_repositories": sorted(discovered_refs),
                 "reference_count": len(discovered_refs),
                 "lineage_status": "unverified",
@@ -158,30 +186,21 @@ def audit_registry(config: dict, fetcher=fetch_text, candidates: list[dict] | No
                 "referenced_repositories": [],
                 "reference_count": 0,
             })
-    candidate_shared = []
-    for i, left in enumerate(candidate_docs):
-        if left.get("status") != "audited_reference_inventory":
-            continue
-        for right in candidate_docs[i+1:]:
-            if right.get("status") != "audited_reference_inventory":
-                continue
-            overlap = sorted(set(left["referenced_repositories"]) & set(right["referenced_repositories"]))
-            if overlap:
-                candidate_shared.append({
-                    "repositories": [left["repository"], right["repository"]],
-                    "shared_readme_references": overlap,
-                    "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
-                })
-    shared = []
-    for i, left in enumerate(inventories):
-        if left.get("status") != "audited":
-            continue
-        for right in inventories[i+1:]:
-            if right.get("status") != "audited":
-                continue
-            overlap = sorted(set(left["comparison_upstreams"]) & set(right["comparison_upstreams"]))
-            if overlap:
-                shared.append({"sources": [left["source_id"], right["source_id"]], "shared_upstreams": overlap})
+    candidate_shared = [
+        {
+            "repositories": [candidate_docs[pair["left"]]["repository"], candidate_docs[pair["right"]]["repository"]],
+            "shared_readme_references": pair["shared"],
+            "interpretation": "Possible shared reference only; README hyperlinks do not prove actual rule-data ancestry."
+        }
+        for pair in shared_reference_pairs(candidate_docs, "referenced_repositories", "audited_reference_inventory")
+    ]
+    shared = [
+        {
+            "sources": [inventories[pair["left"]]["source_id"], inventories[pair["right"]]["source_id"]],
+            "shared_upstreams": pair["shared"],
+        }
+        for pair in shared_reference_pairs(inventories, "comparison_upstreams", "audited")
+    ]
     return {
         "schema_version": 1,
         "audited_at": datetime.now(timezone.utc).isoformat(),
@@ -203,7 +222,8 @@ def audit_registry(config: dict, fetcher=fetch_text, candidates: list[dict] | No
 def main():
     config = json.loads(REGISTRY.read_text(encoding="utf-8"))
     candidates = read_document(DISCOVERY, "candidates", {"candidates": []}).get("candidates", [])
-    report = audit_registry(config, candidates=candidates)
+    previous_report = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {}
+    report = audit_registry(config, candidates=candidates, previous_report=previous_report)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({

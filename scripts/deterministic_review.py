@@ -7,7 +7,7 @@ from datetime import datetime,timezone
 from domain_rule_engine import RuleIndex,load_domain_rules,inspect_suffix_scope
 from source_registry import validate_registry
 from review_cursor import snapshot_digest,resume_index,checkpoint
-from json_document_store import read_document,write_document
+from json_document_store import read_document,write_document,iter_document_records
 from audit_ruleset_config_overlap import scope_covers_candidate
 ROOT=Path(__file__).resolve().parents[1]
 CONFIG=ROOT/"shadowrocket/ss.conf"
@@ -24,6 +24,25 @@ MAX_REVIEW_RECORDS=30_000_000
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
 COND_RE=re.compile(r"(DOMAIN-SUFFIX|DOMAIN),([A-Za-z0-9.-]+)",re.I)
 def fail(msg): raise SystemExit("ERROR: "+msg)
+
+
+def stable_fingerprint(value) -> str:
+    encoded=json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(",",":")).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+def review_context_fingerprint(source_cfg,protected,config,current_hashes,correlated_pairs,lifecycle_active,published_identities):
+    return stable_fingerprint({
+        "source_registry":source_cfg,
+        "protected_domains":protected,
+        "user_config":config,
+        "source_hashes":current_hashes,
+        "correlated_publisher_pairs":sorted(tuple(sorted(pair)) for pair in correlated_pairs),
+        "lifecycle_active":bool(lifecycle_active),
+        "published_identities":sorted(published_identities),
+    })
+
+def candidate_review_fingerprint(candidate,context_sha256):
+    return stable_fingerprint({"candidate":candidate,"context_sha256":context_sha256})
 
 def validate_evidence(evidence, source_map, current_hashes, policy):
     """Keep only current evidence whose identity and policy match the trusted source registry."""
@@ -276,11 +295,7 @@ def main():
     minimum=int(score_cfg["minimum_independent_sources"])
     now=datetime.now(timezone.utc).isoformat()
     correlated_pairs=load_correlated_publishers()
-    if OUTPUT.exists():
-        prior=read_document(OUTPUT,"reviews",{"schema_version":1,"reviews":[]})
-    else:
-        prior={"schema_version":1,"reviews":[]}
-    review_map={x["domain"]:x for x in prior.get("reviews",[])}
+    review_map={x["domain"]:x for x in iter_document_records(OUTPUT,"reviews")}
     if len(review_map)>MAX_REVIEW_RECORDS:
         fail(f"historical review ledger exceeds hard limit: {len(review_map):,} > {MAX_REVIEW_RECORDS:,}")
     lifecycle_state=json.loads(LIFECYCLE_STATE.read_text(encoding="utf-8")) if LIFECYCLE_STATE.exists() else {}
@@ -297,16 +312,31 @@ def main():
             elif line.startswith("DOMAIN-SUFFIX,"):
                 published_identities.add((policy_name.upper(),line[14:],"suffix_candidate"))
     run_counts={}
+    partial_counts={}
+    for record in review_map.values():
+        record_status=str(record.get("status","UNKNOWN"))
+        partial_counts[record_status]=partial_counts.get(record_status,0)+1
     candidates=collected.get("candidates",[])
     if len(candidates)>MAX_REVIEW_RECORDS:
         fail(f"candidate review input exceeds hard limit: {len(candidates):,} > {MAX_REVIEW_RECORDS:,}")
-    snapshot_sha256=snapshot_digest(collected.get("sources",[]),candidates)
+    context_sha256=review_context_fingerprint(
+        source_cfg,protected,config,current_hashes,correlated_pairs,lifecycle_active,published_identities
+    )
+    snapshot_sha256=stable_fingerprint({
+        "candidate_snapshot":snapshot_digest(collected.get("sources",[]),candidates),
+        "review_context":context_sha256,
+    })
     cursor_state=json.loads(CURSOR.read_text(encoding="utf-8")) if CURSOR.exists() else {}
     start_index=resume_index(cursor_state,snapshot_sha256,len(candidates))
     batch_size=5000
     for candidate_index,item in enumerate(candidates[start_index:],start=start_index):
         domain=str(item.get("domain","")).lower().rstrip(".")
         if not DOMAIN_RE.fullmatch(domain): fail("invalid candidate domain: "+domain)
+        previous_record=review_map.get(domain)
+        input_fingerprint=candidate_review_fingerprint(item,context_sha256)
+        if previous_record and previous_record.get("review_fingerprint")==input_fingerprint:
+            run_counts["UNCHANGED"]=run_counts.get("UNCHANGED",0)+1
+            continue
         policy=str(item.get("classification","")).upper()
         raw_evidence=item.get("evidence",[])
         candidate_policies={str(x).upper() for x in item.get("candidate_policies",[])}
@@ -364,9 +394,9 @@ def main():
             "conflict_check":"PASS" if status not in {"CONFLICT","POLICY_CONFLICT","REVIEW"} else status,
             "risk_check":"VETO" if status=="RISK_HOLD" else "PASS",
             "decision_engine":"deterministic-domain-audit/4.1","reviewed_at":now,
+            "review_fingerprint":input_fingerprint,
             "config_authority":"shadowrocket/ss.conf"
         }
-        previous_record=review_map.get(domain)
         previous_policy=str(previous_record.get("policy","")).upper() if previous_record else ""
         previous_scope=str(previous_record.get("source_entry_type","exact_candidate")) if previous_record else "exact_candidate"
         was_published=(previous_policy,domain,previous_scope) in published_identities
@@ -380,13 +410,18 @@ def main():
             }
         if domain not in review_map and len(review_map)>=MAX_REVIEW_RECORDS:
             fail(f"historical review ledger would exceed hard limit: {MAX_REVIEW_RECORDS:,}")
+        previous_status=str(previous_record.get("status","UNKNOWN")) if previous_record else None
+        if previous_status:
+            partial_counts[previous_status]=partial_counts.get(previous_status,0)-1
+            if partial_counts[previous_status]<=0:
+                partial_counts.pop(previous_status,None)
         review_map[domain]=new_record
+        record_status=str(new_record.get("status","UNKNOWN"))
+        partial_counts[record_status]=partial_counts.get(record_status,0)+1
         run_counts[status]=run_counts.get(status,0)+1
         if (candidate_index+1)%batch_size==0 or candidate_index+1==len(candidates):
-            partial_reviews=sorted(review_map.values(),key=lambda x:x["domain"])
-            partial_counts={}
-            for record in partial_reviews: partial_counts[record["status"]]=partial_counts.get(record["status"],0)+1
-            write_document(OUTPUT,{"schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,"source_snapshot":collected.get("sources",[]),"run_counts":run_counts,"counts":partial_counts,"reviews":partial_reviews},"reviews")
+            # Checkpoints need not be sorted; the final publication is sorted once.
+            write_document(OUTPUT,{"schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,"source_snapshot":collected.get("sources",[]),"run_counts":run_counts,"counts":partial_counts,"reviews":list(review_map.values())},"reviews")
             atomic_json(CURSOR,{**checkpoint(snapshot_sha256,len(candidates),candidate_index+1,batch_size),"updated_at":now,"last_checkpoint_domain":domain})
     reviews=sorted(review_map.values(),key=lambda x:x["domain"])
     total_counts={}

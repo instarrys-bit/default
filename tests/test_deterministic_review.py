@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
-from deterministic_review import DOMAIN_RE, evidence_gate, inspect, validate_evidence
+from deterministic_review import DOMAIN_RE, evidence_gate, inspect, validate_evidence, review_context_fingerprint, candidate_review_fingerprint
 from domain_rule_engine import RuleIndex, DomainRule, inspect_suffix_scope
 from deterministic_review import CONFIG as REVIEW_CONFIG
 from build_rulesets import CONFIG as RULESET_CONFIG
@@ -12,6 +12,28 @@ from select_domain_rules import CONFIG as SELECTOR_CONFIG
 from audit_external_domains import CONFIG as EXTERNAL_AUDIT_CONFIG
 from collect_domains import bootstrap_source_domains, check_source_delta, parse_adblock, parse_domain_list, parse_source
 from source_registry import validate_registry
+
+
+class ReviewFingerprintTests(unittest.TestCase):
+    def test_candidate_fingerprint_is_stable_and_tracks_candidate_changes(self):
+        context = "a" * 64
+        candidate = {"domain": "example.com", "classification": "DIRECT"}
+        first = candidate_review_fingerprint(candidate, context)
+        self.assertEqual(first, candidate_review_fingerprint(dict(candidate), context))
+        self.assertNotEqual(first, candidate_review_fingerprint({**candidate, "classification": "PROXY"}, context))
+        self.assertNotEqual(first, candidate_review_fingerprint(candidate, "b" * 64))
+
+    def test_review_context_fingerprint_tracks_every_decision_input_group(self):
+        base = ({"scoring": {"minimum_confidence": 0.8}}, {"protected_suffixes": ["safe.example"]},
+                "[Rule]\n", {"source-a": "a" * 64}, {("publisher-a", "publisher-b")}, False,
+                {("DIRECT", "example.com", "exact_candidate")})
+        first = review_context_fingerprint(*base)
+        changed_config = list(base)
+        changed_config[2] = "[Rule]\nDOMAIN,example.com,PROXY\n"
+        self.assertNotEqual(first, review_context_fingerprint(*changed_config))
+        changed_lifecycle = list(base)
+        changed_lifecycle[5] = True
+        self.assertNotEqual(first, review_context_fingerprint(*changed_lifecycle))
 
 class SourceRegistryTests(unittest.TestCase):
     def setUp(self):

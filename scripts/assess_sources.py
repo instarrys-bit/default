@@ -337,6 +337,16 @@ def compact_assessment_result(result: dict) -> dict:
     compact["fingerprints_storage"] = "ephemeral data/source_assessments_runtime.json; excluded from Git publication"
     return compact
 
+
+def assessment_cache_hit(previous: dict | None, content_sha256: str, policy_claims: list[str]) -> bool:
+    """Reuse parser output only when exact source bytes and README policy claims are unchanged."""
+    return bool(
+        previous
+        and previous.get("sha256") == content_sha256
+        and sorted(previous.get("readme_policy_claims", [])) == sorted(policy_claims)
+        and not previous.get("error")
+    )
+
 def main() -> int:
     discovery = read_document(INPUT, "candidates", {"candidates": []})
     previous_data = read_document(OUTPUT, "assessments", {"assessments": []})
@@ -354,7 +364,14 @@ def main() -> int:
         try:
             payload = fetch_raw(url, repository, MAX_TOTAL_BYTES - total_bytes_read)
             total_bytes_read += len(payload)
-            item = assess_payload(payload, url, candidate["policy_claims"])
+            content_hash = hashlib.sha256(payload).hexdigest()
+            previous = previous_by_url.get(url)
+            if assessment_cache_hit(previous, content_hash, candidate["policy_claims"]):
+                item = dict(previous)
+                item["readme_policy_claims"] = sorted(candidate["policy_claims"])
+                item["assessed_at"] = batch_id
+            else:
+                item = assess_payload(payload, url, candidate["policy_claims"])
             item["repository"] = repository
             item["stars"] = candidate["stars"]
             item["archived"] = candidate["archived"]
