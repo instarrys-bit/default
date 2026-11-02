@@ -36,7 +36,8 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
 
     def test_assessment_read_and_review_capacity_is_high(self):
         assessment = load_script("assess_sources")
-        self.assertGreaterEqual(assessment.MAX_URLS, 1_000)
+        self.assertGreaterEqual(assessment.MAX_URLS, 5_000)
+        self.assertGreaterEqual(assessment.MAX_TOTAL_BYTES, 250_000_000)
         self.assertGreaterEqual(assessment.MAX_BYTES, 5_000_000)
 
 if __name__ == "__main__":
