@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "last_state_run_id": "41494826071",
+  "source_commit": "18f207b5a0aefdd0cae0c7d4a847228b4b2e1430",
+  "recorded_at_utc": "2026-11-02T18:05:50.318266+00:00",
+  "artifact_name": "deterministic-audit-output",
+  "artifact_retention_days": 90,
+  "storage_mode": "github_actions_artifact",
+  "missing_artifact_policy": "fail_closed"
+}

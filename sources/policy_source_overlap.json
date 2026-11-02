@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "feed_count": 73,
-  "total_bytes_read": 68519222,
+  "feed_count": 166,
+  "total_bytes_read": 136581909,
   "max_file_bytes": 30000000,
   "max_total_bytes": 500000000,
   "publisher_counts": {
-    "DIRECT": 7,
-    "PROXY": 10,
-    "REJECT": 13
+    "DIRECT": 9,
+    "PROXY": 12,
+    "REJECT": 18
   },
   "overlaps": [
     {
@@ -72,6 +72,70 @@
         "pinduoduo.com",
         "qq.com",
         "sandai.net"
+      ]
+    },
+    {
+      "policy": "DIRECT",
+      "publishers": [
+        "ACL4SSR/ACL4SSR",
+        "Hackl0us/SS-Rule-Snippet"
+      ],
+      "left_count": 605,
+      "right_count": 139,
+      "overlap_count": 101,
+      "jaccard": 0.157076,
+      "smaller_set_overlap": 0.726619,
+      "shared_domain_sample": [
+        "126.com",
+        "126.net",
+        "127.net",
+        "163.com",
+        "360buyimg.com",
+        "36kr.com",
+        "acfun.tv",
+        "air-matters.com",
+        "aixifan.com",
+        "amap.com",
+        "autonavi.com",
+        "bdimg.com",
+        "bdstatic.com",
+        "bilibili.com",
+        "bilivideo.com",
+        "clouddn.com",
+        "csdn.net",
+        "ctrip.com",
+        "dianping.com",
+        "douban.com",
+        "doubanio.com",
+        "duokan.com",
+        "easou.com",
+        "ele.me",
+        "feng.com",
+        "fir.im",
+        "frdic.com",
+        "godic.net",
+        "gtimg.com",
+        "hongxiu.com",
+        "iciba.com",
+        "ifeng.com",
+        "ifengimg.com",
+        "ipip.net",
+        "iqiyi.com",
+        "jd.com",
+        "jianshu.com",
+        "knewone.com",
+        "le.com",
+        "lecloud.com",
+        "lemicp.com",
+        "luoo.net",
+        "meituan.com",
+        "meituan.net",
+        "mi.com",
+        "miaopai.com",
+        "miui.com",
+        "mob.com",
+        "netease.com",
+        "oschina.net"
       ]
     },
     {
@@ -176,6 +240,55 @@
         "oracle.com",
         "qq.com",
         "snapdrop.net",
+        "so.com",
+        "sogou.com",
+        "soso.com",
+        "taobao.com",
+        "tudou.com",
+        "weather.com",
+        "weibo.com",
+        "xinhuanet.com",
+        "youdao.com",
+        "youku.com",
+        "zhihu.com"
+      ]
+    },
+    {
+      "policy": "DIRECT",
+      "publishers": [
+        "ACL4SSR/ACL4SSR",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 605,
+      "right_count": 325,
+      "overlap_count": 35,
+      "jaccard": 0.039106,
+      "smaller_set_overlap": 0.107692,
+      "shared_domain_sample": [
+        "163.com",
+        "1688.com",
+        "360.com",
+        "alibaba.com",
+        "aliexpress.com",
+        "alipay.com",
+        "babytree.com",
+        "baidu.com",
+        "baike.com",
+        "bilibili.com",
+        "bitauto.com",
+        "cctv.com",
+        "cnblogs.com",
+        "csdn.net",
+        "douban.com",
+        "douyu.com",
+        "eastday.com",
+        "hao123.com",
+        "haosou.com",
+        "iqiyi.com",
+        "jd.com",
+        "mi.com",
+        "oracle.com",
+        "qq.com",
         "so.com",
         "sogou.com",
         "soso.com",
@@ -311,6 +424,49 @@
       "policy": "DIRECT",
       "publishers": [
         "Clash-FX/cn-apps-direct-domains",
+        "Hackl0us/SS-Rule-Snippet"
+      ],
+      "left_count": 120,
+      "right_count": 139,
+      "overlap_count": 29,
+      "jaccard": 0.126087,
+      "smaller_set_overlap": 0.241667,
+      "shared_domain_sample": [
+        "126.net",
+        "127.net",
+        "163.com",
+        "360buyimg.com",
+        "amap.com",
+        "autonavi.com",
+        "bdimg.com",
+        "bdstatic.com",
+        "bilibili.com",
+        "bilivideo.com",
+        "dianping.com",
+        "ele.me",
+        "gtimg.com",
+        "iqiyi.com",
+        "jd.com",
+        "meituan.com",
+        "meituan.net",
+        "qq.com",
+        "sogou.com",
+        "taobao.com",
+        "tmall.com",
+        "weibo.com",
+        "xiami.com",
+        "xiami.net",
+        "xunlei.com",
+        "ykimg.com",
+        "youku.com",
+        "zhihu.com",
+        "zhimg.com"
+      ]
+    },
+    {
+      "policy": "DIRECT",
+      "publishers": [
+        "Clash-FX/cn-apps-direct-domains",
         "Jovanykoch/rules"
       ],
       "left_count": 120,
@@ -402,6 +558,33 @@
       "policy": "DIRECT",
       "publishers": [
         "Clash-FX/cn-apps-direct-domains",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 120,
+      "right_count": 325,
+      "overlap_count": 13,
+      "jaccard": 0.030093,
+      "smaller_set_overlap": 0.108333,
+      "shared_domain_sample": [
+        "163.com",
+        "alipay.com",
+        "baidu.com",
+        "bilibili.com",
+        "iqiyi.com",
+        "jd.com",
+        "qq.com",
+        "so.com",
+        "sogou.com",
+        "taobao.com",
+        "weibo.com",
+        "youku.com",
+        "zhihu.com"
+      ]
+    },
+    {
+      "policy": "DIRECT",
+      "publishers": [
+        "Clash-FX/cn-apps-direct-domains",
         "nthack/Shadowrocket-ADBlock-Rules-Easy"
       ],
       "left_count": 120,
@@ -470,6 +653,245 @@
     {
       "policy": "DIRECT",
       "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "Jovanykoch/rules"
+      ],
+      "left_count": 139,
+      "right_count": 6771,
+      "overlap_count": 93,
+      "jaccard": 0.013642,
+      "smaller_set_overlap": 0.669065,
+      "shared_domain_sample": [
+        "126.com",
+        "126.net",
+        "127.net",
+        "163.com",
+        "360buyimg.com",
+        "36kr.com",
+        "air-matters.com",
+        "aixifan.com",
+        "amap.com",
+        "autonavi.com",
+        "bdimg.com",
+        "bdstatic.com",
+        "bilibili.com",
+        "bilivideo.com",
+        "caiyunapp.com",
+        "clouddn.com",
+        "csdn.net",
+        "ctrip.com",
+        "dgtle.com",
+        "dianping.com",
+        "douban.com",
+        "doubanio.com",
+        "duokan.com",
+        "ele.me",
+        "feng.com",
+        "gtimg.com",
+        "hongxiu.com",
+        "iciba.com",
+        "ifeng.com",
+        "ifengimg.com",
+        "ipip.net",
+        "iqiyi.com",
+        "jd.com",
+        "jianshu.com",
+        "le.com",
+        "lecloud.com",
+        "meituan.com",
+        "meituan.net",
+        "mi.com",
+        "miaopai.com",
+        "miui.com",
+        "miwifi.com",
+        "mob.com",
+        "netease.com",
+        "oschina.net",
+        "ppsimg.com",
+        "pstatp.com",
+        "qcloud.com",
+        "qdmm.com",
+        "qhimg.com"
+      ]
+    },
+    {
+      "policy": "DIRECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "left_count": 139,
+      "right_count": 408,
+      "overlap_count": 23,
+      "jaccard": 0.043893,
+      "smaller_set_overlap": 0.165468,
+      "shared_domain_sample": [
+        "163.com",
+        "bilibili.com",
+        "csdn.net",
+        "douban.com",
+        "iqiyi.com",
+        "jd.com",
+        "mi.com",
+        "microsoft.com",
+        "office.com",
+        "qq.com",
+        "rarbg.to",
+        "researchgate.net",
+        "snapdrop.net",
+        "sogou.com",
+        "speedtest.net",
+        "taobao.com",
+        "tudou.com",
+        "weather.com",
+        "weibo.com",
+        "youdao.com",
+        "youku.com",
+        "zhihu.com",
+        "zoho.com"
+      ]
+    },
+    {
+      "policy": "DIRECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 139,
+      "right_count": 325,
+      "overlap_count": 22,
+      "jaccard": 0.049774,
+      "smaller_set_overlap": 0.158273,
+      "shared_domain_sample": [
+        "163.com",
+        "bilibili.com",
+        "csdn.net",
+        "douban.com",
+        "iqiyi.com",
+        "jd.com",
+        "mi.com",
+        "microsoft.com",
+        "office.com",
+        "qq.com",
+        "rarbg.to",
+        "researchgate.net",
+        "sogou.com",
+        "speedtest.net",
+        "taobao.com",
+        "tudou.com",
+        "weather.com",
+        "weibo.com",
+        "youdao.com",
+        "youku.com",
+        "zhihu.com",
+        "zoho.com"
+      ]
+    },
+    {
+      "policy": "DIRECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "left_count": 139,
+      "right_count": 325,
+      "overlap_count": 22,
+      "jaccard": 0.049774,
+      "smaller_set_overlap": 0.158273,
+      "shared_domain_sample": [
+        "163.com",
+        "bilibili.com",
+        "csdn.net",
+        "douban.com",
+        "iqiyi.com",
+        "jd.com",
+        "mi.com",
+        "microsoft.com",
+        "office.com",
+        "qq.com",
+        "rarbg.to",
+        "researchgate.net",
+        "sogou.com",
+        "speedtest.net",
+        "taobao.com",
+        "tudou.com",
+        "weather.com",
+        "weibo.com",
+        "youdao.com",
+        "youku.com",
+        "zhihu.com",
+        "zoho.com"
+      ]
+    },
+    {
+      "policy": "DIRECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "tickmao/Rules"
+      ],
+      "left_count": 139,
+      "right_count": 195,
+      "overlap_count": 16,
+      "jaccard": 0.050314,
+      "smaller_set_overlap": 0.115108,
+      "shared_domain_sample": [
+        "blackwell-synergy.com",
+        "cabdirect.org",
+        "doi.org",
+        "ieee.org",
+        "jstor.org",
+        "nature.com",
+        "osapublishing.org",
+        "oup.com",
+        "researchgate.net",
+        "sciencemag.org",
+        "scopus.com",
+        "springer.com",
+        "springernature.com",
+        "upaiyun.com",
+        "wiley.com",
+        "xunlei.com"
+      ]
+    },
+    {
+      "policy": "DIRECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 139,
+      "right_count": 325,
+      "overlap_count": 22,
+      "jaccard": 0.049774,
+      "smaller_set_overlap": 0.158273,
+      "shared_domain_sample": [
+        "163.com",
+        "bilibili.com",
+        "csdn.net",
+        "douban.com",
+        "iqiyi.com",
+        "jd.com",
+        "mi.com",
+        "microsoft.com",
+        "office.com",
+        "qq.com",
+        "rarbg.to",
+        "researchgate.net",
+        "sogou.com",
+        "speedtest.net",
+        "taobao.com",
+        "tudou.com",
+        "weather.com",
+        "weibo.com",
+        "youdao.com",
+        "youku.com",
+        "zhihu.com",
+        "zoho.com"
+      ]
+    },
+    {
+      "policy": "DIRECT",
+      "publishers": [
         "Jovanykoch/rules",
         "YanbingJiang/Shadowrocket_diy_rules"
       ],
@@ -522,6 +944,62 @@
         "taobao.com",
         "tudou.com",
         "update.googleapis.com",
+        "weibo.com",
+        "xinhuanet.com",
+        "xywy.com",
+        "yesky.com",
+        "youdao.com",
+        "youku.com",
+        "zhihu.com"
+      ]
+    },
+    {
+      "policy": "DIRECT",
+      "publishers": [
+        "Jovanykoch/rules",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 6771,
+      "right_count": 325,
+      "overlap_count": 42,
+      "jaccard": 0.005954,
+      "smaller_set_overlap": 0.129231,
+      "shared_domain_sample": [
+        "163.com",
+        "1688.com",
+        "1905.com",
+        "360.com",
+        "39.net",
+        "51yes.com",
+        "alibaba.com",
+        "aliexpress.com",
+        "alipay.com",
+        "babytree.com",
+        "baidu.com",
+        "baike.com",
+        "bilibili.com",
+        "bitauto.com",
+        "cctv.com",
+        "china.com",
+        "cnblogs.com",
+        "cnzz.com",
+        "csdn.net",
+        "douban.com",
+        "douyu.com",
+        "eastday.com",
+        "hao123.com",
+        "haosou.com",
+        "huanqiu.com",
+        "iqiyi.com",
+        "jd.com",
+        "mi.com",
+        "oeeee.com",
+        "qq.com",
+        "so.com",
+        "sogou.com",
+        "soso.com",
+        "taobao.com",
+        "tudou.com",
         "weibo.com",
         "xinhuanet.com",
         "xywy.com",
@@ -671,6 +1149,70 @@
         "youdao.com",
         "youku.com",
         "zhihu.com"
+      ]
+    },
+    {
+      "policy": "DIRECT",
+      "publishers": [
+        "YanbingJiang/Shadowrocket_diy_rules",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 408,
+      "right_count": 325,
+      "overlap_count": 325,
+      "jaccard": 0.796569,
+      "smaller_set_overlap": 1.0,
+      "shared_domain_sample": [
+        "163.com",
+        "1688.com",
+        "1905.com",
+        "2ch.net",
+        "360.com",
+        "39.net",
+        "4dsply.com",
+        "51.la",
+        "51yes.com",
+        "9gag.com",
+        "about.com",
+        "abs-cbn.com",
+        "accuweather.com",
+        "addthis.com",
+        "adexchangeprediction.com",
+        "adf.ly",
+        "adobe.com",
+        "airbnb.com",
+        "alibaba.com",
+        "aliexpress.com",
+        "alipay.com",
+        "allegro.pl",
+        "amazon.ca",
+        "amazon.co.uk",
+        "amazon.com",
+        "amazon.de",
+        "amazon.es",
+        "amazon.fr",
+        "amazon.in",
+        "amazon.it",
+        "amazonaws.com",
+        "ameblo.jp",
+        "americanexpress.com",
+        "aol.com",
+        "apple.com",
+        "asos.com",
+        "atlassian.net",
+        "avg.com",
+        "avito.ru",
+        "azlyrics.com",
+        "babytree.com",
+        "baidu.com",
+        "baike.com",
+        "bankofamerica.com",
+        "battle.net",
+        "behance.net",
+        "bestbuy.com",
+        "bet365.com",
+        "bhaskar.com",
+        "bilibili.com"
       ]
     },
     {
@@ -868,6 +1410,149 @@
     {
       "policy": "DIRECT",
       "publishers": [
+        "h2y/Shadowrocket-ADBlock-Rules",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "left_count": 325,
+      "right_count": 325,
+      "overlap_count": 325,
+      "jaccard": 1.0,
+      "smaller_set_overlap": 1.0,
+      "shared_domain_sample": [
+        "163.com",
+        "1688.com",
+        "1905.com",
+        "2ch.net",
+        "360.com",
+        "39.net",
+        "4dsply.com",
+        "51.la",
+        "51yes.com",
+        "9gag.com",
+        "about.com",
+        "abs-cbn.com",
+        "accuweather.com",
+        "addthis.com",
+        "adexchangeprediction.com",
+        "adf.ly",
+        "adobe.com",
+        "airbnb.com",
+        "alibaba.com",
+        "aliexpress.com",
+        "alipay.com",
+        "allegro.pl",
+        "amazon.ca",
+        "amazon.co.uk",
+        "amazon.com",
+        "amazon.de",
+        "amazon.es",
+        "amazon.fr",
+        "amazon.in",
+        "amazon.it",
+        "amazonaws.com",
+        "ameblo.jp",
+        "americanexpress.com",
+        "aol.com",
+        "apple.com",
+        "asos.com",
+        "atlassian.net",
+        "avg.com",
+        "avito.ru",
+        "azlyrics.com",
+        "babytree.com",
+        "baidu.com",
+        "baike.com",
+        "bankofamerica.com",
+        "battle.net",
+        "behance.net",
+        "bestbuy.com",
+        "bet365.com",
+        "bhaskar.com",
+        "bilibili.com"
+      ]
+    },
+    {
+      "policy": "DIRECT",
+      "publishers": [
+        "h2y/Shadowrocket-ADBlock-Rules",
+        "tickmao/Rules"
+      ],
+      "left_count": 325,
+      "right_count": 195,
+      "overlap_count": 1,
+      "jaccard": 0.001927,
+      "smaller_set_overlap": 0.005128,
+      "shared_domain_sample": [
+        "researchgate.net"
+      ]
+    },
+    {
+      "policy": "DIRECT",
+      "publishers": [
+        "h2y/Shadowrocket-ADBlock-Rules",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 325,
+      "right_count": 325,
+      "overlap_count": 325,
+      "jaccard": 1.0,
+      "smaller_set_overlap": 1.0,
+      "shared_domain_sample": [
+        "163.com",
+        "1688.com",
+        "1905.com",
+        "2ch.net",
+        "360.com",
+        "39.net",
+        "4dsply.com",
+        "51.la",
+        "51yes.com",
+        "9gag.com",
+        "about.com",
+        "abs-cbn.com",
+        "accuweather.com",
+        "addthis.com",
+        "adexchangeprediction.com",
+        "adf.ly",
+        "adobe.com",
+        "airbnb.com",
+        "alibaba.com",
+        "aliexpress.com",
+        "alipay.com",
+        "allegro.pl",
+        "amazon.ca",
+        "amazon.co.uk",
+        "amazon.com",
+        "amazon.de",
+        "amazon.es",
+        "amazon.fr",
+        "amazon.in",
+        "amazon.it",
+        "amazonaws.com",
+        "ameblo.jp",
+        "americanexpress.com",
+        "aol.com",
+        "apple.com",
+        "asos.com",
+        "atlassian.net",
+        "avg.com",
+        "avito.ru",
+        "azlyrics.com",
+        "babytree.com",
+        "baidu.com",
+        "baike.com",
+        "bankofamerica.com",
+        "battle.net",
+        "behance.net",
+        "bestbuy.com",
+        "bet365.com",
+        "bhaskar.com",
+        "bilibili.com"
+      ]
+    },
+    {
+      "policy": "DIRECT",
+      "publishers": [
         "nthack/Shadowrocket-ADBlock-Rules-Easy",
         "tickmao/Rules"
       ],
@@ -957,6 +1642,70 @@
       "smaller_set_overlap": 0.005128,
       "shared_domain_sample": [
         "researchgate.net"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "ACL4SSR/ACL4SSR",
+        "Hackl0us/SS-Rule-Snippet"
+      ],
+      "left_count": 6816,
+      "right_count": 493,
+      "overlap_count": 339,
+      "jaccard": 0.048637,
+      "smaller_set_overlap": 0.687627,
+      "shared_domain_sample": [
+        "4everproxy.com",
+        "4shared.com",
+        "akamaized.net",
+        "allconnected.co",
+        "amazon.com",
+        "amazonaws.com",
+        "amplitude.com",
+        "ampproject.org",
+        "ancsconf.org",
+        "android-x86.org",
+        "android.com",
+        "angularjs.org",
+        "anthonycalzadilla.com",
+        "aol.com",
+        "aolcdn.com",
+        "apigee.com",
+        "apk-dl.com",
+        "apkpure.com",
+        "appdownloader.net",
+        "appledaily.com",
+        "appshopper.com",
+        "appspot.com",
+        "archive.is",
+        "archive.org",
+        "archives.gov",
+        "armorgames.com",
+        "aspnetcdn.com",
+        "awsstatic.com",
+        "azureedge.net",
+        "azurewebsites.net",
+        "bandwagonhost.com",
+        "bbtoystore.com",
+        "bigsound.org",
+        "bing.com",
+        "bit.do",
+        "bit.ly",
+        "bitcointalk.org",
+        "bitshare.com",
+        "bkrtx.com",
+        "blogcdn.com",
+        "blogger.com",
+        "bloglovin.com",
+        "blogsmithmedia.com",
+        "blogspot.com",
+        "blogspot.hk",
+        "bloomberg.com",
+        "books.com.tw",
+        "box.com",
+        "box.net",
+        "boxun.com"
       ]
     },
     {
@@ -1219,6 +1968,70 @@
       "policy": "PROXY",
       "publishers": [
         "ACL4SSR/ACL4SSR",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 6816,
+      "right_count": 5575,
+      "overlap_count": 5040,
+      "jaccard": 0.685621,
+      "smaller_set_overlap": 0.904036,
+      "shared_domain_sample": [
+        "030buy.com",
+        "0rz.tw",
+        "1-apple.com.tw",
+        "10.tt",
+        "1000giri.net",
+        "100ke.org",
+        "10conditionsoflove.com",
+        "10musume.com",
+        "123rf.com",
+        "12bet.com",
+        "12vpn.com",
+        "12vpn.net",
+        "138.com",
+        "141hongkong.com",
+        "141jj.com",
+        "141tube.com",
+        "1688.com.au",
+        "173ng.com",
+        "177pic.info",
+        "17t17p.com",
+        "18board.com",
+        "18board.info",
+        "18onlygirls.com",
+        "18p2p.com",
+        "18virginsex.com",
+        "1949er.org",
+        "1984bbs.com",
+        "1984bbs.org",
+        "1989report.hkja.org.hk",
+        "1991way.com",
+        "1998cdp.org",
+        "1bao.org",
+        "1dumb.com",
+        "1e100.net",
+        "1eew.com",
+        "1mobile.com",
+        "1mobile.tw",
+        "1pondo.tv",
+        "2-hand.info",
+        "2000fun.com",
+        "2008xianzhang.info",
+        "2017.hk",
+        "21andy.com",
+        "21join.com",
+        "21pron.com",
+        "21sextury.com",
+        "228.net.tw",
+        "233abc.com",
+        "24hrs.ca",
+        "24smile.org"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "ACL4SSR/ACL4SSR",
         "nthack/Shadowrocket-ADBlock-Rules-Easy"
       ],
       "left_count": 6816,
@@ -1286,10 +2099,10 @@
         "sve1r/Rules-For-Quantumult-X"
       ],
       "left_count": 6816,
-      "right_count": 574,
+      "right_count": 812,
       "overlap_count": 371,
-      "jaccard": 0.052857,
-      "smaller_set_overlap": 0.646341,
+      "jaccard": 0.051123,
+      "smaller_set_overlap": 0.456897,
       "shared_domain_sample": [
         "4shared.com",
         "4sqi.net",
@@ -1538,6 +2351,646 @@
     {
       "policy": "PROXY",
       "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever"
+      ],
+      "left_count": 493,
+      "right_count": 30183,
+      "overlap_count": 278,
+      "jaccard": 0.009145,
+      "smaller_set_overlap": 0.563895,
+      "shared_domain_sample": [
+        "4everproxy.com",
+        "4shared.com",
+        "adobe.com",
+        "allconnected.co",
+        "amazon.com",
+        "amazonaws.com",
+        "ampproject.org",
+        "ancsconf.org",
+        "android-x86.org",
+        "android.com",
+        "angularjs.org",
+        "anthonycalzadilla.com",
+        "aol.com",
+        "apigee.com",
+        "apk-dl.com",
+        "apkpure.com",
+        "appledaily.com",
+        "appshopper.com",
+        "appspot.com",
+        "archive.is",
+        "archive.org",
+        "archives.gov",
+        "awsstatic.com",
+        "azurewebsites.net",
+        "bandwagonhost.com",
+        "bing.com",
+        "bit.com",
+        "bit.do",
+        "bit.ly",
+        "bitcointalk.org",
+        "bitshare.com",
+        "blogger.com",
+        "bloglovin.com",
+        "blogspot.com",
+        "blogspot.hk",
+        "bloomberg.com",
+        "books.com.tw",
+        "boxun.com",
+        "cachefly.net",
+        "cbc.ca",
+        "cccat.cc",
+        "cdninstagram.com",
+        "census.gov",
+        "cloudfront.net",
+        "cloudmagic.com",
+        "cn-proxy.com",
+        "crashlytics.com",
+        "danilo.to",
+        "daolan.net",
+        "db.tt"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules"
+      ],
+      "left_count": 493,
+      "right_count": 39456,
+      "overlap_count": 301,
+      "jaccard": 0.007592,
+      "smaller_set_overlap": 0.610548,
+      "shared_domain_sample": [
+        "4everproxy.com",
+        "4shared.com",
+        "adobe.com",
+        "allconnected.co",
+        "amazon.com",
+        "amazonaws.com",
+        "ampproject.org",
+        "ancsconf.org",
+        "android-x86.org",
+        "android.com",
+        "angularjs.org",
+        "anthonycalzadilla.com",
+        "aol.com",
+        "apigee.com",
+        "apk-dl.com",
+        "apkpure.com",
+        "appdownloader.net",
+        "appledaily.com",
+        "appshopper.com",
+        "appspot.com",
+        "archive.is",
+        "archive.org",
+        "archives.gov",
+        "awsstatic.com",
+        "azurewebsites.net",
+        "bandwagonhost.com",
+        "bbtoystore.com",
+        "bigsound.org",
+        "bing.com",
+        "bit.com",
+        "bit.do",
+        "bit.ly",
+        "bitcointalk.org",
+        "bitshare.com",
+        "blogger.com",
+        "bloglovin.com",
+        "blogspot.com",
+        "blogspot.hk",
+        "bloomberg.com",
+        "books.com.tw",
+        "boxun.com",
+        "cachefly.net",
+        "cbc.ca",
+        "cccat.cc",
+        "cdninstagram.com",
+        "census.gov",
+        "chromium.org",
+        "cloudfront.net",
+        "cn-proxy.com",
+        "cnn.com"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "left_count": 493,
+      "right_count": 5815,
+      "overlap_count": 284,
+      "jaccard": 0.047145,
+      "smaller_set_overlap": 0.576065,
+      "shared_domain_sample": [
+        "4everproxy.com",
+        "4shared.com",
+        "allconnected.co",
+        "amazon.com",
+        "ampproject.org",
+        "ancsconf.org",
+        "android-x86.org",
+        "android.com",
+        "angularjs.org",
+        "anthonycalzadilla.com",
+        "apigee.com",
+        "apk-dl.com",
+        "apkpure.com",
+        "appdownloader.net",
+        "appledaily.com",
+        "appshopper.com",
+        "appspot.com",
+        "archive.is",
+        "archive.org",
+        "archives.gov",
+        "azurewebsites.net",
+        "bandwagonhost.com",
+        "bbtoystore.com",
+        "bigsound.org",
+        "bing.com",
+        "bit.do",
+        "bit.ly",
+        "bitcointalk.org",
+        "bitshare.com",
+        "blogger.com",
+        "bloglovin.com",
+        "blogspot.com",
+        "blogspot.hk",
+        "bloomberg.com",
+        "books.com.tw",
+        "box.com",
+        "boxun.com",
+        "cbc.ca",
+        "cccat.cc",
+        "cdninstagram.com",
+        "chromium.org",
+        "cloudfront.net",
+        "cn-proxy.com",
+        "cnn.com",
+        "daolan.net",
+        "db.tt",
+        "dcmilitary.com",
+        "disconnect.me",
+        "disqus.com",
+        "dropbox.com"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "gatework/surge-rules"
+      ],
+      "left_count": 493,
+      "right_count": 4451,
+      "overlap_count": 226,
+      "jaccard": 0.047902,
+      "smaller_set_overlap": 0.458418,
+      "shared_domain_sample": [
+        "4everproxy.com",
+        "4shared.com",
+        "allconnected.co",
+        "ampproject.org",
+        "ancsconf.org",
+        "android-x86.org",
+        "android.com",
+        "angularjs.org",
+        "anthonycalzadilla.com",
+        "apigee.com",
+        "apkpure.com",
+        "appledaily.com",
+        "appshopper.com",
+        "appspot.com",
+        "archive.is",
+        "archive.org",
+        "archives.gov",
+        "azurewebsites.net",
+        "bandwagonhost.com",
+        "bit.do",
+        "bit.ly",
+        "bitcointalk.org",
+        "bitshare.com",
+        "blogger.com",
+        "bloglovin.com",
+        "blogspot.com",
+        "blogspot.hk",
+        "bloomberg.com",
+        "books.com.tw",
+        "boxun.com",
+        "cachefly.net",
+        "cbc.ca",
+        "cccat.cc",
+        "cdninstagram.com",
+        "cn-proxy.com",
+        "crashlytics.com",
+        "db.tt",
+        "disconnect.me",
+        "disqus.com",
+        "docker.com",
+        "dropbox.com",
+        "dropboxusercontent.com",
+        "duckduckgo.com",
+        "dw.com",
+        "economist.com",
+        "edgecastcdn.net",
+        "eurekavpt.com",
+        "extmatrix.com",
+        "facebook.com",
+        "fast.com"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 493,
+      "right_count": 5575,
+      "overlap_count": 270,
+      "jaccard": 0.046568,
+      "smaller_set_overlap": 0.547667,
+      "shared_domain_sample": [
+        "4everproxy.com",
+        "4shared.com",
+        "allconnected.co",
+        "amazon.com",
+        "ampproject.org",
+        "ancsconf.org",
+        "android-x86.org",
+        "android.com",
+        "angularjs.org",
+        "anthonycalzadilla.com",
+        "apigee.com",
+        "apk-dl.com",
+        "apkpure.com",
+        "appdownloader.net",
+        "appledaily.com",
+        "appshopper.com",
+        "appspot.com",
+        "archive.is",
+        "archive.org",
+        "archives.gov",
+        "azurewebsites.net",
+        "bandwagonhost.com",
+        "bbtoystore.com",
+        "bigsound.org",
+        "bit.do",
+        "bit.ly",
+        "bitcointalk.org",
+        "bitshare.com",
+        "blogger.com",
+        "bloglovin.com",
+        "blogspot.com",
+        "blogspot.hk",
+        "bloomberg.com",
+        "books.com.tw",
+        "boxun.com",
+        "cbc.ca",
+        "cccat.cc",
+        "cdninstagram.com",
+        "chromium.org",
+        "cloudfront.net",
+        "cn-proxy.com",
+        "cnn.com",
+        "daolan.net",
+        "db.tt",
+        "dcmilitary.com",
+        "disconnect.me",
+        "disqus.com",
+        "dropbox.com",
+        "dropboxusercontent.com",
+        "duckduckgo.com"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "left_count": 493,
+      "right_count": 5575,
+      "overlap_count": 270,
+      "jaccard": 0.046568,
+      "smaller_set_overlap": 0.547667,
+      "shared_domain_sample": [
+        "4everproxy.com",
+        "4shared.com",
+        "allconnected.co",
+        "amazon.com",
+        "ampproject.org",
+        "ancsconf.org",
+        "android-x86.org",
+        "android.com",
+        "angularjs.org",
+        "anthonycalzadilla.com",
+        "apigee.com",
+        "apk-dl.com",
+        "apkpure.com",
+        "appdownloader.net",
+        "appledaily.com",
+        "appshopper.com",
+        "appspot.com",
+        "archive.is",
+        "archive.org",
+        "archives.gov",
+        "azurewebsites.net",
+        "bandwagonhost.com",
+        "bbtoystore.com",
+        "bigsound.org",
+        "bit.do",
+        "bit.ly",
+        "bitcointalk.org",
+        "bitshare.com",
+        "blogger.com",
+        "bloglovin.com",
+        "blogspot.com",
+        "blogspot.hk",
+        "bloomberg.com",
+        "books.com.tw",
+        "boxun.com",
+        "cbc.ca",
+        "cccat.cc",
+        "cdninstagram.com",
+        "chromium.org",
+        "cloudfront.net",
+        "cn-proxy.com",
+        "cnn.com",
+        "daolan.net",
+        "db.tt",
+        "dcmilitary.com",
+        "disconnect.me",
+        "disqus.com",
+        "dropbox.com",
+        "dropboxusercontent.com",
+        "duckduckgo.com"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 493,
+      "right_count": 812,
+      "overlap_count": 453,
+      "jaccard": 0.53169,
+      "smaller_set_overlap": 0.918864,
+      "shared_domain_sample": [
+        "4shared.com",
+        "9to5mac.com",
+        "abpchina.org",
+        "adblockplus.org",
+        "adobe.com",
+        "alfredapp.com",
+        "allconnected.co",
+        "amazon.com",
+        "amazonaws.com",
+        "amplitude.com",
+        "ampproject.org",
+        "ancsconf.org",
+        "android-x86.org",
+        "android.com",
+        "angularjs.org",
+        "anthonycalzadilla.com",
+        "aol.com",
+        "aolcdn.com",
+        "apigee.com",
+        "apk-dl.com",
+        "apkpure.com",
+        "appdownloader.net",
+        "appledaily.com",
+        "appshopper.com",
+        "appspot.com",
+        "arcgis.com",
+        "archive.is",
+        "archive.org",
+        "archives.gov",
+        "armorgames.com",
+        "aspnetcdn.com",
+        "att.com",
+        "awsstatic.com",
+        "azureedge.net",
+        "azurewebsites.net",
+        "bbtoystore.com",
+        "bigsound.org",
+        "bing.com",
+        "bintray.com",
+        "bit.com",
+        "bit.do",
+        "bit.ly",
+        "bitbucket.org",
+        "bitcointalk.org",
+        "bitshare.com",
+        "bjango.com",
+        "bkrtx.com",
+        "blog.com",
+        "blogcdn.com",
+        "blogger.com"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "tickmao/Rules"
+      ],
+      "left_count": 493,
+      "right_count": 7367,
+      "overlap_count": 464,
+      "jaccard": 0.062737,
+      "smaller_set_overlap": 0.941176,
+      "shared_domain_sample": [
+        "4everproxy.com",
+        "4shared.com",
+        "9to5mac.com",
+        "abpchina.org",
+        "adblockplus.org",
+        "adobe.com",
+        "alfredapp.com",
+        "allconnected.co",
+        "amazon.com",
+        "amazonaws.com",
+        "ampproject.org",
+        "ancsconf.org",
+        "android-x86.org",
+        "android.com",
+        "angularjs.org",
+        "anthonycalzadilla.com",
+        "aol.com",
+        "aolcdn.com",
+        "apigee.com",
+        "apk-dl.com",
+        "apkpure.com",
+        "appdownloader.net",
+        "appledaily.com",
+        "appshopper.com",
+        "appspot.com",
+        "arcgis.com",
+        "archive.is",
+        "archive.org",
+        "archives.gov",
+        "armorgames.com",
+        "aspnetcdn.com",
+        "att.com",
+        "awsstatic.com",
+        "azureedge.net",
+        "azurewebsites.net",
+        "bandwagonhost.com",
+        "bbtoystore.com",
+        "bigsound.org",
+        "bing.com",
+        "bintray.com",
+        "bit.com",
+        "bit.do",
+        "bit.ly",
+        "bitbucket.org",
+        "bitcointalk.org",
+        "bitshare.com",
+        "blog.com",
+        "blogcdn.com",
+        "blogger.com",
+        "bloglovin.com"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
+      ],
+      "left_count": 493,
+      "right_count": 30166,
+      "overlap_count": 275,
+      "jaccard": 0.009051,
+      "smaller_set_overlap": 0.557809,
+      "shared_domain_sample": [
+        "4everproxy.com",
+        "4shared.com",
+        "allconnected.co",
+        "amazon.com",
+        "amazonaws.com",
+        "ampproject.org",
+        "ancsconf.org",
+        "android-x86.org",
+        "android.com",
+        "angularjs.org",
+        "anthonycalzadilla.com",
+        "apigee.com",
+        "apk-dl.com",
+        "apkpure.com",
+        "appledaily.com",
+        "appshopper.com",
+        "appspot.com",
+        "archive.is",
+        "archive.org",
+        "archives.gov",
+        "awsstatic.com",
+        "azurewebsites.net",
+        "bandwagonhost.com",
+        "bit.com",
+        "bit.do",
+        "bit.ly",
+        "bitcointalk.org",
+        "bitshare.com",
+        "blogger.com",
+        "bloglovin.com",
+        "blogspot.com",
+        "blogspot.hk",
+        "bloomberg.com",
+        "books.com.tw",
+        "boxun.com",
+        "cachefly.net",
+        "cbc.ca",
+        "cccat.cc",
+        "cdninstagram.com",
+        "census.gov",
+        "cloudfront.net",
+        "cloudmagic.com",
+        "cn-proxy.com",
+        "crashlytics.com",
+        "danilo.to",
+        "daolan.net",
+        "db.tt",
+        "disconnect.me",
+        "disqus.com",
+        "disquscdn.com"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 493,
+      "right_count": 4425,
+      "overlap_count": 229,
+      "jaccard": 0.048838,
+      "smaller_set_overlap": 0.464503,
+      "shared_domain_sample": [
+        "4everproxy.com",
+        "4shared.com",
+        "allconnected.co",
+        "ampproject.org",
+        "ancsconf.org",
+        "android-x86.org",
+        "android.com",
+        "angularjs.org",
+        "anthonycalzadilla.com",
+        "apigee.com",
+        "apkpure.com",
+        "appledaily.com",
+        "appshopper.com",
+        "appspot.com",
+        "archive.is",
+        "archive.org",
+        "archives.gov",
+        "azurewebsites.net",
+        "bandwagonhost.com",
+        "bit.do",
+        "bit.ly",
+        "bitcointalk.org",
+        "bitshare.com",
+        "blogger.com",
+        "bloglovin.com",
+        "blogspot.com",
+        "bloomberg.com",
+        "books.com.tw",
+        "boxun.com",
+        "cachefly.net",
+        "cbc.ca",
+        "cccat.cc",
+        "cdninstagram.com",
+        "cloudfront.net",
+        "cn-proxy.com",
+        "crashlytics.com",
+        "db.tt",
+        "disconnect.me",
+        "disqus.com",
+        "docker.com",
+        "dropbox.com",
+        "dropboxusercontent.com",
+        "duckduckgo.com",
+        "dw.com",
+        "economist.com",
+        "edgecastcdn.net",
+        "eurekavpt.com",
+        "extmatrix.com",
+        "facebook.com",
+        "fast.com"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules"
       ],
@@ -1731,6 +3184,70 @@
       "policy": "PROXY",
       "publishers": [
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 30183,
+      "right_count": 5575,
+      "overlap_count": 3619,
+      "jaccard": 0.112605,
+      "smaller_set_overlap": 0.649148,
+      "shared_domain_sample": [
+        "0rz.tw",
+        "1-apple.com.tw",
+        "1000giri.net",
+        "10conditionsoflove.com",
+        "10musume.com",
+        "12bet.com",
+        "12vpn.com",
+        "12vpn.net",
+        "141jj.com",
+        "141tube.com",
+        "1688.com.au",
+        "173ng.com",
+        "18board.com",
+        "18onlygirls.com",
+        "18p2p.com",
+        "1984bbs.com",
+        "1984bbs.org",
+        "1991way.com",
+        "1bao.org",
+        "1e100.net",
+        "1mobile.com",
+        "1pondo.tv",
+        "2.bahamut.com.tw",
+        "2008xianzhang.info",
+        "21pron.com",
+        "21sextury.com",
+        "228.net.tw",
+        "233abc.com",
+        "24hrs.ca",
+        "2shared.com",
+        "2waky.com",
+        "3-a.net",
+        "30boxes.com",
+        "32red.com",
+        "36rain.com",
+        "3arabtv.com",
+        "3boys2girls.com",
+        "3d-game.com",
+        "3proxy.ru",
+        "3tui.net",
+        "43110.cf",
+        "466453.com",
+        "4bluestones.biz",
+        "4chan.com",
+        "4chan.org",
+        "4dq.com",
+        "4everproxy.com",
+        "4pu.com",
+        "4rbtv.com",
+        "4shared.com"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "nthack/Shadowrocket-ADBlock-Rules-Easy"
       ],
       "left_count": 30183,
@@ -1798,10 +3315,10 @@
         "sve1r/Rules-For-Quantumult-X"
       ],
       "left_count": 30183,
-      "right_count": 574,
-      "overlap_count": 296,
-      "jaccard": 0.009717,
-      "smaller_set_overlap": 0.515679,
+      "right_count": 812,
+      "overlap_count": 300,
+      "jaccard": 0.009774,
+      "smaller_set_overlap": 0.369458,
       "shared_domain_sample": [
         "4shared.com",
         "4sqi.net",
@@ -2179,6 +3696,70 @@
       "policy": "PROXY",
       "publishers": [
         "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 39456,
+      "right_count": 5575,
+      "overlap_count": 4820,
+      "jaccard": 0.119868,
+      "smaller_set_overlap": 0.864574,
+      "shared_domain_sample": [
+        "030buy.com",
+        "0rz.tw",
+        "1-apple.com.tw",
+        "1000giri.net",
+        "10conditionsoflove.com",
+        "10musume.com",
+        "123rf.com",
+        "12bet.com",
+        "12vpn.com",
+        "12vpn.net",
+        "138.com",
+        "141hongkong.com",
+        "141jj.com",
+        "141tube.com",
+        "1688.com.au",
+        "173ng.com",
+        "177pic.info",
+        "17t17p.com",
+        "18board.com",
+        "18onlygirls.com",
+        "18p2p.com",
+        "18virginsex.com",
+        "1984bbs.com",
+        "1984bbs.org",
+        "1989report.hkja.org.hk",
+        "1991way.com",
+        "1bao.org",
+        "1dumb.com",
+        "1e100.net",
+        "1eew.com",
+        "1mobile.com",
+        "1pondo.tv",
+        "2-hand.info",
+        "2.bahamut.com.tw",
+        "2000fun.com",
+        "2008xianzhang.info",
+        "21andy.com",
+        "21pron.com",
+        "21sextury.com",
+        "228.net.tw",
+        "233abc.com",
+        "24hrs.ca",
+        "25u.com",
+        "2lipstube.com",
+        "2shared.com",
+        "2waky.com",
+        "3-a.net",
+        "30boxes.com",
+        "315lz.com",
+        "32red.com"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
         "nthack/Shadowrocket-ADBlock-Rules-Easy"
       ],
       "left_count": 39456,
@@ -2246,16 +3827,18 @@
         "sve1r/Rules-For-Quantumult-X"
       ],
       "left_count": 39456,
-      "right_count": 574,
-      "overlap_count": 320,
-      "jaccard": 0.008058,
-      "smaller_set_overlap": 0.557491,
+      "right_count": 812,
+      "overlap_count": 324,
+      "jaccard": 0.008111,
+      "smaller_set_overlap": 0.399015,
       "shared_domain_sample": [
+        "12306.cn",
         "4shared.com",
         "4sqi.net",
         "accountkit.com",
         "adobe.com",
         "akamaihd.net",
+        "aliyun.com",
         "allconnected.co",
         "amazon.com",
         "amazonaws.com",
@@ -2298,9 +3881,7 @@
         "books.com.tw",
         "boxun.com",
         "cachefly.net",
-        "cbc.ca",
-        "census.gov",
-        "certificate-transparency.org"
+        "cbc.ca"
       ]
     },
     {
@@ -2563,6 +4144,70 @@
       "policy": "PROXY",
       "publishers": [
         "YanbingJiang/Shadowrocket_diy_rules",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 5815,
+      "right_count": 5575,
+      "overlap_count": 5575,
+      "jaccard": 0.958727,
+      "smaller_set_overlap": 1.0,
+      "shared_domain_sample": [
+        "030buy.com",
+        "0rz.tw",
+        "1-apple.com.tw",
+        "10.tt",
+        "1000giri.net",
+        "100ke.org",
+        "10conditionsoflove.com",
+        "10musume.com",
+        "123movies.to",
+        "123rf.com",
+        "12bet.com",
+        "12vpn.com",
+        "12vpn.net",
+        "138.com",
+        "141hongkong.com",
+        "141jj.com",
+        "141tube.com",
+        "1688.com.au",
+        "173ng.com",
+        "177pic.info",
+        "17t17p.com",
+        "18board.com",
+        "18board.info",
+        "18onlygirls.com",
+        "18p2p.com",
+        "18virginsex.com",
+        "1949er.org",
+        "1984bbs.com",
+        "1984bbs.org",
+        "1989report.hkja.org.hk",
+        "1991way.com",
+        "1998cdp.org",
+        "1bao.org",
+        "1dumb.com",
+        "1e100.net",
+        "1eew.com",
+        "1mobile.com",
+        "1mobile.tw",
+        "1pondo.tv",
+        "2-hand.info",
+        "2.bahamut.com.tw",
+        "2000fun.com",
+        "2008xianzhang.info",
+        "2017.hk",
+        "21andy.com",
+        "21join.com",
+        "21pron.com",
+        "21sextury.com",
+        "228.net.tw",
+        "233abc.com"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "YanbingJiang/Shadowrocket_diy_rules",
         "nthack/Shadowrocket-ADBlock-Rules-Easy"
       ],
       "left_count": 5815,
@@ -2630,14 +4275,16 @@
         "sve1r/Rules-For-Quantumult-X"
       ],
       "left_count": 5815,
-      "right_count": 574,
-      "overlap_count": 306,
-      "jaccard": 0.050304,
-      "smaller_set_overlap": 0.533101,
+      "right_count": 812,
+      "overlap_count": 313,
+      "jaccard": 0.049572,
+      "smaller_set_overlap": 0.385468,
       "shared_domain_sample": [
         "4shared.com",
         "4sqi.net",
         "accountkit.com",
+        "acfun.cn",
+        "aixifan.com",
         "akamaihd.net",
         "allconnected.co",
         "amazon.com",
@@ -2682,9 +4329,7 @@
         "chinatimes.com",
         "chrome.com",
         "chromecast.com",
-        "chromercise.com",
-        "chromestatus.com",
-        "chromium.org"
+        "chromercise.com"
       ]
     },
     {
@@ -2883,6 +4528,70 @@
       "policy": "PROXY",
       "publishers": [
         "gatework/surge-rules",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 4451,
+      "right_count": 5575,
+      "overlap_count": 2816,
+      "jaccard": 0.390569,
+      "smaller_set_overlap": 0.632667,
+      "shared_domain_sample": [
+        "0rz.tw",
+        "1-apple.com.tw",
+        "1000giri.net",
+        "10musume.com",
+        "12bet.com",
+        "12vpn.com",
+        "12vpn.net",
+        "141jj.com",
+        "1688.com.au",
+        "173ng.com",
+        "18board.com",
+        "1984bbs.com",
+        "1991way.com",
+        "1e100.net",
+        "1pondo.tv",
+        "2008xianzhang.info",
+        "233abc.com",
+        "24hrs.ca",
+        "32red.com",
+        "36rain.com",
+        "466453.com",
+        "4bluestones.biz",
+        "4everproxy.com",
+        "4rbtv.com",
+        "4shared.com",
+        "4sqi.net",
+        "51.ca",
+        "51jav.org",
+        "51luoben.com",
+        "5278.cc",
+        "63i.com",
+        "6park.com",
+        "6parker.com",
+        "6parknews.com",
+        "7capture.com",
+        "8-d.com",
+        "85cc.us",
+        "881903.com",
+        "89-64.org",
+        "8z1.net",
+        "91porn.com",
+        "91vps.club",
+        "991.com",
+        "99btgc01.com",
+        "99cn.info",
+        "9bis.com",
+        "9bis.net",
+        "9gag.com",
+        "a-normal-day.com",
+        "a248.e.akamai.net"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "gatework/surge-rules",
         "nthack/Shadowrocket-ADBlock-Rules-Easy"
       ],
       "left_count": 4451,
@@ -2950,10 +4659,10 @@
         "sve1r/Rules-For-Quantumult-X"
       ],
       "left_count": 4451,
-      "right_count": 574,
-      "overlap_count": 245,
-      "jaccard": 0.051255,
-      "smaller_set_overlap": 0.426829,
+      "right_count": 812,
+      "overlap_count": 248,
+      "jaccard": 0.049452,
+      "smaller_set_overlap": 0.305419,
       "shared_domain_sample": [
         "4shared.com",
         "4sqi.net",
@@ -3202,14 +4911,334 @@
     {
       "policy": "PROXY",
       "publishers": [
+        "h2y/Shadowrocket-ADBlock-Rules",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "left_count": 5575,
+      "right_count": 5575,
+      "overlap_count": 5575,
+      "jaccard": 1.0,
+      "smaller_set_overlap": 1.0,
+      "shared_domain_sample": [
+        "030buy.com",
+        "0rz.tw",
+        "1-apple.com.tw",
+        "10.tt",
+        "1000giri.net",
+        "100ke.org",
+        "10conditionsoflove.com",
+        "10musume.com",
+        "123movies.to",
+        "123rf.com",
+        "12bet.com",
+        "12vpn.com",
+        "12vpn.net",
+        "138.com",
+        "141hongkong.com",
+        "141jj.com",
+        "141tube.com",
+        "1688.com.au",
+        "173ng.com",
+        "177pic.info",
+        "17t17p.com",
+        "18board.com",
+        "18board.info",
+        "18onlygirls.com",
+        "18p2p.com",
+        "18virginsex.com",
+        "1949er.org",
+        "1984bbs.com",
+        "1984bbs.org",
+        "1989report.hkja.org.hk",
+        "1991way.com",
+        "1998cdp.org",
+        "1bao.org",
+        "1dumb.com",
+        "1e100.net",
+        "1eew.com",
+        "1mobile.com",
+        "1mobile.tw",
+        "1pondo.tv",
+        "2-hand.info",
+        "2.bahamut.com.tw",
+        "2000fun.com",
+        "2008xianzhang.info",
+        "2017.hk",
+        "21andy.com",
+        "21join.com",
+        "21pron.com",
+        "21sextury.com",
+        "228.net.tw",
+        "233abc.com"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "h2y/Shadowrocket-ADBlock-Rules",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 5575,
+      "right_count": 812,
+      "overlap_count": 286,
+      "jaccard": 0.046878,
+      "smaller_set_overlap": 0.352217,
+      "shared_domain_sample": [
+        "4shared.com",
+        "4sqi.net",
+        "akamaihd.net",
+        "allconnected.co",
+        "amazon.com",
+        "ampproject.org",
+        "ancsconf.org",
+        "android-x86.org",
+        "android.com",
+        "androidify.com",
+        "angularjs.org",
+        "anthonycalzadilla.com",
+        "apigee.com",
+        "apk-dl.com",
+        "apkpure.com",
+        "appdownloader.net",
+        "appledaily.com",
+        "appshopper.com",
+        "appspot.com",
+        "archive.is",
+        "archive.org",
+        "archives.gov",
+        "avgle.com",
+        "azurewebsites.net",
+        "badoo.com",
+        "bbtoystore.com",
+        "betvictor.com",
+        "bigsound.org",
+        "bit.do",
+        "bit.ly",
+        "bitcointalk.org",
+        "bitshare.com",
+        "blogger.com",
+        "bloglovin.com",
+        "blogspot.com",
+        "blogspot.hk",
+        "bloomberg.com",
+        "books.com.tw",
+        "boxun.com",
+        "cbc.ca",
+        "certificate-transparency.org",
+        "chinatimes.com",
+        "chrome.com",
+        "chromecast.com",
+        "chromercise.com",
+        "chromestatus.com",
+        "chromium.org",
+        "cloudfront.net",
+        "cnn.com",
+        "daolan.net"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "h2y/Shadowrocket-ADBlock-Rules",
+        "tickmao/Rules"
+      ],
+      "left_count": 5575,
+      "right_count": 7367,
+      "overlap_count": 4938,
+      "jaccard": 0.616942,
+      "smaller_set_overlap": 0.88574,
+      "shared_domain_sample": [
+        "030buy.com",
+        "0rz.tw",
+        "1-apple.com.tw",
+        "10.tt",
+        "1000giri.net",
+        "100ke.org",
+        "10conditionsoflove.com",
+        "10musume.com",
+        "123rf.com",
+        "12bet.com",
+        "12vpn.com",
+        "12vpn.net",
+        "138.com",
+        "141hongkong.com",
+        "141jj.com",
+        "141tube.com",
+        "1688.com.au",
+        "173ng.com",
+        "177pic.info",
+        "17t17p.com",
+        "18board.com",
+        "18board.info",
+        "18onlygirls.com",
+        "18p2p.com",
+        "18virginsex.com",
+        "1949er.org",
+        "1984bbs.com",
+        "1984bbs.org",
+        "1989report.hkja.org.hk",
+        "1991way.com",
+        "1998cdp.org",
+        "1bao.org",
+        "1dumb.com",
+        "1e100.net",
+        "1eew.com",
+        "1mobile.com",
+        "1mobile.tw",
+        "1pondo.tv",
+        "2-hand.info",
+        "2000fun.com",
+        "2008xianzhang.info",
+        "2017.hk",
+        "21andy.com",
+        "21join.com",
+        "21pron.com",
+        "21sextury.com",
+        "228.net.tw",
+        "233abc.com",
+        "24hrs.ca",
+        "24smile.org"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "h2y/Shadowrocket-ADBlock-Rules",
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
+      ],
+      "left_count": 5575,
+      "right_count": 30166,
+      "overlap_count": 3620,
+      "jaccard": 0.112699,
+      "smaller_set_overlap": 0.649327,
+      "shared_domain_sample": [
+        "0rz.tw",
+        "1-apple.com.tw",
+        "1000giri.net",
+        "10conditionsoflove.com",
+        "10musume.com",
+        "12bet.com",
+        "12vpn.com",
+        "12vpn.net",
+        "141jj.com",
+        "141tube.com",
+        "1688.com.au",
+        "173ng.com",
+        "18board.com",
+        "18onlygirls.com",
+        "18p2p.com",
+        "1984bbs.com",
+        "1984bbs.org",
+        "1991way.com",
+        "1bao.org",
+        "1e100.net",
+        "1mobile.com",
+        "1pondo.tv",
+        "2.bahamut.com.tw",
+        "2008xianzhang.info",
+        "21pron.com",
+        "21sextury.com",
+        "228.net.tw",
+        "233abc.com",
+        "24hrs.ca",
+        "2shared.com",
+        "2waky.com",
+        "3-a.net",
+        "30boxes.com",
+        "32red.com",
+        "36rain.com",
+        "3arabtv.com",
+        "3boys2girls.com",
+        "3d-game.com",
+        "3proxy.ru",
+        "3tui.net",
+        "43110.cf",
+        "466453.com",
+        "4bluestones.biz",
+        "4chan.com",
+        "4chan.org",
+        "4dq.com",
+        "4everproxy.com",
+        "4pu.com",
+        "4rbtv.com",
+        "4shared.com"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
+        "h2y/Shadowrocket-ADBlock-Rules",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 5575,
+      "right_count": 4425,
+      "overlap_count": 2848,
+      "jaccard": 0.39821,
+      "smaller_set_overlap": 0.643616,
+      "shared_domain_sample": [
+        "0rz.tw",
+        "1-apple.com.tw",
+        "1000giri.net",
+        "10musume.com",
+        "123movies.to",
+        "12bet.com",
+        "12vpn.com",
+        "12vpn.net",
+        "141jj.com",
+        "1688.com.au",
+        "173ng.com",
+        "18board.com",
+        "1984bbs.com",
+        "1991way.com",
+        "1e100.net",
+        "1pondo.tv",
+        "2.bahamut.com.tw",
+        "2008xianzhang.info",
+        "233abc.com",
+        "24hrs.ca",
+        "32red.com",
+        "36rain.com",
+        "466453.com",
+        "4bluestones.biz",
+        "4chan.org",
+        "4everproxy.com",
+        "4rbtv.com",
+        "4shared.com",
+        "4sqi.net",
+        "51.ca",
+        "51jav.org",
+        "51luoben.com",
+        "5278.cc",
+        "63i.com",
+        "6park.com",
+        "6parker.com",
+        "6parknews.com",
+        "7capture.com",
+        "8-d.com",
+        "85cc.us",
+        "881903.com",
+        "89-64.org",
+        "8z1.net",
+        "91porn.com",
+        "91vps.club",
+        "991.com",
+        "99btgc01.com",
+        "99cn.info",
+        "9bis.com",
+        "9bis.net"
+      ]
+    },
+    {
+      "policy": "PROXY",
+      "publishers": [
         "nthack/Shadowrocket-ADBlock-Rules-Easy",
         "sve1r/Rules-For-Quantumult-X"
       ],
       "left_count": 5575,
-      "right_count": 574,
+      "right_count": 812,
       "overlap_count": 286,
-      "jaccard": 0.04878,
-      "smaller_set_overlap": 0.498258,
+      "jaccard": 0.046878,
+      "smaller_set_overlap": 0.352217,
       "shared_domain_sample": [
         "4shared.com",
         "4sqi.net",
@@ -3461,11 +5490,11 @@
         "sve1r/Rules-For-Quantumult-X",
         "tickmao/Rules"
       ],
-      "left_count": 574,
+      "left_count": 812,
       "right_count": 7367,
-      "overlap_count": 533,
-      "jaccard": 0.071949,
-      "smaller_set_overlap": 0.928571,
+      "overlap_count": 536,
+      "jaccard": 0.07013,
+      "smaller_set_overlap": 0.660099,
       "shared_domain_sample": [
         "4shared.com",
         "4sqi.net",
@@ -3514,9 +5543,9 @@
         "azurewebsites.net",
         "badoo.com",
         "bandisoft.com",
+        "battle.net",
         "bbtoystore.com",
-        "betvictor.com",
-        "bigsound.org"
+        "betvictor.com"
       ]
     },
     {
@@ -3525,11 +5554,11 @@
         "sve1r/Rules-For-Quantumult-X",
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
-      "left_count": 574,
+      "left_count": 812,
       "right_count": 30166,
-      "overlap_count": 293,
-      "jaccard": 0.009623,
-      "smaller_set_overlap": 0.510453,
+      "overlap_count": 297,
+      "jaccard": 0.00968,
+      "smaller_set_overlap": 0.365764,
       "shared_domain_sample": [
         "4shared.com",
         "4sqi.net",
@@ -3589,11 +5618,11 @@
         "sve1r/Rules-For-Quantumult-X",
         "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
       ],
-      "left_count": 574,
+      "left_count": 812,
       "right_count": 4425,
-      "overlap_count": 248,
-      "jaccard": 0.0522,
-      "smaller_set_overlap": 0.432056,
+      "overlap_count": 250,
+      "jaccard": 0.05013,
+      "smaller_set_overlap": 0.307882,
       "shared_domain_sample": [
         "4shared.com",
         "4sqi.net",
@@ -3843,6 +5872,21 @@
       "policy": "REJECT",
       "publishers": [
         "GoodnessJSON/PiHole-Whitelist",
+        "Hackl0us/SS-Rule-Snippet"
+      ],
+      "left_count": 270,
+      "right_count": 580,
+      "overlap_count": 1,
+      "jaccard": 0.001178,
+      "smaller_set_overlap": 0.003704,
+      "shared_domain_sample": [
+        "doubleclick.net"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "GoodnessJSON/PiHole-Whitelist",
         "Isaaker/Spotify-AdsList"
       ],
       "left_count": 270,
@@ -3977,6 +6021,21 @@
       "policy": "REJECT",
       "publishers": [
         "GoodnessJSON/PiHole-Whitelist",
+        "TG-Twilight/AWAvenue-Ads-Rule"
+      ],
+      "left_count": 270,
+      "right_count": 969,
+      "overlap_count": 1,
+      "jaccard": 0.000808,
+      "smaller_set_overlap": 0.003704,
+      "shared_domain_sample": [
+        "ad.doubleclick.net"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "GoodnessJSON/PiHole-Whitelist",
         "YanbingJiang/Shadowrocket_diy_rules"
       ],
       "left_count": 270,
@@ -4084,6 +6143,87 @@
       "policy": "REJECT",
       "publishers": [
         "GoodnessJSON/PiHole-Whitelist",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 270,
+      "right_count": 16125,
+      "overlap_count": 3,
+      "jaccard": 0.000183,
+      "smaller_set_overlap": 0.011111,
+      "shared_domain_sample": [
+        "cc-dt.com",
+        "commission-junction.com",
+        "doubleclick.net"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "GoodnessJSON/PiHole-Whitelist",
+        "hagezi/dns-blocklists"
+      ],
+      "left_count": 270,
+      "right_count": 670671,
+      "overlap_count": 52,
+      "jaccard": 7.8e-05,
+      "smaller_set_overlap": 0.192593,
+      "shared_domain_sample": [
+        "7eer.net",
+        "ad.doubleclick.net",
+        "affiliatefuture.com",
+        "anrdoezrs.net",
+        "apmebf.com",
+        "avantlink.com",
+        "bfast.com",
+        "cc-dt.com",
+        "cdn.optimizely.com",
+        "cdn3.optimizely.com",
+        "cj.com",
+        "cj.dotomi.com",
+        "click.linksynergy.com",
+        "clickserve.dartsearch.net",
+        "commission-junction.com",
+        "doubleclick.net",
+        "dpbolvw.net",
+        "driftt.com",
+        "emjcd.com",
+        "evyy.net",
+        "geo-prod.do.dsp.mp.microsoft.com",
+        "go.redirectingat.com",
+        "go.skimresources.com",
+        "go2jump.org",
+        "gopjn.com",
+        "goto.target.com",
+        "ipv64.net",
+        "jdoqocy.com",
+        "kqzyfj.com",
+        "nexusrules.officeapps.live.com",
+        "no-ip.com",
+        "ojrq.net",
+        "onenetworkdirect.net",
+        "partners.webmasterplan.com",
+        "pjatr.com",
+        "pjtra.com",
+        "placehold.it",
+        "placeholdit.imgix.net",
+        "pntra.com",
+        "pntrac.com",
+        "pntrack.com",
+        "qksrv.net",
+        "redirect.at",
+        "redirect.viglink.com",
+        "shareasale-analytics.com",
+        "shareasale.com",
+        "t.co",
+        "tinyurl.com",
+        "tkqlhce.com",
+        "track.adform.net"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "GoodnessJSON/PiHole-Whitelist",
         "marco-acorte/antispam-it"
       ],
       "left_count": 270,
@@ -4117,11 +6257,60 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 270,
-      "right_count": 234548,
+      "right_count": 234723,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
       "shared_domain_sample": []
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "GoodnessJSON/PiHole-Whitelist",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 270,
+      "right_count": 106541,
+      "overlap_count": 35,
+      "jaccard": 0.000328,
+      "smaller_set_overlap": 0.12963,
+      "shared_domain_sample": [
+        "7eer.net",
+        "affiliatefuture.com",
+        "anrdoezrs.net",
+        "apmebf.com",
+        "avantlink.com",
+        "bfast.com",
+        "cc-dt.com",
+        "commission-junction.com",
+        "cws.conviva.com",
+        "d2c8v52ll5s99u.cloudfront.net",
+        "doubleclick.net",
+        "dpbolvw.net",
+        "emjcd.com",
+        "evyy.net",
+        "go2jump.org",
+        "gopjn.com",
+        "jdoqocy.com",
+        "keystone.mwbsys.com",
+        "kqzyfj.com",
+        "linksynergy.com",
+        "nexusrules.officeapps.live.com",
+        "ojrq.net",
+        "pings.conviva.com",
+        "pjatr.com",
+        "pjtra.com",
+        "pntra.com",
+        "pntrac.com",
+        "qksrv.net",
+        "redirectingat.com",
+        "shareasale-analytics.com",
+        "shareasale.com",
+        "tawk.to",
+        "tkqlhce.com",
+        "tradetracker.net",
+        "win10.ipv6.microsoft.com"
+      ]
     },
     {
       "policy": "REJECT",
@@ -4182,6 +6371,754 @@
         "ojrq.net",
         "qksrv.net",
         "redirectingat.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "Isaaker/Spotify-AdsList"
+      ],
+      "left_count": 580,
+      "right_count": 155422,
+      "overlap_count": 224,
+      "jaccard": 0.001438,
+      "smaller_set_overlap": 0.386207,
+      "shared_domain_sample": [
+        "51yes.com",
+        "99click.com",
+        "a.applovin.com",
+        "a.visualrevenue.com",
+        "acs86.com",
+        "ad.360yield.com",
+        "ad.cctv.com",
+        "ad.flipboard.com",
+        "ad.mi.com",
+        "ad.xiaomi.com",
+        "ad.yieldlab.net",
+        "ad.zanox.com",
+        "ad1.xiaomi.com",
+        "ad8.adfarm1.adition.com",
+        "adadvisor.net",
+        "adap.tv",
+        "adchina.com",
+        "adcolony.com",
+        "adcome.cn",
+        "adform.net",
+        "adfuture.cn",
+        "adinfuse.com",
+        "adjust.com",
+        "adjust.io",
+        "admob.com",
+        "adnxs.com",
+        "ads.feedly.com",
+        "ads.genieessp.com",
+        "ads.mobclix.com",
+        "ads.nexage.com",
+        "ads.stickyadstv.com",
+        "ads.yahoo.com",
+        "ads.youtube.com",
+        "adsame.com",
+        "adserver.snapads.com",
+        "adsrvr.org",
+        "adsunflower.com",
+        "adups.com",
+        "aduu.cn",
+        "advertising.com",
+        "adview.cn",
+        "advmob.cn",
+        "adwhirl.com",
+        "adwo.com",
+        "adxmi.com",
+        "adzerk.net",
+        "allyes.com",
+        "amazon-adsystem.com",
+        "analytics.query.yahoo.com",
+        "angsrvr.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever"
+      ],
+      "left_count": 580,
+      "right_count": 52060,
+      "overlap_count": 183,
+      "jaccard": 0.003489,
+      "smaller_set_overlap": 0.315517,
+      "shared_domain_sample": [
+        "51.la",
+        "99click.com",
+        "a-dxk.play.api.3g.youku.com",
+        "acs86.com",
+        "actives.youku.com",
+        "ad.12306.cn",
+        "ad.api.3g.youku.com",
+        "ad.api.mobile.youku.com",
+        "ad.m.iqiyi.com",
+        "ad.mobile.youku.com",
+        "ad.xiaomi.com",
+        "adadvisor.net",
+        "adap.tv",
+        "adchina.com",
+        "adcolony.com",
+        "adcome.cn",
+        "adform.net",
+        "adinfuse.com",
+        "adjust.com",
+        "adjust.io",
+        "admob.com",
+        "adnxs.com",
+        "ads.yahoo.com",
+        "ads.youtube.com",
+        "adsame.com",
+        "adse.ximalaya.com",
+        "adsrvr.org",
+        "aduu.cn",
+        "advertising.com",
+        "adview.cn",
+        "adwhirl.com",
+        "adwo.com",
+        "adxmi.com",
+        "adzerk.net",
+        "afp.iqiyi.com",
+        "allyes.com",
+        "amazon-adsystem.com",
+        "anquan.org",
+        "api.cupid.iqiyi.com",
+        "app-measurement.com",
+        "appads.com",
+        "applifier.com",
+        "applovin.com",
+        "appsflyer.com",
+        "atdmt.com",
+        "azabu-u.ac.jp",
+        "b.smartvideo.youku.com",
+        "bat.bing.com",
+        "beacon.tingyun.com",
+        "buysellads.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules"
+      ],
+      "left_count": 580,
+      "right_count": 45081,
+      "overlap_count": 182,
+      "jaccard": 0.004002,
+      "smaller_set_overlap": 0.313793,
+      "shared_domain_sample": [
+        "51.la",
+        "99click.com",
+        "a-dxk.play.api.3g.youku.com",
+        "acs86.com",
+        "actives.youku.com",
+        "ad.12306.cn",
+        "ad.api.3g.youku.com",
+        "ad.api.mobile.youku.com",
+        "ad.m.iqiyi.com",
+        "ad.mobile.youku.com",
+        "ad.xiaomi.com",
+        "adadvisor.net",
+        "adap.tv",
+        "adchina.com",
+        "adcolony.com",
+        "adcome.cn",
+        "adform.net",
+        "adinfuse.com",
+        "adjust.com",
+        "adjust.io",
+        "admob.com",
+        "adnxs.com",
+        "ads.yahoo.com",
+        "ads.youtube.com",
+        "adsame.com",
+        "adse.ximalaya.com",
+        "adsrvr.org",
+        "aduu.cn",
+        "advertising.com",
+        "adview.cn",
+        "adwhirl.com",
+        "adwo.com",
+        "adxmi.com",
+        "adzerk.net",
+        "afp.iqiyi.com",
+        "allyes.com",
+        "amazon-adsystem.com",
+        "anquan.org",
+        "api.cupid.iqiyi.com",
+        "app-measurement.com",
+        "appads.com",
+        "applifier.com",
+        "applovin.com",
+        "appsflyer.com",
+        "atdmt.com",
+        "azabu-u.ac.jp",
+        "b.smartvideo.youku.com",
+        "bat.bing.com",
+        "beacon.tingyun.com",
+        "buysellads.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "TG-Twilight/AWAvenue-Ads-Rule"
+      ],
+      "left_count": 580,
+      "right_count": 969,
+      "overlap_count": 27,
+      "jaccard": 0.01774,
+      "smaller_set_overlap": 0.046552,
+      "shared_domain_sample": [
+        "ad.12306.cn",
+        "ad.api.3g.youku.com",
+        "ad.cctv.com",
+        "adcolony.com",
+        "adjust.com",
+        "ads.youtube.com",
+        "adse.ximalaya.com",
+        "adsp.xunlei.com",
+        "adview.cn",
+        "analytics.query.yahoo.com",
+        "app-measurement.com",
+        "applovin.com",
+        "cnzz.com",
+        "d.applovin.com",
+        "fancyapi.com",
+        "flurry.com",
+        "google-analytics.com",
+        "googleadservices.com",
+        "iadctest.qwapi.com",
+        "iadsdk.apple.com",
+        "ifacelog.iqiyi.com",
+        "jpush.cn",
+        "mbdlog.iqiyi.com",
+        "moatads.com",
+        "rt.applovin.com",
+        "t7z.cupid.ptqy.gitv.tv",
+        "zhihu-web-analytics.zhihu.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "left_count": 580,
+      "right_count": 17028,
+      "overlap_count": 176,
+      "jaccard": 0.010096,
+      "smaller_set_overlap": 0.303448,
+      "shared_domain_sample": [
+        "1uandun.com",
+        "51.la",
+        "519397.com",
+        "70e.com",
+        "99click.com",
+        "a.ckm.iqiyi.com",
+        "acs86.com",
+        "ad.12306.cn",
+        "ad.cmvideo.cn",
+        "ad.m.iqiyi.com",
+        "ad.mobile.youku.com",
+        "ad.yixin.im",
+        "adap.tv",
+        "adchina.com",
+        "adcolony.com",
+        "adcome.cn",
+        "adform.net",
+        "adinfuse.com",
+        "adjust.com",
+        "adjust.io",
+        "admob.com",
+        "adnxs.com",
+        "ads.yahoo.com",
+        "ads.youtube.com",
+        "adsame.com",
+        "adse.ximalaya.com",
+        "adsp.xunlei.com",
+        "adsrvr.org",
+        "aduu.cn",
+        "advertising.com",
+        "adview.cn",
+        "adwhirl.com",
+        "adwo.com",
+        "adxmi.com",
+        "adzerk.net",
+        "afp.iqiyi.com",
+        "allyes.com",
+        "amazon-adsystem.com",
+        "anquan.org",
+        "api.cupid.iqiyi.com",
+        "api.talkingdata.com",
+        "appads.com",
+        "applifier.com",
+        "applovin.com",
+        "appsflyer.com",
+        "ark.letv.com",
+        "asimgs.pplive.cn",
+        "aty.sohu.com",
+        "beacon.tingyun.com",
+        "behe.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "anudeepND/whitelist"
+      ],
+      "left_count": 580,
+      "right_count": 267,
+      "overlap_count": 1,
+      "jaccard": 0.001182,
+      "smaller_set_overlap": 0.003745,
+      "shared_domain_sample": [
+        "doubleclick.net"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "badmojr/1Hosts"
+      ],
+      "left_count": 580,
+      "right_count": 0,
+      "overlap_count": 0,
+      "jaccard": 0.0,
+      "smaller_set_overlap": 0.0,
+      "shared_domain_sample": []
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "furkan-bayrak/lg-tv-blocklist"
+      ],
+      "left_count": 580,
+      "right_count": 115,
+      "overlap_count": 0,
+      "jaccard": 0.0,
+      "smaller_set_overlap": 0.0,
+      "shared_domain_sample": []
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 580,
+      "right_count": 16125,
+      "overlap_count": 137,
+      "jaccard": 0.008269,
+      "smaller_set_overlap": 0.236207,
+      "shared_domain_sample": [
+        "1uandun.com",
+        "51.la",
+        "519397.com",
+        "70e.com",
+        "99click.com",
+        "a.ckm.iqiyi.com",
+        "acs86.com",
+        "ad.12306.cn",
+        "ad.m.iqiyi.com",
+        "adchina.com",
+        "adcome.cn",
+        "adinfuse.com",
+        "adjust.com",
+        "adjust.io",
+        "adnxs.com",
+        "ads.yahoo.com",
+        "adsame.com",
+        "adse.ximalaya.com",
+        "aduu.cn",
+        "advertising.com",
+        "adview.cn",
+        "adwhirl.com",
+        "adwo.com",
+        "adxmi.com",
+        "adzerk.net",
+        "afp.iqiyi.com",
+        "allyes.com",
+        "amazon-adsystem.com",
+        "anquan.org",
+        "api.cupid.iqiyi.com",
+        "appads.com",
+        "applifier.com",
+        "applovin.com",
+        "aty.sohu.com",
+        "beacon.tingyun.com",
+        "behe.com",
+        "biddingx.com",
+        "btyou.com",
+        "c.uaa.iqiyi.com",
+        "cchfjz.com",
+        "chartboost.com",
+        "clicktracks.com",
+        "clickzs.com",
+        "cloudpush.iqiyi.com",
+        "cm.passport.iqiyi.com",
+        "cmcore.com",
+        "coremetrics.com",
+        "cpm.cm.kankan.com",
+        "da.mgtv.com",
+        "de.as.pptv.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "hagezi/dns-blocklists"
+      ],
+      "left_count": 580,
+      "right_count": 670671,
+      "overlap_count": 239,
+      "jaccard": 0.000356,
+      "smaller_set_overlap": 0.412069,
+      "shared_domain_sample": [
+        "111cn.net",
+        "114la.com",
+        "51.la",
+        "51yes.com",
+        "9377.cn",
+        "99click.com",
+        "a.applovin.com",
+        "a1.itc.cn",
+        "acs86.com",
+        "ad.12306.cn",
+        "ad.api.3g.youku.com",
+        "ad.cctv.com",
+        "ad.cmvideo.cn",
+        "ad.flipboard.com",
+        "ad.mi.com",
+        "ad.xiaomi.com",
+        "adadvisor.net",
+        "adap.tv",
+        "adbxb.com",
+        "adchina.com",
+        "adcolony.com",
+        "ader.mobi",
+        "adform.net",
+        "adfuture.cn",
+        "adinfuse.com",
+        "adjust.com",
+        "adjust.io",
+        "adlive.cn",
+        "admin5.com",
+        "admob.com",
+        "admon.cn",
+        "adnxs.com",
+        "adpolestar.net",
+        "adquan.com",
+        "ads.cdn.tvb.com",
+        "ads.yahoo.com",
+        "ads.youtube.com",
+        "adsame.com",
+        "adse.ximalaya.com",
+        "adsp.xunlei.com",
+        "adsrvr.org",
+        "adsunflower.com",
+        "aduu.cn",
+        "adview.cn",
+        "advmob.cn",
+        "adwo.com",
+        "adxmi.com",
+        "adzerk.net",
+        "allyes.cn",
+        "allyes.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "marco-acorte/antispam-it"
+      ],
+      "left_count": 580,
+      "right_count": 346345,
+      "overlap_count": 0,
+      "jaccard": 0.0,
+      "smaller_set_overlap": 0.0,
+      "shared_domain_sample": []
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "left_count": 580,
+      "right_count": 16125,
+      "overlap_count": 137,
+      "jaccard": 0.008269,
+      "smaller_set_overlap": 0.236207,
+      "shared_domain_sample": [
+        "1uandun.com",
+        "51.la",
+        "519397.com",
+        "70e.com",
+        "99click.com",
+        "a.ckm.iqiyi.com",
+        "acs86.com",
+        "ad.12306.cn",
+        "ad.m.iqiyi.com",
+        "adchina.com",
+        "adcome.cn",
+        "adinfuse.com",
+        "adjust.com",
+        "adjust.io",
+        "adnxs.com",
+        "ads.yahoo.com",
+        "adsame.com",
+        "adse.ximalaya.com",
+        "aduu.cn",
+        "advertising.com",
+        "adview.cn",
+        "adwhirl.com",
+        "adwo.com",
+        "adxmi.com",
+        "adzerk.net",
+        "afp.iqiyi.com",
+        "allyes.com",
+        "amazon-adsystem.com",
+        "anquan.org",
+        "api.cupid.iqiyi.com",
+        "appads.com",
+        "applifier.com",
+        "applovin.com",
+        "aty.sohu.com",
+        "beacon.tingyun.com",
+        "behe.com",
+        "biddingx.com",
+        "btyou.com",
+        "c.uaa.iqiyi.com",
+        "cchfjz.com",
+        "chartboost.com",
+        "clicktracks.com",
+        "clickzs.com",
+        "cloudpush.iqiyi.com",
+        "cm.passport.iqiyi.com",
+        "cmcore.com",
+        "coremetrics.com",
+        "cpm.cm.kankan.com",
+        "da.mgtv.com",
+        "de.as.pptv.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "phishdestroy/destroylist"
+      ],
+      "left_count": 580,
+      "right_count": 234723,
+      "overlap_count": 0,
+      "jaccard": 0.0,
+      "smaller_set_overlap": 0.0,
+      "shared_domain_sample": []
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 580,
+      "right_count": 106541,
+      "overlap_count": 511,
+      "jaccard": 0.004793,
+      "smaller_set_overlap": 0.881034,
+      "shared_domain_sample": [
+        "10up.com",
+        "111cn.net",
+        "114la.com",
+        "123.sogou.com",
+        "1uandun.com",
+        "37wan.cn",
+        "51.la",
+        "513hch.com",
+        "519397.com",
+        "51yes.com",
+        "70e.com",
+        "818mov.com",
+        "86.cc",
+        "915.com",
+        "99click.com",
+        "a-dxk.play.api.3g.youku.com",
+        "a.ckm.iqiyi.com",
+        "a.visualrevenue.com",
+        "a1.itc.cn",
+        "acs86.com",
+        "actives.youku.com",
+        "ad.12306.cn",
+        "ad.3.cn",
+        "ad.360yield.com",
+        "ad.95306.cn",
+        "ad.api.3g.youku.com",
+        "ad.api.mobile.youku.com",
+        "ad.cctv.com",
+        "ad.cmvideo.cn",
+        "ad.flipboard.com",
+        "ad.m.iqiyi.com",
+        "ad.mi.com",
+        "ad.mobile.youku.com",
+        "ad.thepaper.cn",
+        "ad.unimhk.com",
+        "ad.video.51togic.com",
+        "ad.xiaomi.com",
+        "ad.yieldlab.net",
+        "ad.yixin.im",
+        "ad.zanox.com",
+        "ad1.xiaomi.com",
+        "ad8.adfarm1.adition.com",
+        "adadvisor.net",
+        "adap.tv",
+        "adbxb.com",
+        "adchina.com",
+        "adcolony.com",
+        "adcome.cn",
+        "ader.mobi",
+        "adform.net"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
+      ],
+      "left_count": 580,
+      "right_count": 52045,
+      "overlap_count": 136,
+      "jaccard": 0.002591,
+      "smaller_set_overlap": 0.234483,
+      "shared_domain_sample": [
+        "51.la",
+        "99click.com",
+        "acs86.com",
+        "ad.12306.cn",
+        "ad.m.iqiyi.com",
+        "ad.xiaomi.com",
+        "adadvisor.net",
+        "adap.tv",
+        "adchina.com",
+        "adcolony.com",
+        "adcome.cn",
+        "adform.net",
+        "adinfuse.com",
+        "adjust.com",
+        "adjust.io",
+        "admob.com",
+        "adnxs.com",
+        "ads.yahoo.com",
+        "ads.youtube.com",
+        "adsame.com",
+        "adse.ximalaya.com",
+        "adsrvr.org",
+        "aduu.cn",
+        "advertising.com",
+        "adview.cn",
+        "adwhirl.com",
+        "adwo.com",
+        "adxmi.com",
+        "adzerk.net",
+        "afp.iqiyi.com",
+        "allyes.com",
+        "amazon-adsystem.com",
+        "anquan.org",
+        "api.cupid.iqiyi.com",
+        "app-measurement.com",
+        "appads.com",
+        "applifier.com",
+        "applovin.com",
+        "appsflyer.com",
+        "atdmt.com",
+        "bat.bing.com",
+        "beacon.tingyun.com",
+        "buysellads.com",
+        "c.uaa.iqiyi.com",
+        "chartbeat.com",
+        "chartboost.com",
+        "clicktracks.com",
+        "clickzs.com",
+        "cloudpush.iqiyi.com",
+        "cm.passport.iqiyi.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Hackl0us/SS-Rule-Snippet",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 580,
+      "right_count": 48729,
+      "overlap_count": 101,
+      "jaccard": 0.002053,
+      "smaller_set_overlap": 0.174138,
+      "shared_domain_sample": [
+        "51.la",
+        "99click.com",
+        "acs86.com",
+        "ad.12306.cn",
+        "ad.m.iqiyi.com",
+        "ad.xiaomi.com",
+        "adchina.com",
+        "adcome.cn",
+        "adform.net",
+        "adinfuse.com",
+        "adjust.com",
+        "adjust.io",
+        "admob.com",
+        "adsame.com",
+        "adse.ximalaya.com",
+        "aduu.cn",
+        "advertising.com",
+        "adview.cn",
+        "adwhirl.com",
+        "adwo.com",
+        "adxmi.com",
+        "adzerk.net",
+        "afp.iqiyi.com",
+        "allyes.com",
+        "anquan.org",
+        "api.cupid.iqiyi.com",
+        "appads.com",
+        "applifier.com",
+        "applovin.com",
+        "atdmt.com",
+        "beacon.tingyun.com",
+        "c.uaa.iqiyi.com",
+        "chartboost.com",
+        "clicktracks.com",
+        "clickzs.com",
+        "cloudpush.iqiyi.com",
+        "cm.passport.iqiyi.com",
+        "cmcore.com",
+        "coremetrics.com",
+        "cpm.cm.kankan.com",
+        "de.as.pptv.com",
+        "doubleclick.net",
+        "emoticon.sns.iqiyi.com",
+        "fastapi.net",
+        "fastclick.net",
+        "gamecenter.iqiyi.com",
+        "google-analytics.com",
+        "googlesyndication.com",
+        "guohead.com",
+        "guomob.com"
       ]
     },
     {
@@ -4310,6 +7247,70 @@
         "4wnet.com",
         "4wnetwork.com",
         "50websads.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Isaaker/Spotify-AdsList",
+        "TG-Twilight/AWAvenue-Ads-Rule"
+      ],
+      "left_count": 155422,
+      "right_count": 969,
+      "overlap_count": 208,
+      "jaccard": 0.001332,
+      "smaller_set_overlap": 0.214654,
+      "shared_domain_sample": [
+        "ad.cctv.com",
+        "ad.doubleclick.net",
+        "ad.player.baidu.com",
+        "ad.qq.com",
+        "ad.toutiao.com",
+        "ad.ximalaya.com",
+        "ad4.sina.com.cn",
+        "adashbc.ut.taobao.com",
+        "adashx.m.taobao.com",
+        "adashxgc.ut.taobao.com",
+        "adclick.g.doubleclick.net",
+        "adcolony.com",
+        "adexp.liftoff.io",
+        "adguanggao.eee114.com",
+        "adjust.com",
+        "adlog.vivo.com.cn",
+        "adm.funshion.com",
+        "admarketing.yahoo.net",
+        "adreq.vivo.com.cn",
+        "ads.auctions.yahoo.com",
+        "ads.finance.yahoo.com",
+        "ads.inmobi.com",
+        "ads.linkedin.com",
+        "ads.pinterest.com",
+        "ads.pubmatic.com",
+        "ads.servebom.com",
+        "ads.tiktok.com",
+        "ads.youtube.com",
+        "adscdn.baidu.com",
+        "adsdk.vivo.com.cn",
+        "adserver.unityads.unity3d.com",
+        "adservice.google.com",
+        "adsfile.qq.com",
+        "adsfs.oppomobile.com",
+        "adslvfile.qq.com",
+        "adsmoloco.com",
+        "adspecs.yahoo.com",
+        "adstextview.qq.com",
+        "adstudio-assets.scdn.co",
+        "adstudio.spotify.com",
+        "adtago.s3.amazonaws.com",
+        "adv.sec.intl.miui.com",
+        "adv.sec.miui.com",
+        "advertising.apple.com",
+        "advertising.yahoo.com",
+        "advertising.yandex.ru",
+        "advice-ads.s3.amazonaws.com",
+        "adview.cn",
+        "adx.ads.oppomobile.com",
+        "adxlog.vivo.com.cn"
       ]
     },
     {
@@ -4475,6 +7476,134 @@
       "policy": "REJECT",
       "publishers": [
         "Isaaker/Spotify-AdsList",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 155422,
+      "right_count": 16125,
+      "overlap_count": 2553,
+      "jaccard": 0.015107,
+      "smaller_set_overlap": 0.158326,
+      "shared_domain_sample": [
+        "006a039c957c142bb.com",
+        "00aaa2d81c1d174.com",
+        "00ae8b5a9c1d597.com",
+        "012469af389a1d1246d.com",
+        "02aa19117f396e9.com",
+        "02b5da94a2bd4aea.com",
+        "039ad0897e6da.com",
+        "059e025e7484.com",
+        "05ee3a24ed11df058c8.com",
+        "06f09b1008ae993a5a.com",
+        "073c0cec65916314a.com",
+        "0926a687679d337e9d.com",
+        "0956228a2df97a.com",
+        "0b9d84d93f1b.com",
+        "0dbcf515975d.com",
+        "0e6fc55ed3d4c2c2ba0.com",
+        "0f461325bf56c3e1b9.com",
+        "0gw7e6s3wrao9y3q.pro",
+        "10b883b3d61d.com",
+        "110380d053f716c4.com",
+        "118aa629a7968e75e.com",
+        "1221e236c3f8703.com",
+        "123advertising.nl",
+        "1298bab69bbc4.com",
+        "12dc71b7cb820f2a.com",
+        "13190546cd1dec9bbdc.com",
+        "153105c2f9564.com",
+        "165a7c15380874ef3.com",
+        "1740f665a91b68.com",
+        "19b45a16170729.com",
+        "19beda38dc2ce42.com",
+        "19d12dd9de1.com",
+        "1b6a637cbe7bb65ac.com",
+        "1bcde.com",
+        "1ccbt.com",
+        "1ced38bdc42b883.com",
+        "1f58098dd54.com",
+        "1f7de8569ea97f0614.com",
+        "1han-rit-ten.com",
+        "1hanritten.com",
+        "20a840a14a0ef7d6.com",
+        "2137dc12f9d8.com",
+        "21a3dd8ea39c0.com",
+        "21c9a53484951.com",
+        "21sexturycash.com",
+        "23205523023daea6.com",
+        "2334ea708ab6d79.com",
+        "2444efc8cd8e.com",
+        "24ad89fc2690ed9369.com",
+        "24smile.org"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Isaaker/Spotify-AdsList",
+        "hagezi/dns-blocklists"
+      ],
+      "left_count": 155422,
+      "right_count": 670671,
+      "overlap_count": 17185,
+      "jaccard": 0.021245,
+      "smaller_set_overlap": 0.11057,
+      "shared_domain_sample": [
+        "000lkub.rcomhost.com",
+        "000ll4q.rcomhost.com",
+        "005.free-counter.co.uk",
+        "006.free-counter.co.uk",
+        "007.free-counter.co.uk",
+        "008.free-counters.co.uk",
+        "00fun.com",
+        "0816bvh.ru",
+        "0916video.ru",
+        "0emn.com",
+        "0fmm.com",
+        "0gw7e6s3wrao9y3q.pro",
+        "0hna.com",
+        "0stats.com",
+        "1-1ads.com",
+        "1-cl0ud.com",
+        "1.chipde.damoh.schneevonmorgen.com",
+        "1.f.ix.de",
+        "1.gmxnet.damoh.schneevonmorgen.com",
+        "1.im.cz",
+        "1001movies.com",
+        "100webads.com",
+        "101com.com",
+        "101m3.com",
+        "101order.com",
+        "102.112.2o7.net",
+        "103092804.com",
+        "103bees.com",
+        "10712824.qqc.co",
+        "1100ad.com",
+        "11163929-2268.c2.adprotect.net",
+        "11163929-2315.c2.adprotect.net",
+        "11163929-2410.c2.adprotect.net",
+        "11163929-3212.c2.adprotect.net",
+        "11163929-3367.c2.adprotect.net",
+        "11163929-3482.c2.adprotect.net",
+        "11164531-19021001.c2.adprotect.net",
+        "11bet.com",
+        "11bet.net",
+        "11x11.com",
+        "11zz.com",
+        "121media.com",
+        "123-counter.de",
+        "123advertising.nl",
+        "123banners.com",
+        "123c.vn",
+        "123compteur.com",
+        "123count.com",
+        "123counts.com",
+        "123date.me"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Isaaker/Spotify-AdsList",
         "marco-acorte/antispam-it"
       ],
       "left_count": 155422,
@@ -4559,7 +7688,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 155422,
-      "right_count": 234548,
+      "right_count": 234723,
       "overlap_count": 10,
       "jaccard": 2.6e-05,
       "smaller_set_overlap": 6.4e-05,
@@ -4574,6 +7703,70 @@
         "gparted.fr",
         "inkscape.fr",
         "multimining.org"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Isaaker/Spotify-AdsList",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 155422,
+      "right_count": 106541,
+      "overlap_count": 9595,
+      "jaccard": 0.03802,
+      "smaller_set_overlap": 0.090059,
+      "shared_domain_sample": [
+        "0.r.msn.com",
+        "023hysj.com",
+        "0aqpqdju.me",
+        "0emm.com",
+        "0emn.com",
+        "0fmm.com",
+        "0gw7e6s3wrao9y3q.pro",
+        "0stats.com",
+        "1-cl0ud.com",
+        "1001movies.com",
+        "101m3.com",
+        "103092804.com",
+        "103bees.com",
+        "105app.com",
+        "11nux.com",
+        "123-counter.de",
+        "123-tracker.com",
+        "123compteur.com",
+        "123count.com",
+        "123date.me",
+        "123stat.com",
+        "12fou.com",
+        "13p76nnir.de",
+        "152media.com",
+        "15gifts.com",
+        "163.wrating.com",
+        "18naked.com",
+        "1ccbt.com",
+        "1dmp.io",
+        "1freecounter.com",
+        "1fwjpdwguvqs.com",
+        "1l-hit.mail.ru",
+        "1nimo.com",
+        "1pel.com",
+        "1q2w3.fun",
+        "1rx.io",
+        "1rxntv.io",
+        "1to1.bbva.com",
+        "1web.me",
+        "200summit.com",
+        "204st.us",
+        "206ads.com",
+        "206solutions.com",
+        "20dollars2surf.com",
+        "21sexturycash.com",
+        "247-inc.com",
+        "247ilabs.com",
+        "24counter.com",
+        "24log.com",
+        "24log.de"
       ]
     },
     {
@@ -4772,6 +7965,70 @@
       "policy": "REJECT",
       "publishers": [
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "TG-Twilight/AWAvenue-Ads-Rule"
+      ],
+      "left_count": 52060,
+      "right_count": 969,
+      "overlap_count": 64,
+      "jaccard": 0.001208,
+      "smaller_set_overlap": 0.066047,
+      "shared_domain_sample": [
+        "ad.12306.cn",
+        "ad.api.3g.youku.com",
+        "adbox.sina.com.cn",
+        "adcolony.com",
+        "adjust.com",
+        "ads.linkedin.com",
+        "ads.pinterest.com",
+        "ads.pubmatic.com",
+        "ads.servebom.com",
+        "ads.tiktok.com",
+        "ads.youtube.com",
+        "adscdn.baidu.com",
+        "adse.ximalaya.com",
+        "adservice.google.com",
+        "adsmind.gdtimg.com",
+        "adtago.s3.amazonaws.com",
+        "advice-ads.s3.amazonaws.com",
+        "adview.cn",
+        "analytics.pinterest.com",
+        "analytics.pointdrive.linkedin.com",
+        "analytics.tiktok.com",
+        "app-measurement.com",
+        "applovin.com",
+        "bdad.123pan.cn",
+        "beacons.gvt2.com",
+        "cbjs.baidu.com",
+        "click.liftoff.io",
+        "crashlyticsreports-pa.googleapis.com",
+        "de.tynt.com",
+        "doubleclick-cn.net",
+        "eclick.baidu.com",
+        "edge.ads.twitch.tv",
+        "entry.baidu.com",
+        "flurry.com",
+        "google-analytics.com",
+        "googleadservices-cn.com",
+        "googleadservices.com",
+        "gorgon.youdao.com",
+        "hm.baidu.com",
+        "hmma.baidu.com",
+        "ifacelog.iqiyi.com",
+        "iyfbodn.com",
+        "log.pinterest.com",
+        "mbdlog.iqiyi.com",
+        "metrics.icloud.com",
+        "metrics.mzstatic.com",
+        "moatads.com",
+        "mobads-logs.baidu.com",
+        "mobads.baidu.com",
+        "mtj.baidu.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "YanbingJiang/Shadowrocket_diy_rules"
       ],
       "left_count": 52060,
@@ -4901,6 +8158,134 @@
       "policy": "REJECT",
       "publishers": [
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 52060,
+      "right_count": 16125,
+      "overlap_count": 2250,
+      "jaccard": 0.034125,
+      "smaller_set_overlap": 0.139535,
+      "shared_domain_sample": [
+        "003store.com",
+        "0gw7e6s3wrao9y3q.pro",
+        "0sywjs4r1x.com",
+        "0x01n2ptpuz3.com",
+        "1.07swz.com",
+        "1.1010pic.com",
+        "1.11467.com",
+        "1.15lu.com",
+        "1.201980.com",
+        "1.32xp.com",
+        "1.5000yan.com",
+        "1.51sxue.cn",
+        "1.66law.cn",
+        "1.ajiyuming.com",
+        "1.arpun.com",
+        "1.bh5.com.cn",
+        "1.codesdq.com",
+        "1.codezh.com",
+        "1.feihua.com",
+        "1.feihua.net.cn",
+        "1.glook.cn",
+        "1.hao123.com",
+        "1.hnyouneng.com",
+        "1.i999d.cn",
+        "1.isanxia.com",
+        "1.jeasyui.net",
+        "1.jiqie.cn",
+        "1.kuaidiwo.cn",
+        "1.lishibu.com",
+        "1.lvshi567.com",
+        "1.mgff.com",
+        "1.pncdn.cn",
+        "1.qjhm.net",
+        "1.sj33.net",
+        "1.tecbbs.com",
+        "1.ttxs123.net",
+        "1.uc129.com",
+        "1.v-x.com.cn",
+        "1.xilu.com",
+        "1.xuexi.la",
+        "1.yac8.net",
+        "1.yuexw.com",
+        "1.yxzw.com.cn",
+        "1.zhev.com.cn",
+        "1.zhuangxiu567.com",
+        "1.zou114.com",
+        "1.zuowenjun.com",
+        "1.zw3e.com",
+        "100.admin5.com",
+        "100.pncdn.cn"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "hagezi/dns-blocklists"
+      ],
+      "left_count": 52060,
+      "right_count": 670671,
+      "overlap_count": 50601,
+      "jaccard": 0.075285,
+      "smaller_set_overlap": 0.971975,
+      "shared_domain_sample": [
+        "000491b06a.com",
+        "0017c6c37c.com",
+        "0019x.com",
+        "003store.com",
+        "00427011ae.com",
+        "00609c257b.com",
+        "009f45b51c.com",
+        "00a39e6dfd.com",
+        "00a4722597.com",
+        "00c8741ed3.com",
+        "00k456wyh.com",
+        "01168nl.com",
+        "011qt7cln.com",
+        "015ea24446.com",
+        "0171pjx5q.com",
+        "0175a3229c.com",
+        "01anf08rf.com",
+        "01counter.com",
+        "0213499675.com",
+        "02228640b9.com",
+        "0246cba9d4.com",
+        "0256d2ea99.com",
+        "029519cbdc.com",
+        "02e4a0ea60.com",
+        "02e8b93f0e.com",
+        "02exl1ql2l.com",
+        "02fd659794.com",
+        "030363cc95.com",
+        "0334759680.com",
+        "033586410b.com",
+        "0339586393.com",
+        "0359d12a54.com",
+        "03850de51d.com",
+        "039858f297.com",
+        "039ijdlg8.com",
+        "03h6fpes.xyz",
+        "03in08p3r1.com",
+        "03mhpavj25.com",
+        "03mnj87wir.com",
+        "048f3c0516.com",
+        "049bv1hdzn.com",
+        "050393f4ec.com",
+        "05086715f4.com",
+        "0517fd5e92.com",
+        "051ss3usg.com",
+        "054ii.com",
+        "058d79990c.com",
+        "059f25bd5b.com",
+        "05b9daf35c.com",
+        "0628ba07b4.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "marco-acorte/antispam-it"
       ],
       "left_count": 52060,
@@ -4984,7 +8369,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 52060,
-      "right_count": 234548,
+      "right_count": 234723,
       "overlap_count": 11,
       "jaccard": 3.8e-05,
       "smaller_set_overlap": 0.000211,
@@ -5000,6 +8385,70 @@
         "linkvertise.com",
         "sievepalmful.com",
         "vinsgcs.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 52060,
+      "right_count": 106541,
+      "overlap_count": 21928,
+      "jaccard": 0.160441,
+      "smaller_set_overlap": 0.421206,
+      "shared_domain_sample": [
+        "0019x.com",
+        "003store.com",
+        "00427011ae.com",
+        "00609c257b.com",
+        "01168nl.com",
+        "011qt7cln.com",
+        "015ea24446.com",
+        "01anf08rf.com",
+        "01counter.com",
+        "0213499675.com",
+        "02228640b9.com",
+        "029519cbdc.com",
+        "02exl1ql2l.com",
+        "039858f297.com",
+        "03in08p3r1.com",
+        "05086715f4.com",
+        "054ii.com",
+        "058d79990c.com",
+        "05b9daf35c.com",
+        "066b7e895c.com",
+        "06789.xyz",
+        "06cp8ypn8j.com",
+        "06evyxnibl.com",
+        "070880.com",
+        "086123.xyz",
+        "08675bd78b.com",
+        "0880559526.com",
+        "0af2a962b0102942d9a7df351b20be55.com",
+        "0b6rvr210q.com",
+        "0b74655a28.com",
+        "0bb8jytek.com",
+        "0c2bddd1f6.com",
+        "0cf.io",
+        "0d1oo8jp69.com",
+        "0d9063412c.com",
+        "0e024d23f9.com",
+        "0e176a58eb.com",
+        "0e1y8x7ft.com",
+        "0e7mnbmbb.com",
+        "0e9knynfb.com",
+        "0emn.com",
+        "0f857e584a.com",
+        "0fa6d5f434.com",
+        "0fmm.com",
+        "0gw7e6s3wrao9y3q.pro",
+        "0h9yewgei.com",
+        "0hagal2csg.com",
+        "0hagz9mdc.com",
+        "0i0i0i0.com",
+        "0iem8mw1lx.com"
       ]
     },
     {
@@ -5128,6 +8577,70 @@
         "058d79990c.com",
         "059f25bd5b.com",
         "05b9daf35c.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "TG-Twilight/AWAvenue-Ads-Rule"
+      ],
+      "left_count": 45081,
+      "right_count": 969,
+      "overlap_count": 61,
+      "jaccard": 0.001326,
+      "smaller_set_overlap": 0.062951,
+      "shared_domain_sample": [
+        "ad.12306.cn",
+        "ad.api.3g.youku.com",
+        "adbox.sina.com.cn",
+        "adcolony.com",
+        "adjust.com",
+        "ads.linkedin.com",
+        "ads.pinterest.com",
+        "ads.pubmatic.com",
+        "ads.servebom.com",
+        "ads.tiktok.com",
+        "ads.youtube.com",
+        "adscdn.baidu.com",
+        "adse.ximalaya.com",
+        "adservice.google.com",
+        "adsmind.gdtimg.com",
+        "adtago.s3.amazonaws.com",
+        "advice-ads.s3.amazonaws.com",
+        "adview.cn",
+        "analytics.pinterest.com",
+        "analytics.pointdrive.linkedin.com",
+        "analytics.tiktok.com",
+        "app-measurement.com",
+        "applovin.com",
+        "bdad.123pan.cn",
+        "beacons.gvt2.com",
+        "cbjs.baidu.com",
+        "crashlyticsreports-pa.googleapis.com",
+        "doubleclick-cn.net",
+        "eclick.baidu.com",
+        "edge.ads.twitch.tv",
+        "entry.baidu.com",
+        "flurry.com",
+        "google-analytics.com",
+        "googleadservices-cn.com",
+        "googleadservices.com",
+        "gorgon.youdao.com",
+        "hm.baidu.com",
+        "hmma.baidu.com",
+        "ifacelog.iqiyi.com",
+        "iyfbodn.com",
+        "log.pinterest.com",
+        "mbdlog.iqiyi.com",
+        "metrics.icloud.com",
+        "metrics.mzstatic.com",
+        "moatads.com",
+        "mobads-logs.baidu.com",
+        "mobads.baidu.com",
+        "mtj.baidu.com",
+        "nsclick.baidu.com",
+        "outlookads.live.com"
       ]
     },
     {
@@ -5263,6 +8776,134 @@
       "policy": "REJECT",
       "publishers": [
         "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 45081,
+      "right_count": 16125,
+      "overlap_count": 2718,
+      "jaccard": 0.046471,
+      "smaller_set_overlap": 0.168558,
+      "shared_domain_sample": [
+        "003store.com",
+        "0926a687679d337e9d.com",
+        "0f461325bf56c3e1b9.com",
+        "0gw7e6s3wrao9y3q.pro",
+        "0sywjs4r1x.com",
+        "0x01n2ptpuz3.com",
+        "1.07swz.com",
+        "1.1010pic.com",
+        "1.11467.com",
+        "1.15lu.com",
+        "1.201980.com",
+        "1.32xp.com",
+        "1.5000yan.com",
+        "1.51sxue.cn",
+        "1.66law.cn",
+        "1.ajiyuming.com",
+        "1.arpun.com",
+        "1.bh5.com.cn",
+        "1.codesdq.com",
+        "1.codezh.com",
+        "1.feihua.com",
+        "1.feihua.net.cn",
+        "1.glook.cn",
+        "1.hao123.com",
+        "1.hnyouneng.com",
+        "1.i999d.cn",
+        "1.isanxia.com",
+        "1.jeasyui.net",
+        "1.jiqie.cn",
+        "1.kuaidiwo.cn",
+        "1.lishibu.com",
+        "1.lvshi567.com",
+        "1.mgff.com",
+        "1.pncdn.cn",
+        "1.qjhm.net",
+        "1.sj33.net",
+        "1.tecbbs.com",
+        "1.ttxs123.net",
+        "1.uc129.com",
+        "1.v-x.com.cn",
+        "1.xilu.com",
+        "1.xuexi.la",
+        "1.yac8.net",
+        "1.yuexw.com",
+        "1.yxzw.com.cn",
+        "1.zhev.com.cn",
+        "1.zhuangxiu567.com",
+        "1.zou114.com",
+        "1.zuowenjun.com",
+        "1.zw3e.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "hagezi/dns-blocklists"
+      ],
+      "left_count": 45081,
+      "right_count": 670671,
+      "overlap_count": 15691,
+      "jaccard": 0.022414,
+      "smaller_set_overlap": 0.348062,
+      "shared_domain_sample": [
+        "0019x.com",
+        "003store.com",
+        "01counter.com",
+        "0214217ebc.com",
+        "029519cbdc.com",
+        "039858f297.com",
+        "04b9055b2a.com",
+        "054ii.com",
+        "0592.mobi",
+        "070880.com",
+        "08082c0ad5.com",
+        "0941.org",
+        "0af2a962b0102942d9a7df351b20be55.com",
+        "0b74655a28.com",
+        "0cdn.xyz",
+        "0cf.io",
+        "0emn.com",
+        "0fmm.com",
+        "0gw7e6s3wrao9y3q.pro",
+        "0i0i0i0.com",
+        "0sntp7dnrr.com",
+        "0sywjs4r1x.com",
+        "0ul1wlo58s-vu69us-r1u.xyz",
+        "0x01n2ptpuz3.com",
+        "1.07swz.com",
+        "1.1010pic.com",
+        "1.11130.com.cn",
+        "1.11467.com",
+        "1.201980.com",
+        "1.5000yan.com",
+        "1.51dongshi.com",
+        "1.51sxue.cn",
+        "1.66law.cn",
+        "1.78500.cn",
+        "1.95ye.com",
+        "1.arpun.com",
+        "1.bh5.com.cn",
+        "1.codesdq.com",
+        "1.codezh.com",
+        "1.doudouditu.com",
+        "1.feihua.com",
+        "1.feihua.net.cn",
+        "1.glook.cn",
+        "1.gunsuo.com",
+        "1.hao123.com",
+        "1.isanxia.com",
+        "1.jeasyui.net",
+        "1.jushtong.com",
+        "1.kuaidiwo.cn",
+        "1.lvshi567.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
         "marco-acorte/antispam-it"
       ],
       "left_count": 45081,
@@ -5346,7 +8987,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 45081,
-      "right_count": 234548,
+      "right_count": 234723,
       "overlap_count": 9,
       "jaccard": 3.2e-05,
       "smaller_set_overlap": 0.0002,
@@ -5360,6 +9001,70 @@
         "metamask.blog",
         "sievepalmful.com",
         "vinsgcs.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 45081,
+      "right_count": 106541,
+      "overlap_count": 22702,
+      "jaccard": 0.176094,
+      "smaller_set_overlap": 0.503582,
+      "shared_domain_sample": [
+        "0019x.com",
+        "003store.com",
+        "00404850.xyz",
+        "00771944.xyz",
+        "00857731.xyz",
+        "00p034d0dw.com",
+        "01955ad1f7.com",
+        "01counter.com",
+        "02085170.xyz",
+        "0214217ebc.com",
+        "029519cbdc.com",
+        "0300acdff2.com",
+        "039858f297.com",
+        "03t441b8w.com",
+        "0407137f3d.com",
+        "04424170.xyz",
+        "04b9055b2a.com",
+        "05420795.xyz",
+        "05454674.xyz",
+        "054ii.com",
+        "0592.mobi",
+        "05e4bd1819.com",
+        "06789.xyz",
+        "067f87da09.com",
+        "06969451.xyz",
+        "070880.com",
+        "07327127.xyz",
+        "07421283.xyz",
+        "07pv7k61z.com",
+        "08082c0ad5.com",
+        "08256602.xyz",
+        "0941.org",
+        "096243309f.com",
+        "09745951.xyz",
+        "0a0atz2sh.top",
+        "0af2a962b0102942d9a7df351b20be55.com",
+        "0b4qu3nxa.com",
+        "0b63fb1aad.com",
+        "0b6e17a630.com",
+        "0b74655a28.com",
+        "0ba2b70e8c.com",
+        "0c6be7f968.com",
+        "0cdn.xyz",
+        "0cf.io",
+        "0d0705c152.com",
+        "0d22ca5caa.com",
+        "0e4256d4f1.com",
+        "0emn.com",
+        "0f8eec5673.com",
+        "0fe5096a4c.com"
       ]
     },
     {
@@ -5493,6 +9198,463 @@
     {
       "policy": "REJECT",
       "publishers": [
+        "TG-Twilight/AWAvenue-Ads-Rule",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "left_count": 969,
+      "right_count": 17028,
+      "overlap_count": 96,
+      "jaccard": 0.005363,
+      "smaller_set_overlap": 0.099071,
+      "shared_domain_sample": [
+        "1rtb.com",
+        "ad-cdn.qingting.fm",
+        "ad.12306.cn",
+        "ad.bn.netease.com",
+        "ad.hpplay.cn",
+        "ad.qingting.fm",
+        "ad.tencentmusic.com",
+        "ad.toutiao.com",
+        "ad.ximalaya.com",
+        "adbox.sina.com.cn",
+        "adc.hpplay.cn",
+        "adcdn.hpplay.cn",
+        "adcolony.com",
+        "adeng.hpplay.cn",
+        "adimg.uve.weibo.com",
+        "adjust.com",
+        "adlog.vivo.com.cn",
+        "admarketing.yahoo.net",
+        "adreq.vivo.com.cn",
+        "ads-img-qc.xhscdn.com",
+        "ads-marketing-vivofs.vivo.com.cn",
+        "ads-sg.tiktok.com",
+        "ads-video-al.xhscdn.com",
+        "ads-video-qc.xhscdn.com",
+        "ads.auctions.yahoo.com",
+        "ads.finance.yahoo.com",
+        "ads.pinterest.com",
+        "ads.servebom.com",
+        "ads.service.kugou.com",
+        "ads.youtube.com",
+        "adscdn.baidu.com",
+        "adsdk.vivo.com.cn",
+        "adse.wsa.ximalaya.com",
+        "adse.ximalaya.com",
+        "adsebs.ximalaya.com",
+        "adserviceretry.kugou.com",
+        "adsfile.bssdlbig.kugou.com",
+        "adsfs.oppomobile.com",
+        "adsmind.gdtimg.com",
+        "adsp.xunlei.com",
+        "adspecs.yahoo.com",
+        "adstats.tencentmusic.com",
+        "adstore-index-1252524079.file.myqcloud.com",
+        "adui.tg.meitu.com",
+        "advertising.yahoo.com",
+        "adview.cn",
+        "adxlog.vivo.com.cn",
+        "als.baidu.com",
+        "api-ad.kajicam.com",
+        "api.ad.xiaomi.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "TG-Twilight/AWAvenue-Ads-Rule",
+        "anudeepND/whitelist"
+      ],
+      "left_count": 969,
+      "right_count": 267,
+      "overlap_count": 1,
+      "jaccard": 0.00081,
+      "smaller_set_overlap": 0.003745,
+      "shared_domain_sample": [
+        "ad.doubleclick.net"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "TG-Twilight/AWAvenue-Ads-Rule",
+        "badmojr/1Hosts"
+      ],
+      "left_count": 969,
+      "right_count": 0,
+      "overlap_count": 0,
+      "jaccard": 0.0,
+      "smaller_set_overlap": 0.0,
+      "shared_domain_sample": []
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "TG-Twilight/AWAvenue-Ads-Rule",
+        "furkan-bayrak/lg-tv-blocklist"
+      ],
+      "left_count": 969,
+      "right_count": 115,
+      "overlap_count": 0,
+      "jaccard": 0.0,
+      "smaller_set_overlap": 0.0,
+      "shared_domain_sample": []
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "TG-Twilight/AWAvenue-Ads-Rule",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 969,
+      "right_count": 16125,
+      "overlap_count": 27,
+      "jaccard": 0.001582,
+      "smaller_set_overlap": 0.027864,
+      "shared_domain_sample": [
+        "ad.12306.cn",
+        "adbox.sina.com.cn",
+        "adjust.com",
+        "ads-sg.tiktok.com",
+        "ads.servebom.com",
+        "adscdn.baidu.com",
+        "adse.ximalaya.com",
+        "adview.cn",
+        "applovin.com",
+        "biz.weibo.com",
+        "cbjs.baidu.com",
+        "eclick.baidu.com",
+        "entry.baidu.com",
+        "google-analytics.com",
+        "googleadservices.com",
+        "gorgon.youdao.com",
+        "hm.baidu.com",
+        "hmma.baidu.com",
+        "ifacelog.iqiyi.com",
+        "mbdlog.iqiyi.com",
+        "mobads-logs.baidu.com",
+        "mobads.baidu.com",
+        "mtj.baidu.com",
+        "nsclick.baidu.com",
+        "pos.baidu.com",
+        "tpc.googlesyndication.com",
+        "union.baidu.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "TG-Twilight/AWAvenue-Ads-Rule",
+        "hagezi/dns-blocklists"
+      ],
+      "left_count": 969,
+      "right_count": 670671,
+      "overlap_count": 733,
+      "jaccard": 0.001093,
+      "smaller_set_overlap": 0.75645,
+      "shared_domain_sample": [
+        "1500020991.vodplayer.wxamedia.com",
+        "1500022744.vodplayer.wxamedia.com",
+        "1500026601.vodplayer.wxamedia.com",
+        "1rtb.com",
+        "8le8le.com",
+        "8rn1y79f02-1.algolianet.com",
+        "a.market.xiaomi.com",
+        "aaid.umeng.com",
+        "abtest-ch.snssdk.com",
+        "ad-api.4pyun.com",
+        "ad-cdn.qingting.fm",
+        "ad-cmp.hismarttv.com",
+        "ad-download.hismarttv.com",
+        "ad-files.4pyun.com",
+        "ad-scope.com",
+        "ad-scope.com.cn",
+        "ad-sdk-config.youdao.com",
+        "ad-splash-tracking.hktvmall.com",
+        "ad-splash.hktvmall.com",
+        "ad.12306.cn",
+        "ad.51wnl.com",
+        "ad.api.3g.youku.com",
+        "ad.bn.netease.com",
+        "ad.bwton.com",
+        "ad.cctv.com",
+        "ad.cyapi.cn",
+        "ad.doubleclick.net",
+        "ad.duoduo.link",
+        "ad.gameley.com",
+        "ad.hpplay.cn",
+        "ad.iot.360.cn",
+        "ad.jia.360.cn",
+        "ad.life.360.cn",
+        "ad.maoyan.com",
+        "ad.partner.gifshow.com",
+        "ad.qingting.fm",
+        "ad.qq.com",
+        "ad.richmob.cn",
+        "ad.shenshiads.com",
+        "ad.shunchangzhixing.com",
+        "ad.tencentmusic.com",
+        "ad.toutiao.com",
+        "ad.v3mh.com",
+        "ad.winrar.com.cn",
+        "ad.ximalaya.com",
+        "ad.xunkids.com",
+        "ad.zijieapi.com",
+        "ad4.sina.com.cn",
+        "adapi.izuiyou.com",
+        "adapi.yynetwk.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "TG-Twilight/AWAvenue-Ads-Rule",
+        "marco-acorte/antispam-it"
+      ],
+      "left_count": 969,
+      "right_count": 346345,
+      "overlap_count": 0,
+      "jaccard": 0.0,
+      "smaller_set_overlap": 0.0,
+      "shared_domain_sample": []
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "TG-Twilight/AWAvenue-Ads-Rule",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "left_count": 969,
+      "right_count": 16125,
+      "overlap_count": 27,
+      "jaccard": 0.001582,
+      "smaller_set_overlap": 0.027864,
+      "shared_domain_sample": [
+        "ad.12306.cn",
+        "adbox.sina.com.cn",
+        "adjust.com",
+        "ads-sg.tiktok.com",
+        "ads.servebom.com",
+        "adscdn.baidu.com",
+        "adse.ximalaya.com",
+        "adview.cn",
+        "applovin.com",
+        "biz.weibo.com",
+        "cbjs.baidu.com",
+        "eclick.baidu.com",
+        "entry.baidu.com",
+        "google-analytics.com",
+        "googleadservices.com",
+        "gorgon.youdao.com",
+        "hm.baidu.com",
+        "hmma.baidu.com",
+        "ifacelog.iqiyi.com",
+        "mbdlog.iqiyi.com",
+        "mobads-logs.baidu.com",
+        "mobads.baidu.com",
+        "mtj.baidu.com",
+        "nsclick.baidu.com",
+        "pos.baidu.com",
+        "tpc.googlesyndication.com",
+        "union.baidu.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "TG-Twilight/AWAvenue-Ads-Rule",
+        "phishdestroy/destroylist"
+      ],
+      "left_count": 969,
+      "right_count": 234723,
+      "overlap_count": 0,
+      "jaccard": 0.0,
+      "smaller_set_overlap": 0.0,
+      "shared_domain_sample": []
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "TG-Twilight/AWAvenue-Ads-Rule",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 969,
+      "right_count": 106541,
+      "overlap_count": 705,
+      "jaccard": 0.006601,
+      "smaller_set_overlap": 0.727554,
+      "shared_domain_sample": [
+        "1500020991.vodplayer.wxamedia.com",
+        "1500022744.vodplayer.wxamedia.com",
+        "1500026601.vodplayer.wxamedia.com",
+        "1rtb.com",
+        "8le8le.com",
+        "8rn1y79f02-1.algolianet.com",
+        "a.market.xiaomi.com",
+        "abtest-ch.snssdk.com",
+        "ad-cdn.qingting.fm",
+        "ad-scope.com",
+        "ad-scope.com.cn",
+        "ad-sdk-config.youdao.com",
+        "ad-splash-tracking.hktvmall.com",
+        "ad-splash.hktvmall.com",
+        "ad.12306.cn",
+        "ad.51wnl.com",
+        "ad.api.3g.youku.com",
+        "ad.bn.netease.com",
+        "ad.bwton.com",
+        "ad.cctv.com",
+        "ad.cyapi.cn",
+        "ad.duoduo.link",
+        "ad.gameley.com",
+        "ad.hpplay.cn",
+        "ad.iot.360.cn",
+        "ad.jia.360.cn",
+        "ad.life.360.cn",
+        "ad.partner.gifshow.com",
+        "ad.player.baidu.com",
+        "ad.qingting.fm",
+        "ad.qq.com",
+        "ad.richmob.cn",
+        "ad.shunchangzhixing.com",
+        "ad.tencentmusic.com",
+        "ad.toutiao.com",
+        "ad.v3mh.com",
+        "ad.winrar.com.cn",
+        "ad.ximalaya.com",
+        "ad.xunkids.com",
+        "ad.zijieapi.com",
+        "ad4.sina.com.cn",
+        "adapi.izuiyou.com",
+        "adapi.yynetwk.com",
+        "adash-emas.cn-hangzhou.aliyuncs.com",
+        "adashbc.ut.taobao.com",
+        "adashx.m.taobao.com",
+        "adashxgc.ut.taobao.com",
+        "adbox.sina.com.cn",
+        "adc.hpplay.cn",
+        "adcdn.hpplay.cn"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "TG-Twilight/AWAvenue-Ads-Rule",
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
+      ],
+      "left_count": 969,
+      "right_count": 52045,
+      "overlap_count": 63,
+      "jaccard": 0.00119,
+      "smaller_set_overlap": 0.065015,
+      "shared_domain_sample": [
+        "ad.12306.cn",
+        "adbox.sina.com.cn",
+        "adcolony.com",
+        "adjust.com",
+        "ads.linkedin.com",
+        "ads.pinterest.com",
+        "ads.pubmatic.com",
+        "ads.servebom.com",
+        "ads.tiktok.com",
+        "ads.youtube.com",
+        "adscdn.baidu.com",
+        "adse.ximalaya.com",
+        "adservice.google.com",
+        "adsmind.gdtimg.com",
+        "adtago.s3.amazonaws.com",
+        "advice-ads.s3.amazonaws.com",
+        "adview.cn",
+        "analytics.pinterest.com",
+        "analytics.pointdrive.linkedin.com",
+        "analytics.tiktok.com",
+        "app-measurement.com",
+        "applovin.com",
+        "bdad.123pan.cn",
+        "beacons.gvt2.com",
+        "cbjs.baidu.com",
+        "click.liftoff.io",
+        "crashlyticsreports-pa.googleapis.com",
+        "de.tynt.com",
+        "doubleclick-cn.net",
+        "eclick.baidu.com",
+        "edge.ads.twitch.tv",
+        "entry.baidu.com",
+        "flurry.com",
+        "google-analytics.com",
+        "googleadservices-cn.com",
+        "googleadservices.com",
+        "gorgon.youdao.com",
+        "hm.baidu.com",
+        "hmma.baidu.com",
+        "ifacelog.iqiyi.com",
+        "iyfbodn.com",
+        "log.pinterest.com",
+        "mbdlog.iqiyi.com",
+        "metrics.icloud.com",
+        "metrics.mzstatic.com",
+        "moatads.com",
+        "mobads-logs.baidu.com",
+        "mobads.baidu.com",
+        "mtj.baidu.com",
+        "nsclick.baidu.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "TG-Twilight/AWAvenue-Ads-Rule",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 969,
+      "right_count": 48729,
+      "overlap_count": 38,
+      "jaccard": 0.000765,
+      "smaller_set_overlap": 0.039216,
+      "shared_domain_sample": [
+        "ad.12306.cn",
+        "adbox.sina.com.cn",
+        "adjust.com",
+        "ads.linkedin.com",
+        "ads.servebom.com",
+        "adscdn.baidu.com",
+        "adse.ximalaya.com",
+        "adsmind.gdtimg.com",
+        "adtago.s3.amazonaws.com",
+        "advice-ads.s3.amazonaws.com",
+        "adview.cn",
+        "applovin.com",
+        "bdad.123pan.cn",
+        "cbjs.baidu.com",
+        "doubleclick-cn.net",
+        "eclick.baidu.com",
+        "edge.ads.twitch.tv",
+        "entry.baidu.com",
+        "google-analytics.com",
+        "googleadservices-cn.com",
+        "gorgon.youdao.com",
+        "hm.baidu.com",
+        "hmma.baidu.com",
+        "ifacelog.iqiyi.com",
+        "iyfbodn.com",
+        "mbdlog.iqiyi.com",
+        "mobads-logs.baidu.com",
+        "mobads.baidu.com",
+        "mtj.baidu.com",
+        "nsclick.baidu.com",
+        "outlookads.live.com",
+        "pos.baidu.com",
+        "samsungads.com",
+        "static.ads-twitter.com",
+        "union.baidu.com",
+        "wwads.cn",
+        "xlviiirdr.com",
+        "xlviirdr.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
         "YanbingJiang/Shadowrocket_diy_rules",
         "anudeepND/whitelist"
       ],
@@ -5532,6 +9694,134 @@
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
       "shared_domain_sample": []
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "YanbingJiang/Shadowrocket_diy_rules",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 17028,
+      "right_count": 16125,
+      "overlap_count": 16125,
+      "jaccard": 0.94697,
+      "smaller_set_overlap": 1.0,
+      "shared_domain_sample": [
+        "00-gov.cn",
+        "000dn.com",
+        "0024aaaa.com",
+        "003store.com",
+        "006a039c957c142bb.com",
+        "00880808.com",
+        "008844.cc",
+        "00aaa2d81c1d174.com",
+        "00ae8b5a9c1d597.com",
+        "00oo00.com",
+        "012469af389a1d1246d.com",
+        "0127538a552.com",
+        "01dbf3a452b6.com",
+        "01fen.com",
+        "0217qpineuxbcdhopswkvf.xyz",
+        "0224fqpowiuxybnmvdfghj.xyz",
+        "022aifang.com",
+        "025suyu.com",
+        "0265331.com",
+        "027whht.com",
+        "02aa19117f396e9.com",
+        "02b5da94a2bd4aea.com",
+        "0302woeuxcbrnxcvsdfghu.xyz",
+        "0309fuweopermncvbnazdf.xyz",
+        "0316dieroxiemzfjwmapk.xyz",
+        "0323wqpioutyuencsamxsd.xyz",
+        "0330vsdgdwer.xyz",
+        "0351dvd.cn",
+        "039ad0897e6da.com",
+        "0413fsiuhwem.xyz",
+        "0420zvnmljgfdsa.xyz",
+        "0451106.com",
+        "048d36793b8.com",
+        "04zl.cn",
+        "050y9lhe8p.com",
+        "0511qsfhknvz.xyz",
+        "0516bm.com",
+        "0517kongyaji.com",
+        "0518dfgwert.xyz",
+        "0525pweoruxnj.xyz",
+        "0530hz.cn",
+        "0531kt.com",
+        "0551zgz.com",
+        "0577renliu.net.cn",
+        "0592weixin.com",
+        "059e025e7484.com",
+        "05ee3a24ed11df058c8.com",
+        "05qwmtwxa3ev.com",
+        "05xz0h2xo799.com",
+        "0601chruopjsm.xyz"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "YanbingJiang/Shadowrocket_diy_rules",
+        "hagezi/dns-blocklists"
+      ],
+      "left_count": 17028,
+      "right_count": 670671,
+      "overlap_count": 3252,
+      "jaccard": 0.004751,
+      "smaller_set_overlap": 0.19098,
+      "shared_domain_sample": [
+        "000dn.com",
+        "003store.com",
+        "00oo00.com",
+        "022aifang.com",
+        "0265331.com",
+        "0798ls.com",
+        "0gw7e6s3wrao9y3q.pro",
+        "0sywjs4r1x.com",
+        "0x01n2ptpuz3.com",
+        "1.07swz.com",
+        "1.1010pic.com",
+        "1.11467.com",
+        "1.201980.com",
+        "1.5000yan.com",
+        "1.51sxue.cn",
+        "1.66law.cn",
+        "1.arpun.com",
+        "1.bh5.com.cn",
+        "1.codesdq.com",
+        "1.codezh.com",
+        "1.feihua.com",
+        "1.feihua.net.cn",
+        "1.glook.cn",
+        "1.hao123.com",
+        "1.isanxia.com",
+        "1.jeasyui.net",
+        "1.kuaidiwo.cn",
+        "1.lvshi567.com",
+        "1.pncdn.cn",
+        "1.qjhm.net",
+        "1.sj33.net",
+        "1.soufy.cn",
+        "1.tecbbs.com",
+        "1.v-x.com.cn",
+        "1.xilu.com",
+        "1.yac8.net",
+        "1.yuexw.com",
+        "1.yxzw.com.cn",
+        "1.zhev.com.cn",
+        "1.zhuangxiu567.com",
+        "1.zou114.com",
+        "1.zuowenjun.com",
+        "1.zw3e.com",
+        "100.pncdn.cn",
+        "100fenlm.com",
+        "1017.cn",
+        "10desires.com",
+        "11.96131.com.cn",
+        "1133.cc",
+        "114com.cc"
+      ]
     },
     {
       "policy": "REJECT",
@@ -5617,7 +9907,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 17028,
-      "right_count": 234548,
+      "right_count": 234723,
       "overlap_count": 4,
       "jaccard": 1.6e-05,
       "smaller_set_overlap": 0.000235,
@@ -5626,6 +9916,70 @@
         "clearonclick.com",
         "coreldrawchina.com",
         "xitongqingli.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "YanbingJiang/Shadowrocket_diy_rules",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 17028,
+      "right_count": 106541,
+      "overlap_count": 4189,
+      "jaccard": 0.03509,
+      "smaller_set_overlap": 0.246007,
+      "shared_domain_sample": [
+        "000dn.com",
+        "003store.com",
+        "00880808.com",
+        "00oo00.com",
+        "022aifang.com",
+        "025suyu.com",
+        "0451106.com",
+        "0531kt.com",
+        "0551zgz.com",
+        "0592weixin.com",
+        "0gw7e6s3wrao9y3q.pro",
+        "0sywjs4r1x.com",
+        "0x01n2ptpuz3.com",
+        "0xxd.com",
+        "1.07swz.com",
+        "1.1010pic.com",
+        "1.11467.com",
+        "1.201980.com",
+        "1.5000yan.com",
+        "1.51sxue.cn",
+        "1.66law.cn",
+        "1.arpun.com",
+        "1.bh5.com.cn",
+        "1.cjcp.cn",
+        "1.codesdq.com",
+        "1.codezh.com",
+        "1.feihua.com",
+        "1.feihua.net.cn",
+        "1.glook.cn",
+        "1.hao123.com",
+        "1.hnyouneng.com",
+        "1.jeasyui.net",
+        "1.jiqie.cn",
+        "1.kuaidiwo.cn",
+        "1.lvshi567.com",
+        "1.mgff.com",
+        "1.qjhm.net",
+        "1.sj33.net",
+        "1.soufy.cn",
+        "1.tecbbs.com",
+        "1.uc129.com",
+        "1.v-x.com.cn",
+        "1.xilu.com",
+        "1.yac8.net",
+        "1.yxzw.com.cn",
+        "1.zhev.com.cn",
+        "1.zhuangxiu567.com",
+        "1.zuowenjun.com",
+        "1.zw3e.com",
+        "100.pncdn.cn"
       ]
     },
     {
@@ -5786,6 +10140,87 @@
       "policy": "REJECT",
       "publishers": [
         "anudeepND/whitelist",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 267,
+      "right_count": 16125,
+      "overlap_count": 3,
+      "jaccard": 0.000183,
+      "smaller_set_overlap": 0.011236,
+      "shared_domain_sample": [
+        "cc-dt.com",
+        "commission-junction.com",
+        "doubleclick.net"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "anudeepND/whitelist",
+        "hagezi/dns-blocklists"
+      ],
+      "left_count": 267,
+      "right_count": 670671,
+      "overlap_count": 51,
+      "jaccard": 7.6e-05,
+      "smaller_set_overlap": 0.191011,
+      "shared_domain_sample": [
+        "7eer.net",
+        "ad.doubleclick.net",
+        "affiliatefuture.com",
+        "anrdoezrs.net",
+        "apmebf.com",
+        "avantlink.com",
+        "bfast.com",
+        "cc-dt.com",
+        "cdn.optimizely.com",
+        "cdn3.optimizely.com",
+        "cj.com",
+        "cj.dotomi.com",
+        "click.linksynergy.com",
+        "clickserve.dartsearch.net",
+        "commission-junction.com",
+        "doubleclick.net",
+        "dpbolvw.net",
+        "driftt.com",
+        "emjcd.com",
+        "evyy.net",
+        "geo-prod.do.dsp.mp.microsoft.com",
+        "go.redirectingat.com",
+        "go.skimresources.com",
+        "go2jump.org",
+        "gopjn.com",
+        "goto.target.com",
+        "jdoqocy.com",
+        "kqzyfj.com",
+        "nexusrules.officeapps.live.com",
+        "no-ip.com",
+        "ojrq.net",
+        "onenetworkdirect.net",
+        "partners.webmasterplan.com",
+        "pjatr.com",
+        "pjtra.com",
+        "placehold.it",
+        "placeholdit.imgix.net",
+        "pntra.com",
+        "pntrac.com",
+        "pntrack.com",
+        "qksrv.net",
+        "redirect.at",
+        "redirect.viglink.com",
+        "shareasale-analytics.com",
+        "shareasale.com",
+        "t.co",
+        "tinyurl.com",
+        "tkqlhce.com",
+        "track.adform.net",
+        "track.webgains.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "anudeepND/whitelist",
         "marco-acorte/antispam-it"
       ],
       "left_count": 267,
@@ -5819,11 +10254,60 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 267,
-      "right_count": 234548,
+      "right_count": 234723,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
       "shared_domain_sample": []
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "anudeepND/whitelist",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 267,
+      "right_count": 106541,
+      "overlap_count": 35,
+      "jaccard": 0.000328,
+      "smaller_set_overlap": 0.131086,
+      "shared_domain_sample": [
+        "7eer.net",
+        "affiliatefuture.com",
+        "anrdoezrs.net",
+        "apmebf.com",
+        "avantlink.com",
+        "bfast.com",
+        "cc-dt.com",
+        "commission-junction.com",
+        "cws.conviva.com",
+        "d2c8v52ll5s99u.cloudfront.net",
+        "doubleclick.net",
+        "dpbolvw.net",
+        "emjcd.com",
+        "evyy.net",
+        "go2jump.org",
+        "gopjn.com",
+        "jdoqocy.com",
+        "keystone.mwbsys.com",
+        "kqzyfj.com",
+        "linksynergy.com",
+        "nexusrules.officeapps.live.com",
+        "ojrq.net",
+        "pings.conviva.com",
+        "pjatr.com",
+        "pjtra.com",
+        "pntra.com",
+        "pntrac.com",
+        "qksrv.net",
+        "redirectingat.com",
+        "shareasale-analytics.com",
+        "shareasale.com",
+        "tawk.to",
+        "tkqlhce.com",
+        "tradetracker.net",
+        "win10.ipv6.microsoft.com"
+      ]
     },
     {
       "policy": "REJECT",
@@ -5903,6 +10387,32 @@
       "policy": "REJECT",
       "publishers": [
         "badmojr/1Hosts",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 0,
+      "right_count": 16125,
+      "overlap_count": 0,
+      "jaccard": 0.0,
+      "smaller_set_overlap": 0.0,
+      "shared_domain_sample": []
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "badmojr/1Hosts",
+        "hagezi/dns-blocklists"
+      ],
+      "left_count": 0,
+      "right_count": 670671,
+      "overlap_count": 0,
+      "jaccard": 0.0,
+      "smaller_set_overlap": 0.0,
+      "shared_domain_sample": []
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "badmojr/1Hosts",
         "marco-acorte/antispam-it"
       ],
       "left_count": 0,
@@ -5932,7 +10442,20 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 0,
-      "right_count": 234548,
+      "right_count": 234723,
+      "overlap_count": 0,
+      "jaccard": 0.0,
+      "smaller_set_overlap": 0.0,
+      "shared_domain_sample": []
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "badmojr/1Hosts",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 0,
+      "right_count": 106541,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -5968,6 +10491,39 @@
       "policy": "REJECT",
       "publishers": [
         "furkan-bayrak/lg-tv-blocklist",
+        "h2y/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 115,
+      "right_count": 16125,
+      "overlap_count": 0,
+      "jaccard": 0.0,
+      "smaller_set_overlap": 0.0,
+      "shared_domain_sample": []
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "furkan-bayrak/lg-tv-blocklist",
+        "hagezi/dns-blocklists"
+      ],
+      "left_count": 115,
+      "right_count": 670671,
+      "overlap_count": 6,
+      "jaccard": 9e-06,
+      "smaller_set_overlap": 0.052174,
+      "shared_domain_sample": [
+        "ads.lgtvcommon.com",
+        "alphonso.tv",
+        "cdpbeacon.lgtvcommon.com",
+        "lgsmartad.com",
+        "rdx2.lgtvsdp.com",
+        "recommend.lgtvcommon.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "furkan-bayrak/lg-tv-blocklist",
         "marco-acorte/antispam-it"
       ],
       "left_count": 115,
@@ -5997,11 +10553,28 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 115,
-      "right_count": 234548,
+      "right_count": 234723,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
       "shared_domain_sample": []
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "furkan-bayrak/lg-tv-blocklist",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 115,
+      "right_count": 106541,
+      "overlap_count": 3,
+      "jaccard": 2.8e-05,
+      "smaller_set_overlap": 0.026087,
+      "shared_domain_sample": [
+        "ad.lgappstv.com",
+        "alphonso.tv",
+        "lgsmartad.com"
+      ]
     },
     {
       "policy": "REJECT",
@@ -6040,6 +10613,739 @@
     {
       "policy": "REJECT",
       "publishers": [
+        "h2y/Shadowrocket-ADBlock-Rules",
+        "hagezi/dns-blocklists"
+      ],
+      "left_count": 16125,
+      "right_count": 670671,
+      "overlap_count": 2653,
+      "jaccard": 0.003878,
+      "smaller_set_overlap": 0.164527,
+      "shared_domain_sample": [
+        "000dn.com",
+        "003store.com",
+        "00oo00.com",
+        "022aifang.com",
+        "0265331.com",
+        "0798ls.com",
+        "0gw7e6s3wrao9y3q.pro",
+        "0sywjs4r1x.com",
+        "0x01n2ptpuz3.com",
+        "1.07swz.com",
+        "1.1010pic.com",
+        "1.11467.com",
+        "1.201980.com",
+        "1.5000yan.com",
+        "1.51sxue.cn",
+        "1.66law.cn",
+        "1.arpun.com",
+        "1.bh5.com.cn",
+        "1.codesdq.com",
+        "1.codezh.com",
+        "1.feihua.com",
+        "1.feihua.net.cn",
+        "1.glook.cn",
+        "1.hao123.com",
+        "1.isanxia.com",
+        "1.jeasyui.net",
+        "1.kuaidiwo.cn",
+        "1.lvshi567.com",
+        "1.pncdn.cn",
+        "1.qjhm.net",
+        "1.sj33.net",
+        "1.soufy.cn",
+        "1.tecbbs.com",
+        "1.v-x.com.cn",
+        "1.xilu.com",
+        "1.yac8.net",
+        "1.yuexw.com",
+        "1.yxzw.com.cn",
+        "1.zhev.com.cn",
+        "1.zhuangxiu567.com",
+        "1.zou114.com",
+        "1.zuowenjun.com",
+        "1.zw3e.com",
+        "100.pncdn.cn",
+        "100fenlm.com",
+        "1017.cn",
+        "10desires.com",
+        "11.96131.com.cn",
+        "1133.cc",
+        "114com.cc"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "h2y/Shadowrocket-ADBlock-Rules",
+        "marco-acorte/antispam-it"
+      ],
+      "left_count": 16125,
+      "right_count": 346345,
+      "overlap_count": 0,
+      "jaccard": 0.0,
+      "smaller_set_overlap": 0.0,
+      "shared_domain_sample": []
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "h2y/Shadowrocket-ADBlock-Rules",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "left_count": 16125,
+      "right_count": 16125,
+      "overlap_count": 16125,
+      "jaccard": 1.0,
+      "smaller_set_overlap": 1.0,
+      "shared_domain_sample": [
+        "00-gov.cn",
+        "000dn.com",
+        "0024aaaa.com",
+        "003store.com",
+        "006a039c957c142bb.com",
+        "00880808.com",
+        "008844.cc",
+        "00aaa2d81c1d174.com",
+        "00ae8b5a9c1d597.com",
+        "00oo00.com",
+        "012469af389a1d1246d.com",
+        "0127538a552.com",
+        "01dbf3a452b6.com",
+        "01fen.com",
+        "0217qpineuxbcdhopswkvf.xyz",
+        "0224fqpowiuxybnmvdfghj.xyz",
+        "022aifang.com",
+        "025suyu.com",
+        "0265331.com",
+        "027whht.com",
+        "02aa19117f396e9.com",
+        "02b5da94a2bd4aea.com",
+        "0302woeuxcbrnxcvsdfghu.xyz",
+        "0309fuweopermncvbnazdf.xyz",
+        "0316dieroxiemzfjwmapk.xyz",
+        "0323wqpioutyuencsamxsd.xyz",
+        "0330vsdgdwer.xyz",
+        "0351dvd.cn",
+        "039ad0897e6da.com",
+        "0413fsiuhwem.xyz",
+        "0420zvnmljgfdsa.xyz",
+        "0451106.com",
+        "048d36793b8.com",
+        "04zl.cn",
+        "050y9lhe8p.com",
+        "0511qsfhknvz.xyz",
+        "0516bm.com",
+        "0517kongyaji.com",
+        "0518dfgwert.xyz",
+        "0525pweoruxnj.xyz",
+        "0530hz.cn",
+        "0531kt.com",
+        "0551zgz.com",
+        "0577renliu.net.cn",
+        "0592weixin.com",
+        "059e025e7484.com",
+        "05ee3a24ed11df058c8.com",
+        "05qwmtwxa3ev.com",
+        "05xz0h2xo799.com",
+        "0601chruopjsm.xyz"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "h2y/Shadowrocket-ADBlock-Rules",
+        "phishdestroy/destroylist"
+      ],
+      "left_count": 16125,
+      "right_count": 234723,
+      "overlap_count": 2,
+      "jaccard": 8e-06,
+      "smaller_set_overlap": 0.000124,
+      "shared_domain_sample": [
+        "a67z.com",
+        "clearonclick.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "h2y/Shadowrocket-ADBlock-Rules",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 16125,
+      "right_count": 106541,
+      "overlap_count": 3575,
+      "jaccard": 0.030019,
+      "smaller_set_overlap": 0.221705,
+      "shared_domain_sample": [
+        "000dn.com",
+        "003store.com",
+        "00880808.com",
+        "00oo00.com",
+        "022aifang.com",
+        "025suyu.com",
+        "0451106.com",
+        "0531kt.com",
+        "0551zgz.com",
+        "0592weixin.com",
+        "0gw7e6s3wrao9y3q.pro",
+        "0sywjs4r1x.com",
+        "0x01n2ptpuz3.com",
+        "0xxd.com",
+        "1.07swz.com",
+        "1.1010pic.com",
+        "1.11467.com",
+        "1.201980.com",
+        "1.5000yan.com",
+        "1.51sxue.cn",
+        "1.66law.cn",
+        "1.arpun.com",
+        "1.bh5.com.cn",
+        "1.cjcp.cn",
+        "1.codesdq.com",
+        "1.codezh.com",
+        "1.feihua.com",
+        "1.feihua.net.cn",
+        "1.glook.cn",
+        "1.hao123.com",
+        "1.hnyouneng.com",
+        "1.jeasyui.net",
+        "1.jiqie.cn",
+        "1.kuaidiwo.cn",
+        "1.lvshi567.com",
+        "1.mgff.com",
+        "1.qjhm.net",
+        "1.sj33.net",
+        "1.soufy.cn",
+        "1.tecbbs.com",
+        "1.uc129.com",
+        "1.v-x.com.cn",
+        "1.xilu.com",
+        "1.yac8.net",
+        "1.yxzw.com.cn",
+        "1.zhev.com.cn",
+        "1.zhuangxiu567.com",
+        "1.zuowenjun.com",
+        "1.zw3e.com",
+        "100.pncdn.cn"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "h2y/Shadowrocket-ADBlock-Rules",
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
+      ],
+      "left_count": 16125,
+      "right_count": 52045,
+      "overlap_count": 2249,
+      "jaccard": 0.034117,
+      "smaller_set_overlap": 0.139473,
+      "shared_domain_sample": [
+        "003store.com",
+        "0gw7e6s3wrao9y3q.pro",
+        "0sywjs4r1x.com",
+        "0x01n2ptpuz3.com",
+        "1.07swz.com",
+        "1.1010pic.com",
+        "1.11467.com",
+        "1.15lu.com",
+        "1.201980.com",
+        "1.32xp.com",
+        "1.5000yan.com",
+        "1.51sxue.cn",
+        "1.66law.cn",
+        "1.ajiyuming.com",
+        "1.arpun.com",
+        "1.bh5.com.cn",
+        "1.codesdq.com",
+        "1.codezh.com",
+        "1.feihua.com",
+        "1.feihua.net.cn",
+        "1.glook.cn",
+        "1.hao123.com",
+        "1.hnyouneng.com",
+        "1.i999d.cn",
+        "1.isanxia.com",
+        "1.jeasyui.net",
+        "1.jiqie.cn",
+        "1.kuaidiwo.cn",
+        "1.lishibu.com",
+        "1.lvshi567.com",
+        "1.mgff.com",
+        "1.pncdn.cn",
+        "1.qjhm.net",
+        "1.sj33.net",
+        "1.tecbbs.com",
+        "1.ttxs123.net",
+        "1.uc129.com",
+        "1.v-x.com.cn",
+        "1.xilu.com",
+        "1.xuexi.la",
+        "1.yac8.net",
+        "1.yuexw.com",
+        "1.yxzw.com.cn",
+        "1.zhev.com.cn",
+        "1.zhuangxiu567.com",
+        "1.zou114.com",
+        "1.zuowenjun.com",
+        "1.zw3e.com",
+        "100.admin5.com",
+        "100.pncdn.cn"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "h2y/Shadowrocket-ADBlock-Rules",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 16125,
+      "right_count": 48729,
+      "overlap_count": 2230,
+      "jaccard": 0.035609,
+      "smaller_set_overlap": 0.138295,
+      "shared_domain_sample": [
+        "003store.com",
+        "0gw7e6s3wrao9y3q.pro",
+        "0sywjs4r1x.com",
+        "0x01n2ptpuz3.com",
+        "1.07swz.com",
+        "1.1010pic.com",
+        "1.11467.com",
+        "1.15lu.com",
+        "1.201980.com",
+        "1.32xp.com",
+        "1.5000yan.com",
+        "1.51sxue.cn",
+        "1.66law.cn",
+        "1.ajiyuming.com",
+        "1.arpun.com",
+        "1.bh5.com.cn",
+        "1.codesdq.com",
+        "1.codezh.com",
+        "1.feihua.com",
+        "1.feihua.net.cn",
+        "1.glook.cn",
+        "1.hao123.com",
+        "1.hnyouneng.com",
+        "1.i999d.cn",
+        "1.isanxia.com",
+        "1.jeasyui.net",
+        "1.jiqie.cn",
+        "1.kuaidiwo.cn",
+        "1.lishibu.com",
+        "1.lvshi567.com",
+        "1.mgff.com",
+        "1.pncdn.cn",
+        "1.qjhm.net",
+        "1.sj33.net",
+        "1.tecbbs.com",
+        "1.ttxs123.net",
+        "1.uc129.com",
+        "1.v-x.com.cn",
+        "1.xilu.com",
+        "1.xuexi.la",
+        "1.yac8.net",
+        "1.yuexw.com",
+        "1.yxzw.com.cn",
+        "1.zhev.com.cn",
+        "1.zhuangxiu567.com",
+        "1.zou114.com",
+        "1.zuowenjun.com",
+        "1.zw3e.com",
+        "100.admin5.com",
+        "100.pncdn.cn"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "hagezi/dns-blocklists",
+        "marco-acorte/antispam-it"
+      ],
+      "left_count": 670671,
+      "right_count": 346345,
+      "overlap_count": 56,
+      "jaccard": 5.5e-05,
+      "smaller_set_overlap": 0.000162,
+      "shared_domain_sample": [
+        "across.it",
+        "adgoon.it",
+        "adobeevents.com",
+        "adsalsa.com",
+        "airwheel.net",
+        "andreacastellana.it",
+        "animewebradio.it",
+        "armada.it",
+        "autosuggest.net",
+        "bluemotion.it",
+        "btc-net.bg",
+        "businesses10.com",
+        "cantinenicosia.it",
+        "chromaleont.it",
+        "cionfs.it",
+        "computers1000.com",
+        "creditostudio.com",
+        "datawork.agency",
+        "designinsights.net",
+        "dunp.it",
+        "endofinternet.net",
+        "eoaclk.com",
+        "erusd.k12.ca.us",
+        "ewooow.com",
+        "exceltec.com.sg",
+        "fatturapertutti.it",
+        "fiber23.it",
+        "fondazionefenice.it",
+        "graflantz.com",
+        "hyperoffice.com",
+        "img.btdmp.com",
+        "innovationinbusiness.com",
+        "irtel.ru",
+        "klclick.com",
+        "klclick1.com",
+        "klenhosnc.com",
+        "leadplaza.it",
+        "mailtrack.me",
+        "messenger.vendors.vu",
+        "mgpg.it",
+        "monkeydigital.co",
+        "northsixty.com",
+        "notepad.plus",
+        "openai-chatgpt.chat",
+        "parikart.com",
+        "pewo.com",
+        "preventivi-azienda.it",
+        "qemailserver.com",
+        "sendpul.se",
+        "serversmtpbond.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "hagezi/dns-blocklists",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "left_count": 670671,
+      "right_count": 16125,
+      "overlap_count": 2653,
+      "jaccard": 0.003878,
+      "smaller_set_overlap": 0.164527,
+      "shared_domain_sample": [
+        "000dn.com",
+        "003store.com",
+        "00oo00.com",
+        "022aifang.com",
+        "0265331.com",
+        "0798ls.com",
+        "0gw7e6s3wrao9y3q.pro",
+        "0sywjs4r1x.com",
+        "0x01n2ptpuz3.com",
+        "1.07swz.com",
+        "1.1010pic.com",
+        "1.11467.com",
+        "1.201980.com",
+        "1.5000yan.com",
+        "1.51sxue.cn",
+        "1.66law.cn",
+        "1.arpun.com",
+        "1.bh5.com.cn",
+        "1.codesdq.com",
+        "1.codezh.com",
+        "1.feihua.com",
+        "1.feihua.net.cn",
+        "1.glook.cn",
+        "1.hao123.com",
+        "1.isanxia.com",
+        "1.jeasyui.net",
+        "1.kuaidiwo.cn",
+        "1.lvshi567.com",
+        "1.pncdn.cn",
+        "1.qjhm.net",
+        "1.sj33.net",
+        "1.soufy.cn",
+        "1.tecbbs.com",
+        "1.v-x.com.cn",
+        "1.xilu.com",
+        "1.yac8.net",
+        "1.yuexw.com",
+        "1.yxzw.com.cn",
+        "1.zhev.com.cn",
+        "1.zhuangxiu567.com",
+        "1.zou114.com",
+        "1.zuowenjun.com",
+        "1.zw3e.com",
+        "100.pncdn.cn",
+        "100fenlm.com",
+        "1017.cn",
+        "10desires.com",
+        "11.96131.com.cn",
+        "1133.cc",
+        "114com.cc"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "hagezi/dns-blocklists",
+        "phishdestroy/destroylist"
+      ],
+      "left_count": 670671,
+      "right_count": 234723,
+      "overlap_count": 9760,
+      "jaccard": 0.010897,
+      "smaller_set_overlap": 0.041581,
+      "shared_domain_sample": [
+        "01.apswatchclub.shop",
+        "0465kk.com",
+        "09.2026x02find.shop",
+        "0auth2.1mb.site",
+        "0nedrive.dropcloud.it",
+        "0ps8tslaiu.memphisbopclub.com",
+        "1-slots.world",
+        "1010.archi",
+        "101film.live",
+        "106b.com",
+        "108studija.lt",
+        "10killawm-awm.digital",
+        "10vor10.net",
+        "11586bets10.com",
+        "11vet.com",
+        "11wealth.com",
+        "1217.cc",
+        "140aba.senes.at",
+        "140bae.senes.at",
+        "1479182-coinbase.com",
+        "150100.cn",
+        "15052233.com",
+        "158-158-1-61.cprapid.com",
+        "188betguanfang.com",
+        "1cftplatforma.digital",
+        "1fuel.io",
+        "1kdailyprofit.net",
+        "1kdailyprofitpro.digital",
+        "1pro.club",
+        "1sea.nikens.at",
+        "1spin.club",
+        "1webmail-free.clients-2.com",
+        "1wfqxn.life",
+        "1win.fyi",
+        "1win.ng",
+        "1win.pro",
+        "1xbetindonesia.bet",
+        "1xslotc.top",
+        "1xslotswin-cl.com",
+        "2026f1storeplvip.shop",
+        "2026jysk.com",
+        "2026jysk.live",
+        "2026onlinealid.software",
+        "2026pl-zooart.shop",
+        "2026rituals.com",
+        "2026rituals.shop",
+        "2026sheaps.com",
+        "2026strausseu.shop",
+        "2026summerclearance.com",
+        "2026ukaldihot.shop"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "hagezi/dns-blocklists",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 670671,
+      "right_count": 106541,
+      "overlap_count": 39211,
+      "jaccard": 0.053131,
+      "smaller_set_overlap": 0.368037,
+      "shared_domain_sample": [
+        "0.myikas.com",
+        "000dn.com",
+        "0019x.com",
+        "002777.xyz",
+        "003store.com",
+        "00427011ae.com",
+        "00609c257b.com",
+        "00oo00.com",
+        "00px.net",
+        "01168nl.com",
+        "011qt7cln.com",
+        "015ea24446.com",
+        "01anf08rf.com",
+        "01counter.com",
+        "0213499675.com",
+        "0214217ebc.com",
+        "02228640b9.com",
+        "022aifang.com",
+        "029519cbdc.com",
+        "02exl1ql2l.com",
+        "039858f297.com",
+        "03in08p3r1.com",
+        "04b9055b2a.com",
+        "05086715f4.com",
+        "0512s.com",
+        "0518714bbd.com",
+        "054ii.com",
+        "058d79990c.com",
+        "0591101.com",
+        "0592.mobi",
+        "05b9daf35c.com",
+        "066b7e895c.com",
+        "06cp8ypn8j.com",
+        "06evyxnibl.com",
+        "070880.com",
+        "0755rc.com",
+        "07634.com",
+        "07780778.com",
+        "08082c0ad5.com",
+        "086123.xyz",
+        "08675bd78b.com",
+        "0880559526.com",
+        "0941.org",
+        "0af2a962b0102942d9a7df351b20be55.com",
+        "0b6rvr210q.com",
+        "0b74655a28.com",
+        "0bb8jytek.com",
+        "0c2bddd1f6.com",
+        "0cdn.xyz",
+        "0cf.io"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "hagezi/dns-blocklists",
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
+      ],
+      "left_count": 670671,
+      "right_count": 52045,
+      "overlap_count": 50640,
+      "jaccard": 0.075349,
+      "smaller_set_overlap": 0.973004,
+      "shared_domain_sample": [
+        "000491b06a.com",
+        "0017c6c37c.com",
+        "0019x.com",
+        "003store.com",
+        "00427011ae.com",
+        "00609c257b.com",
+        "009f45b51c.com",
+        "00a39e6dfd.com",
+        "00a4722597.com",
+        "00c8741ed3.com",
+        "00k456wyh.com",
+        "01168nl.com",
+        "011qt7cln.com",
+        "015ea24446.com",
+        "0171pjx5q.com",
+        "0175a3229c.com",
+        "01anf08rf.com",
+        "01counter.com",
+        "0213499675.com",
+        "02228640b9.com",
+        "0246cba9d4.com",
+        "0256d2ea99.com",
+        "029519cbdc.com",
+        "02e4a0ea60.com",
+        "02e8b93f0e.com",
+        "02exl1ql2l.com",
+        "02fd659794.com",
+        "030363cc95.com",
+        "0334759680.com",
+        "033586410b.com",
+        "0339586393.com",
+        "0359d12a54.com",
+        "03850de51d.com",
+        "039858f297.com",
+        "039ijdlg8.com",
+        "03h6fpes.xyz",
+        "03in08p3r1.com",
+        "03mhpavj25.com",
+        "03mnj87wir.com",
+        "048f3c0516.com",
+        "049bv1hdzn.com",
+        "050393f4ec.com",
+        "05086715f4.com",
+        "0517fd5e92.com",
+        "051ss3usg.com",
+        "054ii.com",
+        "058d79990c.com",
+        "059f25bd5b.com",
+        "05b9daf35c.com",
+        "0628ba07b4.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "hagezi/dns-blocklists",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 670671,
+      "right_count": 48729,
+      "overlap_count": 47687,
+      "jaccard": 0.070993,
+      "smaller_set_overlap": 0.978616,
+      "shared_domain_sample": [
+        "000491b06a.com",
+        "0017c6c37c.com",
+        "0019x.com",
+        "003store.com",
+        "00427011ae.com",
+        "00609c257b.com",
+        "009f45b51c.com",
+        "00a39e6dfd.com",
+        "00a4722597.com",
+        "00c8741ed3.com",
+        "00k456wyh.com",
+        "01168nl.com",
+        "011qt7cln.com",
+        "015ea24446.com",
+        "0171pjx5q.com",
+        "0175a3229c.com",
+        "01anf08rf.com",
+        "01counter.com",
+        "0213499675.com",
+        "02228640b9.com",
+        "0246cba9d4.com",
+        "0256d2ea99.com",
+        "029519cbdc.com",
+        "02e4a0ea60.com",
+        "02e8b93f0e.com",
+        "02exl1ql2l.com",
+        "02fd659794.com",
+        "030363cc95.com",
+        "0334759680.com",
+        "033586410b.com",
+        "0339586393.com",
+        "0359d12a54.com",
+        "03850de51d.com",
+        "039858f297.com",
+        "039ijdlg8.com",
+        "03h6fpes.xyz",
+        "03in08p3r1.com",
+        "03mhpavj25.com",
+        "03mnj87wir.com",
+        "048f3c0516.com",
+        "049bv1hdzn.com",
+        "050393f4ec.com",
+        "05086715f4.com",
+        "0517fd5e92.com",
+        "051ss3usg.com",
+        "054ii.com",
+        "058d79990c.com",
+        "059f25bd5b.com",
+        "05b9daf35c.com",
+        "0628ba07b4.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
         "marco-acorte/antispam-it",
         "nthack/Shadowrocket-ADBlock-Rules-Easy"
       ],
@@ -6057,11 +11363,26 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 346345,
-      "right_count": 234548,
+      "right_count": 234723,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
       "shared_domain_sample": []
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "marco-acorte/antispam-it",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 346345,
+      "right_count": 106541,
+      "overlap_count": 1,
+      "jaccard": 2e-06,
+      "smaller_set_overlap": 9e-06,
+      "shared_domain_sample": [
+        "ebtrk1.com"
+      ]
     },
     {
       "policy": "REJECT",
@@ -6099,13 +11420,77 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 16125,
-      "right_count": 234548,
+      "right_count": 234723,
       "overlap_count": 2,
       "jaccard": 8e-06,
       "smaller_set_overlap": 0.000124,
       "shared_domain_sample": [
         "a67z.com",
         "clearonclick.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "nthack/Shadowrocket-ADBlock-Rules-Easy",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 16125,
+      "right_count": 106541,
+      "overlap_count": 3575,
+      "jaccard": 0.030019,
+      "smaller_set_overlap": 0.221705,
+      "shared_domain_sample": [
+        "000dn.com",
+        "003store.com",
+        "00880808.com",
+        "00oo00.com",
+        "022aifang.com",
+        "025suyu.com",
+        "0451106.com",
+        "0531kt.com",
+        "0551zgz.com",
+        "0592weixin.com",
+        "0gw7e6s3wrao9y3q.pro",
+        "0sywjs4r1x.com",
+        "0x01n2ptpuz3.com",
+        "0xxd.com",
+        "1.07swz.com",
+        "1.1010pic.com",
+        "1.11467.com",
+        "1.201980.com",
+        "1.5000yan.com",
+        "1.51sxue.cn",
+        "1.66law.cn",
+        "1.arpun.com",
+        "1.bh5.com.cn",
+        "1.cjcp.cn",
+        "1.codesdq.com",
+        "1.codezh.com",
+        "1.feihua.com",
+        "1.feihua.net.cn",
+        "1.glook.cn",
+        "1.hao123.com",
+        "1.hnyouneng.com",
+        "1.jeasyui.net",
+        "1.jiqie.cn",
+        "1.kuaidiwo.cn",
+        "1.lvshi567.com",
+        "1.mgff.com",
+        "1.qjhm.net",
+        "1.sj33.net",
+        "1.soufy.cn",
+        "1.tecbbs.com",
+        "1.uc129.com",
+        "1.v-x.com.cn",
+        "1.xilu.com",
+        "1.yac8.net",
+        "1.yxzw.com.cn",
+        "1.zhev.com.cn",
+        "1.zhuangxiu567.com",
+        "1.zuowenjun.com",
+        "1.zw3e.com",
+        "100.pncdn.cn"
       ]
     },
     {
@@ -6240,9 +11625,36 @@
       "policy": "REJECT",
       "publishers": [
         "phishdestroy/destroylist",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "left_count": 234723,
+      "right_count": 106541,
+      "overlap_count": 13,
+      "jaccard": 3.8e-05,
+      "smaller_set_overlap": 0.000122,
+      "shared_domain_sample": [
+        "0202.com.tw",
+        "audicontadores.com",
+        "cddtsecure.com",
+        "clearonclick.com",
+        "coreldrawchina.com",
+        "curvemodernforester.com",
+        "effectivegatecpm.com",
+        "gmzdaily.com",
+        "khoancatbetong89.vn",
+        "sievepalmful.com",
+        "vinsgcs.com",
+        "xitongqingli.com",
+        "yourmilliondollarsidehustle.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "phishdestroy/destroylist",
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
-      "left_count": 234548,
+      "left_count": 234723,
       "right_count": 52045,
       "overlap_count": 11,
       "jaccard": 3.8e-05,
@@ -6267,7 +11679,7 @@
         "phishdestroy/destroylist",
         "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
       ],
-      "left_count": 234548,
+      "left_count": 234723,
       "right_count": 48729,
       "overlap_count": 10,
       "jaccard": 3.5e-05,
@@ -6283,6 +11695,134 @@
         "ingeniousseasickfoolish.com",
         "sievepalmful.com",
         "vinsgcs.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "sve1r/Rules-For-Quantumult-X",
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
+      ],
+      "left_count": 106541,
+      "right_count": 52045,
+      "overlap_count": 21874,
+      "jaccard": 0.160001,
+      "smaller_set_overlap": 0.42029,
+      "shared_domain_sample": [
+        "0019x.com",
+        "003store.com",
+        "00427011ae.com",
+        "00609c257b.com",
+        "01168nl.com",
+        "011qt7cln.com",
+        "015ea24446.com",
+        "01anf08rf.com",
+        "01counter.com",
+        "0213499675.com",
+        "02228640b9.com",
+        "029519cbdc.com",
+        "02exl1ql2l.com",
+        "039858f297.com",
+        "03in08p3r1.com",
+        "05086715f4.com",
+        "054ii.com",
+        "058d79990c.com",
+        "05b9daf35c.com",
+        "066b7e895c.com",
+        "06789.xyz",
+        "06cp8ypn8j.com",
+        "06evyxnibl.com",
+        "070880.com",
+        "086123.xyz",
+        "08675bd78b.com",
+        "0880559526.com",
+        "0af2a962b0102942d9a7df351b20be55.com",
+        "0b6rvr210q.com",
+        "0b74655a28.com",
+        "0bb8jytek.com",
+        "0c2bddd1f6.com",
+        "0cf.io",
+        "0d1oo8jp69.com",
+        "0d9063412c.com",
+        "0e024d23f9.com",
+        "0e176a58eb.com",
+        "0e1y8x7ft.com",
+        "0e7mnbmbb.com",
+        "0e9knynfb.com",
+        "0emn.com",
+        "0f857e584a.com",
+        "0fa6d5f434.com",
+        "0fmm.com",
+        "0gw7e6s3wrao9y3q.pro",
+        "0h9yewgei.com",
+        "0hagal2csg.com",
+        "0hagz9mdc.com",
+        "0i0i0i0.com",
+        "0iem8mw1lx.com"
+      ]
+    },
+    {
+      "policy": "REJECT",
+      "publishers": [
+        "sve1r/Rules-For-Quantumult-X",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "left_count": 106541,
+      "right_count": 48729,
+      "overlap_count": 20625,
+      "jaccard": 0.153181,
+      "smaller_set_overlap": 0.423259,
+      "shared_domain_sample": [
+        "0019x.com",
+        "003store.com",
+        "00427011ae.com",
+        "00609c257b.com",
+        "01168nl.com",
+        "011qt7cln.com",
+        "015ea24446.com",
+        "01anf08rf.com",
+        "01counter.com",
+        "0213499675.com",
+        "02228640b9.com",
+        "029519cbdc.com",
+        "02exl1ql2l.com",
+        "039858f297.com",
+        "03in08p3r1.com",
+        "05086715f4.com",
+        "054ii.com",
+        "058d79990c.com",
+        "05b9daf35c.com",
+        "066b7e895c.com",
+        "06789.xyz",
+        "06cp8ypn8j.com",
+        "06evyxnibl.com",
+        "070880.com",
+        "086123.xyz",
+        "08675bd78b.com",
+        "0880559526.com",
+        "0af2a962b0102942d9a7df351b20be55.com",
+        "0b6rvr210q.com",
+        "0b74655a28.com",
+        "0bb8jytek.com",
+        "0c2bddd1f6.com",
+        "0cf.io",
+        "0d1oo8jp69.com",
+        "0d9063412c.com",
+        "0e024d23f9.com",
+        "0e176a58eb.com",
+        "0e1y8x7ft.com",
+        "0e7mnbmbb.com",
+        "0e9knynfb.com",
+        "0emn.com",
+        "0f857e584a.com",
+        "0fa6d5f434.com",
+        "0fmm.com",
+        "0gw7e6s3wrao9y3q.pro",
+        "0h9yewgei.com",
+        "0hagal2csg.com",
+        "0hagz9mdc.com",
+        "0i0i0i0.com",
+        "0iem8mw1lx.com"
       ]
     },
     {
@@ -6350,12 +11890,110 @@
       ]
     }
   ],
-  "cross_policy_conflict_domain_count": 814,
+  "cross_policy_conflict_domain_count": 3473,
   "cross_policy_conflict_sample": [
+    {
+      "domain": "000webhost.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
     {
       "domain": "01122200.com",
       "policies": [
         "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "08lkk.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "09061.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "0mag.net",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "0rz.tw",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "0youtube.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "1000giri.net",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "100mountain.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "101010.pl",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "1024huijia.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "10bet.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "118book.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "1234.as",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "123juzi.net",
+      "policies": [
+        "DIRECT",
         "REJECT"
       ]
     },
@@ -6367,7 +12005,112 @@
       ]
     },
     {
+      "domain": "126.net",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "127.net",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "12bet.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "12vpx.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "12wo.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "1337.cx",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "1337x.is",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "1337x.to",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "138.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "141545.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "141jav.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
       "domain": "1511.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "155game.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "163.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "163yun.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "1680180.com",
       "policies": [
         "PROXY",
         "REJECT"
@@ -6388,6 +12131,34 @@
       ]
     },
     {
+      "domain": "18avtube.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "18comic.fun",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "18comic1.art",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "18comic2.art",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
       "domain": "192.com",
       "policies": [
         "PROXY",
@@ -6402,7 +12173,28 @@
       ]
     },
     {
+      "domain": "198game.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "19yxw.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
       "domain": "1drv.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "1dumb.com",
       "policies": [
         "PROXY",
         "REJECT"
@@ -6416,7 +12208,42 @@
       ]
     },
     {
+      "domain": "1proxy.de",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "1ting.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "1vpn.org",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "1worldonline.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
       "domain": "1xbet.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "2049bbs.xyz",
       "policies": [
         "PROXY",
         "REJECT"
@@ -6430,9 +12257,37 @@
       ]
     },
     {
+      "domain": "2345.cc",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "2345.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
       "domain": "24smile.org",
       "policies": [
         "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "25u.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "265.com",
+      "policies": [
+        "DIRECT",
         "REJECT"
       ]
     },
@@ -6452,7 +12307,154 @@
       ]
     },
     {
+      "domain": "2miners.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
       "domain": "2o7.net",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "2proxy.de",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "2waky.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "3-a.net",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "3004ss.vip",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "32red.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "3322.org",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "360buyimg.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "360chou.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "360kuai.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "360os.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "365dmp.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "36dm.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "36kr.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "3bmmavpm.life",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "3dmgame.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "3dxtras.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "3p-link.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "3proxy.de",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "404.mn",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "4040.idv.tw",
       "policies": [
         "PROXY",
         "REJECT"
@@ -6466,6 +12468,34 @@
       ]
     },
     {
+      "domain": "4anime.to",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "4cdn.org",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "4chan.org",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "4dq.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
       "domain": "4dsply.com",
       "policies": [
         "DIRECT",
@@ -6473,7 +12503,84 @@
       ]
     },
     {
+      "domain": "4everproxy.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "4irc.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "4mydomain.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "4paradigm.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "4proxy.de",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "4pu.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "4shared.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "4thunter.net",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "500px.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "500px.org",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
       "domain": "50bang.org",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "51.com",
       "policies": [
         "DIRECT",
         "REJECT"
@@ -6494,6 +12601,83 @@
       ]
     },
     {
+      "domain": "52pk.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "52z.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "53kf.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "5566ua.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "55bet.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "58.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "5dimes.eu",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "5lu8.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "5w.fit",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "688.org",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "71.am",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
       "domain": "71edge.com",
       "policies": [
         "DIRECT",
@@ -6501,7 +12685,84 @@
       ]
     },
     {
+      "domain": "7mmtv.tv",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "7moor-fs1.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "7moor.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "7torrents.cc",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "7vpn.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "8686c.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "888.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
       "domain": "888poker.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "88btbtt.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "88cdn.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "8aa.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "8kun.top",
       "policies": [
         "PROXY",
         "REJECT"
@@ -6515,10 +12776,25 @@
       ]
     },
     {
+      "domain": "999d.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "9cache.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
       "domain": "9gag.com",
       "policies": [
         "DIRECT",
-        "PROXY"
+        "PROXY",
+        "REJECT"
       ]
     },
     {
@@ -6529,7 +12805,42 @@
       ]
     },
     {
+      "domain": "9kb.me",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "9xu.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "a.magsrv.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
       "domain": "a.teads.tv",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "a1.mzstatic.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "a2zapk.com",
       "policies": [
         "PROXY",
         "REJECT"
@@ -6543,6 +12854,20 @@
       ]
     },
     {
+      "domain": "ab.co",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "abchina.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
       "domain": "abercrombie.com",
       "policies": [
         "DIRECT",
@@ -6550,10 +12875,102 @@
       ]
     },
     {
-      "domain": "acg.rip",
+      "domain": "abrdns.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "accesscam.org",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "accountkit.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "acebook.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "aceheibao.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "acevpn.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "acfun.tv",
       "policies": [
         "DIRECT",
         "PROXY"
+      ]
+    },
+    {
+      "domain": "acg.mn",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "acg.rip",
+      "policies": [
+        "DIRECT",
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "acgnx.se",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "acgvideo.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
+      "domain": "acmetoy.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "activity-zhendingtech.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "activpn.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
       ]
     },
     {
@@ -6572,6 +12989,13 @@
     },
     {
       "domain": "adash.man.aliyuncs.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "adbkwai.com",
       "policies": [
         "DIRECT",
         "REJECT"
@@ -6606,9 +13030,30 @@
       ]
     },
     {
+      "domain": "adguard-vpn.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "adkwai.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
       "domain": "adme-net.com",
       "policies": [
         "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "admin5.com",
+      "policies": [
+        "DIRECT",
         "REJECT"
       ]
     },
@@ -6655,6 +13100,13 @@
       ]
     },
     {
+      "domain": "adpost.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
       "domain": "ads-twitter.com",
       "policies": [
         "PROXY",
@@ -6677,6 +13129,13 @@
     },
     {
       "domain": "adsense.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "adsense.google.cn",
       "policies": [
         "PROXY",
         "REJECT"
@@ -6711,9 +13170,58 @@
       ]
     },
     {
+      "domain": "adultproxy.men",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "advanced.name",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "advertisercommunity.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "advertising.amazon.co.jp",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
       "domain": "adxvip.com",
       "policies": [
         "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "aelitis.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "afd.l.google.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "affsoft.cc",
+      "policies": [
+        "PROXY",
         "REJECT"
       ]
     },
@@ -6722,6 +13230,27 @@
       "policies": [
         "DIRECT",
         "PROXY"
+      ]
+    },
+    {
+      "domain": "agoralab.co",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "agrantsem.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "ahaspeed.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
       ]
     },
     {
@@ -6739,1018 +13268,28 @@
       ]
     },
     {
+      "domain": "ainudez.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "aiosearch.com",
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ]
+    },
+    {
+      "domain": "air-matters.com",
+      "policies": [
+        "DIRECT",
+        "PROXY"
+      ]
+    },
+    {
       "domain": "airbrake.io",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "aixifan.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "akamaihd.net",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "akamaized.net",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "ali213.net",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "alimama.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "aliyun.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "allyes.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "amazon-adsystem.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "amazon.ca",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "amazon.co.uk",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "amazon.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "amazon.de",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "amazon.es",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "amazon.fr",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "amazon.in",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "amazon.it",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "amazonaws.com",
-      "policies": [
-        "DIRECT",
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "ameblo.jp",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "amp-api.podcasts.apple.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "amplitude.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "analytics.strava.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "analytics.tiktok.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "animeidhentai.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "anonfilesnew.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "anquan.org",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "antpool.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "anyporn.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "aol.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "api.amplitude.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "api.ettoday.net",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "api.foursquare.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "api.mixpanel.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "api.rlcdn.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "api.segment.io",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "api.share.baidu.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "app-measurement.com",
-      "policies": [
-        "DIRECT",
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "app.adjust.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "app.appsflyer.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "appldnld.apple.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "appldnld.g.aaplimg.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "apple.comscoreresearch.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "apps5.oingo.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "apptjmp.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "ar.hao123.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "artcomix.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "asiafriendfinder.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "aspnetcdn.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "atdmt.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "avg.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "avistaz.to",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "avito.ru",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "awstrack.me",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "az416426.vo.msecnd.net",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "babm.texthelp.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "badoink.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "bag.itunes.apple.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "baidustatic.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "baifendian.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "battle.net",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "bc.game",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "beacons.gcp.gvt2.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "beacons.gvt2.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "behance.net",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "bestgore.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "bestshockers.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "bet365.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "biddingx.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "bidswitch.net",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "biliapi.net",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "bilibili.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "bilivideo.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "bing.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "bit.do",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "bitbucket.io",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "bitcoin.cz",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "bjcathay.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "bkrtx.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "blankrefer.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "blog.google",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "bongacams.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "bongacams7.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "bookofsex.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "boomtrain.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "bootstrap.upsight-api.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "box.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "braze.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "brightcove01.brightcove.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "bugleczmoidgxo.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "bukalapak.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "buy.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "buzzfeed.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "bw.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "bytedance.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "byteoversea.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "c.admob.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "c.go-mpulse.net",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "camdough.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "cameraboys.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "canva.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "capital.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "cartoontube.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "cdn.apple-mapkit.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "cdn.jsdelivr.net",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "cdn.moengage.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "cdn.mxpnl.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "cdn.segment.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "cdp.cloud.unity3d.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "cds-cdn.v.aaplimg.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "cds.apple.com.akadns.net",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "centanet.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "certified-toolbar.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "cf.cdn.inmobi.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "changelly.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "chdbits.co",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "chickenkiller.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "cl1-cdn.origin-apple.com.akadns.net",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "cl3-cdn.origin-apple.com.akadns.net",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "cl4-cdn.origin-apple.com.akadns.net",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "cl5-cdn.origin-apple.com.akadns.net",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "cleansite.us",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "clickadilla.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "clickpoint.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "clickserve.cc-dt.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "clickserve.dartsearch.net",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "clicksgear.com",
-      "policies": [
-        "DIRECT",
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "clicksor.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "clientflow.apple.com.akadns.net",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "cloudconfig.googleapis.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "cnet.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "cnn.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "cnzz.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "coincheck.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "coinone.co.kr",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "configuration.apple.com",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "configuration.apple.com.akadns.net",
-      "policies": [
-        "DIRECT",
-        "PROXY"
-      ]
-    },
-    {
-      "domain": "connect.ok.ru",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "connectivitycheck.android.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "connectivitycheck.gstatic.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "content.mql5.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "cpatrk.net",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "crashlytics.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "crashlyticsreports-pa.googleapis.com",
-      "policies": [
-        "DIRECT",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "criteo.com",
-      "policies": [
-        "PROXY",
-        "REJECT"
-      ]
-    },
-    {
-      "domain": "crittercism.com",
       "policies": [
         "PROXY",
         "REJECT"

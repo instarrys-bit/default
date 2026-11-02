@@ -8,21 +8,21 @@
 
 ## References
 
-- line 1718: reject.list -> REJECT
-- line 1719: proxy.list -> PROXY
-- line 1720: direct.list -> DIRECT
+- line 1898: reject.list -> REJECT
+- line 1899: proxy.list -> PROXY
+- line 1900: direct.list -> DIRECT
 
 ## Generated file counts
 
-- direct.list: 216 lines; policy DIRECT
-- proxy.list: 205 lines; policy PROXY
-- reject.list: 10 lines; policy REJECT
+- direct.list: 133 lines; policy DIRECT
+- proxy.list: 246 lines; policy PROXY
+- reject.list: 6 lines; policy REJECT
 
 ## Cross-file duplicates
 
 - None
 
-## Precedence-resolved overlaps
+## Cross-policy scope overlaps (no winner selected)
 
 - None
 

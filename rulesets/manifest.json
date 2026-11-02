@@ -66,6 +66,38 @@
       "bootstrap_enqueued": false
     },
     {
+      "id": "auto-johnshall-shadowrocket-adblock-rules-forever-4d665bed",
+      "sha256": "0f7971d36942e5397293f446c301f02dfa75680ee739ab3bef42cab3f55275a4",
+      "entries": 52060,
+      "classification": "REJECT",
+      "role": "primary_candidate_source",
+      "lineage_status": "unverified",
+      "upstream_repositories": [],
+      "status": "CURRENT",
+      "error": null,
+      "pending_confirmations": 0,
+      "new_entries": 52060,
+      "removed_entries": 0,
+      "baseline_initialized": true,
+      "bootstrap_enqueued": true
+    },
+    {
+      "id": "auto-johnshall-shadowrocket-adblock-rules-forever-68903a21",
+      "sha256": "f0482b042c53ba011db4d47446ad55f9d1848892528167619948d4f1a35f6133",
+      "entries": 30183,
+      "classification": "PROXY",
+      "role": "primary_candidate_source",
+      "lineage_status": "unverified",
+      "upstream_repositories": [],
+      "status": "CURRENT",
+      "error": null,
+      "pending_confirmations": 0,
+      "new_entries": 30183,
+      "removed_entries": 0,
+      "baseline_initialized": true,
+      "bootstrap_enqueued": true
+    },
+    {
       "id": "auto-jovanykoch-rules-9660520d",
       "sha256": "93159d83fedc9596876f1a30f1b174ebf478af38ba73e7c066c171a4429fa921",
       "entries": 6771,
@@ -76,7 +108,7 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 20,
+      "new_entries": 0,
       "removed_entries": 0,
       "baseline_initialized": false,
       "bootstrap_enqueued": false
@@ -99,8 +131,8 @@
     },
     {
       "id": "hagezi-domains-pro",
-      "sha256": "b9bc08ed37376f9b2f6def507bb7a5aab1eb857d860a687506c019a699585fdd",
-      "entries": 211739,
+      "sha256": "bd6f660e813fe482a2dbaa3bf1cf9c57f51f9228a0b724d4b0fad231c9d99b80",
+      "entries": 211778,
       "classification": "REJECT",
       "role": "independent_adblock_corroboration",
       "lineage_status": "partial",
@@ -177,8 +209,8 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 0,
-      "removed_entries": 0,
+      "new_entries": 1031,
+      "removed_entries": 992,
       "baseline_initialized": false,
       "bootstrap_enqueued": false
     },
@@ -224,122 +256,123 @@
       "bootstrap_enqueued": false
     }
   ],
-  "source_count": 8,
-  "policy_conflict_total": 285,
+  "source_count": 10,
+  "policy_conflict_total": 575,
   "lineage_verified_sources": 0,
-  "lineage_unverified_sources": 6,
+  "lineage_unverified_sources": 8,
   "lineage_partial_sources": 2,
-  "lineage_not_fully_verified_sources": 8,
+  "lineage_not_fully_verified_sources": 10,
   "source_candidate_summary": {
     "DIRECT": {
-      "candidate_publishers": 7,
-      "eligible_publishers": 5,
-      "independent_eligible_groups": 4,
-      "candidate_files": 10,
+      "candidate_publishers": 5,
+      "eligible_publishers": 4,
+      "independent_eligible_groups": 2,
+      "candidate_files": 7,
       "cross_policy_conflict_count": 2,
       "activation_ready": true
     },
     "PROXY": {
-      "candidate_publishers": 10,
-      "eligible_publishers": 10,
-      "independent_eligible_groups": 1,
-      "candidate_files": 20,
+      "candidate_publishers": 6,
+      "eligible_publishers": 5,
+      "independent_eligible_groups": 2,
+      "candidate_files": 11,
       "cross_policy_conflict_count": 2,
-      "activation_ready": false
+      "activation_ready": true
     },
     "REJECT": {
-      "candidate_publishers": 13,
-      "eligible_publishers": 11,
-      "independent_eligible_groups": 8,
-      "candidate_files": 43,
+      "candidate_publishers": 7,
+      "eligible_publishers": 4,
+      "independent_eligible_groups": 2,
+      "candidate_files": 90,
       "cross_policy_conflict_count": 2,
       "activation_ready": true
     }
   },
   "rule_count": {
-    "DIRECT": 146,
-    "PROXY": 205,
+    "DIRECT": 133,
+    "PROXY": 246,
     "REJECT": 6
   },
-  "published_rule_total": 357,
+  "published_rule_total": 385,
   "max_published_rules": 30000,
   "queued_rule_total": 0,
-  "baseline_conflict_hold_count": 1,
-  "baseline_conflict_hold_sample": [
-    {
-      "domain": "akamaihd.net",
-      "policy": "PROXY",
-      "scope": "suffix_candidate",
-      "status": "CONFLICT",
-      "reason": "Prior first-match rules intersect candidate suffix scope",
-      "config_line": 1137,
-      "config_rule": "DOMAIN-SUFFIX,origin-a.akamaihd.net,PROXY",
-      "effective_config_policy": "PROXY"
-    }
-  ],
+  "baseline_conflict_hold_count": 0,
+  "baseline_conflict_hold_sample": [],
   "pending_queue": "rulesets/pending_queue.json",
   "rule_lifecycle": {
     "DIRECT": {
-      "previous_count": 216,
-      "current_count": 146,
-      "added_count": 0,
+      "previous_count": 131,
+      "current_count": 133,
+      "added_count": 2,
       "removed_count": 0,
-      "previous_sha256": "51243bedd7ec8b8756eb3e2ecca4b971b4ab489ecbce9d7aeec1ad94cb79eb18",
-      "current_sha256": "5e2a2011b4504b7856665eedde56a94f76bfd09815d86f92e00eddfaea686854",
-      "added_sample": [],
+      "previous_sha256": "1d1a4d587f822c226f40052da73221eb937b28643a4ec4bb9018cac3c2d5d588",
+      "current_sha256": "ab88d04857b0a19e6510179b69d10d51b8ac8087a27b2957eb532dd648f76035",
+      "added_sample": [
+        "DOMAIN-SUFFIX,10010.com",
+        "DOMAIN-SUFFIX,bdimg.com"
+      ],
       "removed_sample": [],
       "baseline_initialized": false
     },
     "PROXY": {
       "previous_count": 205,
-      "current_count": 205,
-      "added_count": 0,
+      "current_count": 246,
+      "added_count": 41,
       "removed_count": 0,
       "previous_sha256": "1be8ecc699ee8ae38542203c2bdb7b546c93016c931ce8a31064eb0d5bd83011",
-      "current_sha256": "1be8ecc699ee8ae38542203c2bdb7b546c93016c931ce8a31064eb0d5bd83011",
-      "added_sample": [],
+      "current_sha256": "b2900de41fd918de83e0c100be65899ac0f2bdfa5947313ea8e9678c41bba3e4",
+      "added_sample": [
+        "DOMAIN-SUFFIX,1e100.net",
+        "DOMAIN-SUFFIX,akamaihd.net",
+        "DOMAIN-SUFFIX,aol.com",
+        "DOMAIN-SUFFIX,apk-dl.com",
+        "DOMAIN-SUFFIX,bit.com",
+        "DOMAIN-SUFFIX,cloudmagic.com",
+        "DOMAIN-SUFFIX,danilo.to",
+        "DOMAIN-SUFFIX,daolan.net",
+        "DOMAIN-SUFFIX,dockerhub.com",
+        "DOMAIN-SUFFIX,fastly.net"
+      ],
       "removed_sample": [],
       "baseline_initialized": false
     },
     "REJECT": {
-      "previous_count": 10,
+      "previous_count": 6,
       "current_count": 6,
       "added_count": 0,
-      "removed_count": 4,
-      "previous_sha256": "de0f64fee89213efab6dc5d2719121ddce5140335aca4da3cc3c56ee568f9947",
+      "removed_count": 0,
+      "previous_sha256": "4fc7bcf4efe4fa72e523d715207b9ed0af4a947b103f14c3035b1273b3b38140",
       "current_sha256": "4fc7bcf4efe4fa72e523d715207b9ed0af4a947b103f14c3035b1273b3b38140",
       "added_sample": [],
-      "removed_sample": [
-        "DOMAIN,adcdn.tencentmusic.com",
-        "DOMAIN,adcdn6.tencentmusic.com",
-        "DOMAIN,adclick.tencentmusic.com",
-        "DOMAIN,adexpo.tencentmusic.com"
-      ],
+      "removed_sample": [],
       "baseline_initialized": false
     }
   },
-  "reviewed_total": 11603,
-  "approved_total": 431,
-  "held_total": 11172,
+  "reviewed_total": 89271,
+  "approved_total": 384,
+  "held_total": 88887,
+  "reject_manual_approval_required": true,
+  "reject_manual_approval_count": 0,
+  "reject_manual_hold_count": 33560,
   "status_count": {
-    "ALREADY_COVERED": 2168,
-    "APPROVED": 434,
-    "CONFLICT": 550,
-    "POLICY_CONFLICT": 285,
-    "REVIEW": 8155,
-    "RISK_HOLD": 11
+    "ALREADY_COVERED": 9143,
+    "APPROVED": 33944,
+    "CONFLICT": 18707,
+    "POLICY_CONFLICT": 575,
+    "REVIEW": 26889,
+    "RISK_HOLD": 13
   },
   "deterministic_review_progress": {
-    "candidate_total": 11603,
-    "approved_total": 431,
-    "held_total": 11172,
+    "candidate_total": 89271,
+    "approved_total": 384,
+    "held_total": 88887,
     "status_count": {
-      "ALREADY_COVERED": 2168,
-      "APPROVED": 434,
-      "CONFLICT": 550,
-      "POLICY_CONFLICT": 285,
-      "REVIEW": 8155,
-      "RISK_HOLD": 11
+      "ALREADY_COVERED": 9143,
+      "APPROVED": 33944,
+      "CONFLICT": 18707,
+      "POLICY_CONFLICT": 575,
+      "REVIEW": 26889,
+      "RISK_HOLD": 13
     }
   },
   "format": "Standalone Shadowrocket domain RULE-SET lists: DOMAIN,<domain> and DOMAIN-SUFFIX,<domain>; source scope is preserved and policy is assigned by the RULE-SET reference.",

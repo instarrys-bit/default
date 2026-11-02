@@ -1,11 +1,11 @@
 # RULE-SET / ss.conf conflict synchronization
 
 - Config: shadowrocket/ss.conf (read-only)
-- Config blob SHA: a6b2f0e6e41da13572dfca8e8119212118df5bcb
-- Higher-priority config rules inspected: 1672
-- Published rules removed: 0
+- Config blob SHA: 20d66df9e4e2297e805e608985e3329dba927188
+- Explicit config rule lines inspected: 1930
+- Published rules removed: 15
 - Pending queue entries removed: 0
-- Ambiguous overlaps retained for review: 1
+- Partial or unsupported overlaps retained unchanged: 0
 - Restored: 0
 
 ## Removed rules
@@ -14,8 +14,8 @@
 ## Already archived entries suppressed
 - None
 
-## Retained ambiguous overlaps
-- PROXY | DOMAIN-SUFFIX,thefacebook.com | REVIEW | Prior DOMAIN-KEYWORD may match this candidate
+## Retained partial / unsupported overlaps
+- None
 
 ## Restoration
 - None
@@ -29,9 +29,9 @@
 - cfg-ed5cf92b4498c7e2ad67 | REJECT | DOMAIN,adbehavior.ximalaya.com | active_config_overlap
 - cfg-78411fbb3c84a334d9ef | REJECT | DOMAIN,adsehera.ximalaya.com | active_config_overlap
 - cfg-fb54aeabab750721e8ea | REJECT | DOMAIN,adwbs.ximalaya.com | active_config_overlap
-- cfg-326bec1401e6d3f646fb | DIRECT | DOMAIN-SUFFIX,10010.com | active_config_overlap
+- cfg-326bec1401e6d3f646fb | DIRECT | DOMAIN-SUFFIX,10010.com | superseded_config_overlap
 - cfg-7739291360199761a77a | DIRECT | DOMAIN-SUFFIX,baidupcs.com | active_config_overlap
-- cfg-5200a91c7d40bb665d85 | DIRECT | DOMAIN-SUFFIX,bdimg.com | active_config_overlap
+- cfg-5200a91c7d40bb665d85 | DIRECT | DOMAIN-SUFFIX,bdimg.com | superseded_config_overlap
 - cfg-bb556f0edacfd850875c | DIRECT | DOMAIN-SUFFIX,bilivideo.cn | active_config_overlap
 - cfg-6267e509bce00318237c | DIRECT | DOMAIN-SUFFIX,bytedance.com | active_config_overlap
 - cfg-a18de45ed26dbf220c6d | DIRECT | DOMAIN-SUFFIX,dingtalk.com | active_config_overlap
@@ -75,7 +75,7 @@
 - cfg-60655fd0afb65de36560 | PROXY | DOMAIN-SUFFIX,kakao.co.kr | active_config_overlap
 - cfg-89c4ddc5c536fa3219bd | PROXY | DOMAIN-SUFFIX,kakao.com | active_config_overlap
 - cfg-b23b29956c92796f9d02 | PROXY | DOMAIN-SUFFIX,linkedin.com | active_config_overlap
-- cfg-e48f4e39424705e415f0 | PROXY | DOMAIN-SUFFIX,live.net | active_config_overlap
+- cfg-e48f4e39424705e415f0 | PROXY | DOMAIN-SUFFIX,live.net | superseded_config_overlap
 - cfg-3c5eb790513574904bd3 | PROXY | DOMAIN-SUFFIX,macrumors.com | active_config_overlap
 - cfg-cd12044bce7bbfb614f6 | PROXY | DOMAIN-SUFFIX,maven.org | active_config_overlap
 - cfg-5c93e44f30be88e66032 | PROXY | DOMAIN-SUFFIX,medium.com | active_config_overlap
@@ -118,6 +118,21 @@
 - cfg-626ff39e334408851f97 | REJECT | DOMAIN,advertise.baicizhan.org | active_config_overlap
 - cfg-3c135f9b13ee1e0e0402 | REJECT | DOMAIN,ggx03.miguvideo.com | active_config_overlap
 - cfg-be532deac336944d3b78 | REJECT | DOMAIN,kad.gotokeep.com | active_config_overlap
+- cfg-1ee8199b426cc0fef7ef | DIRECT | DOMAIN-SUFFIX,1688.com | active_config_overlap
+- cfg-2045f5bfd4f30f37199b | DIRECT | DOMAIN-SUFFIX,aliimg.com | active_config_overlap
+- cfg-8c6fea5bd2597040caa2 | DIRECT | DOMAIN-SUFFIX,bytedance.net | active_config_overlap
+- cfg-abd7e184ba3877fc488f | DIRECT | DOMAIN-SUFFIX,bytedns.net | active_config_overlap
+- cfg-9be1b365ac69f5b5db63 | DIRECT | DOMAIN-SUFFIX,byteimg.com | active_config_overlap
+- cfg-603a9bbf08ae35974be9 | DIRECT | DOMAIN-SUFFIX,feishucdn.com | active_config_overlap
+- cfg-ecb5fcab71480fffd36d | DIRECT | DOMAIN-SUFFIX,myqcloud.com | active_config_overlap
+- cfg-82f967fe3c85baa88979 | DIRECT | DOMAIN-SUFFIX,toutiaoapi.com | active_config_overlap
+- cfg-e9e6b7ebc9937451adc3 | DIRECT | DOMAIN-SUFFIX,toutiaocdn.com | active_config_overlap
+- cfg-317d4de3725d54613571 | DIRECT | DOMAIN-SUFFIX,toutiaocdn.net | active_config_overlap
+- cfg-b731eff901ec1f11face | DIRECT | DOMAIN-SUFFIX,toutiaocloud.com | active_config_overlap
+- cfg-81f612c9655191b55e4a | DIRECT | DOMAIN-SUFFIX,toutiaohao.com | active_config_overlap
+- cfg-bf8201348435c37ad830 | DIRECT | DOMAIN-SUFFIX,toutiaohao.net | active_config_overlap
+- cfg-0232f5aaca09346fae22 | DIRECT | DOMAIN-SUFFIX,toutiaoimg.com | active_config_overlap
+- cfg-84479ab43890c6fd5efb | DIRECT | DOMAIN-SUFFIX,zijieimg.com | active_config_overlap
 
-The script never writes to shadowrocket/ss.conf. A config-scope archive entry is not restored automatically; restoration is opt-in and rechecked against exact/suffix overlaps, skip-proxy entries, and cross-policy published/queued rules.
+The script never writes to shadowrocket/ss.conf. A config-scope archive entry is not restored automatically; restoration is opt-in and rechecked against full-scope config coverage, skip-proxy entries, and cross-policy published/queued rules.
 Paste selected IDs into the workflow_dispatch input restore_conflict_ids.

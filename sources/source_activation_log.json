@@ -14,21 +14,29 @@
       "policy": "PROXY",
       "url": "https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt",
       "unique_domains": 4451
+    },
+    {
+      "id": "auto-johnshall-shadowrocket-adblock-rules-forever-68903a21",
+      "repository": "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+      "policy": "PROXY",
+      "url": "https://raw.githubusercontent.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever/release/sr_top500_banlist.conf",
+      "unique_domains": 30183
+    },
+    {
+      "id": "auto-johnshall-shadowrocket-adblock-rules-forever-4d665bed",
+      "repository": "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+      "policy": "REJECT",
+      "url": "https://raw.githubusercontent.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever/release/sr_ad_only.conf",
+      "unique_domains": 52060
     }
   ],
-  "last_evaluated_at": "2026-11-02T07:04:57.840389+00:00",
+  "last_evaluated_at": "2026-11-02T18:03:05.384176+00:00",
   "last_decisions": [
     {
       "repository": "Jovanykoch/rules",
       "policy": "DIRECT",
-      "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
-    },
-    {
-      "repository": "nthack/Shadowrocket-ADBlock-Rules-Easy",
-      "policy": "DIRECT",
-      "decision": "held",
-      "reason": "policy evidence is not strong or publisher is archived"
+      "decision": "already_registered",
+      "reason": "publisher or URL is already registered"
     },
     {
       "repository": "ACL4SSR/ACL4SSR",
@@ -37,19 +45,13 @@
       "reason": "publisher or URL is already registered"
     },
     {
-      "repository": "YanbingJiang/Shadowrocket_diy_rules",
-      "policy": "DIRECT",
-      "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
-    },
-    {
-      "repository": "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+      "repository": "h2y/Shadowrocket-ADBlock-Rules",
       "policy": "DIRECT",
       "decision": "held",
       "reason": "policy evidence is not strong or publisher is archived"
     },
     {
-      "repository": "tickmao/Rules",
+      "repository": "Hackl0us/SS-Rule-Snippet",
       "policy": "DIRECT",
       "decision": "held",
       "reason": "no supported file with 100+ unique domains and an unchanged second observation"
@@ -61,28 +63,11 @@
       "reason": "publisher or URL is already registered"
     },
     {
-      "repository": "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
-      "policy": "PROXY",
-      "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
-    },
-    {
       "repository": "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
       "policy": "PROXY",
-      "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
-    },
-    {
-      "repository": "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
-      "policy": "PROXY",
-      "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
-    },
-    {
-      "repository": "tickmao/Rules",
-      "policy": "PROXY",
-      "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+      "decision": "activated",
+      "reason": "strong policy evidence, non-archived publisher, supported parser, 100+ unique domains and unchanged second observation",
+      "source_id": "auto-johnshall-shadowrocket-adblock-rules-forever-68903a21"
     },
     {
       "repository": "ACL4SSR/ACL4SSR",
@@ -91,22 +76,10 @@
       "reason": "publisher or URL is already registered"
     },
     {
-      "repository": "YanbingJiang/Shadowrocket_diy_rules",
+      "repository": "h2y/Shadowrocket-ADBlock-Rules",
       "policy": "PROXY",
       "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
-    },
-    {
-      "repository": "nthack/Shadowrocket-ADBlock-Rules-Easy",
-      "policy": "PROXY",
-      "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
-    },
-    {
-      "repository": "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
-      "policy": "PROXY",
-      "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+      "reason": "policy evidence is not strong or publisher is archived"
     },
     {
       "repository": "gatework/surge-rules",
@@ -121,73 +94,44 @@
       "reason": "publisher or URL is already registered"
     },
     {
-      "repository": "phishdestroy/destroylist",
-      "policy": "REJECT",
+      "repository": "Hackl0us/SS-Rule-Snippet",
+      "policy": "PROXY",
       "decision": "held",
       "reason": "no supported file with 100+ unique domains and an unchanged second observation"
     },
     {
-      "repository": "marco-acorte/antispam-it",
-      "policy": "REJECT",
-      "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
-    },
-    {
-      "repository": "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
-      "policy": "REJECT",
-      "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
-    },
-    {
-      "repository": "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
-      "policy": "REJECT",
-      "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
-    },
-    {
-      "repository": "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
-      "policy": "REJECT",
-      "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
-    },
-    {
-      "repository": "Isaaker/Spotify-AdsList",
+      "repository": "hagezi/dns-blocklists",
       "policy": "REJECT",
       "decision": "held",
       "reason": "policy evidence is not strong or publisher is archived"
     },
     {
-      "repository": "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+      "repository": "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+      "policy": "REJECT",
+      "decision": "activated",
+      "reason": "strong policy evidence, non-archived publisher, supported parser, 100+ unique domains and unchanged second observation",
+      "source_id": "auto-johnshall-shadowrocket-adblock-rules-forever-4d665bed"
+    },
+    {
+      "repository": "sve1r/Rules-For-Quantumult-X",
       "policy": "REJECT",
       "decision": "held",
       "reason": "no supported file with 100+ unique domains and an unchanged second observation"
     },
     {
-      "repository": "badmojr/1Hosts",
+      "repository": "h2y/Shadowrocket-ADBlock-Rules",
+      "policy": "REJECT",
+      "decision": "held",
+      "reason": "policy evidence is not strong or publisher is archived"
+    },
+    {
+      "repository": "TG-Twilight/AWAvenue-Ads-Rule",
       "policy": "REJECT",
       "decision": "held",
       "reason": "no supported file with 100+ unique domains and an unchanged second observation"
     },
     {
-      "repository": "YanbingJiang/Shadowrocket_diy_rules",
-      "policy": "REJECT",
-      "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
-    },
-    {
-      "repository": "nthack/Shadowrocket-ADBlock-Rules-Easy",
-      "policy": "REJECT",
-      "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
-    },
-    {
-      "repository": "GoodnessJSON/PiHole-Whitelist",
-      "policy": "REJECT",
-      "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
-    },
-    {
-      "repository": "furkan-bayrak/lg-tv-blocklist",
+      "repository": "Hackl0us/SS-Rule-Snippet",
       "policy": "REJECT",
       "decision": "held",
       "reason": "no supported file with 100+ unique domains and an unchanged second observation"
