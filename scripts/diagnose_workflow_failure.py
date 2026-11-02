@@ -37,7 +37,7 @@ def diagnose(log_text: str, run_id: str = "") -> dict:
     )
     if (
         "test_stale_audit_guard_runs_before_expensive_domain_review" in log_text
-        and "cancel-in-progress: true" in log_text
+        and "AssertionError: 'cancel-in-progress: true' not found" in log_text
         and "cancel-in-progress: false" in log_text
     ):
         code = "WORKFLOW_TEST_CONTRACT_MISMATCH"
