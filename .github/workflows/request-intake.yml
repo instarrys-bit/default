@@ -80,7 +80,19 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git commit -m "Import observed domains through GitHub Actions"
-            git push origin HEAD:main
+            for attempt in 1 2 3; do
+              if git push origin HEAD:main; then
+                echo "Observation ledger committed to main."
+                break
+              fi
+              if [ "$attempt" -eq 3 ]; then
+                echo "Could not publish the observation ledger after three safe push attempts." >&2
+                exit 1
+              fi
+              echo "Main advanced during intake publication; rebasing the isolated observation commit (attempt $attempt)."
+              git fetch origin main
+              git rebase origin/main
+            done
           fi
 
       - name: Trigger deterministic rule audit
