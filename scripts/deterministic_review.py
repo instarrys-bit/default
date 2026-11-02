@@ -97,7 +97,7 @@ def evidence_gate(evidence, source_weights, minimum, threshold, required_sources
 
 def load_correlated_publishers():
     """Read same-policy high/near-duplicate relationships from the source candidate matrix."""
-    matrix=json.loads(SOURCE_MATRIX.read_text(encoding="utf-8")) if SOURCE_MATRIX.exists() else {}
+    matrix=read_document(SOURCE_MATRIX,"candidates",{"candidates":[]})
     pairs=set()
     for item in matrix.get("same_policy_domain_overlap",[]):
         if item.get("relation") not in {"high_overlap","near_duplicate"}: continue
