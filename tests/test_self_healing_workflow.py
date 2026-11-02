@@ -99,6 +99,8 @@ class SelfHealingWorkflowTests(unittest.TestCase):
     def test_stale_watch_cancels_superseded_audits_before_timeout(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn('run.get("head_sha") != current_main', workflow)
+        self.assertIn('repos/$REPO/compare/$run_sha...$current_main', workflow)
+        self.assertIn('only docs/ changed after its audited commit', workflow)
         self.assertIn('gh run cancel "$stale_id"', workflow)
         self.assertIn('gh workflow run auto_sync.yml --ref main', workflow)
         self.assertIn('An audit is still queued, cancelling, or running', workflow)
