@@ -19,7 +19,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('repos/$REPO/compare/$last_success_sha...$current_sha', workflow)
         self.assertIn("Last successful audit is healthy; any intervening main changes are documentation-only", workflow)
 
-    def test_failed_timed_out_or_startup_failed_scheduled_or_push_runs_trigger_one_recovery(self):
+    def test_only_infrastructure_failures_trigger_bounded_scheduled_or_push_recovery(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn('SOURCE_CONCLUSION: ${{ github.event.workflow_run.conclusion }}', workflow)
         self.assertIn('SOURCE_EVENT: ${{ github.event.workflow_run.event }}', workflow)
@@ -27,7 +27,9 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("validator failures are handled by self-healing diagnosis", workflow)
         self.assertIn("block_manifest=true", workflow)
         self.assertIn("needs.health-check.outputs.block_manifest != 'true'", workflow)
-        self.assertIn('failure|timed_out|startup_failure)', workflow)
+        self.assertIn('timed_out|startup_failure)', workflow)
+        self.assertNotIn('failure|timed_out|startup_failure)', workflow)
+        self.assertIn("scripts/watchdog_recovery_policy.py", workflow)
         self.assertIn('[ "$SOURCE_EVENT" != "schedule" ]', workflow)
         self.assertIn('[ "$SOURCE_EVENT" != "push" ]', workflow)
         self.assertIn("gh workflow run auto_sync.yml --ref main --repo \"$REPO\"", workflow)

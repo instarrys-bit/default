@@ -340,6 +340,15 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:
+      - name: Checkout watchdog recovery policy
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Set up Python for bounded recovery
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
       - name: Cancel superseded or stalled audits and recover current main
         env:
           GH_TOKEN: ${{ github.token }}
@@ -429,7 +438,14 @@ jobs:
           fi
 
           if [ "$timed_out_any" = "1" ] || [ "$audit_base_stale" = "1" ] || [ "$age_seconds" -gt 691200 ]; then
-            echo "No publishable current-main audit is active and the last successful audit is stale or superseded; dispatching one replacement."
+            decision="$(python3 scripts/watchdog_recovery_policy.py --source-run-id 0 --source-sha "$current_main" <<< "$runs")"
+            echo "$decision" | jq -r '"Scheduled recovery policy: " + .reason + "; prior retryable failures=" + (.prior_retryable_failures|tostring) + "; prior deterministic failures=" + (.prior_non_retryable_failures|tostring) + "."'
+            if [ "$(jq -r '.allowed' <<< "$decision")" != "true" ]; then
+              echo "$decision" >> "$GITHUB_STEP_SUMMARY"
+              echo "Scheduled recovery suppressed; diagnosis, cooldown, or retry limit prevents another dispatch."
+              exit 0
+            fi
+            echo "No publishable current-main audit is active and the last successful audit is stale or superseded; dispatching one bounded replacement."
             gh workflow run auto_sync.yml --ref main --repo "$REPO"
           else
             echo "The latest successful audit is healthy; any intervening main changes are documentation-only."
