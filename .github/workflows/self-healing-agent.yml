@@ -368,11 +368,21 @@ jobs:
           PY
           )"
 
-          if [ "$timed_out_any" = "1" ] || [ "$last_success_sha" != "$current_main" ] || [ "$age_seconds" -gt 691200 ]; then
-            echo "No current-main audit is active and the last successful audit is stale or superseded; dispatching one replacement."
+          audit_base_stale=0
+          if [ -z "$last_success_sha" ]; then
+            audit_base_stale=1
+          elif [ "$last_success_sha" != "$current_main" ]; then
+            compare_json="$(gh api "repos/$REPO/compare/$last_success_sha...$current_main" 2>/dev/null || true)"
+            if [ -z "$compare_json" ] || ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null || ! jq -e '[.files[].filename | select(startswith("docs/") | not)] | length == 0' <<< "$compare_json" >/dev/null; then
+              audit_base_stale=1
+            fi
+          fi
+
+          if [ "$timed_out_any" = "1" ] || [ "$audit_base_stale" = "1" ] || [ "$age_seconds" -gt 691200 ]; then
+            echo "No publishable current-main audit is active and the last successful audit is stale or superseded; dispatching one replacement."
             gh workflow run auto_sync.yml --ref main --repo "$REPO"
           else
-            echo "The latest successful audit matches current main and is within the eight-day health window."
+            echo "The latest successful audit is healthy; any intervening main changes are documentation-only."
             issue="$(gh issue list --repo "$REPO" --state open --search "stalled audit in:title" --json number,title --jq '.[0].number')"
             if [ -n "$issue" ] && [ "$issue" != "null" ]; then
               gh issue comment "$issue" --repo "$REPO" --body "A successful audit now matches current main $current_main and is within the eight-day health window."
