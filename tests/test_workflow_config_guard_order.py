@@ -34,6 +34,13 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("retention-days: 90", workflow)
         self.assertIn("fail_closed", workflow)
 
+    def test_state_pointer_is_in_audit_archive_before_publish(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        package = workflow.split("tar -czf audit-output.tar.gz", 1)[1].split(
+            "      - name: Upload allowlisted audit outputs", 1
+        )[0]
+        self.assertIn("reports/automation/state_store.json", package)
+
     def test_large_state_is_artifact_backed_not_committed_as_giant_json(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         publish = workflow.split("      - name: Verify base commit and safely publish allowlisted outputs", 1)[1]
