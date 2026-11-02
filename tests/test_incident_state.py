@@ -6,7 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from incident_state import IncidentStateError, incident_key, transition_incident
+from incident_state import BLOCK_RE, IncidentStateError, incident_key, transition_incident
 
 
 SHA = "a" * 40
@@ -256,12 +256,7 @@ class IncidentStateTests(unittest.TestCase):
             event_id="failure-run-101",
             target_state="MANUAL_INTERVENTION",
         )
-        state_match = __import__("re").search(
-            r"<!-- shadowrocket-incident-state:v1\n(.*?)\n-->",
-            body,
-            __import__("re").DOTALL,
-        )
-        state = json.loads(state_match.group(1))
+        state_match = BLOCK_RE.search(body)
         state["history"][-1] = "RECOVERED"
         corrupt = body[:state_match.start(1)] + json.dumps(state) + body[state_match.end(1):]
         with self.assertRaises(IncidentStateError):
