@@ -262,10 +262,16 @@ def main() -> int:
     token = os.environ.get("GITHUB_TOKEN", "")
     existing = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {"candidates": []}
     discovered: dict[str, dict] = {}
+    discovery_errors: list[dict] = []
     try:
         for query in QUERIES:
             params = urllib.parse.urlencode({"q": query, "sort": "updated", "order": "desc", "per_page": MAX_REPOS_PER_QUERY})
-            result = request_json("https://api.github.com/search/repositories?" + params, token)
+            try:
+                result = request_json("https://api.github.com/search/repositories?" + params, token)
+            except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError) as exc:
+                # Preserve successful query results when one search is unavailable or rate-limited.
+                discovery_errors.append({"query": query, "error": str(exc)})
+                continue
             for repo_data in result.get("items", []):
                 full_name = str(repo_data.get("full_name", ""))
                 if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", full_name):
@@ -334,6 +340,7 @@ def main() -> int:
                 for url in set(previous_claims) | set(seed_claims)
             }
         merged = merge_candidates(existing, list(discovered.values()))
+        merged["discovery_errors"] = discovery_errors
     except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError) as exc:
         message = "Source discovery degraded; previous discovery inventory retained. " + str(exc)
         print("WARNING: " + message, file=sys.stderr)
@@ -348,7 +355,7 @@ def main() -> int:
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:
         with Path(summary).open("a", encoding="utf-8") as stream:
-            stream.write(f"## Source discovery\n\nRepositories seen: **{len(discovered)}**. Candidates retained: **{merged['candidate_count']}**. No source was activated.\n")
+            stream.write(f"## Source discovery\n\nRepositories seen: **{len(discovered)}**. Candidates retained: **{merged['candidate_count']}**. Failed queries: **{len(discovery_errors)}**. No source was activated.\n")
     print(json.dumps({"repositories_seen": len(discovered), "candidates_retained": merged["candidate_count"], "activated": 0}, sort_keys=True))
     return 0
 
