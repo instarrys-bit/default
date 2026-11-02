@@ -9,7 +9,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 
 
-RETRYABLE_CONCLUSIONS = {"timed_out", "startup_failure"}
+RETRYABLE_CONCLUSIONS = {"timed_out", "startup_failure", "cancelled"}
 
 
 def _timestamp(value: str) -> datetime:
