@@ -257,11 +257,11 @@
     }
   },
   "rule_count": {
-    "DIRECT": 231,
+    "DIRECT": 230,
     "PROXY": 205,
     "REJECT": 6
   },
-  "published_rule_total": 442,
+  "published_rule_total": 441,
   "max_published_rules": 30000,
   "queued_rule_total": 0,
   "baseline_conflict_hold_count": 1,
@@ -281,11 +281,11 @@
   "rule_lifecycle": {
     "DIRECT": {
       "previous_count": 216,
-      "current_count": 231,
-      "added_count": 15,
+      "current_count": 230,
+      "added_count": 14,
       "removed_count": 0,
       "previous_sha256": "51243bedd7ec8b8756eb3e2ecca4b971b4ab489ecbce9d7aeec1ad94cb79eb18",
-      "current_sha256": "4181bba987e99df75ef6f467dbe459de2901d63a275fb0d7b7649ec2f1bf31ec",
+      "current_sha256": "5d7847870d43c4285617727c77637b63cdd3161126dff4cc9f13e60cd4f4cf1f",
       "added_sample": [
         "DOMAIN-SUFFIX,37.com",
         "DOMAIN-SUFFIX,37games.com",
