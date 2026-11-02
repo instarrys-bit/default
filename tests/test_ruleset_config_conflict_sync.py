@@ -87,9 +87,9 @@ class ConfigConflictSyncTests(unittest.TestCase):
     def test_config_change_without_conflict_leaves_rule_sets_untouched(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            direct_before = "DOMAIN,keep.example.com\\n"
-            proxy_before = "DOMAIN-SUFFIX,foreign.example.net\\n"
-            reject_before = "DOMAIN,ad.example.org\\n"
+            direct_before = "DOMAIN,keep.example.com\n"
+            proxy_before = "DOMAIN-SUFFIX,foreign.example.net\n"
+            reject_before = "DOMAIN,ad.example.org\n"
             make_root(
                 root,
                 config_with_rules(["DOMAIN-SUFFIX,unrelated.example.com,PROXY"]),
