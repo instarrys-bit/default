@@ -87,6 +87,8 @@ def evidence_is_current(ev, source_map, snapshot_hashes, policy):
         and str(ev.get("classification", "")).upper() == policy
         and str(src.get("classification", "")).upper() == policy
         and ev.get("lineage_status") == src.get("lineage_status")
+        and ev.get("policy_evidence", "documented_policy") == src.get("policy_evidence", "documented_policy")
+        and ev.get("upstream_repositories", []) == src.get("upstream_repositories", [])
         and ev.get("entry_type") in {"exact_candidate", "suffix_candidate"}
     )
 
