@@ -1,6 +1,6 @@
 # Automated source discovery
 
-- Candidate repositories retained: **216**
+- Candidate repositories retained: **217**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
@@ -210,6 +210,14 @@
 
 - Description: Shadowrocket 与 Mihomo 公开规则框架；节点凭据保留本地，GitHub Actions 核验并发布更新。
 - Stars: 0; archived: False; fork: False
+- Search queries: shadowrocket rules
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
+### [FoxUSA/VPN-panel](https://github.com/FoxUSA/VPN-panel)
+
+- Description: Web panel to administer your own VPN server: users, access rules, rule templates, logs and stats, cascade through a second VPN. AmneziaWG, XRay, Hysteria 2, MTProto. Self-hosted, free.
+- Stars: 3; archived: False; fork: False
 - Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
