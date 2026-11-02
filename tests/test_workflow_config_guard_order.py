@@ -24,6 +24,31 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("Independently verify committed remote rulesets", workflow)
         self.assertLess(workflow.index("git push origin HEAD:main"), workflow.index("Independently verify committed remote rulesets"))
 
+    def test_watchdog_recovery_is_main_only_and_serialized_with_publisher(self):
+        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        self.assertIn("group: shadowrocket-main-writer", watchdog)
+        self.assertIn("github.event.workflow_run.head_branch == 'main'", watchdog)
+        self.assertIn('select(.head_branch == "main" and .head_sha == $sha', watchdog)
+        self.assertIn('select(.head_branch == "main" and .conclusion == "success")', watchdog)
+
+    def test_self_healing_never_cancels_non_main_runs_or_cross_closes_incidents(self):
+        healing = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")
+        self.assertIn('if run.get("head_branch") != "main":', healing)
+        self.assertIn('select(.head_branch == "main" and .id > $failed)', healing)
+        self.assertIn("workflow=deterministic_audit;run_id=", healing)
+        self.assertIn("workflow=config_validator;run_id=", healing)
+        self.assertIn("(config_validator)", healing)
+        self.assertIn("(deterministic_audit)", healing)
+
+    def test_automation_incidents_are_bound_to_exact_workflow_runs(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn("Shadowrocket automation failure (run $RUN_ID)", workflow)
+        self.assertIn("workflow=auto_sync;run_id=$RUN_ID", workflow)
+        self.assertIn("capture(\"shadowrocket-automation:workflow=auto_sync;run_id=", workflow)
+        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        self.assertIn("Close recovered manifest integrity incidents", watchdog)
+        self.assertIn("steps.verify.outcome == 'success'", watchdog)
+
     def test_high_volume_state_is_restored_before_candidate_mutation(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         restore = workflow.index("Restore prior high-volume automation state")
