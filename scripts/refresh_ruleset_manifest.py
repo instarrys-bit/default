@@ -25,7 +25,7 @@ def _read_review_engine(root: Path) -> str:
     if not builder.is_file():
         raise ValueError("scripts/build_rulesets.py is missing; cannot verify manifest reviewer version")
     source = builder.read_text(encoding="utf-8")
-    matches = re.findall(r'"review_engine"\\s*:\\s*"([^"]+)"', source)
+    matches = re.findall(r'"review_engine"\s*:\s*"([^"]+)"', source)
     if len(matches) != 1 or not matches[0].strip():
         raise ValueError("could not uniquely determine review_engine from build_rulesets.py")
     return matches[0]
