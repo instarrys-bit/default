@@ -222,7 +222,7 @@ jobs:
           python3 scripts/lifecycle_audit.py
           if [ -f reports/lifecycle/latest.md ]; then python3 scripts/append_step_summary.py --input reports/lifecycle/latest.md; fi
 
-      - name: Enforce final ss.conf precedence after all rule mutations
+      - name: Reconcile final ss.conf scope coverage after all rule mutations
         env:
           RULESET_CONFIG_REPORT_AGGREGATION: "1"
         run: |
@@ -242,7 +242,7 @@ jobs:
           python3 scripts/audit_ruleset_references.py
           python3 scripts/append_step_summary.py --input reports/ruleset-reference-audit.md
 
-      - name: Audit candidate overlap with user config precedence (read-only)
+      - name: Audit candidate scope coverage against user config (read-only)
         run: |
           python3 scripts/audit_ruleset_config_overlap.py
           python3 scripts/append_step_summary.py --input reports/ruleset-config-overlap-audit.md
