@@ -65,6 +65,12 @@ class ProjectStatusTests(unittest.TestCase):
             save("sources/discovered_sources.json", {"candidate_count": 10, "candidates": []})
             save("sources/source_assessments.json", {"assessments": [{}, {}, {}]})
             save("sources/source_candidates.json", {"candidates": [{}, {}]})
+            save("sources/rule_provenance.json", {"rules": [
+                {"rule_id": "r1", "currently_reviewed": True, "sources": [
+                    {"evidence_grade": "exact_file_line", "line_number": 12},
+                    {"evidence_grade": "snapshot_membership", "line_number": None}
+                ]}
+            ]})
             save("reports/source-lineage-audit.json", {
                 "audited_source_count": 6, "lineage_partial_count": 1,
                 "lineage_unverified_count": 5, "lineage_verified_count": 0
@@ -85,6 +91,10 @@ class ProjectStatusTests(unittest.TestCase):
             self.assertEqual(status["rulesets"]["headroom"], 29997)
             self.assertEqual(status["sources"]["enabled_count"], 6)
             self.assertEqual(status["sources"]["degraded_count"], 0)
+            self.assertEqual(status["rule_provenance"]["rule_count"], 1)
+            self.assertEqual(status["rule_provenance"]["exact_file_line_evidence_count"], 1)
+            self.assertEqual(status["rule_provenance"]["snapshot_membership_evidence_count"], 1)
+            self.assertEqual(status["rule_provenance"]["missing_line_number_count"], 1)
             self.assertEqual(status["recovery"]["config_conflict_restorable_count"], 1)
             self.assertEqual(status["recovery"]["lifecycle_deletion_restorable_count"], 1)
             self.assertTrue(status["integrity"]["config_baseline_match"])
