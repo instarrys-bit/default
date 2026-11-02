@@ -249,6 +249,9 @@ jobs:
           for run in payload.get("workflow_runs", []):
               if run.get("status") == "completed":
                   continue
+              # Production recovery must never cancel runs from non-main branches.
+              if run.get("head_branch") != "main":
+                  continue
               run_id = run.get("id")
               if not run_id:
                   continue
@@ -277,14 +280,14 @@ jobs:
             runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=30")"
           fi
 
-          active_count="$(jq '[.workflow_runs[] | select(.status != "completed")] | length' <<< "$runs")"
+          active_count="$(jq '[.workflow_runs[] | select(.head_branch == "main" and .status != "completed")] | length' <<< "$runs")"
           if [ "$active_count" -gt 0 ]; then
             echo "An audit is still queued, cancelling, or running; no replacement will be dispatched."
             exit 0
           fi
 
-          last_success="$(jq -r '[.workflow_runs[] | select(.conclusion == "success")] | sort_by(.created_at) | last | .created_at // empty' <<< "$runs")"
-          last_success_sha="$(jq -r '[.workflow_runs[] | select(.conclusion == "success")] | sort_by(.created_at) | last | .head_sha // empty' <<< "$runs")"
+          last_success="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .created_at // empty' <<< "$runs")"
+          last_success_sha="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .head_sha // empty' <<< "$runs")"
           age_seconds="$(python3 - "$last_success" <<'PY'
           import sys
           from datetime import datetime, timezone
