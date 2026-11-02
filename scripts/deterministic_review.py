@@ -6,6 +6,7 @@ from pathlib import Path
 from datetime import datetime,timezone
 from domain_rule_engine import RuleIndex,load_domain_rules,inspect_suffix_scope
 from source_registry import validate_registry
+from review_cursor import snapshot_digest,resume_index,checkpoint
 ROOT=Path(__file__).resolve().parents[1]
 CONFIG=ROOT/"shadowrocket/ss.conf"
 POLICY=ROOT/"sources/domain_sources.json"
@@ -282,11 +283,9 @@ def main():
                 published_identities.add((policy_name.upper(),line[14:],"suffix_candidate"))
     run_counts={}
     candidates=collected.get("candidates",[])
-    snapshot_sha256=hashlib.sha256(json.dumps({"sources":collected.get("sources",[]),"candidates":candidates},ensure_ascii=False,sort_keys=True,separators=(",",":")).encode("utf-8")).hexdigest()
+    snapshot_sha256=snapshot_digest(collected.get("sources",[]),candidates)
     cursor_state=json.loads(CURSOR.read_text(encoding="utf-8")) if CURSOR.exists() else {}
-    start_index=0
-    if cursor_state.get("snapshot_sha256")==snapshot_sha256 and cursor_state.get("status")=="in_progress":
-        start_index=max(0,min(int(cursor_state.get("next_index",0)),len(candidates)))
+    start_index=resume_index(cursor_state,snapshot_sha256,len(candidates))
     batch_size=250
     for candidate_index,item in enumerate(candidates[start_index:],start=start_index):
         domain=str(item.get("domain","")).lower().rstrip(".")
@@ -368,7 +367,7 @@ def main():
             partial_counts={}
             for record in partial_reviews: partial_counts[record["status"]]=partial_counts.get(record["status"],0)+1
             atomic_json(OUTPUT,{"schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,"source_snapshot":collected.get("sources",[]),"run_counts":run_counts,"counts":partial_counts,"reviews":partial_reviews})
-            atomic_json(CURSOR,{"schema_version":1,"snapshot_sha256":snapshot_sha256,"candidate_count":len(candidates),"next_index":candidate_index+1,"batch_size":batch_size,"status":"in_progress","updated_at":now,"last_checkpoint_domain":domain})
+            atomic_json(CURSOR,{**checkpoint(snapshot_sha256,len(candidates),candidate_index+1,batch_size),"updated_at":now,"last_checkpoint_domain":domain})
         run_counts[status]=run_counts.get(status,0)+1
     reviews=sorted(review_map.values(),key=lambda x:x["domain"])
     total_counts={}
@@ -378,7 +377,7 @@ def main():
         "source_snapshot":collected.get("sources",[]),"run_counts":run_counts,
         "counts":total_counts,"reviews":reviews
     },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    atomic_json(CURSOR,{"schema_version":1,"snapshot_sha256":snapshot_sha256,"candidate_count":len(candidates),"next_index":len(candidates),"batch_size":batch_size,"status":"complete","updated_at":now,"last_checkpoint_domain":candidates[-1].get("domain") if candidates else None})
+    atomic_json(CURSOR,{**checkpoint(snapshot_sha256,len(candidates),len(candidates),batch_size,"complete"),"updated_at":now,"last_checkpoint_domain":candidates[-1].get("domain") if candidates else None})
     print("Deterministic review complete: "+json.dumps(run_counts,ensure_ascii=False,sort_keys=True))
     print("Review cursor: "+json.dumps({"status":"complete","candidate_count":len(candidates),"snapshot_sha256":snapshot_sha256,"correlated_publisher_pairs":len(correlated_pairs)},sort_keys=True))
     print("Historical ledger entries: "+str(len(reviews))+"; candidates reviewed this run: "+str(len(collected.get("candidates",[])))+" (no 100-item cap).")
