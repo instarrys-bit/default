@@ -14,16 +14,30 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"', workflow)
         self.assertIn('      - "Validate Shadowrocket config against user baseline"', workflow)
         self.assertIn("types: [completed]", workflow)
+        self.assertIn("github.event.workflow_run.head_branch == 'main'", workflow)
+        self.assertIn('last_success_sha="$(jq -r', workflow)
+        self.assertIn('repos/$REPO/compare/$last_success_sha...$current_sha', workflow)
+        self.assertIn("Last successful audit is healthy; any intervening main changes are documentation-only", workflow)
 
     def test_failed_timed_out_or_startup_failed_scheduled_or_push_runs_trigger_one_recovery(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn('SOURCE_CONCLUSION: ${{ github.event.workflow_run.conclusion }}', workflow)
         self.assertIn('SOURCE_EVENT: ${{ github.event.workflow_run.event }}', workflow)
+        self.assertIn('SOURCE_WORKFLOW_NAME: ${{ github.event.workflow_run.name }}', workflow)
+        self.assertIn("validator failures are handled by self-healing diagnosis", workflow)
+        self.assertIn("block_manifest=true", workflow)
+        self.assertIn("needs.health-check.outputs.block_manifest != 'true'", workflow)
         self.assertIn('failure|timed_out|startup_failure)', workflow)
         self.assertIn('[ "$SOURCE_EVENT" != "schedule" ]', workflow)
         self.assertIn('[ "$SOURCE_EVENT" != "push" ]', workflow)
         self.assertIn("gh workflow run auto_sync.yml --ref main --repo \"$REPO\"", workflow)
-        self.assertIn('select(.id > $source)', workflow)
+        self.assertIn('select(.head_branch == "main" and .head_sha == $sha and .id > $source', workflow)
+
+    def test_run_history_checks_follow_all_api_pages(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        self.assertGreaterEqual(workflow.count("gh api --paginate --slurp"), 3)
+        self.assertNotIn("runs?per_page=20", workflow)
+        self.assertNotIn("runs?per_page=30", workflow)
 
     def test_workflow_dispatch_recovery_does_not_recursively_retry(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")

@@ -1,10 +1,6 @@
 name: Shadowrocket self-healing agent
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/self-healing-agent.yml"
   workflow_run:
     workflows:
       - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
@@ -28,7 +24,7 @@ jobs:
       contents: write
       issues: write
       pull-requests: write
-    if: ${{ github.event_name == 'workflow_run' && (github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'timed_out' || github.event.workflow_run.conclusion == 'startup_failure') }}
+    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'timed_out' || github.event.workflow_run.conclusion == 'startup_failure') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -51,20 +47,32 @@ jobs:
           REPO: ${{ github.repository }}
           WORKFLOW_ID: ${{ github.event.workflow_run.workflow_id }}
           FAILED_RUN_ID: ${{ github.event.workflow_run.id }}
+          FAILED_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           set -euo pipefail
-          runs="$(gh api "repos/$REPO/actions/workflows/$WORKFLOW_ID/runs?per_page=20" 2>/dev/null || true)"
+          runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/$WORKFLOW_ID/runs?per_page=100" 2>/dev/null | jq '{workflow_runs: [.[].workflow_runs[]]}' || true)"
           if [ -z "$runs" ]; then
             echo "Supersession lookup unavailable; continuing with diagnosis."
             echo "stale=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          newer_count="$(jq --argjson failed "$FAILED_RUN_ID" '[.workflow_runs[] | select(.id > $failed) | select(.status != "completed" or .conclusion == "success")] | length' <<< "$runs")"
+          newer_count="$(jq --argjson failed "$FAILED_RUN_ID" '[.workflow_runs[] | select(.head_branch == "main" and .id > $failed) | select(.status != "completed" or .conclusion == "success")] | length' <<< "$runs")"
           if [ "$newer_count" -gt 0 ]; then
             echo "A newer run is queued, active, or successful; suppressing this superseded failure."
             echo "stale=true" >> "$GITHUB_OUTPUT"
           else
-            echo "No newer active or successful run supersedes this failure."
+            current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"
+            if [ "$FAILED_SHA" != "$current_main" ]; then
+              compare_json="$(gh api "repos/$REPO/compare/$FAILED_SHA...$current_main" 2>/dev/null || true)"
+              if [ -n "$compare_json" ]; then
+                if ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null || ! jq -e '[.files[].filename | select(startswith("docs/") | not)] | length == 0' <<< "$compare_json" >/dev/null; then
+                  echo "The failed run's code inputs have been superseded by a newer main state; suppressing stale diagnosis."
+                  echo "stale=true" >> "$GITHUB_OUTPUT"
+                  exit 0
+                fi
+              fi
+            fi
+            echo "No newer run or non-documentation main change supersedes this failure."
             echo "stale=false" >> "$GITHUB_OUTPUT"
           fi
 
@@ -107,11 +115,19 @@ jobs:
           REPAIR_ID: ${{ steps.diagnosis.outputs.repair_id }}
         run: |
           set -euo pipefail
-          if [ "$REPAIR_ID" != "refresh_ruleset_manifest" ]; then
-            echo "No allowlisted automatic code repair applies; preserving diagnosis for incident reporting."
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
+          case "$REPAIR_ID" in
+            refresh_ruleset_manifest)
+              PR_TITLE="Self-heal: reconcile final RULE-SET manifest counts"
+              ;;
+            fix_stale_audit_concurrency_contract)
+              PR_TITLE="Self-heal: correct stale audit concurrency test contract"
+              ;;
+            *)
+              echo "No allowlisted automatic code repair applies; preserving diagnosis for incident reporting."
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+              ;;
+          esac
 
           python3 scripts/apply_safe_repair.py --diagnosis reports/self-healing/diagnosis.json
           python3 -m py_compile scripts/refresh_ruleset_manifest.py scripts/diagnose_workflow_failure.py scripts/apply_safe_repair.py
@@ -127,56 +143,131 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$branch"
-          git add .github/workflows/auto_sync.yml
-          git commit -m "Self-heal: reconcile final ruleset manifest counts"
+          case "$REPAIR_ID" in
+            refresh_ruleset_manifest)
+              git add -- .github/workflows/auto_sync.yml
+              expected_staged_path=".github/workflows/auto_sync.yml"
+              ;;
+            fix_stale_audit_concurrency_contract)
+              git add -- tests/test_workflow_config_guard_order.py
+              expected_staged_path="tests/test_workflow_config_guard_order.py"
+              ;;
+            *)
+              echo "Unknown repair id at staging; refusing to commit."
+              exit 1
+              ;;
+          esac
+          git diff --cached --check
+          staged_paths="$(git diff --cached --name-only)"
+          if [ "$staged_paths" != "$expected_staged_path" ]; then
+            echo "Staged paths do not match the repair-specific allowlist; refusing to commit."
+            printf '%s\n' "$staged_paths"
+            exit 1
+          fi
+          git commit -m "$PR_TITLE"
           echo "changed=true" >> "$GITHUB_OUTPUT"
           echo "branch=$branch" >> "$GITHUB_OUTPUT"
 
       - name: Publish repair pull request
+        id: publish-repair
         if: ${{ steps.repair.outputs.changed == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           BRANCH: ${{ steps.repair.outputs.branch }}
           RUN_ID: ${{ github.event.workflow_run.id }}
+          REPAIR_ID: ${{ steps.diagnosis.outputs.repair_id }}
         run: |
           set -euo pipefail
+          case "$REPAIR_ID" in
+            refresh_ruleset_manifest)
+              PR_TITLE="Self-heal: reconcile final RULE-SET manifest counts"
+              PR_BODY="Automated, allowlisted repair proposed after workflow run $RUN_ID.\n\n- Diagnosis: RULESET_MANIFEST_COUNT_MISSING or RULESET_MANIFEST_COUNT_MISMATCH.\n- Change: restore the deterministic final-manifest reconciliation step.\n- Validation: Python compilation and the repository unittest suite passed before publishing this PR.\n- Safety: no changes to shadowrocket/ss.conf, DNS, MITM, or routing policy.\n\nThis PR is not auto-merged."
+              ;;
+            fix_stale_audit_concurrency_contract)
+              PR_TITLE="Self-heal: correct stale audit concurrency test contract"
+              PR_BODY="Automated, allowlisted repair proposed after workflow run $RUN_ID.\n\n- Diagnosis: WORKFLOW_TEST_CONTRACT_MISMATCH.\n- Change: update only the outdated static test assertion to match the safe cancel-in-progress: false policy.\n- Validation: Python compilation and the repository unittest suite passed before publishing this PR.\n- Safety: no changes to shadowrocket/ss.conf, ruleset contents, DNS, MITM, or routing policy.\n\nThis PR is not auto-merged."
+              ;;
+            *)
+              echo "Unknown repair id at PR publication; refusing to publish."
+              exit 1
+              ;;
+          esac
           gh auth setup-git
           git push origin "$BRANCH"
-          gh pr create \
-            --repo "$REPO" \
-            --base main \
-            --head "$BRANCH" \
-            --title "Self-heal: reconcile final RULE-SET manifest counts" \
-            --body "Automated, allowlisted repair proposed after workflow run $RUN_ID.\n\n- Diagnosis: RULESET_MANIFEST_COUNT_MISSING or RULESET_MANIFEST_COUNT_MISMATCH.\n- Change: restore the deterministic final-manifest reconciliation step.\n- Validation: Python compilation and the repository unittest suite passed before publishing this PR.\n- Safety: no changes to shadowrocket/ss.conf, DNS, MITM, or routing policy.\n\nThis PR is not auto-merged."
+          gh pr create --repo "$REPO" --base main --head "$BRANCH" --title "$PR_TITLE" --body "$PR_BODY"
           gh workflow run self-healing-tests.yml --ref "$BRANCH" --repo "$REPO"
 
       - name: Open incident when no safe repair applies
-        if: ${{ steps.supersession.outputs.stale != 'true' && steps.repair.outputs.changed != 'true' && steps.diagnosis.outputs.classification != 'STALE_SUPERSEDED' && steps.diagnosis.outputs.failed_steps_count != '0' }}
+        if: ${{ always() && steps.supersession.outputs.stale != 'true' && steps.diagnosis.outcome == 'success' && steps.diagnosis.outputs.classification != 'STALE_SUPERSEDED' && (steps.diagnosis.outputs.failed_steps_count != '0' || steps.diagnosis.outputs.classification == 'WORKFLOW_TIMEOUT' || github.event.workflow_run.conclusion == 'startup_failure') && (steps.repair.outcome != 'success' || steps.repair.outputs.changed != 'true' || steps.publish-repair.outcome == 'failure') }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           RUN_ID: ${{ github.event.workflow_run.id }}
           RUN_URL: ${{ github.event.workflow_run.html_url }}
+          SOURCE_WORKFLOW: ${{ github.event.workflow_run.name }}
         run: |
           set -euo pipefail
+          case "$SOURCE_WORKFLOW" in
+            "Shadowrocket Deterministic Domain Audit (User Config Baseline)") workflow_key="deterministic_audit" ;;
+            "Validate Shadowrocket config against user baseline") workflow_key="config_validator" ;;
+            *) echo "Unsupported source workflow; refusing to open a misclassified incident."; exit 1 ;;
+          esac
+          marker="<!-- shadowrocket-automation:workflow=$workflow_key;run_id=$RUN_ID -->"
           classification="$(python3 -c 'import json; print(json.load(open("reports/self-healing/diagnosis.json"))["classification"])')"
           body="$(cat reports/self-healing/diagnosis.json)"
-          title="Self-healing incident: $classification"
-          existing="$(gh issue list --repo "$REPO" --state open --search "$classification in:title" --json number --jq '.[0].number')"
+          title="Self-healing incident: $classification ($workflow_key)"
+          existing="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title | jq --arg title "$title" -r '.[] | select(.title == $title) | .number' | head -n 1)"
           if [ -n "$existing" ] && [ "$existing" != "null" ]; then
             body_text="$(printf 'Repeated failure for run %s: %s\\n\\n```json\\n%s\\n```\\n' "$RUN_ID" "$RUN_URL" "$body")"
+            body_text="$(printf '%s\\n\\n%s' "$marker" "$body_text")"
             gh issue comment "$existing" --repo "$REPO" --body "$body_text"
+            gh issue edit "$existing" --repo "$REPO" --body "$body_text"
           else
             body_text="$(printf 'Failed workflow run %s: %s\\n\\nAutomatic repair was not applied. No speculative code changes were made.\\n\\nDiagnosis:\\n\\n```json\\n%s\\n```\\n' "$RUN_ID" "$RUN_URL" "$body")"
+            body_text="$(printf '%s\\n\\n%s' "$marker" "$body_text")"
             gh issue create --repo "$REPO" --title "$title" --body "$body_text"
           fi
 
 
+  report-agent-failure:
+    needs: [diagnose-and-repair]
+    if: ${{ always() && github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'timed_out' || github.event.workflow_run.conclusion == 'startup_failure') && needs.diagnose-and-repair.result == 'failure' }}
+    permissions:
+      issues: write
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Open self-healing agent execution incident
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+          SOURCE_RUN_URL: ${{ github.event.workflow_run.html_url }}
+          SOURCE_WORKFLOW: ${{ github.event.workflow_run.name }}
+          AGENT_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          case "$SOURCE_WORKFLOW" in
+            "Shadowrocket Deterministic Domain Audit (User Config Baseline)") workflow_key="deterministic_audit" ;;
+            "Validate Shadowrocket config against user baseline") workflow_key="config_validator" ;;
+            *) echo "Unsupported source workflow; refusing to misclassify agent failure."; exit 1 ;;
+          esac
+          title="Self-healing agent failure: $workflow_key (source run $SOURCE_RUN_ID)"
+          marker="<!-- shadowrocket-automation:agent_failure;workflow=$workflow_key;source_run_id=$SOURCE_RUN_ID -->"
+          body="The self-healing agent itself failed while processing a main-branch workflow failure.\n\nSource run: $SOURCE_RUN_URL\nAgent run: $AGENT_RUN_URL\n\n$marker\n\nNo speculative project changes were made. Inspect the agent run logs and diagnosis/repair stage."
+          existing="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title | jq --arg title "$title" -r '.[] | select(.title == $title) | .number' | head -n 1)"
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "$REPO" --body "$body"
+            gh issue edit "$existing" --repo "$REPO" --body "$body"
+          else
+            gh issue create --repo "$REPO" --title "$title" --body "$body"
+          fi
+
   resolve-validator-incidents:
     permissions:
       issues: write
-    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Validate Shadowrocket config against user baseline' && github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.name == 'Validate Shadowrocket config against user baseline' && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 3
     steps:
@@ -185,10 +276,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.event.workflow_run.html_url }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
         run: |
           set -euo pipefail
-          for classification in CONFIG_BASELINE_MISMATCH TEST_FAILURE PYTHON_IMPORT_FAILURE; do
-            issues="$(gh issue list --repo "$REPO" --state open --search "Self-healing incident $classification in:title" --json number --jq '.[].number')"
+          for classification in CONFIG_BASELINE_MISMATCH TEST_FAILURE PYTHON_IMPORT_FAILURE WORKFLOW_TIMEOUT UNCLASSIFIED_STEP_FAILURE; do
+            issues="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title,body | jq --arg classification "$classification" --argjson run_id "$RUN_ID" '.[] | select(.title == ("Self-healing incident: " + $classification + " (config_validator)")) | select(.body | contains("shadowrocket-automation:workflow=config_validator;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=config_validator;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
             if [ -z "$issues" ]; then
               continue
             fi
@@ -198,12 +290,18 @@ jobs:
               gh issue close "$issue" --repo "$REPO"
             done <<< "$issues"
           done
+          agent_issues="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select(.title | startswith("Self-healing agent failure: config_validator (source run ")) | select(.body | contains("shadowrocket-automation:agent_failure;workflow=config_validator;source_run_id=")) | select(((.body | capture("shadowrocket-automation:agent_failure;workflow=config_validator;source_run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
+          while IFS= read -r issue; do
+            [ -n "$issue" ] || continue
+            gh issue comment "$issue" --repo "$REPO" --body "The config-baseline validator has recovered on a later main-branch run: $RUN_URL"
+            gh issue close "$issue" --repo "$REPO"
+          done <<< "$agent_issues"
 
 
   resolve-audit-incidents:
     permissions:
       issues: write
-    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 3
     steps:
@@ -213,25 +311,32 @@ jobs:
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.event.workflow_run.html_url }}
           RUN_SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
         run: |
           set -euo pipefail
-          issues="$(gh issue list --repo "$REPO" --state open --search '"Self-healing incident" in:title' --json number,title --jq '.[] | select((.title | startswith("Self-healing incident: UNCLASSIFIED_STEP_FAILURE")) or (.title | startswith("Self-healing incident: TEST_FAILURE"))) | .number')"
+          issues="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select(.title | test("^Self-healing incident: (UNCLASSIFIED_STEP_FAILURE|TEST_FAILURE|PYTHON_IMPORT_FAILURE|WORKFLOW_TIMEOUT|CONFIG_BASELINE_MISMATCH|RULESET_MANIFEST_COUNT_MISSING|RULESET_MANIFEST_COUNT_MISMATCH) \\(deterministic_audit\\)$")) | select(.body | contains("shadowrocket-automation:workflow=deterministic_audit;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=deterministic_audit;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
           if [ -z "$issues" ]; then
             echo "No open deterministic-audit test/failure incidents to resolve."
-            exit 0
+          else
+            while IFS= read -r issue; do
+              [ -n "$issue" ] || continue
+              gh issue comment "$issue" --repo "$REPO" --body "A subsequent full deterministic audit and publish completed successfully on commit $RUN_SHA. Recovery run: $RUN_URL"
+              gh issue close "$issue" --repo "$REPO"
+            done <<< "$issues"
           fi
+          agent_issues="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select(.title | startswith("Self-healing agent failure: deterministic_audit (source run ")) | select(.body | contains("shadowrocket-automation:agent_failure;workflow=deterministic_audit;source_run_id=")) | select(((.body | capture("shadowrocket-automation:agent_failure;workflow=deterministic_audit;source_run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
           while IFS= read -r issue; do
             [ -n "$issue" ] || continue
-            gh issue comment "$issue" --repo "$REPO" --body "A subsequent full deterministic audit and publish completed successfully on commit $RUN_SHA. Recovery run: $RUN_URL"
+            gh issue comment "$issue" --repo "$REPO" --body "The deterministic audit and publish have recovered on a later main-branch run: $RUN_URL"
             gh issue close "$issue" --repo "$REPO"
-          done <<< "$issues"
+          done <<< "$agent_issues"
 
   stale-run-watch:
     permissions:
       actions: write
       contents: read
       issues: write
-    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
+    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:
@@ -242,7 +347,7 @@ jobs:
         run: |
           set -euo pipefail
           current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"
-          runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=30")"
+          runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
 
           stale_lines="$(python3 -c '
           import json, sys
@@ -253,42 +358,54 @@ jobs:
           for run in payload.get("workflow_runs", []):
               if run.get("status") == "completed":
                   continue
+              # Production recovery must never cancel runs from non-main branches.
+              if run.get("head_branch") != "main":
+                  continue
               run_id = run.get("id")
               if not run_id:
                   continue
               if run.get("head_sha") != current_main:
-                  print(run_id, "superseded")
+                  print(run_id, "superseded", run.get("head_sha", ""))
                   continue
               stamp = run.get("run_started_at") or run.get("created_at")
               if not stamp:
                   continue
               started = datetime.fromisoformat(stamp.replace("Z", "+00:00"))
               if (now - started).total_seconds() > 21600:
-                  print(run_id, "timeout")
+                  print(run_id, "timeout", run.get("head_sha", ""))
           ' "$current_main" <<< "$runs")"
 
-          cancelled_any=0
           timed_out_any=0
           if [ -n "$stale_lines" ]; then
-            while read -r stale_id reason; do
+            while read -r stale_id reason run_sha; do
               [ -n "$stale_id" ] || continue
+              if [ "$reason" = "superseded" ]; then
+                compare_json="$(gh api "repos/$REPO/compare/$run_sha...$current_main" 2>/dev/null || true)"
+                if [ -z "$compare_json" ] || ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null; then
+                  echo "Could not safely classify changes after audit $stale_id; leaving it active for the publish-base guard."
+                  continue
+                fi
+                if jq -e '[.files[].filename | select(startswith("docs/") | not)] | length == 0' <<< "$compare_json" >/dev/null; then
+                  echo "Audit $stale_id remains publishable: only docs/ changed after its audited commit."
+                  continue
+                fi
+              fi
               echo "Cancelling audit $stale_id ($reason); current main is $current_main."
               gh run cancel "$stale_id" --repo "$REPO" || true
-              cancelled_any=1
               if [ "$reason" = "timeout" ]; then timed_out_any=1; fi
             done <<< "$stale_lines"
             sleep 10
-            runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=30")"
+            runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
           fi
 
-          active_count="$(jq '[.workflow_runs[] | select(.status != "completed")] | length' <<< "$runs")"
+          active_count="$(jq '[.workflow_runs[] | select(.head_branch == "main" and .status != "completed")] | length' <<< "$runs")"
           if [ "$active_count" -gt 0 ]; then
             echo "An audit is still queued, cancelling, or running; no replacement will be dispatched."
             exit 0
           fi
 
-          last_success="$(jq -r '[.workflow_runs[] | select(.conclusion == "success")] | sort_by(.created_at) | last | .created_at // empty' <<< "$runs")"
-          last_success_sha="$(jq -r '[.workflow_runs[] | select(.conclusion == "success")] | sort_by(.created_at) | last | .head_sha // empty' <<< "$runs")"
+          last_success="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .created_at // empty' <<< "$runs")"
+          last_success_sha="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .head_sha // empty' <<< "$runs")"
           age_seconds="$(python3 - "$last_success" <<'PY'
           import sys
           from datetime import datetime, timezone
@@ -301,11 +418,26 @@ jobs:
           PY
           )"
 
-          if [ "$cancelled_any" = "1" ] || [ "$last_success_sha" != "$current_main" ] || [ "$age_seconds" -gt 691200 ]; then
-            echo "No current-main audit is active and the last successful audit is stale or superseded; dispatching one replacement."
+          audit_base_stale=0
+          if [ -z "$last_success_sha" ]; then
+            audit_base_stale=1
+          elif [ "$last_success_sha" != "$current_main" ]; then
+            compare_json="$(gh api "repos/$REPO/compare/$last_success_sha...$current_main" 2>/dev/null || true)"
+            if [ -z "$compare_json" ] || ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null || ! jq -e '[.files[].filename | select(startswith("docs/") | not)] | length == 0' <<< "$compare_json" >/dev/null; then
+              audit_base_stale=1
+            fi
+          fi
+
+          if [ "$timed_out_any" = "1" ] || [ "$audit_base_stale" = "1" ] || [ "$age_seconds" -gt 691200 ]; then
+            echo "No publishable current-main audit is active and the last successful audit is stale or superseded; dispatching one replacement."
             gh workflow run auto_sync.yml --ref main --repo "$REPO"
           else
-            echo "The latest successful audit matches current main and is within the eight-day health window."
+            echo "The latest successful audit is healthy; any intervening main changes are documentation-only."
+            issue="$(gh issue list --repo "$REPO" --state open --search "stalled audit in:title" --json number,title --jq '.[0].number')"
+            if [ -n "$issue" ] && [ "$issue" != "null" ]; then
+              gh issue comment "$issue" --repo "$REPO" --body "A successful audit now matches current main $current_main and is within the eight-day health window."
+              gh issue close "$issue" --repo "$REPO"
+            fi
           fi
 
           if [ "$timed_out_any" = "1" ]; then
