@@ -160,7 +160,7 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn("--paginate --slurp", resolver)
         self.assertLess(
             resolver.index("python3 scripts/verify_recovery_run.py"),
-            resolver.index('\\n          issues="$(gh issue list'),
+            resolver.index('          issues="$(gh issue list'),
         )
         self.assertIn("Independently verify committed remote rulesets", AUTO_SYNC.read_text(encoding="utf-8"))
 
