@@ -105,7 +105,7 @@ class LifecycleAuditSafetyTests(unittest.TestCase):
             rules=root/"rulesets"
             (root/"sources").mkdir()
             rules.mkdir()
-            (rules/"direct.list").write_text("DOMAIN,old.example\\n",encoding="utf-8")
+            (rules/"direct.list").write_text("DOMAIN,old.example\n",encoding="utf-8")
             (rules/"proxy.list").write_text("",encoding="utf-8")
             (rules/"reject.list").write_text("",encoding="utf-8")
             (rules/"lifecycle_state.json").write_text(json.dumps({
