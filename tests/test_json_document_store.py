@@ -63,7 +63,7 @@ class JsonDocumentStoreTests(unittest.TestCase):
             path = Path(tmp) / "ledger.json"
             first = {"reviews": [{"id": i, "payload": "a" * 900} for i in range(6)]}
             second = {"reviews": [{"id": i, "payload": "b" * 900} for i in range(6)]}
-            with patch.object(store, "MAX_FILE_BYTES", 220), patch.object(store, "SHARD_TARGET_BYTES", 100):
+            with patch.object(store, "MAX_FILE_BYTES", 4096), patch.object(store, "SHARD_TARGET_BYTES", 1000):
                 store.write_document(path, first, "reviews")
                 with patch.object(store, "_atomic_write", side_effect=OSError("simulated manifest failure")):
                     with self.assertRaisesRegex(OSError, "simulated"):
