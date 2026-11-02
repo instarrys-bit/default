@@ -1,5 +1,6 @@
 import importlib.util
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 
@@ -34,6 +35,22 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
         self.assertIn("开源分流规则", discovery.QUERIES)
         self.assertFalse(any("apple" in query.lower() for query in discovery.QUERIES))
 
+    def test_tree_discovery_filters_paths_and_reports_truncation(self):
+        discovery = load_script("discover_sources")
+        tree = {
+            "truncated": True,
+            "tree": [
+                {"type": "blob", "path": "rules/direct.list", "size": 100},
+                {"type": "blob", "path": "rules/adult/blocked.txt", "size": 100},
+                {"type": "blob", "path": "rules/oversized.conf", "size": 6_000_000},
+                {"type": "blob", "path": "README.md", "size": 100},
+                {"type": "tree", "path": "rules/nested"},
+            ],
+        }
+        with patch.object(discovery, "request_json", return_value=tree):
+            urls, truncated = discovery.discover_tree_urls("owner", "repo", "main", "token")
+        self.assertEqual(urls, ["https://raw.githubusercontent.com/owner/repo/main/rules/direct.list"])
+        self.assertTrue(truncated)
     def test_assessment_read_and_review_capacity_is_high(self):
         assessment = load_script("assess_sources")
         self.assertGreaterEqual(assessment.MAX_URLS, 5_000)
