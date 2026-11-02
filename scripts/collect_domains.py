@@ -258,7 +258,7 @@ def read_snapshot(source_id):
 
 def main():
     cfg=json.loads(SOURCES.read_text(encoding="utf-8"))
-    buf=json.loads(BUFFER.read_text(encoding="utf-8")) if BUFFER.exists() else {"candidates":[],"bootstrapped_sources":[]}
+    buf=read_document(BUFFER,"candidates",{"candidates":[],"bootstrapped_sources":[]})
     pending_data=json.loads(PENDING.read_text(encoding="utf-8")) if PENDING.exists() else {"schema_version":1,"sources":{}}
     pending_sources=dict(pending_data.get("sources",{}))
     bootstrapped_sources=set(buf.get("bootstrapped_sources",[]))
@@ -391,7 +391,7 @@ def main():
             continue
         path=snapshot_path(sid)
         path.write_text("\n".join(sorted(info["domains"]))+"\n",encoding="utf-8")
-    BUFFER.write_text(json.dumps({"schema_version":2,"updated_at":now,"bootstrapped_sources":sorted(bootstrapped_sources),"candidates":list(queue.values())},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    write_document(BUFFER,{"schema_version":2,"updated_at":now,"bootstrapped_sources":sorted(bootstrapped_sources),"candidates":list(queue.values())},"candidates")
     PENDING.parent.mkdir(parents=True,exist_ok=True)
     PENDING.write_text(json.dumps({"schema_version":1,"updated_at":now,"sources":pending_sources},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     OUTPUT.parent.mkdir(parents=True,exist_ok=True)
