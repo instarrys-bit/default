@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""Transparent JSON document storage with bounded JSONL shards.
-
-Legacy JSON remains readable. Once a document needs sharding, it stays sharded
-so readers never race between two storage formats during normal operation.
-"""
+"""Transparent JSON storage with bounded JSONL shards for growing ledgers."""
 from __future__ import annotations
 
 import hashlib
@@ -23,7 +19,7 @@ def manifest_path(path: Path) -> Path:
     return path.with_name(path.name + MANIFEST_SUFFIX)
 
 
-def _json_bytes(value: Any) -> bytes:
+def _compact_bytes(value: Any) -> bytes:
     return json.dumps(value, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
 
 
@@ -45,7 +41,7 @@ def _atomic_write(path: Path, data: bytes) -> None:
 
 
 def read_document(path: Path, collection_key: str, default: dict | None = None) -> dict:
-    """Read a legacy JSON file or verify and reconstruct its sharded equivalent."""
+    """Read legacy JSON or verify and reconstruct a sharded document."""
     path = Path(path)
     manifest_file = manifest_path(path)
     if not manifest_file.exists():
@@ -60,12 +56,14 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
         raise ValueError(f"shard manifest identity mismatch: {manifest_file}")
 
     records = []
-    total_bytes = 0
     for shard in manifest.get("shards", []):
         name = str(shard.get("file", ""))
         if not name or Path(name).name != name or not name.endswith(".jsonl"):
             raise ValueError(f"unsafe shard name in {manifest_file}: {name!r}")
-        shard_path = manifest_file.parent / str(manifest["shard_directory"]) / name
+        directory = str(manifest.get("shard_directory", ""))
+        if not directory or Path(directory).name != directory:
+            raise ValueError(f"unsafe shard directory in {manifest_file}")
+        shard_path = manifest_file.parent / directory / name
         raw = shard_path.read_bytes()
         if len(raw) > MAX_FILE_BYTES:
             raise ValueError(f"shard exceeds {MAX_FILE_BYTES} bytes: {shard_path}")
@@ -75,7 +73,6 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
         if len(rows) != int(shard.get("records", -1)):
             raise ValueError(f"shard record-count mismatch: {shard_path}")
         records.extend(json.loads(line) for line in rows)
-        total_bytes += len(raw)
     if len(records) != int(manifest.get("record_count", -1)):
         raise ValueError(f"document record-count mismatch: {manifest_file}")
     metadata = manifest.get("metadata", {})
@@ -87,27 +84,38 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
 
 
 def write_document(path: Path, payload: dict, collection_key: str) -> dict:
-    """Atomically write legacy JSON or immutable JSONL shards plus a manifest."""
+    """Write one bounded JSON file, or switch atomically to immutable JSONL shards."""
     path = Path(path)
     if not isinstance(payload, dict) or not isinstance(payload.get(collection_key), list):
         raise ValueError(f"document must contain a list at {collection_key!r}")
     records = payload[collection_key]
     metadata = {key: value for key, value in payload.items() if key != collection_key}
-    legacy = (json.dumps(payload, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
-    already_sharded = manifest_path(path).exists()
+    manifest_file = manifest_path(path)
+    already_sharded = manifest_file.exists()
 
-    if len(legacy) <= MAX_FILE_BYTES and not already_sharded:
-        _atomic_write(path, legacy)
-        return {"storage": "json", "records": len(records), "bytes": len(legacy), "shards": 0}
+    # Estimate compact size without constructing an unbounded serialized document.
+    metadata_bytes = _compact_bytes(metadata)
+    estimate = len(metadata_bytes) + len(collection_key.encode("utf-8")) + 16
+    for record in records:
+        estimate += len(_compact_bytes(record)) + 1
+        if estimate > MAX_FILE_BYTES:
+            break
+
+    if estimate <= MAX_FILE_BYTES and not already_sharded:
+        legacy = (json.dumps(payload, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+        if len(legacy) <= MAX_FILE_BYTES:
+            _atomic_write(path, legacy)
+            return {"storage": "json", "records": len(records), "bytes": len(legacy), "shards": 0}
 
     path.parent.mkdir(parents=True, exist_ok=True)
-    version = hashlib.sha256(legacy).hexdigest()[:16]
-    shard_directory = path.name + ".parts-" + version
-    staging = Path(tempfile.mkdtemp(prefix=shard_directory + ".tmp-", dir=str(path.parent)))
+    staging = Path(tempfile.mkdtemp(prefix=path.name + ".parts.tmp-", dir=str(path.parent)))
     shard_entries = []
     shard_buffer = bytearray()
     shard_index = 0
     total_shard_bytes = 0
+    digest = hashlib.sha256()
+    digest.update(metadata_bytes)
+    digest.update(collection_key.encode("utf-8"))
 
     def flush_shard() -> None:
         nonlocal shard_index, shard_buffer, total_shard_bytes
@@ -130,18 +138,24 @@ def write_document(path: Path, payload: dict, collection_key: str) -> dict:
 
     try:
         for record in records:
-            line = _json_bytes(record) + b"\n"
+            line = _compact_bytes(record) + b"\n"
             if len(line) > MAX_FILE_BYTES:
                 raise ValueError("one record exceeds the 50 MiB single-file limit")
+            digest.update(line)
             if shard_buffer and len(shard_buffer) + len(line) > SHARD_TARGET_BYTES:
                 flush_shard()
             shard_buffer.extend(line)
         flush_shard()
 
+        version = digest.hexdigest()[:16]
+        shard_directory = path.name + ".parts-" + version
         final_directory = path.parent / shard_directory
         if final_directory.exists():
-            shutil.rmtree(final_directory)
-        os.replace(staging, final_directory)
+            # Same content-addressed version is already complete and may be live.
+            shutil.rmtree(staging)
+        else:
+            os.replace(staging, final_directory)
+
         manifest = {
             "schema_version": 1,
             "format": "jsonl-shards-v1",
@@ -154,8 +168,8 @@ def write_document(path: Path, payload: dict, collection_key: str) -> dict:
             "metadata": metadata,
             "shards": shard_entries,
         }
-        _atomic_write(manifest_path(path), (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").encode("utf-8"))
-        # Manifest is now authoritative; removing the legacy monolith is safe.
+        _atomic_write(manifest_file, (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").encode("utf-8"))
+        # The manifest is authoritative only after its atomic replacement.
         if path.exists():
             path.unlink()
         for old in path.parent.glob(path.name + ".parts-*"):
