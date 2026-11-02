@@ -16,14 +16,13 @@
       "unique_domains": 4451
     }
   ],
-  "last_evaluated_at": "2026-11-02T00:37:34.674526+00:00",
+  "last_evaluated_at": "2026-11-02T00:45:56.847144+00:00",
   "last_decisions": [
     {
       "repository": "Jovanykoch/rules",
       "policy": "DIRECT",
-      "decision": "activated",
-      "reason": "strong policy evidence, non-archived publisher, supported parser, 100+ unique domains and unchanged second observation",
-      "source_id": "auto-jovanykoch-rules-9660520d"
+      "decision": "already_registered",
+      "reason": "publisher or URL is already registered"
     },
     {
       "repository": "ACL4SSR/ACL4SSR",
@@ -46,9 +45,8 @@
     {
       "repository": "gatework/surge-rules",
       "policy": "PROXY",
-      "decision": "activated",
-      "reason": "strong policy evidence, non-archived publisher, supported parser, 100+ unique domains and unchanged second observation",
-      "source_id": "auto-gatework-surge-rules-da7f8038"
+      "decision": "already_registered",
+      "reason": "publisher or URL is already registered"
     },
     {
       "repository": "sve1r/Rules-For-Quantumult-X",

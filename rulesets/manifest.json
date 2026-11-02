@@ -60,10 +60,10 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 4451,
+      "new_entries": 0,
       "removed_entries": 0,
-      "baseline_initialized": true,
-      "bootstrap_enqueued": true
+      "baseline_initialized": false,
+      "bootstrap_enqueued": false
     },
     {
       "id": "auto-jovanykoch-rules-9660520d",
@@ -76,10 +76,10 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 6751,
+      "new_entries": 0,
       "removed_entries": 0,
-      "baseline_initialized": true,
-      "bootstrap_enqueued": true
+      "baseline_initialized": false,
+      "bootstrap_enqueued": false
     },
     {
       "id": "clashfx-cn-apps-direct",
@@ -280,46 +280,24 @@
   "pending_queue": "rulesets/pending_queue.json",
   "rule_lifecycle": {
     "DIRECT": {
-      "previous_count": 15,
+      "previous_count": 216,
       "current_count": 216,
-      "added_count": 201,
+      "added_count": 0,
       "removed_count": 0,
-      "previous_sha256": "c9222fcb981ebea636d4766cec628bd7e0a34b58093da6ea47083d8ee8413074",
+      "previous_sha256": "51243bedd7ec8b8756eb3e2ecca4b971b4ab489ecbce9d7aeec1ad94cb79eb18",
       "current_sha256": "51243bedd7ec8b8756eb3e2ecca4b971b4ab489ecbce9d7aeec1ad94cb79eb18",
-      "added_sample": [
-        "DOMAIN,dl.steam.clngaa.com",
-        "DOMAIN,st.dl.bscstorage.net",
-        "DOMAIN,st.dl.eccdnx.com",
-        "DOMAIN,st.dl.pinyuncloud.com",
-        "DOMAIN,wmsjsteam.com",
-        "DOMAIN,xz.pphimalayanrt.com",
-        "DOMAIN-SUFFIX,00cdn.com",
-        "DOMAIN-SUFFIX,115.com",
-        "DOMAIN-SUFFIX,126.com",
-        "DOMAIN-SUFFIX,1688.com"
-      ],
+      "added_sample": [],
       "removed_sample": [],
       "baseline_initialized": false
     },
     "PROXY": {
-      "previous_count": 66,
+      "previous_count": 205,
       "current_count": 205,
-      "added_count": 139,
+      "added_count": 0,
       "removed_count": 0,
-      "previous_sha256": "680a96b6ad48cdf83258b9e78b4ba9249626d9dc40f19e1fb1fc666c8db59dc7",
+      "previous_sha256": "1be8ecc699ee8ae38542203c2bdb7b546c93016c931ce8a31064eb0d5bd83011",
       "current_sha256": "1be8ecc699ee8ae38542203c2bdb7b546c93016c931ce8a31064eb0d5bd83011",
-      "added_sample": [
-        "DOMAIN-SUFFIX,4shared.com",
-        "DOMAIN-SUFFIX,abc.xyz",
-        "DOMAIN-SUFFIX,accountkit.com",
-        "DOMAIN-SUFFIX,androidify.com",
-        "DOMAIN-SUFFIX,anthonycalzadilla.com",
-        "DOMAIN-SUFFIX,apigee.com",
-        "DOMAIN-SUFFIX,apkmirror.com",
-        "DOMAIN-SUFFIX,appledaily.com",
-        "DOMAIN-SUFFIX,appshopper.com",
-        "DOMAIN-SUFFIX,autodraw.com"
-      ],
+      "added_sample": [],
       "removed_sample": [],
       "baseline_initialized": false
     },

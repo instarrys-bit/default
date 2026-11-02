@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
-  "completed_at": "2026-11-02T00:37:26.929428+00:00",
+  "completed_at": "2026-11-02T00:45:45.192666+00:00",
   "config_path": "shadowrocket/ss.conf",
   "config_read_only": true,
   "config_blob_sha": "a6b2f0e6e41da13572dfca8e8119212118df5bcb",
   "first_ruleset_line": 1718,
   "higher_priority_rule_count": 1672,
   "published_before": {
-    "DIRECT": 15,
-    "PROXY": 66,
+    "DIRECT": 216,
+    "PROXY": 205,
     "REJECT": 10
   },
   "published_after": {
-    "DIRECT": 15,
-    "PROXY": 66,
+    "DIRECT": 216,
+    "PROXY": 205,
     "REJECT": 10
   },
   "published_removed_count": 0,
@@ -39,6 +39,777 @@
   "restored": [],
   "restore_refused": [],
   "active_archive_count": 93,
+  "restoration_option_count": 96,
+  "restoration_options": [
+    {
+      "id": "cfg-c13487dfff5d4b12cd9e",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,bing.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T16:01:58.510949+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-c10acbe974988fc40b71",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,edgekey.net",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T16:01:58.510949+00:00",
+      "status": "superseded_config_overlap"
+    },
+    {
+      "id": "cfg-a6c2518c682f3dc4f6cd",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,sfx.ms",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T16:01:58.510949+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-bda306f24b1423bda624",
+      "policy": "REJECT",
+      "rule": "DOMAIN,ad.21cn.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T16:01:58.510949+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-ed5cf92b4498c7e2ad67",
+      "policy": "REJECT",
+      "rule": "DOMAIN,adbehavior.ximalaya.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T16:01:58.510949+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-78411fbb3c84a334d9ef",
+      "policy": "REJECT",
+      "rule": "DOMAIN,adsehera.ximalaya.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T16:01:58.510949+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-fb54aeabab750721e8ea",
+      "policy": "REJECT",
+      "rule": "DOMAIN,adwbs.ximalaya.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T16:01:58.510949+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-326bec1401e6d3f646fb",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,10010.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-7739291360199761a77a",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,baidupcs.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-5200a91c7d40bb665d85",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,bdimg.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-bb556f0edacfd850875c",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,bilivideo.cn",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-6267e509bce00318237c",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,bytedance.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-a18de45ed26dbf220c6d",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,dingtalk.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-03bb2f0c1dd269e12374",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,douyin.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-b3f5edb6aedfe1b636fc",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,douyincdn.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-5dc2f9e1291c840142a6",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,ele.me",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-a9b8f4d2d07ede0515e4",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,gtimg.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-8a6e025ad59ffc991da9",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,iesdouyin.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-450a1198c19b9a759d6b",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,iqiyipic.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-fdd22f92c43e7c5c288a",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,kugou.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-93dce85a71a25a768c11",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,sandai.net",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-331975f7d8ddbd951ff5",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,sinaimg.cn",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-b996713a2621784ece95",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,so.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-a6f5a73037093967aef4",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,tmall.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-edf3799cc5f9a4a4d37b",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,xiami.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-1e9b5a0eb390fad2fcf5",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,xiami.net",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-e28e64b763899bbcc6d6",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,xunlei.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-158f1636154aebedab31",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,zhimg.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-f94626346563132c54e9",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,amazon.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-0255c35cc6520ce5c579",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,ampproject.org",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-761f52b3ad6d9419a882",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,archive.org",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-18afc590bbd1b756bc47",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,bandwagonhost.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-89573a1b88c04dc25612",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,blogsmithmedia.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-d3d841e5dfe9c1eca755",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,bloomberg.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-f5c14632d474f507db8e",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,box.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-b6302eee1bb2e084aaa9",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,cdnst.net",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-25e64cc2f7f6f91db839",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,disqus.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-a8f6431abd6d3eb54f8d",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,disquscdn.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-6876ea5fd998b8fe11c4",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,docker.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-58ebef5d6942429ec63d",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,duckduckgo.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-04a0f333b6f274fb11cb",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,edgesuite.net",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-7728029243401fe271dd",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,eurekavpt.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-9ae9e8d0fe09b0d726b1",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,fb.me",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-c47ffb1ff989102c5eac",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,fbcdn.net",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-ecbffad5a434169406c1",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,flickr.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-98f97f6449f2bf6da037",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,flipboard.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-f95a4257d22d332794a3",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,g.co",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-e451e7eeebd082a61b5f",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,gcr.io",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "superseded_config_overlap"
+    },
+    {
+      "id": "cfg-51224575a61978f3ff5c",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,gongm.in",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-968b3765109b2e10ae0b",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,io.io",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "superseded_config_overlap"
+    },
+    {
+      "id": "cfg-60655fd0afb65de36560",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,kakao.co.kr",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-89c4ddc5c536fa3219bd",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,kakao.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-b23b29956c92796f9d02",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,linkedin.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-e48f4e39424705e415f0",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,live.net",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-3c5eb790513574904bd3",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,macrumors.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-cd12044bce7bbfb614f6",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,maven.org",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-5c93e44f30be88e66032",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,medium.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-06643e6a120076ebe630",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,mega.nz",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-87ee9f82a80b3885a955",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,notion.so",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-ec14421710364cc8ff64",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,openvpn.net",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-0304ed6f19bce5031f5a",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,periscope.tv",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-f528af92df7f70cdea07",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,pinimg.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-1221254b806b4a3cd692",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,pinterest.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-47fe9731624454752875",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,pixiv.net",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-e14e1e97b28e5850c1c1",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,potato.im",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-0191f540c8e2f99de82a",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,quora.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-17b03e2e090965f0d2fa",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,shadowsocks.org",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-c428dabab4800be74e9d",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,smartmailcloud.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-fc7bc79cb4885c9587cc",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,soundcloud.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-77b67d33136786512467",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,startpage.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-dca6d6d6012846b2f42e",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,steamcommunity.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-e800f3004ed3a3694f9b",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,t.co",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-cd7db84f5d53fedcc871",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,t.me",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-4337174754fadd1a6a28",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,telegra.ph",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-02bc31d64464dc42e1a5",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,textnow.me",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-914ae997b8627f9b14e5",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,thepiratebay.org",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-74e476036d4cbf381446",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,torproject.org",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-9425df9a1fbbeb9710b0",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,tumblr.co",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-259b59ce9c4c058d142a",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,tumblr.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-b9c3a717d2c34177b407",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,twimg.co",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-217e2c5064fab4848c68",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,twitch.tv",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-15c2fb13ec0a332a328a",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,v2ex.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-63642c2f3ae79a4e6d60",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,vimeo.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-9eed0339b3f81ce68d78",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,vine.co",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-14ab870eb16c2c1b3a77",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,wikileaks.org",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-b49c275d93b72f8162a3",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,wikimedia.org",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-492e86c247955fea32f7",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,wikipedia.org",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-bd17b52bd83730c40b6c",
+      "policy": "PROXY",
+      "rule": "DOMAIN-SUFFIX,xvideos.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-89fce022775be0aa8246",
+      "policy": "REJECT",
+      "rule": "DOMAIN,ad-cdn.qingting.fm",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-86ce172a3194bc1ebe41",
+      "policy": "REJECT",
+      "rule": "DOMAIN,ad.api.moji.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-b7cb3404111f43a99eab",
+      "policy": "REJECT",
+      "rule": "DOMAIN,ads.yahoo.de",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-4e68c8c9f93a7585ec4c",
+      "policy": "REJECT",
+      "rule": "DOMAIN,adsfilebssdlbig.tx.kugou.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-afc3ae92aa698d433564",
+      "policy": "REJECT",
+      "rule": "DOMAIN,advertise.baicizhan.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-626ff39e334408851f97",
+      "policy": "REJECT",
+      "rule": "DOMAIN,advertise.baicizhan.org",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-3c135f9b13ee1e0e0402",
+      "policy": "REJECT",
+      "rule": "DOMAIN,ggx03.miguvideo.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-be532deac336944d3b78",
+      "policy": "REJECT",
+      "rule": "DOMAIN,kad.gotokeep.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-01T21:51:45.563895+00:00",
+      "status": "active_config_overlap"
+    }
+  ],
   "policy": "Every provable exact/suffix scope overlap with ss.conf or skip-proxy is removed from published and queued external rules, regardless of whether the policy matches. The earliest applicable config rule is recorded as precedence evidence. Historical archive entries are rechecked against the current config and superseded when the overlap no longer exists. Keyword/regex/conditional overlaps that cannot be proven from static domain scope are retained and reported; no speculative deletion is allowed.",
   "errors": []
 }

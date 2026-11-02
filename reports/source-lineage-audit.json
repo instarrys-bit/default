@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-02T00:37:33.609134+00:00",
+  "audited_at": "2026-11-02T00:45:55.863485+00:00",
   "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
-  "source_count": 6,
-  "audited_source_count": 6,
+  "source_count": 8,
+  "audited_source_count": 8,
   "lineage_verified_count": 0,
   "lineage_partial_count": 2,
-  "lineage_unverified_count": 4,
+  "lineage_unverified_count": 6,
   "shared_upstream_pairs": [
     {
       "sources": [
@@ -27,6 +27,17 @@
         "googlehosts/hosts",
         "neko-dev/neohosts",
         "tindy2013/subconverter"
+      ]
+    },
+    {
+      "sources": [
+        "auto-jovanykoch-rules-9660520d",
+        "auto-gatework-surge-rules-da7f8038"
+      ],
+      "shared_upstreams": [
+        "felixonmars/dnsmasq-china-list",
+        "loyalsoldier/geoip",
+        "v2fly/domain-list-community"
       ]
     }
   ],
@@ -2430,6 +2441,81 @@
       "comparison_upstreams": [
         "nobyda/scipts",
         "privacy-protection-tools/anti-ad"
+      ],
+      "status": "audited"
+    },
+    {
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "publisher": "jovanykoch/rules",
+      "lineage_status": "unverified",
+      "evidence_url": "https://github.com/Jovanykoch/rules/blob/main/README.md",
+      "fetched_url": "https://raw.githubusercontent.com/Jovanykoch/rules/main/README.md",
+      "evidence_sha256": "8fb78f65606f9d768230fc25e44616bf79514ca19cd5bcc35c485855c81620fa",
+      "evidence_bytes": 7022,
+      "declared_upstream_count": 0,
+      "discovered_upstream_count": 6,
+      "declared_upstreams": [],
+      "declared_and_discovered": [],
+      "declared_not_in_document": [],
+      "discovered_not_registered": [
+        "astral-sh/uv",
+        "felixonmars/dnsmasq-china-list",
+        "gfwlist/gfwlist",
+        "hagezi/dns-blocklists",
+        "loyalsoldier/geoip",
+        "v2fly/domain-list-community"
+      ],
+      "discovered_upstreams": [
+        "astral-sh/uv",
+        "felixonmars/dnsmasq-china-list",
+        "gfwlist/gfwlist",
+        "hagezi/dns-blocklists",
+        "loyalsoldier/geoip",
+        "v2fly/domain-list-community"
+      ],
+      "comparison_upstreams": [
+        "astral-sh/uv",
+        "felixonmars/dnsmasq-china-list",
+        "gfwlist/gfwlist",
+        "hagezi/dns-blocklists",
+        "loyalsoldier/geoip",
+        "v2fly/domain-list-community"
+      ],
+      "status": "audited"
+    },
+    {
+      "source_id": "auto-gatework-surge-rules-da7f8038",
+      "publisher": "gatework/surge-rules",
+      "lineage_status": "unverified",
+      "evidence_url": "https://github.com/gatework/surge-rules/blob/master/README.md",
+      "fetched_url": "https://raw.githubusercontent.com/gatework/surge-rules/master/README.md",
+      "evidence_sha256": "b4d52430de25efd5bdf88cdbc656d066ed6f3f315b37167bfb0523bc389e2b3d",
+      "evidence_bytes": 17142,
+      "declared_upstream_count": 0,
+      "discovered_upstream_count": 5,
+      "declared_upstreams": [],
+      "declared_and_discovered": [],
+      "declared_not_in_document": [],
+      "discovered_not_registered": [
+        "17mon/china_ip_list",
+        "felixonmars/dnsmasq-china-list",
+        "loyalsoldier/geoip",
+        "loyalsoldier/v2ray-rules-dat",
+        "v2fly/domain-list-community"
+      ],
+      "discovered_upstreams": [
+        "17mon/china_ip_list",
+        "felixonmars/dnsmasq-china-list",
+        "loyalsoldier/geoip",
+        "loyalsoldier/v2ray-rules-dat",
+        "v2fly/domain-list-community"
+      ],
+      "comparison_upstreams": [
+        "17mon/china_ip_list",
+        "felixonmars/dnsmasq-china-list",
+        "loyalsoldier/geoip",
+        "loyalsoldier/v2ray-rules-dat",
+        "v2fly/domain-list-community"
       ],
       "status": "audited"
     }

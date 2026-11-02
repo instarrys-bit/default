@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "collected_at": "2026-11-02T00:37:34.750036+00:00",
+  "collected_at": "2026-11-02T00:45:56.917629+00:00",
   "source_count": 8,
   "quarantined_source_count": 0,
   "quarantined_sources": [],
@@ -48,10 +48,10 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 4451,
+      "new_entries": 0,
       "removed_entries": 0,
-      "baseline_initialized": true,
-      "bootstrap_enqueued": true
+      "baseline_initialized": false,
+      "bootstrap_enqueued": false
     },
     {
       "id": "auto-jovanykoch-rules-9660520d",
@@ -64,10 +64,10 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 6751,
+      "new_entries": 0,
       "removed_entries": 0,
-      "baseline_initialized": true,
-      "bootstrap_enqueued": true
+      "baseline_initialized": false,
+      "bootstrap_enqueued": false
     },
     {
       "id": "clashfx-cn-apps-direct",
