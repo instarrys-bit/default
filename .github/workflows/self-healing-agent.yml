@@ -206,6 +206,7 @@ jobs:
           RUN_ID: ${{ github.event.workflow_run.id }}
           RUN_URL: ${{ github.event.workflow_run.html_url }}
           SOURCE_WORKFLOW: ${{ github.event.workflow_run.name }}
+          FAILED_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           set -euo pipefail
           case "$SOURCE_WORKFLOW" in
@@ -216,18 +217,29 @@ jobs:
           marker="<!-- shadowrocket-automation:workflow=$workflow_key;run_id=$RUN_ID -->"
           classification="$(python3 -c 'import json; print(json.load(open("reports/self-healing/diagnosis.json"))["classification"])')"
           body="$(cat reports/self-healing/diagnosis.json)"
-          title="Self-healing incident: $classification ($workflow_key)"
+          title="Self-healing incident: $classification ($workflow_key; ${FAILED_SHA:0:8})"
           existing="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title | jq --arg title "$title" -r '.[] | select(.title == $title) | .number' | head -n 1)"
           if [ -n "$existing" ] && [ "$existing" != "null" ]; then
-            body_text="$(printf 'Repeated failure for run %s: %s\\n\\n```json\\n%s\\n```\\n' "$RUN_ID" "$RUN_URL" "$body")"
+            body_text="$(printf 'Repeated failure for run %s: %s\\n\\n\x60\x60\x60json\\n%s\\n\x60\x60\x60\\n' "$RUN_ID" "$RUN_URL" "$body")"
             body_text="$(printf '%s\\n\\n%s' "$marker" "$body_text")"
             gh issue comment "$existing" --repo "$REPO" --body "$body_text"
-            gh issue edit "$existing" --repo "$REPO" --body "$body_text"
           else
-            body_text="$(printf 'Failed workflow run %s: %s\\n\\nAutomatic repair was not applied. No speculative code changes were made.\\n\\nDiagnosis:\\n\\n```json\\n%s\\n```\\n' "$RUN_ID" "$RUN_URL" "$body")"
+            body_text="$(printf 'Failed workflow run %s: %s\\n\\nAutomatic repair was not applied. No speculative code changes were made.\\n\\nDiagnosis:\\n\\n\x60\x60\x60json\\n%s\\n\x60\x60\x60\\n' "$RUN_ID" "$RUN_URL" "$body")"
             body_text="$(printf '%s\\n\\n%s' "$marker" "$body_text")"
-            gh issue create --repo "$REPO" --title "$title" --body "$body_text"
+            created_url="$(gh issue create --repo "$REPO" --title "$title" --body "$body_text")"
+            existing="${created_url##*/}"
           fi
+
+          gh issue view "$existing" --repo "$REPO" --json body --jq .body > /tmp/incident-body.md
+          python3 scripts/incident_state.py \\
+            --body-file /tmp/incident-body.md \\
+            --workflow "$workflow_key" \\
+            --source-sha "$FAILED_SHA" \\
+            --classification "$classification" \\
+            --event-id "failure-run-$RUN_ID" \\
+            --target-state MANUAL_INTERVENTION \\
+            --out /tmp/incident-state-body.md
+          gh issue edit "$existing" --repo "$REPO" --body-file /tmp/incident-state-body.md
 
 
   report-agent-failure:
@@ -277,15 +289,20 @@ jobs:
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.event.workflow_run.html_url }}
           RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           set -euo pipefail
           for classification in CONFIG_BASELINE_MISMATCH TEST_FAILURE PYTHON_IMPORT_FAILURE WORKFLOW_TIMEOUT UNCLASSIFIED_STEP_FAILURE; do
-            issues="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title,body | jq --arg classification "$classification" --argjson run_id "$RUN_ID" '.[] | select(.title == ("Self-healing incident: " + $classification + " (config_validator)")) | select(.body | contains("shadowrocket-automation:workflow=config_validator;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=config_validator;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
+            issues="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title,body | jq --arg classification "$classification" --argjson run_id "$RUN_ID" '.[] | select(.title | test("^Self-healing incident: " + $classification + " \\(config_validator(; [0-9a-f]{8})?\\)$")) | select(.body | contains("shadowrocket-automation:workflow=config_validator;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=config_validator;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
             if [ -z "$issues" ]; then
               continue
             fi
             while IFS= read -r issue; do
               [ -n "$issue" ] || continue
+              gh issue view "$issue" --repo "$REPO" --json body --jq .body > /tmp/incident-body.md
+              python3 scripts/incident_state.py \\\n                --body-file /tmp/incident-body.md \\\n                --workflow config_validator \\\n                --source-sha "$RUN_SHA" \\\n                --classification "$classification" \\\n                --event-id "validator-verifying-$RUN_ID-$issue" \\\n                --target-state VERIFYING \\\n                --out /tmp/incident-verifying-body.md
+              python3 scripts/incident_state.py \\\n                --body-file /tmp/incident-verifying-body.md \\\n                --workflow config_validator \\\n                --source-sha "$RUN_SHA" \\\n                --classification "$classification" \\\n                --event-id "validator-success-$RUN_ID-$issue" \\\n                --target-state RECOVERED \\\n                --verification-url "$RUN_URL" \\\n                --out /tmp/incident-state-body.md
+              gh issue edit "$issue" --repo "$REPO" --body-file /tmp/incident-state-body.md
               gh issue comment "$issue" --repo "$REPO" --body "A subsequent config-baseline validation succeeded. The protected config was not modified. Successful validation: $RUN_URL"
               gh issue close "$issue" --repo "$REPO"
             done <<< "$issues"
@@ -323,14 +340,38 @@ jobs:
           set -euo pipefail
           gh api "repos/$REPO/actions/runs/$RUN_ID" > /tmp/recovery-run.json
           gh api --paginate --slurp "repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100" > /tmp/recovery-jobs.json
+          pending_issues="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select(.title | test("^Self-healing incident: (UNCLASSIFIED_STEP_FAILURE|TEST_FAILURE|PYTHON_IMPORT_FAILURE|WORKFLOW_TIMEOUT|CONFIG_BASELINE_MISMATCH|RULESET_MANIFEST_COUNT_MISSING|RULESET_MANIFEST_COUNT_MISMATCH) \\(deterministic_audit(; [0-9a-f]{8})?\\)$")) | select(.body | contains("shadowrocket-automation:workflow=deterministic_audit;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=deterministic_audit;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
+          while IFS= read -r issue; do
+            [ -n "$issue" ] || continue
+            issue_title="$(gh issue view "$issue" --repo "$REPO" --json title --jq .title)"
+            classification="${issue_title#Self-healing incident: }"
+            classification="$(sed -E 's/ \(deterministic_audit(; [0-9a-f]{8})?\)$//' <<< "$classification")"
+            gh issue view "$issue" --repo "$REPO" --json body --jq .body > /tmp/incident-body.md
+            python3 scripts/incident_state.py --body-file /tmp/incident-body.md --workflow deterministic_audit --source-sha "$RUN_SHA" --classification "$classification" --event-id "audit-verifying-$RUN_ID-$issue" --target-state VERIFYING --out /tmp/incident-verifying-body.md
+            gh issue edit "$issue" --repo "$REPO" --body-file /tmp/incident-verifying-body.md
+          done <<< "$pending_issues"
           python3 scripts/verify_recovery_run.py --run /tmp/recovery-run.json --jobs /tmp/recovery-jobs.json | tee /tmp/recovery-verification.json
           cat /tmp/recovery-verification.json >> "$GITHUB_STEP_SUMMARY"
-          issues="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select(.title | test("^Self-healing incident: (UNCLASSIFIED_STEP_FAILURE|TEST_FAILURE|PYTHON_IMPORT_FAILURE|WORKFLOW_TIMEOUT|CONFIG_BASELINE_MISMATCH|RULESET_MANIFEST_COUNT_MISSING|RULESET_MANIFEST_COUNT_MISMATCH) \\(deterministic_audit\\)$")) | select(.body | contains("shadowrocket-automation:workflow=deterministic_audit;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=deterministic_audit;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
+          issues="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select(.title | test("^Self-healing incident: (UNCLASSIFIED_STEP_FAILURE|TEST_FAILURE|PYTHON_IMPORT_FAILURE|WORKFLOW_TIMEOUT|CONFIG_BASELINE_MISMATCH|RULESET_MANIFEST_COUNT_MISSING|RULESET_MANIFEST_COUNT_MISMATCH) \\(deterministic_audit(; [0-9a-f]{8})?\\)$")) | select(.body | contains("shadowrocket-automation:workflow=deterministic_audit;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=deterministic_audit;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
           if [ -z "$issues" ]; then
             echo "No open deterministic-audit test/failure incidents to resolve."
           else
             while IFS= read -r issue; do
               [ -n "$issue" ] || continue
+              issue_title="$(gh issue view "$issue" --repo "$REPO" --json title --jq .title)"
+              classification="${issue_title#Self-healing incident: }"
+              classification="$(sed -E 's/ \(deterministic_audit(; [0-9a-f]{8})?\)$//' <<< "$classification")"
+              gh issue view "$issue" --repo "$REPO" --json body --jq .body > /tmp/incident-body.md
+              python3 scripts/incident_state.py \\
+                --body-file /tmp/incident-body.md \\
+                --workflow deterministic_audit \\
+                --source-sha "$RUN_SHA" \\
+                --classification "$classification" \\
+                --event-id "audit-success-$RUN_ID-$issue" \\
+                --target-state RECOVERED \\
+                --verification-url "$RUN_URL" \\
+                --out /tmp/incident-state-body.md
+              gh issue edit "$issue" --repo "$REPO" --body-file /tmp/incident-state-body.md
               gh issue comment "$issue" --repo "$REPO" --body "A subsequent full deterministic audit and publish completed successfully on commit $RUN_SHA. Recovery run: $RUN_URL"
               gh issue close "$issue" --repo "$REPO"
             done <<< "$issues"

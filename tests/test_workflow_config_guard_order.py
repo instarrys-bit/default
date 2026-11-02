@@ -57,7 +57,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("workflow=config_validator;run_id=", healing)
         self.assertIn('workflow_key="config_validator"', healing)
         self.assertIn('workflow_key="deterministic_audit"', healing)
-        self.assertIn('title="Self-healing incident: $classification ($workflow_key)"', healing)
+        self.assertIn('title="Self-healing incident: $classification ($workflow_key; ${FAILED_SHA:0:8})"', healing)
         self.assertIn('title="Self-healing agent failure: $workflow_key (source run $SOURCE_RUN_ID)"', healing)
 
     def test_automation_incidents_are_bound_to_exact_workflow_runs(self):

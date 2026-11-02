@@ -160,7 +160,7 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn("--paginate --slurp", resolver)
         self.assertLess(
             resolver.index("python3 scripts/verify_recovery_run.py"),
-            resolver.index('issues="$(gh issue list'),
+            resolver.index('          issues="$(gh issue list'),
         )
         self.assertIn("Independently verify committed remote rulesets", AUTO_SYNC.read_text(encoding="utf-8"))
 
@@ -180,6 +180,24 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         stale_watcher = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")
         self.assertIn("scripts/watchdog_recovery_policy.py --source-run-id 0 --source-sha", stale_watcher)
         self.assertIn("Scheduled recovery suppressed", stale_watcher)
+
+
+    def test_incident_state_machine_is_persisted_and_fail_closed(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        state_machine = ROOT / "scripts" / "incident_state.py"
+        self.assertTrue(state_machine.exists())
+        self.assertIn("--target-state MANUAL_INTERVENTION", workflow)
+        self.assertIn("--target-state RECOVERED", workflow)
+        self.assertIn("--verification-url", workflow)
+        self.assertIn("gh issue edit \"$issue\" --repo \"$REPO\" --body-file /tmp/incident-state-body.md", workflow)
+        self.assertIn("FAILED_SHA: ${{ github.event.workflow_run.head_sha }}", workflow)
+        self.assertIn("incident-state:v1", state_machine.read_text(encoding="utf-8"))
+
+    def test_incident_deduplication_is_scoped_to_source_revision(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn('($workflow_key; ${FAILED_SHA:0:8})', workflow)
+        self.assertIn("deterministic_audit(; [0-9a-f]{8})?", workflow)
+        self.assertIn("config_validator(; [0-9a-f]{8})?", workflow)
 
 
 if __name__ == "__main__":

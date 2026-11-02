@@ -12,12 +12,14 @@ on:
       - "scripts/refresh_ruleset_manifest.py"
       - "scripts/watchdog_recovery_policy.py"
       - "scripts/verify_recovery_run.py"
+      - "scripts/incident_state.py"
       - "tests/test_apply_safe_repair.py"
       - "tests/test_diagnose_workflow_failure.py"
       - "tests/test_refresh_ruleset_manifest.py"
       - "tests/test_self_healing_workflow.py"
       - "tests/test_watchdog_recovery_policy.py"
       - "tests/test_verify_recovery_run.py"
+      - "tests/test_incident_state.py"
   workflow_dispatch:
 
 permissions:
@@ -34,7 +36,7 @@ jobs:
           python-version: "3.11"
       - name: Compile self-healing modules
         run: |
-          python3 -m py_compile scripts/apply_safe_repair.py scripts/diagnose_workflow_failure.py scripts/refresh_ruleset_manifest.py scripts/watchdog_recovery_policy.py scripts/verify_recovery_run.py
+          python3 -m py_compile scripts/apply_safe_repair.py scripts/diagnose_workflow_failure.py scripts/refresh_ruleset_manifest.py scripts/watchdog_recovery_policy.py scripts/verify_recovery_run.py scripts/incident_state.py
       - name: Test bounded watchdog recovery policy
         run: python3 -m unittest discover -s tests -p "test_watchdog_recovery_policy.py" -v
       - name: Test independent recovery verification
