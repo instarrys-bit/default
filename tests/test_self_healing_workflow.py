@@ -152,7 +152,7 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         resolver = workflow.split("  resolve-audit-incidents:", 1)[1].split("  stale-run-watch:", 1)[0]
         self.assertIn('gh api "repos/$REPO/actions/runs/$RUN_ID"', resolver)
-        self.assertIn('gh api --paginate "repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100"', resolver)
+        self.assertIn('gh api --paginate --slurp "repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100"', resolver)
         self.assertIn("python3 scripts/verify_recovery_run.py", resolver)
         self.assertIn("actions: read", resolver)
         self.assertIn("contents: read", resolver)
