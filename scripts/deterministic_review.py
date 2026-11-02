@@ -365,6 +365,8 @@ def main():
                 "reason":"Temporary evidence insufficiency does not remove an already-published rule before the 5,000-rule lifecycle gate activates.",
                 "checked_at":now
             }
+        if domain not in review_map and len(review_map)>=MAX_REVIEW_RECORDS:
+            fail(f"historical review ledger would exceed hard limit: {MAX_REVIEW_RECORDS:,}")
         review_map[domain]=new_record
         run_counts[status]=run_counts.get(status,0)+1
         if (candidate_index+1)%batch_size==0 or candidate_index+1==len(candidates):
