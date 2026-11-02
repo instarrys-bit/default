@@ -278,14 +278,12 @@ jobs:
                   print(run_id, "timeout")
           ' "$current_main" <<< "$runs")"
 
-          cancelled_any=0
           timed_out_any=0
           if [ -n "$stale_lines" ]; then
             while read -r stale_id reason; do
               [ -n "$stale_id" ] || continue
               echo "Cancelling audit $stale_id ($reason); current main is $current_main."
               gh run cancel "$stale_id" --repo "$REPO" || true
-              cancelled_any=1
               if [ "$reason" = "timeout" ]; then timed_out_any=1; fi
             done <<< "$stale_lines"
             sleep 10
