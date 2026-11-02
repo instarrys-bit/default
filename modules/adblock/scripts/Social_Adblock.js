@@ -84,6 +84,14 @@
         }
         const content = item.content || item.item || {};
         const itemContent = content.itemContent || (content.item && content.item.itemContent) || {};
+        const nestedRtb = [
+          item.itemContent,
+          item.item && item.item.itemContent,
+          item.content && item.content.itemContent,
+          item.content && item.content.item && item.content.item.itemContent,
+          itemContent
+        ];
+        if (nestedRtb.some(isRtbAdNode)) return true;
         if (
           itemContent.promotedMetadata ||
           content.promotedMetadata ||
@@ -92,8 +100,17 @@
         ) {
           return true;
         }
-        if (Array.isArray(content.items)) {
-          content.items = content.items.filter(sub => !isXAdEntry(sub));
+        // A module may contain several normal items plus one RTB item. Filter
+        // its child list in place; only remove the outer entry if it becomes empty.
+        const childArrays = [content.items, item.items, item.items && item.items.items];
+        for (const children of childArrays) {
+          if (Array.isArray(children)) {
+            const before = children.length;
+            for (let i = children.length - 1; i >= 0; i--) {
+              if (isXAdEntry(children[i])) children.splice(i, 1);
+            }
+            if (before > 0 && children.length === 0) return true;
+          }
         }
         return false;
       }
