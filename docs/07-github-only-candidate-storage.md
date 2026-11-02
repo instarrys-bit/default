@@ -20,7 +20,7 @@ data/candidate_pool/
     ...
 ```
 
-Shards are immutable, gzip-compressed NDJSON. The manifest stores record counts and SHA-256 checksums. The default shard target is 50,000 records; files are split into new shards on subsequent appends. The implementation uses deterministic JSON serialization and gzip timestamps for reproducible shard bytes.
+Shards are immutable, gzip-compressed NDJSON. The manifest stores record counts and SHA-256 checksums. The default shard target is 50,000 records, with a 48 MiB compressed-file ceiling; if a shard exceeds that ceiling, ingestion fails closed and must be retried with a smaller `--shard-records` value. Files are split into new shards on subsequent appends. The implementation uses deterministic JSON serialization and gzip timestamps for reproducible shard bytes.
 
 ## Processing guarantees
 
