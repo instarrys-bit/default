@@ -116,6 +116,18 @@ class ProjectStatusTests(unittest.TestCase):
             self.assertEqual(status["source_discovery"]["tree_scan_backlog_count"], 2)
             self.assertEqual(status["source_assessment"]["deferred_this_run_count"], 8)
             self.assertEqual(status["coverage"]["status"], "IN_PROGRESS")
+            save("sources/discovered_sources.json", {
+                "candidate_count": 10, "candidates": [], "tree_scan_backlog_count": 2,
+                "tree_repositories_scanned": 0, "tree_scan_complete_count": 8
+            })
+            save("sources/source_assessments.json", {
+                "assessments": [{}, {}], "candidate_url_count": 12,
+                "assessed_this_run_count": 0, "deferred_this_run_count": 12
+            })
+            status = build_status(root, now="2026-11-02T00:02:00+00:00")
+            self.assertTrue(status["coverage"]["stalled"])
+            self.assertEqual(status["health"], "CHECK")
+            self.assertFalse(status["coverage"]["stalled"])
 
 
 if __name__ == "__main__":

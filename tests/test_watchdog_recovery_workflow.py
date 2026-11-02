@@ -33,6 +33,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("Report degraded source discovery health", workflow)
         self.assertIn(".source_discovery.search_error_count", workflow)
+        self.assertIn(".coverage.stalled", workflow)
         self.assertIn("Shadowrocket source discovery degraded health", workflow)
         self.assertIn("gh issue create", workflow)
         self.assertIn("gh issue close", workflow)

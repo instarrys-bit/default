@@ -75,9 +75,10 @@ jobs:
           health="$(jq -r '.content | @base64d | fromjson | .health' <<< "$payload")"
           search_errors="$(jq -r '.content | @base64d | fromjson | .source_discovery.search_error_count // 0' <<< "$payload")"
           tree_errors="$(jq -r '.content | @base64d | fromjson | .source_discovery.tree_error_count // 0' <<< "$payload")"
+          coverage_stalled="$(jq -r '.content | @base64d | fromjson | .coverage.stalled // false' <<< "$payload")"
           title="Shadowrocket source discovery degraded health"
           if [ "$health" = "CHECK" ] || [ "$health" = "FAIL" ]; then
-            body="Project health is $health after a successful workflow.\n\nSearch errors: $search_errors\nTree scan errors: $tree_errors\nRun: $RUN_URL\n\nThe affected source inventory remains non-activating until it passes deterministic review. Inspect reports/project-status.json and reports/source-discovery.md."
+            body="Project health is $health after a successful workflow.\n\nSearch errors: $search_errors\nTree scan errors: $tree_errors\nCoverage stalled: $coverage_stalled\nRun: $RUN_URL\n\nThe affected source inventory remains non-activating until it passes deterministic review. Inspect reports/project-status.json and reports/source-discovery.md."
             issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
             if [ -n "$issue" ] && [ "$issue" != "null" ]; then
               gh issue comment "$issue" --repo "$REPO" --body "$body"

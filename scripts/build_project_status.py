@@ -166,7 +166,8 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
     group_gaps = {name: max(0, minimum_groups - source_groups[name]) for name in POLICIES}
 
     integrity_ok = config_match and manifest_match and policy_invariant and total <= maximum
-    discovery_degraded = bool(discovery_errors or tree_errors)
+    coverage_stalled = bool((tree_scan_backlog > 0 and tree_scanned_this_run == 0) or (assessment_deferred > 0 and assessed_this_run == 0))
+    discovery_degraded = bool(discovery_errors or tree_errors or coverage_stalled)
     health = "PASS" if integrity_ok and not degraded_sources and not any(group_gaps.values()) and not due and not discovery_degraded else ("CHECK" if integrity_ok else "FAIL")
     generated_at = now or datetime.now(timezone.utc).isoformat()
 
@@ -232,6 +233,7 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
             "status": "IN_PROGRESS" if tree_scan_backlog or assessment_deferred else "COMPLETE",
             "tree_scan_backlog_count": tree_scan_backlog,
             "assessment_deferred_count": assessment_deferred,
+            "stalled": coverage_stalled,
         },
         "rule_provenance": provenance_summary,
         "review": {
