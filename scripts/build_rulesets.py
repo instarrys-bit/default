@@ -18,8 +18,33 @@ CONFIG=ROOT/"shadowrocket/ss.conf"
 PROTECTED=ROOT/"sources/protected_domains.json"
 OUT=ROOT/"rulesets"
 LIFECYCLE_STATE=OUT/"lifecycle_state.json"
+REJECT_APPROVALS=ROOT/"sources/reject_manual_approvals.json"
 POLICIES={"DIRECT","PROXY","REJECT"}
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
+
+
+def load_reject_approvals(path=REJECT_APPROVALS):
+    if not path.exists():
+        return set()
+    payload=json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload,dict) or payload.get("schema_version")!=1:
+        raise ValueError("reject manual-approval ledger has an unsupported schema")
+    entries=payload.get("approved_rules",[])
+    if not isinstance(entries,list):
+        raise ValueError("reject manual-approval ledger approved_rules must be a list")
+    approved=set()
+    for line in entries:
+        if not isinstance(line,str) or not re.fullmatch(r"DOMAIN(?:-SUFFIX)?,[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+",line):
+            raise ValueError("invalid manually approved REJECT rule: "+str(line))
+        normalized=line.split(",",1)[0].upper()+","+line.split(",",1)[1].lower().rstrip(".")
+        if normalized in approved:
+            raise ValueError("duplicate manually approved REJECT rule: "+normalized)
+        approved.add(normalized)
+    return approved
+
+
+def reject_rule_authorized(line, previously_published, manual_approvals):
+    return line in previously_published or line in manual_approvals
 
 
 def promote_queue_to_capacity(rule_sets, queue_map, previous_rule_count, maximum=30000):
@@ -80,6 +105,7 @@ def main():
     config_archive=json.loads(config_archive_path.read_text(encoding="utf-8")) if config_archive_path.exists() else {"items":[]}
     config_conflict_archived={(str(x.get("policy","")).upper(),str(x.get("rule",""))) for x in config_archive.get("items",[]) if not x.get("restored_at") and not x.get("superseded_at")}
     archived_deleted |= config_conflict_archived
+    manual_reject_approvals=load_reject_approvals()
     previous_published={policy:set() for policy in POLICIES}
     for policy in POLICIES:
         previous_path=OUT/(policy.lower()+".list")
@@ -156,6 +182,9 @@ def main():
         if scope not in {"exact_candidate","suffix_candidate"}:
             raise ValueError("unsupported approved domain scope: "+domain)
         archived_line=("DOMAIN-SUFFIX," if scope=="suffix_candidate" else "DOMAIN,")+domain
+        if policy=="REJECT" and not reject_rule_authorized(archived_line,previous_published["REJECT"],manual_reject_approvals):
+            held+=1
+            continue
         if (policy,archived_line) in config_conflict_archived:
             held+=1
             continue
@@ -227,7 +256,10 @@ def main():
     for queued in prior_queue.get("items",[]):
         key=(str(queued.get("policy","")).upper(),str(queued.get("scope","exact_candidate")),str(queued.get("domain","")).lower())
         if key[0] in POLICIES and key[1] in {"exact_candidate","suffix_candidate"} and key[2]:
-            if (key[0],("DOMAIN-SUFFIX," if key[1]=="suffix_candidate" else "DOMAIN,")+key[2]) not in archived_deleted:
+            queued_line=("DOMAIN-SUFFIX," if key[1]=="suffix_candidate" else "DOMAIN,")+key[2]
+            if key[0]=="REJECT" and not reject_rule_authorized(queued_line,previous_published["REJECT"],manual_reject_approvals):
+                continue
+            if (key[0],queued_line) not in archived_deleted:
                 queue_map[key]=queued
     for policy in POLICIES:
         for scope,domain in sorted(new_approved[policy]):
@@ -321,6 +353,9 @@ def main():
         "reviewed_total":len(reviews),
         "approved_total":approved,
         "held_total":held,
+        "reject_manual_approval_required":True,
+        "reject_manual_approval_count":len(manual_reject_approvals),
+        "reject_manual_hold_count":sum(1 for item in reviews if str(item.get("status",""))=="APPROVED" and str(item.get("policy","")).upper()=="REJECT" and (("DOMAIN-SUFFIX," if item.get("source_entry_type")=="suffix_candidate" else "DOMAIN,")+str(item.get("domain","")).lower().rstrip(".")) not in previous_published["REJECT"] and (("DOMAIN-SUFFIX," if item.get("source_entry_type")=="suffix_candidate" else "DOMAIN,")+str(item.get("domain","")).lower().rstrip(".")) not in manual_reject_approvals),
         "status_count":dict(sorted(status_counts.items())),
         "deterministic_review_progress":{
             "candidate_total":len(reviews),
