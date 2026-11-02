@@ -51,7 +51,9 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
 
     def test_self_healing_never_cancels_non_main_runs_or_cross_closes_incidents(self):
         healing = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")
-        self.assertIn('if run.get("head_branch") != "main":', healing)
+        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        self.assertIn('if run.get("head_branch") != "main":', watchdog)
+        self.assertNotIn("gh run cancel", healing)
         self.assertIn('select(.head_branch == "main" and .id > $failed)', healing)
         self.assertIn("workflow=deterministic_audit;run_id=", healing)
         self.assertIn("workflow=config_validator;run_id=", healing)
@@ -136,7 +138,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         workflow = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")
         self.assertIn('"Shadowrocket Deterministic Domain Audit (User Config Baseline)"', workflow)
         self.assertIn("  resolve-audit-incidents:", workflow)
-        resolver = workflow.split("  resolve-audit-incidents:", 1)[1].split("  stale-run-watch:", 1)[0]
+        resolver = workflow.split("  resolve-audit-incidents:", 1)[1]
         self.assertIn("github.event.workflow_run.conclusion == 'success'", resolver)
         self.assertIn("UNCLASSIFIED_STEP_FAILURE", resolver)
         self.assertIn("TEST_FAILURE", resolver)
