@@ -9,6 +9,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
+STALE_AUDIT_PATTERN = re.compile(
+    r"Audit commit ([0-9a-f]{7,40}) is stale; current main is "
+    r"([0-9a-f]{7,40})\. Refusing to spend resources on stale review inputs\.",
+    re.IGNORECASE,
+)
+
+
 def diagnose(log_text: str, run_id: str = "") -> dict:
     lines = log_text.splitlines()
     failed_steps = []
@@ -22,22 +29,24 @@ def diagnose(log_text: str, run_id: str = "") -> dict:
 
     repair_id = None
     evidence = []
-    if re.search(r"differs from manifest .* count None", log_text, re.IGNORECASE):
+    stale_match = STALE_AUDIT_PATTERN.search(log_text)
+    if stale_match:
+        code = "STALE_SUPERSEDED"
+        summary = (
+            "This audit was safely superseded by a newer main commit. "
+            "No code repair or incident is needed."
+        )
+        evidence = [stale_match.group(0)]
+    elif re.search(r"differs from manifest .* count None", log_text, re.IGNORECASE):
         code = "RULESET_MANIFEST_COUNT_MISSING"
         summary = "The final RULE-SET audit could not read a policy count from the manifest."
         repair_id = "refresh_ruleset_manifest"
-        evidence = [
-            line.strip() for line in lines
-            if "differs from manifest" in line
-        ][:10]
+        evidence = [line.strip() for line in lines if "differs from manifest" in line][:10]
     elif re.search(r"differs from manifest", log_text, re.IGNORECASE):
         code = "RULESET_MANIFEST_COUNT_MISMATCH"
         summary = "The manifest counts do not match the final generated RULE-SET files."
         repair_id = "refresh_ruleset_manifest"
-        evidence = [
-            line.strip() for line in lines
-            if "differs from manifest" in line
-        ][:10]
+        evidence = [line.strip() for line in lines if "differs from manifest" in line][:10]
     elif re.search(r"timed out|TimeoutError|job exceeded maximum execution time", log_text, re.IGNORECASE):
         code = "WORKFLOW_TIMEOUT"
         summary = "The workflow exceeded a time limit or encountered a timeout."
@@ -47,12 +56,12 @@ def diagnose(log_text: str, run_id: str = "") -> dict:
     elif re.search(r"FAILED \(failures=|FAILED \(errors=|AssertionError", log_text):
         code = "TEST_FAILURE"
         summary = "A deterministic test failed."
-    elif "##[error]Process completed with exit code" in log_text:
+    elif "##[error]Process completed with exit code" in log_text and failed_steps:
         code = "UNCLASSIFIED_STEP_FAILURE"
         summary = "A workflow step failed without a recognized safe repair signature."
     else:
-        code = "NO_FAILURE_SIGNATURE"
-        summary = "No supported failure signature was found in the supplied log."
+        code = "INSUFFICIENT_FAILURE_EVIDENCE"
+        summary = "The supplied log did not contain a verifiable failed step; no incident should be opened."
 
     return {
         "schema_version": 1,
@@ -64,7 +73,7 @@ def diagnose(log_text: str, run_id: str = "") -> dict:
         "repair_id": repair_id,
         "automatic_code_change_allowed": repair_id is not None,
         "evidence": evidence,
-        "policy": "Only explicitly allowlisted deterministic repairs may be proposed; unknown failures are reported, never patched speculatively.",
+        "policy": "Only explicitly allowlisted deterministic repairs may be proposed; stale or insufficient logs are not incidents; unknown failures are reported, never patched speculatively.",
     }
 
 
