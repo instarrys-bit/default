@@ -16,7 +16,7 @@ class RuleProvenanceTests(unittest.TestCase):
             "domain":"example.com","policy":"DIRECT","source_entry_type":"exact_candidate",
             "status":"APPROVED","confidence":0.8,"first_seen":"2026-01-01",
             "evidence":[
-                {"source_id":"a","currently_listed":True,"sha256":"ha","url":"https://raw.githubusercontent.com/a/list","publisher":"a/list","independence_group":"ga","classification":"DIRECT","lineage_status":"unverified","entry_type":"exact_candidate"},
+                {"source_id":"a","currently_listed":True,"sha256":"ha","url":"https://raw.githubusercontent.com/a/list","publisher":"a/list","independence_group":"ga","classification":"DIRECT","lineage_status":"unverified","entry_type":"exact_candidate","line_number":42},
                 {"source_id":"b","currently_listed":True,"sha256":"old","url":"https://raw.githubusercontent.com/b/list","publisher":"b/list","independence_group":"gb","classification":"DIRECT","lineage_status":"partial","entry_type":"exact_candidate"}
             ]
         }]}
@@ -26,7 +26,8 @@ class RuleProvenanceTests(unittest.TestCase):
         rule = result["rules"][0]
         self.assertEqual([x["source_id"] for x in rule["sources"]],["a"])
         self.assertEqual(rule["sources"][0]["evidence_grade"],"snapshot_membership")
-        self.assertIsNone(rule["sources"][0]["line_number"])
+        self.assertEqual(rule["sources"][0]["line_number"],42)
+        self.assertEqual(rule["sources"][0]["evidence_grade"],"exact_file_line")
 
     def test_lineage_is_metadata_not_a_veto(self):
         result = build(self.review,self.registry,self.snapshot,{"rules":[]},{},{},{},{}, "now")
