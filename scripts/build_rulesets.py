@@ -21,6 +21,36 @@ LIFECYCLE_STATE=OUT/"lifecycle_state.json"
 POLICIES={"DIRECT","PROXY","REJECT"}
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
 
+
+def promote_queue_to_capacity(rule_sets, queue_map, previous_rule_count, maximum=30000):
+    if previous_rule_count < 0 or previous_rule_count > maximum:
+        raise ValueError("published count is outside the configured capacity")
+    capacity = maximum - previous_rule_count
+    promoted = []
+    ordered = sorted(
+        queue_map,
+        key=lambda x: (
+            int(queue_map[x].get("priority", 1)),
+            str(queue_map[x].get("queued_at", "")),
+            x[0], x[2], x[1]
+        )
+    )
+    for key in ordered:
+        policy, scope, domain = key
+        if policy not in POLICIES or scope not in {"exact_candidate", "suffix_candidate"}:
+            raise ValueError("invalid pending queue identity")
+        if (scope, domain) in rule_sets[policy]:
+            promoted.append(key)
+            continue
+        if capacity <= 0:
+            break
+        rule_sets[policy].add((scope, domain))
+        promoted.append(key)
+        capacity -= 1
+    for key in promoted:
+        queue_map.pop(key, None)
+    return promoted
+
 def main():
     data=json.loads(LEDGER.read_text(encoding="utf-8"))
     source_cfg=json.loads(SOURCE_FILE.read_text(encoding="utf-8"))
@@ -223,17 +253,7 @@ def main():
     for policy in POLICIES:
         for scope,domain in rule_sets[policy]:
             queue_map.pop((policy,scope,domain),None)
-    capacity=max(0,30000-previous_rule_count)
-    promoted=[]
-    for key in sorted(queue_map, key=lambda x:(int(queue_map[x].get("priority",1)),str(queue_map[x].get("queued_at","")),x[0],x[2],x[1])):
-        if capacity<=0:
-            break
-        policy,scope,domain=key
-        rule_sets[policy].add((scope,domain))
-        promoted.append(key)
-        capacity-=1
-    for key in promoted:
-        queue_map.pop(key,None)
+    promoted=promote_queue_to_capacity(rule_sets,queue_map,previous_rule_count,30000)
     for policy in POLICIES:
         for scope,domain in sorted(rule_sets[policy]):
             queue_map.pop((policy,scope,domain),None)
