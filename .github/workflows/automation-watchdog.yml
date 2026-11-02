@@ -63,7 +63,7 @@ jobs:
             echo "A newer current-main deterministic audit already exists; no duplicate recovery."
             exit 0
           fi
-          if jq -e --arg sha "$current_sha" '[.workflow_runs[] | select(.head_sha == $sha and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
+          if jq -e --arg sha "$current_sha" '[.workflow_runs[] | select(.head_branch == "main" and .head_sha == $sha and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
             echo "A deterministic audit for current main ($current_sha) is already queued or running; no duplicate recovery."
             exit 0
           fi
@@ -197,6 +197,22 @@ jobs:
           python3 scripts/verify_published_rulesets.py --ref origin/main | tee /tmp/published-integrity.json
           cat /tmp/published-integrity.json >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Close recovered manifest integrity incidents
+        if: ${{ steps.refresh.outcome == 'success' && steps.publish.outcome == 'success' && steps.verify.outcome == 'success' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          for title in "RULE-SET manifest metadata repair failed" "Published RULE-SET integrity mismatch"; do
+            issue="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title | jq --arg title "$title" -r '.[] | select(.title == $title) | .number' | head -n 1)"
+            if [ -n "$issue" ]; then
+              gh issue comment "$issue" --repo "$REPO" --body "Manifest refresh, publication and independent verification now succeed. Recovery run: $RUN_URL"
+              gh issue close "$issue" --repo "$REPO"
+            fi
+          done
+
       - name: Dispatch one bounded reconciliation audit on mismatch
         if: ${{ steps.refresh.outcome == 'success' && steps.verify.outcome == 'failure' && !(github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch') }}
         env:
@@ -235,7 +251,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           set -euo pipefail
           title="Published RULE-SET integrity mismatch"
