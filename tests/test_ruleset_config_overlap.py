@@ -114,7 +114,7 @@ DOMAIN,late.example.com,REJECT
         ]
         prepared = prepare_rules(rules)
         result = match_candidate("api.example.com", "REJECT", rules, prepared_rules=prepared)
-        self.assertEqual(result["status"], "ALREADY_COVERED")
+        self.assertEqual(result["status"], "CONFLICT")
         self.assertEqual(result["line"], 2)
 
 if __name__ == "__main__":
