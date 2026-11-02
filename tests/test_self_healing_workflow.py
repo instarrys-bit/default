@@ -19,6 +19,15 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("gh pr merge", workflow)
         self.assertIn("No speculative code changes were made.", workflow)
 
+    def test_self_healing_agent_failures_are_reported_and_recovered_per_workflow(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn("  report-agent-failure:", workflow)
+        self.assertIn("needs.diagnose-and-repair.result == 'failure'", workflow)
+        self.assertIn("shadowrocket-automation:agent_failure;workflow=deterministic_audit", workflow)
+        self.assertIn("shadowrocket-automation:agent_failure;workflow=config_validator", workflow)
+        self.assertIn("The deterministic audit and publish have recovered", workflow)
+        self.assertIn("The config-baseline validator has recovered", workflow)
+
     def test_stale_watchdog_threshold_exceeds_main_job_timeout(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         auto_sync = AUTO_SYNC.read_text(encoding="utf-8")
