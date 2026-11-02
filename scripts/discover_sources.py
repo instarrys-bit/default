@@ -12,6 +12,7 @@ import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
+from json_document_store import read_document, write_document
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "sources/discovered_sources.json"
@@ -405,7 +406,7 @@ def select_tree_scan_repositories(discovered: dict[str, dict], limit: int = MAX_
 
 def main() -> int:
     token = os.environ.get("GITHUB_TOKEN", "")
-    existing = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {"candidates": []}
+    existing = read_document(OUTPUT, "candidates", {"candidates": []})
     existing_by_repo = {str(x.get("repository", "")): x for x in existing.get("candidates", []) if x.get("repository")}
     discovered: dict[str, dict] = {}
     discovery_errors: list[dict] = []
@@ -536,7 +537,7 @@ def main() -> int:
         return 0
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(merged, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_document(OUTPUT, merged, "candidates")
     REPORT.write_text(render_report(merged), encoding="utf-8")
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:
