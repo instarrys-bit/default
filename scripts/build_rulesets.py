@@ -10,6 +10,7 @@ from audit_ruleset_config_overlap import all_rule_lines, prepare_rules
 from sync_ruleset_config_conflicts import classify_rule
 from source_registry import validate_registry
 
+from json_document_store import read_document
 ROOT=Path(__file__).resolve().parents[1]
 LEDGER=ROOT/"sources/domain_reviews.json"
 SOURCE_FILE=ROOT/"sources/domain_sources.json"
@@ -77,7 +78,7 @@ def promote_queue_to_capacity(rule_sets, queue_map, previous_rule_count, maximum
     return promoted
 
 def main():
-    data=json.loads(LEDGER.read_text(encoding="utf-8"))
+    data=read_document(LEDGER,"reviews",{"reviews":[]})
     source_cfg=json.loads(SOURCE_FILE.read_text(encoding="utf-8"))
     source_map=validate_registry(source_cfg)
     correlated_pairs=load_correlated_publishers()
