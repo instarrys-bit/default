@@ -16,7 +16,8 @@ ROOT = Path(__file__).resolve().parents[1]
 INPUT = ROOT / "sources/source_assessments.json"
 OUTPUT = ROOT / "sources/policy_source_overlap.json"
 REPORT = ROOT / "reports/policy-source-overlap.md"
-MAX_BYTES = 2_000_000
+MAX_BYTES = 30_000_000
+MAX_TOTAL_BYTES = 500_000_000
 DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
 RULE_RE = re.compile(r"^(?:DOMAIN|DOMAIN-SUFFIX),([^,\s]+)(?:,(?:DIRECT|PROXY|REJECT))?$", re.I)
 QX_RE = re.compile(r"^(?:HOST|HOST-SUFFIX),([^,\s]+),(?:DIRECT|PROXY|REJECT|OUTSIDE)$", re.I)
@@ -52,6 +53,7 @@ def extract_domains(payload: bytes) -> set[str]:
 
 def build_report(assessments: dict, fetcher=fetch) -> dict:
     feeds=[]
+    total_bytes=0
     for item in assessments.get("assessments",[]):
         policy=item.get("policy_candidate")
         parser=item.get("parser_candidate")
@@ -59,6 +61,9 @@ def build_report(assessments: dict, fetcher=fetch) -> dict:
         if policy not in {"DIRECT","PROXY","REJECT"} or parser not in {"domain-only","adblock-domain-rules","shadowrocket-domain-rules","quantumult-domain-rules"} or not repo:
             continue
         payload=fetcher(item["url"],repo)
+        total_bytes += len(payload)
+        if total_bytes > MAX_TOTAL_BYTES:
+            raise ValueError("aggregate source overlap audit byte budget exceeded")
         domains=extract_domains(payload)
         feeds.append({"repository":repo,"policy":policy,"url":item["url"],"sha256":hashlib.sha256(payload).hexdigest(),"domains":domains})
     # A repository is one publisher: union its feeds before comparing publishers.
@@ -79,7 +84,7 @@ def build_report(assessments: dict, fetcher=fetch) -> dict:
     for (policy,repo),domains in grouped.items():
         for domain in domains: by_domain[domain].add(policy)
     contradictions=[{"domain":d,"policies":sorted(p)} for d,p in sorted(by_domain.items()) if len(p)>1]
-    return {"schema_version":1,"feed_count":len(feeds),"publisher_counts":{p:len({r for q,r in grouped if q==p}) for p in ("DIRECT","PROXY","REJECT")},"overlaps":overlaps,"cross_policy_conflict_domain_count":len(contradictions),"cross_policy_conflict_sample":contradictions[:200],"activation_count":0,"activation_policy":"Audit-only. Overlap is not proof of common ancestry or independent provenance; no source is activated."}
+    return {"schema_version":1,"feed_count":len(feeds),"total_bytes_read":total_bytes,"max_file_bytes":MAX_BYTES,"max_total_bytes":MAX_TOTAL_BYTES,"publisher_counts":{p:len({r for q,r in grouped if q==p}) for p in ("DIRECT","PROXY","REJECT")},"overlaps":overlaps,"cross_policy_conflict_domain_count":len(contradictions),"cross_policy_conflict_sample":contradictions[:200],"activation_count":0,"activation_policy":"Audit-only. Overlap is not proof of common ancestry or independent provenance; no source is activated."}
 
 def main():
     data=json.loads(INPUT.read_text(encoding="utf-8"))
