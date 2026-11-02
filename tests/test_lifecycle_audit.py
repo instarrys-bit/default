@@ -126,6 +126,35 @@ class LifecycleAuditSafetyTests(unittest.TestCase):
             archive=json.loads((rules/"deletion_archive.json").read_text(encoding="utf-8"))
             self.assertIsNone(archive["items"][0].get("restored_at"))
 
+    def test_lifecycle_deletes_only_after_30_day_confirmation_and_keeps_protected_hosts(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            rules=root/"rulesets"
+            (root/"sources").mkdir()
+            rules.mkdir()
+            (rules/"direct.list").write_text("DOMAIN,expired.example\\nDOMAIN,api.google.com\\n",encoding="utf-8")
+            for policy in ("proxy","reject"):
+                (rules/(policy+".list")).write_text("",encoding="utf-8")
+            state={"due_milestones":[5000],"monthly_review_due":False,"published_rule_count":5000}
+            (rules/"lifecycle_state.json").write_text(json.dumps(state),encoding="utf-8")
+            identity=rid("DIRECT","DOMAIN,expired.example")
+            (rules/"lifecycle_observations.json").write_text(json.dumps({"items":{
+                identity:{"history":[{"checked_at":"2026-10-01T00:00:00+00:00","status":"CONFIRMED_NXDOMAIN_OBSERVATION"}]}
+            }}),encoding="utf-8")
+            (rules/"deletion_archive.json").write_text(json.dumps({"items":[]}),encoding="utf-8")
+            (rules/"pending_queue.json").write_text(json.dumps({"items":[]}),encoding="utf-8")
+            (root/"sources/protected_domains.json").write_text(json.dumps({
+                "protected_exact":[],"protected_suffixes":[]
+            }),encoding="utf-8")
+            with patch.object(lifecycle_audit,"ROOT",root), patch.object(lifecycle_audit,"DIR",rules), patch.object(lifecycle_audit,"REPORT",root/"reports/lifecycle"), patch.dict(os.environ,{"LIFECYCLE_RESTORE_IDS":""}), patch("lifecycle_audit.inspect",return_value={"status":"CONFIRMED_NXDOMAIN_OBSERVATION","resolver_status":{"cloudflare_A":3,"cloudflare_AAAA":3,"google_A":3,"google_AAAA":3}}), patch("lifecycle_gate.complete_lifecycle_review",return_value=state):
+                lifecycle_audit.main()
+            direct=(rules/"direct.list").read_text(encoding="utf-8")
+            self.assertNotIn("DOMAIN,expired.example",direct)
+            self.assertIn("DOMAIN,api.google.com",direct)
+            archive=json.loads((rules/"deletion_archive.json").read_text(encoding="utf-8"))
+            self.assertEqual(len(archive["items"]),1)
+            self.assertEqual(archive["items"][0]["first_confirmed_at"],"2026-10-01T00:00:00+00:00")
+
     def test_due_lifecycle_run_reaches_completion_hook(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)
