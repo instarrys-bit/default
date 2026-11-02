@@ -257,11 +257,11 @@
     }
   },
   "rule_count": {
-    "DIRECT": 216,
+    "DIRECT": 231,
     "PROXY": 205,
-    "REJECT": 10
+    "REJECT": 6
   },
-  "published_rule_total": 431,
+  "published_rule_total": 442,
   "max_published_rules": 30000,
   "queued_rule_total": 0,
   "baseline_conflict_hold_count": 1,
@@ -281,12 +281,23 @@
   "rule_lifecycle": {
     "DIRECT": {
       "previous_count": 216,
-      "current_count": 216,
-      "added_count": 0,
+      "current_count": 231,
+      "added_count": 15,
       "removed_count": 0,
       "previous_sha256": "51243bedd7ec8b8756eb3e2ecca4b971b4ab489ecbce9d7aeec1ad94cb79eb18",
-      "current_sha256": "51243bedd7ec8b8756eb3e2ecca4b971b4ab489ecbce9d7aeec1ad94cb79eb18",
-      "added_sample": [],
+      "current_sha256": "4181bba987e99df75ef6f467dbe459de2901d63a275fb0d7b7649ec2f1bf31ec",
+      "added_sample": [
+        "DOMAIN-SUFFIX,37.com",
+        "DOMAIN-SUFFIX,37games.com",
+        "DOMAIN-SUFFIX,37wan.net",
+        "DOMAIN-SUFFIX,antgroup.com",
+        "DOMAIN-SUFFIX,duxiaoman.com",
+        "DOMAIN-SUFFIX,hopegoo.com",
+        "DOMAIN-SUFFIX,lilith.com",
+        "DOMAIN-SUFFIX,ly.com",
+        "DOMAIN-SUFFIX,mihoyo.com",
+        "DOMAIN-SUFFIX,perfectworld.com"
+      ],
       "removed_sample": [],
       "baseline_initialized": false
     },
@@ -303,13 +314,18 @@
     },
     "REJECT": {
       "previous_count": 10,
-      "current_count": 10,
+      "current_count": 6,
       "added_count": 0,
-      "removed_count": 0,
+      "removed_count": 4,
       "previous_sha256": "de0f64fee89213efab6dc5d2719121ddce5140335aca4da3cc3c56ee568f9947",
-      "current_sha256": "de0f64fee89213efab6dc5d2719121ddce5140335aca4da3cc3c56ee568f9947",
+      "current_sha256": "4fc7bcf4efe4fa72e523d715207b9ed0af4a947b103f14c3035b1273b3b38140",
       "added_sample": [],
-      "removed_sample": [],
+      "removed_sample": [
+        "DOMAIN,adcdn.tencentmusic.com",
+        "DOMAIN,adcdn6.tencentmusic.com",
+        "DOMAIN,adclick.tencentmusic.com",
+        "DOMAIN,adexpo.tencentmusic.com"
+      ],
       "baseline_initialized": false
     }
   },
