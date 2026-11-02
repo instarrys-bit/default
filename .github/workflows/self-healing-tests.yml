@@ -41,3 +41,5 @@ jobs:
         run: python3 -m unittest discover -s tests -p "test_apply_safe_repair.py" -v
       - name: Test workflow safety boundaries
         run: python3 -m unittest discover -s tests -p "test_self_healing_workflow.py" -v
+      - name: Run full deterministic unit suite
+        run: python3 -m unittest discover -s tests -v
