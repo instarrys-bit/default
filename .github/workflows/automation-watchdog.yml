@@ -42,8 +42,12 @@ jobs:
           fi
 
           runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=20")"
+          if jq -e --argjson source "$SOURCE_RUN_ID" '[.workflow_runs[] | select(.id > $source)] | length > 0' <<< "$runs" >/dev/null; then
+            echo "A newer deterministic audit already exists; no duplicate recovery."
+            exit 0
+          fi
           if jq -e '[.workflow_runs[] | select(.status == "queued" or .status == "in_progress")] | length > 0' <<< "$runs" >/dev/null; then
-            echo "A newer deterministic audit is already queued or running; no duplicate recovery."
+            echo "A deterministic audit is already queued or running; no duplicate recovery."
             exit 0
           fi
 
