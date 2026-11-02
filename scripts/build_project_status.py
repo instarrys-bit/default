@@ -72,6 +72,7 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
     assessments = read_json(root / "sources/source_assessments.json", {"assessments": []})
     source_matrix = read_json(root / "sources/source_candidates.json", {"candidates": []})
     review_ledger = read_json(root / "sources/domain_reviews.json", {"reviews": []})
+    provenance_ledger = read_json(root / "sources/rule_provenance.json", {"rules": []})
     lineage = read_json(root / "reports/source-lineage-audit.json", {})
     policy = read_json(root / "sources/policy.json", {})
     conflict_archive = read_json(rules_dir / "config_conflict_archive.json", {"items": []})
@@ -132,6 +133,15 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
     if review_ledger.get("reviews") is not None:
         approved_not_published = sum(len(x) for x in unpublished_approved.values())
     held = int(manifest.get("held_total", manifest.get("deterministic_review_progress", {}).get("held_total", 0)))
+    provenance_rules = provenance_ledger.get("rules", [])
+    provenance_sources = [source for item in provenance_rules for source in item.get("sources", [])]
+    provenance_summary = {
+        "rule_count": len(provenance_rules),
+        "exact_file_line_evidence_count": sum(1 for x in provenance_sources if x.get("evidence_grade") == "exact_file_line"),
+        "snapshot_membership_evidence_count": sum(1 for x in provenance_sources if x.get("evidence_grade") == "snapshot_membership"),
+        "missing_line_number_count": sum(1 for x in provenance_sources if not isinstance(x.get("line_number"), int)),
+        "rules_without_current_review_count": sum(1 for x in provenance_rules if x.get("currently_reviewed") is False),
+    }
 
     conflict_items = conflict_archive.get("items", [])
     conflict_restorable = sum(1 for x in conflict_items if not x.get("restored_at"))
@@ -194,6 +204,7 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
             "lineage_unverified_count": int(lineage.get("lineage_unverified_count", 0)),
             "lineage_verified_count": int(lineage.get("lineage_verified_count", 0)),
         },
+        "rule_provenance": provenance_summary,
         "review": {
             "candidate_count": candidate_count, "approved_count": approved,
             "ledger_approved_count": ledger_approved,
@@ -239,6 +250,7 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
         f"- 未发布规则明细：ss.conf 首匹配冲突 [{', '.join(x['rule'] for x in unpublished_approved['baseline_conflict']) or '无'}]；配置冲突归档 [{', '.join(x['rule'] for x in unpublished_approved['config_conflict_archive']) or '无'}]；其他 [{', '.join(x['rule'] for x in unpublished_approved['other']) or '无'}]",
         f"- 各策略独立来源组：DIRECT {source_groups['DIRECT']}，PROXY {source_groups['PROXY']}，REJECT {source_groups['REJECT']}（最低要求 {minimum_groups}）",
         f"- 血缘审计：已审计 {result['sources']['lineage_audited_count']}；已验证 {result['sources']['lineage_verified_count']}；部分 {result['sources']['lineage_partial_count']}；未验证 {result['sources']['lineage_unverified_count']}。血缘不确定性是来源说明，不作为一票否决。", "",
+        f"- 规则级来源账本：{provenance_summary['rule_count']} 条规则；精确文件行证据 {provenance_summary['exact_file_line_evidence_count']} 条；仅快照证据 {provenance_summary['snapshot_membership_evidence_count']} 条；缺少行号 {provenance_summary['missing_line_number_count']} 条。", "",
         "## 3. 生命周期与容量管理", "",
         f"- 下一个生命周期节点：{next_milestone} 条；距离节点还差 {remaining_to_milestone} 条",
         f"- 生命周期审核当前状态：{'待执行' if due else '未到触发条件'}",
