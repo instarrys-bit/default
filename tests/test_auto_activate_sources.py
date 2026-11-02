@@ -27,7 +27,7 @@ def base_registry():
 
 
 def candidate(repo="new/direct", policy="DIRECT", drift="unchanged", evidence="README_policy_reference", count=150, archived=False, leading_dot=False):
-    payload = "\\n".join(("." if leading_dot else "") + f"d{i}.example" for i in range(count)).encode()
+    payload = "\n".join(("." if leading_dot else "") + f"d{i}.example" for i in range(count)).encode()
     return {
         "repository": repo,
         "policy": policy,
@@ -67,7 +67,7 @@ class AutoActivationTests(unittest.TestCase):
 
     @patch("auto_activate_sources.urlopen")
     def test_leading_dot_source_is_enabled_only_with_assessment_metadata(self, mocked_urlopen):
-        payload = "\\n".join(f".d{i}.example" for i in range(150)).encode()
+        payload = "\n".join(f".d{i}.example" for i in range(150)).encode()
         class Response:
             def __enter__(self): return self
             def __exit__(self, *args): return False
