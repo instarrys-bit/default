@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Read-only audit of candidate domains against rules preceding the first RULE-SET."""
+"""Read-only scope-coverage audit between candidate domains and user-owned config."""
 from __future__ import annotations
 
 import json
 import re
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,15 +12,7 @@ LEDGER = ROOT / "sources" / "domain_reviews.json"
 REPORT_JSON = ROOT / "reports" / "ruleset-config-overlap-audit.json"
 REPORT_MD = ROOT / "reports" / "ruleset-config-overlap-audit.md"
 DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$", re.I)
-DOMAIN_ATOM_RE = re.compile(r"(DOMAIN-SUFFIX|DOMAIN),([A-Za-z0-9.-]+)", re.I)
 POLICIES = {"DIRECT", "PROXY", "REJECT"}
-from domain_rule_engine import DomainRule, RuleIndex, analyze_candidate
-
-
-def domain_matches(domain: str, kind: str, target: str) -> bool:
-    target = target.lower().strip(".")
-    domain = domain.lower().strip(".")
-    return domain == target or (kind.upper() == "DOMAIN-SUFFIX" and domain.endswith("." + target))
 
 
 def first_ruleset_line(config_text: str) -> int | None:
@@ -36,8 +27,8 @@ def first_ruleset_line(config_text: str) -> int | None:
     return None
 
 
-def prior_rule_lines(config_text: str) -> list[tuple[int, str]]:
-    boundary = first_ruleset_line(config_text)
+def all_rule_lines(config_text: str) -> list[tuple[int, str]]:
+    """Return all active [Rule] entries without assigning precedence."""
     in_rules = False
     result = []
     for number, raw in enumerate(config_text.splitlines(), 1):
@@ -45,191 +36,44 @@ def prior_rule_lines(config_text: str) -> list[tuple[int, str]]:
         if line.startswith("[") and line.endswith("]"):
             in_rules = line[1:-1].strip().lower() == "rule"
             continue
-        if not in_rules:
-            continue
-        if boundary is not None and number >= boundary:
-            break
-        if line and not line.startswith("#"):
+        if in_rules and line and not line.startswith("#"):
             result.append((number, line))
     return result
 
 
+def prior_rule_lines(config_text: str) -> list[tuple[int, str]]:
+    """Legacy helper retained for callers; scope audits must use all_rule_lines."""
+    boundary = first_ruleset_line(config_text)
+    return [
+        (number, line) for number, line in all_rule_lines(config_text)
+        if boundary is not None and number < boundary
+    ]
+
+
+def scope_covers_candidate(candidate_scope: str, domain: str, rule_kind: str, target: str) -> bool:
+    """Whether one explicit config scope fully contains the candidate scope."""
+    domain = domain.lower().strip(".")
+    target = target.lower().strip(".")
+    rule_kind = rule_kind.upper()
+    if candidate_scope == "exact_candidate":
+        return target == domain or (
+            rule_kind == "DOMAIN-SUFFIX" and domain.endswith("." + target)
+        )
+    if candidate_scope == "suffix_candidate":
+        return rule_kind == "DOMAIN-SUFFIX" and (
+            domain == target or domain.endswith("." + target)
+        )
+    raise ValueError("unsupported candidate scope: " + candidate_scope)
+
+
 def scope_intersects(candidate_scope: str, domain: str, kind: str, target: str) -> bool:
+    """Broad overlap test used only for cross-policy ruleset restoration checks."""
     domain, target = domain.lower().strip("."), target.lower().strip(".")
     if candidate_scope == "exact_candidate":
-        return domain_matches(domain, kind, target)
-    if kind == "DOMAIN":
+        return domain == target or (kind.upper() == "DOMAIN-SUFFIX" and domain.endswith("." + target))
+    if kind.upper() == "DOMAIN":
         return target == domain or target.endswith("." + domain)
-    return (
-        target == domain or target.endswith("." + domain)
-        or domain.endswith("." + target)
-    )
-
-
-def prepare_rules(rules: list[tuple[int, str]]) -> dict:
-    """Parse and index config rules once for an entire ledger audit."""
-    domain_rules = []
-    non_domain_rules = []
-    for number, line in rules:
-        fields = [part.strip() for part in line.split(",")]
-        kind = fields[0].upper()
-        if kind in {"DOMAIN", "DOMAIN-SUFFIX"} and len(fields) >= 3:
-            domain_rules.append(DomainRule(
-                kind, fields[1].lower(), fields[2].upper(), number, line
-            ))
-        elif kind == "DOMAIN-KEYWORD" and len(fields) >= 3:
-            non_domain_rules.append({
-                "line": number, "kind": kind, "keyword": fields[1].lower(),
-                "policy": fields[2].upper(), "raw": line
-            })
-        elif kind == "URL-REGEX":
-            if len(fields) < 3:
-                non_domain_rules.append({
-                    "line": number, "kind": kind, "compiled": None,
-                    "policy": None, "raw": line, "malformed": True
-                })
-            else:
-                pattern = ",".join(fields[1:-1])
-                try:
-                    compiled = re.compile(pattern, re.I)
-                    malformed = False
-                except re.error:
-                    compiled = None
-                    malformed = True
-                non_domain_rules.append({
-                    "line": number, "kind": kind, "compiled": compiled,
-                    "policy": fields[-1].upper(), "raw": line,
-                    "malformed": malformed
-                })
-        elif kind in {"AND", "OR", "NOT"}:
-            atoms = [
-                (atom_kind.upper(), target.lower().strip("."))
-                for atom_kind, target in DOMAIN_ATOM_RE.findall(line)
-            ]
-            if atoms:
-                non_domain_rules.append({
-                    "line": number, "kind": kind, "atoms": atoms,
-                    "policy": fields[-1].upper() if fields[-1].upper() in POLICIES else None,
-                    "raw": line
-                })
-        elif kind == "FINAL" and len(fields) >= 2 and fields[1].upper() in POLICIES:
-            non_domain_rules.append({
-                "line": number, "kind": kind, "policy": fields[1].upper(),
-                "raw": line
-            })
-    domain_rules.sort(key=lambda item: item.line)
-    non_domain_rules.sort(key=lambda item: item["line"])
-    return {
-        "index": RuleIndex(domain_rules),
-        "non_domain_rules": non_domain_rules,
-    }
-
-
-def match_candidate(
-    domain: str,
-    policy: str,
-    rules: list[tuple[int, str]],
-    scope: str = "exact_candidate",
-    prepared_rules: dict | None = None,
-) -> dict:
-    prepared = prepared_rules or prepare_rules(rules)
-    index = prepared["index"]
-    if scope == "suffix_candidate":
-        analysis = analyze_candidate(domain, True, index)
-        winners = analysis["scope_winners"]
-        policies = analysis["scope_policies"]
-        if any(value != policy for value in policies):
-            first = next((winner for winner in winners.values() if winner.policy != policy), None)
-            return {
-                "status": "CONFLICT", "line": first.line if first else None,
-                "rule": first.raw if first else None,
-                "effective_policy": first.policy if first else None,
-                "reason": "Prior first-match rules produce a conflicting policy within suffix scope"
-            }
-        if policies:
-            apex = analysis["apex_winner"]
-            fully_covered = bool(
-                apex and apex.kind == "DOMAIN-SUFFIX"
-                and (domain == apex.domain or domain.endswith("." + apex.domain))
-                and all(winner.policy == policy for winner in winners.values())
-            )
-            first = next(iter(winners.values()))
-            return {
-                "status": "ALREADY_COVERED" if fully_covered else "POTENTIAL_MATCH",
-                "line": first.line, "rule": first.raw, "effective_policy": policy,
-                "reason": "Prior first-match rules intersect candidate suffix scope"
-            }
-
-    candidates = []
-    domain_hits = index.matches_host(domain)
-    if domain_hits:
-        candidates.append((domain_hits[0].line, "domain", domain_hits[0]))
-
-    candidate_url = ("https://" + domain, "http://" + domain)
-    for rule in prepared["non_domain_rules"]:
-        kind = rule["kind"]
-        matched = False
-        if kind == "DOMAIN-KEYWORD":
-            matched = bool(rule["keyword"] and rule["keyword"] in domain)
-        elif kind == "URL-REGEX":
-            if rule.get("malformed"):
-                candidates.append((rule["line"], "unresolved_regex", rule))
-                continue
-            compiled = rule["compiled"]
-            matched = bool(compiled and any(compiled.search(url) for url in candidate_url))
-        elif kind in {"AND", "OR", "NOT"}:
-            matched = any(domain_matches(domain, atom_kind, target) for atom_kind, target in rule["atoms"])
-        elif kind == "FINAL":
-            matched = True
-        if matched:
-            candidates.append((rule["line"], kind, rule))
-
-    if not candidates:
-        return {
-            "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES", "line": None,
-            "rule": None, "effective_policy": None,
-            "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found"
-        }
-
-    _, matched_kind, matched_rule = min(candidates, key=lambda item: item[0])
-    if matched_kind == "domain":
-        matched_policy = matched_rule.policy
-        return {
-            "status": "ALREADY_COVERED" if matched_policy == policy else "CONFLICT",
-            "line": matched_rule.line, "rule": matched_rule.raw,
-            "effective_policy": matched_policy,
-            "reason": "Prior first-match exact/suffix domain rule"
-        }
-    if matched_kind == "DOMAIN-KEYWORD":
-        return {
-            "status": "POTENTIAL_MATCH", "line": matched_rule["line"],
-            "rule": matched_rule["raw"], "effective_policy": matched_rule["policy"],
-            "reason": "Prior DOMAIN-KEYWORD may match this candidate"
-        }
-    if matched_kind == "URL-REGEX":
-        return {
-            "status": "POTENTIAL_MATCH", "line": matched_rule["line"],
-            "rule": matched_rule["raw"], "effective_policy": matched_rule["policy"],
-            "reason": "Prior URL-REGEX matches candidate URL"
-        }
-    if matched_kind == "unresolved_regex":
-        return {
-            "status": "UNRESOLVED_RULE", "line": matched_rule["line"],
-            "rule": matched_rule["raw"], "effective_policy": matched_rule["policy"],
-            "reason": "Prior URL-REGEX cannot be compiled"
-        }
-    if matched_kind in {"AND", "OR", "NOT"}:
-        return {
-            "status": "CONDITIONAL_POTENTIAL", "line": matched_rule["line"],
-            "rule": matched_rule["raw"], "effective_policy": matched_rule["policy"],
-            "reason": "Prior compound rule contains a matching domain operand; other operands are not evaluated"
-        }
-    return {
-        "status": "ALREADY_COVERED" if matched_rule["policy"] == policy else "CONFLICT",
-        "line": matched_rule["line"], "rule": matched_rule["raw"],
-        "effective_policy": matched_rule["policy"],
-        "reason": "Prior FINAL rule matches all remaining traffic"
-    }
+    return target == domain or target.endswith("." + domain) or domain.endswith("." + target)
 
 
 def parse_skip_proxy(config_text: str) -> list[str]:
@@ -244,28 +88,78 @@ def parse_skip_proxy(config_text: str) -> list[str]:
 
 
 def skip_proxy_match(domain: str, entries: list[str], scope: str = "exact_candidate") -> str | None:
+    """Return only skip-proxy entries that cover the complete candidate scope."""
+    domain = domain.lower().strip(".")
     for entry in entries:
         if "/" in entry or ":" in entry:
             continue
         if entry.startswith("*."):
-            suffix = entry[2:]
-            if domain == suffix or domain.endswith("." + suffix) or (
-                scope == "suffix_candidate" and suffix.endswith("." + domain)
-            ):
+            suffix = entry[2:].strip(".")
+            if domain == suffix or domain.endswith("." + suffix):
                 return entry
-        elif domain == entry or (scope == "suffix_candidate" and entry.endswith("." + domain)):
+        elif scope == "exact_candidate" and domain == entry:
             return entry
     return None
 
 
+def prepare_rules(rules: list[tuple[int, str]]) -> list[tuple[int, str]]:
+    """Compatibility helper; no ordering or precedence is inferred."""
+    return list(rules)
+
+
+def match_candidate(
+    domain: str,
+    policy: str,
+    rules: list[tuple[int, str]],
+    scope: str = "exact_candidate",
+    prepared_rules: list[tuple[int, str]] | None = None,
+) -> dict:
+    domain = domain.lower().rstrip(".")
+    policy = policy.upper()
+    matches = []
+    for number, line in (prepared_rules if prepared_rules is not None else rules):
+        fields = [part.strip() for part in line.split(",")]
+        if len(fields) < 3 or fields[0].upper() not in {"DOMAIN", "DOMAIN-SUFFIX"}:
+            continue
+        if scope_covers_candidate(scope, domain, fields[0], fields[1]):
+            matches.append({
+                "line": number, "rule": line, "policy": fields[2].upper()
+            })
+
+    if matches:
+        policies = {item["policy"] for item in matches}
+        if len(policies) > 1:
+            status = "MIXED_POLICY_COVERAGE"
+        elif next(iter(policies)) == policy:
+            status = "ALREADY_COVERED"
+        else:
+            status = "CONFLICT"
+        return {
+            "status": status,
+            "line": None,
+            "rule": None,
+            "effective_policy": None,
+            "matches": matches,
+            "reason": "One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated",
+        }
+
+    return {
+        "status": "NOT_COVERED_BY_CONFIG_SCOPE",
+        "line": None,
+        "rule": None,
+        "effective_policy": None,
+        "matches": [],
+        "reason": "No single explicit DOMAIN or DOMAIN-SUFFIX config rule fully covers this candidate scope",
+    }
+
+
 def audit(config_text: str, ledger: dict) -> dict:
-    boundary = first_ruleset_line(config_text)
-    rules = prior_rule_lines(config_text)
+    rules = all_rule_lines(config_text)
     skip_proxy_entries = parse_skip_proxy(config_text)
-    prepared_rules = prepare_rules(rules)
     results = []
     errors = []
     warnings = []
+
     for item in ledger.get("reviews", []):
         domain = str(item.get("domain", "")).lower().rstrip(".")
         policy = str(item.get("policy", item.get("classification", ""))).upper()
@@ -278,39 +172,42 @@ def audit(config_text: str, ledger: dict) -> dict:
         if scope not in {"exact_candidate", "suffix_candidate"}:
             errors.append("Unsupported ledger scope for " + domain + ": " + scope)
             continue
-        match = match_candidate(domain, policy, rules, scope, prepared_rules)
-        if match["status"] == "NOT_COVERED_BY_PRIOR_DOMAIN_RULES":
+
+        match = match_candidate(domain, policy, rules, scope)
+        if match["status"] == "NOT_COVERED_BY_CONFIG_SCOPE":
             bypass = skip_proxy_match(domain, skip_proxy_entries, scope)
             if bypass:
-                match = {"status": "ALREADY_COVERED" if policy == "DIRECT" else "CONFLICT",
-                         "line": None, "rule": "skip-proxy = " + bypass,
-                         "effective_policy": "DIRECT", "reason": "Existing General skip-proxy entry"}
+                match = {
+                    "status": "ALREADY_COVERED" if policy == "DIRECT" else "CONFLICT",
+                    "line": None,
+                    "rule": "skip-proxy = " + bypass,
+                    "effective_policy": "DIRECT",
+                    "matches": [{"line": None, "rule": "skip-proxy = " + bypass, "policy": "DIRECT"}],
+                    "reason": "Existing skip-proxy entry fully covers the candidate scope; rule order is not evaluated",
+                }
+
         result = {
-            "domain": domain, "policy": policy, "source_entry_type": scope,
+            "domain": domain,
+            "policy": policy,
+            "source_entry_type": scope,
             "ledger_status": str(item.get("status", "UNKNOWN")),
-            **match
+            **match,
         }
-        if result["status"] in {"ALREADY_COVERED", "CONFLICT"}:
-            result["priority_resolution"] = "original_config_rule_wins"
-        elif result["status"] in {"POTENTIAL_MATCH", "CONDITIONAL_POTENTIAL", "UNRESOLVED_RULE"}:
-            result["priority_resolution"] = "original_config_rule_may_match_first"
-        else:
-            result["priority_resolution"] = "no_prior_rule_overlap"
         results.append(result)
-        if result["ledger_status"] == "APPROVED" and result["status"] != "NOT_COVERED_BY_PRIOR_DOMAIN_RULES":
+        if result["ledger_status"] == "APPROVED" and result["status"] != "NOT_COVERED_BY_CONFIG_SCOPE":
             warnings.append(
-                "APPROVED candidate is covered or intersected by a higher-priority config rule; "
-                "the original config wins by first-match order: " + domain + " (" + result["status"] + ")"
+                "APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: "
+                + domain + " (" + result["status"] + ")"
             )
+
     counts = {}
     for result in results:
         counts[result["status"]] = counts.get(result["status"], 0) + 1
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "config_path": "shadowrocket/ss.conf",
         "config_is_read_only": True,
-        "first_ruleset_line": boundary,
-        "prior_rule_line_count": len(rules),
+        "config_rule_line_count": len(rules),
         "skip_proxy_entry_count": len(skip_proxy_entries),
         "candidate_count": len(results),
         "status_counts": dict(sorted(counts.items())),
@@ -319,12 +216,12 @@ def audit(config_text: str, ledger: dict) -> dict:
         "errors": errors,
         "passed": not errors,
         "limitations": [
-            "Only rules before the first RULE-SET reference are considered as higher-priority rules. DOMAIN-SUFFIX candidates are checked against the full suffix scope, including exact descendant rules.",
-            "AND/OR/NOT operands are flagged as potential matches; compound truth is not inferred.",
-            "DOMAIN-KEYWORD and URL-REGEX matches are reported as potential, not guaranteed, coverage.",
-            "IP-based and runtime DNS-dependent matches cannot be established from domain names alone.",
-            "The audit never edits ss.conf, DNS, MITM, or RULE-SET references."
-        ]
+            "Only explicit DOMAIN and DOMAIN-SUFFIX scopes are compared.",
+            "A narrower exact or child-suffix exception does not suppress a broader suffix candidate.",
+            "No rule order, first-match winner, or precedence is evaluated.",
+            "DOMAIN-KEYWORD, URL-REGEX, compound rules, IP rules, and runtime DNS-dependent matches are not evaluated.",
+            "The audit never edits ss.conf, DNS, MITM, or RULE-SET references.",
+        ],
     }
 
 
@@ -333,35 +230,40 @@ def main() -> int:
     REPORT_JSON.parent.mkdir(parents=True, exist_ok=True)
     REPORT_JSON.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     lines = [
-        "# RULE-SET / user-config overlap audit", "",
+        "# RULE-SET / user-config scope coverage audit", "",
         "- Authority: read-only shadowrocket/ss.conf",
-        f"- First RULE-SET line: {report['first_ruleset_line']}",
-        f"- Earlier active rules: {report['prior_rule_line_count']}",
+        f"- Explicit config rule lines: {report['config_rule_line_count']}",
         f"- Ledger candidates: {report['candidate_count']}",
         f"- Result: {'PASS' if report['passed'] else 'FAIL'}", "",
-        "## Status counts", ""
+        "## Status counts", "",
     ]
     lines.extend(f"- {name}: {count}" for name, count in report["status_counts"].items())
     lines.extend(["", "## Findings", ""])
-    lines.extend(
-        f"- {x['domain']} ({x['policy']}): {x['status']} — line {x['line']}: {x['reason']}"
-        for x in report["results"] if x["status"] != "NOT_COVERED_BY_PRIOR_DOMAIN_RULES"
-    )
-    if not any(x["status"] != "NOT_COVERED_BY_PRIOR_DOMAIN_RULES" for x in report["results"]):
-        lines.append("- No prior domain-rule overlaps found.")
+    for item in report["results"]:
+        if item["status"] == "NOT_COVERED_BY_CONFIG_SCOPE":
+            continue
+        matches = "; ".join(
+            f"L{match['line']}: {match['rule']} [{match['policy']}]"
+            for match in item.get("matches", [])
+        )
+        if item.get("rule") and not matches:
+            matches = item["rule"]
+        lines.append(
+            f"- {item['domain']} ({item['policy']}): {item['status']} — {item['reason']}; "
+            f"covering scopes: {matches or 'not listed'}"
+        )
+    if not any(x["status"] != "NOT_COVERED_BY_CONFIG_SCOPE" for x in report["results"]):
+        lines.append("- No full-scope coverage found.")
     lines.extend(["", "## Errors", ""])
     lines.extend("- " + error for error in report["errors"]) if report["errors"] else lines.append("- None")
-    lines.extend(["", "Read-only report. No configuration or rule-set references were changed.", ""])
-    REPORT_MD.write_text("\n".join(lines), encoding="utf-8")
-    print(json.dumps({"passed": report["passed"], "candidate_count": report["candidate_count"],
-                      "status_counts": report["status_counts"], "warning_count": len(report["warnings"]), "errors": report["errors"]},
-                     ensure_ascii=False, sort_keys=True))
+    lines.extend(["", "## Warnings", ""])
+    lines.extend("- " + warning for warning in report["warnings"]) if report["warnings"] else lines.append("- None")
+    lines.extend(["", "## Limitations", ""])
+    lines.extend("- " + limitation for limitation in report["limitations"])
+    REPORT_MD.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(json.dumps(report["status_counts"], sort_keys=True))
     return 0 if report["passed"] else 1
 
 
 if __name__ == "__main__":
-    try:
-        raise SystemExit(main())
-    except (OSError, KeyError, ValueError, json.JSONDecodeError) as exc:
-        print("ERROR: " + str(exc), file=sys.stderr)
-        raise SystemExit(1)
+    raise SystemExit(main())
