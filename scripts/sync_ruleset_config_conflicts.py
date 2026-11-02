@@ -153,6 +153,10 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
     if boundary is None:
         raise ValueError("no RULE-SET reference found; refusing to reconcile standalone rulesets")
     config_rules = all_rule_lines(config_text)
+    explicit_config_rules = [
+        (number, line) for number, line in config_rules
+        if line.split(",", 1)[0].strip().upper() in {"DOMAIN", "DOMAIN-SUFFIX"}
+    ]
     skip_entries = parse_skip_proxy(config_text)
     config_blob_sha = hashlib.sha1(
         b"blob " + str(len(config_bytes)).encode("ascii") + bytes([0]) + config_bytes
@@ -400,7 +404,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "config_read_only": True,
         "config_blob_sha": config_blob_sha,
         "first_ruleset_line": boundary,
-        "config_rule_line_count": len(config_rules),
+        "config_rule_line_count": len(explicit_config_rules),
         "published_before": before_counts,
         "published_after": after_counts,
         "published_removed_count": published_removed,
