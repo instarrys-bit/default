@@ -41,9 +41,14 @@ jobs:
           SOURCE_EVENT: ${{ github.event.workflow_run.event }}
           SOURCE_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
           SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+          SOURCE_WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
         run: |
           set -euo pipefail
           # A recovery run is workflow_dispatch; ignore its completion to prevent retry loops.
+          if [ "$SOURCE_WORKFLOW_NAME" != "Shadowrocket Deterministic Domain Audit (User Config Baseline)" ]; then
+            echo "This watchdog recovery path only retries the deterministic domain audit; validator failures are handled by self-healing diagnosis."
+            exit 0
+          fi
           case "$SOURCE_CONCLUSION" in
             failure|timed_out|startup_failure)
               ;;
