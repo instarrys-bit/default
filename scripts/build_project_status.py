@@ -27,6 +27,39 @@ def git_blob_sha(data: bytes) -> str:
     return hashlib.sha1(b"blob " + str(len(data)).encode("ascii") + bytes([0]) + data).hexdigest()
 
 
+def classify_unpublished_approved(entries, published_keys, baseline_samples, archive_items):
+    baseline_keys = set()
+    for item in baseline_samples:
+        policy = str(item.get("policy", "")).upper()
+        domain = str(item.get("domain", "")).lower()
+        scope = str(item.get("scope", "exact_candidate"))
+        kind = "DOMAIN-SUFFIX" if "suffix" in scope else "DOMAIN"
+        baseline_keys.add((policy, f"{kind},{domain}"))
+    archived_keys = {
+        (str(item.get("policy", "")).upper(), str(item.get("rule", "")))
+        for item in archive_items if not item.get("restored_at")
+    }
+    result = {"baseline_conflict": [], "config_conflict_archive": [], "other": []}
+    for entry in entries:
+        if entry.get("status") != "APPROVED":
+            continue
+        policy = str(entry.get("classification") or entry.get("policy") or "").upper()
+        domain = str(entry.get("domain", "")).lower()
+        scope = str(entry.get("source_entry_type") or entry.get("scope") or "exact_candidate")
+        kind = "DOMAIN-SUFFIX" if "suffix" in scope else "DOMAIN"
+        key = (policy, f"{kind},{domain}")
+        if key in published_keys:
+            continue
+        if key in baseline_keys:
+            bucket = "baseline_conflict"
+        elif key in archived_keys:
+            bucket = "config_conflict_archive"
+        else:
+            bucket = "other"
+        result[bucket].append({"policy": policy, "rule": key[1], "domain": domain})
+    return result
+
+
 def build_status(root: Path = ROOT, now: str | None = None) -> dict:
     rules_dir = root / "rulesets"
     manifest = read_json(rules_dir / "manifest.json", {})
@@ -38,6 +71,7 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
     discovered = read_json(root / "sources/discovered_sources.json", {"candidates": []})
     assessments = read_json(root / "sources/source_assessments.json", {"assessments": []})
     source_matrix = read_json(root / "sources/source_candidates.json", {"candidates": []})
+    review_ledger = read_json(root / "sources/domain_reviews.json", {"reviews": []})
     lineage = read_json(root / "reports/source-lineage-audit.json", {})
     policy = read_json(root / "sources/policy.json", {})
     conflict_archive = read_json(rules_dir / "config_conflict_archive.json", {"items": []})
@@ -56,6 +90,7 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
                 invalid_lines.append({"policy": name, "line": line})
 
     counts = {name: len(rules[name]) for name in POLICIES}
+    published_keys = {(name, line) for name in POLICIES for line in rules[name]}
     total = sum(counts.values())
     list_files = sorted(x.name for x in rules_dir.glob("*.list"))
     expected_files = sorted(x.lower() + ".list" for x in POLICIES)
@@ -90,6 +125,12 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
     approved = int(manifest.get("approved_total", manifest.get("deterministic_review_progress", {}).get("approved_total", 0)))
     ledger_approved = int(status_counts.get("APPROVED", approved))
     approved_not_published = max(0, ledger_approved - approved)
+    unpublished_approved = classify_unpublished_approved(
+        review_ledger.get("reviews", []), published_keys,
+        manifest.get("baseline_conflict_hold_sample", []), conflict_archive.get("items", [])
+    )
+    if review_ledger.get("reviews") is not None:
+        approved_not_published = sum(len(x) for x in unpublished_approved.values())
     held = int(manifest.get("held_total", manifest.get("deterministic_review_progress", {}).get("held_total", 0)))
 
     conflict_items = conflict_archive.get("items", [])
@@ -157,6 +198,8 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
             "candidate_count": candidate_count, "approved_count": approved,
             "ledger_approved_count": ledger_approved,
             "approved_not_published_count": approved_not_published,
+            "approved_not_published_reasons": {k: len(v) for k, v in unpublished_approved.items()},
+            "approved_not_published_samples": unpublished_approved,
             "held_count": held, "status_counts": status_counts,
         },
         "recovery": {
@@ -192,7 +235,7 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
         f"- 本轮降级/隔离来源：{len(degraded_sources)}",
         f"- 累计自动激活来源：{len(activation.get('activations', []))}；本轮新增：{activated_last_run}",
         f"- 自动发现仓库：{result['sources']['discovered_repository_count']}；评估文件：{result['sources']['assessed_file_count']}",
-        f"- 候选域名：{candidate_count}；审核账本 APPROVED：{ledger_approved}；实际发布：{approved}；未发布差额：{approved_not_published}；暂缓/拒绝：{held}",
+        f"- 候选域名：{candidate_count}；审核账本 APPROVED：{ledger_approved}；实际发布：{approved}；未发布差额：{approved_not_published}（ss.conf 优先级冲突 {len(unpublished_approved['baseline_conflict'])}；配置冲突归档 {len(unpublished_approved['config_conflict_archive'])}；其他 {len(unpublished_approved['other'])}）；暂缓/拒绝：{held}",
         f"- 各策略独立来源组：DIRECT {source_groups['DIRECT']}，PROXY {source_groups['PROXY']}，REJECT {source_groups['REJECT']}（最低要求 {minimum_groups}）",
         f"- 血缘审计：已审计 {result['sources']['lineage_audited_count']}；已验证 {result['sources']['lineage_verified_count']}；部分 {result['sources']['lineage_partial_count']}；未验证 {result['sources']['lineage_unverified_count']}。血缘不确定性是来源说明，不作为一票否决。", "",
         "## 3. 生命周期与容量管理", "",
