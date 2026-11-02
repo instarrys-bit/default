@@ -94,8 +94,7 @@ def evidence_gate(evidence, source_weights, minimum, threshold, required_sources
 
 def load_correlated_publishers():
     """Read same-policy high/near-duplicate relationships from the source candidate matrix."""
-    if not SOURCE_MATRIX.exists(): return set()
-    matrix=json.loads(SOURCE_MATRIX.read_text(encoding="utf-8"))
+    matrix=json.loads(SOURCE_MATRIX.read_text(encoding="utf-8")) if SOURCE_MATRIX.exists() else {}
     pairs=set()
     for item in matrix.get("same_policy_domain_overlap",[]):
         if item.get("relation") not in {"high_overlap","near_duplicate"}: continue
@@ -346,7 +345,7 @@ def main():
             "duplicate_check":"PASS" if status not in {"DUPLICATE","ALREADY_COVERED"} else status,
             "conflict_check":"PASS" if status not in {"CONFLICT","POLICY_CONFLICT","REVIEW"} else status,
             "risk_check":"VETO" if status=="RISK_HOLD" else "PASS",
-            "decision_engine":"deterministic-domain-audit/4.0","reviewed_at":now,
+            "decision_engine":"deterministic-domain-audit/4.1","reviewed_at":now,
             "config_authority":"shadowrocket/ss.conf"
         }
         previous_record=review_map.get(domain)
@@ -362,13 +361,13 @@ def main():
                 "checked_at":now
             }
         review_map[domain]=new_record
+        run_counts[status]=run_counts.get(status,0)+1
         if (candidate_index+1)%batch_size==0 or candidate_index+1==len(candidates):
             partial_reviews=sorted(review_map.values(),key=lambda x:x["domain"])
             partial_counts={}
             for record in partial_reviews: partial_counts[record["status"]]=partial_counts.get(record["status"],0)+1
             atomic_json(OUTPUT,{"schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,"source_snapshot":collected.get("sources",[]),"run_counts":run_counts,"counts":partial_counts,"reviews":partial_reviews})
             atomic_json(CURSOR,{**checkpoint(snapshot_sha256,len(candidates),candidate_index+1,batch_size),"updated_at":now,"last_checkpoint_domain":domain})
-        run_counts[status]=run_counts.get(status,0)+1
     reviews=sorted(review_map.values(),key=lambda x:x["domain"])
     total_counts={}
     for item in reviews: total_counts[item["status"]]=total_counts.get(item["status"],0)+1
