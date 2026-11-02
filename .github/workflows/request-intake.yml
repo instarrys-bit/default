@@ -13,7 +13,7 @@ permissions:
   actions: write
 
 concurrency:
-  group: github-only-domain-intake
+  group: shadowrocket-main-writer
   cancel-in-progress: false
 
 jobs:

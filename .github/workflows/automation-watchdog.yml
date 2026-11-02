@@ -64,7 +64,7 @@ jobs:
             exit 0
           fi
 
-          runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=20")"
+          runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
           current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
           if jq -e --argjson source "$SOURCE_RUN_ID" --arg sha "$current_sha" '[.workflow_runs[] | select(.head_branch == "main" and .head_sha == $sha and .id > $source and (.status != "completed" or .conclusion == "success"))] | length > 0' <<< "$runs" >/dev/null; then
             echo "A newer current-main deterministic audit already exists; no duplicate recovery."
@@ -116,7 +116,7 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=20")"
+          runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
 
           current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
           if jq -e '[.workflow_runs[] | select(.head_branch == "main" and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
@@ -240,7 +240,7 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=20")"
+          runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
           current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
           if jq -e --arg sha "$current_sha" '[.workflow_runs[] | select(.head_sha == $sha and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
             echo "A deterministic audit for current main ($current_sha) is already queued or running; waiting for its completion."

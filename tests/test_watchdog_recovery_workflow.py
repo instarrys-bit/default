@@ -33,6 +33,12 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("gh workflow run auto_sync.yml --ref main --repo \"$REPO\"", workflow)
         self.assertIn('select(.head_branch == "main" and .head_sha == $sha and .id > $source', workflow)
 
+    def test_run_history_checks_follow_all_api_pages(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        self.assertGreaterEqual(workflow.count("gh api --paginate --slurp"), 3)
+        self.assertNotIn("runs?per_page=20", workflow)
+        self.assertNotIn("runs?per_page=30", workflow)
+
     def test_workflow_dispatch_recovery_does_not_recursively_retry(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("A recovery run is workflow_dispatch; ignore its completion to prevent retry loops.", workflow)

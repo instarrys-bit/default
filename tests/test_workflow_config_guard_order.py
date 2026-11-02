@@ -31,6 +31,16 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn('select(.head_branch == "main" and .head_sha == $sha', watchdog)
         self.assertIn('select(.head_branch == "main" and .conclusion == "success")', watchdog)
 
+    def test_every_main_writer_uses_the_shared_repository_lock(self):
+        auto_sync = WORKFLOW.read_text(encoding="utf-8")
+        intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
+        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        self.assertIn("group: shadowrocket-main-writer", auto_sync)
+        self.assertIn("group: shadowrocket-main-writer", intake)
+        manifest_writer = watchdog.split("  manifest-integrity:", 1)[1]
+        self.assertIn("group: shadowrocket-main-writer", manifest_writer)
+        self.assertNotIn("github-only-domain-intake", intake)
+
     def test_request_intake_retries_non_fast_forward_without_force_push(self):
         intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
         self.assertIn("for attempt in 1 2 3; do", intake)

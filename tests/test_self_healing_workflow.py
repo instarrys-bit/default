@@ -125,6 +125,12 @@ class SelfHealingWorkflowTests(unittest.TestCase):
 
 
 
+    def test_run_history_checks_follow_all_api_pages(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        self.assertGreaterEqual(workflow.count("gh api --paginate --slurp"), 3)
+        self.assertNotIn("runs?per_page=20", workflow)
+        self.assertNotIn("runs?per_page=30", workflow)
+
     def test_permissions_are_scoped_to_the_jobs_that_need_them(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         top_level = workflow.split("jobs:", 1)[0]

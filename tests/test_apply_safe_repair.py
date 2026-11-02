@@ -23,7 +23,7 @@ class ApplySafeRepairTests(unittest.TestCase):
             "      - name: Build append-only rule-level provenance ledger\n"
             "        run: python3 scripts/build_rule_provenance.py\n"
         )
-        (root / ".github/workflows/auto_sync.yml").write_text(workflow + "concurrency:\n  cancel-in-progress: false\n", encoding="utf-8")
+        (root / ".github/workflows/auto_sync.yml").write_text(workflow + "concurrency:\n  group: shadowrocket-main-writer\n  cancel-in-progress: false\n", encoding="utf-8")
         (root / "tests").mkdir()
         (root / "tests/test_workflow_config_guard_order.py").write_text(
             '        self.assertIn("cancel-in-progress: true", workflow)\n', encoding="utf-8"
@@ -52,6 +52,22 @@ class ApplySafeRepairTests(unittest.TestCase):
         self.assertIn("cancel-in-progress: false", text)
         self.assertIn("stale-commit guards stop obsolete runs safely", text)
         self.assertNotIn("cancel-in-progress: true", text)
+
+    def test_repair_guard_ignores_comments_nested_keys_and_wrong_groups(self):
+        root = self.make_root()
+        workflow_path = root / ".github/workflows/auto_sync.yml"
+        diagnosis = {"repair_id": STALE_TEST_REPAIR_ID, "automatic_code_change_allowed": True}
+        invalid_workflows = (
+            "# concurrency:\\n#   group: shadowrocket-main-writer\\n#   cancel-in-progress: false\\n",
+            "jobs:\\n  audit:\\n    concurrency:\\n      group: shadowrocket-main-writer\\n      cancel-in-progress: false\\n",
+            "concurrency:\\n  group: another-writer\\n  cancel-in-progress: false\\n",
+            "concurrency:\\n  group: shadowrocket-main-writer\\n  cancel-in-progress: true\\n",
+        )
+        for invalid in invalid_workflows:
+            with self.subTest(workflow=invalid):
+                workflow_path.write_text(invalid, encoding="utf-8")
+                with self.assertRaises(ValueError):
+                    apply(root, diagnosis)
 
     def test_unknown_diagnosis_is_rejected(self):
         root = self.make_root()

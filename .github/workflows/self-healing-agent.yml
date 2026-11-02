@@ -50,7 +50,7 @@ jobs:
           FAILED_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           set -euo pipefail
-          runs="$(gh api "repos/$REPO/actions/workflows/$WORKFLOW_ID/runs?per_page=20" 2>/dev/null || true)"
+          runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/$WORKFLOW_ID/runs?per_page=100" 2>/dev/null | jq '{workflow_runs: [.[].workflow_runs[]]}' || true)"
           if [ -z "$runs" ]; then
             echo "Supersession lookup unavailable; continuing with diagnosis."
             echo "stale=false" >> "$GITHUB_OUTPUT"
@@ -347,7 +347,7 @@ jobs:
         run: |
           set -euo pipefail
           current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"
-          runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=30")"
+          runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
 
           stale_lines="$(python3 -c '
           import json, sys
@@ -395,7 +395,7 @@ jobs:
               if [ "$reason" = "timeout" ]; then timed_out_any=1; fi
             done <<< "$stale_lines"
             sleep 10
-            runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=30")"
+            runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
           fi
 
           active_count="$(jq '[.workflow_runs[] | select(.head_branch == "main" and .status != "completed")] | length' <<< "$runs")"

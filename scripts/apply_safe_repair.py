@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,16 +23,52 @@ CURRENT_ASSERTIONS = (
     '        self.assertIn("Keep the active audit; stale-commit guards stop obsolete runs safely.", workflow)'
 )
 
+def has_safe_main_writer_concurrency(workflow_text: str) -> bool:
+    """Read the actual top-level concurrency mapping, ignoring comments and nested jobs."""
+    lines = workflow_text.splitlines()
+    headers = [index for index, line in enumerate(lines) if line == "concurrency:"]
+    if len(headers) != 1:
+        return False
+
+    start = headers[0] + 1
+    end = len(lines)
+    for index in range(start, len(lines)):
+        line = lines[index]
+        if line.strip() and not line.startswith((" ", "\t", "#")):
+            end = index
+            break
+
+    values = {}
+    for line in lines[start:end]:
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        match = re.fullmatch(r"  ([A-Za-z0-9_-]+):[ \t]*(.*?)[ \t]*", line)
+        if not match:
+            continue
+        key, value = match.groups()
+        if key in values:
+            return False
+        value = re.split(r"\s+#", value, maxsplit=1)[0].strip()
+        values[key] = value
+
+    return (
+        values.get("group") == "shadowrocket-main-writer"
+        and values.get("cancel-in-progress") == "false"
+    )
+
+
 def apply(root: Path, diagnosis: dict) -> list[str]:
     repair_id = diagnosis.get("repair_id")
     if diagnosis.get("automatic_code_change_allowed") is not True:
         raise ValueError("diagnosis does not authorize a known safe repair")
     root = Path(root)
+    workflow_path = root / WORKFLOW
+    if not workflow_path.is_file() or not has_safe_main_writer_concurrency(
+        workflow_path.read_text(encoding="utf-8")
+    ):
+        raise ValueError("workflow does not contain the safe top-level main-writer concurrency policy")
 
     if repair_id == STALE_TEST_REPAIR_ID:
-        workflow_path = root / WORKFLOW
-        if not workflow_path.is_file() or "cancel-in-progress: false" not in workflow_path.read_text(encoding="utf-8"):
-            raise ValueError("workflow does not contain the safe active-audit concurrency policy")
         test_path = root / STALE_TEST_PATH
         if not test_path.is_file():
             raise ValueError("workflow contract test is missing; refusing to synthesize it")
