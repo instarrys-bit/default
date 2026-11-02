@@ -42,56 +42,14 @@
         "relevance-prompt"
       ];
 
-      function isRtbAdNode(item) {
-        if (!item || typeof item !== "object") return false;
-
-        // GraphQL may expose the Kotlin timeline model name directly or through
-        // a serialized discriminator. Keep matching exact to avoid deleting
-        // ordinary tweets that merely contain advertising-related text.
-        const markers = [
-          item.__typename,
-          item.typename,
-          item.itemType,
-          item.type,
-          item.contentType,
-          item.entryType,
-          item.entryId,
-          item.entry_id
-        ];
-        for (const marker of markers) {
-          if (typeof marker === "string" &&
-              (marker === "UrtTimelineRtbImageAd" ||
-               marker.includes("UrtTimelineRtbImageAd"))) {
-            return true;
-          }
-        }
-
-        // Some serializers wrap the RTB item under a named property.
-        if (Object.prototype.hasOwnProperty.call(item, "UrtTimelineRtbImageAd") ||
-            Object.prototype.hasOwnProperty.call(item, "rtbImageAd")) {
-          return true;
-        }
-        return false;
-      }
-
       function isXAdEntry(item) {
         if (!item || typeof item !== "object") return false;
-        if (isRtbAdNode(item)) return true;
-
         const entryId = String(item.entryId || item.sortIndex || "");
         if (AD_ENTRY_PREFIXES.some(p => entryId.startsWith(p) || entryId.includes("promoted"))) {
           return true;
         }
         const content = item.content || item.item || {};
         const itemContent = content.itemContent || (content.item && content.item.itemContent) || {};
-        const nestedRtb = [
-          item.itemContent,
-          item.item && item.item.itemContent,
-          item.content && item.content.itemContent,
-          item.content && item.content.item && item.content.item.itemContent,
-          itemContent
-        ];
-        if (nestedRtb.some(isRtbAdNode)) return true;
         if (
           itemContent.promotedMetadata ||
           content.promotedMetadata ||
@@ -100,38 +58,15 @@
         ) {
           return true;
         }
-        // A module may contain several normal items plus one RTB item. Filter
-        // its child list in place; only remove the outer entry if it becomes empty.
-        const childArrays = [content.items, item.items, item.items && item.items.items];
-        for (const children of childArrays) {
-          if (Array.isArray(children)) {
-            const before = children.length;
-            for (let i = children.length - 1; i >= 0; i--) {
-              if (isXAdEntry(children[i])) children.splice(i, 1);
-            }
-            if (before > 0 && children.length === 0) return true;
-          }
+        // Filter embedded array of module items (e.g. conversation thread ads)
+        if (Array.isArray(content.items)) {
+          content.items = content.items.filter(sub => !isXAdEntry(sub));
         }
         return false;
       }
 
-      // RTB ads can be nested in URT timeline modules rather than exposed as
-      // top-level promoted-tweet entries. Recursively remove only nodes carrying
-      // the exact RTB discriminator; preserve normal siblings and cursor data.
       function walkX(node) {
         if (!node || typeof node !== "object") return;
-
-        if (Array.isArray(node)) {
-          for (let i = node.length - 1; i >= 0; i--) {
-            if (isXAdEntry(node[i])) {
-              node.splice(i, 1);
-            } else {
-              walkX(node[i]);
-            }
-          }
-          return;
-        }
-
         if (Array.isArray(node.instructions)) {
           for (const inst of node.instructions) {
             if (Array.isArray(inst.entries)) {
@@ -145,16 +80,13 @@
             }
           }
         }
-
         if (node.globalObjects && node.globalObjects.tweets) {
           for (const k of Object.keys(node.globalObjects.tweets)) {
-            if (node.globalObjects.tweets[k] &&
-                node.globalObjects.tweets[k].promotedMetadata) {
+            if (node.globalObjects.tweets[k] && node.globalObjects.tweets[k].promotedMetadata) {
               delete node.globalObjects.tweets[k];
             }
           }
         }
-
         for (const key of Object.keys(node)) {
           const val = node[key];
           if (val && typeof val === "object") {
