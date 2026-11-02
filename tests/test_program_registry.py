@@ -58,6 +58,7 @@ class ProgramRegistryTests(unittest.TestCase):
                     "dispatches": [],
                     "permission_boundary": "test",
                     "health_check": "test",
+                    "orchestration": {"enabled": False, "allowed_callers": [], "max_attempts": 0, "timeout_seconds": 300},
                 },
             ],
         }
