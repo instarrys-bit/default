@@ -389,20 +389,47 @@ def merge_tree_scan_inventory(existing: dict, discovered: dict[str, dict]) -> di
 
 def select_tree_scan_repositories(discovered: dict[str, dict], limit: int = MAX_TREE_REPOSITORIES) -> list[tuple[str, dict]]:
     """Rotate bounded tree scans so every discovered repository is eventually inspected."""
-    def priority(entry: tuple[str, dict]) -> tuple[int, str, int, str]:
+    def priority(entry: tuple[str, dict]) -> tuple[int, str, int, str] | None:
         full_name, item = entry
         scanned_at = str(item.get("tree_scanned_at") or "")
         status = str(item.get("tree_scan_status") or "")
+        scanned_updated = item.get("tree_scanned_updated_at")
+        current_updated = item.get("updated_at")
+        scanned_branch = item.get("tree_scanned_default_branch")
+        current_branch = str(item.get("default_branch") or "main")
         if not scanned_at:
             tier = 0
         elif status in {"error", "truncated"}:
             tier = 1
-        else:
+        elif scanned_updated != current_updated or scanned_branch != current_branch:
             tier = 2
+        else:
+            return None
         return (tier, scanned_at, -int(item.get("stars", 0)), full_name.lower())
 
-    return sorted(discovered.items(), key=priority)[:max(0, int(limit))]
+    eligible = [(name, item) for name, item in discovered.items() if priority((name, item)) is not None]
+    return sorted(eligible, key=priority)[:max(0, int(limit))]
 
+
+
+def readme_snapshot(repo_data: dict, previous: dict | None = None) -> tuple[str, str | None, list[str], dict, bool]:
+    """Reuse a README-derived snapshot only when GitHub's repository revision is unchanged."""
+    previous = previous or {}
+    branch = str(repo_data.get("default_branch") or "main")
+    unchanged = (
+        bool(previous.get("readme_sha256"))
+        and previous.get("updated_at") == repo_data.get("updated_at")
+        and str(previous.get("default_branch") or "main") == branch
+    )
+    if unchanged:
+        urls = list(previous.get("readme_rule_list_urls") or previous.get("rule_list_urls", []))
+        return "", str(previous["readme_sha256"]), urls, dict(previous.get("readme_policy_claims", {})), True
+    owner, name = str(repo_data.get("full_name", "")).split("/", 1)
+    readme = fetch_readme(owner, name, branch)
+    urls = extract_list_urls(readme, owner, name, branch)
+    digest = hashlib.sha256(readme.encode("utf-8")).hexdigest() if readme else None
+    claims = extract_readme_policy_claims(readme, urls)
+    return readme, digest, urls, claims, False
 
 def main() -> int:
     token = os.environ.get("GITHUB_TOKEN", "")
@@ -432,7 +459,11 @@ def main() -> int:
                     owner, name = full_name.split("/", 1)
                     if full_name not in discovered:
                         branch = str(repo_data.get("default_branch") or "main")
-                        readme = fetch_readme(owner, name, branch) if len(discovered) < MAX_README_REPOSITORIES else ""
+                        previous = existing_by_repo.get(full_name, {})
+                        if len(discovered) < MAX_README_REPOSITORIES:
+                            readme, readme_hash, readme_urls, readme_claims, readme_cache_hit = readme_snapshot(repo_data, previous)
+                        else:
+                            readme, readme_hash, readme_urls, readme_claims, readme_cache_hit = "", previous.get("readme_sha256"), list(previous.get("readme_rule_list_urls", [])), dict(previous.get("readme_policy_claims", {})), bool(previous.get("readme_sha256"))
                         discovered[full_name] = {
                             "repository": full_name,
                             "html_url": "https://github.com/" + full_name,
@@ -444,18 +475,18 @@ def main() -> int:
                             "archived": bool(repo_data.get("archived")),
                             "fork": bool(repo_data.get("fork")),
                             "license": (repo_data.get("license") or {}).get("spdx_id") if isinstance(repo_data.get("license"), dict) else None,
-                            "readme_sha256": hashlib.sha256(readme.encode("utf-8")).hexdigest() if readme else existing_by_repo.get(full_name, {}).get("readme_sha256"),
-                            "tree_scanned_at": existing_by_repo.get(full_name, {}).get("tree_scanned_at"),
-                            "tree_scan_status": existing_by_repo.get(full_name, {}).get("tree_scan_status"),
-                            "tree_scan_error": existing_by_repo.get(full_name, {}).get("tree_scan_error"),
-                            "rule_list_urls": extract_list_urls(readme, owner, name, branch),
-                            "readme_policy_claims": {},
+                            "readme_sha256": readme_hash,
+                            "tree_scanned_at": previous.get("tree_scanned_at"),
+                            "tree_scan_status": previous.get("tree_scan_status"),
+                            "tree_scan_error": previous.get("tree_scan_error"),
+                            "tree_scanned_updated_at": previous.get("tree_scanned_updated_at"),
+                            "tree_scanned_default_branch": previous.get("tree_scanned_default_branch"),
+                            "readme_rule_list_urls": readme_urls,
+                            "rule_list_urls": list(previous.get("rule_list_urls", [])) if readme_cache_hit else readme_urls,
+                            "readme_policy_claims": readme_claims,
                             "search_queries": [],
-                            "discovered_at": datetime.now(timezone.utc).isoformat(),
+                            "discovered_at": previous.get("discovered_at") or datetime.now(timezone.utc).isoformat(),
                         }
-                        discovered[full_name]["readme_policy_claims"] = extract_readme_policy_claims(
-                            readme, discovered[full_name]["rule_list_urls"]
-                        )
                     discovered[full_name]["search_queries"].append(query)
                 if len(items) < MAX_REPOS_PER_QUERY:
                     break
@@ -511,12 +542,16 @@ def main() -> int:
                 tree_urls, truncated = discover_tree_urls(owner, name, item.get("default_branch") or "main", token)
                 item["rule_list_urls"] = sorted(set(item.get("rule_list_urls", [])) | set(tree_urls))
                 item["tree_scanned_at"] = datetime.now(timezone.utc).isoformat()
+                item["tree_scanned_updated_at"] = item.get("updated_at")
+                item["tree_scanned_default_branch"] = str(item.get("default_branch") or "main")
                 item["tree_scan_status"] = "truncated" if truncated else "complete"
                 item.pop("tree_scan_error", None)
                 if truncated:
                     tree_truncated.append(full_name)
             except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError) as exc:
                 item["tree_scanned_at"] = datetime.now(timezone.utc).isoformat()
+                item["tree_scanned_updated_at"] = item.get("updated_at")
+                item["tree_scanned_default_branch"] = str(item.get("default_branch") or "main")
                 item["tree_scan_status"] = "error"
                 item["tree_scan_error"] = str(exc)[:300]
                 tree_errors.append({"repository": full_name, "error": str(exc)})
