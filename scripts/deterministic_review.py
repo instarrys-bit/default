@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 import json,re,sys
+from functools import lru_cache
 from pathlib import Path
 from datetime import datetime,timezone
 from domain_rule_engine import RuleIndex,load_domain_rules,inspect_suffix_scope
@@ -57,9 +58,11 @@ def evidence_gate(evidence, source_weights, minimum, threshold, required_sources
     required=set(required_sources)
     qualified=(len(source_ids)>=minimum and len(publishers)>=minimum and len(groups)>=minimum and required.issubset(source_ids) and confidence>=threshold)
     return confidence,source_ids,publishers,groups,qualified
+@lru_cache(maxsize=8)
 def section(text,name,next_name):
     if text.count(name)!=1 or text.count(next_name)!=1: fail("cannot isolate "+name)
     return text.split(name,1)[1].split(next_name,1)[0]
+@lru_cache(maxsize=8)
 def parse_skip_proxy(text):
     if text.count("[General]")!=1 or text.count("[Rule]")!=1: fail("cannot isolate [General] section")
     block=text.split("[General]",1)[1].split("[Rule]",1)[0]
@@ -70,6 +73,7 @@ def parse_skip_proxy(text):
 def overlaps(domain, rule_domain):
     rule_domain=rule_domain.lower().strip(".")
     return domain==rule_domain or domain.endswith("."+rule_domain)
+@lru_cache(maxsize=8)
 def first_ruleset_line(text):
     in_rules=False
     for number,raw in enumerate(text.splitlines(),1):
@@ -81,11 +85,34 @@ def first_ruleset_line(text):
             return number
     return None
 
+_PREPARED_RULE_INDEX = {}
+
+
+def prepared_rule_index(rules, conditional, boundary):
+    key = (id(rules), boundary)
+    cached = _PREPARED_RULE_INDEX.get(key)
+    if cached is not None and cached[0] is rules:
+        return cached[1], cached[2]
+    filtered_rules = RuleIndex([rule for rule in rules.rules if rule.line < boundary])
+    filtered_conditional = [(line, raw) for line, raw in conditional if line < boundary]
+    _PREPARED_RULE_INDEX.clear()
+    _PREPARED_RULE_INDEX[key] = (rules, filtered_rules, filtered_conditional)
+    return filtered_rules, filtered_conditional
+
+
+@lru_cache(maxsize=8)
+def special_rule_lines(text):
+    boundary = first_ruleset_line(text)
+    rule_block = section(text, "[Rule]", "[Host]")
+    if boundary is not None:
+        rule_start = text.split("[Rule]", 1)[0].count("\n") + 2
+        rule_block = "\n".join(raw for offset, raw in enumerate(rule_block.splitlines()) if rule_start + offset < boundary)
+    return tuple(line.strip() for line in rule_block.splitlines() if line.strip() and line.strip().upper().startswith(("DOMAIN-KEYWORD,", "URL-REGEX,")))
+
 def inspect(domain,rules,conditional,base,protected,candidate_policy=None,candidate_suffix=False):
     boundary=first_ruleset_line(base)
     if boundary is not None:
-        rules=RuleIndex([rule for rule in rules.rules if rule.line<boundary])
-        conditional=[(line,raw) for line,raw in conditional if line<boundary]
+        rules,conditional=prepared_rule_index(rules,conditional,boundary)
     hits=rules.matches_host(domain)
     if hits:
         winner=hits[0]
@@ -102,13 +129,7 @@ def inspect(domain,rules,conditional,base,protected,candidate_policy=None,candid
         if domain==entry.lower(): return "RISK_HOLD","Exact host is on the critical-function protection list"
     for suffix in protected.get("protected_suffixes",[]):
         if overlaps(domain,suffix): return "RISK_HOLD","Candidate intersects protected suffix "+suffix
-    rule_block=section(base,"[Rule]","[Host]")
-    if boundary is not None:
-        rule_start=base.split("[Rule]",1)[0].count("\n")+2
-        rule_block="\n".join(raw for offset,raw in enumerate(rule_block.splitlines()) if rule_start+offset<boundary)
-    for raw in rule_block.splitlines():
-        line=raw.strip()
-        if not line or line.startswith("#"): continue
+    for line in special_rule_lines(base):
         upper=line.upper()
         if upper.startswith("DOMAIN-KEYWORD,"):
             fields=line.split(",",2)
