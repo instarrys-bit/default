@@ -151,7 +151,7 @@ def inspect(domain,rules,conditional,base,protected,candidate_policy=None,candid
     # Compare complete scopes only. No first-match winner or rule ordering is used.
     covering = [
         rule for rule in rules.rules
-        if scope_covers_candidate(candidate_scope, domain, rule.kind, rule.domain)
+        if rule.policy != "REJECT" and scope_covers_candidate(candidate_scope, domain, rule.kind, rule.domain)
     ]
     if covering:
         policies = {rule.policy for rule in covering}
@@ -166,6 +166,8 @@ def inspect(domain,rules,conditional,base,protected,candidate_policy=None,candid
         return status, "Explicit config scope fully covers candidate (" + evidence + "); rule order is not evaluated"
 
     for _,raw in conditional:
+        if raw.rsplit(",", 1)[-1].strip().upper() == "REJECT":
+            continue
         for kind,match in COND_RE.findall(raw):
             match=match.lower().strip(".")
             if candidate_suffix:
@@ -196,7 +198,7 @@ def inspect(domain,rules,conditional,base,protected,candidate_policy=None,candid
         upper=line.upper()
         if upper.startswith("DOMAIN-KEYWORD,"):
             fields=line.split(",",2)
-            if len(fields)==3 and fields[1].lower() in domain:
+            if len(fields)==3 and fields[2].strip().upper() != "REJECT" and fields[1].lower() in domain:
                 if candidate_suffix:
                     return "REVIEW","Suffix candidate may intersect existing DOMAIN-KEYWORD rule"
                 pol=fields[2].strip().upper()
@@ -226,6 +228,8 @@ def inspect(domain,rules,conditional,base,protected,candidate_policy=None,candid
                 host_regex=re.compile(r"^(?:"+host_pattern+r")$")
             except re.error:
                 return "REVIEW","Existing URL-REGEX host pattern cannot be compiled"
+            if fields[1].strip().upper() == "REJECT":
+                continue
             if host_regex.fullmatch(domain):
                 if candidate_suffix:
                     return "REVIEW","Suffix candidate may intersect host-specific URL-REGEX"
