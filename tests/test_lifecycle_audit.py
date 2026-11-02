@@ -44,6 +44,14 @@ class LifecycleAuditSafetyTests(unittest.TestCase):
         self.assertFalse(deletion_confirmed(short))
         self.assertTrue(deletion_confirmed(enough))
 
+    def test_daily_confirmations_accumulate_over_30_days(self):
+        history=[
+            {"checked_at":f"2026-11-{day:02d}T00:00:00+00:00","status":"CONFIRMED_NXDOMAIN_OBSERVATION"}
+            for day in range(1, 31)
+        ]
+        history.append({"checked_at":"2026-12-01T00:00:00+00:00","status":"CONFIRMED_NXDOMAIN_OBSERVATION"})
+        self.assertTrue(deletion_confirmed(history))
+
     def test_intervening_dns_recovery_breaks_deletion_confirmation(self):
         history=[
             {"checked_at":"2026-11-01T00:00:00+00:00","status":"CONFIRMED_NXDOMAIN_OBSERVATION"},
