@@ -14,6 +14,7 @@ REPORT_MD = ROOT / "reports" / "ruleset-config-overlap-audit.md"
 DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$", re.I)
 POLICIES = {"DIRECT", "PROXY", "REJECT"}
 from domain_rule_engine import DomainRule, RuleIndex, ancestors
+from json_document_store import read_document
 
 
 def all_rule_lines(config_text: str) -> list[tuple[int, str]]:
@@ -226,7 +227,7 @@ def audit(config_text: str, ledger: dict) -> dict:
 
 
 def main() -> int:
-    report = audit(CONFIG.read_text(encoding="utf-8-sig"), json.loads(LEDGER.read_text(encoding="utf-8")))
+    report = audit(CONFIG.read_text(encoding="utf-8-sig"), read_document(LEDGER, "reviews", {"reviews": []}))
     REPORT_JSON.parent.mkdir(parents=True, exist_ok=True)
     REPORT_JSON.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     lines = [
