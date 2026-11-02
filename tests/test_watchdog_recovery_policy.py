@@ -106,6 +106,18 @@ class WatchdogRecoveryPolicyTests(unittest.TestCase):
         self.assertTrue(result["allowed"])
         self.assertEqual(result["prior_retryable_failures"], 0)
 
+
+    def test_same_sha_deterministic_failure_blocks_automatic_retry(self):
+        result = decide_recovery(
+            [run(9, minutes_ago=5, conclusion="failure")],
+            source_run_id="0",
+            source_sha=SHA,
+            now=NOW,
+        )
+        self.assertFalse(result["allowed"])
+        self.assertEqual(result["reason"], "non_retryable_failure_requires_diagnosis")
+        self.assertEqual(result["prior_non_retryable_failures"], 1)
+
     def test_source_run_is_not_counted_as_its_own_prior_failure(self):
         result = decide_recovery(
             [run(10, minutes_ago=1)],
