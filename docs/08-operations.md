@@ -40,3 +40,8 @@ A full ruleset pauses publication, not candidate collection or review. Inspect t
 ### Device behavior differs from static validation
 
 Static checks cannot prove that Shadowrocket, DNS paths, apps, or system services behave as expected. Reproduce on the target device and record the observation separately from static validation.
+## Configuration-conflict recovery
+
+Configuration-conflict removals are tracked separately from lifecycle deletions. Review `rulesets/config_conflict_archive.json` and the recovery IDs in `reports/ruleset-config-conflict-sync.md`. If a removal is confirmed to be erroneous, provide its ID through `restore_conflict_ids` in the manual GitHub Actions workflow. The restore process rechecks the current `ss.conf`, skip-proxy entries, published rules, and pending queue for cross-policy overlap; unsafe restorations are rejected.
+
+Lifecycle deletion recovery uses `restore_ids` instead. Never substitute one recovery ID type for the other.
