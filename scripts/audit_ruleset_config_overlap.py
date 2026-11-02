@@ -66,14 +66,76 @@ def scope_intersects(candidate_scope: str, domain: str, kind: str, target: str) 
     )
 
 
-def match_candidate(domain: str, policy: str, rules: list[tuple[int, str]], scope: str = "exact_candidate") -> dict:
+def prepare_rules(rules: list[tuple[int, str]]) -> dict:
+    """Parse and index config rules once for an entire ledger audit."""
+    domain_rules = []
+    non_domain_rules = []
+    for number, line in rules:
+        fields = [part.strip() for part in line.split(",")]
+        kind = fields[0].upper()
+        if kind in {"DOMAIN", "DOMAIN-SUFFIX"} and len(fields) >= 3:
+            domain_rules.append(DomainRule(
+                kind, fields[1].lower(), fields[2].upper(), number, line
+            ))
+        elif kind == "DOMAIN-KEYWORD" and len(fields) >= 3:
+            non_domain_rules.append({
+                "line": number, "kind": kind, "keyword": fields[1].lower(),
+                "policy": fields[2].upper(), "raw": line
+            })
+        elif kind == "URL-REGEX":
+            if len(fields) < 3:
+                non_domain_rules.append({
+                    "line": number, "kind": kind, "compiled": None,
+                    "policy": None, "raw": line, "malformed": True
+                })
+            else:
+                pattern = ",".join(fields[1:-1])
+                try:
+                    compiled = re.compile(pattern, re.I)
+                    malformed = False
+                except re.error:
+                    compiled = None
+                    malformed = True
+                non_domain_rules.append({
+                    "line": number, "kind": kind, "compiled": compiled,
+                    "policy": fields[-1].upper(), "raw": line,
+                    "malformed": malformed
+                })
+        elif kind in {"AND", "OR", "NOT"}:
+            atoms = [
+                (atom_kind.upper(), target.lower().strip("."))
+                for atom_kind, target in DOMAIN_ATOM_RE.findall(line)
+            ]
+            if atoms:
+                non_domain_rules.append({
+                    "line": number, "kind": kind, "atoms": atoms,
+                    "policy": fields[-1].upper() if fields[-1].upper() in POLICIES else None,
+                    "raw": line
+                })
+        elif kind == "FINAL" and len(fields) >= 2 and fields[1].upper() in POLICIES:
+            non_domain_rules.append({
+                "line": number, "kind": kind, "policy": fields[1].upper(),
+                "raw": line
+            })
+    domain_rules.sort(key=lambda item: item.line)
+    non_domain_rules.sort(key=lambda item: item["line"])
+    return {
+        "index": RuleIndex(domain_rules),
+        "non_domain_rules": non_domain_rules,
+    }
+
+
+def match_candidate(
+    domain: str,
+    policy: str,
+    rules: list[tuple[int, str]],
+    scope: str = "exact_candidate",
+    prepared_rules: dict | None = None,
+) -> dict:
+    prepared = prepared_rules or prepare_rules(rules)
+    index = prepared["index"]
     if scope == "suffix_candidate":
-        parsed = []
-        for number, line in rules:
-            fields = [part.strip() for part in line.split(",")]
-            if len(fields) >= 3 and fields[0].upper() in {"DOMAIN", "DOMAIN-SUFFIX"}:
-                parsed.append(DomainRule(fields[0].upper(), fields[1].lower(), fields[2].upper(), number, line))
-        analysis = analyze_candidate(domain, True, RuleIndex(parsed))
+        analysis = analyze_candidate(domain, True, index)
         winners = analysis["scope_winners"]
         policies = analysis["scope_policies"]
         if any(value != policy for value in policies):
@@ -97,49 +159,77 @@ def match_candidate(domain: str, policy: str, rules: list[tuple[int, str]], scop
                 "line": first.line, "rule": first.raw, "effective_policy": policy,
                 "reason": "Prior first-match rules intersect candidate suffix scope"
             }
-    for number, line in rules:
-        fields = [part.strip() for part in line.split(",")]
-        kind = fields[0].upper()
-        if kind in {"DOMAIN", "DOMAIN-SUFFIX"} and len(fields) >= 3:
-            if domain_matches(domain, kind, fields[1]):
-                matched_policy = fields[2].upper()
-                return {
-                    "status": "ALREADY_COVERED" if matched_policy == policy else "CONFLICT",
-                    "line": number, "rule": line, "effective_policy": matched_policy,
-                    "reason": "Prior first-match exact/suffix domain rule"
-                }
-        elif kind == "DOMAIN-KEYWORD" and len(fields) >= 3:
-            if fields[1].lower() in domain:
-                return {
-                    "status": "POTENTIAL_MATCH", "line": number, "rule": line,
-                    "effective_policy": fields[2].upper(),
-                    "reason": "Prior DOMAIN-KEYWORD may match this candidate"
-                }
+
+    candidates = []
+    domain_hits = index.matches_host(domain)
+    if domain_hits:
+        candidates.append((domain_hits[0].line, "domain", domain_hits[0]))
+
+    candidate_url = ("https://" + domain, "http://" + domain)
+    for rule in prepared["non_domain_rules"]:
+        kind = rule["kind"]
+        matched = False
+        if kind == "DOMAIN-KEYWORD":
+            matched = bool(rule["keyword"] and rule["keyword"] in domain)
         elif kind == "URL-REGEX":
-            if len(fields) < 3:
-                return {"status": "UNRESOLVED_RULE", "line": number, "rule": line,
-                        "effective_policy": None, "reason": "Malformed prior URL-REGEX"}
-            pattern = ",".join(fields[1:-1])
-            try:
-                compiled = re.compile(pattern, re.I)
-            except re.error:
-                return {"status": "UNRESOLVED_RULE", "line": number, "rule": line,
-                        "effective_policy": fields[-1].upper(), "reason": "Prior URL-REGEX cannot be compiled"}
-            if compiled.search("https://" + domain) or compiled.search("http://" + domain):
-                return {"status": "POTENTIAL_MATCH", "line": number, "rule": line,
-                        "effective_policy": fields[-1].upper(), "reason": "Prior URL-REGEX matches candidate URL"}
+            if rule.get("malformed"):
+                candidates.append((rule["line"], "unresolved_regex", rule))
+                continue
+            compiled = rule["compiled"]
+            matched = bool(compiled and any(compiled.search(url) for url in candidate_url))
         elif kind in {"AND", "OR", "NOT"}:
-            for atom_kind, target in DOMAIN_ATOM_RE.findall(line):
-                if domain_matches(domain, atom_kind, target):
-                    return {"status": "CONDITIONAL_POTENTIAL", "line": number, "rule": line,
-                            "effective_policy": fields[-1].upper() if fields[-1].upper() in POLICIES else None,
-                            "reason": "Prior compound rule contains a matching domain operand; other operands are not evaluated"}
-        elif kind == "FINAL" and len(fields) >= 2 and fields[1].upper() in POLICIES:
-            return {"status": "ALREADY_COVERED" if fields[1].upper() == policy else "CONFLICT",
-                    "line": number, "rule": line, "effective_policy": fields[1].upper(),
-                    "reason": "Prior FINAL rule matches all remaining traffic"}
-    return {"status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES", "line": None, "rule": None,
-            "effective_policy": None, "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found"}
+            matched = any(domain_matches(domain, atom_kind, target) for atom_kind, target in rule["atoms"])
+        elif kind == "FINAL":
+            matched = True
+        if matched:
+            candidates.append((rule["line"], kind, rule))
+
+    if not candidates:
+        return {
+            "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES", "line": None,
+            "rule": None, "effective_policy": None,
+            "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found"
+        }
+
+    _, matched_kind, matched_rule = min(candidates, key=lambda item: item[0])
+    if matched_kind == "domain":
+        matched_policy = matched_rule.policy
+        return {
+            "status": "ALREADY_COVERED" if matched_policy == policy else "CONFLICT",
+            "line": matched_rule.line, "rule": matched_rule.raw,
+            "effective_policy": matched_policy,
+            "reason": "Prior first-match exact/suffix domain rule"
+        }
+    if matched_kind == "DOMAIN-KEYWORD":
+        return {
+            "status": "POTENTIAL_MATCH", "line": matched_rule["line"],
+            "rule": matched_rule["raw"], "effective_policy": matched_rule["policy"],
+            "reason": "Prior DOMAIN-KEYWORD may match this candidate"
+        }
+    if matched_kind == "URL-REGEX":
+        return {
+            "status": "POTENTIAL_MATCH", "line": matched_rule["line"],
+            "rule": matched_rule["raw"], "effective_policy": matched_rule["policy"],
+            "reason": "Prior URL-REGEX matches candidate URL"
+        }
+    if matched_kind == "unresolved_regex":
+        return {
+            "status": "UNRESOLVED_RULE", "line": matched_rule["line"],
+            "rule": matched_rule["raw"], "effective_policy": matched_rule["policy"],
+            "reason": "Prior URL-REGEX cannot be compiled"
+        }
+    if matched_kind in {"AND", "OR", "NOT"}:
+        return {
+            "status": "CONDITIONAL_POTENTIAL", "line": matched_rule["line"],
+            "rule": matched_rule["raw"], "effective_policy": matched_rule["policy"],
+            "reason": "Prior compound rule contains a matching domain operand; other operands are not evaluated"
+        }
+    return {
+        "status": "ALREADY_COVERED" if matched_rule["policy"] == policy else "CONFLICT",
+        "line": matched_rule["line"], "rule": matched_rule["raw"],
+        "effective_policy": matched_rule["policy"],
+        "reason": "Prior FINAL rule matches all remaining traffic"
+    }
 
 
 def parse_skip_proxy(config_text: str) -> list[str]:
@@ -172,6 +262,7 @@ def audit(config_text: str, ledger: dict) -> dict:
     boundary = first_ruleset_line(config_text)
     rules = prior_rule_lines(config_text)
     skip_proxy_entries = parse_skip_proxy(config_text)
+    prepared_rules = prepare_rules(rules)
     results = []
     errors = []
     warnings = []
@@ -187,7 +278,7 @@ def audit(config_text: str, ledger: dict) -> dict:
         if scope not in {"exact_candidate", "suffix_candidate"}:
             errors.append("Unsupported ledger scope for " + domain + ": " + scope)
             continue
-        match = match_candidate(domain, policy, rules, scope)
+        match = match_candidate(domain, policy, rules, scope, prepared_rules)
         if match["status"] == "NOT_COVERED_BY_PRIOR_DOMAIN_RULES":
             bypass = skip_proxy_match(domain, skip_proxy_entries, scope)
             if bypass:
