@@ -54,6 +54,23 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
             "owner/never-b", "owner/never-a"
         ])
 
+
+    def test_tree_scan_inventory_includes_old_repositories_and_retries_truncated_trees(self):
+        discovery = load_script("discover_sources")
+        existing = {"candidates": [
+            {"repository": "owner/old", "stars": 5, "tree_scanned_at": "2026-10-01T00:00:00+00:00", "tree_scan_status": "complete", "rule_list_urls": ["old.list"]},
+            {"repository": "owner/truncated", "stars": 4, "tree_scanned_at": "2026-10-02T00:00:00+00:00", "tree_scan_status": "truncated", "rule_list_urls": ["partial.list"]},
+        ]}
+        current = {
+            "owner/new": {"repository": "owner/new", "stars": 10, "rule_list_urls": ["new.list"]},
+            "owner/old": {"repository": "owner/old", "stars": 6, "rule_list_urls": ["fresh.list"]},
+        }
+        inventory = discovery.merge_tree_scan_inventory(existing, current)
+        self.assertEqual(set(inventory), {"owner/old", "owner/truncated", "owner/new"})
+        self.assertEqual(set(inventory["owner/old"]["rule_list_urls"]), {"old.list", "fresh.list"})
+        selected = discovery.select_tree_scan_repositories(inventory, 2)
+        self.assertEqual([name for name, _ in selected], ["owner/new", "owner/truncated"])
+
     def test_tree_discovery_filters_paths_and_reports_truncation(self):
         discovery = load_script("discover_sources")
         tree = {

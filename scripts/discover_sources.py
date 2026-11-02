@@ -479,8 +479,8 @@ def main() -> int:
         merged["tree_truncated_repositories"] = tree_truncated
         merged["search_pages_per_query"] = MAX_SEARCH_PAGES
         merged["tree_repositories_scanned"] = len(tree_scan_batch)
-        merged["tree_scan_backlog_count"] = sum(1 for item in merged["candidates"] if not item.get("tree_scanned_at") or item.get("tree_scan_status") == "error")
-        merged["tree_scan_complete_count"] = sum(1 for item in merged["candidates"] if item.get("tree_scan_status") in {"complete", "truncated"})
+        merged["tree_scan_backlog_count"] = sum(1 for item in merged["candidates"] if not item.get("tree_scanned_at") or item.get("tree_scan_status") in {"error", "truncated"})
+        merged["tree_scan_complete_count"] = sum(1 for item in merged["candidates"] if item.get("tree_scan_status") == "complete")
     except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError) as exc:
         message = "Source discovery degraded; previous discovery inventory retained. " + str(exc)
         print("WARNING: " + message, file=sys.stderr)
