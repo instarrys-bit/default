@@ -115,8 +115,8 @@ def build(review_data, registry_data, snapshot_data, previous, published, pendin
             "source_file_url": ev.get("url"),
             "snapshot_sha256": ev.get("sha256"),
             "source_entry_scope": ev.get("entry_type"),
-            "line_number": None,
-            "evidence_grade": "snapshot_membership",
+            "line_number": ev.get("line_number") if isinstance(ev.get("line_number"), int) and ev.get("line_number") > 0 else None,
+            "evidence_grade": "exact_file_line" if isinstance(ev.get("line_number"), int) and ev.get("line_number") > 0 else "snapshot_membership",
             "lineage_status": ev.get("lineage_status", "unverified"),
         } for ev in valid]
         if key in published:
