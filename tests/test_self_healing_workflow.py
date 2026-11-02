@@ -154,6 +154,8 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn('gh api "repos/$REPO/actions/runs/$RUN_ID"', resolver)
         self.assertIn('gh api --paginate "repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100"', resolver)
         self.assertIn("python3 scripts/verify_recovery_run.py", resolver)
+        self.assertIn("actions: read", resolver)
+        self.assertIn("--paginate --slurp", resolver)
         self.assertLess(
             resolver.index("python3 scripts/verify_recovery_run.py"),
             resolver.index('issues="$(gh issue list'),
