@@ -385,10 +385,11 @@ jobs:
         with:
           name: review-cursor-checkpoint
           path: cursor-artifact
+        continue-on-error: true
       - name: Validate and persist in-progress cursor only
         run: |
           set -euo pipefail
-          test -s cursor-artifact/review_cursor.json
+          if [ ! -s cursor-artifact/review_cursor.json ]; then echo "No cursor artifact to persist."; exit 0; fi
           python3 - <<'PY'
           import json
           from pathlib import Path
@@ -402,7 +403,7 @@ jobs:
           if not isinstance(d.get("next_index"),int) or d["next_index"] < 1:
               raise SystemExit("Cursor has no completed checkpoint; nothing to persist.")
           Path("sources").mkdir(exist_ok=True)
-          Path("sources/review_cursor.json").write_text(json.dumps(d,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+          Path("sources/review_cursor.json").write_text(json.dumps(d,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
           PY
           git add -- sources/review_cursor.json
           if git diff --cached --quiet; then
