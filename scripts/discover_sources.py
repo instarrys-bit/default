@@ -10,6 +10,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 from json_document_store import read_document, write_document
@@ -23,6 +24,7 @@ MAX_REPOS_PER_QUERY = 100
 MAX_SEARCH_PAGES = 10
 MAX_README_REPOSITORIES = 1_500
 MAX_TREE_REPOSITORIES = 500
+MAX_TREE_SCAN_WORKERS = 4
 MAX_TREE_ENTRIES_PER_REPOSITORY = 3_000
 QUERIES = [
     "shadowrocket rules",
@@ -536,25 +538,33 @@ def main() -> int:
         tree_errors = []
         tree_truncated = []
         tree_scan_batch = select_tree_scan_repositories(tree_inventory, MAX_TREE_REPOSITORIES)
-        for full_name, item in tree_scan_batch:
+        def scan_tree(entry: tuple[str, dict]) -> tuple[str, list[str], bool, str | None]:
+            full_name, item = entry
             owner, name = full_name.split("/", 1)
             try:
-                tree_urls, truncated = discover_tree_urls(owner, name, item.get("default_branch") or "main", token)
+                urls, truncated = discover_tree_urls(owner, name, item.get("default_branch") or "main", token)
+                return full_name, urls, truncated, None
+            except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError) as exc:
+                return full_name, [], False, str(exc)[:300]
+
+        # Only bounded, independent read-only API requests run concurrently.
+        with ThreadPoolExecutor(max_workers=MAX_TREE_SCAN_WORKERS) as executor:
+            scan_results = list(executor.map(scan_tree, tree_scan_batch))
+        for full_name, tree_urls, truncated, error in scan_results:
+            item = tree_inventory[full_name]
+            item["tree_scanned_at"] = datetime.now(timezone.utc).isoformat()
+            item["tree_scanned_updated_at"] = item.get("updated_at")
+            item["tree_scanned_default_branch"] = str(item.get("default_branch") or "main")
+            if error is None:
                 item["rule_list_urls"] = sorted(set(item.get("rule_list_urls", [])) | set(tree_urls))
-                item["tree_scanned_at"] = datetime.now(timezone.utc).isoformat()
-                item["tree_scanned_updated_at"] = item.get("updated_at")
-                item["tree_scanned_default_branch"] = str(item.get("default_branch") or "main")
                 item["tree_scan_status"] = "truncated" if truncated else "complete"
                 item.pop("tree_scan_error", None)
                 if truncated:
                     tree_truncated.append(full_name)
-            except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError) as exc:
-                item["tree_scanned_at"] = datetime.now(timezone.utc).isoformat()
-                item["tree_scanned_updated_at"] = item.get("updated_at")
-                item["tree_scanned_default_branch"] = str(item.get("default_branch") or "main")
+            else:
                 item["tree_scan_status"] = "error"
-                item["tree_scan_error"] = str(exc)[:300]
-                tree_errors.append({"repository": full_name, "error": str(exc)})
+                item["tree_scan_error"] = error
+                tree_errors.append({"repository": full_name, "error": error})
         merged = merge_candidates(existing, list(tree_inventory.values()))
         merged["discovery_errors"] = discovery_errors
         merged["tree_errors"] = tree_errors
