@@ -83,7 +83,7 @@ def transition_incident(
         if target_state == "MANUAL_INTERVENTION":
             history = ["DETECTED", "DIAGNOSING"]
             initial = "DIAGNOSING"
-        elif target_state == "RECOVERED":
+        elif target_state in {"RECOVERING", "VERIFYING", "RECOVERED"}:
             # Backward-compatible bootstrap for pre-state-machine incidents.
             history = ["DETECTED", "DIAGNOSING", "MANUAL_INTERVENTION"]
             initial = "MANUAL_INTERVENTION"
