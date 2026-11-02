@@ -56,15 +56,35 @@ def evidence_gate(evidence, source_weights, minimum, threshold, required_sources
     current=[item for item in evidence if item.get("source_id") and item.get("currently_listed") is True and item.get("lineage_status") in {"verified","partial","unverified"}]
     source_ids={str(item.get("source_id")) for item in current}
     publishers={str(item.get("publisher")) for item in current if item.get("publisher")}
-    parent={publisher:publisher for publisher in publishers}
-    def find(value):
-        while parent[value] != value:
-            parent[value]=parent[parent[value]]
-            value=parent[value]
-        return value
+    adjacency={publisher:set() for publisher in publishers}
+    publisher_groups={}
+    for item in current:
+        publisher=str(item.get("publisher",""))
+        group=str(item.get("independence_group",""))
+        if publisher and group:
+            if group in publisher_groups:
+                other=publisher_groups[group]
+                adjacency[publisher].add(other)
+                adjacency[other].add(publisher)
+            else:
+                publisher_groups[group]=publisher
     for left,right in correlated_pairs:
-        if left in parent and right in parent: parent[find(left)]=find(right)
-    groups={find(str(item.get("publisher"))) for item in current if item.get("publisher")}
+        if left in adjacency and right in adjacency:
+            adjacency[left].add(right)
+            adjacency[right].add(left)
+    groups=set()
+    unseen=set(publishers)
+    while unseen:
+        first=unseen.pop()
+        component={first}
+        pending=[first]
+        while pending:
+            current_publisher=pending.pop()
+            for neighbor in adjacency[current_publisher] & unseen:
+                unseen.remove(neighbor)
+                component.add(neighbor)
+                pending.append(neighbor)
+        groups.add(tuple(sorted(component)))
     confidence=round(min(1.0,sum(float(source_weights.get(source_id,0)) for source_id in source_ids)),2)
     required=set(required_sources)
     qualified=(len(source_ids)>=minimum and len(publishers)>=minimum and len(groups)>=minimum and required.issubset(source_ids) and confidence>=threshold)
