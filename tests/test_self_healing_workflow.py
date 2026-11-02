@@ -41,6 +41,13 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("GH_TOKEN", repair_step)
         self.assertIn("persist-credentials: false", workflow)
 
+    def test_owner_baseline_is_persisted_after_failed_audit(self):
+        workflow = AUTO_SYNC.read_text(encoding="utf-8")
+        cursor_job = workflow.split("  persist-review-cursor:", 1)[1]
+        self.assertIn("Persist owner-approved config baseline even when audit fails", cursor_job)
+        self.assertIn("python3 scripts/register_config_baseline.py", cursor_job)
+        self.assertIn("git add -- sources/policy.json sources/review_cursor.json", cursor_job)
+
     def test_missing_or_completed_review_cursor_is_a_successful_noop(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
         self.assertIn('print("Cursor is not in progress; no checkpoint needs persistence.")', workflow)
