@@ -58,10 +58,10 @@ class ApplySafeRepairTests(unittest.TestCase):
         workflow_path = root / ".github/workflows/auto_sync.yml"
         diagnosis = {"repair_id": STALE_TEST_REPAIR_ID, "automatic_code_change_allowed": True}
         invalid_workflows = (
-            "# concurrency:\\n#   group: shadowrocket-main-writer\\n#   cancel-in-progress: false\\n",
-            "jobs:\\n  audit:\\n    concurrency:\\n      group: shadowrocket-main-writer\\n      cancel-in-progress: false\\n",
-            "concurrency:\\n  group: another-writer\\n  cancel-in-progress: false\\n",
-            "concurrency:\\n  group: shadowrocket-main-writer\\n  cancel-in-progress: true\\n",
+            "# concurrency:\n#   group: shadowrocket-main-writer\n#   cancel-in-progress: false\n",
+            "jobs:\n  audit:\n    concurrency:\n      group: shadowrocket-main-writer\n      cancel-in-progress: false\n",
+            "concurrency:\n  group: another-writer\n  cancel-in-progress: false\n",
+            "concurrency:\n  group: shadowrocket-main-writer\n  cancel-in-progress: true\n",
         )
         for invalid in invalid_workflows:
             with self.subTest(workflow=invalid):
