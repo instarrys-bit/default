@@ -15,6 +15,7 @@ on:
 permissions:
   actions: write
   contents: read
+  issues: write
 
 concurrency:
   group: shadowrocket-automation-watchdog
@@ -62,6 +63,34 @@ jobs:
           echo "Source run $SOURCE_RUN_ID failed; dispatching one workflow_dispatch recovery attempt."
           gh workflow run auto_sync.yml --ref main --repo "$REPO"
 
+      - name: Report degraded source discovery health
+        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          set -euo pipefail
+          payload="$(gh api "repos/$REPO/contents/reports/project-status.json")"
+          health="$(jq -r '.content | @base64d | fromjson | .health' <<< "$payload")"
+          search_errors="$(jq -r '.content | @base64d | fromjson | .source_discovery.search_error_count // 0' <<< "$payload")"
+          tree_errors="$(jq -r '.content | @base64d | fromjson | .source_discovery.tree_error_count // 0' <<< "$payload")"
+          title="Shadowrocket source discovery degraded health"
+          if [ "$health" = "CHECK" ] || [ "$health" = "FAIL" ]; then
+            body="Project health is $health after a successful workflow.\n\nSearch errors: $search_errors\nTree scan errors: $tree_errors\nRun: $RUN_URL\n\nThe affected source inventory remains non-activating until it passes deterministic review. Inspect reports/project-status.json and reports/source-discovery.md."
+            issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
+            if [ -n "$issue" ] && [ "$issue" != "null" ]; then
+              gh issue comment "$issue" --repo "$REPO" --body "$body"
+            else
+              gh issue create --repo "$REPO" --title "$title" --body "$body"
+            fi
+          else
+            issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
+            if [ -n "$issue" ] && [ "$issue" != "null" ]; then
+              gh issue comment "$issue" --repo "$REPO" --body "Project health recovered to PASS. Recovery run: $RUN_URL"
+              gh issue close "$issue" --repo "$REPO"
+            fi
+          fi
       - name: Detect stale successful audit and recover
         if: ${{ github.event_name != 'workflow_run' }}
         env:

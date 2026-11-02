@@ -29,6 +29,15 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("A recovery run is workflow_dispatch; ignore its completion to prevent retry loops.", workflow)
         self.assertIn("github.event_name == 'workflow_run'", workflow)
 
+    def test_successful_workflow_reports_degraded_source_discovery_health(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        self.assertIn("Report degraded source discovery health", workflow)
+        self.assertIn(".source_discovery.search_error_count", workflow)
+        self.assertIn("Shadowrocket source discovery degraded health", workflow)
+        self.assertIn("gh issue create", workflow)
+        self.assertIn("gh issue close", workflow)
+        self.assertIn("issues: write", workflow)
+
     def test_successful_audit_writes_and_publishes_a_durable_heartbeat(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
         self.assertIn("Write successful audit heartbeat", workflow)
