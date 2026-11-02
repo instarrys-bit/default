@@ -13,6 +13,7 @@ REPORT_JSON = ROOT / "reports" / "ruleset-config-overlap-audit.json"
 REPORT_MD = ROOT / "reports" / "ruleset-config-overlap-audit.md"
 DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$", re.I)
 POLICIES = {"DIRECT", "PROXY", "REJECT"}
+from domain_rule_engine import DomainRule, RuleIndex, ancestors
 
 
 def all_rule_lines(config_text: str) -> list[tuple[int, str]]:
@@ -81,9 +82,30 @@ def skip_proxy_match(domain: str, entries: list[str], scope: str = "exact_candid
     return None
 
 
-def prepare_rules(rules: list[tuple[int, str]]) -> list[tuple[int, str]]:
-    """Compatibility helper; no ordering or precedence is inferred."""
-    return list(rules)
+def prepare_rules(rules: list[tuple[int, str]]) -> RuleIndex:
+    """Build an unordered scope index for explicit config domain rules."""
+    parsed = []
+    for number, line in rules:
+        fields = [part.strip() for part in line.split(",")]
+        if len(fields) < 3 or fields[0].upper() not in {"DOMAIN", "DOMAIN-SUFFIX"}:
+            continue
+        domain = fields[1].lower().strip(".")
+        policy = fields[2].upper()
+        if policy in POLICIES:
+            parsed.append(DomainRule(fields[0].upper(), domain, policy, number, line))
+    return RuleIndex(parsed)
+
+
+def find_covering_rules(domain: str, scope: str, prepared_rules: RuleIndex):
+    domain = domain.lower().rstrip(".")
+    if scope == "exact_candidate":
+        return prepared_rules.matches_host(domain)
+    if scope == "suffix_candidate":
+        matches = []
+        for parent in ancestors(domain):
+            matches.extend(prepared_rules.suffix.get(parent, []))
+        return matches
+    raise ValueError("unsupported candidate scope: " + scope)
 
 
 def match_candidate(
@@ -91,19 +113,16 @@ def match_candidate(
     policy: str,
     rules: list[tuple[int, str]],
     scope: str = "exact_candidate",
-    prepared_rules: list[tuple[int, str]] | None = None,
+    prepared_rules: RuleIndex | None = None,
 ) -> dict:
     domain = domain.lower().rstrip(".")
     policy = policy.upper()
-    matches = []
-    for number, line in (prepared_rules if prepared_rules is not None else rules):
-        fields = [part.strip() for part in line.split(",")]
-        if len(fields) < 3 or fields[0].upper() not in {"DOMAIN", "DOMAIN-SUFFIX"}:
-            continue
-        if scope_covers_candidate(scope, domain, fields[0], fields[1]):
-            matches.append({
-                "line": number, "rule": line, "policy": fields[2].upper()
-            })
+    index = prepared_rules if prepared_rules is not None else prepare_rules(rules)
+    matches = [
+        {"line": rule.line, "rule": rule.raw, "policy": rule.policy}
+        for rule in find_covering_rules(domain, scope, index)
+    ]
+    matches.sort(key=lambda item: (item["rule"], item["policy"], item["line"]))
 
     if matches:
         policies = {item["policy"] for item in matches}
@@ -135,6 +154,7 @@ def match_candidate(
 def audit(config_text: str, ledger: dict) -> dict:
     rules = all_rule_lines(config_text)
     skip_proxy_entries = parse_skip_proxy(config_text)
+    prepared_rules = prepare_rules(rules)
     results = []
     errors = []
     warnings = []
@@ -152,7 +172,7 @@ def audit(config_text: str, ledger: dict) -> dict:
             errors.append("Unsupported ledger scope for " + domain + ": " + scope)
             continue
 
-        match = match_candidate(domain, policy, rules, scope)
+        match = match_candidate(domain, policy, rules, scope, prepared_rules)
         if match["status"] == "NOT_COVERED_BY_CONFIG_SCOPE":
             bypass = skip_proxy_match(domain, skip_proxy_entries, scope)
             if bypass:
