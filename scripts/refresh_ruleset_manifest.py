@@ -26,7 +26,7 @@ def _read_rules(path: Path) -> tuple[list[str], str]:
     parsed = [DOMAIN_LINE.fullmatch(line) for line in lines]
     if any(match is None for match in parsed):
         raise ValueError(f"{path.name} contains an unsupported or malformed rule")
-    normalized = [(match.group(1).upper(), match.group(2).lower()) for match in parsed]
+    normalized = [(match.group(1).upper(), match.group(0).split(",", 1)[1].lower()) for match in parsed]
     if len(normalized) != len(set(normalized)):
         raise ValueError(f"{path.name} contains duplicate domain scopes")
     canonical = "\n".join(lines) + ("\n" if lines else "")
