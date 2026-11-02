@@ -1,10 +1,19 @@
 # Automated source discovery
 
-- Candidate repositories retained: **1522**
+- Candidate repositories retained: **1557**
 - Discovery is a lead-generation stage only; no candidate is activated automatically.
 - Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.
 
 ## Candidate repositories
+
+### [0718lol/log-sentinel](https://github.com/0718lol/log-sentinel)
+
+- Description: 本项目是一套专为微服务/分布式环境设计的轻量级高可靠日志采集与监控告警平台。  核心亮点：  高可靠采集端 (Agent)：支持非阻塞异步文件尾随（Tailing）、有界队列背压（Backpressure）控制以及带抖动的指数退避重试，保障数据在网络波动时不丢失。 规则判定与故障自愈 (Server)：使用内存滑动窗口（Sliding Window）和状态机机制，支持多条件过滤与 CPU/内存指标超载判定，实现告警自动恢复与消警。 多通道路由推送 (Alert Channels)：集成飞书/钉钉群机器人 Webhook，支持富文本卡片告警实时分发与消警变绿自动同步。 暗黑拟物可视化大屏：通过 WebSocket 提供极低延迟的日志流实时观测控制台、EPS 吞吐折线图及告警卡片动态交互。
+- Stars: 0; archived: False; fork: False
+- Search queries: 网络规则集
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/0718lol/log-sentinel/main/requirements.txt
 
 ### [0ce/shadowrocket-rules](https://github.com/0ce/shadowrocket-rules)
 
@@ -19,8 +28,9 @@
 - Description: A curated collection of domain blocklists for Pi-Hole and other DNS-level ad blockers. Designed to enhance privacy, reduce unwanted traffic, and block ads, trackers, malicious domains, and more.
 - Stars: 0; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/0libote/Pi-Hole-Blocklist/main/Lists/Trackers-Only.txt
 
 ### [0x11DFE/controld-hagezi-sync](https://github.com/0x11DFE/controld-hagezi-sync)
 
@@ -29,6 +39,17 @@
 - Search queries: hagezi dns-blocklists
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
+
+### [0xBash/Batak-AI](https://github.com/0xBash/Batak-AI)
+
+- Description: A duck.ai wrapper w/ built-in host list blocker by StevenBlack
+- Stars: 0; archived: False; fork: False
+- Search queries: StevenBlack hosts
+- README / curated seed rule-list links: 3
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/0xBash/Batak-AI/main/fastlane/metadata/android/en-US/full_description.txt
+  - https://raw.githubusercontent.com/0xBash/Batak-AI/main/fastlane/metadata/android/en-US/short_description.txt
+  - https://raw.githubusercontent.com/0xBash/Batak-AI/main/fastlane/metadata/android/en-US/title.txt
 
 ### [0xDanielLopez/TweetFeed](https://github.com/0xDanielLopez/TweetFeed)
 
@@ -101,8 +122,14 @@
 - Description: blacklists to use for Pi-hole, DNSCrypt, etc.
 - Stars: 0; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 6
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/0xedward/blocklists/master/lists/android-analytics.txt
+  - https://raw.githubusercontent.com/0xedward/blocklists/master/lists/brave.txt
+  - https://raw.githubusercontent.com/0xedward/blocklists/master/lists/comcast.txt
+  - https://raw.githubusercontent.com/0xedward/blocklists/master/lists/facebook.txt
+  - https://raw.githubusercontent.com/0xedward/blocklists/master/lists/google.txt
+  - https://raw.githubusercontent.com/0xedward/blocklists/master/lists/windows.txt
 
 ### [1-Reality/China-PCDN-Rules](https://github.com/1-Reality/China-PCDN-Rules)
 
@@ -114,6 +141,16 @@
   - https://raw.githubusercontent.com/1-Reality/China-PCDN-Rules/main/generated/%E5%AF%BC%E5%87%BA%E8%AF%B4%E6%98%8E.txt
   - https://raw.githubusercontent.com/1-Reality/China-PCDN-Rules/main/generated/ADGHome.txt
   - https://raw.githubusercontent.com/1-Reality/China-PCDN-Rules/main/generated/Hosts.txt
+
+### [123456phy/NetShield-AI-](https://github.com/123456phy/NetShield-AI-)
+
+- Description: NetShield AI 是 AI 驱动的全栈网络安全防护系统，集实时监控、智能检测与自动化防御于一体。底层 C++ 模块实现硬件控制与网络捕获，中层 Python 部署神经网络、本地 LLM 及多智能体引擎，支持离线 / 在线双模检测，精准识别恶意流量、异常进程；上层 Java 控制端提供可视化仪表盘，可远程 IP 配对，实时呈现被控端硬件状态、渗透测试结果与安全事件。兼容多平台，支持自定义规则与模型扩展，既能为服务器、边缘设备提供轻量化防护，也可通过分布式架构实现多节点统一管控，构建 “检测 - 决策 - 防御” 安全闭环 。
+- Stars: 0; archived: False; fork: False
+- Search queries: 网络规则集
+- README / curated seed rule-list links: 2
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/123456phy/NetShield-AI-/main/%E6%80%BB%E4%BB%A3%E7%A0%81%E6%95%B0%EF%BC%9A2416.txt
+  - https://raw.githubusercontent.com/123456phy/NetShield-AI-/main/%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84.txt
 
 ### [123qwe55aa/proxy-rules](https://github.com/123qwe55aa/proxy-rules)
 
@@ -145,8 +182,22 @@
 - Description: sing-box rule sets for smbox (converted from blackmatrix7/ios_rule_script)
 - Stars: 0; archived: False; fork: False
 - Search queries: blackmatrix7 ios_rule_script
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 4
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/18702540384/smbox-rules/main/Netflix.list
+  - https://raw.githubusercontent.com/18702540384/smbox-rules/main/OpenAI.list
+  - https://raw.githubusercontent.com/18702540384/smbox-rules/main/PrivateTracker.list
+  - https://raw.githubusercontent.com/18702540384/smbox-rules/main/netflix-qh.list
+
+### [18834488299/AI-Business-Copilot](https://github.com/18834488299/AI-Business-Copilot)
+
+- Description: 面向销售运营、区域负责人和管理层，把自然语言经营问题转成可核验的数据分析。系统重点解决四个工程问题： 结果有依据：数值由业务工具计算，制度类问题由知识库检索，并返回来源。 过程可观察：记录路由、工具、检索、耗时和状态，便于调试与复盘。 演示可复现：默认本地确定性模式，无APIKey也能跑通核心路径。 边界可控制：只暴露白名单工具；异常时返回明确警告，不编造缺失数据。
+- Stars: 0; archived: False; fork: False
+- Search queries: 域名白名单
+- README / curated seed rule-list links: 2
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/18834488299/AI-Business-Copilot/main/requirements-dev.txt
+  - https://raw.githubusercontent.com/18834488299/AI-Business-Copilot/main/requirements.txt
 
 ### [1andrevich/antifilter-domain](https://github.com/1andrevich/antifilter-domain)
 
@@ -2022,8 +2073,14 @@
 - Description: 个人域名分流规则（Clash/mihomo）：国外版 + 国内版，用户规则优先、补充规则零冲突
 - Stars: 0; archived: False; fork: False
 - Search queries: 国内域名规则
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 6
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/335459215/domain-rules/main/domestic/custom.list
+  - https://raw.githubusercontent.com/335459215/domain-rules/main/domestic/domestic.list
+  - https://raw.githubusercontent.com/335459215/domain-rules/main/domestic/supplement.list
+  - https://raw.githubusercontent.com/335459215/domain-rules/main/overseas/custom.list
+  - https://raw.githubusercontent.com/335459215/domain-rules/main/overseas/overseas.list
+  - https://raw.githubusercontent.com/335459215/domain-rules/main/overseas/supplement.list
 
 ### [34wolf/shadowrocket-rules](https://github.com/34wolf/shadowrocket-rules)
 
@@ -2117,6 +2174,67 @@
 - README / curated seed rule-list links: 1
 - Curated seed links: 0
   - https://raw.githubusercontent.com/90dGH/shadowrocket-rules/main/bybit-rules.txt
+
+### [98nh7yh6bg-create/content-blocker-lists](https://github.com/98nh7yh6bg-create/content-blocker-lists)
+
+- Description: Daily WebKit content-blocker lists built from EasyList and EasyPrivacy
+- Stars: 0; archived: False; fork: False
+- Search queries: EasyList EasyPrivacy
+- README / curated seed rule-list links: 2
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/98nh7yh6bg-create/content-blocker-lists/main/popups-allow.txt
+  - https://raw.githubusercontent.com/98nh7yh6bg-create/content-blocker-lists/main/unbreak.txt
+
+### [9991314/ai-trainer-level3](https://github.com/9991314/ai-trainer-level3)
+
+- Description: 人工智能训练师三级在线刷题与备考平台，面向人工智能训练师相关知识学习、职业技能提升与考试复习场景，提供章节练习、顺序刷题、随机刷题、模拟考试、错题本、收藏题目、答题解析、学习进度、正确率统计和历史记录等功能。项目采用结构化题库设计，题目数据与页面逻辑分离，方便后续维护、补充和扩展题库，并可按需增加新的题型、章节和考试规则。学习记录可保存在本地，打开网页即可继续上次进度。界面简洁清晰，兼顾桌面端与移动端体验，可作为个人备考工具、教学辅助平台、职业技能学习项目或前端开发示例。项目以开源方式发布，欢迎提交 Issue、建议与改进。本项目仅用于学习、刷题与技术交流，不代表任何官方机构，也不声称收录内容为官方考试原题；题目、答案和解析请以最新考试大纲、官方教材及相关规范为准。
+- Stars: 1; archived: False; fork: False
+- Search queries: 开源分流规则
+- README / curated seed rule-list links: 43
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/national/level-5/exam-info/%E5%85%88%E7%9C%8B%E8%BF%99%E4%B8%AA.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/national/level-5/practical/%E5%85%88%E7%9C%8B%E8%BF%99%E4%B8%AA%EF%BC%8C%E8%AF%B4%E6%98%8E%E6%96%87%E6%A1%A3.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/national/level-5/practical/labels.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/national/level-5/practical/voc-model-labels.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/national/mixed/other/%E5%85%88%E7%9C%8B%E8%BF%99%E4%B8%AA%EF%BC%8C%E8%AF%B4%E6%98%8E%E6%96%87%E6%A1%A3.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/national/mixed/other/%E7%BB%84%E5%8D%B7%E8%AF%B4%E6%98%8E.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/national/mixed/other/qa_real_shenzhen_D.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/national/mixed/other/qa_selected_questions.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/national/mixed/other/qa_selected_questions_B.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/%E4%B8%8D%E6%8E%A8%E8%8D%90%E7%9C%8B%E7%9A%84%E5%8E%9F%E5%9B%A0.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/%E5%86%8D%E6%AC%A1%E5%A3%B0%E6%98%8E%EF%BC%9A%E4%BB%BB%E4%BD%95%E7%B3%BB%E7%BB%9F%E9%83%BD%E4%B8%8D%E9%9C%80%E8%A6%81%E8%A3%85%E8%99%9A%E6%8B%9F%E6%9C%BA.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/%E5%AD%A6%E4%B9%A0%E9%A1%BA%E5%BA%8F.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E7%AD%94%E7%96%91-%E4%B8%8A%E6%B5%B7.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/%E6%A0%87%E6%B3%A8%E7%B1%BB%E5%88%AB%E5%80%BC--196d2764.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/%E6%A0%87%E6%B3%A8%E7%B1%BB%E5%88%AB%E5%80%BC.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/%E7%89%B9%E6%AE%8A%E6%83%85%E5%86%B5%EF%BC%9Amac%20intel%E8%8A%AF%E7%89%87%20%E4%B8%8B%E8%BD%BD%E6%95%99%E7%A8%8B.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/%E8%80%83%E8%AF%95%E7%B3%BB%E7%BB%9F%E9%93%BE%E6%8E%A5.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/2.2.1_report.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/2.2.1_report_xg.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/2.2.1_results.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/2.2.1_results_xg.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/2.2.2_report.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/2.2.2_report_rf.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/2.2.2_results.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/2.2.2_results_rf.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/2.2.3_report.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/2.2.3_report_xgb.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/2.2.3_results.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/2.2.3_results_xgb.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/2.2.4_report_xgb.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/2.2.4_results.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/2.2.4_results_xg.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/2.2.5_report.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/2.2.5_results.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/Anaconda-Mac%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B%E4%B8%8E%E8%AF%B4%E6%98%8E.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/Win%E7%AB%AF-anaconda%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B%E4%B8%8E%E8%AF%B4%E6%98%8E.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/predefined_classes--1f8c3f9b.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/predefined_classes--e45e100e.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/predefined_classes.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/vx%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%88%96%E8%80%85%E4%B8%8B%E8%BD%BD%E8%80%83%E8%AF%95%E5%AE%9Dapp%E6%80%A7%EF%BC%8C%E6%89%AB%E7%A0%81%E6%88%96%E8%BE%93%E5%85%A5%E4%B8%8B%E6%96%B9%E6%BF%80%E6%B4%BB%E7%A0%81.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shanghai/level-5/practical/xgb%E6%8A%A5%E9%94%99%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/materials/files/shenzhen/level-3/practical/%E5%88%B7%E9%A2%98%E9%93%BE%E6%8E%A5.txt
+  - https://raw.githubusercontent.com/9991314/ai-trainer-level3/main/public/robots.txt
 
 ### [ACL4SSR/ACL4SSR](https://github.com/ACL4SSR/ACL4SSR)
 
@@ -3145,13 +3263,27 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [ARbingan/Deep-Learning-based-Network-Traffic-Anomaly-Detection](https://github.com/ARbingan/Deep-Learning-based-Network-Traffic-Anomaly-Detection)
+
+- Description: 本项目为南京邮电大学B22041217辛晗宇的本科毕业设计，实现一个基于 Scapy 的网络异常流量实时检测与可视化系统，使用 **Streamlit** 作为前端界面。  主要采用流水线架构，将流量采集、解析、特征提取、异常检测与可视化等模块串联起来。每个模块只负责一个特定的功能，有利于独立修改且便于单元测试。数据从上到下流动，没有循环依赖。每一层都是独立修改的个体，可以随时添加规则且不影响其他模块。  各个模块通信的核心是数据结构 `PacketEvent`，它在 `Source` 层被采集，在 `Parser` 层被解析，在 `Feature` 层被特征提取，在 `Sink` 层被输出。每个模块只负责一个特定的功能，而数据则在这些模块之间流动。
+- Stars: 0; archived: False; fork: False
+- Search queries: 网络规则集
+- README / curated seed rule-list links: 2
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/ARbingan/Deep-Learning-based-Network-Traffic-Anomaly-Detection/main/%E8%AE%AD%E7%BB%83%E7%BB%93%E6%9E%9C.txt
+  - https://raw.githubusercontent.com/ARbingan/Deep-Learning-based-Network-Traffic-Anomaly-Detection/main/requirements.txt
+
 ### [AbdulRasheed8888/dns-blocklists](https://github.com/AbdulRasheed8888/dns-blocklists)
 
 - Description: A collection of curated DNS blocklists for Pi-hole and other DNS filtering systems. Includes gambling, adult, malware, spyware, ads, and unwanted domains.
 - Stars: 0; archived: False; fork: False
 - Search queries: DNS filtering blocklist domains
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 4
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/AbdulRasheed8888/dns-blocklists/main/ads-clean.txt
+  - https://raw.githubusercontent.com/AbdulRasheed8888/dns-blocklists/main/gambling.txt
+  - https://raw.githubusercontent.com/AbdulRasheed8888/dns-blocklists/main/proxy-vpn.txt
+  - https://raw.githubusercontent.com/AbdulRasheed8888/dns-blocklists/main/spyware-transsion.txt
 
 ### [Accademia/Additional_Rule_For_Clash](https://github.com/Accademia/Additional_Rule_For_Clash)
 
@@ -3238,8 +3370,106 @@
 - Description: Privacy-first phishing protection. 42+ signals, 9 blocklist sources, CatBoost ML. Chrome/Firefox/Safari extensions + iOS/Android app.
 - Stars: 1; archived: False; fork: False
 - Search queries: privacy protection blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 98
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/api/data/cloudflare_ips.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/api/data/disposable_emails.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/data/benchmark_legit_ru.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/data/brand_owned_hosts.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/data/canary_must_resolve.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/data/iana_tlds.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/data/infrastructure_domains.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/dist/store-artifacts/cleanway-0.2.2-sha256.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/docs/email-templates/confirmation.subject.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/docs/email-templates/confirmation.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/docs/email-templates/email_change.subject.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/docs/email-templates/email_change.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/docs/email-templates/magic_link.subject.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/docs/email-templates/magic_link.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/docs/email-templates/recovery.subject.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/docs/email-templates/recovery.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/landing/public/robots.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/ml/sms/requirements.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/mobile/modules/cleanway-sms-filter/ios/EngineAssets/root_zone_tlds.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/mobile/modules/cleanway-vpn/android/src/main/assets/popular_veto.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/mobile/modules/cleanway-vpn/android/src/main/assets/root_zone_tlds.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/mobile/modules/cleanway-vpn/android/src/main/assets/shared_suffixes.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/breach_alert/ar.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/breach_alert/de.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/breach_alert/en.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/breach_alert/es.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/breach_alert/fr.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/breach_alert/hi.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/breach_alert/id.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/breach_alert/it.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/breach_alert/pt.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/breach_alert/ru.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/family_invite/ar.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/family_invite/de.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/family_invite/en.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/family_invite/es.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/family_invite/fr.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/family_invite/hi.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/family_invite/id.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/family_invite/it.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/family_invite/pt.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/family_invite/ru.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/granny_mode_invite/ar.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/granny_mode_invite/de.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/granny_mode_invite/en.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/granny_mode_invite/es.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/granny_mode_invite/fr.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/granny_mode_invite/hi.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/granny_mode_invite/id.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/granny_mode_invite/it.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/granny_mode_invite/pt.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/granny_mode_invite/ru.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/receipt/ar.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/receipt/de.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/receipt/en.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/receipt/es.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/receipt/fr.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/receipt/hi.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/receipt/id.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/receipt/it.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/receipt/pt.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/receipt/ru.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/subscription_cancel/ar.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/subscription_cancel/de.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/subscription_cancel/en.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/subscription_cancel/es.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/subscription_cancel/fr.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/subscription_cancel/hi.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/subscription_cancel/id.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/subscription_cancel/it.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/subscription_cancel/pt.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/subscription_cancel/ru.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/weekly_report/ar.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/weekly_report/de.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/weekly_report/en.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/weekly_report/es.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/weekly_report/fr.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/weekly_report/hi.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/weekly_report/id.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/weekly_report/it.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/weekly_report/pt.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/weekly_report/ru.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/welcome/ar.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/welcome/de.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/welcome/en.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/welcome/es.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/welcome/fr.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/welcome/hi.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/welcome/id.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/welcome/it.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/welcome/pt.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/packages/email-templates/out/welcome/ru.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/requirements-dev.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/requirements.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/tests/data/ct/sycamore2026h2_checkpoint.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/tests/data/ru_heuristics_legit.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/tests/data/ru_heuristics_phish.txt
+  - https://raw.githubusercontent.com/AlexMos555/linkshield/main/tests/data/ru_heuristics_phish_caught_before.txt
 
 ### [Alexaztz/vpn-rules](https://github.com/Alexaztz/vpn-rules)
 
@@ -3274,8 +3504,9 @@
 - Description: AISI.Services  is Cloudflare Domain for American Communications Onlinie ACOAbsolutely. I think JETservices should have its own blog inside the repository so it becomes the operational journal for your AI ecosystem.  Suggested structure  JETservices/ │ ├── README.md ├── index.md ├── about.md ├── _config.yml ├── _posts/ │   ├── 2026-07-28-jet-services-daily-report.md │   ├── 2026-07-29-ai-revolution-report.md │   ├── 2026-07-30-anthropic-economic-futures.md │   └── ... │ ├── images/ ├── assets/ └── whitepapers/  GitHub Pages with Jekyll is designed to publish blog posts from a _posts folder, where each post is a Markdown file named YYYY-MM-DD-title.md.    Home page  JETservices  Intelligence • Governance • Publishing • AI Revolution  Daily reports covering:  * AI Revolution News * OpenAI * Anthropic * Google DeepMind * xAI * Meta AI * NVIDIA * AI Alliance * Hugging Face * Research Papers * Economic AI * Robotics * AISI.services * TJ Morris Publishing  ⸻  Categories  * Daily Reports * AI Revolution * AISI.services * Governance * Research * White Papers * GitHub Updates * Publishing * Enterprise AI * Robotics  ⸻  First post  Jet Services Daily Report  * Executive Summary * Frontier AI * Enterprise AI * Research * Benchmarks * Economic Impact * AISI.services Update * GitHub Activity * Tomorrow’s Watch List  ⸻  Since you’ve been organizing JETservices as the operational publishing lane in your ecosystem, I also recommend adding:  * /blog/ — public articles * /whitepapers/ — research papers * /reports/ — daily and weekly reports * /canon/ — approved governance documents * /archive/ — historical reports  That would make the repository both a public website and a long-term knowledge archive. GitHub Pages can publish it automatically whenever you push new Markdown posts to the repository.
 - Stars: 1; archived: False; fork: False
 - Search queries: GitHub domain list repository, Google services domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/American-Communications-Online/aisiservices/main/robots.txt
 
 ### [AmitShmuelevitz/DNS-Sinkhole-server](https://github.com/AmitShmuelevitz/DNS-Sinkhole-server)
 
@@ -3357,8 +3588,9 @@
 - Description: Bloqueador de publicidad y rastreadores por DNS para Android. Minimalista, local y sin cuentas.
 - Stars: 1; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/Antitastico/Calma/main/app/src/main/assets/seed_blocklist.txt
 
 ### [Anton111111/rule-lists](https://github.com/Anton111111/rule-lists)
 
@@ -3373,8 +3605,9 @@
 - Description: THE CHALLENGE  Any user can log in to the system with username and password.  You can use generic views provided by Django to implement  these features. Registering new users via the admin interface is  enough. Note, you do not need to implement a user profile  interface to support password change.  Any logged-in user can create any number of data schemas to  create datasets with fake data.  Each such data schema has a name and the list of columns with  names and specified data types.  You need to implement different types of data (at least 5  different types):  Full name (a combination of first name and last name)  Job  Email  Domain name  Phone number  Company name  Text (with specified range for a number of sentences)  Integer (with specified range)  Address  Date  Users can build the data schema with any number of columns  with any type described above. Some types support extra  arguments (like a range), others not.  Each column also has its own name (which will be a column  header in the CSV file) and order (just a number to manage  column order).  After creating the schema, the user should be able to input the  number of records he/she needs to generate and press the  “Generate data” button.  After pressing the button, the system must use Celery to  generate CSV file of specified structure, corresponding fake data  and save the result in the file somewhere in the “media”  directory.  Build an online service for generating CSV files with fake(dummy)  data using Python and Django: The interface should show a colored label of generation status  for each dataset (processing/ready).  Add a “Download” button for datasets available for download.  Completed application should be deployed to Heroku and be  available online (HTTPS should be supported). Please, create a  test user and provide us with the credentials.  The source code should be committed to the repository on  GitHub, Bitbucket, or GitLab.  TECHNOLOGY STACK  Python 3  Django  Celery  Bootstrap, Bulma, UIKit or any other similar framework for UI  Use PEP8 for your Python code. 
 - Stars: 0; archived: False; fork: False
 - Search queries: GitHub domain list repository
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/AntonBalmakov/Test_task_Planeks/main/requirements.txt
 
 ### [Anveena/ShadowrocketRules](https://github.com/Anveena/ShadowrocketRules)
 
@@ -3415,6 +3648,17 @@
 - Search queries: direct domain list
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
+
+### [Arui-world/erpnext_mcp_tools](https://github.com/Arui-world/erpnext_mcp_tools)
+
+- Description: Frappe App：ERPNext 的 MCP 服务端——OAuth 身份透传、权限感知领域聚合工具（多仓库存/物料组低库存/应收摘要）、白名单草稿写入与幂等审计
+- Stars: 0; archived: False; fork: False
+- Search queries: 域名白名单
+- README / curated seed rule-list links: 3
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/Arui-world/erpnext_mcp_tools/erpnext_mcp_tools/erpnext_mcp_tools/modules.txt
+  - https://raw.githubusercontent.com/Arui-world/erpnext_mcp_tools/erpnext_mcp_tools/erpnext_mcp_tools/patches.txt
+  - https://raw.githubusercontent.com/Arui-world/erpnext_mcp_tools/erpnext_mcp_tools/license.txt
 
 ### [Aryia-Behroziuan/References](https://github.com/Aryia-Behroziuan/References)
 
@@ -3459,8 +3703,10 @@
 - Description: Repo storing personal whitelisted domains & hosts.
 - Stars: 0; archived: False; fork: False
 - Search queries: adblock domain list, hosts adblock domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/Avtrkrb/adblocking_lists/main/blacklist_sorted.txt
+  - https://raw.githubusercontent.com/Avtrkrb/adblocking_lists/main/whitelist_sorted.txt
 
 ### [Azure99/GFW_White_Domain](https://github.com/Azure99/GFW_White_Domain)
 
@@ -3476,9 +3722,13 @@
 - Description: Free threat-intelligence blocklists from Evil-DB (evil-db.io) — malicious IPs, malware/phishing domains, botnet C2. Auto-updated. Pi-hole / pfBlockerNG / RPZ ready.
 - Stars: 0; archived: False; fork: False
 - Search queries: malware phishing domain blocklist
-- README / curated seed rule-list links: 1
+- README / curated seed rule-list links: 5
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/B33BMO/evildb-blocklists/main/domains/ads-trackers.txt
+  - https://raw.githubusercontent.com/B33BMO/evildb-blocklists/main/domains/phishing-domains.txt
+  - https://raw.githubusercontent.com/B33BMO/evildb-blocklists/main/ips/botnet-c2.txt
   - https://raw.githubusercontent.com/B33BMO/evildb-blocklists/main/ips/malware-ips.txt
+  - https://raw.githubusercontent.com/B33BMO/evildb-blocklists/main/ips/spam-sources.txt
 
 ### [BRAVE-HOSTS/StevenBlack](https://github.com/BRAVE-HOSTS/StevenBlack)
 
@@ -3510,8 +3760,11 @@
 - Description: The OnlineVPN is a web-based platform designed in Python that provide you a home page that you are able to enter any page URL that you are willing to check/watch, and you enter a list of domain or subdomains that you are willing to change and forward, then it will send a request to your page from the server and act like a proxy.
 - Stars: 0; archived: False; fork: False
 - Search queries: proxy domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 3
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/BaseMax/OnlineVPN/main/nginx/conf.d/vpn-app.conf
+  - https://raw.githubusercontent.com/BaseMax/OnlineVPN/main/nginx/nginx.conf
+  - https://raw.githubusercontent.com/BaseMax/OnlineVPN/main/requirements.txt
 
 ### [Ben88889/unwanted-domains](https://github.com/Ben88889/unwanted-domains)
 
@@ -3538,8 +3791,9 @@
 - Description: proxy HTTP qui intercepte les requêtes, journalise les URLs visitées, détecte les mots-clés sensibles dans les réponses et peut bloquer l'accès à certains domaines listés dans un fichier de configuration.
 - Stars: 1; archived: False; fork: False
 - Search queries: proxy domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/Beryith/proxy_HTTP_Interceptor/main/blocklist.txt
 
 ### [BibleCommentaries/110000-Chinese-Bible-Sermons-Parallel-Commentaries](https://github.com/BibleCommentaries/110000-Chinese-Bible-Sermons-Parallel-Commentaries)
 
@@ -3610,18 +3864,68 @@
 - Description: Pi-hole & DNS blocklists for ads, tracking, telemetry, malware and phishing — privacy/security profiles, allowlisting, validation and automated daily updates.
 - Stars: 0; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 533
+- README / curated seed rule-list links: 1288
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/allowlists/authentication.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/allowlists/cdn.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/allowlists/essential.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/allowlists/false-positives.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/allowlists/payment.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/config/allowlist.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/family/content/dating.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/family/content/drugs.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/family/content/misinformation.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/family/content/piracy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/family/content/torrents.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/family/content/violence-gore.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/family/content/weapons.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/family/kids-allow-only/approved-sites.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/family/kids-allow-only/kids-de.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/family/kids-allow-only/kids-education-de.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/family/kids-allow-only/kids-games-de.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/family/kids-allow-only/kids-media-de.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/family/kids-allow-only/kids-runtime-de.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/family/main/light.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/family/main/normal.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/family/main/pro-plus.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/family/main/pro.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/family/main/ultimate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/gaming/full/anti-cheat-telemetry.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/gaming/full/battle-net.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/gaming/full/ea-origin.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/gaming/full/epic-games.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/gaming/full/game-analytics.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/gaming/full/mobile-games.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/gaming/full/nintendo.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/gaming/full/playstation.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/gaming/full/riot-games.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/gaming/full/rockstar.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/gaming/full/steam.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/gaming/full/ubisoft.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/gaming/full/xbox.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/gaming/main/light.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/gaming/main/normal.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/gaming/main/pro-plus.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/gaming/main/pro.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/gaming/main/ultimate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/social-media/full/discord.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/social-media/full/facebook-meta.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/social-media/full/instagram.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/social-media/full/linkedin.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/social-media/full/pinterest.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/social-media/full/reddit.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/social-media/full/snapchat.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/social-media/full/telegram.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/social-media/full/threads.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/social-media/full/tiktok.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/social-media/full/whatsapp.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/social-media/full/x-twitter.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/social-media/main/light.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/social-media/main/normal.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/social-media/main/pro-plus.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/social-media/main/pro.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/social-media/main/ultimate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/apps/social-media/special/social-networks.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/automation/full/aggressive-crawlers.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/automation/full/ai-crawlers.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/automation/full/ai-scrapers.txt
@@ -3698,15 +4002,43 @@
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/apple/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/apple/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/apple/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/audi/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/audi/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/audi/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/audi/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/bmw/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/bmw/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/bmw/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/bmw/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/ford/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/ford/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/ford/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/ford/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/mercedes/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/mercedes/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/mercedes/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/mercedes/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/tesla/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/tesla/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/tesla/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/tesla/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/vw/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/vw/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/vw/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/automotive/vw/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/ecosystems/amazon/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/ecosystems/amazon/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/ecosystems/amazon/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/ecosystems/amazon/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/ecosystems/apple/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/ecosystems/apple/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/ecosystems/apple/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/ecosystems/apple/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/ecosystems/google/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/ecosystems/google/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/ecosystems/google/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/ecosystems/google/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/ecosystems/microsoft/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/ecosystems/microsoft/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/ecosystems/microsoft/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/ecosystems/microsoft/updates.txt
@@ -3749,99 +4081,291 @@
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/huawei/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/huawei/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/huawei/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/amazon-alexa/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/amazon-alexa/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/amazon-alexa/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/amazon-alexa/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/huawei/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/huawei/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/huawei/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/huawei/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/samsung-smartthings/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/samsung-smartthings/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/samsung-smartthings/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/samsung-smartthings/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/shared-other/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/shared-other/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/shared-other/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/shared-other/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/sonos/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/sonos/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/sonos/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/sonos/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/xiaomi/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/xiaomi/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/xiaomi/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot-smart-home/xiaomi/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/iot/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/linux/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/linux/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/linux/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/adobe/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/adobe/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/adobe/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/adobe/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/amazon/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/amazon/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/amazon/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/amazon/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/amd/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/amd/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/amd/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/amd/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/apple/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/apple/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/apple/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/apple/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/autodesk/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/autodesk/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/autodesk/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/autodesk/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/ea/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/ea/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/ea/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/ea/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/epic/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/epic/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/epic/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/epic/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/google/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/google/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/google/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/google/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/huawei/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/huawei/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/huawei/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/huawei/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/lg/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/lg/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/lg/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/lg/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/logitech/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/logitech/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/logitech/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/logitech/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/meta/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/meta/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/meta/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/meta/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/microsoft/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/microsoft/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/microsoft/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/microsoft/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/nintendo/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/nintendo/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/nintendo/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/nintendo/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/nvidia/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/nvidia/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/nvidia/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/nvidia/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/philips/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/philips/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/philips/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/philips/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/razer/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/razer/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/razer/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/razer/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/samsung/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/samsung/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/samsung/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/samsung/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/sony/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/sony/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/sony/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/sony/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/ubisoft/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/ubisoft/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/ubisoft/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/ubisoft/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/valve-steam/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/valve-steam/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/valve-steam/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/valve-steam/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/xiaomi/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/xiaomi/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/xiaomi/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/manufacturers/xiaomi/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/apple-ios/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/apple-ios/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/apple-ios/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/apple-ios/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/google-android/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/google-android/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/google-android/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/google-android/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/google-pixel/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/google-pixel/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/google-pixel/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/google-pixel/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/huawei/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/huawei/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/huawei/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/huawei/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/motorola/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/motorola/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/motorola/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/motorola/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/oneplus/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/oneplus/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/oneplus/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/oneplus/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/oppo-realme/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/oppo-realme/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/oppo-realme/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/oppo-realme/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/samsung/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/samsung/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/samsung/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/samsung/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/shared-other/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/shared-other/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/shared-other/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/shared-other/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/vivo/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/vivo/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/vivo/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/vivo/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/xiaomi/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/xiaomi/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/xiaomi/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/mobile/xiaomi/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/docker/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/docker/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/docker/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/docker/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/hpe-dell/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/hpe-dell/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/hpe-dell/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/hpe-dell/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/kubernetes/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/kubernetes/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/kubernetes/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/kubernetes/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/qnap/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/qnap/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/qnap/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/qnap/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/redhat-openshift/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/redhat-openshift/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/redhat-openshift/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/redhat-openshift/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/synology/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/synology/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/synology/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/synology/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/truenas/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/truenas/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/truenas/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/truenas/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/unraid/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/unraid/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/unraid/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas-server/unraid/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/nas/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/asus/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/asus/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/asus/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/asus/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/avm-fritzbox/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/avm-fritzbox/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/avm-fritzbox/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/avm-fritzbox/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/cisco/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/cisco/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/cisco/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/cisco/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/huawei/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/huawei/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/huawei/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/huawei/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/mikrotik/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/mikrotik/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/mikrotik/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/mikrotik/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/netgear/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/netgear/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/netgear/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/netgear/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/tp-link/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/tp-link/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/tp-link/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/tp-link/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/ubiquiti/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/ubiquiti/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/ubiquiti/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/ubiquiti/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/zyxel/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/zyxel/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/zyxel/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/network-devices/zyxel/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/android/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/android/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/android/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/android/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/apple/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/apple/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/apple/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/apple/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/chromeos/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/chromeos/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/chromeos/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/chromeos/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/ios/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/ios/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/ios/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/ios/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/linux/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/linux/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/linux/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/linux/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/macos/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/macos/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/macos/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/macos/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/windows/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/windows/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/windows/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/operating-systems/windows/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/oppo-realme/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/oppo-realme/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/oppo-realme/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/1und1/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/1und1/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/1und1/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/1und1/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/deutsche-glasfaser/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/deutsche-glasfaser/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/deutsche-glasfaser/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/deutsche-glasfaser/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/o2/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/o2/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/o2/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/o2/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/telekom/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/telekom/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/telekom/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/telekom/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/unitymedia/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/unitymedia/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/unitymedia/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/unitymedia/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/vodafone/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/vodafone/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/vodafone/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/providers/vodafone/updates.txt
@@ -3854,59 +4378,113 @@
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/server/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/server/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/server/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/amazon-fire-tv/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/amazon-fire-tv/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/amazon-fire-tv/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/amazon-fire-tv/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/android-tv/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/android-tv/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/android-tv/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/fire-tv/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/fire-tv/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/fire-tv/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/google-android-tv/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/google-android-tv/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/google-android-tv/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/google-android-tv/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/google-tv/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/google-tv/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/google-tv/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/google-tv/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/hisense-vidaa/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/hisense-vidaa/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/hisense-vidaa/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/hisense-vidaa/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/lg-webos/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/lg-webos/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/lg-webos/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/lg-webos/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/lg/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/lg/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/lg/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/panasonic/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/panasonic/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/panasonic/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/panasonic/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/philips/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/philips/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/philips/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/philips/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/roku/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/roku/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/roku/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/roku/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/samsung/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/samsung/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/samsung/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/samsung/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/shared-other/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/shared-other/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/shared-other/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/shared-other/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/sony-bravia/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/sony-bravia/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/sony-bravia/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/sony-bravia/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/tcl/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/tcl/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/tcl/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/smart-tv/tcl/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/adobe/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/adobe/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/adobe/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/adobe/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/amd/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/amd/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/amd/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/amd/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/autodesk/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/autodesk/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/autodesk/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/autodesk/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/corsair/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/corsair/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/corsair/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/corsair/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/intel/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/intel/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/intel/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/intel/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/logitech/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/logitech/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/logitech/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/logitech/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/nvidia/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/nvidia/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/nvidia/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/nvidia/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/razer/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/razer/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/razer/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/software-hardware/razer/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/vivo/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/vivo/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/vivo/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/voice-assistants/alexa/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/voice-assistants/alexa/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/voice-assistants/alexa/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/voice-assistants/alexa/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/voice-assistants/cortana/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/voice-assistants/cortana/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/voice-assistants/cortana/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/voice-assistants/cortana/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/voice-assistants/google-assistant/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/voice-assistants/google-assistant/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/voice-assistants/google-assistant/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/voice-assistants/google-assistant/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/voice-assistants/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/voice-assistants/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/voice-assistants/siri/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/voice-assistants/siri/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/voice-assistants/siri/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/voice-assistants/siri/updates.txt
@@ -3917,6 +4495,15 @@
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/xiaomi/privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/xiaomi/restrict.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/device-control/xiaomi/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/ecosystems/full/amazon.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/ecosystems/full/apple.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/ecosystems/full/google.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/ecosystems/full/microsoft.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/ecosystems/main/light.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/ecosystems/main/normal.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/ecosystems/main/pro-plus.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/ecosystems/main/pro.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/ecosystems/main/ultimate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/family/anti-piracy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/family/bypass-protection.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/family/chats-communities.txt
@@ -3937,6 +4524,18 @@
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/gaming/platforms/riot-privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/gaming/platforms/rockstar-privacy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/gaming/platforms/steam-privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/infrastructure/cloud-development/full/aws.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/infrastructure/cloud-development/full/azure.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/infrastructure/cloud-development/full/cicd.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/infrastructure/cloud-development/full/cloud-storage.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/infrastructure/cloud-development/full/cloudflare.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/infrastructure/cloud-development/full/github.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/infrastructure/cloud-development/full/gitlab.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/infrastructure/cloud-development/full/google-cloud.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/infrastructure/cloud-development/full/jetbrains.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/infrastructure/cloud-development/full/oracle-cloud.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/infrastructure/cloud-development/full/visual-studio.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/infrastructure/cloud-development/full/vscode.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/infrastructure/cloud-development/main/light.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/infrastructure/cloud-development/main/normal.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/infrastructure/cloud-development/main/pro-plus.txt
@@ -3952,15 +4551,45 @@
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/kids-allow-only/safe-search.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/kids-allow-only/school-platforms.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/kids-allow-only/school.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/adobe.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/amazon.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/amd.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/apple.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/autodesk.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/ea.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/epic.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/google.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/huawei.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/lg.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/logitech.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/meta.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/microsoft.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/nintendo.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/nvidia.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/philips.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/razer.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/samsung.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/sony.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/ubisoft.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/valve-steam.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/manufacturers/xiaomi.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/ai-crawlers.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/doh-ipv4.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/doh-only.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/doh-vpn-tor-proxy-bypass.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/dynamic-dns.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/full/adblock-bypass.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/full/dns-attacks.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/full/dns-bypass.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/full/doh.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/full/dot.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/full/dynamic-dns.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/full/private-dns.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/full/proxy.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/full/safesearch-not-supported.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/full/tor.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/full/url-shorteners.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/full/vpn.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/main/light.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/main/normal.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/main/pro-plus.txt
@@ -3968,24 +4597,160 @@
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/main/ultimate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/safesearch-unsupported.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/scrapers-bots.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/special/doh-vpn-tor-proxy-bypass.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/special/encrypted-dns-only.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/suspicious-tlds.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/tracking-redirectors.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/network/url-shortener.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/automotive/full/audi.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/automotive/full/bmw.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/automotive/full/ford.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/automotive/full/mercedes.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/automotive/full/tesla.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/automotive/full/vw.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/automotive/main/light.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/automotive/main/normal.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/automotive/main/pro-plus.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/automotive/main/pro.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/automotive/main/ultimate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/iot-smart-home/_base/all-known.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/iot-smart-home/full/amazon-alexa.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/iot-smart-home/full/huawei.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/iot-smart-home/full/samsung-smartthings.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/iot-smart-home/full/shared-other.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/iot-smart-home/full/sonos.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/iot-smart-home/full/xiaomi.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/iot-smart-home/main/light.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/iot-smart-home/main/normal.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/iot-smart-home/main/pro-plus.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/iot-smart-home/main/pro.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/iot-smart-home/main/ultimate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/mobile/_base/all-known.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/mobile/full/apple-ios.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/mobile/full/google-android.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/mobile/full/google-pixel.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/mobile/full/huawei.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/mobile/full/motorola.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/mobile/full/oneplus.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/mobile/full/oppo-realme.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/mobile/full/samsung.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/mobile/full/shared-other.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/mobile/full/vivo.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/mobile/full/xiaomi.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/mobile/main/light.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/mobile/main/normal.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/mobile/main/pro-plus.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/mobile/main/pro.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/mobile/main/ultimate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/nas-server/_base/nas.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/nas-server/_base/server.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/nas-server/full/docker.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/nas-server/full/hpe-dell.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/nas-server/full/kubernetes.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/nas-server/full/qnap.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/nas-server/full/redhat-openshift.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/nas-server/full/synology.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/nas-server/full/truenas.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/nas-server/full/unraid.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/nas-server/main/light.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/nas-server/main/normal.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/nas-server/main/pro-plus.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/nas-server/main/pro.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/nas-server/main/ultimate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/network-devices/full/asus.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/network-devices/full/avm-fritzbox.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/network-devices/full/cisco.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/network-devices/full/huawei.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/network-devices/full/mikrotik.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/network-devices/full/netgear.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/network-devices/full/tp-link.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/network-devices/full/ubiquiti.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/network-devices/full/zyxel.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/network-devices/main/light.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/network-devices/main/normal.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/network-devices/main/pro-plus.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/network-devices/main/pro.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/network-devices/main/ultimate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/operating-systems/full/android.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/operating-systems/full/apple.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/operating-systems/full/chromeos.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/operating-systems/full/ios.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/operating-systems/full/linux.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/operating-systems/full/macos.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/operating-systems/full/windows.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/operating-systems/main/light.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/operating-systems/main/normal.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/operating-systems/main/pro-plus.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/operating-systems/main/pro.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/operating-systems/main/ultimate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/providers/full/1und1.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/providers/full/deutsche-glasfaser.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/providers/full/o2.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/providers/full/telekom.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/providers/full/unitymedia.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/providers/full/vodafone.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/providers/main/light.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/providers/main/normal.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/providers/main/pro-plus.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/providers/main/pro.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/providers/main/ultimate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/smart-tv/_base/all-known.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/smart-tv/full/amazon-fire-tv.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/smart-tv/full/google-android-tv.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/smart-tv/full/google-tv.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/smart-tv/full/hisense-vidaa.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/smart-tv/full/lg-webos.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/smart-tv/full/panasonic.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/smart-tv/full/philips.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/smart-tv/full/roku.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/smart-tv/full/samsung.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/smart-tv/full/shared-other.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/smart-tv/full/sony-bravia.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/smart-tv/full/tcl.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/smart-tv/main/light.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/smart-tv/main/normal.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/smart-tv/main/pro-plus.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/smart-tv/main/pro.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/smart-tv/main/ultimate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/software-hardware-telemetry/full/adobe.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/software-hardware-telemetry/full/amd.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/software-hardware-telemetry/full/autodesk.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/software-hardware-telemetry/full/corsair.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/software-hardware-telemetry/full/intel.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/software-hardware-telemetry/full/logitech.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/software-hardware-telemetry/full/nvidia.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/software-hardware-telemetry/full/razer.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/software-hardware-telemetry/main/light.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/software-hardware-telemetry/main/normal.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/software-hardware-telemetry/main/pro-plus.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/software-hardware-telemetry/main/pro.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/software-hardware-telemetry/main/ultimate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/streaming/full/apple-tv.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/streaming/full/dazn.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/streaming/full/disney-plus.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/streaming/full/emby.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/streaming/full/jellyfin.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/streaming/full/netflix.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/streaming/full/paramount.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/streaming/full/plex.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/streaming/full/prime-video.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/streaming/full/spotify.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/streaming/full/twitch.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/streaming/full/youtube.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/streaming/main/light.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/streaming/main/normal.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/streaming/main/pro-plus.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/streaming/main/pro.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/streaming/main/ultimate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/voice-assistants/full/alexa.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/voice-assistants/full/cortana.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/voice-assistants/full/google-assistant.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/voice-assistants/full/siri.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/voice-assistants/main/light.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/voice-assistants/main/normal.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/voice-assistants/main/pro-plus.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/voice-assistants/main/pro.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/platforms/voice-assistants/main/ultimate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/privacy-security/privacy/cloud-analytics.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/privacy-security/privacy/crash-reporting.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/privacy-security/privacy/diagnostics.txt
@@ -4060,36 +4825,279 @@
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/regional/ru.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/regional/uk.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/regional/us.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/abuse.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/badware-hosters.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/brand-impersonation.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/command-control.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/cryptocurrency.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/cryptomining.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/data-exfiltration.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/ddos.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/disposable-email.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/dns-security.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/dynamic-dns.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/expired-domains.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/exploits.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/fake-shops.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/fake-software.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/malicious-extensions.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/malicious-redirects.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/malvertising.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/newly-registered-domains.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/nft.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/parked-domains.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/pup-pua.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/ransomware.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/remote-access.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/scanners.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/spam.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/surveillance.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/suspicious-tlds.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/full/typosquatting.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/main/light.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/main/normal.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/main/pro-plus.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/main/pro.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/security/main/ultimate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/aws/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/aws/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/aws/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/aws/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/aws/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/azure/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/azure/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/azure/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/azure/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/azure/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/cicd/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/cicd/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/cicd/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/cicd/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/cicd/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/cloud-storage/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/cloud-storage/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/cloud-storage/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/cloud-storage/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/cloud-storage/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/cloudflare/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/cloudflare/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/cloudflare/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/cloudflare/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/cloudflare/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/github/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/github/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/github/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/github/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/github/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/gitlab/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/gitlab/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/gitlab/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/gitlab/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/gitlab/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/google-cloud/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/google-cloud/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/google-cloud/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/google-cloud/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/google-cloud/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/jetbrains/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/jetbrains/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/jetbrains/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/jetbrains/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/jetbrains/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/oracle-cloud/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/oracle-cloud/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/oracle-cloud/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/oracle-cloud/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/oracle-cloud/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/visual-studio/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/visual-studio/isolate.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/visual-studio/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/visual-studio/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/visual-studio/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/vs-code/block-all.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/vs-code/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/vscode/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/vscode/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/vscode/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/vscode/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/cloud-development/vscode/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/anti-cheat-telemetry/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/battle-net/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/battle-net/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/battle-net/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/battle-net/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/battle-net/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/ea-origin/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/ea-origin/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/ea-origin/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/ea-origin/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/ea-origin/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/epic-games/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/epic-games/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/epic-games/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/epic-games/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/epic-games/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/game-analytics/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/mobile-games/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/mobile-games/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/mobile-games/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/mobile-games/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/mobile-games/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/nintendo/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/nintendo/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/nintendo/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/nintendo/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/nintendo/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/playstation/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/playstation/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/playstation/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/playstation/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/playstation/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/riot-games/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/riot-games/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/riot-games/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/riot-games/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/riot-games/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/rockstar/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/rockstar/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/rockstar/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/rockstar/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/rockstar/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/steam/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/steam/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/steam/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/steam/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/steam/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/ubisoft/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/ubisoft/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/ubisoft/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/ubisoft/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/ubisoft/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/xbox/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/xbox/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/xbox/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/xbox/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/gaming/xbox/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/discord/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/discord/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/discord/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/discord/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/discord/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/facebook-meta/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/facebook-meta/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/facebook-meta/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/facebook-meta/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/facebook-meta/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/instagram/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/instagram/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/instagram/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/instagram/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/instagram/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/linkedin/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/linkedin/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/linkedin/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/linkedin/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/linkedin/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/pinterest/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/pinterest/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/pinterest/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/pinterest/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/pinterest/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/reddit/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/reddit/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/reddit/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/reddit/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/reddit/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/snapchat/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/snapchat/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/snapchat/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/snapchat/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/snapchat/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/telegram/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/telegram/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/telegram/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/telegram/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/telegram/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/threads/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/threads/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/threads/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/threads/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/threads/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/tiktok/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/tiktok/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/tiktok/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/tiktok/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/tiktok/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/whatsapp/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/whatsapp/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/whatsapp/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/whatsapp/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/whatsapp/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/x-twitter/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/x-twitter/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/x-twitter/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/x-twitter/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/social-media/x-twitter/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/apple-tv/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/apple-tv/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/apple-tv/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/apple-tv/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/apple-tv/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/dazn/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/dazn/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/dazn/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/dazn/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/dazn/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/disney-plus/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/disney-plus/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/disney-plus/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/disney-plus/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/disney-plus/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/emby/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/emby/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/emby/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/emby/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/emby/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/jellyfin/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/jellyfin/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/jellyfin/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/jellyfin/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/jellyfin/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/netflix/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/netflix/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/netflix/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/netflix/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/netflix/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/paramount/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/paramount/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/paramount/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/paramount/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/paramount/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/plex/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/plex/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/plex/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/plex/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/plex/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/prime-video/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/prime-video/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/prime-video/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/prime-video/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/prime-video/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/spotify/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/spotify/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/spotify/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/spotify/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/spotify/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/twitch/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/twitch/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/twitch/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/twitch/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/twitch/updates.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/youtube/block-all.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/youtube/isolate.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/youtube/privacy.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/youtube/restrict.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/service-blocking/streaming/youtube/updates.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/special/fake-scam-trap-sites.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/system-blocking/all-in/full-isolation.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/system-blocking/all-in/local-mode.txt
@@ -4139,6 +5147,7 @@
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/system-blocking/voice-assistants/local-mode.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/system-blocking/windows/full-isolation.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/lists/system-blocking/windows/local-mode.txt
+  - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/policies/dnsmasq/rebind.conf
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/profiles/all-in.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/profiles/light.txt
   - https://raw.githubusercontent.com/BlackRabbitZ/BlackRabbitZ-DNS-Blocklists/main/profiles/normal.txt
@@ -4151,8 +5160,44 @@
 - Description: fork from blackmatrix7/ios_rule_script
 - Stars: 0; archived: False; fork: False
 - Search queries: blackmatrix7 ios_rule_script
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 26
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/q/Apple.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/q/China.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/q/ChinaIPs.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/q/Direct.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/q/GitHub.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/q/Global.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/q/Google.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/q/Lan.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/q/OpenAI.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/q/Spotify.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/q/Telegram.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/q/YouTube.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/s/Advertising.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/s/Apple.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/s/China.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/s/ChinaIPs.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/s/Direct.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/s/GitHub.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/s/Global.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/s/Google.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/s/Lan.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/s/OpenAI.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/s/Spotify.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/s/Telegram.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/s/TikTok.list
+  - https://raw.githubusercontent.com/Blackfiles/ios/main/rule/s/YouTube.list
+
+### [BlockedAd/updates](https://github.com/BlockedAd/updates)
+
+- Description: Free ad blocker for Android – blocks ads, trackers and dangerous sites in all apps and browsers. No root, no account. Download the APK below.
+- Stars: 0; archived: False; fork: False
+- Search queries: privacy DNS blocklist
+- README / curated seed rule-list links: 2
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/BlockedAd/updates/main/blocklist_balkan.txt
+  - https://raw.githubusercontent.com/BlockedAd/updates/main/blocklist_popups.txt
 
 ### [BoysGmNg/EksvancRawGithubLicense](https://github.com/BoysGmNg/EksvancRawGithubLicense)
 
@@ -4212,18 +5257,21 @@
 - Description: Hong Kong AI-only Shadowrocket rules and daily Voice address refresh
 - Stars: 0; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 1
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
   - https://raw.githubusercontent.com/Brokkkoli/shadowrocket-hk-ai/main/Howard-HK-AI-Only.conf
+  - https://raw.githubusercontent.com/Brokkkoli/shadowrocket-hk-ai/main/config.template.conf
 
 ### [Bukk1t/PiHoleBlocklist](https://github.com/Bukk1t/PiHoleBlocklist)
 
 - Description: A self-updating Pi-hole blocklist combining trusted ad, tracker, malware, and phishing sources into one file.
 - Stars: 0; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 1
+- README / curated seed rule-list links: 3
 - Curated seed links: 0
   - https://raw.githubusercontent.com/Bukk1t/PiHoleBlocklist/main/Blocklist.txt
+  - https://raw.githubusercontent.com/Bukk1t/PiHoleBlocklist/main/Stats.txt
+  - https://raw.githubusercontent.com/Bukk1t/PiHoleBlocklist/main/sources.txt
 
 ### [ByteTuxiaobei/Image-Violation-Detection](https://github.com/ByteTuxiaobei/Image-Violation-Detection)
 
@@ -4243,8 +5291,12 @@
 - Description: This is a simple script that takes a list of payment domains, finds their IP addresses, and adds them to your firewall to be blocked. That's it.
 - Stars: 0; archived: False; fork: False
 - Search queries: proxy domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 4
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/ByteZeroLabs/proxy-guard/main/data/domains.txt
+  - https://raw.githubusercontent.com/ByteZeroLabs/proxy-guard/main/data/domains_cleaned.txt
+  - https://raw.githubusercontent.com/ByteZeroLabs/proxy-guard/main/data/failed_domains.txt
+  - https://raw.githubusercontent.com/ByteZeroLabs/proxy-guard/main/data/resolved_ips.txt
 
 ### [CAB233/domi-cli](https://github.com/CAB233/domi-cli)
 
@@ -4266,6 +5318,15 @@
   - https://raw.githubusercontent.com/CAOHUABIN/doubao-adguard-rules/main/dns_blocklist_adguard.txt
   - https://raw.githubusercontent.com/CAOHUABIN/doubao-adguard-rules/main/dns_blocklist_hosts.txt
   - https://raw.githubusercontent.com/CAOHUABIN/doubao-adguard-rules/main/safari_rules.txt
+
+### [CCDawn/pc-touchpad](https://github.com/CCDawn/pc-touchpad)
+
+- Description: 把 HarmonyOS 手机变成 Windows PC 的 Apple 风格触控板：局域网 WSS 认证、语义手势协议、白名单 SendInput。
+- Stars: 1; archived: False; fork: False
+- Search queries: 域名白名单
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/CCDawn/pc-touchpad/main/apps/harmony-client/entry/obfuscation-rules.txt
 
 ### [CERT-Polska/adblock-domain-list](https://github.com/CERT-Polska/adblock-domain-list)
 
@@ -4306,8 +5367,9 @@
 - Description: Shadowrocket rule collection
 - Stars: 0; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/Carrjiang/Shadowrocket-rule/main/Shadowrocket.conf
 
 ### [Cashcoin123/Cashcoin123](https://github.com/Cashcoin123/Cashcoin123)
 
@@ -4322,8 +5384,14 @@
 - Description: Not supplied
 - Stars: 0; archived: False; fork: False
 - Search queries: geosite domain
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 6
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/ChaCha20-Poly-1305/geosite-domain-rule-generator/main/output/ip-geo-detect-domain.list
+  - https://raw.githubusercontent.com/ChaCha20-Poly-1305/geosite-domain-rule-generator/main/output/ru-domain.list
+  - https://raw.githubusercontent.com/ChaCha20-Poly-1305/geosite-domain-rule-generator/main/output/ru-unbound-domain-blocklist.conf
+  - https://raw.githubusercontent.com/ChaCha20-Poly-1305/geosite-domain-rule-generator/main/output/ru-unbound-domain-whitelist.conf
+  - https://raw.githubusercontent.com/ChaCha20-Poly-1305/geosite-domain-rule-generator/main/raw/domain_list.txt
+  - https://raw.githubusercontent.com/ChaCha20-Poly-1305/geosite-domain-rule-generator/main/raw/domain_list_init.txt
 
 ### [ChaCha20-Poly-1305/geosite-extractor-dlc](https://github.com/ChaCha20-Poly-1305/geosite-extractor-dlc)
 
@@ -4475,8 +5543,20 @@
 - Description: 聚合不同格式的DNS过滤规则， 广告无处遁形。同时提供AdGuard自建DNS指引，适配中国宝宝体质。
 - Stars: 0; archived: False; fork: False
 - Search queries: DNS过滤规则
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/Code-Agitator/adguard-dns-rules/main/agrules/agh_custom_reject.txt
+  - https://raw.githubusercontent.com/Code-Agitator/adguard-dns-rules/main/agrules/agh_sr_reject.txt
+
+### [Coekyun-Dou/Focus-Time](https://github.com/Coekyun-Dou/Focus-Time)
+
+- Description: Study-Lock浏览器插件，学习锁定期间仅允许访问白名单域名，其他网站一律拦截。
+- Stars: 1; archived: False; fork: False
+- Search queries: 域名白名单
+- README / curated seed rule-list links: 2
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/Coekyun-Dou/Focus-Time/main/node_modules/typescript/LICENSE.txt
+  - https://raw.githubusercontent.com/Coekyun-Dou/Focus-Time/main/node_modules/typescript/ThirdPartyNoticeText.txt
 
 ### [Composur/react-manage](https://github.com/Composur/react-manage)
 
@@ -5242,10 +6322,12 @@
 - Description: This folder contains several block lists used to **explicitly block** access to specific services or content platforms. Each file within this folder represents a list of domains or IP addresses that are denied access based on the service or platform.
 - Stars: 1; archived: False; fork: False
 - Search queries: adblock domain list
-- README / curated seed rule-list links: 5
+- README / curated seed rule-list links: 7
 - Curated seed links: 0
   - https://raw.githubusercontent.com/CosmicIndustries/block/main/blockList.txt
+  - https://raw.githubusercontent.com/CosmicIndustries/block/main/blocklist_2025-03-31_0gfy8c.txt
   - https://raw.githubusercontent.com/CosmicIndustries/block/main/disney_block.txt
+  - https://raw.githubusercontent.com/CosmicIndustries/block/main/list2merge_block.txt
   - https://raw.githubusercontent.com/CosmicIndustries/block/main/list2mrg_block.txt
   - https://raw.githubusercontent.com/CosmicIndustries/block/main/netflix_block.txt
   - https://raw.githubusercontent.com/CosmicIndustries/block/main/roku_block.txt
@@ -5289,8 +6371,9 @@
 - Description: StevenBlack/hosts list converted for Adblock
 - Stars: 0; archived: False; fork: False
 - Search queries: StevenBlack hosts
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/Crisisrose/hosts/main/hosts.txt
 
 ### [Csr9162/Shadowrocket-Rules](https://github.com/Csr9162/Shadowrocket-Rules)
 
@@ -5316,8 +6399,9 @@
 - Description: Converts the massive StevenBlack master hosts file to an AdGuard format
 - Stars: 0; archived: False; fork: False
 - Search queries: StevenBlack hosts
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/D1n0Bot/StevenBlack-to-AdGuard/main/hosts.txt
 
 ### [DDcat2025/adobe-shadowrocket-rules](https://github.com/DDcat2025/adobe-shadowrocket-rules)
 
@@ -5754,8 +6838,10 @@
 - Description: Filter lists for uBlock Origin - Microsoft Attack Simulation Training domains (auto-updated weekly)
 - Stars: 1; archived: False; fork: False
 - Search queries: adblock domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/DmitrySandalov/filter-lists/main/ms-attack-simulation-domains-hosts.txt
+  - https://raw.githubusercontent.com/DmitrySandalov/filter-lists/main/ms-attack-simulation-domains.txt
 
 ### [Don-No7/Hack-SQL](https://github.com/Don-No7/Hack-SQL)
 
@@ -5870,8 +6956,12 @@
 - Description: 拥有53端口一样的速度，双栈并行查询全链路加密dns机制，自动从多个上游 DNS 中选择最快响应结果。用户可自由自定义加密 DNS 与 Bootstrap DNS（禁用 53 端口以提升安全性）。内置可配置 TTL 与大小限制的 DNS 缓存，支持识别并应用 AdGuard Home 拦截规则实现域名过滤。采用异步方式记录 DNS 请求日志，到达阈值自动裁剪日志，内存达到设定阈值后自动转存至本地文件并清理内存。整体代码已对内存占用和 CPU 使用进行了深度优化。
 - Stars: 2; archived: False; fork: False
 - Search queries: DNS过滤规则
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 4
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/EdgarJOJOP/dnscrypt-proxy/main/%E8%AF%81%E4%B9%A6%E5%88%9B%E5%BB%BA%E5%91%BD%E4%BB%A4.txt
+  - https://raw.githubusercontent.com/EdgarJOJOP/dnscrypt-proxy/main/openssl.conf
+  - https://raw.githubusercontent.com/EdgarJOJOP/dnscrypt-proxy/main/requirements.txt
+  - https://raw.githubusercontent.com/EdgarJOJOP/dnscrypt-proxy/main/rules/filter_rules.txt
 
 ### [EinsPommes/blocklist-scrubber](https://github.com/EinsPommes/blocklist-scrubber)
 
@@ -7285,7 +8375,7 @@
 ### [Johnshall/Shadowrocket-ADBlock-Rules-Forever](https://github.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever)
 
 - Description: 提供多款 Shadowrocket 规则，拥有强劲的广告过滤功能。每日 8 时重新构建规则。
-- Stars: 31771; archived: False; fork: False
+- Stars: 31772; archived: False; fork: False
 - Search queries: shadowrocket rules
 - README / curated seed rule-list links: 14
 - Curated seed links: 0
@@ -8113,6 +9203,16 @@
   - https://raw.githubusercontent.com/Jyanbai/Shadowrocket-Config/main/ad_list.txt
   - https://raw.githubusercontent.com/Jyanbai/Shadowrocket-Config/main/src/sr_ad_only.conf
 
+### [Kamine-Jf/CampusKnowledge_QASystem](https://github.com/Kamine-Jf/CampusKnowledge_QASystem)
+
+- Description: 针对校园政策查询繁琐、信息分散问题，搭建智能问答系统，整合教务规则等资料，实现精准高效检索，为师生提供便捷信息服务，提升校园管理信息化水平。基于 Python、FastAPI、Docker 部署 Milvus 向量库与 MySQL，构建 RAG 架构校园问答系统，完成 EXCEL、Word及PDF 解析、向量入库与双源检索。完成系统全流程开发，实现结构化与非结构化数据融合查询，功能稳定、检索准确，可为同类校园信息系统提供参考方案。
+- Stars: 1; archived: False; fork: False
+- Search queries: 开源分流规则
+- README / curated seed rule-list links: 2
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/Kamine-Jf/CampusKnowledge_QASystem/master/requirements.txt
+  - https://raw.githubusercontent.com/Kamine-Jf/CampusKnowledge_QASystem/master/requirements_stage4.txt
+
 ### [Karmenzind/sr-rules](https://github.com/Karmenzind/sr-rules)
 
 - Description: 自用:rocket:规则，去广告及常用APP优化，每日自动构建更新
@@ -8545,8 +9645,20 @@
 - Description: dns日志过滤，支持配置多个任务或多种过滤规则
 - Stars: 2; archived: False; fork: False
 - Search queries: DNS过滤规则
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 12
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/LeonRhapsody/dnsLogFilter/main/apt.list
+  - https://raw.githubusercontent.com/LeonRhapsody/dnsLogFilter/main/domain.txt
+  - https://raw.githubusercontent.com/LeonRhapsody/dnsLogFilter/main/force.list
+  - https://raw.githubusercontent.com/LeonRhapsody/dnsLogFilter/main/force2.list
+  - https://raw.githubusercontent.com/LeonRhapsody/dnsLogFilter/main/force3.list
+  - https://raw.githubusercontent.com/LeonRhapsody/dnsLogFilter/main/ip.list
+  - https://raw.githubusercontent.com/LeonRhapsody/dnsLogFilter/main/ip.txt
+  - https://raw.githubusercontent.com/LeonRhapsody/dnsLogFilter/main/output.txt
+  - https://raw.githubusercontent.com/LeonRhapsody/dnsLogFilter/main/v4.list
+  - https://raw.githubusercontent.com/LeonRhapsody/dnsLogFilter/main/v6.list
+  - https://raw.githubusercontent.com/LeonRhapsody/dnsLogFilter/main/v6IP.txt
+  - https://raw.githubusercontent.com/LeonRhapsody/dnsLogFilter/main/wuxi-AI.list
 
 ### [LeonardSEO/snapchat_ads](https://github.com/LeonardSEO/snapchat_ads)
 
@@ -8596,8 +9708,9 @@
 - Description: 一个利用标注好的中文医学数据集，使用 Bidirectional LSTM-CRF模型进行中文医学领域的命名实体识别项目，最终在测试集上达到65%的准确率。
 - Stars: 1; archived: False; fork: False
 - Search queries: 域名数据集
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/LinYuOu/ner_lstm_crf_pytorch_class/main/result.txt
 
 ### [Lincoln233/biubiu-accelerator-shadowrocket-rules](https://github.com/Lincoln233/biubiu-accelerator-shadowrocket-rules)
 
@@ -8688,6 +9801,15 @@
   - https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt
   - https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt
 
+### [Lssppssl/-RK3588-](https://github.com/Lssppssl/-RK3588-)
+
+- Description: 设计并实现了一款基于瑞芯微RK3588异构计算平台的智能水文检测工控机。系统采用统一封装测流计算与管控规则、双端交互层分别适配现场触控与远程监管场景的分层架构，基于Buildroot深度定制嵌入式Linux系统镜像，完成内核裁剪、第三方库交叉编译与依赖适配；集成IO管控、PWM波形生成、SPI高速通信、RTC时钟校准、多链路网络切换等全量工业外设能力；内置STIV时空图像法、LK光流法、STE-OF法三种非接触式视频测流算法，依托PostgreSQL实现测流数据的全生命周期持久化，构建“本地Qt终端+Web远程管理平台”的双端管控体系。测试结果表明，系统外设控制响应时延低、测流算法运行稳定、网络切换无业务中断，可为中小河流、灌区、山洪预警等场景提供高可靠、低成本的非接触式水文监测解决方案。
+- Stars: 1; archived: False; fork: False
+- Search queries: 网络规则集
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/Lssppssl/-RK3588-/main/resolv.conf
+
 ### [Luccifer/xray-lists](https://github.com/Luccifer/xray-lists)
 
 - Description: Small, frequently updated domain lists for selective tunnelling (xray geosite.dat + plain lists)
@@ -8750,8 +9872,109 @@
 - Description: A Streamlit tool for automated threat-intel research on IoCs-IPs, domains, and file hashes. It enriches results with VirusTotal and ThreatFox, searches bundled datasets for context, and supports single or batch analysis with downloadable reports.
 - Stars: 1; archived: False; fork: False
 - Search queries: ThreatFox IOC domains
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 101
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/botvrij/ioclist.domain.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/botvrij/ioclist.filename.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/botvrij/ioclist.hostname.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/botvrij/ioclist.ip-dest.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/botvrij/ioclist.md5.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/botvrij/ioclist.sha1.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/botvrij/ioclist.sha256.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/botvrij/ioclist.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/botvrij/misp.md5.ADMIN.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/botvrij/misp.sha1.ADMIN.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/botvrij/misp.sha256.ADMIN.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/botvrij/misp.text_ip-dst.ADMIN.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/ci-army-list/ci-badguys.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/disposable-email-domain-list/domains.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/disposable-email-domain-list/domains_legacy.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/disposable-email-domain-list/domains_mx.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/disposable-email-domain-list/domains_sha1.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/disposable-email-domain-list/domains_strict.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/disposable-email-domain-list/domains_strict_mx.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/disposable-email-domain-list/domains_strict_sha1.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/firehol/firehol_level1.netset.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/adservers/adservers.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/ads/dgxtneitpuvgqqcpfulq.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/badpeers/cwworuawihqvocglcoss.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/bogon/gihxqmhyunbxhbmgqrla.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/dshield/xpbqleszmajjesnzddhv.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/edu/imlmncgrkbnacgcwfjvh.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/exclusions/mtxmiireqmjzazcsoiem.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/fornonlancomputers/jhaoawihmfxgnvmaqffp.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/forumspam/ficutxiwawokxlcyoeye.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/hijacked/usrcshglbiilevmyfhse.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/iana-multicast/pwqnlynprfgtjbgqoizj.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/iana-private/cslpybexmxyuacbyuvib.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/iana-reserved/bcoepfyewziejvcqyhqo.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/level-2/gyisgnzbhppbvsphucsw.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/level-3/uwnukjqktoggdknzrhgh.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/microsoft/xshktygkujudfnjfioro.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/proxy/xoebmbyexwuiogmbyprb.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/rangetest/plkehquoahljmyxjixpu.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/spider/mcvxsnihddgutbjfbghy.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/spyware/llvtlsjyoyiczbkjsxpf.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/bluetack/webexploit/ghlzqtqxnzctvvajwwag.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/cns-army/cns-army.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/cruzit-web-attacks/cruzit-web-attacks.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/drop/drop.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/malc0de/malc0de.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/iblocklist/pedophiles/pedophiles-sites-ips.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/ipsum/ipsum.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/openphish-feeds/openphish-feeds.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/securityscore-card/ipblocklist.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/securityscore-card/proxylist.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/signature-base/c2-iocs.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/signature-base/filename-iocs.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/signature-base/hash-iocs.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/signature-base/keywords.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/signature-base/sig-base-rules.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/threadfeeds/blocklist.de-blocklist.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/threadfeeds/brute-force-blist.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/threadfeeds/brute-force-hlist.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/threadfeeds/ci-badguys.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/threadfeeds/compromised-ips.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/Datasets-bkp/threadfeeds/ipblocklist_aggressive.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/gemma3/threat_report_042373cc51426069afe1ed855f8a864f.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/gemma3/threat_report_107_191_61_105.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/gemma3/threat_report_142_251_41_42.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/gemma3/threat_report_143_92_39_50.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/gemma3/threat_report_45_57_91_1.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/gemma3/threat_report_7a2757e51b9f918c8fcc8a23678948e8.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/gemma3/threat_report_803f5098d7fa8552a43c893fe13ffd76.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/gemma3/threat_report_b27c2e0141bbb3a7907a5ec1863e1465.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/gemma3/threat_report_connectotels_net.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/gemma3/threat_report_datahog_su.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/gemma3/threat_report_grammarly_com.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/gemma3/threat_report_linkedin_com.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/llama32/threat_report_042373cc51426069afe1ed855f8a864f.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/llama32/threat_report_107_191_61_105.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/llama32/threat_report_142_251_41_42.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/llama32/threat_report_143_92_39_50.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/llama32/threat_report_45_57_91_1.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/llama32/threat_report_7a2757e51b9f918c8fcc8a23678948e8.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/llama32/threat_report_803f5098d7fa8552a43c893fe13ffd76.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/llama32/threat_report_b27c2e0141bbb3a7907a5ec1863e1465.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/llama32/threat_report_connectotels_net.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/llama32/threat_report_datahog_su.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/llama32/threat_report_grammarly_com.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/phi4/threat_report_042373cc51426069afe1ed855f8a864f.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/phi4/threat_report_107_191_61_105.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/phi4/threat_report_142_251_41_42.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/phi4/threat_report_143_92_39_50.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/phi4/threat_report_45_57_91_1.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/phi4/threat_report_7a2757e51b9f918c8fcc8a23678948e8.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/phi4/threat_report_803f5098d7fa8552a43c893fe13ffd76.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/phi4/threat_report__803f5098d7fa8552a43c893fe13ffd76.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/phi4/threat_report_b27c2e0141bbb3a7907a5ec1863e1465.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/phi4/threat_report_connectotels_net.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/phi4/threat_report_datahog_su.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/phi4/threat_report_grammarly_com.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/phi4/threat_report_linkedin_com.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/threat_report_143_92_39_50_gemma3.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/threat_report_143_92_39_50_ollama.txt
+  - https://raw.githubusercontent.com/Mangesh-Bhattacharya/Threat-Intelligence-Automated-Research-and-Analysis-AI-Tool/main/SampleReports/threat_report_143_92_39_50_phi4.txt
 
 ### [MarshMeadow/Block-Spotify-ADS-DNS-List](https://github.com/MarshMeadow/Block-Spotify-ADS-DNS-List)
 
@@ -8875,8 +10098,9 @@
 - Description: An AdBlock Plus blocklist based on the Google Masked Domain List for their IP Protection feature
 - Stars: 2; archived: False; fork: False
 - Search queries: adblock domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/Metrokoto/masked-domain-blocklist/main/mdl.txt
 
 ### [MikeHuang01/MikeHuang01-Rules](https://github.com/MikeHuang01/MikeHuang01-Rules)
 
@@ -8937,8 +10161,22 @@
 - Description: Merges public DNS blocklists into a single, deduplicated file for AdGuard Home. Updates every 12 hours.
 - Stars: 2; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 14
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/MissionWAR/BlocklistMerger/main/config/sources.txt
+  - https://raw.githubusercontent.com/MissionWAR/BlocklistMerger/main/constraints/release-py314.txt
+  - https://raw.githubusercontent.com/MissionWAR/BlocklistMerger/main/tests/fixtures/agh_semantics_effects_expected.txt
+  - https://raw.githubusercontent.com/MissionWAR/BlocklistMerger/main/tests/fixtures/agh_semantics_effects_input.txt
+  - https://raw.githubusercontent.com/MissionWAR/BlocklistMerger/main/tests/fixtures/coverage_proof_pruning_expected.txt
+  - https://raw.githubusercontent.com/MissionWAR/BlocklistMerger/main/tests/fixtures/coverage_proof_pruning_input.txt
+  - https://raw.githubusercontent.com/MissionWAR/BlocklistMerger/main/tests/fixtures/modifiers_priority_expected.txt
+  - https://raw.githubusercontent.com/MissionWAR/BlocklistMerger/main/tests/fixtures/modifiers_priority_input.txt
+  - https://raw.githubusercontent.com/MissionWAR/BlocklistMerger/main/tests/fixtures/semantic_whitelist_scope_expected.txt
+  - https://raw.githubusercontent.com/MissionWAR/BlocklistMerger/main/tests/fixtures/semantic_whitelist_scope_input.txt
+  - https://raw.githubusercontent.com/MissionWAR/BlocklistMerger/main/tests/fixtures/whitelist_basic_expected.txt
+  - https://raw.githubusercontent.com/MissionWAR/BlocklistMerger/main/tests/fixtures/whitelist_basic_input.txt
+  - https://raw.githubusercontent.com/MissionWAR/BlocklistMerger/main/tests/fixtures/whitelist_wildcard_expected.txt
+  - https://raw.githubusercontent.com/MissionWAR/BlocklistMerger/main/tests/fixtures/whitelist_wildcard_input.txt
 
 ### [Moskvitch/Shadowrocket-Rules](https://github.com/Moskvitch/Shadowrocket-Rules)
 
@@ -9541,8 +10779,46 @@
 - Description: Rules / 规则：Surge / Shadowrocket / Quantumult 【back-up】
 - Stars: 1; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 38
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Quantumult/Quantumult.conf
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Quantumult/Quantumult_Extra.conf
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Quantumult/Quantumult_URL.conf
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge%C2%B3.conf
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge%C2%B3/Advertising.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge%C2%B3/Apple.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge%C2%B3/Basic.conf
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge%C2%B3/China.conf
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge%C2%B3/China.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge%C2%B3/DomesticMedia.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge%C2%B3/ForeignMedia.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge%C2%B3/Global.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge%C2%B3/Hijacking.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge%C2%B3/Pro.conf
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge%C2%B3/Surge3.conf
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge/Groups.conf
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge/MITM.conf
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge/Prototype.conf
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge/TestFlight.conf
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge3/Media/abematv.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge3/Media/bahamut.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge3/Media/bbc.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge3/Media/bilibili%26iqiyi.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge3/Media/fox%2B.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge3/Media/hbo%26hbogo.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge3/Media/hulu.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge3/Media/mytvsuper%26joox.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge3/Media/netflix.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge3/Media/youtube.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge3/adblock.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge3/apple.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge3/china_media.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge3/domestic.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge3/global_media.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge3/proxy.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge3/reject1.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/Surge3/reject2.list
+  - https://raw.githubusercontent.com/P79N6A/Rules-2/master/SurgeNew.conf
 
 ### [PaPerseller/chn-iplist](https://github.com/PaPerseller/chn-iplist)
 
@@ -9634,8 +10910,10 @@
 - Description: Phishing Domains, urls websites and threats database from https://phisheye.com/
 - Stars: 1; archived: False; fork: False
 - Search queries: phishing domains feed
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/PhishEyeCom/Phishing-Feeds/main/feeds/LAST_UPDATED.txt
+  - https://raw.githubusercontent.com/PhishEyeCom/Phishing-Feeds/main/feeds/urlscan-phishing-30d.txt
 
 ### [Phishing-Database/Phishing.Database](https://github.com/Phishing-Database/Phishing.Database)
 
@@ -9760,8 +11038,10 @@
 - Description: Freshly validated and de-duplicated DNS blocklists by PigeonSec. Perfect for Pi-hole, AdGuard Home, or any DNS filter that loves fast, clean, and verified domains. Generated and validated by Magpie￼ - the bird that never sleeps.
 - Stars: 2; archived: False; fork: False
 - Search queries: DNS filtering blocklist domains, adguard DNS filter domains
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/PigeonSec/blocklists/main/unclean/annoying.txt
+  - https://raw.githubusercontent.com/PigeonSec/blocklists/main/unclean/bad.txt
 
 ### [Plesnte25/Into_the_Wild_Stays](https://github.com/Plesnte25/Into_the_Wild_Stays)
 
@@ -9967,13 +11247,23 @@
   - https://raw.githubusercontent.com/QmQsun/Shadowrocket-Rules/main/sr_mainland.conf
   - https://raw.githubusercontent.com/QmQsun/Shadowrocket-Rules/main/sr_mode_probe.conf
 
+### [QuailOurs/SodaRiskEngine](https://github.com/QuailOurs/SodaRiskEngine)
+
+- Description: Soda 是一个面向业务安全与通用业务场景的开源规则引擎。它把业务方、场景、 输入参数、特征、规则和策略组织成可配置的决策流程，并通过 HTTP API 对外提供低侵入的实时决策能力。  Soda 既可以用于登录保护、注册防刷、账号安全、名单校验等业务安全场景，也可以 用于营销资格、订单路由、价格规则、流程分支等通用业务决策场景。
+- Stars: 1; archived: False; fork: False
+- Search queries: 开源分流规则
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/QuailOurs/SodaRiskEngine/main/deploy/nginx.conf
+
 ### [Rafaelrico77/piholeyt](https://github.com/Rafaelrico77/piholeyt)
 
 - Description: Pi-Hole Blocklist for googlevideo.com domains, which serves advertising content on youtube. 
 - Stars: 1; archived: False; fork: False
 - Search queries: advertising domains blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/Rafaelrico77/piholeyt/master/youtubeadblock.txt
 
 ### [Ragul0727/MarineGlowYacht-website](https://github.com/Ragul0727/MarineGlowYacht-website)
 
@@ -10191,8 +11481,10 @@
 - Description: Koleksi daftar hitam domain (hosts/blocklist) terkurasi. Repositori ini menyediakan berbagai daftar dari HaGeZi, OISD, dan Steven Black yang siap digunakan untuk aplikasi seperti AdGuard Home, Pi-hole, NextDNS, atau uBlock Origin.
 - Stars: 1; archived: False; fork: False
 - Search queries: OISD domain blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/RusdiEneri/blacklist-hosts/main/hosts/HaGeZi/pro.plus.txt
+  - https://raw.githubusercontent.com/RusdiEneri/blacklist-hosts/main/hosts/StevenBlack/fakenews.txt
 
 ### [RzMY/IOS-AntiRevoke-DNS-Rules](https://github.com/RzMY/IOS-AntiRevoke-DNS-Rules)
 
@@ -10337,8 +11629,12 @@
 - Description: A Node.js + Express based web scraping service that fetches real-time job listings from Indeed using Puppeteer. Users can enter a job domain through a simple HTML form, and the backend returns a structured JSON response containing 100+ job listings, including titles, companies, locations, and direct URLs. The scraper is optimized with efficient DOM
 - Stars: 1; archived: False; fork: False
 - Search queries: direct domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 4
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/SarthakSirohi/Web-scrapper-project/master/node_modules/ejs/usage.txt
+  - https://raw.githubusercontent.com/SarthakSirohi/Web-scrapper-project/master/node_modules/jake/usage.txt
+  - https://raw.githubusercontent.com/SarthakSirohi/Web-scrapper-project/master/node_modules/whatwg-encoding/LICENSE.txt
+  - https://raw.githubusercontent.com/SarthakSirohi/Web-scrapper-project/master/node_modules/whatwg-mimetype/LICENSE.txt
 
 ### [ScriptTiger/Hosts-BL](https://github.com/ScriptTiger/Hosts-BL)
 
@@ -10882,7 +12178,7 @@
 ### [TG-Twilight/AWAvenue-Ads-Rule](https://github.com/TG-Twilight/AWAvenue-Ads-Rule)
 
 - Description: 众多优秀广告规则的上游、开源社区中最棒的广告过滤器之一。适配AdGuard/Home/DNS、AdAway、hosts、Mosdns、ClashMeta、QuantumultX等主流广告拦截工具/代理工具。
-- Stars: 6744; archived: False; fork: False
+- Stars: 6745; archived: False; fork: False
 - Search queries: DNS过滤规则, 开源广告过滤规则
 - README / curated seed rule-list links: 52
 - Curated seed links: 0
@@ -11098,8 +12394,61 @@
 - Description: A high-performance Python utility that fetches and merges multiple adlists into domain-only output for DNS blockers like Pi-hole, AdGuard, and similar DNS filtering solutions.
 - Stars: 1; archived: False; fork: False
 - Search queries: adguard DNS filter domains
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 53
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/013e8863064aa54ac54a56d97e18b45d4a8f7d4ccc66735225caaa05b5a91af6.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/05b65cd757ca83c4d0ee6a1cc36cb2135226537a8d2627af0ff82c59666bce68.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/0bf2e3e9c4742b3c865d0e4d8f0c5f896ebf50e6386d88cfac626ca35a068da3.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/0fa37ad233867b47219c3b886d21ca18a1b9c3a37e867897ef1c939172171967.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/11170fa6b9b3e8fc77c9f600098cf0659dd3096132c931004fb26e566655f47b.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/11d929e8b03efb46538c4ac83c9c428b450db7bf9303d6a60aba524165997193.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/14a8682caaea2bb6e3c5a1f77fbe35507ffa3eb3f3357a0c941b0d364ff7840c.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/1616694fcc2e0d6b4c56df2bc24d9a87f2689b5c8b7ece384861e76bc2557e9d.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/162c94609a8808d10052f6f231016d3d04fce67412f5507b99192ad68056af4c.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/19d62bfdcc6c0aa3b6b477d340341b49628998e1ab0b802411d82aea35b7891d.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/2f51457d8ee8b40047d8958fed29188bafba0c18c489c3b6bda9777934d8d4b7.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/3924a78308567080b00c6e930f7a3497aebba58b354a1196075c2b8f3d7722c5.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/3f6cd8b96cbbbef9d97587180066eacca4251ca0404dfaff69d40910a3fe31c0.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/416ad6e61b7bcaf8112b78a9552d5fa003d8ac95192d4c4e7f830c8a130e7912.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/5206c48b0b125ebbcdd57950aea863f80e8dd29d5b43cafce2b627346259ec26.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/5c92dd7dc61496fd51794828672b35e6975d7835aa3778fb0c492f9669e98f3f.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/603e776c4f62b98ab5930dbb790e02bc215a3a571e56cc472e020ca36c8d44dd.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/637d6b90f74b54280ad37497f865526363e87bf3f2e85c4cff11d18a76653b5a.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/65517047d42863ed4a321fb2966d9316c1f050bd853d0b65abc2d200d58a66fb.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/69481aca991270b96a8395a149f7495d6dd1e522c0909f82baad8e6e24d08a1f.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/694a44a4a4eddc4197a757c76f73b14a57520dd22694caa20059694b18ee3db1.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/698ec1c75558d0a7e01ab40d68239714815a20cbaabe7bc261ef42365bc85579.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/7c9b29c127ec4245c83a0093290a8d1201702d7cd038284e30ba1e0b6d3528f3.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/7f0588e41d381da9f33b8f0dc81761a4b57c828449ca92497be8dbee6407de20.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/7faa974d2dba2c969596946d5b41ecd1cae373586f67a8ecab3bfa9b238203f9.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/864c10e715dddab6e08ede0879735c580db21c11169a54ec6d4539f8b3d02e2f.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/8723526bd3fe99d70d29821352ecd73fe53edb5c0ba75fd975324bb513341d05.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/9401af26c002c3d5751a5afb54571bb486c1464cadb2bf38ae854dfee6eae2bb.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/9682971443b4a91abef79c38036cfc8c38913919fd9b41932dc9eb43a96044a6.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/97234e851839c9c12762cf3e7082a49fa7b1663e402213303647aa5fa33b5739.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/975a1b195d8234ae12759e3b95d3332f6de5c8ef378aaf0f268542ce1a7603bc.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/a05eddb5750a86973ab8650a25407ea27b45453c9f1934bd5378fbedd0f3f774.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/a0a06e5ccc3382738e91f0dbd06f5513a9cea55a4b94733667c529cf519c6508.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/a2cfc8d21ba9077869c86e6c8475de3a0a78dea975c80ed8d117e7287ecee63b.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/a41d8da9a9717d711497b11cef2676814a1070e347d440b0e61044a32ed77182.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/adeb91c87c37c4cdce52a84262d054d798d2923959893b1831ace186f39bdba9.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/ae3ae6e073b74350ec895d03c99585655f8935552e5a0ab729a4fbd78a9add73.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/b4aa011f10f914c20f1c8994f9fe8f1cf5a6ee8c7e2584827b9146d8fe88880f.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/bc290ebd8778b7b8d55ea5dc223d4bd01dd20f95dbc42d703e9298f2e25d50f9.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/bfd1414220325bc495b6eb863d49f7f161136b2c2ead8ae7e3fae29a9caca812.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/c6f22938bfa16140481d8d551fa938fb7cd398c231b250d12f2bfabcdaca42b2.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/ca0a572b80c78f14b1eb98ada458ea31cb23c6ca2f353a59a3cf1a580be9728b.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/da8500f6949cde13d915a5206a665639a7421c12eddc5d985ba65d5d49827e7b.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/e413d034d669b085c70d2d213d3a6052ae600c1204164cd04a1694954b036286.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/e5d742a036de0497866542454df891afe8f9ce94019cabc5976cfebdc7a496ba.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/e70556964925b652f70f9b3898a2f6f03b91a8a9c8a4d6b66f8b1ff95dfad0c0.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/e8d5d8005cf5e2e33578862e33fcad11b0da540e2206cdd18f2a7ff6479e24a6.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/ebb0a355310310eb6e4c2874e2b51c9bb2fb09f3e0bcef8b40f4540ad8f73c23.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/cache/ec3500d47390f0af0d790300efa77072f787236a4150faba55af8b82b9370f74.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/data/blacklist.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/data/whitelist.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/output/adlist.txt
+  - https://raw.githubusercontent.com/Toomas633/Adlist-Parser/main/output/whitelist.txt
 
 ### [Torno999/Shadowrocket-Telegram-rule-list](https://github.com/Torno999/Shadowrocket-Telegram-rule-list)
 
@@ -11218,8 +12567,16 @@
 - Description: Test of https://gitlab.com/quidsup/notrack-blocklists/-/raw/master/malware.list
 - Stars: 2; archived: False; fork: False
 - Search queries: notracking blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 8
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/Ultimate-Hosts-Blacklist/quidsup_malicious-sites/master/clean.list
+  - https://raw.githubusercontent.com/Ultimate-Hosts-Blacklist/quidsup_malicious-sites/master/domains.list
+  - https://raw.githubusercontent.com/Ultimate-Hosts-Blacklist/quidsup_malicious-sites/master/ip.list
+  - https://raw.githubusercontent.com/Ultimate-Hosts-Blacklist/quidsup_malicious-sites/master/output/domains.list/logs/percentage/percentage.txt
+  - https://raw.githubusercontent.com/Ultimate-Hosts-Blacklist/quidsup_malicious-sites/master/output/domains.list/logs/percentage/registrar.txt
+  - https://raw.githubusercontent.com/Ultimate-Hosts-Blacklist/quidsup_malicious-sites/master/requirements.txt
+  - https://raw.githubusercontent.com/Ultimate-Hosts-Blacklist/quidsup_malicious-sites/master/volatile.list
+  - https://raw.githubusercontent.com/Ultimate-Hosts-Blacklist/quidsup_malicious-sites/master/whitelisted.list
 
 ### [Ultimate-Hosts-Blacklist/quidsup_notrack_trackers](https://github.com/Ultimate-Hosts-Blacklist/quidsup_notrack_trackers)
 
@@ -11275,6 +12632,16 @@
 - README / curated seed rule-list links: 1
 - Curated seed links: 0
   - https://raw.githubusercontent.com/Upaway/shadowrocket-broker-rules/main/Broker.list
+
+### [UtkarshOver9000/phishvpn-detection](https://github.com/UtkarshOver9000/phishvpn-detection)
+
+- Description: Phishing URL detection trained on real data (PhiUSIIL + Tranco top-1M), tested on the live OpenPhish feed.
+- Stars: 1; archived: False; fork: False
+- Search queries: OpenPhish phishing feed
+- README / curated seed rule-list links: 2
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/UtkarshOver9000/phishvpn-detection/main/requirements-dev.txt
+  - https://raw.githubusercontent.com/UtkarshOver9000/phishvpn-detection/main/requirements.txt
 
 ### [VAIXLNS/VAIXLNS](https://github.com/VAIXLNS/VAIXLNS)
 
@@ -14615,8 +15982,24 @@
 - Description: 这是一个个人维护的规则补充仓库，用于弥补我在日常使用 MetaCubeX/meta-rules-dat 时发现的未覆盖规则和遗漏域名。  它本质上是我自用的查漏补缺列表，旨在提高个人网络配置的准确性，确保流量被正确地分流。
 - Stars: 2; archived: False; fork: False
 - Search queries: MetaCubeX meta-rules-dat
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 16
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/ZheLaVie/Meta-Rules-Patch/main/geoip/aliyun.list
+  - https://raw.githubusercontent.com/ZheLaVie/Meta-Rules-Patch/main/geoip/bank.list
+  - https://raw.githubusercontent.com/ZheLaVie/Meta-Rules-Patch/main/geoip/securities.list
+  - https://raw.githubusercontent.com/ZheLaVie/Meta-Rules-Patch/main/geoip/tencent.list
+  - https://raw.githubusercontent.com/ZheLaVie/Meta-Rules-Patch/main/geosite/binance.list
+  - https://raw.githubusercontent.com/ZheLaVie/Meta-Rules-Patch/main/geosite/direct.list
+  - https://raw.githubusercontent.com/ZheLaVie/Meta-Rules-Patch/main/geosite/emby.list
+  - https://raw.githubusercontent.com/ZheLaVie/Meta-Rules-Patch/main/geosite/futu.list
+  - https://raw.githubusercontent.com/ZheLaVie/Meta-Rules-Patch/main/geosite/game-cdn.list
+  - https://raw.githubusercontent.com/ZheLaVie/Meta-Rules-Patch/main/geosite/gateio.list
+  - https://raw.githubusercontent.com/ZheLaVie/Meta-Rules-Patch/main/geosite/hsbc.list
+  - https://raw.githubusercontent.com/ZheLaVie/Meta-Rules-Patch/main/geosite/select.list
+  - https://raw.githubusercontent.com/ZheLaVie/Meta-Rules-Patch/main/geosite/source.list
+  - https://raw.githubusercontent.com/ZheLaVie/Meta-Rules-Patch/main/geosite/steam%40cn.list
+  - https://raw.githubusercontent.com/ZheLaVie/Meta-Rules-Patch/main/geosite/usmart.list
+  - https://raw.githubusercontent.com/ZheLaVie/Meta-Rules-Patch/main/geosite/zabank.list
 
 ### [Ziadsaadeladmin/MailShield-Automated-Email-Threat-Analysis-Platform](https://github.com/Ziadsaadeladmin/MailShield-Automated-Email-Threat-Analysis-Platform)
 
@@ -14695,8 +16078,11 @@
 - Description: Python CLI tool that checks domains, IPs, and URLs against Abuse.ch and AlienVault OTX threat intelligence feeds
 - Stars: 0; archived: False; fork: False
 - Search queries: abuse.ch threat intelligence domains
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 3
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/aarondutton-grc/ioc-threat-feed-aggregator/main/LICENSE.txt
+  - https://raw.githubusercontent.com/aarondutton-grc/ioc-threat-feed-aggregator/main/indicators.txt
+  - https://raw.githubusercontent.com/aarondutton-grc/ioc-threat-feed-aggregator/main/requirements.txt
 
 ### [abanoubha/AdBlock_Site_Lists](https://github.com/abanoubha/AdBlock_Site_Lists)
 
@@ -14812,8 +16198,194 @@
 - Description: Tự động đồng bộ và cập nhật link DNS blocklists từ GitLab Hagezi DNS-Blocklists: For a better internet - keep the internet clean!
 - Stars: 0; archived: False; fork: False
 - Search queries: hagezi dns-blocklists
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 186
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/anti.piracy.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/blocklist-referral-native.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/doh-ips.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/doh-vpn-proxy-bypass.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/doh.top.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/doh.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/dyndns.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/fake.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/gambling.medium.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/gambling.mini.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/hoster.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/light.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/multi.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/nameserver-ips.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/native.amazon.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/native.apple.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/native.huawei.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/native.lgwebos.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/native.oppo-realme.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/native.roku.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/native.samsung.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/native.tiktok.extended.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/native.tiktok.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/native.vivo.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/native.winoffice.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/native.xiaomi.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/nosafesearch.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/popupads.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/pro.mini.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/pro.plus.mini.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/pro.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/social.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/spam-tlds-adblock-aggressive.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/spam-tlds-adblock-allow.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/spam-tlds-adblock.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/spam-tlds-ublock.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/spam-tlds.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/tif-ips.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/tif.mini.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/ultimate.mini.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/urlshortener.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/whitelist-referral-native.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/whitelist-referral.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adblock/whitelist-urlshortener.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adguard/apple-private-relay.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adguard/dns-rebind-protection.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/adguard/regex-wildcard-rules.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/anti.piracy.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/doh-vpn-proxy-bypass.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/doh.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/dyndns.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/fake.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/gambling.medium.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/gambling.mini.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/hoster.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/light.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/multi.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/native.amazon.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/native.apple.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/native.huawei.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/native.lgwebos.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/native.oppo-realme.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/native.roku.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/native.samsung.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/native.tiktok.extended.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/native.tiktok.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/native.vivo.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/native.winoffice.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/native.xiaomi.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/nosafesearch.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/popupads.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/pro.mini.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/pro.plus.mini.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/social.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/tif-ips.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/tif.mini.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/ultimate.mini.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/dnsmasq/urlshortener.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/ips/doh.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/ips/nameserver.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/ips/tif.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/anti.piracy.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/doh-vpn-proxy-bypass.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/doh.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/dyndns.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/fake.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/hoster.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/light.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/native.amazon.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/native.apple.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/native.huawei.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/native.lgwebos.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/native.oppo-realme.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/native.roku.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/native.samsung.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/native.tiktok.extended.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/native.tiktok.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/native.vivo.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/native.winoffice.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/native.xiaomi.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/nosafesearch.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/popupads.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/pro.mini.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/pro.plus.mini.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/social.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/spam-tlds-rpz-aggressive.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/spam-tlds-rpz.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/tif-ips.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/ultimate.mini.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/rpz/urlshortener.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/share/ad-shield-subdomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/share/ad-shield.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/share/apple-private-relay.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/share/facebook.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/share/hoster-cname-allow.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/share/microsoft.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/share/ultimate-known-issues.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/anti.piracy-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/anti.piracy.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/blocklist-referral-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/doh-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/doh-vpn-proxy-bypass-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/doh-vpn-proxy-bypass.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/doh.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/dyndns-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/dyndns.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/fake-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/fake.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/gambling.medium-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/gambling.medium.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/gambling.mini-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/gambling.mini.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/hoster-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/hoster.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/light-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/light.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/multi-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/multi.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/mutti-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.amazon-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.amazon.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.apple-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.apple.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.huawei-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.huawei.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.lgwebos-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.lgwebos.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.oppo-realme-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.oppo-realme.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.roku-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.roku.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.samsung-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.samsung.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.tiktok-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.tiktok.extended-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.tiktok.extended.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.tiktok.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.vivo-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.vivo.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.winoffice-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.winoffice.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.xiaomi-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/native.xiaomi.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/nosafesearch-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/nosafesearch.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/popupads-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/popupads.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/pro-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/pro.mini-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/pro.mini.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/pro.plus-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/pro.plus.mini-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/pro.plus.mini.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/pro.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/social-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/social.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/spam-tlds-allow-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/spam-tlds-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/tif.mini-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/tif.mini.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/ultimate-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/ultimate.mini-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/ultimate.mini.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/urlshortener-onlydomains.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/urlshortener.txt
+  - https://raw.githubusercontent.com/adv247/dns-blocklists/main/wildcard/whitelist-referral-onlydomains.txt
 
 ### [agadiffe/Convert_Hosts_file_to_Adblock](https://github.com/agadiffe/Convert_Hosts_file_to_Adblock)
 
@@ -14838,6 +16410,17 @@
 - Search queries: Google services domain list, Microsoft services domain list
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
+
+### [ajaypoudel47-dot/shield-extension](https://github.com/ajaypoudel47-dot/shield-extension)
+
+- Description: Shield — free & open-source ad/tracker blocker. Manifest V3 declarativeNetRequest, EasyList + EasyPrivacy engines, works in Chrome/Edge/Brave/Firefox.
+- Stars: 0; archived: False; fork: False
+- Search queries: EasyList EasyPrivacy
+- README / curated seed rule-list links: 3
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/ajaypoudel47-dot/shield-extension/main/android/app/src/main/assets/filters/blocklist.txt
+  - https://raw.githubusercontent.com/ajaypoudel47-dot/shield-extension/main/filters/lists/easylist.txt
+  - https://raw.githubusercontent.com/ajaypoudel47-dot/shield-extension/main/filters/lists/easyprivacy.txt
 
 ### [akash705/Traffic-Blocker](https://github.com/akash705/Traffic-Blocker)
 
@@ -14868,8 +16451,9 @@
 - Description: Shadowrocket-ADBlock-Rules
 - Stars: 0; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/aklover00/aklover00.github.io/main/Banlist.conf
 
 ### [aleaio/Shadowrocket_rule](https://github.com/aleaio/Shadowrocket_rule)
 
@@ -15124,8 +16708,9 @@
 - Description: phishing, dapp, web3 security, scam sites, malicious domains, crypto security, blocklist, domain blacklist
 - Stars: 0; archived: False; fork: False
 - Search queries: scam domains blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/anti-phishing-dapps/anti-phishing-dapps.github.io/main/robots.txt
 
 ### [antong7377-png/roscomvpn-shadowrocket](https://github.com/antong7377-png/roscomvpn-shadowrocket)
 
@@ -15285,25 +16870,34 @@
 - Description: Loon subscription rules converted from blackmatrix7 ios_rule_script with explicit policies (Apple/China=DIRECT, Netflix/YouTube/GlobalMedia=落地)
 - Stars: 0; archived: False; fork: False
 - Search queries: blackmatrix7 ios_rule_script
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 6
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/ashun520/loon-rules/main/Ai.list
+  - https://raw.githubusercontent.com/ashun520/loon-rules/main/Apple.list
+  - https://raw.githubusercontent.com/ashun520/loon-rules/main/China.list
+  - https://raw.githubusercontent.com/ashun520/loon-rules/main/GlobalMedia.list
+  - https://raw.githubusercontent.com/ashun520/loon-rules/main/Netflix.list
+  - https://raw.githubusercontent.com/ashun520/loon-rules/main/YouTube.list
 
 ### [asoksubedi/Gl.inet-PBR-Rules](https://github.com/asoksubedi/Gl.inet-PBR-Rules)
 
 - Description: Streaming Service Domains and Sub-Domains
 - Stars: 0; archived: False; fork: False
 - Search queries: streaming services domain rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/asoksubedi/Gl.inet-PBR-Rules/main/India.txt
+  - https://raw.githubusercontent.com/asoksubedi/Gl.inet-PBR-Rules/main/USA.txt
 
 ### [asteroid-99942/apophis-blocklist](https://github.com/asteroid-99942/apophis-blocklist)
 
 - Description: Apophis Blocklist is a fast, standards‑driven domain filtering engine for Pi‑hole. It merges multiple threat‑intelligence feeds, normalises domains using IDNA and the Public Suffix List, applies allowlists, and outputs a clean, deduplicated blocklist. The focus is malware and other nefarious threats.
 - Stars: 1; archived: False; fork: False
 - Search queries: malware phishing domain blocklist, phishing domains feed
-- README / curated seed rule-list links: 1
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
   - https://raw.githubusercontent.com/asteroid-99942/apophis-blocklist/main/output/hosts.txt
+  - https://raw.githubusercontent.com/asteroid-99942/apophis-blocklist/main/requirements.txt
 
 ### [astor012/sr-config](https://github.com/astor012/sr-config)
 
@@ -15326,8 +16920,14 @@
 - Description: 🛡️ Aggregate and normalize malicious domains from various sources for effective threat intelligence and cybersecurity defense.
 - Stars: 0; archived: False; fork: False
 - Search queries: scam domains blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 6
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/asuki-yashi/malicious-domains/main/output/domains.txt
+  - https://raw.githubusercontent.com/asuki-yashi/malicious-domains/main/sources/digitalside.it.txt
+  - https://raw.githubusercontent.com/asuki-yashi/malicious-domains/main/sources/drb-ba.txt
+  - https://raw.githubusercontent.com/asuki-yashi/malicious-domains/main/sources/malwarebytes.com.txt
+  - https://raw.githubusercontent.com/asuki-yashi/malicious-domains/main/sources/phishunt.io.txt
+  - https://raw.githubusercontent.com/asuki-yashi/malicious-domains/main/sources/red.flag.domains.txt
 
 ### [atomlong/xray-domain-list-community](https://github.com/atomlong/xray-domain-list-community)
 
@@ -15360,8 +16960,9 @@
 - Description: 更新ipv6的hosts并根据hosts中的域名生成一份用于AutoProxy插件的白名单，for BYR
 - Stars: 0; archived: False; fork: False
 - Search queries: 域名白名单
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/autulin/update-ipv6-hosts-and-generate-proxy-whitelist/master/autoproxy-whitelist-for-byr.txt
 
 ### [avinmanchester/my-shadowrocket-rules](https://github.com/avinmanchester/my-shadowrocket-rules)
 
@@ -15376,16 +16977,26 @@
 - Description: De-spy and de-bloat a TCL Android TV without root: REA telemetry analysis, reversible ADB debloat, DNS blocklists, and Frame - a clean, fast custom launcher.
 - Stars: 1; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 6
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/aviv0404/tcl-tv-despy/main/blocklist/hosts.txt
+  - https://raw.githubusercontent.com/aviv0404/tcl-tv-despy/main/blocklist/nextdns-denylist.txt
+  - https://raw.githubusercontent.com/aviv0404/tcl-tv-despy/main/blocklist/tcl-telemetry-ads.pihole-regex.txt
+  - https://raw.githubusercontent.com/aviv0404/tcl-tv-despy/main/blocklist/tcl-telemetry-ads.txt
+  - https://raw.githubusercontent.com/aviv0404/tcl-tv-despy/main/launcher/app/src/main/assets/backgrounds/credits.txt
+  - https://raw.githubusercontent.com/aviv0404/tcl-tv-despy/main/launcher/app/src/main/assets/fonts/OFL.txt
 
 ### [b255ea006/adguard-home-blocklists](https://github.com/b255ea006/adguard-home-blocklists)
 
 - Description: Curated AdGuard Home DNS blocklists for ads, trackers, and malware — ready as filter subscription URLs.
 - Stars: 0; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 4
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/b255ea006/adguard-home-blocklists/main/lists/ads.txt
+  - https://raw.githubusercontent.com/b255ea006/adguard-home-blocklists/main/lists/all.txt
+  - https://raw.githubusercontent.com/b255ea006/adguard-home-blocklists/main/lists/malware.txt
+  - https://raw.githubusercontent.com/b255ea006/adguard-home-blocklists/main/lists/tracking.txt
 
 ### [bacdown/rules](https://github.com/bacdown/rules)
 
@@ -15450,8 +17061,15 @@
 - Description: Secure DNS configuration with Unbound: DNS-over-TLS, DNSSEC validation, blocklists for ads/malware/trackers. Privacy-first DNS for OPNsense or standalone.
 - Stars: 0; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 7
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/bastiaan365/dns-security-setup/main/blocklists/sources.txt
+  - https://raw.githubusercontent.com/bastiaan365/dns-security-setup/main/blocklists/whitelist.txt
+  - https://raw.githubusercontent.com/bastiaan365/dns-security-setup/main/monitoring/telegraf-dns.conf
+  - https://raw.githubusercontent.com/bastiaan365/dns-security-setup/main/unbound/dns-over-tls.conf
+  - https://raw.githubusercontent.com/bastiaan365/dns-security-setup/main/unbound/dnssec.conf
+  - https://raw.githubusercontent.com/bastiaan365/dns-security-setup/main/unbound/opnsense-custom.conf
+  - https://raw.githubusercontent.com/bastiaan365/dns-security-setup/main/unbound/unbound.conf
 
 ### [bbnotcode/rulify-rules](https://github.com/bbnotcode/rulify-rules)
 
@@ -15517,8 +17135,9 @@
 - Description: A script to fetch a known malware domains list and parse as blocked domains file for BIND server
 - Stars: 0; archived: False; fork: False
 - Search queries: DNS sinkhole domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/bersalazar/sinkhole/master/requirements.txt
 
 ### [best-directories/directory-submission-sites](https://github.com/best-directories/directory-submission-sites)
 
@@ -15533,8 +17152,21 @@
 - Description: 移动端广告弹窗拦截工具（Expo + React Native）：Android 用 VpnService 做按 App 的 DNS 过滤，iOS 提供 Safari 内容拦截扩展与全局 DNS 描述文件，规则引擎纯本地运行、不上传浏览数据。
 - Stars: 0; archived: False; fork: False
 - Search queries: DNS过滤规则
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 13
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/better6666/adshield/main/AdShield-iOSTest/modules/adshield-vpn/android/build/intermediates/annotations_typedef_file/release/extractReleaseAnnotations/typedefs.txt
+  - https://raw.githubusercontent.com/better6666/adshield/main/AdShield-iOSTest/modules/adshield-vpn/android/build/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt
+  - https://raw.githubusercontent.com/better6666/adshield/main/AdShield-iOSTest/modules/adshield-vpn/android/build/intermediates/compile_symbol_list/release/generateReleaseRFile/R.txt
+  - https://raw.githubusercontent.com/better6666/adshield/main/AdShield-iOSTest/modules/adshield-vpn/android/build/intermediates/lint-cache/lintVitalAnalyzeRelease/lint-cache-version.txt
+  - https://raw.githubusercontent.com/better6666/adshield/main/AdShield-iOSTest/modules/adshield-vpn/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt
+  - https://raw.githubusercontent.com/better6666/adshield/main/AdShield-iOSTest/modules/adshield-vpn/android/build/intermediates/local_only_symbol_list/release/parseReleaseLocalResources/R-def.txt
+  - https://raw.githubusercontent.com/better6666/adshield/main/AdShield-iOSTest/modules/adshield-vpn/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt
+  - https://raw.githubusercontent.com/better6666/adshield/main/AdShield-iOSTest/modules/adshield-vpn/android/build/intermediates/manifest_merge_blame_file/release/processReleaseManifest/manifest-merger-blame-release-report.txt
+  - https://raw.githubusercontent.com/better6666/adshield/main/AdShield-iOSTest/modules/adshield-vpn/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt
+  - https://raw.githubusercontent.com/better6666/adshield/main/AdShield-iOSTest/modules/adshield-vpn/android/build/intermediates/nested_resources_validation_report/release/generateReleaseResources/nestedResourcesValidationReport.txt
+  - https://raw.githubusercontent.com/better6666/adshield/main/AdShield-iOSTest/modules/adshield-vpn/android/build/intermediates/source_set_path_map/release/mapReleaseSourceSetPaths/file-map.txt
+  - https://raw.githubusercontent.com/better6666/adshield/main/AdShield-iOSTest/modules/adshield-vpn/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt
+  - https://raw.githubusercontent.com/better6666/adshield/main/AdShield-iOSTest/modules/adshield-vpn/android/build/intermediates/symbol_list_with_package_name/release/generateReleaseRFile/package-aware-r.txt
 
 ### [bettydong23-gif/my-shadowrocket-rules](https://github.com/bettydong23-gif/my-shadowrocket-rules)
 
@@ -17615,16 +19247,29 @@
 - Description: This repository includes different lists with domains, IP's, keywords or regular expressions that may contain inappropriate content for web filters / proxies (e.g squidGuard etc)
 - Stars: 1; archived: False; fork: False
 - Search queries: proxy domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/bibz0r/WebFilteringLists/master/webproxies-redirectors-domains.txt
 
 ### [billkit/china-domains-list](https://github.com/billkit/china-domains-list)
 
 - Description: Not supplied
 - Stars: 1; archived: False; fork: False
 - Search queries: China domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 12
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/billkit/china-domains-list/main/accelerated-domains.china.conf
+  - https://raw.githubusercontent.com/billkit/china-domains-list/main/apple.china.conf
+  - https://raw.githubusercontent.com/billkit/china-domains-list/main/apple.txt
+  - https://raw.githubusercontent.com/billkit/china-domains-list/main/cn-domains.txt
+  - https://raw.githubusercontent.com/billkit/china-domains-list/main/gfw.txt
+  - https://raw.githubusercontent.com/billkit/china-domains-list/main/mosdns_chnlist/99-bogus-nxdomain.china.conf
+  - https://raw.githubusercontent.com/billkit/china-domains-list/main/mosdns_chnlist/Domains.apple.txt
+  - https://raw.githubusercontent.com/billkit/china-domains-list/main/mosdns_chnlist/Domains.chn.txt
+  - https://raw.githubusercontent.com/billkit/china-domains-list/main/mosdns_chnlist/Domains.games.txt
+  - https://raw.githubusercontent.com/billkit/china-domains-list/main/mosdns_chnlist/Domains.microsoft.txt
+  - https://raw.githubusercontent.com/billkit/china-domains-list/main/mosdns_chnlist/chn_ip.txt
+  - https://raw.githubusercontent.com/billkit/china-domains-list/main/mosdns_chnlist/no_cn_list.txt
 
 ### [birdy0000/openclash-mobile-rules](https://github.com/birdy0000/openclash-mobile-rules)
 
@@ -17642,8 +19287,9 @@
 - Description: DNS-level firewall for macOS. Blocks Apple + Google telemetry via /etc/hosts. Lightweight, OSS, no NetworkExtension.
 - Stars: 0; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/bitm4ncer/lychgate/main/lists/lychgate-curated.txt
 
 ### [bitruss/shadowrocket-web3-rules](https://github.com/bitruss/shadowrocket-web3-rules)
 
@@ -17886,16 +19532,35 @@
 - Description: A domain list for some Chinese platform showing IP info 展示用户 IP 信息的应用域名列表
 - Stars: 0; archived: False; fork: False
 - Search queries: China domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 15
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/bolucat/domain-list/main/src/baijiahao.txt
+  - https://raw.githubusercontent.com/bolucat/domain-list/main/src/bilibili.txt
+  - https://raw.githubusercontent.com/bolucat/domain-list/main/src/douban.txt
+  - https://raw.githubusercontent.com/bolucat/domain-list/main/src/douyin.txt
+  - https://raw.githubusercontent.com/bolucat/domain-list/main/src/ithome.txt
+  - https://raw.githubusercontent.com/bolucat/domain-list/main/src/kuaishou.txt
+  - https://raw.githubusercontent.com/bolucat/domain-list/main/src/netease-music.txt
+  - https://raw.githubusercontent.com/bolucat/domain-list/main/src/qq.txt
+  - https://raw.githubusercontent.com/bolucat/domain-list/main/src/taobao.txt
+  - https://raw.githubusercontent.com/bolucat/domain-list/main/src/tieba.txt
+  - https://raw.githubusercontent.com/bolucat/domain-list/main/src/toutiao.txt
+  - https://raw.githubusercontent.com/bolucat/domain-list/main/src/wechat.txt
+  - https://raw.githubusercontent.com/bolucat/domain-list/main/src/weibo.txt
+  - https://raw.githubusercontent.com/bolucat/domain-list/main/src/xiaohongshu.txt
+  - https://raw.githubusercontent.com/bolucat/domain-list/main/src/zhihu.txt
 
 ### [boluwajioadepojuw/DomainSieve](https://github.com/boluwajioadepojuw/DomainSieve)
 
 - Description: NRD feed to Suricata rules pipeline
 - Stars: 0; archived: False; fork: False
 - Search queries: phishing domains feed
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 4
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/boluwajioadepojuw/DomainSieve/main/docs/sample-run.txt
+  - https://raw.githubusercontent.com/boluwajioadepojuw/DomainSieve/main/requirements.txt
+  - https://raw.githubusercontent.com/boluwajioadepojuw/DomainSieve/main/rule_sids.txt
+  - https://raw.githubusercontent.com/boluwajioadepojuw/DomainSieve/main/sieve-nrd-domains.txt
 
 ### [bombolcot/encrypted-dns-blocklist-resolver](https://github.com/bombolcot/encrypted-dns-blocklist-resolver)
 
@@ -17931,24 +19596,27 @@
 - Description: Panel for an AmneziaWG server - interfaces, clients, templates and subscriptions, routing by geo databases and domains through other servers, a resolver for the clients, updates and backups. Debian and Ubuntu, as a service or in Docker.
 - Stars: 0; archived: False; fork: False
 - Search queries: geosite domain
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/bor-project/amneziageo_server/master/shots/panel/frames.txt
 
 ### [borekon/Malware-Domains](https://github.com/borekon/Malware-Domains)
 
 - Description: Malware domains list to use in pihole/adblock
 - Stars: 0; archived: False; fork: False
 - Search queries: adblock domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/borekon/Malware-Domains/master/hosts.txt
 
 ### [boxfoonk/Protection-subscription](https://github.com/boxfoonk/Protection-subscription)
 
 - Description: Using adGuard home causes the GitHub page to not load correctly. Add the GitHub domain name and IP to the DNS whitelist in adguard home to prohibit filtering GitHub.
 - Stars: 0; archived: False; fork: False
 - Search queries: adguard DNS filter domains
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/boxfoonk/Protection-subscription/main/github.txt
 
 ### [brainiackaler/shadowrocket-rules](https://github.com/brainiackaler/shadowrocket-rules)
 
@@ -17965,8 +19633,18 @@
 - Description:  Filtro de contenido DNS local y nativo para Windows. Bloquea pornografía por dominios y palabras clave en CUALQUIER red (NRPT), con anti-DoH,blindaje y autocontrol por contraseña. Hecho en Python.
 - Stars: 1; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 10
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/brayan3210/Bloqueador-DNS-NATIVO/main/estado.txt
+  - https://raw.githubusercontent.com/brayan3210/Bloqueador-DNS-NATIVO/main/instalador/TERMINOS.txt
+  - https://raw.githubusercontent.com/brayan3210/Bloqueador-DNS-NATIVO/main/listas/doh_bypass.txt
+  - https://raw.githubusercontent.com/brayan3210/Bloqueador-DNS-NATIVO/main/listas/dominios_personalizados.txt
+  - https://raw.githubusercontent.com/brayan3210/Bloqueador-DNS-NATIVO/main/listas/ips_bloqueadas.txt
+  - https://raw.githubusercontent.com/brayan3210/Bloqueador-DNS-NATIVO/main/listas/palabras_clave.txt
+  - https://raw.githubusercontent.com/brayan3210/Bloqueador-DNS-NATIVO/main/proxy_busquedas/listas/catalogo_busqueda.txt
+  - https://raw.githubusercontent.com/brayan3210/Bloqueador-DNS-NATIVO/main/proxy_busquedas/listas/excepciones_educativas.txt
+  - https://raw.githubusercontent.com/brayan3210/Bloqueador-DNS-NATIVO/main/proxy_busquedas/requirements.txt
+  - https://raw.githubusercontent.com/brayan3210/Bloqueador-DNS-NATIVO/main/requirements.txt
 
 ### [broisnees/mailcheckr](https://github.com/broisnees/mailcheckr)
 
@@ -19638,6 +21316,17 @@
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [c6llum/OpenPhish-Filter-Search](https://github.com/c6llum/OpenPhish-Filter-Search)
+
+- Description: Filter through OpenPhish.com phishing feed for specific sites
+- Stars: 1; archived: False; fork: False
+- Search queries: OpenPhish phishing feed
+- README / curated seed rule-list links: 3
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/c6llum/OpenPhish-Filter-Search/master/feed1.txt
+  - https://raw.githubusercontent.com/c6llum/OpenPhish-Filter-Search/master/offline.txt
+  - https://raw.githubusercontent.com/c6llum/OpenPhish-Filter-Search/master/online.txt
+
 ### [caaaptaintop/shadowrocket-config](https://github.com/caaaptaintop/shadowrocket-config)
 
 - Description: Personal Shadowrocket configuration with custom rules and upstream rulesets
@@ -19675,8 +21364,9 @@
 - Description: Aggressive ABP-style Pi-hole blocklist to disable splash video ads in camera, IoT and CCTV mobile apps.
 - Stars: 0; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/camammoli/lista_pihole/master/camera-splash-ads-aggressive.txt
 
 ### [cameronapak/hosts-blocker](https://github.com/cameronapak/hosts-blocker)
 
@@ -19944,8 +21634,9 @@
 - Description: Host-only Loon DNS plugin generated daily from the full CN domain list; no private proxy configuration.
 - Stars: 0; archived: False; fork: False
 - Search queries: proxy domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/ccc592/loon-dns-rules/main/foreign-dns-exceptions.txt
 
 ### [ccyhiboy/shadowrocket-rule](https://github.com/ccyhiboy/shadowrocket-rule)
 
@@ -20084,8 +21775,106 @@
 - Description: 精选 Clash/Surge 分流规则镜像，自动同步 blackmatrix7/ios_rule_script
 - Stars: 0; archived: False; fork: False
 - Search queries: blackmatrix7 ios_rule_script
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 98
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/AI.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/AliPay.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Alibaba.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Amazon.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/AmazonPrimeVideo.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Anthropic.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Apkpure.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Apple.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/AppleID.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/AppleMedia.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/AppleMusic.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/AppleProxy.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/AppleTV.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Bahamut.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Baidu.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/BardAI.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/BiliBili.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Binance.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/ByteDance.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/China.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/ChinaMax.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/ChinaMedia.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Claude.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Copilot.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Crypto.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Cryptocurrency.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/CustomDirect.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/CustomProxy.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/DingTalk.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Discord.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/DiscoveryPlus.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Disney.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/DisneyPlus_dl.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Disneyplus.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/DouYin.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Download.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Emby.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Epic.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Facebook.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Game.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Gemini.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/GitHub.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/GlobalMedia.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Google.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Googlevoice.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/HBO.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/HBOHK.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/HBO_asia.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/HBO_usa.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Huawei.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Hulu.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/HuluUSA.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Instagram.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/JingDong.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/KuaiShou.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Line.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/LinkedIn.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Microsoft.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/MicrosoftEdge.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Migu.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/NetEase.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Netflix.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/OKX.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/OPPO.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Onedrive.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/OpenAI.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/ParamountPlus.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/PayPal.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/PrimeVideo.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Protonmail.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Reddit.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Snap.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Spotify.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Teams.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Telegram.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Tencent.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/TencentVideo.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Threads.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/TikTok.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Twitter.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Vivo.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/WeChat.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Web3.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Weibo.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Whatsapp.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/XiaoHongShu.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/XiaoMi.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/YouTube.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/Youku.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/iCloud.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/iQIYI.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/rule/Surge/twitch.list
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/source/overlays/AI.txt
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/source/overlays/Crypto.txt
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/source/overlays/CustomDirect.txt
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/source/overlays/CustomProxy.txt
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/source/overlays/HBO.txt
+  - https://raw.githubusercontent.com/chentanwan/Config_Self/main/source/overlays/Web3.txt
 
 ### [chenxq-try/Shadowrocket-ADBlock-Rules](https://github.com/chenxq-try/Shadowrocket-ADBlock-Rules)
 
@@ -20108,9 +21897,19 @@
 - Description: Custom DNS + browser filter lists supplementing OISD + AdGuard defaults. Adblock, domains, and hosts formats for NextDNS, AdGuard, uBlock Origin, Pi-hole.
 - Stars: 1; archived: False; fork: False
 - Search queries: DNS filtering blocklist domains, OISD domain blocklist, adblock domain list, adguard DNS filter domains, hosts adblock domain list, privacy DNS blocklist
-- README / curated seed rule-list links: 1
+- README / curated seed rule-list links: 11
 - Curated seed links: 0
   - https://raw.githubusercontent.com/chirag127/filter-lists/main/custom/allowlist/global.txt
+  - https://raw.githubusercontent.com/chirag127/filter-lists/main/custom/blocklist/ads.txt
+  - https://raw.githubusercontent.com/chirag127/filter-lists/main/custom/blocklist/analytics.txt
+  - https://raw.githubusercontent.com/chirag127/filter-lists/main/custom/blocklist/microsoft.txt
+  - https://raw.githubusercontent.com/chirag127/filter-lists/main/custom/blocklist/misc.txt
+  - https://raw.githubusercontent.com/chirag127/filter-lists/main/custom/blocklist/mobile.txt
+  - https://raw.githubusercontent.com/chirag127/filter-lists/main/custom/blocklist/paywall.txt
+  - https://raw.githubusercontent.com/chirag127/filter-lists/main/custom/blocklist/social.txt
+  - https://raw.githubusercontent.com/chirag127/filter-lists/main/output/adblock.txt
+  - https://raw.githubusercontent.com/chirag127/filter-lists/main/output/domains.txt
+  - https://raw.githubusercontent.com/chirag127/filter-lists/main/output/hosts.txt
 
 ### [chuankris/shadowrocket-rules](https://github.com/chuankris/shadowrocket-rules)
 
@@ -20185,8 +21984,10 @@
 - Description: This is a block list, created from over 600 smaller blocklists for pi-hole. It blocks about 16 million domains.
 - Stars: 0; archived: False; fork: False
 - Search queries: scam domains blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/cjlfilm/dns-blocklist/main/bulk.txt
+  - https://raw.githubusercontent.com/cjlfilm/dns-blocklist/main/short.txt
 
 ### [cjscrofani/cloudflare-zero-trust-adblock](https://github.com/cjscrofani/cloudflare-zero-trust-adblock)
 
@@ -20220,9 +22021,10 @@
 - Description: Curated Pi-hole adlist references for home network DNS filtering.
 - Stars: 0; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 1
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
   - https://raw.githubusercontent.com/cleitoncostaa/pihole-adlists/main/adlists/adlist1.txt
+  - https://raw.githubusercontent.com/cleitoncostaa/pihole-adlists/main/adlists/disabled-unreachable-20260604.txt
 
 ### [cn-wanmei/Popular-Rules-Collection](https://github.com/cn-wanmei/Popular-Rules-Collection)
 
@@ -21081,8 +22883,19 @@
 - Description: Auto-updating mobile telemetry & analytics domain blocklist for NextDNS
 - Stars: 0; archived: False; fork: False
 - Search queries: telemetry domains blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/csdznwrk/telemetry-blocklist/main/docs/domains.txt
+  - https://raw.githubusercontent.com/csdznwrk/telemetry-blocklist/main/seeds.txt
+
+### [ctbot000/ad-blocker-chrome-extension](https://github.com/ctbot000/ad-blocker-chrome-extension)
+
+- Description: A fast, private Manifest V3 ad and tracker blocker for Chrome, built on EasyList and EasyPrivacy.
+- Stars: 0; archived: False; fork: False
+- Search queries: EasyList EasyPrivacy
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/ctbot000/ad-blocker-chrome-extension/main/extension/resources/noop.txt
 
 ### [ctkqiang/NezhaCyberADSBlocker](https://github.com/ctkqiang/NezhaCyberADSBlocker)
 
@@ -21126,8 +22939,13 @@
 - Description: 网络收集的quantumult X规则、脚本。
 - Stars: 0; archived: False; fork: False
 - Search queries: 网络规则集
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 5
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/cyk1688/quantumult-X/main/Tiktok/TiktokJP.conf
+  - https://raw.githubusercontent.com/cyk1688/quantumult-X/main/Tiktok/TiktokKR.conf
+  - https://raw.githubusercontent.com/cyk1688/quantumult-X/main/Tiktok/TiktokTW.conf
+  - https://raw.githubusercontent.com/cyk1688/quantumult-X/main/Tiktok/TiktokUK.conf
+  - https://raw.githubusercontent.com/cyk1688/quantumult-X/main/Tiktok/TiktokUS.conf
 
 ### [cypherpilgrim/satoshishield](https://github.com/cypherpilgrim/satoshishield)
 
@@ -21156,8 +22974,15 @@
 - Description: This Energized System is designed for Unix-like systems, gets a list of domains that serve ads, tracking scripts and malware from multiple reputable sources and creates protection packs.
 - Stars: 0; archived: False; fork: False
 - Search queries: tracking protection domains list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 7
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/dandystago/block/master/basic/domains.txt
+  - https://raw.githubusercontent.com/dandystago/block/master/blu/domains.txt
+  - https://raw.githubusercontent.com/dandystago/block/master/bluGo/domains.txt
+  - https://raw.githubusercontent.com/dandystago/block/master/extensions/domains.txt
+  - https://raw.githubusercontent.com/dandystago/block/master/spark/domains.txt
+  - https://raw.githubusercontent.com/dandystago/block/master/ultimate/domains.txt
+  - https://raw.githubusercontent.com/dandystago/block/master/unified/domains.txt
 
 ### [dangaogit/dodo](https://github.com/dangaogit/dodo)
 
@@ -22137,8 +23962,11 @@
 - Description: Test of http://someonewhocares.org/hosts/zero/hosts
 - Stars: 1; archived: False; fork: False
 - Search queries: someonewhocares hosts
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 3
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/dead-hosts/hosts_web_someonewhocares.org/master/clean.list
+  - https://raw.githubusercontent.com/dead-hosts/hosts_web_someonewhocares.org/master/origin.list
+  - https://raw.githubusercontent.com/dead-hosts/hosts_web_someonewhocares.org/master/requirements.txt
 
 ### [deezertidal/shadowrocket-rules](https://github.com/deezertidal/shadowrocket-rules)
 
@@ -23685,8 +25513,10 @@
 - Description: A personal project to make my own proxy software, initially intended to just use for myself and my jellyfin server. I created this variant to be used for many other use cases and can be set up to proxy any backend and use any mainstream domain name provider on the supported list.
 - Stars: 1; archived: False; fork: False
 - Search queries: proxy domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/domperkins3/Revan-Reverse-Proxy/main/gui_installer_wpf/payload/tools/simple-acme/version.txt
+  - https://raw.githubusercontent.com/domperkins3/Revan-Reverse-Proxy/main/gui_installer_wpf/payload/tools/wacs/version.txt
 
 ### [donfranke/domainparser](https://github.com/donfranke/domainparser)
 
@@ -24405,8 +26235,11 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Shadowrocket Rules based on Unblock PAC of Unblock Youku
 - Stars: 1; archived: True; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 3
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/esme518/cn-proxy-rules/master/cn-noad-rules.conf
+  - https://raw.githubusercontent.com/esme518/cn-proxy-rules/master/cn-proxy-rules.conf
+  - https://raw.githubusercontent.com/esme518/cn-proxy-rules/master/src/REJECT.conf
 
 ### [evanZheng1021/shadowrocket-routing-config](https://github.com/evanZheng1021/shadowrocket-routing-config)
 
@@ -24523,8 +26356,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Not supplied
 - Stars: 1; archived: False; fork: False
 - Search queries: proxy domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/ez4y2f/ProxyDomainList/main/APNs.list
 
 ### [ez4y2f/SurgeRulesAutoBuild](https://github.com/ez4y2f/SurgeRulesAutoBuild)
 
@@ -27688,8 +29522,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Modified Hosts file. Uses a special version of hosts file forked from https://github.com/StevenBlack/hosts
 - Stars: 1; archived: False; fork: False
 - Search queries: StevenBlack hosts
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/foxtrot9/hostsFiles/master/hosts.txt
 
 ### [franciscoronel/adblocklist](https://github.com/franciscoronel/adblocklist)
 
@@ -27721,8 +29556,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: 用于 Open-Box 等 DNS 过滤器的实验性 B 站 PCDN Adblock 规则
 - Stars: 1; archived: False; fork: False
 - Search queries: DNS过滤规则
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/fredqin2006-X/bilibili-pcdn-filter/main/bilibili-pcdn.txt
 
 ### [free-dam-man/shadowrocket-rules](https://github.com/free-dam-man/shadowrocket-rules)
 
@@ -27805,6 +29641,15 @@ MNE-Python is BSD-licenced (3 clause):
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [g2rain/g2rain-gateway-webmvc](https://github.com/g2rain/g2rain-gateway-webmvc)
+
+- Description: 基于 Spring Cloud Gateway Server WebMVC 的统一入口：RouterFuncHolder + RouteCompiler 将 g2rain-infra 下发的 RouteDefinitionVo 编译为 RouterFunction 并驻留内存，经 Nacos 注册发现由网关转发至下游；OpenFeign 调用 infra / basis 拉取路由、国际化与侧车数据；集成 JWT / DPoP 校验、签名校验、主体作用域、链路日志与统一异常处理；
+- Stars: 2; archived: False; fork: False
+- Search queries: 域名数据集
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/g2rain/g2rain-gateway-webmvc/main/src/main/resources/banner.txt
+
 ### [gaels-dev/adblock-manager](https://github.com/gaels-dev/adblock-manager)
 
 - Description: AdBlock Manager: a Spring Boot platform for managing domain blocklists, generating hosts and Pi-hole configurations, and serving as the foundation for a custom DNS filtering system.
@@ -27879,8 +29724,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Detectopod is an automated threat intelligence system that monitors the web for phishing domains impersonating Bulgarian courier and logistics companies like Econt, Speedy, and BulgariaPost. The system runs continuously via GitHub Actions and maintains a public threat feed.
 - Stars: 1; archived: False; fork: False
 - Search queries: phishing domains feed
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/georgi-i/detectopod/main/detection/requirements.txt
 
 ### [getdatagrit/website-tech-stack-lookup](https://github.com/getdatagrit/website-tech-stack-lookup)
 
@@ -27898,6 +29744,15 @@ MNE-Python is BSD-licenced (3 clause):
 - README / curated seed rule-list links: 1
 - Curated seed links: 0
   - https://raw.githubusercontent.com/ghanad/shadowrocket-rules/main/shadowrocket.conf
+
+### [ghostfacejiang/Network-Security-Situation-Awareness-System](https://github.com/ghostfacejiang/Network-Security-Situation-Awareness-System)
+
+- Description: 本系统是一个面向网络安全领域的态势感知平台，通过实时采集网络流量数据，运用多种威胁检测规则进行智能分析，结合可视化大屏直观展示网络安全态势，帮助安全人员快速发现和响应安全威胁。
+- Stars: 1; archived: False; fork: False
+- Search queries: 网络规则集
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/ghostfacejiang/Network-Security-Situation-Awareness-System/main/requirements.txt
 
 ### [ghostnetic/adblock-filter-compiler](https://github.com/ghostnetic/adblock-filter-compiler)
 
@@ -27938,8 +29793,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Hosts is collected from Mi-Purify,GoodbyeAds,StevenBlack's hosts and neohosts.
 - Stars: 1; archived: False; fork: False
 - Search queries: StevenBlack hosts
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/giwhub/xiaomi-adblocking-hosts/master/hosts/mab.txt
 
 ### [gmurdock/Adblocking](https://github.com/gmurdock/Adblocking)
 
@@ -28060,6 +29916,22 @@ MNE-Python is BSD-licenced (3 clause):
   - https://raw.githubusercontent.com/groveld/blocklists/master/data/nopelist/black.list
   - https://raw.githubusercontent.com/groveld/blocklists/master/data/nopelist/source.list
   - https://raw.githubusercontent.com/groveld/blocklists/master/data/nopelist/white.list
+
+### [groveld/sinkhole](https://github.com/groveld/sinkhole)
+
+- Description: Automatically updated, moderated and optimized lists for blocking ads, trackers, malware and other garbage.
+- Stars: 1; archived: False; fork: False
+- Search queries: privacy DNS blocklist, privacy protection blocklist
+- README / curated seed rule-list links: 8
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/groveld/sinkhole/main/lists/default/black.list
+  - https://raw.githubusercontent.com/groveld/sinkhole/main/lists/default/source.list
+  - https://raw.githubusercontent.com/groveld/sinkhole/main/lists/default/white.list
+  - https://raw.githubusercontent.com/groveld/sinkhole/main/lists/global.black.list
+  - https://raw.githubusercontent.com/groveld/sinkhole/main/lists/global.white.list
+  - https://raw.githubusercontent.com/groveld/sinkhole/main/lists/groveld/black.list
+  - https://raw.githubusercontent.com/groveld/sinkhole/main/lists/groveld/source.list
+  - https://raw.githubusercontent.com/groveld/sinkhole/main/lists/groveld/white.list
 
 ### [gs002143/shadowrocket](https://github.com/gs002143/shadowrocket)
 
@@ -28738,8 +30610,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: showdowrocket rule
 - Stars: 1; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/hejunping/shadowrocket/master/Shadowrocket.conf
 
 ### [hellolgj/AdGuard-Rules](https://github.com/hellolgj/AdGuard-Rules)
 
@@ -28898,8 +30771,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Rule set of Chinese domains for sing-box.
 - Stars: 1; archived: False; fork: False
 - Search queries: sing-box rule-set domain
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/hguandl/sing-chinalist/master/requirements.txt
 
 ### [hidefbi/dns-control](https://github.com/hidefbi/dns-control)
 
@@ -29108,8 +30982,12 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Surge 与 mihomo（Clash Meta）分流规则：MetaCubeX geosite/geoip 转 Surge 格式，每日同步 · Surge & mihomo rule sets, synced daily
 - Stars: 1; archived: False; fork: False
 - Search queries: MetaCubeX meta-rules-dat
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 4
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/hoobnn/fly-rule/main/custom/apple-push.list
+  - https://raw.githubusercontent.com/hoobnn/fly-rule/main/custom/direct-sp.list
+  - https://raw.githubusercontent.com/hoobnn/fly-rule/main/custom/example.list
+  - https://raw.githubusercontent.com/hoobnn/fly-rule/main/custom/fakeip-bypass.list
 
 ### [houjoe0829/shadowrocket-rules-joe](https://github.com/houjoe0829/shadowrocket-rules-joe)
 
@@ -29203,7 +31081,7 @@ MNE-Python is BSD-licenced (3 clause):
 ### [hxehex/russia-mobile-internet-whitelist](https://github.com/hxehex/russia-mobile-internet-whitelist)
 
 - Description: a list of domains and ips that stay live in russia when the mobile internet gets restricted
-- Stars: 3819; archived: False; fork: False
+- Stars: 3820; archived: False; fork: False
 - Search queries: proxy domain list
 - README / curated seed rule-list links: 3
 - Curated seed links: 0
@@ -29288,8 +31166,10 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Daily deduplicated Pi-hole v6 blocklist combining HaGeZi, oisd, AdGuard and StevenBlack with reproducible build statistics.
 - Stars: 2; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 8
+- README / curated seed rule-list links: 12
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/iamwaqargulzar/Pihole-Curated-Blocklist/main/additional-sources.txt
+  - https://raw.githubusercontent.com/iamwaqargulzar/Pihole-Curated-Blocklist/main/allowlist.txt
   - https://raw.githubusercontent.com/iamwaqargulzar/Pihole-Curated-Blocklist/main/dist/blocklist-01.txt
   - https://raw.githubusercontent.com/iamwaqargulzar/Pihole-Curated-Blocklist/main/dist/blocklist-02.txt
   - https://raw.githubusercontent.com/iamwaqargulzar/Pihole-Curated-Blocklist/main/dist/blocklist-03.txt
@@ -29298,6 +31178,8 @@ MNE-Python is BSD-licenced (3 clause):
   - https://raw.githubusercontent.com/iamwaqargulzar/Pihole-Curated-Blocklist/main/dist/blocklist-06.txt
   - https://raw.githubusercontent.com/iamwaqargulzar/Pihole-Curated-Blocklist/main/dist/blocklist-07.txt
   - https://raw.githubusercontent.com/iamwaqargulzar/Pihole-Curated-Blocklist/main/dist/blocklist-08.txt
+  - https://raw.githubusercontent.com/iamwaqargulzar/Pihole-Curated-Blocklist/main/llms.txt
+  - https://raw.githubusercontent.com/iamwaqargulzar/Pihole-Curated-Blocklist/main/unsupported-sources.txt
 
 ### [ibalbal/shadowrocket-rules](https://github.com/ibalbal/shadowrocket-rules)
 
@@ -29608,6 +31490,15 @@ MNE-Python is BSD-licenced (3 clause):
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [j5s/InfoScan2](https://github.com/j5s/InfoScan2)
+
+- Description: 一个web信息收集工具、SRC挖掘小工具，在之前的infoscan上进行了修改，去除了子域名爆破功能，增加了域名存活判断，waf检测和js爬取功能，并将得到的结果写入数据库，方便以后查找。
+- Stars: 1; archived: False; fork: False
+- Search queries: 域名数据集
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/j5s/InfoScan2/main/result/result.txt
+
 ### [jacber2001/IOS-Adblock-DNS-list](https://github.com/jacber2001/IOS-Adblock-DNS-list)
 
 - Description: Here‘s a list,that heavily focused on in app ads, not like some others which are hosts files based on PC ads.(I collected them from the Dns Monitoring section)  I have literally blocked all ad domains which are being invoked in apps. For Safari though I suggest you to use Adguards content blocker in addition to the current adblocker, because you can‘t block any specific content on a website with hosts files.
@@ -29662,8 +31553,10 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Checks for dead and resurrected domains in https://github.com/jarelllama/Scam-Blocklist.
 - Stars: 2; archived: False; fork: False
 - Search queries: scam domains blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/jarelllama/Dead-Domains/main/alive_domains.txt
+  - https://raw.githubusercontent.com/jarelllama/Dead-Domains/main/dead_domains.txt
 
 ### [jarelllama/Parked-Domains](https://github.com/jarelllama/Parked-Domains)
 
@@ -29702,8 +31595,41 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Not supplied
 - Stars: 2; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 33
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/manual_direct.txt
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/manual_gfwlist.txt
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/manual_proxy.txt
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/manual_reject.txt
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/resultant/ad.list
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/resultant/gfw.list
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/resultant/top500_direct.list
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/resultant/top500_proxy.list
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/template/sr_adb.txt
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/template/sr_backcn.txt
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/template/sr_backcn_ad.txt
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/template/sr_cnip.txt
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/template/sr_cnip_ad.txt
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/template/sr_direct_banad.txt
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/template/sr_foot.txt
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/template/sr_head.txt
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/template/sr_proxy_banad.txt
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/template/sr_top500_banlist.txt
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/template/sr_top500_banlist_ad.txt
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/template/sr_top500_whitelist.txt
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/factory/template/sr_top500_whitelist_ad.txt
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/requirements.txt
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/sr_adb.conf
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/sr_backcn.conf
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/sr_backcn_ad.conf
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/sr_cnip.conf
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/sr_cnip_ad.conf
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/sr_direct_banad.conf
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/sr_proxy_banad.conf
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/sr_top500_banlist.conf
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/sr_top500_banlist_ad.conf
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/sr_top500_whitelist.conf
+  - https://raw.githubusercontent.com/jarodvip/Shadowrocket-ADBlock-Rules/master/sr_top500_whitelist_ad.conf
 
 ### [jatuananh/evnnpc-blacklist-domain](https://github.com/jatuananh/evnnpc-blacklist-domain)
 
@@ -29797,8 +31723,10 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Privacy-focused DNS setup for macOS/Linux using dnscrypt-proxy and dnsmasq. Includes automated blocklist updates (Systemd/Launchd) for ad-blocking and encrypted queries. Streamlined scripts for easy installation, configuration, and secure local DNS resolution.
 - Stars: 2; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/jfblg/dnscrypt-proxy-dnsmasq-setup/main/config/blocklists.conf
+  - https://raw.githubusercontent.com/jfblg/dnscrypt-proxy-dnsmasq-setup/main/config/dnsmasq.conf
 
 ### [jfox52/ruleset](https://github.com/jfox52/ruleset)
 
@@ -31839,6 +33767,14 @@ MNE-Python is BSD-licenced (3 clause):
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [kacpergumieniuk/mimicwatch](https://github.com/kacpergumieniuk/mimicwatch)
+
+- Description: Open feed of lookalike domains, cloned sites and copycat tokens impersonating Ethereum and Base projects, reviewed by a person and reported to wallet blocklists. MIT dataset.
+- Stars: 0; archived: False; fork: False
+- Search queries: phishing domains feed
+- README / curated seed rule-list links: 0
+- Curated seed links: 0
+
 ### [kalagxw/shadowrocket-rules](https://github.com/kalagxw/shadowrocket-rules)
 
 - Description: Not supplied
@@ -31977,8 +33913,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Python proxy with the added benefit of an allowed list that contains only the domains that are to be displayed (all else is blocked - inverse filter mode). Perfect for public computers and terminals.
 - Stars: 1; archived: False; fork: False
 - Search queries: proxy domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/kirichhub/Python-URL-Filter/master/proxy.txt
 
 ### [kites-dev/awesome-ai-directories](https://github.com/kites-dev/awesome-ai-directories)
 
@@ -32140,8 +34077,52 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: shadowrocket rules&Quantumult rules
 - Stars: 1; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 44
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Auto/Apple.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Auto/DIRECT.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Auto/HOST.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Auto/Header%20Rewrite.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Auto/Hostname.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Auto/PROXY.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Auto/REJECT.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Auto/URL%20REJECT.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Auto/URL%20Rewrite.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Quantumult/Basic.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Quantumult/QuantuamultX.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Quantumult/Quantumult.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Quantumult/Quantumult_Extra.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Quantumult/Quantumult_Extra_JS.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Quantumult/Quantumult_URL.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Quantumult/Quantumult_go2cn.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Shadowrocket.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Shadowrocket/General.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Shadowrocket/Prototype.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Shadowrocket/Shadowrocket-cn.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge/Groups.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge/MITM.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge/Prototype.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge/TestFlight.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge3/Media/abematv.list
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge3/Media/bahamut.list
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge3/Media/bbc.list
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge3/Media/bilibili%26iqiyi.list
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge3/Media/fox%2B.list
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge3/Media/hbo%26hbogo.list
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge3/Media/hulu.list
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge3/Media/mytvsuper%26joox.list
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge3/Media/netflix.list
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge3/Media/youtube.list
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge3/apple.list
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge3/china_media.list
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge3/domestic.list
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge3/global_media.list
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge3/proxy.list
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/Surge3/reject.list
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/back2cn.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/go2cn.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/my2cn.conf
+  - https://raw.githubusercontent.com/lavamini/unicorncross/master/sr_top500_whitelist_ad.conf
 
 ### [lclalalalala/shadowrocket_rule](https://github.com/lclalalalala/shadowrocket_rule)
 
@@ -32202,8 +34183,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: A GFW White List, IPs and domains that provide a better experience when accessed directly from China without using a proxy. 从中国访问时不走代理体验更好的 IP 和域名清单。
 - Stars: 1; archived: False; fork: False
 - Search queries: China domain list, proxy domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/leic4u/GFWPass/main/GFWPass.txt
 
 ### [lele394/DNSnitch](https://github.com/lele394/DNSnitch)
 
@@ -32452,8 +34434,10 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: 小火箭分流规则
 - Stars: 1; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 12
+- README / curated seed rule-list links: 14
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/lqqfastboot/Shadowrocket-Watson-Rules/main/modules/Watson-StartingAds.conf
+  - https://raw.githubusercontent.com/lqqfastboot/Shadowrocket-Watson-Rules/main/modules/Watson-YouTubeAds.conf
   - https://raw.githubusercontent.com/lqqfastboot/Shadowrocket-Watson-Rules/main/rules/AI.list
   - https://raw.githubusercontent.com/lqqfastboot/Shadowrocket-Watson-Rules/main/rules/Direct.list
   - https://raw.githubusercontent.com/lqqfastboot/Shadowrocket-Watson-Rules/main/rules/DouyinShop.list
@@ -32616,8 +34600,10 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Breaking Bad Habits: A Linux tool to block explicit content and build better routines. It   leverages the StevenBlack porn blocklist to modify /etc/hosts and enforce browser policies.   Features include a progress tracker, system tray integration, and a self set security timer for   deactivation.
 - Stars: 1; archived: False; fork: False
 - Search queries: StevenBlack hosts
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/m4nage/breaking_bad_habits_v1.0/main/information.txt
+  - https://raw.githubusercontent.com/m4nage/breaking_bad_habits_v1.0/main/requirements.txt
 
 ### [mRFWq7LwNPZjaVv5v6eo/cihna-dictattorshrip-8](https://github.com/mRFWq7LwNPZjaVv5v6eo/cihna-dictattorshrip-8)
 
@@ -32652,8 +34638,74 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Aggregates public OSINT malicious-domain feeds, normalizes and deduplicates IOCs, and generates clean domain blocklists for SOC, SIEM, DNS filtering, and threat-intel research.
 - Stars: 2; archived: False; fork: False
 - Search queries: DNS filtering blocklist domains, malware phishing domain blocklist, phishing domains feed
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 66
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/output/domains.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-IPs-ACTIVE-today__phishing-IPs-ACTIVE-today.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-IPs-ACTIVE-today__phishing-IPs-ACTIVE-today1.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-IPs-ACTIVE.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-IPs-ACTIVE__phishing-IPs-ACTIVE.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-IPs-ACTIVE__phishing-IPs-ACTIVE1.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-IPs-INACTIVE.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-IPs-INACTIVE__phishing-IPs-INACTIVE.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-IPs-INACTIVE__phishing-IPs-INACTIVE1.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-IPs-INVALID.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-IPs-INVALID__phishing-IPs-INVALID.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-IPs-INVALID__phishing-IPs-INVALID1.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-IPs-NEW-today__phishing-IPs-NEW-today.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-IPs-NEW-today__phishing-IPs-NEW-today1.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-domains-ACTIVE-today__phishing-domains-ACTIVE-today.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-domains-ACTIVE-today__phishing-domains-ACTIVE-today1.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-domains-ACTIVE__phishing-domains-ACTIVE.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-domains-ACTIVE__phishing-domains-ACTIVE2.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-domains-INACTIVE.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-domains-INACTIVE__phishing-domains-INACTIVE.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-domains-INACTIVE__phishing-domains-INACTIVE1.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-domains-INVALID.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-domains-INVALID__phishing-domains-INVALID.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-domains-INVALID__phishing-domains-INVALID1.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-domains-NEW-last-hour.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-domains-NEW-last-hour__phishing-domains-NEW-last-hour.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-domains-NEW-last-hour__phishing-domains-NEW-last-hour1.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-domains-NEW-today.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-domains-NEW-today__phishing-domains-NEW-today.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-domains-NEW-today__phishing-domains-NEW-today1.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-ips-NEW-last-hour.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-ips-NEW-last-hour__phishing-ips-NEW-last-hour.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-ips-NEW-last-hour__phishing-ips-NEW-last-hour1.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-ips-NEW-today.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-ips-NEW-today__phishing-ips-NEW-today.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-ips-NEW-today__phishing-ips-NEW-today1.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-links-ACTIVE-NOW.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-links-ACTIVE-today.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-links-ACTIVE-today__phishing-links-ACTIVE-today.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-links-ACTIVE-today__phishing-links-ACTIVE-today1.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-links-ACTIVE__phishing-links-ACTIVE.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-links-ACTIVE__phishing-links-ACTIVE1.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-links-INACTIVE__phishing-links-INACTIVE.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-links-INACTIVE__phishing-links-INACTIVE1.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-links-INVALID.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-links-INVALID__phishing-links-INVALID.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-links-INVALID__phishing-links-INVALID1.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-links-NEW-last-hour.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-links-NEW-last-hour__phishing-links-NEW-last-hour.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-links-NEW-last-hour__phishing-links-NEW-last-hour1.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-links-NEW-today.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-links-NEW-today__phishing-links-NEW-today.manifest.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/Phishing.Database__phishing-links-NEW-today__phishing-links-NEW-today1.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/blackbook__blackbook.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/digitalside.it.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/drb-ba.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/malicious-domains__full-domains-aa.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/malicious-domains__full-domains-ab.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/malicious-domains__full-domains-ac.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/malicious-domains__sources__drb-ba.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/malicious-domains__sources__malwarebytes.com.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/malicious-domains__sources__phishunt.io.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/malicious-domains__sources__red.flag.domains.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/malwarebytes.com.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/phishunt.io.txt
+  - https://raw.githubusercontent.com/machphy/malicious-domains/main/sources/red.flag.domains.txt
 
 ### [madique/shadowrocket-config](https://github.com/madique/shadowrocket-config)
 
@@ -34831,8 +36883,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Not supplied
 - Stars: 1; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/moonheart/shadowrocket-rules/main/rule.conf
 
 ### [moshall/egloon_rule_hub](https://github.com/moshall/egloon_rule_hub)
 
@@ -35372,8 +37425,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: 自用小火箭规则Shadowrocket rules
 - Stars: 1; archived: False; fork: False
 - Search queries: shadowrocket rules
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/mraxu/Shadowrocket_rules/main/Shadowrocket.conf
 
 ### [mrc991/lc-network-rules](https://github.com/mrc991/lc-network-rules)
 
@@ -35400,8 +37454,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Free category-based DNS filtering for UniFi gateways (UCG, UDM, UDR): HaGeZi and other open-source blocklists inside UniFi's own content filter, filling the CyberSecure Enhanced categories, replacing the built-in Ad Block list, with a block page that says why a site is blocked.
 - Stars: 2; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/msaifuddin/unifi-blocklist/main/categories.list
 
 ### [mytech-today-now/hosts](https://github.com/mytech-today-now/hosts)
 
@@ -35458,16 +37513,20 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Filter lists and scripting resources for NEAT Browser's built-in adblock-rust engine. Auto-built from uBlock Origin upstream every 6 hours.
 - Stars: 1; archived: False; fork: False
 - Search queries: scam domains blocklist, telemetry domains blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/neatbrowser/neat-filters/main/neat-filters/bench/hosts.txt
 
 ### [nebulabox/china_domain_list](https://github.com/nebulabox/china_domain_list)
 
 - Description: A simple list for the sites on China.
 - Stars: 1; archived: False; fork: False
 - Search queries: China domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 3
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/nebulabox/china_domain_list/master/china.domains.SwitchyOmega.rules.txt
+  - https://raw.githubusercontent.com/nebulabox/china_domain_list/master/china.domains.conf
+  - https://raw.githubusercontent.com/nebulabox/china_domain_list/master/china.domains.txt
 
 ### [neko-dev/china_cdn_domain_list](https://github.com/neko-dev/china_cdn_domain_list)
 
@@ -35523,22 +37582,26 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: DNS blocklist (ABP format) automatically synced with the official GOLD.DE Fakeshop Blacklist to prevent precious metal scams. Works with Pi-hole and AdGuard Home.
 - Stars: 1; archived: False; fork: False
 - Search queries: scam domains blocklist
-- README / curated seed rule-list links: 3
+- README / curated seed rule-list links: 5
 - Curated seed links: 0
   - https://raw.githubusercontent.com/nice42q/gold-de-fakeshops/main/blocklist-domains.txt
   - https://raw.githubusercontent.com/nice42q/gold-de-fakeshops/main/blocklist-hosts.txt
   - https://raw.githubusercontent.com/nice42q/gold-de-fakeshops/main/blocklist.txt
+  - https://raw.githubusercontent.com/nice42q/gold-de-fakeshops/main/debug/blacklist.txt
+  - https://raw.githubusercontent.com/nice42q/gold-de-fakeshops/main/requirements.txt
 
 ### [nice42q/watchlist-internet](https://github.com/nice42q/watchlist-internet)
 
 - Description: DNS blocklist (ABP format) automatically synced with the official watchlist-internet.at database to prevent fake-shops, phishing, and online scams. Works with Pi-hole and AdGuard Home.
 - Stars: 1; archived: False; fork: False
 - Search queries: scam domains blocklist
-- README / curated seed rule-list links: 3
+- README / curated seed rule-list links: 5
 - Curated seed links: 0
   - https://raw.githubusercontent.com/nice42q/watchlist-internet/main/blocklist-domains.txt
   - https://raw.githubusercontent.com/nice42q/watchlist-internet/main/blocklist-hosts.txt
   - https://raw.githubusercontent.com/nice42q/watchlist-internet/main/blocklist.txt
+  - https://raw.githubusercontent.com/nice42q/watchlist-internet/main/debug/blacklist.txt
+  - https://raw.githubusercontent.com/nice42q/watchlist-internet/main/requirements.txt
 
 ### [nichuanfang/domestic-rules-generator](https://github.com/nichuanfang/domestic-rules-generator)
 
@@ -42859,8 +44922,13 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: 🛡️ PhishGuard - Anti-scam browser extension & LINE bot. Detects phishing/scam URLs using 2.5M+ blocklisted domains from 38 sources. Safari extension + OpenClaw skill.
 - Stars: 1; archived: False; fork: False
 - Search queries: scam domains blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 5
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/phishguard-niki/Phishguard/master/anti-scam-extension-v042-auto/config/global/crypto-exchange-scam.txt
+  - https://raw.githubusercontent.com/phishguard-niki/Phishguard/master/anti-scam-extension-v042-auto/config/global/scamadviser-highrisk.txt
+  - https://raw.githubusercontent.com/phishguard-niki/Phishguard/master/anti-scam-extension-v042-auto/config/global/spamhaus-dbl.txt
+  - https://raw.githubusercontent.com/phishguard-niki/Phishguard/master/anti-scam-extension-v042-auto/config/keywords.txt
+  - https://raw.githubusercontent.com/phishguard-niki/Phishguard/master/anti-scam-extension-v042-auto/config/local-seeds.txt
 
 ### [phishguard-niki/blocklist-data](https://github.com/phishguard-niki/blocklist-data)
 
@@ -42919,10 +44987,34 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Whitelists and Blocklists that can be used to safe and protect you on different platforms.
 - Stars: 2; archived: False; fork: False
 - Search queries: privacy DNS blocklist, scam domains blocklist, telemetry domains blocklist, telemetry tracking domains list
-- README / curated seed rule-list links: 4
+- README / curated seed rule-list links: 28
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/build/blocklist-sources.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/build/combine-blocklist-sources.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/build/combine-whitelist-sources.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/build/whitelist-sources.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/false-positive-fixes.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasallow-badblock.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasallow-completewhitelist.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasallow-referral.txt
   - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasblacklist.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasblock-adguard-sdns.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasblock-adway.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasblock-amazon.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasblock-apple.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasblock-dandelion-sprout.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasblock-haGeZi-pro%2B%2B.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasblock-huawei.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasblock-lgwebos.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasblock-microsoft.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasblock-native-oppo.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasblock-roku.txt
   - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasblock-samsung.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasblock-tiktok.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasblock-urlhaus.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasblock-vivo.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasblock-xiaomi.txt
+  - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasblock-youtube.txt
   - https://raw.githubusercontent.com/pointaction/adguard-lists/main/pasreferral-whitelist.txt
   - https://raw.githubusercontent.com/pointaction/adguard-lists/main/paswhitelist.txt
 
@@ -43401,24 +45493,29 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Automatically updated DNS blocklist for Pi-hole, AdGuard Home, and other DNS sinkholes - blocks ads, trackers, and malware with minimal false positives.
 - Stars: 1; archived: False; fork: False
 - Search queries: privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/resname/UltimateDNSBlockList/main/sources.txt
+  - https://raw.githubusercontent.com/resname/UltimateDNSBlockList/main/version.txt
 
 ### [revanth543/Certstream-PhishingCatcher](https://github.com/revanth543/Certstream-PhishingCatcher)
 
 - Description: Catch Phishy domains using cert-stream. CertStream is an intelligence feed that gives you real-time updates from the Certificate Transparency Log network
 - Stars: 1; archived: False; fork: False
 - Search queries: phishing domains feed
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/revanth543/Certstream-PhishingCatcher/master/requirements.txt
 
 ### [rf152/stevenblack-hosts-convert](https://github.com/rf152/stevenblack-hosts-convert)
 
 - Description: Script to convert Steven Black hosts file into Unbound configuration format
 - Stars: 1; archived: False; fork: False
 - Search queries: StevenBlack hosts
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/rf152/stevenblack-hosts-convert/main/ignorelist.txt
+  - https://raw.githubusercontent.com/rf152/stevenblack-hosts-convert/main/requirements.txt
 
 ### [ringoshiina/shadowrocket-backcn-rules](https://github.com/ringoshiina/shadowrocket-backcn-rules)
 
@@ -43443,8 +45540,11 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Automated phishing threat intelligence feed with URLs, IPs, domains, and IOC data.
 - Stars: 2; archived: False; fork: False
 - Search queries: phishing domains feed
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 3
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/rjn32s/SentinelPhishFeed/main/hashes.txt
+  - https://raw.githubusercontent.com/rjn32s/SentinelPhishFeed/main/ips.txt
+  - https://raw.githubusercontent.com/rjn32s/SentinelPhishFeed/main/urls.txt
 
 ### [robyscar/PeeHole-trackers](https://github.com/robyscar/PeeHole-trackers)
 
@@ -43484,8 +45584,10 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: 适用于 Root 安卓设备的广告拦截域名规则仓，仅兼容 AdGuard 安卓客户端，专注国内APP广告、信息流内嵌广告/卡片信息，埋点追踪域名，不定期维护更新。
 - Stars: 1; archived: False; fork: False
 - Search queries: 国内域名规则
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/rssvcn/Ads-Root_Rule/main/Ads-Dns_Rule.txt
+  - https://raw.githubusercontent.com/rssvcn/Ads-Root_Rule/main/Ads-Root_Rule.txt
 
 ### [rudolf-si/shadowrocket-configuration](https://github.com/rudolf-si/shadowrocket-configuration)
 
@@ -43504,8 +45606,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: A curated collection of domain blocklists optimized for AdGuard Home. This repository provides regularly updated, clean, and categorized domain lists focused on blocking ads, tracking, malware, telemetry, and unwanted content.
 - Stars: 2; archived: False; fork: False
 - Search queries: telemetry domains blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/ruhex/aghome-blocks/main/lists/blocklist.txt
 
 ### [ruijzhan/chnroute](https://github.com/ruijzhan/chnroute)
 
@@ -43526,6 +45629,29 @@ MNE-Python is BSD-licenced (3 clause):
 - Search queries: geosite domain
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
+
+### [rydevs29/RifqyShield](https://github.com/rydevs29/RifqyShield)
+
+- Description: RifqyShield is designed to block websites such as advertisements, malware, tracking, phishing, pornography, gambling, and others, and has optional versions such as Lite, Medium, and Ultimate.
+- Stars: 2; archived: False; fork: False
+- Search queries: scam domains blocklist, telemetry domains blocklist
+- README / curated seed rule-list links: 15
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/rydevs29/RifqyShield/main/LICENSE.txt
+  - https://raw.githubusercontent.com/rydevs29/RifqyShield/main/filters/borrow/RifqyShield-Borrow.txt
+  - https://raw.githubusercontent.com/rydevs29/RifqyShield/main/filters/gambling/RifqyShield-Gambling.txt
+  - https://raw.githubusercontent.com/rydevs29/RifqyShield/main/output/lite/adblock.txt
+  - https://raw.githubusercontent.com/rydevs29/RifqyShield/main/output/lite/adguard.txt
+  - https://raw.githubusercontent.com/rydevs29/RifqyShield/main/output/lite/dnsmasq.conf
+  - https://raw.githubusercontent.com/rydevs29/RifqyShield/main/output/lite/hosts.txt
+  - https://raw.githubusercontent.com/rydevs29/RifqyShield/main/output/lite/loon.list
+  - https://raw.githubusercontent.com/rydevs29/RifqyShield/main/output/lite/plain.txt
+  - https://raw.githubusercontent.com/rydevs29/RifqyShield/main/output/lite/quantumultx.list
+  - https://raw.githubusercontent.com/rydevs29/RifqyShield/main/output/lite/rpz.txt
+  - https://raw.githubusercontent.com/rydevs29/RifqyShield/main/output/lite/smartdns.conf
+  - https://raw.githubusercontent.com/rydevs29/RifqyShield/main/output/lite/surge.list
+  - https://raw.githubusercontent.com/rydevs29/RifqyShield/main/output/lite/unbound.conf
+  - https://raw.githubusercontent.com/rydevs29/RifqyShield/main/output/lite/wildcard.txt
 
 ### [rylox1/shadowracket_rules](https://github.com/rylox1/shadowracket_rules)
 
@@ -43940,6 +46066,15 @@ MNE-Python is BSD-licenced (3 clause):
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [shirleyalfreda/Predicting-PUBG-Final-Rank-Based-on-Real-Game-Data](https://github.com/shirleyalfreda/Predicting-PUBG-Final-Rank-Based-on-Real-Game-Data)
+
+- Description: 《绝地求生》(PUBG) 是一款战术竞技型射击类沙盒游戏。在游戏中，玩家需要在游戏地图上收集各种资源，并在不断缩小的安全区域内对抗其他玩家，让自己生存到最后。当选手在本局游戏中取得第一名后，会有一段台词出现：“大吉大利，晚上吃鸡!”。本项目将构建数据挖掘模型，通过每位玩家的统计信息、队友统计信息、本局其他玩家的统计信息等，预测最终的游戏排名。注意排名是按照队伍排名，若多位玩家在PUBG一局游戏中组队，则最终排名相同。
+- Stars: 1; archived: False; fork: False
+- Search queries: 域名数据集
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/shirleyalfreda/Predicting-PUBG-Final-Rank-Based-on-Real-Game-Data/main/requirements.txt
+
 ### [shivroop4444/scanmaster](https://github.com/shivroop4444/scanmaster)
 
 - Description: # scanless # created by shivroop This is a Python 3 command-line utility and library for using websites that can perform port scans on your behalf.  ## Supported Online Port Scanners  * [hackertarget](https://hackertarget.com/nmap-online-port-scanner/) * [ipfingerprints](http://www.ipfingerprints.com/portscan.php) * [spiderip](https://spiderip.com/online-port-scan.php) * [standingtech](https://portscanner.standingtech.com/) * [t1shopper](http://www.t1shopper.com/tools/port-scan/) * [viewdns](http://viewdns.info/) * [yougetsignal](http://www.yougetsignal.com/tools/open-ports/)  ## Install  Do it up: ``` $ pip install scanless --user ```  ## CLI Usage  ``` $ scanless --help   usage: scanless [-h] [-v] [-t TARGET] [-s SCANNER] [-r] [-l] [-a]  scanless, an online port scan scraper.  optional arguments:   -h, --help            show this help message and exit   -v, --version         display the current version   -t TARGET, --target TARGET                         ip or domain to scan   -s SCANNER, --scanner SCANNER                         scanner to use (default: hackertarget)   -r, --random          use a random scanner   -l, --list            list scanners   -a, --all             use all the scanners   -d, --debug           debug mode (cli mode off & show network errors)  $ scanless --list +----------------+--------------------------------------+ | Scanner Name   | Website                              | +----------------+--------------------------------------+ | hackertarget   | https://hackertarget.com             | | ipfingerprints | https://www.ipfingerprints.com       | | spiderip       | https://spiderip.com                 | | standingtech   | https://portscanner.standingtech.com | | t1shopper      | http://www.t1shopper.com             | | viewdns        | https://viewdns.info                 | | yougetsignal   | https://www.yougetsignal.com         | +----------------+--------------------------------------+  $ scanless -t scanme.nmap.org -s spiderip Running scanless v2.1.3...  spiderip: PORT      STATE  SERVICE 21/tcp    closed ftp 22/tcp    open   ssh 25/tcp    closed smtp 80/tcp    open   http 110/tcp   closed pop3 143/tcp   closed imap 443/tcp   closed https 465/tcp   closed smtps 993/tcp   closed imaps 995/tcp   closed pop3s 1433/tcp  closed ms-sql-s 3306/tcp  closed mysql 3389/tcp  closed ms-wbt-server 5900/tcp  closed vnc 8080/tcp  closed http-proxy 8443/tcp  closed https-alt ```  ## Library Usage  ``` >>> import scanless >>> sl = scanless.Scanless() >>> output = sl.scan('scanme.nmap.org', scanner='hackertarget') >>> print(output['raw']) Starting Nmap 7.70 ( https://nmap.org ) at 2020-05-12 21:39 UTC Nmap scan report for scanme.nmap.org (45.33.32.156) Host is up (0.065s latency). Other addresses for scanme.nmap.org (not scanned): 2600:3c01::f03c:91ff:fe18:bb2f  PORT    STATE  SERVICE 21/tcp  closed ftp 22/tcp  open   ssh 80/tcp  open   http 443/tcp closed https  Nmap done: 1 IP address (1 host up) scanned in 0.11 seconds >>> import json >>> print(json.dumps(output['parsed'], indent=2)) [   {     "port": "21",     "state": "closed",     "service": "ftp",     "protocol": "tcp"   },   {     "port": "22",     "state": "open",     "service": "ssh",     "protocol": "tcp"   },   {     "port": "80",     "state": "open",     "service": "http",     "protocol": "tcp"   },   {     "port": "443",     "state": "closed",     "service": "https",     "protocol": "tcp"   } ] ```  ## Docker  **Note from the repo author:** I did not create, nor do I maintain Docker support or the Dockerfile for scanless. It was a nice community addition. If it's broken please open an issue or submit a pull request and I'll take a look. Thank you!  ### Build  To build the Docker image, run: ```shell $ docker build -t scanless . ```  ### Usage  To use the Docker image previously created, run the following with whichever options you want like `--help`: ``` $ docker run --rm -it scanless --help ```  If that long command is too troublesome, you can make an alias like so: `alias scanless="docker run --rm -it scanless"` and then run `scanless` as you would normally: ``` $ scanless --help $ scanless -l $ scanless -t scanme.nmap.org -s yougetsignal ```
@@ -44121,8 +46256,15 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Private mirror of MetaCubeX/meta-rules-dat
 - Stars: 1; archived: False; fork: False
 - Search queries: MetaCubeX meta-rules-dat
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 7
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/slow-craft/nautilus-rules/master/resouces/android-bundle-mrs.txt
+  - https://raw.githubusercontent.com/slow-craft/nautilus-rules/master/resouces/direct-need-to-remove.txt
+  - https://raw.githubusercontent.com/slow-craft/nautilus-rules/master/resouces/direct.txt
+  - https://raw.githubusercontent.com/slow-craft/nautilus-rules/master/resouces/proxy-need-to-remove.txt
+  - https://raw.githubusercontent.com/slow-craft/nautilus-rules/master/resouces/proxy.txt
+  - https://raw.githubusercontent.com/slow-craft/nautilus-rules/master/resouces/reject-need-to-remove.txt
+  - https://raw.githubusercontent.com/slow-craft/nautilus-rules/master/resouces/reject.txt
 
 ### [smashah/smashblock](https://github.com/smashah/smashblock)
 
@@ -44338,6 +46480,17 @@ MNE-Python is BSD-licenced (3 clause):
   - https://raw.githubusercontent.com/spacding/Proxy-Rules/main/QuantumultX/Rewite/BilibiliAD.conf
   - https://raw.githubusercontent.com/spacding/Proxy-Rules/main/QuantumultX/Rewite/SpotifyUnlock.conf
   - https://raw.githubusercontent.com/spacding/Proxy-Rules/main/QuantumultX/Rewite/YouTubeAD.conf
+
+### [spacegithub/com-sc](https://github.com/spacegithub/com-sc)
+
+- Description: 开发常用工具封装 包括json 日期 邮件 excle 代码模板 redis 规则引擎 网络 日期 集合 文件等基本操作的封装
+- Stars: 1; archived: False; fork: False
+- Search queries: 网络规则集
+- README / curated seed rule-list links: 3
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/spacegithub/com-sc/master/sc-excle/src/main/resources/readme.txt
+  - https://raw.githubusercontent.com/spacegithub/com-sc/master/sc-socket/src/main/java/com/sc/socket/core/ssl/facade/tips.txt
+  - https://raw.githubusercontent.com/spacegithub/com-sc/master/sc-utils/src/main/resources/readme.txt
 
 ### [spideuremagne/darkwire](https://github.com/spideuremagne/darkwire)
 
@@ -44617,6 +46770,17 @@ MNE-Python is BSD-licenced (3 clause):
   - https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Sample_v1.4.2.conf
   - https://raw.githubusercontent.com/sve1r/Rules-For-Quantumult-X/main/Sample_v1.5.3.conf
 
+### [svenzhi/ScholarInfoNER](https://github.com/svenzhi/ScholarInfoNER)
+
+- Description: 面向学术分析与学者画像领域的中文命名实体识别数据集
+- Stars: 1; archived: False; fork: False
+- Search queries: 域名数据集
+- README / curated seed rule-list links: 3
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/svenzhi/ScholarInfoNER/main/dev.txt
+  - https://raw.githubusercontent.com/svenzhi/ScholarInfoNER/main/test.txt
+  - https://raw.githubusercontent.com/svenzhi/ScholarInfoNER/main/train.txt
+
 ### [svobodacenter/domain-list-to-geosite](https://github.com/svobodacenter/domain-list-to-geosite)
 
 - Description: A Go tool that converts remote domain lists (like HaGeZi's DNS blocklists) into V2Ray/Xray geosite.dat format
@@ -44769,16 +46933,26 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: AdGuard Home DNS blocklists for ads and YouTube ad domains, in AdGuard ||domain filter syntax
 - Stars: 1; archived: False; fork: False
 - Search queries: DNS filtering blocklist domains, adguard DNS filter domains, privacy DNS blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 3
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/t0mer/AdGuard-Lists/main/ads.txt
+  - https://raw.githubusercontent.com/t0mer/AdGuard-Lists/main/youtube.txt
+  - https://raw.githubusercontent.com/t0mer/AdGuard-Lists/main/youtube2.txt
 
 ### [t0saki/cn-game-rules](https://github.com/t0saki/cn-game-rules)
 
 - Description: 国内二游 (原神/星铁/绝区零/鸣潮) 国服+国际服游玩服务器域名规则集，海外回国加速用
 - Stars: 1; archived: False; fork: False
 - Search queries: 国内域名规则
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 7
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/t0saki/cn-game-rules/main/download-cdn-exclude.list
+  - https://raw.githubusercontent.com/t0saki/cn-game-rules/main/genshin.list
+  - https://raw.githubusercontent.com/t0saki/cn-game-rules/main/mihoyo-shared.list
+  - https://raw.githubusercontent.com/t0saki/cn-game-rules/main/star-rail.list
+  - https://raw.githubusercontent.com/t0saki/cn-game-rules/main/tracking-exclude.list
+  - https://raw.githubusercontent.com/t0saki/cn-game-rules/main/wuthering.list
+  - https://raw.githubusercontent.com/t0saki/cn-game-rules/main/zenless.list
 
 ### [tallcyberguy/ioc-triage](https://github.com/tallcyberguy/ioc-triage)
 
@@ -44858,8 +47032,10 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: AdBlock DNS is a lightweight DNS proxy written in Go that filters requests against hosts-style blocklists. Blocked domains are answered with `0.0.0.0`; everything else is forwarded to an upstream resolver (Cloudflare `1.1.1.1` by default). A small HTTP health endpoint is exposed alongside the DNS server.
 - Stars: 1; archived: False; fork: False
 - Search queries: DNS filtering blocklist domains
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/techerpierre/addblock-dns/main/configs/hosts.txt
+  - https://raw.githubusercontent.com/techerpierre/addblock-dns/main/configs/hosts1.txt
 
 ### [temurlee/rules](https://github.com/temurlee/rules)
 
@@ -44868,6 +47044,17 @@ MNE-Python is BSD-licenced (3 clause):
 - Search queries: 网络规则集
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
+
+### [teng00123/data-exploration](https://github.com/teng00123/data-exploration)
+
+- Description: 数据探查系统是一个企业级数据库管理平台，集成了MySQL、Redis、Elasticsearch、Kafka、HDFS、InfluxDB、Pulsar等多种数据存储和消息队列组件。该系统提供从数据库实例创建、配置、监控到销毁的全生命周期管理功能，支持大规模集群的批量操作和自动化运维。通过统一的管理界面，用户可以便捷地进行数据库配置调优、高可用切换、域名解析管理等个性化服务。系统内置强大的监控告警机制和实时数据观测能力，涵盖性能指标跟踪、异常检测和容量规划等功能，助力数据库管理员、运维工程师和开发团队实现更智能、更高效的数据库管理体验。  The Data Exploration System is an enterprise-grade database management....
+- Stars: 1; archived: False; fork: False
+- Search queries: 域名数据集
+- README / curated seed rule-list links: 3
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/teng00123/data-exploration/main/backend/font/%E6%8E%88%E6%9D%83%E5%8D%8F%E8%AE%AE.txt
+  - https://raw.githubusercontent.com/teng00123/data-exploration/main/requirements.txt
+  - https://raw.githubusercontent.com/teng00123/data-exploration/main/scheduler_redis/data/demo.txt
 
 ### [term7/Break-Apple-Blocklist](https://github.com/term7/Break-Apple-Blocklist)
 
@@ -44999,6 +47186,28 @@ MNE-Python is BSD-licenced (3 clause):
 - Search queries: shadowrocket rules
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
+
+### [tianmenggong666/FinDKG-zh](https://github.com/tianmenggong666/FinDKG-zh)
+
+- Description: FindKG-Chinese（别名FinDKG-zh）是面向**中文金融领域**的开源时序知识图谱数据集，是经典知识库项目FindKG的中文垂直领域适配版本。
+- Stars: 1; archived: False; fork: False
+- Search queries: 域名数据集
+- README / curated seed rule-list links: 14
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/tianmenggong666/FinDKG-zh/main/findkg-chinese/LINCENSE.txt
+  - https://raw.githubusercontent.com/tianmenggong666/FinDKG-zh/main/findkg-chinese/README.md.txt
+  - https://raw.githubusercontent.com/tianmenggong666/FinDKG-zh/main/findkg-chinese/data/raw/entity2id.txt
+  - https://raw.githubusercontent.com/tianmenggong666/FinDKG-zh/main/findkg-chinese/data/raw/example_quadruples.txt
+  - https://raw.githubusercontent.com/tianmenggong666/FinDKG-zh/main/findkg-chinese/data/raw/full_entity_info.txt
+  - https://raw.githubusercontent.com/tianmenggong666/FinDKG-zh/main/findkg-chinese/data/raw/relation2id.txt
+  - https://raw.githubusercontent.com/tianmenggong666/FinDKG-zh/main/findkg-chinese/data/raw/stat.txt
+  - https://raw.githubusercontent.com/tianmenggong666/FinDKG-zh/main/findkg-chinese/data/raw/stats.txt
+  - https://raw.githubusercontent.com/tianmenggong666/FinDKG-zh/main/findkg-chinese/data/raw/test.txt
+  - https://raw.githubusercontent.com/tianmenggong666/FinDKG-zh/main/findkg-chinese/data/raw/timestamp2id.txt
+  - https://raw.githubusercontent.com/tianmenggong666/FinDKG-zh/main/findkg-chinese/data/raw/train.txt
+  - https://raw.githubusercontent.com/tianmenggong666/FinDKG-zh/main/findkg-chinese/data/raw/type2id.txt
+  - https://raw.githubusercontent.com/tianmenggong666/FinDKG-zh/main/findkg-chinese/data/raw/valid.txt
+  - https://raw.githubusercontent.com/tianmenggong666/FinDKG-zh/main/findkg-chinese/docs/dataset_desc.md.txt
 
 ### [tianya441523/shadowrocket_adblock_rules](https://github.com/tianya441523/shadowrocket_adblock_rules)
 
@@ -45795,6 +48004,89 @@ MNE-Python is BSD-licenced (3 clause):
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [vivycode/CAN-MCU-](https://github.com/vivycode/CAN-MCU-)
+
+- Description: 设计并实现自定义CAN ID分域编码(node/func/ch)及应用层CRC8校验协议，完成传感器数据上报、心跳判活   、指令下发三类帧的端到端通信.基于FreeRTOS搭建8任务多节点架构：CAN中断→三队列分发(LCD/SD/串口)、心跳超时判定(1.5s阈值+seq丢包    统计+时间戳重启检测)、出入站双白名单过滤.实现SPI SD卡FATFS日志落卡，独立排查并解决挂载失败全错误链(FR_NOT_READY→FR_MKFS_ABORTED→FR_DISK_  ERR，最终定位VLA栈溢出根因.开发5页LCD菜单系统(模型-视图分离架构)，支持按键+串口双路下行传感器控制(挂起/恢复)，目前正在扩展  CAN Bootloader OTA功能
+- Stars: 1; archived: False; fork: False
+- Search queries: 域名白名单
+- README / curated seed rule-list links: 75
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/1pr1/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/1pr1/Drivers/CMSIS/Device/ST/STM32G4xx/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/1pr1/Drivers/CMSIS/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/1pr1/Drivers/STM32G4xx_HAL_Driver/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/1pr1/cmake/stm32cubemx/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/2G431%E5%9F%BA%E7%A1%80lcd%E6%98%BE%E7%A4%BA/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/2G431%E5%9F%BA%E7%A1%80lcd%E6%98%BE%E7%A4%BA/Drivers/CMSIS/Device/ST/STM32G4xx/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/2G431%E5%9F%BA%E7%A1%80lcd%E6%98%BE%E7%A4%BA/Drivers/CMSIS/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/2G431%E5%9F%BA%E7%A1%80lcd%E6%98%BE%E7%A4%BA/Drivers/STM32G4xx_HAL_Driver/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/2G431%E5%9F%BA%E7%A1%80lcd%E6%98%BE%E7%A4%BA/cmake/stm32cubemx/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/3%E4%B8%B2%E5%8F%A3%E9%93%BE%E6%8E%A5/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/3%E4%B8%B2%E5%8F%A3%E9%93%BE%E6%8E%A5/Drivers/CMSIS/Device/ST/STM32G4xx/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/3%E4%B8%B2%E5%8F%A3%E9%93%BE%E6%8E%A5/Drivers/CMSIS/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/3%E4%B8%B2%E5%8F%A3%E9%93%BE%E6%8E%A5/Drivers/STM32G4xx_HAL_Driver/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/3%E4%B8%B2%E5%8F%A3%E9%93%BE%E6%8E%A5/cmake/stm32cubemx/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/4can%E8%BF%9E%E6%8E%A5/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/4can%E8%BF%9E%E6%8E%A5/Drivers/CMSIS/Device/ST/STM32G4xx/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/4can%E8%BF%9E%E6%8E%A5/Drivers/CMSIS/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/4can%E8%BF%9E%E6%8E%A5/Drivers/STM32G4xx_HAL_Driver/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/4can%E8%BF%9E%E6%8E%A5/cmake/stm32cubemx/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/5can%E8%BF%9E%E6%8E%A5%E5%8A%A0%E5%BC%BA/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/5can%E8%BF%9E%E6%8E%A5%E5%8A%A0%E5%BC%BA/Drivers/CMSIS/Device/ST/STM32G4xx/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/5can%E8%BF%9E%E6%8E%A5%E5%8A%A0%E5%BC%BA/Drivers/CMSIS/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/5can%E8%BF%9E%E6%8E%A5%E5%8A%A0%E5%BC%BA/Drivers/STM32G4xx_HAL_Driver/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/5can%E8%BF%9E%E6%8E%A5%E5%8A%A0%E5%BC%BA/cmake/stm32cubemx/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/6SD%E5%8D%A1%E6%8C%82%E8%BD%BD/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/6SD%E5%8D%A1%E6%8C%82%E8%BD%BD/Drivers/CMSIS/Device/ST/STM32G4xx/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/6SD%E5%8D%A1%E6%8C%82%E8%BD%BD/Drivers/CMSIS/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/6SD%E5%8D%A1%E6%8C%82%E8%BD%BD/Drivers/STM32G4xx_HAL_Driver/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/6SD%E5%8D%A1%E6%8C%82%E8%BD%BD/cmake/stm32cubemx/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/7%E6%95%B0%E6%8D%AE%E4%B8%8B%E8%A1%8C/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/7%E6%95%B0%E6%8D%AE%E4%B8%8B%E8%A1%8C/Drivers/CMSIS/Device/ST/STM32G4xx/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/7%E6%95%B0%E6%8D%AE%E4%B8%8B%E8%A1%8C/Drivers/CMSIS/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/7%E6%95%B0%E6%8D%AE%E4%B8%8B%E8%A1%8C/Drivers/STM32G4xx_HAL_Driver/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/7%E6%95%B0%E6%8D%AE%E4%B8%8B%E8%A1%8C/cmake/stm32cubemx/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/8%E7%99%BD%E5%90%8D%E5%8D%95%E5%BF%83%E8%B7%B3%E5%8C%85%E9%94%99%E8%AF%AF%E6%98%BE%E7%A4%BA/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/8%E7%99%BD%E5%90%8D%E5%8D%95%E5%BF%83%E8%B7%B3%E5%8C%85%E9%94%99%E8%AF%AF%E6%98%BE%E7%A4%BA/Drivers/CMSIS/Device/ST/STM32G4xx/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/8%E7%99%BD%E5%90%8D%E5%8D%95%E5%BF%83%E8%B7%B3%E5%8C%85%E9%94%99%E8%AF%AF%E6%98%BE%E7%A4%BA/Drivers/CMSIS/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/8%E7%99%BD%E5%90%8D%E5%8D%95%E5%BF%83%E8%B7%B3%E5%8C%85%E9%94%99%E8%AF%AF%E6%98%BE%E7%A4%BA/Drivers/STM32G4xx_HAL_Driver/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/8%E7%99%BD%E5%90%8D%E5%8D%95%E5%BF%83%E8%B7%B3%E5%8C%85%E9%94%99%E8%AF%AF%E6%98%BE%E7%A4%BA/cmake/stm32cubemx/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/9%E8%8F%9C%E5%8D%95%E7%95%8C%E9%9D%A2%E7%BE%8E%E5%8C%96/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/9%E8%8F%9C%E5%8D%95%E7%95%8C%E9%9D%A2%E7%BE%8E%E5%8C%96/Drivers/CMSIS/Device/ST/STM32G4xx/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/9%E8%8F%9C%E5%8D%95%E7%95%8C%E9%9D%A2%E7%BE%8E%E5%8C%96/Drivers/CMSIS/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/9%E8%8F%9C%E5%8D%95%E7%95%8C%E9%9D%A2%E7%BE%8E%E5%8C%96/Drivers/STM32G4xx_HAL_Driver/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/G431%E9%83%A8%E5%88%86/9%E8%8F%9C%E5%8D%95%E7%95%8C%E9%9D%A2%E7%BE%8E%E5%8C%96/cmake/stm32cubemx/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/1%E5%9F%BA%E7%A1%80%E6%98%BE%E7%A4%BA%E4%BB%A3%E7%A0%81/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/1%E5%9F%BA%E7%A1%80%E6%98%BE%E7%A4%BA%E4%BB%A3%E7%A0%81/Drivers/CMSIS/Device/ST/STM32F1xx/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/1%E5%9F%BA%E7%A1%80%E6%98%BE%E7%A4%BA%E4%BB%A3%E7%A0%81/Drivers/CMSIS/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/1%E5%9F%BA%E7%A1%80%E6%98%BE%E7%A4%BA%E4%BB%A3%E7%A0%81/Drivers/STM32F1xx_HAL_Driver/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/1%E5%9F%BA%E7%A1%80%E6%98%BE%E7%A4%BA%E4%BB%A3%E7%A0%81/cmake/stm32cubemx/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/2can%E8%BF%9E%E6%8E%A5%E9%80%9A%E4%BF%A1/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/2can%E8%BF%9E%E6%8E%A5%E9%80%9A%E4%BF%A1/Drivers/CMSIS/Device/ST/STM32F1xx/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/2can%E8%BF%9E%E6%8E%A5%E9%80%9A%E4%BF%A1/Drivers/CMSIS/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/2can%E8%BF%9E%E6%8E%A5%E9%80%9A%E4%BF%A1/Drivers/STM32F1xx_HAL_Driver/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/2can%E8%BF%9E%E6%8E%A5%E9%80%9A%E4%BF%A1/cmake/stm32cubemx/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/3can%E8%BF%9E%E6%8E%A5%E9%80%9A%E4%BF%A1%E5%8A%A0%E5%BC%BA/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/3can%E8%BF%9E%E6%8E%A5%E9%80%9A%E4%BF%A1%E5%8A%A0%E5%BC%BA/Drivers/CMSIS/Device/ST/STM32F1xx/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/3can%E8%BF%9E%E6%8E%A5%E9%80%9A%E4%BF%A1%E5%8A%A0%E5%BC%BA/Drivers/CMSIS/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/3can%E8%BF%9E%E6%8E%A5%E9%80%9A%E4%BF%A1%E5%8A%A0%E5%BC%BA/Drivers/STM32F1xx_HAL_Driver/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/3can%E8%BF%9E%E6%8E%A5%E9%80%9A%E4%BF%A1%E5%8A%A0%E5%BC%BA/cmake/stm32cubemx/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/4can%E4%B8%8B%E8%A1%8C%E9%80%9A%E8%B7%AF%E9%93%BE%E6%8E%A5/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/4can%E4%B8%8B%E8%A1%8C%E9%80%9A%E8%B7%AF%E9%93%BE%E6%8E%A5/Drivers/CMSIS/Device/ST/STM32F1xx/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/4can%E4%B8%8B%E8%A1%8C%E9%80%9A%E8%B7%AF%E9%93%BE%E6%8E%A5/Drivers/CMSIS/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/4can%E4%B8%8B%E8%A1%8C%E9%80%9A%E8%B7%AF%E9%93%BE%E6%8E%A5/Drivers/STM32F1xx_HAL_Driver/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/4can%E4%B8%8B%E8%A1%8C%E9%80%9A%E8%B7%AF%E9%93%BE%E6%8E%A5/cmake/stm32cubemx/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/5%E7%99%BD%E5%90%8D%E5%8D%95%E5%BF%83%E8%B7%B3%E5%8C%85%E9%94%99%E8%AF%AF%E6%98%BE%E7%A4%BA/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/5%E7%99%BD%E5%90%8D%E5%8D%95%E5%BF%83%E8%B7%B3%E5%8C%85%E9%94%99%E8%AF%AF%E6%98%BE%E7%A4%BA/Drivers/CMSIS/Device/ST/STM32F1xx/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/5%E7%99%BD%E5%90%8D%E5%8D%95%E5%BF%83%E8%B7%B3%E5%8C%85%E9%94%99%E8%AF%AF%E6%98%BE%E7%A4%BA/Drivers/CMSIS/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/5%E7%99%BD%E5%90%8D%E5%8D%95%E5%BF%83%E8%B7%B3%E5%8C%85%E9%94%99%E8%AF%AF%E6%98%BE%E7%A4%BA/Drivers/STM32F1xx_HAL_Driver/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/5%E7%99%BD%E5%90%8D%E5%8D%95%E5%BF%83%E8%B7%B3%E5%8C%85%E9%94%99%E8%AF%AF%E6%98%BE%E7%A4%BA/cmake/stm32cubemx/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/6%E4%B8%8B%E8%A1%8C%E5%91%BD%E4%BB%A4%E8%A7%A3%E6%9E%90/cmake-build-debug/CMakeFiles/clion-Debug-log.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/7ota%E5%8D%87%E7%BA%A7%E7%A8%8B%E5%BA%8F/CMakeLists.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/7ota%E5%8D%87%E7%BA%A7%E7%A8%8B%E5%BA%8F/Drivers/CMSIS/Device/ST/STM32F1xx/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/7ota%E5%8D%87%E7%BA%A7%E7%A8%8B%E5%BA%8F/Drivers/CMSIS/LICENSE.txt
+  - https://raw.githubusercontent.com/vivycode/CAN-MCU-/main/f103%E9%83%A8%E5%88%86/7ota%E5%8D%87%E7%BA%A7%E7%A8%8B%E5%BA%8F/Drivers/STM32F1xx_HAL_Driver/LICENSE.txt
+
 ### [vk951/Analytics-Vidhya-Jobathon-Event](https://github.com/vk951/Analytics-Vidhya-Jobathon-Event)
 
 - Description: Case was related to the domain of HR Analytics where we need to determine whether the list of employees will leave the organization or not based on past 2 year employee data 
@@ -45832,8 +48124,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Discord scam and phishing detection bot. Self-hosted and open source. Blocks scam images with perceptual hashes (pHash) and phishing domains with a maintained blocklist. discord.js, SQLite, MIT.
 - Stars: 1; archived: False; fork: False
 - Search queries: scam domains blocklist
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/vorlaxen-labs/scam-lens-for-discord/main/data/text/domains.txt
 
 ### [vuquangchien2208/VQC](https://github.com/vuquangchien2208/VQC)
 
@@ -45864,8 +48157,10 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: Privacy-first browser shell with an embedded MITM filter proxy (EasyPrivacy + EasyList) and optional Tor routing via arti. Tauri/Rust.
 - Stars: 2; archived: False; fork: False
 - Search queries: EasyList EasyPrivacy
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/w1ck3ds0d4/BlueFlame/main/public/fonts/jetbrains-mono/OFL.txt
+  - https://raw.githubusercontent.com/w1ck3ds0d4/BlueFlame/main/src/fonts/OFL.txt
 
 ### [w5027901-source/proxy-rules](https://github.com/w5027901-source/proxy-rules)
 
@@ -46305,8 +48600,11 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: DNS过滤广告规则&&一些其它的
 - Stars: 1; archived: False; fork: False
 - Search queries: DNS过滤规则
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 3
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/xdun/g2ds/master/DNS_ADGuard.txt
+  - https://raw.githubusercontent.com/xdun/g2ds/master/china.txt
+  - https://raw.githubusercontent.com/xdun/g2ds/master/china_v6.txt
 
 ### [xheiop/easylist-loon-rules](https://github.com/xheiop/easylist-loon-rules)
 
@@ -46442,6 +48740,15 @@ MNE-Python is BSD-licenced (3 clause):
 - Search queries: 开源分流规则, 网络规则集
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
+
+### [xier-vecto/Xier-rss-daily-brief-Skill](https://github.com/xier-vecto/Xier-rss-daily-brief-Skill)
+
+- Description: 一个可配置的公开信源日报 Skill，用来帮不同用户建立自己的信息判断系统。它的核心价值是降噪：先理解用户是谁、为什么读、读给谁，再决定信源、评分规则、价值视角和日报格式，最后把 RSS / 网页 / newsletter / podcast 这类高噪声公开信息流，转成可读、可用、可持续自动化的 Markdown / HTML 日报。
+- Stars: 1; archived: False; fork: False
+- Search queries: 开源分流规则
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/xier-vecto/Xier-rss-daily-brief-Skill/main/scripts/requirements.txt
 
 ### [xingren2020/github_blackmatrix7_ios_rule_script](https://github.com/xingren2020/github_blackmatrix7_ios_rule_script)
 
@@ -46751,6 +49058,15 @@ MNE-Python is BSD-licenced (3 clause):
 - Curated seed links: 0
   - https://raw.githubusercontent.com/yh-zero/go-zero-admin/main/go-zero-admin/docker/nginx/nginx.conf
 
+### [yicko/SysScanGUI](https://github.com/yicko/SysScanGUI)
+
+- Description: Windows 系统进程与服务安全扫描器（PySide6 GUI）· 进程/服务/网络/持久化采集 + 可解释风险规则 + 一键处置与回滚
+- Stars: 1; archived: False; fork: False
+- Search queries: 网络规则集
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/yicko/SysScanGUI/main/requirements.txt
+
 ### [yindudegugezhanghao-lgtm/hk-brokers-rules](https://github.com/yindudegugezhanghao-lgtm/hk-brokers-rules)
 
 - Description: 面向 Mihomo / Clash 的免费开源香港券商域名分流规则库，提供经核验的 LIST、YAML 和 MRS 规则集。
@@ -46770,7 +49086,7 @@ MNE-Python is BSD-licenced (3 clause):
 ### [yokoffing/NextDNS-Config](https://github.com/yokoffing/NextDNS-Config)
 
 - Description: Setup guide for NextDNS, a DoH proxy with advanced capabilities
-- Stars: 3218; archived: False; fork: False
+- Stars: 3220; archived: False; fork: False
 - Search queries: privacy DNS blocklist
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
@@ -46913,6 +49229,32 @@ MNE-Python is BSD-licenced (3 clause):
   - https://raw.githubusercontent.com/yubisyuu/clash-rules/main/rules/Zinvest/Zinvest.list
   - https://raw.githubusercontent.com/yubisyuu/clash-rules/main/rules/Zircon/Zircon.list
   - https://raw.githubusercontent.com/yubisyuu/clash-rules/main/rules/uSmart/uSmart.list
+
+### [yvhcel888/flappy-bird-tiny-cnn](https://github.com/yvhcel888/flappy-bird-tiny-cnn)
+
+- Description: 一个可以读完的微型 CNN 案例：规则老师采集 17 万帧 → 1.66M 参数小网络行为克隆 → CPU 1.3ms 实时玩 Flappy Bird，五档难度全通、地狱单局 141 分。PyTorch + Pygame，全流程可复现。
+- Stars: 1; archived: False; fork: False
+- Search queries: 网络规则集
+- README / curated seed rule-list links: 6
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/yvhcel888/flappy-bird-tiny-cnn/main/font/OFL.txt
+  - https://raw.githubusercontent.com/yvhcel888/flappy-bird-tiny-cnn/main/img/bird/Blue%20Bird%20Sprite%20Sheets/bevouliin.com.txt.txt
+  - https://raw.githubusercontent.com/yvhcel888/flappy-bird-tiny-cnn/main/img/bird/Flappy%20Pink%20Bird/get%20more%20at%20bevouliin_dot_com.txt
+  - https://raw.githubusercontent.com/yvhcel888/flappy-bird-tiny-cnn/main/img/bird/Free%20Green%20Flappy%20Stupid%20Bird%20sprite%20sheets/get%20more%20at%20bevouliin_dot_com.txt
+  - https://raw.githubusercontent.com/yvhcel888/flappy-bird-tiny-cnn/main/img/bird/flying%20flappy%20bird%20game%20asset%20sprite%20sheets%20art/get%20more%20at%20bevouliin_dot_com.txt
+  - https://raw.githubusercontent.com/yvhcel888/flappy-bird-tiny-cnn/main/requirements.txt
+
+### [yykweb/westweb](https://github.com/yykweb/westweb)
+
+- Description: 西部数据接口服务平台，集成主机销售与域名销售功能！
+- Stars: 1; archived: False; fork: False
+- Search queries: 域名数据集
+- README / curated seed rule-list links: 4
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/yykweb/westweb/master/resource/admin/js/DatePicker/%E5%BC%80%E5%8F%91%E5%8C%85/readme.txt
+  - https://raw.githubusercontent.com/yykweb/westweb/master/resource/admin/js/editor/asp.net/README.txt
+  - https://raw.githubusercontent.com/yykweb/westweb/master/resource/admin/js/editor/jsp/README.txt
+  - https://raw.githubusercontent.com/yykweb/westweb/master/resource/admin/js/editor/license.txt
 
 ### [yyzdrew/sift-adblocker](https://github.com/yyzdrew/sift-adblocker)
 
@@ -47164,6 +49506,15 @@ MNE-Python is BSD-licenced (3 clause):
 - README / curated seed rule-list links: 0
 - Curated seed links: 0
 
+### [zhougb10/luci-app-device-access](https://github.com/zhougb10/luci-app-device-access)
+
+- Description: OpenWRT LuCI 插件 - 设备访问控制/域名白名单管理
+- Stars: 1; archived: False; fork: False
+- Search queries: 域名白名单
+- README / curated seed rule-list links: 1
+- Curated seed links: 0
+  - https://raw.githubusercontent.com/zhougb10/luci-app-device-access/master/root/usr/share/device-access/websites.list
+
 ### [zhouzhouprogram/Shadowrocket-ADBlock-Rules](https://github.com/zhouzhouprogram/Shadowrocket-ADBlock-Rules)
 
 - Description: 提供多款 Shadowrocket 规则，带广告过滤功能。用于 iOS 未越狱设备选择性地自动翻墙。
@@ -47246,8 +49597,9 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: 域名白名单
 - Stars: 1; archived: False; fork: False
 - Search queries: 域名白名单
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 1
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/zjhiphop/white-domains/master/result/chinaz_top_domains.txt
 
 ### [zojyjg/loon-cn-bank-direct](https://github.com/zojyjg/loon-cn-bank-direct)
 
@@ -47262,8 +49614,10 @@ MNE-Python is BSD-licenced (3 clause):
 - Description: nxdomain -- domain block list creator
 - Stars: 1; archived: False; fork: False
 - Search queries: adblock domain list
-- README / curated seed rule-list links: 0
+- README / curated seed rule-list links: 2
 - Curated seed links: 0
+  - https://raw.githubusercontent.com/zopieux/nxdomain/master/tests/hosts.txt
+  - https://raw.githubusercontent.com/zopieux/nxdomain/master/tests/simple.txt
 
 ### [zpc1314521/PCL2](https://github.com/zpc1314521/PCL2)
 

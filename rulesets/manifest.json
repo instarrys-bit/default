@@ -50,6 +50,38 @@
       "bootstrap_enqueued": false
     },
     {
+      "id": "auto-badmojr-1hosts-640464a4",
+      "sha256": "f2d89a0f4b60d420a852419352473c2d3bde02b4a9772dd2cc7eb448200bd070",
+      "entries": 102241,
+      "classification": "REJECT",
+      "role": "primary_candidate_source",
+      "lineage_status": "unverified",
+      "upstream_repositories": [],
+      "status": "CURRENT",
+      "error": null,
+      "pending_confirmations": 0,
+      "new_entries": 102241,
+      "removed_entries": 0,
+      "baseline_initialized": true,
+      "bootstrap_enqueued": true
+    },
+    {
+      "id": "auto-furkan-bayrak-lg-tv-blocklist-369778d8",
+      "sha256": "caca78127b92867018273dac8b15ea282f6b2e379a25fd93afa97ebd2fb3f087",
+      "entries": 115,
+      "classification": "REJECT",
+      "role": "primary_candidate_source",
+      "lineage_status": "unverified",
+      "upstream_repositories": [],
+      "status": "CURRENT",
+      "error": null,
+      "pending_confirmations": 0,
+      "new_entries": 115,
+      "removed_entries": 0,
+      "baseline_initialized": true,
+      "bootstrap_enqueued": true
+    },
+    {
       "id": "auto-gatework-surge-rules-da7f8038",
       "sha256": "b8323cbd838d959e82746528c88cf18c14d3b011a921269de9e4f3dbccf6cf51",
       "entries": 4451,
@@ -76,10 +108,10 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 52060,
+      "new_entries": 0,
       "removed_entries": 0,
-      "baseline_initialized": true,
-      "bootstrap_enqueued": true
+      "baseline_initialized": false,
+      "bootstrap_enqueued": false
     },
     {
       "id": "auto-johnshall-shadowrocket-adblock-rules-forever-68903a21",
@@ -92,10 +124,10 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 30183,
+      "new_entries": 0,
       "removed_entries": 0,
-      "baseline_initialized": true,
-      "bootstrap_enqueued": true
+      "baseline_initialized": false,
+      "bootstrap_enqueued": false
     },
     {
       "id": "auto-jovanykoch-rules-9660520d",
@@ -112,6 +144,22 @@
       "removed_entries": 0,
       "baseline_initialized": false,
       "bootstrap_enqueued": false
+    },
+    {
+      "id": "auto-nthack-shadowrocket-adblock-rules-easy-d42211d2",
+      "sha256": "819efbd0ea0f13f53a826959217cc20faff000d264c1f32c62f8932676b6eeef",
+      "entries": 5546,
+      "classification": "PROXY",
+      "role": "primary_candidate_source",
+      "lineage_status": "unverified",
+      "upstream_repositories": [],
+      "status": "CURRENT",
+      "error": null,
+      "pending_confirmations": 0,
+      "new_entries": 5546,
+      "removed_entries": 0,
+      "baseline_initialized": true,
+      "bootstrap_enqueued": true
     },
     {
       "id": "clashfx-cn-apps-direct",
@@ -209,8 +257,8 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 1031,
-      "removed_entries": 992,
+      "new_entries": 0,
+      "removed_entries": 0,
       "baseline_initialized": false,
       "bootstrap_enqueued": false
     },
@@ -256,44 +304,44 @@
       "bootstrap_enqueued": false
     }
   ],
-  "source_count": 10,
-  "policy_conflict_total": 575,
+  "source_count": 13,
+  "policy_conflict_total": 717,
   "lineage_verified_sources": 0,
-  "lineage_unverified_sources": 8,
+  "lineage_unverified_sources": 11,
   "lineage_partial_sources": 2,
-  "lineage_not_fully_verified_sources": 10,
+  "lineage_not_fully_verified_sources": 13,
   "source_candidate_summary": {
     "DIRECT": {
-      "candidate_publishers": 5,
-      "eligible_publishers": 4,
-      "independent_eligible_groups": 2,
-      "candidate_files": 7,
+      "candidate_publishers": 2,
+      "eligible_publishers": 0,
+      "independent_eligible_groups": 0,
+      "candidate_files": 3,
       "cross_policy_conflict_count": 2,
-      "activation_ready": true
+      "activation_ready": false
     },
     "PROXY": {
-      "candidate_publishers": 6,
-      "eligible_publishers": 5,
-      "independent_eligible_groups": 2,
-      "candidate_files": 11,
+      "candidate_publishers": 3,
+      "eligible_publishers": 3,
+      "independent_eligible_groups": 3,
+      "candidate_files": 6,
       "cross_policy_conflict_count": 2,
       "activation_ready": true
     },
     "REJECT": {
-      "candidate_publishers": 7,
-      "eligible_publishers": 4,
-      "independent_eligible_groups": 2,
-      "candidate_files": 90,
+      "candidate_publishers": 9,
+      "eligible_publishers": 5,
+      "independent_eligible_groups": 5,
+      "candidate_files": 47,
       "cross_policy_conflict_count": 2,
       "activation_ready": true
     }
   },
   "rule_count": {
-    "DIRECT": 133,
-    "PROXY": 246,
+    "DIRECT": 143,
+    "PROXY": 3222,
     "REJECT": 6
   },
-  "published_rule_total": 385,
+  "published_rule_total": 3371,
   "max_published_rules": 30000,
   "queued_rule_total": 0,
   "baseline_conflict_hold_count": 0,
@@ -301,37 +349,45 @@
   "pending_queue": "rulesets/pending_queue.json",
   "rule_lifecycle": {
     "DIRECT": {
-      "previous_count": 131,
-      "current_count": 133,
-      "added_count": 2,
+      "previous_count": 133,
+      "current_count": 143,
+      "added_count": 10,
       "removed_count": 0,
-      "previous_sha256": "1d1a4d587f822c226f40052da73221eb937b28643a4ec4bb9018cac3c2d5d588",
-      "current_sha256": "ab88d04857b0a19e6510179b69d10d51b8ac8087a27b2957eb532dd648f76035",
+      "previous_sha256": "ab88d04857b0a19e6510179b69d10d51b8ac8087a27b2957eb532dd648f76035",
+      "current_sha256": "c56eb38be10d0b8891526cc4bba2296593bee32db57906efc32a6cafb64fb799",
       "added_sample": [
-        "DOMAIN-SUFFIX,10010.com",
-        "DOMAIN-SUFFIX,bdimg.com"
+        "DOMAIN-SUFFIX,178.com",
+        "DOMAIN-SUFFIX,3dmgame.com",
+        "DOMAIN-SUFFIX,allawntech.com",
+        "DOMAIN-SUFFIX,bdurl.net",
+        "DOMAIN-SUFFIX,dangdang.com",
+        "DOMAIN-SUFFIX,douyu.com",
+        "DOMAIN-SUFFIX,duowan.com",
+        "DOMAIN-SUFFIX,huaweicloud.com",
+        "DOMAIN-SUFFIX,ksyun.com",
+        "DOMAIN-SUFFIX,oppomobile.com"
       ],
       "removed_sample": [],
       "baseline_initialized": false
     },
     "PROXY": {
-      "previous_count": 205,
-      "current_count": 246,
-      "added_count": 41,
+      "previous_count": 246,
+      "current_count": 3222,
+      "added_count": 2976,
       "removed_count": 0,
-      "previous_sha256": "1be8ecc699ee8ae38542203c2bdb7b546c93016c931ce8a31064eb0d5bd83011",
-      "current_sha256": "b2900de41fd918de83e0c100be65899ac0f2bdfa5947313ea8e9678c41bba3e4",
+      "previous_sha256": "b2900de41fd918de83e0c100be65899ac0f2bdfa5947313ea8e9678c41bba3e4",
+      "current_sha256": "0ea3f0828b35a38297e19d24d57702af218347ec4ebf8fd912b90f4d51570c84",
       "added_sample": [
-        "DOMAIN-SUFFIX,1e100.net",
-        "DOMAIN-SUFFIX,akamaihd.net",
-        "DOMAIN-SUFFIX,aol.com",
-        "DOMAIN-SUFFIX,apk-dl.com",
-        "DOMAIN-SUFFIX,bit.com",
-        "DOMAIN-SUFFIX,cloudmagic.com",
-        "DOMAIN-SUFFIX,danilo.to",
-        "DOMAIN-SUFFIX,daolan.net",
-        "DOMAIN-SUFFIX,dockerhub.com",
-        "DOMAIN-SUFFIX,fastly.net"
+        "DOMAIN-SUFFIX,10beasts.net",
+        "DOMAIN-SUFFIX,10conditionsoflove.com",
+        "DOMAIN-SUFFIX,10musume.com",
+        "DOMAIN-SUFFIX,123av.com",
+        "DOMAIN-SUFFIX,12vpn.com",
+        "DOMAIN-SUFFIX,12vpn.net",
+        "DOMAIN-SUFFIX,1337x.to",
+        "DOMAIN-SUFFIX,141jj.com",
+        "DOMAIN-SUFFIX,141tube.com",
+        "DOMAIN-SUFFIX,1688.com.au"
       ],
       "removed_sample": [],
       "baseline_initialized": false
@@ -348,31 +404,31 @@
       "baseline_initialized": false
     }
   },
-  "reviewed_total": 89271,
-  "approved_total": 384,
-  "held_total": 88887,
+  "reviewed_total": 165535,
+  "approved_total": 3370,
+  "held_total": 162165,
   "reject_manual_approval_required": true,
   "reject_manual_approval_count": 0,
-  "reject_manual_hold_count": 33560,
+  "reject_manual_hold_count": 57825,
   "status_count": {
-    "ALREADY_COVERED": 9143,
-    "APPROVED": 33944,
-    "CONFLICT": 18707,
-    "POLICY_CONFLICT": 575,
-    "REVIEW": 26889,
-    "RISK_HOLD": 13
+    "ALREADY_COVERED": 9576,
+    "APPROVED": 61195,
+    "CONFLICT": 36411,
+    "POLICY_CONFLICT": 717,
+    "REVIEW": 57620,
+    "RISK_HOLD": 16
   },
   "deterministic_review_progress": {
-    "candidate_total": 89271,
-    "approved_total": 384,
-    "held_total": 88887,
+    "candidate_total": 165535,
+    "approved_total": 3370,
+    "held_total": 162165,
     "status_count": {
-      "ALREADY_COVERED": 9143,
-      "APPROVED": 33944,
-      "CONFLICT": 18707,
-      "POLICY_CONFLICT": 575,
-      "REVIEW": 26889,
-      "RISK_HOLD": 13
+      "ALREADY_COVERED": 9576,
+      "APPROVED": 61195,
+      "CONFLICT": 36411,
+      "POLICY_CONFLICT": 717,
+      "REVIEW": 57620,
+      "RISK_HOLD": 16
     }
   },
   "format": "Standalone Shadowrocket domain RULE-SET lists: DOMAIN,<domain> and DOMAIN-SUFFIX,<domain>; source scope is preserved and policy is assigned by the RULE-SET reference.",

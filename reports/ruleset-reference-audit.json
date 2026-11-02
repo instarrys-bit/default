@@ -4,19 +4,19 @@
   "config_rule_set_reference_count": 3,
   "references": [
     {
-      "line": 1898,
+      "line": 1897,
       "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/reject.list",
       "file": "reject.list",
       "policy": "REJECT"
     },
     {
-      "line": 1899,
+      "line": 1898,
       "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list",
       "file": "proxy.list",
       "policy": "PROXY"
     },
     {
-      "line": 1900,
+      "line": 1899,
       "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list",
       "file": "direct.list",
       "policy": "DIRECT"
@@ -30,17 +30,17 @@
   "file_stats": {
     "direct.list": {
       "policy": "DIRECT",
-      "line_count": 133,
-      "valid_domain_lines": 133,
+      "line_count": 143,
+      "valid_domain_lines": 143,
       "exact_domain_lines": 6,
-      "suffix_domain_lines": 127
+      "suffix_domain_lines": 137
     },
     "proxy.list": {
       "policy": "PROXY",
-      "line_count": 246,
-      "valid_domain_lines": 246,
+      "line_count": 3222,
+      "valid_domain_lines": 3222,
       "exact_domain_lines": 0,
-      "suffix_domain_lines": 246
+      "suffix_domain_lines": 3222
     },
     "reject.list": {
       "policy": "REJECT",
@@ -62,17 +62,17 @@
     ],
     "marker_lines": {
       "layer_1": 30,
-      "layer_2": 600,
-      "layer_3": 636,
-      "layer_4": 1177,
-      "layer_5": 1725,
-      "original_rules_end": 1789,
-      "external_rulesets": 1814,
-      "geoip_asn_start": 1901,
-      "geoip_asn_cn": 1926,
-      "geoip_cn_rule": 1979,
-      "layer_6": 1980,
-      "final_rule": 1981
+      "layer_2": 599,
+      "layer_3": 635,
+      "layer_4": 1176,
+      "layer_5": 1724,
+      "original_rules_end": 1788,
+      "external_rulesets": 1813,
+      "geoip_asn_start": 1900,
+      "geoip_asn_cn": 1925,
+      "geoip_cn_rule": 1978,
+      "layer_6": 1979,
+      "final_rule": 1980
     },
     "passed": true
   },

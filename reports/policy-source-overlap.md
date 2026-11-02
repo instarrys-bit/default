@@ -2,8 +2,8 @@
 
 This report compares normalized domain sets across discovered publisher feeds. It is informational only: overlap does not prove common ancestry, and low overlap does not prove independence.
 
-- Feeds fetched: **166**
-- Cross-policy conflict domains: **3473**
+- Feeds fetched: **196**
+- Cross-policy conflict domains: **3497**
 
 | Policy | Publisher A | Publisher B | A domains | B domains | Shared | Smaller-set overlap | Jaccard |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -49,6 +49,7 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | PROXY | ACL4SSR/ACL4SSR | YanbingJiang/Shadowrocket_diy_rules | 6816 | 5815 | 5156 | 88.7% | 69.0% |
 | PROXY | ACL4SSR/ACL4SSR | gatework/surge-rules | 6816 | 4451 | 3786 | 85.1% | 50.6% |
 | PROXY | ACL4SSR/ACL4SSR | h2y/Shadowrocket-ADBlock-Rules | 6816 | 5575 | 5040 | 90.4% | 68.6% |
+| PROXY | ACL4SSR/ACL4SSR | ignaciocastro/a-dove-is-dumb | 6816 | 7602 | 0 | 0.0% | 0.0% |
 | PROXY | ACL4SSR/ACL4SSR | nthack/Shadowrocket-ADBlock-Rules-Easy | 6816 | 5575 | 5040 | 90.4% | 68.6% |
 | PROXY | ACL4SSR/ACL4SSR | sve1r/Rules-For-Quantumult-X | 6816 | 812 | 371 | 45.7% | 5.1% |
 | PROXY | ACL4SSR/ACL4SSR | tickmao/Rules | 6816 | 7367 | 6644 | 97.5% | 88.1% |
@@ -59,6 +60,7 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | PROXY | Hackl0us/SS-Rule-Snippet | YanbingJiang/Shadowrocket_diy_rules | 493 | 5815 | 284 | 57.6% | 4.7% |
 | PROXY | Hackl0us/SS-Rule-Snippet | gatework/surge-rules | 493 | 4451 | 226 | 45.8% | 4.8% |
 | PROXY | Hackl0us/SS-Rule-Snippet | h2y/Shadowrocket-ADBlock-Rules | 493 | 5575 | 270 | 54.8% | 4.7% |
+| PROXY | Hackl0us/SS-Rule-Snippet | ignaciocastro/a-dove-is-dumb | 493 | 7602 | 0 | 0.0% | 0.0% |
 | PROXY | Hackl0us/SS-Rule-Snippet | nthack/Shadowrocket-ADBlock-Rules-Easy | 493 | 5575 | 270 | 54.8% | 4.7% |
 | PROXY | Hackl0us/SS-Rule-Snippet | sve1r/Rules-For-Quantumult-X | 493 | 812 | 453 | 91.9% | 53.2% |
 | PROXY | Hackl0us/SS-Rule-Snippet | tickmao/Rules | 493 | 7367 | 464 | 94.1% | 6.3% |
@@ -68,6 +70,7 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | PROXY | Johnshall/Shadowrocket-ADBlock-Rules-Forever | YanbingJiang/Shadowrocket_diy_rules | 30183 | 5815 | 3739 | 64.3% | 11.6% |
 | PROXY | Johnshall/Shadowrocket-ADBlock-Rules-Forever | gatework/surge-rules | 30183 | 4451 | 4419 | 99.3% | 14.6% |
 | PROXY | Johnshall/Shadowrocket-ADBlock-Rules-Forever | h2y/Shadowrocket-ADBlock-Rules | 30183 | 5575 | 3619 | 64.9% | 11.3% |
+| PROXY | Johnshall/Shadowrocket-ADBlock-Rules-Forever | ignaciocastro/a-dove-is-dumb | 30183 | 7602 | 0 | 0.0% | 0.0% |
 | PROXY | Johnshall/Shadowrocket-ADBlock-Rules-Forever | nthack/Shadowrocket-ADBlock-Rules-Easy | 30183 | 5575 | 3619 | 64.9% | 11.3% |
 | PROXY | Johnshall/Shadowrocket-ADBlock-Rules-Forever | sve1r/Rules-For-Quantumult-X | 30183 | 812 | 300 | 36.9% | 1.0% |
 | PROXY | Johnshall/Shadowrocket-ADBlock-Rules-Forever | tickmao/Rules | 30183 | 7367 | 4933 | 67.0% | 15.1% |
@@ -76,6 +79,7 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | PROXY | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | YanbingJiang/Shadowrocket_diy_rules | 39456 | 5815 | 4945 | 85.0% | 12.3% |
 | PROXY | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | gatework/surge-rules | 39456 | 4451 | 4117 | 92.5% | 10.3% |
 | PROXY | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | h2y/Shadowrocket-ADBlock-Rules | 39456 | 5575 | 4820 | 86.5% | 12.0% |
+| PROXY | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | ignaciocastro/a-dove-is-dumb | 39456 | 7602 | 0 | 0.0% | 0.0% |
 | PROXY | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | nthack/Shadowrocket-ADBlock-Rules-Easy | 39456 | 5575 | 4820 | 86.5% | 12.0% |
 | PROXY | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | sve1r/Rules-For-Quantumult-X | 39456 | 812 | 324 | 39.9% | 0.8% |
 | PROXY | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | tickmao/Rules | 39456 | 7367 | 5717 | 77.6% | 13.9% |
@@ -83,22 +87,30 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | PROXY | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 39456 | 4425 | 4102 | 92.7% | 10.3% |
 | PROXY | YanbingJiang/Shadowrocket_diy_rules | gatework/surge-rules | 5815 | 4451 | 2913 | 65.4% | 39.6% |
 | PROXY | YanbingJiang/Shadowrocket_diy_rules | h2y/Shadowrocket-ADBlock-Rules | 5815 | 5575 | 5575 | 100.0% | 95.9% |
+| PROXY | YanbingJiang/Shadowrocket_diy_rules | ignaciocastro/a-dove-is-dumb | 5815 | 7602 | 0 | 0.0% | 0.0% |
 | PROXY | YanbingJiang/Shadowrocket_diy_rules | nthack/Shadowrocket-ADBlock-Rules-Easy | 5815 | 5575 | 5575 | 100.0% | 95.9% |
 | PROXY | YanbingJiang/Shadowrocket_diy_rules | sve1r/Rules-For-Quantumult-X | 5815 | 812 | 313 | 38.5% | 5.0% |
 | PROXY | YanbingJiang/Shadowrocket_diy_rules | tickmao/Rules | 5815 | 7367 | 5055 | 86.9% | 62.2% |
 | PROXY | YanbingJiang/Shadowrocket_diy_rules | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 5815 | 30166 | 3739 | 64.3% | 11.6% |
 | PROXY | YanbingJiang/Shadowrocket_diy_rules | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 5815 | 4425 | 2945 | 66.6% | 40.4% |
 | PROXY | gatework/surge-rules | h2y/Shadowrocket-ADBlock-Rules | 4451 | 5575 | 2816 | 63.3% | 39.1% |
+| PROXY | gatework/surge-rules | ignaciocastro/a-dove-is-dumb | 4451 | 7602 | 0 | 0.0% | 0.0% |
 | PROXY | gatework/surge-rules | nthack/Shadowrocket-ADBlock-Rules-Easy | 4451 | 5575 | 2816 | 63.3% | 39.1% |
 | PROXY | gatework/surge-rules | sve1r/Rules-For-Quantumult-X | 4451 | 812 | 248 | 30.5% | 4.9% |
 | PROXY | gatework/surge-rules | tickmao/Rules | 4451 | 7367 | 4131 | 92.8% | 53.7% |
 | PROXY | gatework/surge-rules | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 4451 | 30166 | 4419 | 99.3% | 14.6% |
 | PROXY | gatework/surge-rules | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 4451 | 4425 | 4390 | 99.2% | 97.9% |
+| PROXY | h2y/Shadowrocket-ADBlock-Rules | ignaciocastro/a-dove-is-dumb | 5575 | 7602 | 0 | 0.0% | 0.0% |
 | PROXY | h2y/Shadowrocket-ADBlock-Rules | nthack/Shadowrocket-ADBlock-Rules-Easy | 5575 | 5575 | 5575 | 100.0% | 100.0% |
 | PROXY | h2y/Shadowrocket-ADBlock-Rules | sve1r/Rules-For-Quantumult-X | 5575 | 812 | 286 | 35.2% | 4.7% |
 | PROXY | h2y/Shadowrocket-ADBlock-Rules | tickmao/Rules | 5575 | 7367 | 4938 | 88.6% | 61.7% |
 | PROXY | h2y/Shadowrocket-ADBlock-Rules | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 5575 | 30166 | 3620 | 64.9% | 11.3% |
 | PROXY | h2y/Shadowrocket-ADBlock-Rules | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 5575 | 4425 | 2848 | 64.4% | 39.8% |
+| PROXY | ignaciocastro/a-dove-is-dumb | nthack/Shadowrocket-ADBlock-Rules-Easy | 7602 | 5575 | 0 | 0.0% | 0.0% |
+| PROXY | ignaciocastro/a-dove-is-dumb | sve1r/Rules-For-Quantumult-X | 7602 | 812 | 1 | 0.1% | 0.0% |
+| PROXY | ignaciocastro/a-dove-is-dumb | tickmao/Rules | 7602 | 7367 | 0 | 0.0% | 0.0% |
+| PROXY | ignaciocastro/a-dove-is-dumb | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 7602 | 30166 | 0 | 0.0% | 0.0% |
+| PROXY | ignaciocastro/a-dove-is-dumb | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 7602 | 4425 | 0 | 0.0% | 0.0% |
 | PROXY | nthack/Shadowrocket-ADBlock-Rules-Easy | sve1r/Rules-For-Quantumult-X | 5575 | 812 | 286 | 35.2% | 4.7% |
 | PROXY | nthack/Shadowrocket-ADBlock-Rules-Easy | tickmao/Rules | 5575 | 7367 | 4938 | 88.6% | 61.7% |
 | PROXY | nthack/Shadowrocket-ADBlock-Rules-Easy | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 5575 | 30166 | 3620 | 64.9% | 11.3% |
@@ -122,10 +134,13 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | GoodnessJSON/PiHole-Whitelist | hagezi/dns-blocklists | 270 | 670671 | 52 | 19.3% | 0.0% |
 | REJECT | GoodnessJSON/PiHole-Whitelist | marco-acorte/antispam-it | 270 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | GoodnessJSON/PiHole-Whitelist | nthack/Shadowrocket-ADBlock-Rules-Easy | 270 | 16125 | 3 | 1.1% | 0.0% |
+| REJECT | GoodnessJSON/PiHole-Whitelist | pengelana/blocklist | 270 | 226570 | 2 | 0.7% | 0.0% |
 | REJECT | GoodnessJSON/PiHole-Whitelist | phishdestroy/destroylist | 270 | 234723 | 0 | 0.0% | 0.0% |
+| REJECT | GoodnessJSON/PiHole-Whitelist | sefinek/Sefinek-Blocklist-Collection | 270 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | GoodnessJSON/PiHole-Whitelist | sve1r/Rules-For-Quantumult-X | 270 | 106541 | 35 | 13.0% | 0.0% |
 | REJECT | GoodnessJSON/PiHole-Whitelist | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 270 | 52045 | 21 | 7.8% | 0.0% |
-| REJECT | GoodnessJSON/PiHole-Whitelist | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 270 | 48729 | 12 | 4.4% | 0.0% |
+| REJECT | GoodnessJSON/PiHole-Whitelist | zangadoprojets/pi-hole-blocklist | 270 | 57637 | 2 | 0.7% | 0.0% |
+| REJECT | GoodnessJSON/PiHole-Whitelist | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 270 | 49086 | 12 | 4.4% | 0.0% |
 | REJECT | Hackl0us/SS-Rule-Snippet | Isaaker/Spotify-AdsList | 580 | 155422 | 224 | 38.6% | 0.1% |
 | REJECT | Hackl0us/SS-Rule-Snippet | Johnshall/Shadowrocket-ADBlock-Rules-Forever | 580 | 52060 | 183 | 31.6% | 0.3% |
 | REJECT | Hackl0us/SS-Rule-Snippet | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | 580 | 45081 | 182 | 31.4% | 0.4% |
@@ -138,10 +153,13 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | Hackl0us/SS-Rule-Snippet | hagezi/dns-blocklists | 580 | 670671 | 239 | 41.2% | 0.0% |
 | REJECT | Hackl0us/SS-Rule-Snippet | marco-acorte/antispam-it | 580 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | Hackl0us/SS-Rule-Snippet | nthack/Shadowrocket-ADBlock-Rules-Easy | 580 | 16125 | 137 | 23.6% | 0.8% |
+| REJECT | Hackl0us/SS-Rule-Snippet | pengelana/blocklist | 580 | 226570 | 28 | 4.8% | 0.0% |
 | REJECT | Hackl0us/SS-Rule-Snippet | phishdestroy/destroylist | 580 | 234723 | 0 | 0.0% | 0.0% |
+| REJECT | Hackl0us/SS-Rule-Snippet | sefinek/Sefinek-Blocklist-Collection | 580 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | Hackl0us/SS-Rule-Snippet | sve1r/Rules-For-Quantumult-X | 580 | 106541 | 511 | 88.1% | 0.5% |
 | REJECT | Hackl0us/SS-Rule-Snippet | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 580 | 52045 | 136 | 23.4% | 0.3% |
-| REJECT | Hackl0us/SS-Rule-Snippet | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 580 | 48729 | 101 | 17.4% | 0.2% |
+| REJECT | Hackl0us/SS-Rule-Snippet | zangadoprojets/pi-hole-blocklist | 580 | 57637 | 0 | 0.0% | 0.0% |
+| REJECT | Hackl0us/SS-Rule-Snippet | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 580 | 49086 | 101 | 17.4% | 0.2% |
 | REJECT | Isaaker/Spotify-AdsList | Johnshall/Shadowrocket-ADBlock-Rules-Forever | 155422 | 52060 | 4121 | 7.9% | 2.0% |
 | REJECT | Isaaker/Spotify-AdsList | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | 155422 | 45081 | 4660 | 10.3% | 2.4% |
 | REJECT | Isaaker/Spotify-AdsList | TG-Twilight/AWAvenue-Ads-Rule | 155422 | 969 | 208 | 21.5% | 0.1% |
@@ -153,10 +171,13 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | Isaaker/Spotify-AdsList | hagezi/dns-blocklists | 155422 | 670671 | 17185 | 11.1% | 2.1% |
 | REJECT | Isaaker/Spotify-AdsList | marco-acorte/antispam-it | 155422 | 346345 | 3 | 0.0% | 0.0% |
 | REJECT | Isaaker/Spotify-AdsList | nthack/Shadowrocket-ADBlock-Rules-Easy | 155422 | 16125 | 2553 | 15.8% | 1.5% |
+| REJECT | Isaaker/Spotify-AdsList | pengelana/blocklist | 155422 | 226570 | 3134 | 2.0% | 0.8% |
 | REJECT | Isaaker/Spotify-AdsList | phishdestroy/destroylist | 155422 | 234723 | 10 | 0.0% | 0.0% |
+| REJECT | Isaaker/Spotify-AdsList | sefinek/Sefinek-Blocklist-Collection | 155422 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | Isaaker/Spotify-AdsList | sve1r/Rules-For-Quantumult-X | 155422 | 106541 | 9595 | 9.0% | 3.8% |
 | REJECT | Isaaker/Spotify-AdsList | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 155422 | 52045 | 4109 | 7.9% | 2.0% |
-| REJECT | Isaaker/Spotify-AdsList | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 155422 | 48729 | 1880 | 3.9% | 0.9% |
+| REJECT | Isaaker/Spotify-AdsList | zangadoprojets/pi-hole-blocklist | 155422 | 57637 | 18 | 0.0% | 0.0% |
+| REJECT | Isaaker/Spotify-AdsList | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 155422 | 49086 | 1880 | 3.8% | 0.9% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | 52060 | 45081 | 13797 | 30.6% | 16.6% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | TG-Twilight/AWAvenue-Ads-Rule | 52060 | 969 | 64 | 6.6% | 0.1% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | YanbingJiang/Shadowrocket_diy_rules | 52060 | 17028 | 2450 | 14.4% | 3.7% |
@@ -167,10 +188,13 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | hagezi/dns-blocklists | 52060 | 670671 | 50601 | 97.2% | 7.5% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | marco-acorte/antispam-it | 52060 | 346345 | 2 | 0.0% | 0.0% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | nthack/Shadowrocket-ADBlock-Rules-Easy | 52060 | 16125 | 2250 | 14.0% | 3.4% |
+| REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | pengelana/blocklist | 52060 | 226570 | 16404 | 31.5% | 6.3% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | phishdestroy/destroylist | 52060 | 234723 | 11 | 0.0% | 0.0% |
+| REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | sefinek/Sefinek-Blocklist-Collection | 52060 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | sve1r/Rules-For-Quantumult-X | 52060 | 106541 | 21928 | 42.1% | 16.0% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 52060 | 52045 | 51992 | 99.9% | 99.8% |
-| REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 52060 | 48729 | 48729 | 100.0% | 93.6% |
+| REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | zangadoprojets/pi-hole-blocklist | 52060 | 57637 | 0 | 0.0% | 0.0% |
+| REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 52060 | 49086 | 48777 | 99.4% | 93.1% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | TG-Twilight/AWAvenue-Ads-Rule | 45081 | 969 | 61 | 6.3% | 0.1% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | YanbingJiang/Shadowrocket_diy_rules | 45081 | 17028 | 2917 | 17.1% | 4.9% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | anudeepND/whitelist | 45081 | 267 | 21 | 7.9% | 0.0% |
@@ -180,10 +204,13 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | hagezi/dns-blocklists | 45081 | 670671 | 15691 | 34.8% | 2.2% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | marco-acorte/antispam-it | 45081 | 346345 | 2 | 0.0% | 0.0% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | nthack/Shadowrocket-ADBlock-Rules-Easy | 45081 | 16125 | 2718 | 16.9% | 4.6% |
+| REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | pengelana/blocklist | 45081 | 226570 | 10780 | 23.9% | 4.1% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | phishdestroy/destroylist | 45081 | 234723 | 9 | 0.0% | 0.0% |
+| REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | sefinek/Sefinek-Blocklist-Collection | 45081 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | sve1r/Rules-For-Quantumult-X | 45081 | 106541 | 22702 | 50.4% | 17.6% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 45081 | 52045 | 13729 | 30.5% | 16.5% |
-| REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 45081 | 48729 | 10825 | 24.0% | 13.0% |
+| REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | zangadoprojets/pi-hole-blocklist | 45081 | 57637 | 0 | 0.0% | 0.0% |
+| REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 45081 | 49086 | 10825 | 24.0% | 13.0% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | YanbingJiang/Shadowrocket_diy_rules | 969 | 17028 | 96 | 9.9% | 0.5% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | anudeepND/whitelist | 969 | 267 | 1 | 0.4% | 0.1% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | badmojr/1Hosts | 969 | 0 | 0 | 0.0% | 0.0% |
@@ -192,10 +219,13 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | hagezi/dns-blocklists | 969 | 670671 | 733 | 75.6% | 0.1% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | marco-acorte/antispam-it | 969 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | nthack/Shadowrocket-ADBlock-Rules-Easy | 969 | 16125 | 27 | 2.8% | 0.2% |
+| REJECT | TG-Twilight/AWAvenue-Ads-Rule | pengelana/blocklist | 969 | 226570 | 15 | 1.5% | 0.0% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | phishdestroy/destroylist | 969 | 234723 | 0 | 0.0% | 0.0% |
+| REJECT | TG-Twilight/AWAvenue-Ads-Rule | sefinek/Sefinek-Blocklist-Collection | 969 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | sve1r/Rules-For-Quantumult-X | 969 | 106541 | 705 | 72.8% | 0.7% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 969 | 52045 | 63 | 6.5% | 0.1% |
-| REJECT | TG-Twilight/AWAvenue-Ads-Rule | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 969 | 48729 | 38 | 3.9% | 0.1% |
+| REJECT | TG-Twilight/AWAvenue-Ads-Rule | zangadoprojets/pi-hole-blocklist | 969 | 57637 | 1 | 0.1% | 0.0% |
+| REJECT | TG-Twilight/AWAvenue-Ads-Rule | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 969 | 49086 | 38 | 3.9% | 0.1% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | anudeepND/whitelist | 17028 | 267 | 3 | 1.1% | 0.0% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | badmojr/1Hosts | 17028 | 0 | 0 | 0.0% | 0.0% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | furkan-bayrak/lg-tv-blocklist | 17028 | 115 | 0 | 0.0% | 0.0% |
@@ -203,69 +233,108 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | hagezi/dns-blocklists | 17028 | 670671 | 3252 | 19.1% | 0.5% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | marco-acorte/antispam-it | 17028 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | nthack/Shadowrocket-ADBlock-Rules-Easy | 17028 | 16125 | 16125 | 100.0% | 94.7% |
+| REJECT | YanbingJiang/Shadowrocket_diy_rules | pengelana/blocklist | 17028 | 226570 | 1382 | 8.1% | 0.6% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | phishdestroy/destroylist | 17028 | 234723 | 4 | 0.0% | 0.0% |
+| REJECT | YanbingJiang/Shadowrocket_diy_rules | sefinek/Sefinek-Blocklist-Collection | 17028 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | sve1r/Rules-For-Quantumult-X | 17028 | 106541 | 4189 | 24.6% | 3.5% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 17028 | 52045 | 2446 | 14.4% | 3.7% |
-| REJECT | YanbingJiang/Shadowrocket_diy_rules | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 17028 | 48729 | 2326 | 13.7% | 3.7% |
+| REJECT | YanbingJiang/Shadowrocket_diy_rules | zangadoprojets/pi-hole-blocklist | 17028 | 57637 | 0 | 0.0% | 0.0% |
+| REJECT | YanbingJiang/Shadowrocket_diy_rules | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 17028 | 49086 | 2326 | 13.7% | 3.6% |
 | REJECT | anudeepND/whitelist | badmojr/1Hosts | 267 | 0 | 0 | 0.0% | 0.0% |
 | REJECT | anudeepND/whitelist | furkan-bayrak/lg-tv-blocklist | 267 | 115 | 0 | 0.0% | 0.0% |
 | REJECT | anudeepND/whitelist | h2y/Shadowrocket-ADBlock-Rules | 267 | 16125 | 3 | 1.1% | 0.0% |
 | REJECT | anudeepND/whitelist | hagezi/dns-blocklists | 267 | 670671 | 51 | 19.1% | 0.0% |
 | REJECT | anudeepND/whitelist | marco-acorte/antispam-it | 267 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | anudeepND/whitelist | nthack/Shadowrocket-ADBlock-Rules-Easy | 267 | 16125 | 3 | 1.1% | 0.0% |
+| REJECT | anudeepND/whitelist | pengelana/blocklist | 267 | 226570 | 2 | 0.7% | 0.0% |
 | REJECT | anudeepND/whitelist | phishdestroy/destroylist | 267 | 234723 | 0 | 0.0% | 0.0% |
+| REJECT | anudeepND/whitelist | sefinek/Sefinek-Blocklist-Collection | 267 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | anudeepND/whitelist | sve1r/Rules-For-Quantumult-X | 267 | 106541 | 35 | 13.1% | 0.0% |
 | REJECT | anudeepND/whitelist | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 267 | 52045 | 21 | 7.9% | 0.0% |
-| REJECT | anudeepND/whitelist | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 267 | 48729 | 12 | 4.5% | 0.0% |
+| REJECT | anudeepND/whitelist | zangadoprojets/pi-hole-blocklist | 267 | 57637 | 2 | 0.7% | 0.0% |
+| REJECT | anudeepND/whitelist | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 267 | 49086 | 12 | 4.5% | 0.0% |
 | REJECT | badmojr/1Hosts | furkan-bayrak/lg-tv-blocklist | 0 | 115 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | h2y/Shadowrocket-ADBlock-Rules | 0 | 16125 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | hagezi/dns-blocklists | 0 | 670671 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | marco-acorte/antispam-it | 0 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | nthack/Shadowrocket-ADBlock-Rules-Easy | 0 | 16125 | 0 | 0.0% | 0.0% |
+| REJECT | badmojr/1Hosts | pengelana/blocklist | 0 | 226570 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | phishdestroy/destroylist | 0 | 234723 | 0 | 0.0% | 0.0% |
+| REJECT | badmojr/1Hosts | sefinek/Sefinek-Blocklist-Collection | 0 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | sve1r/Rules-For-Quantumult-X | 0 | 106541 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 0 | 52045 | 0 | 0.0% | 0.0% |
-| REJECT | badmojr/1Hosts | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 0 | 48729 | 0 | 0.0% | 0.0% |
+| REJECT | badmojr/1Hosts | zangadoprojets/pi-hole-blocklist | 0 | 57637 | 0 | 0.0% | 0.0% |
+| REJECT | badmojr/1Hosts | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 0 | 49086 | 0 | 0.0% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | h2y/Shadowrocket-ADBlock-Rules | 115 | 16125 | 0 | 0.0% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | hagezi/dns-blocklists | 115 | 670671 | 6 | 5.2% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | marco-acorte/antispam-it | 115 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | nthack/Shadowrocket-ADBlock-Rules-Easy | 115 | 16125 | 0 | 0.0% | 0.0% |
+| REJECT | furkan-bayrak/lg-tv-blocklist | pengelana/blocklist | 115 | 226570 | 1 | 0.9% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | phishdestroy/destroylist | 115 | 234723 | 0 | 0.0% | 0.0% |
+| REJECT | furkan-bayrak/lg-tv-blocklist | sefinek/Sefinek-Blocklist-Collection | 115 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | sve1r/Rules-For-Quantumult-X | 115 | 106541 | 3 | 2.6% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 115 | 52045 | 3 | 2.6% | 0.0% |
-| REJECT | furkan-bayrak/lg-tv-blocklist | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 115 | 48729 | 3 | 2.6% | 0.0% |
+| REJECT | furkan-bayrak/lg-tv-blocklist | zangadoprojets/pi-hole-blocklist | 115 | 57637 | 0 | 0.0% | 0.0% |
+| REJECT | furkan-bayrak/lg-tv-blocklist | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 115 | 49086 | 3 | 2.6% | 0.0% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | hagezi/dns-blocklists | 16125 | 670671 | 2653 | 16.5% | 0.4% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | marco-acorte/antispam-it | 16125 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | nthack/Shadowrocket-ADBlock-Rules-Easy | 16125 | 16125 | 16125 | 100.0% | 100.0% |
+| REJECT | h2y/Shadowrocket-ADBlock-Rules | pengelana/blocklist | 16125 | 226570 | 1262 | 7.8% | 0.5% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | phishdestroy/destroylist | 16125 | 234723 | 2 | 0.0% | 0.0% |
+| REJECT | h2y/Shadowrocket-ADBlock-Rules | sefinek/Sefinek-Blocklist-Collection | 16125 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | sve1r/Rules-For-Quantumult-X | 16125 | 106541 | 3575 | 22.2% | 3.0% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 16125 | 52045 | 2249 | 13.9% | 3.4% |
-| REJECT | h2y/Shadowrocket-ADBlock-Rules | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 16125 | 48729 | 2230 | 13.8% | 3.6% |
+| REJECT | h2y/Shadowrocket-ADBlock-Rules | zangadoprojets/pi-hole-blocklist | 16125 | 57637 | 0 | 0.0% | 0.0% |
+| REJECT | h2y/Shadowrocket-ADBlock-Rules | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 16125 | 49086 | 2230 | 13.8% | 3.5% |
 | REJECT | hagezi/dns-blocklists | marco-acorte/antispam-it | 670671 | 346345 | 56 | 0.0% | 0.0% |
 | REJECT | hagezi/dns-blocklists | nthack/Shadowrocket-ADBlock-Rules-Easy | 670671 | 16125 | 2653 | 16.5% | 0.4% |
+| REJECT | hagezi/dns-blocklists | pengelana/blocklist | 670671 | 226570 | 141564 | 62.5% | 18.7% |
 | REJECT | hagezi/dns-blocklists | phishdestroy/destroylist | 670671 | 234723 | 9760 | 4.2% | 1.1% |
+| REJECT | hagezi/dns-blocklists | sefinek/Sefinek-Blocklist-Collection | 670671 | 81 | 2 | 2.5% | 0.0% |
 | REJECT | hagezi/dns-blocklists | sve1r/Rules-For-Quantumult-X | 670671 | 106541 | 39211 | 36.8% | 5.3% |
 | REJECT | hagezi/dns-blocklists | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 670671 | 52045 | 50640 | 97.3% | 7.5% |
-| REJECT | hagezi/dns-blocklists | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 670671 | 48729 | 47687 | 97.9% | 7.1% |
+| REJECT | hagezi/dns-blocklists | zangadoprojets/pi-hole-blocklist | 670671 | 57637 | 172 | 0.3% | 0.0% |
+| REJECT | hagezi/dns-blocklists | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 670671 | 49086 | 47896 | 97.6% | 7.1% |
 | REJECT | marco-acorte/antispam-it | nthack/Shadowrocket-ADBlock-Rules-Easy | 346345 | 16125 | 0 | 0.0% | 0.0% |
+| REJECT | marco-acorte/antispam-it | pengelana/blocklist | 346345 | 226570 | 3 | 0.0% | 0.0% |
 | REJECT | marco-acorte/antispam-it | phishdestroy/destroylist | 346345 | 234723 | 0 | 0.0% | 0.0% |
+| REJECT | marco-acorte/antispam-it | sefinek/Sefinek-Blocklist-Collection | 346345 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | marco-acorte/antispam-it | sve1r/Rules-For-Quantumult-X | 346345 | 106541 | 1 | 0.0% | 0.0% |
 | REJECT | marco-acorte/antispam-it | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 346345 | 52045 | 2 | 0.0% | 0.0% |
-| REJECT | marco-acorte/antispam-it | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 346345 | 48729 | 0 | 0.0% | 0.0% |
+| REJECT | marco-acorte/antispam-it | zangadoprojets/pi-hole-blocklist | 346345 | 57637 | 0 | 0.0% | 0.0% |
+| REJECT | marco-acorte/antispam-it | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 346345 | 49086 | 0 | 0.0% | 0.0% |
+| REJECT | nthack/Shadowrocket-ADBlock-Rules-Easy | pengelana/blocklist | 16125 | 226570 | 1262 | 7.8% | 0.5% |
 | REJECT | nthack/Shadowrocket-ADBlock-Rules-Easy | phishdestroy/destroylist | 16125 | 234723 | 2 | 0.0% | 0.0% |
+| REJECT | nthack/Shadowrocket-ADBlock-Rules-Easy | sefinek/Sefinek-Blocklist-Collection | 16125 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | nthack/Shadowrocket-ADBlock-Rules-Easy | sve1r/Rules-For-Quantumult-X | 16125 | 106541 | 3575 | 22.2% | 3.0% |
 | REJECT | nthack/Shadowrocket-ADBlock-Rules-Easy | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 16125 | 52045 | 2249 | 13.9% | 3.4% |
-| REJECT | nthack/Shadowrocket-ADBlock-Rules-Easy | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 16125 | 48729 | 2230 | 13.8% | 3.6% |
+| REJECT | nthack/Shadowrocket-ADBlock-Rules-Easy | zangadoprojets/pi-hole-blocklist | 16125 | 57637 | 0 | 0.0% | 0.0% |
+| REJECT | nthack/Shadowrocket-ADBlock-Rules-Easy | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 16125 | 49086 | 2230 | 13.8% | 3.5% |
+| REJECT | pengelana/blocklist | phishdestroy/destroylist | 226570 | 234723 | 12953 | 5.7% | 2.9% |
+| REJECT | pengelana/blocklist | sefinek/Sefinek-Blocklist-Collection | 226570 | 81 | 0 | 0.0% | 0.0% |
+| REJECT | pengelana/blocklist | sve1r/Rules-For-Quantumult-X | 226570 | 106541 | 16254 | 15.3% | 5.1% |
+| REJECT | pengelana/blocklist | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 226570 | 52045 | 16402 | 31.5% | 6.3% |
+| REJECT | pengelana/blocklist | zangadoprojets/pi-hole-blocklist | 226570 | 57637 | 0 | 0.0% | 0.0% |
+| REJECT | pengelana/blocklist | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 226570 | 49086 | 16017 | 32.6% | 6.2% |
+| REJECT | phishdestroy/destroylist | sefinek/Sefinek-Blocklist-Collection | 234723 | 81 | 1 | 1.2% | 0.0% |
 | REJECT | phishdestroy/destroylist | sve1r/Rules-For-Quantumult-X | 234723 | 106541 | 13 | 0.0% | 0.0% |
 | REJECT | phishdestroy/destroylist | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 234723 | 52045 | 11 | 0.0% | 0.0% |
-| REJECT | phishdestroy/destroylist | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 234723 | 48729 | 10 | 0.0% | 0.0% |
+| REJECT | phishdestroy/destroylist | zangadoprojets/pi-hole-blocklist | 234723 | 57637 | 0 | 0.0% | 0.0% |
+| REJECT | phishdestroy/destroylist | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 234723 | 49086 | 10 | 0.0% | 0.0% |
+| REJECT | sefinek/Sefinek-Blocklist-Collection | sve1r/Rules-For-Quantumult-X | 81 | 106541 | 0 | 0.0% | 0.0% |
+| REJECT | sefinek/Sefinek-Blocklist-Collection | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 81 | 52045 | 0 | 0.0% | 0.0% |
+| REJECT | sefinek/Sefinek-Blocklist-Collection | zangadoprojets/pi-hole-blocklist | 81 | 57637 | 0 | 0.0% | 0.0% |
+| REJECT | sefinek/Sefinek-Blocklist-Collection | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 81 | 49086 | 0 | 0.0% | 0.0% |
 | REJECT | sve1r/Rules-For-Quantumult-X | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 106541 | 52045 | 21874 | 42.0% | 16.0% |
-| REJECT | sve1r/Rules-For-Quantumult-X | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 106541 | 48729 | 20625 | 42.3% | 15.3% |
-| REJECT | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 52045 | 48729 | 48729 | 100.0% | 93.6% |
+| REJECT | sve1r/Rules-For-Quantumult-X | zangadoprojets/pi-hole-blocklist | 106541 | 57637 | 10 | 0.0% | 0.0% |
+| REJECT | sve1r/Rules-For-Quantumult-X | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 106541 | 49086 | 20625 | 42.0% | 15.3% |
+| REJECT | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | zangadoprojets/pi-hole-blocklist | 52045 | 57637 | 0 | 0.0% | 0.0% |
+| REJECT | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 52045 | 49086 | 48830 | 99.5% | 93.4% |
+| REJECT | zangadoprojets/pi-hole-blocklist | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 57637 | 49086 | 0 | 0.0% | 0.0% |
 
 ## Cross-policy contradictions
 
-Detected domains appearing under more than one policy: **3473**
+Detected domains appearing under more than one policy: **3497**
 
 - `000webhost.com`: PROXY, REJECT
 - `01122200.com`: PROXY, REJECT

@@ -135,23 +135,20 @@
   },
   "managed_config_guard": {
     "path": "shadowrocket/ss.conf",
-    "approved_git_blob_sha": "20d66df9e4e2297e805e608985e3329dba927188",
+    "approved_git_blob_sha": "3fb030163c6daf3f5e5c7af37625ae1745e5c315",
     "immutable": true,
     "description": "Authoritative user-managed Shadowrocket config baseline. Read-only for automation; derived rule audits must evaluate against this file.",
     "last_user_approved_baseline_update": {
-      "previous_blob_sha": "2e528134059b629605d20b52481516dd16a53580",
-      "new_blob_sha": "20d66df9e4e2297e805e608985e3329dba927188",
-      "reason": "Recover interrupted baseline registration after verifying that every ss.conf-changing commit since the previously approved baseline is associated with the repository owner on GitHub. The four verified owner-authored commits preserve Tencent Music REJECT exceptions and add approved DIRECT rules. Automation does not edit ss.conf.",
+      "previous_blob_sha": "20d66df9e4e2297e805e608985e3329dba927188",
+      "new_blob_sha": "3fb030163c6daf3f5e5c7af37625ae1745e5c315",
+      "reason": "Recover an interrupted registration after verifying every intervening ss.conf-changing commit is associated with the repository owner on GitHub. Automation does not edit ss.conf.",
       "approval_mode": "recovered_owner_authored_config_history",
       "config_change_commits": [
-        "534270a28247b78aa79a8a14fade355bf4f789a5",
-        "72f4b4f2b4974afab5ddf1b01cc4c4890c26a333",
-        "cfdac3d25f55bee620f6b5c34f6e0c535813c6aa",
-        "20f42a09a661508e504bb16f5e41ec8d4f2e7cfa"
+        "166b754cb7c49ba884edf77368f2a57daab324ae"
       ],
-      "actor": "instarrys-bit",
-      "commit_sha": "20f42a09a661508e504bb16f5e41ec8d4f2e7cfa",
-      "registered_at": "2026-11-02T16:37:59.980Z"
+      "actor": "github-actions[bot]",
+      "commit_sha": "538e109667841a9746939743ba4507e6cea3bf88",
+      "registered_at": "2026-11-02T19:17:55.492114+00:00"
     }
   }
 }

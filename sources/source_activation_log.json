@@ -28,116 +28,114 @@
       "policy": "REJECT",
       "url": "https://raw.githubusercontent.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever/release/sr_ad_only.conf",
       "unique_domains": 52060
+    },
+    {
+      "id": "auto-nthack-shadowrocket-adblock-rules-easy-d42211d2",
+      "repository": "nthack/Shadowrocket-ADBlock-Rules-Easy",
+      "policy": "PROXY",
+      "url": "https://raw.githubusercontent.com/nthack/Shadowrocket-ADBlock-Rules-Easy/master/h2y_bak/sr_top500_banlist.conf",
+      "unique_domains": 5546
+    },
+    {
+      "id": "auto-badmojr-1hosts-640464a4",
+      "repository": "badmojr/1Hosts",
+      "policy": "REJECT",
+      "url": "https://raw.githubusercontent.com/badmojr/1Hosts/master/Lite/adblock.txt",
+      "unique_domains": 102241
+    },
+    {
+      "id": "auto-furkan-bayrak-lg-tv-blocklist-369778d8",
+      "repository": "furkan-bayrak/lg-tv-blocklist",
+      "policy": "REJECT",
+      "url": "https://raw.githubusercontent.com/furkan-bayrak/lg-tv-blocklist/main/lists/strict-adblock.txt",
+      "unique_domains": 115
     }
   ],
-  "last_evaluated_at": "2026-11-02T18:03:05.384176+00:00",
+  "last_evaluated_at": "2026-11-02T19:20:19.878668+00:00",
   "last_decisions": [
     {
-      "repository": "Jovanykoch/rules",
-      "policy": "DIRECT",
-      "decision": "already_registered",
-      "reason": "publisher or URL is already registered"
-    },
-    {
-      "repository": "ACL4SSR/ACL4SSR",
-      "policy": "DIRECT",
-      "decision": "already_registered",
-      "reason": "publisher or URL is already registered"
-    },
-    {
-      "repository": "h2y/Shadowrocket-ADBlock-Rules",
+      "repository": "nthack/Shadowrocket-ADBlock-Rules-Easy",
       "policy": "DIRECT",
       "decision": "held",
       "reason": "policy evidence is not strong or publisher is archived"
     },
     {
-      "repository": "Hackl0us/SS-Rule-Snippet",
+      "repository": "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
       "policy": "DIRECT",
+      "decision": "held",
+      "reason": "policy evidence is not strong or publisher is archived"
+    },
+    {
+      "repository": "ignaciocastro/a-dove-is-dumb",
+      "policy": "PROXY",
       "decision": "held",
       "reason": "no supported file with 100+ unique domains and an unchanged second observation"
     },
     {
-      "repository": "Clash-FX/cn-apps-direct-domains",
-      "policy": "DIRECT",
-      "decision": "already_registered",
-      "reason": "publisher or URL is already registered"
-    },
-    {
-      "repository": "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+      "repository": "nthack/Shadowrocket-ADBlock-Rules-Easy",
       "policy": "PROXY",
       "decision": "activated",
       "reason": "strong policy evidence, non-archived publisher, supported parser, 100+ unique domains and unchanged second observation",
-      "source_id": "auto-johnshall-shadowrocket-adblock-rules-forever-68903a21"
+      "source_id": "auto-nthack-shadowrocket-adblock-rules-easy-d42211d2"
     },
     {
-      "repository": "ACL4SSR/ACL4SSR",
-      "policy": "PROXY",
-      "decision": "already_registered",
-      "reason": "publisher or URL is already registered"
-    },
-    {
-      "repository": "h2y/Shadowrocket-ADBlock-Rules",
-      "policy": "PROXY",
-      "decision": "held",
-      "reason": "policy evidence is not strong or publisher is archived"
-    },
-    {
-      "repository": "gatework/surge-rules",
-      "policy": "PROXY",
-      "decision": "already_registered",
-      "reason": "publisher or URL is already registered"
-    },
-    {
-      "repository": "sve1r/Rules-For-Quantumult-X",
-      "policy": "PROXY",
-      "decision": "already_registered",
-      "reason": "publisher or URL is already registered"
-    },
-    {
-      "repository": "Hackl0us/SS-Rule-Snippet",
+      "repository": "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
       "policy": "PROXY",
       "decision": "held",
       "reason": "no supported file with 100+ unique domains and an unchanged second observation"
     },
     {
-      "repository": "hagezi/dns-blocklists",
+      "repository": "phishdestroy/destroylist",
+      "policy": "REJECT",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "pengelana/blocklist",
       "policy": "REJECT",
       "decision": "held",
       "reason": "policy evidence is not strong or publisher is archived"
     },
     {
-      "repository": "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+      "repository": "Isaaker/Spotify-AdsList",
+      "policy": "REJECT",
+      "decision": "held",
+      "reason": "policy evidence is not strong or publisher is archived"
+    },
+    {
+      "repository": "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+      "policy": "REJECT",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "badmojr/1Hosts",
       "policy": "REJECT",
       "decision": "activated",
       "reason": "strong policy evidence, non-archived publisher, supported parser, 100+ unique domains and unchanged second observation",
-      "source_id": "auto-johnshall-shadowrocket-adblock-rules-forever-4d665bed"
+      "source_id": "auto-badmojr-1hosts-640464a4"
     },
     {
-      "repository": "sve1r/Rules-For-Quantumult-X",
-      "policy": "REJECT",
-      "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
-    },
-    {
-      "repository": "h2y/Shadowrocket-ADBlock-Rules",
+      "repository": "zangadoprojets/pi-hole-blocklist",
       "policy": "REJECT",
       "decision": "held",
       "reason": "policy evidence is not strong or publisher is archived"
     },
     {
-      "repository": "TG-Twilight/AWAvenue-Ads-Rule",
+      "repository": "nthack/Shadowrocket-ADBlock-Rules-Easy",
       "policy": "REJECT",
       "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+      "reason": "production collector preflight failed: invalid domain in DOMAIN-SUFFIX rule at line 186: '.maizhenai.cn'"
     },
     {
-      "repository": "Hackl0us/SS-Rule-Snippet",
+      "repository": "furkan-bayrak/lg-tv-blocklist",
       "policy": "REJECT",
-      "decision": "held",
-      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+      "decision": "activated",
+      "reason": "strong policy evidence, non-archived publisher, supported parser, 100+ unique domains and unchanged second observation",
+      "source_id": "auto-furkan-bayrak-lg-tv-blocklist-369778d8"
     },
     {
-      "repository": "anudeepND/whitelist",
+      "repository": "sefinek/Sefinek-Blocklist-Collection",
       "policy": "REJECT",
       "decision": "held",
       "reason": "policy evidence is not strong or publisher is archived"
