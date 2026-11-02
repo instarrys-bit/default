@@ -5,7 +5,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
 from deterministic_review import DOMAIN_RE, evidence_gate, inspect, validate_evidence
-from domain_rule_engine import RuleIndex, DomainRule
+from domain_rule_engine import RuleIndex, DomainRule, inspect_suffix_scope
 from deterministic_review import CONFIG as REVIEW_CONFIG
 from build_rulesets import CONFIG as RULESET_CONFIG
 from select_domain_rules import CONFIG as SELECTOR_CONFIG
@@ -172,8 +172,8 @@ class UrlRegexScopeTests(unittest.TestCase):
 
 
 
-class RuleSetPrecedenceTests(unittest.TestCase):
-    def test_rules_after_first_ruleset_do_not_affect_review(self):
+class ConfigScopeCoverageTests(unittest.TestCase):
+    def test_rules_after_first_ruleset_are_included_without_ordering(self):
         base = """[General]
 skip-proxy =
 [Rule]
@@ -186,20 +186,51 @@ AND,((DOMAIN-SUFFIX,late.example.com),(GEOIP,CN)),REJECT
         rules = RuleIndex([DomainRule("DOMAIN", "late.example.com", "REJECT", 5, "DOMAIN,late.example.com,REJECT")])
         conditional = [(7, "AND,((DOMAIN-SUFFIX,late.example.com),(GEOIP,CN)),REJECT")]
         status, reason = inspect("late.example.com", rules, conditional, base, {}, "DIRECT")
-        self.assertIsNone(status)
+        self.assertEqual(status, "CONFLICT")
+        self.assertIn("rule order is not evaluated", reason)
 
-    def test_rules_before_first_ruleset_still_take_precedence(self):
+    def test_explicit_parent_suffix_scope_covers_exact_candidate(self):
         base = """[General]
 skip-proxy =
 [Rule]
 DOMAIN-SUFFIX,example.com,REJECT
 RULE-SET,https://example.invalid/proxy.list,PROXY
-DOMAIN,late.example.com,DIRECT
 [Host]
 """
         rules = RuleIndex([DomainRule("DOMAIN-SUFFIX", "example.com", "REJECT", 4, "DOMAIN-SUFFIX,example.com,REJECT")])
         status, reason = inspect("api.example.com", rules, [], base, {}, "DIRECT")
         self.assertEqual(status, "CONFLICT")
+
+    def test_parent_suffix_candidate_is_not_blocked_by_exact_child_reject_exception(self):
+        base = """[General]
+skip-proxy =
+[Rule]
+DOMAIN,api.example.com,REJECT
+RULE-SET,https://example.invalid/direct.list,DIRECT
+[Host]
+"""
+        rules = RuleIndex([DomainRule("DOMAIN", "api.example.com", "REJECT", 4, "DOMAIN,api.example.com,REJECT")])
+        status, reason = inspect("example.com", rules, [], base, {}, "DIRECT", candidate_suffix=True)
+        self.assertIsNone(status)
+        scope_status, scope_reason = inspect_suffix_scope("example.com", "DIRECT", rules, [], {}, [])
+        self.assertIsNone(scope_status)
+
+    def test_mixed_full_scope_policies_are_held_without_selecting_a_winner(self):
+        base = """[General]
+skip-proxy =
+[Rule]
+DOMAIN-SUFFIX,example.com,DIRECT
+DOMAIN,api.example.com,REJECT
+RULE-SET,https://example.invalid/direct.list,DIRECT
+[Host]
+"""
+        rules = RuleIndex([
+            DomainRule("DOMAIN-SUFFIX", "example.com", "DIRECT", 4, "DOMAIN-SUFFIX,example.com,DIRECT"),
+            DomainRule("DOMAIN", "api.example.com", "REJECT", 5, "DOMAIN,api.example.com,REJECT"),
+        ])
+        status, reason = inspect("api.example.com", rules, [], base, {}, "DIRECT")
+        self.assertEqual(status, "REVIEW")
+        self.assertIn("no winner is selected", reason)
 
 
 class SourceIntegrityTests(unittest.TestCase):
