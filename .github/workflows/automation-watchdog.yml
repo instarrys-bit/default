@@ -116,8 +116,8 @@ jobs:
           runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=20")"
 
           current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
-          if jq -e --arg sha "$current_sha" '[.workflow_runs[] | select(.head_branch == "main" and .head_sha == $sha and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
-            echo "A current-main deterministic audit is already queued or running; no duplicate dispatch."
+          if jq -e '[.workflow_runs[] | select(.head_branch == "main" and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
+            echo "A main-branch deterministic audit is already queued or running; no duplicate dispatch."
             exit 0
           fi
 
