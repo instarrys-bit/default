@@ -96,8 +96,8 @@ def validate(path):
             continue
 
         if stripped in seen:
-            # Duplicate rules are redundant, but not a syntax failure: Shadowrocket
-            # applies first-match order and the user-owned config is not auto-edited.
+            # Duplicate lines are redundant, but not a syntax failure. This check
+            # reports only the earlier identical line; it does not resolve rule priority.
             print(f"WARNING: {path}:{line_no}: duplicate rule; first occurrence at line {seen[stripped]}")
         else:
             seen[stripped] = line_no
