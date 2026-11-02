@@ -16,10 +16,12 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "sources/discovered_sources.json"
 REPORT = ROOT / "reports/source-discovery.md"
 MAX_README_BYTES = 1_500_000
-# GitHub repository search allows up to 100 results per query. Keep a broad but
-# bounded first-page scan; discovery is a lead generator, never an activation gate.
+# Paginated repository search plus bounded repository-tree scans.
 MAX_REPOS_PER_QUERY = 100
-MAX_README_REPOSITORIES = 300
+MAX_SEARCH_PAGES = 10
+MAX_README_REPOSITORIES = 1_000
+MAX_TREE_REPOSITORIES = 500
+MAX_TREE_ENTRIES_PER_REPOSITORY = 3_000
 QUERIES = [
     "shadowrocket rules",
     "China domain list",
@@ -220,6 +222,32 @@ def extract_list_urls(text: str, owner: str, repo: str, branch: str) -> list[str
         found.add(f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}{clean_path}")
     return sorted(found)
 
+def discover_tree_urls(owner: str, repo: str, branch: str, token: str = "") -> tuple[list[str], bool]:
+    """Find candidate list files from a repository tree; policy remains unclassified."""
+    if not all(re.fullmatch(r"[A-Za-z0-9_.-]+", x) for x in (owner, repo, branch)):
+        return [], False
+    encoded_branch = urllib.parse.quote(branch, safe="")
+    endpoint = f"https://api.github.com/repos/{owner}/{repo}/git/trees/{encoded_branch}?recursive=1"
+    result = request_json(endpoint, token)
+    tree = result.get("tree", [])
+    urls = set()
+    for entry in tree[:MAX_TREE_ENTRIES_PER_REPOSITORY]:
+        if entry.get("type") != "blob":
+            continue
+        path = str(entry.get("path", ""))
+        if not path.lower().endswith(LIST_EXTENSIONS) or SENSITIVE_PATH_RE.search(path):
+            continue
+        clean = urllib.parse.unquote(path)
+        if any(part in ("..", ".") for part in clean.split("/")):
+            continue
+        size = entry.get("size")
+        if isinstance(size, int) and size > 5_000_000:
+            continue
+        encoded_path = urllib.parse.quote(clean, safe="/-._")
+        encoded_ref = urllib.parse.quote(branch, safe="/-._")
+        urls.add(f"https://raw.githubusercontent.com/{owner}/{repo}/{encoded_ref}/{encoded_path}")
+    return sorted(urls), bool(result.get("truncated")) or len(tree) > MAX_TREE_ENTRIES_PER_REPOSITORY
+
 def is_relevant_candidate(item: dict) -> bool:
     if item.get("rule_list_urls"):
         return True
@@ -323,42 +351,62 @@ def main() -> int:
     discovery_errors: list[dict] = []
     try:
         for query in QUERIES:
-            params = urllib.parse.urlencode({"q": query, "sort": "updated", "order": "desc", "per_page": MAX_REPOS_PER_QUERY})
+            for page in range(1, MAX_SEARCH_PAGES + 1):
+                params = urllib.parse.urlencode({
+                    "q": query, "sort": "updated", "order": "desc",
+                    "per_page": MAX_REPOS_PER_QUERY, "page": page
+                })
+                try:
+                    result = request_json("https://api.github.com/search/repositories?" + params, token)
+                except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError) as exc:
+                    discovery_errors.append({"query": query, "page": page, "error": str(exc)})
+                    break
+                items = result.get("items", [])
+                if not items:
+                    break
+                for repo_data in items:
+                    full_name = str(repo_data.get("full_name", ""))
+                    if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", full_name):
+                        continue
+                    owner, name = full_name.split("/", 1)
+                    if full_name not in discovered:
+                        branch = str(repo_data.get("default_branch") or "main")
+                        readme = fetch_readme(owner, name, branch) if len(discovered) < MAX_README_REPOSITORIES else ""
+                        discovered[full_name] = {
+                            "repository": full_name,
+                            "html_url": "https://github.com/" + full_name,
+                            "description": repo_data.get("description"),
+                            "default_branch": branch,
+                            "updated_at": repo_data.get("updated_at"),
+                            "pushed_at": repo_data.get("pushed_at"),
+                            "stars": int(repo_data.get("stargazers_count") or 0),
+                            "archived": bool(repo_data.get("archived")),
+                            "fork": bool(repo_data.get("fork")),
+                            "license": (repo_data.get("license") or {}).get("spdx_id") if isinstance(repo_data.get("license"), dict) else None,
+                            "readme_sha256": hashlib.sha256(readme.encode("utf-8")).hexdigest() if readme else None,
+                            "rule_list_urls": extract_list_urls(readme, owner, name, branch),
+                            "readme_policy_claims": {},
+                            "search_queries": [],
+                            "discovered_at": datetime.now(timezone.utc).isoformat(),
+                        }
+                        discovered[full_name]["readme_policy_claims"] = extract_readme_policy_claims(
+                            readme, discovered[full_name]["rule_list_urls"]
+                        )
+                    discovered[full_name]["search_queries"].append(query)
+                if len(items) < MAX_REPOS_PER_QUERY:
+                    break
+
+        tree_errors = []
+        tree_truncated = []
+        for full_name, item in list(discovered.items())[:MAX_TREE_REPOSITORIES]:
+            owner, name = full_name.split("/", 1)
             try:
-                result = request_json("https://api.github.com/search/repositories?" + params, token)
+                tree_urls, truncated = discover_tree_urls(owner, name, item.get("default_branch") or "main", token)
+                item["rule_list_urls"] = sorted(set(item.get("rule_list_urls", [])) | set(tree_urls))
+                if truncated:
+                    tree_truncated.append(full_name)
             except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError) as exc:
-                # Preserve successful query results when one search is unavailable or rate-limited.
-                discovery_errors.append({"query": query, "error": str(exc)})
-                continue
-            for repo_data in result.get("items", []):
-                full_name = str(repo_data.get("full_name", ""))
-                if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", full_name):
-                    continue
-                owner, name = full_name.split("/", 1)
-                if full_name not in discovered:
-                    branch = str(repo_data.get("default_branch") or "main")
-                    readme = fetch_readme(owner, name, branch) if len(discovered) < MAX_README_REPOSITORIES else ""
-                    discovered[full_name] = {
-                        "repository": full_name,
-                        "html_url": "https://github.com/" + full_name,
-                        "description": repo_data.get("description"),
-                        "default_branch": branch,
-                        "updated_at": repo_data.get("updated_at"),
-                        "pushed_at": repo_data.get("pushed_at"),
-                        "stars": int(repo_data.get("stargazers_count") or 0),
-                        "archived": bool(repo_data.get("archived")),
-                        "fork": bool(repo_data.get("fork")),
-                        "license": (repo_data.get("license") or {}).get("spdx_id") if isinstance(repo_data.get("license"), dict) else None,
-                        "readme_sha256": hashlib.sha256(readme.encode("utf-8")).hexdigest() if readme else None,
-                        "rule_list_urls": extract_list_urls(readme, owner, name, branch),
-                        "readme_policy_claims": {},
-                        "search_queries": [],
-                        "discovered_at": datetime.now(timezone.utc).isoformat(),
-                    }
-                    discovered[full_name]["readme_policy_claims"] = extract_readme_policy_claims(
-                        readme, discovered[full_name]["rule_list_urls"]
-                    )
-                discovered[full_name]["search_queries"].append(query)
+                tree_errors.append({"repository": full_name, "error": str(exc)})
 
         for full_name, seed_urls in SEED_SOURCE_URLS.items():
             owner, name = full_name.split("/", 1)
@@ -399,6 +447,10 @@ def main() -> int:
             }
         merged = merge_candidates(existing, list(discovered.values()))
         merged["discovery_errors"] = discovery_errors
+        merged["tree_errors"] = tree_errors
+        merged["tree_truncated_repositories"] = tree_truncated
+        merged["search_pages_per_query"] = MAX_SEARCH_PAGES
+        merged["tree_repositories_scanned"] = min(len(discovered), MAX_TREE_REPOSITORIES)
     except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError) as exc:
         message = "Source discovery degraded; previous discovery inventory retained. " + str(exc)
         print("WARNING: " + message, file=sys.stderr)
@@ -413,7 +465,7 @@ def main() -> int:
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:
         with Path(summary).open("a", encoding="utf-8") as stream:
-            stream.write(f"## Source discovery\n\nRepositories seen: **{len(discovered)}**. Candidates retained: **{merged['candidate_count']}**. Failed queries: **{len(discovery_errors)}**. No source was activated.\n")
+            stream.write(f"## Source discovery\n\nRepositories seen: **{len(discovered)}**. Tree scans: **{min(len(discovered), MAX_TREE_REPOSITORIES)}**. Truncated trees: **{len(tree_truncated)}**. Candidates retained: **{merged['candidate_count']}**. Failed queries: **{len(discovery_errors)}**. No source was activated.\n")
     print(json.dumps({"repositories_seen": len(discovered), "candidates_retained": merged["candidate_count"], "activated": 0}, sort_keys=True))
     return 0
 
