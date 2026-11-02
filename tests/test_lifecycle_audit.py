@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
-from lifecycle_audit import inspect, protected, rid, deletion_confirmed
+from lifecycle_audit import inspect, protected, rid, deletion_confirmed, scope_intersects_rule
 import lifecycle_audit
 import json
 import tempfile
@@ -117,6 +117,12 @@ class LifecycleAuditSafetyTests(unittest.TestCase):
             with patch.object(lifecycle_audit,"ROOT",root), patch.object(lifecycle_audit,"DIR",rules), patch.object(lifecycle_audit,"REPORT",root/"reports/lifecycle"), patch.dict(os.environ,{"LIFECYCLE_RESTORE_IDS":""}), patch("lifecycle_audit.inspect",return_value={"status":"DNS_EXISTS_OR_NODATA","resolver_status":{}}), patch("lifecycle_gate.complete_lifecycle_review",return_value=state) as complete:
                 lifecycle_audit.main()
             complete.assert_called_once()
+
+    def test_restore_overlap_detection_covers_exact_and_suffix_scopes(self):
+        self.assertTrue(scope_intersects_rule("DOMAIN-SUFFIX,example.com","DOMAIN,api.example.com"))
+        self.assertTrue(scope_intersects_rule("DOMAIN-SUFFIX,example.com","DOMAIN-SUFFIX,sub.example.com"))
+        self.assertFalse(scope_intersects_rule("DOMAIN,api.example.com","DOMAIN,mail.example.com"))
+        self.assertFalse(scope_intersects_rule("DOMAIN,invalid_domain","DOMAIN,invalid_domain"))
 
     def test_deletion_ids_are_stable_and_policy_specific(self):
         self.assertEqual(rid("DIRECT","DOMAIN,api.example"),rid("DIRECT","DOMAIN,api.example"))
