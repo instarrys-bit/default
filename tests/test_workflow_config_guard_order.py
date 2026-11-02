@@ -107,6 +107,14 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("rule order is not evaluated", sync)
 
 
+    def test_unattended_config_analysis_excludes_reject_decisions(self):
+        audit = (ROOT / "scripts" / "audit_ruleset_config_overlap.py").read_text(encoding="utf-8")
+        self.assertIn('if policy in {"DIRECT", "PROXY"}', audit)
+        reviewer = (ROOT / "scripts" / "deterministic_review.py").read_text(encoding="utf-8")
+        self.assertIn('rule.policy != "REJECT"', reviewer)
+        external = (ROOT / "scripts" / "audit_external_domains.py").read_text(encoding="utf-8")
+        self.assertIn('rule.policy != "REJECT"', external)
+
     def test_unattended_audits_do_not_resolve_config_or_ruleset_precedence(self):
         external = (ROOT / "scripts" / "audit_external_domains.py").read_text(encoding="utf-8")
         self.assertIn("scope_covers_candidate", external)
