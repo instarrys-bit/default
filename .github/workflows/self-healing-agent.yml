@@ -22,7 +22,7 @@ jobs:
       contents: write
       issues: write
       pull-requests: write
-    if: ${{ github.event_name == 'workflow_run' && (github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'timed_out' || github.event.workflow_run.conclusion == 'startup_failure') }}
+    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'timed_out' || github.event.workflow_run.conclusion == 'startup_failure') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -170,7 +170,7 @@ jobs:
   resolve-validator-incidents:
     permissions:
       issues: write
-    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Validate Shadowrocket config against user baseline' && github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.name == 'Validate Shadowrocket config against user baseline' && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 3
     steps:
@@ -197,7 +197,7 @@ jobs:
   resolve-audit-incidents:
     permissions:
       issues: write
-    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 3
     steps:
