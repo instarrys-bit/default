@@ -14,6 +14,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"', workflow)
         self.assertIn('      - "Validate Shadowrocket config against user baseline"', workflow)
         self.assertIn("types: [completed]", workflow)
+        self.assertIn("github.event.workflow_run.head_branch == 'main'", workflow)
 
     def test_failed_timed_out_or_startup_failed_scheduled_or_push_runs_trigger_one_recovery(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
@@ -23,7 +24,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('[ "$SOURCE_EVENT" != "schedule" ]', workflow)
         self.assertIn('[ "$SOURCE_EVENT" != "push" ]', workflow)
         self.assertIn("gh workflow run auto_sync.yml --ref main --repo \"$REPO\"", workflow)
-        self.assertIn('select(.id > $source)', workflow)
+        self.assertIn('select(.head_branch == "main" and .head_sha == $sha and .id > $source', workflow)
 
     def test_workflow_dispatch_recovery_does_not_recursively_retry(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
