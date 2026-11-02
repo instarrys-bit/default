@@ -25,7 +25,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: shadowrocket-automation-watchdog
+  group: shadowrocket-main-writer
   cancel-in-progress: false
 
 jobs:
@@ -34,7 +34,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Recover failed scheduled or push-triggered audit once
-        if: ${{ github.event_name == 'workflow_run' }}
+        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
@@ -58,11 +58,11 @@ jobs:
           fi
 
           runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=20")"
-          if jq -e --argjson source "$SOURCE_RUN_ID" '[.workflow_runs[] | select(.id > $source)] | length > 0' <<< "$runs" >/dev/null; then
-            echo "A newer deterministic audit already exists; no duplicate recovery."
+          current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
+          if jq -e --argjson source "$SOURCE_RUN_ID" --arg sha "$current_sha" '[.workflow_runs[] | select(.head_branch == "main" and .head_sha == $sha and .id > $source and (.status != "completed" or .conclusion == "success"))] | length > 0' <<< "$runs" >/dev/null; then
+            echo "A newer current-main deterministic audit already exists; no duplicate recovery."
             exit 0
           fi
-          current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
           if jq -e --arg sha "$current_sha" '[.workflow_runs[] | select(.head_sha == $sha and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
             echo "A deterministic audit for current main ($current_sha) is already queued or running; no duplicate recovery."
             exit 0
@@ -72,7 +72,7 @@ jobs:
           gh workflow run auto_sync.yml --ref main --repo "$REPO"
 
       - name: Report degraded source discovery health
-        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success' }}
+        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
@@ -110,12 +110,13 @@ jobs:
           set -euo pipefail
           runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=20")"
 
-          if jq -e '[.workflow_runs[] | select(.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress")] | length > 0' <<< "$runs" >/dev/null; then
-            echo "The deterministic audit is already queued or running; no duplicate dispatch."
+          current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
+          if jq -e --arg sha "$current_sha" '[.workflow_runs[] | select(.head_branch == "main" and .head_sha == $sha and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
+            echo "A current-main deterministic audit is already queued or running; no duplicate dispatch."
             exit 0
           fi
 
-          last_success="$(jq -r '[.workflow_runs[] | select(.conclusion == "success")] | sort_by(.created_at) | last | .created_at // empty' <<< "$runs")"
+          last_success="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .created_at // empty' <<< "$runs")"
           age_seconds="$(python3 - "$last_success" <<'PY'
           import sys
           from datetime import datetime, timezone
@@ -143,7 +144,7 @@ jobs:
         github.event_name == 'push' ||
         github.event_name == 'schedule' ||
         github.event_name == 'workflow_dispatch' ||
-        (github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success')
+        (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success')
       }}
     runs-on: ubuntu-24.04
     timeout-minutes: 8
