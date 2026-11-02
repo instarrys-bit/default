@@ -84,7 +84,7 @@ def load_correlated_publishers():
 def atomic_json(path,payload):
     path.parent.mkdir(parents=True,exist_ok=True)
     temporary=path.with_suffix(path.suffix+".tmp")
-    temporary.write_text(json.dumps(payload,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+    temporary.write_text(json.dumps(payload,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     temporary.replace(path)
 @lru_cache(maxsize=8)
 def section(text,name,next_name):
@@ -275,7 +275,7 @@ def main():
             policy="CONFLICT"
         elif policy not in {"DIRECT","PROXY","REJECT"}:
             evidence=[]
-            confidence,source_ids,publishers,groups,_=evidence_gate([],source_weights,minimum,threshold,())
+            confidence,source_ids,publishers,groups,_=evidence_gate([],source_weights,minimum,threshold,(),correlated_pairs)
             status="REVIEW"
             reason="No currently enabled source provides a supported policy classification"
         else:
