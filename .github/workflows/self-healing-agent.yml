@@ -144,16 +144,26 @@ jobs:
           REPO: ${{ github.repository }}
           BRANCH: ${{ steps.repair.outputs.branch }}
           RUN_ID: ${{ github.event.workflow_run.id }}
+          REPAIR_ID: ${{ steps.diagnosis.outputs.repair_id }}
         run: |
           set -euo pipefail
+          case "$REPAIR_ID" in
+            refresh_ruleset_manifest)
+              PR_TITLE="Self-heal: reconcile final RULE-SET manifest counts"
+              PR_BODY="Automated, allowlisted repair proposed after workflow run $RUN_ID.\n\n- Diagnosis: RULESET_MANIFEST_COUNT_MISSING or RULESET_MANIFEST_COUNT_MISMATCH.\n- Change: restore the deterministic final-manifest reconciliation step.\n- Validation: Python compilation and the repository unittest suite passed before publishing this PR.\n- Safety: no changes to shadowrocket/ss.conf, DNS, MITM, or routing policy.\n\nThis PR is not auto-merged."
+              ;;
+            fix_stale_audit_concurrency_contract)
+              PR_TITLE="Self-heal: correct stale audit concurrency test contract"
+              PR_BODY="Automated, allowlisted repair proposed after workflow run $RUN_ID.\n\n- Diagnosis: WORKFLOW_TEST_CONTRACT_MISMATCH.\n- Change: update only the outdated static test assertion to match the safe cancel-in-progress: false policy.\n- Validation: Python compilation and the repository unittest suite passed before publishing this PR.\n- Safety: no changes to shadowrocket/ss.conf, ruleset contents, DNS, MITM, or routing policy.\n\nThis PR is not auto-merged."
+              ;;
+            *)
+              echo "Unknown repair id at PR publication; refusing to publish."
+              exit 1
+              ;;
+          esac
           gh auth setup-git
           git push origin "$BRANCH"
-          gh pr create \
-            --repo "$REPO" \
-            --base main \
-            --head "$BRANCH" \
-            --title "Self-heal: reconcile final RULE-SET manifest counts" \
-            --body "Automated, allowlisted repair proposed after workflow run $RUN_ID.\n\n- Diagnosis: RULESET_MANIFEST_COUNT_MISSING or RULESET_MANIFEST_COUNT_MISMATCH.\n- Change: restore the deterministic final-manifest reconciliation step.\n- Validation: Python compilation and the repository unittest suite passed before publishing this PR.\n- Safety: no changes to shadowrocket/ss.conf, DNS, MITM, or routing policy.\n\nThis PR is not auto-merged."
+          gh pr create --repo "$REPO" --base main --head "$BRANCH" --title "$PR_TITLE" --body "$PR_BODY"
           gh workflow run self-healing-tests.yml --ref "$BRANCH" --repo "$REPO"
 
       - name: Open incident when no safe repair applies
