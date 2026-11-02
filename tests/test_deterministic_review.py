@@ -205,7 +205,7 @@ RULE-SET,https://example.invalid/proxy.list,PROXY
         base = """[General]
 skip-proxy =
 [Rule]
-DOMAIN,api.example.com,PROXY
+DOMAIN,api.example.com,REJECT
 RULE-SET,https://example.invalid/direct.list,DIRECT
 [Host]
 """
