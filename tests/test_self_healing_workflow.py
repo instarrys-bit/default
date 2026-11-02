@@ -22,10 +22,10 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn("timeout-minutes: 300", auto_sync)
         self.assertIn("> 21600", workflow)
 
-    def test_manifest_reconciliation_runs_after_final_config_precedence(self):
+    def test_manifest_reconciliation_runs_after_final_config_scope_coverage(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
         self.assertLess(
-            workflow.index("Enforce final ss.conf precedence after all rule mutations"),
+            workflow.index("Reconcile final ss.conf scope coverage after all rule mutations"),
             workflow.index("Reconcile final RULE-SET manifest counts"),
         )
         self.assertLess(
