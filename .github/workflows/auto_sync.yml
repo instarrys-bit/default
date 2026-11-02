@@ -56,7 +56,7 @@ jobs:
 
       - name: Compile and run deterministic review tests
         run: |
-          python3 -m py_compile scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/import_request_observations.py scripts/lifecycle_gate.py scripts/lifecycle_audit.py scripts/auto_activate_sources.py scripts/build_project_status.py scripts/build_rule_provenance.py scripts/review_cursor.py scripts/verify_published_rulesets.py
+          python3 -m py_compile scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/import_request_observations.py scripts/lifecycle_gate.py scripts/lifecycle_audit.py scripts/auto_activate_sources.py scripts/build_project_status.py scripts/build_rule_provenance.py scripts/refresh_ruleset_manifest.py scripts/diagnose_workflow_failure.py scripts/apply_safe_repair.py scripts/review_cursor.py scripts/verify_published_rulesets.py
           python3 -m unittest discover -s tests -v
 
       - name: Discover candidate source repositories (non-activating)
@@ -154,6 +154,9 @@ jobs:
         run: |
           python3 scripts/sync_ruleset_config_conflicts.py
           cat reports/ruleset-config-conflict-sync.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Reconcile final RULE-SET manifest counts
+        run: python3 scripts/refresh_ruleset_manifest.py
+
       - name: Build append-only rule-level provenance ledger
         run: python3 scripts/build_rule_provenance.py
 
@@ -386,7 +389,17 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: main
+          fetch-depth: 0
           persist-credentials: true
+      - name: Persist owner-approved config baseline even when audit fails
+        if: github.event_name == 'push'
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          GITHUB_BEFORE: ${{ github.event.before }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: python3 scripts/register_config_baseline.py
       - name: Download failed-run cursor checkpoint
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
@@ -402,17 +415,23 @@ jobs:
           from pathlib import Path
           p=Path("cursor-artifact/review_cursor.json")
           d=json.loads(p.read_text(encoding="utf-8"))
-          if d.get("schema_version") != 1 or d.get("status") != "in_progress":
-              raise SystemExit("No resumable in-progress review cursor; nothing to persist.")
+          if d.get("schema_version") != 1:
+              raise SystemExit("Unsupported review cursor schema; refusing to persist.")
+          if d.get("status") != "in_progress":
+              print("Cursor is not in progress; no checkpoint needs persistence.")
+              raise SystemExit(0)
           digest=str(d.get("snapshot_sha256",""))
           if len(digest) != 64 or any(ch not in "0123456789abcdef" for ch in digest):
               raise SystemExit("Invalid cursor snapshot digest.")
-          if not isinstance(d.get("next_index"),int) or d["next_index"] < 1:
-              raise SystemExit("Cursor has no completed checkpoint; nothing to persist.")
+          if not isinstance(d.get("next_index"),int):
+              raise SystemExit("Invalid cursor checkpoint index.")
+          if d["next_index"] < 1:
+              print("Cursor has no completed checkpoint; nothing to persist.")
+              raise SystemExit(0)
           Path("sources").mkdir(exist_ok=True)
           Path("sources/review_cursor.json").write_text(json.dumps(d,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
           PY
-          git add -- sources/review_cursor.json
+          git add -- sources/policy.json sources/review_cursor.json
           if git diff --cached --quiet; then
             echo "No new review cursor checkpoint to persist."
             exit 0
