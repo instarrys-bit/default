@@ -85,7 +85,7 @@ class WatchdogRecoveryPolicyTests(unittest.TestCase):
             run(2, minutes_ago=5, branch="feature"),
             run(3, minutes_ago=5, conclusion="failure"),
             run(4, minutes_ago=5, conclusion="success"),
-            run(5, minutes_ago=5, conclusion="cancelled"),
+            run(5, minutes_ago=5, conclusion="action_required"),
         ]
         result = decide_recovery(
             unrelated,
@@ -106,6 +106,18 @@ class WatchdogRecoveryPolicyTests(unittest.TestCase):
         self.assertTrue(result["allowed"])
         self.assertEqual(result["prior_retryable_failures"], 0)
 
+
+
+    def test_watchdog_cancelled_stalled_runs_consume_retry_budget(self):
+        result = decide_recovery(
+            [run(9, minutes_ago=20, conclusion="cancelled")],
+            source_run_id="0",
+            source_sha=SHA,
+            now=NOW,
+        )
+        self.assertTrue(result["allowed"])
+        self.assertEqual(result["prior_retryable_failures"], 1)
+        self.assertEqual(result["retry_number"], 2)
 
     def test_same_sha_deterministic_failure_blocks_automatic_retry(self):
         result = decide_recovery(
