@@ -12,6 +12,7 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 from datetime import datetime, timezone
+from datetime import datetime, timezone
 
 ROOT = Path(__file__).resolve().parents[1]
 INPUT = ROOT / "sources/discovered_sources.json"
@@ -289,6 +290,33 @@ def render_report(assessments: list[dict], drift_summary: dict | None = None) ->
     ])
     return "\n".join(rows)
 
+def flatten_candidate_urls(candidates: list[dict]) -> list[dict]:
+    flattened = []
+    seen = set()
+    for candidate in sorted(candidates, key=lambda item: (not bool(item.get('seeded_source_urls')), -int(item.get('stars', 0)), str(item.get('repository', '')))):
+        repository = str(candidate.get('repository', ''))
+        if not repository or '/' not in repository:
+            continue
+        seeded = set(candidate.get('seeded_source_urls', []))
+        for url in sorted(candidate.get('rule_list_urls', []), key=lambda value: (value not in seeded, value)):
+            if url in seen or SENSITIVE_PATH_RE.search(urllib.parse.urlparse(url).path):
+                continue
+            seen.add(url)
+            flattened.append({'repository': repository, 'url': url, 'seeded': url in seeded, 'stars': int(candidate.get('stars', 0)), 'archived': bool(candidate.get('archived', False)), 'policy_claims': candidate.get('readme_policy_claims', {}).get(url, [])})
+    return flattened
+
+
+def rotate_assessment_urls(items: list[dict], cursor_url: str | None, limit: int = MAX_URLS) -> list[dict]:
+    if not items:
+        return []
+    start = 0
+    if cursor_url:
+        for index, item in enumerate(items):
+            if item.get('url') == cursor_url:
+                start = (index + 1) % len(items)
+                break
+    return (items[start:] + items[:start])[:max(0, int(limit))]
+
 def compact_assessment_result(result: dict) -> dict:
     """Persist metadata only; keep per-domain fingerprints ephemeral for same-run analysis."""
     compact = dict(result)
@@ -303,47 +331,41 @@ def main() -> int:
     discovery = json.loads(INPUT.read_text(encoding="utf-8"))
     previous_data = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {"assessments": []}
     previous_by_url = {x.get("url"): x for x in previous_data.get("assessments", []) if x.get("url")}
-    candidates = sorted(
-        discovery.get("candidates", []),
-        key=lambda item: (bool(item.get("seeded_source_urls")), int(item.get("stars", 0))),
-        reverse=True,
-    )
+    previous_cursor = previous_data.get("next_cursor_url")
+    candidate_urls = flatten_candidate_urls(discovery.get("candidates", []))
+    batch = rotate_assessment_urls(candidate_urls, previous_cursor, MAX_URLS)
     assessments = []
     total_bytes_read = 0
-    for candidate in candidates:
-        repository = candidate.get("repository", "")
-        seeded = set(candidate.get("seeded_source_urls", []))
-        urls = sorted(candidate.get("rule_list_urls", []), key=lambda url: (url not in seeded, url))
-        if not repository or not urls:
-            continue
-        owner, name = repository.split("/", 1)
-        for url in urls:
-            if len(assessments) >= MAX_URLS or total_bytes_read >= MAX_TOTAL_BYTES:
+    batch_id = datetime.now(timezone.utc).isoformat()
+    budget_exhausted = False
+    for candidate in batch:
+        repository = candidate["repository"]
+        url = candidate["url"]
+        try:
+            payload = fetch_raw(url, repository)
+            if total_bytes_read + len(payload) > MAX_TOTAL_BYTES:
+                budget_exhausted = True
                 break
-            if SENSITIVE_PATH_RE.search(urllib.parse.urlparse(url).path):
-                continue
-            try:
-                payload = fetch_raw(url, repository)
-                claims = candidate.get("readme_policy_claims", {}).get(url, [])
-                total_bytes_read += len(payload)
-                item = assess_payload(payload, url, claims)
-                item["repository"] = repository
-                item["stars"] = candidate.get("stars", 0)
-                item["archived"] = candidate.get("archived", False)
-                assessments.append(item)
-            except (OSError, urllib.error.URLError, ValueError) as exc:
-                assessments.append({
-                    "repository": repository, "url": url,
-                    "parser_candidate": "fetch_or_validation_error",
-                    "policy_candidate": None, "policy_evidence": "none",
-                    "error": str(exc), "activation_eligible": False,
-                    "exact_domain_count": 0, "suffix_domain_count": 0,
-                    "adblock_domain_count": 0, "domain_only_count": 0,
-                    "duplicate_domain_lines": 0,
-                    "domain_fingerprints": [],
-                    "domain_keyword_rules_ignored": 0, "ip_asn_rules_ignored": 0,
-                    "explicit_action_counts": {},
-                })
+            total_bytes_read += len(payload)
+            item = assess_payload(payload, url, candidate["policy_claims"])
+            item["repository"] = repository
+            item["stars"] = candidate["stars"]
+            item["archived"] = candidate["archived"]
+            item["assessed_at"] = batch_id
+            assessments.append(item)
+        except (OSError, urllib.error.URLError, ValueError) as exc:
+            assessments.append({
+                "repository": repository, "url": url,
+                "parser_candidate": "fetch_or_validation_error",
+                "policy_candidate": None, "policy_evidence": "none",
+                "error": str(exc), "activation_eligible": False,
+                "exact_domain_count": 0, "suffix_domain_count": 0,
+                "adblock_domain_count": 0, "domain_only_count": 0,
+                "duplicate_domain_lines": 0,
+                "domain_fingerprints": [],
+                "domain_keyword_rules_ignored": 0, "ip_asn_rules_ignored": 0,
+                "explicit_action_counts": {}, "assessed_at": batch_id,
+            })
     for item in assessments:
         item["drift"] = compare_drift(item, previous_by_url.get(item.get("url")))
     drift_summary = {
@@ -353,9 +375,28 @@ def main() -> int:
         "removed_domain_count": sum(x["drift"].get("removed_domain_count") or 0 for x in assessments),
         "policy_changes": sum(1 for x in assessments if x["drift"].get("policy_changed")),
     }
+    next_cursor = assessments[-1]["url"] if assessments else previous_cursor
+    history = dict(previous_by_url)
+    for item in assessments:
+        url = item.get("url")
+        prior = history.get(url, {})
+        if item.get("error") and prior.get("sha256"):
+            prior = dict(prior)
+            prior["last_fetch_error"] = item.get("error")
+            prior["last_attempt_at"] = batch_id
+            history[url] = prior
+        else:
+            history[url] = item
     result = {
         "schema_version": 1,
         "assessment_count": len(assessments),
+        "assessed_this_run_count": len(assessments),
+        "historical_assessment_count": len(history),
+        "candidate_url_count": len(candidate_urls),
+        "deferred_this_run_count": max(0, len(candidate_urls) - len(assessments)),
+        "budget_exhausted": budget_exhausted,
+        "batch_id": batch_id,
+        "next_cursor_url": next_cursor,
         "total_bytes_read": total_bytes_read,
         "assessment_capacity": {"max_urls": MAX_URLS, "max_file_bytes": MAX_BYTES, "max_total_bytes": MAX_TOTAL_BYTES},
         "drift_summary": drift_summary,
@@ -363,11 +404,14 @@ def main() -> int:
         "assessments": assessments,
         "activation_policy": "Assessment never edits or enables sources/domain_sources.json.",
     }
+    persistent = dict(result)
+    persistent["assessments"] = list(history.values())
+    persistent["assessment_count"] = len(history)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     RUNTIME_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     RUNTIME_OUTPUT.write_text(json.dumps(result, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
-    OUTPUT.write_text(json.dumps(compact_assessment_result(result), ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+    OUTPUT.write_text(json.dumps(compact_assessment_result(persistent), ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     REPORT.write_text(render_report(assessments, drift_summary), encoding="utf-8")
     print(json.dumps({
         "assessed": len(assessments),
