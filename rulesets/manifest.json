@@ -248,16 +248,13 @@
       "baseline_initialized": false
     },
     "PROXY": {
-      "previous_count": 64,
+      "previous_count": 66,
       "current_count": 66,
-      "added_count": 2,
+      "added_count": 0,
       "removed_count": 0,
-      "previous_sha256": "8347013121571ebef8a7d59f29cdcbe7c5878a94410693f0eab385f60b3ae1d5",
+      "previous_sha256": "680a96b6ad48cdf83258b9e78b4ba9249626d9dc40f19e1fb1fc666c8db59dc7",
       "current_sha256": "680a96b6ad48cdf83258b9e78b4ba9249626d9dc40f19e1fb1fc666c8db59dc7",
-      "added_sample": [
-        "DOMAIN-SUFFIX,gcr.io",
-        "DOMAIN-SUFFIX,io.io"
-      ],
+      "added_sample": [],
       "removed_sample": [],
       "baseline_initialized": false
     },
