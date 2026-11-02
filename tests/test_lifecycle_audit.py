@@ -112,7 +112,7 @@ class LifecycleAuditSafetyTests(unittest.TestCase):
                 "due_milestones":[],"monthly_review_due":False,"published_rule_count":1
             }),encoding="utf-8")
             (rules/"deletion_archive.json").write_text(json.dumps({"items":[{
-                "id":"restore-proxy","policy":"proxy","rule":"DOMAIN,old.example","domain":"old.example"
+                "id":"restore-proxy","policy":"proxy","rule":"DOMAIN,old.example","domain":"old.example","removed_at":"2026-10-01T00:00:00+00:00"
             }]}),encoding="utf-8")
             (rules/"pending_queue.json").write_text(json.dumps({"items":[]}),encoding="utf-8")
             (root/"sources/protected_domains.json").write_text(json.dumps({
