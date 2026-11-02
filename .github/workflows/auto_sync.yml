@@ -405,13 +405,19 @@ jobs:
           from pathlib import Path
           p=Path("cursor-artifact/review_cursor.json")
           d=json.loads(p.read_text(encoding="utf-8"))
-          if d.get("schema_version") != 1 or d.get("status") != "in_progress":
-              raise SystemExit("No resumable in-progress review cursor; nothing to persist.")
+          if d.get("schema_version") != 1:
+              raise SystemExit("Unsupported review cursor schema; refusing to persist.")
+          if d.get("status") != "in_progress":
+              print("Cursor is not in progress; no checkpoint needs persistence.")
+              raise SystemExit(0)
           digest=str(d.get("snapshot_sha256",""))
           if len(digest) != 64 or any(ch not in "0123456789abcdef" for ch in digest):
               raise SystemExit("Invalid cursor snapshot digest.")
-          if not isinstance(d.get("next_index"),int) or d["next_index"] < 1:
-              raise SystemExit("Cursor has no completed checkpoint; nothing to persist.")
+          if not isinstance(d.get("next_index"),int):
+              raise SystemExit("Invalid cursor checkpoint index.")
+          if d["next_index"] < 1:
+              print("Cursor has no completed checkpoint; nothing to persist.")
+              raise SystemExit(0)
           Path("sources").mkdir(exist_ok=True)
           Path("sources/review_cursor.json").write_text(json.dumps(d,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
           PY
