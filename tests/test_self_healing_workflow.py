@@ -78,7 +78,7 @@ class SelfHealingWorkflowTests(unittest.TestCase):
     def test_superseded_failures_are_suppressed_when_a_newer_run_is_active_or_successful(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("Check whether a newer run supersedes this failure", workflow)
-        self.assertIn("select(.id > $failed)", workflow)
+        self.assertIn('select(.head_branch == "main" and .id > $failed)', workflow)
         self.assertIn('select(.status != "completed" or .conclusion == "success")', workflow)
         self.assertIn("steps.supersession.outputs.stale != 'true'", workflow)
 
@@ -93,10 +93,10 @@ class SelfHealingWorkflowTests(unittest.TestCase):
 
 
 
-    def test_watchdog_runs_immediately_when_its_own_workflow_changes(self):
+    def test_hourly_watchdog_is_the_recovery_entrypoint_without_self_triggering_pushes(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn('      - ".github/workflows/self-healing-agent.yml"', workflow)
-        self.assertIn("github.event_name == 'push'", workflow)
+        self.assertIn('    - cron: "0 * * * *"', workflow)
+        self.assertNotIn("  push:", workflow)
 
 
 
