@@ -10,7 +10,12 @@ on:
   push:
     branches: [main]
     paths:
-      - ".github/workflows/automation-watchdog.yml"
+      - ".github/workflows/**"
+      - "rulesets/**"
+      - "sources/**"
+      - "scripts/**"
+      - "tests/**"
+      - "shadowrocket/ss.conf"
 
 permissions:
   actions: write
@@ -131,6 +136,7 @@ jobs:
   manifest-integrity:
     if: >-
       ${{
+        github.event_name == 'push' ||
         github.event_name == 'schedule' ||
         github.event_name == 'workflow_dispatch' ||
         (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
