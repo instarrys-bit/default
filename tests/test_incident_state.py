@@ -99,9 +99,27 @@ class IncidentStateTests(unittest.TestCase):
                 target_state="DETECTED",
             )
 
-    def test_legacy_issue_can_be_bootstrapped_only_with_recovery_evidence(self):
-        body, state = transition_incident(
+    def test_legacy_issue_must_persist_verifying_before_recovered(self):
+        with self.assertRaises(IncidentStateError):
+            transition_incident(
+                "Legacy issue body",
+                workflow="config_validator",
+                source_sha=SHA,
+                classification="LEGACY_INCIDENT",
+                event_id="verified-run-303",
+                target_state="RECOVERED",
+                verification_url="https://github.com/example/validator-run",
+            )
+        body, _ = transition_incident(
             "Legacy issue body",
+            workflow="config_validator",
+            source_sha=SHA,
+            classification="LEGACY_INCIDENT",
+            event_id="verifying-run-302",
+            target_state="VERIFYING",
+        )
+        recovered_body, recovered = transition_incident(
+            body,
             workflow="config_validator",
             source_sha=SHA,
             classification="LEGACY_INCIDENT",
@@ -110,10 +128,10 @@ class IncidentStateTests(unittest.TestCase):
             verification_url="https://github.com/example/validator-run",
         )
         self.assertEqual(
-            state["history"],
-            ["DETECTED", "DIAGNOSING", "MANUAL_INTERVENTION", "RECOVERED"],
+            recovered["history"][-2:],
+            ["VERIFYING", "RECOVERED"],
         )
-        self.assertTrue(body.endswith("\n"))
+        self.assertTrue(recovered_body.endswith("\n"))
 
     def test_corrupt_persisted_state_fails_closed(self):
         body = "x\n<!-- shadowrocket-incident-state:v1\nnot-json\n-->\n"
@@ -180,6 +198,91 @@ class IncidentStateTests(unittest.TestCase):
             ["VERIFYING", "RECOVERED"],
         )
 
+
+    def test_persisted_source_sha_mismatch_is_rejected(self):
+        body, _ = transition_incident(
+            "Failure summary",
+            workflow="deterministic_audit",
+            source_sha=SHA,
+            classification="TEST_FAILURE",
+            event_id="failure-run-101",
+            target_state="MANUAL_INTERVENTION",
+        )
+        with self.assertRaises(IncidentStateError):
+            transition_incident(
+                body,
+                workflow="deterministic_audit",
+                source_sha="b" * 40,
+                classification="TEST_FAILURE",
+                event_id="wrong-sha-202",
+                target_state="VERIFYING",
+            )
+
+    def test_recovered_cannot_skip_verifying(self):
+        body, _ = transition_incident(
+            "Failure summary",
+            workflow="deterministic_audit",
+            source_sha=SHA,
+            classification="TEST_FAILURE",
+            event_id="failure-run-101",
+            target_state="MANUAL_INTERVENTION",
+        )
+        with self.assertRaises(IncidentStateError):
+            transition_incident(
+                body,
+                workflow="deterministic_audit",
+                source_sha=SHA,
+                classification="TEST_FAILURE",
+                event_id="verified-run-202",
+                target_state="RECOVERED",
+                verification_url="https://github.com/example/verified-run",
+            )
+
+    def test_corrupt_history_or_revision_fails_closed(self):
+        body, _ = transition_incident(
+            "Failure summary",
+            workflow="deterministic_audit",
+            source_sha=SHA,
+            classification="TEST_FAILURE",
+            event_id="failure-run-101",
+            target_state="MANUAL_INTERVENTION",
+        )
+        state_match = __import__("re").search(
+            r"<!-- shadowrocket-incident-state:v1\\n(.*?)\\n-->",
+            body,
+            __import__("re").DOTALL,
+        )
+        state = json.loads(state_match.group(1))
+        state["history"][-1] = "RECOVERED"
+        corrupt = body[:state_match.start(1)] + json.dumps(state) + body[state_match.end(1):]
+        with self.assertRaises(IncidentStateError):
+            transition_incident(
+                corrupt,
+                workflow="deterministic_audit",
+                source_sha=SHA,
+                classification="TEST_FAILURE",
+                event_id="next-event",
+                target_state="VERIFYING",
+            )
+
+    def test_multiple_state_blocks_fail_closed(self):
+        body, _ = transition_incident(
+            "Failure summary",
+            workflow="deterministic_audit",
+            source_sha=SHA,
+            classification="TEST_FAILURE",
+            event_id="failure-run-101",
+            target_state="MANUAL_INTERVENTION",
+        )
+        with self.assertRaises(IncidentStateError):
+            transition_incident(
+                body + "\\n" + body.split("Failure summary", 1)[1],
+                workflow="deterministic_audit",
+                source_sha=SHA,
+                classification="TEST_FAILURE",
+                event_id="next-event",
+                target_state="VERIFYING",
+            )
 
 if __name__ == "__main__":
     unittest.main()
