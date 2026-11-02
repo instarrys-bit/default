@@ -59,7 +59,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         collect = workflow.index("Collect and cross-check all enabled domain sources")
         build = workflow.index("Build standalone DIRECT, PROXY and REJECT rule sets")
         lifecycle = workflow.index("Run conservative lifecycle audit and selectable restoration")
-        final = workflow.index("Enforce final ss.conf precedence after all rule mutations")
+        final = workflow.index("Reconcile final ss.conf scope coverage after all rule mutations")
         validate = workflow.index("Validate Shadowrocket config structure")
         self.assertLess(pre, collect)
         self.assertLess(collect, build)
@@ -94,6 +94,17 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("github.event.workflow_run.conclusion == 'success'", resolver)
         self.assertIn("UNCLASSIFIED_STEP_FAILURE", resolver)
         self.assertIn("gh issue close", resolver)
+
+
+    def test_config_reconciliation_does_not_evaluate_rule_precedence(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn("Reconcile final ss.conf scope coverage after all rule mutations", workflow)
+        self.assertIn("Audit candidate scope coverage against user config (read-only)", workflow)
+        self.assertNotIn("ss.conf precedence", workflow)
+        audit = (ROOT / "scripts" / "audit_ruleset_config_overlap.py").read_text(encoding="utf-8")
+        self.assertIn("No rule order, first-match winner, or precedence is evaluated.", audit)
+        sync = (ROOT / "scripts" / "sync_ruleset_config_conflicts.py").read_text(encoding="utf-8")
+        self.assertIn("rule order is not evaluated", sync)
 
 
 if __name__ == "__main__":
