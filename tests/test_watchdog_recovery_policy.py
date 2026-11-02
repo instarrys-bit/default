@@ -83,7 +83,7 @@ class WatchdogRecoveryPolicyTests(unittest.TestCase):
         unrelated = [
             run(1, minutes_ago=5, sha="b" * 40),
             run(2, minutes_ago=5, branch="feature"),
-            run(3, minutes_ago=5, conclusion="failure"),
+            run(3, minutes_ago=5, conclusion="action_required"),
             run(4, minutes_ago=5, conclusion="success"),
             run(5, minutes_ago=5, conclusion="action_required"),
         ]
