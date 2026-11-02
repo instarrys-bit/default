@@ -147,6 +147,19 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("pull-requests: write", watcher)
 
 
+
+    def test_audit_incidents_close_only_after_independent_publish_verification(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        resolver = workflow.split("  resolve-audit-incidents:", 1)[1].split("  stale-run-watch:", 1)[0]
+        self.assertIn('gh api "repos/$REPO/actions/runs/$RUN_ID"', resolver)
+        self.assertIn('gh api --paginate "repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100"', resolver)
+        self.assertIn("python3 scripts/verify_recovery_run.py", resolver)
+        self.assertLess(
+            resolver.index("python3 scripts/verify_recovery_run.py"),
+            resolver.index('issues="$(gh issue list'),
+        )
+        self.assertIn("Independently verify committed remote rulesets", AUTO_SYNC.read_text(encoding="utf-8"))
+
     def test_watchdog_uses_bounded_infrastructure_retries_only(self):
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         policy = (ROOT / "scripts" / "watchdog_recovery_policy.py").read_text(encoding="utf-8")
