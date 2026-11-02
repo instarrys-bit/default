@@ -35,3 +35,15 @@ The repository retains the Maasea Apache 2.0 license file for the relevant deriv
 ## Safe change boundary
 
 Documentation-only work must not alter scripts, workflow permissions, rule lists, source registries, generated state, or the protected configuration. Runtime changes require a separate audit, explicit scope, tests, and authorization.
+## Optional module inventory
+
+The documented optional assets include:
+
+- `modules/AdBlock.sgmodule` — user-maintained ad-handling module.
+- `modules/adblock/scripts/Social_Adblock.js` — social/search response handling.
+- `modules/adblock/scripts/youtube_initplayback_observer.js` — local-only hostname observation for YouTube initplayback; no full URL storage or network request.
+- `modules/adblock/scripts/youtube_protobuf_response_filter.js` — project-maintained derivative based on Maasea upstream code.
+
+The former standalone `youtube-ads.sgmodule` is no longer part of the current repository layout. The presence of these files does not mean they are enabled in `ss.conf` or validated on a device.
+
+The upstream Apache 2.0 license is retained at `modules/adblock/LICENSE-APACHE-2.0-Maasea`. Preserve its license and required notices.
