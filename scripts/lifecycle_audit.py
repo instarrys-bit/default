@@ -37,10 +37,8 @@ def query(endpoint,domain,kind):
 
 
 def deletion_confirmed(history):
-    if len(history)<2 or any(x.get("status")!="CONFIRMED_NXDOMAIN_OBSERVATION" for x in history[-2:]):
+    if len(history)<2 or any(x.get("status")!="CONFIRMED_NXDOMAIN_OBSERVATION" for x in history):
         return False
-    first=datetime.fromisoformat(history[-2]["checked_at"].replace("Z","+00:00"))
-    second=datetime.fromisoformat(history[-1]["checked_at"].replace("Z","+00:00"))
     first=datetime.fromisoformat(history[0]["checked_at"].replace("Z","+00:00"))
     last=datetime.fromisoformat(history[-1]["checked_at"].replace("Z","+00:00"))
     return last-first>=timedelta(days=30)
@@ -133,7 +131,7 @@ def main():
                 history.append({"checked_at":timestamp,"status":result["status"],"resolver_status":result["resolver_status"]})
             if deletion_confirmed(history) and key not in archived:
                 rules[policy].discard(line)
-                entry={"id":key,"policy":policy,"rule":line,"domain":domain,"removed_at":timestamp,"first_confirmed_at":history[-2]["checked_at"],"reason":"Two independent DoH resolvers returned NXDOMAIN for A and AAAA on observations at least 30 days apart"}
+                entry={"id":key,"policy":policy,"rule":line,"domain":domain,"removed_at":timestamp,"first_confirmed_at":history[0]["checked_at"],"reason":"Two independent DoH resolvers returned NXDOMAIN for A and AAAA on observations at least 30 days apart"}
                 archive["items"].append(entry); deleted.append(entry); archived.add(key)
         elif result["status"]=="DNS_EXISTS_OR_NODATA":
             active+=1
@@ -174,7 +172,7 @@ def main():
     lines += [f"- {x['id']} | {x['policy']} | {x['rule']} | first confirmation {x['first_confirmed_at']}" for x in deleted] or ["- None"]
     lines += ["## Selectable restore IDs"]+[f"- {x['id']} | {x['policy']} | {x['rule']}" for x in options]
     lines += ["","To restore, run the workflow manually and paste selected IDs into restore_ids."]
-        (REPORT/"latest.md").write_text("# Lifecycle audit\n\nNo lifecycle review is due. Daily incremental review and publishing continue.\n")
+    (REPORT/"latest.md").write_text("\n".join(lines)+"\n")
     if due:
         from lifecycle_gate import complete_lifecycle_review
         done=complete_lifecycle_review(ROOT,timestamp)
