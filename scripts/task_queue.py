@@ -66,7 +66,7 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
             "task_id", "idempotency_key", "trace_id", "requester_program_id",
             "target_program_id", "capability", "created_at", "not_before",
             "priority", "status", "attempts", "max_attempts", "input",
-            "lease", "result", "last_error",
+            "lease", "result", "last_error", "state_history",
         }
         missing = sorted(required - set(task))
         if missing:
@@ -87,11 +87,15 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
         if not isinstance(trace, str) or not trace.strip():
             raise ValueError(f"{task_id}.trace_id is required")
         requester, target = task["requester_program_id"], task["target_program_id"]
+        if not isinstance(requester, str) or not isinstance(target, str):
+            raise ValueError(f"{task_id} requester and target IDs must be strings")
         if requester not in by_id:
             raise ValueError(f"{task_id} references unknown requester program: {requester}")
         if target not in by_id:
             raise ValueError(f"{task_id} references unknown target program: {target}")
         target_program = by_id[target]
+        if not isinstance(task["capability"], str) or not task["capability"]:
+            raise ValueError(f"{task_id}.capability must be a non-empty string")
         if task["capability"] not in target_program.get("capabilities", []):
             raise ValueError(f"{task_id} requests a capability not declared by {target}")
         orchestration = target_program.get("orchestration", {})
@@ -105,7 +109,7 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
         if isinstance(priority, bool) or not isinstance(priority, int) or not 0 <= priority <= 100:
             raise ValueError(f"{task_id}.priority must be an integer from 0 to 100")
         status = task["status"]
-        if status not in STATUSES:
+        if not isinstance(status, str) or status not in STATUSES:
             raise ValueError(f"{task_id} has unsupported status: {status}")
         attempts, max_attempts = task["attempts"], task["max_attempts"]
         if isinstance(attempts, bool) or not isinstance(attempts, int) or attempts < 0:
@@ -120,6 +124,22 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
         if not isinstance(task["input"], dict):
             raise ValueError(f"{task_id}.input must be an object")
         lease = task["lease"]
+        history = task["state_history"]
+        if not isinstance(history, list) or not history or any(state not in STATUSES for state in history):
+            raise ValueError(f"{task_id}.state_history must be a non-empty array of valid statuses")
+        if history[-1] != status:
+            raise ValueError(f"{task_id}.state_history must end with the current status")
+        allowed_transitions = {
+            "QUEUED": {"CLAIMED", "CANCELLED"},
+            "CLAIMED": {"SUCCEEDED", "FAILED", "QUEUED", "DEAD_LETTER"},
+            "FAILED": {"QUEUED", "DEAD_LETTER", "CANCELLED"},
+            "SUCCEEDED": set(),
+            "CANCELLED": set(),
+            "DEAD_LETTER": set(),
+        }
+        for previous, current in zip(history, history[1:]):
+            if current not in allowed_transitions[previous]:
+                raise ValueError(f"{task_id}.state_history contains illegal transition {previous} -> {current}")
         if status == "CLAIMED":
             if not isinstance(lease, dict) or not isinstance(lease.get("owner"), str) or not lease["owner"].strip():
                 raise ValueError(f"{task_id} CLAIMED task requires a lease owner")

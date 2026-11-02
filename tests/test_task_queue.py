@@ -49,6 +49,7 @@ class TaskQueueTests(unittest.TestCase):
             "lease": None,
             "result": None,
             "last_error": None,
+            "state_history": ["QUEUED"],
         }
         value.update(overrides)
         return value
@@ -98,7 +99,7 @@ class TaskQueueTests(unittest.TestCase):
 
     def test_claimed_task_requires_lease(self):
         root, queue, registry = self.make_store()
-        self.write_task(queue, self.task(status="CLAIMED"))
+        self.write_task(queue, self.task(status="CLAIMED", state_history=["QUEUED", "CLAIMED"]))
         with self.assertRaisesRegex(ValueError, "requires a lease owner"):
             self.validate(root, queue, registry)
 
@@ -114,10 +115,10 @@ class TaskQueueTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "exceed the registered retry budget"):
             self.validate(root, queue, registry)
 
-    def test_success_requires_result(self):
+    def test_rejects_illegal_state_transition(self):
         root, queue, registry = self.make_store()
-        self.write_task(queue, self.task(status="SUCCEEDED"))
-        with self.assertRaisesRegex(ValueError, "requires a result object"):
+        self.write_task(queue, self.task(status="SUCCEEDED", state_history=["QUEUED", "SUCCEEDED"], result={"ok": True}))
+        with self.assertRaisesRegex(ValueError, "illegal transition"):
             self.validate(root, queue, registry)
 
 

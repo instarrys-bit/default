@@ -815,6 +815,33 @@
       }
     },
     {
+      "id": "script_task_queue",
+      "path": "scripts/task_queue.py",
+      "kind": "python_component",
+      "responsibility": "validate the durable cross-program task envelope and queue without dispatching work",
+      "capabilities": [
+        "task_queue_validation"
+      ],
+      "invocation": "python_cli",
+      "inputs": [
+        "automation/task_queue.json",
+        "automation/program_registry.json"
+      ],
+      "outputs": [
+        "validation summary or non-zero exit on invalid queue state"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Read-only repository files; no GitHub token or repository write permission.",
+      "health_check": "Dedicated task queue unit tests and required config-validation CI invocation.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
       "id": "script_validate_config",
       "path": "scripts/validate_config.py",
       "kind": "python_component",
@@ -1198,6 +1225,7 @@
         "script_register_config_baseline",
         "script_select_domain_rules",
         "script_sync_ruleset_config_conflicts",
+        "script_task_queue",
         "script_validate_config",
         "script_validate_program_registry",
         "script_verify_baseline"
