@@ -40,3 +40,8 @@ Configuration-conflict removals use a separate archive and recovery input. Befor
 ## Change accounting
 
 The manifest's `rule_lifecycle` section records per-policy counts before and after a build, additions/removals, before/after SHA-256 values, and up to ten change examples. This is audit data; it does not relax review or deletion requirements.
+## Recovery workflow inputs
+
+Lifecycle recovery uses the manual workflow input `restore_ids`, containing one or more comma-separated IDs copied from the lifecycle report. Configuration-conflict recovery uses the separate `restore_conflict_ids` input. Configuration-conflict records are stored in `rulesets/config_conflict_archive.json` and summarized in `reports/ruleset-config-conflict-sync.md`.
+
+Configuration-conflict restoration is rechecked against the current main configuration, skip-proxy behavior, published lists, and pending queue. If the restored rule would create a conflict, restoration is rejected. These records and IDs must never be mixed with lifecycle deletion records.
