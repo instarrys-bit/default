@@ -40,6 +40,55 @@ def _atomic_write(path: Path, data: bytes) -> None:
         raise
 
 
+
+def iter_document_records(path: Path, collection_key: str):
+    """Yield records without materializing the complete JSONL-sharded collection."""
+    path = Path(path)
+    manifest_file = manifest_path(path)
+    if not manifest_file.exists():
+        if not path.exists():
+            return
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        records = payload.get(collection_key, [])
+        if not isinstance(records, list):
+            raise ValueError(f"document collection {collection_key!r} is not a list: {path}")
+        yield from records
+        return
+
+    if manifest_file.stat().st_size > MAX_FILE_BYTES:
+        raise ValueError(f"shard manifest exceeds {MAX_FILE_BYTES} bytes: {manifest_file}")
+    manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+    if manifest.get("schema_version") != 1 or manifest.get("format") != "jsonl-shards-v1":
+        raise ValueError(f"unsupported shard manifest: {manifest_file}")
+    if manifest.get("logical_path") != path.name or manifest.get("collection_key") != collection_key:
+        raise ValueError(f"shard manifest identity mismatch: {manifest_file}")
+    directory = str(manifest.get("shard_directory", ""))
+    if not directory or Path(directory).name != directory:
+        raise ValueError(f"unsafe shard directory in {manifest_file}")
+    total_records = 0
+    for shard in manifest.get("shards", []):
+        name = str(shard.get("file", ""))
+        if not name or Path(name).name != name or not name.endswith(".jsonl"):
+            raise ValueError(f"unsafe shard name in {manifest_file}: {name!r}")
+        shard_path = manifest_file.parent / directory / name
+        raw = shard_path.read_bytes()
+        if len(raw) > MAX_FILE_BYTES:
+            raise ValueError(f"shard exceeds {MAX_FILE_BYTES} bytes: {shard_path}")
+        if hashlib.sha256(raw).hexdigest() != shard.get("sha256"):
+            raise ValueError(f"shard checksum mismatch: {shard_path}")
+        shard_count = 0
+        for line in raw.splitlines():
+            if not line:
+                continue
+            yield json.loads(line)
+            shard_count += 1
+            total_records += 1
+        if shard_count != int(shard.get("records", -1)):
+            raise ValueError(f"shard record-count mismatch: {shard_path}")
+    if total_records != int(manifest.get("record_count", -1)):
+        raise ValueError(f"document record-count mismatch: {manifest_file}")
+
+
 def read_document(path: Path, collection_key: str, default: dict | None = None) -> dict:
     """Read legacy JSON or verify and reconstruct a sharded document."""
     path = Path(path)
