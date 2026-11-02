@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
-from domain_rule_engine import load_domain_rules
+from domain_rule_engine import RuleIndex, load_domain_rules, ancestors
 from audit_ruleset_config_overlap import scope_covers_candidate, scope_intersects
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -63,21 +63,26 @@ def main() -> int:
         raise SystemExit(f"ERROR: source unexpectedly small or truncated: {len(candidates)} entries")
 
     rules, conditional, ignored = load_domain_rules(CONFIG)
+    rule_index = RuleIndex(rules)
     covered_by_policy = {"DIRECT": 0, "PROXY": 0, "REJECT": 0}
     mixed_coverage = []
     partial_overlaps = []
     uncovered = 0
     for domain, is_suffix in candidates:
         scope = "suffix_candidate" if is_suffix else "exact_candidate"
-        full_matches = [
-            rule for rule in rules
-            if scope_covers_candidate(scope, domain, rule.kind, rule.domain)
-        ]
-        partial_matches = [
-            rule for rule in rules
-            if scope_intersects(scope, domain, rule.kind, rule.domain)
-            and not scope_covers_candidate(scope, domain, rule.kind, rule.domain)
-        ]
+        if is_suffix:
+            full_matches = [
+                rule for parent in ancestors(domain)
+                for rule in rule_index.suffix.get(parent, [])
+            ]
+            partial_matches = [
+                rule for rule in rule_index.under.get(domain, [])
+                if not scope_covers_candidate(scope, domain, rule.kind, rule.domain)
+                and scope_intersects(scope, domain, rule.kind, rule.domain)
+            ]
+        else:
+            full_matches = rule_index.matches_host(domain)
+            partial_matches = []
         if full_matches:
             policies = {rule.policy for rule in full_matches}
             if len(policies) == 1:
