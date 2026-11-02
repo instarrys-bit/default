@@ -7,7 +7,7 @@ from datetime import datetime,timezone
 from domain_rule_engine import RuleIndex,load_domain_rules,inspect_suffix_scope
 from source_registry import validate_registry
 from review_cursor import snapshot_digest,resume_index,checkpoint
-from json_document_store import read_document,write_document
+from json_document_store import read_document,write_document,iter_document_records
 from audit_ruleset_config_overlap import scope_covers_candidate
 ROOT=Path(__file__).resolve().parents[1]
 CONFIG=ROOT/"shadowrocket/ss.conf"
@@ -276,11 +276,7 @@ def main():
     minimum=int(score_cfg["minimum_independent_sources"])
     now=datetime.now(timezone.utc).isoformat()
     correlated_pairs=load_correlated_publishers()
-    if OUTPUT.exists():
-        prior=read_document(OUTPUT,"reviews",{"schema_version":1,"reviews":[]})
-    else:
-        prior={"schema_version":1,"reviews":[]}
-    review_map={x["domain"]:x for x in prior.get("reviews",[])}
+    review_map={x["domain"]:x for x in iter_document_records(OUTPUT,"reviews")}
     if len(review_map)>MAX_REVIEW_RECORDS:
         fail(f"historical review ledger exceeds hard limit: {len(review_map):,} > {MAX_REVIEW_RECORDS:,}")
     lifecycle_state=json.loads(LIFECYCLE_STATE.read_text(encoding="utf-8")) if LIFECYCLE_STATE.exists() else {}
@@ -297,6 +293,10 @@ def main():
             elif line.startswith("DOMAIN-SUFFIX,"):
                 published_identities.add((policy_name.upper(),line[14:],"suffix_candidate"))
     run_counts={}
+    partial_counts={}
+    for record in review_map.values():
+        record_status=str(record.get("status","UNKNOWN"))
+        partial_counts[record_status]=partial_counts.get(record_status,0)+1
     candidates=collected.get("candidates",[])
     if len(candidates)>MAX_REVIEW_RECORDS:
         fail(f"candidate review input exceeds hard limit: {len(candidates):,} > {MAX_REVIEW_RECORDS:,}")
@@ -380,13 +380,17 @@ def main():
             }
         if domain not in review_map and len(review_map)>=MAX_REVIEW_RECORDS:
             fail(f"historical review ledger would exceed hard limit: {MAX_REVIEW_RECORDS:,}")
+        previous_status=str(previous_record.get("status","UNKNOWN")) if previous_record else None
+        if previous_status:
+            partial_counts[previous_status]=partial_counts.get(previous_status,0)-1
+            if partial_counts[previous_status]<=0:
+                partial_counts.pop(previous_status,None)
         review_map[domain]=new_record
+        partial_counts[status]=partial_counts.get(status,0)+1
         run_counts[status]=run_counts.get(status,0)+1
         if (candidate_index+1)%batch_size==0 or candidate_index+1==len(candidates):
-            partial_reviews=sorted(review_map.values(),key=lambda x:x["domain"])
-            partial_counts={}
-            for record in partial_reviews: partial_counts[record["status"]]=partial_counts.get(record["status"],0)+1
-            write_document(OUTPUT,{"schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,"source_snapshot":collected.get("sources",[]),"run_counts":run_counts,"counts":partial_counts,"reviews":partial_reviews},"reviews")
+            # Checkpoints need not be sorted; the final publication is sorted once.
+            write_document(OUTPUT,{"schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,"source_snapshot":collected.get("sources",[]),"run_counts":run_counts,"counts":partial_counts,"reviews":list(review_map.values())},"reviews")
             atomic_json(CURSOR,{**checkpoint(snapshot_sha256,len(candidates),candidate_index+1,batch_size),"updated_at":now,"last_checkpoint_domain":domain})
     reviews=sorted(review_map.values(),key=lambda x:x["domain"])
     total_counts={}
