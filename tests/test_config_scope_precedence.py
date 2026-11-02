@@ -31,7 +31,7 @@ class ConfigScopeCoverageTests(unittest.TestCase):
             "REJECT", "DOMAIN,api.example.com",
             [
                 (3, "DOMAIN,api.example.com,DIRECT"),
-                (9, "DOMAIN-SUFFIX,example.com,REJECT"),
+                (9, "DOMAIN-SUFFIX,example.com,PROXY"),
             ], []
         )
         self.assertEqual(result["status"], "CONFLICT")
