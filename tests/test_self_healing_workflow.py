@@ -32,6 +32,14 @@ class SelfHealingWorkflowTests(unittest.TestCase):
             workflow.index("Build append-only rule-level provenance ledger"),
         )
 
+    def test_write_token_is_not_exposed_to_repair_tests(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        repair_step = workflow.split("      - name: Apply allowlisted repair and run tests", 1)[1].split(
+            "      - name: Publish repair pull request", 1
+        )[0]
+        self.assertNotIn("GH_TOKEN", repair_step)
+        self.assertIn("persist-credentials: false", workflow)
+
     def test_user_owned_config_is_never_added_to_repair_commit(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("git add .github/workflows/auto_sync.yml", workflow)
