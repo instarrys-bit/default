@@ -10,7 +10,7 @@ AUTO_SYNC = ROOT / ".github" / "workflows" / "auto_sync.yml"
 class SelfHealingWorkflowTests(unittest.TestCase):
     def test_repair_is_bounded_and_does_not_auto_merge(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn('REPAIR_ID != "refresh_ruleset_manifest"', workflow)
+        self.assertIn('[ "$REPAIR_ID" != "refresh_ruleset_manifest" ]', workflow)
         self.assertIn("gh pr create", workflow)
         self.assertNotIn("gh pr merge", workflow)
         self.assertIn("No speculative code changes were made.", workflow)
