@@ -92,34 +92,6 @@ def matches_host(host: str, rules):
     return index.matches_host(host)
 
 
-def analyze_candidate(domain: str, is_suffix: bool, rules):
-    """Resolve first-match policy for apex and representative hosts in a source suffix."""
-    index = rules if isinstance(rules, RuleIndex) else RuleIndex(rules)
-    apex_hits = index.matches_host(domain)
-    apex_winner = apex_hits[0] if apex_hits else None
-    scope = {}
-    if is_suffix:
-        probes = {domain}
-        for rule in index.under.get(domain, []):
-            probes.add(rule.domain)
-            if rule.kind == "DOMAIN-SUFFIX":
-                probes.add("probe." + rule.domain)
-        for host in sorted(probes):
-            hits = index.matches_host(host)
-            if hits:
-                scope[host] = hits[0]
-    elif apex_winner:
-        scope[domain] = apex_winner
-    policies = {winner.policy for winner in scope.values()}
-    return {
-        "apex_hits": apex_hits,
-        "apex_winner": apex_winner,
-        "scope_winners": scope,
-        "scope_policies": policies,
-    }
-
-
-
 def inspect_suffix_scope(domain: str, policy: str, rules, conditional, protected, skip_proxy=()):
     """Check full-scope coverage and safety holds without evaluating rule order."""
     domain = domain.lower().rstrip(".")
