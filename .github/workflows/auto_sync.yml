@@ -23,11 +23,9 @@ on:
       - "sources/domain_sources.json"
       - "sources/protected_domains.json"
       - "sources/request_domain_observations.json"
+      - "sources/reject_manual_approvals.json"
       - "scripts/**"
       - "tests/**"
-      - ".github/workflows/auto_sync.yml"
-      - ".github/workflows/validate-config.yml"
-      - ".github/workflows/automation-watchdog.yml"
 
 permissions:
   contents: read
