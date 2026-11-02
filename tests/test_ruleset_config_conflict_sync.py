@@ -155,7 +155,7 @@ class ConfigConflictSyncTests(unittest.TestCase):
     def test_sync_retains_parent_direct_when_config_has_exact_reject_exception(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            parent = "DOMAIN-SUFFIX,example.com\\n"
+            parent = "DOMAIN-SUFFIX,example.com\n"
             make_root(
                 root,
                 config_with_rules(["DOMAIN,api.example.com,REJECT"]),
