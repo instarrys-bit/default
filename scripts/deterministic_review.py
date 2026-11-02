@@ -254,7 +254,7 @@ def inspect(domain,rules,conditional,base,protected,candidate_policy=None,candid
 def main():
     source_cfg=json.loads(POLICY.read_text(encoding="utf-8"))
     protected=json.loads(PROTECTED.read_text(encoding="utf-8"))
-    collected=json.loads(CANDIDATES.read_text(encoding="utf-8"))
+    collected=read_document(CANDIDATES,"candidates",{"candidates":[],"sources":[]})
     config=CONFIG.read_text(encoding="utf-8")
     base=config
     rules,conditional,ignored=load_domain_rules(CONFIG)
