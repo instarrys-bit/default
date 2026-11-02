@@ -42,6 +42,7 @@ jobs:
     timeout-minutes: 300
     permissions:
       contents: read
+      actions: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -56,7 +57,7 @@ jobs:
 
       - name: Compile and run deterministic review tests
         run: |
-          python3 -m py_compile scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/import_request_observations.py scripts/lifecycle_gate.py scripts/lifecycle_audit.py scripts/auto_activate_sources.py scripts/build_project_status.py scripts/build_rule_provenance.py scripts/refresh_ruleset_manifest.py scripts/diagnose_workflow_failure.py scripts/append_step_summary.py scripts/apply_safe_repair.py scripts/review_cursor.py scripts/verify_published_rulesets.py
+          python3 -m py_compile scripts/restore_automation_state.py scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/import_request_observations.py scripts/lifecycle_gate.py scripts/lifecycle_audit.py scripts/auto_activate_sources.py scripts/build_project_status.py scripts/build_rule_provenance.py scripts/refresh_ruleset_manifest.py scripts/diagnose_workflow_failure.py scripts/append_step_summary.py scripts/apply_safe_repair.py scripts/review_cursor.py scripts/verify_published_rulesets.py
           python3 -m unittest discover -s tests -v
 
       - name: Discover candidate source repositories (non-activating)
@@ -91,6 +92,52 @@ jobs:
         run: python3 scripts/register_config_baseline.py
       - name: Verify registered user config baseline
         run: python3 scripts/verify_baseline.py --baseline-only
+      - name: Restore prior high-volume automation state
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          CURRENT_RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/prior-audit-state
+          pointer="reports/automation/state_store.json"
+          if [ -s "$pointer" ]; then
+            run_id="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("last_state_run_id", ""))' "$pointer")"
+            if [ -z "$run_id" ]; then
+              echo "State pointer exists but has no run ID; refusing to reset automation state."
+              exit 1
+            fi
+            run_ids="$run_id"
+          else
+            run_ids="$(gh api "repos/$REPO/actions/runs?per_page=100" --jq '.workflow_runs[] | select(.path == ".github/workflows/auto_sync.yml" and .head_branch == "main") | .id')"
+          fi
+          restored=0
+          for run_id in $run_ids; do
+            [ "$run_id" = "$CURRENT_RUN_ID" ] && continue
+            artifact_id="$(gh api "repos/$REPO/actions/runs/$run_id/artifacts" --jq '[.artifacts[] | select(.name == "deterministic-audit-output" and .expired == false)] | first | .id // empty' 2>/dev/null || true)"
+            if [ -z "$artifact_id" ]; then
+              if [ -s "$pointer" ]; then
+                echo "The state artifact for recorded run $run_id is missing or expired; refusing destructive reinitialization."
+                exit 1
+              fi
+              continue
+            fi
+            gh run download "$run_id" --name deterministic-audit-output --dir /tmp/prior-audit-state
+            archive="/tmp/prior-audit-state/audit-output.tar.gz"
+            test -s "$archive"
+            python3 scripts/restore_automation_state.py --archive "$archive" --root .
+            echo "Restored high-volume state from audit run $run_id (artifact $artifact_id)."
+            restored=1
+            break
+          done
+          if [ "$restored" -eq 0 ]; then
+            if [ -s "$pointer" ]; then
+              echo "Recorded automation state could not be restored; refusing to continue."
+              exit 1
+            fi
+            echo "No prior state artifact found; using repository bootstrap state."
+          fi
+
       - name: Remove published and queued rules that conflict with ss.conf
         env:
           RULESET_CONFIG_RESTORE_IDS: ${{ github.event.inputs.restore_conflict_ids || '' }}
@@ -239,6 +286,30 @@ jobs:
               stream.write("\n")
           PY
 
+      - name: Record durable automation state pointer
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          mkdir -p reports/automation
+          python3 - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          record = {
+              "schema_version": 1,
+              "last_state_run_id": os.environ["GITHUB_RUN_ID"],
+              "source_commit": os.environ["GITHUB_SHA"],
+              "recorded_at_utc": datetime.now(timezone.utc).isoformat(),
+              "artifact_name": "deterministic-audit-output",
+              "artifact_retention_days": 90,
+              "storage_mode": "github_actions_artifact",
+              "missing_artifact_policy": "fail_closed"
+          }
+          with open("reports/automation/state_store.json", "w", encoding="utf-8") as stream:
+              json.dump(record, stream, ensure_ascii=False, indent=2)
+              stream.write("\n")
+          PY
+
       - name: Package allowlisted audit outputs
         run: |
           tar -czf audit-output.tar.gz \
@@ -287,7 +358,7 @@ jobs:
           name: deterministic-audit-output
           path: audit-output.tar.gz
           if-no-files-found: error
-          retention-days: 1
+          retention-days: 90
 
   publish:
     needs: audit
@@ -329,15 +400,13 @@ jobs:
 
           git add -- \
             sources/policy.json \
-            sources/domain_reviews.json \
-            sources/review_cursor.json \
-            sources/rule_provenance.json \
             sources/domain_sources.json \
             sources/source_activation_log.json \
             reports/lifecycle \
             reports/project-status.md \
             reports/project-status.json \
             reports/automation/heartbeat.json \
+            reports/automation/state_store.json \
             reports/external-domain-audit.md \
             reports/config-drift-audit.md \
             reports/config-drift-audit.json \
@@ -357,12 +426,6 @@ jobs:
             sources/discovered_sources.json \
             sources/source_assessments.json \
             sources/source_candidates.json \
-            data/domain_candidates.json \
-            data/candidates.json \
-            data/source_pending.json \
-            data/primary_snapshot.txt \
-            data/secondary_snapshot.txt \
-            data/source_snapshots/ \
             rulesets/
 
           # Explicitly fail if the protected config somehow entered the staged commit.
