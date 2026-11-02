@@ -293,7 +293,7 @@
 ### [Hackl0us/SS-Rule-Snippet](https://github.com/Hackl0us/SS-Rule-Snippet)
 
 - Description: 搜集、整理、维护 Surge / Quantumult (X) / Shadowrocket / Surfboard / clash (Premium) 实用规则。
-- Stars: 11216; archived: False; fork: False
+- Stars: 11215; archived: False; fork: False
 - Search queries: curated_seed
 - README / curated seed rule-list links: 2
 - Curated seed links: 2

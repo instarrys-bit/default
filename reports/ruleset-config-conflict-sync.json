@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "completed_at": "2026-11-02T02:05:33.329171+00:00",
+  "completed_at": "2026-11-02T02:16:46.760347+00:00",
   "config_path": "shadowrocket/ss.conf",
   "config_read_only": true,
   "config_blob_sha": "a6b2f0e6e41da13572dfca8e8119212118df5bcb",
@@ -812,10 +812,10 @@
   ],
   "policy": "Every provable exact/suffix scope overlap with ss.conf or skip-proxy is removed from published and queued external rules, regardless of whether the policy matches. The earliest applicable config rule is recorded as precedence evidence. Historical archive entries are rechecked against the current config and superseded when the overlap no longer exists. Keyword/regex/conditional overlaps that cannot be proven from static domain scope are retained and reported; no speculative deletion is allowed.",
   "errors": [],
-  "workflow_run_id": "41375680090",
+  "workflow_run_id": "41376623146",
   "sync_passes": [
     {
-      "completed_at": "2026-11-02T02:04:47.824655+00:00",
+      "completed_at": "2026-11-02T02:15:46.233708+00:00",
       "published_before": {
         "DIRECT": 216,
         "PROXY": 205,
@@ -833,7 +833,7 @@
       "restore_refused_count": 0
     },
     {
-      "completed_at": "2026-11-02T02:05:33.329171+00:00",
+      "completed_at": "2026-11-02T02:16:46.760347+00:00",
       "published_before": {
         "DIRECT": 216,
         "PROXY": 205,

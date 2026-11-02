@@ -77,11 +77,11 @@
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list": [
-          "DIRECT"
-        ],
         "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list": [
           "PROXY"
+        ],
+        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list": [
+          "DIRECT"
         ]
       },
       "seeded_source_urls": [
@@ -787,9 +787,9 @@
       "html_url": "https://github.com/Hackl0us/SS-Rule-Snippet",
       "description": "搜集、整理、维护 Surge / Quantumult (X) / Shadowrocket / Surfboard / clash (Premium) 实用规则。",
       "default_branch": "main",
-      "updated_at": "2026-11-02T00:53:44Z",
+      "updated_at": "2026-11-02T02:12:53Z",
       "pushed_at": "2024-03-19T11:51:12Z",
-      "stars": 11216,
+      "stars": 11215,
       "archived": false,
       "fork": false,
       "license": "AGPL-3.0",
@@ -1371,7 +1371,8 @@
       "search_queries": [
         "shadowrocket rules"
       ],
-      "discovered_at": "2026-11-02T02:04:18.421169+00:00"
+      "discovered_at": "2026-11-02T02:04:18.421169+00:00",
+      "seeded_source_urls": []
     },
     {
       "repository": "Remix123/routingrulehub",
@@ -2772,15 +2773,15 @@
         "https://raw.githubusercontent.com/gatework/surge-rules/release/proxy.txt"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/gatework/surge-rules/release/direct.txt": [
-          "DIRECT",
-          "PROXY",
-          "REJECT"
-        ],
         "https://raw.githubusercontent.com/gatework/surge-rules/release/gfw.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/gatework/surge-rules/release/proxy.txt": [
+          "DIRECT",
+          "PROXY",
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/gatework/surge-rules/release/direct.txt": [
           "DIRECT",
           "PROXY",
           "REJECT"
@@ -3260,43 +3261,43 @@
         "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_whitelist_ad.conf"
       ],
       "readme_policy_claims": {
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_banlist_ad.conf": [
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/lazy.conf": [
           "REJECT"
         ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_ad_only.conf": [
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_cnip_ad.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_banlist.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_backcn.conf": [
           "REJECT"
         ],
         "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/lazy_group.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_banlist_ad.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_proxy_banad.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_whitelist_ad.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_cnip.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_direct_banad.conf": [
+          "REJECT"
+        ],
+        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_ad_only.conf": [
           "REJECT"
         ],
         "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_backcn_ad.conf": [
           "REJECT"
         ],
         "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_whitelist.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_whitelist_ad.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/lazy.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_direct_banad.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_cnip.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_top500_banlist.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_cnip_ad.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_backcn.conf": [
-          "REJECT"
-        ],
-        "https://raw.githubusercontent.com/kaonimei/Shadowrocket-ADBlock-Rules/main/sr_proxy_banad.conf": [
           "REJECT"
         ]
       },
@@ -4575,7 +4576,13 @@
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/twitch.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/netflix.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/torrent.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/telegram.txt": [
@@ -4584,28 +4591,22 @@
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/socials.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/tools.txt": [
-          "PROXY"
-        ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/whatsapp.txt": [
+          "PROXY"
+        ],
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/discord.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/processes.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/torrent.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/tools.txt": [
           "PROXY"
         ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/ai.txt": [
+        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/netflix.txt": [
           "PROXY"
         ],
         "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/youtube.txt": [
-          "PROXY"
-        ],
-        "https://raw.githubusercontent.com/teslaproduuction/ClashDomainsList/main/music.txt": [
           "PROXY"
         ]
       },
@@ -4728,8 +4729,8 @@
       "html_url": "https://github.com/tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
       "description": "本项目基于Johnshall大神的项目https://github.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever，根据我个人需求修改而成。",
       "default_branch": "release",
-      "updated_at": "2026-11-01T01:49:51Z",
-      "pushed_at": "2026-11-01T01:49:47Z",
+      "updated_at": "2026-11-02T02:04:30Z",
+      "pushed_at": "2026-11-02T02:04:26Z",
       "stars": 43,
       "archived": false,
       "fork": false,
@@ -4768,8 +4769,8 @@
       "html_url": "https://github.com/vialan-art/My-Shadowrocket-Rules",
       "description": null,
       "default_branch": "main",
-      "updated_at": "2026-11-01T22:39:33Z",
-      "pushed_at": "2026-11-01T22:39:29Z",
+      "updated_at": "2026-11-02T02:12:52Z",
+      "pushed_at": "2026-11-02T02:12:48Z",
       "stars": 0,
       "archived": false,
       "fork": false,
