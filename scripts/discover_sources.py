@@ -6,6 +6,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -160,10 +161,30 @@ def request_json(url: str, token: str = "") -> dict:
     if token:
         headers["Authorization"] = "Bearer " + token
     req = urllib.request.Request(url, headers=headers)
-    with urllib.request.urlopen(req, timeout=30) as response:
-        if response.status != 200:
-            raise ValueError("GitHub API returned HTTP " + str(response.status))
-        return json.loads(response.read(20_000_000).decode("utf-8"))
+    for attempt in range(6):
+        try:
+            with urllib.request.urlopen(req, timeout=30) as response:
+                if response.status != 200:
+                    raise ValueError("GitHub API returned HTTP " + str(response.status))
+                return json.loads(response.read(20_000_000).decode("utf-8"))
+        except urllib.error.HTTPError as exc:
+            if exc.code not in {403, 429, 500, 502, 503, 504} or attempt == 5:
+                raise
+            retry_after = exc.headers.get("Retry-After") if exc.headers else None
+            remaining = exc.headers.get("X-RateLimit-Remaining") if exc.headers else None
+            reset = exc.headers.get("X-RateLimit-Reset") if exc.headers else None
+            if retry_after:
+                delay = float(retry_after)
+            elif remaining == "0" and reset:
+                delay = max(1.0, float(reset) - time.time())
+            else:
+                delay = min(60.0, 2.0 ** (attempt + 1))
+            time.sleep(min(90.0, max(1.0, delay)))
+        except urllib.error.URLError:
+            if attempt == 5:
+                raise
+            time.sleep(min(30.0, 2.0 ** (attempt + 1)))
+    raise RuntimeError("GitHub API retry budget exhausted")
 
 def fetch_readme(owner: str, repo: str, branch: str) -> str:
     if not all(re.fullmatch(r"[A-Za-z0-9_.-]+", x) for x in (owner, repo, branch)):
