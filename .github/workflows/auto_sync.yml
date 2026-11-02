@@ -338,6 +338,7 @@ jobs:
             reports/project-status.md \
             reports/project-status.json \
             reports/automation/heartbeat.json \
+            reports/automation/state_store.json \
             reports/external-domain-audit.md \
             reports/config-drift-audit.md \
             reports/config-drift-audit.json \
