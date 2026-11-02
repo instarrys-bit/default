@@ -561,6 +561,7 @@ alitianji.com
 alitrip.com
 alittle-tea.com
 aliunicorn.com
+alivecdn.com
 aliway.com
 aliwork.com
 aliwx.net
@@ -583,6 +584,7 @@ allawntech.com
 allday.work
 allhistory.com
 alloyteam.com
+allwinnertech.com
 allyes.com
 alookweb.com
 aloys233.top
@@ -1005,6 +1007,7 @@ build9s.io
 building.fun
 buke999.com
 burningvocabulary.com
+busyming.com
 buydouke.com
 buyjingxi.com
 bvfcdn.com
@@ -1150,6 +1153,7 @@ caiyunai.com
 caiyunapp.com
 caiyuncdn.com
 calorietech.com
+cambricon.com
 camcard.com
 camscanner.com
 cang.com
@@ -2014,6 +2018,7 @@ douban.fm
 doubanio.com
 doubao-dev.com
 doubao.com
+doubaoapps.com
 doubaocdn.com
 doubleclick-cn.net
 doubleclick.net
@@ -2161,6 +2166,7 @@ ecombdimg.com
 ecombdstatic.com
 ecombdvod.com
 ecukwai.com
+edge-byted.com
 edge.geo.kaspersky.com
 edgeceler.com
 edgekey88.net
@@ -2720,6 +2726,7 @@ haier.com
 haier.net
 haiersmarthomes.com
 hailuoai.com
+haimian.com
 hainanairlines.com
 haishun.com
 halvie.com
@@ -2841,6 +2848,7 @@ hnair.com
 hnbntv.com
 hnchasing.com
 hndt.com
+hnlshm.com
 hnol.net
 hnrcsc.com
 hntv.tv
@@ -4136,6 +4144,12 @@ mmarket6.com
 mmbang.com
 mmbang.info
 mmstat.com
+mnc000.mcc460.pub.3gppnetwork.org
+mnc002.mcc460.pub.3gppnetwork.org
+mnc004.mcc460.pub.3gppnetwork.org
+mnc007.mcc460.pub.3gppnetwork.org
+mnc011.mcc460.pub.3gppnetwork.org
+mnc015.mcc460.pub.3gppnetwork.org
 mndqlib.net
 mob.com
 mobmore.com
@@ -4193,6 +4207,7 @@ msstatic.com
 mszdld.com
 mszdld.net
 mszq.com
+mthreads.com
 mti100.com
 mtime.com
 mting.info
@@ -4678,6 +4693,7 @@ qianyierp.com
 qianzhan.com
 qiao-cn.com
 qiaobutang.com
+qiaqiafood.com
 qichacha.com
 qichamao.com
 qidian.com
@@ -5128,6 +5144,7 @@ soufun.com
 soufunimg.com
 soulteary.com
 souqian.com
+southchip.com
 southcn.com
 southmoney.com
 sp.itunes.apple.com
@@ -5432,6 +5449,7 @@ tendcloud.com
 tendis.net
 tengmed.com
 tenpay.com
+tenpayglobal.com
 tenxcloud.com
 tesoon.com
 test-cignacmb.com
@@ -6051,6 +6069,7 @@ wenxiaozhan.com
 wenxiaozhan.net
 wenxin-ge.com
 west95582.com
+wesure100.com
 weui.io
 wework-studio.com
 wf.pub
@@ -6741,6 +6760,7 @@ zxhgroup.com
 zxxk.com
 zybang.com
 zyh365.com
+zymls.com
 zysn.net
 zysou.com
 zyyct.com

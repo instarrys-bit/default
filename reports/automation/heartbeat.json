@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "status": "audit_passed",
+  "workflow": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
+  "run_id": "41399868094",
+  "run_attempt": 1,
+  "event": "push",
+  "source_commit": "2943af8c2e5bc68732a86260b9f313da1705f54f",
+  "recorded_at_utc": "2026-11-02T07:06:00.901675+00:00",
+  "checks": {
+    "deterministic_tests": "passed",
+    "user_config_baseline": "passed",
+    "config_conflict_sync": "passed",
+    "lifecycle_audit": "passed",
+    "three_policy_rule_sets": "passed",
+    "config_validation": "passed",
+    "source_and_rule_audits": "passed"
+  },
+  "protected_config": {
+    "path": "shadowrocket/ss.conf",
+    "modified_by_automation": false
+  }
+}

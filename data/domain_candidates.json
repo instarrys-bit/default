@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-02T02:21:57.149234+00:00",
+  "updated_at": "2026-11-02T07:04:57.918647+00:00",
   "bootstrapped_sources": [
     "acl4ssr-china-domain",
     "acl4ssr-proxy-lite",
@@ -58056,6 +58056,106 @@
       "domain": "zzzmap.com",
       "source_id": "auto-jovanykoch-rules-9660520d",
       "first_seen": "2026-11-02T00:37:34.750036+00:00"
+    },
+    {
+      "domain": "alivecdn.com",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "allwinnertech.com",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "busyming.com",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "cambricon.com",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "doubaoapps.com",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "edge-byted.com",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "haimian.com",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "hnlshm.com",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "mnc000.mcc460.pub.3gppnetwork.org",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "mnc002.mcc460.pub.3gppnetwork.org",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "mnc004.mcc460.pub.3gppnetwork.org",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "mnc007.mcc460.pub.3gppnetwork.org",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "mnc011.mcc460.pub.3gppnetwork.org",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "mnc015.mcc460.pub.3gppnetwork.org",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "mthreads.com",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "qiaqiafood.com",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "southchip.com",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "tenpayglobal.com",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "wesure100.com",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
+    },
+    {
+      "domain": "zymls.com",
+      "source_id": "auto-jovanykoch-rules-9660520d",
+      "first_seen": "2026-11-02T07:04:57.918647+00:00"
     }
   ]
 }

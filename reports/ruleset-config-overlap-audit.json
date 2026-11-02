@@ -5,12 +5,12 @@
   "first_ruleset_line": 1718,
   "prior_rule_line_count": 1672,
   "skip_proxy_entry_count": 146,
-  "candidate_count": 11298,
+  "candidate_count": 11318,
   "status_counts": {
     "ALREADY_COVERED": 1940,
     "CONDITIONAL_POTENTIAL": 16,
-    "CONFLICT": 530,
-    "NOT_COVERED_BY_PRIOR_DOMAIN_RULES": 8558,
+    "CONFLICT": 536,
+    "NOT_COVERED_BY_PRIOR_DOMAIN_RULES": 8572,
     "POTENTIAL_MATCH": 254
   },
   "results": [
@@ -8703,6 +8703,18 @@
       "priority_resolution": "no_prior_rule_overlap"
     },
     {
+      "domain": "alivecdn.com",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "REVIEW",
+      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "line": null,
+      "rule": null,
+      "effective_policy": null,
+      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found",
+      "priority_resolution": "no_prior_rule_overlap"
+    },
+    {
       "domain": "aliway.com",
       "policy": "DIRECT",
       "source_entry_type": "exact_candidate",
@@ -9088,6 +9100,18 @@
     },
     {
       "domain": "alloyteam.com",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "REVIEW",
+      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "line": null,
+      "rule": null,
+      "effective_policy": null,
+      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found",
+      "priority_resolution": "no_prior_rule_overlap"
+    },
+    {
+      "domain": "allwinnertech.com",
       "policy": "DIRECT",
       "source_entry_type": "exact_candidate",
       "ledger_status": "REVIEW",
@@ -19515,6 +19539,18 @@
       "priority_resolution": "original_config_rule_wins"
     },
     {
+      "domain": "busyming.com",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "REVIEW",
+      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "line": null,
+      "rule": null,
+      "effective_policy": null,
+      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found",
+      "priority_resolution": "no_prior_rule_overlap"
+    },
+    {
       "domain": "buydouke.com",
       "policy": "DIRECT",
       "source_entry_type": "exact_candidate",
@@ -21520,6 +21556,18 @@
     },
     {
       "domain": "calorietech.com",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "REVIEW",
+      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "line": null,
+      "rule": null,
+      "effective_policy": null,
+      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found",
+      "priority_resolution": "no_prior_rule_overlap"
+    },
+    {
+      "domain": "cambricon.com",
       "policy": "DIRECT",
       "source_entry_type": "exact_candidate",
       "ledger_status": "REVIEW",
@@ -37239,6 +37287,18 @@
       "priority_resolution": "no_prior_rule_overlap"
     },
     {
+      "domain": "doubaoapps.com",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "REVIEW",
+      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "line": null,
+      "rule": null,
+      "effective_policy": null,
+      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found",
+      "priority_resolution": "no_prior_rule_overlap"
+    },
+    {
       "domain": "doubaocdn.com",
       "policy": "DIRECT",
       "source_entry_type": "exact_candidate",
@@ -39568,6 +39628,18 @@
     },
     {
       "domain": "ecukwai.com",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "REVIEW",
+      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "line": null,
+      "rule": null,
+      "effective_policy": null,
+      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found",
+      "priority_resolution": "no_prior_rule_overlap"
+    },
+    {
+      "domain": "edge-byted.com",
       "policy": "DIRECT",
       "source_entry_type": "exact_candidate",
       "ledger_status": "REVIEW",
@@ -54903,6 +54975,18 @@
       "priority_resolution": "no_prior_rule_overlap"
     },
     {
+      "domain": "haimian.com",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "REVIEW",
+      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "line": null,
+      "rule": null,
+      "effective_policy": null,
+      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found",
+      "priority_resolution": "no_prior_rule_overlap"
+    },
+    {
       "domain": "hainanairlines.com",
       "policy": "DIRECT",
       "source_entry_type": "exact_candidate",
@@ -57377,6 +57461,18 @@
     {
       "domain": "hnjhj.com",
       "policy": "PROXY",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "REVIEW",
+      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "line": null,
+      "rule": null,
+      "effective_policy": null,
+      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found",
+      "priority_resolution": "no_prior_rule_overlap"
+    },
+    {
+      "domain": "hnlshm.com",
+      "policy": "DIRECT",
       "source_entry_type": "exact_candidate",
       "ledger_status": "REVIEW",
       "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
@@ -80559,6 +80655,78 @@
       "priority_resolution": "original_config_rule_wins"
     },
     {
+      "domain": "mnc000.mcc460.pub.3gppnetwork.org",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "CONFLICT",
+      "status": "CONFLICT",
+      "line": 647,
+      "rule": "DOMAIN-SUFFIX,org,PROXY",
+      "effective_policy": "PROXY",
+      "reason": "Prior first-match exact/suffix domain rule",
+      "priority_resolution": "original_config_rule_wins"
+    },
+    {
+      "domain": "mnc002.mcc460.pub.3gppnetwork.org",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "CONFLICT",
+      "status": "CONFLICT",
+      "line": 647,
+      "rule": "DOMAIN-SUFFIX,org,PROXY",
+      "effective_policy": "PROXY",
+      "reason": "Prior first-match exact/suffix domain rule",
+      "priority_resolution": "original_config_rule_wins"
+    },
+    {
+      "domain": "mnc004.mcc460.pub.3gppnetwork.org",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "CONFLICT",
+      "status": "CONFLICT",
+      "line": 647,
+      "rule": "DOMAIN-SUFFIX,org,PROXY",
+      "effective_policy": "PROXY",
+      "reason": "Prior first-match exact/suffix domain rule",
+      "priority_resolution": "original_config_rule_wins"
+    },
+    {
+      "domain": "mnc007.mcc460.pub.3gppnetwork.org",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "CONFLICT",
+      "status": "CONFLICT",
+      "line": 647,
+      "rule": "DOMAIN-SUFFIX,org,PROXY",
+      "effective_policy": "PROXY",
+      "reason": "Prior first-match exact/suffix domain rule",
+      "priority_resolution": "original_config_rule_wins"
+    },
+    {
+      "domain": "mnc011.mcc460.pub.3gppnetwork.org",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "CONFLICT",
+      "status": "CONFLICT",
+      "line": 647,
+      "rule": "DOMAIN-SUFFIX,org,PROXY",
+      "effective_policy": "PROXY",
+      "reason": "Prior first-match exact/suffix domain rule",
+      "priority_resolution": "original_config_rule_wins"
+    },
+    {
+      "domain": "mnc015.mcc460.pub.3gppnetwork.org",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "CONFLICT",
+      "status": "CONFLICT",
+      "line": 647,
+      "rule": "DOMAIN-SUFFIX,org,PROXY",
+      "effective_policy": "PROXY",
+      "reason": "Prior first-match exact/suffix domain rule",
+      "priority_resolution": "original_config_rule_wins"
+    },
+    {
       "domain": "mndqlib.net",
       "policy": "DIRECT",
       "source_entry_type": "exact_candidate",
@@ -81832,6 +82000,18 @@
     },
     {
       "domain": "mszq.com",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "REVIEW",
+      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "line": null,
+      "rule": null,
+      "effective_policy": null,
+      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found",
+      "priority_resolution": "no_prior_rule_overlap"
+    },
+    {
+      "domain": "mthreads.com",
       "policy": "DIRECT",
       "source_entry_type": "exact_candidate",
       "ledger_status": "REVIEW",
@@ -93579,6 +93759,18 @@
       "priority_resolution": "no_prior_rule_overlap"
     },
     {
+      "domain": "qiaqiafood.com",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "REVIEW",
+      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "line": null,
+      "rule": null,
+      "effective_policy": null,
+      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found",
+      "priority_resolution": "no_prior_rule_overlap"
+    },
+    {
       "domain": "qichacha.com",
       "policy": "DIRECT",
       "source_entry_type": "exact_candidate",
@@ -103107,6 +103299,18 @@
       "priority_resolution": "original_config_rule_wins"
     },
     {
+      "domain": "southchip.com",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "REVIEW",
+      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "line": null,
+      "rule": null,
+      "effective_policy": null,
+      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found",
+      "priority_resolution": "no_prior_rule_overlap"
+    },
+    {
       "domain": "southcn.com",
       "policy": "DIRECT",
       "source_entry_type": "exact_candidate",
@@ -109069,6 +109273,18 @@
       "effective_policy": "DIRECT",
       "reason": "Prior first-match rules intersect candidate suffix scope",
       "priority_resolution": "original_config_rule_wins"
+    },
+    {
+      "domain": "tenpayglobal.com",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "REVIEW",
+      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "line": null,
+      "rule": null,
+      "effective_policy": null,
+      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found",
+      "priority_resolution": "no_prior_rule_overlap"
     },
     {
       "domain": "tensorflow.org",
@@ -123159,6 +123375,18 @@
       "priority_resolution": "original_config_rule_wins"
     },
     {
+      "domain": "wesure100.com",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "REVIEW",
+      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "line": null,
+      "rule": null,
+      "effective_policy": null,
+      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found",
+      "priority_resolution": "no_prior_rule_overlap"
+    },
+    {
       "domain": "weui.io",
       "policy": "DIRECT",
       "source_entry_type": "exact_candidate",
@@ -135460,6 +135688,18 @@
     },
     {
       "domain": "zyh365.com",
+      "policy": "DIRECT",
+      "source_entry_type": "exact_candidate",
+      "ledger_status": "REVIEW",
+      "status": "NOT_COVERED_BY_PRIOR_DOMAIN_RULES",
+      "line": null,
+      "rule": null,
+      "effective_policy": null,
+      "reason": "No earlier exact, suffix, keyword, URL-REGEX or conditional domain match found",
+      "priority_resolution": "no_prior_rule_overlap"
+    },
+    {
+      "domain": "zymls.com",
       "policy": "DIRECT",
       "source_entry_type": "exact_candidate",
       "ledger_status": "REVIEW",

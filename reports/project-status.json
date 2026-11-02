@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T02:22:43.620355+00:00",
+  "generated_at": "2026-11-02T07:06:00.824378+00:00",
   "health": "PASS",
   "integrity": {
     "config_baseline_match": true,
@@ -55,9 +55,9 @@
       "PROXY": 0,
       "REJECT": 0
     },
-    "discovered_repository_count": 218,
-    "assessed_file_count": 50,
-    "source_candidate_count": 7,
+    "discovered_repository_count": 1183,
+    "assessed_file_count": 4705,
+    "source_candidate_count": 30,
     "activated_this_run": 0,
     "cumulative_auto_activations": 2,
     "lineage_audited_count": 8,
@@ -66,14 +66,14 @@
     "lineage_verified_count": 0
   },
   "rule_provenance": {
-    "rule_count": 11298,
-    "exact_file_line_evidence_count": 12298,
+    "rule_count": 11318,
+    "exact_file_line_evidence_count": 12318,
     "snapshot_membership_evidence_count": 2,
     "missing_line_number_count": 2,
     "rules_without_current_review_count": 0
   },
   "review": {
-    "candidate_count": 11583,
+    "candidate_count": 11603,
     "approved_count": 431,
     "ledger_approved_count": 434,
     "approved_not_published_count": 3,
@@ -104,13 +104,13 @@
       ],
       "other": []
     },
-    "held_count": 11152,
+    "held_count": 11172,
     "status_counts": {
       "ALREADY_COVERED": 2168,
       "APPROVED": 434,
-      "CONFLICT": 544,
+      "CONFLICT": 550,
       "POLICY_CONFLICT": 285,
-      "REVIEW": 8141,
+      "REVIEW": 8155,
       "RISK_HOLD": 11
     }
   },

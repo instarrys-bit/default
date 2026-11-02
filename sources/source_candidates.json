@@ -1,35 +1,46 @@
 {
   "schema_version": 1,
-  "candidate_count": 7,
-  "eligible_candidate_count": 7,
+  "candidate_count": 30,
+  "eligible_candidate_count": 26,
   "minimum_independent_publishers": 2,
   "policy_summary": {
     "DIRECT": {
-      "candidate_publishers": 3,
-      "eligible_publishers": 3,
-      "independent_eligible_groups": 2,
-      "candidate_files": 3,
+      "candidate_publishers": 7,
+      "eligible_publishers": 5,
+      "independent_eligible_groups": 4,
+      "candidate_files": 10,
       "cross_policy_conflict_count": 2,
       "activation_ready": true
     },
     "PROXY": {
-      "candidate_publishers": 3,
-      "eligible_publishers": 3,
-      "independent_eligible_groups": 2,
-      "candidate_files": 4,
-      "cross_policy_conflict_count": 1,
-      "activation_ready": true
+      "candidate_publishers": 10,
+      "eligible_publishers": 10,
+      "independent_eligible_groups": 1,
+      "candidate_files": 20,
+      "cross_policy_conflict_count": 2,
+      "activation_ready": false
     },
     "REJECT": {
-      "candidate_publishers": 1,
-      "eligible_publishers": 1,
-      "independent_eligible_groups": 1,
-      "candidate_files": 2,
-      "cross_policy_conflict_count": 1,
-      "activation_ready": false
+      "candidate_publishers": 13,
+      "eligible_publishers": 11,
+      "independent_eligible_groups": 8,
+      "candidate_files": 43,
+      "cross_policy_conflict_count": 2,
+      "activation_ready": true
     }
   },
   "same_policy_domain_overlap": [
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "Jovanykoch/rules",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "shared_domain_count": 42,
+      "overlap_of_smaller": 0.1292,
+      "jaccard": 0.006,
+      "relation": "partial_overlap"
+    },
     {
       "policy": "DIRECT",
       "repositories": [
@@ -38,8 +49,41 @@
       ],
       "shared_domain_count": 439,
       "overlap_of_smaller": 0.7256,
-      "jaccard": 0.0635,
+      "jaccard": 0.0633,
       "relation": "high_overlap"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "Jovanykoch/rules",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "shared_domain_count": 50,
+      "overlap_of_smaller": 0.1225,
+      "jaccard": 0.007,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "Jovanykoch/rules",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_domain_count": 42,
+      "overlap_of_smaller": 0.1292,
+      "jaccard": 0.006,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "Jovanykoch/rules",
+        "tickmao/Rules"
+      ],
+      "shared_domain_count": 16,
+      "overlap_of_smaller": 0.0821,
+      "jaccard": 0.0023,
+      "relation": "partial_overlap"
     },
     {
       "policy": "DIRECT",
@@ -55,6 +99,94 @@
     {
       "policy": "DIRECT",
       "repositories": [
+        "nthack/Shadowrocket-ADBlock-Rules-Easy",
+        "ACL4SSR/ACL4SSR"
+      ],
+      "shared_domain_count": 35,
+      "overlap_of_smaller": 0.1077,
+      "jaccard": 0.0391,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "nthack/Shadowrocket-ADBlock-Rules-Easy",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "shared_domain_count": 325,
+      "overlap_of_smaller": 1.0,
+      "jaccard": 0.7966,
+      "relation": "near_duplicate"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "nthack/Shadowrocket-ADBlock-Rules-Easy",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_domain_count": 325,
+      "overlap_of_smaller": 1.0,
+      "jaccard": 1.0,
+      "relation": "near_duplicate"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "nthack/Shadowrocket-ADBlock-Rules-Easy",
+        "tickmao/Rules"
+      ],
+      "shared_domain_count": 1,
+      "overlap_of_smaller": 0.0051,
+      "jaccard": 0.0019,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "nthack/Shadowrocket-ADBlock-Rules-Easy",
+        "Clash-FX/cn-apps-direct-domains"
+      ],
+      "shared_domain_count": 13,
+      "overlap_of_smaller": 0.1083,
+      "jaccard": 0.0301,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "ACL4SSR/ACL4SSR",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "shared_domain_count": 37,
+      "overlap_of_smaller": 0.0907,
+      "jaccard": 0.0379,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "ACL4SSR/ACL4SSR",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_domain_count": 35,
+      "overlap_of_smaller": 0.1077,
+      "jaccard": 0.0391,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "ACL4SSR/ACL4SSR",
+        "tickmao/Rules"
+      ],
+      "shared_domain_count": 6,
+      "overlap_of_smaller": 0.0308,
+      "jaccard": 0.0076,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
         "ACL4SSR/ACL4SSR",
         "Clash-FX/cn-apps-direct-domains"
       ],
@@ -62,6 +194,435 @@
       "overlap_of_smaller": 0.6083,
       "jaccard": 0.112,
       "relation": "partial_overlap"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "YanbingJiang/Shadowrocket_diy_rules",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_domain_count": 325,
+      "overlap_of_smaller": 1.0,
+      "jaccard": 0.7966,
+      "relation": "near_duplicate"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "YanbingJiang/Shadowrocket_diy_rules",
+        "tickmao/Rules"
+      ],
+      "shared_domain_count": 58,
+      "overlap_of_smaller": 0.2974,
+      "jaccard": 0.1064,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "YanbingJiang/Shadowrocket_diy_rules",
+        "Clash-FX/cn-apps-direct-domains"
+      ],
+      "shared_domain_count": 13,
+      "overlap_of_smaller": 0.1083,
+      "jaccard": 0.0252,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+        "tickmao/Rules"
+      ],
+      "shared_domain_count": 1,
+      "overlap_of_smaller": 0.0051,
+      "jaccard": 0.0019,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+        "Clash-FX/cn-apps-direct-domains"
+      ],
+      "shared_domain_count": 13,
+      "overlap_of_smaller": 0.1083,
+      "jaccard": 0.0301,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "DIRECT",
+      "repositories": [
+        "tickmao/Rules",
+        "Clash-FX/cn-apps-direct-domains"
+      ],
+      "shared_domain_count": 1,
+      "overlap_of_smaller": 0.0083,
+      "jaccard": 0.0032,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever"
+      ],
+      "shared_domain_count": 20988,
+      "overlap_of_smaller": 0.6954,
+      "jaccard": 0.4314,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
+      ],
+      "shared_domain_count": 20967,
+      "overlap_of_smaller": 0.6951,
+      "jaccard": 0.4309,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "tickmao/Rules"
+      ],
+      "shared_domain_count": 5717,
+      "overlap_of_smaller": 0.776,
+      "jaccard": 0.1391,
+      "relation": "high_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "ACL4SSR/ACL4SSR"
+      ],
+      "shared_domain_count": 5627,
+      "overlap_of_smaller": 0.8256,
+      "jaccard": 0.1384,
+      "relation": "high_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "shared_domain_count": 4945,
+      "overlap_of_smaller": 0.8504,
+      "jaccard": 0.1226,
+      "relation": "high_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "shared_domain_count": 4820,
+      "overlap_of_smaller": 0.8646,
+      "jaccard": 0.1199,
+      "relation": "high_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_domain_count": 4102,
+      "overlap_of_smaller": 0.927,
+      "jaccard": 0.1031,
+      "relation": "high_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "gatework/surge-rules"
+      ],
+      "shared_domain_count": 4117,
+      "overlap_of_smaller": 0.925,
+      "jaccard": 0.1035,
+      "relation": "high_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "shared_domain_count": 320,
+      "overlap_of_smaller": 0.5575,
+      "jaccard": 0.0081,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
+      ],
+      "shared_domain_count": 30161,
+      "overlap_of_smaller": 0.9998,
+      "jaccard": 0.9991,
+      "relation": "near_duplicate"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "tickmao/Rules"
+      ],
+      "shared_domain_count": 4933,
+      "overlap_of_smaller": 0.6696,
+      "jaccard": 0.1512,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "ACL4SSR/ACL4SSR"
+      ],
+      "shared_domain_count": 4621,
+      "overlap_of_smaller": 0.678,
+      "jaccard": 0.1427,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "shared_domain_count": 3739,
+      "overlap_of_smaller": 0.643,
+      "jaccard": 0.1159,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "shared_domain_count": 3619,
+      "overlap_of_smaller": 0.6491,
+      "jaccard": 0.1126,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_domain_count": 4401,
+      "overlap_of_smaller": 0.9946,
+      "jaccard": 0.1457,
+      "relation": "near_duplicate"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "gatework/surge-rules"
+      ],
+      "shared_domain_count": 4419,
+      "overlap_of_smaller": 0.9928,
+      "jaccard": 0.1463,
+      "relation": "near_duplicate"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "shared_domain_count": 296,
+      "overlap_of_smaller": 0.5157,
+      "jaccard": 0.0097,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+        "tickmao/Rules"
+      ],
+      "shared_domain_count": 4927,
+      "overlap_of_smaller": 0.6688,
+      "jaccard": 0.1511,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+        "ACL4SSR/ACL4SSR"
+      ],
+      "shared_domain_count": 4618,
+      "overlap_of_smaller": 0.6775,
+      "jaccard": 0.1427,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "shared_domain_count": 3739,
+      "overlap_of_smaller": 0.643,
+      "jaccard": 0.116,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "shared_domain_count": 3620,
+      "overlap_of_smaller": 0.6493,
+      "jaccard": 0.1127,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_domain_count": 4401,
+      "overlap_of_smaller": 0.9946,
+      "jaccard": 0.1458,
+      "relation": "near_duplicate"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+        "gatework/surge-rules"
+      ],
+      "shared_domain_count": 4419,
+      "overlap_of_smaller": 0.9928,
+      "jaccard": 0.1463,
+      "relation": "near_duplicate"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "shared_domain_count": 293,
+      "overlap_of_smaller": 0.5105,
+      "jaccard": 0.0096,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "tickmao/Rules",
+        "ACL4SSR/ACL4SSR"
+      ],
+      "shared_domain_count": 6644,
+      "overlap_of_smaller": 0.9748,
+      "jaccard": 0.8813,
+      "relation": "near_duplicate"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "tickmao/Rules",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "shared_domain_count": 5055,
+      "overlap_of_smaller": 0.8693,
+      "jaccard": 0.622,
+      "relation": "high_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "tickmao/Rules",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "shared_domain_count": 4938,
+      "overlap_of_smaller": 0.8857,
+      "jaccard": 0.6169,
+      "relation": "high_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "tickmao/Rules",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_domain_count": 4085,
+      "overlap_of_smaller": 0.9232,
+      "jaccard": 0.53,
+      "relation": "high_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "tickmao/Rules",
+        "gatework/surge-rules"
+      ],
+      "shared_domain_count": 4131,
+      "overlap_of_smaller": 0.9281,
+      "jaccard": 0.5374,
+      "relation": "high_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "tickmao/Rules",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "shared_domain_count": 533,
+      "overlap_of_smaller": 0.9286,
+      "jaccard": 0.0719,
+      "relation": "high_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "ACL4SSR/ACL4SSR",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "shared_domain_count": 5156,
+      "overlap_of_smaller": 0.8867,
+      "jaccard": 0.6898,
+      "relation": "high_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "ACL4SSR/ACL4SSR",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "shared_domain_count": 5040,
+      "overlap_of_smaller": 0.904,
+      "jaccard": 0.6856,
+      "relation": "high_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "ACL4SSR/ACL4SSR",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_domain_count": 3794,
+      "overlap_of_smaller": 0.8574,
+      "jaccard": 0.5095,
+      "relation": "high_overlap"
     },
     {
       "policy": "PROXY",
@@ -88,12 +649,969 @@
     {
       "policy": "PROXY",
       "repositories": [
+        "YanbingJiang/Shadowrocket_diy_rules",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "shared_domain_count": 5575,
+      "overlap_of_smaller": 1.0,
+      "jaccard": 0.9587,
+      "relation": "near_duplicate"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "YanbingJiang/Shadowrocket_diy_rules",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_domain_count": 2945,
+      "overlap_of_smaller": 0.6655,
+      "jaccard": 0.4037,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "YanbingJiang/Shadowrocket_diy_rules",
+        "gatework/surge-rules"
+      ],
+      "shared_domain_count": 2913,
+      "overlap_of_smaller": 0.6545,
+      "jaccard": 0.3962,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "YanbingJiang/Shadowrocket_diy_rules",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "shared_domain_count": 306,
+      "overlap_of_smaller": 0.5331,
+      "jaccard": 0.0503,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "nthack/Shadowrocket-ADBlock-Rules-Easy",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_domain_count": 2848,
+      "overlap_of_smaller": 0.6436,
+      "jaccard": 0.3982,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "nthack/Shadowrocket-ADBlock-Rules-Easy",
+        "gatework/surge-rules"
+      ],
+      "shared_domain_count": 2816,
+      "overlap_of_smaller": 0.6327,
+      "jaccard": 0.3906,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "nthack/Shadowrocket-ADBlock-Rules-Easy",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "shared_domain_count": 286,
+      "overlap_of_smaller": 0.4983,
+      "jaccard": 0.0488,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+        "gatework/surge-rules"
+      ],
+      "shared_domain_count": 4390,
+      "overlap_of_smaller": 0.9921,
+      "jaccard": 0.9786,
+      "relation": "near_duplicate"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+        "sve1r/Rules-For-Quantumult-X"
+      ],
+      "shared_domain_count": 248,
+      "overlap_of_smaller": 0.4321,
+      "jaccard": 0.0522,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "PROXY",
+      "repositories": [
         "gatework/surge-rules",
         "sve1r/Rules-For-Quantumult-X"
       ],
       "shared_domain_count": 245,
       "overlap_of_smaller": 0.4268,
       "jaccard": 0.0513,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "phishdestroy/destroylist",
+        "marco-acorte/antispam-it"
+      ],
+      "shared_domain_count": 0,
+      "overlap_of_smaller": 0.0,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "phishdestroy/destroylist",
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever"
+      ],
+      "shared_domain_count": 11,
+      "overlap_of_smaller": 0.0002,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "phishdestroy/destroylist",
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
+      ],
+      "shared_domain_count": 11,
+      "overlap_of_smaller": 0.0002,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "phishdestroy/destroylist",
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules"
+      ],
+      "shared_domain_count": 9,
+      "overlap_of_smaller": 0.0002,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "phishdestroy/destroylist",
+        "Isaaker/Spotify-AdsList"
+      ],
+      "shared_domain_count": 10,
+      "overlap_of_smaller": 0.0001,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "phishdestroy/destroylist",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_domain_count": 10,
+      "overlap_of_smaller": 0.0002,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "phishdestroy/destroylist",
+        "badmojr/1Hosts"
+      ],
+      "shared_domain_count": 227,
+      "overlap_of_smaller": 0.0022,
+      "jaccard": 0.0007,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "phishdestroy/destroylist",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "shared_domain_count": 4,
+      "overlap_of_smaller": 0.0002,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "phishdestroy/destroylist",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "shared_domain_count": 2,
+      "overlap_of_smaller": 0.0001,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "phishdestroy/destroylist",
+        "GoodnessJSON/PiHole-Whitelist"
+      ],
+      "shared_domain_count": 0,
+      "overlap_of_smaller": 0.0,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "phishdestroy/destroylist",
+        "furkan-bayrak/lg-tv-blocklist"
+      ],
+      "shared_domain_count": 0,
+      "overlap_of_smaller": 0.0,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "phishdestroy/destroylist",
+        "anudeepND/whitelist"
+      ],
+      "shared_domain_count": 0,
+      "overlap_of_smaller": 0.0,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "marco-acorte/antispam-it",
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever"
+      ],
+      "shared_domain_count": 2,
+      "overlap_of_smaller": 0.0,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "marco-acorte/antispam-it",
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
+      ],
+      "shared_domain_count": 2,
+      "overlap_of_smaller": 0.0,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "marco-acorte/antispam-it",
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules"
+      ],
+      "shared_domain_count": 2,
+      "overlap_of_smaller": 0.0,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "marco-acorte/antispam-it",
+        "Isaaker/Spotify-AdsList"
+      ],
+      "shared_domain_count": 3,
+      "overlap_of_smaller": 0.0,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "marco-acorte/antispam-it",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_domain_count": 0,
+      "overlap_of_smaller": 0.0,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "marco-acorte/antispam-it",
+        "badmojr/1Hosts"
+      ],
+      "shared_domain_count": 25,
+      "overlap_of_smaller": 0.0002,
+      "jaccard": 0.0001,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "marco-acorte/antispam-it",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "shared_domain_count": 0,
+      "overlap_of_smaller": 0.0,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "marco-acorte/antispam-it",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "shared_domain_count": 0,
+      "overlap_of_smaller": 0.0,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "marco-acorte/antispam-it",
+        "GoodnessJSON/PiHole-Whitelist"
+      ],
+      "shared_domain_count": 0,
+      "overlap_of_smaller": 0.0,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "marco-acorte/antispam-it",
+        "furkan-bayrak/lg-tv-blocklist"
+      ],
+      "shared_domain_count": 0,
+      "overlap_of_smaller": 0.0,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "marco-acorte/antispam-it",
+        "anudeepND/whitelist"
+      ],
+      "shared_domain_count": 0,
+      "overlap_of_smaller": 0.0,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
+      ],
+      "shared_domain_count": 51992,
+      "overlap_of_smaller": 0.999,
+      "jaccard": 0.9977,
+      "relation": "near_duplicate"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules"
+      ],
+      "shared_domain_count": 13797,
+      "overlap_of_smaller": 0.306,
+      "jaccard": 0.1655,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "Isaaker/Spotify-AdsList"
+      ],
+      "shared_domain_count": 4121,
+      "overlap_of_smaller": 0.0792,
+      "jaccard": 0.0203,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_domain_count": 48729,
+      "overlap_of_smaller": 1.0,
+      "jaccard": 0.936,
+      "relation": "near_duplicate"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "badmojr/1Hosts"
+      ],
+      "shared_domain_count": 27711,
+      "overlap_of_smaller": 0.5323,
+      "jaccard": 0.2189,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "shared_domain_count": 2450,
+      "overlap_of_smaller": 0.1439,
+      "jaccard": 0.0368,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "shared_domain_count": 2250,
+      "overlap_of_smaller": 0.1395,
+      "jaccard": 0.0341,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "GoodnessJSON/PiHole-Whitelist"
+      ],
+      "shared_domain_count": 21,
+      "overlap_of_smaller": 0.0778,
+      "jaccard": 0.0004,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "furkan-bayrak/lg-tv-blocklist"
+      ],
+      "shared_domain_count": 3,
+      "overlap_of_smaller": 0.0261,
+      "jaccard": 0.0001,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+        "anudeepND/whitelist"
+      ],
+      "shared_domain_count": 21,
+      "overlap_of_smaller": 0.0787,
+      "jaccard": 0.0004,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules"
+      ],
+      "shared_domain_count": 13729,
+      "overlap_of_smaller": 0.3045,
+      "jaccard": 0.1646,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+        "Isaaker/Spotify-AdsList"
+      ],
+      "shared_domain_count": 4109,
+      "overlap_of_smaller": 0.079,
+      "jaccard": 0.0202,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_domain_count": 48729,
+      "overlap_of_smaller": 1.0,
+      "jaccard": 0.9363,
+      "relation": "near_duplicate"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+        "badmojr/1Hosts"
+      ],
+      "shared_domain_count": 27703,
+      "overlap_of_smaller": 0.5323,
+      "jaccard": 0.2189,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "shared_domain_count": 2446,
+      "overlap_of_smaller": 0.1436,
+      "jaccard": 0.0367,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "shared_domain_count": 2249,
+      "overlap_of_smaller": 0.1395,
+      "jaccard": 0.0341,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+        "GoodnessJSON/PiHole-Whitelist"
+      ],
+      "shared_domain_count": 21,
+      "overlap_of_smaller": 0.0778,
+      "jaccard": 0.0004,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+        "furkan-bayrak/lg-tv-blocklist"
+      ],
+      "shared_domain_count": 3,
+      "overlap_of_smaller": 0.0261,
+      "jaccard": 0.0001,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+        "anudeepND/whitelist"
+      ],
+      "shared_domain_count": 21,
+      "overlap_of_smaller": 0.0787,
+      "jaccard": 0.0004,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "Isaaker/Spotify-AdsList"
+      ],
+      "shared_domain_count": 4660,
+      "overlap_of_smaller": 0.1034,
+      "jaccard": 0.0238,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_domain_count": 10825,
+      "overlap_of_smaller": 0.2401,
+      "jaccard": 0.1304,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "badmojr/1Hosts"
+      ],
+      "shared_domain_count": 9408,
+      "overlap_of_smaller": 0.2087,
+      "jaccard": 0.0682,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "shared_domain_count": 2917,
+      "overlap_of_smaller": 0.1713,
+      "jaccard": 0.0493,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "shared_domain_count": 2718,
+      "overlap_of_smaller": 0.1686,
+      "jaccard": 0.0465,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "GoodnessJSON/PiHole-Whitelist"
+      ],
+      "shared_domain_count": 21,
+      "overlap_of_smaller": 0.0778,
+      "jaccard": 0.0005,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "furkan-bayrak/lg-tv-blocklist"
+      ],
+      "shared_domain_count": 3,
+      "overlap_of_smaller": 0.0261,
+      "jaccard": 0.0001,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+        "anudeepND/whitelist"
+      ],
+      "shared_domain_count": 21,
+      "overlap_of_smaller": 0.0787,
+      "jaccard": 0.0005,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "Isaaker/Spotify-AdsList",
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
+      ],
+      "shared_domain_count": 1880,
+      "overlap_of_smaller": 0.0386,
+      "jaccard": 0.0093,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "Isaaker/Spotify-AdsList",
+        "badmojr/1Hosts"
+      ],
+      "shared_domain_count": 12404,
+      "overlap_of_smaller": 0.1213,
+      "jaccard": 0.0506,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "Isaaker/Spotify-AdsList",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "shared_domain_count": 2976,
+      "overlap_of_smaller": 0.1748,
+      "jaccard": 0.0176,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "Isaaker/Spotify-AdsList",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "shared_domain_count": 2553,
+      "overlap_of_smaller": 0.1583,
+      "jaccard": 0.0151,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "Isaaker/Spotify-AdsList",
+        "GoodnessJSON/PiHole-Whitelist"
+      ],
+      "shared_domain_count": 90,
+      "overlap_of_smaller": 0.3333,
+      "jaccard": 0.0006,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "Isaaker/Spotify-AdsList",
+        "furkan-bayrak/lg-tv-blocklist"
+      ],
+      "shared_domain_count": 4,
+      "overlap_of_smaller": 0.0348,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "Isaaker/Spotify-AdsList",
+        "anudeepND/whitelist"
+      ],
+      "shared_domain_count": 90,
+      "overlap_of_smaller": 0.3371,
+      "jaccard": 0.0006,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+        "badmojr/1Hosts"
+      ],
+      "shared_domain_count": 25696,
+      "overlap_of_smaller": 0.5273,
+      "jaccard": 0.2051,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "shared_domain_count": 2326,
+      "overlap_of_smaller": 0.1366,
+      "jaccard": 0.0367,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "shared_domain_count": 2230,
+      "overlap_of_smaller": 0.1383,
+      "jaccard": 0.0356,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+        "GoodnessJSON/PiHole-Whitelist"
+      ],
+      "shared_domain_count": 12,
+      "overlap_of_smaller": 0.0444,
+      "jaccard": 0.0002,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+        "furkan-bayrak/lg-tv-blocklist"
+      ],
+      "shared_domain_count": 3,
+      "overlap_of_smaller": 0.0261,
+      "jaccard": 0.0001,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+        "anudeepND/whitelist"
+      ],
+      "shared_domain_count": 12,
+      "overlap_of_smaller": 0.0449,
+      "jaccard": 0.0002,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "badmojr/1Hosts",
+        "YanbingJiang/Shadowrocket_diy_rules"
+      ],
+      "shared_domain_count": 1355,
+      "overlap_of_smaller": 0.0796,
+      "jaccard": 0.0115,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "badmojr/1Hosts",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "shared_domain_count": 903,
+      "overlap_of_smaller": 0.056,
+      "jaccard": 0.0077,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "badmojr/1Hosts",
+        "GoodnessJSON/PiHole-Whitelist"
+      ],
+      "shared_domain_count": 20,
+      "overlap_of_smaller": 0.0741,
+      "jaccard": 0.0002,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "badmojr/1Hosts",
+        "furkan-bayrak/lg-tv-blocklist"
+      ],
+      "shared_domain_count": 16,
+      "overlap_of_smaller": 0.1391,
+      "jaccard": 0.0002,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "badmojr/1Hosts",
+        "anudeepND/whitelist"
+      ],
+      "shared_domain_count": 20,
+      "overlap_of_smaller": 0.0749,
+      "jaccard": 0.0002,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "YanbingJiang/Shadowrocket_diy_rules",
+        "nthack/Shadowrocket-ADBlock-Rules-Easy"
+      ],
+      "shared_domain_count": 16125,
+      "overlap_of_smaller": 1.0,
+      "jaccard": 0.947,
+      "relation": "near_duplicate"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "YanbingJiang/Shadowrocket_diy_rules",
+        "GoodnessJSON/PiHole-Whitelist"
+      ],
+      "shared_domain_count": 3,
+      "overlap_of_smaller": 0.0111,
+      "jaccard": 0.0002,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "YanbingJiang/Shadowrocket_diy_rules",
+        "furkan-bayrak/lg-tv-blocklist"
+      ],
+      "shared_domain_count": 0,
+      "overlap_of_smaller": 0.0,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "YanbingJiang/Shadowrocket_diy_rules",
+        "anudeepND/whitelist"
+      ],
+      "shared_domain_count": 3,
+      "overlap_of_smaller": 0.0112,
+      "jaccard": 0.0002,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "nthack/Shadowrocket-ADBlock-Rules-Easy",
+        "GoodnessJSON/PiHole-Whitelist"
+      ],
+      "shared_domain_count": 3,
+      "overlap_of_smaller": 0.0111,
+      "jaccard": 0.0002,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "nthack/Shadowrocket-ADBlock-Rules-Easy",
+        "furkan-bayrak/lg-tv-blocklist"
+      ],
+      "shared_domain_count": 0,
+      "overlap_of_smaller": 0.0,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "nthack/Shadowrocket-ADBlock-Rules-Easy",
+        "anudeepND/whitelist"
+      ],
+      "shared_domain_count": 3,
+      "overlap_of_smaller": 0.0112,
+      "jaccard": 0.0002,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "GoodnessJSON/PiHole-Whitelist",
+        "furkan-bayrak/lg-tv-blocklist"
+      ],
+      "shared_domain_count": 0,
+      "overlap_of_smaller": 0.0,
+      "jaccard": 0.0,
+      "relation": "partial_overlap"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "GoodnessJSON/PiHole-Whitelist",
+        "anudeepND/whitelist"
+      ],
+      "shared_domain_count": 267,
+      "overlap_of_smaller": 1.0,
+      "jaccard": 0.9889,
+      "relation": "near_duplicate"
+    },
+    {
+      "policy": "REJECT",
+      "repositories": [
+        "furkan-bayrak/lg-tv-blocklist",
+        "anudeepND/whitelist"
+      ],
+      "shared_domain_count": 0,
+      "overlap_of_smaller": 0.0,
+      "jaccard": 0.0,
       "relation": "partial_overlap"
     }
   ],
@@ -103,14 +1621,21 @@
         "DIRECT",
         "PROXY"
       ],
-      "shared_domain_count": 21
+      "shared_domain_count": 271
     },
     {
       "policies": [
         "DIRECT",
         "REJECT"
       ],
-      "shared_domain_count": 7
+      "shared_domain_count": 229
+    },
+    {
+      "policies": [
+        "PROXY",
+        "REJECT"
+      ],
+      "shared_domain_count": 570
     }
   ],
   "candidates": [
@@ -122,16 +1647,18 @@
           "url": "https://raw.githubusercontent.com/Jovanykoch/rules/rel/loc-cn.list",
           "parser": "domain-only",
           "policy_evidence": "README_policy_reference",
-          "domain_count": 6751,
-          "leading_dot_domain_count": 6228,
+          "domain_count": 6771,
+          "leading_dot_domain_count": 6248,
           "duplicate_domain_lines": 0,
-          "sha256": "2d756875ee2384e9d4050664dc23ac79a1d2af7a6b5ec0190d20ba1adb3834c5",
-          "domain_fingerprint_count": 6751,
+          "sha256": "93159d83fedc9596876f1a30f1b174ebf478af38ba73e7c066c171a4429fa921",
+          "domain_fingerprint_count": 6771,
           "drift": {
-            "status": "unchanged",
-            "added_domain_count": 0,
+            "status": "domain_set_changed",
+            "added_domain_count": 20,
             "removed_domain_count": 0,
-            "policy_changed": false
+            "policy_changed": false,
+            "previous_sha256": "2d756875ee2384e9d4050664dc23ac79a1d2af7a6b5ec0190d20ba1adb3834c5",
+            "current_sha256": "93159d83fedc9596876f1a30f1b174ebf478af38ba73e7c066c171a4429fa921"
           }
         }
       ],
@@ -140,6 +1667,63 @@
       "lineage_audit_status": "audited_reference_inventory",
       "readme_reference_count": 6,
       "readme_shared_reference_peers": [
+        {
+          "repository": "27Aaron/ProxyRules",
+          "references": [
+            "loyalsoldier/geoip",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "ChopsGarbageCollection/chops-mobile-blocklist",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
+          "repository": "CorleoneSalute/SHADOW-BLOCKER-BLOCKLIST",
+          "references": [
+            "hagezi/dns-blocklists",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "DDcat2025/douyin-bytedance-shadowrocket-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "DDcat2025/openai-shadowrocket-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "DDcat2025/shadowrocket-routing-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "DDcat2025/tencent-shadowrocket-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "EastonSun/ProxyRules",
+          "references": [
+            "felixonmars/dnsmasq-china-list",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "Flo5k5/proxyware-blocklist",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
         {
           "repository": "GMOogway/shadowrocket-rules",
           "references": [
@@ -156,8 +1740,34 @@
           ]
         },
         {
+          "repository": "Infinitty35/shadowrocket-adblock",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
           "repository": "Jeliren/shadowrocket-russia-direct",
           "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "Jo-CRuiSe/siri-ai-rules",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
+          "repository": "Kimberlysz/shadowrocket-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "Knight4LHB/shadowrocket-rules",
+          "references": [
+            "felixonmars/dnsmasq-china-list",
+            "gfwlist/gfwlist",
             "v2fly/domain-list-community"
           ]
         },
@@ -171,7 +1781,31 @@
           ]
         },
         {
+          "repository": "MuMu2223/SSShadowrocket-Rules",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
+          "repository": "OriginVorfeed/shadowrocket-china-list",
+          "references": [
+            "felixonmars/dnsmasq-china-list"
+          ]
+        },
+        {
           "repository": "PaPerseller/chn-iplist",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "Remix123/routingrulehub",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "SeanCode-super/shadowrocket-routing-rules",
           "references": [
             "v2fly/domain-list-community"
           ]
@@ -180,6 +1814,24 @@
           "repository": "Seanyim/tailrocket",
           "references": [
             "gfwlist/gfwlist"
+          ]
+        },
+        {
+          "repository": "VPSDance/ai-proxy-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "actusnileh/geoip-geosite-list",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "amzonmeeee/Shadowrocket_Rules",
+          "references": [
+            "v2fly/domain-list-community"
           ]
         },
         {
@@ -192,6 +1844,12 @@
           "repository": "crayonluffy/shadowrocket-rules",
           "references": [
             "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "denis-g/rpi4-pihole-settings",
+          "references": [
+            "hagezi/dns-blocklists"
           ]
         },
         {
@@ -209,6 +1867,12 @@
           ]
         },
         {
+          "repository": "julxxy/smart-proxy-rules",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
           "repository": "kaonimei/Shadowrocket-ADBlock-Rules",
           "references": [
             "felixonmars/dnsmasq-china-list",
@@ -216,7 +1880,70 @@
           ]
         },
         {
+          "repository": "mahlenko/shadowrocket-rules-v2fly",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "marco-acorte/antispam-it",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
+          "repository": "moesnow/Shadowrocket-Rules",
+          "references": [
+            "felixonmars/dnsmasq-china-list",
+            "loyalsoldier/geoip",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "mofanxt/shadowrocket-rules",
+          "references": [
+            "loyalsoldier/geoip"
+          ]
+        },
+        {
+          "repository": "moshall/egloon_rule_hub",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "niansi1/Shadowrocket-Rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "nihestver/ru-geo-lists",
+          "references": [
+            "loyalsoldier/geoip",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
           "repository": "poohyeban/shadowrocket-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "privacyfilters/Microsoft-Blocker",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
+          "repository": "privacyfilters/Mozilla-Blocker",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
+          "repository": "proxyBug/tigertrade-moomoo-rules",
           "references": [
             "v2fly/domain-list-community"
           ]
@@ -235,12 +1962,82 @@
         "README_policy_reference"
       ],
       "policy_evidence_strong": true,
-      "total_domain_entries": 6751,
-      "domain_fingerprint_count": 6751,
-      "domain_set_sha256": "455609878fe23aa0220355509a0157b7d75f93c58bf24457f553c46529fee9d9",
+      "total_domain_entries": 6771,
+      "domain_fingerprint_count": 6771,
+      "domain_set_sha256": "1d6636175b61103094abbac91572a2f7f04aba6033e951c6ac8d250d9c065b52",
       "file_count": 1,
       "activation_eligible": true,
       "activation_blockers": [],
+      "lineage_warning": "possible_shared_readme_references; correlation signal only"
+    },
+    {
+      "repository": "nthack/Shadowrocket-ADBlock-Rules-Easy",
+      "policy": "DIRECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/nthack/Shadowrocket-ADBlock-Rules-Easy/master/factory/resultant/top500_direct.list",
+          "parser": "domain-only",
+          "policy_evidence": "source_header_claim",
+          "domain_count": 325,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "b0b3dba28a28e9b25104b7937e8708e8d334c36a34a045a6ef763e83fbdaa828",
+          "domain_fingerprint_count": 325,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 325,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/nthack/Shadowrocket-ADBlock-Rules-Easy/master/h2y_bak/factory/resultant/top500_direct.list",
+          "parser": "domain-only",
+          "policy_evidence": "source_header_claim",
+          "domain_count": 325,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "b0b3dba28a28e9b25104b7937e8708e8d334c36a34a045a6ef763e83fbdaa828",
+          "domain_fingerprint_count": 325,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 325,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 1,
+      "readme_shared_reference_peers": [
+        {
+          "repository": "WidgetA/SSR_Whitelist_for_ShadowRocket",
+          "references": [
+            "h2y/shadowrocket-adblock-rules"
+          ]
+        },
+        {
+          "repository": "jackwoo725-ux/shadowrocket-rules",
+          "references": [
+            "h2y/shadowrocket-adblock-rules"
+          ]
+        }
+      ],
+      "archived": false,
+      "policy_evidence_types": [
+        "source_header_claim"
+      ],
+      "policy_evidence_strong": false,
+      "total_domain_entries": 650,
+      "domain_fingerprint_count": 325,
+      "domain_set_sha256": "75353d3730e31e0b3399ee8baa13ad456b405531c27d639713f69beb21f03795",
+      "file_count": 2,
+      "activation_eligible": false,
+      "activation_blockers": [
+        "policy_evidence_not_strong"
+      ],
       "lineage_warning": "possible_shared_readme_references; correlation signal only"
     },
     {
@@ -283,6 +2080,158 @@
       "lineage_warning": "lineage_not_verified"
     },
     {
+      "repository": "YanbingJiang/Shadowrocket_diy_rules",
+      "policy": "DIRECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/YanbingJiang/Shadowrocket_diy_rules/main/Archives/Backup/DivineEngine/Filter/China.list",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 57,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "342b2d841b78d4a7206b40c7bdbacd2525fb5232413cb6b3361f59882cf8364c",
+          "domain_fingerprint_count": 57,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 57,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/YanbingJiang/Shadowrocket_diy_rules/main/Archives/Backup/DivineEngine/Filter/Unbreak.list",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 27,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 1,
+          "sha256": "b6db01b4c0f7b163cbcd29fdf61aa150afdd4bf51cb961ab15e1ee9df9f04851",
+          "domain_fingerprint_count": 27,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 27,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/YanbingJiang/Shadowrocket_diy_rules/main/Archives/Backup/h2y/factory/resultant/top500_direct.list",
+          "parser": "domain-only",
+          "policy_evidence": "source_header_claim",
+          "domain_count": 325,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "b0b3dba28a28e9b25104b7937e8708e8d334c36a34a045a6ef763e83fbdaa828",
+          "domain_fingerprint_count": 325,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 325,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 0,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "explicit_third_field",
+        "source_header_claim"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 409,
+      "domain_fingerprint_count": 408,
+      "domain_set_sha256": "74e9e2dfa769a76138ce9d3b5975eafb25e2460106e72a08d88af44dbc99e3c4",
+      "file_count": 3,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "lineage_not_verified"
+    },
+    {
+      "repository": "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+      "policy": "DIRECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/zhouzhouprogram/Shadowrocket-ADBlock-Rules/master/factory/resultant/top500_direct.list",
+          "parser": "domain-only",
+          "policy_evidence": "source_header_claim",
+          "domain_count": 325,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "b0b3dba28a28e9b25104b7937e8708e8d334c36a34a045a6ef763e83fbdaa828",
+          "domain_fingerprint_count": 325,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 325,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "readme_unavailable",
+      "readme_reference_count": 0,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "source_header_claim"
+      ],
+      "policy_evidence_strong": false,
+      "total_domain_entries": 325,
+      "domain_fingerprint_count": 325,
+      "domain_set_sha256": "75353d3730e31e0b3399ee8baa13ad456b405531c27d639713f69beb21f03795",
+      "file_count": 1,
+      "activation_eligible": false,
+      "activation_blockers": [
+        "policy_evidence_not_strong"
+      ],
+      "lineage_warning": "lineage_not_verified"
+    },
+    {
+      "repository": "tickmao/Rules",
+      "policy": "DIRECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/tickmao/Rules/master/QuantumultX/Rules/Direct.list",
+          "parser": "quantumult-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 195,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "4d2abfc33bf85027f21abfeb2ffb8b0adcdf1926a71d5cced89e18883a97c24e",
+          "domain_fingerprint_count": 195,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 195,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 0,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "explicit_third_field"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 195,
+      "domain_fingerprint_count": 195,
+      "domain_set_sha256": "1ef75c35b3c6817e2f235d42a349e5145e313b52fd0731288e83c8aa0baba781",
+      "file_count": 1,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "lineage_not_verified"
+    },
+    {
       "repository": "Clash-FX/cn-apps-direct-domains",
       "policy": "DIRECT",
       "files": [
@@ -316,6 +2265,194 @@
       "total_domain_entries": 120,
       "domain_fingerprint_count": 120,
       "domain_set_sha256": "d8a821041a17d9c7f1879daccd95001413bc8cdc66af1f4b1c8e982e09d80a2b",
+      "file_count": 1,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "lineage_not_verified"
+    },
+    {
+      "repository": "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+      "policy": "PROXY",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/NZNL31/Shadowrocket-Ad-DNS-Leak-Rules/main/%E2%80%9COther%20rules%20are%20available%20in%20the%20johnshall%20repository.%E2%80%9D/sr_cnip.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 371,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "c7f0d65872bb1b0e48aa584e81c6e3dec108605829133f6a84b389dde80c65b7",
+          "domain_fingerprint_count": 371,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 371,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/NZNL31/Shadowrocket-Ad-DNS-Leak-Rules/main/%E2%80%9COther%20rules%20are%20available%20in%20the%20johnshall%20repository.%E2%80%9D/sr_top500_banlist.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 39456,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 22,
+          "sha256": "36a2aebe102ceec1e0025eae740c3bd45b110de2bb23a18f164d68dfa72acc7f",
+          "domain_fingerprint_count": 39456,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 39456,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "readme_unavailable",
+      "readme_reference_count": 0,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "explicit_third_field"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 39827,
+      "domain_fingerprint_count": 39456,
+      "domain_set_sha256": "fba7f47a6607668d8490a955600fa01b80892b08e4a082f3c06976c86a4a269d",
+      "file_count": 2,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "lineage_not_verified"
+    },
+    {
+      "repository": "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+      "policy": "PROXY",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever/release/sr_cnip.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 371,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "d4855227270b6a1eb9a38e6ce7fcbf830edb320c00208676e5d71287e38868b6",
+          "domain_fingerprint_count": 371,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 371,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever/release/sr_top500_banlist.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 30183,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 32,
+          "sha256": "f0482b042c53ba011db4d47446ad55f9d1848892528167619948d4f1a35f6133",
+          "domain_fingerprint_count": 30183,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 30183,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "readme_unavailable",
+      "readme_reference_count": 0,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "explicit_third_field"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 30554,
+      "domain_fingerprint_count": 30183,
+      "domain_set_sha256": "caab7a15a85f93c4832a6747c7f5409cf2a1a05941d636e431edcd1319e81735",
+      "file_count": 2,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "lineage_not_verified"
+    },
+    {
+      "repository": "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+      "policy": "PROXY",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/tumblemelon/Shadowrocket-ADBlock-Rules-Forever/release/sr_top500_banlist.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 30166,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 48,
+          "sha256": "7a5a63fa23ecfe9ef31945064425b6a0050dcc2278f107d0520ec6540c70f5a9",
+          "domain_fingerprint_count": 30166,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 30166,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "readme_unavailable",
+      "readme_reference_count": 0,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "explicit_third_field"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 30166,
+      "domain_fingerprint_count": 30166,
+      "domain_set_sha256": "f66a3cca8e70fecaa2a3d6e9463c364a38f8bda45fe0784aad777a9047e16949",
+      "file_count": 1,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "lineage_not_verified"
+    },
+    {
+      "repository": "tickmao/Rules",
+      "policy": "PROXY",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/tickmao/Rules/master/QuantumultX/Rules/Proxy.list",
+          "parser": "quantumult-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 7367,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "9f4b8f8be4f5b062bd6b49da811353ca645ca66c74ef2cb3decc7fec59114c6c",
+          "domain_fingerprint_count": 7367,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 7367,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 0,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "explicit_third_field"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 7367,
+      "domain_fingerprint_count": 7367,
+      "domain_set_sha256": "7a4c8659d645da92174fddeb7d987d72ade9c65dd0def52c44d3f2d7660f6db4",
       "file_count": 1,
       "activation_eligible": true,
       "activation_blockers": [],
@@ -377,6 +2514,251 @@
       "lineage_warning": "lineage_not_verified"
     },
     {
+      "repository": "YanbingJiang/Shadowrocket_diy_rules",
+      "policy": "PROXY",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/YanbingJiang/Shadowrocket_diy_rules/main/Archives/Backup/DivineEngine/Filter/Extra/Apple/SoftwareUpdate.list",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 21,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "ab6512d2dcae1c6c7f33f2f0173b03fa108b35176f0116d6154bf56aa704ebf0",
+          "domain_fingerprint_count": 21,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 21,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/YanbingJiang/Shadowrocket_diy_rules/main/Archives/Backup/DivineEngine/Filter/Global.list",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 415,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "a420ace4f8e27e145075de7b8d69188af17f7bea72fc55d23fd4a3a1d1ab0a4f",
+          "domain_fingerprint_count": 415,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 415,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/YanbingJiang/Shadowrocket_diy_rules/main/Archives/Backup/DivineEngine/Filter/StreamingMedia/StreamingCN.list",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 45,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "5dafbdd5a6b21b7b6ff2d6e765e2e9ee8bd8787c14c68996a3bd81d0d6b9fa36",
+          "domain_fingerprint_count": 45,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 45,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/YanbingJiang/Shadowrocket_diy_rules/main/Archives/Backup/h2y/factory/resultant/top500_proxy.list",
+          "parser": "domain-only",
+          "policy_evidence": "source_header_claim",
+          "domain_count": 99,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "2984a17b0ec5d01587179cff12446b962fa9337cb1f6b3c860e2c019c9cfc444",
+          "domain_fingerprint_count": 99,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 99,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/YanbingJiang/Shadowrocket_diy_rules/main/Archives/Backup/h2y/sr_top500_banlist.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 5546,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 2,
+          "sha256": "819efbd0ea0f13f53a826959217cc20faff000d264c1f32c62f8932676b6eeef",
+          "domain_fingerprint_count": 5546,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 5546,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 0,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "explicit_third_field",
+        "source_header_claim"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 6126,
+      "domain_fingerprint_count": 5815,
+      "domain_set_sha256": "fa43273492ed20708df88609a3956da8b20c66c2c72b77724b52bfeb9061aff4",
+      "file_count": 5,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "lineage_not_verified"
+    },
+    {
+      "repository": "nthack/Shadowrocket-ADBlock-Rules-Easy",
+      "policy": "PROXY",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/nthack/Shadowrocket-ADBlock-Rules-Easy/master/factory/resultant/top500_proxy.list",
+          "parser": "domain-only",
+          "policy_evidence": "source_header_claim",
+          "domain_count": 99,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "2984a17b0ec5d01587179cff12446b962fa9337cb1f6b3c860e2c019c9cfc444",
+          "domain_fingerprint_count": 99,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 99,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/nthack/Shadowrocket-ADBlock-Rules-Easy/master/h2y_bak/factory/resultant/top500_proxy.list",
+          "parser": "domain-only",
+          "policy_evidence": "source_header_claim",
+          "domain_count": 99,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "2984a17b0ec5d01587179cff12446b962fa9337cb1f6b3c860e2c019c9cfc444",
+          "domain_fingerprint_count": 99,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 99,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/nthack/Shadowrocket-ADBlock-Rules-Easy/master/h2y_bak/sr_top500_banlist.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 5546,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 2,
+          "sha256": "819efbd0ea0f13f53a826959217cc20faff000d264c1f32c62f8932676b6eeef",
+          "domain_fingerprint_count": 5546,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 5546,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 1,
+      "readme_shared_reference_peers": [
+        {
+          "repository": "WidgetA/SSR_Whitelist_for_ShadowRocket",
+          "references": [
+            "h2y/shadowrocket-adblock-rules"
+          ]
+        },
+        {
+          "repository": "jackwoo725-ux/shadowrocket-rules",
+          "references": [
+            "h2y/shadowrocket-adblock-rules"
+          ]
+        }
+      ],
+      "archived": false,
+      "policy_evidence_types": [
+        "explicit_third_field",
+        "source_header_claim"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 5744,
+      "domain_fingerprint_count": 5575,
+      "domain_set_sha256": "be2ff22ea4ed26ccc750acad4c4659e730ce98eb25b8ef7585837cdc8b328557",
+      "file_count": 3,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "possible_shared_readme_references; correlation signal only"
+    },
+    {
+      "repository": "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+      "policy": "PROXY",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/zhouzhouprogram/Shadowrocket-ADBlock-Rules/master/factory/resultant/top500_proxy.list",
+          "parser": "domain-only",
+          "policy_evidence": "source_header_claim",
+          "domain_count": 99,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "2984a17b0ec5d01587179cff12446b962fa9337cb1f6b3c860e2c019c9cfc444",
+          "domain_fingerprint_count": 99,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 99,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/zhouzhouprogram/Shadowrocket-ADBlock-Rules/master/sr_banlist.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 4389,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 1,
+          "sha256": "5e1c97d7a3b817aba6687bef1410ba1200284af60fe7d49f7a0c7772c33a9477",
+          "domain_fingerprint_count": 4389,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 4389,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "readme_unavailable",
+      "readme_reference_count": 0,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "explicit_third_field",
+        "source_header_claim"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 4488,
+      "domain_fingerprint_count": 4425,
+      "domain_set_sha256": "43a8d2732395eb410658d6bc39bf3a5806cfb18d79a7ef8d5888dd53b2ea9952",
+      "file_count": 2,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "lineage_not_verified"
+    },
+    {
       "repository": "gatework/surge-rules",
       "policy": "PROXY",
       "files": [
@@ -403,6 +2785,52 @@
       "readme_reference_count": 5,
       "readme_shared_reference_peers": [
         {
+          "repository": "27Aaron/ProxyRules",
+          "references": [
+            "loyalsoldier/geoip",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "CorleoneSalute/SHADOW-BLOCKER-BLOCKLIST",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "DDcat2025/douyin-bytedance-shadowrocket-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "DDcat2025/openai-shadowrocket-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "DDcat2025/shadowrocket-routing-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "DDcat2025/tencent-shadowrocket-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "EastonSun/ProxyRules",
+          "references": [
+            "17mon/china_ip_list",
+            "felixonmars/dnsmasq-china-list",
+            "loyalsoldier/v2ray-rules-dat",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
           "repository": "GMOogway/shadowrocket-rules",
           "references": [
             "felixonmars/dnsmasq-china-list",
@@ -423,10 +2851,29 @@
           ]
         },
         {
+          "repository": "Jo-CRuiSe/siri-ai-rules",
+          "references": [
+            "loyalsoldier/v2ray-rules-dat"
+          ]
+        },
+        {
           "repository": "Jovanykoch/rules",
           "references": [
             "felixonmars/dnsmasq-china-list",
             "loyalsoldier/geoip",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "Kimberlysz/shadowrocket-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "Knight4LHB/shadowrocket-rules",
+          "references": [
+            "felixonmars/dnsmasq-china-list",
             "v2fly/domain-list-community"
           ]
         },
@@ -439,11 +2886,54 @@
           ]
         },
         {
+          "repository": "OriginVorfeed/shadowrocket-china-list",
+          "references": [
+            "felixonmars/dnsmasq-china-list"
+          ]
+        },
+        {
           "repository": "PaPerseller/chn-iplist",
           "references": [
             "17mon/china_ip_list",
             "loyalsoldier/v2ray-rules-dat",
             "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "Remix123/routingrulehub",
+          "references": [
+            "loyalsoldier/v2ray-rules-dat",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "SeanCode-super/shadowrocket-routing-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "VPSDance/ai-proxy-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "actusnileh/geoip-geosite-list",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "amzonmeeee/Shadowrocket_Rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "bacdown/rules",
+          "references": [
+            "loyalsoldier/v2ray-rules-dat"
           ]
         },
         {
@@ -460,6 +2950,12 @@
           ]
         },
         {
+          "repository": "jfox52/ruleset",
+          "references": [
+            "loyalsoldier/v2ray-rules-dat"
+          ]
+        },
+        {
           "repository": "jhz1022/Shadowrocket-Rules",
           "references": [
             "loyalsoldier/v2ray-rules-dat",
@@ -473,7 +2969,55 @@
           ]
         },
         {
+          "repository": "mahlenko/shadowrocket-rules-v2fly",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "moesnow/Shadowrocket-Rules",
+          "references": [
+            "17mon/china_ip_list",
+            "felixonmars/dnsmasq-china-list",
+            "loyalsoldier/geoip",
+            "loyalsoldier/v2ray-rules-dat",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "mofanxt/shadowrocket-rules",
+          "references": [
+            "loyalsoldier/geoip",
+            "loyalsoldier/v2ray-rules-dat"
+          ]
+        },
+        {
+          "repository": "moshall/egloon_rule_hub",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "niansi1/Shadowrocket-Rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "nihestver/ru-geo-lists",
+          "references": [
+            "loyalsoldier/geoip",
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
           "repository": "poohyeban/shadowrocket-rules",
+          "references": [
+            "v2fly/domain-list-community"
+          ]
+        },
+        {
+          "repository": "proxyBug/tigertrade-moomoo-rules",
           "references": [
             "v2fly/domain-list-community"
           ]
@@ -526,7 +3070,32 @@
       "lineage_status": "unverified",
       "lineage_audit_status": "audited_reference_inventory",
       "readme_reference_count": 2,
-      "readme_shared_reference_peers": [],
+      "readme_shared_reference_peers": [
+        {
+          "repository": "EastonSun/ProxyRules",
+          "references": [
+            "privacy-protection-tools/anti-ad"
+          ]
+        },
+        {
+          "repository": "Infinitty35/shadowrocket-adblock",
+          "references": [
+            "privacy-protection-tools/anti-ad"
+          ]
+        },
+        {
+          "repository": "jackwoo725-ux/shadowrocket-rules",
+          "references": [
+            "privacy-protection-tools/anti-ad"
+          ]
+        },
+        {
+          "repository": "julxxy/smart-proxy-rules",
+          "references": [
+            "privacy-protection-tools/anti-ad"
+          ]
+        }
+      ],
       "archived": false,
       "policy_evidence_types": [
         "explicit_third_field"
@@ -538,40 +3107,835 @@
       "file_count": 1,
       "activation_eligible": true,
       "activation_blockers": [],
-      "lineage_warning": "lineage_not_verified"
+      "lineage_warning": "possible_shared_readme_references; correlation signal only"
     },
     {
-      "repository": "RzMY/IOS-AntiRevoke-DNS-Rules",
+      "repository": "phishdestroy/destroylist",
       "policy": "REJECT",
       "files": [
         {
-          "url": "https://raw.githubusercontent.com/RzMY/IOS-AntiRevoke-DNS-Rules/main/output/RevokeGuard_Loon.txt",
-          "parser": "shadowrocket-domain-rules",
-          "policy_evidence": "explicit_third_field",
-          "domain_count": 38,
+          "url": "https://raw.githubusercontent.com/phishdestroy/destroylist/main/dns/active_domains.txt",
+          "parser": "domain-only",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 142262,
           "leading_dot_domain_count": 0,
           "duplicate_domain_lines": 0,
-          "sha256": "5519a4db7a572d97b600562a50e930b99e8568ae1ffa387d6862245dfed5c195",
-          "domain_fingerprint_count": 38,
+          "sha256": "dd0cd18fcff3f42b4e73eca3e619c21f672ab001e584628791c405e4e0e75879",
+          "domain_fingerprint_count": 142262,
           "drift": {
-            "status": "unchanged",
-            "added_domain_count": 0,
+            "status": "baseline_initialized",
+            "added_domain_count": 142262,
             "removed_domain_count": 0,
             "policy_changed": false
           }
         },
         {
-          "url": "https://raw.githubusercontent.com/RzMY/IOS-AntiRevoke-DNS-Rules/main/output/RevokeGuard_Shadowrocket.txt",
-          "parser": "shadowrocket-domain-rules",
-          "policy_evidence": "explicit_third_field",
-          "domain_count": 38,
+          "url": "https://raw.githubusercontent.com/phishdestroy/destroylist/main/list.txt",
+          "parser": "domain-only",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 234540,
           "leading_dot_domain_count": 0,
           "duplicate_domain_lines": 0,
-          "sha256": "5519a4db7a572d97b600562a50e930b99e8568ae1ffa387d6862245dfed5c195",
-          "domain_fingerprint_count": 38,
+          "sha256": "038f1d9c11f416604d00f203ecf44cfa8fc8b185fef35a133758a145e61b9fec",
+          "domain_fingerprint_count": 234540,
           "drift": {
-            "status": "unchanged",
-            "added_domain_count": 0,
+            "status": "baseline_initialized",
+            "added_domain_count": 234540,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary/domains.txt",
+          "parser": "domain-only",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 234540,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "9e58a373a27734c324c36ce9886ac1261fe7cfafb538be80990ab3cdbcce0df4",
+          "domain_fingerprint_count": 234540,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 234540,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/adblock.txt",
+          "parser": "adblock-domain-rules",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 142262,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "89ccde0a5d07ea2a5b62bd65c46ec37e10c15088986557a8869007e46d93c6a1",
+          "domain_fingerprint_count": 142262,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 142262,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/domains.txt",
+          "parser": "domain-only",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 142262,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "555a60b6d82066bd28150ec300765c1e3ca583bde275b8ac2d4e5a9da0eb1a2d",
+          "domain_fingerprint_count": 142262,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 142262,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 5,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "README_policy_reference"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 895866,
+      "domain_fingerprint_count": 234540,
+      "domain_set_sha256": "9b56817b158833ea7ba7d521c3caa6d4a8df350185e0ba600df39ed014c8392a",
+      "file_count": 5,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "lineage_not_verified"
+    },
+    {
+      "repository": "marco-acorte/antispam-it",
+      "policy": "REJECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/marco-acorte/antispam-it/main/antispam-it.txt",
+          "parser": "domain-only",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 1610,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "9da26858a96914bebcfb7748e51c343e62707b2ad5c91de22289c2eafb6f3a82",
+          "domain_fingerprint_count": 1610,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 1610,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/marco-acorte/antispam-it/main/ip-to-ban.txt",
+          "parser": "domain-only",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 344735,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "21da5a6b3a0a92495a2df46a727bf923b5225b2671311b4095797846ed022c42",
+          "domain_fingerprint_count": 344735,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 344735,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/marco-acorte/antispam-it/main/outlook-blocklist.txt",
+          "parser": "domain-only",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 1610,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "63a6da525a74a92a55cd963d0f535b473fa121f30ce0b514549d89b33db58474",
+          "domain_fingerprint_count": 1610,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 1610,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 2,
+      "readme_shared_reference_peers": [
+        {
+          "repository": "ChopsGarbageCollection/chops-mobile-blocklist",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
+          "repository": "CorleoneSalute/SHADOW-BLOCKER-BLOCKLIST",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
+          "repository": "Flo5k5/proxyware-blocklist",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
+          "repository": "Infinitty35/shadowrocket-adblock",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
+          "repository": "Jo-CRuiSe/siri-ai-rules",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
+          "repository": "Jovanykoch/rules",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
+          "repository": "MuMu2223/SSShadowrocket-Rules",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
+          "repository": "denis-g/rpi4-pihole-settings",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
+          "repository": "julxxy/smart-proxy-rules",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
+          "repository": "privacyfilters/Microsoft-Blocker",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
+          "repository": "privacyfilters/Mozilla-Blocker",
+          "references": [
+            "hagezi/dns-blocklists"
+          ]
+        },
+        {
+          "repository": "schrebra/Windows.10.DNS.Block.List",
+          "references": [
+            "notracking/hosts-blocklists"
+          ]
+        }
+      ],
+      "archived": false,
+      "policy_evidence_types": [
+        "README_policy_reference"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 347955,
+      "domain_fingerprint_count": 346345,
+      "domain_set_sha256": "d3a77cb6ecf3638383c48c5e4d2b87211d6ce2f20c8a66b5c75bbe8040b77868",
+      "file_count": 3,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "possible_shared_readme_references; correlation signal only"
+    },
+    {
+      "repository": "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+      "policy": "REJECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever/release/sr_ad_only.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 52060,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 29,
+          "sha256": "0f7971d36942e5397293f446c301f02dfa75680ee739ab3bef42cab3f55275a4",
+          "domain_fingerprint_count": 52060,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 52060,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever/release/sr_backcn_ad.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 52060,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 29,
+          "sha256": "9933cc3506060c82716d344b9fa3ac6ee8f8d95817ab92463d35fde8ff5fba37",
+          "domain_fingerprint_count": 52060,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 52060,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever/release/sr_direct_banad.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 52060,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 29,
+          "sha256": "7df3a69c79a1065ee75a725ee2951c2d996092865e95728c5fcb2aa5da7b3ccd",
+          "domain_fingerprint_count": 52060,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 52060,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever/release/sr_proxy_banad.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 52060,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 29,
+          "sha256": "289af204429da0143a01adaa902a394ddf7341d4dd4ab8a3ecf23c67bca982ab",
+          "domain_fingerprint_count": 52060,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 52060,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "readme_unavailable",
+      "readme_reference_count": 0,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "explicit_third_field"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 208240,
+      "domain_fingerprint_count": 52060,
+      "domain_set_sha256": "c1c7c27aa23326ced6f7117a33f0021caae8fe9e9ec3e38e71b3f8956bc51360",
+      "file_count": 4,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "lineage_not_verified"
+    },
+    {
+      "repository": "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+      "policy": "REJECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/tumblemelon/Shadowrocket-ADBlock-Rules-Forever/release/sr_ad_only.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 52045,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 23,
+          "sha256": "126fb0edeb30c702c1a8feb6880832b8dbf362dee0bbfe8c0c399e44d99114b1",
+          "domain_fingerprint_count": 52045,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 52045,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/tumblemelon/Shadowrocket-ADBlock-Rules-Forever/release/sr_backcn_ad.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 52045,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 23,
+          "sha256": "f4b588db729d4f05d774dd5b42cdafc9feabb405ed1b58fd3461aa20675eb5b7",
+          "domain_fingerprint_count": 52045,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 52045,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/tumblemelon/Shadowrocket-ADBlock-Rules-Forever/release/sr_direct_banad.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 52045,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 23,
+          "sha256": "bf91b7b3e68cff7f6811acab2ff17e82bf58162d637dbbcaccbdcabbf921a7ec",
+          "domain_fingerprint_count": 52045,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 52045,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/tumblemelon/Shadowrocket-ADBlock-Rules-Forever/release/sr_proxy_banad.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 52045,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 23,
+          "sha256": "d7cb74930d52dd1740772c29f8e538d65027e18d4c43578ae24ab45658baff10",
+          "domain_fingerprint_count": 52045,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 52045,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "readme_unavailable",
+      "readme_reference_count": 0,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "explicit_third_field"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 208180,
+      "domain_fingerprint_count": 52045,
+      "domain_set_sha256": "a89d94dab960d2d65d02d62a968cc3396a9b352aba955885f9d42f409a97b057",
+      "file_count": 4,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "lineage_not_verified"
+    },
+    {
+      "repository": "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+      "policy": "REJECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/NZNL31/Shadowrocket-Ad-DNS-Leak-Rules/main/%E2%80%9COther%20rules%20are%20available%20in%20the%20johnshall%20repository.%E2%80%9D/sr_ad_only.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 45081,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 29,
+          "sha256": "3407854aa76d72ffc4ddcfb49c2573e8e05be66bd68c25fe4c7736acbae43f8d",
+          "domain_fingerprint_count": 45081,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 45081,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/NZNL31/Shadowrocket-Ad-DNS-Leak-Rules/main/%E2%80%9COther%20rules%20are%20available%20in%20the%20johnshall%20repository.%E2%80%9D/sr_backcn_ad.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 45081,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 29,
+          "sha256": "4d2bc41b462cae80845920601f2057c3537aa9b3c289ba32741f13edf99d826f",
+          "domain_fingerprint_count": 45081,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 45081,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/NZNL31/Shadowrocket-Ad-DNS-Leak-Rules/main/%E2%80%9COther%20rules%20are%20available%20in%20the%20johnshall%20repository.%E2%80%9D/sr_direct_banad.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 45081,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 29,
+          "sha256": "56a7fe97c5b22609ea29969d22aec333801d66704ef05838e29f5200128019a9",
+          "domain_fingerprint_count": 45081,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 45081,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/NZNL31/Shadowrocket-Ad-DNS-Leak-Rules/main/%E2%80%9COther%20rules%20are%20available%20in%20the%20johnshall%20repository.%E2%80%9D/sr_proxy_banad.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 45081,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 29,
+          "sha256": "09ae678a98c0c04550485d288ece9f2bc50cad134f6455ddc85c5cd82d78f9a7",
+          "domain_fingerprint_count": 45081,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 45081,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "readme_unavailable",
+      "readme_reference_count": 0,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "explicit_third_field"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 180324,
+      "domain_fingerprint_count": 45081,
+      "domain_set_sha256": "d25f502fb1ae06bcd7229158ffadc6cd4427601976e7c153f471972e9d714c9c",
+      "file_count": 4,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "lineage_not_verified"
+    },
+    {
+      "repository": "Isaaker/Spotify-AdsList",
+      "policy": "REJECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/Isaaker/Spotify-AdsList/main/Lists/abp-mixed.txt",
+          "parser": "domain-only",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 155422,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "a83d29190ae765ffa492935015530aa587234847ba22b2351c61a8100c090a9b",
+          "domain_fingerprint_count": 155422,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 155422,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/Isaaker/Spotify-AdsList/main/Lists/abp.txt",
+          "parser": "domain-only",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 1243,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "66090011555b0df4808ca7b7c01599d6ebce15b6bd415da1f6fde551bd2d60bf",
+          "domain_fingerprint_count": 1243,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 1243,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 3,
+      "readme_shared_reference_peers": [
+        {
+          "repository": "LingJingMaster/Shadowrocket-Rules",
+          "references": [
+            "user-attachments/assets"
+          ]
+        },
+        {
+          "repository": "dcotecnologia/pihole-lists",
+          "references": [
+            "blocklistproject/lists"
+          ]
+        },
+        {
+          "repository": "schrebra/Windows.10.DNS.Block.List",
+          "references": [
+            "user-attachments/assets"
+          ]
+        }
+      ],
+      "archived": true,
+      "policy_evidence_types": [
+        "README_policy_reference"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 156665,
+      "domain_fingerprint_count": 155422,
+      "domain_set_sha256": "a5250b5175f31a068da11970f6257897415a1186c2e1ef85618bd2e086280e1d",
+      "file_count": 2,
+      "activation_eligible": false,
+      "activation_blockers": [
+        "publisher_archived"
+      ],
+      "lineage_warning": "possible_shared_readme_references; correlation signal only"
+    },
+    {
+      "repository": "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+      "policy": "REJECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/zhouzhouprogram/Shadowrocket-ADBlock-Rules/master/sr_backcn_ad.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 48729,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 9,
+          "sha256": "d0e507f554143fe29984c9e9f391d5a156f4b671040c3f3d8412a6d39f2a43d0",
+          "domain_fingerprint_count": 48729,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 48729,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/zhouzhouprogram/Shadowrocket-ADBlock-Rules/master/sr_direct_banad.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 48729,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 9,
+          "sha256": "7b2163d69f4aea188725ee4b74df594d72f24c52f0aadc026c9d928e6aff84ed",
+          "domain_fingerprint_count": 48729,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 48729,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/zhouzhouprogram/Shadowrocket-ADBlock-Rules/master/sr_proxy_banad.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 48729,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 9,
+          "sha256": "8b63794d4dfe3e9c1e37835dc6165513bd5f5b0e8f20b1e5b55ff7b68610d2ea",
+          "domain_fingerprint_count": 48729,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 48729,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "readme_unavailable",
+      "readme_reference_count": 0,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "explicit_third_field"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 146187,
+      "domain_fingerprint_count": 48729,
+      "domain_set_sha256": "b1a37463674b27689124344f1ce0d2af72cdce2dd38a50959e85147ced4af42d",
+      "file_count": 3,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "lineage_not_verified"
+    },
+    {
+      "repository": "badmojr/1Hosts",
+      "policy": "REJECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/badmojr/1Hosts/master/Lite/adblock.txt",
+          "parser": "adblock-domain-rules",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 102241,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "f2d89a0f4b60d420a852419352473c2d3bde02b4a9772dd2cc7eb448200bd070",
+          "domain_fingerprint_count": 102241,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 102241,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 3,
+      "readme_shared_reference_peers": [
+        {
+          "repository": "Hackl0us/SS-Rule-Snippet",
+          "references": [
+            "gorhill/ublock"
+          ]
+        },
+        {
+          "repository": "JohnyP36/Personal-List",
+          "references": [
+            "gorhill/ublock"
+          ]
+        },
+        {
+          "repository": "VenexGit/DeepGuard",
+          "references": [
+            "gorhill/ublock"
+          ]
+        },
+        {
+          "repository": "omerdduran/turk-adfilter",
+          "references": [
+            "gorhill/ublock"
+          ]
+        },
+        {
+          "repository": "privacyfilters/Microsoft-Blocker",
+          "references": [
+            "gorhill/ublock"
+          ]
+        },
+        {
+          "repository": "privacyfilters/Mozilla-Blocker",
+          "references": [
+            "evilsocket/opensnitch"
+          ]
+        }
+      ],
+      "archived": false,
+      "policy_evidence_types": [
+        "README_policy_reference"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 102241,
+      "domain_fingerprint_count": 102241,
+      "domain_set_sha256": "f70d3357e74a09bac6f681fbfb42818cda8f18211d9abdf231397c8cfaaab4d8",
+      "file_count": 1,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "possible_shared_readme_references; correlation signal only"
+    },
+    {
+      "repository": "YanbingJiang/Shadowrocket_diy_rules",
+      "policy": "REJECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/YanbingJiang/Shadowrocket_diy_rules/main/Archives/Backup/DivineEngine/Filter/Guard/Advertising.list",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 779,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "63c064548f9832c143838fa693e785eb0cbc7e653a761508dd6357fed80314c5",
+          "domain_fingerprint_count": 779,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 779,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/YanbingJiang/Shadowrocket_diy_rules/main/Archives/Backup/DivineEngine/Filter/Guard/Hijacking.list",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 186,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "7693ae6f2cf9cf83cca23eb425de57a1575989dd9c9ed4bdced9c7348ac381fd",
+          "domain_fingerprint_count": 186,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 186,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/YanbingJiang/Shadowrocket_diy_rules/main/Archives/Backup/DivineEngine/Filter/Guard/Privacy.list",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 45,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "23b5396fd10d7ce866f57dc4868bec61851fee00252323c39644800f9774838c",
+          "domain_fingerprint_count": 45,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 45,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/YanbingJiang/Shadowrocket_diy_rules/main/Archives/Backup/h2y/sr_backcn_ad.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 16125,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 3,
+          "sha256": "4d47c16f45ae1a7f2fcd5f2e316b1123a9d2f1e4500261f3c65d325c1ff73ff1",
+          "domain_fingerprint_count": 16125,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 16125,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/YanbingJiang/Shadowrocket_diy_rules/main/Archives/Backup/h2y/sr_direct_banad.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 16125,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 3,
+          "sha256": "d6f1563527536f8f33b3c2bb5e3f71a8d385ef89dffb120d4d84f20ef7756620",
+          "domain_fingerprint_count": 16125,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 16125,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/YanbingJiang/Shadowrocket_diy_rules/main/Archives/Backup/h2y/sr_proxy_banad.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 16125,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 3,
+          "sha256": "96cec9579854d3c9069afbfcfdc959fe8b78dff2b85f5a3277284a7eeff445b6",
+          "domain_fingerprint_count": 16125,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 16125,
             "removed_domain_count": 0,
             "policy_changed": false
           }
@@ -587,12 +3951,295 @@
         "explicit_third_field"
       ],
       "policy_evidence_strong": true,
-      "total_domain_entries": 76,
-      "domain_fingerprint_count": 38,
-      "domain_set_sha256": "ba9d6ae0275d70776e464ee98f7fe4fd47188b954af9aeddb10905275904717f",
+      "total_domain_entries": 49385,
+      "domain_fingerprint_count": 17028,
+      "domain_set_sha256": "66577eb023994728e8377f19017242e84a802bbc134b05ccb4380b388c4e798f",
+      "file_count": 6,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "lineage_not_verified"
+    },
+    {
+      "repository": "nthack/Shadowrocket-ADBlock-Rules-Easy",
+      "policy": "REJECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/nthack/Shadowrocket-ADBlock-Rules-Easy/master/h2y_bak/sr_backcn_ad.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 16125,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 3,
+          "sha256": "4d47c16f45ae1a7f2fcd5f2e316b1123a9d2f1e4500261f3c65d325c1ff73ff1",
+          "domain_fingerprint_count": 16125,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 16125,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/nthack/Shadowrocket-ADBlock-Rules-Easy/master/h2y_bak/sr_direct_banad.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 16125,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 3,
+          "sha256": "d6f1563527536f8f33b3c2bb5e3f71a8d385ef89dffb120d4d84f20ef7756620",
+          "domain_fingerprint_count": 16125,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 16125,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/nthack/Shadowrocket-ADBlock-Rules-Easy/master/h2y_bak/sr_proxy_banad.conf",
+          "parser": "shadowrocket-domain-rules",
+          "policy_evidence": "explicit_third_field",
+          "domain_count": 16125,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 3,
+          "sha256": "96cec9579854d3c9069afbfcfdc959fe8b78dff2b85f5a3277284a7eeff445b6",
+          "domain_fingerprint_count": 16125,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 16125,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 1,
+      "readme_shared_reference_peers": [
+        {
+          "repository": "WidgetA/SSR_Whitelist_for_ShadowRocket",
+          "references": [
+            "h2y/shadowrocket-adblock-rules"
+          ]
+        },
+        {
+          "repository": "jackwoo725-ux/shadowrocket-rules",
+          "references": [
+            "h2y/shadowrocket-adblock-rules"
+          ]
+        }
+      ],
+      "archived": false,
+      "policy_evidence_types": [
+        "explicit_third_field"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 48375,
+      "domain_fingerprint_count": 16125,
+      "domain_set_sha256": "4b2798dc2a6fe0c9eb4f90cc835d5cef54c0c74719d4b12f002904cc5cb659b3",
+      "file_count": 3,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "possible_shared_readme_references; correlation signal only"
+    },
+    {
+      "repository": "GoodnessJSON/PiHole-Whitelist",
+      "policy": "REJECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/GoodnessJSON/PiHole-Whitelist/master/lists/referral-sites.txt",
+          "parser": "domain-only",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 76,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "76ade9f6bb6babe0b078fd1ce49bc2c0697a4acbf2ad7923f9075ad53df6165b",
+          "domain_fingerprint_count": 76,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 76,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/GoodnessJSON/PiHole-Whitelist/master/lists/whitelist.txt",
+          "parser": "domain-only",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 194,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "0c248bc8d6c09b7e17b77db960a9614cb956f7cebb005a02cc0efac04d9788ee",
+          "domain_fingerprint_count": 194,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 194,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 1,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "README_policy_reference"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 270,
+      "domain_fingerprint_count": 270,
+      "domain_set_sha256": "d8c4e928da6a272ce2ddf0c3f9f81fe713053f2d3c8c98d071d76a7a056dd95d",
       "file_count": 2,
       "activation_eligible": true,
       "activation_blockers": [],
+      "lineage_warning": "lineage_not_verified"
+    },
+    {
+      "repository": "furkan-bayrak/lg-tv-blocklist",
+      "policy": "REJECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/furkan-bayrak/lg-tv-blocklist/main/lists/safe-adblock.txt",
+          "parser": "adblock-domain-rules",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 20,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "adcbae813ceda46f4b126d88d82592f3105f6ae8e5a107f72157123e460febaf",
+          "domain_fingerprint_count": 20,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 20,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/furkan-bayrak/lg-tv-blocklist/main/lists/safe-domains.txt",
+          "parser": "domain-only",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 20,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "4568831db596d13c3ab0595b2cf80321b70d1762cf083ef93dd247dbfb3aed6c",
+          "domain_fingerprint_count": 20,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 20,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/furkan-bayrak/lg-tv-blocklist/main/lists/strict-adblock.txt",
+          "parser": "adblock-domain-rules",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 115,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "caca78127b92867018273dac8b15ea282f6b2e379a25fd93afa97ebd2fb3f087",
+          "domain_fingerprint_count": 115,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 115,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/furkan-bayrak/lg-tv-blocklist/main/lists/strict-domains.txt",
+          "parser": "domain-only",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 115,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "36df8fdb518fb762a0ce1d87cadc317dd84a16a4523c4cc6fe4fbea2c1713cfe",
+          "domain_fingerprint_count": 115,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 115,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 0,
+      "readme_shared_reference_peers": [],
+      "archived": false,
+      "policy_evidence_types": [
+        "README_policy_reference"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 270,
+      "domain_fingerprint_count": 115,
+      "domain_set_sha256": "c4c1f0e56446aa6a7151cfe9efc3fc31b9572d5bb840c60ce0d9cccb1847c231",
+      "file_count": 4,
+      "activation_eligible": true,
+      "activation_blockers": [],
+      "lineage_warning": "lineage_not_verified"
+    },
+    {
+      "repository": "anudeepND/whitelist",
+      "policy": "REJECT",
+      "files": [
+        {
+          "url": "https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/referral-sites.txt",
+          "parser": "domain-only",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 76,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "142d231f24df94290a38e756d1d8b41643cf00ea58d5bc1519139ec8986c3ffb",
+          "domain_fingerprint_count": 76,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 76,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        },
+        {
+          "url": "https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/whitelist.txt",
+          "parser": "domain-only",
+          "policy_evidence": "README_policy_reference",
+          "domain_count": 191,
+          "leading_dot_domain_count": 0,
+          "duplicate_domain_lines": 0,
+          "sha256": "0231b454e6103a67766af96a6332245b4109db0af903c280cd8448cb23147f19",
+          "domain_fingerprint_count": 191,
+          "drift": {
+            "status": "baseline_initialized",
+            "added_domain_count": 191,
+            "removed_domain_count": 0,
+            "policy_changed": false
+          }
+        }
+      ],
+      "publisher_count_contribution": 1,
+      "lineage_status": "unverified",
+      "lineage_audit_status": "audited_reference_inventory",
+      "readme_reference_count": 0,
+      "readme_shared_reference_peers": [],
+      "archived": true,
+      "policy_evidence_types": [
+        "README_policy_reference"
+      ],
+      "policy_evidence_strong": true,
+      "total_domain_entries": 267,
+      "domain_fingerprint_count": 267,
+      "domain_set_sha256": "198fd605423ba11443226d262e1538df11be4d975acda49a88cfbbb78765824c",
+      "file_count": 2,
+      "activation_eligible": false,
+      "activation_blockers": [
+        "publisher_archived"
+      ],
       "lineage_warning": "lineage_not_verified"
     }
   ],

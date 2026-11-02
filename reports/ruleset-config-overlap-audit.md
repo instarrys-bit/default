@@ -3,15 +3,15 @@
 - Authority: read-only shadowrocket/ss.conf
 - First RULE-SET line: 1718
 - Earlier active rules: 1672
-- Ledger candidates: 11298
+- Ledger candidates: 11318
 - Result: PASS
 
 ## Status counts
 
 - ALREADY_COVERED: 1940
 - CONDITIONAL_POTENTIAL: 16
-- CONFLICT: 530
-- NOT_COVERED_BY_PRIOR_DOMAIN_RULES: 8558
+- CONFLICT: 536
+- NOT_COVERED_BY_PRIOR_DOMAIN_RULES: 8572
 - POTENTIAL_MATCH: 254
 
 ## Findings
@@ -1640,6 +1640,12 @@
 - mjj.today (PROXY): ALREADY_COVERED — line 756: Prior first-match exact/suffix domain rule
 - mlzs.work (PROXY): ALREADY_COVERED — line 734: Prior first-match exact/suffix domain rule
 - mmbang.info (DIRECT): CONFLICT — line 715: Prior first-match exact/suffix domain rule
+- mnc000.mcc460.pub.3gppnetwork.org (DIRECT): CONFLICT — line 647: Prior first-match exact/suffix domain rule
+- mnc002.mcc460.pub.3gppnetwork.org (DIRECT): CONFLICT — line 647: Prior first-match exact/suffix domain rule
+- mnc004.mcc460.pub.3gppnetwork.org (DIRECT): CONFLICT — line 647: Prior first-match exact/suffix domain rule
+- mnc007.mcc460.pub.3gppnetwork.org (DIRECT): CONFLICT — line 647: Prior first-match exact/suffix domain rule
+- mnc011.mcc460.pub.3gppnetwork.org (DIRECT): CONFLICT — line 647: Prior first-match exact/suffix domain rule
+- mnc015.mcc460.pub.3gppnetwork.org (DIRECT): CONFLICT — line 647: Prior first-match exact/suffix domain rule
 - mob.bz.mgtv.com (REJECT): CONFLICT — line 1210: Prior first-match exact/suffix domain rule
 - mobike.com (DIRECT): ALREADY_COVERED — line 1256: Prior first-match exact/suffix domain rule
 - mobile01.com (PROXY): ALREADY_COVERED — line 886: Prior first-match rules intersect candidate suffix scope

@@ -16,19 +16,43 @@
       "unique_domains": 4451
     }
   ],
-  "last_evaluated_at": "2026-11-02T02:21:57.095284+00:00",
+  "last_evaluated_at": "2026-11-02T07:04:57.840389+00:00",
   "last_decisions": [
     {
       "repository": "Jovanykoch/rules",
       "policy": "DIRECT",
-      "decision": "already_registered",
-      "reason": "publisher or URL is already registered"
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "nthack/Shadowrocket-ADBlock-Rules-Easy",
+      "policy": "DIRECT",
+      "decision": "held",
+      "reason": "policy evidence is not strong or publisher is archived"
     },
     {
       "repository": "ACL4SSR/ACL4SSR",
       "policy": "DIRECT",
       "decision": "already_registered",
       "reason": "publisher or URL is already registered"
+    },
+    {
+      "repository": "YanbingJiang/Shadowrocket_diy_rules",
+      "policy": "DIRECT",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+      "policy": "DIRECT",
+      "decision": "held",
+      "reason": "policy evidence is not strong or publisher is archived"
+    },
+    {
+      "repository": "tickmao/Rules",
+      "policy": "DIRECT",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
     },
     {
       "repository": "Clash-FX/cn-apps-direct-domains",
@@ -37,10 +61,52 @@
       "reason": "publisher or URL is already registered"
     },
     {
+      "repository": "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+      "policy": "PROXY",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+      "policy": "PROXY",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+      "policy": "PROXY",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "tickmao/Rules",
+      "policy": "PROXY",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
       "repository": "ACL4SSR/ACL4SSR",
       "policy": "PROXY",
       "decision": "already_registered",
       "reason": "publisher or URL is already registered"
+    },
+    {
+      "repository": "YanbingJiang/Shadowrocket_diy_rules",
+      "policy": "PROXY",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "nthack/Shadowrocket-ADBlock-Rules-Easy",
+      "policy": "PROXY",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+      "policy": "PROXY",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
     },
     {
       "repository": "gatework/surge-rules",
@@ -55,10 +121,82 @@
       "reason": "publisher or URL is already registered"
     },
     {
-      "repository": "RzMY/IOS-AntiRevoke-DNS-Rules",
+      "repository": "phishdestroy/destroylist",
       "policy": "REJECT",
       "decision": "held",
       "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "marco-acorte/antispam-it",
+      "policy": "REJECT",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+      "policy": "REJECT",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
+      "policy": "REJECT",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules",
+      "policy": "REJECT",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "Isaaker/Spotify-AdsList",
+      "policy": "REJECT",
+      "decision": "held",
+      "reason": "policy evidence is not strong or publisher is archived"
+    },
+    {
+      "repository": "zhouzhouprogram/Shadowrocket-ADBlock-Rules",
+      "policy": "REJECT",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "badmojr/1Hosts",
+      "policy": "REJECT",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "YanbingJiang/Shadowrocket_diy_rules",
+      "policy": "REJECT",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "nthack/Shadowrocket-ADBlock-Rules-Easy",
+      "policy": "REJECT",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "GoodnessJSON/PiHole-Whitelist",
+      "policy": "REJECT",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "furkan-bayrak/lg-tv-blocklist",
+      "policy": "REJECT",
+      "decision": "held",
+      "reason": "no supported file with 100+ unique domains and an unchanged second observation"
+    },
+    {
+      "repository": "anudeepND/whitelist",
+      "policy": "REJECT",
+      "decision": "held",
+      "reason": "policy evidence is not strong or publisher is archived"
     }
   ]
 }
