@@ -25,6 +25,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('SOURCE_EVENT: ${{ github.event.workflow_run.event }}', workflow)
         self.assertIn('SOURCE_WORKFLOW_NAME: ${{ github.event.workflow_run.name }}', workflow)
         self.assertIn("validator failures are handled by self-healing diagnosis", workflow)
+        self.assertIn("block_manifest=true", workflow)
+        self.assertIn("needs.health-check.outputs.block_manifest != 'true'", workflow)
         self.assertIn('failure|timed_out|startup_failure)', workflow)
         self.assertIn('[ "$SOURCE_EVENT" != "schedule" ]', workflow)
         self.assertIn('[ "$SOURCE_EVENT" != "push" ]', workflow)
