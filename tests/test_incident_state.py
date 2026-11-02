@@ -257,6 +257,7 @@ class IncidentStateTests(unittest.TestCase):
             target_state="MANUAL_INTERVENTION",
         )
         state_match = BLOCK_RE.search(body)
+        state = json.loads(state_match.group(1))
         state["history"][-1] = "RECOVERED"
         corrupt = body[:state_match.start(1)] + json.dumps(state) + body[state_match.end(1):]
         with self.assertRaises(IncidentStateError):
