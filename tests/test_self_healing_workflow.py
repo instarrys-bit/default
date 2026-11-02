@@ -103,7 +103,7 @@ class SelfHealingWorkflowTests(unittest.TestCase):
     def test_permissions_are_scoped_to_the_jobs_that_need_them(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         top_level = workflow.split("jobs:", 1)[0]
-        self.assertIn("permissions:\\n  contents: read", top_level)
+        self.assertIn("permissions:" + chr(10) + "  contents: read", top_level)
         self.assertNotIn("contents: write", top_level)
         diagnose = workflow.split("  diagnose-and-repair:", 1)[1].split("  resolve-validator-incidents:", 1)[0]
         self.assertIn("contents: write", diagnose)

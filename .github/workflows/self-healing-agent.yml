@@ -179,8 +179,6 @@ jobs:
     if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Validate Shadowrocket config against user baseline' && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 3
-    permissions:
-      issues: write
     steps:
       - name: Close recovered validator incidents
         env:
