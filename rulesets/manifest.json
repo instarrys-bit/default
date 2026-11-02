@@ -257,11 +257,11 @@
     }
   },
   "rule_count": {
-    "DIRECT": 216,
+    "DIRECT": 146,
     "PROXY": 205,
     "REJECT": 6
   },
-  "published_rule_total": 427,
+  "published_rule_total": 357,
   "max_published_rules": 30000,
   "queued_rule_total": 0,
   "baseline_conflict_hold_count": 1,
@@ -281,11 +281,11 @@
   "rule_lifecycle": {
     "DIRECT": {
       "previous_count": 216,
-      "current_count": 216,
+      "current_count": 146,
       "added_count": 0,
       "removed_count": 0,
       "previous_sha256": "51243bedd7ec8b8756eb3e2ecca4b971b4ab489ecbce9d7aeec1ad94cb79eb18",
-      "current_sha256": "7b66006c8b3ab1dbf3535eec97eef167c6d686fbe972402d0160eb77d79c1211",
+      "current_sha256": "5e2a2011b4504b7856665eedde56a94f76bfd09815d86f92e00eddfaea686854",
       "added_sample": [],
       "removed_sample": [],
       "baseline_initialized": false
