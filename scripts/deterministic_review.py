@@ -386,7 +386,8 @@ def main():
             if partial_counts[previous_status]<=0:
                 partial_counts.pop(previous_status,None)
         review_map[domain]=new_record
-        record_status=str(new_record.get("status","UNKNOWN"))\n        partial_counts[record_status]=partial_counts.get(record_status,0)+1
+        record_status=str(new_record.get("status","UNKNOWN"))
+        partial_counts[record_status]=partial_counts.get(record_status,0)+1
         run_counts[status]=run_counts.get(status,0)+1
         if (candidate_index+1)%batch_size==0 or candidate_index+1==len(candidates):
             # Checkpoints need not be sorted; the final publication is sorted once.
