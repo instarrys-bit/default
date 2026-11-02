@@ -129,6 +129,7 @@ jobs:
           echo "branch=$branch" >> "$GITHUB_OUTPUT"
 
       - name: Publish repair pull request
+        id: publish-repair
         if: ${{ steps.repair.outputs.changed == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
@@ -148,7 +149,7 @@ jobs:
           gh workflow run self-healing-tests.yml --ref "$BRANCH" --repo "$REPO"
 
       - name: Open incident when no safe repair applies
-        if: ${{ steps.supersession.outputs.stale != 'true' && steps.repair.outputs.changed != 'true' && steps.diagnosis.outputs.classification != 'STALE_SUPERSEDED' && steps.diagnosis.outputs.failed_steps_count != '0' }}
+        if: ${{ always() && steps.supersession.outputs.stale != 'true' && steps.diagnosis.outcome == 'success' && steps.diagnosis.outputs.classification != 'STALE_SUPERSEDED' && steps.diagnosis.outputs.failed_steps_count != '0' && (steps.repair.outcome != 'success' || steps.repair.outputs.changed != 'true' || steps.publish-repair.outcome == 'failure') }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
