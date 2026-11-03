@@ -79,6 +79,7 @@ def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
 
     def mutate(queue: dict):
         validate_envelope(queue)
+        validate_candidate(queue, registry)
         for old in queue["tasks"]:
             if old.get("idempotency_key") == idem:
                 fields = ("requester_program_id", "target_program_id", "capability", "priority", "input")
