@@ -183,5 +183,14 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertNotIn("precedence_resolved_overlaps", references)
 
 
+    def test_pull_request_config_validation_does_not_approve_or_edit_owner_baseline(self):
+        validation = (ROOT / ".github" / "workflows" / "validate-config.yml").read_text(encoding="utf-8")
+        self.assertIn("Keep owner-controlled config and baseline unchanged in pull requests", validation)
+        self.assertIn('git diff --quiet "$BASE_SHA" "$HEAD_SHA" -- shadowrocket/ss.conf sources/policy.json', validation)
+        self.assertIn("if: ${{ github.event_name != 'pull_request' }}", validation)
+        self.assertIn("Verify owner-approved config baseline", validation)
+        self.assertIn("Audit config drift against the approved baseline", validation)
+
+
 if __name__ == "__main__":
     unittest.main()
