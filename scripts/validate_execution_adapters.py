@@ -79,6 +79,8 @@ def validate_execution_adapters(root=ROOT,adapters_path=None,registry_path=None)
             if isinstance(seconds,bool) or not isinstance(seconds,int) or not 1<=seconds<=21600: raise ValueError(f"{tid} resource_contract lease_seconds invalid")
         read_only=a.get("read_only_resources",[])
         if not isinstance(read_only,list) or any(not isinstance(path,str) or not path or path.startswith("/") or chr(92) in path or any(part in {"",".",".."} for part in path.split("/")) for path in read_only) or len(read_only)!=len(set(read_only)): raise ValueError(f"{tid} read_only_resources invalid")
+        required_read_only=a.get("required_read_only_resources",[])
+        if not isinstance(required_read_only,list) or any(path not in read_only for path in required_read_only) or len(required_read_only)!=len(set(required_read_only)): raise ValueError(f"{tid} required_read_only_resources must be a unique subset of read_only_resources")
         if resource_contract is not None and set(read_only)&set(resource_contract.get("resource_keys",[])): raise ValueError(f"{tid} resource cannot be both read-only and writable")
         artifact_verifier=completion.get("artifact_verifier")
         if artifact_verifier is not None:
