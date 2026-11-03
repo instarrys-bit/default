@@ -1,0 +1,52 @@
+name: Read-only operations dashboard
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "dashboard/**"
+      - "scripts/build_dashboard_snapshot.py"
+      - "rulesets/**"
+      - "automation/task_queue.json"
+      - "sources/domain_reviews.json"
+      - "data/candidates.json"
+      - "reports/lifecycle/**"
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages-dashboard
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Build sanitized dashboard data
+        run: python3 scripts/build_dashboard_snapshot.py
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload static dashboard
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dashboard
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy read-only dashboard
+        id: deployment
+        uses: actions/deploy-pages@v4
