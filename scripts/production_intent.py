@@ -74,6 +74,18 @@ def compute_fingerprint(root: Path, manifest: dict) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
+def compute_output_fingerprint(root: Path) -> str:
+    """Fingerprint the three published policy outputs independently of input state."""
+    entries = {}
+    for relative in ("rulesets/direct.list", "rulesets/proxy.list", "rulesets/reject.list"):
+        path = root / relative
+        if not path.is_file() or path.is_symlink():
+            raise ValueError(f"published ruleset output is missing or unsafe: {relative}")
+        entries[relative] = hashlib.sha256(path.read_bytes()).hexdigest()
+    payload = json.dumps(entries, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
 def parse_timestamp(value: str | None) -> datetime | None:
     if not value:
         return None
