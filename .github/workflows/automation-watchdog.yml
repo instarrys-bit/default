@@ -343,6 +343,13 @@ jobs:
               echo "Production was not dispatched: unregistered paths are being recorded in the Watchdog inbox."
               echo "block_manifest=true" >> "$GITHUB_OUTPUT"
               unknown_paths="$(jq -c '.path_classification.unknown_changes // []' <<< "$intent_json")"
+              registry_response="$(gh api "repos/$REPO/contents/automation/unregistered_path_registry.json" 2>/dev/null || true)"
+              registry_sha=""
+              if [ -n "$registry_response" ]; then
+                registry_sha="$(jq -r '.sha' <<< "$registry_response")"
+                registry_encoded="$(jq -r '.content' <<< "$registry_response" | tr -d '\\n')"
+                printf '%s' "$registry_encoded" | base64 -d > automation/unregistered_path_registry.json
+              fi
               registration_result="$(python3 scripts/production_intent.py \
                 --event "$ORIGIN_EVENT" \
                 --revision "$ORIGIN_SHA" \
@@ -352,7 +359,6 @@ jobs:
                 --run-url "$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID")"
               echo "$registration_result" >> "$GITHUB_STEP_SUMMARY"
               registry_content="$(base64 -w0 automation/unregistered_path_registry.json)"
-              registry_sha="$(gh api "repos/$REPO/contents/automation/unregistered_path_registry.json" --jq .sha 2>/dev/null || true)"
               if [ -n "$registry_sha" ]; then
                 gh api --method PUT "repos/$REPO/contents/automation/unregistered_path_registry.json" \
                   -f message="Watchdog: register unclassified repository paths" \
