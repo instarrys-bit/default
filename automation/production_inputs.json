@@ -30,7 +30,6 @@
     "scripts/audit_external_domains.py",
     "scripts/audit_config_drift.py",
     "scripts/audit_ruleset_references.py",
-    "scripts/audit_ruleset_config_overlap.py",
     "scripts/import_request_observations.py",
     "scripts/lifecycle_gate.py",
     "scripts/lifecycle_audit.py",
