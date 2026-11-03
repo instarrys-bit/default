@@ -109,7 +109,7 @@
         "Return values and/or repository artifacts as defined by the implementation"
       ],
       "current_invocation": "python_module_or_workflow_step",
-      "contract_status": "incomplete",
+      "contract_status": "source_reviewed_documented_not_dispatchable",
       "dispatch_status": "disabled",
       "missing_contract_fields": [
         "input_schema",
@@ -123,7 +123,8 @@
         "success_predicate",
         "independent_verifier"
       ],
-      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+      "audit_note": "Entrypoint source reviewed and detailed contract sample recorded separately; no CLI task-input interface, exclusive resource leases, or independent verifier exists, so dispatch remains disabled.",
+      "contract_sample_path": "automation/capability_contracts/assess_sources.json"
     },
     {
       "id": "script_audit_config_drift",
