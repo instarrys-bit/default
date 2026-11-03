@@ -218,6 +218,16 @@
       ],
       "lock_key": "resource:rulesets/pending_queue.json",
       "mode": "exclusive"
+    },
+    {
+      "resource": "logical/production-pipeline",
+      "writers": [
+        "workflow_auto_sync"
+      ],
+      "lock_key": "logical/production-pipeline",
+      "mode": "exclusive",
+      "enforcement": "durable task queue lease with monotonically increasing fencing token; publish gate re-reads live queue before git push",
+      "note": "Virtual logical resource key used to serialize the complete production workflow; it is not a repository file path."
     }
   ],
   "not_yet_proven": [
@@ -234,5 +244,15 @@
     "execution_adapters_blob_sha": "0de9d5ab91358434de523518af9b084de43885e1",
     "added_after_release_baseline": true,
     "note": "This is a review-context pointer, not a dispatch authorization or claim that all runtime guarantees are implemented."
+  },
+  "scheduler_lock_contract": {
+    "logical_resource_key": "logical/production-pipeline",
+    "owner_program_id": "workflow_auto_sync",
+    "mode": "exclusive",
+    "fencing_required": true,
+    "lease_seconds": 3600,
+    "purpose": "Serialize scheduler-mediated production audits and hold the lock through asynchronous workflow verification; the live fencing proof is checked at audit start and immediately before publishing to main.",
+    "coverage_boundary": "This is a coarse production-pipeline mutex. It does not prove every possible direct/manual filesystem writer uses the lease; direct workflow dispatch is blocked by required Watchdog correlation and proof, and future independent Python writers must declare and enforce compatible resource contracts before enablement.",
+    "current_enforcement_pr": "pending #168 merge"
   }
 }
