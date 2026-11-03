@@ -20,7 +20,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("github.event.workflow_run.head_branch == 'main'", workflow)
         self.assertIn('last_success_sha="$(jq -r', workflow)
         self.assertIn('repos/$REPO/compare/$last_success_sha...$current_sha', workflow)
-        self.assertIn("The latest successful audit is healthy; intervening main changes are documentation or strictly verified queue state.", workflow)
+        self.assertIn("Normal input-change and scheduled-refresh decisions are centralized", workflow)
         self.assertIn("bash scripts/verify_publish_base.sh --check-only", workflow)
 
     def test_only_infrastructure_failures_trigger_bounded_scheduled_or_push_recovery(self):
@@ -142,6 +142,33 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("github.event_name == 'repository_dispatch'", step)
         self.assertIn("repository_dispatch:", workflow)
         self.assertIn("automation-production-completed", workflow)
+
+    def test_production_demand_is_fingerprint_based_and_single_sourced(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        health_start = workflow.index("      - name: Detect stale successful audit and recover")
+        queue_start = workflow.index("  task-queue-supervision:", health_start)
+        health = workflow[health_start:queue_start]
+        self.assertIn("scripts/production_intent.py", health)
+        self.assertIn('--idempotency-key "production:$fingerprint"', health)
+        self.assertIn("REVIEW_REQUIRED", health)
+        stale_start = workflow.index("  stale-run-watch:")
+        manifest_start = workflow.index("  manifest-integrity:", stale_start)
+        stale = workflow[stale_start:manifest_start]
+        self.assertNotIn("audit_base_stale", stale)
+        self.assertNotIn("auto-sync-stale:", stale)
+        self.assertIn("bounded timeout recovery", stale)
+
+    def test_successful_heartbeat_persists_the_production_input_fingerprint(self):
+        audit = AUTO_SYNC.read_text(encoding="utf-8")
+        self.assertIn("input_fingerprint", audit)
+        self.assertIn("compute_fingerprint", audit)
+        self.assertIn("automation/production_inputs.json", audit)
+
+    def test_production_intent_engine_is_registered_and_ss_conf_is_read_only_input(self):
+        registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
+        manifest = json.loads((ROOT / "automation" / "production_inputs.json").read_text(encoding="utf-8"))
+        self.assertIn("script_production_intent", {item["id"] for item in registry["programs"]})
+        self.assertIn("shadowrocket/ss.conf", manifest["production_input_paths"])
 
 
 if __name__ == "__main__":
