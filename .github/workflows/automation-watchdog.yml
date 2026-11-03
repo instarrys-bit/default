@@ -248,7 +248,7 @@ jobs:
             paths_json='["__no_successful_audit__"]'
           fi
 
-          active_fingerprints="$(jq -c '[.tasks[] | select(.status == "QUEUED" or .status == "CLAIMED" or .status == "VERIFYING") | .input.production_intent.fingerprint // empty] | map(select(type == "string")) | unique' automation/task_queue.json)"
+          active_fingerprints="$(jq -c '[.tasks[] | select(.status == "QUEUED" or .status == "CLAIMED" or .status == "VERIFYING") | .input.production_fingerprint // empty] | map(select(type == "string")) | unique' automation/task_queue.json)"
           successful_fingerprints="$(jq -c '[.tasks[] | select(.status == "SUCCEEDED" and .verification.status == "passed") | .input.production_intent.fingerprint // empty] | map(select(type == "string")) | unique' automation/task_queue.json)"
 
           intent_json="$(python3 scripts/production_intent.py \
@@ -265,7 +265,7 @@ jobs:
           case "$decision" in
             INPUT_CHANGED|SCHEDULE_DUE)
               echo "Production is required: $decision ($fingerprint)."
-              audit_input_json="$(jq -cn --arg fingerprint "$fingerprint" --arg decision "$decision" --arg reason "$(jq -r '.reason' <<< "$intent_json")" --arg event "$ORIGIN_EVENT" --arg actor "$ORIGIN_ACTOR" --arg before "$ORIGIN_BEFORE" --arg sha "$ORIGIN_SHA" '{production_intent:{fingerprint:$fingerprint,decision:$decision,reason:$reason,detected_event:$event},baseline_source_event:$event,baseline_source_actor:$actor,baseline_source_before:$before,baseline_source_sha:$sha}')"
+              audit_input_json="$(jq -cn --arg fingerprint "$fingerprint" --arg decision "$decision" --arg reason "$(jq -r '.reason' <<< "$intent_json")" --arg event "$ORIGIN_EVENT" --arg actor "$ORIGIN_ACTOR" --arg before "$ORIGIN_BEFORE" --arg sha "$ORIGIN_SHA" '{production_fingerprint:$fingerprint,production_decision:$decision,production_reason:$reason,baseline_source_event:$event,baseline_source_actor:$actor,baseline_source_before:$before,baseline_source_sha:$sha}')"
               production_key="$(jq -r '.idempotency_key' <<< "$intent_json")"
               printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$production_key" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
               echo "block_manifest=true" >> "$GITHUB_OUTPUT"
@@ -429,7 +429,7 @@ jobs:
           print(compute_fingerprint(Path("."), manifest))
           PY
           )"
-              recovery_input="$(jq -cn --arg fingerprint "$current_fingerprint" --arg reason "bounded recovery after watchdog cancellation of a timed-out audit" '{production_intent:{fingerprint:$fingerprint,decision:"RECOVERY_REQUIRED",reason:$reason}}')"
+              recovery_input="$(jq -cn --arg fingerprint "$current_fingerprint" --arg reason "bounded recovery after watchdog cancellation of a timed-out audit" '{production_fingerprint:$fingerprint,production_decision:"RECOVERY_REQUIRED",production_reason:$reason}')"
               printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "production:recovery:$current_fingerprint:$timed_out_run_id" --priority 100 --input-json "$recovery_input" enqueue-auto-sync
             fi
           fi
