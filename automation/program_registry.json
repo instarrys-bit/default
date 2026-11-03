@@ -1268,6 +1268,7 @@
         "script_refresh_ruleset_manifest",
         "script_register_config_baseline",
         "script_remote_task_queue_runtime",
+        "script_resource_lease_runtime",
         "script_select_domain_rules",
         "script_sync_ruleset_config_conflicts",
         "script_task_queue",
