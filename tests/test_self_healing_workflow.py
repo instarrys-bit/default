@@ -192,7 +192,8 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("shadowrocket/ss.conf", policy)
         stale_watcher = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("scripts/watchdog_recovery_policy.py --source-run-id 0 --source-sha", stale_watcher)
-        self.assertIn("Scheduled recovery suppressed", stale_watcher)
+        self.assertIn("Timeout recovery suppressed by bounded recovery policy", stale_watcher)
+        self.assertNotIn("Scheduled recovery suppressed", stale_watcher)
 
 
     def test_incident_state_machine_is_persisted_and_fail_closed(self):
