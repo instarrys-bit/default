@@ -7,12 +7,14 @@ import json
 import os
 import secrets
 import sys
+import tempfile
 import uuid
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from github_queue_store import GitHubContentsQueueStore
 from task_queue_runtime import authorize, now_utc, stamp
+from task_queue import validate_task_queue
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -35,6 +37,17 @@ def validate_envelope(queue: dict) -> None:
             or not isinstance(queue.get("revision"), int) or queue["revision"] < 0
             or not isinstance(queue.get("tasks"), list)):
         raise ValueError("remote task queue envelope is invalid")
+
+
+def validate_candidate(queue: dict, registry: dict) -> None:
+    """Run the independent queue integrity validator before accepting a mutation."""
+    with tempfile.TemporaryDirectory(prefix="remote-queue-verify-") as directory:
+        root = Path(directory)
+        queue_path = root / "task_queue.json"
+        registry_path = root / "program_registry.json"
+        queue_path.write_text(json.dumps(queue, ensure_ascii=False), encoding="utf-8")
+        registry_path.write_text(json.dumps(registry, ensure_ascii=False), encoding="utf-8")
+        validate_task_queue(root=root, queue_path=queue_path, registry_path=registry_path)
 
 
 def make_store(repository: str | None = None, branch: str | None = None,
@@ -71,6 +84,7 @@ def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
                 fields = ("requester_program_id", "target_program_id", "capability", "priority", "input")
                 if any(old.get(k) != task.get(k, 50 if k == "priority" else {}) for k in fields):
                     raise ValueError("idempotency_key is already used for a different task payload")
+                validate_candidate(queue, registry)
                 return queue, {"created": False, "task": old}
         item = {
             "task_id": "task_" + uuid.uuid4().hex[:24],
@@ -87,6 +101,7 @@ def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
         }
         queue["tasks"].append(item)
         queue["revision"] += 1
+        validate_candidate(queue, registry)
         return queue, {"created": True, "task": item}
     return store.mutate(mutate)
 
@@ -109,6 +124,7 @@ def claim_remote(worker_id: str, store: GitHubContentsQueueStore,
             policy = authorize(task, by_id)
             eligible.append((task, policy))
         if not eligible:
+            validate_candidate(queue, registry)
             return queue, None
         eligible.sort(key=lambda pair: (-pair[0]["priority"], pair[0]["created_at"], pair[0]["task_id"]))
         task, policy = eligible[0]
@@ -120,6 +136,7 @@ def claim_remote(worker_id: str, store: GitHubContentsQueueStore,
             "expires_at": stamp(now + timedelta(seconds=policy["timeout_seconds"])),
         }
         queue["revision"] += 1
+        validate_candidate(queue, registry)
         return queue, task
     return store.mutate(mutate)
 
@@ -165,11 +182,12 @@ def complete_remote(task_id: str, worker_id: str, lease_token: str, *,
                 task["status"] = "DEAD_LETTER"
                 task["state_history"].append("DEAD_LETTER")
         queue["revision"] += 1
+        validate_candidate(queue, registry)
         return queue, task
     return store.mutate(mutate)
 
 
-def recover_remote(store: GitHubContentsQueueStore, now: datetime | None = None) -> list[dict]:
+def recover_remote(store: GitHubContentsQueueStore, registry: dict, now: datetime | None = None) -> list[dict]:
     now = now or now_utc()
 
     def mutate(queue: dict):
@@ -193,6 +211,7 @@ def recover_remote(store: GitHubContentsQueueStore, now: datetime | None = None)
             recovered.append(task)
         if recovered:
             queue["revision"] += 1
+        validate_candidate(queue, registry)
         return queue, recovered
     return store.mutate(mutate)
 
@@ -238,11 +257,12 @@ def main() -> int:
                 output = complete_remote(args.task_id, args.worker_id, args.lease_token,
                                           success=False, error=error, store=store, registry=registry)
         elif args.command == "recover-expired":
-            recovered = recover_remote(store)
+            recovered = recover_remote(store, registry)
             output = {"recovered_count": len(recovered), "tasks": recovered}
         else:
             snapshot = store.read()
             validate_envelope(snapshot.document)
+            validate_candidate(snapshot.document, registry)
             output = {"valid": True, "revision": snapshot.document["revision"],
                       "task_count": len(snapshot.document["tasks"]), "blob_sha": snapshot.content_sha}
         print(json.dumps(output, ensure_ascii=False))
