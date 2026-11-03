@@ -14,6 +14,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('    - cron: "0 * * * *"', workflow)
         self.assertIn('      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"', workflow)
         self.assertIn('      - "Validate Shadowrocket config against user baseline"', workflow)
+        self.assertIn('      - "Validate self-healing agent"', workflow)
         self.assertIn("types: [completed]", workflow)
         self.assertIn("github.event.workflow_run.head_branch == 'main'", workflow)
         self.assertIn('last_success_sha="$(jq -r', workflow)
