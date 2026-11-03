@@ -1259,6 +1259,7 @@
         "reports, artifacts, and repository changes explicitly allowed by workflow jobs"
       ],
       "depends_on": [
+        "script_assess_sources",
         "script_audit_adapter_activation",
         "script_audit_config_drift",
         "script_audit_ruleset_config_overlap",
@@ -1284,6 +1285,7 @@
         "script_validate_execution_adapters",
         "script_validate_program_registry",
         "script_validate_release_manifest",
+        "script_verify_assess_sources_artifacts",
         "script_verify_baseline"
       ],
       "dispatches": [],
