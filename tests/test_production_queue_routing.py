@@ -22,7 +22,7 @@ class ProductionQueueRoutingTests(unittest.TestCase):
         self.assertIn("needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped'", workflow)
         queue_job = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
         self.assertIn("group: shadowrocket-main-writer", queue_job)
-        self.assertIn("workflow.event_name != 'schedule'", workflow)
+        self.assertIn("github.event_name != 'schedule'", workflow)
 
     def test_all_stale_audit_checks_use_the_same_queue_aware_base_guard(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
