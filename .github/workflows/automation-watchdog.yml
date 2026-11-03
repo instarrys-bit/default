@@ -222,7 +222,7 @@ jobs:
             if [ "$ORIGIN_EVENT" = "push" ]; then
               audit_input_json="$(jq -cn --arg event "$ORIGIN_EVENT" --arg actor "$ORIGIN_ACTOR" --arg before "$ORIGIN_BEFORE" --arg sha "$ORIGIN_SHA" '{baseline_source_event:$event,baseline_source_actor:$actor,baseline_source_before:$before,baseline_source_sha:$sha}')"
             fi
-            printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-stale:$current_sha" --priority 80 --input-json "$audit_input_json" enqueue-auto-sync
+            printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-stale:$current_sha" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
             echo "block_manifest=true" >> "$GITHUB_OUTPUT"
           else
             echo "Last successful audit is healthy; any intervening main changes are documentation-only (${age_seconds}s ago)."
