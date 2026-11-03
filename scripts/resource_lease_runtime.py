@@ -72,7 +72,7 @@ def acquire_resource_leases_in_queue(queue, task, worker_id, task_lease_token, r
     claimed_task(queue, task["task_id"], worker_id, task_lease_token, now)
     keys=normalize_keys(resource_keys)
     if isinstance(lease_seconds,bool) or not isinstance(lease_seconds,int) or not 1<=lease_seconds<=21600:
-        raise ValueError("lease_seconds must be 1..3600")
+        raise ValueError("lease_seconds must be 1..21600")
     expiry=min(now+timedelta(seconds=lease_seconds),utc(task["lease"]["expires_at"]))
     leases=queue.setdefault("resource_leases",{})
     if not isinstance(leases,dict): raise ValueError("resource_leases must be an object")
