@@ -18,7 +18,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertEqual(workflow.count("bash scripts/verify_publish_base.sh --check-only"), 2)
         publish_guard = (ROOT / "scripts" / "verify_publish_base.sh").read_text(encoding="utf-8")
         self.assertIn("Only strictly verified durable queue-state commits changed", publish_guard)
-        self.assertIn('Non-documentation input or unverified repository state changed during audit; refusing stale work.', publish_guard)
+        self.assertIn('A declared production input changed after the audited commit; a new production audit is required.', publish_guard)
         self.assertIn("cancel-in-progress: false", workflow)
         self.assertIn("Keep the active audit; stale-commit guards stop obsolete runs safely.", workflow)
         self.assertIn("group: shadowrocket-main-writer", workflow)
