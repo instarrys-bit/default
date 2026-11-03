@@ -108,7 +108,8 @@ def decide(*, event: str, current_fingerprint: str, last_success_fingerprint: st
            path_classification: dict, last_success_at: str | None,
            active_fingerprints: set[str] | None = None,
            successful_fingerprints: set[str] | None = None,
-           now: datetime | None = None, refresh_after_seconds: int = 691200) -> dict:
+           revision: str | None = None, now: datetime | None = None,
+           refresh_after_seconds: int = 691200) -> dict:
     now = now or datetime.now(timezone.utc)
     active_fingerprints = active_fingerprints or set()
     successful_fingerprints = successful_fingerprints or set()
