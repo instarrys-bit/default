@@ -1377,7 +1377,7 @@
       "id": "script_task_result_verifier",
       "path": "scripts/task_result_verifier.py",
       "kind": "python_component",
-      "responsibility": "independently validate remote task result payloads against reviewed deterministic output contracts",
+      "responsibility": "independently validate Python results and GitHub Actions workflow run identity and completed conclusions",
       "capabilities": [
         "task_result_verification"
       ],
@@ -1385,11 +1385,13 @@
       "inputs": [
         "remote task queue snapshot",
         "program registry",
-        "reviewed execution adapter output contracts"
+        "reviewed Python output contracts",
+        "persisted GitHub Actions workflow dispatch intents"
       ],
       "outputs": [
         "verified task IDs",
         "rejected task IDs",
+        "pending workflow run IDs",
         "blocked verification reasons"
       ],
       "depends_on": [
@@ -1400,7 +1402,7 @@
       ],
       "dispatches": [],
       "permission_boundary": "Requires caller-provided GitHub Contents read/write permission to persist verification transitions; never modifies shadowrocket/ss.conf, rulesets, or DNS.",
-      "health_check": "Deterministic JSON Schema subset tests, fail-closed unsupported keyword tests, and CAS-backed VERIFYING-to-terminal/retry transition tests.",
+      "health_check": "Tests cover deterministic JSON contract validation, workflow run correlation, identity/SHA checks, pending state, success/failure conclusions, and CAS-backed task transitions.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],
@@ -1412,9 +1414,10 @@
       "id": "script_task_scheduler",
       "path": "scripts/task_scheduler.py",
       "kind": "python_component",
-      "responsibility": "plan and execute only explicitly enabled, reviewed Python task adapters with least-privilege child environments",
+      "responsibility": "plan and execute only explicitly enabled, reviewed Python CLI or GitHub Actions workflow adapters with durable dispatch intent and least-privilege credentials",
       "capabilities": [
-        "deterministic_task_scheduling"
+        "deterministic_task_scheduling",
+        "github_workflow_dispatch"
       ],
       "invocation": "python_cli",
       "inputs": [
@@ -1426,7 +1429,8 @@
       "outputs": [
         "processed task summaries",
         "blocked task reasons",
-        "verification results"
+        "persisted workflow dispatch intents",
+        "independent workflow run verification results"
       ],
       "depends_on": [
         "script_remote_task_queue_runtime",
@@ -1437,7 +1441,7 @@
       ],
       "dispatches": [],
       "permission_boundary": "Requires caller-provided GitHub Contents read/write permission. Child programs receive only a non-secret environment allowlist, no shell, and no GitHub token. The scheduler does not modify shadowrocket/ss.conf.",
-      "health_check": "Tests for disabled-adapter blocking, input/output contract checks, exact Python entrypoint invocation, no-shell execution, secret environment isolation, and independent result verification.",
+      "health_check": "Tests cover disabled-adapter blocking, reviewed Python execution, workflow dispatch authorization, durable intent recovery, duplicate-dispatch prevention, and independent workflow run verification.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],
