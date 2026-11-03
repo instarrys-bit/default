@@ -228,7 +228,7 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
                 self.store, registry, adapters,
                 worker_id="watchdog-config-test", max_tasks=1, root=self.root, now=self.now,
             )
-        self.assertEqual(report["processed_count"], 1)
+        self.assertEqual(report["processed_count"], 1, repr(report))
         dispatched = self.client.dispatches[0][2]
         for field in (
             "baseline_source_sha", "production_fingerprint",
