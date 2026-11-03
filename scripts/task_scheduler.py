@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+from contextlib import contextmanager
 import json
 import os
 import string
@@ -171,6 +172,22 @@ def ensure_protected_config_unchanged(before_digest: str, task: dict, store,
         raise ProtectedConfigMutationError(error["message"])
 
 
+@contextmanager
+def without_parent_secrets():
+    """Temporarily remove credential-like variables from the scheduler process too."""
+    secret_markers = ("TOKEN", "SECRET", "PASSWORD", "CREDENTIAL", "PRIVATE_KEY")
+    removed = {
+        key: value for key, value in os.environ.items()
+        if any(marker in key.upper() for marker in secret_markers)
+    }
+    for key in removed:
+        os.environ.pop(key, None)
+    try:
+        yield
+    finally:
+        os.environ.update(removed)
+
+
 def safe_child_environment(root: Path = ROOT) -> dict[str, str]:
     """Pass only non-secret runtime basics; never inherit GitHub or runner credentials."""
     environment = {key: os.environ[key] for key in SAFE_ENV_KEYS if key in os.environ}
@@ -209,16 +226,17 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
         argv = [argument.format_map(argv_values) for argument in entrypoint["argv_template"]]
         command = [sys.executable, str(script_path), *argv]
         try:
-            completed = subprocess.run(
-                command,
-                cwd=root,
-                env=safe_child_environment(root),
-                shell=False,
-                capture_output=True,
-                text=True,
-                timeout=adapter["timeout_seconds"],
-                check=False,
-            )
+            with without_parent_secrets():
+                completed = subprocess.run(
+                    command,
+                    cwd=root,
+                    env=safe_child_environment(root),
+                    shell=False,
+                    capture_output=True,
+                    text=True,
+                    timeout=adapter["timeout_seconds"],
+                    check=False,
+                )
         except subprocess.TimeoutExpired:
             ensure_protected_config_unchanged(protected_digest, task, store, registry, root)
             error = {"type": "execution_timeout", "message": "Registered program exceeded its adapter timeout."}
