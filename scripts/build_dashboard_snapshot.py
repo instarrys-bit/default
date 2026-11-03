@@ -107,7 +107,8 @@ snapshot = {
         "held_total": held,
         "policy_conflicts": as_int(manifest.get("policy_conflict_total")),
         "reject_manual_approval_required": bool(manifest.get("reject_manual_approval_required", True)),
-        "reject_manual_approved": as_int(manifest.get("reject_manual_approval_count"))
+        "reject_manual_approved": as_int(manifest.get("reject_manual_approval_count")),
+        "reject_manual_pending": as_int(manifest.get("reject_manual_hold_count"))
     },
     "queue": {"total": len(tasks), "by_status": queue_status},
     "production": {
