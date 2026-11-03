@@ -140,6 +140,27 @@ jobs:
           print(f"Authorized Watchdog production audit task {task_id}, attempt {attempt}.")
           PY
 
+      - name: Capture and verify the exact production input fingerprint
+        env:
+          PRODUCTION_FINGERPRINT: ${{ inputs.production_fingerprint }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from production_intent import load_manifest, compute_fingerprint
+          manifest = load_manifest(Path("automation/production_inputs.json"))
+          actual = compute_fingerprint(Path("."), manifest)
+          expected = os.environ.get("PRODUCTION_FINGERPRINT", "")
+          if expected and expected != actual:
+              raise SystemExit("The dispatched production fingerprint does not match the checked-out input snapshot.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
+              stream.write(f"PRODUCTION_INPUT_FINGERPRINT={actual}\\n")
+          print(f"Captured production input fingerprint {actual}.")
+          PY
+
       - name: Stop stale audit before discovery and source downloads
         env:
           GH_TOKEN: ${{ github.token }}
@@ -353,12 +374,17 @@ jobs:
           import sys
           from datetime import datetime, timezone
           sys.path.insert(0, "scripts")
-          from production_intent import load_manifest, compute_fingerprint
-          manifest = load_manifest(__import__("pathlib").Path("automation/production_inputs.json"))
-          input_fingerprint = compute_fingerprint(__import__("pathlib").Path("."), manifest)
+          from production_intent import load_manifest, compute_fingerprint, compute_output_fingerprint
+          from pathlib import Path
+          manifest = load_manifest(Path("automation/production_inputs.json"))
+          input_fingerprint = os.environ["PRODUCTION_INPUT_FINGERPRINT"]
+          post_run_input_fingerprint = compute_fingerprint(Path("."), manifest)
+          output_fingerprint = compute_output_fingerprint(Path("."))
           record = {
-              "schema_version": 2,
+              "schema_version": 3,
               "input_fingerprint": input_fingerprint,
+              "post_run_input_fingerprint": post_run_input_fingerprint,
+              "output_fingerprint": output_fingerprint,
               "input_manifest_schema_version": manifest["schema_version"],
               "status": "audit_passed",
               "workflow": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
