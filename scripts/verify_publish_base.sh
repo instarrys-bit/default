@@ -14,6 +14,35 @@ is_docs_only_compare() {
   ' >/dev/null 2>&1
 }
 
+# Only declared production inputs may create a new production intent.
+# Generated rulesets, reports, queue state, and unrelated repository files are outputs/state.
+is_production_input_path() {
+  case "$1" in
+    .github/workflows/*|scripts/*|tests/*|\
+    sources/policy.json|sources/domain_sources.json|sources/policy_approvals.json|\
+    sources/protected_domains.json|sources/request_domain_observations.json|\
+    sources/reject_manual_approvals.json|\
+    shadowrocket/ss.conf|automation/program_registry.json|automation/execution_adapters.json)
+      return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+is_non_input_only_compare() {
+  jq -e '
+    .status == "ahead"
+    and (.files | type == "array")
+    and (.files | length > 0)
+  ' >/dev/null 2>&1 || return 1
+  while IFS= read -r path; do
+    [ -n "$path" ] || continue
+    if is_production_input_path "$path"; then
+      return 1
+    fi
+  done < <(jq -r '.files[].filename' <<< "$compare_json")
+  return 0
+}
+
 is_queue_only_compare() {
   jq -e --arg base "$GITHUB_SHA" '
     .status == "ahead"
@@ -65,7 +94,11 @@ if [ "$mode" = "--check-only" ]; then
     echo "Only strictly verified durable queue-state commits changed after the audited commit."
     exit 0
   fi
-  echo "Non-documentation input or unverified repository state changed during audit; refusing stale work." >&2
+  if is_non_input_only_compare; then
+    echo "No declared production inputs changed after the audited commit; generated outputs and unrelated state do not create production demand."
+    exit 0
+  fi
+  echo "A declared production input changed after the audited commit; a new production audit is required." >&2
   exit 1
 fi
 
