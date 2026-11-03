@@ -29,6 +29,8 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         git(self.work, "config", "user.email", "test@example.invalid")
         (self.work / "docs").mkdir()
         (self.work / "shadowrocket").mkdir()
+        (self.work / "automation").mkdir()
+        (self.work / "automation" / "task_queue.json").write_text(json.dumps({"revision": 0}) + chr(10), encoding="utf-8")
         (self.work / "docs" / "guide.md").write_text("initial\n", encoding="utf-8")
         (self.work / "shadowrocket" / "ss.conf").write_text("protected\n", encoding="utf-8")
         git(self.work, "add", ".")
@@ -60,12 +62,12 @@ class PublishBaseIntegrationTests(unittest.TestCase):
                          message="Update durable automation task queue", extra_path=None):
         queue_path = self.work / "automation" / "task_queue.json"
         queue_path.parent.mkdir(parents=True, exist_ok=True)
-        queue_path.write_text('{"revision": 1}\\n', encoding="utf-8")
+        queue_path.write_text(json.dumps({"revision": 1}) + chr(10), encoding="utf-8")
         git(self.work, "add", "automation/task_queue.json")
         if extra_path:
             extra = self.work / extra_path
             extra.parent.mkdir(parents=True, exist_ok=True)
-            extra.write_text("other change\\n", encoding="utf-8")
+            extra.write_text("other change" + chr(10), encoding="utf-8")
             git(self.work, "add", extra_path)
         env = os.environ.copy()
         env["GIT_AUTHOR_NAME"] = "github-actions[bot]"
