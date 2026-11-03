@@ -343,13 +343,34 @@ jobs:
               echo "Production was not dispatched: unregistered paths are being recorded in the Watchdog inbox."
               echo "block_manifest=true" >> "$GITHUB_OUTPUT"
               unknown_paths="$(jq -c '.path_classification.unknown_changes // []' <<< "$intent_json")"
-              registration_result="$(python3 scripts/register_unclassified_paths.py \
-                --paths-json "$unknown_paths" \
-                --event "$ORIGIN_EVENT" \
-                --revision "$ORIGIN_SHA" \
-                --run-id "$GITHUB_RUN_ID" \
-                --run-url "$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID" \
-                --ledger automation/unregistered_path_registry.json)"
+              registration_result="$(UNKNOWN_PATHS_JSON="$unknown_paths" ORIGIN_EVENT="$ORIGIN_EVENT" ORIGIN_SHA="$ORIGIN_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" RUN_URL="$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID" python3 - <<'PY'
+              import json
+              import os
+              from pathlib import Path
+              from production_intent import register_unclassified_paths
+
+              ledger_path = Path("automation/unregistered_path_registry.json")
+              if ledger_path.exists():
+                  ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+              else:
+                  ledger = {
+                      "schema_version": 1,
+                      "purpose": "Watchdog inbox for unregistered repository paths; registration is not approval.",
+                      "entries": [],
+                  }
+              paths = json.loads(os.environ["UNKNOWN_PATHS_JSON"])
+              ledger = register_unclassified_paths(
+                  paths, ledger, os.environ["ORIGIN_EVENT"], os.environ["ORIGIN_SHA"],
+                  os.environ["GITHUB_RUN_ID"], os.environ["RUN_URL"],
+              )
+              ledger_path.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+              print(json.dumps({
+                  "registered_count": len(set(paths)),
+                  "pending_count": sum(item.get("status") == "PENDING_CLASSIFICATION" for item in ledger["entries"]),
+                  "paths": sorted(set(paths)),
+              }, ensure_ascii=False))
+              PY
+              )"
               echo "$registration_result" >> "$GITHUB_STEP_SUMMARY"
               registry_content="$(base64 -w0 automation/unregistered_path_registry.json)"
               registry_sha="$(gh api "repos/$REPO/contents/automation/unregistered_path_registry.json" --jq .sha 2>/dev/null || true)"
@@ -364,7 +385,7 @@ jobs:
               fi
               title="Production input classification requires review"
               issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
-              body="The Watchdog registered the following unclassified paths in automation/unregistered_path_registry.json. Registration is not approval. These paths remain PENDING_CLASSIFICATION and production remains blocked until each path is explicitly classified.\n\nPaths: $unknown_paths\n\nRun: $GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID"
+              body="$(printf 'The Watchdog registered these unclassified paths in automation/unregistered_path_registry.json. Registration is not approval. All remain PENDING_CLASSIFICATION and production stays blocked until explicit classification.\\n\\nPaths: %s\\n\\nRun: %s' "$unknown_paths" "$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID")"
               if [ -n "$issue" ] && [ "$issue" != "null" ]; then
                 gh issue comment "$issue" --repo "$REPO" --body "$body"
               else
