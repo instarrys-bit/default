@@ -1,5 +1,5 @@
 {
-  "revision": 13,
+  "revision": 14,
   "schema_version": 1,
   "tasks": [
     {
@@ -150,6 +150,17 @@
       "attempts": 1,
       "capability": "deterministic_audit",
       "created_at": "2026-11-03T07:42:51Z",
+      "dispatch_intent": {
+        "correlation_id": "task_ca88ab87b72a421aa4e17549-a1",
+        "correlation_title": "Automation task task_ca88ab87b72a421aa4e17549-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-03T07:43:13Z",
+        "ref": "main",
+        "requested_head_sha": "fe52039121048cf898fa114d601ee669104b83a2",
+        "task_id": "task_ca88ab87b72a421aa4e17549",
+        "workflow_id": 402712272,
+        "workflow_path": ".github/workflows/auto_sync.yml"
+      },
       "execution_backend": "github_contents",
       "idempotency_key": "auto-sync-stale:9703c686ae9f0f0ddfdec00b7580616bcbb77d1e",
       "input": {
