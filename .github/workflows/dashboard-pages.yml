@@ -1,0 +1,61 @@
+name: Read-only operations dashboard
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "dashboard/**"
+      - "scripts/build_dashboard_snapshot.py"
+      - "rulesets/**"
+      - "automation/task_queue.json"
+      - "automation/program_registry.json"
+      - "automation/execution_adapters.json"
+      - "sources/domain_reviews.json"
+      - "data/candidates.json"
+      - "reports/lifecycle/**"
+  workflow_run:
+    workflows:
+      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
+      - "Shadowrocket automation watchdog"
+    types: [completed]
+  schedule:
+    - cron: "17 * * * *"
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages-dashboard
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest main snapshot
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Build sanitized dashboard data
+        run: python3 scripts/build_dashboard_snapshot.py
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload static dashboard
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dashboard
+
+  deploy:
+    needs: build
+    if: ${{ needs.build.result == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy read-only dashboard
+        id: deployment
+        uses: actions/deploy-pages@v4
