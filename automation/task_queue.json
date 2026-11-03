@@ -1,5 +1,5 @@
 {
-  "revision": 3,
+  "revision": 4,
   "schema_version": 1,
   "tasks": [
     {
@@ -21,24 +21,34 @@
       "idempotency_key": "approved-self-healing-tests-canary-2026-11-03-02ab2966",
       "input": {},
       "last_error": null,
-      "lease": {
-        "expires_at": "2026-11-03T06:54:56Z",
-        "owner": "41592287205",
-        "token": "511d9e6340fe021a093a2d579fecd4e0"
-      },
+      "lease": null,
       "max_attempts": 1,
       "not_before": "2026-11-03T06:47:57Z",
       "priority": 100,
       "requester_program_id": "workflow_automation_watchdog",
-      "result": null,
+      "result": {
+        "correlation_id": "task_4bb1ec0f7ba4339e02ab2966-a1",
+        "correlation_title": "Automation task task_4bb1ec0f7ba4339e02ab2966-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-03T06:49:58Z",
+        "ref": "main",
+        "requested_head_sha": "1fb81b17112e63729afe388f9a30c946a63f928d",
+        "submitted_at": "2026-11-03T06:50:01Z",
+        "task_id": "task_4bb1ec0f7ba4339e02ab2966",
+        "workflow_id": 404456867,
+        "workflow_path": ".github/workflows/self-healing-tests.yml"
+      },
       "state_history": [
         "QUEUED",
-        "CLAIMED"
+        "CLAIMED",
+        "VERIFYING"
       ],
-      "status": "CLAIMED",
+      "status": "VERIFYING",
       "target_program_id": "workflow_self_healing_tests",
       "task_id": "task_4bb1ec0f7ba4339e02ab2966",
-      "trace_id": "trace_4bb1ec0f7ba4339e02ab2966"
+      "trace_id": "trace_4bb1ec0f7ba4339e02ab2966",
+      "verification": null
     }
   ]
 }
