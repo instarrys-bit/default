@@ -23,14 +23,24 @@ def _compact_bytes(value: Any) -> bytes:
     return json.dumps(value, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
 
 
-def _atomic_write(path: Path, data: bytes) -> None:
+def _assert_document_lease(path: Path, required: bool) -> None:
+    if not required:
+        return
+    from resource_lease_runtime import assert_resource_lease_from_environment
+    assert_resource_lease_from_environment(path.relative_to(Path(__file__).resolve().parents[1]).as_posix())
+
+
+def _atomic_write(path: Path, data: bytes, *, lease_required: bool = False) -> None:
+    _assert_document_lease(path, lease_required)
     path.parent.mkdir(parents=True, exist_ok=True)
+    _assert_document_lease(path, lease_required)
     fd, temporary = tempfile.mkstemp(prefix=path.name + ".", suffix=".tmp", dir=str(path.parent))
     try:
         with os.fdopen(fd, "wb") as stream:
             stream.write(data)
             stream.flush()
             os.fsync(stream.fileno())
+        _assert_document_lease(path, lease_required)
         os.replace(temporary, path)
     except Exception:
         try:
@@ -134,7 +144,7 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
     return result
 
 
-def write_document(path: Path, payload: dict, collection_key: str) -> dict:
+def write_document(path: Path, payload: dict, collection_key: str, *, lease_required: bool = False) -> dict:
     """Write one bounded JSON file, or switch atomically to immutable JSONL shards."""
     path = Path(path)
     if not isinstance(payload, dict) or not isinstance(payload.get(collection_key), list):
@@ -157,10 +167,12 @@ def write_document(path: Path, payload: dict, collection_key: str) -> dict:
     if estimate <= MAX_FILE_BYTES and not already_sharded:
         legacy = (json.dumps(payload, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
         if len(legacy) <= MAX_FILE_BYTES:
-            _atomic_write(path, legacy)
+            _atomic_write(path, legacy, lease_required=lease_required)
             return {"storage": "json", "records": len(records), "bytes": len(legacy), "shards": 0}
 
+    _assert_document_lease(path, lease_required)
     path.parent.mkdir(parents=True, exist_ok=True)
+    _assert_document_lease(path, lease_required)
     staging = Path(tempfile.mkdtemp(prefix=path.name + ".parts.tmp-", dir=str(path.parent)))
     shard_entries = []
     shard_buffer = bytearray()
@@ -178,6 +190,7 @@ def write_document(path: Path, payload: dict, collection_key: str) -> dict:
             raise ValueError("internal shard sizing error")
         name = f"part-{shard_index:06d}.jsonl"
         raw = bytes(shard_buffer)
+        _assert_document_lease(path, lease_required)
         (staging / name).write_bytes(raw)
         shard_entries.append({
             "file": name,
@@ -205,8 +218,10 @@ def write_document(path: Path, payload: dict, collection_key: str) -> dict:
         final_directory = path.parent / shard_directory
         if final_directory.exists():
             # Same content-addressed version is already complete and may be live.
+            _assert_document_lease(path, lease_required)
             shutil.rmtree(staging)
         else:
+            _assert_document_lease(path, lease_required)
             os.replace(staging, final_directory)
 
         manifest = {
@@ -224,15 +239,22 @@ def write_document(path: Path, payload: dict, collection_key: str) -> dict:
         manifest_bytes = (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
         if len(manifest_bytes) > MAX_FILE_BYTES:
             raise ValueError("shard manifest exceeds the 50 MB single-file limit")
-        _atomic_write(manifest_file, manifest_bytes)
+        _atomic_write(manifest_file, manifest_bytes, lease_required=lease_required)
         # The manifest is authoritative only after its atomic replacement.
         if path.exists():
+            _assert_document_lease(path, lease_required)
             path.unlink()
         for old in path.parent.glob(path.name + ".parts-*"):
             if old.is_dir() and old.name != shard_directory:
+                _assert_document_lease(path, lease_required)
                 shutil.rmtree(old)
         return {"storage": "jsonl-shards-v1", "records": len(records), "bytes": total_shard_bytes, "shards": len(shard_entries)}
     except Exception:
         if staging.exists():
-            shutil.rmtree(staging, ignore_errors=True)
+            try:
+                _assert_document_lease(path, lease_required)
+            except Exception:
+                pass  # Leave an orphaned staging directory rather than clean up without the live fence.
+            else:
+                shutil.rmtree(staging, ignore_errors=True)
         raise
