@@ -1,0 +1,173 @@
+import json
+import sys
+import tempfile
+import unittest
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from task_queue import validate_task_queue
+from task_queue_runtime import (
+    claim_next,
+    complete_task,
+    enqueue_task,
+    recover_expired,
+)
+
+
+class TaskQueueRuntimeTests(unittest.TestCase):
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        (self.root / "automation").mkdir()
+        self.queue = self.root / "automation" / "task_queue.json"
+        self.registry = self.root / "automation" / "program_registry.json"
+        programs = [
+            {"id": "script_requester", "capabilities": ["request"]},
+            {
+                "id": "script_target",
+                "capabilities": ["test_capability"],
+                "orchestration": {
+                    "enabled": True,
+                    "allowed_callers": ["script_requester"],
+                    "max_attempts": 2,
+                    "timeout_seconds": 120,
+                },
+            },
+        ]
+        self.registry.write_text(json.dumps({"programs": programs}), encoding="utf-8")
+        self.queue.write_text(json.dumps({"schema_version": 1, "revision": 0, "tasks": []}), encoding="utf-8")
+        self.now = datetime(2026, 11, 3, 4, 0, tzinfo=timezone.utc)
+
+    def payload(self, **overrides):
+        value = {
+            "idempotency_key": "runtime:test:once",
+            "trace_id": "trace-runtime-001",
+            "requester_program_id": "script_requester",
+            "target_program_id": "script_target",
+            "capability": "test_capability",
+            "priority": 50,
+            "input": {"value": 1},
+        }
+        value.update(overrides)
+        return value
+
+    def enqueue(self, **overrides):
+        return enqueue_task(self.payload(**overrides), self.queue, self.registry, self.now)
+
+    def test_enqueue_is_idempotent(self):
+        first = self.enqueue()
+        second = self.enqueue()
+        self.assertTrue(first["created"])
+        self.assertFalse(second["created"])
+        self.assertEqual(first["task"]["task_id"], second["task"]["task_id"])
+        self.assertEqual(len(json.loads(self.queue.read_text())["tasks"]), 1)
+
+    def test_enqueue_rejects_disabled_or_unauthorized_target(self):
+        data = json.loads(self.registry.read_text())
+        data["programs"][1]["orchestration"]["enabled"] = False
+        data["programs"][1]["orchestration"]["allowed_callers"] = []
+        self.registry.write_text(json.dumps(data), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "not enabled"):
+            self.enqueue()
+
+    def test_claim_uses_priority_and_only_claims_once(self):
+        self.enqueue(idempotency_key="low", priority=10)
+        self.enqueue(idempotency_key="high", priority=90)
+        claimed = claim_next("worker-a", self.queue, self.registry, self.now)
+        self.assertEqual(claimed["idempotency_key"], "high")
+        self.assertEqual(claimed["attempts"], 1)
+        self.assertEqual(claimed["status"], "CLAIMED")
+        second = claim_next("worker-b", self.queue, self.registry, self.now)
+        self.assertEqual(second["idempotency_key"], "low")
+        self.assertIsNone(claim_next("worker-c", self.queue, self.registry, self.now))
+
+    def test_success_requires_matching_live_lease(self):
+        self.enqueue()
+        claimed = claim_next("worker-a", self.queue, self.registry, self.now)
+        with self.assertRaisesRegex(ValueError, "mismatch"):
+            complete_task(claimed["task_id"], "worker-b", claimed["lease"]["token"],
+                          success=True, result={"ok": True}, queue_path=self.queue,
+                          registry_path=self.registry, now=self.now)
+        done = complete_task(claimed["task_id"], "worker-a", claimed["lease"]["token"],
+                             success=True, result={"ok": True}, queue_path=self.queue,
+                             registry_path=self.registry, now=self.now)
+        self.assertEqual(done["status"], "SUCCEEDED")
+        self.assertEqual(done["state_history"], ["QUEUED", "CLAIMED", "SUCCEEDED"])
+
+    def test_failed_attempt_is_requeued_with_backoff(self):
+        self.enqueue()
+        claimed = claim_next("worker-a", self.queue, self.registry, self.now)
+        failed = complete_task(claimed["task_id"], "worker-a", claimed["lease"]["token"],
+                               success=False, error={"type": "temporary"}, queue_path=self.queue,
+                               registry_path=self.registry, now=self.now)
+        self.assertEqual(failed["status"], "QUEUED")
+        self.assertEqual(failed["state_history"], ["QUEUED", "CLAIMED", "FAILED", "QUEUED"])
+        self.assertEqual(datetime.fromisoformat(failed["not_before"].replace("Z", "+00:00")),
+                         self.now + timedelta(seconds=30))
+
+    def test_exhausted_attempts_go_to_dead_letter(self):
+        self.enqueue()
+        first = claim_next("worker-a", self.queue, self.registry, self.now)
+        retry = complete_task(first["task_id"], "worker-a", first["lease"]["token"],
+                              success=False, error={"type": "temporary"}, queue_path=self.queue,
+                              registry_path=self.registry, now=self.now)
+        second_now = self.now + timedelta(seconds=31)
+        second = claim_next("worker-b", self.queue, self.registry, second_now)
+        final = complete_task(second["task_id"], "worker-b", second["lease"]["token"],
+                              success=False, error={"type": "still_failing"}, queue_path=self.queue,
+                              registry_path=self.registry, now=second_now)
+        self.assertEqual(retry["status"], "QUEUED")
+        self.assertEqual(final["status"], "DEAD_LETTER")
+        self.assertEqual(final["attempts"], 2)
+
+    def test_expired_lease_is_recovered(self):
+        self.enqueue()
+        claimed = claim_next("worker-a", self.queue, self.registry, self.now)
+        after_expiry = self.now + timedelta(seconds=121)
+        recovered = recover_expired(self.queue, self.registry, after_expiry)
+        self.assertEqual(len(recovered), 1)
+        self.assertEqual(recovered[0]["task_id"], claimed["task_id"])
+        self.assertEqual(recovered[0]["status"], "QUEUED")
+        self.assertIsNone(recovered[0]["lease"])
+
+    def test_expired_final_attempt_goes_to_dead_letter(self):
+        self.enqueue()
+        first = claim_next("worker-a", self.queue, self.registry, self.now)
+        retry = complete_task(first["task_id"], "worker-a", first["lease"]["token"],
+                              success=False, error={"type": "temporary"}, queue_path=self.queue,
+                              registry_path=self.registry, now=self.now)
+        second_now = self.now + timedelta(seconds=31)
+        second = claim_next("worker-b", self.queue, self.registry, second_now)
+        recovered = recover_expired(self.queue, self.registry, second_now + timedelta(seconds=121))
+        self.assertEqual(len(recovered), 1)
+        self.assertEqual(recovered[0]["task_id"], second["task_id"])
+        self.assertEqual(recovered[0]["status"], "DEAD_LETTER")
+
+    def test_idempotency_key_cannot_be_reused_for_different_payload(self):
+        self.enqueue(input={"value": 1})
+        with self.assertRaisesRegex(ValueError, "different task payload"):
+            self.enqueue(input={"value": 2})
+
+    def test_runtime_outputs_pass_queue_integrity_validator(self):
+        self.enqueue()
+        claimed = claim_next("worker-a", self.queue, self.registry, self.now)
+        complete_task(claimed["task_id"], "worker-a", claimed["lease"]["token"],
+                      success=True, result={"ok": True}, queue_path=self.queue,
+                      registry_path=self.registry, now=self.now)
+        result = validate_task_queue(self.root, self.queue, self.registry)
+        self.assertTrue(result["valid"])
+        self.assertEqual(result["task_count"], 1)
+
+    def test_expired_lease_cannot_be_completed(self):
+        self.enqueue()
+        claimed = claim_next("worker-a", self.queue, self.registry, self.now)
+        with self.assertRaisesRegex(ValueError, "lease has expired"):
+            complete_task(claimed["task_id"], "worker-a", claimed["lease"]["token"],
+                          success=True, result={"ok": True}, queue_path=self.queue,
+                          registry_path=self.registry, now=self.now + timedelta(seconds=121))
+
+
+if __name__ == "__main__":
+    unittest.main()

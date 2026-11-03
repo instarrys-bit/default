@@ -75,3 +75,10 @@ Every task identifies its requester, target, requested capability, idempotency k
 All programs currently default to orchestration disabled with an empty caller allowlist. This is an explicit deny-by-default posture. A registry entry alone does not authorize invocation.
 
 The current implementation is a protocol and data-integrity gate, not a live scheduler. No existing workflow is dispatched from this queue yet. Lease acquisition, concurrency control, execution, timeout enforcement, retry transitions, dead-letter handling, and independent result verification remain later implementation steps.
+
+
+## Local task-queue runtime primitives
+
+The registered runtime module provides idempotent enqueue, priority-based claim, per-task lease tokens, bounded retry with backoff, and expired-lease recovery. Mutations use an advisory file lock plus fsync-and-rename atomic replacement. This serializes cooperating processes that share the same filesystem.
+
+This is not yet a distributed queue or a cross-runner lock. Current GitHub Actions validation invokes only a CLI smoke check and unit tests; it does not enable a production worker, dispatch registered programs, or persist queue mutations back to the repository. A GitHub-backed single-writer/conditional-update adapter and an execution dispatcher are still required before production activation.

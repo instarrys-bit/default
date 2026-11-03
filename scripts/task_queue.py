@@ -143,6 +143,8 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
         if status == "CLAIMED":
             if not isinstance(lease, dict) or not isinstance(lease.get("owner"), str) or not lease["owner"].strip():
                 raise ValueError(f"{task_id} CLAIMED task requires a lease owner")
+            if not isinstance(lease.get("token"), str) or not lease["token"]:
+                raise ValueError(f"{task_id} CLAIMED task requires a lease token")
             parse_utc(lease.get("expires_at"), f"{task_id}.lease.expires_at")
         elif lease is not None:
             raise ValueError(f"{task_id} must not retain a lease while status is {status}")
