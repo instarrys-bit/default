@@ -1,0 +1,1579 @@
+{
+  "schema_version": 1,
+  "audit_id": "capability-contract-inventory-2026.11.04.1",
+  "status": "baseline_inventory",
+  "source_registry_blob_sha": "ee1d9738c11b269317af4c1ec5dddc14b6e52041",
+  "summary": {
+    "registered_programs": 56,
+    "python_components": 49,
+    "python_components_with_concrete_io_contract": 0,
+    "python_components_with_declared_registry_dependencies": 4,
+    "independently_dispatchable_python_components": 0,
+    "note": "Counts reflect registry declarations, not runtime call-graph completeness."
+  },
+  "policy": {
+    "watchdog_is_top_level_orchestrator": true,
+    "python_adapter_activation": "deny_by_default",
+    "registry_registration_is_not_dispatch_authorization": true,
+    "dashboard_is_observer_only": true,
+    "protected_config": "shadowrocket/ss.conf is read-only",
+    "independent_dispatch_gate": "Every capability requires reviewed input/output schemas, transitive read/write sets, dependency semantics, idempotency, resource lease requirements, timeout/retry policy, and independent result verification."
+  },
+  "contract_fields_required": [
+    "input_schema",
+    "output_schema",
+    "read_resources",
+    "write_resources",
+    "transitive_side_effects",
+    "dependency_edges",
+    "idempotency_key",
+    "resource_lease_keys",
+    "timeout_seconds",
+    "retry_policy",
+    "success_predicate",
+    "independent_verifier",
+    "protected_config_digest_required"
+  ],
+  "programs": [
+    {
+      "id": "script_append_step_summary",
+      "path": "scripts/append_step_summary.py",
+      "declared_capabilities": [
+        "workflow_reporting"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_apply_safe_repair",
+      "path": "scripts/apply_safe_repair.py",
+      "declared_capabilities": [
+        "allowlisted_repair"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_assess_sources",
+      "path": "scripts/assess_sources.py",
+      "declared_capabilities": [
+        "source_assessment"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_audit_config_drift",
+      "path": "scripts/audit_config_drift.py",
+      "declared_capabilities": [
+        "configuration_integrity"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_audit_external_domains",
+      "path": "scripts/audit_external_domains.py",
+      "declared_capabilities": [
+        "external_domain_audit"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_audit_policy_source_overlap",
+      "path": "scripts/audit_policy_source_overlap.py",
+      "declared_capabilities": [
+        "source_independence_audit"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_audit_ruleset_config_overlap",
+      "path": "scripts/audit_ruleset_config_overlap.py",
+      "declared_capabilities": [
+        "configuration_conflict_audit"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_audit_ruleset_references",
+      "path": "scripts/audit_ruleset_references.py",
+      "declared_capabilities": [
+        "reference_validation"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_audit_source_lineage",
+      "path": "scripts/audit_source_lineage.py",
+      "declared_capabilities": [
+        "source_lineage_audit"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_auto_activate_sources",
+      "path": "scripts/auto_activate_sources.py",
+      "declared_capabilities": [
+        "source_activation_gate"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_build_project_status",
+      "path": "scripts/build_project_status.py",
+      "declared_capabilities": [
+        "project_health_reporting"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_build_rule_provenance",
+      "path": "scripts/build_rule_provenance.py",
+      "declared_capabilities": [
+        "rule_provenance"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_build_rulesets",
+      "path": "scripts/build_rulesets.py",
+      "declared_capabilities": [
+        "ruleset_build"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_build_source_candidates",
+      "path": "scripts/build_source_candidates.py",
+      "declared_capabilities": [
+        "candidate_generation"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_collect_domains",
+      "path": "scripts/collect_domains.py",
+      "declared_capabilities": [
+        "domain_collection"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_deterministic_review",
+      "path": "scripts/deterministic_review.py",
+      "declared_capabilities": [
+        "deterministic_evidence_review"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_diagnose_workflow_failure",
+      "path": "scripts/diagnose_workflow_failure.py",
+      "declared_capabilities": [
+        "workflow_diagnosis"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_discover_sources",
+      "path": "scripts/discover_sources.py",
+      "declared_capabilities": [
+        "source_discovery"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_domain_rule_engine",
+      "path": "scripts/domain_rule_engine.py",
+      "declared_capabilities": [
+        "domain_rule_processing"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_import_request_observations",
+      "path": "scripts/import_request_observations.py",
+      "declared_capabilities": [
+        "manual_observation_intake"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_incident_state",
+      "path": "scripts/incident_state.py",
+      "declared_capabilities": [
+        "incident_lifecycle"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_json_document_store",
+      "path": "scripts/json_document_store.py",
+      "declared_capabilities": [
+        "persistent_state_storage"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_lifecycle_audit",
+      "path": "scripts/lifecycle_audit.py",
+      "declared_capabilities": [
+        "ruleset_lifecycle_audit"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_lifecycle_gate",
+      "path": "scripts/lifecycle_gate.py",
+      "declared_capabilities": [
+        "ruleset_lifecycle_gate"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_refresh_ruleset_manifest",
+      "path": "scripts/refresh_ruleset_manifest.py",
+      "declared_capabilities": [
+        "manifest_reconciliation"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_register_config_baseline",
+      "path": "scripts/register_config_baseline.py",
+      "declared_capabilities": [
+        "configuration_baseline_registration"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_restore_automation_state",
+      "path": "scripts/restore_automation_state.py",
+      "declared_capabilities": [
+        "automation_state_restore"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_review_cursor",
+      "path": "scripts/review_cursor.py",
+      "declared_capabilities": [
+        "review_cursor_management"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_select_domain_rules",
+      "path": "scripts/select_domain_rules.py",
+      "declared_capabilities": [
+        "domain_rule_selection"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_source_registry",
+      "path": "scripts/source_registry.py",
+      "declared_capabilities": [
+        "source_registry_validation"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_sync_ruleset_config_conflicts",
+      "path": "scripts/sync_ruleset_config_conflicts.py",
+      "declared_capabilities": [
+        "configuration_conflict_sync"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_task_queue",
+      "path": "scripts/task_queue.py",
+      "declared_capabilities": [
+        "task_queue_validation"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "automation/task_queue.json",
+        "automation/program_registry.json"
+      ],
+      "current_registry_outputs": [
+        "validation summary or non-zero exit on invalid queue state"
+      ],
+      "current_invocation": "python_cli",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_task_queue_runtime",
+      "path": "scripts/task_queue_runtime.py",
+      "declared_capabilities": [
+        "task_queue_runtime"
+      ],
+      "registry_dependencies": [
+        "script_task_queue"
+      ],
+      "current_registry_inputs": [
+        "automation/task_queue.json",
+        "automation/program_registry.json",
+        "explicit task payload"
+      ],
+      "current_registry_outputs": [
+        "atomically updated local queue state and task result"
+      ],
+      "current_invocation": "python_module_or_cli",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_validate_config",
+      "path": "scripts/validate_config.py",
+      "declared_capabilities": [
+        "configuration_validation"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_validate_program_registry",
+      "path": "scripts/validate_program_registry.py",
+      "declared_capabilities": [
+        "program_registry_validation"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "automation/program_registry.json",
+        "scripts/*.py",
+        " .github/workflows/*.yml and *.yaml"
+      ],
+      "current_registry_outputs": [
+        "Validation summary or non-zero exit on registry drift"
+      ],
+      "current_invocation": "python_cli",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_verify_baseline",
+      "path": "scripts/verify_baseline.py",
+      "declared_capabilities": [
+        "configuration_baseline_verification"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_verify_published_rulesets",
+      "path": "scripts/verify_published_rulesets.py",
+      "declared_capabilities": [
+        "publication_verification"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_verify_recovery_run",
+      "path": "scripts/verify_recovery_run.py",
+      "declared_capabilities": [
+        "recovery_independent_verification"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_watchdog_recovery_policy",
+      "path": "scripts/watchdog_recovery_policy.py",
+      "declared_capabilities": [
+        "bounded_recovery_policy"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "current_registry_outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_validate_execution_adapters",
+      "path": "scripts/validate_execution_adapters.py",
+      "declared_capabilities": [
+        "execution_adapter_validation"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "automation/execution_adapters.json",
+        "automation/program_registry.json",
+        "registered workflow files"
+      ],
+      "current_registry_outputs": [
+        "validation summary or non-zero exit on adapter contract drift"
+      ],
+      "current_invocation": "python_cli",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_github_queue_store",
+      "path": "scripts/github_queue_store.py",
+      "declared_capabilities": [
+        "github_queue_storage"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "repository identity",
+        "queue document",
+        "expected GitHub blob SHA",
+        "deterministic mutation callback"
+      ],
+      "current_registry_outputs": [
+        "verified queue snapshot",
+        "new blob SHA",
+        "conflict or API error"
+      ],
+      "current_invocation": "python_library",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_remote_task_queue_runtime",
+      "path": "scripts/remote_task_queue_runtime.py",
+      "declared_capabilities": [
+        "remote_task_queue_runtime"
+      ],
+      "registry_dependencies": [
+        "script_github_queue_store",
+        "script_task_queue_runtime",
+        "script_task_queue"
+      ],
+      "current_registry_inputs": [
+        "registered task payload",
+        "worker identity and lease token",
+        "GitHub repository and branch context"
+      ],
+      "current_registry_outputs": [
+        "CAS-persisted task state",
+        "claim lease",
+        "completion or recovery result"
+      ],
+      "current_invocation": "python_cli",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_task_result_verifier",
+      "path": "scripts/task_result_verifier.py",
+      "declared_capabilities": [
+        "task_result_verification"
+      ],
+      "registry_dependencies": [
+        "script_remote_task_queue_runtime",
+        "script_task_queue",
+        "script_task_queue_runtime",
+        "script_github_workflow_adapter"
+      ],
+      "current_registry_inputs": [
+        "remote task queue snapshot",
+        "program registry",
+        "reviewed Python output contracts",
+        "persisted GitHub Actions workflow dispatch intents"
+      ],
+      "current_registry_outputs": [
+        "verified task IDs",
+        "rejected task IDs",
+        "pending workflow run IDs",
+        "blocked verification reasons"
+      ],
+      "current_invocation": "python_cli",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_task_scheduler",
+      "path": "scripts/task_scheduler.py",
+      "declared_capabilities": [
+        "deterministic_task_scheduling",
+        "github_workflow_dispatch"
+      ],
+      "registry_dependencies": [
+        "script_remote_task_queue_runtime",
+        "script_task_result_verifier",
+        "script_task_queue",
+        "script_task_queue_runtime",
+        "script_github_workflow_adapter"
+      ],
+      "current_registry_inputs": [
+        "GitHub-backed task queue",
+        "program registry",
+        "reviewed execution adapter inventory",
+        "worker identity and task limit"
+      ],
+      "current_registry_outputs": [
+        "processed task summaries",
+        "blocked task reasons",
+        "persisted workflow dispatch intents",
+        "independent workflow run verification results"
+      ],
+      "current_invocation": "python_cli",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_github_workflow_adapter",
+      "path": "scripts/github_workflow_adapter.py",
+      "declared_capabilities": [
+        "github_workflow_dispatch",
+        "workflow_run_correlation",
+        "workflow_run_verification"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "reviewed workflow adapter contract",
+        "authorized task envelope",
+        "allowlisted GitHub ref",
+        "caller-provided GitHub Actions token"
+      ],
+      "current_registry_outputs": [
+        "persistable workflow dispatch intent",
+        "correlated workflow run evidence",
+        "pending or failed run state"
+      ],
+      "current_invocation": "python_library_and_cli_contract",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_audit_adapter_activation",
+      "path": "scripts/audit_adapter_activation.py",
+      "declared_capabilities": [
+        "adapter_activation_audit"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "program registry",
+        "execution adapter inventory",
+        "registered workflow files"
+      ],
+      "current_registry_outputs": [
+        "activation readiness report",
+        "least-privilege canary candidates",
+        "blocker reasons"
+      ],
+      "current_invocation": "python_cli",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_persist_review_cursor",
+      "path": "scripts/persist_review_cursor.py",
+      "declared_capabilities": [
+        "review_cursor_persistence",
+        "failure_recovery"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "review cursor checkpoint artifact JSON",
+        "destination path for the persisted checkpoint"
+      ],
+      "current_registry_outputs": [
+        "validated in-progress cursor checkpoint, safe missing-artifact no-op, or completed-checkpoint cleanup"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_production_intent",
+      "path": "scripts/production_intent.py",
+      "declared_capabilities": [
+        "production_intent_classification",
+        "production_input_fingerprinting"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "automation/production_inputs.json",
+        "repository changed-path set",
+        "last successful audit fingerprint and timestamp",
+        "active and successful task fingerprints"
+      ],
+      "current_registry_outputs": [
+        "deterministic production-demand decision",
+        "SHA-256 production-input fingerprint",
+        "path classification report"
+      ],
+      "current_invocation": "python_cli_and_python_library",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_build_dashboard_snapshot",
+      "path": "scripts/build_dashboard_snapshot.py",
+      "declared_capabilities": [
+        "read_only_metrics_aggregation"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "rulesets/manifest.json",
+        "automation/task_queue.json",
+        "rulesets/pending_queue.json",
+        "rulesets/lifecycle_state.json",
+        "reports/lifecycle/latest.json",
+        "data/candidates.json"
+      ],
+      "current_registry_outputs": [
+        "dashboard/data.json in the temporary GitHub Pages build workspace"
+      ],
+      "current_invocation": "dashboard_pages_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    }
+  ]
+}
