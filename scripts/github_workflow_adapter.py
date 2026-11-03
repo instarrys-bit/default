@@ -201,7 +201,7 @@ def submit_dispatch(client: GitHubWorkflowClient, intent: dict) -> dict:
     """Submit exactly one dispatch request; callers must persist intent first."""
     response = client.dispatch(intent["workflow_id"], intent["ref"], intent["inputs"])
     if response is not None:
-        raise WorkflowAPIError("workflow dispatch endpoint returned an unexpected response body")
+        raise WorkflowDispatchOutcomeUnknown("workflow dispatch returned an unexpected response body; reconcile by task correlation before retrying")
     return {
         key: intent[key] for key in (
             "workflow_id", "workflow_path", "ref", "requested_head_sha",
