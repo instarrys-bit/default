@@ -26,7 +26,7 @@ class ExecutionAdapterTests(unittest.TestCase):
  def test_rejects_dispatchable_workflow_without_unique_task_correlation(self):
   root,ap,rp,d=self.make_repo()
   path=root/".github"/"workflows"/"run.yml"
-  path.write_text("on:\\n  workflow_dispatch:\\n    inputs:\\n      item:\\n        required: true\\n        type: string\\njobs: {}\\n",encoding="utf-8")
+  path.write_text("\\n".join(line for line in path.read_text(encoding="utf-8").splitlines() if not line.startswith("run-name:"))+"\\n",encoding="utf-8")
   d["adapters"][1]["workflow"]["inputs"]=[{"name":"item","type":"string","required":True}]
   ap.write_text(json.dumps(d))
   with self.assertRaisesRegex(ValueError,"automation_task_id"):
