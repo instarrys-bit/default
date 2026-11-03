@@ -1,5 +1,5 @@
 {
-  "revision": 32,
+  "revision": 33,
   "schema_version": 1,
   "tasks": [
     {
@@ -420,6 +420,28 @@
       "task_id": "task_07b443cbfea9410288d1abcd",
       "trace_id": "24e73fe8ad8a402b8629bac5806a8d13",
       "verification": null
+    },
+    {
+      "attempts": 0,
+      "capability": "deterministic_audit",
+      "created_at": "2026-11-03T09:57:22Z",
+      "execution_backend": "github_contents",
+      "idempotency_key": "auto-sync-stale:270366d821c3b674dca3c364c6c1d8ca4f2d1b80",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-03T09:57:22Z",
+      "priority": 100,
+      "requester_program_id": "workflow_automation_watchdog",
+      "result": null,
+      "state_history": [
+        "QUEUED"
+      ],
+      "status": "QUEUED",
+      "target_program_id": "workflow_auto_sync",
+      "task_id": "task_b11e5c90c1f142f696610e4a",
+      "trace_id": "830c210381a74e828c15c61e9884f3cd"
     }
   ]
 }
