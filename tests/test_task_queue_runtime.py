@@ -79,7 +79,9 @@ class TaskQueueRuntimeTests(unittest.TestCase):
         self.assertEqual(claimed["idempotency_key"], "high")
         self.assertEqual(claimed["attempts"], 1)
         self.assertEqual(claimed["status"], "CLAIMED")
-        self.assertIsNone(claim_next("worker-b", self.queue, self.registry, self.now))
+        second = claim_next("worker-b", self.queue, self.registry, self.now)
+        self.assertEqual(second["idempotency_key"], "low")
+        self.assertIsNone(claim_next("worker-c", self.queue, self.registry, self.now))
 
     def test_success_requires_matching_live_lease(self):
         self.enqueue()
