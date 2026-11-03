@@ -1268,7 +1268,8 @@
         "script_remote_task_queue_runtime",
         "script_task_result_verifier",
         "script_task_scheduler",
-        "script_github_workflow_adapter"
+        "script_github_workflow_adapter",
+        "script_audit_adapter_activation"
       ],
       "dispatches": [],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
