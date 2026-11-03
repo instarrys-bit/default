@@ -132,6 +132,10 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
         acquired = acquire_resource_leases("task_a", "worker_a", "task-token-a",
                                            ["rulesets/manifest.json"], self.store, now=self.now)
         task = self.store.document["tasks"][0]
+        task["resource_lease"] = {
+            "status": "ACTIVE", "resources": acquired["resources"],
+            "lease_seconds": 300, "expires_at": acquired["expires_at"],
+        }
         later = self.now + timedelta(seconds=20)
         self.assertTrue(renew_resource_leases_in_queue(self.store.document, task, later))
         record = self.store.document["resource_leases"]["rulesets/manifest.json"]
