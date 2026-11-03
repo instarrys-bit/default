@@ -46,7 +46,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
 
     def test_workflow_dispatch_recovery_does_not_recursively_retry(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
-        self.assertIn("A recovery run is workflow_dispatch; ignore its completion to prevent retry loops.", workflow)
+        self.assertIn("Retry queue-dispatched workflow runs only when their durable task correlation can be recovered.", workflow)
+        self.assertIn("Workflow-dispatch run has no durable queue task correlation; refusing automatic retry.", workflow)
         self.assertIn("github.event_name == 'workflow_run'", workflow)
 
     def test_successful_workflow_reports_degraded_source_discovery_health(self):
