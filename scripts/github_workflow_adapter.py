@@ -132,8 +132,9 @@ def validate_dispatch_request(adapter: dict, task: dict, ref: str) -> dict:
     attempt = task.get("attempts")
     if not isinstance(task_id, str) or not task_id.startswith("task_"):
         raise ValueError("task_id is required for workflow run correlation")
-    if isinstance(attempt, bool) or not isinstance(attempt, int) or attempt < 1:
-        raise ValueError("claimed task attempt number is required for workflow run correlation")
+    if isinstance(attempt, bool) or not isinstance(attempt, int) or attempt < 0:
+        raise ValueError("task attempt number is invalid for workflow run correlation")
+    correlation_attempt = max(1, attempt)
     supplied = task.get("input")
     if not isinstance(supplied, dict):
         raise ValueError("workflow task input must be an object")
@@ -149,7 +150,7 @@ def validate_dispatch_request(adapter: dict, task: dict, ref: str) -> dict:
     if unknown:
         raise ValueError("unsupported workflow input(s): " + ", ".join(unknown))
     inputs = dict(supplied)
-    inputs["automation_task_id"] = f"{task_id}-a{attempt}"
+    inputs["automation_task_id"] = f"{task_id}-a{correlation_attempt}"
     for name, spec in by_name.items():
         value = inputs.get(name)
         if value is None:
