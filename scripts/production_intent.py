@@ -126,6 +126,8 @@ def decide(*, event: str, current_fingerprint: str, last_success_fingerprint: st
         return {**base, "decision": "REVIEW_REQUIRED", "reason": "changed paths include unregistered files"}
     if current_fingerprint in active_fingerprints:
         return {**base, "decision": "IN_PROGRESS", "reason": "the same input fingerprint already has an active task"}
+    if active_fingerprints:
+        return {**base, "decision": "WAIT_FOR_ACTIVE", "reason": "a different production input fingerprint already has an active task; let its stale-input guard and recovery path settle first"}
     last = parse_timestamp(last_success_at)
     age = None if last is None else max(0, int((now - last).total_seconds()))
     refresh_due = event == "schedule" and (last is None or age >= refresh_after_seconds)
