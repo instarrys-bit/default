@@ -173,6 +173,10 @@ jobs:
             idempotency_key="auto-sync-superseded:$SOURCE_RUN_ID"
           fi
 
+          recovery_fingerprint="$(jq -r '.production_fingerprint // empty' <<< "$audit_input_json")"
+          if [ -n "$recovery_fingerprint" ]; then
+            idempotency_key="production:recovery:$recovery_fingerprint:$SOURCE_RUN_ID"
+          fi
           printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$idempotency_key" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
 
       - name: Report degraded source discovery health
@@ -540,8 +544,23 @@ jobs:
             echo "A deterministic audit for current main ($current_sha) is already queued or running; waiting for its completion."
             exit 0
           fi
-          echo "No current-main audit is active. Enqueueing one bounded reconciliation audit for $current_sha."
-          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-manifest:$current_sha" --priority 100 enqueue-auto-sync
+          checkout_sha="$(git rev-parse HEAD)"
+          if [ "$checkout_sha" != "$current_sha" ]; then
+            echo "Manifest verifier checkout is behind current main; deferring reconciliation."
+            exit 0
+          fi
+          current_fingerprint="$(python3 - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from production_intent import load_manifest, compute_fingerprint
+          manifest = load_manifest(Path("automation/production_inputs.json"))
+          print(compute_fingerprint(Path("."), manifest))
+          PY
+          )"
+          integrity_input="$(jq -cn --arg fingerprint "$current_fingerprint" --arg reason "bounded reconciliation after published manifest integrity mismatch" '{production_fingerprint:$fingerprint,production_decision:"RECOVERY_REQUIRED",production_reason:$reason}')"
+          echo "No current-main audit is active. Enqueueing one bounded integrity reconciliation for $current_sha."
+          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "production:integrity:$current_fingerprint" --priority 100 --input-json "$integrity_input" enqueue-auto-sync
 
       - name: Open manifest metadata repair incident
         if: ${{ always() && (steps.refresh.outcome == 'failure' || steps.publish.outcome == 'failure') }}
