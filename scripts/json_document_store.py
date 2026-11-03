@@ -27,7 +27,10 @@ def _assert_document_lease(path: Path, required: bool) -> None:
     if not required:
         return
     from resource_lease_runtime import assert_resource_lease_from_environment
-    assert_resource_lease_from_environment(path.relative_to(Path(__file__).resolve().parents[1]).as_posix())
+    logical_path=path
+    if logical_path.name.endswith(".manifest.json"):
+        logical_path=logical_path.with_name(logical_path.name[:-len(".manifest.json")])
+    assert_resource_lease_from_environment(logical_path.relative_to(Path(__file__).resolve().parents[1]).as_posix())
 
 
 def _atomic_write(path: Path, data: bytes, *, lease_required: bool = False) -> None:
