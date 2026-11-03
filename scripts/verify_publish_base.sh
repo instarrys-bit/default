@@ -33,7 +33,7 @@ is_non_input_only_compare() {
     .status == "ahead"
     and (.files | type == "array")
     and (.files | length > 0)
-  ' >/dev/null 2>&1 || return 1
+  ' <<< "$compare_json" >/dev/null 2>&1 || return 1
   while IFS= read -r path; do
     [ -n "$path" ] || continue
     if is_production_input_path "$path"; then
