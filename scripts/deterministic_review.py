@@ -135,7 +135,7 @@ def publisher_ancestry_pairs(sources):
         normalized_publisher = normalize_repository_reference(publisher)
         upstreams = {
             normalize_repository_reference(item)
-            for item in source.get("upstream_repositories", [])
+            for item in (source.get("upstream_repositories") or [])
             if normalize_repository_reference(item)
         }
         if publisher and normalized_publisher:
