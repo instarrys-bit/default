@@ -211,8 +211,14 @@ jobs:
             audit_base_stale=1
           elif [ "$last_success_sha" != "$current_sha" ]; then
             compare_json="$(gh api "repos/$REPO/compare/$last_success_sha...$current_sha" 2>/dev/null || true)"
-            if [ -z "$compare_json" ] || ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null || ! jq -e '[.files[].filename | select(startswith("docs/") | not)] | length == 0' <<< "$compare_json" >/dev/null; then
+            if [ -z "$compare_json" ] || ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null; then
               audit_base_stale=1
+            else
+              compare_file="$RUNNER_TEMP/audit-compare-last-success.json"
+              printf '%s' "$compare_json" > "$compare_file"
+              if ! GITHUB_SHA="$last_success_sha" COMPARE_JSON_FILE="$compare_file" bash scripts/verify_publish_base.sh --check-only; then
+                audit_base_stale=1
+              fi
             fi
           fi
 
@@ -326,8 +332,10 @@ jobs:
                   echo "Could not safely classify changes after audit $stale_id; leaving it active for the publish-base guard."
                   continue
                 fi
-                if jq -e '[.files[].filename | select(startswith("docs/") | not)] | length == 0' <<< "$compare_json" >/dev/null; then
-                  echo "Audit $stale_id remains publishable: only docs/ changed after its audited commit."
+                compare_file="$RUNNER_TEMP/audit-compare-$stale_id.json"
+                printf '%s' "$compare_json" > "$compare_file"
+                if GITHUB_SHA="$run_sha" COMPARE_JSON_FILE="$compare_file" bash scripts/verify_publish_base.sh --check-only; then
+                  echo "Audit $stale_id remains publishable: only documentation or strictly verified queue-state commits changed."
                   continue
                 fi
               fi
@@ -380,7 +388,7 @@ jobs:
             echo "No publishable current-main audit is active and the last successful audit is stale or superseded; enqueueing one bounded replacement."
             printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-stale:$current_main" --priority 100 enqueue-auto-sync
           else
-            echo "The latest successful audit is healthy; any intervening main changes are documentation-only."
+            echo "The latest successful audit is healthy; intervening main changes are documentation or strictly verified queue state."
             issue="$(gh issue list --repo "$REPO" --state open --search "stalled audit in:title" --json number,title --jq '.[0].number')"
             if [ -n "$issue" ] && [ "$issue" != "null" ]; then
               gh issue comment "$issue" --repo "$REPO" --body "A successful audit now matches current main $current_main and is within the eight-day health window."
