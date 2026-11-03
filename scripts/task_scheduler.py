@@ -428,6 +428,10 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
                 "AUTOMATION_WORKER_ID": task["lease"]["owner"],
                 "AUTOMATION_TASK_LEASE_TOKEN": task["lease"]["token"],
                 "AUTOMATION_RESOURCE_LEASE_PROOF": json.dumps(resources, sort_keys=True, separators=(",", ":")),
+                "AUTOMATION_QUEUE_REPOSITORY": store.repository,
+                "AUTOMATION_QUEUE_BRANCH": store.branch,
+                "AUTOMATION_QUEUE_PATH": store.path,
+                "AUTOMATION_QUEUE_TOKEN": store.token,
             })
         try:
             with without_parent_secrets():
