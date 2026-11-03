@@ -19,7 +19,7 @@ is_docs_only_compare() {
 is_known_non_input_path() {
   case "$1" in
     docs/*|rulesets/*|reports/*|\\
-    automation/task_queue.json|automation/heartbeat.json|automation/state_store.json|\\
+    automation/heartbeat.json|automation/state_store.json|\\
     sources/source_activation_log.json|sources/policy_source_overlap.json)
       return 0 ;;
     *) return 1 ;;
