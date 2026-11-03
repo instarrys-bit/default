@@ -406,8 +406,14 @@ jobs:
             audit_base_stale=1
           elif [ "$last_success_sha" != "$current_main" ]; then
             compare_json="$(gh api "repos/$REPO/compare/$last_success_sha...$current_main" 2>/dev/null || true)"
-            if [ -z "$compare_json" ] || ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null || ! jq -e '[.files[].filename | select(startswith("docs/") | not)] | length == 0' <<< "$compare_json" >/dev/null; then
+            if [ -z "$compare_json" ] || ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null; then
               audit_base_stale=1
+            else
+              compare_file="$RUNNER_TEMP/last-success-base-compare.json"
+              printf '%s' "$compare_json" > "$compare_file"
+              if ! GITHUB_SHA="$last_success_sha" COMPARE_JSON_FILE="$compare_file" bash scripts/verify_publish_base.sh --check-only; then
+                audit_base_stale=1
+              fi
             fi
           fi
 
