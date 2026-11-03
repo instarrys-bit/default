@@ -15,7 +15,7 @@ from datetime import datetime
 from pathlib import Path
 
 from remote_task_queue_runtime import (
-    claim_remote, complete_remote, make_store, validate_candidate, validate_envelope,
+    claim_remote, complete_remote, make_store, recover_remote, validate_candidate, validate_envelope,
 )
 from task_queue_runtime import authorize, now_utc
 from github_queue_store import QueueStoreError
@@ -104,6 +104,7 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
             adapter = by_target.get(target_id)
             if target is None:
                 raise ValueError("target program is not registered")
+            protected_config_digest(root)
             authorize(task, by_id)
             if not isinstance(adapter, dict) or adapter.get("enabled") is not True:
                 raise ValueError("target adapter is disabled")
@@ -130,10 +131,10 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
                 raise ValueError("registered entrypoint is missing or resolves outside the repository")
             timeout = adapter.get("timeout_seconds")
             policy_timeout = target.get("orchestration", {}).get("timeout_seconds")
-            if (isinstance(timeout, bool) or not isinstance(timeout, int) or timeout < 1
+            if (isinstance(timeout, bool) or not isinstance(timeout, int) or timeout < 1 or timeout > 300
                     or isinstance(policy_timeout, bool) or not isinstance(policy_timeout, int)
                     or timeout >= policy_timeout):
-                raise ValueError("adapter timeout must be shorter than the registered task lease")
+                raise ValueError("adapter timeout must be 1-300 seconds and shorter than the registered task lease")
             eligible.append(task_id)
         except (KeyError, TypeError, ValueError) as exc:
             blocked.append({"task_id": task_id, "reason": str(exc)})
@@ -287,6 +288,7 @@ def run_scheduler_once(store, registry: dict, adapters: dict, *,
         raise ValueError("worker_id is required")
     fixed_now = now
     initial_now = now or now_utc()
+    recovered = recover_remote(store, registry, initial_now)
     initial_verification = verify_pending_remote(store, registry, adapters, initial_now)
     processed = []
     blocked_seen = {}
@@ -315,6 +317,7 @@ def run_scheduler_once(store, registry: dict, adapters: dict, *,
         "processed": processed,
         "blocked": [{"task_id": key, "reason": value} for key, value in sorted(blocked_seen.items())],
         "initial_verification": initial_verification,
+        "recovered_count": len(recovered),
         "queue_revision": final_snapshot["revision"],
     }
 
