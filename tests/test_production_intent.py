@@ -31,6 +31,20 @@ class ProductionIntentTests(unittest.TestCase):
         for name, body in (("direct.list", "DIRECT\\n"), ("proxy.list", "PROXY\\n"), ("reject.list", "REJECT\\n")):
             (self.root / "rulesets" / name).write_text(body, encoding="utf-8")
 
+    def test_read_only_dashboard_paths_are_non_production(self):
+        manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
+        paths = [
+            ".github/workflows/dashboard-pages.yml",
+            "dashboard/README.md",
+            "dashboard/index.html",
+            "dashboard/data.json",
+            "scripts/build_dashboard_snapshot.py",
+        ]
+        result = classify_paths(paths, manifest)
+        self.assertEqual(result["status"], "NO_INPUT_CHANGE")
+        self.assertEqual(result["unknown_changes"], [])
+        self.assertEqual(result["non_production_changes"], sorted(paths))
+
     def test_input_change_is_classified_as_production_input(self):
         result = classify_paths(["sources/policy.json"], self.manifest)
         self.assertEqual(result["status"], "INPUT_CHANGED")
