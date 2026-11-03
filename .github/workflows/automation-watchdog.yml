@@ -305,7 +305,7 @@ jobs:
                 gh issue create --repo "$REPO" --title "$title" --body "$body"
               fi
               ;;
-            IN_PROGRESS|ALREADY_SATISFIED|OBSERVE_ONLY)
+            IN_PROGRESS|WAIT_FOR_ACTIVE|ALREADY_SATISFIED|OBSERVE_ONLY)
               echo "No production task required: $decision."
               echo "block_manifest=false" >> "$GITHUB_OUTPUT"
               ;;
