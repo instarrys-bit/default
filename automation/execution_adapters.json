@@ -1022,7 +1022,7 @@
           "actions:write"
         ]
       },
-      "timeout_seconds": 300,
+      "timeout_seconds": 30,
       "retry": {
         "max_attempts": 0,
         "policy": "disabled_until_dispatcher_and_run_verifier"
@@ -1063,7 +1063,7 @@
           "actions:write"
         ]
       },
-      "timeout_seconds": 300,
+      "timeout_seconds": 30,
       "retry": {
         "max_attempts": 0,
         "policy": "disabled_until_dispatcher_and_run_verifier"
@@ -1109,7 +1109,7 @@
           "actions:write"
         ]
       },
-      "timeout_seconds": 300,
+      "timeout_seconds": 30,
       "retry": {
         "max_attempts": 0,
         "policy": "disabled_until_dispatcher_and_run_verifier"
@@ -1144,7 +1144,7 @@
           "actions:write"
         ]
       },
-      "timeout_seconds": 300,
+      "timeout_seconds": 30,
       "retry": {
         "max_attempts": 0,
         "policy": "disabled_until_dispatcher_and_run_verifier"
@@ -1185,7 +1185,7 @@
           "actions:write"
         ]
       },
-      "timeout_seconds": 300,
+      "timeout_seconds": 30,
       "retry": {
         "max_attempts": 0,
         "policy": "disabled_until_dispatcher_and_run_verifier"
@@ -1220,7 +1220,7 @@
           "actions:write"
         ]
       },
-      "timeout_seconds": 300,
+      "timeout_seconds": 30,
       "retry": {
         "max_attempts": 0,
         "policy": "disabled_until_dispatcher_and_run_verifier"
