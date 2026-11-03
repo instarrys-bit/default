@@ -113,8 +113,13 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
             authorize(task, by_id)
             if not isinstance(adapter, dict) or adapter.get("enabled") is not True:
                 raise ValueError("target adapter is disabled")
-            if adapter.get("interface_status") != "reviewed":
-                raise ValueError("target adapter interface is not reviewed")
+            expected_interface = (
+                "reviewed" if adapter.get("adapter_type") == "python_cli"
+                else "workflow_dispatch_reviewed" if adapter.get("adapter_type") == "github_actions_workflow"
+                else None
+            )
+            if expected_interface is None or adapter.get("interface_status") != expected_interface:
+                raise ValueError("target adapter interface is not reviewed for its adapter type")
             if task["requester_program_id"] not in adapter.get("allowed_callers", []):
                 raise ValueError("requester is not in the adapter caller allowlist")
             timeout = adapter.get("timeout_seconds")
