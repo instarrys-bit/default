@@ -129,8 +129,11 @@ def validate_dispatch_request(adapter: dict, task: dict, ref: str) -> dict:
     if task.get("requester_program_id") not in callers:
         raise ValueError("requester is not in the workflow adapter caller allowlist")
     task_id = task.get("task_id")
+    attempt = task.get("attempts")
     if not isinstance(task_id, str) or not task_id.startswith("task_"):
         raise ValueError("task_id is required for workflow run correlation")
+    if isinstance(attempt, bool) or not isinstance(attempt, int) or attempt < 1:
+        raise ValueError("claimed task attempt number is required for workflow run correlation")
     supplied = task.get("input")
     if not isinstance(supplied, dict):
         raise ValueError("workflow task input must be an object")
@@ -146,7 +149,7 @@ def validate_dispatch_request(adapter: dict, task: dict, ref: str) -> dict:
     if unknown:
         raise ValueError("unsupported workflow input(s): " + ", ".join(unknown))
     inputs = dict(supplied)
-    inputs["automation_task_id"] = task_id
+    inputs["automation_task_id"] = f"{task_id}-a{attempt}"
     for name, spec in by_name.items():
         value = inputs.get(name)
         if value is None:
@@ -179,13 +182,16 @@ def prepare_dispatch(client: GitHubWorkflowClient, adapter: dict, task: dict,
     if not isinstance(commit_sha, str) or len(commit_sha) != 40:
         raise WorkflowAPIError("GitHub ref did not resolve to a commit SHA")
     task_id = task["task_id"]
+    correlation_id = inputs["automation_task_id"]
     return {
         "workflow_id": workflow_id,
         "workflow_path": workflow_path,
         "ref": ref,
         "requested_head_sha": commit_sha,
         "task_id": task_id,
-        "correlation_title": f"Automation task {task_id}",
+        "dispatch_attempt": task["attempts"],
+        "correlation_id": correlation_id,
+        "correlation_title": f"Automation task {correlation_id}",
         "inputs": inputs,
         "prepared_at": utc_stamp(now),
     }
@@ -199,7 +205,7 @@ def submit_dispatch(client: GitHubWorkflowClient, intent: dict) -> dict:
     return {
         key: intent[key] for key in (
             "workflow_id", "workflow_path", "ref", "requested_head_sha",
-            "task_id", "correlation_title", "prepared_at",
+            "task_id", "dispatch_attempt", "correlation_id", "correlation_title", "prepared_at",
         )
     } | {"dispatch_state": "submitted", "submitted_at": utc_stamp()}
 
