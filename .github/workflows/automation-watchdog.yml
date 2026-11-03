@@ -133,25 +133,70 @@ jobs:
               recovery_kind="infrastructure"
               ;;
             failure)
-              # A failed audit must not be retried against the same inputs. If
-              # main advanced with non-doc/non-queue changes while it ran, create
-              # a NEW current-main task instead of retrying the stale task.
-              if [ "$SOURCE_SHA" = "$current_sha" ]; then
-                echo "Same-SHA deterministic failure requires diagnosis; automatic retry is prohibited."
-                exit 0
+              task_fingerprint="$(jq -r '.production_fingerprint // empty' <<< "$audit_input_json")"
+              if [ -n "$task_fingerprint" ]; then
+                checkout_sha="$(git rev-parse HEAD)"
+                if [ "$checkout_sha" != "$current_sha" ]; then
+                  echo "Watchdog checkout is behind current main; failed-audit recovery will be reconsidered on the next reconciliation."
+                  exit 0
+                fi
+                current_fingerprint="$(python3 - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from production_intent import load_manifest, compute_fingerprint
+          manifest = load_manifest(Path("automation/production_inputs.json"))
+          print(compute_fingerprint(Path("."), manifest))
+          PY
+          )"
+                if [ "$task_fingerprint" != "$current_fingerprint" ]; then
+                  echo "The task's input fingerprint is stale even if its workflow run SHA equals current main; replacing it with the current input fingerprint."
+                  recovery_kind="superseded_inputs"
+                else
+                  if [ "$SOURCE_SHA" = "$current_sha" ]; then
+                    echo "Same-SHA failure with an unchanged production fingerprint requires diagnosis; automatic retry is prohibited."
+                    exit 0
+                  fi
+                  compare_json="$(gh api "repos/$REPO/compare/$SOURCE_SHA...$current_sha" 2>/dev/null || true)"
+                  if [ -z "$compare_json" ] || ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null; then
+                    echo "Could not safely classify the failed audit's base advancement; leaving it for the next scheduled reconciliation."
+                    exit 0
+                  fi
+                  compare_file="$RUNNER_TEMP/failed-audit-base-compare.json"
+                  printf '%s' "$compare_json" > "$compare_file"
+                  if GITHUB_SHA="$SOURCE_SHA" COMPARE_JSON_FILE="$compare_file" bash scripts/verify_publish_base.sh --check-only; then
+                    echo "The failed audit's reviewed inputs remain current; this is not a superseded-input failure. No automatic retry."
+                    exit 0
+                  fi
+                  title="Production input classification requires review"
+                  body="The failed audit's production fingerprint still matches current main, but the publish-base guard found repository changes that are not safely classified. No replacement production task was created. Review the changed paths and register them in automation/production_inputs.json if appropriate."
+                  issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
+                  if [ -n "$issue" ] && [ "$issue" != "null" ]; then
+                    gh issue comment "$issue" --repo "$REPO" --body "$body"
+                  else
+                    gh issue create --repo "$REPO" --title "$title" --body "$body"
+                  fi
+                  exit 0
+                fi
+              else
+                # Legacy tasks without fingerprints retain the old conservative base guard.
+                if [ "$SOURCE_SHA" = "$current_sha" ]; then
+                  echo "Same-SHA deterministic failure requires diagnosis; automatic retry is prohibited."
+                  exit 0
+                fi
+                compare_json="$(gh api "repos/$REPO/compare/$SOURCE_SHA...$current_sha" 2>/dev/null || true)"
+                if [ -z "$compare_json" ] || ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null; then
+                  echo "Could not safely classify the failed audit's base advancement; leaving it for the next scheduled reconciliation."
+                  exit 0
+                fi
+                compare_file="$RUNNER_TEMP/failed-audit-base-compare.json"
+                printf '%s' "$compare_json" > "$compare_file"
+                if GITHUB_SHA="$SOURCE_SHA" COMPARE_JSON_FILE="$compare_file" bash scripts/verify_publish_base.sh --check-only; then
+                  echo "The failed audit's reviewed inputs remain current; this is not a superseded-input failure. No automatic retry."
+                  exit 0
+                fi
+                recovery_kind="superseded_inputs"
               fi
-              compare_json="$(gh api "repos/$REPO/compare/$SOURCE_SHA...$current_sha" 2>/dev/null || true)"
-              if [ -z "$compare_json" ] || ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null; then
-                echo "Could not safely classify the failed audit's base advancement; leaving it for the next scheduled reconciliation."
-                exit 0
-              fi
-              compare_file="$RUNNER_TEMP/failed-audit-base-compare.json"
-              printf '%s' "$compare_json" > "$compare_file"
-              if GITHUB_SHA="$SOURCE_SHA" COMPARE_JSON_FILE="$compare_file" bash scripts/verify_publish_base.sh --check-only; then
-                echo "The failed audit's reviewed inputs remain current; this is not a superseded-input failure. No automatic retry."
-                exit 0
-              fi
-              recovery_kind="superseded_inputs"
               ;;
             *)
               echo "Conclusion '$SOURCE_CONCLUSION' is not eligible for automatic recovery."
