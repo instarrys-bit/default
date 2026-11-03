@@ -210,21 +210,24 @@ def find_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict | No
     runs = payload.get("workflow_runs")
     if not isinstance(runs, list):
         raise WorkflowAPIError("workflow runs response is missing workflow_runs")
-    matches = []
-    for run in runs:
-        if not isinstance(run, dict):
-            continue
-        if (
-            run.get("workflow_id") == intent["workflow_id"]
-            and run.get("event") == "workflow_dispatch"
-            and run.get("head_branch") == intent["ref"]
-            and run.get("head_sha") == intent["requested_head_sha"]
-            and run.get("display_title") == intent["correlation_title"]
-        ):
-            matches.append(run)
+    matches = [
+        run for run in runs
+        if isinstance(run, dict) and run.get("display_title") == intent["correlation_title"]
+    ]
     if len(matches) > 1:
         raise AmbiguousWorkflowRun("multiple workflow runs match one task correlation ID")
-    return matches[0] if matches else None
+    if not matches:
+        return None
+    run = matches[0]
+    expected = {
+        "workflow_id": intent["workflow_id"],
+        "event": "workflow_dispatch",
+        "head_branch": intent["ref"],
+        "head_sha": intent["requested_head_sha"],
+    }
+    if any(run.get(key) != value for key, value in expected.items()):
+        raise WorkflowAPIError("correlated workflow run does not match the persisted workflow/ref/SHA identity")
+    return run
 
 
 def inspect_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict:
