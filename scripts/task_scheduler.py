@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deny-by-default one-shot scheduler for reviewed Python execution adapters."""
+"""Deny-by-default scheduler for reviewed Python and GitHub Actions adapters."""
 from __future__ import annotations
 
 import argparse
