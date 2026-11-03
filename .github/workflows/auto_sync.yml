@@ -33,6 +33,18 @@ on:
         description: 'Original push SHA for config baseline registration'
         required: false
         type: string
+      production_fingerprint:
+        description: 'Watchdog-computed production input fingerprint'
+        required: false
+        type: string
+      production_decision:
+        description: 'Watchdog production intent decision'
+        required: false
+        type: string
+      production_reason:
+        description: 'Auditable reason for this production task'
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -64,6 +76,9 @@ jobs:
       - name: Verify Watchdog-owned durable task dispatch
         env:
           AUTOMATION_TASK_ID: ${{ inputs.automation_task_id }}
+          PRODUCTION_FINGERPRINT: ${{ inputs.production_fingerprint }}
+          PRODUCTION_DECISION: ${{ inputs.production_decision }}
+          PRODUCTION_REASON: ${{ inputs.production_reason }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -99,6 +114,20 @@ jobs:
           ):
               raise SystemExit("The queue record does not authorize this exact Watchdog production audit dispatch.")
 
+          production_fingerprint = os.environ.get("PRODUCTION_FINGERPRINT", "")
+          production_decision = os.environ.get("PRODUCTION_DECISION", "")
+          production_reason = os.environ.get("PRODUCTION_REASON", "")
+          if production_fingerprint:
+              task_input = task.get("input")
+              if (
+                  not isinstance(task_input, dict)
+                  or task_input.get("production_fingerprint") != production_fingerprint
+                  or task_input.get("production_decision") != production_decision
+                  or task_input.get("production_reason") != production_reason
+                  or production_decision not in {"INPUT_CHANGED", "SCHEDULE_DUE", "RECOVERY_REQUIRED"}
+                  or not production_reason
+              ):
+                  raise SystemExit("The dispatched production intent does not match the durable task input.")
           if task.get("status") == "VERIFYING":
               result = task.get("result")
               if (
@@ -337,6 +366,8 @@ jobs:
               "run_attempt": int(os.environ["GITHUB_RUN_ATTEMPT"]),
               "event": os.environ["GITHUB_EVENT_NAME"],
               "source_commit": os.environ["GITHUB_SHA"],
+              "production_decision": os.environ.get("PRODUCTION_DECISION", ""),
+              "production_reason": os.environ.get("PRODUCTION_REASON", ""),
               "recorded_at_utc": datetime.now(timezone.utc).isoformat(),
               "checks": {
                   "deterministic_tests": "passed",
