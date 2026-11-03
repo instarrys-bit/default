@@ -1268,7 +1268,8 @@
         "script_remote_task_queue_runtime",
         "script_task_result_verifier",
         "script_task_scheduler",
-        "script_github_workflow_adapter"
+        "script_github_workflow_adapter",
+        "script_audit_adapter_activation"
       ],
       "dispatches": [],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
@@ -1475,6 +1476,36 @@
       "dispatches": [],
       "permission_boundary": "Requires caller-provided actions:write for dispatch and actions:read for run inspection. Tokens are never returned in results or passed to child programs. This module does not modify shadowrocket/ss.conf.",
       "health_check": "Unit tests cover caller/ref/input authorization, live workflow identity, correlation marker injection, ambiguous run detection, run identity validation, and completed-success verification.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_audit_adapter_activation",
+      "path": "scripts/audit_adapter_activation.py",
+      "kind": "python_component",
+      "responsibility": "produce a read-only deterministic readiness and least-privilege canary report for execution adapters",
+      "capabilities": [
+        "adapter_activation_audit"
+      ],
+      "invocation": "python_cli",
+      "inputs": [
+        "program registry",
+        "execution adapter inventory",
+        "registered workflow files"
+      ],
+      "outputs": [
+        "activation readiness report",
+        "least-privilege canary candidates",
+        "blocker reasons"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Read-only repository inspection; no network access, no queue mutation, no adapter activation, and no changes to shadowrocket/ss.conf.",
+      "health_check": "Tests validate disabled-by-default state, workflow permission scope parsing, read-only canary classification, and protected-config write detection.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],

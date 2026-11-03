@@ -82,11 +82,16 @@ jobs:
       - run: python scripts/task_result_verifier.py --help
       - run: python scripts/task_scheduler.py --help
       - run: python scripts/github_workflow_adapter.py --help-contract
+      - run: python scripts/audit_adapter_activation.py --help
       - name: Validate unified execution adapter contracts
         run: python scripts/validate_execution_adapters.py
+      - name: Audit adapter activation readiness without enabling anything
+        run: |
+          set -euo pipefail
+          python scripts/audit_adapter_activation.py | python -c 'import json,sys; d=json.load(sys.stdin); print("Activation audit: programs={program_count}, adapters={adapter_count}, enabled={enabled_adapter_count}, watchdog_permissions_ready={watchdog_caller_permissions_ready}".format(**d)); print("Least-privilege canary candidates: " + (", ".join(d["least_privilege_canary_candidates"]) or "none")); assert d["activation_performed"] is False'
       - name: Validate deterministic evidence review
         run: |
-          python -m py_compile scripts/github_queue_store.py scripts/github_workflow_adapter.py scripts/remote_task_queue_runtime.py scripts/task_result_verifier.py scripts/task_scheduler.py scripts/task_queue_runtime.py scripts/task_queue.py scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/validate_config.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/json_document_store.py scripts/build_rulesets.py
+          python -m py_compile scripts/audit_adapter_activation.py scripts/github_queue_store.py scripts/github_workflow_adapter.py scripts/remote_task_queue_runtime.py scripts/task_result_verifier.py scripts/task_scheduler.py scripts/task_queue_runtime.py scripts/task_queue.py scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/validate_config.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/json_document_store.py scripts/build_rulesets.py
           python -m unittest discover -s tests -v
           python -m json.tool sources/domain_sources.json >/dev/null
           python -m json.tool sources/policy.json >/dev/null

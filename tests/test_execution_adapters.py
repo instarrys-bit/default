@@ -53,7 +53,7 @@ class ExecutionAdapterTests(unittest.TestCase):
                  "workflow": {"path": ".github/workflows/run.yml", "dispatchable": True,
                  "inputs": [{"name": "item", "type": "string", "required": True},
                             {"name": "automation_task_id", "type": "string", "required": False}],
-                 "allowed_refs": ["main"], "caller_permissions_required": ["actions:write"]},
+                 "allowed_refs": ["main"], "caller_permissions_required": ["actions:write", "contents:write"]},
                  "timeout_seconds": 300, "retry": {"max_attempts": 0},
                  "completion": {"independent_verification_required": True}},
             ],
@@ -67,7 +67,7 @@ class ExecutionAdapterTests(unittest.TestCase):
     def test_repository_contract_is_valid(self):
         result = validate_execution_adapters(ROOT)
         self.assertTrue(result["valid"])
-        self.assertEqual(result["adapter_count"], 51)
+        self.assertEqual(result["adapter_count"], 52)
         self.assertEqual(result["enabled_adapter_count"], 0)
 
     def test_valid_minimal_inventory(self):
@@ -97,6 +97,13 @@ class ExecutionAdapterTests(unittest.TestCase):
         ) + "\n", encoding="utf-8")
         ap.write_text(json.dumps(doc), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "automation_task_id"):
+            validate_execution_adapters(root, ap, rp)
+
+    def test_rejects_workflow_caller_without_queue_storage_permission(self):
+        root, ap, rp, doc = self.make_repo()
+        doc["adapters"][1]["workflow"]["caller_permissions_required"] = ["actions:write"]
+        ap.write_text(json.dumps(doc), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "actions:write and contents:write"):
             validate_execution_adapters(root, ap, rp)
 
     def test_rejects_workflow_input_drift(self):
