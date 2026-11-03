@@ -149,7 +149,7 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
             {"id": "workflow_automation_watchdog", "path": ".github/workflows/automation-watchdog.yml",
              "kind": "github_actions_workflow", "capabilities": ["top_level_supervision"],
              "orchestration": {"enabled": False, "allowed_callers": [], "max_attempts": 0, "timeout_seconds": 300}},
-            {"id": "workflow_auto_sync", "path": ".github/workflows/auto_sync.yml",
+            {"id": "workflow_auto_sync", "path": ".github/workflows/workflow-target.yml",
              "kind": "github_actions_workflow", "capabilities": ["deterministic_audit"],
              "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
                                "max_attempts": 1, "timeout_seconds": 300}},
@@ -200,6 +200,7 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
             encoding="utf-8",
         )
         adapter = copy.deepcopy(self.adapter)
+        adapter["target_program_id"] = "workflow_auto_sync"
         adapter["allowed_callers"] = ["workflow_automation_watchdog"]
         adapter["workflow"]["inputs"].extend([
             {"name": "baseline_source_sha", "type": "string", "required": False},
