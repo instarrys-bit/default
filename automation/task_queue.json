@@ -1,5 +1,5 @@
 {
-  "revision": 21,
+  "revision": 22,
   "schema_version": 1,
   "tasks": [
     {
@@ -294,6 +294,33 @@
         "verified_at": "2026-11-03T08:38:51Z",
         "verifier_program_id": "script_task_result_verifier"
       }
+    },
+    {
+      "attempts": 0,
+      "capability": "deterministic_audit",
+      "created_at": "2026-11-03T08:53:36Z",
+      "execution_backend": "github_contents",
+      "idempotency_key": "auto-sync-stale:e67060e6c065be9576aa08004b4ca7b4f5dc717d",
+      "input": {
+        "baseline_source_actor": "instarrys-bit",
+        "baseline_source_before": "422fa8214e25ae9fa7c3e1b06c22c6e77fa394c7",
+        "baseline_source_event": "push",
+        "baseline_source_sha": "e67060e6c065be9576aa08004b4ca7b4f5dc717d"
+      },
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-03T08:53:36Z",
+      "priority": 100,
+      "requester_program_id": "workflow_automation_watchdog",
+      "result": null,
+      "state_history": [
+        "QUEUED"
+      ],
+      "status": "QUEUED",
+      "target_program_id": "workflow_auto_sync",
+      "task_id": "task_23fad3460d5c4c0a97801a3a",
+      "trace_id": "30f1675271cc4cfaad45b4ef928b9141"
     }
   ]
 }
