@@ -198,7 +198,7 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
             error = {"type": "execution_start_failed", "message": str(exc)[:1000]}
             completed_task = complete_remote(
                 task["task_id"], task["lease"]["owner"], task["lease"]["token"],
-                success=False, error=error, store=store, registry=registry, now=now,
+                success=False, error=error, store=store, registry=registry, now=now_utc(),
             )
             return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
 
