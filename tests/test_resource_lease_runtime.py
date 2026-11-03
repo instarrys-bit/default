@@ -9,6 +9,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
+import resource_lease_runtime
 from resource_lease_runtime import (
     acquire_resource_leases, assert_resource_lease, release_resource_leases,
     normalize_keys, renew_resource_leases_in_queue, assert_workflow_resource_lease,
@@ -171,22 +172,42 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "stale or fenced"):
             assert_workflow_resource_lease(self.store.document, "task_a", proof, now=self.now)
 
-    def test_synchronous_child_can_assert_lease_from_read_only_snapshot(self):
+    def test_synchronous_child_checks_live_queue_fencing(self):
         acquired = acquire_resource_leases("task_a", "worker_a", "task-token-a",
                                            ["sources/source_assessments.json"], self.store, now=self.now)
         task = self.store.document["tasks"][0]
+        task["resource_lease"] = {
+            "status": "ACTIVE", "resources": acquired["resources"],
+            "lease_seconds": 300, "expires_at": acquired["expires_at"],
+        }
         proof = acquired["resources"]
+        class LiveStore:
+            def __init__(self, document):
+                self.document = copy.deepcopy(document)
+            def read(self):
+                return type("Snapshot", (), {"document": copy.deepcopy(self.document)})()
+        live = LiveStore(self.store.document)
         with tempfile.TemporaryDirectory() as directory:
             snapshot = Path(directory) / "queue.json"
             snapshot.write_text(json.dumps(self.store.document), encoding="utf-8")
-            with patch.dict("os.environ", {
+            env = {
                 "AUTOMATION_QUEUE_SNAPSHOT": str(snapshot),
+                "AUTOMATION_QUEUE_REPOSITORY": "owner/repo",
+                "AUTOMATION_QUEUE_TOKEN": "read-token",
+                "AUTOMATION_QUEUE_BRANCH": "main",
+                "AUTOMATION_QUEUE_PATH": "automation/task_queue.json",
                 "AUTOMATION_TASK_ID": "task_a",
                 "AUTOMATION_WORKER_ID": "worker_a",
                 "AUTOMATION_TASK_LEASE_TOKEN": "task-token-a",
                 "AUTOMATION_RESOURCE_LEASE_PROOF": json.dumps(proof),
-            }, clear=False):
-                self.assertTrue(assert_resource_lease_from_environment("sources/source_assessments.json"))
+            }
+            with patch.dict("os.environ", env, clear=False):
+                with patch.object(resource_lease_runtime, "GitHubContentsQueueStore", return_value=live):
+                    self.assertTrue(assert_resource_lease_from_environment("sources/source_assessments.json"))
+                    live.document["resource_leases"]["sources/source_assessments.json"]["fencing_token"] += 1
+                    with self.assertRaisesRegex(ValueError, "fencing check failed"):
+                        assert_resource_lease_from_environment("sources/source_assessments.json")
+
 
     def test_rejects_path_traversal_and_noncanonical_paths(self):
         for value in ["../secret", "/etc/passwd", "rulesets//direct.list", "rulesets/../secret", " rulesets/direct.list"]:
