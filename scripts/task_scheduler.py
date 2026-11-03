@@ -133,8 +133,11 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
             completion = adapter.get("completion", {})
             artifact_verifier = completion.get("artifact_verifier") if isinstance(completion, dict) else None
             if artifact_verifier is not None:
-                if not isinstance(artifact_verifier, dict) or not isinstance(artifact_verifier.get("path"), str) or not isinstance(artifact_verifier.get("output_field"), str):
-                    raise ValueError("artifact_verifier must declare a path and output_field")
+                if not isinstance(artifact_verifier, dict) or not isinstance(artifact_verifier.get("path"), str) or not isinstance(artifact_verifier.get("output_field"), str) or not isinstance(artifact_verifier.get("program_id"), str):
+                    raise ValueError("artifact_verifier must declare a registered program_id, path and output_field")
+                verifier_program = by_id.get(artifact_verifier["program_id"])
+                if not isinstance(verifier_program, dict) or verifier_program.get("path") != artifact_verifier["path"] or verifier_program.get("kind") != "python_component":
+                    raise ValueError("artifact verifier program identity does not match the registry")
                 verifier_path = (root / artifact_verifier["path"]).resolve()
                 if not verifier_path.is_relative_to(root.resolve()) or not verifier_path.is_file():
                     raise ValueError("registered artifact verifier is missing or outside the repository")
