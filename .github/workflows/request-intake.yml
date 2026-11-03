@@ -100,7 +100,12 @@ jobs:
             done
           fi
 
-      - name: Trigger deterministic rule audit
+      - name: Request ruleset audit through Watchdog queue
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run auto_sync.yml --ref main --repo "$GITHUB_REPOSITORY"
+        run: |
+          set -euo pipefail
+          # GITHUB_TOKEN is permitted to trigger workflow_dispatch. The Watchdog
+          # creates the durable auto-sync task; intake never dispatches production
+          # publication directly.
+          gh workflow run automation-watchdog.yml --ref main --repo "$GITHUB_REPOSITORY"
