@@ -85,7 +85,13 @@
     "automation/execution_adapters.json",
     "automation/program_registry.json",
     "automation/production_intent_ledger.json",
-    "scripts/production_intent.py"
+    "scripts/production_intent.py",
+    "modules/**",
+    "sources/review_cursor.json",
+    "sources/source_snapshots/**",
+    "README*",
+    "LICENSE*",
+    "NOTICE*"
   ],
   "unknown_path_policy": "review_required"
 }
