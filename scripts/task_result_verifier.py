@@ -14,6 +14,7 @@ from remote_task_queue_runtime import (
     make_store, validate_candidate, validate_envelope,
 )
 from task_queue_runtime import now_utc, stamp
+from github_queue_store import QueueStoreError
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -232,7 +233,7 @@ def main() -> int:
         adapters = load_object(args.adapters, "execution adapter inventory")
         print(json.dumps(verify_pending_remote(store, registry, adapters), ensure_ascii=False))
         return 0
-    except (ValueError, OSError) as exc:
+    except (ValueError, OSError, QueueStoreError) as exc:
         print(f"RESULT VERIFICATION ERROR: {exc}", file=sys.stderr)
         return 1
 
