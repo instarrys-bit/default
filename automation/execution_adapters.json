@@ -1017,6 +1017,11 @@
             "required": true
           },
           {
+            "name": "resource_lease_proof",
+            "type": "string",
+            "required": true
+          },
+          {
             "name": "baseline_source_event",
             "type": "string",
             "required": false
@@ -1050,11 +1055,6 @@
             "name": "production_reason",
             "type": "string",
             "required": false
-          },
-          {
-            "name": "resource_lease_proof",
-            "type": "string",
-            "required": true
           }
         ],
         "allowed_refs": [
