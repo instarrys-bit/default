@@ -190,7 +190,11 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
         task for task in snapshot.get("tasks", [])
         if isinstance(task, dict) and (
             task.get("status") == "VERIFYING"
-            or (task.get("status") == "QUEUED" and isinstance(task.get("dispatch_intent"), dict))
+            or (
+                task.get("status") in {"QUEUED", "DEAD_LETTER"}
+                and isinstance(task.get("dispatch_intent"), dict)
+                and not isinstance(task.get("verification"), dict)
+            )
         )
         and by_target.get(task.get("target_program_id"), {}).get("adapter_type") == "github_actions_workflow"
     ]
@@ -229,7 +233,11 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
         changed = False
         for task in queue["tasks"]:
             status = task.get("status")
-            has_recoverable_intent = status == "QUEUED" and isinstance(task.get("dispatch_intent"), dict)
+            has_recoverable_intent = (
+                status in {"QUEUED", "DEAD_LETTER"}
+                and isinstance(task.get("dispatch_intent"), dict)
+                and not isinstance(task.get("verification"), dict)
+            )
             if status != "VERIFYING" and not has_recoverable_intent:
                 continue
             target = task.get("target_program_id")
