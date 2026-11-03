@@ -4,7 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from dashboard_metrics import build_candidate_review_metrics
+from build_dashboard_snapshot import build_candidate_review_metrics
 
 
 class CandidateReviewDashboardMetricsTests(unittest.TestCase):
