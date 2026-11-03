@@ -142,7 +142,8 @@ jobs:
               ("baseline_source_sha", "BASELINE_SOURCE_SHA"),
           ):
               supplied = os.environ.get(env_name, "")
-              if supplied and task_input.get(field) != supplied:
+              durable_value = task_input.get(field, "")
+              if durable_value != supplied:
                   raise SystemExit(f"Dispatched {field} does not match the durable Watchdog task input.")
           baseline_sha = os.environ.get("BASELINE_SOURCE_SHA", "")
           if baseline_sha and not re.fullmatch(r"[0-9a-f]{40}", baseline_sha):
