@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from resource_lease_runtime import (
     acquire_resource_leases, assert_resource_lease, release_resource_leases,
-    normalize_keys,
+    normalize_keys, renew_resource_leases_in_queue,
 )
 
 
@@ -127,6 +127,17 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
         second = acquire_resource_leases("task_a", "worker_a", "task-token-a",
                                          ["rulesets/direct.list"], self.store, now=self.now)
         self.assertEqual(first["resources"], second["resources"])
+
+    def test_lease_renewal_extends_only_a_current_unexpired_fence(self):
+        acquired = acquire_resource_leases("task_a", "worker_a", "task-token-a",
+                                           ["rulesets/manifest.json"], self.store, now=self.now)
+        task = self.store.document["tasks"][0]
+        later = self.now + timedelta(seconds=20)
+        self.assertTrue(renew_resource_leases_in_queue(self.store.document, task, later))
+        record = self.store.document["resource_leases"]["rulesets/manifest.json"]
+        self.assertEqual(record["expires_at"], (later + timedelta(seconds=300)).isoformat(timespec="seconds").replace("+00:00", "Z"))
+        record["expires_at"] = (later - timedelta(seconds=1)).isoformat().replace("+00:00", "Z")
+        self.assertFalse(renew_resource_leases_in_queue(self.store.document, task, later))
 
     def test_rejects_path_traversal_and_noncanonical_paths(self):
         for value in ["../secret", "/etc/passwd", "rulesets//direct.list", "rulesets/../secret", " rulesets/direct.list"]:
