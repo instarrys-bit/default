@@ -234,6 +234,7 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
                     shell=False,
                     capture_output=True,
                     text=True,
+                    stdin=subprocess.DEVNULL,
                     timeout=adapter["timeout_seconds"],
                     check=False,
                 )
@@ -349,10 +350,14 @@ def main() -> int:
     parser.add_argument("--adapters", type=Path, default=ADAPTERS)
     parser.add_argument("--worker-id", default=os.environ.get("GITHUB_RUN_ID") or ("scheduler-" + uuid.uuid4().hex[:12]))
     parser.add_argument("--max-tasks", type=int, default=1)
+    parser.add_argument("--token-stdin", action="store_true")
     parser.add_argument("command", choices=["plan", "run-once"])
     args = parser.parse_args()
     try:
-        store = make_store(args.repository, args.branch, args.queue_path)
+        token = sys.stdin.read().strip() if args.token_stdin else None
+        if args.command == "run-once" and not token:
+            raise ValueError("run-once requires a queue token supplied through --token-stdin")
+        store = make_store(args.repository, args.branch, args.queue_path, token=token)
         registry = load_object(args.registry, "program registry")
         adapters = load_object(args.adapters, "execution adapter inventory")
         if args.command == "plan":
