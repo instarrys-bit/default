@@ -82,3 +82,16 @@ The current implementation is a protocol and data-integrity gate, not a live sch
 The registered runtime module provides idempotent enqueue, priority-based claim, per-task lease tokens, bounded retry with backoff, and expired-lease recovery. Mutations use an advisory file lock plus fsync-and-rename atomic replacement. This serializes cooperating processes that share the same filesystem.
 
 This is not yet a distributed queue or a cross-runner lock. Current GitHub Actions validation invokes only a CLI smoke check and unit tests; it does not enable a production worker, dispatch registered programs, or persist queue mutations back to the repository. A GitHub-backed single-writer/conditional-update adapter and an execution dispatcher are still required before production activation.
+
+## Unified execution adapter standard
+
+`automation/execution_adapters.json` is the one-to-one execution contract for every registered program. CI checks that its 46 adapter entries exactly match the 40 Python components and six GitHub Actions workflows in `automation/program_registry.json`.
+
+- **Python components:** invocation is limited to the exact registered file path through `python3`, with a literal argument array and no shell. A Python target remains non-executable until its CLI input schema, output schema, timeout, and side effects have been reviewed and recorded. All current Python interfaces are marked `unreviewed`.
+- **GitHub Actions workflows:** the contract records whether `workflow_dispatch` exists and mirrors its declared input names, types, and required flags. Four workflows are dispatchable; the event-only self-healing agent and push/PR config validator are not workflow-dispatch targets.
+- **Authorization:** every adapter is disabled, every caller allowlist is empty, and retry budgets are zero. Enabling a target requires matching registry orchestration policy, reviewed interface contracts, explicit callers, bounded retries, and a ref allowlist. The adapter registry does not grant token permissions; a caller job must separately declare least-privilege permissions, including `actions: write` for workflow dispatch.
+- **Completion:** a zero process exit or a successful GitHub Actions run is not sufficient by itself. The dispatcher must retain the workflow run ID and result metadata, then pass the result through an independent verifier before a task may become `SUCCEEDED`.
+- **Current implementation boundary:** this PR establishes and validates the adapter contract only. It does not add a dispatcher, GitHub-backed queue persistence, worker activation, or automatic invocation. The task queue runtime remains local and all adapters remain disabled.
+
+The adapter contract is distinct from `rulesets/pending_queue.json` and cannot authorize changes to `shadowrocket/ss.conf`.
+

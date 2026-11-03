@@ -1259,11 +1259,40 @@
         "script_task_queue_runtime",
         "script_validate_config",
         "script_validate_program_registry",
-        "script_verify_baseline"
+        "script_verify_baseline",
+        "script_validate_execution_adapters"
       ],
       "dispatches": [],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
       "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_validate_execution_adapters",
+      "path": "scripts/validate_execution_adapters.py",
+      "kind": "python_component",
+      "responsibility": "validate explicit deny-by-default execution adapter contracts against the registered program inventory and workflow dispatch interfaces",
+      "capabilities": [
+        "execution_adapter_validation"
+      ],
+      "invocation": "python_cli",
+      "inputs": [
+        "automation/execution_adapters.json",
+        "automation/program_registry.json",
+        "registered workflow files"
+      ],
+      "outputs": [
+        "validation summary or non-zero exit on adapter contract drift"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Validation is read-only; execution permissions remain defined by invoking workflow jobs.",
+      "health_check": "Run in validate-config CI and deterministic execution-adapter tests.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],
