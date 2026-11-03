@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "purpose": "Watchdog inbox for unregistered repository paths; registration is not approval.",
+  "entries": []
+}
