@@ -100,12 +100,24 @@ class ProductionIntentTests(unittest.TestCase):
             last_success_at=stamp, successful_fingerprints={self.fp}, now=self.now)
         self.assertEqual(result["idempotency_key"], f"production:schedule:{self.fp}:{stamp}")
 
-    def test_reverted_to_previously_successful_fingerprint_does_not_rebuild_on_push(self):
+    def test_reverted_to_previously_successful_fingerprint_rebuilds_on_input_change(self):
         result = decide(event="push", current_fingerprint=self.fp,
             last_success_fingerprint="different", path_classification={"status":"INPUT_CHANGED"},
+            last_success_at=self.now.isoformat(), successful_fingerprints={self.fp},
+            revision="commit-a", now=self.now)
+        self.assertEqual(result["decision"], "INPUT_CHANGED")
+        self.assertTrue(result["should_produce"])
+        self.assertEqual(result["idempotency_key"], f"production:input:{self.fp}:commit-a")
+
+    def test_same_revert_revision_is_idempotent_but_later_revert_is_new_work(self):
+        args = dict(event="push", current_fingerprint=self.fp,
+            last_success_fingerprint="different", path_classification={"status":"INPUT_CHANGED"},
             last_success_at=self.now.isoformat(), successful_fingerprints={self.fp}, now=self.now)
-        self.assertEqual(result["decision"], "ALREADY_SATISFIED")
-        self.assertFalse(result["should_produce"])
+        first = decide(**args, revision="commit-a")
+        replay = decide(**args, revision="commit-a")
+        later = decide(**args, revision="commit-b")
+        self.assertEqual(first["idempotency_key"], replay["idempotency_key"])
+        self.assertNotEqual(first["idempotency_key"], later["idempotency_key"])
 
     def test_output_fingerprint_covers_all_three_policy_rule_sets(self):
         first = compute_output_fingerprint(self.root)
