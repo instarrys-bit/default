@@ -157,6 +157,21 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
         error = task["last_error"]
         if error is not None and not isinstance(error, dict):
             raise ValueError(f"{task_id}.last_error must be an object or null")
+        verification = task.get("verification")
+        if verification is not None:
+            if not isinstance(verification, dict):
+                raise ValueError(f"{task_id}.verification must be an object or null")
+            if verification.get("verifier_program_id") not in by_id:
+                raise ValueError(f"{task_id}.verification references an unknown verifier program")
+            if verification.get("status") not in {"passed", "failed"}:
+                raise ValueError(f"{task_id}.verification.status must be passed or failed")
+            parse_utc(verification.get("verified_at"), f"{task_id}.verification.verified_at")
+            if not isinstance(verification.get("contract_sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", verification["contract_sha256"]):
+                raise ValueError(f"{task_id}.verification.contract_sha256 must be a SHA-256 digest")
+            if status == "VERIFYING":
+                raise ValueError(f"{task_id} VERIFYING task must not retain a previous verification")
+            if status == "SUCCEEDED" and verification["status"] != "passed":
+                raise ValueError(f"{task_id} SUCCEEDED task requires passed verification")
 
     return {"valid": True, "task_count": len(tasks), "revision": revision}
 
