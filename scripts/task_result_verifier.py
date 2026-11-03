@@ -48,7 +48,7 @@ def _check_schema_definition(schema: object, path: str = "$schema", depth: int =
     if unknown:
         raise ValueError(f"{path} uses unsupported schema keywords: {', '.join(unknown)}")
     kind = schema.get("type")
-    if kind is not None and kind not in VALID_TYPES:
+    if kind is not None and (not isinstance(kind, str) or kind not in VALID_TYPES):
         raise ValueError(f"{path}.type is unsupported")
     if "properties" in schema:
         properties = schema["properties"]
@@ -74,8 +74,20 @@ def _check_schema_definition(schema: object, path: str = "$schema", depth: int =
         if key in schema and (isinstance(schema[key], bool) or not isinstance(schema[key], int) or schema[key] < 0):
             raise ValueError(f"{path}.{key} must be a non-negative integer")
     for key in ("minimum", "maximum"):
-        if key in schema and (isinstance(schema[key], bool) or not isinstance(schema[key], (int, float))):
-            raise ValueError(f"{path}.{key} must be numeric")
+        if key in schema and (
+            isinstance(schema[key], bool) or not isinstance(schema[key], (int, float))
+            or (isinstance(schema[key], float) and not math.isfinite(schema[key]))
+        ):
+            raise ValueError(f"{path}.{key} must be a finite number")
+    if "minLength" in schema and "maxLength" in schema and schema["minLength"] > schema["maxLength"]:
+        raise ValueError(f"{path} minLength exceeds maxLength")
+    if "minItems" in schema and "maxItems" in schema and schema["minItems"] > schema["maxItems"]:
+        raise ValueError(f"{path} minItems exceeds maxItems")
+
+
+def validate_schema_definition(schema: object) -> None:
+    """Validate the supported schema subset without evaluating a result value."""
+    _check_schema_definition(schema)
 
 
 def _matches_type(value: object, kind: str) -> bool:
@@ -88,7 +100,9 @@ def _matches_type(value: object, kind: str) -> bool:
     if kind == "integer":
         return isinstance(value, int) and not isinstance(value, bool)
     if kind == "number":
-        return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+        return (isinstance(value, int) and not isinstance(value, bool)) or (
+            isinstance(value, float) and math.isfinite(value)
+        )
     if kind == "boolean":
         return isinstance(value, bool)
     if kind == "null":
@@ -119,7 +133,7 @@ def validate_json_schema(value: object, schema: dict) -> list[str]:
             if "maxLength" in rule and len(current) > rule["maxLength"]:
                 errors.append(f"{path}: string is longer than maxLength")
         if isinstance(current, (int, float)) and not isinstance(current, bool):
-            if not math.isfinite(current):
+            if isinstance(current, float) and not math.isfinite(current):
                 errors.append(f"{path}: number must be finite")
             if "minimum" in rule and current < rule["minimum"]:
                 errors.append(f"{path}: number is below minimum")
