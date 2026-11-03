@@ -260,7 +260,7 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
                             "run_evidence": {
                                 "run_id": run_id,
                                 "html_url": observation.get("html_url"),
-                                "status": "in_progress",
+                                "status": observation.get("run_status", "in_progress"),
                             },
                         }
                         task["status"] = "VERIFYING"
@@ -270,7 +270,7 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
                         evidence = {
                             "run_id": run_id,
                             "html_url": observation.get("html_url"),
-                            "status": "in_progress",
+                            "status": observation.get("run_status", "in_progress"),
                         }
                         if task.get("result", {}).get("run_evidence") != evidence:
                             task["result"]["run_evidence"] = evidence
