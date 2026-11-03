@@ -282,7 +282,7 @@ class ConfigConflictSyncTests(unittest.TestCase):
             make_root(
                 root,
                 config_with_rules(["DOMAIN,ads.example.com,DIRECT"]),
-                reject="DOMAIN,ads.example.com\\n",
+                reject="DOMAIN,ads.example.com\n",
             )
             sync(root=root, now="2026-11-01T00:00:00+00:00")
             archive_path = root / "rulesets" / "config_conflict_archive.json"
