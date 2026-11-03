@@ -167,9 +167,9 @@ class ConfigConflictSyncTests(unittest.TestCase):
             make_root(
                 root,
                 config_with_rules(["DOMAIN-SUFFIX,example.com,REJECT"]),
-                direct="DOMAIN,api.example.com\\n",
-                proxy="DOMAIN,web.example.com\\n",
-                reject="DOMAIN,ads.example.com\\n",
+                direct="DOMAIN,api.example.com\n",
+                proxy="DOMAIN,web.example.com\n",
+                reject="DOMAIN,ads.example.com\n",
                 queue=queue,
             )
             report = sync(root=root, now="2026-11-03T00:00:00+00:00")
