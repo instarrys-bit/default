@@ -34,7 +34,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("scripts/watchdog_recovery_policy.py", workflow)
         self.assertIn('[ "$SOURCE_EVENT" != "schedule" ]', workflow)
         self.assertIn('[ "$SOURCE_EVENT" != "push" ]', workflow)
-        self.assertIn("gh workflow run auto_sync.yml --ref main --repo \"$REPO\"", workflow)
+        self.assertIn("enqueue-auto-sync", workflow)
+        self.assertNotIn("gh workflow run auto_sync.yml", workflow)
         self.assertIn('select(.head_branch == "main" and .head_sha == $sha and .id > $source', workflow)
 
     def test_run_history_checks_follow_all_api_pages(self):
@@ -99,6 +100,16 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("--max-tasks 1 run-once", workflow)
         self.assertIn("github.event.workflow_run.head_branch == 'main'", workflow)
 
+    def test_production_audit_is_watchdog_queue_owned(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        audit = AUTO_SYNC.read_text(encoding="utf-8")
+        self.assertIn("enqueue_auto_sync_task", (ROOT / "scripts" / "task_scheduler.py").read_text(encoding="utf-8"))
+        self.assertIn("enqueue-auto-sync", workflow)
+        self.assertNotIn("gh workflow run auto_sync.yml", workflow)
+        self.assertNotIn("  schedule:", audit.split("  workflow_dispatch:", 1)[0])
+        self.assertNotIn("  push:", audit.split("  permissions:", 1)[0])
+        self.assertIn("  workflow_dispatch:", audit)
+
     def test_watchdog_deduplicates_all_active_run_states_before_dispatch(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         for status in ("queued", "pending", "waiting", "requested", "in_progress"):
@@ -108,11 +119,13 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
     def test_queue_and_activation_contract_changes_wake_the_watchdog(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         for path in (
-            "automation/task_queue.json",
             "automation/program_registry.json",
             "automation/execution_adapters.json",
         ):
             self.assertIn(f'      - "{path}"', workflow)
+        self.assertNotIn('"automation/task_queue.json"', workflow.split("permissions:", 1)[0])
+        self.assertNotIn('"rulesets/**"', workflow.split("permissions:", 1)[0])
+        self.assertNotIn('"sources/**"', workflow.split("permissions:", 1)[0])
 
 if __name__ == "__main__":
     unittest.main()
