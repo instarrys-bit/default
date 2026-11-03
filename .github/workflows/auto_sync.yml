@@ -76,7 +76,7 @@ jobs:
 
       - name: Compile and run deterministic review tests
         run: |
-          python3 -m py_compile scripts/restore_automation_state.py scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/import_request_observations.py scripts/lifecycle_gate.py scripts/lifecycle_audit.py scripts/auto_activate_sources.py scripts/build_project_status.py scripts/build_rule_provenance.py scripts/refresh_ruleset_manifest.py scripts/diagnose_workflow_failure.py scripts/append_step_summary.py scripts/apply_safe_repair.py scripts/review_cursor.py scripts/json_document_store.py scripts/verify_published_rulesets.py
+          python3 -m py_compile scripts/restore_automation_state.py scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/import_request_observations.py scripts/lifecycle_gate.py scripts/lifecycle_audit.py scripts/auto_activate_sources.py scripts/build_project_status.py scripts/build_rule_provenance.py scripts/refresh_ruleset_manifest.py scripts/diagnose_workflow_failure.py scripts/append_step_summary.py scripts/apply_safe_repair.py scripts/review_cursor.py scripts/persist_review_cursor.py scripts/json_document_store.py scripts/verify_published_rulesets.py
           python3 -m unittest discover -s tests -v
 
       - name: Discover candidate source repositories (non-activating)
@@ -345,39 +345,54 @@ jobs:
             data/domain_candidates.json*
             data/candidates.json*
           )
-          tar -czf audit-output.tar.gz \
-            sources/review_cursor.json \
-            sources/domain_sources.json \
-            sources/source_activation_log.json \
-            reports/lifecycle \
-            reports/project-status.md \
-            reports/project-status.json \
-            reports/automation/heartbeat.json \
-            reports/automation/state_store.json \
-            reports/external-domain-audit.md \
-            reports/config-drift-audit.md \
-            reports/config-drift-audit.json \
-            reports/ruleset-reference-audit.md \
-            reports/ruleset-reference-audit.json \
-            reports/ruleset-config-conflict-sync.md \
-            reports/ruleset-config-conflict-sync.json \
-            sources/policy.json \
-            reports/ruleset-config-overlap-audit.md \
-            reports/ruleset-config-overlap-audit.json \
-            reports/source-lineage-audit.json \
-            reports/source-discovery.md \
-            reports/source-assessment.md \
-            reports/source-candidate-matrix.md \
-            reports/source-activation.md \
-            reports/policy-source-overlap.md \
-            sources/policy_source_overlap.json \
-            data/domain_candidates.json \
-            data/source_pending.json \
-            data/primary_snapshot.txt \
-            data/secondary_snapshot.txt \
-            data/source_snapshots \
-            rulesets \
-            "${state_files[@]}"
+          base_files=(
+            sources/review_cursor.json
+            sources/domain_sources.json
+            sources/source_activation_log.json
+            reports/lifecycle
+            reports/project-status.md
+            reports/project-status.json
+            reports/automation/heartbeat.json
+            reports/automation/state_store.json
+            reports/external-domain-audit.md
+            reports/config-drift-audit.md
+            reports/config-drift-audit.json
+            reports/ruleset-reference-audit.md
+            reports/ruleset-reference-audit.json
+            reports/ruleset-config-conflict-sync.md
+            reports/ruleset-config-conflict-sync.json
+            sources/policy.json
+            reports/ruleset-config-overlap-audit.md
+            reports/ruleset-config-overlap-audit.json
+            reports/source-lineage-audit.json
+            reports/source-discovery.md
+            reports/source-assessment.md
+            reports/source-candidate-matrix.md
+            reports/source-activation.md
+            reports/policy-source-overlap.md
+            sources/policy_source_overlap.json
+            data/domain_candidates.json
+            data/source_pending.json
+            data/primary_snapshot.txt
+            data/secondary_snapshot.txt
+            data/source_snapshots
+            rulesets
+          )
+          declare -A archive_seen=()
+          archive_inputs=()
+          for path in "${base_files[@]}" "${state_files[@]}"; do
+            [[ -e "$path" ]] || continue
+            if [[ -L "$path" ]]; then
+              echo "Refusing symlink in automation state: $path" >&2
+              exit 1
+            fi
+            if [[ -z "${archive_seen[$path]+present}" ]]; then
+              archive_seen["$path"]=1
+              archive_inputs+=("$path")
+            fi
+          done
+          test "${#archive_inputs[@]}" -gt 0
+          tar -czf audit-output.tar.gz -- "${archive_inputs[@]}"
 
       - name: Upload allowlisted audit outputs
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -539,29 +554,21 @@ jobs:
       - name: Validate and persist in-progress cursor only
         run: |
           set -euo pipefail
-          if [ ! -s cursor-artifact/review_cursor.json ]; then echo "No cursor artifact to persist."; exit 0; fi
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-          p=Path("cursor-artifact/review_cursor.json")
-          d=json.loads(p.read_text(encoding="utf-8"))
-          if d.get("schema_version") != 1:
-              raise SystemExit("Unsupported review cursor schema; refusing to persist.")
-          if d.get("status") != "in_progress":
-              print("Cursor is not in progress; no checkpoint needs persistence.")
-              raise SystemExit(0)
-          digest=str(d.get("snapshot_sha256",""))
-          if len(digest) != 64 or any(ch not in "0123456789abcdef" for ch in digest):
-              raise SystemExit("Invalid cursor snapshot digest.")
-          if not isinstance(d.get("next_index"),int):
-              raise SystemExit("Invalid cursor checkpoint index.")
-          if d["next_index"] < 1:
-              print("Cursor has no completed checkpoint; nothing to persist.")
-              raise SystemExit(0)
-          Path("sources").mkdir(exist_ok=True)
-          Path("sources/review_cursor.json").write_text(json.dumps(d,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-          PY
-          git add -- sources/policy.json sources/review_cursor.json
+          python3 scripts/persist_review_cursor.py \
+            --cursor-artifact cursor-artifact/review_cursor.json \
+            --destination sources/review_cursor.json
+          # Stage the owner-approved baseline and resumable cursor independently.
+          # A missing optional cursor must never prevent policy.json from being saved.
+          for path in sources/policy.json sources/review_cursor.json; do
+            if [[ -L "$path" ]]; then
+              echo "Refusing symlink while persisting automation state: $path" >&2
+              exit 1
+            elif [[ -f "$path" ]]; then
+              git add -- "$path"
+            else
+              echo "Optional persistence path absent; skipping: $path"
+            fi
+          done
           if git diff --cached --quiet; then
             echo "No new review cursor checkpoint to persist."
             exit 0

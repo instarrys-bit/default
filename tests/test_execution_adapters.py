@@ -67,7 +67,7 @@ class ExecutionAdapterTests(unittest.TestCase):
     def test_repository_contract_is_valid(self):
         result = validate_execution_adapters(ROOT)
         self.assertTrue(result["valid"])
-        self.assertEqual(result["adapter_count"], 52)
+        self.assertEqual(result["adapter_count"], 53)
         self.assertEqual(result["enabled_adapter_count"], 0)
 
     def test_valid_minimal_inventory(self):
