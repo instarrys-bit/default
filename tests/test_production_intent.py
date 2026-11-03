@@ -123,6 +123,13 @@ class ProductionIntentTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "also match non-production patterns"):
             load_manifest(path)
 
+    def test_different_active_fingerprint_blocks_a_second_production_task(self):
+        result = decide(event="push", current_fingerprint=self.fp,
+            last_success_fingerprint="old", path_classification={"status":"INPUT_CHANGED"},
+            last_success_at=None, active_fingerprints={"older-active-fingerprint"}, now=self.now)
+        self.assertEqual(result["decision"], "WAIT_FOR_ACTIVE")
+        self.assertFalse(result["should_produce"])
+
 
 if __name__ == "__main__":
     unittest.main()
