@@ -21,6 +21,9 @@ def verify(result_path: Path) -> dict:
         raise ValueError(f"cannot read assessor stdout result: {exc}") from exc
     if not isinstance(result,dict):
         raise ValueError("assessor stdout result must be an object")
+    for artifact in (RUNTIME, PERSISTENT):
+        if not artifact.is_file() and not artifact.with_name(artifact.name + ".manifest.json").is_file():
+            raise ValueError(f"required assessment artifact is missing: {artifact.relative_to(ROOT)}")
     runtime=read_document(RUNTIME,"assessments",{"assessments":[]})
     persistent=read_document(PERSISTENT,"assessments",{"assessments":[]})
     assessments=runtime.get("assessments")
@@ -42,6 +45,11 @@ def verify(result_path: Path) -> dict:
         raise ValueError("stdout parser/policy counts do not match runtime artifacts")
     if persistent.get("assessment_count")!=len(history):
         raise ValueError("persistent assessment history count is inconsistent")
+    historical_count=persistent.get("historical_assessment_count")
+    if historical_count is not None and historical_count != len(history):
+        raise ValueError("persistent historical assessment count is inconsistent")
+    if any(not isinstance(item,dict) for item in history):
+        raise ValueError("persistent assessment history contains malformed records")
     if any("domain_fingerprints" in item for item in history if isinstance(item,dict)):
         raise ValueError("persistent assessment history must not contain ephemeral fingerprints")
     if not REPORT.is_file() or REPORT.stat().st_size==0:
