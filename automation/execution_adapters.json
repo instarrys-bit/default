@@ -1086,7 +1086,7 @@
         "resource_keys": [
           "logical/production-pipeline"
         ],
-        "lease_seconds": 3600,
+        "lease_seconds": 21600,
         "fencing_required": true,
         "enforcement_boundary": "live task-queue proof checked by the audit gate and immediately before publish push",
         "coverage": "scheduler-mediated production workflow; independent Python writers remain disabled until separately contracted"
