@@ -196,6 +196,9 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
     def test_production_workflow_requires_live_fenced_resource_lease_before_publish(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("resource_lease_proof:", workflow)
+        scheduler = (ROOT / "scripts" / "task_scheduler.py").read_text(encoding="utf-8")
+        self.assertIn('dispatch_task["input"]["resource_lease_proof"]', scheduler)
+        self.assertIn('target_id == "workflow_auto_sync" and resource_contract is None', scheduler)
         self.assertIn("Verify live Watchdog resource lease before production audit", workflow)
         self.assertGreaterEqual(workflow.count("assert-workflow --task-id"), 2)
         publish_start = workflow.index("      - name: Verify base commit and safely publish allowlisted outputs")
