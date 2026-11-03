@@ -219,7 +219,7 @@ def main() -> int:
                 paths, ledger, args.event, args.revision, args.run_id, args.run_url
             )
             args.register_ledger.parent.mkdir(parents=True, exist_ok=True)
-            args.register_ledger.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+            args.register_ledger.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + chr(10), encoding="utf-8")
             print(json.dumps({
                 "registered_count": len(set(paths)),
                 "pending_count": sum(item.get("status") == "PENDING_CLASSIFICATION" for item in ledger["entries"]),
