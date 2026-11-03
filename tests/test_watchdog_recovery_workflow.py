@@ -19,7 +19,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("github.event.workflow_run.head_branch == 'main'", workflow)
         self.assertIn('last_success_sha="$(jq -r', workflow)
         self.assertIn('repos/$REPO/compare/$last_success_sha...$current_sha', workflow)
-        self.assertIn("Last successful audit is healthy; any intervening main changes are documentation-only", workflow)
+        self.assertIn("The latest successful audit is healthy; intervening main changes are documentation or strictly verified queue state.", workflow)
+        self.assertIn("bash scripts/verify_publish_base.sh --check-only", workflow)
 
     def test_only_infrastructure_failures_trigger_bounded_scheduled_or_push_recovery(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
