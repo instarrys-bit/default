@@ -200,8 +200,32 @@ def main() -> int:
     parser.add_argument("--active-fingerprints-json", default="[]")
     parser.add_argument("--successful-fingerprints-json", default="[]")
     parser.add_argument("--refresh-after-seconds", type=int, default=691200)
+    parser.add_argument("--register-ledger", type=Path)
+    parser.add_argument("--run-id", default="")
+    parser.add_argument("--run-url", default="")
     args = parser.parse_args()
     try:
+        if args.register_ledger is not None:
+            paths = json.loads(args.paths_json)
+            if not isinstance(paths, list) or any(not isinstance(path, str) for path in paths):
+                raise ValueError("paths-json must be a JSON string array")
+            if not args.run_id or not args.run_url:
+                raise ValueError("run-id and run-url are required for Watchdog registration")
+            if args.register_ledger.exists():
+                ledger = json.loads(args.register_ledger.read_text(encoding="utf-8"))
+            else:
+                ledger = {"schema_version": 1, "purpose": "Watchdog inbox for unregistered repository paths; registration is not approval.", "entries": []}
+            ledger = register_unclassified_paths(
+                paths, ledger, args.event, args.revision, args.run_id, args.run_url
+            )
+            args.register_ledger.parent.mkdir(parents=True, exist_ok=True)
+            args.register_ledger.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+            print(json.dumps({
+                "registered_count": len(set(paths)),
+                "pending_count": sum(item.get("status") == "PENDING_CLASSIFICATION" for item in ledger["entries"]),
+                "paths": sorted(set(paths)),
+            }, ensure_ascii=False))
+            return 0
         if isinstance(args.refresh_after_seconds, bool) or args.refresh_after_seconds < 1:
             raise ValueError("refresh-after-seconds must be a positive integer")
         manifest = load_manifest(args.manifest)
