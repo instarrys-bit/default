@@ -15,7 +15,8 @@ The job performs one bounded scheduler pass:
 
 - Only the queue-supervision job receives `contents: write`; the rest of the Watchdog retains its existing job-scoped permissions.
 - Checkout uses `persist-credentials: false`.
-- The queue token is passed only to the scheduler process. The scheduler strips GitHub and runner credentials from child-process environments.
+- The workflow removes `GITHUB_TOKEN` from its shell environment and pipes it to the scheduler over stdin; the scheduler stores it only in the queue client.
+- The scheduler strips credential-like variables from its own environment while child processes run, gives children a small non-secret environment allowlist, and closes child stdin.
 - The job is serialized with the `shadowrocket-task-queue` concurrency group.
 - Scheduler execution is bounded to one task per Watchdog invocation and to Python CLI adapters with enabled, reviewed interfaces and explicit caller allowlists.
 - Workflow-dispatch adapters remain unsupported by this scheduler version and are blocked.
