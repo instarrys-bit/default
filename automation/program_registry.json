@@ -1545,6 +1545,38 @@
         "max_attempts": 0,
         "timeout_seconds": 300
       }
+    },
+    {
+      "id": "script_production_intent",
+      "path": "scripts/production_intent.py",
+      "kind": "python_component",
+      "responsibility": "compute a deterministic production-input fingerprint and classify whether a production audit is required",
+      "capabilities": [
+        "production_intent_classification",
+        "production_input_fingerprinting"
+      ],
+      "invocation": "python_cli_and_python_library",
+      "inputs": [
+        "automation/production_inputs.json",
+        "repository changed-path set",
+        "last successful audit fingerprint and timestamp",
+        "active and successful task fingerprints"
+      ],
+      "outputs": [
+        "deterministic production-demand decision",
+        "SHA-256 production-input fingerprint",
+        "path classification report"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Read-only deterministic classification and hashing. No network access, queue writes, ruleset writes, or modification of shadowrocket/ss.conf.",
+      "health_check": "Dedicated deterministic unit tests plus Watchdog workflow integration tests.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     }
   ]
 }
