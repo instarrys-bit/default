@@ -167,7 +167,7 @@ def register_unclassified_paths(paths, ledger, event, revision, run_id, run_url,
         if not isinstance(raw, str):
             raise ValueError("unregistered paths must be strings")
         path = raw.strip().removeprefix("./")
-        if not path or path.startswith("/") or "\\\\" in path or any(part in {"", ".", ".."} for part in path.split("/")):
+        if not path or path.startswith("/") or "\\" in path or any(part in {"", ".", ".."} for part in path.split("/")):
             raise ValueError("unsafe or invalid repository path: " + repr(raw))
         if any(ord(char) < 32 for char in path):
             raise ValueError("control characters are not allowed in repository paths")
