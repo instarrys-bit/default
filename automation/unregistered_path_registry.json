@@ -1,5 +1,51 @@
 {
   "schema_version": 1,
   "purpose": "Watchdog inbox for unregistered repository paths; registration is not approval.",
-  "entries": []
+  "entries": [
+    {
+      "path": ".github/workflows/dashboard-pages.yml",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-03T17:12:05.157284Z",
+      "last_seen_at": "2026-11-03T17:12:05.157284Z",
+      "seen_count": 1,
+      "last_seen_event": "push",
+      "last_seen_revision": "006bac897e65907ec0499d4144c0177ded079ab0",
+      "last_seen_run_id": "41681774774",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41681774774"
+    },
+    {
+      "path": "dashboard/README.md",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-03T17:12:05.157284Z",
+      "last_seen_at": "2026-11-03T17:12:05.157284Z",
+      "seen_count": 1,
+      "last_seen_event": "push",
+      "last_seen_revision": "006bac897e65907ec0499d4144c0177ded079ab0",
+      "last_seen_run_id": "41681774774",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41681774774"
+    },
+    {
+      "path": "dashboard/index.html",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-03T17:12:05.157284Z",
+      "last_seen_at": "2026-11-03T17:12:05.157284Z",
+      "seen_count": 1,
+      "last_seen_event": "push",
+      "last_seen_revision": "006bac897e65907ec0499d4144c0177ded079ab0",
+      "last_seen_run_id": "41681774774",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41681774774"
+    },
+    {
+      "path": "scripts/build_dashboard_snapshot.py",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-03T17:12:05.157284Z",
+      "last_seen_at": "2026-11-03T17:12:05.157284Z",
+      "seen_count": 1,
+      "last_seen_event": "push",
+      "last_seen_revision": "006bac897e65907ec0499d4144c0177ded079ab0",
+      "last_seen_run_id": "41681774774",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41681774774"
+    }
+  ],
+  "updated_at": "2026-11-03T17:12:05.157284Z"
 }
