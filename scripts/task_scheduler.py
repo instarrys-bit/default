@@ -281,7 +281,7 @@ def execute_claimed_workflow_task(task: dict, adapter: dict, store, registry: di
             error = {"type": "workflow_dispatch_rejected", "message": str(exc)}
             completed = complete_remote(
                 task["task_id"], task["lease"]["owner"], task["lease"]["token"],
-                success=False, error=error, store=store, registry=registry, now=now_utc(),
+                success=False, error=error, store=store, registry=registry, now=now,
             )
             return {"task_id": task["task_id"], "status": completed["status"], "error": error}
         pending = complete_remote(
@@ -304,7 +304,7 @@ def execute_claimed_workflow_task(task: dict, adapter: dict, store, registry: di
         error = {"type": "workflow_dispatch_preflight_failed", "message": str(exc)[:1000]}
         completed = complete_remote(
             task["task_id"], task["lease"]["owner"], task["lease"]["token"],
-            success=False, error=error, store=store, registry=registry, now=now_utc(),
+            success=False, error=error, store=store, registry=registry, now=now,
         )
         return {"task_id": task["task_id"], "status": completed["status"], "error": error}
 
