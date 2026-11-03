@@ -256,7 +256,7 @@ def inspect_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict:
     if any(run.get(key) != value for key, value in required.items()):
         raise WorkflowAPIError("workflow run identity does not match the persisted dispatch intent")
     if run.get("status") != "completed":
-        return {"state": "pending", "run_id": run_id, "html_url": run.get("html_url")}
+        return {"state": "pending", "run_id": run_id, "html_url": run.get("html_url"), "run_status": run.get("status")}
     conclusion = run.get("conclusion")
     evidence = {
         "run_id": run_id,
