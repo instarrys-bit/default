@@ -2,6 +2,7 @@
 """Build exact-domain RULE-SET lists only from deterministic evidence-approved records."""
 from __future__ import annotations
 import hashlib, json, re
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from deterministic_review import inspect, parse_skip_proxy, evidence_gate, load_correlated_publishers
@@ -63,6 +64,43 @@ def previously_published_reject_rules(previously_published, config_archive):
     return authorized
 
 
+def reject_secondary_decision(evidence, scoring, minimum, threshold, correlated_pairs, required_sources=()):
+    """Apply the stricter REJECT-only gate before a candidate reaches human approval."""
+    config = scoring.get("reject_secondary_review", {})
+    minimum_sources = int(config.get("minimum_current_sources", 3))
+    minimum_groups = int(config.get("minimum_independent_publishers", 2))
+    required_any_sources = {str(value) for value in config.get("required_any_sources", [])}
+    confidence, source_ids, publishers, groups, qualified = evidence_gate(
+        evidence,
+        scoring.get("source_weights", {}),
+        minimum,
+        threshold,
+        required_sources,
+        correlated_pairs,
+    )
+    reasons = []
+    if len(source_ids) < minimum_sources:
+        reasons.append("insufficient_current_sources")
+    if len(groups) < minimum_groups:
+        reasons.append("insufficient_independent_publishers")
+    if not source_ids.intersection(required_any_sources):
+        reasons.append("missing_specialist_adblock_source")
+    if not qualified:
+        reasons.append("first_stage_evidence_gate_not_met")
+    return {
+        "eligible": not reasons,
+        "reasons": reasons,
+        "confidence": confidence,
+        "source_ids": sorted(source_ids),
+        "publishers": sorted(publishers),
+        "independent_publisher_groups": [list(group) for group in sorted(groups)],
+        "current_source_count": len(source_ids),
+        "independent_publisher_count": len(groups),
+        "minimum_current_sources": minimum_sources,
+        "minimum_independent_publishers": minimum_groups,
+        "required_any_sources": sorted(required_any_sources),
+    }
+
 
 def promote_queue_to_capacity(rule_sets, queue_map, previous_rule_count, maximum=30000):
     if previous_rule_count < 0 or previous_rule_count > maximum:
@@ -102,6 +140,16 @@ def main():
     required_by_policy=scoring.get("required_sources_by_policy",{})
     minimum=int(scoring.get("minimum_independent_sources",2))
     threshold=float(scoring.get("minimum_confidence",0.8))
+    secondary_cfg=scoring.get("reject_secondary_review",{})
+    secondary_min_sources=int(secondary_cfg.get("minimum_current_sources",3))
+    secondary_min_groups=int(secondary_cfg.get("minimum_independent_publishers",2))
+    secondary_required_any={str(value) for value in secondary_cfg.get("required_any_sources",[])}
+    if secondary_min_sources < minimum or secondary_min_groups < minimum:
+        raise ValueError("REJECT secondary review thresholds cannot be lower than the first-stage evidence gate")
+    if not secondary_required_any or not secondary_required_any.issubset(source_map):
+        raise ValueError("REJECT secondary review requires configured specialist source IDs")
+    if any(str(source_map[sid].get("classification","")).upper()!="REJECT" for sid in secondary_required_any):
+        raise ValueError("REJECT secondary specialist sources must be classified as REJECT")
     current=read_document(CURRENT_SNAPSHOT,"candidates",{"candidates":[]})
     current_hashes={x["id"]:x["sha256"] for x in current.get("sources",[])}
     enabled_source_ids={sid for sid,source in source_map.items() if source.get("enabled",True) is not False}
@@ -155,6 +203,13 @@ def main():
     seen=dict(published_domain_policies)
     status_counts={}
     held=approved=0
+    reject_candidate_count=0
+    reject_first_stage_status_counts=Counter()
+    reject_secondary_hold_reason_counts=Counter()
+    reject_secondary_eligible_count=0
+    reject_manual_hold_count=0
+    reject_manual_approval_outside_shortlist_count=0
+    reject_review_queue_items=[]
     reviews=data.get("reviews",[])
     if len({str(item.get("domain","")).lower() for item in reviews})!=len(reviews):
         raise ValueError("duplicate domain key in deterministic ledger")
@@ -162,7 +217,15 @@ def main():
     for item in reviews:
         status=str(item.get("status","UNKNOWN"))
         status_counts[status]=status_counts.get(status,0)+1
+        policy=str(item.get("policy",item.get("classification",""))).upper()
+        candidate_policies={str(value).upper() for value in item.get("candidate_policies",[])}
+        is_reject_candidate=policy=="REJECT" or "REJECT" in candidate_policies
+        if is_reject_candidate:
+            reject_candidate_count+=1
         if status!="APPROVED":
+            if is_reject_candidate:
+                reject_first_stage_status_counts[status]+=1
+                reject_secondary_hold_reason_counts["first_stage_"+status.lower()]+=1
             held+=1
             continue
         domain=str(item.get("domain","")).lower().rstrip(".")
@@ -203,9 +266,6 @@ def main():
         if scope not in {"exact_candidate","suffix_candidate"}:
             raise ValueError("unsupported approved domain scope: "+domain)
         archived_line=("DOMAIN-SUFFIX," if scope=="suffix_candidate" else "DOMAIN,")+domain
-        if policy=="REJECT" and not reject_rule_authorized(archived_line,previously_published_reject,manual_reject_approvals):
-            held+=1
-            continue
         if (policy,archived_line) in config_conflict_archived:
             held+=1
             continue
@@ -266,11 +326,81 @@ def main():
             held+=1
             baseline_conflict_holds.append({"domain":domain,"policy":policy,"scope":scope,"status":local_status,"reason":reason})
             continue
+        if policy=="REJECT" and archived_line not in previously_published_reject:
+            secondary=reject_secondary_decision(
+                valid,scoring,minimum,threshold,correlated_pairs,required
+            )
+            if not secondary["eligible"]:
+                held+=1
+                for reason_code in secondary["reasons"]:
+                    reject_secondary_hold_reason_counts[reason_code]+=1
+                if archived_line in manual_reject_approvals:
+                    reject_manual_approval_outside_shortlist_count+=1
+                continue
+            reject_secondary_eligible_count+=1
+            if archived_line not in manual_reject_approvals:
+                reject_manual_hold_count+=1
+                reject_review_queue_items.append({
+                    "rule":candidate_line,
+                    "domain":domain,
+                    "scope":scope,
+                    "policy":"REJECT",
+                    "status":"ELIGIBLE_FOR_MANUAL_APPROVAL",
+                    "confidence":secondary["confidence"],
+                    "current_source_count":secondary["current_source_count"],
+                    "independent_publisher_count":secondary["independent_publisher_count"],
+                    "source_ids":secondary["source_ids"],
+                    "publishers":secondary["publishers"],
+                    "independent_publisher_groups":secondary["independent_publisher_groups"],
+                    "reason":"Passed first-stage review, ancestry-aware source independence, and REJECT-specific secondary criteria; human approval is still required."
+                })
+                held+=1
+                continue
         seen[domain]=policy
         new_approved[policy].add((scope,domain))
         approved+=1
 
     OUT.mkdir(parents=True,exist_ok=True)
+    reject_review_queue_items.sort(key=lambda item:(item["domain"],item["scope"]))
+    reject_queue_path=OUT/"reject_review_queue.json"
+    reject_queue_path.write_text(json.dumps({
+        "schema_version":1,
+        "policy":"REJECT",
+        "updated_at":datetime.now(timezone.utc).isoformat(),
+        "criteria":{
+            "minimum_current_sources":secondary_min_sources,
+            "minimum_independent_publishers":secondary_min_groups,
+            "required_any_sources":sorted(secondary_required_any),
+            "manual_approval_required":True
+        },
+        "eligible_count":reject_secondary_eligible_count,
+        "pending_manual_approval_count":len(reject_review_queue_items),
+        "items":reject_review_queue_items
+    },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    report_dir=ROOT/"reports"
+    report_dir.mkdir(parents=True,exist_ok=True)
+    report_lines=[
+        "# REJECT 二次筛选报告","",
+        f"- REJECT 相关候选总量：{reject_candidate_count}",
+        f"- 一审未通过/暂缓：{sum(reject_first_stage_status_counts.values())}",
+        f"- 二审通过、等待人工审批：{len(reject_review_queue_items)}",
+        f"- 二审通过总量（含本轮已获人工授权）：{reject_secondary_eligible_count}",
+        f"- 二审门槛：至少 {secondary_min_sources} 个当前来源、至少 {secondary_min_groups} 个独立发布者，并至少包含一个指定专业广告拦截来源。",
+        "- 新 REJECT 规则不会自动发布；必须逐条写入 sources/reject_manual_approvals.json。",
+        "",
+        "## 一审状态暂缓统计","",
+    ]
+    report_lines.extend(f"- {name}: {count}" for name,count in sorted(reject_first_stage_status_counts.items()))
+    report_lines.extend(["","## 二审拦截原因",""])
+    report_lines.extend(f"- {name}: {count}" for name,count in sorted(reject_secondary_hold_reason_counts.items()))
+    report_lines.extend(["","## 待人工审批候选",""])
+    report_lines.extend(["| 规则 | 当前来源数 | 独立发布者组 | 置信度 | 来源 |","|---|---:|---:|---:|---|"])
+    for item in reject_review_queue_items:
+        report_lines.append(
+            f"| {item['rule']} | {item['current_source_count']} | {item['independent_publisher_count']} | "
+            f"{item['confidence']:.2f} | {', '.join(item['source_ids'])} |"
+        )
+    (report_dir/"reject-secondary-review.md").write_text("\n".join(report_lines)+"\n",encoding="utf-8")
     queue_path=OUT/"pending_queue.json"
     prior_queue=json.loads(queue_path.read_text(encoding="utf-8")) if queue_path.exists() else {"schema_version":1,"items":[]}
     queue_map={}
@@ -376,7 +506,20 @@ def main():
         "held_total":held,
         "reject_manual_approval_required":True,
         "reject_manual_approval_count":len(manual_reject_approvals),
-        "reject_manual_hold_count":sum(1 for item in reviews if str(item.get("status",""))=="APPROVED" and str(item.get("policy","")).upper()=="REJECT" and (("DOMAIN-SUFFIX," if item.get("source_entry_type")=="suffix_candidate" else "DOMAIN,")+str(item.get("domain","")).lower().rstrip(".")) not in previously_published_reject and (("DOMAIN-SUFFIX," if item.get("source_entry_type")=="suffix_candidate" else "DOMAIN,")+str(item.get("domain","")).lower().rstrip(".")) not in manual_reject_approvals),
+        "reject_manual_hold_count":reject_manual_hold_count,
+        "reject_secondary_review":{
+            "candidate_count":reject_candidate_count,
+            "first_stage_held_by_status":dict(sorted(reject_first_stage_status_counts.items())),
+            "eligible_for_manual_approval_count":reject_secondary_eligible_count,
+            "pending_manual_approval_count":len(reject_review_queue_items),
+            "manual_approval_outside_shortlist_count":reject_manual_approval_outside_shortlist_count,
+            "held_reason_counts":dict(sorted(reject_secondary_hold_reason_counts.items())),
+            "minimum_current_sources":secondary_min_sources,
+            "minimum_independent_publishers":secondary_min_groups,
+            "required_any_sources":sorted(secondary_required_any),
+            "manual_approval_required":True,
+            "queue_path":"rulesets/reject_review_queue.json"
+        },
         "status_count":dict(sorted(status_counts.items())),
         "deterministic_review_progress":{
             "candidate_total":len(reviews),

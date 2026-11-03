@@ -22,6 +22,7 @@ def as_int(value):
 manifest = read_json("rulesets/manifest.json")
 queue_doc = read_json("automation/task_queue.json")
 pending = read_json("rulesets/pending_queue.json")
+reject_review_queue = read_json("rulesets/reject_review_queue.json")
 lifecycle = read_json("rulesets/lifecycle_state.json")
 lifecycle_report = read_json("reports/lifecycle/latest.json")
 candidates = read_json("data/candidates.json")
@@ -108,7 +109,17 @@ snapshot = {
         "policy_conflicts": as_int(manifest.get("policy_conflict_total")),
         "reject_manual_approval_required": bool(manifest.get("reject_manual_approval_required", True)),
         "reject_manual_approved": as_int(manifest.get("reject_manual_approval_count")),
-        "reject_manual_pending": as_int(manifest.get("reject_manual_hold_count"))
+        "reject_manual_pending": as_int(manifest.get("reject_manual_hold_count")),
+        "reject_secondary": {
+            "candidate_total": as_int((manifest.get("reject_secondary_review") or {}).get("candidate_count")),
+            "first_stage_held": sum(as_int(v) for v in ((manifest.get("reject_secondary_review") or {}).get("first_stage_held_by_status") or {}).values()),
+            "eligible_for_manual_approval": as_int((manifest.get("reject_secondary_review") or {}).get("eligible_for_manual_approval_count")),
+            "pending_manual_approval": len(reject_review_queue.get("items", [])) if isinstance(reject_review_queue.get("items"), list) else 0,
+            "manual_approval_outside_shortlist": as_int((manifest.get("reject_secondary_review") or {}).get("manual_approval_outside_shortlist_count")),
+            "minimum_current_sources": as_int((manifest.get("reject_secondary_review") or {}).get("minimum_current_sources")),
+            "minimum_independent_publishers": as_int((manifest.get("reject_secondary_review") or {}).get("minimum_independent_publishers")),
+            "held_reason_counts": (manifest.get("reject_secondary_review") or {}).get("held_reason_counts", {})
+        }
     },
     "queue": {"total": len(tasks), "by_status": queue_status},
     "production": {

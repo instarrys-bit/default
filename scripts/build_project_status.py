@@ -66,6 +66,7 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
     manifest = read_json(rules_dir / "manifest.json", {})
     lifecycle = read_json(rules_dir / "lifecycle_state.json", {})
     queue = read_json(rules_dir / "pending_queue.json", {"items": []})
+    reject_review_queue = read_json(rules_dir / "reject_review_queue.json", {"items": []})
     registry = read_json(root / "sources/domain_sources.json", {"sources": []})
     snapshot = read_document(root / "data/candidates.json", "candidates", {"candidates": [], "sources": {}})
     activation = read_json(root / "sources/source_activation_log.json", {"activations": [], "last_decisions": []})
@@ -101,6 +102,11 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
     maximum = int(lifecycle.get("max_published_rules", manifest.get("max_published_rules", 30000)))
     headroom = max(0, maximum - total)
     queued = len(queue.get("items", []))
+    reject_secondary = manifest.get("reject_secondary_review", {})
+    reject_first_stage_held = sum(
+        int(value) for value in reject_secondary.get("first_stage_held_by_status", {}).values()
+    )
+    reject_pending_manual = len(reject_review_queue.get("items", []))
 
     guard = policy.get("managed_config_guard", {})
     config_path = root / str(guard.get("path", "shadowrocket/ss.conf"))
@@ -245,6 +251,18 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
             "approved_not_published_samples": unpublished_approved,
             "held_count": held, "status_counts": status_counts,
         },
+        "reject_secondary_review": {
+            "candidate_count": int(reject_secondary.get("candidate_count", 0)),
+            "first_stage_held_count": reject_first_stage_held,
+            "eligible_for_manual_approval_count": int(reject_secondary.get("eligible_for_manual_approval_count", 0)),
+            "pending_manual_approval_count": reject_pending_manual,
+            "manual_approval_outside_shortlist_count": int(reject_secondary.get("manual_approval_outside_shortlist_count", 0)),
+            "held_reason_counts": reject_secondary.get("held_reason_counts", {}),
+            "minimum_current_sources": int(reject_secondary.get("minimum_current_sources", 0)),
+            "minimum_independent_publishers": int(reject_secondary.get("minimum_independent_publishers", 0)),
+            "required_any_sources": reject_secondary.get("required_any_sources", []),
+            "manual_approval_required": bool(reject_secondary.get("manual_approval_required", True)),
+        },
         "recovery": {
             "config_conflict_archive_total": len(conflict_items),
             "config_conflict_active_count": conflict_active,
@@ -281,6 +299,12 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
         f"- 候选域名：{candidate_count}；审核账本 APPROVED：{ledger_approved}；实际发布：{approved}；未发布差额：{approved_not_published}（ss.conf 范围覆盖冲突 {len(unpublished_approved['baseline_conflict'])}；配置冲突归档 {len(unpublished_approved['config_conflict_archive'])}；其他 {len(unpublished_approved['other'])}）；暂缓/拒绝：{held}",
         f"- 未发布规则明细：ss.conf 范围覆盖冲突 [{', '.join(x['rule'] for x in unpublished_approved['baseline_conflict']) or '无'}]；配置冲突归档 [{', '.join(x['rule'] for x in unpublished_approved['config_conflict_archive']) or '无'}]；其他 [{', '.join(x['rule'] for x in unpublished_approved['other']) or '无'}]",
         f"- 各策略独立来源组：DIRECT {source_groups['DIRECT']}，PROXY {source_groups['PROXY']}，REJECT {source_groups['REJECT']}（最低要求 {minimum_groups}）",
+        "",
+        "### REJECT 专项二次筛选",
+        f"- REJECT 相关候选：{result['reject_secondary_review']['candidate_count']}；一审暂缓：{reject_first_stage_held}",
+        f"- 二审合格待人工审批：{reject_pending_manual}；二审合格总数：{result['reject_secondary_review']['eligible_for_manual_approval_count']}",
+        f"- 二审门槛：至少 {result['reject_secondary_review']['minimum_current_sources']} 个当前来源、至少 {result['reject_secondary_review']['minimum_independent_publishers']} 个独立发布者组，并命中指定专业拦截来源。",
+        "- 人工审批之外的 REJECT 规则不会自动发布。候选明细保存在 rulesets/reject_review_queue.json。",
         f"- 血缘审计：已审计 {result['sources']['lineage_audited_count']}；已验证 {result['sources']['lineage_verified_count']}；部分 {result['sources']['lineage_partial_count']}；未验证 {result['sources']['lineage_unverified_count']}。血缘不确定性是来源说明，不作为一票否决。", "",
         f"- 规则级来源账本：{provenance_summary['rule_count']} 条规则；精确文件行证据 {provenance_summary['exact_file_line_evidence_count']} 条；仅快照证据 {provenance_summary['snapshot_membership_evidence_count']} 条；缺少行号 {provenance_summary['missing_line_number_count']} 条。", "",
         "## 3. 生命周期与容量管理", "",
