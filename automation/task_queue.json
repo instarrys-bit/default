@@ -1,5 +1,5 @@
 {
-  "revision": 53,
+  "revision": 54,
   "schema_version": 1,
   "tasks": [
     {
@@ -688,7 +688,19 @@
         "production_fingerprint": "3ccf12bda385f40c936ba508a59be14f990f2177b7271e69d75570629722da58",
         "production_reason": "current production input fingerprint differs from the last successful audit"
       },
-      "last_error": null,
+      "last_error": {
+        "evidence": {
+          "conclusion": "failure",
+          "head_sha": "011abc3cf1911270dccdf32ab5dede3f7541b191",
+          "head_sha_relationship": "queue_intent_commit_only",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/41630565005",
+          "requested_head_sha": "2b3715ab002110b50135731855a9a40746cda73f",
+          "run_id": 41630565005,
+          "status": "completed"
+        },
+        "message": "workflow completed with conclusion 'failure'",
+        "type": "workflow_run_failed"
+      },
       "lease": null,
       "max_attempts": 1,
       "not_before": "2026-11-03T11:48:42Z",
@@ -702,6 +714,15 @@
         "prepared_at": "2026-11-03T11:49:01Z",
         "ref": "main",
         "requested_head_sha": "2b3715ab002110b50135731855a9a40746cda73f",
+        "run_evidence": {
+          "conclusion": "failure",
+          "head_sha": "011abc3cf1911270dccdf32ab5dede3f7541b191",
+          "head_sha_relationship": "queue_intent_commit_only",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/41630565005",
+          "requested_head_sha": "2b3715ab002110b50135731855a9a40746cda73f",
+          "run_id": 41630565005,
+          "status": "completed"
+        },
         "submitted_at": "2026-11-03T11:49:03Z",
         "task_id": "task_ab4ab361bcb748e188f72d92",
         "workflow_id": 402712272,
@@ -710,13 +731,20 @@
       "state_history": [
         "QUEUED",
         "CLAIMED",
-        "VERIFYING"
+        "VERIFYING",
+        "FAILED",
+        "DEAD_LETTER"
       ],
-      "status": "VERIFYING",
+      "status": "DEAD_LETTER",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_ab4ab361bcb748e188f72d92",
       "trace_id": "3a49f7604d9e4bf3a2f55dc66e7e1200",
-      "verification": null
+      "verification": {
+        "contract_sha256": "2021790e2473850d39006e31974bf295231a36470f510480bdf1519ef7c54b9c",
+        "status": "failed",
+        "verified_at": "2026-11-03T12:12:54Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
     }
   ]
 }
