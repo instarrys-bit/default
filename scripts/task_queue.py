@@ -77,6 +77,9 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
         if task_id in task_ids:
             raise ValueError(f"duplicate task_id: {task_id}")
         task_ids.add(task_id)
+        execution_backend = task.get("execution_backend")
+        if execution_backend is not None and execution_backend != "github_contents":
+            raise ValueError(f"{task_id}.execution_backend is unsupported")
         idem = task["idempotency_key"]
         if not isinstance(idem, str) or not 1 <= len(idem) <= 200:
             raise ValueError(f"{task_id}.idempotency_key must contain 1 to 200 characters")
@@ -172,6 +175,9 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
                 raise ValueError(f"{task_id} VERIFYING task must not retain a previous verification")
             if status == "SUCCEEDED" and verification["status"] != "passed":
                 raise ValueError(f"{task_id} SUCCEEDED task requires passed verification")
+        if execution_backend == "github_contents" and status == "SUCCEEDED":
+            if not isinstance(verification, dict) or verification.get("status") != "passed":
+                raise ValueError(f"{task_id} GitHub-backed SUCCEEDED task requires independent verification")
 
     return {"valid": True, "task_count": len(tasks), "revision": revision}
 
