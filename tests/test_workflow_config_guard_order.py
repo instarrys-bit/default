@@ -193,6 +193,17 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("Audit config drift against the approved baseline", validation)
 
 
+    def test_production_workflow_requires_live_fenced_resource_lease_before_publish(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn("resource_lease_proof:", workflow)
+        self.assertIn("Verify live Watchdog resource lease before production audit", workflow)
+        self.assertGreaterEqual(workflow.count("assert-workflow --task-id"), 2)
+        publish_start = workflow.index("      - name: Verify base commit and safely publish allowlisted outputs")
+        publish_end = workflow.index("      - name: Independently verify committed remote rulesets", publish_start)
+        publish_step = workflow[publish_start:publish_end]
+        self.assertLess(publish_step.index("assert-workflow --task-id"), publish_step.index("git push origin HEAD:main"))
+        self.assertIn("logical/production-pipeline", (ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
+
     def test_watchdog_owns_config_change_detection_and_sync_dispatch(self):
         watchdog_path = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
         watchdog = watchdog_path.read_text(encoding="utf-8")
