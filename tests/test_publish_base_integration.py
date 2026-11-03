@@ -185,6 +185,12 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0, result.stdout)
         self.assertIn("A declared production input changed", result.stdout)
 
+    def test_unknown_repository_path_fails_closed(self):
+        compare = {"status": "ahead", "files": [{"filename": "new-inputs/unclassified.json", "status": "modified"}]}
+        result = self.run_check_only(compare)
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("A declared production input changed", result.stdout)
+
     def test_ss_conf_is_a_read_only_production_input(self):
         compare = {"status": "ahead", "files": [{"filename": "shadowrocket/ss.conf", "status": "modified"}]}
         result = self.run_check_only(compare)
