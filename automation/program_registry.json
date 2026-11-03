@@ -858,7 +858,9 @@
       "outputs": [
         "atomically updated local queue state and task result"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "script_task_queue"
+      ],
       "dispatches": [],
       "permission_boundary": "Local repository filesystem only; no network, GitHub token, workflow dispatch, or repository write API.",
       "health_check": "Dedicated task queue runtime tests and CLI help smoke check.",
@@ -1270,4 +1272,4 @@
       }
     }
   ]
-}
+}\n

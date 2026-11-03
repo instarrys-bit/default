@@ -8,6 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
+from task_queue import validate_task_queue
 from task_queue_runtime import (
     claim_next,
     complete_task,
@@ -141,6 +142,21 @@ class TaskQueueRuntimeTests(unittest.TestCase):
         self.assertEqual(len(recovered), 1)
         self.assertEqual(recovered[0]["task_id"], second["task_id"])
         self.assertEqual(recovered[0]["status"], "DEAD_LETTER")
+
+    def test_idempotency_key_cannot_be_reused_for_different_payload(self):
+        self.enqueue(input={"value": 1})
+        with self.assertRaisesRegex(ValueError, "different task payload"):
+            self.enqueue(input={"value": 2})
+
+    def test_runtime_outputs_pass_queue_integrity_validator(self):
+        self.enqueue()
+        claimed = claim_next("worker-a", self.queue, self.registry, self.now)
+        complete_task(claimed["task_id"], "worker-a", claimed["lease"]["token"],
+                      success=True, result={"ok": True}, queue_path=self.queue,
+                      registry_path=self.registry, now=self.now)
+        result = validate_task_queue(self.root, self.queue, self.registry)
+        self.assertTrue(result["valid"])
+        self.assertEqual(result["task_count"], 1)
 
     def test_expired_lease_cannot_be_completed(self):
         self.enqueue()
