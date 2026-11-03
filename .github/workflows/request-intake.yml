@@ -17,8 +17,10 @@ permissions:
   contents: write
   actions: write
 
+# Intake commits are rebased safely on push; do not let a shared pending
+# writer slot discard a user's submitted hostname batch.
 concurrency:
-  group: shadowrocket-main-writer
+  group: shadowrocket-request-intake-${{ github.run_id }}
   cancel-in-progress: false
 
 jobs:
