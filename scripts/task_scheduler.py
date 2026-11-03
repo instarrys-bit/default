@@ -462,8 +462,14 @@ def run_scheduler_once(store, registry: dict, adapters: dict, *,
         eligible = set(plan["eligible_task_ids"])
         if not eligible:
             break
+        resource_keys_by_target = {
+            item["target_program_id"]: item["resource_contract"]
+            for item in adapters.get("adapters", [])
+            if isinstance(item, dict) and isinstance(item.get("resource_contract"), dict)
+        }
         task = claim_remote(
-            worker_id, store, registry, eligible_task_ids=eligible, now=iteration_now
+            worker_id, store, registry, eligible_task_ids=eligible,
+            resource_keys_by_target=resource_keys_by_target, now=iteration_now
         )
         if task is None:
             continue
