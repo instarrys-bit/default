@@ -1299,6 +1299,37 @@
         "max_attempts": 0,
         "timeout_seconds": 300
       }
+    },
+    {
+      "id": "script_github_queue_store",
+      "path": "scripts/github_queue_store.py",
+      "kind": "python_component",
+      "responsibility": "provide SHA-guarded GitHub Contents API persistence for the cross-runner task queue",
+      "capabilities": [
+        "github_queue_storage"
+      ],
+      "invocation": "python_library",
+      "inputs": [
+        "repository identity",
+        "queue document",
+        "expected GitHub blob SHA",
+        "deterministic mutation callback"
+      ],
+      "outputs": [
+        "verified queue snapshot",
+        "new blob SHA",
+        "conflict or API error"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Requires a caller-supplied GitHub token with narrowly scoped contents read/write permission. The module grants no permission and logs no token values.",
+      "health_check": "Mocked API tests for guarded writes, stale-SHA conflicts, bounded re-reads, and fail-closed API errors.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     }
   ]
 }
