@@ -184,7 +184,14 @@ def acquire_resource_leases(task_id, worker_id, task_lease_token, resource_keys,
 
 def assert_resource_lease(queue, *, task_id, worker_id, task_lease_token, resource_path, lease_id, fencing_token, now=None):
     now=now or datetime.now(timezone.utc); key=resource_key(resource_path)
-    validate_envelope(queue); claimed_task(queue,task_id,worker_id,task_lease_token,now)
+    validate_envelope(queue)
+    task=claimed_task(queue,task_id,worker_id,task_lease_token,now)
+    task_resource_lease=task.get("resource_lease")
+    if not isinstance(task_resource_lease,dict) or task_resource_lease.get("status")!="ACTIVE":
+        raise ValueError("task resource lease is not active")
+    declared=task_resource_lease.get("resources")
+    if not isinstance(declared,dict) or declared.get(key)!={"lease_id":lease_id,"fencing_token":fencing_token}:
+        raise ValueError(f"task resource proof does not match the requested fencing token: {key}")
     leases=queue.get("resource_leases")
     if not isinstance(leases,dict): raise ValueError("resource lease registry is missing")
     record=checked_record(leases.get(key),key)
