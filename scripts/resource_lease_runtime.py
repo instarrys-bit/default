@@ -96,8 +96,8 @@ def acquire_resource_leases(task_id, worker_id, task_lease_token, resource_keys,
     return store.mutate(mutate)
 
 
-def assert_resource_lease(queue, *, task_id, worker_id, task_lease_token, resource_key, lease_id, fencing_token, now=None):
-    now=now or datetime.now(timezone.utc); key=resource_key(resource_key)
+def assert_resource_lease(queue, *, task_id, worker_id, task_lease_token, resource_path, lease_id, fencing_token, now=None):
+    now=now or datetime.now(timezone.utc); key=resource_key(resource_path)
     validate_envelope(queue); claimed_task(queue,task_id,worker_id,task_lease_token,now)
     leases=queue.get("resource_leases")
     if not isinstance(leases,dict): raise ValueError("resource lease registry is missing")
