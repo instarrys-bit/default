@@ -39,6 +39,11 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
         ]}
         self.now = datetime(2026, 11, 3, 4, 0, tzinfo=timezone.utc)
 
+    def claim(self, worker_id, now):
+        eligible = {task["task_id"] for task in self.store.document["tasks"]}
+        return claim_remote(worker_id, self.store, self.registry,
+                            eligible_task_ids=eligible, now=now)
+
     def payload(self, **overrides):
         value = {"idempotency_key": "remote:test:once", "requester_program_id": "script_requester",
                  "target_program_id": "script_target", "capability": "test_capability",
@@ -58,14 +63,14 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
     def test_claim_respects_priority_and_uses_lease(self):
         enqueue_remote(self.payload(idempotency_key="low", priority=10), self.store, self.registry, self.now)
         enqueue_remote(self.payload(idempotency_key="high", priority=90), self.store, self.registry, self.now)
-        task = claim_remote("worker-a", self.store, self.registry, self.now)
+        task = self.claim("worker-a", self.now)
         self.assertEqual(task["idempotency_key"], "high")
         self.assertEqual(task["status"], "CLAIMED")
         self.assertEqual(task["lease"]["owner"], "worker-a")
 
     def test_completion_requires_matching_lease(self):
         enqueue_remote(self.payload(), self.store, self.registry, self.now)
-        task = claim_remote("worker-a", self.store, self.registry, self.now)
+        task = self.claim("worker-a", self.now)
         with self.assertRaisesRegex(ValueError, "mismatch"):
             complete_remote(task["task_id"], "worker-b", task["lease"]["token"],
                             success=True, result={"ok": True}, store=self.store,
@@ -77,13 +82,13 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
 
     def test_failure_retries_then_dead_letters(self):
         enqueue_remote(self.payload(), self.store, self.registry, self.now)
-        first = claim_remote("worker-a", self.store, self.registry, self.now)
+        first = self.claim("worker-a", self.now)
         retry = complete_remote(first["task_id"], "worker-a", first["lease"]["token"],
                                 success=False, error={"type": "temporary"}, store=self.store,
                                 registry=self.registry, now=self.now)
         self.assertEqual(retry["status"], "QUEUED")
         later = self.now + timedelta(seconds=31)
-        second = claim_remote("worker-b", self.store, self.registry, later)
+        second = self.claim("worker-b", later)
         final = complete_remote(second["task_id"], "worker-b", second["lease"]["token"],
                                  success=False, error={"type": "failed"}, store=self.store,
                                  registry=self.registry, now=later)
@@ -91,14 +96,14 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
 
     def test_expired_lease_is_recovered(self):
         enqueue_remote(self.payload(), self.store, self.registry, self.now)
-        task = claim_remote("worker-a", self.store, self.registry, self.now)
+        task = self.claim("worker-a", self.now)
         recovered = recover_remote(self.store, self.registry, self.now + timedelta(seconds=121))
         self.assertEqual(len(recovered), 1)
         self.assertEqual(recovered[0]["task_id"], task["task_id"])
         self.assertEqual(recovered[0]["status"], "QUEUED")
 
     def test_empty_claim_and_recovery_do_not_write(self):
-        self.assertIsNone(claim_remote("worker-a", self.store, self.registry, self.now))
+        self.assertIsNone(self.claim("worker-a", self.now))
         self.assertEqual(recover_remote(self.store, self.registry, self.now), [])
         self.assertEqual(self.store.writes, 0)
 

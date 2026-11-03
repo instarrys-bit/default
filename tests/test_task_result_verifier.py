@@ -56,7 +56,9 @@ class TaskResultVerifierTests(unittest.TestCase):
                 "target_program_id": "script_target",
                 "capability": "test_capability", "input": {}}
         enqueue_remote(task, self.store, self.registry, self.now)
-        claimed = claim_remote("worker-a", self.store, self.registry, self.now)
+        eligible = {item["task_id"] for item in self.store.document["tasks"]}
+        claimed = claim_remote("worker-a", self.store, self.registry,
+                               eligible_task_ids=eligible, now=self.now)
         return complete_remote(
             claimed["task_id"], "worker-a", claimed["lease"]["token"],
             success=True, result=result, store=self.store,

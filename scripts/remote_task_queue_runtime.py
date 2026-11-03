@@ -112,9 +112,12 @@ def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
 
 
 def claim_remote(worker_id: str, store: GitHubContentsQueueStore,
-                 registry: dict, now: datetime | None = None) -> dict | None:
+                 registry: dict, *, eligible_task_ids: set[str],
+                 now: datetime | None = None) -> dict | None:
     if not isinstance(worker_id, str) or not worker_id.strip():
         raise ValueError("worker_id is required")
+    if not isinstance(eligible_task_ids, set) or any(not isinstance(item, str) for item in eligible_task_ids):
+        raise ValueError("eligible_task_ids must be a set of task IDs supplied by the reviewed scheduler")
     now = now or now_utc()
     by_id = {p.get("id"): p for p in registry["programs"] if isinstance(p, dict)}
 
@@ -125,7 +128,7 @@ def claim_remote(worker_id: str, store: GitHubContentsQueueStore,
         validate_candidate(queue, registry)
         eligible = []
         for task in queue["tasks"]:
-            if task.get("status") != "QUEUED":
+            if task.get("status") != "QUEUED" or task.get("task_id") not in eligible_task_ids:
                 continue
             if datetime.fromisoformat(task["not_before"].replace("Z", "+00:00")) > now:
                 continue
@@ -236,8 +239,6 @@ def main() -> int:
     subs = parser.add_subparsers(dest="command", required=True)
     enqueue = subs.add_parser("enqueue")
     enqueue.add_argument("--task-json", type=Path, required=True)
-    claim = subs.add_parser("claim")
-    claim.add_argument("--worker-id", required=True)
     complete = subs.add_parser("complete")
     complete.add_argument("--task-id", required=True)
     complete.add_argument("--worker-id", required=True)
@@ -253,9 +254,6 @@ def main() -> int:
         if args.command == "enqueue":
             payload = json.loads(args.task_json.read_text(encoding="utf-8"))
             output = enqueue_remote(payload, store, registry)
-        elif args.command == "claim":
-            task = claim_remote(args.worker_id, store, registry)
-            output = {"claimed": task is not None, "task": task}
         elif args.command == "complete":
             if bool(args.result_json) == bool(args.error_json):
                 raise ValueError("provide exactly one of --result-json or --error-json")

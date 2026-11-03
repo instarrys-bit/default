@@ -1263,7 +1263,8 @@
         "script_validate_program_registry",
         "script_verify_baseline",
         "script_remote_task_queue_runtime",
-        "script_task_result_verifier"
+        "script_task_result_verifier",
+        "script_task_scheduler"
       ],
       "dispatches": [],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
@@ -1395,6 +1396,42 @@
       "dispatches": [],
       "permission_boundary": "Requires caller-provided GitHub Contents read/write permission to persist verification transitions; never modifies shadowrocket/ss.conf, rulesets, or DNS.",
       "health_check": "Deterministic JSON Schema subset tests, fail-closed unsupported keyword tests, and CAS-backed VERIFYING-to-terminal/retry transition tests.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_task_scheduler",
+      "path": "scripts/task_scheduler.py",
+      "kind": "python_component",
+      "responsibility": "plan and execute only explicitly enabled, reviewed Python task adapters with least-privilege child environments",
+      "capabilities": [
+        "deterministic_task_scheduling"
+      ],
+      "invocation": "python_cli",
+      "inputs": [
+        "GitHub-backed task queue",
+        "program registry",
+        "reviewed execution adapter inventory",
+        "worker identity and task limit"
+      ],
+      "outputs": [
+        "processed task summaries",
+        "blocked task reasons",
+        "verification results"
+      ],
+      "depends_on": [
+        "script_remote_task_queue_runtime",
+        "script_task_result_verifier",
+        "script_task_queue",
+        "script_task_queue_runtime"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Requires caller-provided GitHub Contents read/write permission. Child programs receive only a non-secret environment allowlist, no shell, and no GitHub token. The scheduler does not modify shadowrocket/ss.conf.",
+      "health_check": "Tests for disabled-adapter blocking, input/output contract checks, exact Python entrypoint invocation, no-shell execution, secret environment isolation, and independent result verification.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],
