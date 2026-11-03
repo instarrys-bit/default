@@ -1261,7 +1261,8 @@
         "script_validate_config",
         "script_validate_execution_adapters",
         "script_validate_program_registry",
-        "script_verify_baseline"
+        "script_verify_baseline",
+        "script_remote_task_queue_runtime"
       ],
       "dispatches": [],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
@@ -1325,6 +1326,40 @@
       "dispatches": [],
       "permission_boundary": "Requires a caller-supplied GitHub token with narrowly scoped contents read/write permission. The module grants no permission and logs no token values.",
       "health_check": "Mocked API tests for guarded writes, stale-SHA conflicts, bounded re-reads, and fail-closed API errors.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_remote_task_queue_runtime",
+      "path": "scripts/remote_task_queue_runtime.py",
+      "kind": "python_component",
+      "responsibility": "execute GitHub-backed task queue state transitions through SHA-CAS persistence",
+      "capabilities": [
+        "remote_task_queue_runtime"
+      ],
+      "invocation": "python_cli",
+      "inputs": [
+        "registered task payload",
+        "worker identity and lease token",
+        "GitHub repository and branch context"
+      ],
+      "outputs": [
+        "CAS-persisted task state",
+        "claim lease",
+        "completion or recovery result"
+      ],
+      "depends_on": [
+        "script_github_queue_store",
+        "script_task_queue_runtime",
+        "script_task_queue"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Requires caller-provided GitHub Contents read/write permission; this component grants no permissions and must never modify shadowrocket/ss.conf.",
+      "health_check": "Unit tests for remote enqueue, idempotency, priority claims, lease ownership, retry/dead-letter transitions, and expired-lease recovery.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],
