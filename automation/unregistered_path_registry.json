@@ -4,48 +4,60 @@
   "entries": [
     {
       "path": ".github/workflows/dashboard-pages.yml",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "CLASSIFIED_NON_PRODUCTION",
       "first_seen_at": "2026-11-03T17:12:05.157284Z",
       "last_seen_at": "2026-11-03T17:12:05.157284Z",
       "seen_count": 1,
       "last_seen_event": "push",
       "last_seen_revision": "006bac897e65907ec0499d4144c0177ded079ab0",
       "last_seen_run_id": "41681774774",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41681774774"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41681774774",
+      "classified_at": "2026-11-04T01:34:00+08:00",
+      "classification_reason": "Dashboard-only GitHub Pages build/deploy workflow; read-only snapshot generation, no production dispatch or repository-content writes.",
+      "classification_basis": "Audited path contents and dashboard-pages workflow permissions/steps; does not affect DIRECT/PROXY/REJECT production output."
     },
     {
       "path": "dashboard/README.md",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "CLASSIFIED_NON_PRODUCTION",
       "first_seen_at": "2026-11-03T17:12:05.157284Z",
       "last_seen_at": "2026-11-03T17:12:05.157284Z",
       "seen_count": 1,
       "last_seen_event": "push",
       "last_seen_revision": "006bac897e65907ec0499d4144c0177ded079ab0",
       "last_seen_run_id": "41681774774",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41681774774"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41681774774",
+      "classified_at": "2026-11-04T01:34:00+08:00",
+      "classification_reason": "Documentation for the read-only operations dashboard.",
+      "classification_basis": "Audited path contents and dashboard-pages workflow permissions/steps; does not affect DIRECT/PROXY/REJECT production output."
     },
     {
       "path": "dashboard/index.html",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "CLASSIFIED_NON_PRODUCTION",
       "first_seen_at": "2026-11-03T17:12:05.157284Z",
       "last_seen_at": "2026-11-03T17:12:05.157284Z",
       "seen_count": 1,
       "last_seen_event": "push",
       "last_seen_revision": "006bac897e65907ec0499d4144c0177ded079ab0",
       "last_seen_run_id": "41681774774",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41681774774"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41681774774",
+      "classified_at": "2026-11-04T01:34:00+08:00",
+      "classification_reason": "Static read-only dashboard presentation; no production controls or configuration mutation.",
+      "classification_basis": "Audited path contents and dashboard-pages workflow permissions/steps; does not affect DIRECT/PROXY/REJECT production output."
     },
     {
       "path": "scripts/build_dashboard_snapshot.py",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "CLASSIFIED_NON_PRODUCTION",
       "first_seen_at": "2026-11-03T17:12:05.157284Z",
       "last_seen_at": "2026-11-03T17:12:05.157284Z",
       "seen_count": 1,
       "last_seen_event": "push",
       "last_seen_revision": "006bac897e65907ec0499d4144c0177ded079ab0",
       "last_seen_run_id": "41681774774",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41681774774"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41681774774",
+      "classified_at": "2026-11-04T01:34:00+08:00",
+      "classification_reason": "Builds sanitized dashboard snapshot from committed records and writes only dashboard/data.json in the workflow workspace.",
+      "classification_basis": "Audited path contents and dashboard-pages workflow permissions/steps; does not affect DIRECT/PROXY/REJECT production output."
     }
   ],
-  "updated_at": "2026-11-03T17:12:05.157284Z"
+  "updated_at": "2026-11-04T01:34:00+08:00"
 }
