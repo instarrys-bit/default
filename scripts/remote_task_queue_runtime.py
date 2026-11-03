@@ -77,6 +77,9 @@ def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
     if not isinstance(payload, dict):
         raise ValueError("input must be an object")
 
+    task_id = "task_" + uuid.uuid4().hex[:24]
+    trace_id = str(task.get("trace_id") or uuid.uuid4().hex)
+
     def mutate(queue: dict):
         validate_envelope(queue)
         validate_candidate(queue, registry)
