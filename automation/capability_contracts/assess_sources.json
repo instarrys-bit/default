@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "contract_id": "capability-script-assess-sources-v1",
+  "program_id": "script_assess_sources",
+  "implementation_path": "scripts/assess_sources.py",
+  "implementation_blob_sha": "e8e174bb4c042887351d8a524e8b1e9ad54c4206",
+  "review_status": "source_reviewed_documented_not_dispatchable",
+  "dispatch_status": "disabled",
+  "entrypoint": {
+    "command": [
+      "python3",
+      "scripts/assess_sources.py"
+    ],
+    "cli_arguments": [],
+    "current_adapter_argv_template": [],
+    "task_scheduler_compatible": false,
+    "reason": "The program reads its inputs from fixed repository paths and does not accept or validate a scheduler task-input file."
+  },
+  "inputs": {
+    "repository_snapshot": [
+      {
+        "path": "sources/discovered_sources.json",
+        "mode": "read",
+        "format": "JSON document or json_document_store sharded document",
+        "collection_key": "candidates"
+      },
+      {
+        "path": "sources/source_assessments.json",
+        "mode": "read",
+        "format": "JSON document or json_document_store sharded document",
+        "collection_key": "assessments",
+        "purpose": "previous assessment history and rotation cursor"
+      }
+    ],
+    "remote_inputs": {
+      "origin": "candidate URLs supplied by sources/discovered_sources.json",
+      "allowed_origin": "https://raw.githubusercontent.com",
+      "repository_binding": "URL owner/repository must match the candidate repository",
+      "redirect_policy": "final response must remain HTTPS on raw.githubusercontent.com",
+      "per_url_max_bytes": 5000000,
+      "aggregate_max_bytes": 250000000,
+      "max_urls_per_run": 5000,
+      "request_timeout_seconds": 10
+    },
+    "environment": {
+      "github_token_required": false,
+      "other_environment_inputs": "None identified in reviewed main() path"
+    }
+  },
+  "outputs": {
+    "stdout_json": {
+      "required_fields": [
+        "assessed",
+        "bytes_read",
+        "parser_candidates",
+        "policy_candidates",
+        "activated"
+      ],
+      "invariant": {
+        "activated": 0
+      },
+      "meaning": "Run summary only; does not prove downstream source activation."
+    },
+    "repository_artifacts": [
+      {
+        "path": "sources/source_assessments.json",
+        "mode": "write",
+        "purpose": "persistent assessment history and cursor"
+      },
+      {
+        "path": "data/source_assessments_runtime.json",
+        "mode": "write",
+        "purpose": "current batch result"
+      },
+      {
+        "path": "reports/source-assessment.md",
+        "mode": "write",
+        "purpose": "human-readable assessment report"
+      }
+    ],
+    "document_store_side_effects": [
+      "For each write_document logical document, JSON storage may atomically replace the base file.",
+      "For sharded documents it may create <logical-name>.manifest.json and <logical-name>.parts-<content-digest>/part-*.jsonl.",
+      "After the new manifest becomes authoritative it may delete older <logical-name>.parts-* directories.",
+      "Temporary staging directories and temporary files may be created and removed."
+    ],
+    "protected_paths": {
+      "shadowrocket/ss.conf": "not read or written by this entrypoint",
+      "sources/domain_sources.json": "not written; assessment does not activate sources"
+    }
+  },
+  "resource_contract": {
+    "read_resources": [
+      "sources/discovered_sources.json",
+      "sources/source_assessments.json"
+    ],
+    "exclusive_write_resources": [
+      "sources/source_assessments.json",
+      "data/source_assessments_runtime.json",
+      "reports/source-assessment.md"
+    ],
+    "lease_keys": [
+      "resource:sources/source_assessments.json",
+      "resource:data/source_assessments_runtime.json",
+      "resource:reports/source-assessment.md"
+    ],
+    "dynamic_children_share_parent_lease": true,
+    "lock_scope_note": "The logical document lease must cover its adjacent manifest, all content-addressed shard directories, staging files, atomic replacement, and old-shard cleanup."
+  },
+  "execution_semantics": {
+    "network_access": true,
+    "side_effect_class": "bounded_network_read_and_repository_artifact_write",
+    "deterministic": false,
+    "idempotent": false,
+    "idempotency_key": "Not implemented; cursor rotation and assessed_at timestamps change persisted state.",
+    "retry_policy": "No automatic retry until cursor/checkpoint recovery and write-resource lease semantics are implemented.",
+    "timeout_seconds": null,
+    "timeout_note": "Current maximum of 5,000 URLs with per-request network timeout does not establish a safe total runtime bound; benchmark and explicit batch-size input are required.",
+    "success_predicate": [
+      "Process exits with code 0.",
+      "stdout is exactly one parseable JSON object with all required fields.",
+      "activated equals 0.",
+      "persistent and runtime assessment documents pass schema and shard-integrity verification.",
+      "report exists and is non-empty.",
+      "Protected config digest is unchanged."
+    ],
+    "independent_verifier": "Not implemented; required before dispatch can be enabled."
+  },
+  "dependency_edges": {
+    "required_predecessor": "script_discover_sources",
+    "edge_semantics": "assess_sources consumes the discovered_sources snapshot produced by discover_sources; it does not dispatch that predecessor itself.",
+    "registry_dependency_declared": false,
+    "note": "The dependency must become a scheduler-enforced artifact dependency with snapshot identity, not merely a workflow ordering assumption."
+  },
+  "permission_boundary": {
+    "filesystem": "Write only the three declared logical output resources and their document-store temporary/manifest/shard children.",
+    "network": "HTTPS raw.githubusercontent.com only, repository-bound URL and same-host redirect checks.",
+    "github_api": "No direct GitHub API write or token grant.",
+    "protected_config": "shadowrocket/ss.conf is immutable and outside this capability's write set."
+  },
+  "blockers": [
+    "No validated task-input-file CLI contract.",
+    "No runtime resource lease or fencing token enforcement.",
+    "No independent output verifier.",
+    "No stable idempotency key or checkpoint-aware retry semantics.",
+    "No measured total runtime bound for the configured 5,000-URL batch."
+  ],
+  "review_context": {
+    "release_id": "shadowrocket-automation-baseline-2026.11.04.1",
+    "release_manifest_blob_sha": "1a4221816d274bf0afc2a7347892faebdce2af54",
+    "program_registry_blob_sha": "ead514c6013b563b6ed02b93fb88be17adf2617f",
+    "execution_adapters_blob_sha": "0de9d5ab91358434de523518af9b084de43885e1",
+    "added_after_release_baseline": true,
+    "note": "This is a review-context pointer, not a dispatch authorization or claim that all runtime guarantees are implemented."
+  }
+}
