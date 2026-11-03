@@ -28,6 +28,9 @@ def dispatch_contract(path):
         if not req or not typ: raise ValueError(f"{path}: input {m.group(1)} must declare required and type")
         found.append({"name":m.group(1),"type":typ.group(1),"required":req.group(1)=="true"})
     return True,found
+def has_task_correlation_run_name(path):
+    content=path.read_text(encoding="utf-8")
+    return bool(re.search(r"(?m)^run-name:.*\$\{\{\s*inputs\.automation_task_id\b",content))
 def validate_execution_adapters(root=ROOT,adapters_path=None,registry_path=None):
     ap=Path(adapters_path) if adapters_path else root/"automation/execution_adapters.json"
     rp=Path(registry_path) if registry_path else root/"automation/program_registry.json"
@@ -79,6 +82,8 @@ def validate_execution_adapters(root=ROOT,adapters_path=None,registry_path=None)
             if a.get("adapter_type")!="github_actions_workflow" or not isinstance(w,dict) or w.get("path")!=p.get("path"): raise ValueError(f"{tid} workflow adapter/path invalid")
             actual,inputs=dispatch_contract(root/p["path"])
             if w.get("dispatchable") is not actual or w.get("inputs")!=inputs: raise ValueError(f"{tid} workflow_dispatch contract drift")
+            if actual and ("automation_task_id" not in {item["name"] for item in inputs} or not has_task_correlation_run_name(root/p["path"])):
+                raise ValueError(f"{tid} requires automation_task_id input and a correlated run-name")
             if a.get("interface_status")!=("workflow_dispatch_reviewed" if actual else "event_only"): raise ValueError(f"{tid} workflow interface_status invalid")
             if not isinstance(w.get("allowed_refs"),list) or not w["allowed_refs"]: raise ValueError(f"{tid} allowed_refs must be explicit")
             if not isinstance(w.get("caller_permissions_required"),list) or "actions:write" not in w["caller_permissions_required"]: raise ValueError(f"{tid} caller requires actions:write")
