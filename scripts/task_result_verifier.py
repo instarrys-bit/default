@@ -154,12 +154,18 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
                           now: datetime | None = None) -> dict:
     now = now or now_utc()
     adapter_items = adapters.get("adapters")
-    if not isinstance(adapter_items, list):
+    if adapters.get("schema_version") != 1 or not isinstance(adapter_items, list):
         raise ValueError("execution adapter inventory is invalid")
-    by_target = {
-        item.get("target_program_id"): item
-        for item in adapter_items if isinstance(item, dict)
-    }
+    by_target = {}
+    for item in adapter_items:
+        if not isinstance(item, dict):
+            raise ValueError("execution adapter entries must be objects")
+        target_id = item.get("target_program_id")
+        if not isinstance(target_id, str) or not target_id:
+            raise ValueError("execution adapter target_program_id is required")
+        if target_id in by_target:
+            raise ValueError(f"duplicate execution adapter for {target_id}")
+        by_target[target_id] = item
     def mutate(queue: dict):
         validate_envelope(queue)
         validate_candidate(queue, registry)
