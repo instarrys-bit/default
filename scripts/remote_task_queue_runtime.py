@@ -9,7 +9,7 @@ import secrets
 import sys
 import tempfile
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from pathlib import Path
 
 from github_queue_store import GitHubContentsQueueStore, QueueStoreError
@@ -88,9 +88,9 @@ def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
                 validate_candidate(queue, registry)
                 return queue, {"created": False, "task": old}
         item = {
-            "task_id": "task_" + uuid.uuid4().hex[:24],
+            "task_id": task_id,
             "idempotency_key": idem,
-            "trace_id": str(task.get("trace_id") or uuid.uuid4().hex),
+            "trace_id": trace_id,
             "requester_program_id": task["requester_program_id"],
             "target_program_id": task["target_program_id"],
             "capability": task["capability"],
@@ -114,8 +114,11 @@ def claim_remote(worker_id: str, store: GitHubContentsQueueStore,
     now = now or now_utc()
     by_id = {p.get("id"): p for p in registry["programs"] if isinstance(p, dict)}
 
+    lease_token = secrets.token_hex(16)
+
     def mutate(queue: dict):
         validate_envelope(queue)
+        validate_candidate(queue, registry)
         eligible = []
         for task in queue["tasks"]:
             if task.get("status") != "QUEUED":
@@ -133,7 +136,7 @@ def claim_remote(worker_id: str, store: GitHubContentsQueueStore,
         task["attempts"] += 1
         task["state_history"].append("CLAIMED")
         task["lease"] = {
-            "owner": worker_id, "token": secrets.token_hex(16),
+            "owner": worker_id, "token": lease_token,
             "expires_at": stamp(now + timedelta(seconds=policy["timeout_seconds"])),
         }
         queue["revision"] += 1
@@ -151,6 +154,7 @@ def complete_remote(task_id: str, worker_id: str, lease_token: str, *,
 
     def mutate(queue: dict):
         validate_envelope(queue)
+        validate_candidate(queue, registry)
         task = next((item for item in queue["tasks"] if item.get("task_id") == task_id), None)
         if task is None:
             raise ValueError(f"unknown task_id: {task_id}")
@@ -193,6 +197,7 @@ def recover_remote(store: GitHubContentsQueueStore, registry: dict, now: datetim
 
     def mutate(queue: dict):
         validate_envelope(queue)
+        validate_candidate(queue, registry)
         recovered = []
         for task in queue["tasks"]:
             if task.get("status") != "CLAIMED":
