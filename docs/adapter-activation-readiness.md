@@ -23,8 +23,8 @@ The Watchdog queue job must explicitly declare `actions: write` and `contents: w
 
 The audit separately identifies workflows that are dispatchable, have correlation support, have a caller with the required scopes, and declare no write permissions or repository-publishing/downstream-dispatch side effects.
 
-The current expected low-privilege candidate is `workflow_self_healing_tests` because its workflow token is read-only and its job runs deterministic tests. This is a candidate for a future user-approved canary, not an activation. The audit does not authorize or trigger it.
+The approved low-privilege canary is `workflow_self_healing_tests`. Its target workflow token is read-only and its job runs deterministic tests. The only permitted caller is `workflow_automation_watchdog`, through the `task-queue-supervision` job, whose job-level permissions are limited to `actions:write` and `contents:write` for dispatch and queue persistence. The canary has a single attempt and no automatic retry. This activation does not enable any repair worker or the self-healing agent workflow.
 
 ## Current activation policy
 
-All adapters remain disabled by default. A canary requires a separate explicit approval to set both the target program orchestration and matching adapter enabled/caller fields. No broad enablement is performed by this audit or by CI.
+All adapters remain disabled by default. By explicit user approval, exactly one canary is activated: `workflow_self_healing_tests`. All other adapters remain disabled. The read-only audit does not itself activate or trigger adapters; it only reports the configured state.
