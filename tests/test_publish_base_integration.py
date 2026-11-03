@@ -1,3 +1,4 @@
+import json
 import os
 import subprocess
 import tempfile
@@ -55,6 +56,48 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         git(self.work, "push", "origin", "HEAD:main")
         git(self.work, "checkout", "--detach", self.base)
 
+    def add_queue_commit(self, *, author_email="41898282+github-actions[bot]@users.noreply.github.com",
+                         message="Update durable automation task queue", extra_path=None):
+        queue_path = self.work / "automation" / "task_queue.json"
+        queue_path.parent.mkdir(parents=True, exist_ok=True)
+        queue_path.write_text('{"revision": 1}\\n', encoding="utf-8")
+        git(self.work, "add", "automation/task_queue.json")
+        if extra_path:
+            extra = self.work / extra_path
+            extra.parent.mkdir(parents=True, exist_ok=True)
+            extra.write_text("other change\\n", encoding="utf-8")
+            git(self.work, "add", extra_path)
+        env = os.environ.copy()
+        env["GIT_AUTHOR_NAME"] = "github-actions[bot]"
+        env["GIT_AUTHOR_EMAIL"] = author_email
+        subprocess.run(["git", "commit", "-m", message], cwd=self.work, env=env,
+                       check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        git(self.work, "push", "origin", "HEAD:main")
+        git(self.work, "checkout", "--detach", self.base)
+
+    def run_check_only(self, compare):
+        env = os.environ.copy()
+        env["GITHUB_SHA"] = self.base
+        env["COMPARE_JSON"] = json.dumps(compare)
+        return subprocess.run(
+            ["bash", str(VERIFY_SCRIPT), "--check-only"], cwd=self.work, env=env,
+            text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        )
+
+    def queue_compare(self, *, author_email="41898282+github-actions[bot]@users.noreply.github.com",
+                      message="Update durable automation task queue", files=None, parent=None):
+        return {
+            "status": "ahead",
+            "ahead_by": 1,
+            "behind_by": 0,
+            "files": files or [{"filename": "automation/task_queue.json", "status": "modified"}],
+            "commits": [{
+                "sha": "a" * 40,
+                "commit": {"message": message, "author": {"email": author_email}},
+                "parents": [{"sha": parent or self.base}],
+            }],
+        }
+
     def test_docs_only_change_rebases_to_current_main(self):
         self.add_remote_commit("docs/guide.md", "updated docs\n", "docs update")
         result = self.run_guard()
@@ -62,6 +105,38 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         self.assertEqual(git(self.work, "rev-parse", "HEAD"), git(self.work, "rev-parse", "origin/main"))
         self.assertEqual((self.work / "docs" / "guide.md").read_text(encoding="utf-8"), "updated docs\n")
         self.assertEqual((self.work / "shadowrocket" / "ss.conf").read_text(encoding="utf-8"), "protected\n")
+
+    def test_verified_queue_only_commit_rebases_to_current_main(self):
+        self.add_queue_commit()
+        result = self.run_guard()
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("strictly verified durable queue-state commits", result.stdout)
+        self.assertEqual(git(self.work, "rev-parse", "HEAD"), git(self.work, "rev-parse", "origin/main"))
+        self.assertEqual((self.work / "shadowrocket" / "ss.conf").read_text(encoding="utf-8"), "protected\\n")
+
+    def test_queue_only_commit_from_non_bot_author_is_rejected(self):
+        self.add_queue_commit(author_email="test@example.invalid")
+        result = self.run_guard()
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("untrusted, mixed, or non-linear", result.stdout)
+        self.assertEqual(git(self.work, "rev-parse", "HEAD"), self.base)
+
+    def test_queue_commit_mixed_with_other_files_is_rejected(self):
+        self.add_queue_commit(extra_path="scripts/changed.py")
+        result = self.run_guard()
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("Non-documentation", result.stdout)
+        self.assertEqual(git(self.work, "rev-parse", "HEAD"), self.base)
+
+    def test_api_check_accepts_strict_queue_only_compare(self):
+        result = self.run_check_only(self.queue_compare())
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("strictly verified durable queue-state commits", result.stdout)
+
+    def test_api_check_rejects_untrusted_queue_commit(self):
+        result = self.run_check_only(self.queue_compare(author_email="test@example.invalid"))
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("unverified repository state", result.stdout)
 
     def test_non_documentation_change_is_rejected_without_rebase(self):
         self.add_remote_commit("scripts/build_config.py", "changed\n", "script update")
