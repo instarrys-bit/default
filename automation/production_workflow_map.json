@@ -594,5 +594,13 @@
     "The publish job must not be decomposed into independently writable capability jobs without a single controlled publisher.",
     "The review cursor recovery job runs only after audit failure and must remain a recovery path.",
     "Dashboard generation is observer-only and is not a production stage."
-  ]
+  ],
+  "review_context": {
+    "release_id": "shadowrocket-automation-baseline-2026.11.04.1",
+    "release_manifest_blob_sha": "1a4221816d274bf0afc2a7347892faebdce2af54",
+    "program_registry_blob_sha": "ead514c6013b563b6ed02b93fb88be17adf2617f",
+    "execution_adapters_blob_sha": "0de9d5ab91358434de523518af9b084de43885e1",
+    "added_after_release_baseline": true,
+    "note": "This is a review-context pointer, not a dispatch authorization or claim that all runtime guarantees are implemented."
+  }
 }
