@@ -1,3 +1,4 @@
+import json
 import sys
 import unittest
 from pathlib import Path
@@ -15,8 +16,10 @@ class AdapterActivationAuditTests(unittest.TestCase):
         report = audit_activation_readiness(ROOT)
         self.assertTrue(report["read_only"])
         self.assertFalse(report["activation_performed"])
-        self.assertEqual(report["program_count"], 56)
-        self.assertEqual(report["adapter_count"], 56)
+        registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
+        adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
+        self.assertEqual(report["program_count"], len(registry["programs"]))
+        self.assertEqual(report["adapter_count"], len(adapters["adapters"]))
         self.assertEqual(report["enabled_adapter_count"], 2)
         self.assertTrue(report["watchdog_caller_permissions_ready"])
         self.assertEqual(

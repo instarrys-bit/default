@@ -27,6 +27,8 @@ on:
       - "automation/program_registry.json"
       - "automation/execution_adapters.json"
       - "automation/task_queue.json"
+      - "automation/*.json"
+      - "automation/**/*.json"
       - "scripts/**"
   pull_request:
     paths:
@@ -40,6 +42,8 @@ on:
       - ".github/workflows/**"
       - "automation/program_registry.json"
       - "automation/execution_adapters.json"
+      - "automation/*.json"
+      - "automation/**/*.json"
 
 permissions:
   contents: read
@@ -124,6 +128,8 @@ jobs:
       - run: python scripts/audit_adapter_activation.py --help
       - name: Validate unified execution adapter contracts
         run: python scripts/validate_execution_adapters.py
+      - name: Validate unified release manifest pins and execution safety gates
+        run: python scripts/validate_release_manifest.py
       - name: Audit adapter activation readiness without enabling anything
         run: |
           set -euo pipefail
