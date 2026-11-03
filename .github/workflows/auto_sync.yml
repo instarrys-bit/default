@@ -79,6 +79,10 @@ jobs:
           PRODUCTION_FINGERPRINT: ${{ inputs.production_fingerprint }}
           PRODUCTION_DECISION: ${{ inputs.production_decision }}
           PRODUCTION_REASON: ${{ inputs.production_reason }}
+          BASELINE_SOURCE_EVENT: ${{ inputs.baseline_source_event }}
+          BASELINE_SOURCE_ACTOR: ${{ inputs.baseline_source_actor }}
+          BASELINE_SOURCE_BEFORE: ${{ inputs.baseline_source_before }}
+          BASELINE_SOURCE_SHA: ${{ inputs.baseline_source_sha }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -128,6 +132,21 @@ jobs:
                   or not production_reason
               ):
                   raise SystemExit("The dispatched production intent does not match the durable task input.")
+          task_input = task.get("input")
+          if not isinstance(task_input, dict):
+              raise SystemExit("The durable task input is missing or invalid.")
+          for field, env_name in (
+              ("baseline_source_event", "BASELINE_SOURCE_EVENT"),
+              ("baseline_source_actor", "BASELINE_SOURCE_ACTOR"),
+              ("baseline_source_before", "BASELINE_SOURCE_BEFORE"),
+              ("baseline_source_sha", "BASELINE_SOURCE_SHA"),
+          ):
+              supplied = os.environ.get(env_name, "")
+              if supplied and task_input.get(field) != supplied:
+                  raise SystemExit(f"Dispatched {field} does not match the durable Watchdog task input.")
+          baseline_sha = os.environ.get("BASELINE_SOURCE_SHA", "")
+          if baseline_sha and not re.fullmatch(r"[0-9a-f]{40}", baseline_sha):
+              raise SystemExit("The dispatched baseline source SHA is not a full Git commit SHA.")
           if task.get("status") == "VERIFYING":
               result = task.get("result")
               if (
