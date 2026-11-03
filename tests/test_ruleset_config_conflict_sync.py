@@ -311,6 +311,86 @@ class ConfigConflictSyncTests(unittest.TestCase):
                 previously_published_reject_rules(set(), pending),
             )
 
+    def test_config_a_to_b_to_a_reconciles_archive_without_auto_restoring_rules(self):
+        from build_rulesets import previously_published_reject_rules
+        from production_intent import decide
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            queue = {
+                "schema_version": 1,
+                "max_published_rules": 30000,
+                "queued_count": 2,
+                "items": [
+                    {"policy": "DIRECT", "scope": "exact_candidate", "domain": "queued.example.com"},
+                    {"policy": "REJECT", "scope": "exact_candidate", "domain": "queued-reject.example.com"},
+                ],
+            }
+            config_a = config_with_rules([])
+            config_b = config_with_rules(["DOMAIN-SUFFIX,example.com,REJECT"])
+            make_root(
+                root, config_a,
+                direct="DOMAIN,api.example.com\\n",
+                proxy="DOMAIN-SUFFIX,web.example.com\\n",
+                reject="DOMAIN,ads.example.com\\n",
+                queue=queue,
+            )
+            config_path = root / "shadowrocket" / "ss.conf"
+            original_a = config_path.read_bytes()
+            sync(root=root, now="2026-11-01T00:00:00+00:00")
+            self.assertEqual(config_path.read_bytes(), original_a)
+
+            config_path.write_text(config_b, encoding="utf-8")
+            before_b = config_path.read_bytes()
+            report_b = sync(root=root, now="2026-11-02T00:00:00+00:00")
+            self.assertEqual(config_path.read_bytes(), before_b)
+            self.assertEqual(report_b["published_removed_count"], 3)
+            self.assertEqual(report_b["pending_queue_removed_count"], 2)
+            for policy in ("direct", "proxy", "reject"):
+                self.assertEqual((root / "rulesets" / f"{policy}.list").read_text(), "")
+            queue_b = json.loads((root / "rulesets" / "pending_queue.json").read_text())
+            self.assertEqual(queue_b["items"], [])
+            archive_path = root / "rulesets" / "config_conflict_archive.json"
+            archive_b = json.loads(archive_path.read_text())
+            self.assertEqual(len(archive_b["items"]), 5)
+            self.assertEqual(
+                {item["origin"] for item in archive_b["items"]},
+                {"published_ruleset", "pending_queue"},
+            )
+
+            config_path.write_text(config_a, encoding="utf-8")
+            before_a = config_path.read_bytes()
+            intent = decide(
+                event="push",
+                current_fingerprint="a" * 64,
+                last_success_fingerprint="a" * 64,
+                path_classification={
+                    "status": "INPUT_CHANGED",
+                    "production_input_changes": ["shadowrocket/ss.conf"],
+                    "non_production_changes": [],
+                    "unknown_changes": [],
+                },
+                last_success_at="2026-11-01T00:00:00+00:00",
+                successful_fingerprints={"a" * 64, "b" * 64},
+                revision="c" * 40,
+            )
+            self.assertEqual(intent["decision"], "INPUT_CHANGED")
+            self.assertTrue(intent["should_produce"])
+            self.assertEqual(intent["idempotency_key"], "production:input:" + "a" * 64 + ":" + "c" * 40)
+
+            report_a = sync(root=root, now="2026-11-03T00:00:00+00:00")
+            self.assertEqual(config_path.read_bytes(), before_a)
+            self.assertEqual(report_a["active_archive_count"], 0)
+            archive_a = json.loads(archive_path.read_text())
+            self.assertTrue(all(item.get("superseded_at") for item in archive_a["items"]))
+            self.assertTrue(all(not item.get("restored_at") for item in archive_a["items"]))
+
+            for policy in ("direct", "proxy", "reject"):
+                self.assertEqual((root / "rulesets" / f"{policy}.list").read_text(), "")
+            authorized_rejects = previously_published_reject_rules(set(), archive_a)
+            self.assertIn("DOMAIN,ads.example.com", authorized_rejects)
+            self.assertNotIn("DOMAIN,queued-reject.example.com", authorized_rejects)
+
 
 if __name__ == "__main__":
     unittest.main()
