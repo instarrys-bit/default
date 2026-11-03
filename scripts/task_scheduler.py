@@ -192,6 +192,29 @@ def protected_config_digest(root: Path = ROOT) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def read_only_resource_digests(root: Path, paths: list[str]) -> dict[str, str | None]:
+    if not isinstance(paths, list) or any(not isinstance(path, str) or not path or path.startswith("/") or chr(92) in path or any(part in {"", ".", ".."} for part in path.split("/")) for path in paths):
+        raise ValueError("read_only_resources must contain safe repository-relative file paths")
+    if len(paths) != len(set(paths)):
+        raise ValueError("read_only_resources contains duplicate paths")
+    result={}
+    for relative in paths:
+        path=(root/relative).resolve()
+        if not path.is_relative_to(root.resolve()):
+            raise ValueError(f"read-only resource resolves outside repository: {relative}")
+        if path.exists() and not path.is_file():
+            raise ValueError(f"read-only resource must be a file: {relative}")
+        result[relative]=hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
+    return result
+
+
+def ensure_read_only_resources_unchanged(before: dict[str, str | None], root: Path) -> None:
+    after=read_only_resource_digests(root,list(before))
+    changed=[path for path in before if before[path]!=after[path]]
+    if changed:
+        raise ProtectedConfigMutationError("Capability modified declared read-only resources: "+", ".join(changed))
+
+
 def ensure_protected_config_unchanged(before_digest: str, task: dict, store,
                                       registry: dict, root: Path = ROOT) -> None:
     after_digest = protected_config_digest(root)
