@@ -63,5 +63,47 @@ class RestoreAutomationStateTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "unsafe"):
                 restore_state(archive, root/"repo")
 
+
+    def test_skips_only_legacy_gnu_tar_self_hardlink_duplicate(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); archive = root / "state.tar.gz"
+            with tarfile.open(archive, "w:gz") as tar:
+                for name in ("data/candidates.json", "sources/domain_reviews.json"):
+                    data = b"{}"
+                    info = tarfile.TarInfo(name); info.size = len(data)
+                    tar.addfile(info, io.BytesIO(data))
+                duplicate = tarfile.TarInfo("data/candidates.json")
+                duplicate.type = tarfile.LNKTYPE
+                duplicate.linkname = "data/candidates.json"
+                tar.addfile(duplicate)
+            result = restore_state(archive, root / "repo")
+            self.assertEqual(result["restored_files"], 2)
+
+    def test_rejects_hardlink_to_different_path(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); archive = root / "state.tar.gz"
+            with tarfile.open(archive, "w:gz") as tar:
+                for name in ("data/candidates.json", "sources/domain_reviews.json"):
+                    data = b"{}"
+                    info = tarfile.TarInfo(name); info.size = len(data)
+                    tar.addfile(info, io.BytesIO(data))
+                link = tarfile.TarInfo("data/domain_candidates.json")
+                link.type = tarfile.LNKTYPE
+                link.linkname = "data/candidates.json"
+                tar.addfile(link)
+            with self.assertRaisesRegex(ValueError, "unsupported"):
+                restore_state(archive, root / "repo")
+
+    def test_rejects_duplicate_regular_archive_entry(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); archive = root / "state.tar.gz"
+            self.make_archive(archive, [
+                ("data/candidates.json", "{}"),
+                ("sources/domain_reviews.json", "{}"),
+                ("data/candidates.json", "{\"duplicate\":true}"),
+            ])
+            with self.assertRaisesRegex(ValueError, "duplicate"):
+                restore_state(archive, root / "repo")
+
 if __name__ == "__main__":
     unittest.main()
