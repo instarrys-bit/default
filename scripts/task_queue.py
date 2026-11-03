@@ -207,6 +207,54 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
             if not isinstance(verification, dict) or verification.get("status") != "passed":
                 raise ValueError(f"{task_id} GitHub-backed SUCCEEDED task requires independent verification")
 
+    resource_leases = queue.get("resource_leases", {})
+    if not isinstance(resource_leases, dict):
+        raise ValueError("resource_leases must be an object")
+    for resource, record in resource_leases.items():
+        if (not isinstance(resource, str) or not resource or resource.startswith("/")
+                or "\\\\" in resource or any(part in {"", ".", ".."} for part in resource.split("/"))):
+            raise ValueError(f"resource lease key is not a canonical relative path: {resource!r}")
+        if not isinstance(record, dict) or record.get("status") not in {"ACTIVE", "RELEASED"}:
+            raise ValueError(f"resource lease record is invalid: {resource}")
+        for field in ("task_id", "worker_id", "task_lease_token", "lease_id"):
+            if not isinstance(record.get(field), str) or not record[field]:
+                raise ValueError(f"resource lease {resource}.{field} is required")
+        fence = record.get("fencing_token")
+        if isinstance(fence, bool) or not isinstance(fence, int) or fence < 1:
+            raise ValueError(f"resource lease {resource}.fencing_token is invalid")
+        for field in ("acquired_at", "renewed_at", "expires_at"):
+            parse_utc(record.get(field), f"resource_leases.{resource}.{field}")
+        if record.get("status") == "ACTIVE" and record.get("released_at") is not None:
+            raise ValueError(f"active resource lease {resource} cannot have released_at")
+        if record.get("status") == "RELEASED":
+            parse_utc(record.get("released_at"), f"resource_leases.{resource}.released_at")
+
+    for task in tasks:
+        resource_lease = task.get("resource_lease")
+        if resource_lease is None:
+            continue
+        task_id = task["task_id"]
+        if not isinstance(resource_lease, dict) or resource_lease.get("status") not in {"ACTIVE", "RELEASED"}:
+            raise ValueError(f"{task_id}.resource_lease is invalid")
+        seconds = resource_lease.get("lease_seconds")
+        if isinstance(seconds, bool) or not isinstance(seconds, int) or not 1 <= seconds <= 3600:
+            raise ValueError(f"{task_id}.resource_lease.lease_seconds is invalid")
+        resources = resource_lease.get("resources")
+        if not isinstance(resources, dict) or not resources:
+            raise ValueError(f"{task_id}.resource_lease.resources must be a non-empty object")
+        for resource, proof in resources.items():
+            if resource not in resource_leases or not isinstance(proof, dict):
+                raise ValueError(f"{task_id}.resource_lease references an unknown resource")
+            lease_id, fence = proof.get("lease_id"), proof.get("fencing_token")
+            if not isinstance(lease_id, str) or not lease_id or isinstance(fence, bool) or not isinstance(fence, int) or fence < 1:
+                raise ValueError(f"{task_id}.resource_lease proof is invalid for {resource}")
+            if resource_lease["status"] == "ACTIVE":
+                current = resource_leases[resource]
+                if current.get("status") != "ACTIVE" or current.get("task_id") != task_id or current.get("lease_id") != lease_id or current.get("fencing_token") != fence:
+                    raise ValueError(f"{task_id}.resource_lease is stale for {resource}")
+        if resource_lease.get("status") == "ACTIVE":
+            parse_utc(resource_lease.get("expires_at"), f"{task_id}.resource_lease.expires_at")
+
     return {"valid": True, "task_count": len(tasks), "revision": revision}
 
 
