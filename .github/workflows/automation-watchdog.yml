@@ -51,9 +51,6 @@ jobs:
       block_manifest: ${{ steps.stale-recovery.outputs.block_manifest }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
-    concurrency:
-      group: shadowrocket-main-writer
-      cancel-in-progress: false
     permissions:
       actions: write
       contents: write
@@ -275,6 +272,9 @@ jobs:
   task-queue-supervision:
     needs: [health-check, stale-run-watch, manifest-integrity]
     if: ${{ always() && needs.health-check.result == 'success' && ((github.event_name != 'schedule' && github.event_name != 'workflow_dispatch') || needs.stale-run-watch.result == 'success') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main') }}
+    concurrency:
+      group: shadowrocket-main-writer
+      cancel-in-progress: false
     permissions:
       actions: write
       contents: write
