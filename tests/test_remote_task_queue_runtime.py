@@ -73,7 +73,7 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
         done = complete_remote(task["task_id"], "worker-a", task["lease"]["token"],
                                success=True, result={"ok": True}, store=self.store,
                                registry=self.registry, now=self.now)
-        self.assertEqual(done["status"], "SUCCEEDED")
+        self.assertEqual(done["status"], "VERIFYING")
 
     def test_failure_retries_then_dead_letters(self):
         enqueue_remote(self.payload(), self.store, self.registry, self.now)
