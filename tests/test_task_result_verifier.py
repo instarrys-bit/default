@@ -23,6 +23,9 @@ class MemoryStore:
             self.writes += 1
         return result
 
+    def read(self):
+        return type("Snapshot", (), {"document": copy.deepcopy(self.document), "content_sha": "fake-sha"})()
+
 
 class TaskResultVerifierTests(unittest.TestCase):
     def setUp(self):
