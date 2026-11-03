@@ -7,6 +7,11 @@ on:
     - cron: "30 22 * * *"
   workflow_dispatch:
     inputs:
+      request_deterministic_audit:
+        description: 'Explicitly authorize one deterministic production audit through the durable Watchdog queue'
+        required: false
+        default: false
+        type: boolean
       automation_task_id:
         description: 'Internal task correlation ID; leave blank for manual runs'
         required: false
@@ -292,6 +297,43 @@ jobs:
           fi
           if jq -e '[.workflow_runs[] | select(.head_branch == "main" and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
             echo "A main-branch deterministic audit is already queued or running; no duplicate dispatch."
+            echo "block_manifest=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # A manual authorization is an explicit one-shot request, not a bypass
+          # of the normal Watchdog queue, unknown-path gate, or protected baseline.
+          if [ "$ORIGIN_EVENT" = "workflow_dispatch" ] && [ "${{ inputs.request_deterministic_audit }}" = "true" ]; then
+            pending_paths="$(jq '[.entries[] | select(.status == "PENDING_CLASSIFICATION")] | length' automation/unregistered_path_registry.json)"
+            if [ "$pending_paths" -gt 0 ]; then
+              echo "Manual audit blocked: $pending_paths unclassified paths remain in the Watchdog inbox."
+              echo "block_manifest=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            active_tasks="$(jq '[.tasks[] | select(.status == "QUEUED" or .status == "CLAIMED" or .status == "VERIFYING")] | length' automation/task_queue.json)"
+            if [ "$active_tasks" -gt 0 ]; then
+              echo "Manual audit blocked: $active_tasks durable queue task(s) are already active."
+              echo "block_manifest=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            manual_fingerprint="$(python3 - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from production_intent import load_manifest, compute_fingerprint
+          manifest = load_manifest(Path("automation/production_inputs.json"))
+          print(compute_fingerprint(Path("."), manifest))
+          PY
+          )"
+            if [ -z "$manual_fingerprint" ]; then
+              echo "Manual audit blocked: production input fingerprint is empty."
+              exit 1
+            fi
+            manual_input="$(jq -cn --arg fingerprint "$manual_fingerprint" --arg sha "$current_sha" --arg run "$GITHUB_RUN_ID" '{production_fingerprint:$fingerprint,production_decision:"USER_AUTHORIZED_MANUAL_AUDIT",production_reason:"Explicit one-shot user authorization submitted through the Watchdog manual control.",baseline_source_event:"workflow_dispatch",baseline_source_sha:$sha,authorization_run_id:$run}')"
+            manual_key="production:manual-authorized:$manual_fingerprint:$GITHUB_RUN_ID"
+            echo "Enqueueing one explicitly authorized deterministic audit for current main $current_sha ($manual_fingerprint)."
+            printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$manual_key" --priority 100 --input-json "$manual_input" enqueue-auto-sync
+            echo "One authorized deterministic audit was persisted to the durable queue." >> "$GITHUB_STEP_SUMMARY"
             echo "block_manifest=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
