@@ -2,6 +2,7 @@
 """Build a sanitized, read-only GitHub Pages operations snapshot."""
 import json
 import os
+import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -60,8 +61,37 @@ held = as_int(manifest.get("held_total"))
 candidate_count = as_int(candidates.get("candidate_count"))
 source_count = as_int(manifest.get("source_count"))
 
+def watchdog_status():
+    repo = os.environ.get("GITHUB_REPOSITORY", "")
+    token = os.environ.get("GH_TOKEN", "")
+    if not repo or not token:
+        return {"workflow_state": "unknown", "last_run_status": "unknown",
+                "last_run_conclusion": None, "last_run_at": None}
+    headers = {"Accept": "application/vnd.github+json",
+               "Authorization": "Bearer " + token,
+               "X-GitHub-Api-Version": "2022-11-28"}
+    def api(path):
+        request = urllib.request.Request(
+            "https://api.github.com/repos/" + repo + path, headers=headers)
+        with urllib.request.urlopen(request, timeout=8) as response:
+            return json.load(response)
+    try:
+        workflow = api("/actions/workflows/automation-watchdog.yml")
+        runs = api("/actions/workflows/automation-watchdog.yml/runs?per_page=1")
+        latest = (runs.get("workflow_runs") or [{}])[0]
+        return {"workflow_state": workflow.get("state", "unknown"),
+                "last_run_status": latest.get("status", "unknown"),
+                "last_run_conclusion": latest.get("conclusion"),
+                "last_run_at": latest.get("run_started_at") or latest.get("created_at")}
+    except Exception as exc:
+        print("watchdog status unavailable: " + str(exc))
+        return {"workflow_state": "unknown", "last_run_status": "unknown",
+                "last_run_conclusion": None, "last_run_at": None}
+
+
 snapshot = {
     "schema_version": 1,
+    "automation": watchdog_status(),
     "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
     "source_commit": os.environ.get("GITHUB_SHA", "local"),
     "sources": {"source_count": source_count, "candidate_count": candidate_count},
