@@ -135,25 +135,29 @@
   },
   "managed_config_guard": {
     "path": "shadowrocket/ss.conf",
-    "approved_git_blob_sha": "b87f4c3bf13ed76d7f01ecc77266793da0e7556b",
+    "approved_git_blob_sha": "daa84802764de63c24da1e727ed233bab2e9151f",
     "immutable": true,
     "description": "Authoritative user-managed Shadowrocket config baseline. Read-only for automation; derived rule audits must evaluate against this file.",
     "last_user_approved_baseline_update": {
-      "previous_blob_sha": "3fb030163c6daf3f5e5c7af37625ae1745e5c315",
-      "new_blob_sha": "b87f4c3bf13ed76d7f01ecc77266793da0e7556b",
+      "previous_blob_sha": "b87f4c3bf13ed76d7f01ecc77266793da0e7556b",
+      "new_blob_sha": "daa84802764de63c24da1e727ed233bab2e9151f",
       "reason": "Recover an interrupted registration after verifying every intervening ss.conf-changing commit is associated with the repository owner on GitHub. Automation does not edit ss.conf.",
       "approval_mode": "recovered_owner_authored_config_history",
       "config_change_commits": [
-        "e58e3c2d85078802d5975e175402f2afbb83748d",
-        "b0316ffd3d2070638a4c2103769699e3f4b827de",
-        "b64913aceb9e06a1ce2addcd38c91cf12050b310",
-        "063cc6c9c3683aa074e475d8b0b382cbdae878a3",
-        "685bdb874d566ce6ad9d7d191ef69dfde006de89",
-        "72acf96de60666b533f044a23fcb47d7119e7041"
+        "8996af8a530e47585979badfee575ca76a04a38a",
+        "7c376836232c1fda8ee40d91bab0e7d7255f501f",
+        "bd8d96e54b374f6abe30425ab0aea1a56e1c73eb",
+        "9ae9993d851a81231a98d8d041d4f499475cf920",
+        "f11460c4e79dfdc3f1d0fe94d932ac8c96fcbab4",
+        "610f631c5ccbce61df551993cdb80b14ff1afc1c",
+        "bd97bdc55ead8a4ccfddde33b3ffa7de355c9c0f",
+        "404294351140e43beb7aaeb5949f67c0b6129486",
+        "ba3df60101797ffc0a977dfac5298b91b6b9cbec",
+        "f207017c0830fd53f48294d01fa0404eaa54a081"
       ],
       "actor": "github-actions[bot]",
-      "commit_sha": "8ecf8f5ca206b478b34ef2fa5b7cfc101731fbd4",
-      "registered_at": "2026-11-03T09:04:11.901868+00:00"
+      "commit_sha": "09457fd03856c6264b9d47eac993252f86c3d609",
+      "registered_at": "2026-11-03T18:17:58.128395+00:00"
     }
   }
 }

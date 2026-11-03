@@ -254,9 +254,9 @@
         "yous/youslist",
         "zakird/crux-top-lists"
       ],
-      "status": "CURRENT",
-      "error": null,
-      "pending_confirmations": 0,
+      "status": "STALE_QUARANTINED",
+      "error": "hagezi-domains-pro source drift exceeds automatic safety limit: 36779 added + 800 removed = 37579; limit 21177",
+      "pending_confirmations": 1,
       "new_entries": 0,
       "removed_entries": 0,
       "baseline_initialized": false,
@@ -305,7 +305,7 @@
     }
   ],
   "source_count": 13,
-  "policy_conflict_total": 717,
+  "policy_conflict_total": 464,
   "lineage_verified_sources": 0,
   "lineage_unverified_sources": 11,
   "lineage_partial_sources": 2,
@@ -337,36 +337,64 @@
     }
   },
   "rule_count": {
-    "DIRECT": 143,
-    "PROXY": 3222,
+    "DIRECT": 147,
+    "PROXY": 3259,
     "REJECT": 6
   },
-  "published_rule_total": 3371,
+  "published_rule_total": 3412,
   "max_published_rules": 30000,
   "queued_rule_total": 0,
-  "baseline_conflict_hold_count": 0,
-  "baseline_conflict_hold_sample": [],
+  "baseline_conflict_hold_count": 1,
+  "baseline_conflict_hold_sample": [
+    {
+      "domain": "tellapart.com",
+      "policy": "PROXY",
+      "scope": "suffix_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L274: DOMAIN-SUFFIX,tellapart.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    }
+  ],
   "pending_queue": "rulesets/pending_queue.json",
   "rule_lifecycle": {
     "DIRECT": {
-      "previous_count": 143,
-      "current_count": 143,
-      "added_count": 0,
+      "previous_count": 142,
+      "current_count": 147,
+      "added_count": 5,
       "removed_count": 0,
-      "previous_sha256": "c56eb38be10d0b8891526cc4bba2296593bee32db57906efc32a6cafb64fb799",
-      "current_sha256": "c56eb38be10d0b8891526cc4bba2296593bee32db57906efc32a6cafb64fb799",
-      "added_sample": [],
+      "previous_sha256": "0269d3adae399308a5fbd5def14b018b3cba43ff45dbcdae4d2832e2a8f44e96",
+      "current_sha256": "13f590c91641eb7dc9ffc4a87844217870604c509bd77d1df047e3bd6c884692",
+      "added_sample": [
+        "DOMAIN-SUFFIX,360kuai.com",
+        "DOMAIN-SUFFIX,88cdn.com",
+        "DOMAIN-SUFFIX,bootcss.com",
+        "DOMAIN-SUFFIX,p2cdn.com",
+        "DOMAIN-SUFFIX,toutiaopage.com"
+      ],
       "removed_sample": [],
       "baseline_initialized": false
     },
     "PROXY": {
       "previous_count": 3222,
-      "current_count": 3222,
-      "added_count": 0,
+      "current_count": 3259,
+      "added_count": 37,
       "removed_count": 0,
       "previous_sha256": "0ea3f0828b35a38297e19d24d57702af218347ec4ebf8fd912b90f4d51570c84",
-      "current_sha256": "0ea3f0828b35a38297e19d24d57702af218347ec4ebf8fd912b90f4d51570c84",
-      "added_sample": [],
+      "current_sha256": "c65be8a8c922445caa8d6f30c6e1f81446c1ac9d0ba3dd441729af98cb16d1d1",
+      "added_sample": [
+        "DOMAIN-SUFFIX,000webhost.com",
+        "DOMAIN-SUFFIX,1000giri.net",
+        "DOMAIN-SUFFIX,12bet.com",
+        "DOMAIN-SUFFIX,1mobile.com",
+        "DOMAIN-SUFFIX,2049bbs.xyz",
+        "DOMAIN-SUFFIX,advertisercommunity.com",
+        "DOMAIN-SUFFIX,blinkx.com",
+        "DOMAIN-SUFFIX,blogcatalog.com",
+        "DOMAIN-SUFFIX,bloglines.com",
+        "DOMAIN-SUFFIX,bloglovin.com"
+      ],
       "removed_sample": [],
       "baseline_initialized": false
     },
@@ -383,29 +411,29 @@
     }
   },
   "reviewed_total": 165902,
-  "approved_total": 3370,
-  "held_total": 162532,
+  "approved_total": 3411,
+  "held_total": 162491,
   "reject_manual_approval_required": true,
   "reject_manual_approval_count": 0,
-  "reject_manual_hold_count": 57908,
+  "reject_manual_hold_count": 33028,
   "status_count": {
-    "ALREADY_COVERED": 9559,
-    "APPROVED": 61278,
-    "CONFLICT": 36587,
-    "POLICY_CONFLICT": 717,
-    "REVIEW": 57745,
+    "ALREADY_COVERED": 9596,
+    "APPROVED": 36441,
+    "CONFLICT": 36598,
+    "POLICY_CONFLICT": 464,
+    "REVIEW": 82787,
     "RISK_HOLD": 16
   },
   "deterministic_review_progress": {
     "candidate_total": 165902,
-    "approved_total": 3370,
-    "held_total": 162532,
+    "approved_total": 3411,
+    "held_total": 162491,
     "status_count": {
-      "ALREADY_COVERED": 9559,
-      "APPROVED": 61278,
-      "CONFLICT": 36587,
-      "POLICY_CONFLICT": 717,
-      "REVIEW": 57745,
+      "ALREADY_COVERED": 9596,
+      "APPROVED": 36441,
+      "CONFLICT": 36598,
+      "POLICY_CONFLICT": 464,
+      "REVIEW": 82787,
       "RISK_HOLD": 16
     }
   },

@@ -1,33 +1,51 @@
 {
   "schema_version": 1,
-  "completed_at": "2026-11-03T10:56:20.227565+00:00",
+  "completed_at": "2026-11-03T18:24:15.032369+00:00",
   "config_path": "shadowrocket/ss.conf",
   "config_read_only": true,
-  "config_blob_sha": "b87f4c3bf13ed76d7f01ecc77266793da0e7556b",
+  "config_blob_sha": "daa84802764de63c24da1e727ed233bab2e9151f",
+  "config_sha256": "a154d2810fbed217245802c3ff99800119e5138fc29b80fa4181efd938074ed6",
   "ruleset_reference_count": 3,
-  "config_rule_line_count": 1200,
+  "config_rule_line_count": 1675,
   "published_before": {
     "DIRECT": 143,
     "PROXY": 3222,
     "REJECT": 6
   },
   "published_after": {
-    "DIRECT": 143,
-    "PROXY": 3222,
+    "DIRECT": 147,
+    "PROXY": 3259,
     "REJECT": 6
   },
-  "published_removed_count": 0,
+  "published_removed_count": 1,
   "published_added_count": 0,
-  "removed": [],
-  "removed_count": 0,
+  "removed": [
+    {
+      "id": "cfg-1ccb4c7a21c90063d78a",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,allawntech.com",
+      "domain": "allawntech.com",
+      "scope": "suffix_candidate",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-03T18:18:03.431942+00:00",
+      "config_blob_sha": "daa84802764de63c24da1e727ed233bab2e9151f",
+      "config_sha256": "a154d2810fbed217245802c3ff99800119e5138fc29b80fa4181efd938074ed6",
+      "config_rule_line": null,
+      "config_rule": "L160: DOMAIN-SUFFIX,allawntech.com,REJECT [REJECT]",
+      "effective_config_policy": null,
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "restored_at": null
+    }
+  ],
+  "removed_count": 1,
   "pending_queue_removed_count": 0,
   "suppressed_active_archive": [],
   "retained_for_review": [],
   "retained_for_review_count": 0,
   "restored": [],
   "restore_refused": [],
-  "active_archive_count": 105,
-  "restoration_option_count": 111,
+  "active_archive_count": 106,
+  "restoration_option_count": 112,
   "restoration_options": [
     {
       "id": "cfg-c13487dfff5d4b12cd9e",
@@ -916,40 +934,48 @@
       "origin": "published_ruleset",
       "removed_at": "2026-11-02T18:01:25.037493+00:00",
       "status": "active_config_overlap"
+    },
+    {
+      "id": "cfg-1ccb4c7a21c90063d78a",
+      "policy": "DIRECT",
+      "rule": "DOMAIN-SUFFIX,allawntech.com",
+      "origin": "published_ruleset",
+      "removed_at": "2026-11-03T18:18:03.431942+00:00",
+      "status": "active_config_overlap"
     }
   ],
-  "policy": "Only candidates fully covered by an explicit DIRECT/PROXY DOMAIN or DOMAIN-SUFFIX scope in ss.conf, or fully covered by skip-proxy, are removed from published and queued external rules. Narrower exact or child-suffix exceptions do not remove broader parent suffix candidates. REJECT rules in ss.conf are excluded from automated analysis; blocking decisions remain user-owned. Rule order and precedence are never evaluated. Historical archive entries are rechecked against current full-scope coverage and superseded when coverage no longer exists. Keyword, regex, conditional, and partial overlaps are not evaluated or deleted.",
+  "policy": "Candidates fully covered by an explicit DOMAIN or DOMAIN-SUFFIX rule with DIRECT, PROXY, or REJECT policy in ss.conf, or fully covered by skip-proxy, are removed from published and queued external rules. The ss.conf policy wins regardless of whether it matches the external policy. Narrower exact or child-suffix exceptions do not remove broader parent suffix candidates. Rule order and precedence are not evaluated. Historical archive entries are rechecked against current full-scope coverage and superseded when coverage no longer exists; the normal builder then reconsiders eligible records using current evidence and publication gates. Keyword, regex, conditional, and partial overlaps are not automatically resolved.",
   "errors": [],
-  "workflow_run_id": "41620668166",
+  "workflow_run_id": "41689927662",
   "sync_passes": [
     {
-      "completed_at": "2026-11-03T10:53:50.255057+00:00",
+      "completed_at": "2026-11-03T18:18:03.431942+00:00",
       "published_before": {
         "DIRECT": 143,
         "PROXY": 3222,
         "REJECT": 6
       },
       "published_after": {
-        "DIRECT": 143,
+        "DIRECT": 142,
         "PROXY": 3222,
         "REJECT": 6
       },
-      "published_removed_count": 0,
+      "published_removed_count": 1,
       "pending_queue_removed_count": 0,
       "retained_for_review_count": 0,
       "restored_count": 0,
       "restore_refused_count": 0
     },
     {
-      "completed_at": "2026-11-03T10:56:20.227565+00:00",
+      "completed_at": "2026-11-03T18:24:15.032369+00:00",
       "published_before": {
-        "DIRECT": 143,
-        "PROXY": 3222,
+        "DIRECT": 147,
+        "PROXY": 3259,
         "REJECT": 6
       },
       "published_after": {
-        "DIRECT": 143,
-        "PROXY": 3222,
+        "DIRECT": 147,
+        "PROXY": 3259,
         "REJECT": 6
       },
       "published_removed_count": 0,

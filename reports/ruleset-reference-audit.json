@@ -4,19 +4,19 @@
   "config_rule_set_reference_count": 3,
   "references": [
     {
-      "line": 1912,
+      "line": 1930,
       "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/reject.list",
       "file": "reject.list",
       "policy": "REJECT"
     },
     {
-      "line": 1913,
+      "line": 1931,
       "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/proxy.list",
       "file": "proxy.list",
       "policy": "PROXY"
     },
     {
-      "line": 1914,
+      "line": 1932,
       "url": "https://raw.githubusercontent.com/instarrys-bit/default/main/rulesets/direct.list",
       "file": "direct.list",
       "policy": "DIRECT"
@@ -30,17 +30,17 @@
   "file_stats": {
     "direct.list": {
       "policy": "DIRECT",
-      "line_count": 143,
-      "valid_domain_lines": 143,
+      "line_count": 147,
+      "valid_domain_lines": 147,
       "exact_domain_lines": 6,
-      "suffix_domain_lines": 137
+      "suffix_domain_lines": 141
     },
     "proxy.list": {
       "policy": "PROXY",
-      "line_count": 3222,
-      "valid_domain_lines": 3222,
+      "line_count": 3259,
+      "valid_domain_lines": 3259,
       "exact_domain_lines": 0,
-      "suffix_domain_lines": 3222
+      "suffix_domain_lines": 3259
     },
     "reject.list": {
       "policy": "REJECT",
@@ -61,18 +61,18 @@
       "direct.list:DIRECT"
     ],
     "marker_lines": {
-      "layer_1": 45,
-      "layer_2": 614,
-      "layer_3": 650,
-      "layer_4": 1191,
-      "layer_5": 1739,
-      "original_rules_end": 1803,
-      "external_rulesets": 1828,
-      "geoip_asn_start": 1915,
-      "geoip_asn_cn": 1940,
-      "geoip_cn_rule": 1993,
-      "layer_6": 1994,
-      "final_rule": 1995
+      "layer_1": 56,
+      "layer_2": 625,
+      "layer_3": 661,
+      "layer_4": 1202,
+      "layer_5": 1757,
+      "original_rules_end": 1821,
+      "external_rulesets": 1846,
+      "geoip_asn_start": 1933,
+      "geoip_asn_cn": 1958,
+      "geoip_cn_rule": 2011,
+      "layer_6": 2012,
+      "final_rule": 2013
     },
     "passed": true
   },

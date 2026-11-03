@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-03T10:54:25.766653+00:00",
+  "audited_at": "2026-11-03T18:18:39.727708+00:00",
   "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
   "source_count": 13,
   "audited_source_count": 11,
@@ -50795,8 +50795,8 @@
       "lineage_status": "partial",
       "evidence_url": "https://github.com/HaGeZi/dns-blocklists/blob/main/sources.md",
       "fetched_url": "https://raw.githubusercontent.com/HaGeZi/dns-blocklists/main/sources.md",
-      "evidence_sha256": "3465c5dc35c9c1e45d8ae7af03d39b0b2231143879128f3bf3598e8c233f45af",
-      "evidence_bytes": 24158,
+      "evidence_sha256": "3ee1638c00d862458e02d0f38357e32df0584f826d52c4d4977ad093c67db2be",
+      "evidence_bytes": 24506,
       "declared_upstream_count": 68,
       "discovered_upstream_count": 68,
       "declared_upstreams": [
@@ -51300,7 +51300,7 @@
       "lineage_status": "unverified",
       "evidence_url": "https://github.com/nthack/Shadowrocket-ADBlock-Rules-Easy/blob/master/README.md",
       "fetched_url": "https://raw.githubusercontent.com/nthack/Shadowrocket-ADBlock-Rules-Easy/master/README.md",
-      "evidence_sha256": "6862edfca0bae18b99a5be49edbf2dd28374cdb410507f58e61f5bd070f9dfd2",
+      "evidence_sha256": "d25c605ccbadd720f62ad4c68c952dd3762119a34477b3767daffd8ffb012839",
       "evidence_bytes": 4302,
       "declared_upstream_count": 0,
       "discovered_upstream_count": 1,

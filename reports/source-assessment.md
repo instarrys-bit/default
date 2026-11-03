@@ -19915,7 +19915,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http-tested/discord.txt
-- SHA-256: efc06dcb8e88c1f6134b6f69ba60dfd14b3f2270b0146ed1852a8163d0c4d25e
+- SHA-256: 1559a265d683e7cedfbb5778bed9c06da7fe7780207939dbaad2e9268b077c91
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -19924,7 +19924,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http-tested/facebook.txt
-- SHA-256: a5adb59ef68c2fc6f9487eefc4d4cf243839ff4aa04d2f8daedc1bf4ab505215
+- SHA-256: 5798eb7a3d14b17df9173b6ecdbd097a954fd46ef9e6e02fc7c44b33bec1620c
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -19933,7 +19933,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http-tested/google.txt
-- SHA-256: f6722c3f883872ba843e586291e08465c987dcb84753959e14a8e3eed9a14313
+- SHA-256: 10034dceabe59fd583cdde3d7dfacc340042d90952c39a1bd942d411b3bd74c7
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -19942,7 +19942,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http-tested/instagram.txt
-- SHA-256: 4a7988edc7b54e75f39f0ed6dcdec4d5e988ec9d5b459f5e190e039b19bc179e
+- SHA-256: 03784a45c118ef584c20cbec06866417faad1e48381276f49b3288e3dd721429
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -19951,7 +19951,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http-tested/microsoft.txt
-- SHA-256: d33d786796f79bd0fd7c208dfeb22b1952100a36a94bcf2e3bc437ff0ff9ee7b
+- SHA-256: 87c931888f16637aaaf244e68e63272a72dc9d5ca2b7281d0b5b0a9d89cd78b5
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -19960,7 +19960,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http-tested/tiktok.txt
-- SHA-256: 15067559eac505beee4c173ea4f7535c588687a40e6cd50106601e4099093e47
+- SHA-256: eb2cd343d9a034b79aa5f3ac1e0e4fe5404d7fe6f7cbc7303b6aa7cd25630a92
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -19969,7 +19969,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http-tested/twitter.txt
-- SHA-256: 4ee7e3c1d4779911da7adb2960f704e4997ba48a6e2de839d98968ab75fd05c1
+- SHA-256: 1ff8ab2a47835115df36ee4fcad36ebf7df27464e049b21341e6937bab0ec9ed
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -19978,7 +19978,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http-tested/whatsapp.txt
-- SHA-256: c6be8f27a89a6fe12ee7e7576ca313955786544eaaaf475f23b51edec17db435
+- SHA-256: 2e3d2db49b10eec1197bc850dbb5c05fc4286ac8e7dbd32e0ac958ff8abcdb7c
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -19987,7 +19987,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http-tested/youtube.txt
-- SHA-256: 53feae190e0b7893eb6811a6b372b381342bd7d10456f110609968747fb52f93
+- SHA-256: cf40b6c9d8845381b1fc178d8e4a76cb7f4b2761263593f78f3996cc9683cd5e
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -19996,7 +19996,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http.txt
-- SHA-256: 25067483f6c02b909f8bba8cd7cad1837a9aabc269a9f8671389df191376fd55
+- SHA-256: bb0b7e0f31e72192cb6a75605c21fa726c1ceedadb28333b87af6a5ccfdbe71a
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 1; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20005,7 +20005,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https-tested/discord.txt
-- SHA-256: edbeabb0be07cdfa42f3018f2892531ded1954a6a229f42b5deca1347b6553d5
+- SHA-256: 24ab94e9b31732eef6c85de7279505de2b4402b8e58ab44259716fa1de50cb40
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20014,7 +20014,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https-tested/facebook.txt
-- SHA-256: 35e62c92712e68fc5978241c8d38dad91b7fa8c8b21ec6fe964e04594fb2c69c
+- SHA-256: bc86ea89f3ba651f33d62e57aaff40eef4d7174550d16e8c7ff4cd125101d3e9
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20023,7 +20023,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https-tested/google.txt
-- SHA-256: 3136f0f40a4a64030c58ad51fd1f51068757ff12d4f674f62c73b72bef01c0e1
+- SHA-256: 8aeebd1f830ae76fcc131e1742034512fb7d45ddf50d7b59138723cb01f0d8cf
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20032,7 +20032,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https-tested/instagram.txt
-- SHA-256: defb475c41618c99d14396d42a81e33a7d58f35945abeb1f28ed1d96776998c7
+- SHA-256: a49ea26d4389d31ad417ea6e18eaa7897825e8e8611803ea410dc2e2f05687dd
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20041,7 +20041,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https-tested/microsoft.txt
-- SHA-256: dfab326fa6f785c3ad2cc20d23dece6aa78c3c4a1daa8af9289f379e607ae1ab
+- SHA-256: 34a8b8618bbbcea9660b9d4523c5d7068562e13346774a85d2b148fc8c90ce2a
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20050,7 +20050,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https-tested/tiktok.txt
-- SHA-256: 3f6c3cfe354c62323d33af9fdd75508aafea7ef6f27bc25f014671f3d0586b82
+- SHA-256: 0ca6629f01b48681d0fda3c59fc8027664ede9f797fe92ed1774d64615ea8e78
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20059,7 +20059,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https-tested/twitter.txt
-- SHA-256: 92f07437b02ff0c201fb6f60e8108718a3b007ac2b5ec87bf5def8be16b62bbd
+- SHA-256: 718cc4907123f6ac5c34558edf6fb9057e5c8931ff8fe7d8a0481f0ea5ccb559
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20068,7 +20068,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https-tested/whatsapp.txt
-- SHA-256: 54cb522ff5657011534a6a35104410f7832b3934d2ad46edb37122782f8a68f6
+- SHA-256: b247b528737a1bd55d6b1f96b043db5bbf054f1a21f2c5e1154953d05ee41588
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20077,7 +20077,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https-tested/youtube.txt
-- SHA-256: 1e96a99e4a3929371f680218a3797edbeb30a3fd2712e9f0cb7737d3b6a0b542
+- SHA-256: 0125c4437daa7daa075be19846d8b57bf0d92f6c9de26e81edd300f193d4fad6
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20086,7 +20086,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https.txt
-- SHA-256: 8828155fd561e1fa61729b9032b4a1f057876b72d168466b8a8b843d6e4ab983
+- SHA-256: 0f6e12958ecb654baad616d4a54d9de3ee5645c06020b6d0281c2f1785af2493
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 1; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20095,7 +20095,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/socks4.txt
-- SHA-256: ad374922e482b06a3de5dcd2aa869bf9bc9953a809e8c5fe3e4101154b0a203d
+- SHA-256: e834828fc0b64fb3d76155dadf11f0ef35219f2e96fac25d4e5e3cad9877950f
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20104,7 +20104,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/socks5.txt
-- SHA-256: 464c4a043f14dcbfeba254f4316ff089e6989d61bacf175498f93e66b504b77e
+- SHA-256: 79ea364293cf3f87b94963d101c485ab3c9dfdf10eea4f1684f59d90aed26e20
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -41713,7 +41713,7 @@
 ### guandasheng/adguardhome
 
 - URL: https://raw.githubusercontent.com/guandasheng/adguardhome/main/rule/hosts.txt
-- SHA-256: 1e68384b1504f093ba843e70922ebb945711c4081056b6a0172b83212b3f3214
+- SHA-256: 54a747db919d0c2a4b99082cc77327bbb19a919385a036b045a40116594b6aea
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -41722,7 +41722,7 @@
 ### guandasheng/adguardhome
 
 - URL: https://raw.githubusercontent.com/guandasheng/adguardhome/main/rule/modify.txt
-- SHA-256: c6e387f2d3ca84725661b70b61ae83e8f57136678194ba963c51c1c2914de6c2
+- SHA-256: a15f722cfb21483cff20721337437065ed79fe24a16d0b29d150a4032bf1298d
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 20; domain-only: 22; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -41740,7 +41740,7 @@
 ### guandasheng/adguardhome
 
 - URL: https://raw.githubusercontent.com/guandasheng/adguardhome/main/rule/regex.txt
-- SHA-256: bf8667c2e50ce6f67e809c2d17de0380065653e045cb886caa45ee88f528a088
+- SHA-256: 9a4b605a37645a434b2914298fa8c9656f28223bb069971a27b00e4c0982b7a4
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -42001,7 +42001,7 @@
 ### tickmao/Rules
 
 - URL: https://raw.githubusercontent.com/tickmao/Rules/master/Loon/Loon.conf
-- SHA-256: f9bf1831c8d8bdb4594e829415c4080f10adbf14a176bbd94e824d57be7a0bca
+- SHA-256: e3b5457a26dba9b168e8cf09caafe0c189a31f2ac44ba96b89645142d3896ad5
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -42244,7 +42244,7 @@
 ### tickmao/Rules
 
 - URL: https://raw.githubusercontent.com/tickmao/Rules/master/QuantumultX/QuantumultX.conf
-- SHA-256: 0dc32d37a0ccb0884a724144774137dcbf8a38fc97f8dc7b41fc27e3aa404c95
+- SHA-256: 285427f863e5674e11c9bbc99723e1b3f4f662633955c2919290a2e6dc2481a4
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -42712,7 +42712,7 @@
 ### tickmao/Rules
 
 - URL: https://raw.githubusercontent.com/tickmao/Rules/master/Shadowrocket/Shadowrocket.conf
-- SHA-256: c0c0ee2f5f5ac2b1146a7c8ade9670cb2b5f3e2b391a87a0eec9ae8091d6d4d4
+- SHA-256: 4b8bac8dd7509d698f8d75f2cb393084d69fd22a049db37da81f02e5a1e289de
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -42973,7 +42973,7 @@
 ### tickmao/Rules
 
 - URL: https://raw.githubusercontent.com/tickmao/Rules/master/Surge/Surge.conf
-- SHA-256: ec9b519658ce9f7e539ae7ddced6f685fb3e4579ab93b4d1f9b317cc52fa5a1b
+- SHA-256: 3f05874953f1c80881206ac5c4b8afe1ba40f66f6275e740e257fc266ea19d0c
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}

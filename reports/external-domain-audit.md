@@ -1,10 +1,10 @@
 # External domain source scope audit
 
-- Audit time: 2026-11-03T10:57:08.557530+00:00
+- Audit time: 2026-11-03T18:25:14.781250+00:00
 - Source: https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list
 - Git blob SHA-1: `ec23c2d1280ea4a59717816716b8ccb569dac624`
 - Candidate entries: 56516
-- Explicit DIRECT/PROXY DOMAIN / DOMAIN-SUFFIX config rules: 1200
+- Explicit DIRECT/PROXY DOMAIN / DOMAIN-SUFFIX config rules: 1217
 - Conditional composite rules (not evaluated for precedence): 0
 - Malformed or unsupported simple domain rules held aside: 0
 - Fully covered candidate scopes: 18884

@@ -1,9 +1,10 @@
 # RULE-SET / ss.conf conflict synchronization
 
 - Config: shadowrocket/ss.conf (read-only)
-- Config blob SHA: b87f4c3bf13ed76d7f01ecc77266793da0e7556b
-- Explicit config rule lines inspected: 1943
-- Published rules removed: 0
+- Config Git blob SHA: daa84802764de63c24da1e727ed233bab2e9151f
+- Config SHA256: a154d2810fbed217245802c3ff99800119e5138fc29b80fa4181efd938074ed6
+- Explicit config rule lines inspected: 1961
+- Published rules removed: 1
 - Pending queue entries removed: 0
 - Partial or unsupported overlaps retained unchanged: 0
 - Restored: 0
@@ -133,6 +134,7 @@
 - cfg-bf8201348435c37ad830 | DIRECT | DOMAIN-SUFFIX,toutiaohao.net | active_config_overlap
 - cfg-0232f5aaca09346fae22 | DIRECT | DOMAIN-SUFFIX,toutiaoimg.com | active_config_overlap
 - cfg-84479ab43890c6fd5efb | DIRECT | DOMAIN-SUFFIX,zijieimg.com | active_config_overlap
+- cfg-1ccb4c7a21c90063d78a | DIRECT | DOMAIN-SUFFIX,allawntech.com | active_config_overlap
 
-The script never writes to shadowrocket/ss.conf. A config-scope archive entry is not restored automatically; restoration is opt-in and rechecked against full-scope config coverage, skip-proxy entries, and cross-policy published/queued rules.
+The script never writes to shadowrocket/ss.conf. Archived entries are automatically reconsidered when the current config no longer fully covers them; publication still requires the normal evidence and REJECT authorization gates. Explicit DOMAIN and DOMAIN-SUFFIX rules with DIRECT, PROXY, and REJECT policies are compared; rule order, precedence, keyword, regex, conditional, and partial overlaps are not inferred.
 Paste selected IDs into the workflow_dispatch input restore_conflict_ids.

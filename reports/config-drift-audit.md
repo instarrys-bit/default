@@ -2,10 +2,10 @@
 
 - Mode: read-only; user-managed config is authoritative
 - Baseline file: `shadowrocket/ss.conf`
-- Baseline Git blob SHA: `b87f4c3bf13ed76d7f01ecc77266793da0e7556b`
+- Baseline Git blob SHA: `daa84802764de63c24da1e727ed233bab2e9151f`
 - Registered baseline SHA matches: **True**
 - Sections: **5**
-- Rule lines: **1943**
+- Rule lines: **1961**
 - URL Rewrite lines: **10**
 - MITM section present: **True**
 - MITM enabled: **False**
