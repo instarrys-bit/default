@@ -41,8 +41,9 @@ class TaskSchedulerTests(unittest.TestCase):
         self.script.write_text(
             "import json, os, sys\n"
             "payload=json.load(open(sys.argv[1], encoding='utf-8'))\n"
-            "print(json.dumps({'ok': True, 'value': payload['value'], "
-            "'token_visible': 'GITHUB_TOKEN' in os.environ}))\n",
+            "parent_env=open(f'/proc/{os.getppid()}/environ','rb').read()\n"
+            "token_visible=('GITHUB_TOKEN' in os.environ or b'GITHUB_TOKEN=' in parent_env)\n"
+            "print(json.dumps({'ok': True, 'value': payload['value'], 'token_visible': token_visible}))\n",
             encoding="utf-8",
         )
         self.store = MemoryStore()
