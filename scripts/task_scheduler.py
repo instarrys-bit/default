@@ -126,6 +126,28 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
                 lease_seconds = resource_contract.get("lease_seconds")
                 if isinstance(lease_seconds, bool) or not isinstance(lease_seconds, int) or not 1 <= lease_seconds <= 21600:
                     raise ValueError("resource_contract lease_seconds must be from 1 to 21600")
+            read_only_resources = adapter.get("read_only_resources", [])
+            read_only_digests = read_only_resource_digests(root, read_only_resources)
+            required_read_only = adapter.get("required_read_only_resources", [])
+            if (not isinstance(required_read_only,list)
+                    or any(path not in read_only_resources for path in required_read_only)):
+                raise ValueError("required_read_only_resources must be a subset of read_only_resources")
+            missing_inputs=[path for path in required_read_only if read_only_digests.get(path) is None]
+            if missing_inputs:
+                raise ValueError("required input artifacts are missing: "+", ".join(missing_inputs))
+            if isinstance(resource_contract, dict) and set(read_only_resources) & set(resource_contract.get("resource_keys", [])):
+                raise ValueError("a resource cannot be both read-only and exclusively writable")
+            completion = adapter.get("completion", {})
+            artifact_verifier = completion.get("artifact_verifier") if isinstance(completion, dict) else None
+            if artifact_verifier is not None:
+                if not isinstance(artifact_verifier, dict) or not isinstance(artifact_verifier.get("path"), str) or not isinstance(artifact_verifier.get("output_field"), str) or not isinstance(artifact_verifier.get("program_id"), str):
+                    raise ValueError("artifact_verifier must declare a registered program_id, path and output_field")
+                verifier_program = by_id.get(artifact_verifier["program_id"])
+                if not isinstance(verifier_program, dict) or verifier_program.get("path") != artifact_verifier["path"] or verifier_program.get("kind") != "python_component":
+                    raise ValueError("artifact verifier program identity does not match the registry")
+                verifier_path = (root / artifact_verifier["path"]).resolve()
+                if not verifier_path.is_relative_to(root.resolve()) or not verifier_path.is_file():
+                    raise ValueError("registered artifact verifier is missing or outside the repository")
             expected_interface = (
                 "reviewed" if adapter.get("adapter_type") == "python_cli"
                 else "workflow_dispatch_reviewed" if adapter.get("adapter_type") == "github_actions_workflow"
@@ -190,6 +212,64 @@ def protected_config_digest(root: Path = ROOT) -> str:
     if not path.is_file():
         raise ValueError("protected config guard unavailable: shadowrocket/ss.conf is missing")
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def read_only_resource_digests(root: Path, paths: list[str]) -> dict[str, str | None]:
+    if not isinstance(paths, list) or any(not isinstance(path, str) or not path or path.startswith("/") or chr(92) in path or any(part in {"", ".", ".."} for part in path.split("/")) for path in paths):
+        raise ValueError("read_only_resources must contain safe repository-relative file paths")
+    if len(paths) != len(set(paths)):
+        raise ValueError("read_only_resources contains duplicate paths")
+    result={}
+    for relative in paths:
+        path=(root/relative).resolve()
+        if not path.is_relative_to(root.resolve()):
+            raise ValueError(f"read-only resource resolves outside repository: {relative}")
+        if path.exists() and not path.is_file():
+            raise ValueError(f"read-only resource must be a file: {relative}")
+        digest=hashlib.sha256()
+        found=False
+        if path.is_file():
+            digest.update(b"legacy-json\\0")
+            digest.update(path.read_bytes())
+            found=True
+        manifest=path.with_name(path.name + ".manifest.json")
+        if manifest.is_file():
+            try:
+                value=json.loads(manifest.read_text(encoding="utf-8"))
+            except (OSError,json.JSONDecodeError) as exc:
+                raise ValueError(f"read-only document manifest is invalid: {relative}") from exc
+            if not isinstance(value,dict):
+                raise ValueError(f"read-only document manifest must be an object: {relative}")
+            if not manifest.resolve().is_relative_to(root.resolve()):
+                raise ValueError(f"read-only document manifest resolves outside repository: {relative}")
+            directory=value.get("shard_directory")
+            shards=value.get("shards")
+            if (value.get("logical_path")!=path.name or not isinstance(directory,str)
+                    or Path(directory).name!=directory or not isinstance(shards,list)):
+                raise ValueError(f"read-only document manifest identity is invalid: {relative}")
+            digest.update(b"manifest\\0")
+            digest.update(manifest.read_bytes())
+            for shard in shards:
+                name=shard.get("file") if isinstance(shard,dict) else None
+                if not isinstance(name,str) or Path(name).name!=name or not name.endswith(".jsonl"):
+                    raise ValueError(f"read-only document shard entry is invalid: {relative}")
+                shard_path=manifest.parent/directory/name
+                if not shard_path.resolve().is_relative_to(root.resolve()):
+                    raise ValueError(f"read-only document shard resolves outside repository: {relative}/{directory}/{name}")
+                if not shard_path.is_file():
+                    raise ValueError(f"read-only document shard is missing: {relative}/{directory}/{name}")
+                digest.update(name.encode("utf-8")+b"\\0")
+                digest.update(hashlib.sha256(shard_path.read_bytes()).digest())
+            found=True
+        result[relative]=digest.hexdigest() if found else None
+    return result
+
+
+def ensure_read_only_resources_unchanged(before: dict[str, str | None], root: Path) -> None:
+    after=read_only_resource_digests(root,list(before))
+    changed=[path for path in before if before[path]!=after[path]]
+    if changed:
+        raise ProtectedConfigMutationError("Capability modified declared read-only resources: "+", ".join(changed))
 
 
 def ensure_protected_config_unchanged(before_digest: str, task: dict, store,
@@ -360,6 +440,7 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
         )
         return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
     protected_digest = protected_config_digest(root)
+    read_only_before = read_only_resource_digests(root, adapter.get("read_only_resources", []))
     argv_values = {
         "task_id": task["task_id"],
         "idempotency_key": task["idempotency_key"],
@@ -371,12 +452,35 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
         argv_values["task_input_file"] = str(input_path)
         argv = [argument.format_map(argv_values) for argument in entrypoint["argv_template"]]
         command = [sys.executable, str(script_path), *argv]
+        child_env = safe_child_environment(root)
+        resource_contract = adapter.get("resource_contract")
+        if isinstance(resource_contract, dict):
+            resource_lease = task.get("resource_lease")
+            if not isinstance(resource_lease, dict) or resource_lease.get("status") != "ACTIVE":
+                raise ValueError("Python capability dispatch requires an active resource lease")
+            resources = resource_lease.get("resources")
+            if not isinstance(resources, dict) or set(resources) != set(resource_contract.get("resource_keys", [])):
+                raise ValueError("Python task resource lease does not match its reviewed resource contract")
+            snapshot_path = Path(directory) / "task-queue-lease-snapshot.json"
+            snapshot_path.write_text(json.dumps(store.read().document, ensure_ascii=False), encoding="utf-8")
+            snapshot_path.chmod(0o400)
+            child_env.update({
+                "AUTOMATION_QUEUE_SNAPSHOT": str(snapshot_path),
+                "AUTOMATION_TASK_ID": task["task_id"],
+                "AUTOMATION_WORKER_ID": task["lease"]["owner"],
+                "AUTOMATION_TASK_LEASE_TOKEN": task["lease"]["token"],
+                "AUTOMATION_RESOURCE_LEASE_PROOF": json.dumps(resources, sort_keys=True, separators=(",", ":")),
+                "AUTOMATION_QUEUE_REPOSITORY": store.repository,
+                "AUTOMATION_QUEUE_BRANCH": store.branch,
+                "AUTOMATION_QUEUE_PATH": store.path,
+                "AUTOMATION_QUEUE_TOKEN": store.token,
+            })
         try:
             with without_parent_secrets():
                 completed = subprocess.run(
                     command,
                     cwd=root,
-                    env=safe_child_environment(root),
+                    env=child_env,
                     shell=False,
                     capture_output=True,
                     text=True,
@@ -386,7 +490,12 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
                 )
         except subprocess.TimeoutExpired:
             ensure_protected_config_unchanged(protected_digest, task, store, registry, root)
-            error = {"type": "execution_timeout", "message": "Registered program exceeded its adapter timeout."}
+            try:
+                ensure_read_only_resources_unchanged(read_only_before, root)
+            except ProtectedConfigMutationError as exc:
+                error = {"type": "read_only_resource_mutation_detected", "message": str(exc)}
+            else:
+                error = {"type": "execution_timeout", "message": "Registered program exceeded its adapter timeout."}
             completed_task = complete_remote(
                 task["task_id"], task["lease"]["owner"], task["lease"]["token"],
                 success=False, error=error, store=store, registry=registry, now=now_utc(),
@@ -401,6 +510,16 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
             return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
 
         ensure_protected_config_unchanged(protected_digest, task, store, registry, root)
+        try:
+            ensure_read_only_resources_unchanged(read_only_before, root)
+        except ProtectedConfigMutationError as exc:
+            error = {"type": "read_only_resource_mutation_detected", "message": str(exc)}
+            completed_task = complete_remote(
+                task["task_id"], task["lease"]["owner"], task["lease"]["token"],
+                success=False, error=error, store=store, registry=registry, now=now_utc(),
+            )
+            return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
+
         if completed.returncode != 0:
             error = {
                 "type": "program_exit_nonzero",
@@ -428,6 +547,62 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
                 success=False, error=error, store=store, registry=registry, now=now_utc(),
             )
             return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
+
+        artifact_verifier = adapter.get("completion", {}).get("artifact_verifier")
+        if artifact_verifier is not None:
+            output_field = artifact_verifier["output_field"]
+            if output_field in result:
+                error = {"type": "artifact_verifier_output_collision", "message": f"program output already contains reserved field {output_field}"}
+                completed_task = complete_remote(
+                    task["task_id"], task["lease"]["owner"], task["lease"]["token"],
+                    success=False, error=error, store=store, registry=registry, now=now_utc(),
+                )
+                return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
+            verifier_path = (root / artifact_verifier["path"]).resolve()
+            try:
+                with tempfile.TemporaryDirectory(prefix="artifact-verifier-") as verifier_directory:
+                    result_path = Path(verifier_directory) / "task-result.json"
+                    result_path.write_text(json.dumps(result, ensure_ascii=False), encoding="utf-8")
+                    verifier_command = [sys.executable, str(verifier_path), "--result-json-file", str(result_path)]
+                    verified = subprocess.run(
+                        verifier_command, cwd=root, env=safe_child_environment(root),
+                        shell=False, capture_output=True, text=True,
+                        stdin=subprocess.DEVNULL, timeout=min(adapter["timeout_seconds"], 60), check=False,
+                    )
+            except subprocess.TimeoutExpired:
+                verified = None
+            if verified is None or verified.returncode != 0:
+                error = {"type": "independent_artifact_verification_failed",
+                         "message": "Independent artifact verifier did not complete successfully.",
+                         "stderr": verified.stderr[-2000:] if verified is not None else "verifier timed out"}
+                completed_task = complete_remote(
+                    task["task_id"], task["lease"]["owner"], task["lease"]["token"],
+                    success=False, error=error, store=store, registry=registry, now=now_utc(),
+                )
+                return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
+            try:
+                verification_result = json.loads(verified.stdout)
+            except json.JSONDecodeError:
+                verification_result = None
+            if not isinstance(verification_result, dict) or verification_result.get("valid") is not True:
+                error = {"type": "independent_artifact_verification_invalid_output",
+                         "message": "Independent artifact verifier must emit one JSON object with valid=true.",
+                         "stdout": verified.stdout[-2000:]}
+                completed_task = complete_remote(
+                    task["task_id"], task["lease"]["owner"], task["lease"]["token"],
+                    success=False, error=error, store=store, registry=registry, now=now_utc(),
+                )
+                return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
+            result[output_field] = verification_result
+            try:
+                ensure_read_only_resources_unchanged(read_only_before, root)
+            except ProtectedConfigMutationError as exc:
+                error = {"type": "read_only_resource_mutation_detected", "message": str(exc)}
+                completed_task = complete_remote(
+                    task["task_id"], task["lease"]["owner"], task["lease"]["token"],
+                    success=False, error=error, store=store, registry=registry, now=now_utc(),
+                )
+                return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
 
         pending = complete_remote(
             task["task_id"], task["lease"]["owner"], task["lease"]["token"],

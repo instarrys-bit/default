@@ -3,18 +3,25 @@
   "contract_id": "capability-script-assess-sources-v1",
   "program_id": "script_assess_sources",
   "implementation_path": "scripts/assess_sources.py",
-  "implementation_blob_sha": "e8e174bb4c042887351d8a524e8b1e9ad54c4206",
-  "review_status": "source_reviewed_documented_not_dispatchable",
+  "implementation_blob_sha": "pending-main-merge",
+  "review_status": "implementation_reviewed_pending_ci",
   "dispatch_status": "disabled",
   "entrypoint": {
     "command": [
       "python3",
-      "scripts/assess_sources.py"
+      "scripts/assess_sources.py",
+      "--task-input",
+      "<bounded-task-input-json>"
     ],
-    "cli_arguments": [],
-    "current_adapter_argv_template": [],
-    "task_scheduler_compatible": false,
-    "reason": "The program reads its inputs from fixed repository paths and does not accept or validate a scheduler task-input file."
+    "cli_arguments": [
+      "--task-input"
+    ],
+    "current_adapter_argv_template": [
+      "--task-input",
+      "{task_input_file}"
+    ],
+    "task_scheduler_compatible": true,
+    "reason": "Bounded task-input CLI and live fenced write contract implemented; adapter remains disabled pending CI, merge and controlled canary."
   },
   "inputs": {
     "repository_snapshot": [
@@ -37,14 +44,15 @@
       "allowed_origin": "https://raw.githubusercontent.com",
       "repository_binding": "URL owner/repository must match the candidate repository",
       "redirect_policy": "final response must remain HTTPS on raw.githubusercontent.com",
-      "per_url_max_bytes": 5000000,
-      "aggregate_max_bytes": 250000000,
-      "max_urls_per_run": 5000,
-      "request_timeout_seconds": 10
+      "per_url_max_bytes": 1000000,
+      "aggregate_max_bytes": 10000000,
+      "max_urls_per_run": 20,
+      "request_timeout_seconds": 10,
+      "max_batch_runtime_seconds": 240
     },
     "environment": {
-      "github_token_required": false,
-      "other_environment_inputs": "None identified in reviewed main() path"
+      "github_token_required": true,
+      "other_environment_inputs": "Read-only GitHub Contents API credential supplied by the parent scheduler to re-read live task/resource lease state before each write; no GitHub API write capability is used by the assessor."
     }
   },
   "outputs": {
@@ -54,7 +62,8 @@
         "bytes_read",
         "parser_candidates",
         "policy_candidates",
-        "activated"
+        "activated",
+        "artifact_verification"
       ],
       "invariant": {
         "activated": 0
@@ -100,12 +109,16 @@
       "reports/source-assessment.md"
     ],
     "lease_keys": [
-      "resource:sources/source_assessments.json",
-      "resource:data/source_assessments_runtime.json",
-      "resource:reports/source-assessment.md"
+      "logical/production-pipeline",
+      "sources/source_assessments.json",
+      "data/source_assessments_runtime.json",
+      "reports/source-assessment.md"
     ],
     "dynamic_children_share_parent_lease": true,
-    "lock_scope_note": "The logical document lease must cover its adjacent manifest, all content-addressed shard directories, staging files, atomic replacement, and old-shard cleanup."
+    "lock_scope_note": "Live queue is re-read before every write boundary. The three logical output leases cover base JSON, adjacent manifests, content-addressed shards, staging, atomic manifest switch and old-shard cleanup. Shared logical/production-pipeline key serializes against workflow_auto_sync. The discovered_sources predecessor is required and its full legacy or sharded content digest is checked before and after execution.",
+    "required_predecessor_artifacts": [
+      "sources/discovered_sources.json"
+    ]
   },
   "execution_semantics": {
     "network_access": true,
@@ -113,8 +126,8 @@
     "deterministic": false,
     "idempotent": false,
     "idempotency_key": "Not implemented; cursor rotation and assessed_at timestamps change persisted state.",
-    "retry_policy": "No automatic retry until cursor/checkpoint recovery and write-resource lease semantics are implemented.",
-    "timeout_seconds": null,
+    "retry_policy": "No automatic retry; cursor rotation and assessed_at timestamps are non-idempotent.",
+    "timeout_seconds": 240,
     "timeout_note": "Current maximum of 5,000 URLs with per-request network timeout does not establish a safe total runtime bound; benchmark and explicit batch-size input are required.",
     "success_predicate": [
       "Process exits with code 0.",
@@ -124,7 +137,7 @@
       "report exists and is non-empty.",
       "Protected config digest is unchanged."
     ],
-    "independent_verifier": "Not implemented; required before dispatch can be enabled."
+    "independent_verifier": "scripts/verify_assess_sources_artifacts.py independently checks runtime/persistent counts, fingerprints exclusion, report presence and non-activation."
   },
   "dependency_edges": {
     "required_predecessor": "script_discover_sources",
@@ -135,15 +148,13 @@
   "permission_boundary": {
     "filesystem": "Write only the three declared logical output resources and their document-store temporary/manifest/shard children.",
     "network": "HTTPS raw.githubusercontent.com only, repository-bound URL and same-host redirect checks.",
-    "github_api": "No direct GitHub API write or token grant.",
+    "github_api": "Read-only GitHub Contents API access is used solely to re-read the durable task queue and verify live fencing before writes; the assessor performs no GitHub API writes.",
     "protected_config": "shadowrocket/ss.conf is immutable and outside this capability's write set."
   },
   "blockers": [
-    "No validated task-input-file CLI contract.",
-    "No runtime resource lease or fencing token enforcement.",
-    "No independent output verifier.",
-    "No stable idempotency key or checkpoint-aware retry semantics.",
-    "No measured total runtime bound for the configured 5,000-URL batch."
+    "CI and full repository test suite must pass.",
+    "Merge and post-merge controlled scheduler canary remain outstanding.",
+    "Adapter remains disabled until the controlled canary proves live fencing and artifact verification in GitHub Actions."
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.04.1",

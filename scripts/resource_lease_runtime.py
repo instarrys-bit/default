@@ -5,9 +5,9 @@ This manages queue metadata only. Writers must invoke assert_resource_lease at
 their actual commit boundary before resource exclusion is considered enforced.
 """
 from __future__ import annotations
-import argparse, json, secrets, sys
+import argparse, json, os, secrets, sys
 from datetime import datetime, timedelta, timezone
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
 from github_queue_store import GitHubContentsQueueStore
 
 
@@ -215,6 +215,65 @@ def release_resource_leases(task_id, worker_id, task_lease_token, resources, sto
         queue["revision"]+=1
         return queue,{"released":sorted(normalized),"fencing_counters_preserved":True}
     return store.mutate(mutate)
+
+
+def assert_resource_lease_from_environment(resource_path):
+    """Read the durable queue on every write boundary and enforce live fencing."""
+    required=("AUTOMATION_QUEUE_REPOSITORY","AUTOMATION_QUEUE_TOKEN",
+              "AUTOMATION_QUEUE_BRANCH","AUTOMATION_QUEUE_PATH",
+              "AUTOMATION_TASK_ID","AUTOMATION_WORKER_ID",
+              "AUTOMATION_TASK_LEASE_TOKEN","AUTOMATION_RESOURCE_LEASE_PROOF")
+    missing=[key for key in required if not os.environ.get(key)]
+    if missing:
+        raise ValueError("live resource lease environment is incomplete: "+", ".join(missing))
+    try:
+        proof=json.loads(os.environ["AUTOMATION_RESOURCE_LEASE_PROOF"])
+    except json.JSONDecodeError as exc:
+        raise ValueError("resource lease proof is unreadable") from exc
+    if not isinstance(proof,dict) or resource_path not in proof:
+        raise ValueError(f"resource lease proof does not include {resource_path}")
+    item=proof[resource_path]
+    if not isinstance(item,dict):
+        raise ValueError("resource lease proof entry is malformed")
+    # Snapshot establishes the original claim identity; the live read below
+    # detects expiry, release, reassignment, or a newer fencing token.
+    snapshot_path=os.environ.get("AUTOMATION_QUEUE_SNAPSHOT")
+    if snapshot_path:
+        try:
+            snapshot=json.loads(Path(snapshot_path).read_text(encoding="utf-8"))
+            assert_resource_lease(
+                snapshot, task_id=os.environ["AUTOMATION_TASK_ID"],
+                worker_id=os.environ["AUTOMATION_WORKER_ID"],
+                task_lease_token=os.environ["AUTOMATION_TASK_LEASE_TOKEN"],
+                resource_path=resource_path, lease_id=item.get("lease_id"),
+                fencing_token=item.get("fencing_token"),
+            )
+        except (OSError,json.JSONDecodeError) as exc:
+            raise ValueError("resource lease claim snapshot is unreadable") from exc
+    store=GitHubContentsQueueStore(
+        os.environ["AUTOMATION_QUEUE_REPOSITORY"],
+        os.environ["AUTOMATION_QUEUE_PATH"],
+        branch=os.environ["AUTOMATION_QUEUE_BRANCH"],
+        token=os.environ["AUTOMATION_QUEUE_TOKEN"],
+        timeout=10,
+    )
+    live_queue=store.read().document
+    live_task=claimed_task(
+        live_queue, os.environ["AUTOMATION_TASK_ID"],
+        os.environ["AUTOMATION_WORKER_ID"], os.environ["AUTOMATION_TASK_LEASE_TOKEN"],
+        datetime.now(timezone.utc),
+    )
+    live_task_lease=live_task.get("resource_lease")
+    declared=live_task_lease.get("resources") if isinstance(live_task_lease,dict) and live_task_lease.get("status")=="ACTIVE" else None
+    if not isinstance(declared,dict) or declared.get(resource_path)!=item:
+        raise ValueError("live task resource proof does not match the fencing token")
+    return assert_resource_lease(
+        live_queue, task_id=os.environ["AUTOMATION_TASK_ID"],
+        worker_id=os.environ["AUTOMATION_WORKER_ID"],
+        task_lease_token=os.environ["AUTOMATION_TASK_LEASE_TOKEN"],
+        resource_path=resource_path, lease_id=item.get("lease_id"),
+        fencing_token=item.get("fencing_token"),
+    )
 
 
 def assert_workflow_resource_lease(queue, task_id, proof, *, now=None):
