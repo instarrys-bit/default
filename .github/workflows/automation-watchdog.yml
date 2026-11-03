@@ -347,7 +347,7 @@ jobs:
               registry_sha=""
               if [ -n "$registry_response" ]; then
                 registry_sha="$(jq -r '.sha' <<< "$registry_response")"
-                registry_encoded="$(jq -r '.content' <<< "$registry_response" | tr -d '\\n')"
+                registry_encoded="$(jq -r '.content' <<< "$registry_response" | tr -d '\n')"
                 printf '%s' "$registry_encoded" | base64 -d > automation/unregistered_path_registry.json
               fi
               registration_result="$(python3 scripts/production_intent.py \
