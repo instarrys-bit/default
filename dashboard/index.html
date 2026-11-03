@@ -174,7 +174,7 @@ button{font:inherit}
 <main class="shell">
 <header class="topbar compact-topbar">
  <div class="brand"><div class="brand-title">自动化运营控制台</div></div>
- <div class="top-meta"><span class="live-pill compact-clock"><i class="live-dot"></i><time id="clock">北京时间同步中…</time></span></div>
+ <div class="top-meta"><span class="live-pill compact-clock"><i class="live-dot"></i><time id="clock">同步中…</time></span></div>
 </header>
 <section class="kpis" id="summary">
  <article class="kpi published"><div class="kpi-label">已发布规则</div><div class="kpi-value">—</div><div class="kpi-foot">当前规则集规模</div></article>
@@ -264,7 +264,7 @@ async function load(){try{
   '<div class="lifecycle-details"><div class="lifecycle-detail"><span>节点进度</span><b>'+progress.toFixed(1)+'%</b></div><div class="lifecycle-detail"><span>检查安排</span><b>'+lifecycleStatus+'</b></div><div class="lifecycle-detail"><span>最近检查</span><b>'+lastReview+'</b></div><div class="lifecycle-detail"><span>容量上限</span><b>'+n(d.lifecycle.max_published_rules)+'</b></div><div class="lifecycle-detail"><span>最近成功检查</span><b>'+fmtTime(d.lifecycle.last_successful_review_at)+'</b></div><div class="lifecycle-detail"><span>监控状态</span><b class="'+stateClass+'">'+state+'</b></div></div>';
 
  }catch(e){const status=el("headline-time");if(status)status.textContent="数据更新失败，等待重试";}}
-function tickClock(){const node=el("clock");if(node)node.textContent=new Intl.DateTimeFormat("zh-CN",{timeZone:"Asia/Shanghai",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).format(new Date())+" · 北京时间";}
+function tickClock(){const node=el("clock");if(node)node.textContent=new Intl.DateTimeFormat("zh-CN",{timeZone:"Asia/Shanghai",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).format(new Date());}
 tickClock();setInterval(tickClock,1000);load();setInterval(load,30000);
 </script>
 </body>
