@@ -1,5 +1,5 @@
 {
-  "revision": 63,
+  "revision": 64,
   "schema_version": 1,
   "tasks": [
     {
@@ -857,24 +857,34 @@
         "production_reason": "a registered production input changed; prior success for the same fingerprint does not prove current state is reconciled"
       },
       "last_error": null,
-      "lease": {
-        "expires_at": "2026-11-03T18:07:09Z",
-        "owner": "41689687842",
-        "token": "599a5711c302acc46ed34b80eda76275"
-      },
+      "lease": null,
       "max_attempts": 1,
       "not_before": "2026-11-03T18:01:33Z",
       "priority": 100,
       "requester_program_id": "workflow_automation_watchdog",
-      "result": null,
+      "result": {
+        "correlation_id": "task_f3f9ba4a645a475594a4438b-a1",
+        "correlation_title": "Automation task task_f3f9ba4a645a475594a4438b-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-03T18:02:11Z",
+        "ref": "main",
+        "requested_head_sha": "7eaa40c7fb235fc6a6f3a7b211d9682c880f1c6a",
+        "submitted_at": "2026-11-03T18:02:14Z",
+        "task_id": "task_f3f9ba4a645a475594a4438b",
+        "workflow_id": 402712272,
+        "workflow_path": ".github/workflows/auto_sync.yml"
+      },
       "state_history": [
         "QUEUED",
-        "CLAIMED"
+        "CLAIMED",
+        "VERIFYING"
       ],
-      "status": "CLAIMED",
+      "status": "VERIFYING",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_f3f9ba4a645a475594a4438b",
-      "trace_id": "f0e49718bd444598aa09e39e34164ad9"
+      "trace_id": "f0e49718bd444598aa09e39e34164ad9",
+      "verification": null
     }
   ]
 }
