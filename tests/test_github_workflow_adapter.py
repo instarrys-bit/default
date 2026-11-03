@@ -17,6 +17,7 @@ class FakeGitHub:
         self.dispatched = []
         self.runs = []
         self.run_detail = {}
+        self.commits = {}
         self.workflow = {"id": 1234, "path": ".github/workflows/request-intake.yml", "state": "active"}
         self.ref = {"object": {"sha": "a" * 40}}
 
@@ -38,6 +39,9 @@ class FakeGitHub:
 
     def get_run(self, run_id):
         return self.run_detail[run_id]
+
+    def get_commit(self, commit_sha):
+        return self.commits[commit_sha]
 
 
 class WorkflowAdapterTests(unittest.TestCase):
@@ -166,6 +170,65 @@ class WorkflowAdapterTests(unittest.TestCase):
         with self.assertRaisesRegex(WorkflowAPIError, "identity"):
             inspect_correlated_run(self.client, intent)
 
+
+    def test_allows_only_single_queue_intent_commit_after_prepared_ref(self):
+        intent = self.prepare()
+        actual_sha = "b" * 40
+        listed = {
+            "id": 88, "workflow_id": 1234, "event": "workflow_dispatch",
+            "head_branch": "main", "head_sha": actual_sha,
+            "display_title": intent["correlation_title"],
+        }
+        self.client.commits[actual_sha] = {
+            "commit": {"message": "Update durable automation task queue"},
+            "parents": [{"sha": intent["requested_head_sha"]}],
+            "files": [{"filename": "automation/task_queue.json", "status": "modified"}],
+        }
+        self.client.runs = [listed]
+        self.client.run_detail[88] = dict(listed, status="completed", conclusion="success")
+        result = inspect_correlated_run(self.client, intent)
+        self.assertEqual(result["state"], "success")
+        self.assertEqual(result["evidence"]["head_sha_relationship"], "queue_intent_commit_only")
+        self.assertEqual(result["evidence"]["requested_head_sha"], intent["requested_head_sha"])
+
+    def test_rejects_queue_intent_commit_that_also_changes_code(self):
+        intent = self.prepare()
+        actual_sha = "b" * 40
+        listed = {
+            "id": 88, "workflow_id": 1234, "event": "workflow_dispatch",
+            "head_branch": "main", "head_sha": actual_sha,
+            "display_title": intent["correlation_title"],
+        }
+        self.client.commits[actual_sha] = {
+            "commit": {"message": "Update durable automation task queue"},
+            "parents": [{"sha": intent["requested_head_sha"]}],
+            "files": [
+                {"filename": "automation/task_queue.json", "status": "modified"},
+                {"filename": "scripts/task_scheduler.py", "status": "modified"},
+            ],
+        }
+        self.client.runs = [listed]
+        self.client.run_detail[88] = dict(listed, status="completed", conclusion="success")
+        with self.assertRaisesRegex(WorkflowAPIError, "only the exact single-parent queue-intent commit"):
+            inspect_correlated_run(self.client, intent)
+
+    def test_rejects_queue_commit_with_unexpected_parent(self):
+        intent = self.prepare()
+        actual_sha = "b" * 40
+        listed = {
+            "id": 88, "workflow_id": 1234, "event": "workflow_dispatch",
+            "head_branch": "main", "head_sha": actual_sha,
+            "display_title": intent["correlation_title"],
+        }
+        self.client.commits[actual_sha] = {
+            "commit": {"message": "Update durable automation task queue"},
+            "parents": [{"sha": "c" * 40}],
+            "files": [{"filename": "automation/task_queue.json", "status": "modified"}],
+        }
+        self.client.runs = [listed]
+        self.client.run_detail[88] = dict(listed, status="completed", conclusion="success")
+        with self.assertRaisesRegex(WorkflowAPIError, "only the exact single-parent queue-intent commit"):
+            inspect_correlated_run(self.client, intent)
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

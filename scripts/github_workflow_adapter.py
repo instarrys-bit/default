@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 from datetime import datetime, timezone
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urlencode
@@ -111,6 +112,11 @@ class GitHubWorkflowClient:
     def get_run(self, run_id: int) -> dict:
         return self.request("GET", f"actions/runs/{run_id}")
 
+    def get_commit(self, commit_sha: str) -> dict:
+        if not isinstance(commit_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", commit_sha):
+            raise WorkflowAPIError("workflow run commit SHA is invalid")
+        return self.request("GET", f"commits/{commit_sha}")
+
 
 def validate_dispatch_request(adapter: dict, task: dict, ref: str) -> dict:
     """Validate exact caller, input names/types, and allowed ref before API access."""
@@ -211,6 +217,36 @@ def submit_dispatch(client: GitHubWorkflowClient, intent: dict) -> dict:
     } | {"dispatch_state": "submitted", "submitted_at": utc_stamp()}
 
 
+def validate_run_head_sha(client: GitHubWorkflowClient, intent: dict, actual_sha: str) -> str:
+    """Allow exact ref identity or the one queue-only commit created while persisting dispatch intent."""
+    expected_sha = intent.get("requested_head_sha")
+    if actual_sha == expected_sha:
+        return "exact"
+    if not isinstance(actual_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", actual_sha):
+        raise WorkflowAPIError("correlated workflow run commit SHA is invalid")
+    commit = client.get_commit(actual_sha)
+    parents = commit.get("parents")
+    files = commit.get("files")
+    message = (commit.get("commit") or {}).get("message") if isinstance(commit.get("commit"), dict) else None
+    if (
+        not isinstance(parents, list)
+        or len(parents) != 1
+        or not isinstance(parents[0], dict)
+        or parents[0].get("sha") != expected_sha
+        or not isinstance(files, list)
+        or len(files) != 1
+        or not isinstance(files[0], dict)
+        or files[0].get("filename") != "automation/task_queue.json"
+        or files[0].get("status") != "modified"
+        or message != "Update durable automation task queue"
+    ):
+        raise WorkflowAPIError(
+            "correlated workflow run does not match the persisted workflow/ref/SHA identity; "
+            "only the exact single-parent queue-intent commit is permitted"
+        )
+    return "queue_intent_commit_only"
+
+
 def find_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict | None:
     """Find exactly one run by workflow ID, ref, SHA, event, and unique run-name."""
     payload = client.list_runs(intent["workflow_id"], intent["ref"])
@@ -230,10 +266,10 @@ def find_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict | No
         "workflow_id": intent["workflow_id"],
         "event": "workflow_dispatch",
         "head_branch": intent["ref"],
-        "head_sha": intent["requested_head_sha"],
     }
     if any(run.get(key) != value for key, value in expected.items()):
-        raise WorkflowAPIError("correlated workflow run does not match the persisted workflow/ref/SHA identity")
+        raise WorkflowAPIError("correlated workflow run does not match the persisted workflow/ref identity")
+    validate_run_head_sha(client, intent, run.get("head_sha"))
     return run
 
 
@@ -250,11 +286,13 @@ def inspect_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict:
         "workflow_id": intent["workflow_id"],
         "event": "workflow_dispatch",
         "head_branch": intent["ref"],
-        "head_sha": intent["requested_head_sha"],
         "display_title": intent["correlation_title"],
     }
     if any(run.get(key) != value for key, value in required.items()):
         raise WorkflowAPIError("workflow run identity does not match the persisted dispatch intent")
+    if run.get("head_sha") != listed.get("head_sha"):
+        raise WorkflowAPIError("workflow run identity commit SHA changed between list and detail reads")
+    head_sha_relationship = validate_run_head_sha(client, intent, run.get("head_sha"))
     if run.get("status") != "completed":
         return {"state": "pending", "run_id": run_id, "html_url": run.get("html_url"), "run_status": run.get("status")}
     conclusion = run.get("conclusion")
@@ -262,6 +300,8 @@ def inspect_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict:
         "run_id": run_id,
         "html_url": run.get("html_url"),
         "head_sha": run.get("head_sha"),
+        "requested_head_sha": intent["requested_head_sha"],
+        "head_sha_relationship": head_sha_relationship,
         "status": run.get("status"),
         "conclusion": conclusion,
     }
