@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "audit_id": "resource-ownership-audit-2026.11.04.1",
+  "status": "partial_static_audit",
+  "purpose": "Identify known overlapping write resources before independent capability scheduling. This inventory is deliberately fail-closed and is not an execution authorization.",
+  "evidence_scope": {
+    "registry_blob_sha": "ee1d9738c11b269317af4c1ec5dddc14b6e52041",
+    "adapters_blob_sha": "b266437eee2a17b75b9f7d721124ddba414dee3e",
+    "inspected_sources": [
+      "scripts/build_rulesets.py",
+      "scripts/lifecycle_audit.py",
+      "scripts/sync_ruleset_config_conflicts.py",
+      "scripts/refresh_ruleset_manifest.py",
+      "scripts/json_document_store.py"
+    ],
+    "limitation": "Static source review of identified entrypoints; indirect helper writes, runtime-selected paths, and all call sites are not yet exhaustively traced."
+  },
+  "protected_resources": {
+    "shadowrocket/ss.conf": {
+      "access": "read_only",
+      "writers_allowed": [],
+      "enforcement_evidence": "task_scheduler protected-config digest guard and auto_sync publish-job pre/post staging checks",
+      "scheduling_rule": "Any detected modification must fail closed; no capability may claim write ownership."
+    }
+  },
+  "resource_groups": [
+    {
+      "id": "published_ruleset_artifacts",
+      "paths": [
+        "rulesets/direct.list",
+        "rulesets/proxy.list",
+        "rulesets/reject.list"
+      ],
+      "known_writers": [
+        "script_build_rulesets",
+        "script_lifecycle_audit",
+        "script_sync_ruleset_config_conflicts"
+      ],
+      "lock_key": "resource:rulesets/published-lists",
+      "required_mode": "exclusive",
+      "status": "overlap_confirmed",
+      "note": "All three entrypoints can affect published policy lists; serialize them until a single-writer ownership boundary is enforced."
+    },
+    {
+      "id": "ruleset_manifest",
+      "paths": [
+        "rulesets/manifest.json"
+      ],
+      "known_writers": [
+        "script_build_rulesets",
+        "script_lifecycle_audit",
+        "script_sync_ruleset_config_conflicts",
+        "script_refresh_ruleset_manifest"
+      ],
+      "lock_key": "resource:rulesets/manifest.json",
+      "required_mode": "exclusive",
+      "status": "overlap_confirmed",
+      "note": "Manifest reconciliation and production/lifecycle/conflict flows share this resource."
+    },
+    {
+      "id": "ruleset_pending_and_archive_state",
+      "paths": [
+        "rulesets/pending_queue.json",
+        "rulesets/config_conflict_archive.json",
+        "rulesets/lifecycle_state.json"
+      ],
+      "known_writers": [
+        "script_build_rulesets",
+        "script_lifecycle_audit",
+        "script_sync_ruleset_config_conflicts"
+      ],
+      "lock_key": "resource:rulesets/state",
+      "required_mode": "exclusive",
+      "status": "known_shared_state",
+      "note": "Exact per-file writer coverage and indirect writes still require call-graph tracing."
+    },
+    {
+      "id": "shared_json_document_store",
+      "paths": [
+        "path-selected JSON documents and their adjacent .manifest.json / shard files"
+      ],
+      "known_writers": [
+        "script_json_document_store",
+        "script_collect_domains",
+        "script_deterministic_review",
+        "script_import_request_observations"
+      ],
+      "lock_key": "resource:<canonical-document-path>",
+      "required_mode": "exclusive_per_document",
+      "status": "dynamic_path_requires_runtime_lock",
+      "note": "The storage helper uses atomic replacement, JSONL shards, manifest switching, and old-shard cleanup. Locking by program ID is insufficient; lock the canonical document path and include manifest/shards in the same lease."
+    },
+    {
+      "id": "review_cursor_checkpoint",
+      "paths": [
+        "review cursor/checkpoint path (runtime-selected)"
+      ],
+      "known_writers": [
+        "script_review_cursor",
+        "script_persist_review_cursor",
+        "script_deterministic_review"
+      ],
+      "lock_key": "resource:<canonical-cursor-path>",
+      "required_mode": "exclusive_per_cursor",
+      "status": "partial_static_audit",
+      "note": "Resolve the concrete path and all helper call sites before dispatch."
+    },
+    {
+      "id": "reports_and_audit_outputs",
+      "paths": [
+        "reports/** (entrypoint-specific)"
+      ],
+      "known_writers": [
+        "script_build_rulesets",
+        "script_lifecycle_audit",
+        "script_sync_ruleset_config_conflicts",
+        "script_refresh_ruleset_manifest"
+      ],
+      "lock_key": "resource:<canonical-report-path>",
+      "required_mode": "exclusive_per_output",
+      "status": "partial_static_audit",
+      "note": "Exact report path inventory is not complete; avoid concurrent same-path writes."
+    }
+  ],
+  "scheduling_gates": {
+    "default": "deny",
+    "independent_python_dispatch_allowed": false,
+    "required_before_enablement": [
+      "Complete transitive write-set tracing for every candidate capability.",
+      "Resolve dynamic paths to canonical resource identifiers before claiming a task.",
+      "Acquire all required resource leases atomically or in deterministic sorted order.",
+      "Hold leases through process completion and independent result verification.",
+      "Use lease expiry and fencing tokens so stale workers cannot overwrite newer outputs.",
+      "Verify protected ss.conf digest before and after every worker."
+    ]
+  }
+}
