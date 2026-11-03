@@ -83,7 +83,7 @@ def validate_execution_adapters(root=ROOT,adapters_path=None,registry_path=None)
         artifact_verifier=completion.get("artifact_verifier")
         if artifact_verifier is not None:
             if not isinstance(artifact_verifier,dict) or not isinstance(artifact_verifier.get("path"),str) or not artifact_verifier["path"].startswith("scripts/") or not isinstance(artifact_verifier.get("output_field"),str) or not artifact_verifier["output_field"]: raise ValueError(f"{tid} artifact_verifier contract invalid")
-            verifier_path=(ROOT.parent/artifact_verifier["path"]).resolve()
+            verifier_path=(ROOT/artifact_verifier["path"]).resolve()
             if not verifier_path.is_file(): raise ValueError(f"{tid} artifact_verifier path is missing")
             output=a.get("output_contract")
             if not isinstance(output,dict) or artifact_verifier["output_field"] not in output.get("properties",{}) or artifact_verifier["output_field"] not in output.get("required",[]): raise ValueError(f"{tid} output_contract must require the artifact_verifier output field")
