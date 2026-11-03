@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deny-by-default one-shot scheduler for reviewed Python execution adapters."""
+"""Deny-by-default scheduler for reviewed Python and GitHub Actions adapters."""
 from __future__ import annotations
 
 import argparse
@@ -22,6 +22,10 @@ from task_queue_runtime import authorize, now_utc
 from github_queue_store import QueueStoreError
 from task_result_verifier import (
     validate_json_schema, validate_schema_definition, verify_pending_remote,
+)
+from github_workflow_adapter import (
+    GitHubWorkflowClient, WorkflowAPIError, WorkflowDispatchOutcomeUnknown,
+    WorkflowDispatchRejected, prepare_dispatch, submit_dispatch, validate_dispatch_request,
 )
 
 
@@ -109,33 +113,47 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
             authorize(task, by_id)
             if not isinstance(adapter, dict) or adapter.get("enabled") is not True:
                 raise ValueError("target adapter is disabled")
-            if adapter.get("interface_status") != "reviewed":
-                raise ValueError("target adapter interface is not reviewed")
-            if adapter.get("adapter_type") != "python_cli":
-                raise ValueError("this scheduler version only executes reviewed python_cli adapters")
+            expected_interface = (
+                "reviewed" if adapter.get("adapter_type") == "python_cli"
+                else "workflow_dispatch_reviewed" if adapter.get("adapter_type") == "github_actions_workflow"
+                else None
+            )
+            if expected_interface is None or adapter.get("interface_status") != expected_interface:
+                raise ValueError("target adapter interface is not reviewed for its adapter type")
             if task["requester_program_id"] not in adapter.get("allowed_callers", []):
                 raise ValueError("requester is not in the adapter caller allowlist")
-            if adapter.get("input_contract") is None or adapter.get("output_contract") is None:
-                raise ValueError("reviewed input and output contracts are required")
-            validate_schema_definition(adapter["input_contract"])
-            validate_schema_definition(adapter["output_contract"])
-            input_errors = validate_json_schema(task["input"], adapter["input_contract"])
-            if input_errors:
-                raise ValueError("task input contract failed: " + "; ".join(input_errors[:5]))
-            entrypoint = adapter.get("entrypoint")
-            if (not isinstance(entrypoint, dict) or entrypoint.get("path") != target.get("path")
-                    or entrypoint.get("executable") != "python3" or entrypoint.get("shell") is not False):
-                raise ValueError("entrypoint must match the registered Python component and prohibit shell execution")
-            validate_argv_template(entrypoint.get("argv_template"))
-            entrypoint_path = (root / entrypoint["path"]).resolve()
-            if not entrypoint_path.is_relative_to(root.resolve()) or not entrypoint_path.is_file():
-                raise ValueError("registered entrypoint is missing or resolves outside the repository")
             timeout = adapter.get("timeout_seconds")
             policy_timeout = target.get("orchestration", {}).get("timeout_seconds")
             if (isinstance(timeout, bool) or not isinstance(timeout, int) or timeout < 1 or timeout > 300
                     or isinstance(policy_timeout, bool) or not isinstance(policy_timeout, int)
                     or timeout >= policy_timeout):
                 raise ValueError("adapter timeout must be 1-300 seconds and shorter than the registered task lease")
+            if adapter.get("adapter_type") == "python_cli":
+                if adapter.get("input_contract") is None or adapter.get("output_contract") is None:
+                    raise ValueError("reviewed input and output contracts are required")
+                validate_schema_definition(adapter["input_contract"])
+                validate_schema_definition(adapter["output_contract"])
+                input_errors = validate_json_schema(task["input"], adapter["input_contract"])
+                if input_errors:
+                    raise ValueError("task input contract failed: " + "; ".join(input_errors[:5]))
+                entrypoint = adapter.get("entrypoint")
+                if (not isinstance(entrypoint, dict) or entrypoint.get("path") != target.get("path")
+                        or entrypoint.get("executable") != "python3" or entrypoint.get("shell") is not False):
+                    raise ValueError("entrypoint must match the registered Python component and prohibit shell execution")
+                validate_argv_template(entrypoint.get("argv_template"))
+                entrypoint_path = (root / entrypoint["path"]).resolve()
+                if not entrypoint_path.is_relative_to(root.resolve()) or not entrypoint_path.is_file():
+                    raise ValueError("registered entrypoint is missing or resolves outside the repository")
+            elif adapter.get("adapter_type") == "github_actions_workflow":
+                if task.get("dispatch_intent") is not None:
+                    raise ValueError("persisted workflow dispatch intent requires reconciliation; redispatch is prohibited")
+                workflow = adapter.get("workflow")
+                if (not isinstance(workflow, dict) or workflow.get("path") != target.get("path")
+                        or workflow.get("dispatchable") is not True):
+                    raise ValueError("workflow path or dispatchable contract is invalid")
+                validate_dispatch_request(adapter, task, "main")
+            else:
+                raise ValueError("unsupported execution adapter type")
             eligible.append(task_id)
         except (KeyError, TypeError, ValueError) as exc:
             blocked.append({"task_id": task_id, "reason": str(exc)})
@@ -166,7 +184,7 @@ def ensure_protected_config_unchanged(before_digest: str, task: dict, store,
     try:
         complete_remote(
             task["task_id"], task["lease"]["owner"], task["lease"]["token"],
-            success=False, error=error, store=store, registry=registry, now=now_utc(),
+            success=False, error=error, store=store, registry=registry, now=now,
         )
     finally:
         raise ProtectedConfigMutationError(error["message"])
@@ -195,10 +213,108 @@ def safe_child_environment(root: Path = ROOT) -> dict[str, str]:
     return environment
 
 
+def persist_workflow_dispatch_intent(task: dict, intent: dict, store, registry: dict) -> dict:
+    """Persist correlation identity before the non-idempotent GitHub dispatch call."""
+    stable = {key: intent[key] for key in (
+        "workflow_id", "workflow_path", "ref", "requested_head_sha",
+        "task_id", "dispatch_attempt", "correlation_id", "correlation_title", "prepared_at",
+    )}
+    def mutate(queue):
+        validate_envelope(queue)
+        validate_candidate(queue, registry)
+        current = next((item for item in queue["tasks"] if item["task_id"] == task["task_id"]), None)
+        if current is None or current.get("status") != "CLAIMED":
+            raise ValueError("workflow task is no longer claimed")
+        lease = current.get("lease") or {}
+        if lease.get("owner") != task["lease"]["owner"] or lease.get("token") != task["lease"]["token"]:
+            raise ValueError("workflow task lease changed before dispatch intent persistence")
+        existing = current.get("dispatch_intent")
+        if existing is not None:
+            if existing != stable:
+                raise ValueError("workflow task already has a different dispatch intent; refusing redispatch")
+            return queue, existing
+        current["dispatch_intent"] = stable
+        queue["revision"] += 1
+        validate_candidate(queue, registry)
+        return queue, stable
+    return store.mutate(mutate)
+
+
+def clear_workflow_dispatch_intent(task: dict, store, registry: dict) -> None:
+    """Clear an intent only after GitHub explicitly rejects the dispatch request."""
+    def mutate(queue):
+        validate_envelope(queue)
+        validate_candidate(queue, registry)
+        current = next((item for item in queue["tasks"] if item["task_id"] == task["task_id"]), None)
+        if current is None or current.get("status") != "CLAIMED":
+            raise ValueError("workflow task is no longer claimed")
+        lease = current.get("lease") or {}
+        if lease.get("owner") != task["lease"]["owner"] or lease.get("token") != task["lease"]["token"]:
+            raise ValueError("workflow task lease changed before dispatch intent clear")
+        current.pop("dispatch_intent", None)
+        queue["revision"] += 1
+        validate_candidate(queue, registry)
+        return queue, None
+    store.mutate(mutate)
+
+
+def execute_claimed_workflow_task(task: dict, adapter: dict, store, registry: dict,
+                                   adapters: dict, now: datetime | None = None) -> dict:
+    """Persist intent, dispatch once, then move the task to independent verification."""
+    now = now or now_utc()
+    try:
+        client = GitHubWorkflowClient(
+            store.repository, token=store.token, timeout=adapter["timeout_seconds"]
+        )
+        prepared = prepare_dispatch(client, adapter, task, ref=store.branch)
+        persisted = persist_workflow_dispatch_intent(task, prepared, store, registry)
+        intent = dict(persisted)
+        intent["inputs"] = prepared["inputs"]
+        try:
+            result = submit_dispatch(client, intent)
+        except WorkflowDispatchOutcomeUnknown as exc:
+            result = dict(persisted)
+            result["dispatch_state"] = "unknown"
+            result["dispatch_uncertainty"] = str(exc)
+        except WorkflowDispatchRejected as exc:
+            clear_workflow_dispatch_intent(task, store, registry)
+            error = {"type": "workflow_dispatch_rejected", "message": str(exc)}
+            completed = complete_remote(
+                task["task_id"], task["lease"]["owner"], task["lease"]["token"],
+                success=False, error=error, store=store, registry=registry, now=now,
+            )
+            return {"task_id": task["task_id"], "status": completed["status"], "error": error}
+        pending = complete_remote(
+            task["task_id"], task["lease"]["owner"], task["lease"]["token"],
+            success=True, result=result, store=store, registry=registry, now=now,
+        )
+        verification = verify_pending_remote(
+            store, registry, adapters, now, workflow_client=client
+        )
+        snapshot = store.read().document
+        final_task = next(item for item in snapshot["tasks"] if item["task_id"] == task["task_id"])
+        return {
+            "task_id": task["task_id"],
+            "worker_completion_status": pending["status"],
+            "status": final_task["status"],
+            "dispatch_state": result["dispatch_state"],
+            "verification": verification,
+        }
+    except (WorkflowAPIError, ValueError, OSError) as exc:
+        error = {"type": "workflow_dispatch_preflight_failed", "message": str(exc)[:1000]}
+        completed = complete_remote(
+            task["task_id"], task["lease"]["owner"], task["lease"]["token"],
+            success=False, error=error, store=store, registry=registry, now=now,
+        )
+        return {"task_id": task["task_id"], "status": completed["status"], "error": error}
+
+
 def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
                          adapters: dict, root: Path = ROOT,
                          now: datetime | None = None) -> dict:
     now = now or now_utc()
+    if adapter.get("adapter_type") == "github_actions_workflow":
+        return execute_claimed_workflow_task(task, adapter, store, registry, adapters, now)
     entrypoint = adapter["entrypoint"]
     script_path = (root / entrypoint["path"]).resolve()
     input_errors = validate_json_schema(task["input"], adapter["input_contract"])

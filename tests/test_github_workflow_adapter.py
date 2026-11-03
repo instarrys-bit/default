@@ -61,6 +61,7 @@ class WorkflowAdapterTests(unittest.TestCase):
         self.task = {
             "task_id": "task_0123456789abcdef01234567",
             "requester_program_id": "workflow_automation_watchdog",
+            "attempts": 1,
             "input": {"domains": "example.com"},
         }
 
@@ -71,7 +72,7 @@ class WorkflowAdapterTests(unittest.TestCase):
         inputs = validate_dispatch_request(self.adapter, self.task, "main")
         self.assertEqual(inputs, {
             "domains": "example.com",
-            "automation_task_id": self.task["task_id"],
+            "automation_task_id": self.task["task_id"] + "-a1",
         })
 
     def test_rejects_disabled_adapter_unapproved_caller_and_ref(self):
@@ -102,7 +103,7 @@ class WorkflowAdapterTests(unittest.TestCase):
         intent = self.prepare()
         self.assertEqual(intent["workflow_id"], 1234)
         self.assertEqual(intent["requested_head_sha"], "a" * 40)
-        self.assertEqual(intent["correlation_title"], "Automation task " + self.task["task_id"])
+        self.assertEqual(intent["correlation_title"], "Automation task " + self.task["task_id"] + "-a1")
         self.client.workflow["state"] = "disabled_manually"
         with self.assertRaisesRegex(WorkflowAPIError, "identity or active state"):
             self.prepare()
@@ -112,10 +113,11 @@ class WorkflowAdapterTests(unittest.TestCase):
         result = submit_dispatch(self.client, intent)
         self.assertEqual(self.client.dispatched, [(
             1234, "main",
-            {"domains": "example.com", "automation_task_id": self.task["task_id"]},
+            {"domains": "example.com", "automation_task_id": self.task["task_id"] + "-a1"},
         )])
         self.assertEqual(result["dispatch_state"], "submitted")
         self.assertEqual(result["task_id"], self.task["task_id"])
+        self.assertEqual(result["correlation_id"], self.task["task_id"] + "-a1")
         self.assertNotIn("inputs", result)
 
     def test_find_run_requires_exact_correlation_and_rejects_ambiguity(self):

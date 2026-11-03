@@ -23,6 +23,9 @@ class MemoryStore:
             self.writes += 1
         return result
 
+    def read(self):
+        return type("Snapshot", (), {"document": copy.deepcopy(self.document), "content_sha": "fake-sha"})()
+
 
 class TaskResultVerifierTests(unittest.TestCase):
     def setUp(self):
@@ -45,6 +48,7 @@ class TaskResultVerifierTests(unittest.TestCase):
         }
         self.adapters = {"schema_version": 1, "adapters": [{
             "target_program_id": "script_target",
+            "adapter_type": "python_cli",
             "enabled": True,
             "interface_status": "reviewed",
             "output_contract": self.schema,

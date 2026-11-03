@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Reviewed GitHub Actions workflow-dispatch and run-correlation primitives.
+"""GitHub Actions workflow dispatch and run-correlation primitives.
 
-This module is deliberately not wired into the scheduler in this change.
-It defines and tests the API boundary first; dispatch remains disabled until
-scheduler integration and independent run verification are reviewed.
+Production use is gated by the scheduler's reviewed adapter, caller allowlist,
+allowlisted ref, persisted dispatch intent, and independent run verifier.
 """
 from __future__ import annotations
 
@@ -22,6 +21,10 @@ class WorkflowAPIError(RuntimeError):
 
 class WorkflowDispatchOutcomeUnknown(WorkflowAPIError):
     """The dispatch request may have reached GitHub, but no response was received."""
+
+
+class WorkflowDispatchRejected(WorkflowAPIError):
+    """GitHub explicitly rejected a dispatch request; retry may be safe."""
 
 
 class AmbiguousWorkflowRun(WorkflowAPIError):
@@ -66,6 +69,12 @@ class GitHubWorkflowClient:
                 if not raw:
                     return None
         except HTTPError as exc:
+            if method == "POST" and path.endswith("/dispatches"):
+                if 400 <= exc.code < 500:
+                    raise WorkflowDispatchRejected(f"GitHub rejected workflow dispatch with HTTP {exc.code}") from None
+                raise WorkflowDispatchOutcomeUnknown(
+                    f"GitHub dispatch endpoint returned HTTP {exc.code}; reconcile by task correlation before retrying"
+                ) from None
             raise WorkflowAPIError(f"GitHub Actions API returned HTTP {exc.code}") from None
         except (URLError, TimeoutError, OSError):
             if method == "POST" and path.endswith("/dispatches"):
@@ -82,7 +91,8 @@ class GitHubWorkflowClient:
         return value
 
     def get_workflow(self, workflow_path: str) -> dict:
-        return self.request("GET", f"actions/workflows/{quote(workflow_path, safe='/')}")
+        filename = workflow_path.rsplit("/", 1)[-1]
+        return self.request("GET", f"actions/workflows/{quote(filename, safe='')}")
 
     def get_ref(self, ref: str) -> dict:
         encoded = quote(ref, safe="/")
@@ -119,8 +129,12 @@ def validate_dispatch_request(adapter: dict, task: dict, ref: str) -> dict:
     if task.get("requester_program_id") not in callers:
         raise ValueError("requester is not in the workflow adapter caller allowlist")
     task_id = task.get("task_id")
+    attempt = task.get("attempts")
     if not isinstance(task_id, str) or not task_id.startswith("task_"):
         raise ValueError("task_id is required for workflow run correlation")
+    if isinstance(attempt, bool) or not isinstance(attempt, int) or attempt < 0:
+        raise ValueError("task attempt number is invalid for workflow run correlation")
+    correlation_attempt = max(1, attempt)
     supplied = task.get("input")
     if not isinstance(supplied, dict):
         raise ValueError("workflow task input must be an object")
@@ -136,7 +150,7 @@ def validate_dispatch_request(adapter: dict, task: dict, ref: str) -> dict:
     if unknown:
         raise ValueError("unsupported workflow input(s): " + ", ".join(unknown))
     inputs = dict(supplied)
-    inputs["automation_task_id"] = task_id
+    inputs["automation_task_id"] = f"{task_id}-a{correlation_attempt}"
     for name, spec in by_name.items():
         value = inputs.get(name)
         if value is None:
@@ -169,13 +183,16 @@ def prepare_dispatch(client: GitHubWorkflowClient, adapter: dict, task: dict,
     if not isinstance(commit_sha, str) or len(commit_sha) != 40:
         raise WorkflowAPIError("GitHub ref did not resolve to a commit SHA")
     task_id = task["task_id"]
+    correlation_id = inputs["automation_task_id"]
     return {
         "workflow_id": workflow_id,
         "workflow_path": workflow_path,
         "ref": ref,
         "requested_head_sha": commit_sha,
         "task_id": task_id,
-        "correlation_title": f"Automation task {task_id}",
+        "dispatch_attempt": task["attempts"],
+        "correlation_id": correlation_id,
+        "correlation_title": f"Automation task {correlation_id}",
         "inputs": inputs,
         "prepared_at": utc_stamp(now),
     }
@@ -185,11 +202,11 @@ def submit_dispatch(client: GitHubWorkflowClient, intent: dict) -> dict:
     """Submit exactly one dispatch request; callers must persist intent first."""
     response = client.dispatch(intent["workflow_id"], intent["ref"], intent["inputs"])
     if response is not None:
-        raise WorkflowAPIError("workflow dispatch endpoint returned an unexpected response body")
+        raise WorkflowDispatchOutcomeUnknown("workflow dispatch returned an unexpected response body; reconcile by task correlation before retrying")
     return {
         key: intent[key] for key in (
             "workflow_id", "workflow_path", "ref", "requested_head_sha",
-            "task_id", "correlation_title", "prepared_at",
+            "task_id", "dispatch_attempt", "correlation_id", "correlation_title", "prepared_at",
         )
     } | {"dispatch_state": "submitted", "submitted_at": utc_stamp()}
 
@@ -200,21 +217,24 @@ def find_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict | No
     runs = payload.get("workflow_runs")
     if not isinstance(runs, list):
         raise WorkflowAPIError("workflow runs response is missing workflow_runs")
-    matches = []
-    for run in runs:
-        if not isinstance(run, dict):
-            continue
-        if (
-            run.get("workflow_id") == intent["workflow_id"]
-            and run.get("event") == "workflow_dispatch"
-            and run.get("head_branch") == intent["ref"]
-            and run.get("head_sha") == intent["requested_head_sha"]
-            and run.get("display_title") == intent["correlation_title"]
-        ):
-            matches.append(run)
+    matches = [
+        run for run in runs
+        if isinstance(run, dict) and run.get("display_title") == intent["correlation_title"]
+    ]
     if len(matches) > 1:
         raise AmbiguousWorkflowRun("multiple workflow runs match one task correlation ID")
-    return matches[0] if matches else None
+    if not matches:
+        return None
+    run = matches[0]
+    expected = {
+        "workflow_id": intent["workflow_id"],
+        "event": "workflow_dispatch",
+        "head_branch": intent["ref"],
+        "head_sha": intent["requested_head_sha"],
+    }
+    if any(run.get(key) != value for key, value in expected.items()):
+        raise WorkflowAPIError("correlated workflow run does not match the persisted workflow/ref/SHA identity")
+    return run
 
 
 def inspect_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict:
@@ -236,7 +256,7 @@ def inspect_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict:
     if any(run.get(key) != value for key, value in required.items()):
         raise WorkflowAPIError("workflow run identity does not match the persisted dispatch intent")
     if run.get("status") != "completed":
-        return {"state": "pending", "run_id": run_id, "html_url": run.get("html_url")}
+        return {"state": "pending", "run_id": run_id, "html_url": run.get("html_url"), "run_status": run.get("status")}
     conclusion = run.get("conclusion")
     evidence = {
         "run_id": run_id,
@@ -265,7 +285,7 @@ def main() -> int:
             "correlation_input": "automation_task_id",
             "run_identity": ["workflow_id", "event", "head_branch", "head_sha", "display_title"],
             "success_requires": "completed workflow run with conclusion=success",
-            "dispatch_enabled_by_this_module": False,
+            "production_dispatch_requires_enabled_reviewed_adapter": True,
         }, sort_keys=True))
     else:
         parser.print_help()

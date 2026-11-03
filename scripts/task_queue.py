@@ -133,13 +133,13 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
         if history[-1] != status:
             raise ValueError(f"{task_id}.state_history must end with the current status")
         allowed_transitions = {
-            "QUEUED": {"CLAIMED", "CANCELLED"},
+            "QUEUED": {"CLAIMED", "CANCELLED", "VERIFYING"},
             "CLAIMED": {"VERIFYING", "SUCCEEDED", "FAILED", "QUEUED", "DEAD_LETTER"},
             "VERIFYING": {"SUCCEEDED", "FAILED", "QUEUED", "DEAD_LETTER"},
             "FAILED": {"QUEUED", "DEAD_LETTER", "CANCELLED"},
             "SUCCEEDED": set(),
             "CANCELLED": set(),
-            "DEAD_LETTER": set(),
+            "DEAD_LETTER": {"VERIFYING"},
         }
         for previous, current in zip(history, history[1:]):
             if current not in allowed_transitions[previous]:
@@ -152,6 +152,34 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
             parse_utc(lease.get("expires_at"), f"{task_id}.lease.expires_at")
         elif lease is not None:
             raise ValueError(f"{task_id} must not retain a lease while status is {status}")
+        if any(previous == "QUEUED" and current == "VERIFYING" for previous, current in zip(history, history[1:])):
+            if not isinstance(task.get("dispatch_intent"), dict):
+                raise ValueError(f"{task_id} may enter VERIFYING from QUEUED only through a persisted workflow dispatch intent")
+        if any(previous == "DEAD_LETTER" and current == "VERIFYING" for previous, current in zip(history, history[1:])):
+            if not isinstance(task.get("dispatch_intent"), dict):
+                raise ValueError(f"{task_id} may leave DEAD_LETTER for VERIFYING only to reconcile a persisted workflow dispatch intent")
+        dispatch_intent = task.get("dispatch_intent")
+        if dispatch_intent is not None:
+            if not isinstance(dispatch_intent, dict):
+                raise ValueError(f"{task_id}.dispatch_intent must be an object")
+            workflow_id = dispatch_intent.get("workflow_id")
+            if isinstance(workflow_id, bool) or not isinstance(workflow_id, int) or workflow_id < 1:
+                raise ValueError(f"{task_id}.dispatch_intent.workflow_id must be a positive integer")
+            if dispatch_intent.get("task_id") != task_id:
+                raise ValueError(f"{task_id}.dispatch_intent task ID mismatch")
+            dispatch_attempt = dispatch_intent.get("dispatch_attempt")
+            if isinstance(dispatch_attempt, bool) or not isinstance(dispatch_attempt, int) or dispatch_attempt < 1 or dispatch_attempt > attempts:
+                raise ValueError(f"{task_id}.dispatch_intent dispatch attempt is invalid")
+            expected_correlation = f"{task_id}-a{dispatch_attempt}"
+            if dispatch_intent.get("correlation_id") != expected_correlation or dispatch_intent.get("correlation_title") != f"Automation task {expected_correlation}":
+                raise ValueError(f"{task_id}.dispatch_intent correlation identity mismatch")
+            if not isinstance(dispatch_intent.get("workflow_path"), str) or not dispatch_intent["workflow_path"].startswith(".github/workflows/"):
+                raise ValueError(f"{task_id}.dispatch_intent workflow path is invalid")
+            if not isinstance(dispatch_intent.get("ref"), str) or not dispatch_intent["ref"]:
+                raise ValueError(f"{task_id}.dispatch_intent ref is required")
+            if not isinstance(dispatch_intent.get("requested_head_sha"), str) or not re.fullmatch(r"[0-9a-f]{40}", dispatch_intent["requested_head_sha"]):
+                raise ValueError(f"{task_id}.dispatch_intent head SHA is invalid")
+            parse_utc(dispatch_intent.get("prepared_at"), f"{task_id}.dispatch_intent.prepared_at")
         result = task["result"]
         if status in {"VERIFYING", "SUCCEEDED"} and not isinstance(result, dict):
             raise ValueError(f"{task_id} {status} task requires a result object")

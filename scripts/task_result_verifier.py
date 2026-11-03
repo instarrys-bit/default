@@ -15,6 +15,7 @@ from remote_task_queue_runtime import (
 )
 from task_queue_runtime import now_utc, stamp
 from github_queue_store import QueueStoreError
+from github_workflow_adapter import GitHubWorkflowClient, WorkflowAPIError, inspect_correlated_run
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -165,7 +166,7 @@ def validate_json_schema(value: object, schema: dict) -> list[str]:
 
 
 def verify_pending_remote(store, registry: dict, adapters: dict,
-                          now: datetime | None = None) -> dict:
+                          now: datetime | None = None, workflow_client=None) -> dict:
     now = now or now_utc()
     adapter_items = adapters.get("adapters")
     if adapters.get("schema_version") != 1 or not isinstance(adapter_items, list):
@@ -180,6 +181,49 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
         if target_id in by_target:
             raise ValueError(f"duplicate execution adapter for {target_id}")
         by_target[target_id] = item
+
+    # Network reads happen before the CAS mutator. The mutator remains pure and
+    # may safely be replayed if another worker advances the queue revision.
+    snapshot = store.read().document
+    workflow_observations = {}
+    workflow_tasks = [
+        task for task in snapshot.get("tasks", [])
+        if isinstance(task, dict) and (
+            task.get("status") == "VERIFYING"
+            or (
+                task.get("status") in {"QUEUED", "DEAD_LETTER"}
+                and isinstance(task.get("dispatch_intent"), dict)
+                and not isinstance(task.get("verification"), dict)
+            )
+        )
+        and by_target.get(task.get("target_program_id"), {}).get("adapter_type") == "github_actions_workflow"
+    ]
+    if workflow_tasks:
+        if workflow_client is None:
+            try:
+                workflow_client = GitHubWorkflowClient(store.repository, token=store.token)
+            except (AttributeError, ValueError) as exc:
+                for task in workflow_tasks:
+                    workflow_observations[task["task_id"]] = {
+                        "state": "error", "reason": f"workflow API client unavailable: {exc}"
+                    }
+        if workflow_client is not None:
+            for task in workflow_tasks:
+                adapter = by_target.get(task.get("target_program_id"), {})
+                intent = task.get("dispatch_intent") or task.get("result")
+                if (adapter.get("enabled") is not True
+                        or adapter.get("interface_status") != "workflow_dispatch_reviewed"
+                        or not isinstance(adapter.get("workflow"), dict)
+                        or not isinstance(intent, dict)):
+                    workflow_observations[task["task_id"]] = {
+                        "state": "error", "reason": "workflow adapter or persisted dispatch intent is not reviewable"
+                    }
+                    continue
+                try:
+                    workflow_observations[task["task_id"]] = inspect_correlated_run(workflow_client, intent)
+                except (WorkflowAPIError, ValueError, KeyError) as exc:
+                    workflow_observations[task["task_id"]] = {"state": "error", "reason": str(exc)[:1000]}
+
     def mutate(queue: dict):
         validate_envelope(queue)
         validate_candidate(queue, registry)
@@ -188,13 +232,112 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
         blocked: list[dict] = []
         changed = False
         for task in queue["tasks"]:
-            if task.get("status") != "VERIFYING":
+            status = task.get("status")
+            has_recoverable_intent = (
+                status in {"QUEUED", "DEAD_LETTER"}
+                and isinstance(task.get("dispatch_intent"), dict)
+                and not isinstance(task.get("verification"), dict)
+            )
+            if status != "VERIFYING" and not has_recoverable_intent:
                 continue
             target = task.get("target_program_id")
             adapter = by_target.get(target)
-            if (not isinstance(adapter, dict) or adapter.get("enabled") is not True
-                    or adapter.get("interface_status") != "reviewed"
-                    or not isinstance(adapter.get("output_contract"), dict)):
+            if not isinstance(adapter, dict) or adapter.get("enabled") is not True:
+                blocked.append({"task_id": task["task_id"], "reason": "target adapter is not enabled"})
+                continue
+
+            if adapter.get("adapter_type") == "github_actions_workflow":
+                if (adapter.get("interface_status") != "workflow_dispatch_reviewed"
+                        or not isinstance(adapter.get("workflow"), dict)):
+                    blocked.append({"task_id": task["task_id"], "reason": "workflow adapter contract is not reviewed"})
+                    continue
+                observation = workflow_observations.get(task["task_id"])
+                if not isinstance(observation, dict) or observation.get("state") == "error":
+                    blocked.append({
+                        "task_id": task["task_id"],
+                        "reason": observation.get("reason", "workflow run inspection unavailable")
+                        if isinstance(observation, dict) else "workflow run inspection unavailable",
+                    })
+                    continue
+                if observation.get("state") == "pending":
+                    run_id = observation.get("run_id")
+                    if has_recoverable_intent and isinstance(run_id, int):
+                        task["result"] = {
+                            **task["dispatch_intent"],
+                            "dispatch_state": "reconciled",
+                            "run_evidence": {
+                                "run_id": run_id,
+                                "html_url": observation.get("html_url"),
+                                "status": observation.get("run_status", "in_progress"),
+                            },
+                        }
+                        task["status"] = "VERIFYING"
+                        task["state_history"].append("VERIFYING")
+                        changed = True
+                    elif status == "VERIFYING" and isinstance(run_id, int):
+                        evidence = {
+                            "run_id": run_id,
+                            "html_url": observation.get("html_url"),
+                            "status": observation.get("run_status", "in_progress"),
+                        }
+                        if task.get("result", {}).get("run_evidence") != evidence:
+                            task["result"]["run_evidence"] = evidence
+                            changed = True
+                    blocked.append({"task_id": task["task_id"], "reason": observation.get("reason", "workflow run is still pending")})
+                    continue
+                if observation.get("state") not in {"success", "failure"}:
+                    blocked.append({"task_id": task["task_id"], "reason": "workflow run inspection returned an unsupported state"})
+                    continue
+
+                if has_recoverable_intent:
+                    task["result"] = {
+                        **task["dispatch_intent"],
+                        "dispatch_state": "reconciled",
+                    }
+                    task["status"] = "VERIFYING"
+                    task["state_history"].append("VERIFYING")
+                task["result"]["run_evidence"] = observation["evidence"]
+                workflow_contract = adapter["workflow"]
+                contract_sha = hashlib.sha256(
+                    json.dumps(workflow_contract, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+                ).hexdigest()
+                passed = observation["state"] == "success"
+                task["verification"] = {
+                    "verifier_program_id": VERIFIER_ID,
+                    "verified_at": stamp(now),
+                    "contract_sha256": contract_sha,
+                    "status": "passed" if passed else "failed",
+                }
+                if passed:
+                    task["status"] = "SUCCEEDED"
+                    task["last_error"] = None
+                    task["state_history"].append("SUCCEEDED")
+                    verified.append(task["task_id"])
+                else:
+                    task["last_error"] = {
+                        "type": "workflow_run_failed",
+                        "message": observation.get("reason", "GitHub Actions workflow did not succeed"),
+                        "evidence": observation.get("evidence"),
+                    }
+                    task["state_history"].append("FAILED")
+                    if task["attempts"] < task["max_attempts"]:
+                        task["status"] = "QUEUED"
+                        task.pop("dispatch_intent", None)
+                        task["state_history"].append("QUEUED")
+                        task["not_before"] = stamp(now + timedelta(
+                            seconds=min(900, 30 * (2 ** max(0, task["attempts"] - 1)))
+                        ))
+                    else:
+                        task["status"] = "DEAD_LETTER"
+                        task["state_history"].append("DEAD_LETTER")
+                    rejected.append(task["task_id"])
+                changed = True
+                continue
+
+            if adapter.get("adapter_type") != "python_cli":
+                blocked.append({"task_id": task["task_id"], "reason": "unsupported adapter type"})
+                continue
+            if adapter.get("interface_status") != "reviewed" or not isinstance(adapter.get("output_contract"), dict):
                 blocked.append({"task_id": task["task_id"], "reason": "target has no enabled, reviewed output contract"})
                 continue
             schema = adapter["output_contract"]
