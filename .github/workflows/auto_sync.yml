@@ -321,9 +321,16 @@ jobs:
           python3 - <<'PY'
           import json
           import os
+          import sys
           from datetime import datetime, timezone
+          sys.path.insert(0, "scripts")
+          from production_intent import load_manifest, compute_fingerprint
+          manifest = load_manifest(__import__("pathlib").Path("automation/production_inputs.json"))
+          input_fingerprint = compute_fingerprint(__import__("pathlib").Path("."), manifest)
           record = {
-              "schema_version": 1,
+              "schema_version": 2,
+              "input_fingerprint": input_fingerprint,
+              "input_manifest_schema_version": manifest["schema_version"],
               "status": "audit_passed",
               "workflow": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
               "run_id": os.environ["GITHUB_RUN_ID"],
