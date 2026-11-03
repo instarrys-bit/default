@@ -5,6 +5,7 @@ import os
 import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from json_document_store import read_document, iter_document_records
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "dashboard" / "data.json"
@@ -19,115 +20,161 @@ def read_json(path):
 def as_int(value):
     return value if isinstance(value, int) and not isinstance(value, bool) else 0
 
-manifest = read_json("rulesets/manifest.json")
-queue_doc = read_json("automation/task_queue.json")
-pending = read_json("rulesets/pending_queue.json")
-lifecycle = read_json("rulesets/lifecycle_state.json")
-lifecycle_report = read_json("reports/lifecycle/latest.json")
-candidates = read_json("data/candidates.json")
 
-tasks = queue_doc.get("tasks", []) if isinstance(queue_doc.get("tasks"), list) else []
-queue_status = {}
-for task in tasks:
-    status = str(task.get("status", "UNKNOWN")).upper()
-    queue_status[status] = queue_status.get(status, 0) + 1
-
-production_tasks = [t for t in tasks if t.get("target_program_id") == "workflow_auto_sync"]
-prod_status = {}
-for task in production_tasks:
-    status = str(task.get("status", "UNKNOWN")).upper()
-    prod_status[status] = prod_status.get(status, 0) + 1
-
-successful = [t for t in production_tasks
-              if str(t.get("status", "")).upper() == "SUCCEEDED"
-              and (t.get("verification") or {}).get("status") == "passed"
-              and (t.get("verification") or {}).get("verified_at")]
-successful.sort(key=lambda t: str((t.get("verification") or {}).get("verified_at", "")))
-last_verified = (successful[-1].get("verification") or {}).get("verified_at") if successful else None
-next_expected = None
-if last_verified:
-    try:
-        parsed = datetime.fromisoformat(last_verified.replace("Z", "+00:00"))
-        next_expected = (parsed + timedelta(days=8)).astimezone(timezone.utc).isoformat()
-    except ValueError:
-        pass
-
-counts = manifest.get("rule_count", {}) if isinstance(manifest.get("rule_count"), dict) else {}
-published = as_int(manifest.get("published_rule_total"))
-max_published = as_int(manifest.get("max_published_rules"))
-reviewed = as_int(manifest.get("reviewed_total"))
-approved = as_int(manifest.get("approved_total"))
-held = as_int(manifest.get("held_total"))
-candidate_count = as_int(candidates.get("candidate_count"))
-source_count = as_int(manifest.get("source_count"))
-
-def watchdog_status():
-    repo = os.environ.get("GITHUB_REPOSITORY", "")
-    token = os.environ.get("GH_TOKEN", "")
-    if not repo or not token:
-        return {"workflow_state": "unknown", "last_run_status": "unknown",
-                "last_run_conclusion": None, "last_run_at": None}
-    headers = {"Accept": "application/vnd.github+json",
-               "Authorization": "Bearer " + token,
-               "X-GitHub-Api-Version": "2022-11-28"}
-    def api(path):
-        request = urllib.request.Request(
-            "https://api.github.com/repos/" + repo + path, headers=headers)
-        with urllib.request.urlopen(request, timeout=8) as response:
-            return json.load(response)
-    try:
-        workflow = api("/actions/workflows/automation-watchdog.yml")
-        runs = api("/actions/workflows/automation-watchdog.yml/runs?per_page=1")
-        latest = (runs.get("workflow_runs") or [{}])[0]
-        return {"workflow_state": workflow.get("state", "unknown"),
-                "last_run_status": latest.get("status", "unknown"),
-                "last_run_conclusion": latest.get("conclusion"),
-                "last_run_at": latest.get("run_started_at") or latest.get("created_at")}
-    except Exception as exc:
-        print("watchdog status unavailable: " + str(exc))
-        return {"workflow_state": "unknown", "last_run_status": "unknown",
-                "last_run_conclusion": None, "last_run_at": None}
-
-
-snapshot = {
-    "schema_version": 1,
-    "automation": watchdog_status(),
-    "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
-    "source_commit": os.environ.get("GITHUB_SHA", "local"),
-    "sources": {"source_count": source_count, "candidate_count": candidate_count},
-    "rulesets": {
-        "by_policy": {p: as_int(counts.get(p)) for p in ("DIRECT", "PROXY", "REJECT")},
-        "published_total": published,
-        "max_published": max_published,
-        "queued_total": as_int(manifest.get("queued_rule_total", pending.get("queued_count", 0)))
-    },
-    "review": {
-        "reviewed_total": reviewed,
-        "approved_total": approved,
-        "held_total": held,
-        "policy_conflicts": as_int(manifest.get("policy_conflict_total")),
-        "reject_manual_approval_required": bool(manifest.get("reject_manual_approval_required", True)),
-        "reject_manual_approved": as_int(manifest.get("reject_manual_approval_count")),
-        "reject_manual_pending": as_int(manifest.get("reject_manual_hold_count"))
-    },
-    "queue": {"total": len(tasks), "by_status": queue_status},
-    "production": {
-        "total_tasks": len(production_tasks),
-        "succeeded": prod_status.get("SUCCEEDED", 0),
-        "active": sum(prod_status.get(s, 0) for s in ("QUEUED", "CLAIMED", "VERIFYING")),
-        "dead_letter": prod_status.get("DEAD_LETTER", 0),
-        "last_success_verified_at": last_verified,
-        "next_expected_at": next_expected
-    },
-    "lifecycle": {
-        "published_rule_count": as_int(lifecycle.get("published_rule_count", lifecycle_report.get("published_rule_count"))),
-        "next_milestone": as_int(lifecycle.get("next_milestone", lifecycle_report.get("next_milestone"))),
-        "max_published_rules": as_int(lifecycle.get("max_published_rules", lifecycle_report.get("max_published_rules"))),
-        "status": str(lifecycle.get("status", "unknown")),
-        "latest_review_status": str(lifecycle_report.get("status", "no_record")),
-        "last_successful_review_at": lifecycle.get("last_successful_review_at")
+def build_candidate_review_metrics(candidates, review_records, cursor=None, ledger_updated_at=None):
+    candidate_domains = {
+        str(item.get("domain", "")).lower().rstrip(".")
+        for item in candidates
+        if isinstance(item, dict) and item.get("domain")
     }
-}
-OUT.parent.mkdir(parents=True, exist_ok=True)
-OUT.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-print("dashboard snapshot generated")
+    review_by_domain = {
+        str(item.get("domain", "")).lower().rstrip("."): item
+        for item in review_records
+        if isinstance(item, dict) and item.get("domain")
+    }
+    status_counts = {}
+    for domain in candidate_domains:
+        record = review_by_domain.get(domain)
+        status = str(record.get("status", "UNKNOWN")).upper() if record else "UNREVIEWED"
+        status_counts[status] = status_counts.get(status, 0) + 1
+    cursor = cursor if isinstance(cursor, dict) else {}
+    recorded = sum(1 for domain in candidate_domains if domain in review_by_domain)
+    return {
+        "candidate_total": len(candidate_domains),
+        "history_recorded": recorded,
+        "missing_history": len(candidate_domains) - recorded,
+        "status_counts": status_counts,
+        "review_ledger_total": len(review_records),
+        "review_ledger_updated_at": ledger_updated_at,
+        "cursor_status": str(cursor.get("status", "unknown")),
+        "cursor_candidate_count": cursor.get("candidate_count", 0)
+        if isinstance(cursor.get("candidate_count", 0), int) else 0,
+    }
+
+def main():
+    manifest = read_json("rulesets/manifest.json")
+    queue_doc = read_json("automation/task_queue.json")
+    pending = read_json("rulesets/pending_queue.json")
+    lifecycle = read_json("rulesets/lifecycle_state.json")
+    lifecycle_report = read_json("reports/lifecycle/latest.json")
+    candidates_doc = read_document(ROOT / "data" / "candidates.json", "candidates", {"candidates": [], "sources": []})
+    candidates = candidates_doc.get("candidates", []) if isinstance(candidates_doc.get("candidates"), list) else []
+    review_records = list(iter_document_records(ROOT / "sources" / "domain_reviews.json", "reviews"))
+    review_cursor = read_json("sources/review_cursor.json")
+    review_ledger_manifest = read_json("sources/domain_reviews.json.manifest.json")
+    review_ledger_updated_at = ((review_ledger_manifest.get("metadata") or {}).get("updated_at")
+                                or read_json("sources/domain_reviews.json").get("updated_at"))
+    candidate_review = build_candidate_review_metrics(
+        candidates, review_records, review_cursor, review_ledger_updated_at
+    )
+    
+    tasks = queue_doc.get("tasks", []) if isinstance(queue_doc.get("tasks"), list) else []
+    queue_status = {}
+    for task in tasks:
+        status = str(task.get("status", "UNKNOWN")).upper()
+        queue_status[status] = queue_status.get(status, 0) + 1
+    
+    production_tasks = [t for t in tasks if t.get("target_program_id") == "workflow_auto_sync"]
+    prod_status = {}
+    for task in production_tasks:
+        status = str(task.get("status", "UNKNOWN")).upper()
+        prod_status[status] = prod_status.get(status, 0) + 1
+    
+    successful = [t for t in production_tasks
+                  if str(t.get("status", "")).upper() == "SUCCEEDED"
+                  and (t.get("verification") or {}).get("status") == "passed"
+                  and (t.get("verification") or {}).get("verified_at")]
+    successful.sort(key=lambda t: str((t.get("verification") or {}).get("verified_at", "")))
+    last_verified = (successful[-1].get("verification") or {}).get("verified_at") if successful else None
+    next_expected = None
+    if last_verified:
+        try:
+            parsed = datetime.fromisoformat(last_verified.replace("Z", "+00:00"))
+            next_expected = (parsed + timedelta(days=8)).astimezone(timezone.utc).isoformat()
+        except ValueError:
+            pass
+    
+    counts = manifest.get("rule_count", {}) if isinstance(manifest.get("rule_count"), dict) else {}
+    published = as_int(manifest.get("published_rule_total"))
+    max_published = as_int(manifest.get("max_published_rules"))
+    reviewed = as_int(manifest.get("reviewed_total"))
+    approved = as_int(manifest.get("approved_total"))
+    held = as_int(manifest.get("held_total"))
+    candidate_count = candidate_review["candidate_total"]
+    source_count = as_int(manifest.get("source_count"))
+    
+    def watchdog_status():
+        repo = os.environ.get("GITHUB_REPOSITORY", "")
+        token = os.environ.get("GH_TOKEN", "")
+        if not repo or not token:
+            return {"workflow_state": "unknown", "last_run_status": "unknown",
+                    "last_run_conclusion": None, "last_run_at": None}
+        headers = {"Accept": "application/vnd.github+json",
+                   "Authorization": "Bearer " + token,
+                   "X-GitHub-Api-Version": "2022-11-28"}
+        def api(path):
+            request = urllib.request.Request(
+                "https://api.github.com/repos/" + repo + path, headers=headers)
+            with urllib.request.urlopen(request, timeout=8) as response:
+                return json.load(response)
+        try:
+            workflow = api("/actions/workflows/automation-watchdog.yml")
+            runs = api("/actions/workflows/automation-watchdog.yml/runs?per_page=1")
+            latest = (runs.get("workflow_runs") or [{}])[0]
+            return {"workflow_state": workflow.get("state", "unknown"),
+                    "last_run_status": latest.get("status", "unknown"),
+                    "last_run_conclusion": latest.get("conclusion"),
+                    "last_run_at": latest.get("run_started_at") or latest.get("created_at")}
+        except Exception as exc:
+            print("watchdog status unavailable: " + str(exc))
+            return {"workflow_state": "unknown", "last_run_status": "unknown",
+                    "last_run_conclusion": None, "last_run_at": None}
+    
+    
+    snapshot = {
+        "schema_version": 1,
+        "automation": watchdog_status(),
+        "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+        "source_commit": os.environ.get("GITHUB_SHA", "local"),
+        "sources": {"source_count": source_count, "candidate_count": candidate_count},
+        "candidate_review": candidate_review,
+        "rulesets": {
+            "by_policy": {p: as_int(counts.get(p)) for p in ("DIRECT", "PROXY", "REJECT")},
+            "published_total": published,
+            "max_published": max_published,
+            "queued_total": as_int(manifest.get("queued_rule_total", pending.get("queued_count", 0)))
+        },
+        "review": {
+            "reviewed_total": reviewed,
+            "approved_total": approved,
+            "held_total": held,
+            "policy_conflicts": as_int(manifest.get("policy_conflict_total")),
+            "reject_manual_approval_required": bool(manifest.get("reject_manual_approval_required", True)),
+            "reject_manual_approved": as_int(manifest.get("reject_manual_approval_count")),
+            "reject_manual_pending": as_int(manifest.get("reject_manual_hold_count"))
+        },
+        "queue": {"total": len(tasks), "by_status": queue_status},
+        "production": {
+            "total_tasks": len(production_tasks),
+            "succeeded": prod_status.get("SUCCEEDED", 0),
+            "active": sum(prod_status.get(s, 0) for s in ("QUEUED", "CLAIMED", "VERIFYING")),
+            "dead_letter": prod_status.get("DEAD_LETTER", 0),
+            "last_success_verified_at": last_verified,
+            "next_expected_at": next_expected
+        },
+        "lifecycle": {
+            "published_rule_count": as_int(lifecycle.get("published_rule_count", lifecycle_report.get("published_rule_count"))),
+            "next_milestone": as_int(lifecycle.get("next_milestone", lifecycle_report.get("next_milestone"))),
+            "max_published_rules": as_int(lifecycle.get("max_published_rules", lifecycle_report.get("max_published_rules"))),
+            "status": str(lifecycle.get("status", "unknown")),
+            "latest_review_status": str(lifecycle_report.get("status", "no_record")),
+            "last_successful_review_at": lifecycle.get("last_successful_review_at")
+        }
+    }
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    OUT.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print("dashboard snapshot generated")
+
+
+if __name__ == "__main__":
+    main()
