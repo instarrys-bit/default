@@ -13,7 +13,6 @@ from pathlib import Path
 
 from github_queue_store import GitHubContentsQueueStore
 from task_queue_runtime import authorize, now_utc, stamp
-from task_queue import validate_task_queue
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -239,7 +238,8 @@ def main() -> int:
                 output = complete_remote(args.task_id, args.worker_id, args.lease_token,
                                           success=False, error=error, store=store, registry=registry)
         elif args.command == "recover-expired":
-            output = {"recovered_count": len(recover_remote(store)), "tasks": recover_remote(store)}
+            recovered = recover_remote(store)
+            output = {"recovered_count": len(recovered), "tasks": recovered}
         else:
             snapshot = store.read()
             validate_envelope(snapshot.document)
