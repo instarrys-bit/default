@@ -371,12 +371,31 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
         argv_values["task_input_file"] = str(input_path)
         argv = [argument.format_map(argv_values) for argument in entrypoint["argv_template"]]
         command = [sys.executable, str(script_path), *argv]
+        child_env = safe_child_environment(root)
+        resource_contract = adapter.get("resource_contract")
+        if isinstance(resource_contract, dict):
+            resource_lease = task.get("resource_lease")
+            if not isinstance(resource_lease, dict) or resource_lease.get("status") != "ACTIVE":
+                raise ValueError("Python capability dispatch requires an active resource lease")
+            resources = resource_lease.get("resources")
+            if not isinstance(resources, dict) or set(resources) != set(resource_contract.get("resource_keys", [])):
+                raise ValueError("Python task resource lease does not match its reviewed resource contract")
+            snapshot_path = Path(directory) / "task-queue-lease-snapshot.json"
+            snapshot_path.write_text(json.dumps(store.read().document, ensure_ascii=False), encoding="utf-8")
+            snapshot_path.chmod(0o400)
+            child_env.update({
+                "AUTOMATION_QUEUE_SNAPSHOT": str(snapshot_path),
+                "AUTOMATION_TASK_ID": task["task_id"],
+                "AUTOMATION_WORKER_ID": task["lease"]["owner"],
+                "AUTOMATION_TASK_LEASE_TOKEN": task["lease"]["token"],
+                "AUTOMATION_RESOURCE_LEASE_PROOF": json.dumps(resources, sort_keys=True, separators=(",", ":")),
+            })
         try:
             with without_parent_secrets():
                 completed = subprocess.run(
                     command,
                     cwd=root,
-                    env=safe_child_environment(root),
+                    env=child_env,
                     shell=False,
                     capture_output=True,
                     text=True,
