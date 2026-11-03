@@ -12,7 +12,7 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from github_queue_store import GitHubContentsQueueStore
+from github_queue_store import GitHubContentsQueueStore, QueueStoreError
 from task_queue_runtime import authorize, now_utc, stamp
 from task_queue import validate_task_queue
 
@@ -267,7 +267,7 @@ def main() -> int:
                       "task_count": len(snapshot.document["tasks"]), "blob_sha": snapshot.content_sha}
         print(json.dumps(output, ensure_ascii=False))
         return 0
-    except (ValueError, OSError, json.JSONDecodeError) as exc:
+    except (ValueError, OSError, json.JSONDecodeError, QueueStoreError) as exc:
         print(f"REMOTE TASK QUEUE ERROR: {exc}", file=sys.stderr)
         return 1
 
