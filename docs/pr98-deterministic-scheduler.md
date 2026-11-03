@@ -2,9 +2,9 @@
 
 ## Scope
 
-The scheduler performs one bounded scheduling pass. It reads the GitHub-backed queue, independently verifies any pending results, builds an execution plan, claims only task IDs that passed scheduler preflight, runs a reviewed Python adapter, records its completion, and invokes the independent result verifier.
+The scheduler performs one bounded scheduling pass. It first recovers expired leases, then reads the GitHub-backed queue, independently verifies pending results, builds an execution plan, claims only task IDs that passed scheduler preflight, runs a reviewed Python adapter, records its completion, and invokes the independent result verifier.
 
-The scheduler is not a daemon and does not create a recurring workflow. Watchdog remains the planned top-level supervisor; scheduler activation and recurring invocation are deferred until that supervision layer is in place.
+The scheduler is not a daemon. The existing top-level Watchdog now invokes one bounded scheduler pass on its supported events; it does not enable any adapters or create a separate scheduler workflow.
 
 ## Fail-closed execution gates
 
@@ -17,7 +17,7 @@ A task is eligible only when all of the following hold:
 - task input satisfies the reviewed input contract;
 - the entrypoint exactly matches the registered program path and resolves inside the repository;
 - the argument template contains exactly one `{task_input_file}` placeholder and uses only approved placeholders;
-- shell execution is prohibited and the adapter timeout is shorter than the registered lease.
+- shell execution is prohibited and the adapter timeout is no more than 300 seconds and shorter than the registered lease.
 
 Only eligible task IDs are passed to the CAS claim operation. The claim callback re-reads the latest queue snapshot, so stale plans cannot claim a task that has already changed state.
 
