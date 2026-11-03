@@ -163,6 +163,9 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
     def test_successful_heartbeat_persists_the_production_input_fingerprint(self):
         audit = AUTO_SYNC.read_text(encoding="utf-8")
         self.assertIn("input_fingerprint", audit)
+        self.assertIn("post_run_input_fingerprint", audit)
+        self.assertIn("output_fingerprint", audit)
+        self.assertIn("PRODUCTION_INPUT_FINGERPRINT", audit)
         self.assertIn("compute_fingerprint", audit)
         self.assertIn("automation/production_inputs.json", audit)
 
