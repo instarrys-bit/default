@@ -207,7 +207,7 @@ jobs:
           fi
       - name: Detect stale successful audit and recover
         id: stale-recovery
-        if: ${{ github.event_name != 'workflow_run' }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
