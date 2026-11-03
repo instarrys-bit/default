@@ -1,3 +1,4 @@
+import json
 import unittest
 from pathlib import Path
 
@@ -27,7 +28,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('SOURCE_CONCLUSION: ${{ github.event.workflow_run.conclusion }}', workflow)
         self.assertIn('SOURCE_EVENT: ${{ github.event.workflow_run.event }}', workflow)
         self.assertIn('SOURCE_WORKFLOW_NAME: ${{ github.event.workflow_run.name }}', workflow)
-        self.assertIn("validator failures are handled by self-healing diagnosis", workflow)
+        self.assertIn("and self-healing failures have their own diagnosis paths.", workflow)
         self.assertIn("block_manifest=true", workflow)
         self.assertIn("needs.health-check.outputs.block_manifest != 'true'", workflow)
         self.assertIn('timed_out|startup_failure)', workflow)
@@ -47,9 +48,12 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
 
     def test_workflow_dispatch_recovery_does_not_recursively_retry(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
-        self.assertIn("Retry queue-dispatched workflow runs only when their durable task correlation can be recovered.", workflow)
-        self.assertIn("Workflow-dispatch run has no durable queue task correlation; refusing automatic retry.", workflow)
+        self.assertIn("Workflow-dispatch run has no durable queue task correlation; refusing automatic recovery.", workflow)
         self.assertIn("github.event_name == 'workflow_run'", workflow)
+        audit = AUTO_SYNC.read_text(encoding="utf-8")
+        self.assertIn("A valid Watchdog task correlation is required", audit)
+        self.assertIn('task.get("requester_program_id") != "workflow_automation_watchdog"', audit)
+        self.assertIn('task.get("status") not in {"CLAIMED", "VERIFYING"}', audit)
 
     def test_successful_workflow_reports_degraded_source_discovery_health(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
@@ -86,7 +90,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
     def test_top_level_watchdog_supervises_remote_queue_fail_closed(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("task-queue-supervision:", workflow)
-        self.assertIn("group: shadowrocket-main-writer", workflow)
+        self.assertIn("needs.stale-run-watch.result == 'success'", workflow)
         self.assertIn("needs: [health-check, stale-run-watch, manifest-integrity]", workflow)
         job_start = workflow.index("  task-queue-supervision:")
         job_end = workflow.index("  stale-run-watch:", job_start)

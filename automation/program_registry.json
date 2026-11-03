@@ -1033,11 +1033,11 @@
       "id": "workflow_auto_sync",
       "path": ".github/workflows/auto_sync.yml",
       "kind": "github_actions_workflow",
-      "responsibility": "scheduled and event-driven deterministic collection, review, ruleset build, validation, and publication",
+      "responsibility": "Watchdog-queued deterministic collection, review, ruleset build, validation, and publication",
       "capabilities": [
         "deterministic_audit"
       ],
-      "invocation": "Watchdog durable task-queue dispatch and manual workflow dispatch",
+      "invocation": "Watchdog durable task-queue dispatch only; direct workflow dispatch requires a valid persisted queue correlation",
       "inputs": [
         "GitHub event payload",
         "repository state and declared workflow inputs"
@@ -1149,7 +1149,7 @@
       ],
       "depends_on": [],
       "dispatches": [
-        "workflow_auto_sync"
+        "workflow_automation_watchdog"
       ],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
       "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",

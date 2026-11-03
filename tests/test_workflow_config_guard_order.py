@@ -32,12 +32,17 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn('select(.head_branch == "main" and .head_sha == $sha', watchdog)
         self.assertIn('select(.head_branch == "main" and .conclusion == "success")', watchdog)
 
-    def test_every_main_writer_uses_the_shared_repository_lock(self):
+    def test_main_writers_are_serialized_or_use_safe_rebase(self):
         auto_sync = WORKFLOW.read_text(encoding="utf-8")
         intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn("group: shadowrocket-main-writer", auto_sync)
-        self.assertIn("group: shadowrocket-main-writer", intake)
+        # Intake is a hostname-ledger writer. It uses a per-run slot plus
+        # non-force rebase retries so a pending user submission is not dropped.
+        self.assertIn("group: shadowrocket-request-intake-", intake)
+        self.assertIn("github.run_id", intake)
+        self.assertIn("for attempt in 1 2 3; do", intake)
+        self.assertIn("git rebase origin/main", intake)
         manifest_writer = watchdog.split("  manifest-integrity:", 1)[1]
         self.assertIn("group: shadowrocket-main-writer", manifest_writer)
         self.assertNotIn("github-only-domain-intake", intake)
@@ -176,6 +181,16 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("cross_policy_scope_overlaps", references)
         self.assertNotIn("policy_order", references)
         self.assertNotIn("precedence_resolved_overlaps", references)
+
+
+    def test_non_main_config_validation_does_not_approve_or_edit_owner_baseline(self):
+        validation = (ROOT / ".github" / "workflows" / "validate-config.yml").read_text(encoding="utf-8")
+        self.assertIn("Protect owner-controlled config baseline in non-main validation", validation)
+        self.assertIn('git diff --quiet "$base_sha" "$head_sha" -- shadowrocket/ss.conf', validation)
+        self.assertIn('base.get("managed_config_guard") != head.get("managed_config_guard")', validation)
+        self.assertIn("github.ref == 'refs/heads/main'", validation)
+        self.assertIn("Verify owner-approved config baseline", validation)
+        self.assertIn("Audit config drift against the approved baseline", validation)
 
 
 if __name__ == "__main__":

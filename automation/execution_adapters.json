@@ -1014,7 +1014,7 @@
           {
             "name": "automation_task_id",
             "type": "string",
-            "required": false
+            "required": true
           },
           {
             "name": "baseline_source_event",
