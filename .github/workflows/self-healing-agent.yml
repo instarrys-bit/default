@@ -303,10 +303,25 @@ jobs:
             while IFS= read -r issue; do
               [ -n "$issue" ] || continue
               gh issue view "$issue" --repo "$REPO" --json body --jq .body > /tmp/incident-body.md
-              python3 scripts/incident_state.py \\\n                --body-file /tmp/incident-body.md \\\n                --workflow config_validator \\\n                --source-sha "$RUN_SHA" \\
-                --source-sha-from-state \\\n                --classification "$classification" \\\n                --event-id "validator-verifying-$RUN_ID-$issue" \\\n                --target-state VERIFYING \\\n                --out /tmp/incident-verifying-body.md
-              python3 scripts/incident_state.py \\\n                --body-file /tmp/incident-verifying-body.md \\\n                --workflow config_validator \\\n                --source-sha "$RUN_SHA" \\
-                --source-sha-from-state \\\n                --classification "$classification" \\\n                --event-id "validator-success-$RUN_ID-$issue" \\\n                --target-state RECOVERED \\\n                --verification-url "$RUN_URL" \\\n                --out /tmp/incident-state-body.md
+              python3 scripts/incident_state.py \
+                --body-file /tmp/incident-body.md \
+                --workflow config_validator \
+                --source-sha "$RUN_SHA" \
+                --source-sha-from-state \
+                --classification "$classification" \
+                --event-id "validator-verifying-$RUN_ID-$issue" \
+                --target-state VERIFYING \
+                --out /tmp/incident-verifying-body.md
+              python3 scripts/incident_state.py \
+                --body-file /tmp/incident-verifying-body.md \
+                --workflow config_validator \
+                --source-sha "$RUN_SHA" \
+                --source-sha-from-state \
+                --classification "$classification" \
+                --event-id "validator-success-$RUN_ID-$issue" \
+                --target-state RECOVERED \
+                --verification-url "$RUN_URL" \
+                --out /tmp/incident-state-body.md
               gh issue edit "$issue" --repo "$REPO" --body-file /tmp/incident-state-body.md
               gh issue comment "$issue" --repo "$REPO" --body "A subsequent config-baseline validation succeeded. The protected config was not modified. Successful validation: $RUN_URL"
               gh issue close "$issue" --repo "$REPO"

@@ -95,6 +95,9 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         resolver = workflow.split("  resolve-validator-incidents:", 1)[1].split("  resolve-audit-incidents:", 1)[0]
         self.assertIn("contents: read", resolver)
         self.assertIn("Checkout incident state helper", resolver)
+        self.assertNotIn("\\\\n", resolver)
+        self.assertIn("validator-verifying-$RUN_ID-$issue", resolver)
+        self.assertIn("validator-success-$RUN_ID-$issue", resolver)
         self.assertIn("persist-credentials: false", resolver)
         self.assertIn("CONFIG_BASELINE_MISMATCH TEST_FAILURE PYTHON_IMPORT_FAILURE", workflow)
         self.assertIn("The protected config was not modified.", workflow)
