@@ -644,6 +644,47 @@ jobs:
             gh issue create --repo "$REPO" --title "$title" --body "$body"
           fi
 
+
+  notify-watchdog-completion:
+    name: Notify Watchdog of production completion
+    if: ${{ always() && (needs.audit.result == 'success' || needs.audit.result == 'failure' || needs.audit.result == 'cancelled') }}
+    needs: [audit, publish]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      contents: write
+    steps:
+      - name: Send completion observation to Watchdog
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          TASK_ID: ${{ inputs.automation_task_id }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          HEAD_SHA: ${{ github.sha }}
+          AUDIT_RESULT: ${{ needs.audit.result }}
+          PUBLISH_RESULT: ${{ needs.publish.result }}
+        run: |
+          set -euo pipefail
+          conclusion=success
+          if [ "$AUDIT_RESULT" != "success" ] || [ "$PUBLISH_RESULT" != "success" ]; then
+            conclusion=failure
+          fi
+          payload="$(jq -n \
+            --arg task_id "$TASK_ID" \
+            --arg run_id "$RUN_ID" \
+            --arg run_attempt "$RUN_ATTEMPT" \
+            --arg head_sha "$HEAD_SHA" \
+            --arg conclusion "$conclusion" \
+            --arg audit_result "$AUDIT_RESULT" \
+            --arg publish_result "$PUBLISH_RESULT" \
+            '{task_id:$task_id,run_id:$run_id,run_attempt:$run_attempt,head_sha:$head_sha,conclusion:$conclusion,audit_result:$audit_result,publish_result:$publish_result}')"
+          printf '%s' "$payload" | gh api "repos/$REPO/dispatches" \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -f event_type=automation-production-completed \
+            --input -
+
   resolve-failure:
     needs: [audit, publish]
     if: ${{ needs.audit.result == 'success' && needs.publish.result == 'success' }}
