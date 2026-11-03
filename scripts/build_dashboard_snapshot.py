@@ -6,6 +6,7 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from json_document_store import read_document, iter_document_records
+from dashboard_metrics import build_candidate_review_metrics
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "dashboard" / "data.json"
@@ -27,18 +28,14 @@ lifecycle = read_json("rulesets/lifecycle_state.json")
 lifecycle_report = read_json("reports/lifecycle/latest.json")
 candidates_doc = read_document(ROOT / "data" / "candidates.json", "candidates", {"candidates": [], "sources": []})
 candidates = candidates_doc.get("candidates", []) if isinstance(candidates_doc.get("candidates"), list) else []
-candidate_domains = {str(item.get("domain", "")).lower().rstrip(".") for item in candidates
-                     if isinstance(item, dict) and item.get("domain")}
 review_records = list(iter_document_records(ROOT / "sources" / "domain_reviews.json", "reviews"))
-review_by_domain = {str(item.get("domain", "")).lower().rstrip("."): item for item in review_records
-                    if isinstance(item, dict) and item.get("domain")}
-current_review_counts = {}
-for domain in candidate_domains:
-    record = review_by_domain.get(domain)
-    status = str(record.get("status", "UNKNOWN")).upper() if record else "UNREVIEWED"
-    current_review_counts[status] = current_review_counts.get(status, 0) + 1
 review_cursor = read_json("sources/review_cursor.json")
 review_ledger_manifest = read_json("sources/domain_reviews.json.manifest.json")
+review_ledger_updated_at = ((review_ledger_manifest.get("metadata") or {}).get("updated_at")
+                            or read_json("sources/domain_reviews.json").get("updated_at"))
+candidate_review = build_candidate_review_metrics(
+    candidates, review_records, review_cursor, review_ledger_updated_at
+)
 
 tasks = queue_doc.get("tasks", []) if isinstance(queue_doc.get("tasks"), list) else []
 queue_status = {}
@@ -72,7 +69,7 @@ max_published = as_int(manifest.get("max_published_rules"))
 reviewed = as_int(manifest.get("reviewed_total"))
 approved = as_int(manifest.get("approved_total"))
 held = as_int(manifest.get("held_total"))
-candidate_count = len(candidate_domains)
+candidate_count = candidate_review["candidate_total"]
 source_count = as_int(manifest.get("source_count"))
 
 def watchdog_status():
@@ -109,16 +106,7 @@ snapshot = {
     "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
     "source_commit": os.environ.get("GITHUB_SHA", "local"),
     "sources": {"source_count": source_count, "candidate_count": candidate_count},
-    "candidate_review": {
-        "candidate_total": candidate_count,
-        "history_recorded": sum(1 for domain in candidate_domains if domain in review_by_domain),
-        "missing_history": sum(1 for domain in candidate_domains if domain not in review_by_domain),
-        "status_counts": current_review_counts,
-        "review_ledger_total": len(review_records),
-        "review_ledger_updated_at": (review_ledger_manifest.get("metadata") or {}).get("updated_at") or read_json("sources/domain_reviews.json").get("updated_at"),
-        "cursor_status": str(review_cursor.get("status", "unknown")),
-        "cursor_candidate_count": as_int(review_cursor.get("candidate_count"))
-    },
+    "candidate_review": candidate_review,
     "rulesets": {
         "by_policy": {p: as_int(counts.get(p)) for p in ("DIRECT", "PROXY", "REJECT")},
         "published_total": published,
