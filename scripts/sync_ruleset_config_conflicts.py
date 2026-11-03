@@ -487,7 +487,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
     ) if restoration_options else lines.append("- None")
     lines.extend([
         "",
-        "The script never writes to shadowrocket/ss.conf. A config-scope archive entry is not restored automatically; restoration is opt-in and rechecked against full-scope config coverage, skip-proxy entries, and cross-policy published/queued rules.",
+        "The script never writes to shadowrocket/ss.conf. Archived entries are automatically reconsidered when the current config no longer fully covers them; publication still requires the normal evidence and REJECT authorization gates. Explicit DOMAIN and DOMAIN-SUFFIX rules with DIRECT, PROXY, and REJECT policies are compared; rule order, precedence, keyword, regex, conditional, and partial overlaps are not inferred.",
         "Paste selected IDs into the workflow_dispatch input restore_conflict_ids.",
         "",
     ])
