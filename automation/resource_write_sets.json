@@ -76,7 +76,14 @@
         "HTTPS reads restricted to raw.githubusercontent.com with repository binding and same-host redirect validation.",
         "Rotates the assessment cursor and writes assessed_at timestamps; execution is not idempotent."
       ],
-      "evidence": "main() reads discovery and prior assessment documents, then calls write_document for runtime and persistent outputs and writes REPORT."
+      "evidence": "main() reads discovery and prior assessment documents, then calls write_document for runtime and persistent outputs and writes REPORT.",
+      "lease_keys": [
+        "logical/production-pipeline",
+        "sources/source_assessments.json",
+        "data/source_assessments_runtime.json",
+        "reports/source-assessment.md"
+      ],
+      "lease_enforcement": "Live GitHub queue read and fencing-token assertion immediately before each JSON base/manifest/shard/staging/cleanup mutation and before Markdown report write."
     },
     {
       "program_id": "script_build_source_candidates",
@@ -222,12 +229,13 @@
     {
       "resource": "logical/production-pipeline",
       "writers": [
-        "workflow_auto_sync"
+        "workflow_auto_sync",
+        "script_assess_sources"
       ],
       "lock_key": "logical/production-pipeline",
       "mode": "exclusive",
       "enforcement": "durable task queue lease with monotonically increasing fencing token; publish gate re-reads live queue before git push",
-      "note": "Virtual logical resource key used to serialize the complete production workflow; it is not a repository file path."
+      "note": "Shared coarse mutex serializes workflow_auto_sync with the independently scheduled source assessor; each JSON/report output also has its own logical resource lease."
     }
   ],
   "not_yet_proven": [
@@ -252,7 +260,7 @@
     "fencing_required": true,
     "lease_seconds": 21600,
     "purpose": "Serialize scheduler-mediated production audits and hold the lock through asynchronous workflow verification; the live fencing proof is checked at audit start and immediately before publishing to main.",
-    "coverage_boundary": "This is a coarse production-pipeline mutex. It does not prove every possible direct/manual filesystem writer uses the lease; direct workflow dispatch is blocked by required Watchdog correlation and proof, and future independent Python writers must declare and enforce compatible resource contracts before enablement.",
-    "current_enforcement_pr": "pending #168 merge"
+    "coverage_boundary": "Scheduler-mediated production workflow and independently scheduled source assessor share logical/production-pipeline. Assessor also fences each logical output and every JSON document-store mutation. Other future independent Python writers must declare compatible contracts before enablement.",
+    "current_enforcement_pr": "#168 merged"
   }
 }
