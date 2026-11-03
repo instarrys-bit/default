@@ -125,7 +125,7 @@ class ProductionIntentTests(unittest.TestCase):
         result = decide(
             event="push", current_fingerprint=fingerprint_reverted,
             last_success_fingerprint=fingerprint_b,
-            path_classification=classification,
+            path_classification=classification, last_success_at=self.now.isoformat(),
             successful_fingerprints={fingerprint_a, fingerprint_b},
             revision="revert-commit", now=self.now,
         )
