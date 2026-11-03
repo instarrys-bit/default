@@ -69,6 +69,13 @@ def validate_execution_adapters(root=ROOT,adapters_path=None,registry_path=None)
         if isinstance(attempts,bool) or not isinstance(attempts,int) or not 0<=attempts<=orch.get("max_attempts",0): raise ValueError(f"{tid} retry budget exceeds orchestration policy")
         completion=a.get("completion")
         if not isinstance(completion,dict) or completion.get("independent_verification_required") is not True: raise ValueError(f"{tid} requires independent completion verification")
+        resource_contract=a.get("resource_contract")
+        if resource_contract is not None:
+            if not isinstance(resource_contract,dict) or resource_contract.get("mode")!="exclusive" or resource_contract.get("fencing_required") is not True: raise ValueError(f"{tid} resource_contract must require exclusive fenced leases")
+            keys=resource_contract.get("resource_keys")
+            if not isinstance(keys,list) or not keys or any(not isinstance(k,str) or not k or k.startswith("/") or chr(92) in k or any(part in {"",".",".."} for part in k.split("/")) for k in keys) or len(keys)!=len(set(keys)): raise ValueError(f"{tid} resource_contract resource_keys invalid")
+            seconds=resource_contract.get("lease_seconds")
+            if isinstance(seconds,bool) or not isinstance(seconds,int) or not 1<=seconds<=3600: raise ValueError(f"{tid} resource_contract lease_seconds invalid")
         if kind=="python_component":
             ep=a.get("entrypoint")
             if a.get("adapter_type")!="python_cli" or a.get("interface_status") not in ("unreviewed","reviewed"): raise ValueError(f"{tid} Python adapter type/status invalid")
