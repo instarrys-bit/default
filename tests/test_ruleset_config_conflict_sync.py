@@ -281,7 +281,7 @@ class ConfigConflictSyncTests(unittest.TestCase):
             root = Path(tmp)
             make_root(
                 root,
-                config_with_rules(["DOMAIN,ads.example.com,REJECT"]),
+                config_with_rules(["DOMAIN,ads.example.com,DIRECT"]),
                 reject="DOMAIN,ads.example.com\\n",
             )
             sync(root=root, now="2026-11-01T00:00:00+00:00")
