@@ -71,7 +71,7 @@ def acquire_resource_leases_in_queue(queue, task, worker_id, task_lease_token, r
     validate_envelope(queue)
     claimed_task(queue, task["task_id"], worker_id, task_lease_token, now)
     keys=normalize_keys(resource_keys)
-    if isinstance(lease_seconds,bool) or not isinstance(lease_seconds,int) or not 1<=lease_seconds<=3600:
+    if isinstance(lease_seconds,bool) or not isinstance(lease_seconds,int) or not 1<=lease_seconds<=21600:
         raise ValueError("lease_seconds must be 1..3600")
     expiry=min(now+timedelta(seconds=lease_seconds),utc(task["lease"]["expires_at"]))
     leases=queue.setdefault("resource_leases",{})
@@ -117,7 +117,7 @@ def renew_resource_leases_in_queue(queue, task, now):
     if not isinstance(lease,dict): return True
     resources=lease.get("resources")
     seconds=lease.get("lease_seconds")
-    if not isinstance(resources,dict) or not resources or isinstance(seconds,bool) or not isinstance(seconds,int) or not 1<=seconds<=3600:
+    if not isinstance(resources,dict) or not resources or isinstance(seconds,bool) or not isinstance(seconds,int) or not 1<=seconds<=21600:
         raise ValueError("task resource lease renewal contract is malformed")
     leases=queue.get("resource_leases")
     if not isinstance(leases,dict): raise ValueError("resource lease registry is missing")
@@ -138,7 +138,7 @@ def extend_resource_leases_for_verification(queue, task, now):
     if not isinstance(lease,dict): return
     seconds=lease.get("lease_seconds")
     resources=lease.get("resources")
-    if isinstance(seconds,bool) or not isinstance(seconds,int) or not 1<=seconds<=3600 or not isinstance(resources,dict):
+    if isinstance(seconds,bool) or not isinstance(seconds,int) or not 1<=seconds<=21600 or not isinstance(resources,dict):
         raise ValueError("task resource lease metadata is malformed")
     leases=queue.get("resource_leases")
     if not isinstance(leases,dict): raise ValueError("resource lease registry is missing")
@@ -155,7 +155,7 @@ def extend_resource_leases_for_verification(queue, task, now):
 def acquire_resource_leases(task_id, worker_id, task_lease_token, resource_keys, store, *, lease_seconds=300, now=None):
     if not isinstance(task_id, str) or not task_id or not isinstance(worker_id, str) or not worker_id.strip() or not isinstance(task_lease_token, str) or not task_lease_token:
         raise ValueError("task_id, worker_id and task_lease_token are required")
-    if isinstance(lease_seconds, bool) or not isinstance(lease_seconds, int) or not 1 <= lease_seconds <= 3600:
+    if isinstance(lease_seconds, bool) or not isinstance(lease_seconds, int) or not 1 <= lease_seconds <= 21600:
         raise ValueError("lease_seconds must be 1..3600")
     keys=normalize_keys(resource_keys); now=now or datetime.now(timezone.utc); new_id=secrets.token_hex(16)
     def mutate(queue):
