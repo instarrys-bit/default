@@ -192,6 +192,9 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
         workflow_path.write_text(
             "on:\\n  workflow_dispatch:\\n    inputs:\\n"
             "      domains:\\n        required: true\\n        type: string\\n"
+            "      baseline_source_event:\\n        required: false\\n        type: string\\n"
+            "      baseline_source_actor:\\n        required: false\\n        type: string\\n"
+            "      baseline_source_before:\\n        required: false\\n        type: string\\n"
             "      baseline_source_sha:\\n        required: false\\n        type: string\\n"
             "      production_fingerprint:\\n        required: false\\n        type: string\\n"
             "      production_decision:\\n        required: false\\n        type: string\\n"
@@ -203,6 +206,9 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
         adapter["target_program_id"] = "workflow_auto_sync"
         adapter["allowed_callers"] = ["workflow_automation_watchdog"]
         adapter["workflow"]["inputs"].extend([
+            {"name": "baseline_source_event", "type": "string", "required": False},
+            {"name": "baseline_source_actor", "type": "string", "required": False},
+            {"name": "baseline_source_before", "type": "string", "required": False},
             {"name": "baseline_source_sha", "type": "string", "required": False},
             {"name": "production_fingerprint", "type": "string", "required": False},
             {"name": "production_decision", "type": "string", "required": False},
