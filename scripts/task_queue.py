@@ -212,7 +212,7 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
         raise ValueError("resource_leases must be an object")
     for resource, record in resource_leases.items():
         if (not isinstance(resource, str) or not resource or resource.startswith("/")
-                or "\\\\" in resource or any(part in {"", ".", ".."} for part in resource.split("/"))):
+                or chr(92) in resource or any(part in {"", ".", ".."} for part in resource.split("/"))):
             raise ValueError(f"resource lease key is not a canonical relative path: {resource!r}")
         if not isinstance(record, dict) or record.get("status") not in {"ACTIVE", "RELEASED"}:
             raise ValueError(f"resource lease record is invalid: {resource}")
