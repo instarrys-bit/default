@@ -242,7 +242,7 @@ jobs:
           last_success_fingerprint=""
           heartbeat_at=""
           if [ -s reports/automation/heartbeat.json ]; then
-            last_success_fingerprint="$(jq -r '.input_fingerprint // empty' reports/automation/heartbeat.json)"
+            last_success_fingerprint="$(jq -r '.post_run_input_fingerprint // .input_fingerprint // empty' reports/automation/heartbeat.json)"
             heartbeat_at="$(jq -r '.recorded_at_utc // empty' reports/automation/heartbeat.json)"
           fi
 
