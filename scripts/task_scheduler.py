@@ -16,7 +16,8 @@ from datetime import datetime
 from pathlib import Path
 
 from remote_task_queue_runtime import (
-    claim_remote, complete_remote, make_store, recover_remote, validate_candidate, validate_envelope,
+    claim_remote, complete_remote, enqueue_remote, make_store, recover_remote,
+    validate_candidate, validate_envelope,
 )
 from task_queue_runtime import authorize, now_utc
 from github_queue_store import QueueStoreError
@@ -414,6 +415,26 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
         }
 
 
+def enqueue_auto_sync_task(store, registry: dict, *, idempotency_key: str,
+                           priority: int = 80) -> dict:
+    """Enqueue the production audit only through the top-level Watchdog identity."""
+    result = enqueue_remote({
+        "idempotency_key": idempotency_key,
+        "requester_program_id": "workflow_automation_watchdog",
+        "target_program_id": "workflow_auto_sync",
+        "capability": "deterministic_audit",
+        "priority": priority,
+        "input": {},
+    }, store, registry)
+    task = result["task"]
+    return {
+        "created": result["created"],
+        "task_id": task["task_id"],
+        "status": task["status"],
+        "idempotency_key": task["idempotency_key"],
+    }
+
+
 def run_scheduler_once(store, registry: dict, adapters: dict, *,
                        worker_id: str, max_tasks: int = 1,
                        root: Path = ROOT, now: datetime | None = None) -> dict:
@@ -467,18 +488,29 @@ def main() -> int:
     parser.add_argument("--worker-id", default=os.environ.get("GITHUB_RUN_ID") or ("scheduler-" + uuid.uuid4().hex[:12]))
     parser.add_argument("--max-tasks", type=int, default=1)
     parser.add_argument("--token-stdin", action="store_true")
-    parser.add_argument("command", choices=["plan", "run-once"])
+    parser.add_argument("--idempotency-key")
+    parser.add_argument("--priority", type=int, default=80)
+    parser.add_argument("command", choices=["plan", "run-once", "enqueue-auto-sync"])
     args = parser.parse_args()
     try:
         token = sys.stdin.read().strip() if args.token_stdin else None
-        if args.command == "run-once" and not token:
-            raise ValueError("run-once requires a queue token supplied through --token-stdin")
+        if args.command in {"run-once", "enqueue-auto-sync"} and not token:
+            raise ValueError(f"{args.command} requires a queue token supplied through --token-stdin")
         store = make_store(args.repository, args.branch, args.queue_path, token=token)
         registry = load_object(args.registry, "program registry")
         adapters = load_object(args.adapters, "execution adapter inventory")
         if args.command == "plan":
             plan = build_execution_plan(store.read().document, registry, adapters)
             print(json.dumps(plan, ensure_ascii=False))
+        elif args.command == "enqueue-auto-sync":
+            if not isinstance(args.idempotency_key, str) or not args.idempotency_key:
+                raise ValueError("enqueue-auto-sync requires --idempotency-key")
+            if not 0 <= args.priority <= 100:
+                raise ValueError("--priority must be an integer from 0 to 100")
+            print(json.dumps(enqueue_auto_sync_task(
+                store, registry, idempotency_key=args.idempotency_key,
+                priority=args.priority,
+            ), ensure_ascii=False))
         else:
             print(json.dumps(run_scheduler_once(
                 store, registry, adapters, worker_id=args.worker_id,
