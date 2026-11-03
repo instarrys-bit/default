@@ -1094,9 +1094,10 @@
       "id": "workflow_automation_watchdog",
       "path": ".github/workflows/automation-watchdog.yml",
       "kind": "github_actions_workflow",
-      "responsibility": "supervise audit health, bounded recovery, stale-run monitoring, and manifest integrity",
+      "responsibility": "supervise audit health, bounded recovery, stale-run monitoring, manifest integrity, remote task queue leases, and deterministic task execution",
       "capabilities": [
-        "top_level_supervision"
+        "top_level_supervision",
+        "remote_task_queue_supervision"
       ],
       "invocation": "hourly and daily schedule, workflow completion, relevant push, manual dispatch",
       "inputs": [
@@ -1105,18 +1106,20 @@
       ],
       "outputs": [
         "workflow run result",
-        "reports, artifacts, and repository changes explicitly allowed by workflow jobs"
+        "reports, artifacts, and repository changes explicitly allowed by workflow jobs",
+        "remote queue recovery and verification report"
       ],
       "depends_on": [
         "script_refresh_ruleset_manifest",
         "script_verify_published_rulesets",
-        "script_watchdog_recovery_policy"
+        "script_watchdog_recovery_policy",
+        "script_task_scheduler"
       ],
       "dispatches": [
         "workflow_auto_sync"
       ],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
-      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
+      "health_check": "GitHub Actions job and step conclusions; independent publication verification and queue state validation are required where configured.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],

@@ -3,13 +3,14 @@ import os
 import sys
 import tempfile
 import unittest
+from datetime import timedelta
 from pathlib import Path
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from remote_task_queue_runtime import enqueue_remote
+from remote_task_queue_runtime import claim_remote, enqueue_remote
 from task_queue_runtime import now_utc
 from task_scheduler import run_scheduler_once, build_execution_plan
 
@@ -40,8 +41,9 @@ class TaskSchedulerTests(unittest.TestCase):
         self.script.write_text(
             "import json, os, sys\n"
             "payload=json.load(open(sys.argv[1], encoding='utf-8'))\n"
-            "print(json.dumps({'ok': True, 'value': payload['value'], "
-            "'token_visible': 'GITHUB_TOKEN' in os.environ}))\n",
+            "parent_env=open(f'/proc/{os.getppid()}/environ','rb').read()\n"
+            "token_visible=('GITHUB_TOKEN' in os.environ or b'GITHUB_TOKEN=' in parent_env)\n"
+            "print(json.dumps({'ok': True, 'value': payload['value'], 'token_visible': token_visible}))\n",
             encoding="utf-8",
         )
         self.store = MemoryStore()
@@ -138,6 +140,21 @@ class TaskSchedulerTests(unittest.TestCase):
         plan = build_execution_plan(self.store.document, self.registry, self.adapters, self.root, self.now)
         self.assertEqual(plan["eligible_task_ids"], [])
         self.assertIn("input contract failed", plan["blocked"][0]["reason"])
+        self.assertEqual(self.store.document["tasks"][0]["status"], "QUEUED")
+
+    def test_scheduler_recovers_expired_leases_before_planning(self):
+        task = self.enqueue()["task"]
+        claim_remote(
+            "worker-old", self.store, self.registry,
+            eligible_task_ids={task["task_id"]}, now=self.now,
+        )
+        later = self.now + timedelta(seconds=121)
+        report = run_scheduler_once(
+            self.store, self.registry, self.adapters,
+            worker_id="scheduler-test", max_tasks=1, root=self.root, now=later,
+        )
+        self.assertEqual(report["recovered_count"], 1)
+        self.assertEqual(report["processed_count"], 0)
         self.assertEqual(self.store.document["tasks"][0]["status"], "QUEUED")
 
     def test_child_modification_of_protected_config_stops_scheduler(self):

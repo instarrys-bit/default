@@ -2,9 +2,9 @@
 
 ## Scope
 
-The scheduler performs one bounded scheduling pass. It reads the GitHub-backed queue, independently verifies any pending results, builds an execution plan, claims only task IDs that passed scheduler preflight, runs a reviewed Python adapter, records its completion, and invokes the independent result verifier.
+The scheduler performs one bounded scheduling pass. It first recovers expired leases, then reads the GitHub-backed queue, independently verifies pending results, builds an execution plan, claims only task IDs that passed scheduler preflight, runs a reviewed Python adapter, records its completion, and invokes the independent result verifier.
 
-The scheduler is not a daemon and does not create a recurring workflow. Watchdog remains the planned top-level supervisor; scheduler activation and recurring invocation are deferred until that supervision layer is in place.
+The scheduler is not a daemon. The existing top-level Watchdog now invokes one bounded scheduler pass on its supported events; it does not enable any adapters or create a separate scheduler workflow.
 
 ## Fail-closed execution gates
 
@@ -17,7 +17,7 @@ A task is eligible only when all of the following hold:
 - task input satisfies the reviewed input contract;
 - the entrypoint exactly matches the registered program path and resolves inside the repository;
 - the argument template contains exactly one `{task_input_file}` placeholder and uses only approved placeholders;
-- shell execution is prohibited and the adapter timeout is shorter than the registered lease.
+- shell execution is prohibited and the adapter timeout is no more than 300 seconds and shorter than the registered lease.
 
 Only eligible task IDs are passed to the CAS claim operation. The claim callback re-reads the latest queue snapshot, so stale plans cannot claim a task that has already changed state.
 
@@ -25,7 +25,7 @@ Only eligible task IDs are passed to the CAS claim operation. The claim callback
 
 - The scheduler invokes the exact registered Python entrypoint with an argument array and `shell=False`.
 - Task input is written to a temporary JSON file and deleted after execution.
-- Child processes receive only a small non-secret environment allowlist. GitHub tokens and runner credentials are not inherited.
+- Child processes receive only a small non-secret environment allowlist. The scheduler also temporarily removes credential-like variables from its own process environment while the child runs, preventing the child from reading the parent's `/proc/.../environ` on the runner.
 - The protected `shadowrocket/ss.conf` file is hashed before and after child execution. Any detected change fails the task and stops the scheduler.
 - A scheduler workflow must use checkout with `persist-credentials: false`; the scheduler must receive its own narrowly scoped queue-storage token, which is never passed to child programs.
 

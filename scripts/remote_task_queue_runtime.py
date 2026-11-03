@@ -51,12 +51,13 @@ def validate_candidate(queue: dict, registry: dict) -> None:
 
 
 def make_store(repository: str | None = None, branch: str | None = None,
-               path: str = "automation/task_queue.json") -> GitHubContentsQueueStore:
+               path: str = "automation/task_queue.json",
+               token: str | None = None) -> GitHubContentsQueueStore:
     repository = repository or os.environ.get("GITHUB_REPOSITORY", "")
     branch = branch or os.environ.get("GITHUB_REF_NAME", "main")
     if not repository:
         raise ValueError("repository is required (or set GITHUB_REPOSITORY)")
-    return GitHubContentsQueueStore(repository, path, branch=branch)
+    return GitHubContentsQueueStore(repository, path, branch=branch, token=token)
 
 
 def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
