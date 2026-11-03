@@ -207,7 +207,7 @@ def audit(config_text: str, ledger: dict) -> dict:
         "schema_version": 2,
         "config_path": "shadowrocket/ss.conf",
         "config_is_read_only": True,
-        "config_rule_line_count": sum(1 for _, line in rules if len(line.split(",")) >= 3 and line.split(",", 1)[0].strip().upper() in {"DOMAIN", "DOMAIN-SUFFIX"} and line.split(",")[2].strip().upper() in {"DIRECT", "PROXY"}),
+        "config_rule_line_count": sum(1 for _, line in rules if len(line.split(",")) >= 3 and line.split(",", 1)[0].strip().upper() in {"DOMAIN", "DOMAIN-SUFFIX"} and line.split(",")[2].strip().upper() in {"DIRECT", "PROXY", "REJECT"}),
         "skip_proxy_entry_count": len(skip_proxy_entries),
         "candidate_count": len(results),
         "status_counts": dict(sorted(counts.items())),
@@ -216,7 +216,7 @@ def audit(config_text: str, ledger: dict) -> dict:
         "errors": errors,
         "passed": not errors,
         "limitations": [
-            "Only explicit DIRECT/PROXY DOMAIN and DOMAIN-SUFFIX scopes are compared.",
+            "Explicit DOMAIN and DOMAIN-SUFFIX scopes with DIRECT, PROXY, and REJECT policies are compared.",
             "Explicit DOMAIN and DOMAIN-SUFFIX rules with DIRECT, PROXY, and REJECT policies are compared for full-scope coverage; rule precedence is not evaluated.",
             "A narrower exact or child-suffix exception does not suppress a broader suffix candidate.",
             "No rule order, first-match winner, or precedence is evaluated.",
