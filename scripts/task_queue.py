@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 QUEUE_PATH = Path("automation/task_queue.json")
 REGISTRY_PATH = Path("automation/program_registry.json")
 TASK_ID_RE = re.compile(r"^task_[0-9a-f]{24}$")
-STATUSES = {"QUEUED", "CLAIMED", "SUCCEEDED", "FAILED", "CANCELLED", "DEAD_LETTER"}
+STATUSES = {"QUEUED", "CLAIMED", "VERIFYING", "SUCCEEDED", "FAILED", "CANCELLED", "DEAD_LETTER"}
 TERMINAL = {"SUCCEEDED", "FAILED", "CANCELLED", "DEAD_LETTER"}
 
 
@@ -131,7 +131,8 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
             raise ValueError(f"{task_id}.state_history must end with the current status")
         allowed_transitions = {
             "QUEUED": {"CLAIMED", "CANCELLED"},
-            "CLAIMED": {"SUCCEEDED", "FAILED", "QUEUED", "DEAD_LETTER"},
+            "CLAIMED": {"VERIFYING", "SUCCEEDED", "FAILED", "QUEUED", "DEAD_LETTER"},
+            "VERIFYING": {"SUCCEEDED", "FAILED", "QUEUED", "DEAD_LETTER"},
             "FAILED": {"QUEUED", "DEAD_LETTER", "CANCELLED"},
             "SUCCEEDED": set(),
             "CANCELLED": set(),
@@ -149,8 +150,8 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
         elif lease is not None:
             raise ValueError(f"{task_id} must not retain a lease while status is {status}")
         result = task["result"]
-        if status == "SUCCEEDED" and not isinstance(result, dict):
-            raise ValueError(f"{task_id} SUCCEEDED task requires a result object")
+        if status in {"VERIFYING", "SUCCEEDED"} and not isinstance(result, dict):
+            raise ValueError(f"{task_id} {status} task requires a result object")
         if result is not None and not isinstance(result, dict):
             raise ValueError(f"{task_id}.result must be an object or null")
         error = task["last_error"]
