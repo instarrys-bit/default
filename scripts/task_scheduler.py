@@ -114,6 +114,16 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
             authorize(task, by_id)
             if not isinstance(adapter, dict) or adapter.get("enabled") is not True:
                 raise ValueError("target adapter is disabled")
+            resource_contract = adapter.get("resource_contract")
+            if resource_contract is not None:
+                if not isinstance(resource_contract, dict) or resource_contract.get("mode") != "exclusive" or resource_contract.get("fencing_required") is not True:
+                    raise ValueError("resource_contract must declare exclusive mode and mandatory fencing")
+                keys = resource_contract.get("resource_keys")
+                if not isinstance(keys, list) or not keys or any(not isinstance(key, str) or not key or key.startswith("/") or chr(92) in key or any(part in {"", ".", ".."} for part in key.split("/")) for key in keys) or len(keys) != len(set(keys)):
+                    raise ValueError("resource_contract resource_keys must be unique canonical relative paths")
+                lease_seconds = resource_contract.get("lease_seconds")
+                if isinstance(lease_seconds, bool) or not isinstance(lease_seconds, int) or not 1 <= lease_seconds <= 3600:
+                    raise ValueError("resource_contract lease_seconds must be from 1 to 3600")
             expected_interface = (
                 "reviewed" if adapter.get("adapter_type") == "python_cli"
                 else "workflow_dispatch_reviewed" if adapter.get("adapter_type") == "github_actions_workflow"
