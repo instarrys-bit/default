@@ -94,11 +94,11 @@ class ProgramRegistryTests(unittest.TestCase):
         root, registry = self.make_repo()
         workflow_path = root / ".github" / "workflows" / "run.yml"
         workflow_path.write_text(
-            "steps:\\n  - run: python scripts/alpha.py\\n  - run: enqueue-auto-sync\\n",
+            "steps:\n  - run: python scripts/alpha.py\n  - run: enqueue-auto-sync\n",
             encoding="utf-8",
         )
         target_path = root / ".github" / "workflows" / "auto_sync.yml"
-        target_path.write_text("on:\\n  workflow_dispatch:\\n", encoding="utf-8")
+        target_path.write_text("on:\n  workflow_dispatch:\n", encoding="utf-8")
         payload = json.loads(registry.read_text(encoding="utf-8"))
         payload["programs"][1]["dispatches"] = ["workflow_auto_sync"]
         payload["programs"].append({
