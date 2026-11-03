@@ -220,6 +220,12 @@ jobs:
           runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
 
           current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
+          checkout_sha="$(git rev-parse HEAD)"
+          if [ "$checkout_sha" != "$current_sha" ]; then
+            echo "Watchdog checkout is behind current main; refusing to decide from a stale input snapshot."
+            echo "block_manifest=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if jq -e '[.workflow_runs[] | select(.head_branch == "main" and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
             echo "A main-branch deterministic audit is already queued or running; no duplicate dispatch."
             echo "block_manifest=true" >> "$GITHUB_OUTPUT"
@@ -418,6 +424,11 @@ jobs:
               echo "$decision" >> "$GITHUB_STEP_SUMMARY"
               echo "Timeout recovery suppressed by bounded recovery policy."
             else
+              checkout_sha="$(git rev-parse HEAD)"
+              if [ "$checkout_sha" != "$current_main" ]; then
+                echo "Watchdog checkout is behind current main; timeout recovery will be reconsidered on the next reconciliation."
+                exit 0
+              fi
               current_fingerprint="$(python3 - <<'PY'
           import sys
           from pathlib import Path
