@@ -1,5 +1,5 @@
 {
-  "revision": 28,
+  "revision": 29,
   "schema_version": 1,
   "tasks": [
     {
@@ -364,7 +364,7 @@
       }
     },
     {
-      "attempts": 0,
+      "attempts": 1,
       "capability": "deterministic_audit",
       "created_at": "2026-11-03T09:32:58Z",
       "execution_backend": "github_contents",
@@ -376,16 +376,21 @@
         "baseline_source_sha": "5ce050f7fb5bd74ad05b6dcaa89f0233257839c3"
       },
       "last_error": null,
-      "lease": null,
+      "lease": {
+        "expires_at": "2026-11-03T09:38:09Z",
+        "owner": "41611878035",
+        "token": "6f0cd8d3141c8972a04ee0c90d14a408"
+      },
       "max_attempts": 1,
       "not_before": "2026-11-03T09:32:58Z",
       "priority": 100,
       "requester_program_id": "workflow_automation_watchdog",
       "result": null,
       "state_history": [
-        "QUEUED"
+        "QUEUED",
+        "CLAIMED"
       ],
-      "status": "QUEUED",
+      "status": "CLAIMED",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_07b443cbfea9410288d1abcd",
       "trace_id": "24e73fe8ad8a402b8629bac5806a8d13"
