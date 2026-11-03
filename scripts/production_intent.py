@@ -55,10 +55,10 @@ def classify_paths(paths: Iterable[str], manifest: dict) -> dict:
             continue
         if path in inputs:
             input_paths.append(path)
-        elif any(fnmatch.fnmatchcase(path, pattern) for pattern in monitoring_patterns):
-            monitoring_paths.append(path)
         elif any(fnmatch.fnmatchcase(path, pattern) for pattern in documentation_patterns):
             documentation_paths.append(path)
+        elif any(fnmatch.fnmatchcase(path, pattern) for pattern in monitoring_patterns):
+            monitoring_paths.append(path)
         elif any(fnmatch.fnmatchcase(path, pattern) for pattern in patterns):
             non_input_paths.append(path)
         else:
