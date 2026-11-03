@@ -1,14 +1,18 @@
 import copy
+import json
 import sys
+import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from resource_lease_runtime import (
     acquire_resource_leases, assert_resource_lease, release_resource_leases,
     normalize_keys, renew_resource_leases_in_queue, assert_workflow_resource_lease,
+    assert_resource_lease_from_environment,
 )
 
 
@@ -166,6 +170,23 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
         record["fencing_token"] += 1
         with self.assertRaisesRegex(ValueError, "stale or fenced"):
             assert_workflow_resource_lease(self.store.document, "task_a", proof, now=self.now)
+
+    def test_synchronous_child_can_assert_lease_from_read_only_snapshot(self):
+        acquired = acquire_resource_leases("task_a", "worker_a", "task-token-a",
+                                           ["sources/source_assessments.json"], self.store, now=self.now)
+        task = self.store.document["tasks"][0]
+        proof = acquired["resources"]
+        with tempfile.TemporaryDirectory() as directory:
+            snapshot = Path(directory) / "queue.json"
+            snapshot.write_text(json.dumps(self.store.document), encoding="utf-8")
+            with patch.dict("os.environ", {
+                "AUTOMATION_QUEUE_SNAPSHOT": str(snapshot),
+                "AUTOMATION_TASK_ID": "task_a",
+                "AUTOMATION_WORKER_ID": "worker_a",
+                "AUTOMATION_TASK_LEASE_TOKEN": "task-token-a",
+                "AUTOMATION_RESOURCE_LEASE_PROOF": json.dumps(proof),
+            }, clear=False):
+                self.assertTrue(assert_resource_lease_from_environment("sources/source_assessments.json"))
 
     def test_rejects_path_traversal_and_noncanonical_paths(self):
         for value in ["../secret", "/etc/passwd", "rulesets//direct.list", "rulesets/../secret", " rulesets/direct.list"]:
