@@ -8,6 +8,7 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 import assess_sources
+import task_scheduler
 import verify_assess_sources_artifacts
 
 
@@ -75,6 +76,18 @@ class AssessSourcesArtifactVerifierTests(unittest.TestCase):
                  patch.object(verify_assess_sources_artifacts, "PERSISTENT", persistent), \
                  patch.object(verify_assess_sources_artifacts, "REPORT", report):
                 self.assertTrue(verify_assess_sources_artifacts.verify(result_path)["valid"])
+
+    def test_scheduler_protects_declared_read_only_resources(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = root / "sources" / "domain_sources.json"
+            path.parent.mkdir(parents=True)
+            path.write_text('{"sources":[]}', encoding="utf-8")
+            before = task_scheduler.read_only_resource_digests(root, ["sources/domain_sources.json"])
+            task_scheduler.ensure_read_only_resources_unchanged(before, root)
+            path.write_text('{"sources":[{"url":"new"}]}', encoding="utf-8")
+            with self.assertRaisesRegex(task_scheduler.ProtectedConfigMutationError, "read-only resources"):
+                task_scheduler.ensure_read_only_resources_unchanged(before, root)
 
     def test_rejects_any_source_activation(self):
         with tempfile.TemporaryDirectory() as directory:
