@@ -1,4 +1,5 @@
 name: Validate self-healing agent
+run-name: Automation task ${{ inputs.automation_task_id || 'manual' }}
 
 on:
   pull_request:
@@ -21,6 +22,11 @@ on:
       - "tests/test_verify_recovery_run.py"
       - "tests/test_incident_state.py"
   workflow_dispatch:
+    inputs:
+      automation_task_id:
+        description: 'Internal task correlation ID; leave blank for manual runs'
+        required: false
+        type: string
 
 permissions:
   contents: read
