@@ -113,6 +113,16 @@ class ProductionIntentTests(unittest.TestCase):
         second = compute_output_fingerprint(self.root)
         self.assertNotEqual(first, second)
 
+    def test_manifest_rejects_paths_classified_as_both_input_and_output(self):
+        path = self.root / "automation" / "overlap.json"
+        path.write_text(json.dumps({
+            "schema_version": 1,
+            "production_input_paths": ["reports/important.json"],
+            "non_production_path_patterns": ["reports/**"]
+        }), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "also match non-production patterns"):
+            load_manifest(path)
+
 
 if __name__ == "__main__":
     unittest.main()
