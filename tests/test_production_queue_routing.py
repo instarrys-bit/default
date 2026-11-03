@@ -20,6 +20,16 @@ class ProductionQueueRoutingTests(unittest.TestCase):
         self.assertIn("needs: [health-check, stale-run-watch, manifest-integrity]", workflow)
         self.assertIn("needs.stale-run-watch.result == 'success'", workflow)
         self.assertIn("needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped'", workflow)
+        self.assertIn("workflow.event_name != 'schedule'", workflow)
+
+    def test_all_stale_audit_checks_use_the_same_queue_aware_base_guard(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        stale_job = workflow.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
+        self.assertIn("bash scripts/verify_publish_base.sh --check-only", stale_job)
+        self.assertNotIn('select(startswith("docs/") | not)', stale_job)
+        manifest_job = workflow.split("  manifest-integrity:", 1)[1]
+        self.assertIn("enqueue-auto-sync", manifest_job)
+        self.assertNotIn("gh workflow run auto_sync.yml", manifest_job)
 
     def test_superseded_audit_is_replaced_only_when_inputs_advanced(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
