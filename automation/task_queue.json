@@ -1,5 +1,5 @@
 {
-  "revision": 11,
+  "revision": 12,
   "schema_version": 1,
   "tasks": [
     {
@@ -88,7 +88,19 @@
         "baseline_source_event": "push",
         "baseline_source_sha": "c50c848102418dc6ca875d6d04c8898755bfd5a0"
       },
-      "last_error": null,
+      "last_error": {
+        "evidence": {
+          "conclusion": "failure",
+          "head_sha": "926900ffdc7815f023f0e11f2e9fb1dbc07284c6",
+          "head_sha_relationship": "queue_intent_commit_only",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/41595541353",
+          "requested_head_sha": "8c40087d507244d1f58df1085433cf52afca32c9",
+          "run_id": 41595541353,
+          "status": "completed"
+        },
+        "message": "workflow completed with conclusion 'failure'",
+        "type": "workflow_run_failed"
+      },
       "lease": null,
       "max_attempts": 1,
       "not_before": "2026-11-03T07:19:02Z",
@@ -103,9 +115,13 @@
         "ref": "main",
         "requested_head_sha": "8c40087d507244d1f58df1085433cf52afca32c9",
         "run_evidence": {
+          "conclusion": "failure",
+          "head_sha": "926900ffdc7815f023f0e11f2e9fb1dbc07284c6",
+          "head_sha_relationship": "queue_intent_commit_only",
           "html_url": "https://github.com/instarrys-bit/default/actions/runs/41595541353",
+          "requested_head_sha": "8c40087d507244d1f58df1085433cf52afca32c9",
           "run_id": 41595541353,
-          "status": "in_progress"
+          "status": "completed"
         },
         "submitted_at": "2026-11-03T07:19:23Z",
         "task_id": "task_c0666db1bb9e40fba25d9c34",
@@ -115,13 +131,20 @@
       "state_history": [
         "QUEUED",
         "CLAIMED",
-        "VERIFYING"
+        "VERIFYING",
+        "FAILED",
+        "DEAD_LETTER"
       ],
-      "status": "VERIFYING",
+      "status": "DEAD_LETTER",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_c0666db1bb9e40fba25d9c34",
       "trace_id": "febd4bb9d9a84547a8d80ee2f819217d",
-      "verification": null
+      "verification": {
+        "contract_sha256": "2c106614f9ee31626ac137a0a95e3d8d538311a5af1bf056986a5430bded9c0c",
+        "status": "failed",
+        "verified_at": "2026-11-03T07:43:07Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
     },
     {
       "attempts": 0,
