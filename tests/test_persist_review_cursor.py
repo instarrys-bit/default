@@ -51,5 +51,15 @@ class PersistReviewCursorTests(unittest.TestCase):
                 persist_cursor(artifact, root / "repo/sources/review_cursor.json")
 
 
+    def test_invalid_complete_cursor_does_not_remove_existing_checkpoint(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); artifact = root / "artifact.json"
+            destination = root / "repo/sources/review_cursor.json"
+            destination.parent.mkdir(parents=True); destination.write_text("keep")
+            artifact.write_text(json.dumps(self.cursor(status="complete", next_index=4)))
+            with self.assertRaisesRegex(ValueError, "completed cursor"):
+                persist_cursor(artifact, destination)
+            self.assertEqual(destination.read_text(), "keep")
+
 if __name__ == "__main__":
     unittest.main()
