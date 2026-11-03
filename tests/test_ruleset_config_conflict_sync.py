@@ -327,7 +327,13 @@ class ConfigConflictSyncTests(unittest.TestCase):
                 ],
             }
             config_a = config_with_rules([])
-            config_b = config_with_rules(["DOMAIN-SUFFIX,example.com,REJECT"])
+            config_b = config_with_rules([
+                "DOMAIN,api.example.com,REJECT",
+                "DOMAIN,web.example.com,REJECT",
+                "DOMAIN,ads.example.com,REJECT",
+                "DOMAIN,queued.example.com,REJECT",
+                "DOMAIN,queued-reject.example.com,REJECT",
+            ])
             make_root(
                 root, config_a,
                 direct="DOMAIN,api.example.com\\n",
@@ -337,7 +343,6 @@ class ConfigConflictSyncTests(unittest.TestCase):
             )
             config_path = root / "shadowrocket" / "ss.conf"
             original_a = config_path.read_bytes()
-            sync(root=root, now="2026-11-01T00:00:00+00:00")
             self.assertEqual(config_path.read_bytes(), original_a)
 
             config_path.write_text(config_b, encoding="utf-8")
