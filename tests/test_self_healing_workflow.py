@@ -66,12 +66,18 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         cursor_job = workflow.split("  persist-review-cursor:", 1)[1]
         self.assertIn("Persist owner-approved config baseline even when audit fails", cursor_job)
         self.assertIn("python3 scripts/register_config_baseline.py", cursor_job)
-        self.assertIn("git add -- sources/policy.json sources/review_cursor.json", cursor_job)
+        self.assertIn("for path in sources/policy.json sources/review_cursor.json; do", cursor_job)
+        self.assertIn('git add -- "$path"', cursor_job)
+        self.assertIn("Optional persistence path absent; skipping:", cursor_job)
+        self.assertLess(cursor_job.index("Persist owner-approved config baseline even when audit fails"), cursor_job.index("git add -- \"$path\""))
 
     def test_missing_or_completed_review_cursor_is_a_successful_noop(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
-        self.assertIn('print("Cursor is not in progress; no checkpoint needs persistence.")', workflow)
-        self.assertIn('print("Cursor has no completed checkpoint; nothing to persist.")', workflow)
+        self.assertIn("python3 scripts/persist_review_cursor.py", workflow)
+        helper = (ROOT / "scripts" / "persist_review_cursor.py").read_text(encoding="utf-8")
+        self.assertIn('return "missing"', helper)
+        self.assertIn('destination.unlink(missing_ok=True)', helper)
+        self.assertIn('return "complete"', helper)
 
     def test_user_owned_config_is_never_added_to_repair_commit(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
