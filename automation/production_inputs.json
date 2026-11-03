@@ -2,6 +2,7 @@
   "schema_version": 1,
   "purpose": "Explicit allowlist of repository files whose content can change the DIRECT/PROXY/REJECT production result.",
   "production_input_paths": [
+    "automation/production_inputs.json",
     ".github/workflows/auto_sync.yml",
     "shadowrocket/ss.conf",
     "sources/domain_sources.json",
@@ -50,7 +51,6 @@
     "tests/**",
     "rulesets/**",
     "reports/**",
-    "automation/**",
     "sources/discovered_sources.json*",
     "sources/domain_reviews.json*",
     "sources/source_assessments.json*",
@@ -78,7 +78,13 @@
     "scripts/validate_program_registry.py",
     "scripts/validate_execution_adapters.py",
     "scripts/audit_adapter_activation.py",
-    "scripts/audit_ruleset_config_overlap.py"
+    "scripts/audit_ruleset_config_overlap.py",
+    "automation/task_queue.json",
+    "automation/heartbeat.json",
+    "automation/state_store.json",
+    "automation/execution_adapters.json",
+    "automation/program_registry.json",
+    "automation/production_intent_ledger.json"
   ],
   "unknown_path_policy": "review_required"
 }
