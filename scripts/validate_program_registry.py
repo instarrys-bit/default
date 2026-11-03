@@ -151,6 +151,9 @@ def validate_registry(root: Path = ROOT, registry_path: Path | None = None) -> d
             "workflow_" + re.sub(r"\.(yml|yaml)$", "", match.group(1)).replace("-", "_")
             for match in re.finditer(r"gh workflow run ([A-Za-z0-9_.-]+)", content)
         }
+        # Production workflow dispatch may be delegated to the durable scheduler.
+        if re.search(r"\benqueue-auto-sync\b", content):
+            actual_dispatches.add("workflow_auto_sync")
         if actual_scripts != set(item["depends_on"]):
             missing = sorted(actual_scripts - set(item["depends_on"]))
             extra = sorted(set(item["depends_on"]) - actual_scripts)

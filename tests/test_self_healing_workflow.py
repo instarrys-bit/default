@@ -120,7 +120,8 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn('repos/$REPO/compare/$run_sha...$current_main', workflow)
         self.assertIn('only docs/ changed after its audited commit', workflow)
         self.assertIn('gh run cancel "$stale_id"', workflow)
-        self.assertIn('gh workflow run auto_sync.yml --ref main', workflow)
+        self.assertIn('enqueue-auto-sync', workflow)
+        self.assertNotIn('gh workflow run auto_sync.yml', workflow)
         self.assertIn('An audit is still queued, cancelling, or running', workflow)
 
 
@@ -153,8 +154,10 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("contents: write", resolver)
         watcher = WATCHDOG.read_text(encoding="utf-8").split("  stale-run-watch:", 1)[1]
         self.assertIn("actions: write", watcher)
-        self.assertIn("contents: read", watcher)
+        self.assertIn("contents: write", watcher)
         self.assertNotIn("pull-requests: write", watcher)
+        health_check = WATCHDOG.read_text(encoding="utf-8").split("  health-check:", 1)[1].split("  task-queue-supervision:", 1)[0]
+        self.assertIn("contents: write", health_check)
 
 
 

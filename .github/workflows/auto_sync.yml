@@ -3,9 +3,6 @@ name: Shadowrocket Deterministic Domain Audit (User Config Baseline)
 run-name: Automation task ${{ inputs.automation_task_id || 'manual' }}
 
 on:
-  schedule:
-    - cron: "0 20 * * 0"
-    # Beijing time: every Monday at 04:00.
   workflow_dispatch:
     inputs:
       restore_ids:
@@ -20,19 +17,22 @@ on:
         description: 'Internal task correlation ID; leave blank for manual runs'
         required: false
         type: string
-  push:
-    branches: [main]
-    paths:
-      - "sources/policy.json"
-      - "shadowrocket/ss.conf"
-      - "sources/domain_sources.json"
-      - "sources/protected_domains.json"
-      - "sources/request_domain_observations.json"
-      - "sources/reject_manual_approvals.json"
-      - "scripts/**"
-      - "!scripts/refresh_ruleset_manifest.py"
-      - "tests/**"
-      - "!tests/test_refresh_ruleset_manifest.py"
+      baseline_source_event:
+        description: 'Original event type preserved by the Watchdog queue'
+        required: false
+        type: string
+      baseline_source_actor:
+        description: 'Original actor preserved by the Watchdog queue'
+        required: false
+        type: string
+      baseline_source_before:
+        description: 'Original push before SHA for config baseline registration'
+        required: false
+        type: string
+      baseline_source_sha:
+        description: 'Original push SHA for config baseline registration'
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -106,11 +106,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF: ${{ github.ref }}
-          GITHUB_EVENT_NAME: ${{ github.event_name }}
-          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_EVENT_NAME: ${{ inputs.baseline_source_event || github.event_name }}
+          GITHUB_ACTOR: ${{ inputs.baseline_source_actor || github.actor }}
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-          GITHUB_BEFORE: ${{ github.event.before }}
-          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_BEFORE: ${{ inputs.baseline_source_before || github.event.before }}
+          GITHUB_SHA: ${{ inputs.baseline_source_sha || github.sha }}
         run: python3 scripts/register_config_baseline.py
       - name: Verify registered user config baseline
         run: python3 scripts/verify_baseline.py --baseline-only

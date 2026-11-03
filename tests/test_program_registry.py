@@ -90,6 +90,39 @@ class ProgramRegistryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unregistered program files"):
             validate_registry(root, registry)
 
+    def test_accepts_workflow_dispatch_delegated_to_durable_scheduler(self):
+        root, registry = self.make_repo()
+        workflow_path = root / ".github" / "workflows" / "run.yml"
+        workflow_path.write_text(
+            "steps:\n  - run: python scripts/alpha.py\n  - run: enqueue-auto-sync\n",
+            encoding="utf-8",
+        )
+        target_path = root / ".github" / "workflows" / "auto_sync.yml"
+        target_path.write_text("on:\n  workflow_dispatch:\n", encoding="utf-8")
+        payload = json.loads(registry.read_text(encoding="utf-8"))
+        payload["programs"][1]["dispatches"] = ["workflow_auto_sync"]
+        payload["programs"].append({
+            "id": "workflow_auto_sync",
+            "path": ".github/workflows/auto_sync.yml",
+            "kind": "github_actions_workflow",
+            "responsibility": "test audit target",
+            "capabilities": ["deterministic_audit"],
+            "invocation": "durable scheduler",
+            "inputs": [],
+            "outputs": [],
+            "depends_on": [],
+            "dispatches": [],
+            "permission_boundary": "test",
+            "health_check": "test",
+            "orchestration": {
+                "enabled": False, "allowed_callers": [],
+                "max_attempts": 0, "timeout_seconds": 300,
+            },
+        })
+        registry.write_text(json.dumps(payload), encoding="utf-8")
+        result = validate_registry(root, registry)
+        self.assertEqual(result["program_count"], 3)
+
     def test_rejects_workflow_call_without_declared_dependency(self):
         root, registry = self.make_repo(dependency=False)
         with self.assertRaisesRegex(ValueError, "script dependency mismatch"):

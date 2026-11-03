@@ -21,12 +21,15 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/**"
-      - "rulesets/**"
-      - "sources/**"
+      - "sources/policy.json"
+      - "sources/domain_sources.json"
+      - "sources/policy_approvals.json"
+      - "sources/protected_domains.json"
+      - "sources/request_domain_observations.json"
+      - "sources/reject_manual_approvals.json"
       - "scripts/**"
       - "tests/**"
       - "shadowrocket/ss.conf"
-      - "automation/task_queue.json"
       - "automation/program_registry.json"
       - "automation/execution_adapters.json"
 
@@ -45,6 +48,10 @@ jobs:
       block_manifest: ${{ steps.stale-recovery.outputs.block_manifest }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
+    permissions:
+      actions: write
+      contents: write
+      issues: write
     steps:
       - name: Checkout watchdog policy code
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -67,7 +74,7 @@ jobs:
           SOURCE_WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
         run: |
           set -euo pipefail
-          # A recovery run is workflow_dispatch; ignore its completion to prevent retry loops.
+          # Retry queue-dispatched workflow runs only when their durable task correlation can be recovered.
           if [ "$SOURCE_WORKFLOW_NAME" != "Shadowrocket Deterministic Domain Audit (User Config Baseline)" ]; then
             echo "This watchdog recovery path only retries the deterministic domain audit; validator failures are handled by self-healing diagnosis."
             exit 0
@@ -80,9 +87,34 @@ jobs:
               exit 0
               ;;
           esac
-          if [ "$SOURCE_EVENT" != "schedule" ] && [ "$SOURCE_EVENT" != "push" ]; then
+          if [ "$SOURCE_EVENT" != "schedule" ] && [ "$SOURCE_EVENT" != "push" ] && [ "$SOURCE_EVENT" != "workflow_dispatch" ]; then
             echo "No automatic recovery for source event=$SOURCE_EVENT."
             exit 0
+          fi
+
+          audit_input_json='{}'
+          if [ "$SOURCE_EVENT" = "workflow_dispatch" ]; then
+            display_title="$(gh api "repos/$REPO/actions/runs/$SOURCE_RUN_ID" --jq .display_title)"
+            source_task_id="$(python3 - "$display_title" <<'PY'
+          import re, sys
+          match = re.fullmatch(r"Automation task (task_[0-9a-f]{24})-a[1-9][0-9]*", sys.argv[1])
+          print(match.group(1) if match else "")
+          PY
+          )"
+            if [ -z "$source_task_id" ]; then
+              echo "Workflow-dispatch run has no durable queue task correlation; refusing automatic retry."
+              exit 0
+            fi
+            queue_content="$(gh api "repos/$REPO/contents/automation/task_queue.json" --jq .content)"
+            audit_input_json="$(QUEUE_CONTENT="$queue_content" python3 - "$source_task_id" <<'PY'
+          import base64, json, os, sys
+          queue = json.loads(base64.b64decode(os.environ["QUEUE_CONTENT"]).decode("utf-8"))
+          task = next((item for item in queue.get("tasks", []) if item.get("task_id") == sys.argv[1]), None)
+          if task is None or not isinstance(task.get("input"), dict):
+              raise SystemExit("Correlated durable queue task or its input is missing; refusing retry.")
+          print(json.dumps(task["input"], ensure_ascii=False, separators=(",", ":")))
+          PY
+          )"
           fi
 
           runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
@@ -104,8 +136,8 @@ jobs:
             exit 0
           fi
 
-          echo "Source run $SOURCE_RUN_ID failed with a retryable infrastructure conclusion; dispatching bounded workflow_dispatch recovery."
-          gh workflow run auto_sync.yml --ref main --repo "$REPO"
+          echo "Source run $SOURCE_RUN_ID failed with a retryable infrastructure conclusion; enqueueing bounded recovery through the durable task queue."
+          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-recovery:$SOURCE_RUN_ID" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
 
       - name: Report degraded source discovery health
         if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success' }}
@@ -143,6 +175,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
+          ORIGIN_EVENT: ${{ github.event_name }}
+          ORIGIN_ACTOR: ${{ github.actor }}
+          ORIGIN_BEFORE: ${{ github.event.before }}
+          ORIGIN_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
           runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
@@ -168,8 +204,8 @@ jobs:
           PY
           )"
 
-          # Weekly audit is scheduled at 20:00 UTC on Sunday. An 8-day threshold
-          # tolerates queue delays while recovering a missed scheduled run.
+          # Watchdog owns the audit cadence. An 8-day threshold tolerates queue delays
+          # while recovering missed or stalled production audit tasks.
           audit_base_stale=0
           if [ -z "$last_success_sha" ]; then
             audit_base_stale=1
@@ -181,8 +217,12 @@ jobs:
           fi
 
           if [ "$audit_base_stale" = "1" ] || [ "$age_seconds" -gt 691200 ]; then
-            echo "Last successful audit is stale or contains non-documentation changes since its audited commit (age=${age_seconds}s, audited=$last_success_sha, current=$current_sha); dispatching recovery run."
-            gh workflow run auto_sync.yml --ref main --repo "$REPO"
+            echo "Last successful audit is stale or contains non-documentation changes since its audited commit (age=${age_seconds}s, audited=$last_success_sha, current=$current_sha); enqueueing a durable audit task."
+            audit_input_json='{}'
+            if [ "$ORIGIN_EVENT" = "push" ]; then
+              audit_input_json="$(jq -cn --arg event "$ORIGIN_EVENT" --arg actor "$ORIGIN_ACTOR" --arg before "$ORIGIN_BEFORE" --arg sha "$ORIGIN_SHA" '{baseline_source_event:$event,baseline_source_actor:$actor,baseline_source_before:$before,baseline_source_sha:$sha}')"
+            fi
+            printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-stale:$current_sha" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
             echo "block_manifest=true" >> "$GITHUB_OUTPUT"
           else
             echo "Last successful audit is healthy; any intervening main changes are documentation-only (${age_seconds}s ago)."
@@ -226,7 +266,7 @@ jobs:
   stale-run-watch:
     permissions:
       actions: write
-      contents: read
+      contents: write
       issues: write
     if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-24.04
@@ -337,8 +377,8 @@ jobs:
               echo "Scheduled recovery suppressed; diagnosis, cooldown, or retry limit prevents another dispatch."
               exit 0
             fi
-            echo "No publishable current-main audit is active and the last successful audit is stale or superseded; dispatching one bounded replacement."
-            gh workflow run auto_sync.yml --ref main --repo "$REPO"
+            echo "No publishable current-main audit is active and the last successful audit is stale or superseded; enqueueing one bounded replacement."
+            printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-stale:$current_main" --priority 100 enqueue-auto-sync
           else
             echo "The latest successful audit is healthy; any intervening main changes are documentation-only."
             issue="$(gh issue list --repo "$REPO" --state open --search "stalled audit in:title" --json number,title --jq '.[0].number')"
@@ -351,7 +391,7 @@ jobs:
           if [ "$timed_out_any" = "1" ]; then
             title="Self-healing incident: stalled audit"
             existing="$(gh issue list --repo "$REPO" --state open --search "stalled audit in:title" --json number --jq '.[0].number')"
-            body_text="$(printf 'The watchdog cancelled an audit that exceeded six hours and dispatched a replacement on current main %s.\\n' "$current_main")"
+            body_text="$(printf 'The watchdog cancelled an audit that exceeded six hours and queued a replacement on current main %s.\\n' "$current_main")"
             if [ -n "$existing" ] && [ "$existing" != "null" ]; then
               gh issue comment "$existing" --repo "$REPO" --body "$body_text"
             else
@@ -445,8 +485,8 @@ jobs:
             echo "A deterministic audit for current main ($current_sha) is already queued or running; waiting for its completion."
             exit 0
           fi
-          echo "No current-main audit is active. Dispatching one bounded reconciliation audit for $current_sha."
-          gh workflow run auto_sync.yml --ref main --repo "$REPO"
+          echo "No current-main audit is active. Enqueueing one bounded reconciliation audit for $current_sha."
+          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-manifest:$current_sha" --priority 100 enqueue-auto-sync
 
       - name: Open manifest metadata repair incident
         if: ${{ always() && (steps.refresh.outcome == 'failure' || steps.publish.outcome == 'failure') }}
