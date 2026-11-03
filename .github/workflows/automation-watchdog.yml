@@ -179,6 +179,36 @@ jobs:
             echo "block_manifest=false" >> "$GITHUB_OUTPUT"
           fi
 
+  task-queue-supervision:
+    needs: [health-check]
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main' }}
+    concurrency:
+      group: shadowrocket-task-queue
+      cancel-in-progress: false
+    permissions:
+      contents: write
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Checkout scheduler code without persisted credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Set up Python for deterministic queue supervision
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+      - name: Recover leases, verify results, and run one bounded task
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REF_NAME: main
+        run: |
+          set -euo pipefail
+          python3 scripts/task_scheduler.py --repository "$GITHUB_REPOSITORY" --branch main --max-tasks 1 run-once | tee /tmp/task-scheduler-report.json
+          cat /tmp/task-scheduler-report.json >> "$GITHUB_STEP_SUMMARY"
+
   stale-run-watch:
     permissions:
       actions: write
