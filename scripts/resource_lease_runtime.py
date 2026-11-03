@@ -218,22 +218,48 @@ def release_resource_leases(task_id, worker_id, task_lease_token, resources, sto
 
 
 def assert_resource_lease_from_environment(resource_path):
-    """Check a synchronous child against the immutable queue snapshot for its claim."""
-    required=("AUTOMATION_QUEUE_SNAPSHOT","AUTOMATION_TASK_ID","AUTOMATION_WORKER_ID",
+    """Read the durable queue on every write boundary and enforce live fencing."""
+    required=("AUTOMATION_QUEUE_REPOSITORY","AUTOMATION_QUEUE_TOKEN",
+              "AUTOMATION_QUEUE_BRANCH","AUTOMATION_QUEUE_PATH",
+              "AUTOMATION_TASK_ID","AUTOMATION_WORKER_ID",
               "AUTOMATION_TASK_LEASE_TOKEN","AUTOMATION_RESOURCE_LEASE_PROOF")
     missing=[key for key in required if not os.environ.get(key)]
-    if missing: raise ValueError("resource lease environment is incomplete: "+", ".join(missing))
+    if missing:
+        raise ValueError("live resource lease environment is incomplete: "+", ".join(missing))
     try:
-        queue=json.loads(Path(os.environ["AUTOMATION_QUEUE_SNAPSHOT"]).read_text(encoding="utf-8"))
         proof=json.loads(os.environ["AUTOMATION_RESOURCE_LEASE_PROOF"])
-    except (OSError,json.JSONDecodeError) as exc:
-        raise ValueError("resource lease snapshot or proof is unreadable") from exc
+    except json.JSONDecodeError as exc:
+        raise ValueError("resource lease proof is unreadable") from exc
     if not isinstance(proof,dict) or resource_path not in proof:
         raise ValueError(f"resource lease proof does not include {resource_path}")
     item=proof[resource_path]
-    if not isinstance(item,dict): raise ValueError("resource lease proof entry is malformed")
+    if not isinstance(item,dict):
+        raise ValueError("resource lease proof entry is malformed")
+    # Snapshot establishes the original claim identity; the live read below
+    # detects expiry, release, reassignment, or a newer fencing token.
+    snapshot_path=os.environ.get("AUTOMATION_QUEUE_SNAPSHOT")
+    if snapshot_path:
+        try:
+            snapshot=json.loads(Path(snapshot_path).read_text(encoding="utf-8"))
+            assert_resource_lease(
+                snapshot, task_id=os.environ["AUTOMATION_TASK_ID"],
+                worker_id=os.environ["AUTOMATION_WORKER_ID"],
+                task_lease_token=os.environ["AUTOMATION_TASK_LEASE_TOKEN"],
+                resource_path=resource_path, lease_id=item.get("lease_id"),
+                fencing_token=item.get("fencing_token"),
+            )
+        except (OSError,json.JSONDecodeError) as exc:
+            raise ValueError("resource lease claim snapshot is unreadable") from exc
+    store=GitHubContentsQueueStore(
+        os.environ["AUTOMATION_QUEUE_REPOSITORY"],
+        os.environ["AUTOMATION_QUEUE_PATH"],
+        branch=os.environ["AUTOMATION_QUEUE_BRANCH"],
+        token=os.environ["AUTOMATION_QUEUE_TOKEN"],
+        timeout=10,
+    )
+    live_queue=store.read().document
     return assert_resource_lease(
-        queue, task_id=os.environ["AUTOMATION_TASK_ID"],
+        live_queue, task_id=os.environ["AUTOMATION_TASK_ID"],
         worker_id=os.environ["AUTOMATION_WORKER_ID"],
         task_lease_token=os.environ["AUTOMATION_TASK_LEASE_TOKEN"],
         resource_path=resource_path, lease_id=item.get("lease_id"),
