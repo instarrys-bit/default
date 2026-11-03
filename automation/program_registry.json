@@ -1579,6 +1579,67 @@
         "max_attempts": 0,
         "timeout_seconds": 300
       }
+    },
+    {
+      "id": "script_build_dashboard_snapshot",
+      "path": "scripts/build_dashboard_snapshot.py",
+      "kind": "python_component",
+      "responsibility": "read committed automation summaries and generate a sanitized static dashboard data snapshot",
+      "capabilities": [
+        "read_only_metrics_aggregation"
+      ],
+      "invocation": "dashboard_pages_workflow_step",
+      "inputs": [
+        "rulesets/manifest.json",
+        "automation/task_queue.json",
+        "rulesets/pending_queue.json",
+        "rulesets/lifecycle_state.json",
+        "reports/lifecycle/latest.json",
+        "data/candidates.json"
+      ],
+      "outputs": [
+        "dashboard/data.json in the temporary GitHub Pages build workspace"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Read-only repository inputs; writes only the generated dashboard snapshot in the workflow workspace. No GitHub API write permission, no production dispatch, no edits to repository state or shadowrocket/ss.conf.",
+      "health_check": "Python compilation and deterministic snapshot-schema tests; Pages workflow build result.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "workflow_read_only_dashboard_pages",
+      "path": ".github/workflows/dashboard-pages.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "periodically aggregate sanitized read-only metrics and publish the static GitHub Pages operations dashboard",
+      "capabilities": [
+        "read_only_dashboard_build",
+        "github_pages_deployment"
+      ],
+      "invocation": "hourly schedule and allowlisted main-branch data/dashboard pushes",
+      "inputs": [
+        "GitHub event payload",
+        "committed repository summary files"
+      ],
+      "outputs": [
+        "static GitHub Pages artifact and deployment"
+      ],
+      "depends_on": [
+        "script_build_dashboard_snapshot"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Build job has contents:read only; deployment job has pages:write and id-token:write only. No contents:write, actions:write, production dispatch, queue mutation, or config access beyond read-only checkout.",
+      "health_check": "Snapshot builder exit status, artifact upload, and GitHub Pages deployment result.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     }
   ]
 }
