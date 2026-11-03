@@ -67,7 +67,7 @@ def authorize(task,by_id):
     if isinstance(timeout,bool) or not isinstance(timeout,int) or not 1<=timeout<=3600: raise ValueError("target timeout must be from 1 to 3600 seconds")
     return policy
 
-def enqueue_task(task,queue_path=QUEUE,registry_path=REGISTRY):
+def enqueue_task(task,queue_path=QUEUE,registry_path=REGISTRY,now=None):
     if not isinstance(task,dict): raise ValueError("task payload must be an object")
     with queue_lock(queue_path):
         queue,by_id=context(queue_path,registry_path); policy=authorize(task,by_id)
@@ -82,7 +82,7 @@ def enqueue_task(task,queue_path=QUEUE,registry_path=REGISTRY):
         priority=task.get("priority",50); payload=task.get("input",{})
         if isinstance(priority,bool) or not isinstance(priority,int) or not 0<=priority<=100: raise ValueError("priority must be an integer from 0 to 100")
         if not isinstance(payload,dict): raise ValueError("input must be an object")
-        now=now_utc()
+        now=now or now_utc()
         item={"task_id":"task_"+uuid.uuid4().hex[:24],"idempotency_key":idem,"trace_id":str(task.get("trace_id") or uuid.uuid4().hex),
               "requester_program_id":task["requester_program_id"],"target_program_id":task["target_program_id"],"capability":task["capability"],
               "created_at":stamp(now),"not_before":stamp(now),"priority":priority,"status":"QUEUED","attempts":0,

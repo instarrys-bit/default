@@ -54,7 +54,7 @@ class TaskQueueRuntimeTests(unittest.TestCase):
         return value
 
     def enqueue(self, **overrides):
-        return enqueue_task(self.payload(**overrides), self.queue, self.registry)
+        return enqueue_task(self.payload(**overrides), self.queue, self.registry, self.now)
 
     def test_enqueue_is_idempotent(self):
         first = self.enqueue()
