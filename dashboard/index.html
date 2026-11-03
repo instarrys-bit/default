@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>规则集自动化｜运营看板</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#141c30;--muted:#91a0ba;--text:#edf2ff;--line:#26334d;--blue:#82aaff;--green:#65d6a3;--amber:#f4c66a;--red:#ff8585}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#0b1020,#111a2d 55%,#0b1020);color:var(--text);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:1240px;margin:auto;padding:28px 20px 60px}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}h1{font-size:26px;margin:0 0 6px}.sub,.muted{color:var(--muted)}.pill{border:1px solid #315d54;color:var(--green);padding:6px 11px;border-radius:99px;font-size:12px;white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:22px 0}.panel{background:rgba(20,28,48,.92);border:1px solid var(--line);border-radius:15px;padding:18px;min-width:0}.metric{font-size:28px;font-weight:700;letter-spacing:-.5px;margin-top:6px}.label{color:var(--muted);font-size:13px}.section{font-size:17px;margin:26px 0 12px}.split{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}.barrow{display:grid;grid-template-columns:80px 1fr 68px;gap:10px;align-items:center;margin:14px 0}.track{height:10px;border-radius:99px;background:#25314a;overflow:hidden}.fill{height:100%;border-radius:99px;background:var(--blue)}.fill.direct{background:#65d6a3}.fill.proxy{background:#82aaff}.fill.reject{background:#f4c66a}.row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.row:last-child{border:0}.status{font-weight:650}.ok{color:var(--green)}.warn{color:var(--amber)}.bad{color:var(--red)}.note{font-size:12px;color:var(--muted);margin-top:16px}.empty{color:var(--muted);padding:14px 0}.footer{border-top:1px solid var(--line);margin-top:28px;padding-top:16px;color:var(--muted);font-size:12px}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.split{grid-template-columns:1fr}}@media(max-width:480px){main{padding:20px 14px 40px}.grid{gap:9px}.panel{padding:14px}.metric{font-size:24px}h1{font-size:22px}}
+</style>
+</head>
+<body><main>
+<header class="top"><div><h1>规则集自动化 · 运营看板</h1><div class="sub">只读运营视图｜数据来自仓库已提交的生产记录</div></div><span class="pill">READ ONLY · 无生产控制权限</span></header>
+<div class="grid" id="summary"><div class="panel"><div class="label">已发布规则总量</div><div class="metric">—</div></div><div class="panel"><div class="label">累计已审核候选</div><div class="metric">—</div></div><div class="panel"><div class="label">规则待发布</div><div class="metric">—</div></div><div class="panel"><div class="label">来源数量</div><div class="metric">—</div></div></div>
+<h2 class="section">规则集库存</h2><div class="panel" id="inventory"><div class="empty">正在读取数据…</div></div>
+<div class="split"><section><h2 class="section">审核与筛选</h2><div class="panel" id="review"><div class="empty">正在读取数据…</div></div></section><section><h2 class="section">生产运行状态</h2><div class="panel" id="production"><div class="empty">正在读取数据…</div></div></section></div>
+<div class="split"><section><h2 class="section">任务队列</h2><div class="panel" id="queue"><div class="empty">正在读取数据…</div></div></section><section><h2 class="section">生命周期管理</h2><div class="panel" id="lifecycle"><div class="empty">正在读取数据…</div></div></section></div>
+<div class="footer" id="updated">数据加载中</div>
+</main>
+<script>
+const n=v=>Number.isFinite(Number(v))?Number(v).toLocaleString("zh-CN"):"—";
+const el=id=>document.getElementById(id);
+const row=(k,v,cls="")=>'<div class="row"><span class="muted">'+k+'</span><span class="status '+cls+'">'+v+'</span></div>';
+async function load(){try{const r=await fetch("./data.json",{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);const d=await r.json();
+const cards=[["已发布规则总量",n(d.rulesets.published_total)],["已审核候选",n(d.review.reviewed_total)],["待处理队列",n(d.rulesets.queued_total)],["规则来源",n(d.sources.source_count)]];
+el("summary").innerHTML=cards.map(x=>'<div class="panel"><div class="label">'+x[0]+'</div><div class="metric">'+x[1]+'</div></div>').join("");
+const total=Math.max(1,d.rulesets.published_total||0);let inv="";for(const p of ["DIRECT","PROXY","REJECT"]){const v=d.rulesets.by_policy[p]||0;inv+='<div class="barrow"><b>'+p+'</b><div class="track"><div class="fill '+p.toLowerCase()+'" style="width:'+Math.min(100,v/total*100)+'%"></div></div><b>'+n(v)+'</b></div>'}inv+=row("发布容量",n(d.rulesets.max_published)+" 条")+row("容量使用率",d.rulesets.max_published?((d.rulesets.published_total/d.rulesets.max_published)*100).toFixed(1)+"%":"—");el("inventory").innerHTML=inv;
+let rev=row("审核候选总数",n(d.review.reviewed_total))+row("批准记录",n(d.review.approved_total))+row("暂缓 / 未通过处理",n(d.review.held_total))+row("策略冲突",n(d.review.policy_conflicts))+row("REJECT 人工审批要求",d.review.reject_manual_approval_required?"是":"否")+row("REJECT 已人工批准",n(d.review.reject_manual_approved));el("review").innerHTML=rev;
+const p=d.production;el("production").innerHTML=row("生产执行任务",n(p.total_tasks))+row("成功并核验",n(p.succeeded),"ok")+row("执行中 / 待核验",n(p.active),"warn")+row("失败 / 死信",n(p.dead_letter),"bad")+row("最近成功核验",p.last_success_verified_at||"暂无记录")+row("下次生产预期",p.next_expected_at||"尚无可验证时间记录")+ '<div class="note">生产周期按 8 天策略计算；仅在存在成功核验记录时展示预计时间。</div>';
+el("queue").innerHTML=row("队列任务总数",n(d.queue.total))+row("QUEUED",n(d.queue.by_status.QUEUED))+row("CLAIMED",n(d.queue.by_status.CLAIMED))+row("VERIFYING",n(d.queue.by_status.VERIFYING),"warn")+row("SUCCEEDED",n(d.queue.by_status.SUCCEEDED),"ok")+row("DEAD_LETTER",n(d.queue.by_status.DEAD_LETTER),"bad")+row("规则待发布数",n(d.rulesets.queued_total));
+el("lifecycle").innerHTML=row("当前发布量",n(d.lifecycle.published_rule_count))+row("下一审核里程碑",n(d.lifecycle.next_milestone))+row("规则上限",n(d.lifecycle.max_published_rules))+row("生命周期状态",d.lifecycle.status||"未知")+row("本次审核状态",d.lifecycle.latest_review_status||"暂无记录")+row("最近审核时间",d.lifecycle.last_successful_review_at||"暂无记录");
+el("updated").textContent="数据更新时间："+d.generated_at+" · 数据提交版本："+(d.source_commit||"未知")+" · 本页仅展示汇总数据，不提供任何生产、部署或配置操作。历史抓取批次、归档、生命周期删除/恢复事件尚无完整事件账本，因此不伪造累计值。";
+}catch(e){el("updated").textContent="数据读取失败："+e.message+"。请稍后重试或检查看板数据构建任务。";}}
+load();
+</script></body></html>
