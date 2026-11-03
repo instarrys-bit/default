@@ -90,7 +90,10 @@
     "sources/source_snapshots/**",
     "README*",
     "LICENSE*",
-    "NOTICE*"
+    "NOTICE*",
+    ".github/workflows/dashboard-pages.yml",
+    "dashboard/**",
+    "scripts/build_dashboard_snapshot.py"
   ],
   "unknown_path_policy": "review_required"
 }
