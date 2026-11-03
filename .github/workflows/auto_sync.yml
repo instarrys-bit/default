@@ -17,6 +17,10 @@ on:
         description: 'Required Watchdog-owned durable task correlation ID'
         required: true
         type: string
+      resource_lease_proof:
+        description: 'Watchdog-issued exclusive production resource lease IDs and fencing tokens'
+        required: true
+        type: string
       baseline_source_event:
         description: 'Original event type preserved by the Watchdog queue'
         required: false
