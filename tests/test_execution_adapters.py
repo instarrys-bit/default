@@ -14,7 +14,7 @@ class ExecutionAdapterTests(unittest.TestCase):
    {"target_program_id":"workflow_run","target_kind":"github_actions_workflow","adapter_type":"github_actions_workflow","enabled":False,"interface_status":"workflow_dispatch_reviewed","allowed_callers":[],"workflow":{"path":".github/workflows/run.yml","dispatchable":True,"inputs":[{"name":"item","type":"string","required":True}],"allowed_refs":["main"],"caller_permissions_required":["actions:write"]},"timeout_seconds":300,"retry":{"max_attempts":0},"completion":{"independent_verification_required":True}}]}
   rp=root/"automation"/"program_registry.json"; ap=root/"automation"/"execution_adapters.json"; rp.write_text(json.dumps(reg)); ap.write_text(json.dumps(doc)); return root,ap,rp,doc
  def test_repository_contract_is_valid(self):
-  r=validate_execution_adapters(ROOT); self.assertTrue(r["valid"]); self.assertEqual(r["adapter_count"],50); self.assertEqual(r["enabled_adapter_count"],0)
+  r=validate_execution_adapters(ROOT); self.assertTrue(r["valid"]); self.assertEqual(r["adapter_count"],51); self.assertEqual(r["enabled_adapter_count"],0)
  def test_valid_minimal_inventory(self):
   root,ap,rp,_=self.make_repo(); self.assertEqual(validate_execution_adapters(root,ap,rp)["adapter_count"],2)
  def test_rejects_missing_target(self):
