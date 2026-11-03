@@ -67,7 +67,7 @@ class ExecutionAdapterTests(unittest.TestCase):
     def test_repository_contract_is_valid(self):
         result = validate_execution_adapters(ROOT)
         self.assertTrue(result["valid"])
-        self.assertEqual(result["adapter_count"], 54)
+        self.assertEqual(result["adapter_count"], 56)
         self.assertEqual(result["enabled_adapter_count"], 2)
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
         adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
