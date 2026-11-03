@@ -122,6 +122,7 @@ jobs:
       - name: Smoke-check task queue runtime CLI
         run: python scripts/task_queue_runtime.py --help
       - run: python scripts/remote_task_queue_runtime.py --help
+      - run: python scripts/resource_lease_runtime.py --help
       - run: python scripts/task_result_verifier.py --help
       - run: python scripts/task_scheduler.py --help
       - run: python scripts/github_workflow_adapter.py --help-contract
