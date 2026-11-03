@@ -32,6 +32,9 @@ class TaskResultVerifierTests(unittest.TestCase):
             {"id": "script_target", "capabilities": ["test_capability"],
              "orchestration": {"enabled": True, "allowed_callers": ["script_requester"],
                                "max_attempts": 2, "timeout_seconds": 120}},
+            {"id": "script_task_result_verifier", "capabilities": ["task_result_verification"],
+             "orchestration": {"enabled": False, "allowed_callers": [],
+                               "max_attempts": 0, "timeout_seconds": 300}},
         ]}
         self.now = datetime(2026, 11, 3, 4, 0, tzinfo=timezone.utc)
         self.schema = {
