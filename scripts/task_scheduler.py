@@ -115,6 +115,8 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
             if not isinstance(adapter, dict) or adapter.get("enabled") is not True:
                 raise ValueError("target adapter is disabled")
             resource_contract = adapter.get("resource_contract")
+            if target_id == "workflow_auto_sync" and resource_contract is None:
+                raise ValueError("production workflow is blocked without a fenced resource contract")
             if resource_contract is not None:
                 if not isinstance(resource_contract, dict) or resource_contract.get("mode") != "exclusive" or resource_contract.get("fencing_required") is not True:
                     raise ValueError("resource_contract must declare exclusive mode and mandatory fencing")
