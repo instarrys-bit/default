@@ -1113,8 +1113,6 @@
         "script_refresh_ruleset_manifest",
         "script_verify_published_rulesets",
         "script_watchdog_recovery_policy",
-        "script_remote_task_queue_runtime",
-        "script_task_result_verifier",
         "script_task_scheduler"
       ],
       "dispatches": [
