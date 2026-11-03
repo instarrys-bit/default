@@ -4,7 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from build_rulesets import promote_queue_to_capacity, POLICIES
+from build_rulesets import promote_queue_to_capacity, previously_published_reject_rules, POLICIES
 
 
 class RuleSetCapacityTests(unittest.TestCase):
@@ -51,6 +51,28 @@ class RuleSetCapacityTests(unittest.TestCase):
         self.assertEqual(len(promoted), 2)
         self.assertEqual(len(rule_sets["PROXY"]), 1)
         self.assertEqual(len(queue), 1)
+
+    def test_superseded_published_reject_keeps_prior_authorization(self):
+        archive = {"items": [{
+            "policy": "REJECT",
+            "rule": "DOMAIN,ads.example.com",
+            "origin": "published_ruleset",
+            "superseded_at": "2026-11-03T00:00:00+00:00",
+            "restored_at": None,
+        }]}
+        authorized = previously_published_reject_rules(set(), archive)
+        self.assertIn("DOMAIN,ads.example.com", authorized)
+
+    def test_pending_reject_archive_does_not_grant_prior_publication_authorization(self):
+        archive = {"items": [{
+            "policy": "REJECT",
+            "rule": "DOMAIN,ads.example.com",
+            "origin": "pending_queue",
+            "superseded_at": "2026-11-03T00:00:00+00:00",
+            "restored_at": None,
+        }]}
+        authorized = previously_published_reject_rules(set(), archive)
+        self.assertNotIn("DOMAIN,ads.example.com", authorized)
 
 
 if __name__ == "__main__":

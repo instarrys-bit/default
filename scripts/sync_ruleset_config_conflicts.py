@@ -155,13 +155,14 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         raise ValueError("no RULE-SET reference found; refusing to reconcile standalone rulesets")
     explicit_config_rules = [
         (number, line) for number, line in config_rules
-        if len(line.split(",")) >= 3 and line.split(",", 1)[0].strip().upper() in {"DOMAIN", "DOMAIN-SUFFIX"} and line.split(",")[2].strip().upper() in {"DIRECT", "PROXY"}
+        if len(line.split(",")) >= 3 and line.split(",", 1)[0].strip().upper() in {"DOMAIN", "DOMAIN-SUFFIX"} and line.split(",")[2].strip().upper() in {"DIRECT", "PROXY", "REJECT"}
     ]
     skip_entries = parse_skip_proxy(config_text)
     prepared_config_rules = prepare_rules(config_rules)
     config_blob_sha = hashlib.sha1(
         b"blob " + str(len(config_bytes)).encode("ascii") + bytes([0]) + config_bytes
     ).hexdigest()
+    config_sha256 = hashlib.sha256(config_bytes).hexdigest()
 
     expected = {policy.lower() + ".list" for policy in POLICIES}
     actual = {path.name for path in rules_dir.glob("*.list")}
@@ -237,6 +238,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
             "origin": origin,
             "removed_at": timestamp,
             "config_blob_sha": config_blob_sha,
+            "config_sha256": config_sha256,
             "config_rule_line": result.get("config_line"),
             "config_rule": result.get("config_rule"),
             "effective_config_policy": result.get("effective_policy"),
@@ -404,6 +406,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "config_path": "shadowrocket/ss.conf",
         "config_read_only": True,
         "config_blob_sha": config_blob_sha,
+        "config_sha256": config_sha256,
         "ruleset_reference_count": ruleset_reference_count,
         "config_rule_line_count": len(explicit_config_rules),
         "published_before": before_counts,
@@ -421,7 +424,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "active_archive_count": sum(1 for x in archive["items"] if not x.get("restored_at") and not x.get("superseded_at")),
         "restoration_option_count": len(restoration_options),
         "restoration_options": restoration_options,
-        "policy": "Only candidates fully covered by an explicit DIRECT/PROXY DOMAIN or DOMAIN-SUFFIX scope in ss.conf, or fully covered by skip-proxy, are removed from published and queued external rules. Narrower exact or child-suffix exceptions do not remove broader parent suffix candidates. REJECT rules in ss.conf are excluded from automated analysis; blocking decisions remain user-owned. Rule order and precedence are never evaluated. Historical archive entries are rechecked against current full-scope coverage and superseded when coverage no longer exists. Keyword, regex, conditional, and partial overlaps are not evaluated or deleted.",
+        "policy": "Candidates fully covered by an explicit DOMAIN or DOMAIN-SUFFIX rule with DIRECT, PROXY, or REJECT policy in ss.conf, or fully covered by skip-proxy, are removed from published and queued external rules. The ss.conf policy wins regardless of whether it matches the external policy. Narrower exact or child-suffix exceptions do not remove broader parent suffix candidates. Rule order and precedence are not evaluated. Historical archive entries are rechecked against current full-scope coverage and superseded when coverage no longer exists; the normal builder then reconsiders eligible records using current evidence and publication gates. Keyword, regex, conditional, and partial overlaps are not automatically resolved.",
         "errors": [],
     }
     run_id = os.environ.get("GITHUB_RUN_ID", "").strip() if os.environ.get("RULESET_CONFIG_REPORT_AGGREGATION") == "1" else ""
@@ -449,7 +452,8 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "# RULE-SET / ss.conf conflict synchronization",
         "",
         "- Config: " + report["config_path"] + " (read-only)",
-        "- Config blob SHA: " + config_blob_sha,
+        "- Config Git blob SHA: " + config_blob_sha,
+        "- Config SHA256: " + config_sha256,
         "- Explicit config rule lines inspected: " + str(len(config_rules)),
         "- Published rules removed: " + str(report["published_removed_count"]),
         "- Pending queue entries removed: " + str(report["pending_queue_removed_count"]),
@@ -483,7 +487,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
     ) if restoration_options else lines.append("- None")
     lines.extend([
         "",
-        "The script never writes to shadowrocket/ss.conf. A config-scope archive entry is not restored automatically; restoration is opt-in and rechecked against full-scope config coverage, skip-proxy entries, and cross-policy published/queued rules.",
+        "The script never writes to shadowrocket/ss.conf. Archived entries are automatically reconsidered when the current config no longer fully covers them; publication still requires the normal evidence and REJECT authorization gates. Explicit DOMAIN and DOMAIN-SUFFIX rules with DIRECT, PROXY, and REJECT policies are compared; rule order, precedence, keyword, regex, conditional, and partial overlaps are not inferred.",
         "Paste selected IDs into the workflow_dispatch input restore_conflict_ids.",
         "",
     ])

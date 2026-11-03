@@ -165,9 +165,9 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("rule order is not evaluated", sync)
 
 
-    def test_unattended_config_analysis_excludes_reject_decisions(self):
+    def test_unattended_config_analysis_includes_reject_scopes_without_approving_new_rejects(self):
         audit = (ROOT / "scripts" / "audit_ruleset_config_overlap.py").read_text(encoding="utf-8")
-        self.assertIn('if policy in {"DIRECT", "PROXY"}', audit)
+        self.assertIn('if policy in {"DIRECT", "PROXY", "REJECT"}', audit)
         reviewer = (ROOT / "scripts" / "deterministic_review.py").read_text(encoding="utf-8")
         self.assertIn('rule.policy != "REJECT"', reviewer)
         external = (ROOT / "scripts" / "audit_external_domains.py").read_text(encoding="utf-8")
@@ -191,6 +191,39 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("github.ref == 'refs/heads/main'", validation)
         self.assertIn("Verify owner-approved config baseline", validation)
         self.assertIn("Audit config drift against the approved baseline", validation)
+
+
+    def test_watchdog_owns_config_change_detection_and_sync_dispatch(self):
+        watchdog_path = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
+        watchdog = watchdog_path.read_text(encoding="utf-8")
+        production_inputs = (ROOT / "automation" / "production_inputs.json").read_text(encoding="utf-8")
+        production_intent = (ROOT / "scripts" / "production_intent.py").read_text(encoding="utf-8")
+        scheduler = (ROOT / "scripts" / "task_scheduler.py").read_text(encoding="utf-8")
+        self.assertIn('"shadowrocket/ss.conf"', watchdog)
+        self.assertIn('"shadowrocket/ss.conf"', production_inputs)
+        self.assertIn('INPUT_CHANGED|SCHEDULE_DUE)', watchdog)
+        self.assertIn('enqueue-auto-sync', watchdog)
+        self.assertIn('--revision "$ORIGIN_SHA"', watchdog)
+        self.assertIn('production:input:$current_fingerprint:$current_sha', watchdog)
+        self.assertIn('revision: str | None = None', production_intent)
+        self.assertIn('path_classification["status"] == "INPUT_CHANGED"', production_intent)
+        self.assertIn('if path in inputs:', production_intent)
+        self.assertIn('"shadowrocket/ss.conf"', production_inputs)
+        self.assertIn('protected_config_digest(root)', scheduler)
+        self.assertIn('ensure_protected_config_unchanged', scheduler)
+
+        # Watchdog schedules the existing production workflow; the config
+        # conflict synchronizer remains a subordinate step, not an independent
+        # monitor or a second workflow.
+        pre_sync = WORKFLOW.read_text(encoding="utf-8")
+        self.assertEqual(pre_sync.count("python3 scripts/sync_ruleset_config_conflicts.py"), 2)
+        self.assertIn("Remove published and queued rules that conflict with ss.conf", pre_sync)
+        self.assertIn('BASELINE_SOURCE_SHA: ${{ inputs.baseline_source_sha }}', pre_sync)
+        self.assertIn('(\"baseline_source_sha\", \"BASELINE_SOURCE_SHA\")', pre_sync)
+        self.assertIn("does not match the durable Watchdog task input", pre_sync)
+        self.assertIn("not a full Git commit SHA", pre_sync)
+        self.assertIn("Reconcile final ss.conf scope coverage after all rule mutations", pre_sync)
+        self.assertIn("group: shadowrocket-main-writer", pre_sync)
 
 
 if __name__ == "__main__":

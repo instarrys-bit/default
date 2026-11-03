@@ -234,8 +234,8 @@ jobs:
           print(compute_fingerprint(Path("."), manifest))
           PY
           )"
-            audit_input_json="$(jq --arg fingerprint "$current_fingerprint" --arg reason "new production input superseded the failed audit; re-evaluating current main" '. + {production_fingerprint:$fingerprint,production_decision:"INPUT_CHANGED",production_reason:$reason}' <<< "$audit_input_json")"
-            idempotency_key="production:input:$current_fingerprint"
+            audit_input_json="$(jq --arg fingerprint "$current_fingerprint" --arg sha "$current_sha" --arg reason "new production input superseded the failed audit; re-evaluating current main" '. + {production_fingerprint:$fingerprint,production_decision:"INPUT_CHANGED",production_reason:$reason,baseline_source_sha:$sha}' <<< "$audit_input_json")"
+            idempotency_key="production:input:$current_fingerprint:$current_sha"
           fi
           printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$idempotency_key" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
 
@@ -321,6 +321,7 @@ jobs:
 
           intent_json="$(python3 scripts/production_intent.py \
             --event "$ORIGIN_EVENT" \
+            --revision "$ORIGIN_SHA" \
             --paths-json "$paths_json" \
             --last-success-fingerprint "$last_success_fingerprint" \
             --last-success-at "$heartbeat_at" \

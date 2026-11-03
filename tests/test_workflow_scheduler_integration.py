@@ -149,7 +149,7 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
             {"id": "workflow_automation_watchdog", "path": ".github/workflows/automation-watchdog.yml",
              "kind": "github_actions_workflow", "capabilities": ["top_level_supervision"],
              "orchestration": {"enabled": False, "allowed_callers": [], "max_attempts": 0, "timeout_seconds": 300}},
-            {"id": "workflow_auto_sync", "path": ".github/workflows/auto_sync.yml",
+            {"id": "workflow_auto_sync", "path": ".github/workflows/workflow-target.yml",
              "kind": "github_actions_workflow", "capabilities": ["deterministic_audit"],
              "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
                                "max_attempts": 1, "timeout_seconds": 300}},
@@ -177,6 +177,74 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
         self.assertEqual(saved["capability"], "deterministic_audit")
         self.assertEqual(saved["input"], origin)
         self.assertEqual(saved["status"], "QUEUED")
+
+    def test_watchdog_baseline_sha_survives_durable_queue_and_workflow_dispatch(self):
+        registry = {"programs": [
+            {"id": "workflow_automation_watchdog", "path": ".github/workflows/automation-watchdog.yml",
+             "kind": "github_actions_workflow", "capabilities": ["top_level_supervision"],
+             "orchestration": {"enabled": False, "allowed_callers": [], "max_attempts": 0, "timeout_seconds": 300}},
+            {"id": "workflow_auto_sync", "path": ".github/workflows/workflow-target.yml",
+             "kind": "github_actions_workflow", "capabilities": ["deterministic_audit"],
+             "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
+                               "max_attempts": 1, "timeout_seconds": 300}},
+        ]}
+        workflow_path = self.root / ".github" / "workflows" / "workflow-target.yml"
+        workflow_path.write_text(
+            "on:\\n  workflow_dispatch:\\n    inputs:\\n"
+            "      domains:\\n        required: true\\n        type: string\\n"
+            "      baseline_source_event:\\n        required: false\\n        type: string\\n"
+            "      baseline_source_actor:\\n        required: false\\n        type: string\\n"
+            "      baseline_source_before:\\n        required: false\\n        type: string\\n"
+            "      baseline_source_sha:\\n        required: false\\n        type: string\\n"
+            "      production_fingerprint:\\n        required: false\\n        type: string\\n"
+            "      production_decision:\\n        required: false\\n        type: string\\n"
+            "      production_reason:\\n        required: false\\n        type: string\\n"
+            "      automation_task_id:\\n        required: false\\n        type: string\\n",
+            encoding="utf-8",
+        )
+        adapter = copy.deepcopy(self.adapter)
+        adapter["target_program_id"] = "workflow_auto_sync"
+        adapter["allowed_callers"] = ["workflow_automation_watchdog"]
+        adapter["workflow"]["inputs"].extend([
+            {"name": "baseline_source_event", "type": "string", "required": False},
+            {"name": "baseline_source_actor", "type": "string", "required": False},
+            {"name": "baseline_source_before", "type": "string", "required": False},
+            {"name": "baseline_source_sha", "type": "string", "required": False},
+            {"name": "production_fingerprint", "type": "string", "required": False},
+            {"name": "production_decision", "type": "string", "required": False},
+            {"name": "production_reason", "type": "string", "required": False},
+        ])
+        adapters = {"schema_version": 1, "adapters": [adapter]}
+        origin = {
+            "domains": "example.com",
+            "baseline_source_event": "push",
+            "baseline_source_actor": "repository-owner",
+            "baseline_source_before": "b" * 40,
+            "baseline_source_sha": "a" * 40,
+            "production_fingerprint": "f" * 64,
+            "production_decision": "INPUT_CHANGED",
+            "production_reason": "shadowrocket/ss.conf changed",
+        }
+        task_scheduler.enqueue_auto_sync_task(
+            self.store, registry, idempotency_key="config-baseline:" + "a" * 40,
+            priority=100, input_payload=origin,
+        )
+        with patch.object(task_scheduler, "GitHubWorkflowClient", return_value=self.client):
+            report = task_scheduler.run_scheduler_once(
+                self.store, registry, adapters,
+                worker_id="watchdog-config-test", max_tasks=1, root=self.root, now=datetime.now(timezone.utc),
+            )
+        self.assertEqual(report["processed_count"], 1, repr(report))
+        dispatched = self.client.dispatches[0][2]
+        for field in (
+            "baseline_source_sha", "production_fingerprint",
+            "production_decision", "production_reason",
+        ):
+            self.assertEqual(dispatched[field], origin[field])
+        self.assertEqual(
+            self.store.document["tasks"][0]["input"]["baseline_source_sha"],
+            "a" * 40,
+        )
 
     def test_scheduler_dispatches_once_and_leaves_task_verifying(self):
         task = self.enqueue()
