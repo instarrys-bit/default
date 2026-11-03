@@ -178,6 +178,7 @@ def complete_remote(task_id: str, worker_id: str, lease_token: str, *,
             task["status"] = "VERIFYING"
             task["result"] = result
             task["last_error"] = None
+            task["verification"] = None
             task["state_history"].append("VERIFYING")
         else:
             task["last_error"] = error
