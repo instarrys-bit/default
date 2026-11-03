@@ -164,7 +164,14 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
                 if (not isinstance(workflow, dict) or workflow.get("path") != target.get("path")
                         or workflow.get("dispatchable") is not True):
                     raise ValueError("workflow path or dispatchable contract is invalid")
-                validate_dispatch_request(adapter, task, "main")
+                preflight_task = task
+                if isinstance(adapter.get("resource_contract"), dict):
+                    preflight_task = dict(task)
+                    preflight_task["input"] = dict(task.get("input") or {})
+                    # The actual proof is minted atomically during claim_remote; plan-time
+                    # validation checks only the declared string input shape.
+                    preflight_task["input"]["resource_lease_proof"] = "{}"
+                validate_dispatch_request(adapter, preflight_task, "main")
             else:
                 raise ValueError("unsupported execution adapter type")
             eligible.append(task_id)
