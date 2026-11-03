@@ -1085,9 +1085,11 @@
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
       "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
       "orchestration": {
-        "enabled": false,
-        "allowed_callers": [],
-        "max_attempts": 0,
+        "enabled": true,
+        "allowed_callers": [
+          "workflow_automation_watchdog"
+        ],
+        "max_attempts": 1,
         "timeout_seconds": 300
       }
     },
