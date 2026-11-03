@@ -13,7 +13,7 @@ The job performs one bounded scheduler pass:
 
 ## Permission and execution boundary
 
-- Only the queue-supervision job receives `contents: write`; the rest of the Watchdog retains its existing job-scoped permissions.
+- Only the queue-supervision job receives `actions: write` and `contents: write`; it does not receive `issues: write`. The rest of the Watchdog retains its existing job-scoped permissions.
 - Checkout uses `persist-credentials: false`.
 - The workflow removes `GITHUB_TOKEN` from its shell environment and pipes it to the scheduler over stdin; the scheduler stores it only in the queue client.
 - The scheduler strips credential-like variables from its own environment while child processes run, gives children a small non-secret environment allowlist, and closes child stdin.
