@@ -340,11 +340,37 @@ jobs:
               echo "block_manifest=true" >> "$GITHUB_OUTPUT"
               ;;
             REVIEW_REQUIRED)
-              echo "Production was not dispatched: an unregistered or unclassifiable change requires review."
+              echo "Production was not dispatched: unregistered paths are being recorded in the Watchdog inbox."
               echo "block_manifest=true" >> "$GITHUB_OUTPUT"
+              unknown_paths="$(jq -c '.path_classification.unknown_changes // []' <<< "$intent_json")"
+              registry_response="$(gh api "repos/$REPO/contents/automation/unregistered_path_registry.json" 2>/dev/null || true)"
+              registry_sha=""
+              if [ -n "$registry_response" ]; then
+                registry_sha="$(jq -r '.sha' <<< "$registry_response")"
+                registry_encoded="$(jq -r '.content' <<< "$registry_response" | tr -d '\n')"
+                printf '%s' "$registry_encoded" | base64 -d > automation/unregistered_path_registry.json
+              fi
+              registration_result="$(python3 scripts/production_intent.py \
+                --event "$ORIGIN_EVENT" \
+                --revision "$ORIGIN_SHA" \
+                --paths-json "$unknown_paths" \
+                --register-ledger automation/unregistered_path_registry.json \
+                --run-id "$GITHUB_RUN_ID" \
+                --run-url "$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID")"
+              echo "$registration_result" >> "$GITHUB_STEP_SUMMARY"
+              registry_content="$(base64 -w0 automation/unregistered_path_registry.json)"
+              if [ -n "$registry_sha" ]; then
+                gh api --method PUT "repos/$REPO/contents/automation/unregistered_path_registry.json" \
+                  -f message="Watchdog: register unclassified repository paths" \
+                  -f content="$registry_content" -f branch=main -f sha="$registry_sha" >/dev/null
+              else
+                gh api --method PUT "repos/$REPO/contents/automation/unregistered_path_registry.json" \
+                  -f message="Watchdog: register unclassified repository paths" \
+                  -f content="$registry_content" -f branch=main >/dev/null
+              fi
               title="Production input classification requires review"
               issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
-              body="The Watchdog found a repository change that is not registered as a production input or known non-production path. No production task was created. Inspect the intent report in this run and update automation/production_inputs.json through review."
+              body="$(printf 'The Watchdog registered these unclassified paths in automation/unregistered_path_registry.json. Registration is not approval. All remain PENDING_CLASSIFICATION and production stays blocked until explicit classification.\\n\\nPaths: %s\\n\\nRun: %s' "$unknown_paths" "$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID")"
               if [ -n "$issue" ] && [ "$issue" != "null" ]; then
                 gh issue comment "$issue" --repo "$REPO" --body "$body"
               else
