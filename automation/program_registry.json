@@ -1481,6 +1481,36 @@
         "max_attempts": 0,
         "timeout_seconds": 300
       }
+    },
+    {
+      "id": "script_audit_adapter_activation",
+      "path": "scripts/audit_adapter_activation.py",
+      "kind": "python_component",
+      "responsibility": "produce a read-only deterministic readiness and least-privilege canary report for execution adapters",
+      "capabilities": [
+        "adapter_activation_audit"
+      ],
+      "invocation": "python_cli",
+      "inputs": [
+        "program registry",
+        "execution adapter inventory",
+        "registered workflow files"
+      ],
+      "outputs": [
+        "activation readiness report",
+        "least-privilege canary candidates",
+        "blocker reasons"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Read-only repository inspection; no network access, no queue mutation, no adapter activation, and no changes to shadowrocket/ss.conf.",
+      "health_check": "Tests validate disabled-by-default state, workflow permission scope parsing, read-only canary classification, and protected-config write detection.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     }
   ]
 }
