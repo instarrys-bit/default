@@ -15,6 +15,10 @@ from pathlib import Path
 from github_queue_store import GitHubContentsQueueStore, QueueStoreError
 from task_queue_runtime import authorize, now_utc, stamp
 from task_queue import validate_task_queue
+from resource_lease_runtime import (
+    acquire_resource_leases_in_queue, extend_resource_leases_for_verification,
+    release_resource_leases_in_queue,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -114,6 +118,7 @@ def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
 
 def claim_remote(worker_id: str, store: GitHubContentsQueueStore,
                  registry: dict, *, eligible_task_ids: set[str],
+                 resource_keys_by_target: dict | None = None,
                  now: datetime | None = None) -> dict | None:
     if not isinstance(worker_id, str) or not worker_id.strip():
         raise ValueError("worker_id is required")
@@ -122,7 +127,11 @@ def claim_remote(worker_id: str, store: GitHubContentsQueueStore,
     now = now or now_utc()
     by_id = {p.get("id"): p for p in registry["programs"] if isinstance(p, dict)}
 
-    lease_token = secrets.token_hex(16)
+    resource_keys_by_target = resource_keys_by_target or {}
+    if not isinstance(resource_keys_by_target, dict):
+        raise ValueError("resource_keys_by_target must be an object")
+    lease_tokens = {task_id: secrets.token_hex(16) for task_id in eligible_task_ids}
+    resource_lease_ids = {task_id: secrets.token_hex(16) for task_id in eligible_task_ids}
 
     def mutate(queue: dict):
         validate_envelope(queue)
@@ -139,17 +148,42 @@ def claim_remote(worker_id: str, store: GitHubContentsQueueStore,
             validate_candidate(queue, registry)
             return queue, None
         eligible.sort(key=lambda pair: (-pair[0]["priority"], pair[0]["created_at"], pair[0]["task_id"]))
-        task, policy = eligible[0]
-        task["status"] = "CLAIMED"
-        task["attempts"] += 1
-        task["state_history"].append("CLAIMED")
-        task["lease"] = {
-            "owner": worker_id, "token": lease_token,
-            "expires_at": stamp(now + timedelta(seconds=policy["timeout_seconds"])),
-        }
-        queue["revision"] += 1
+        for task, policy in eligible:
+            task["status"] = "CLAIMED"
+            task["attempts"] += 1
+            task["state_history"].append("CLAIMED")
+            task["lease"] = {
+                "owner": worker_id, "token": lease_tokens[task["task_id"]],
+                "expires_at": stamp(now + timedelta(seconds=policy["timeout_seconds"])),
+            }
+            resource_spec = resource_keys_by_target.get(task["target_program_id"])
+            if resource_spec is not None:
+                if not isinstance(resource_spec, dict):
+                    raise ValueError("resource contract must be an object")
+                acquired = acquire_resource_leases_in_queue(
+                    queue, task, worker_id, task["lease"]["token"],
+                    resource_spec.get("resource_keys"),
+                    lease_seconds=resource_spec.get("lease_seconds", 300),
+                    now=now, lease_id=resource_lease_ids[task["task_id"]],
+                )
+                if not acquired.get("acquired"):
+                    task["status"] = "QUEUED"
+                    task["attempts"] -= 1
+                    task["state_history"].pop()
+                    task["lease"] = None
+                    continue
+                task["resource_lease"] = {
+                    "status": "ACTIVE",
+                    "resources": acquired["resources"],
+                    "lease_seconds": acquired["lease_seconds"],
+                    "acquired_at": stamp(now),
+                    "expires_at": acquired["expires_at"],
+                }
+            queue["revision"] += 1
+            validate_candidate(queue, registry)
+            return queue, task
         validate_candidate(queue, registry)
-        return queue, task
+        return queue, None
     return store.mutate(mutate)
 
 
@@ -185,7 +219,9 @@ def complete_remote(task_id: str, worker_id: str, lease_token: str, *,
             task["last_error"] = None
             task["verification"] = None
             task["state_history"].append("VERIFYING")
+            extend_resource_leases_for_verification(queue, task, now)
         else:
+            release_resource_leases_in_queue(queue, task, now)
             task["last_error"] = error
             task["state_history"].append("FAILED")
             if task["attempts"] < task["max_attempts"]:
@@ -215,6 +251,11 @@ def recover_remote(store: GitHubContentsQueueStore, registry: dict, now: datetim
             if datetime.fromisoformat(lease["expires_at"].replace("Z", "+00:00")) > now:
                 continue
             task["lease"] = None
+            try:
+                release_resource_leases_in_queue(queue, task, now)
+            except ValueError:
+                # A newer fencing epoch already owns the resource; never release it.
+                pass
             task["last_error"] = {"type": "lease_expired", "message": "Worker lease expired before completion."}
             if task["attempts"] < task["max_attempts"]:
                 task["status"] = "QUEUED"
