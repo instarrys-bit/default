@@ -32,12 +32,17 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn('select(.head_branch == "main" and .head_sha == $sha', watchdog)
         self.assertIn('select(.head_branch == "main" and .conclusion == "success")', watchdog)
 
-    def test_every_main_writer_uses_the_shared_repository_lock(self):
+    def test_main_writers_are_serialized_or_use_safe_rebase(self):
         auto_sync = WORKFLOW.read_text(encoding="utf-8")
         intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn("group: shadowrocket-main-writer", auto_sync)
-        self.assertIn("group: shadowrocket-main-writer", intake)
+        # Intake is a hostname-ledger writer. It uses a per-run slot plus
+        # non-force rebase retries so a pending user submission is not dropped.
+        self.assertIn("group: shadowrocket-request-intake-", intake)
+        self.assertIn("github.run_id", intake)
+        self.assertIn("for attempt in 1 2 3; do", intake)
+        self.assertIn("git rebase origin/main", intake)
         manifest_writer = watchdog.split("  manifest-integrity:", 1)[1]
         self.assertIn("group: shadowrocket-main-writer", manifest_writer)
         self.assertNotIn("github-only-domain-intake", intake)
