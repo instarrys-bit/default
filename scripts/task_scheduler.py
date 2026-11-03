@@ -395,6 +395,7 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
         )
         return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
     protected_digest = protected_config_digest(root)
+    read_only_before = read_only_resource_digests(root, adapter.get("read_only_resources", []))
     argv_values = {
         "task_id": task["task_id"],
         "idempotency_key": task["idempotency_key"],
@@ -440,7 +441,12 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
                 )
         except subprocess.TimeoutExpired:
             ensure_protected_config_unchanged(protected_digest, task, store, registry, root)
-            error = {"type": "execution_timeout", "message": "Registered program exceeded its adapter timeout."}
+            try:
+                ensure_read_only_resources_unchanged(read_only_before, root)
+            except ProtectedConfigMutationError as exc:
+                error = {"type": "read_only_resource_mutation_detected", "message": str(exc)}
+            else:
+                error = {"type": "execution_timeout", "message": "Registered program exceeded its adapter timeout."}
             completed_task = complete_remote(
                 task["task_id"], task["lease"]["owner"], task["lease"]["token"],
                 success=False, error=error, store=store, registry=registry, now=now_utc(),
@@ -455,6 +461,16 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
             return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
 
         ensure_protected_config_unchanged(protected_digest, task, store, registry, root)
+        try:
+            ensure_read_only_resources_unchanged(read_only_before, root)
+        except ProtectedConfigMutationError as exc:
+            error = {"type": "read_only_resource_mutation_detected", "message": str(exc)}
+            completed_task = complete_remote(
+                task["task_id"], task["lease"]["owner"], task["lease"]["token"],
+                success=False, error=error, store=store, registry=registry, now=now_utc(),
+            )
+            return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
+
         if completed.returncode != 0:
             error = {
                 "type": "program_exit_nonzero",
@@ -482,6 +498,61 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
                 success=False, error=error, store=store, registry=registry, now=now_utc(),
             )
             return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
+
+        artifact_verifier = adapter.get("completion", {}).get("artifact_verifier")
+        if artifact_verifier is not None:
+            output_field = artifact_verifier["output_field"]
+            if output_field in result:
+                error = {"type": "artifact_verifier_output_collision", "message": f"program output already contains reserved field {output_field}"}
+                completed_task = complete_remote(
+                    task["task_id"], task["lease"]["owner"], task["lease"]["token"],
+                    success=False, error=error, store=store, registry=registry, now=now_utc(),
+                )
+                return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
+            result_path = Path(directory) / "task-result.json"
+            result_path.write_text(json.dumps(result, ensure_ascii=False), encoding="utf-8")
+            verifier_path = (root / artifact_verifier["path"]).resolve()
+            verifier_command = [sys.executable, str(verifier_path), "--result-json-file", str(result_path)]
+            try:
+                verified = subprocess.run(
+                    verifier_command, cwd=root, env=safe_child_environment(root),
+                    shell=False, capture_output=True, text=True,
+                    stdin=subprocess.DEVNULL, timeout=min(adapter["timeout_seconds"], 60), check=False,
+                )
+            except subprocess.TimeoutExpired:
+                verified = None
+            if verified is None or verified.returncode != 0:
+                error = {"type": "independent_artifact_verification_failed",
+                         "message": "Independent artifact verifier did not complete successfully.",
+                         "stderr": verified.stderr[-2000:] if verified is not None else "verifier timed out"}
+                completed_task = complete_remote(
+                    task["task_id"], task["lease"]["owner"], task["lease"]["token"],
+                    success=False, error=error, store=store, registry=registry, now=now_utc(),
+                )
+                return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
+            try:
+                verification_result = json.loads(verified.stdout)
+            except json.JSONDecodeError:
+                verification_result = None
+            if not isinstance(verification_result, dict) or verification_result.get("valid") is not True:
+                error = {"type": "independent_artifact_verification_invalid_output",
+                         "message": "Independent artifact verifier must emit one JSON object with valid=true.",
+                         "stdout": verified.stdout[-2000:]}
+                completed_task = complete_remote(
+                    task["task_id"], task["lease"]["owner"], task["lease"]["token"],
+                    success=False, error=error, store=store, registry=registry, now=now_utc(),
+                )
+                return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
+            result[output_field] = verification_result
+            try:
+                ensure_read_only_resources_unchanged(read_only_before, root)
+            except ProtectedConfigMutationError as exc:
+                error = {"type": "read_only_resource_mutation_detected", "message": str(exc)}
+                completed_task = complete_remote(
+                    task["task_id"], task["lease"]["owner"], task["lease"]["token"],
+                    success=False, error=error, store=store, registry=registry, now=now_utc(),
+                )
+                return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
 
         pending = complete_remote(
             task["task_id"], task["lease"]["owner"], task["lease"]["token"],
