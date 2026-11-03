@@ -258,7 +258,7 @@ def clear_workflow_dispatch_intent(task: dict, store, registry: dict) -> None:
     store.mutate(mutate)
 
 
-def execute_claimed_workflow_task(task: dict, adapter: dict, store, registry: dict) -> dict:
+def execute_claimed_workflow_task(task: dict, adapter: dict, store, registry: dict, adapters: dict) -> dict:
     """Persist intent, dispatch once, then move the task to independent verification."""
     try:
         client = GitHubWorkflowClient(
@@ -286,11 +286,17 @@ def execute_claimed_workflow_task(task: dict, adapter: dict, store, registry: di
             task["task_id"], task["lease"]["owner"], task["lease"]["token"],
             success=True, result=result, store=store, registry=registry, now=now_utc(),
         )
+        verification = verify_pending_remote(
+            store, registry, adapters, now_utc(), workflow_client=client
+        )
+        snapshot = store.read().document
+        final_task = next(item for item in snapshot["tasks"] if item["task_id"] == task["task_id"])
         return {
             "task_id": task["task_id"],
             "worker_completion_status": pending["status"],
-            "status": pending["status"],
+            "status": final_task["status"],
             "dispatch_state": result["dispatch_state"],
+            "verification": verification,
         }
     except (WorkflowAPIError, ValueError, OSError) as exc:
         error = {"type": "workflow_dispatch_preflight_failed", "message": str(exc)[:1000]}
@@ -306,7 +312,7 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
                          now: datetime | None = None) -> dict:
     now = now or now_utc()
     if adapter.get("adapter_type") == "github_actions_workflow":
-        return execute_claimed_workflow_task(task, adapter, store, registry)
+        return execute_claimed_workflow_task(task, adapter, store, registry, adapters)
     entrypoint = adapter["entrypoint"]
     script_path = (root / entrypoint["path"]).resolve()
     input_errors = validate_json_schema(task["input"], adapter["input_contract"])
