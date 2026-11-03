@@ -1700,33 +1700,33 @@
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | REJECT | 0 | baseline_initialized | source_header_claim |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | REJECT | 0 | baseline_initialized | source_header_claim |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | REJECT | 0 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 199060 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 219698 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 199227 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 219865 | baseline_initialized | source_header_claim |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | REJECT | 0 | baseline_initialized | source_header_claim |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | REJECT | 0 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 25490 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 25490 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 25490 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 25467 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 25467 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 25467 | baseline_initialized | source_header_claim |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | REJECT | 0 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 199060 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 219698 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 217798 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 12222 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 211056 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 220391 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 68276 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 56138 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 36575 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 223887 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 80569 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 56138 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | — | 9885 | baseline_initialized | none |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 199227 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 219865 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 217784 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 12068 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 211070 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 220363 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 68124 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 56140 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 36398 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 223880 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 80395 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | REJECT | 56140 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | — | 9793 | baseline_initialized | none |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | — | 64 | baseline_initialized | none |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | — | 64 | baseline_initialized | none |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | — | 0 | baseline_initialized | none |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | — | 9885 | baseline_initialized | none |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | — | 9793 | baseline_initialized | none |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | — | 0 | baseline_initialized | none |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | — | 2528 | baseline_initialized | none |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | — | 2532 | baseline_initialized | none |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | domain-only | — | 1716 | baseline_initialized | none |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | REJECT | 0 | baseline_initialized | source_header_claim |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | REJECT | 0 | baseline_initialized | source_header_claim |
@@ -1740,23 +1740,23 @@
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | REJECT | 0 | baseline_initialized | source_header_claim |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | REJECT | 0 | baseline_initialized | source_header_claim |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | REJECT | 0 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 199060 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 199227 | baseline_initialized | source_header_claim |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | REJECT | 0 | baseline_initialized | source_header_claim |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | REJECT | 0 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 25490 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 25490 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 25490 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 25467 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 25467 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 25467 | baseline_initialized | source_header_claim |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | REJECT | 0 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 199060 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 217798 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 12222 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 199227 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 217784 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 12068 | baseline_initialized | source_header_claim |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | fetch_or_validation_error | — | 0 | unavailable | none |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 220391 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 68276 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 56138 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 36575 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 80569 | baseline_initialized | source_header_claim |
-| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 56138 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 220363 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 68124 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 56140 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 36398 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 80395 | baseline_initialized | source_header_claim |
+| KnightmareVIIVIIXC/AIO-Firebog-Blocklists | adblock-domain-rules | REJECT | 56140 | baseline_initialized | source_header_claim |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | REJECT | 0 | baseline_initialized | source_header_claim |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | REJECT | 0 | baseline_initialized | source_header_claim |
 | KnightmareVIIVIIXC/AIO-Firebog-Blocklists | unsupported_or_too_small | REJECT | 0 | baseline_initialized | source_header_claim |
@@ -4381,9 +4381,10 @@
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
+| bgpeer/rules | unsupported_or_too_small | — | 0 | content_changed_baseline_schema_unavailable | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
+| bgpeer/rules | unsupported_or_too_small | — | 0 | content_changed_baseline_schema_unavailable | ambiguous |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
-| bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | ambiguous |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
@@ -4565,8 +4566,7 @@
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
-| bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
-| bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
+| bgpeer/rules | unsupported_or_too_small | — | 0 | content_changed_baseline_schema_unavailable | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
@@ -4895,7 +4895,7 @@
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
-| bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
+| bgpeer/rules | unsupported_or_too_small | — | 0 | content_changed_baseline_schema_unavailable | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | unchanged | none |
@@ -5010,8 +5010,8 @@
 ## Source update drift
 
 - New source files: 4023
-- Changed source files: 20
-- Added domain entries: 4623289
+- Changed source files: 24
+- Added domain entries: 4622590
 - Removed domain entries: 0
 - Policy changes: 0
 
@@ -20158,7 +20158,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/dnsmasqlists/firebogbluead.conf
-- SHA-256: 185e8aae457c547591418bc13381185f6ca398a81877ddf6196f988db1929f41
+- SHA-256: c9efdb07be7f6491221bfc9074a71c477154439c00aff06e2c35ea70c3050f08
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20167,7 +20167,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/dnsmasqlists/firebogblueadtrack.conf
-- SHA-256: f689bf2fe2d8ef896ae5d5611a5968dd7edd2b016a26231bea638e4a187946a1
+- SHA-256: 5e6ec59909a977381e9f124deeea1ff20dffed3e1eb736ca3e5aff8616edd8ed
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20176,7 +20176,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/dnsmasqlists/firebogbluesus.conf
-- SHA-256: 2b2231715d75399bd878815bed3071111517143ed30ee336648dc9fbbaaa28cd
+- SHA-256: 357a1f613a99eeb45af2801a7cf827bb1e6948f81f6391dc6a34200cbd7f67ca
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20185,7 +20185,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/dnsmasqlists/firebogbluesusad.conf
-- SHA-256: 2719817d5028e6e323388044d6dfe8c808539a4eaead7d14982b9699ae18c9eb
+- SHA-256: 6943c52b5e24147c8d8314cc71c15eec20ac8f55ecc9a08b5aed1167332763ce
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20194,7 +20194,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/dnsmasqlists/firebogbluesustrack.conf
-- SHA-256: 14ddfe21f3c7c7b5317ffc9ee44da19d243a193e6d3f3ca4d22609764cd96bd6
+- SHA-256: 2662d881cfad96f20e0d452c11d8703ec1832f31f0e5099af454025e9d49d72f
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20203,7 +20203,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/dnsmasqlists/firebogbluetrack.conf
-- SHA-256: cad9fbc3ccb36506f1f6da1ecc789430ff9e29a9e988359997408fee9debbd27
+- SHA-256: 8ca6114e61c5bb55436ed7444e949ead5027fdd78948b6f4d7597e8d7dd91ee5
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20212,7 +20212,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/dnsmasqlists/fireboggreensus.conf
-- SHA-256: 1f82770b845370ec8059ad4bafe3eb3e48525fa20d27b8d3333ad8a14fa6b5cf
+- SHA-256: 9b7e06af9aa9cb1448d7a103391e6acacb4f13f7b7a5dffad584f6de29f77252
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20221,7 +20221,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/dnsmasqlists/fireboggreensustrack.conf
-- SHA-256: 188aec3fd98c3422c5ce30f63aed97ddbe2e2dab6cf5ce0ab2053869301321a2
+- SHA-256: e5dbeaffe268c5902ed5910d2e6333fc28f4610d3a2b25ea3806cdebf53d9fae
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20230,7 +20230,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/dnsmasqlists/fireboggreentrack.conf
-- SHA-256: 464a8d6707b4045b22135ee655be17473d1bc9c3095d9ade7f90dc129f4e538f
+- SHA-256: 0853d22999acf3b5e868d930a45c45dc1379639d059a083ce8264a6e242fdd35
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20239,7 +20239,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/dnsmasqlists/firebogsus.conf
-- SHA-256: dccf7c33f805bae234e325d42310e2d37f2bb3157f9b734b36018e9e3ec6730b
+- SHA-256: 280c29ab545699418d792a8146502a1e72e3d1655965d960808cf38c3cf213f8
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20248,7 +20248,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/dnsmasqlists/firebogsustrack.conf
-- SHA-256: a0da00ab54884a7738d505bf3d3ad66d80006ae5139cbc8558fdc0097994145b
+- SHA-256: 63ce8f6bf333d1513d694ac77419d03036d3ad0814bf5f9cd23ce66c6ec59ffb
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20257,7 +20257,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/dnsmasqlists/firebogtrack.conf
-- SHA-256: 5b3ffbd389a658fe5b7168aebb0e68f65f3a2861ef3516e030fcf538c41cf45e
+- SHA-256: 5f1f59ed38de5c17427dc54c4115d8cf67261b9295151e675d546ef4f6d3e99c
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20266,8 +20266,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/firebogad.txt
-- SHA-256: fe86f5f0e5d39bc71d803ab5f462084043d5ba963f993c9ebaed3e9048a46035
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 199060; duplicate lines: 0
+- SHA-256: a3711bc8278bf4e74dddabbf1854a6ed118edcca6eaf1e5b4ca4d8108cc1ea6d
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 199227; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20275,8 +20275,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/firebogadtrack.txt
-- SHA-256: d41efba6c94fdf4718e2048555da0a0c63f2ddc1c03b9add8becb821f42713fc
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 219698; duplicate lines: 0
+- SHA-256: 0fff6ba3298a3e31fa95aa44d132ba111bad5e8a1cd65073fcce872e09bbb15f
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 219865; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20284,7 +20284,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/firebogbluead.txt
-- SHA-256: 4e54bfd29e960bafdeb9f5712be452b8a27b2743fb8a21f6aff706a00e04a2f0
+- SHA-256: b3bd793b46131374cb91a12478ed2fd691458a7492225e733d2723ade5edb1b9
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20293,7 +20293,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/firebogblueadtrack.txt
-- SHA-256: a34a7e1d3f06031295e56881e0fbb89e686ae109b733d1f4707f34cc882b1a78
+- SHA-256: b5acbbce7a8df8e5db1d2dabecd4189f434c3ed438ca6c8d95dfc74cdcb1beec
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20302,8 +20302,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/firebogbluesus.txt
-- SHA-256: 11f2977a8460f4d4834bf47aac9fb003070c012a603e1b42aa8c5458079d182d
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 25490; duplicate lines: 0
+- SHA-256: b7164d5c6ec6c76dc044f60f612ddf8cbde76073d96e6997eb8fd9a572751b59
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 25467; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20311,8 +20311,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/firebogbluesusad.txt
-- SHA-256: 05aee39e24408b88b068fc388ac8288cb5d2ce758342be378fa1549cb92f43da
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 25490; duplicate lines: 0
+- SHA-256: c47c869b75c470ec0f4493e285d503968072d364473ba8d7cc69c37982adb043
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 25467; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20320,8 +20320,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/firebogbluesustrack.txt
-- SHA-256: 4ba0fedf23a7cd4849bb37be7b9ef9ba2e225b4ac00b1138ccd8136ab2a1a6a8
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 25490; duplicate lines: 0
+- SHA-256: fc25cf5473b18f5c13950338323fb10e5e53b577f39dbe461468159afa51499c
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 25467; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20329,7 +20329,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/firebogbluetrack.txt
-- SHA-256: 1f621b029447e97bfe5342551314b633fc12d1545489b46a8eadaf13ff5b2d66
+- SHA-256: 3f39cabd105ce0b22f42dc16dc76ba138349b9563730cbae87644ae233b348f5
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20338,8 +20338,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/fireboggreenad.txt
-- SHA-256: 160054f8ce5b12b08cf03bffcde4acf919f0529e77b9500279a5a98baeb0d36b
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 199060; duplicate lines: 0
+- SHA-256: 9176053c781d1b84a598b72e6ccfb07644c0c634c8b4cc8686d63b36e67a95b7
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 199227; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20347,8 +20347,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/fireboggreenadtrack.txt
-- SHA-256: 6027453eb6b74fc8fb2e20da6666aa4401692d2b61190fb5e7e299a4d363ce8d
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 219698; duplicate lines: 0
+- SHA-256: 3e7972bcc03d47c7efa22b2e8f376a602abcf7ee1b493475e3990bf5c69bce09
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 219865; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20356,8 +20356,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/fireboggreenmal.txt
-- SHA-256: b41cab2077e3e18ee352e39a93181e9ef9c3cecd9cc3d8091fbe7ced17e796ae
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 217798; duplicate lines: 0
+- SHA-256: 5de297d39d7e189f9e981ddad0298d6d3e79ef11d3d245d0163f1aadbbbd9042
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 217784; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20365,8 +20365,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/fireboggreensus.txt
-- SHA-256: 31702996a5f51a4ca69fbf88e5952c3b872f8377b44ee1a9cdf0ea76247cf803
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 12222; duplicate lines: 0
+- SHA-256: 202a80d5d6d32f929d22cd6569664bbba56d4c3dbfaecc7efa7388608098e035
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 12068; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20374,8 +20374,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/fireboggreensusad.txt
-- SHA-256: 84b7a8a19fdf84dd0b0054763dc298a21bf9de23116e9620cddf2668601e9373
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 211056; duplicate lines: 0
+- SHA-256: c2aaa0eea7bf6afb5c6cf01afe23f90d3d6189d6f5e4af3d1d76c1d7f5bb2341
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 211070; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20383,8 +20383,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/fireboggreensusmal.txt
-- SHA-256: 60699e65b07d797df0804d9ff5d713113ba56b25ad265a59f520ef070684796f
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 220391; duplicate lines: 0
+- SHA-256: 486a3a1c479cdc513e4de4e4efc273239a6f2d6c576ea07095a8ab71292bdfb8
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 220363; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20392,8 +20392,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/fireboggreensustrack.txt
-- SHA-256: 934df9201dcd07350e4f0743e87775c4eaff5d0b993937170c080fb7508dc48b
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 68276; duplicate lines: 0
+- SHA-256: 6461ea1cbd04ac79c206cc8a6455e8087058bfbc7a4b58b0510e083159c07421
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 68124; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20401,8 +20401,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/fireboggreentrack.txt
-- SHA-256: a2e8468a3cff9633976e84ed8aaee94b26369c269fcdbb71a6105796665aa20a
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 56138; duplicate lines: 0
+- SHA-256: 8ee792cdc0e8c7e618334041311e173e57ce0ae851aaf6f3c92f03ae0c5304c6
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 56140; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20410,8 +20410,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/firebogsus.txt
-- SHA-256: 692dfc5a992f7f5b5c14c0afb2d03a21e043fb1a1cc5df3249bbd810ffdc21ab
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 36575; duplicate lines: 0
+- SHA-256: 84fef097b5951f52e3643c84bb89fefd87ef68b28731871a7ca4dd8cb1a63bbd
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 36398; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20419,8 +20419,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/firebogsusad.txt
-- SHA-256: d8edc799cb0b5f762837bc624564a98dde57e1db751d15581f7841705f70ef8a
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 223887; duplicate lines: 0
+- SHA-256: dc30f525e17280f93ca626d8c1d0569d62cfa76a5311977671aa01448247e2e6
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 223880; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20428,8 +20428,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/firebogsustrack.txt
-- SHA-256: 2859b2e5c329a879a407e15023dbe355059159fec87ccb271d9bbebeaaac18e3
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 80569; duplicate lines: 0
+- SHA-256: 9ab3ae129ae085eaee0bd52c39a86b8a6f1eea4e520a8aa277ed695ceaca5d80
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 80395; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20437,8 +20437,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/domlists/firebogtrack.txt
-- SHA-256: 44d133e4a0254e2fb2246f63aff38184eaad0e0874c662f9ab53df9de6d75f40
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 56138; duplicate lines: 0
+- SHA-256: c18a0f8bdf91fee498f1ec13543d2a48751b5849bcbf9342927f3035fedd2769
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 56140; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20446,8 +20446,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/exclusions/aioexclusions.txt
-- SHA-256: 57fa0aefa6cb3addf7ae0f6caacfb983492c0e86b42c5ccba96c2447479334cf
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 9885; domain-only: 0; duplicate lines: 0
+- SHA-256: 7859a62c8c53cec94eedcab9ccc802ed0034ec4c49ea6aa12bc9c5ebc751d109
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 9793; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -20455,7 +20455,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/exclusions/aioexclusionsreq.txt
-- SHA-256: 7624edae23a72a55022508f6d29c5ba83aa571ac6a4a84fab2bf9f1eb42f2034
+- SHA-256: 8f7ea5969d0a27ab10a2ba5954d169879f0997a7f317075488b1807bcf987f92
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 64; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20482,8 +20482,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/exclusions/exclusions.txt
-- SHA-256: 3ca39299cb46726b11fb48ee4e1e8c83257b963e5121e2bae6b1eb0ccdfbe0a0
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 9885; domain-only: 0; duplicate lines: 0
+- SHA-256: ad9cff9564f743acf7182b3eb6a6e0dd58339ef7919fc458dcb9557322db1c5f
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 9793; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -20491,7 +20491,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/exclusions/exclusions_wild.txt
-- SHA-256: f89314e0464ebd2002eb99dffc5075d40bd0a3512173020b7135f1d5ad382d61
+- SHA-256: ef62f4ce980bb78e48e9f2fd8bc222815cc77bacd148e7584fe09256d17e36b6
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20500,8 +20500,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/exclusions/oisd_excludes.txt
-- SHA-256: 5bb46958eadbf3e7dea49555aa0ac5bfafdcf667147dadc7b27477dd2c507bd7
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 2528; duplicate lines: 0
+- SHA-256: 6bd4d819ab1e0f280bb53c50fcca2ce46e727b635907a0b6344e871473fb957c
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 2532; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -20518,7 +20518,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/hostslists/firebogbluead.txt
-- SHA-256: 3e0a8b5b7adb1e306d07307e8ce5f758e6f3d930a5438201adaa58dcf90e0670
+- SHA-256: 157a13180e2e50657cb66046a2be32fa2db57b0ad51fcbe82bffdff2e79d5bb1
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20527,7 +20527,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/hostslists/firebogblueadtrack.txt
-- SHA-256: 5210bfdd65e9cefd580227b527d8acf50ed4dc9ea3a7ed4d72e90faad626b40e
+- SHA-256: 603fc81812854de2791247c82aab8cec83c0a4577f5de65ccc911eccad74b029
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20536,7 +20536,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/hostslists/firebogbluesus.txt
-- SHA-256: 14f1ca595503954511522c88b5340d5b41dfe67af3bf5214d041e127f48b2d8d
+- SHA-256: 19f332d4b9f8000c72c2166de834a2d1aa59a27cc1d675d4be411f117d7895aa
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20545,7 +20545,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/hostslists/firebogbluesusad.txt
-- SHA-256: 83fdf7842e2c87c8539decba49072fa89d72aa46a32d890a80b4fc88d3fabc17
+- SHA-256: d1e1718dab786ee3ce657aee87eacf2f342b903025632bc302b33e47a1a22f58
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20554,7 +20554,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/hostslists/firebogbluesustrack.txt
-- SHA-256: 3313f1c7c22035ed22b9e08d28e464b9288feb90e95ac8e649f4d142a67f3586
+- SHA-256: 7cd4d0e78a653fc0d9cb3cb3b71411df9e5ea9358172724356892ddfefc82b07
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20563,7 +20563,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/hostslists/firebogbluetrack.txt
-- SHA-256: 321ac83fe0031cc001f08d89748a6caf8ddc74fd37989d304a97fac6b0faf5bf
+- SHA-256: 0f606f0b645d6c604d8272866b916454052aa60d6e9be9adcb1fcb066a66b333
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20572,7 +20572,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/hostslists/fireboggreensus.txt
-- SHA-256: 2a4b2979a55338e6a62518ac85112a8c80879419c238abcf6679c2daa8e7bcc5
+- SHA-256: 14c17f5c18b4cd8469dd4c64234777eaf901e8b0f50264498b8b6949a90608c8
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20581,7 +20581,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/hostslists/fireboggreensustrack.txt
-- SHA-256: 2cd3a6b10fa97e0ad189fe694d15167c3e4cc0d8609d6d5f84c3e5d3c7963b21
+- SHA-256: 90be7f2977afbfccb3318f4a2301cf3daa894866afb252fc1548ea5366ce6ee6
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20590,7 +20590,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/hostslists/fireboggreentrack.txt
-- SHA-256: 1840aef50ecd2644b80b22c4f2fac9e6c1c434ec703bf9e14668092aad55ac8d
+- SHA-256: 1fbb77eaaba323c6088c7f1d2b2fbbd9cba6f126190e579c3ef6b7320311a249
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20599,7 +20599,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/hostslists/firebogsus.txt
-- SHA-256: daa18a887b912c825f28c59e058efb20ff2e9ea99f5f869e67833a9c19b50771
+- SHA-256: dcceaf60681e778fee6757742c1bdd90aa42c792f81def25067ef82d83962c4a
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20608,7 +20608,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/hostslists/firebogsustrack.txt
-- SHA-256: 9b8673a52e98455740ed5fb2bf0952a09c4aa58e0e95d3bb41ebd6a5b24d1a91
+- SHA-256: ef5de7a012862422e526bd2f8b502937b117aec23780b86db8da5247a9b0fb7a
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20617,7 +20617,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/hostslists/firebogtrack.txt
-- SHA-256: 3a0d09ab8197b34dc43293c6c41bcddb931320bf593dcc837d380d71e30d4c28
+- SHA-256: cab7fe283cc1a2e60f5303feab3580efdff18326b69349c6410d088c6d0da510
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20626,8 +20626,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/lists/firebogad.txt
-- SHA-256: 9fe36e18519100c58bb53fe5a90c42c38d86d2de27e0057f5fd89d50bb9911ad
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 199060; domain-only: 0; duplicate lines: 0
+- SHA-256: ce93677106b59a322f8b8415d25722a39b03aa15157f57ba76d4a9da03675e51
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 199227; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20635,7 +20635,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/lists/firebogbluead.txt
-- SHA-256: 1eeeb00f20f060a3c6e27bfd566431ac7a6c0d8c4d0b12a65268b6f7e8777cbd
+- SHA-256: e0423069e2d0bec551c5a8bb3d536077df95c0970f51a620c2e50ab454b7d022
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20644,7 +20644,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/lists/firebogblueadtrack.txt
-- SHA-256: f51dbb71e198781102b1d2e812b1566a8668197b45660ad3d63183d88ba4b417
+- SHA-256: d582f289b64379992601e06381fc0ccdfb7e43a93178c44857538105edc21f81
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20653,8 +20653,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/lists/firebogbluesus.txt
-- SHA-256: a45d5e0ebf360ef92ff87a4b9e37b9cbf257b2d5bc6e5d65d3f3fcd334adeb50
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 25490; domain-only: 0; duplicate lines: 0
+- SHA-256: 4c28e1a96618e001aef58b8dfe3e6bddb03ffdeadcf18cffad1d645bdfa8b973
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 25467; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20662,8 +20662,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/lists/firebogbluesusad.txt
-- SHA-256: 14ae10f7999e2e300af21224ef8b053172a6d2af3e7fa1ec0789230c6589ffdc
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 25490; domain-only: 0; duplicate lines: 0
+- SHA-256: 31a2fdcc2994082e194922b3284d7eebc046c4fcec6d1448fcddc2ce33ea1a1c
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 25467; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20671,8 +20671,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/lists/firebogbluesustrack.txt
-- SHA-256: a93fdd94896d78488abd6ab2094c5a81c08ae52948120d1f0a1ed839c6174112
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 25490; domain-only: 0; duplicate lines: 0
+- SHA-256: 6d84a1c3ed5a6552cd3d9c5a967e9bcedbc2af8828c5534340350b49b41281c4
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 25467; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20680,7 +20680,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/lists/firebogbluetrack.txt
-- SHA-256: 795b1a743389c20db93e97d9dfb51a0033996e504557671bde117e92f95a3ccd
+- SHA-256: 25f9709a8d6fd64e7a1024208a3ffb826c37c08252943e516d2c09f314780d9e
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20689,8 +20689,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/lists/fireboggreenad.txt
-- SHA-256: 634d3769e38d3a6e725bef0e675c5901d0f016263ba1803c18ce5b9f133ea290
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 199060; domain-only: 0; duplicate lines: 0
+- SHA-256: 1dfdc46fda8aaabf3cd4be52e4bf01234a3578e6eebaf2c1dc76592547e466bb
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 199227; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20698,8 +20698,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/lists/fireboggreenmal.txt
-- SHA-256: 55c5aa8772182034876548b6a8014497a8508642645ed11a16de5383bd828fcc
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 217798; domain-only: 0; duplicate lines: 0
+- SHA-256: 4894995d284b68054d525c7e72865442d366d36f2b2e61634979f92d62e10221
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 217784; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20707,8 +20707,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/lists/fireboggreensus.txt
-- SHA-256: a94bff5e2a43d1b4f2d1f3e56c8f97e371138a4282b73b383c8c38948f21a4fb
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 12222; domain-only: 0; duplicate lines: 0
+- SHA-256: 3fc27cd1a53c1d7bcf12579bbd2858d43d6f98a53a509fdb01e2a35dceead4ad
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 12068; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20725,8 +20725,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/lists/fireboggreensusmal.txt
-- SHA-256: 37bfd0a91ac1b81f30fc6aa16d16ba2e3d3145a17fd9eca864363532343abf56
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 220391; domain-only: 0; duplicate lines: 0
+- SHA-256: 24ffe0c8e303929c2361081b37392979ea72fcd01ea58f7ac73c2c8b390bbebc
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 220363; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20734,8 +20734,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/lists/fireboggreensustrack.txt
-- SHA-256: 98a42ee76af60d801bc09ff372f9da9ee4b172e711e55dbf1ac82ebcb36e96ce
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 68276; domain-only: 0; duplicate lines: 0
+- SHA-256: 9503e7a695329ee27f0d9b7e6a4c24584548cfe81df55781653f749f55a63c64
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 68124; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20743,8 +20743,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/lists/fireboggreentrack.txt
-- SHA-256: 9352385d166fb9db77ee930068d4c0ebeb848a85755a79f1c615cfd03406252e
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 56138; domain-only: 0; duplicate lines: 0
+- SHA-256: 855658271f2dafcb3cdeb98488c49fb42b473992b28305d13f5a75d0838c490a
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 56140; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20752,8 +20752,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/lists/firebogsus.txt
-- SHA-256: b833fc57d99e36c32a767a4482a72915abdf327da41c853df60d45280b8d5ddb
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 36575; domain-only: 0; duplicate lines: 0
+- SHA-256: 6c60198ebbf8e9c1405475a3b024dc16abf9af763e30f482d617571d84592ff2
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 36398; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20761,8 +20761,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/lists/firebogsustrack.txt
-- SHA-256: 918ebfa9edcca5b8d823a65758f6b836dff04cf16a6cca97d025093d05683235
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 80569; domain-only: 0; duplicate lines: 0
+- SHA-256: d034b686f91e9543455eec98f03ea6f54545f1e18e0466e0d416dc3f12926ca6
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 80395; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20770,8 +20770,8 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/lists/firebogtrack.txt
-- SHA-256: 5b4c98592cee9ca3d058418b95d4373e63168423b6019dadf8221b3ae2ae29d0
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 56138; domain-only: 0; duplicate lines: 0
+- SHA-256: bc526b654d7b5ba1134ca8ec1ed9228b1e10f79fdbf94a27db4ba4f8dc849942
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 56140; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: source_header_claim; candidate: REJECT
@@ -20779,7 +20779,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/wildlists/firebogad.txt
-- SHA-256: 623db0e2aadb5c2163fe94b644008e9844049237e2d73b6dcb7400a245bf10fd
+- SHA-256: 5b59690abb9268f31f86bc2062949764904a1a17784d997c75298dc70e2b729c
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20788,7 +20788,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/wildlists/firebogbluead.txt
-- SHA-256: 185e8aae457c547591418bc13381185f6ca398a81877ddf6196f988db1929f41
+- SHA-256: c9efdb07be7f6491221bfc9074a71c477154439c00aff06e2c35ea70c3050f08
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20797,7 +20797,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/wildlists/firebogblueadtrack.txt
-- SHA-256: f689bf2fe2d8ef896ae5d5611a5968dd7edd2b016a26231bea638e4a187946a1
+- SHA-256: 5e6ec59909a977381e9f124deeea1ff20dffed3e1eb736ca3e5aff8616edd8ed
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20806,7 +20806,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/wildlists/firebogbluesus.txt
-- SHA-256: a429cf00dfed1ffb68e30167692e76b819487edcbd539e54ce5f43418016f0cf
+- SHA-256: e6368adaaeaa70a024d7e8876d1517d345832ade1db5cbda83e6eba6912c9dc6
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20815,7 +20815,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/wildlists/firebogbluesusad.txt
-- SHA-256: efdbbe655f9ffd1b7a5b5e5aa7089189228b7f84ef1d16d47d20c4a129f50104
+- SHA-256: b24d6cd8bb4a4600739a0acc7be026d5b4a4609fafa3b3a40ba429794ea952ba
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20824,7 +20824,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/wildlists/firebogbluesustrack.txt
-- SHA-256: 1b28b568e146bda400dc5cee746502264cfbb70524114a1966af4640784e0cbd
+- SHA-256: b3c5528e7ca7aa06b9d31efdc534dee18e9e6d1a617aaf7b875cd5b7a1eb7a90
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20833,7 +20833,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/wildlists/firebogbluetrack.txt
-- SHA-256: cad9fbc3ccb36506f1f6da1ecc789430ff9e29a9e988359997408fee9debbd27
+- SHA-256: 8ca6114e61c5bb55436ed7444e949ead5027fdd78948b6f4d7597e8d7dd91ee5
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20842,7 +20842,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/wildlists/fireboggreenad.txt
-- SHA-256: 697b06195612b6f30463660dfdf68cd4beb5d629b92f51c18da4584dceff6c7d
+- SHA-256: 7e81d17e3355bbda4f2aae562828f224af13101a83602ac9b2188919f9da5f64
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20851,7 +20851,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/wildlists/fireboggreenmal.txt
-- SHA-256: 856606159b131f2a8aaf5a961415e5ee492fc5cb199e3ab93faee4decee21cb2
+- SHA-256: 3c7b14c66e84d9aa772b98f0a03e094b8889e6c4ccebf381e8166aecc97532ff
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20860,7 +20860,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/wildlists/fireboggreensus.txt
-- SHA-256: 00e83cbc6f9ba5c2b5f352b2b88e298f2b3911a8660271be05c36d2128bd9d2c
+- SHA-256: d8f58d038eeb635aa9ac3fa8cd64a03ac161fa179dd842da6a9ad5e4dfc206ce
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20869,7 +20869,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/wildlists/fireboggreensusad.txt
-- SHA-256: b76b35bd341ad0f6eb5a6e7e49a900e740211406f6bb02ee0179fdbdb86be516
+- SHA-256: 251279008c383c0f1494f0db7ea55692ae139e24871659fe12539dde8003443f
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20878,7 +20878,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/wildlists/fireboggreensusmal.txt
-- SHA-256: 6602054be9e1c2d9786d467033f63b2ac1b1ee9047f6cb4ef926abe579a168f9
+- SHA-256: 8269232f2e905283a92bbb560a4e257d462eebf5c4c8ef28b83509bdaa494813
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20887,7 +20887,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/wildlists/fireboggreensustrack.txt
-- SHA-256: b720c2ee0b70de46e253386bce0e2e881fb0dbd0c4ce21869f74183c2cf5fd97
+- SHA-256: 81448497107f9cf12fb7875ad7e22d6b09ba501f09ba585ad11d11ee401ada8c
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20896,7 +20896,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/wildlists/fireboggreentrack.txt
-- SHA-256: 35a476996596b0349b065cee5fc4030e1252ae7181409b58ff7b1a27141a3359
+- SHA-256: 47d125caa313bba1253eaa7d8f39117d10a8286aba9aa867ba4cebce3d703d87
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20905,7 +20905,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/wildlists/firebogsus.txt
-- SHA-256: ad79c271298d119a7e63c9c2a6b257fb7f301c85a8ea788af2c926b2f68098af
+- SHA-256: 5e18333cb11af83f720c09bd04532b2add8d48c6a8f131698743b0c37ae5994a
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20914,7 +20914,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/wildlists/firebogsustrack.txt
-- SHA-256: fcfb9068d2dd31eb24161f996bb6f33bf2efffd93b4074b2e16cd273395f532b
+- SHA-256: 1bc4655ec96ffe0e364c7b6242c519c2f0ca201a1438e8d072fe6cb0fa75ebef
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20923,7 +20923,7 @@
 ### KnightmareVIIVIIXC/AIO-Firebog-Blocklists
 
 - URL: https://raw.githubusercontent.com/KnightmareVIIVIIXC/AIO-Firebog-Blocklists/main/wildlists/firebogtrack.txt
-- SHA-256: 4427de3cbcd2a7fab3cf677013f06fa19e64a7d91c68f036cbbcbcef8bfa67c5
+- SHA-256: 43be7465c1f811aacb5d329ff0bc8b7d204009ea13dc29615d8dcda53c784603
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -44395,9 +44395,9 @@
 ### bgpeer/rules
 
 - URL: https://raw.githubusercontent.com/bgpeer/rules/main/QX/geoip/cloudfront.list
-- SHA-256: 142dd3f9c5ff301b44b2c403184f514f993aae8f0ddad005cf7a727260871f15
+- SHA-256: 9fa36f05de1c166973b41513cdcf32a977fee264c508505d3748036f8e93c1db
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 182
+- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 183
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
 
@@ -44413,9 +44413,9 @@
 ### bgpeer/rules
 
 - URL: https://raw.githubusercontent.com/bgpeer/rules/main/QX/geoip/cn.list
-- SHA-256: cee39710615dc597b8e74320ae7e24e6bde290a21870e860aaa5548f57c048ca
+- SHA-256: 630d788aa21ebe394f7fce3c7cb8a9721b9853cbc39f7c81d00173716dd55c3e
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 9673
+- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 9362
 - Explicit action counts: {}
 - Policy evidence: ambiguous; candidate: none
 
@@ -46060,9 +46060,9 @@
 ### bgpeer/rules
 
 - URL: https://raw.githubusercontent.com/bgpeer/rules/main/QX/geoip/tor.list
-- SHA-256: 0666663967f89d0275fd5ba7a4e464ca085a3a8d7702b76836992ac8e7945bf7
+- SHA-256: 6c75c711f8a02a412f44dd5addd0ae64d4c8a4b637956fc4bf61c88806dacb25
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 659
+- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 668
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
 
@@ -49021,7 +49021,7 @@
 ### bgpeer/rules
 
 - URL: https://raw.githubusercontent.com/bgpeer/rules/main/QX/geosite/category-ru.list
-- SHA-256: 6d29b46f365e77332d6eaeba59934b954c5bbdd4b6ca3cd962858a3c6cde220a
+- SHA-256: 0e3b90d1eaf6ef7aebb72a75fcaec7a82332587d80c55f4a0b0481644ee81feb
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}

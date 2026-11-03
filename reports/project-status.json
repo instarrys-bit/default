@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-11-03T08:14:02.335301+00:00",
+  "generated_at": "2026-11-03T09:10:41.699005+00:00",
   "health": "CHECK",
   "integrity": {
     "config_baseline_match": true,
-    "config_blob_sha": "3fb030163c6daf3f5e5c7af37625ae1745e5c315",
-    "approved_config_blob_sha": "3fb030163c6daf3f5e5c7af37625ae1745e5c315",
+    "config_blob_sha": "b87f4c3bf13ed76d7f01ecc77266793da0e7556b",
+    "approved_config_blob_sha": "b87f4c3bf13ed76d7f01ecc77266793da0e7556b",
     "manifest_matches_files": true,
     "only_three_policy_outputs": true,
     "invalid_rule_line_count": 0,
@@ -289650,11 +289650,11 @@
     },
     "held_count": 162532,
     "status_counts": {
-      "ALREADY_COVERED": 9576,
+      "ALREADY_COVERED": 9559,
       "APPROVED": 61278,
       "CONFLICT": 36587,
       "POLICY_CONFLICT": 717,
-      "REVIEW": 57728,
+      "REVIEW": 57745,
       "RISK_HOLD": 16
     }
   },

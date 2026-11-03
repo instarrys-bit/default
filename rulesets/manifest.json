@@ -108,7 +108,7 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 367,
+      "new_entries": 0,
       "removed_entries": 0,
       "baseline_initialized": false,
       "bootstrap_enqueued": false
@@ -389,11 +389,11 @@
   "reject_manual_approval_count": 0,
   "reject_manual_hold_count": 57908,
   "status_count": {
-    "ALREADY_COVERED": 9576,
+    "ALREADY_COVERED": 9559,
     "APPROVED": 61278,
     "CONFLICT": 36587,
     "POLICY_CONFLICT": 717,
-    "REVIEW": 57728,
+    "REVIEW": 57745,
     "RISK_HOLD": 16
   },
   "deterministic_review_progress": {
@@ -401,11 +401,11 @@
     "approved_total": 3370,
     "held_total": 162532,
     "status_count": {
-      "ALREADY_COVERED": 9576,
+      "ALREADY_COVERED": 9559,
       "APPROVED": 61278,
       "CONFLICT": 36587,
       "POLICY_CONFLICT": 717,
-      "REVIEW": 57728,
+      "REVIEW": 57745,
       "RISK_HOLD": 16
     }
   },
