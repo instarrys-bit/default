@@ -368,7 +368,7 @@ jobs:
               if [ -n "$issue" ] && [ "$issue" != "null" ]; then
                 gh issue comment "$issue" --repo "$REPO" --body "$body"
               else
-                gh issue create "$title" --repo "$REPO" --body "$body"
+                gh issue create --repo "$REPO" --title "$title" --body "$body"
               fi
               ;;
             IN_PROGRESS|WAIT_FOR_ACTIVE|ALREADY_SATISFIED|OBSERVE_ONLY)
