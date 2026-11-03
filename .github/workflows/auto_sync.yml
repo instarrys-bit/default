@@ -17,6 +17,10 @@ on:
         description: 'Required Watchdog-owned durable task correlation ID'
         required: true
         type: string
+      resource_lease_proof:
+        description: 'Watchdog-issued exclusive production resource lease IDs and fencing tokens'
+        required: true
+        type: string
       baseline_source_event:
         description: 'Original event type preserved by the Watchdog queue'
         required: false
@@ -160,6 +164,16 @@ jobs:
           print(f"Authorized Watchdog production audit task {task_id}, attempt {attempt}.")
           PY
 
+      - name: Verify live Watchdog resource lease before production audit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          AUTOMATION_TASK_ID: ${{ inputs.automation_task_id }}
+          RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
+        run: |
+          set -euo pipefail
+          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID" --proof-json "$RESOURCE_LEASE_PROOF"
+
       - name: Capture and verify the exact production input fingerprint
         env:
           PRODUCTION_FINGERPRINT: ${{ inputs.production_fingerprint }}
@@ -192,7 +206,7 @@ jobs:
 
       - name: Compile and run deterministic review tests
         run: |
-          python3 -m py_compile scripts/production_intent.py scripts/restore_automation_state.py scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/import_request_observations.py scripts/lifecycle_gate.py scripts/lifecycle_audit.py scripts/auto_activate_sources.py scripts/build_project_status.py scripts/build_rule_provenance.py scripts/refresh_ruleset_manifest.py scripts/diagnose_workflow_failure.py scripts/append_step_summary.py scripts/apply_safe_repair.py scripts/review_cursor.py scripts/persist_review_cursor.py scripts/json_document_store.py scripts/verify_published_rulesets.py
+          python3 -m py_compile scripts/production_intent.py scripts/restore_automation_state.py scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/import_request_observations.py scripts/lifecycle_gate.py scripts/lifecycle_audit.py scripts/auto_activate_sources.py scripts/build_project_status.py scripts/build_rule_provenance.py scripts/refresh_ruleset_manifest.py scripts/diagnose_workflow_failure.py scripts/append_step_summary.py scripts/apply_safe_repair.py scripts/review_cursor.py scripts/persist_review_cursor.py scripts/json_document_store.py scripts/resource_lease_runtime.py scripts/verify_published_rulesets.py
           python3 -m unittest discover -s tests -v
 
       - name: Discover candidate source repositories (non-activating)
@@ -549,7 +563,13 @@ jobs:
           path: audit-artifact
 
       - name: Verify base commit and safely publish allowlisted outputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          AUTOMATION_TASK_ID: ${{ inputs.automation_task_id }}
+          RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
         run: |
+          set -euo pipefail
           bash scripts/verify_publish_base.sh
 
           archive="audit-artifact/audit-output.tar.gz"
@@ -628,6 +648,9 @@ jobs:
             exit 1
           }
 
+          # Even a no-change run must finish under its original fencing epoch.
+          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID" --proof-json "$RESOURCE_LEASE_PROOF"
+
           if git diff --cached --quiet; then
             echo "No audit output changes."
             exit 0
@@ -636,6 +659,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Run deterministic Shadowrocket domain audit"
+          # Re-read the live queue and verify the exact fencing epoch immediately before the main-branch write.
+          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID" --proof-json "$RESOURCE_LEASE_PROOF"
           git push origin HEAD:main
 
       - name: Independently verify committed remote rulesets

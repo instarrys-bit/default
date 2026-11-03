@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from resource_lease_runtime import (
     acquire_resource_leases, assert_resource_lease, release_resource_leases,
-    normalize_keys, renew_resource_leases_in_queue,
+    normalize_keys, renew_resource_leases_in_queue, assert_workflow_resource_lease,
 )
 
 
@@ -142,6 +142,30 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
         self.assertEqual(record["expires_at"], (later + timedelta(seconds=300)).isoformat(timespec="seconds").replace("+00:00", "Z"))
         record["expires_at"] = (later - timedelta(seconds=1)).isoformat().replace("+00:00", "Z")
         self.assertFalse(renew_resource_leases_in_queue(self.store.document, task, later))
+
+    def test_workflow_publish_assertion_checks_current_fencing_epoch(self):
+        acquired = acquire_resource_leases("task_a", "worker_a", "task-token-a",
+                                           ["logical/production-pipeline"], self.store, now=self.now)
+        task = self.store.document["tasks"][0]
+        task["target_program_id"] = "workflow_auto_sync"
+        task["requester_program_id"] = "workflow_automation_watchdog"
+        task["attempts"] = 1
+        task["dispatch_intent"] = {
+            "task_id": "task_a", "dispatch_attempt": 1,
+            "correlation_id": "task_a-a1",
+            "workflow_path": ".github/workflows/auto_sync.yml", "ref": "main",
+        }
+        task["resource_lease"] = {
+            "status": "ACTIVE", "resources": acquired["resources"],
+            "lease_seconds": 300, "expires_at": acquired["expires_at"],
+        }
+        proof = acquired["resources"]
+        result = assert_workflow_resource_lease(self.store.document, "task_a", proof, now=self.now)
+        self.assertTrue(result["valid"])
+        record = self.store.document["resource_leases"]["logical/production-pipeline"]
+        record["fencing_token"] += 1
+        with self.assertRaisesRegex(ValueError, "stale or fenced"):
+            assert_workflow_resource_lease(self.store.document, "task_a", proof, now=self.now)
 
     def test_rejects_path_traversal_and_noncanonical_paths(self):
         for value in ["../secret", "/etc/passwd", "rulesets//direct.list", "rulesets/../secret", " rulesets/direct.list"]:

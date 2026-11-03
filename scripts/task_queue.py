@@ -237,7 +237,7 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
         if not isinstance(resource_lease, dict) or resource_lease.get("status") not in {"ACTIVE", "RELEASED", "LOST"}:
             raise ValueError(f"{task_id}.resource_lease is invalid")
         seconds = resource_lease.get("lease_seconds")
-        if isinstance(seconds, bool) or not isinstance(seconds, int) or not 1 <= seconds <= 3600:
+        if isinstance(seconds, bool) or not isinstance(seconds, int) or not 1 <= seconds <= 21600:
             raise ValueError(f"{task_id}.resource_lease.lease_seconds is invalid")
         resources = resource_lease.get("resources")
         if not isinstance(resources, dict) or not resources:

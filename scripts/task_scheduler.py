@@ -115,6 +115,8 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
             if not isinstance(adapter, dict) or adapter.get("enabled") is not True:
                 raise ValueError("target adapter is disabled")
             resource_contract = adapter.get("resource_contract")
+            if target_id == "workflow_auto_sync" and resource_contract is None:
+                raise ValueError("production workflow is blocked without a fenced resource contract")
             if resource_contract is not None:
                 if not isinstance(resource_contract, dict) or resource_contract.get("mode") != "exclusive" or resource_contract.get("fencing_required") is not True:
                     raise ValueError("resource_contract must declare exclusive mode and mandatory fencing")
@@ -122,8 +124,8 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
                 if not isinstance(keys, list) or not keys or any(not isinstance(key, str) or not key or key.startswith("/") or chr(92) in key or any(part in {"", ".", ".."} for part in key.split("/")) for key in keys) or len(keys) != len(set(keys)):
                     raise ValueError("resource_contract resource_keys must be unique canonical relative paths")
                 lease_seconds = resource_contract.get("lease_seconds")
-                if isinstance(lease_seconds, bool) or not isinstance(lease_seconds, int) or not 1 <= lease_seconds <= 3600:
-                    raise ValueError("resource_contract lease_seconds must be from 1 to 3600")
+                if isinstance(lease_seconds, bool) or not isinstance(lease_seconds, int) or not 1 <= lease_seconds <= 21600:
+                    raise ValueError("resource_contract lease_seconds must be from 1 to 21600")
             expected_interface = (
                 "reviewed" if adapter.get("adapter_type") == "python_cli"
                 else "workflow_dispatch_reviewed" if adapter.get("adapter_type") == "github_actions_workflow"
@@ -162,7 +164,14 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
                 if (not isinstance(workflow, dict) or workflow.get("path") != target.get("path")
                         or workflow.get("dispatchable") is not True):
                     raise ValueError("workflow path or dispatchable contract is invalid")
-                validate_dispatch_request(adapter, task, "main")
+                preflight_task = task
+                if isinstance(adapter.get("resource_contract"), dict):
+                    preflight_task = dict(task)
+                    preflight_task["input"] = dict(task.get("input") or {})
+                    # The actual proof is minted atomically during claim_remote; plan-time
+                    # validation checks only the declared string input shape.
+                    preflight_task["input"]["resource_lease_proof"] = "{}"
+                validate_dispatch_request(adapter, preflight_task, "main")
             else:
                 raise ValueError("unsupported execution adapter type")
             eligible.append(task_id)
@@ -277,7 +286,17 @@ def execute_claimed_workflow_task(task: dict, adapter: dict, store, registry: di
         client = GitHubWorkflowClient(
             store.repository, token=store.token, timeout=adapter["timeout_seconds"]
         )
-        prepared = prepare_dispatch(client, adapter, task, ref=store.branch)
+        dispatch_task = dict(task)
+        dispatch_task["input"] = dict(task.get("input") or {})
+        resource_lease = task.get("resource_lease")
+        if isinstance(adapter.get("resource_contract"), dict):
+            if not isinstance(resource_lease, dict) or resource_lease.get("status") != "ACTIVE":
+                raise ValueError("workflow dispatch requires an active task resource lease")
+            resources = resource_lease.get("resources")
+            if not isinstance(resources, dict) or set(resources) != set(adapter["resource_contract"].get("resource_keys", [])):
+                raise ValueError("task resource lease does not match the adapter's reviewed resource set")
+            dispatch_task["input"]["resource_lease_proof"] = json.dumps(resources, sort_keys=True, separators=(",", ":"))
+        prepared = prepare_dispatch(client, adapter, dispatch_task, ref=store.branch)
         persisted = persist_workflow_dispatch_intent(task, prepared, store, registry)
         intent = dict(persisted)
         intent["inputs"] = prepared["inputs"]

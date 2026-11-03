@@ -310,7 +310,8 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
                 contract_sha = hashlib.sha256(
                     json.dumps(workflow_contract, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
                 ).hexdigest()
-                passed = observation["state"] == "success"
+                lease_lost = task.get("resource_lease", {}).get("status") == "LOST"
+                passed = observation["state"] == "success" and not lease_lost
                 task["verification"] = {
                     "verifier_program_id": VERIFIER_ID,
                     "verified_at": stamp(now),
@@ -325,7 +326,7 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
                 else:
                     task["last_error"] = {
                         "type": "workflow_run_failed",
-                        "message": observation.get("reason", "GitHub Actions workflow did not succeed"),
+                        "message": ("workflow completed after its resource lease was lost" if lease_lost else observation.get("reason", "GitHub Actions workflow did not succeed")),
                         "evidence": observation.get("evidence"),
                     }
                     task["state_history"].append("FAILED")
