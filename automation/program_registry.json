@@ -1395,7 +1395,8 @@
       "depends_on": [
         "script_remote_task_queue_runtime",
         "script_task_queue",
-        "script_task_queue_runtime"
+        "script_task_queue_runtime",
+        "script_github_workflow_adapter"
       ],
       "dispatches": [],
       "permission_boundary": "Requires caller-provided GitHub Contents read/write permission to persist verification transitions; never modifies shadowrocket/ss.conf, rulesets, or DNS.",
