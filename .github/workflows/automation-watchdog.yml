@@ -167,15 +167,30 @@ jobs:
               echo "Automatic infrastructure retry suppressed by bounded recovery policy."
               exit 0
             fi
-            idempotency_key="auto-sync-recovery:$SOURCE_RUN_ID"
+            recovery_fingerprint="$(jq -r '.production_fingerprint // empty' <<< "$audit_input_json")"
+            if [ -n "$recovery_fingerprint" ]; then
+              idempotency_key="production:recovery:$recovery_fingerprint:$SOURCE_RUN_ID"
+            else
+              idempotency_key="auto-sync-recovery:$SOURCE_RUN_ID"
+            fi
           else
-            echo "The source audit was superseded by meaningful main-branch changes; enqueueing a fresh audit against current main."
-            idempotency_key="auto-sync-superseded:$SOURCE_RUN_ID"
-          fi
-
-          recovery_fingerprint="$(jq -r '.production_fingerprint // empty' <<< "$audit_input_json")"
-          if [ -n "$recovery_fingerprint" ]; then
-            idempotency_key="production:recovery:$recovery_fingerprint:$SOURCE_RUN_ID"
+            echo "The source audit was superseded by meaningful main-branch input changes; recomputing intent against current main."
+            checkout_sha="$(git rev-parse HEAD)"
+            if [ "$checkout_sha" != "$current_sha" ]; then
+              echo "Watchdog checkout is behind current main; superseded recovery will be reconsidered on the next reconciliation."
+              exit 0
+            fi
+            current_fingerprint="$(python3 - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from production_intent import load_manifest, compute_fingerprint
+          manifest = load_manifest(Path("automation/production_inputs.json"))
+          print(compute_fingerprint(Path("."), manifest))
+          PY
+          )"
+            audit_input_json="$(jq --arg fingerprint "$current_fingerprint" --arg reason "new production input superseded the failed audit; re-evaluating current main" '. + {production_fingerprint:$fingerprint,production_decision:"INPUT_CHANGED",production_reason:$reason}' <<< "$audit_input_json")"
+            idempotency_key="production:input:$current_fingerprint"
           fi
           printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$idempotency_key" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
 
