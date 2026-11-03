@@ -39,7 +39,9 @@ is_queue_only_compare() {
 }
 
 if [ "$mode" = "--check-only" ]; then
-  if [ -n "${COMPARE_JSON:-}" ]; then
+  if [ -n "${COMPARE_JSON_FILE:-}" ]; then
+    compare_json="$(cat "$COMPARE_JSON_FILE")"
+  elif [ -n "${COMPARE_JSON:-}" ]; then
     compare_json="$COMPARE_JSON"
   else
     : "${GH_TOKEN:?GH_TOKEN is required for API-only publish-base checks}"
