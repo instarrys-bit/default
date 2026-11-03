@@ -40,6 +40,7 @@ def _atomic_write(path: Path, data: bytes, *, lease_required: bool = False) -> N
     fd, temporary = tempfile.mkstemp(prefix=path.name + ".", suffix=".tmp", dir=str(path.parent))
     try:
         with os.fdopen(fd, "wb") as stream:
+            _assert_document_lease(path, lease_required)
             stream.write(data)
             stream.flush()
             os.fsync(stream.fileno())
@@ -47,9 +48,14 @@ def _atomic_write(path: Path, data: bytes, *, lease_required: bool = False) -> N
         os.replace(temporary, path)
     except Exception:
         try:
-            os.unlink(temporary)
-        except FileNotFoundError:
-            pass
+            _assert_document_lease(path, lease_required)
+        except Exception:
+            pass  # Preserve the temporary file rather than mutate without a valid fence.
+        else:
+            try:
+                os.unlink(temporary)
+            except FileNotFoundError:
+                pass
         raise
 
 
