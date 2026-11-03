@@ -126,6 +126,8 @@ def validate_registry(root: Path = ROOT, registry_path: Path | None = None) -> d
             raise ValueError(f"{program_id}.orchestration references unknown callers: {', '.join(unknown_callers)}")
         if orchestration["enabled"] and not orchestration["allowed_callers"]:
             raise ValueError(f"{program_id} orchestration cannot be enabled without explicit allowed callers")
+        if orchestration["enabled"] and orchestration["max_attempts"] < 1:
+            raise ValueError(f"{program_id} enabled orchestration requires max_attempts >= 1")
         for field in ("depends_on", "dispatches"):
             unknown = sorted(set(item[field]) - set(by_id))
             if unknown:

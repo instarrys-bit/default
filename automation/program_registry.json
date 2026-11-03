@@ -842,6 +842,34 @@
       }
     },
     {
+      "id": "script_task_queue_runtime",
+      "path": "scripts/task_queue_runtime.py",
+      "kind": "python_component",
+      "responsibility": "perform local single-writer queue mutations with idempotency, leases, bounded retries and expiry recovery",
+      "capabilities": [
+        "task_queue_runtime"
+      ],
+      "invocation": "python_module_or_cli",
+      "inputs": [
+        "automation/task_queue.json",
+        "automation/program_registry.json",
+        "explicit task payload"
+      ],
+      "outputs": [
+        "atomically updated local queue state and task result"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Local repository filesystem only; no network, GitHub token, workflow dispatch, or repository write API.",
+      "health_check": "Dedicated task queue runtime tests and CLI help smoke check.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
       "id": "script_validate_config",
       "path": "scripts/validate_config.py",
       "kind": "python_component",
@@ -1226,6 +1254,7 @@
         "script_select_domain_rules",
         "script_sync_ruleset_config_conflicts",
         "script_task_queue",
+        "script_task_queue_runtime",
         "script_validate_config",
         "script_validate_program_registry",
         "script_verify_baseline"
