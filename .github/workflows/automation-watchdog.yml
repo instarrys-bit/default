@@ -204,8 +204,8 @@ jobs:
           PY
           )"
 
-          # Weekly audit is scheduled at 20:00 UTC on Sunday. An 8-day threshold
-          # tolerates queue delays while recovering a missed scheduled run.
+          # Watchdog owns the audit cadence. An 8-day threshold tolerates queue delays
+          # while recovering missed or stalled production audit tasks.
           audit_base_stale=0
           if [ -z "$last_success_sha" ]; then
             audit_base_stale=1
@@ -391,7 +391,7 @@ jobs:
           if [ "$timed_out_any" = "1" ]; then
             title="Self-healing incident: stalled audit"
             existing="$(gh issue list --repo "$REPO" --state open --search "stalled audit in:title" --json number --jq '.[0].number')"
-            body_text="$(printf 'The watchdog cancelled an audit that exceeded six hours and dispatched a replacement on current main %s.\\n' "$current_main")"
+            body_text="$(printf 'The watchdog cancelled an audit that exceeded six hours and queued a replacement on current main %s.\\n' "$current_main")"
             if [ -n "$existing" ] && [ "$existing" != "null" ]; then
               gh issue comment "$existing" --repo "$REPO" --body "$body_text"
             else
