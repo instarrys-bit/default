@@ -24,9 +24,16 @@ def load_manifest(path: Path) -> dict:
         raise ValueError("production input paths must be unique")
     if not isinstance(non_inputs, list) or any(not isinstance(x, str) or not x for x in non_inputs):
         raise ValueError("non_production_path_patterns must be a string array")
-    overlap = set(inputs).intersection(non_inputs)
+    for relative in inputs:
+        candidate = Path(relative)
+        if candidate.is_absolute() or ".." in candidate.parts or "\\" in relative or any(char in relative for char in "*?[]"):
+            raise ValueError(f"production input path must be a literal repository-relative path: {relative}")
+    overlap = {
+        relative for relative in inputs
+        if any(fnmatch.fnmatchcase(relative, pattern) for pattern in non_inputs)
+    }
     if overlap:
-        raise ValueError("a path cannot be both a production input and non-production path")
+        raise ValueError("production inputs also match non-production patterns: " + ", ".join(sorted(overlap)))
     return value
 
 
@@ -62,6 +69,8 @@ def compute_fingerprint(root: Path, manifest: dict) -> str:
     entries = {}
     for relative in sorted(manifest["production_input_paths"]):
         path = root / relative
+        if path.is_symlink():
+            raise ValueError(f"production input path is a symlink: {relative}")
         if not path.is_file():
             entries[relative] = "MISSING"
             continue
@@ -146,6 +155,8 @@ def main() -> int:
     parser.add_argument("--refresh-after-seconds", type=int, default=691200)
     args = parser.parse_args()
     try:
+        if isinstance(args.refresh_after_seconds, bool) or args.refresh_after_seconds < 1:
+            raise ValueError("refresh-after-seconds must be a positive integer")
         manifest = load_manifest(args.manifest)
         paths = json.loads(args.paths_json)
         active = set(json.loads(args.active_fingerprints_json))
