@@ -1,0 +1,230 @@
+{
+  "schema_version": 1,
+  "inventory_id": "resource-write-sets-2026.11.04.2",
+  "status": "partial_static_entrypoint_review",
+  "policy": {
+    "lock_identity": "canonical logical resource path, not program ID",
+    "dynamic_document_store_children": "must be covered by the logical document lease",
+    "overlapping_writers": "must serialize until a single-writer boundary is enforced",
+    "protected_config": {
+      "path": "shadowrocket/ss.conf",
+      "access": "read_only",
+      "writers_allowed": []
+    },
+    "dispatch": "This inventory is evidence, not an execution grant. Independent Python dispatch remains disabled."
+  },
+  "document_store_semantics": {
+    "implementation": "scripts/json_document_store.py",
+    "confirmed_behaviors": [
+      "Atomic replacement of the legacy JSON document through a temporary file.",
+      "Sharded mode creates a content-addressed <logical-name>.parts-<digest> directory containing part-*.jsonl.",
+      "Sharded mode atomically replaces the adjacent <logical-name>.manifest.json to make the new shard set authoritative.",
+      "After manifest replacement, the helper removes old <logical-name>.parts-* directories.",
+      "Temporary staging directories and files are created and removed."
+    ],
+    "required_locking": "Hold one exclusive lease for the full logical document across base file, manifest, every shard directory, staging, atomic switch and old-shard cleanup."
+  },
+  "confirmed_write_sets": [
+    {
+      "program_id": "script_discover_sources",
+      "source": "scripts/discover_sources.py",
+      "writes": [
+        "sources/discovered_sources.json",
+        "reports/source-discovery.md",
+        "GITHUB_STEP_SUMMARY (if set; warning path overwrites, success path appends)"
+      ],
+      "document_store": [
+        "sources/discovered_sources.json"
+      ],
+      "dynamic_children": [
+        "sources/discovered_sources.json.manifest.json",
+        "sources/discovered_sources.json.parts-<digest>/part-*.jsonl",
+        "sources/discovered_sources.json.parts.tmp-*"
+      ],
+      "read_resources": [
+        "sources/discovered_sources.json"
+      ],
+      "side_effects": [
+        "Bounded GitHub repository search and repository-tree/README reads; no source activation."
+      ],
+      "evidence": "main() reads existing discovery inventory, then calls write_document(OUTPUT, merged, 'candidates') and writes REPORT."
+    },
+    {
+      "program_id": "script_assess_sources",
+      "source": "scripts/assess_sources.py",
+      "writes": [
+        "sources/source_assessments.json",
+        "data/source_assessments_runtime.json",
+        "reports/source-assessment.md"
+      ],
+      "document_store": [
+        "sources/source_assessments.json",
+        "data/source_assessments_runtime.json"
+      ],
+      "dynamic_children": [
+        "sources/source_assessments.json.manifest.json",
+        "sources/source_assessments.json.parts-<digest>/part-*.jsonl",
+        "data/source_assessments_runtime.json.manifest.json",
+        "data/source_assessments_runtime.json.parts-<digest>/part-*.jsonl",
+        "corresponding .parts.tmp-* staging directories"
+      ],
+      "read_resources": [
+        "sources/discovered_sources.json",
+        "sources/source_assessments.json"
+      ],
+      "side_effects": [
+        "HTTPS reads restricted to raw.githubusercontent.com with repository binding and same-host redirect validation.",
+        "Rotates the assessment cursor and writes assessed_at timestamps; execution is not idempotent."
+      ],
+      "evidence": "main() reads discovery and prior assessment documents, then calls write_document for runtime and persistent outputs and writes REPORT."
+    },
+    {
+      "program_id": "script_build_source_candidates",
+      "source": "scripts/build_source_candidates.py",
+      "writes": [
+        "sources/source_candidates.json",
+        "reports/source-candidate-matrix.md"
+      ],
+      "document_store": [
+        "sources/source_candidates.json"
+      ],
+      "dynamic_children": [
+        "sources/source_candidates.json.manifest.json",
+        "sources/source_candidates.json.parts-<digest>/part-*.jsonl",
+        "sources/source_candidates.json.parts.tmp-*"
+      ],
+      "read_resources": [
+        "data/source_assessments_runtime.json (preferred when present)",
+        "sources/source_assessments.json (fallback)",
+        "reports/source-lineage-audit.json"
+      ],
+      "side_effects": [
+        "Builds non-activating source candidate matrix; no active source registry write."
+      ],
+      "evidence": "main() selects runtime or persistent assessment input, reads lineage, then calls write_document(OUTPUT, result, 'candidates') and writes REPORT."
+    },
+    {
+      "program_id": "script_build_rulesets",
+      "source": "scripts/build_rulesets.py",
+      "writes": [
+        "rulesets/direct.list",
+        "rulesets/proxy.list",
+        "rulesets/reject.list",
+        "rulesets/pending_queue.json",
+        "rulesets/manifest.json"
+      ],
+      "read_resources": [
+        "sources/domain_reviews.json",
+        "sources/domain_sources.json",
+        "data/candidates.json",
+        "shadowrocket/ss.conf",
+        "sources/protected_domains.json",
+        "sources/reject_manual_approvals.json",
+        "rulesets/deletion_archive.json",
+        "rulesets/config_conflict_archive.json",
+        "rulesets/lifecycle_state.json",
+        "rulesets/direct.list",
+        "rulesets/proxy.list",
+        "rulesets/reject.list",
+        "sources/source_candidates.json"
+      ],
+      "side_effects": [
+        "All three policy lists are rewritten; pending queue and manifest are rewritten.",
+        "REJECT additions remain gated by existing publication/manual-approval checks."
+      ],
+      "evidence": "main() reads the above policy and state inputs, writes pending_queue.json, all three policy lists and rulesets/manifest.json."
+    },
+    {
+      "program_id": "script_lifecycle_audit",
+      "source": "scripts/lifecycle_audit.py",
+      "writes": [
+        "rulesets/direct.list",
+        "rulesets/proxy.list",
+        "rulesets/reject.list",
+        "rulesets/lifecycle_observations.json",
+        "rulesets/deletion_archive.json",
+        "rulesets/pending_queue.json",
+        "rulesets/manifest.json",
+        "reports/lifecycle/latest.json",
+        "reports/lifecycle/latest.md"
+      ],
+      "side_effects": [
+        "External DNS-over-HTTPS queries to configured resolvers.",
+        "May delete eligible published rules and update lifecycle/archive state; may restore explicitly selected IDs."
+      ],
+      "evidence": "main() writes policy lists, observations, archive, queue, manifest and lifecycle reports."
+    },
+    {
+      "program_id": "script_sync_ruleset_config_conflicts",
+      "source": "scripts/sync_ruleset_config_conflicts.py",
+      "writes": [
+        "rulesets/direct.list",
+        "rulesets/proxy.list",
+        "rulesets/reject.list",
+        "rulesets/config_conflict_archive.json",
+        "rulesets/pending_queue.json",
+        "reports/ruleset-config-conflict-sync.json",
+        "reports/ruleset-config-conflict-sync.md"
+      ],
+      "side_effects": [
+        "Reads shadowrocket/ss.conf and never writes it.",
+        "Can restore selected archive IDs into rule outputs/queue after rechecking current config."
+      ],
+      "evidence": "sync() writes changed policy lists, archive, queue and two reports."
+    },
+    {
+      "program_id": "script_refresh_ruleset_manifest",
+      "source": "scripts/refresh_ruleset_manifest.py",
+      "writes": [
+        "rulesets/manifest.json"
+      ],
+      "read_resources": [
+        "rulesets/direct.list",
+        "rulesets/proxy.list",
+        "rulesets/reject.list",
+        "scripts/build_rulesets.py"
+      ],
+      "evidence": "refresh() reads all three list files and build_rulesets.py, then replaces rulesets/manifest.json."
+    }
+  ],
+  "confirmed_shared_write_groups": [
+    {
+      "resource": "rulesets/direct.list, rulesets/proxy.list, rulesets/reject.list",
+      "writers": [
+        "script_build_rulesets",
+        "script_lifecycle_audit",
+        "script_sync_ruleset_config_conflicts"
+      ],
+      "lock_key": "resource:rulesets/published-lists",
+      "mode": "exclusive"
+    },
+    {
+      "resource": "rulesets/manifest.json",
+      "writers": [
+        "script_build_rulesets",
+        "script_lifecycle_audit",
+        "script_sync_ruleset_config_conflicts",
+        "script_refresh_ruleset_manifest"
+      ],
+      "lock_key": "resource:rulesets/manifest.json",
+      "mode": "exclusive"
+    },
+    {
+      "resource": "rulesets/pending_queue.json",
+      "writers": [
+        "script_build_rulesets",
+        "script_lifecycle_audit",
+        "script_sync_ruleset_config_conflicts"
+      ],
+      "lock_key": "resource:rulesets/pending_queue.json",
+      "mode": "exclusive"
+    }
+  ],
+  "not_yet_proven": [
+    "Complete transitive write sets for every registered Python component.",
+    "All writers and readers of lifecycle/archive/report resources.",
+    "Dynamic path selection from environment variables across all scripts.",
+    "Atomic multi-resource lease acquisition and lease fencing at every write boundary.",
+    "Runtime proof that every declared write set matches actual filesystem mutations."
+  ]
+}
