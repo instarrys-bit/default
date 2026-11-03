@@ -7,7 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from remote_task_queue_runtime import claim_remote, complete_remote, enqueue_remote
+from remote_task_queue_runtime import claim_remote, complete_remote, enqueue_remote, validate_candidate
 from task_result_verifier import validate_json_schema, verify_pending_remote
 
 
@@ -81,6 +81,15 @@ class TaskResultVerifierTests(unittest.TestCase):
         self.assertEqual(saved["status"], "QUEUED")
         self.assertEqual(saved["verification"]["status"], "failed")
         self.assertEqual(saved["last_error"]["type"], "result_verification_failed")
+
+    def test_github_backed_task_cannot_be_marked_succeeded_without_verification(self):
+        self.make_verifying_task({"ok": True})
+        candidate = copy.deepcopy(self.store.document)
+        task = candidate["tasks"][0]
+        task["status"] = "SUCCEEDED"
+        task["state_history"].append("SUCCEEDED")
+        with self.assertRaisesRegex(ValueError, "requires independent verification"):
+            validate_candidate(candidate, self.registry)
 
     def test_missing_reviewed_contract_blocks_without_mutation(self):
         task = self.make_verifying_task({"ok": True})
