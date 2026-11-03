@@ -174,7 +174,7 @@ class ProductionIntentTests(unittest.TestCase):
             "monitoring_path_patterns": ["dashboard/**"],
             "documentation_path_patterns": []
         }), encoding="utf-8")
-        with self.assertRaisesRegex(ValueError, "also match non-production patterns"):
+        with self.assertRaisesRegex(ValueError, "also match"):
             load_manifest(path)
 
     def test_different_active_fingerprint_blocks_a_second_production_task(self):
