@@ -209,7 +209,11 @@
         "coverage": "exclusive logical document locks cover legacy JSON, adjacent manifests, content-addressed shard directories, temporary staging and old-shard cleanup; shared logical/production-pipeline key serializes against the production workflow"
       },
       "read_only_resources": [
+        "sources/discovered_sources.json",
         "sources/domain_sources.json"
+      ],
+      "required_read_only_resources": [
+        "sources/discovered_sources.json"
       ]
     },
     {
