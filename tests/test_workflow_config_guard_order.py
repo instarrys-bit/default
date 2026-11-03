@@ -193,5 +193,30 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("Audit config drift against the approved baseline", validation)
 
 
+    def test_watchdog_owns_config_change_detection_and_sync_dispatch(self):
+        watchdog_path = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
+        watchdog = watchdog_path.read_text(encoding="utf-8")
+        production_inputs = (ROOT / "automation" / "production_inputs.json").read_text(encoding="utf-8")
+        production_intent = (ROOT / "scripts" / "production_intent.py").read_text(encoding="utf-8")
+        scheduler = (ROOT / "scripts" / "task_scheduler.py").read_text(encoding="utf-8")
+        self.assertIn('"shadowrocket/ss.conf"', watchdog)
+        self.assertIn('"shadowrocket/ss.conf"', production_inputs)
+        self.assertIn('INPUT_CHANGED|SCHEDULE_DUE)', watchdog)
+        self.assertIn('enqueue-auto-sync', watchdog)
+        self.assertIn('if path in inputs:', production_intent)
+        self.assertIn('"shadowrocket/ss.conf"', production_inputs)
+        self.assertIn('protected_config_digest(root)', scheduler)
+        self.assertIn('ensure_protected_config_unchanged', scheduler)
+
+        # Watchdog schedules the existing production workflow; the config
+        # conflict synchronizer remains a subordinate step, not an independent
+        # monitor or a second workflow.
+        pre_sync = WORKFLOW.read_text(encoding="utf-8")
+        self.assertEqual(pre_sync.count("python3 scripts/sync_ruleset_config_conflicts.py"), 2)
+        self.assertIn("Remove published and queued rules that conflict with ss.conf", pre_sync)
+        self.assertIn("Reconcile final ss.conf scope coverage after all rule mutations", pre_sync)
+        self.assertIn("group: shadowrocket-main-writer", pre_sync)
+
+
 if __name__ == "__main__":
     unittest.main()
