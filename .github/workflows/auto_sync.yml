@@ -157,7 +157,7 @@ jobs:
           if expected and expected != actual:
               raise SystemExit("The dispatched production fingerprint does not match the checked-out input snapshot.")
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
-              stream.write(f"PRODUCTION_INPUT_FINGERPRINT={actual}\\n")
+              stream.write(f"PRODUCTION_INPUT_FINGERPRINT={actual}\n")
           print(f"Captured production input fingerprint {actual}.")
           PY
 
