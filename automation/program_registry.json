@@ -1079,7 +1079,8 @@
         "script_validate_config",
         "script_verify_baseline",
         "script_verify_published_rulesets",
-        "script_persist_review_cursor"
+        "script_persist_review_cursor",
+        "script_production_intent"
       ],
       "dispatches": [],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
