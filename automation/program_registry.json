@@ -1250,6 +1250,7 @@
         "script_collect_domains",
         "script_deterministic_review",
         "script_domain_rule_engine",
+        "script_github_queue_store",
         "script_json_document_store",
         "script_refresh_ruleset_manifest",
         "script_register_config_baseline",
@@ -1258,9 +1259,9 @@
         "script_task_queue",
         "script_task_queue_runtime",
         "script_validate_config",
+        "script_validate_execution_adapters",
         "script_validate_program_registry",
-        "script_verify_baseline",
-        "script_validate_execution_adapters"
+        "script_verify_baseline"
       ],
       "dispatches": [],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
