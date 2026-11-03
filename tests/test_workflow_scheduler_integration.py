@@ -231,6 +231,31 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
         self.assertEqual(saved["result"]["run_evidence"]["run_id"], 991)
         self.assertEqual(len(self.client.dispatches), 0)
 
+    def test_dead_letter_with_unresolved_intent_can_only_recover_via_verified_run(self):
+        task = self.enqueue()
+        task["attempts"] = 2
+        task["state_history"] = ["QUEUED", "CLAIMED", "DEAD_LETTER"]
+        task["status"] = "DEAD_LETTER"
+        task["dispatch_intent"] = {
+            "workflow_id": 1234,
+            "workflow_path": ".github/workflows/workflow-target.yml",
+            "ref": "main",
+            "requested_head_sha": "a" * 40,
+            "task_id": task["task_id"],
+            "dispatch_attempt": 2,
+            "correlation_id": task["task_id"] + "-a2",
+            "correlation_title": "Automation task " + task["task_id"] + "-a2",
+            "prepared_at": "2026-11-03T04:00:00Z",
+        }
+        self.client.add_run(task["task_id"], attempt=2, status="completed", conclusion="success")
+        report = verify_pending_remote(
+            self.store, self.registry, self.adapters, self.now, workflow_client=self.client,
+        )
+        saved = self.store.document["tasks"][0]
+        self.assertEqual(report["verified"], [task["task_id"]])
+        self.assertEqual(saved["status"], "SUCCEEDED")
+        self.assertEqual(saved["state_history"][-3:], ["VERIFYING", "SUCCEEDED"][-3:])
+
     def test_completed_failure_retries_with_new_attempt_correlation(self):
         task = self.enqueue()
         with patch.object(task_scheduler, "GitHubWorkflowClient", return_value=self.client):
