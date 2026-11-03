@@ -1,4 +1,5 @@
 name: GitHub-only observed-domain intake
+run-name: Automation task ${{ inputs.automation_task_id || 'manual' }}
 
 on:
   workflow_dispatch:
@@ -6,6 +7,10 @@ on:
       domains:
         description: "Paste hostnames separated by spaces, commas, semicolons or newlines. Hostnames only; no URLs."
         required: true
+        type: string
+      automation_task_id:
+        description: 'Internal task correlation ID; leave blank for manual runs'
+        required: false
         type: string
 
 permissions:
