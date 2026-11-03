@@ -84,7 +84,8 @@
     "automation/state_store.json",
     "automation/execution_adapters.json",
     "automation/program_registry.json",
-    "automation/production_intent_ledger.json"
+    "automation/production_intent_ledger.json",
+    "scripts/production_intent.py"
   ],
   "unknown_path_policy": "review_required"
 }
