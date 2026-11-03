@@ -164,6 +164,16 @@ jobs:
           print(f"Authorized Watchdog production audit task {task_id}, attempt {attempt}.")
           PY
 
+      - name: Verify live Watchdog resource lease before production audit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          AUTOMATION_TASK_ID: ${{ inputs.automation_task_id }}
+          RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
+        run: |
+          set -euo pipefail
+          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID" --proof-json "$RESOURCE_LEASE_PROOF"
+
       - name: Capture and verify the exact production input fingerprint
         env:
           PRODUCTION_FINGERPRINT: ${{ inputs.production_fingerprint }}
@@ -553,7 +563,13 @@ jobs:
           path: audit-artifact
 
       - name: Verify base commit and safely publish allowlisted outputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          AUTOMATION_TASK_ID: ${{ inputs.automation_task_id }}
+          RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
         run: |
+          set -euo pipefail
           bash scripts/verify_publish_base.sh
 
           archive="audit-artifact/audit-output.tar.gz"
@@ -640,6 +656,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Run deterministic Shadowrocket domain audit"
+          # Re-read the live queue and verify the exact fencing epoch immediately before the main-branch write.
+          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID" --proof-json "$RESOURCE_LEASE_PROOF"
           git push origin HEAD:main
 
       - name: Independently verify committed remote rulesets
