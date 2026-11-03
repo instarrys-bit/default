@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "release_id": "shadowrocket-automation-baseline-2026.11.04.1",
+  "release_status": "baseline_snapshot",
+  "created_on": "2026-11-04",
+  "purpose": "Pin the currently reviewed automation components under one release identity without changing component schemas or enabling new execution capabilities.",
+  "component_schemas": {
+    "program_registry": {
+      "path": "automation/program_registry.json",
+      "schema_version": 1,
+      "git_blob_sha": "ee1d9738c11b269317af4c1ec5dddc14b6e52041"
+    },
+    "execution_adapters": {
+      "path": "automation/execution_adapters.json",
+      "schema_version": 1,
+      "git_blob_sha": "b266437eee2a17b75b9f7d721124ddba414dee3e"
+    },
+    "ruleset_manifest": {
+      "path": "rulesets/manifest.json",
+      "schema_version": 2,
+      "git_blob_sha": "b92d23fa80689aeb7188642a28b81adb0d157bb0"
+    }
+  },
+  "implementation_pins": {
+    "watchdog_workflow": {
+      "path": ".github/workflows/automation-watchdog.yml",
+      "git_blob_sha": "8c2e8e25706ee3367512a1ba28e25d9515feeb9d"
+    },
+    "production_workflow": {
+      "path": ".github/workflows/auto_sync.yml",
+      "git_blob_sha": "e62ef3dd301fdcce64209a453cf9691ac861aab7"
+    },
+    "review_engine": {
+      "declared_version": "deterministic-domain-audit/4.1",
+      "source_commit": null,
+      "verification_status": "declared_in_ruleset_manifest_only"
+    },
+    "config_baseline": {
+      "path": "shadowrocket/ss.conf",
+      "git_blob_sha": "daa84802764de63c24da1e727ed233bab2e9151f",
+      "access": "read_only"
+    }
+  },
+  "compatibility": {
+    "status": "not_yet_machine_verified",
+    "rule": "A task may run only when its pinned registry, adapter, workflow, review-engine, and config-baseline versions satisfy an explicitly validated compatibility contract.",
+    "unknown_versions_are_blocking": true
+  },
+  "execution_policy": {
+    "new_python_adapters_enabled": false,
+    "existing_adapter_enablement_unchanged": true,
+    "watchdog_is_top_level_orchestrator": true,
+    "dashboard_is_read_only_observer": true,
+    "production_may_not_write_config_baseline": true,
+    "ruleset_writers_require_resource_exclusive_lease": true,
+    "reject_rule_publication_requires_explicit_approval": true
+  },
+  "known_gaps": [
+    "Python adapter input and output contracts are not yet complete.",
+    "Per-capability dependency edges have not yet been separated from shared-library imports and workflow aggregation.",
+    "Write-path ownership and indirect side effects still require machine-checked coverage.",
+    "Resource locking and artifact lineage are not yet enforced as a unified contract.",
+    "The declared review-engine version is not yet pinned to a verified source revision."
+  ],
+  "next_migration_gate": {
+    "required_before_independent_python_dispatch": [
+      "Complete capability input/output contracts.",
+      "Validate executable entrypoints and argument schemas.",
+      "Declare read and write resource sets, including indirect writes.",
+      "Enforce exclusive resource leases for overlapping writers.",
+      "Record input snapshot hashes and output artifact hashes.",
+      "Verify config-baseline immutability before and after execution.",
+      "Run isolated canary tests with all new adapters disabled by default."
+    ],
+    "completion_status": "blocked_pending_contract_and_runtime_enforcement"
+  }
+}
