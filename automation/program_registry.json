@@ -1430,11 +1430,45 @@
         "script_remote_task_queue_runtime",
         "script_task_result_verifier",
         "script_task_queue",
-        "script_task_queue_runtime"
+        "script_task_queue_runtime",
+        "script_github_workflow_adapter"
       ],
       "dispatches": [],
       "permission_boundary": "Requires caller-provided GitHub Contents read/write permission. Child programs receive only a non-secret environment allowlist, no shell, and no GitHub token. The scheduler does not modify shadowrocket/ss.conf.",
       "health_check": "Tests for disabled-adapter blocking, input/output contract checks, exact Python entrypoint invocation, no-shell execution, secret environment isolation, and independent result verification.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_github_workflow_adapter",
+      "path": "scripts/github_workflow_adapter.py",
+      "kind": "python_component",
+      "responsibility": "validate workflow dispatch inputs, submit a uniquely correlated GitHub Actions dispatch, and independently inspect its run identity and conclusion",
+      "capabilities": [
+        "github_workflow_dispatch",
+        "workflow_run_correlation",
+        "workflow_run_verification"
+      ],
+      "invocation": "python_library_and_cli_contract",
+      "inputs": [
+        "reviewed workflow adapter contract",
+        "authorized task envelope",
+        "allowlisted GitHub ref",
+        "caller-provided GitHub Actions token"
+      ],
+      "outputs": [
+        "persistable workflow dispatch intent",
+        "correlated workflow run evidence",
+        "pending or failed run state"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Requires caller-provided actions:write for dispatch and actions:read for run inspection. Tokens are never returned in results or passed to child programs. This module does not modify shadowrocket/ss.conf.",
+      "health_check": "Unit tests cover caller/ref/input authorization, live workflow identity, correlation marker injection, ambiguous run detection, run identity validation, and completed-success verification.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],
