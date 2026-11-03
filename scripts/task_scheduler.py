@@ -126,6 +126,18 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
                 lease_seconds = resource_contract.get("lease_seconds")
                 if isinstance(lease_seconds, bool) or not isinstance(lease_seconds, int) or not 1 <= lease_seconds <= 21600:
                     raise ValueError("resource_contract lease_seconds must be from 1 to 21600")
+            read_only_resources = adapter.get("read_only_resources", [])
+            read_only_resource_digests(root, read_only_resources)
+            if isinstance(resource_contract, dict) and set(read_only_resources) & set(resource_contract.get("resource_keys", [])):
+                raise ValueError("a resource cannot be both read-only and exclusively writable")
+            completion = adapter.get("completion", {})
+            artifact_verifier = completion.get("artifact_verifier") if isinstance(completion, dict) else None
+            if artifact_verifier is not None:
+                if not isinstance(artifact_verifier, dict) or not isinstance(artifact_verifier.get("path"), str) or not isinstance(artifact_verifier.get("output_field"), str):
+                    raise ValueError("artifact_verifier must declare a path and output_field")
+                verifier_path = (root / artifact_verifier["path"]).resolve()
+                if not verifier_path.is_relative_to(root.resolve()) or not verifier_path.is_file():
+                    raise ValueError("registered artifact verifier is missing or outside the repository")
             expected_interface = (
                 "reviewed" if adapter.get("adapter_type") == "python_cli"
                 else "workflow_dispatch_reviewed" if adapter.get("adapter_type") == "github_actions_workflow"
