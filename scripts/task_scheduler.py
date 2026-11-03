@@ -416,15 +416,19 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
 
 
 def enqueue_auto_sync_task(store, registry: dict, *, idempotency_key: str,
-                           priority: int = 80) -> dict:
+                           priority: int = 80, input_payload: dict | None = None) -> dict:
     """Enqueue the production audit only through the top-level Watchdog identity."""
+    if input_payload is None:
+        input_payload = {}
+    if not isinstance(input_payload, dict):
+        raise ValueError("workflow task input must be an object")
     result = enqueue_remote({
         "idempotency_key": idempotency_key,
         "requester_program_id": "workflow_automation_watchdog",
         "target_program_id": "workflow_auto_sync",
         "capability": "deterministic_audit",
         "priority": priority,
-        "input": {},
+        "input": input_payload,
     }, store, registry)
     task = result["task"]
     return {
@@ -490,6 +494,7 @@ def main() -> int:
     parser.add_argument("--token-stdin", action="store_true")
     parser.add_argument("--idempotency-key")
     parser.add_argument("--priority", type=int, default=80)
+    parser.add_argument("--input-json", default="{}")
     parser.add_argument("command", choices=["plan", "run-once", "enqueue-auto-sync"])
     args = parser.parse_args()
     try:
@@ -507,9 +512,13 @@ def main() -> int:
                 raise ValueError("enqueue-auto-sync requires --idempotency-key")
             if not 0 <= args.priority <= 100:
                 raise ValueError("--priority must be an integer from 0 to 100")
+            try:
+                input_payload = json.loads(args.input_json)
+            except json.JSONDecodeError as exc:
+                raise ValueError(f"--input-json is invalid JSON: {exc}") from exc
             print(json.dumps(enqueue_auto_sync_task(
                 store, registry, idempotency_key=args.idempotency_key,
-                priority=args.priority,
+                priority=args.priority, input_payload=input_payload,
             ), ensure_ascii=False))
         else:
             print(json.dumps(run_scheduler_once(
