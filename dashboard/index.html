@@ -138,8 +138,8 @@ button{font:inherit}
 .review-top{gap:13px;margin:0 0 10px}
 .gauge{width:68px;height:68px;flex-basis:68px}
 .gauge:before{inset:6px}
-.gauge-value{font-size:14px;letter-spacing:-.2px}
-.gauge-label{font-size:7px}
+.gauge-value{font-size:10px;font-weight:750;letter-spacing:0}
+.gauge-label{font-size:6px}
 .review-copy strong{font-size:16px}
 .review-copy span{font-size:9px;margin-top:2px}
 .review-grid{gap:6px}
@@ -200,7 +200,6 @@ button{font:inherit}
   <div id="lifecycle"><div class="loading">正在读取生命周期数据…</div></div>
  </article>
 </section>
-<footer class="footer"><span id="updated">正在加载数据快照…</span><span>数据只读 · 不触发生产 · 不修改配置</span></footer>
 </main>
 <script>
 const n=v=>Number.isFinite(Number(v))?Number(v).toLocaleString("zh-CN"):"—";
@@ -263,8 +262,8 @@ async function load(){try{
   '<div class="lifecycle-top"><div><strong>'+n(published)+'</strong><span>当前已发布规则</span></div><div class="milestone"><strong>'+n(milestone)+'</strong><span>下次检查节点</span></div></div>'+
   '<div class="lifecycle-track"><div class="lifecycle-fill" style="width:'+progress+'%"></div></div>'+
   '<div class="lifecycle-details"><div class="lifecycle-detail"><span>节点进度</span><b>'+progress.toFixed(1)+'%</b></div><div class="lifecycle-detail"><span>检查安排</span><b>'+lifecycleStatus+'</b></div><div class="lifecycle-detail"><span>最近检查</span><b>'+lastReview+'</b></div><div class="lifecycle-detail"><span>容量上限</span><b>'+n(d.lifecycle.max_published_rules)+'</b></div><div class="lifecycle-detail"><span>最近成功检查</span><b>'+fmtTime(d.lifecycle.last_successful_review_at)+'</b></div><div class="lifecycle-detail"><span>监控状态</span><b class="'+stateClass+'">'+state+'</b></div></div>';
- el("updated").textContent="北京时间 · 数据生成 "+fmtTime(d.generated_at)+" · 页面更新 "+fmtTime(lastSuccessfulLoad.toISOString())+" · 数据版本 "+(d.source_commit||"未知");
- }catch(e){el("updated").innerHTML='<span class="error">数据更新失败：'+e.message+'。页面将在下次轮询时重试。</span>';}}
+
+ }catch(e){const status=el("headline-time");if(status)status.textContent="数据更新失败，等待重试";}}
 function tickClock(){const node=el("clock");if(node)node.textContent=new Intl.DateTimeFormat("zh-CN",{timeZone:"Asia/Shanghai",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).format(new Date())+" · 北京时间";}
 tickClock();setInterval(tickClock,1000);load();setInterval(load,30000);
 </script>
