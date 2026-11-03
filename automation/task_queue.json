@@ -1,5 +1,5 @@
 {
-  "revision": 65,
+  "revision": 66,
   "schema_version": 1,
   "tasks": [
     {
@@ -871,9 +871,13 @@
         "ref": "main",
         "requested_head_sha": "7eaa40c7fb235fc6a6f3a7b211d9682c880f1c6a",
         "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "09457fd03856c6264b9d47eac993252f86c3d609",
+          "head_sha_relationship": "queue_intent_commit_only",
           "html_url": "https://github.com/instarrys-bit/default/actions/runs/41689927662",
+          "requested_head_sha": "7eaa40c7fb235fc6a6f3a7b211d9682c880f1c6a",
           "run_id": 41689927662,
-          "status": "pending"
+          "status": "completed"
         },
         "submitted_at": "2026-11-03T18:02:14Z",
         "task_id": "task_f3f9ba4a645a475594a4438b",
@@ -883,13 +887,19 @@
       "state_history": [
         "QUEUED",
         "CLAIMED",
-        "VERIFYING"
+        "VERIFYING",
+        "SUCCEEDED"
       ],
-      "status": "VERIFYING",
+      "status": "SUCCEEDED",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_f3f9ba4a645a475594a4438b",
       "trace_id": "f0e49718bd444598aa09e39e34164ad9",
-      "verification": null
+      "verification": {
+        "contract_sha256": "2021790e2473850d39006e31974bf295231a36470f510480bdf1519ef7c54b9c",
+        "status": "passed",
+        "verified_at": "2026-11-03T18:27:04Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
     }
   ]
 }
