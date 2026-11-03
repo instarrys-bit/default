@@ -38,8 +38,11 @@ permissions:
   contents: read
   issues: write
 
+# GitHub keeps only one pending run per concurrency group. A shared group can
+# silently replace a pending push/workflow_run watchdog event with a later event.
+# Queue writes use CAS, while the publisher has its own main-writer lock.
 concurrency:
-  group: shadowrocket-automation-watchdog
+  group: shadowrocket-automation-watchdog-${{ github.run_id }}
   cancel-in-progress: false
 
 jobs:
@@ -65,7 +68,7 @@ jobs:
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
-      - name: Recover failed scheduled or push-triggered audit once
+      - name: Recover failed or superseded production audit
         if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' }}
         env:
           GH_TOKEN: ${{ github.token }}
@@ -77,21 +80,14 @@ jobs:
           SOURCE_WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
         run: |
           set -euo pipefail
-          # Retry queue-dispatched workflow runs only when their durable task correlation can be recovered.
+          # Only the production ruleset audit is recovered here. Config-validator
+          # and self-healing failures have their own diagnosis paths.
           if [ "$SOURCE_WORKFLOW_NAME" != "Shadowrocket Deterministic Domain Audit (User Config Baseline)" ]; then
-            echo "This watchdog recovery path only retries the deterministic domain audit; validator failures are handled by self-healing diagnosis."
+            echo "This recovery path only handles the deterministic ruleset audit."
             exit 0
           fi
-          case "$SOURCE_CONCLUSION" in
-            timed_out|startup_failure)
-              ;;
-            *)
-              echo "No automatic recovery required for event=$SOURCE_EVENT conclusion=$SOURCE_CONCLUSION."
-              exit 0
-              ;;
-          esac
           if [ "$SOURCE_EVENT" != "schedule" ] && [ "$SOURCE_EVENT" != "push" ] && [ "$SOURCE_EVENT" != "workflow_dispatch" ]; then
-            echo "No automatic recovery for source event=$SOURCE_EVENT."
+            echo "No recovery for source event=$SOURCE_EVENT."
             exit 0
           fi
 
@@ -105,7 +101,7 @@ jobs:
           PY
           )"
             if [ -z "$source_task_id" ]; then
-              echo "Workflow-dispatch run has no durable queue task correlation; refusing automatic retry."
+              echo "Workflow-dispatch run has no durable queue task correlation; refusing automatic recovery."
               exit 0
             fi
             queue_content="$(gh api "repos/$REPO/contents/automation/task_queue.json" --jq .content)"
@@ -114,7 +110,7 @@ jobs:
           queue = json.loads(base64.b64decode(os.environ["QUEUE_CONTENT"]).decode("utf-8"))
           task = next((item for item in queue.get("tasks", []) if item.get("task_id") == sys.argv[1]), None)
           if task is None or not isinstance(task.get("input"), dict):
-              raise SystemExit("Correlated durable queue task or its input is missing; refusing retry.")
+              raise SystemExit("Correlated durable queue task or its input is missing; refusing recovery.")
           print(json.dumps(task["input"], ensure_ascii=False, separators=(",", ":")))
           PY
           )"
@@ -122,25 +118,63 @@ jobs:
 
           runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
           current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
+
           if jq -e --argjson source "$SOURCE_RUN_ID" --arg sha "$current_sha" '[.workflow_runs[] | select(.head_branch == "main" and .head_sha == $sha and .id > $source and (.status != "completed" or .conclusion == "success"))] | length > 0' <<< "$runs" >/dev/null; then
-            echo "A newer current-main deterministic audit already exists; no duplicate recovery."
+            echo "A newer successful or active current-main audit already exists; no duplicate recovery."
             exit 0
           fi
-          if jq -e --arg sha "$current_sha" '[.workflow_runs[] | select(.head_branch == "main" and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
-            echo "A deterministic audit for current main ($current_sha) is already queued or running; no duplicate recovery."
-            exit 0
-          fi
-
-          decision="$(python3 scripts/watchdog_recovery_policy.py --source-run-id "$SOURCE_RUN_ID" --source-sha "$SOURCE_SHA" <<< "$runs")"
-          echo "$decision" | jq -r '"Recovery policy: " + .reason + "; prior retryable failures=" + (.prior_retryable_failures|tostring) + "; retry=" + (.retry_number|tostring) + "/" + (.max_retries|tostring) + "."'
-          if [ "$(jq -r '.allowed' <<< "$decision")" != "true" ]; then
-            echo "$decision" >> "$GITHUB_STEP_SUMMARY"
-            echo "Automatic retry suppressed by bounded recovery policy."
+          if jq -e '[.workflow_runs[] | select(.head_branch == "main" and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
+            echo "A main-branch deterministic audit is already queued or running; no duplicate recovery."
             exit 0
           fi
 
-          echo "Source run $SOURCE_RUN_ID failed with a retryable infrastructure conclusion; enqueueing bounded recovery through the durable task queue."
-          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-recovery:$SOURCE_RUN_ID" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
+          recovery_kind=""
+          case "$SOURCE_CONCLUSION" in
+            timed_out|startup_failure)
+              recovery_kind="infrastructure"
+              ;;
+            failure)
+              # A failed audit must not be retried against the same inputs. If
+              # main advanced with non-doc/non-queue changes while it ran, create
+              # a NEW current-main task instead of retrying the stale task.
+              if [ "$SOURCE_SHA" = "$current_sha" ]; then
+                echo "Same-SHA deterministic failure requires diagnosis; automatic retry is prohibited."
+                exit 0
+              fi
+              compare_json="$(gh api "repos/$REPO/compare/$SOURCE_SHA...$current_sha" 2>/dev/null || true)"
+              if [ -z "$compare_json" ] || ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null; then
+                echo "Could not safely classify the failed audit's base advancement; leaving it for the next scheduled reconciliation."
+                exit 0
+              fi
+              compare_file="$RUNNER_TEMP/failed-audit-base-compare.json"
+              printf '%s' "$compare_json" > "$compare_file"
+              if GITHUB_SHA="$SOURCE_SHA" COMPARE_JSON_FILE="$compare_file" bash scripts/verify_publish_base.sh --check-only; then
+                echo "The failed audit's reviewed inputs remain current; this is not a superseded-input failure. No automatic retry."
+                exit 0
+              fi
+              recovery_kind="superseded_inputs"
+              ;;
+            *)
+              echo "Conclusion '$SOURCE_CONCLUSION' is not eligible for automatic recovery."
+              exit 0
+              ;;
+          esac
+
+          if [ "$recovery_kind" = "infrastructure" ]; then
+            decision="$(python3 scripts/watchdog_recovery_policy.py --source-run-id "$SOURCE_RUN_ID" --source-sha "$SOURCE_SHA" <<< "$runs")"
+            echo "$decision" | jq -r '"Infrastructure recovery: " + .reason + "; prior retryable failures=" + (.prior_retryable_failures|tostring) + "; retry=" + (.retry_number|tostring) + "/" + (.max_retries|tostring) + "."'
+            if [ "$(jq -r '.allowed' <<< "$decision")" != "true" ]; then
+              echo "$decision" >> "$GITHUB_STEP_SUMMARY"
+              echo "Automatic infrastructure retry suppressed by bounded recovery policy."
+              exit 0
+            fi
+            idempotency_key="auto-sync-recovery:$SOURCE_RUN_ID"
+          else
+            echo "The source audit was superseded by meaningful main-branch changes; enqueueing a fresh audit against current main."
+            idempotency_key="auto-sync-superseded:$SOURCE_RUN_ID"
+          fi
+
+          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$idempotency_key" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
 
       - name: Report degraded source discovery health
         if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success' }}
@@ -240,10 +274,7 @@ jobs:
 
   task-queue-supervision:
     needs: [health-check, stale-run-watch, manifest-integrity]
-    if: ${{ always() && needs.health-check.result == 'success' && (github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main') }}
-    concurrency:
-      group: shadowrocket-main-writer
-      cancel-in-progress: false
+    if: ${{ always() && needs.health-check.result == 'success' && ((github.event_name != 'schedule' && github.event_name != 'workflow_dispatch') || needs.stale-run-watch.result == 'success') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main') }}
     permissions:
       actions: write
       contents: write
