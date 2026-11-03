@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
-from deterministic_review import DOMAIN_RE, evidence_gate, inspect, validate_evidence, review_context_fingerprint, candidate_review_fingerprint
+from deterministic_review import DOMAIN_RE, evidence_gate, inspect, validate_evidence, review_context_fingerprint, candidate_review_fingerprint, publisher_ancestry_pairs
 from domain_rule_engine import RuleIndex, DomainRule, inspect_suffix_scope
 from deterministic_review import CONFIG as REVIEW_CONFIG
 from build_rulesets import CONFIG as RULESET_CONFIG
@@ -105,6 +105,32 @@ class SourceRegistryTests(unittest.TestCase):
         bad["sources"][0]["url"]="http://raw.githubusercontent.com/a/list"
         with self.assertRaises(ValueError):
             validate_registry(bad)
+
+
+class PublisherAncestryCorrelationTests(unittest.TestCase):
+    def test_publisher_listed_as_another_sources_upstream_is_correlated(self):
+        sources = [
+            {"publisher": "Johnshall/Shadowrocket-ADBlock-Rules-Forever", "upstream_repositories": []},
+            {"publisher": "ithtelab/sr-adblock", "upstream_repositories": ["https://github.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever.git"]},
+        ]
+        self.assertEqual(
+            publisher_ancestry_pairs(sources),
+            {("Johnshall/Shadowrocket-ADBlock-Rules-Forever", "ithtelab/sr-adblock")},
+        )
+
+    def test_unrelated_publishers_are_not_correlated_by_directional_ancestry(self):
+        sources = [
+            {"publisher": "publisher-a/rules", "upstream_repositories": ["shared/upstream"]},
+            {"publisher": "publisher-b/rules", "upstream_repositories": ["different/upstream"]},
+        ]
+        self.assertEqual(publisher_ancestry_pairs(sources), set())
+
+    def test_reverse_directional_ancestry_is_detected(self):
+        sources = [
+            {"publisher": "publisher-a/rules", "upstream_repositories": ["publisher-b/rules"]},
+            {"publisher": "publisher-b/rules", "upstream_repositories": []},
+        ]
+        self.assertEqual(publisher_ancestry_pairs(sources), {("publisher-a/rules", "publisher-b/rules")})
 
 
 class DomainSyntaxTests(unittest.TestCase):
