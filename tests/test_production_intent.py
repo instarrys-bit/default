@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from production_intent import classify_paths, compute_fingerprint, decide, load_manifest
+from production_intent import classify_paths, compute_fingerprint, compute_output_fingerprint, decide, load_manifest
 
 
 class ProductionIntentTests(unittest.TestCase):
@@ -27,6 +27,9 @@ class ProductionIntentTests(unittest.TestCase):
         self.manifest = load_manifest(self.manifest_path)
         self.now = datetime(2026, 11, 3, tzinfo=timezone.utc)
         self.fp = compute_fingerprint(self.root, self.manifest)
+        (self.root / "rulesets").mkdir()
+        for name, body in (("direct.list", "DIRECT\\n"), ("proxy.list", "PROXY\\n"), ("reject.list", "REJECT\\n")):
+            (self.root / "rulesets" / name).write_text(body, encoding="utf-8")
 
     def test_input_change_is_classified_as_production_input(self):
         result = classify_paths(["sources/policy.json"], self.manifest)
@@ -103,6 +106,12 @@ class ProductionIntentTests(unittest.TestCase):
             last_success_at=self.now.isoformat(), successful_fingerprints={self.fp}, now=self.now)
         self.assertEqual(result["decision"], "ALREADY_SATISFIED")
         self.assertFalse(result["should_produce"])
+
+    def test_output_fingerprint_covers_all_three_policy_rule_sets(self):
+        first = compute_output_fingerprint(self.root)
+        (self.root / "rulesets" / "direct.list").write_text("DIRECT\\nexample.com\\n", encoding="utf-8")
+        second = compute_output_fingerprint(self.root)
+        self.assertNotEqual(first, second)
 
 
 if __name__ == "__main__":
