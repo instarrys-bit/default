@@ -78,11 +78,12 @@ jobs:
         run: python scripts/task_queue.py
       - name: Smoke-check task queue runtime CLI
         run: python scripts/task_queue_runtime.py --help
+      - run: python scripts/remote_task_queue_runtime.py --help
       - name: Validate unified execution adapter contracts
         run: python scripts/validate_execution_adapters.py
       - name: Validate deterministic evidence review
         run: |
-          python -m py_compile scripts/github_queue_store.py scripts/task_queue_runtime.py scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/validate_config.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/json_document_store.py scripts/build_rulesets.py
+          python -m py_compile scripts/github_queue_store.py scripts/remote_task_queue_runtime.py scripts/task_queue_runtime.py scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/validate_config.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/json_document_store.py scripts/build_rulesets.py
           python -m unittest discover -s tests -v
           python -m json.tool sources/domain_sources.json >/dev/null
           python -m json.tool sources/policy.json >/dev/null
