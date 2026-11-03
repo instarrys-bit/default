@@ -38,6 +38,7 @@ for domain in candidate_domains:
     status = str(record.get("status", "UNKNOWN")).upper() if record else "UNREVIEWED"
     current_review_counts[status] = current_review_counts.get(status, 0) + 1
 review_cursor = read_json("sources/review_cursor.json")
+review_ledger_manifest = read_json("sources/domain_reviews.json.manifest.json")
 
 tasks = queue_doc.get("tasks", []) if isinstance(queue_doc.get("tasks"), list) else []
 queue_status = {}
@@ -114,7 +115,7 @@ snapshot = {
         "missing_history": sum(1 for domain in candidate_domains if domain not in review_by_domain),
         "status_counts": current_review_counts,
         "review_ledger_total": len(review_records),
-        "review_ledger_updated_at": read_json("sources/domain_reviews.json").get("updated_at"),
+        "review_ledger_updated_at": (review_ledger_manifest.get("metadata") or {}).get("updated_at") or read_json("sources/domain_reviews.json").get("updated_at"),
         "cursor_status": str(review_cursor.get("status", "unknown")),
         "cursor_candidate_count": as_int(review_cursor.get("candidate_count"))
     },
