@@ -254,7 +254,7 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
         saved = self.store.document["tasks"][0]
         self.assertEqual(report["verified"], [task["task_id"]])
         self.assertEqual(saved["status"], "SUCCEEDED")
-        self.assertEqual(saved["state_history"][-3:], ["VERIFYING", "SUCCEEDED"][-3:])
+        self.assertEqual(saved["state_history"][-2:], ["VERIFYING", "SUCCEEDED"])
 
     def test_completed_failure_retries_with_new_attempt_correlation(self):
         task = self.enqueue()
