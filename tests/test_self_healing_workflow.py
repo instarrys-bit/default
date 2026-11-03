@@ -92,6 +92,10 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn('      - "Validate Shadowrocket config against user baseline"', workflow)
         self.assertIn("resolve-validator-incidents:", workflow)
+        resolver = workflow.split("  resolve-validator-incidents:", 1)[1].split("  resolve-audit-incidents:", 1)[0]
+        self.assertIn("contents: read", resolver)
+        self.assertIn("Checkout incident state helper", resolver)
+        self.assertIn("persist-credentials: false", resolver)
         self.assertIn("CONFIG_BASELINE_MISMATCH TEST_FAILURE PYTHON_IMPORT_FAILURE", workflow)
         self.assertIn("The protected config was not modified.", workflow)
 
