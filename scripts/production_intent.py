@@ -18,35 +18,47 @@ def load_manifest(path: Path) -> dict:
         raise ValueError("unsupported production input manifest schema")
     inputs = value.get("production_input_paths")
     non_inputs = value.get("non_production_path_patterns")
+    monitoring = value.get("monitoring_path_patterns", [])
+    documentation = value.get("documentation_path_patterns", [])
     if not isinstance(inputs, list) or not inputs or any(not isinstance(x, str) or not x for x in inputs):
         raise ValueError("production_input_paths must be a non-empty string array")
     if len(inputs) != len(set(inputs)):
         raise ValueError("production input paths must be unique")
     if not isinstance(non_inputs, list) or any(not isinstance(x, str) or not x for x in non_inputs):
         raise ValueError("non_production_path_patterns must be a string array")
+    for field, patterns in (("monitoring_path_patterns", monitoring), ("documentation_path_patterns", documentation)):
+        if not isinstance(patterns, list) or any(not isinstance(x, str) or not x for x in patterns):
+            raise ValueError(f"{field} must be a string array")
     for relative in inputs:
         candidate = Path(relative)
         if candidate.is_absolute() or ".." in candidate.parts or "\\" in relative or any(char in relative for char in "*?[]"):
             raise ValueError(f"production input path must be a literal repository-relative path: {relative}")
+    all_non_inputs = non_inputs + monitoring + documentation
     overlap = {
         relative for relative in inputs
-        if any(fnmatch.fnmatchcase(relative, pattern) for pattern in non_inputs)
+        if any(fnmatch.fnmatchcase(relative, pattern) for pattern in all_non_inputs)
     }
     if overlap:
-        raise ValueError("production inputs also match non-production patterns: " + ", ".join(sorted(overlap)))
+        raise ValueError("production inputs also match non-production/monitoring/documentation patterns: " + ", ".join(sorted(overlap)))
     return value
 
 
 def classify_paths(paths: Iterable[str], manifest: dict) -> dict:
     inputs = set(manifest["production_input_paths"])
     patterns = manifest["non_production_path_patterns"]
-    input_paths, non_input_paths, unknown_paths = [], [], []
+    monitoring_patterns = manifest.get("monitoring_path_patterns", [])
+    documentation_patterns = manifest.get("documentation_path_patterns", [])
+    input_paths, non_input_paths, monitoring_paths, documentation_paths, unknown_paths = [], [], [], [], []
     for raw in sorted(set(paths)):
         path = raw.strip().removeprefix("./")
         if not path:
             continue
         if path in inputs:
             input_paths.append(path)
+        elif any(fnmatch.fnmatchcase(path, pattern) for pattern in monitoring_patterns):
+            monitoring_paths.append(path)
+        elif any(fnmatch.fnmatchcase(path, pattern) for pattern in documentation_patterns):
+            documentation_paths.append(path)
         elif any(fnmatch.fnmatchcase(path, pattern) for pattern in patterns):
             non_input_paths.append(path)
         else:
@@ -61,6 +73,8 @@ def classify_paths(paths: Iterable[str], manifest: dict) -> dict:
         "status": status,
         "production_input_changes": input_paths,
         "non_production_changes": non_input_paths,
+        "monitoring_changes": monitoring_paths,
+        "documentation_changes": documentation_paths,
         "unknown_changes": unknown_paths,
     }
 
