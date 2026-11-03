@@ -43,6 +43,7 @@ class ProgramRegistryTests(unittest.TestCase):
                     "dispatches": [],
                     "permission_boundary": "test",
                     "health_check": "test",
+                    "orchestration": {"enabled": False, "allowed_callers": [], "max_attempts": 0, "timeout_seconds": 300},
                 },
                 {
                     "id": "workflow_run",
@@ -57,6 +58,7 @@ class ProgramRegistryTests(unittest.TestCase):
                     "dispatches": [],
                     "permission_boundary": "test",
                     "health_check": "test",
+                    "orchestration": {"enabled": False, "allowed_callers": [], "max_attempts": 0, "timeout_seconds": 300},
                 },
             ],
         }
@@ -91,6 +93,25 @@ class ProgramRegistryTests(unittest.TestCase):
     def test_rejects_workflow_call_without_declared_dependency(self):
         root, registry = self.make_repo(dependency=False)
         with self.assertRaisesRegex(ValueError, "script dependency mismatch"):
+            validate_registry(root, registry)
+
+    def test_rejects_orchestration_without_allowed_callers(self):
+        root, registry = self.make_repo()
+        payload = json.loads(registry.read_text(encoding="utf-8"))
+        payload["programs"][0]["orchestration"]["enabled"] = True
+        registry.write_text(json.dumps(payload), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "without explicit allowed callers"):
+            validate_registry(root, registry)
+
+    def test_rejects_unknown_orchestration_caller(self):
+        root, registry = self.make_repo()
+        payload = json.loads(registry.read_text(encoding="utf-8"))
+        payload["programs"][0]["orchestration"] = {
+            "enabled": True, "allowed_callers": ["script_missing"],
+            "max_attempts": 1, "timeout_seconds": 300,
+        }
+        registry.write_text(json.dumps(payload), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "unknown callers"):
             validate_registry(root, registry)
 
     def test_rejects_duplicate_program_ids(self):

@@ -26,7 +26,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_apply_safe_repair",
@@ -46,7 +52,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_assess_sources",
@@ -66,7 +78,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_audit_config_drift",
@@ -86,7 +104,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_audit_external_domains",
@@ -106,7 +130,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_audit_policy_source_overlap",
@@ -126,7 +156,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_audit_ruleset_config_overlap",
@@ -146,7 +182,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_audit_ruleset_references",
@@ -166,7 +208,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_audit_source_lineage",
@@ -186,7 +234,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_auto_activate_sources",
@@ -206,7 +260,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_build_project_status",
@@ -226,7 +286,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_build_rule_provenance",
@@ -246,7 +312,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_build_rulesets",
@@ -266,7 +338,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_build_source_candidates",
@@ -286,7 +364,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_collect_domains",
@@ -306,7 +390,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_deterministic_review",
@@ -326,7 +416,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_diagnose_workflow_failure",
@@ -346,7 +442,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_discover_sources",
@@ -366,7 +468,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_domain_rule_engine",
@@ -386,7 +494,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_import_request_observations",
@@ -406,7 +520,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_incident_state",
@@ -426,7 +546,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_json_document_store",
@@ -446,7 +572,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_lifecycle_audit",
@@ -466,7 +598,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_lifecycle_gate",
@@ -486,7 +624,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_refresh_ruleset_manifest",
@@ -506,7 +650,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_register_config_baseline",
@@ -526,7 +676,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_restore_automation_state",
@@ -546,7 +702,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_review_cursor",
@@ -566,7 +728,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_select_domain_rules",
@@ -586,7 +754,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_source_registry",
@@ -606,7 +780,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_sync_ruleset_config_conflicts",
@@ -626,7 +806,40 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_task_queue",
+      "path": "scripts/task_queue.py",
+      "kind": "python_component",
+      "responsibility": "validate the durable cross-program task envelope and queue without dispatching work",
+      "capabilities": [
+        "task_queue_validation"
+      ],
+      "invocation": "python_cli",
+      "inputs": [
+        "automation/task_queue.json",
+        "automation/program_registry.json"
+      ],
+      "outputs": [
+        "validation summary or non-zero exit on invalid queue state"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Read-only repository files; no GitHub token or repository write permission.",
+      "health_check": "Dedicated task queue unit tests and required config-validation CI invocation.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_validate_config",
@@ -646,7 +859,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_validate_program_registry",
@@ -668,7 +887,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "Read-only repository inventory and registry validation; no GitHub token or repository write permission.",
-      "health_check": "Dedicated unit tests in tests/test_program_registry.py and required CI invocation."
+      "health_check": "Dedicated unit tests in tests/test_program_registry.py and required CI invocation.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_verify_baseline",
@@ -688,7 +913,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_verify_published_rulesets",
@@ -708,7 +939,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_verify_recovery_run",
@@ -728,7 +965,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "script_watchdog_recovery_policy",
@@ -748,7 +991,13 @@
       "depends_on": [],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks."
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "workflow_auto_sync",
@@ -803,7 +1052,13 @@
       ],
       "dispatches": [],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
-      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured."
+      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "workflow_automation_watchdog",
@@ -831,7 +1086,13 @@
         "workflow_auto_sync"
       ],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
-      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured."
+      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "workflow_request_intake",
@@ -855,7 +1116,13 @@
         "workflow_auto_sync"
       ],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
-      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured."
+      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "workflow_self_healing_agent",
@@ -885,7 +1152,13 @@
         "workflow_self_healing_tests"
       ],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
-      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured."
+      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "workflow_self_healing_tests",
@@ -914,7 +1187,13 @@
       ],
       "dispatches": [],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
-      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured."
+      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     },
     {
       "id": "workflow_validate_config",
@@ -946,13 +1225,20 @@
         "script_register_config_baseline",
         "script_select_domain_rules",
         "script_sync_ruleset_config_conflicts",
+        "script_task_queue",
         "script_validate_config",
         "script_validate_program_registry",
         "script_verify_baseline"
       ],
       "dispatches": [],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
-      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured."
+      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     }
   ]
 }

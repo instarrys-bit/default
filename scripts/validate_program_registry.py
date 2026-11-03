@@ -51,7 +51,7 @@ def validate_registry(root: Path = ROOT, registry_path: Path | None = None) -> d
     by_path = {}
     required_fields = (
         "id", "path", "kind", "responsibility", "capabilities", "invocation",
-        "inputs", "outputs", "depends_on", "dispatches", "permission_boundary", "health_check",
+        "inputs", "outputs", "depends_on", "dispatches", "permission_boundary", "health_check", "orchestration",
     )
     for item in programs:
         if not isinstance(item, dict):
@@ -86,6 +86,24 @@ def validate_registry(root: Path = ROOT, registry_path: Path | None = None) -> d
                 raise ValueError(f"{program_id}.{field} contains duplicates")
         if not item["capabilities"]:
             raise ValueError(f"{program_id} must declare at least one capability")
+        orchestration = item["orchestration"]
+        if not isinstance(orchestration, dict):
+            raise ValueError(f"{program_id}.orchestration must be an object")
+        if not isinstance(orchestration.get("enabled"), bool):
+            raise ValueError(f"{program_id}.orchestration.enabled must be boolean")
+        callers = orchestration.get("allowed_callers")
+        if not isinstance(callers, list) or any(not isinstance(caller, str) or not caller for caller in callers):
+            raise ValueError(f"{program_id}.orchestration.allowed_callers must be an array of program IDs")
+        if len(callers) != len(set(callers)):
+            raise ValueError(f"{program_id}.orchestration.allowed_callers contains duplicates")
+        max_attempts = orchestration.get("max_attempts")
+        if isinstance(max_attempts, bool) or not isinstance(max_attempts, int) or not 0 <= max_attempts <= 5:
+            raise ValueError(f"{program_id}.orchestration.max_attempts must be an integer from 0 to 5")
+        timeout = orchestration.get("timeout_seconds")
+        if isinstance(timeout, bool) or not isinstance(timeout, int) or not 1 <= timeout <= 3600:
+            raise ValueError(f"{program_id}.orchestration.timeout_seconds must be an integer from 1 to 3600")
+        if not orchestration["enabled"] and callers:
+            raise ValueError(f"{program_id} cannot allow callers while orchestration is disabled")
         by_id[program_id] = item
         by_path[path] = item
 
@@ -102,6 +120,12 @@ def validate_registry(root: Path = ROOT, registry_path: Path | None = None) -> d
         raise ValueError("; ".join(details))
 
     for program_id, item in by_id.items():
+        orchestration = item["orchestration"]
+        unknown_callers = sorted(set(orchestration["allowed_callers"]) - set(by_id))
+        if unknown_callers:
+            raise ValueError(f"{program_id}.orchestration references unknown callers: {', '.join(unknown_callers)}")
+        if orchestration["enabled"] and not orchestration["allowed_callers"]:
+            raise ValueError(f"{program_id} orchestration cannot be enabled without explicit allowed callers")
         for field in ("depends_on", "dispatches"):
             unknown = sorted(set(item[field]) - set(by_id))
             if unknown:

@@ -64,3 +64,14 @@ Every Python component in `scripts/` and every workflow in `.github/workflows/` 
 Registration does not force programs into a central runtime. Each program keeps its own scheduled, event-driven, manual, or imported entry point. The registry is the contract for future coordination: Watchdog and any later scheduler may only consider registered capabilities and declared dependencies. Automatic invocation still requires an explicit dispatch policy and the target workflow's existing permissions.
 
 The registry is descriptive and fail-closed; it does not grant GitHub permissions, activate sources, approve domain rules, publish artifacts, or permit automation to modify `shadowrocket/ss.conf`.
+
+
+## Cross-program orchestration contract
+
+The general task queue at automation/task_queue.json is deliberately separate from rulesets/pending_queue.json, which remains the domain-rule candidate queue.
+
+Every task identifies its requester, target, requested capability, idempotency key, trace ID, priority, UTC schedule fields, retry budget, input, lease, result, and error. Validation rejects unknown programs, undeclared capabilities, disabled targets, unauthorized callers, duplicate idempotency keys, invalid timestamps, malformed leases, and retry budgets above the target's registered policy.
+
+All programs currently default to orchestration disabled with an empty caller allowlist. This is an explicit deny-by-default posture. A registry entry alone does not authorize invocation.
+
+The current implementation is a protocol and data-integrity gate, not a live scheduler. No existing workflow is dispatched from this queue yet. Lease acquisition, concurrency control, execution, timeout enforcement, retry transitions, dead-letter handling, and independent result verification remain later implementation steps.
