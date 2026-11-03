@@ -110,18 +110,72 @@ button{font:inherit}
 @media(max-width:650px){.shell{padding:17px 12px 20px}.topbar{margin-bottom:22px}.brand-mark{width:37px;height:37px;border-radius:12px}.brand-title{font-size:14px}.eyebrow{font-size:9px}.intro{align-items:flex-start;flex-direction:column;gap:8px;margin-bottom:16px}.intro h1{font-size:27px}.intro-aside{text-align:left}.kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}.kpi{min-height:98px;padding:13px 14px;border-radius:13px}.kpi-value{font-size:25px;margin-top:7px}.bento{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:auto;gap:9px}.distribution,.review,.queue,.lifecycle{grid-column:1/-1;grid-row:auto}.card{padding:16px;border-radius:15px}.card-head{margin-bottom:15px}.policy-total{margin-bottom:12px}.policy-legend{margin-top:13px}.legend-value{font-size:18px}.review-top{gap:14px}.gauge{width:76px;height:76px;flex-basis:76px}.review-grid{gap:6px}.review-cell{padding:8px}.task-flow{gap:6px}.task{padding:10px 8px}.task-value{font-size:19px}.lifecycle-details{gap:8px}.footer{margin-top:14px}}
 @media(max-width:370px){.shell{padding-left:9px;padding-right:9px}.top-meta{gap:5px}.live-pill,.meta-pill{padding:6px 8px;font-size:9px}.review-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.policy-legend{grid-template-columns:1fr}.legend-item{display:flex;align-items:center;justify-content:space-between;gap:8px}.legend-value{margin:0}.legend-share{margin-left:auto}.lifecycle-details{grid-template-columns:1fr 1fr}.task-flow{grid-template-columns:1fr 1fr}.task:last-child{grid-column:1/-1}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Compact one-screen layout */
+.shell{padding:12px clamp(14px,2vw,28px) 10px}
+.topbar{margin-bottom:11px;min-height:30px}
+.compact-topbar .brand-title{font-size:14px;font-weight:760;margin:0;letter-spacing:.1px}
+.compact-clock{padding:5px 9px;font-size:10px;gap:7px}
+.compact-clock .live-dot{width:6px;height:6px;flex-basis:6px;box-shadow:0 0 0 3px rgba(67,214,160,.1)}
+.kpis{gap:9px;margin-bottom:10px}
+.kpi{min-height:78px;padding:10px 14px;border-radius:13px}
+.kpi-value{font-size:clamp(22px,2.2vw,28px);margin-top:5px;line-height:1.05}
+.kpi-foot{margin-top:3px;font-size:9px}
+.kpi-label{font-size:10px}
+.bento{grid-auto-rows:minmax(165px,auto);gap:10px}
+.card{padding:14px 16px;border-radius:15px}
+.card-head{margin-bottom:11px}
+.card-title{font-size:13px}
+.card-subtitle{font-size:9px;margin-top:2px}
+.policy-total{margin:-2px 0 10px}
+.policy-total strong{font-size:24px}
+.stackbar{height:10px}
+.policy-legend{margin-top:11px;gap:7px}
+.legend-item{padding:7px 9px}
+.legend-value{font-size:17px;margin-top:3px}
+.legend-share{font-size:8px}
+.capacity{margin-top:10px;font-size:9px}
+.review-top{gap:13px;margin:0 0 10px}
+.gauge{width:68px;height:68px;flex-basis:68px}
+.gauge:before{inset:6px}
+.gauge-value{font-size:14px;letter-spacing:-.2px}
+.gauge-label{font-size:7px}
+.review-copy strong{font-size:16px}
+.review-copy span{font-size:9px;margin-top:2px}
+.review-grid{gap:6px}
+.review-cell{padding:7px 8px}
+.review-cell span{font-size:8px}
+.review-cell b{font-size:14px;margin-top:3px}
+.micro-note{font-size:8px;margin-top:7px}
+.status-line{padding:8px 10px;margin:-1px 0 10px}
+.status-line strong{font-size:10px}
+.status-line span:last-child{font-size:8px}
+.task-flow{gap:6px}
+.task{padding:8px 9px}
+.task-label,.task-state{font-size:8px}
+.task-value{font-size:18px;margin-top:4px}
+.queue-foot{margin-top:8px;gap:10px;font-size:8px}
+.lifecycle-top{margin-bottom:8px}
+.lifecycle-top strong{font-size:21px}
+.lifecycle-top .milestone strong{font-size:16px}
+.lifecycle-track{height:7px}
+.lifecycle-details{gap:8px;margin-top:10px}
+.lifecycle-detail{padding-top:7px}
+.lifecycle-detail span{font-size:8px}
+.lifecycle-detail b{font-size:9px;margin-top:2px}
+.footer{margin-top:9px;padding-top:7px;font-size:8px}
+@media(min-width:1200px){.shell{padding-top:12px}.bento{grid-auto-rows:minmax(165px,auto);gap:10px}.card{padding:14px 16px}}
+@media(max-width:900px){.shell{padding:12px 14px 10px}.bento{grid-auto-rows:minmax(165px,auto);gap:9px}}
+@media(max-width:650px){.shell{padding:12px 10px 16px}.topbar{margin-bottom:10px}.kpis{gap:7px}.kpi{min-height:74px;padding:9px 11px}.bento{gap:8px}.card{padding:13px}.footer{margin-top:12px}}
+
 </style>
 </head>
 <body>
 <main class="shell">
-<header class="topbar">
- <div class="brand"><div class="brand-mark">R</div><div><div class="eyebrow">RULESET OPERATIONS</div><div class="brand-title">自动化运营控制台</div></div></div>
- <div class="top-meta"><span class="meta-pill">READ ONLY</span><span class="live-pill"><i class="live-dot"></i>实时快照 · 30 秒刷新</span></div>
+<header class="topbar compact-topbar">
+ <div class="brand"><div class="brand-title">自动化运营控制台</div></div>
+ <div class="top-meta"><span class="live-pill compact-clock"><i class="live-dot"></i><time id="clock">北京时间同步中…</time></span></div>
 </header>
-<section class="intro">
- <div><h1>运行总览</h1><p>规则集生产、审核与生命周期状态，一屏掌握关键进度。</p></div>
- <div class="intro-aside">SYSTEM MONITOR<br><span id="headline-time">正在同步数据…</span></div>
-</section>
 <section class="kpis" id="summary">
  <article class="kpi published"><div class="kpi-label">已发布规则</div><div class="kpi-value">—</div><div class="kpi-foot">当前规则集规模</div></article>
  <article class="kpi candidate"><div class="kpi-label">候选池总量</div><div class="kpi-value">—</div><div class="kpi-foot">候选记录，不等同于待筛选</div></article>
@@ -163,7 +217,7 @@ async function load(){try{
  const stateClass=state.indexOf("正常")>=0||state.indexOf("运行")>=0?"good":state.indexOf("异常")>=0?"bad":"";
  const autoClass=a.workflow_state==="active"?"good":"warn";
  const automationLabel=a.workflow_state==="active"?"自动化已启用":a.workflow_state==="disabled"?"自动化未启用":"自动化状态待确认";
- el("headline-time").textContent="快照时间 · "+fmtTime(d.generated_at);
+ 
  const total=Number(d.rulesets.published_total)||0,by=d.rulesets.by_policy||{};
  const direct=Number(by.DIRECT)||0,proxy=Number(by.PROXY)||0,reject=Number(by.REJECT)||0;
  const distributionTotal=direct+proxy+reject||total;
@@ -211,7 +265,8 @@ async function load(){try{
   '<div class="lifecycle-details"><div class="lifecycle-detail"><span>节点进度</span><b>'+progress.toFixed(1)+'%</b></div><div class="lifecycle-detail"><span>检查安排</span><b>'+lifecycleStatus+'</b></div><div class="lifecycle-detail"><span>最近检查</span><b>'+lastReview+'</b></div><div class="lifecycle-detail"><span>容量上限</span><b>'+n(d.lifecycle.max_published_rules)+'</b></div><div class="lifecycle-detail"><span>最近成功检查</span><b>'+fmtTime(d.lifecycle.last_successful_review_at)+'</b></div><div class="lifecycle-detail"><span>监控状态</span><b class="'+stateClass+'">'+state+'</b></div></div>';
  el("updated").textContent="北京时间 · 数据生成 "+fmtTime(d.generated_at)+" · 页面更新 "+fmtTime(lastSuccessfulLoad.toISOString())+" · 数据版本 "+(d.source_commit||"未知");
  }catch(e){el("updated").innerHTML='<span class="error">数据更新失败：'+e.message+'。页面将在下次轮询时重试。</span>';}}
-load();setInterval(load,30000);
+function tickClock(){const node=el("clock");if(node)node.textContent=new Intl.DateTimeFormat("zh-CN",{timeZone:"Asia/Shanghai",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).format(new Date())+" · 北京时间";}
+tickClock();setInterval(tickClock,1000);load();setInterval(load,30000);
 </script>
 </body>
 </html>
