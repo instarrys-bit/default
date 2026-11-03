@@ -5,9 +5,9 @@ This manages queue metadata only. Writers must invoke assert_resource_lease at
 their actual commit boundary before resource exclusion is considered enforced.
 """
 from __future__ import annotations
-import argparse, json, secrets, sys
+import argparse, json, os, secrets, sys
 from datetime import datetime, timedelta, timezone
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
 from github_queue_store import GitHubContentsQueueStore
 
 
@@ -215,6 +215,30 @@ def release_resource_leases(task_id, worker_id, task_lease_token, resources, sto
         queue["revision"]+=1
         return queue,{"released":sorted(normalized),"fencing_counters_preserved":True}
     return store.mutate(mutate)
+
+
+def assert_resource_lease_from_environment(resource_path):
+    """Check a synchronous child against the immutable queue snapshot for its claim."""
+    required=("AUTOMATION_QUEUE_SNAPSHOT","AUTOMATION_TASK_ID","AUTOMATION_WORKER_ID",
+              "AUTOMATION_TASK_LEASE_TOKEN","AUTOMATION_RESOURCE_LEASE_PROOF")
+    missing=[key for key in required if not os.environ.get(key)]
+    if missing: raise ValueError("resource lease environment is incomplete: "+", ".join(missing))
+    try:
+        queue=json.loads(Path(os.environ["AUTOMATION_QUEUE_SNAPSHOT"]).read_text(encoding="utf-8"))
+        proof=json.loads(os.environ["AUTOMATION_RESOURCE_LEASE_PROOF"])
+    except (OSError,json.JSONDecodeError) as exc:
+        raise ValueError("resource lease snapshot or proof is unreadable") from exc
+    if not isinstance(proof,dict) or resource_path not in proof:
+        raise ValueError(f"resource lease proof does not include {resource_path}")
+    item=proof[resource_path]
+    if not isinstance(item,dict): raise ValueError("resource lease proof entry is malformed")
+    return assert_resource_lease(
+        queue, task_id=os.environ["AUTOMATION_TASK_ID"],
+        worker_id=os.environ["AUTOMATION_WORKER_ID"],
+        task_lease_token=os.environ["AUTOMATION_TASK_LEASE_TOKEN"],
+        resource_path=resource_path, lease_id=item.get("lease_id"),
+        fencing_token=item.get("fencing_token"),
+    )
 
 
 def assert_workflow_resource_lease(queue, task_id, proof, *, now=None):
