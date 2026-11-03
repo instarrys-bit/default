@@ -74,7 +74,7 @@ jobs:
           SOURCE_WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
         run: |
           set -euo pipefail
-          # A recovery run is workflow_dispatch; ignore its completion to prevent retry loops.
+          # Retry queue-dispatched workflow runs only when their durable task correlation can be recovered.
           if [ "$SOURCE_WORKFLOW_NAME" != "Shadowrocket Deterministic Domain Audit (User Config Baseline)" ]; then
             echo "This watchdog recovery path only retries the deterministic domain audit; validator failures are handled by self-healing diagnosis."
             exit 0
