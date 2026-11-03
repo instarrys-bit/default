@@ -3,7 +3,7 @@
 This report compares normalized domain sets across discovered publisher feeds. It is informational only: overlap does not prove common ancestry, and low overlap does not prove independence.
 
 - Feeds fetched: **196**
-- Cross-policy conflict domains: **3497**
+- Cross-policy conflict domains: **3498**
 
 | Policy | Publisher A | Publisher B | A domains | B domains | Shared | Smaller-set overlap | Jaccard |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -131,7 +131,7 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | GoodnessJSON/PiHole-Whitelist | badmojr/1Hosts | 270 | 0 | 0 | 0.0% | 0.0% |
 | REJECT | GoodnessJSON/PiHole-Whitelist | furkan-bayrak/lg-tv-blocklist | 270 | 115 | 0 | 0.0% | 0.0% |
 | REJECT | GoodnessJSON/PiHole-Whitelist | h2y/Shadowrocket-ADBlock-Rules | 270 | 16125 | 3 | 1.1% | 0.0% |
-| REJECT | GoodnessJSON/PiHole-Whitelist | hagezi/dns-blocklists | 270 | 670671 | 52 | 19.3% | 0.0% |
+| REJECT | GoodnessJSON/PiHole-Whitelist | hagezi/dns-blocklists | 270 | 705148 | 52 | 19.3% | 0.0% |
 | REJECT | GoodnessJSON/PiHole-Whitelist | marco-acorte/antispam-it | 270 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | GoodnessJSON/PiHole-Whitelist | nthack/Shadowrocket-ADBlock-Rules-Easy | 270 | 16125 | 3 | 1.1% | 0.0% |
 | REJECT | GoodnessJSON/PiHole-Whitelist | pengelana/blocklist | 270 | 226570 | 2 | 0.7% | 0.0% |
@@ -150,7 +150,7 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | Hackl0us/SS-Rule-Snippet | badmojr/1Hosts | 580 | 0 | 0 | 0.0% | 0.0% |
 | REJECT | Hackl0us/SS-Rule-Snippet | furkan-bayrak/lg-tv-blocklist | 580 | 115 | 0 | 0.0% | 0.0% |
 | REJECT | Hackl0us/SS-Rule-Snippet | h2y/Shadowrocket-ADBlock-Rules | 580 | 16125 | 137 | 23.6% | 0.8% |
-| REJECT | Hackl0us/SS-Rule-Snippet | hagezi/dns-blocklists | 580 | 670671 | 239 | 41.2% | 0.0% |
+| REJECT | Hackl0us/SS-Rule-Snippet | hagezi/dns-blocklists | 580 | 705148 | 302 | 52.1% | 0.0% |
 | REJECT | Hackl0us/SS-Rule-Snippet | marco-acorte/antispam-it | 580 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | Hackl0us/SS-Rule-Snippet | nthack/Shadowrocket-ADBlock-Rules-Easy | 580 | 16125 | 137 | 23.6% | 0.8% |
 | REJECT | Hackl0us/SS-Rule-Snippet | pengelana/blocklist | 580 | 226570 | 28 | 4.8% | 0.0% |
@@ -168,7 +168,7 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | Isaaker/Spotify-AdsList | badmojr/1Hosts | 155422 | 0 | 0 | 0.0% | 0.0% |
 | REJECT | Isaaker/Spotify-AdsList | furkan-bayrak/lg-tv-blocklist | 155422 | 115 | 4 | 3.5% | 0.0% |
 | REJECT | Isaaker/Spotify-AdsList | h2y/Shadowrocket-ADBlock-Rules | 155422 | 16125 | 2553 | 15.8% | 1.5% |
-| REJECT | Isaaker/Spotify-AdsList | hagezi/dns-blocklists | 155422 | 670671 | 17185 | 11.1% | 2.1% |
+| REJECT | Isaaker/Spotify-AdsList | hagezi/dns-blocklists | 155422 | 705148 | 20637 | 13.3% | 2.5% |
 | REJECT | Isaaker/Spotify-AdsList | marco-acorte/antispam-it | 155422 | 346345 | 3 | 0.0% | 0.0% |
 | REJECT | Isaaker/Spotify-AdsList | nthack/Shadowrocket-ADBlock-Rules-Easy | 155422 | 16125 | 2553 | 15.8% | 1.5% |
 | REJECT | Isaaker/Spotify-AdsList | pengelana/blocklist | 155422 | 226570 | 3134 | 2.0% | 0.8% |
@@ -185,7 +185,7 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | badmojr/1Hosts | 52427 | 0 | 0 | 0.0% | 0.0% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | furkan-bayrak/lg-tv-blocklist | 52427 | 115 | 3 | 2.6% | 0.0% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | h2y/Shadowrocket-ADBlock-Rules | 52427 | 16125 | 2250 | 14.0% | 3.4% |
-| REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | hagezi/dns-blocklists | 52427 | 670671 | 50766 | 96.8% | 7.6% |
+| REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | hagezi/dns-blocklists | 52427 | 705148 | 50999 | 97.3% | 7.2% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | marco-acorte/antispam-it | 52427 | 346345 | 2 | 0.0% | 0.0% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | nthack/Shadowrocket-ADBlock-Rules-Easy | 52427 | 16125 | 2250 | 14.0% | 3.4% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | pengelana/blocklist | 52427 | 226570 | 16406 | 31.3% | 6.2% |
@@ -201,7 +201,7 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | badmojr/1Hosts | 45081 | 0 | 0 | 0.0% | 0.0% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | furkan-bayrak/lg-tv-blocklist | 45081 | 115 | 3 | 2.6% | 0.0% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | h2y/Shadowrocket-ADBlock-Rules | 45081 | 16125 | 2718 | 16.9% | 4.6% |
-| REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | hagezi/dns-blocklists | 45081 | 670671 | 15691 | 34.8% | 2.2% |
+| REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | hagezi/dns-blocklists | 45081 | 705148 | 15791 | 35.0% | 2.2% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | marco-acorte/antispam-it | 45081 | 346345 | 2 | 0.0% | 0.0% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | nthack/Shadowrocket-ADBlock-Rules-Easy | 45081 | 16125 | 2718 | 16.9% | 4.6% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | pengelana/blocklist | 45081 | 226570 | 10780 | 23.9% | 4.1% |
@@ -216,7 +216,7 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | badmojr/1Hosts | 969 | 0 | 0 | 0.0% | 0.0% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | furkan-bayrak/lg-tv-blocklist | 969 | 115 | 0 | 0.0% | 0.0% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | h2y/Shadowrocket-ADBlock-Rules | 969 | 16125 | 27 | 2.8% | 0.2% |
-| REJECT | TG-Twilight/AWAvenue-Ads-Rule | hagezi/dns-blocklists | 969 | 670671 | 733 | 75.6% | 0.1% |
+| REJECT | TG-Twilight/AWAvenue-Ads-Rule | hagezi/dns-blocklists | 969 | 705148 | 733 | 75.6% | 0.1% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | marco-acorte/antispam-it | 969 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | nthack/Shadowrocket-ADBlock-Rules-Easy | 969 | 16125 | 27 | 2.8% | 0.2% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | pengelana/blocklist | 969 | 226570 | 15 | 1.5% | 0.0% |
@@ -230,7 +230,7 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | badmojr/1Hosts | 17028 | 0 | 0 | 0.0% | 0.0% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | furkan-bayrak/lg-tv-blocklist | 17028 | 115 | 0 | 0.0% | 0.0% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | h2y/Shadowrocket-ADBlock-Rules | 17028 | 16125 | 16125 | 100.0% | 94.7% |
-| REJECT | YanbingJiang/Shadowrocket_diy_rules | hagezi/dns-blocklists | 17028 | 670671 | 3252 | 19.1% | 0.5% |
+| REJECT | YanbingJiang/Shadowrocket_diy_rules | hagezi/dns-blocklists | 17028 | 705148 | 3715 | 21.8% | 0.5% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | marco-acorte/antispam-it | 17028 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | nthack/Shadowrocket-ADBlock-Rules-Easy | 17028 | 16125 | 16125 | 100.0% | 94.7% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | pengelana/blocklist | 17028 | 226570 | 1382 | 8.1% | 0.6% |
@@ -243,7 +243,7 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | anudeepND/whitelist | badmojr/1Hosts | 267 | 0 | 0 | 0.0% | 0.0% |
 | REJECT | anudeepND/whitelist | furkan-bayrak/lg-tv-blocklist | 267 | 115 | 0 | 0.0% | 0.0% |
 | REJECT | anudeepND/whitelist | h2y/Shadowrocket-ADBlock-Rules | 267 | 16125 | 3 | 1.1% | 0.0% |
-| REJECT | anudeepND/whitelist | hagezi/dns-blocklists | 267 | 670671 | 51 | 19.1% | 0.0% |
+| REJECT | anudeepND/whitelist | hagezi/dns-blocklists | 267 | 705148 | 51 | 19.1% | 0.0% |
 | REJECT | anudeepND/whitelist | marco-acorte/antispam-it | 267 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | anudeepND/whitelist | nthack/Shadowrocket-ADBlock-Rules-Easy | 267 | 16125 | 3 | 1.1% | 0.0% |
 | REJECT | anudeepND/whitelist | pengelana/blocklist | 267 | 226570 | 2 | 0.7% | 0.0% |
@@ -255,7 +255,7 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | anudeepND/whitelist | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 267 | 49086 | 12 | 4.5% | 0.0% |
 | REJECT | badmojr/1Hosts | furkan-bayrak/lg-tv-blocklist | 0 | 115 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | h2y/Shadowrocket-ADBlock-Rules | 0 | 16125 | 0 | 0.0% | 0.0% |
-| REJECT | badmojr/1Hosts | hagezi/dns-blocklists | 0 | 670671 | 0 | 0.0% | 0.0% |
+| REJECT | badmojr/1Hosts | hagezi/dns-blocklists | 0 | 705148 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | marco-acorte/antispam-it | 0 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | nthack/Shadowrocket-ADBlock-Rules-Easy | 0 | 16125 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | pengelana/blocklist | 0 | 226570 | 0 | 0.0% | 0.0% |
@@ -266,7 +266,7 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | badmojr/1Hosts | zangadoprojets/pi-hole-blocklist | 0 | 57637 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 0 | 49086 | 0 | 0.0% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | h2y/Shadowrocket-ADBlock-Rules | 115 | 16125 | 0 | 0.0% | 0.0% |
-| REJECT | furkan-bayrak/lg-tv-blocklist | hagezi/dns-blocklists | 115 | 670671 | 6 | 5.2% | 0.0% |
+| REJECT | furkan-bayrak/lg-tv-blocklist | hagezi/dns-blocklists | 115 | 705148 | 6 | 5.2% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | marco-acorte/antispam-it | 115 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | nthack/Shadowrocket-ADBlock-Rules-Easy | 115 | 16125 | 0 | 0.0% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | pengelana/blocklist | 115 | 226570 | 1 | 0.9% | 0.0% |
@@ -276,7 +276,7 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | furkan-bayrak/lg-tv-blocklist | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 115 | 52444 | 3 | 2.6% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | zangadoprojets/pi-hole-blocklist | 115 | 57637 | 0 | 0.0% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 115 | 49086 | 3 | 2.6% | 0.0% |
-| REJECT | h2y/Shadowrocket-ADBlock-Rules | hagezi/dns-blocklists | 16125 | 670671 | 2653 | 16.5% | 0.4% |
+| REJECT | h2y/Shadowrocket-ADBlock-Rules | hagezi/dns-blocklists | 16125 | 705148 | 3043 | 18.9% | 0.4% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | marco-acorte/antispam-it | 16125 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | nthack/Shadowrocket-ADBlock-Rules-Easy | 16125 | 16125 | 16125 | 100.0% | 100.0% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | pengelana/blocklist | 16125 | 226570 | 1262 | 7.8% | 0.5% |
@@ -286,15 +286,15 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 16125 | 52444 | 2249 | 13.9% | 3.4% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | zangadoprojets/pi-hole-blocklist | 16125 | 57637 | 0 | 0.0% | 0.0% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 16125 | 49086 | 2230 | 13.8% | 3.5% |
-| REJECT | hagezi/dns-blocklists | marco-acorte/antispam-it | 670671 | 346345 | 56 | 0.0% | 0.0% |
-| REJECT | hagezi/dns-blocklists | nthack/Shadowrocket-ADBlock-Rules-Easy | 670671 | 16125 | 2653 | 16.5% | 0.4% |
-| REJECT | hagezi/dns-blocklists | pengelana/blocklist | 670671 | 226570 | 141564 | 62.5% | 18.7% |
-| REJECT | hagezi/dns-blocklists | phishdestroy/destroylist | 670671 | 234768 | 9789 | 4.2% | 1.1% |
-| REJECT | hagezi/dns-blocklists | sefinek/Sefinek-Blocklist-Collection | 670671 | 81 | 2 | 2.5% | 0.0% |
-| REJECT | hagezi/dns-blocklists | sve1r/Rules-For-Quantumult-X | 670671 | 106541 | 39211 | 36.8% | 5.3% |
-| REJECT | hagezi/dns-blocklists | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 670671 | 52444 | 50753 | 96.8% | 7.5% |
-| REJECT | hagezi/dns-blocklists | zangadoprojets/pi-hole-blocklist | 670671 | 57637 | 172 | 0.3% | 0.0% |
-| REJECT | hagezi/dns-blocklists | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 670671 | 49086 | 47896 | 97.6% | 7.1% |
+| REJECT | hagezi/dns-blocklists | marco-acorte/antispam-it | 705148 | 346345 | 56 | 0.0% | 0.0% |
+| REJECT | hagezi/dns-blocklists | nthack/Shadowrocket-ADBlock-Rules-Easy | 705148 | 16125 | 3043 | 18.9% | 0.4% |
+| REJECT | hagezi/dns-blocklists | pengelana/blocklist | 705148 | 226570 | 152774 | 67.4% | 19.6% |
+| REJECT | hagezi/dns-blocklists | phishdestroy/destroylist | 705148 | 234768 | 12681 | 5.4% | 1.4% |
+| REJECT | hagezi/dns-blocklists | sefinek/Sefinek-Blocklist-Collection | 705148 | 81 | 2 | 2.5% | 0.0% |
+| REJECT | hagezi/dns-blocklists | sve1r/Rules-For-Quantumult-X | 705148 | 106541 | 41931 | 39.4% | 5.4% |
+| REJECT | hagezi/dns-blocklists | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 705148 | 52444 | 51064 | 97.4% | 7.2% |
+| REJECT | hagezi/dns-blocklists | zangadoprojets/pi-hole-blocklist | 705148 | 57637 | 173 | 0.3% | 0.0% |
+| REJECT | hagezi/dns-blocklists | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 705148 | 49086 | 48069 | 97.9% | 6.8% |
 | REJECT | marco-acorte/antispam-it | nthack/Shadowrocket-ADBlock-Rules-Easy | 346345 | 16125 | 0 | 0.0% | 0.0% |
 | REJECT | marco-acorte/antispam-it | pengelana/blocklist | 346345 | 226570 | 3 | 0.0% | 0.0% |
 | REJECT | marco-acorte/antispam-it | phishdestroy/destroylist | 346345 | 234768 | 0 | 0.0% | 0.0% |
@@ -334,7 +334,7 @@ This report compares normalized domain sets across discovered publisher feeds. I
 
 ## Cross-policy contradictions
 
-Detected domains appearing under more than one policy: **3497**
+Detected domains appearing under more than one policy: **3498**
 
 - `000webhost.com`: PROXY, REJECT
 - `01122200.com`: PROXY, REJECT
@@ -353,6 +353,7 @@ Detected domains appearing under more than one policy: **3497**
 - `123juzi.net`: DIRECT, REJECT
 - `123movies.to`: PROXY, REJECT
 - `126.net`: DIRECT, PROXY
+- `127.com`: DIRECT, REJECT
 - `127.net`: DIRECT, PROXY
 - `12bet.com`: PROXY, REJECT
 - `12vpx.com`: PROXY, REJECT
@@ -535,7 +536,6 @@ Detected domains appearing under more than one policy: **3497**
 - `ainudez.com`: PROXY, REJECT
 - `aiosearch.com`: PROXY, REJECT
 - `air-matters.com`: DIRECT, PROXY
-- `airbrake.io`: PROXY, REJECT
 
 ## Publication boundary
 

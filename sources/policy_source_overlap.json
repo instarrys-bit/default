@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "feed_count": 196,
-  "total_bytes_read": 148152332,
+  "total_bytes_read": 149167865,
   "max_file_bytes": 30000000,
   "max_total_bytes": 500000000,
   "publisher_counts": {
@@ -6321,9 +6321,9 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 270,
-      "right_count": 670671,
+      "right_count": 705148,
       "overlap_count": 52,
-      "jaccard": 7.8e-05,
+      "jaccard": 7.4e-05,
       "smaller_set_overlap": 0.192593,
       "shared_domain_sample": [
         "7eer.net",
@@ -6985,15 +6985,17 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 580,
-      "right_count": 670671,
-      "overlap_count": 239,
-      "jaccard": 0.000356,
-      "smaller_set_overlap": 0.412069,
+      "right_count": 705148,
+      "overlap_count": 302,
+      "jaccard": 0.000428,
+      "smaller_set_overlap": 0.52069,
       "shared_domain_sample": [
         "111cn.net",
         "114la.com",
         "51.la",
+        "519397.com",
         "51yes.com",
+        "915.com",
         "9377.cn",
         "99click.com",
         "a.applovin.com",
@@ -7005,12 +7007,14 @@
         "ad.cmvideo.cn",
         "ad.flipboard.com",
         "ad.mi.com",
+        "ad.mobile.youku.com",
         "ad.xiaomi.com",
         "adadvisor.net",
         "adap.tv",
         "adbxb.com",
         "adchina.com",
         "adcolony.com",
+        "adcome.cn",
         "ader.mobi",
         "adform.net",
         "adfuture.cn",
@@ -7035,11 +7039,7 @@
         "aduu.cn",
         "adview.cn",
         "advmob.cn",
-        "adwo.com",
-        "adxmi.com",
-        "adzerk.net",
-        "allyes.cn",
-        "allyes.com"
+        "adwo.com"
       ]
     },
     {
@@ -7814,10 +7814,10 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 155422,
-      "right_count": 670671,
-      "overlap_count": 17185,
-      "jaccard": 0.021245,
-      "smaller_set_overlap": 0.11057,
+      "right_count": 705148,
+      "overlap_count": 20637,
+      "jaccard": 0.02457,
+      "smaller_set_overlap": 0.13278,
       "shared_domain_sample": [
         "000lkub.rcomhost.com",
         "000ll4q.rcomhost.com",
@@ -7839,16 +7839,23 @@
         "1.f.ix.de",
         "1.gmxnet.damoh.schneevonmorgen.com",
         "1.im.cz",
+        "1.ofsnetwork.com",
+        "1.quicktrkr.com",
+        "100023.live173.com",
         "1001movies.com",
         "100webads.com",
         "101com.com",
         "101m3.com",
         "101order.com",
         "102.112.2o7.net",
+        "10267.10cms.com",
         "103092804.com",
         "103bees.com",
         "10712824.qqc.co",
+        "10xhellometro.112.2o7.net",
+        "11.rtstats.com",
         "1100ad.com",
+        "1105governmentinformationgroup.122.2o7.net",
         "11163929-2268.c2.adprotect.net",
         "11163929-2315.c2.adprotect.net",
         "11163929-2410.c2.adprotect.net",
@@ -7861,14 +7868,7 @@
         "11x11.com",
         "11zz.com",
         "121media.com",
-        "123-counter.de",
-        "123advertising.nl",
-        "123banners.com",
-        "123c.vn",
-        "123compteur.com",
-        "123count.com",
-        "123counts.com",
-        "123date.me"
+        "123-counter.de"
       ]
     },
     {
@@ -8605,16 +8605,17 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 52427,
-      "right_count": 670671,
-      "overlap_count": 50766,
-      "jaccard": 0.075507,
-      "smaller_set_overlap": 0.968318,
+      "right_count": 705148,
+      "overlap_count": 50999,
+      "jaccard": 0.072178,
+      "smaller_set_overlap": 0.972762,
       "shared_domain_sample": [
         "000491b06a.com",
         "0017c6c37c.com",
         "0019x.com",
         "003store.com",
         "00427011ae.com",
+        "005ad66f1d.com",
         "00609c257b.com",
         "009f45b51c.com",
         "00a39e6dfd.com",
@@ -8658,8 +8659,7 @@
         "054ii.com",
         "058d79990c.com",
         "059f25bd5b.com",
-        "05b9daf35c.com",
-        "0628ba07b4.com"
+        "05b9daf35c.com"
       ]
     },
     {
@@ -9313,10 +9313,10 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 45081,
-      "right_count": 670671,
-      "overlap_count": 15691,
-      "jaccard": 0.022414,
-      "smaller_set_overlap": 0.348062,
+      "right_count": 705148,
+      "overlap_count": 15791,
+      "jaccard": 0.021501,
+      "smaller_set_overlap": 0.350281,
       "shared_domain_sample": [
         "0019x.com",
         "003store.com",
@@ -9908,9 +9908,9 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 969,
-      "right_count": 670671,
+      "right_count": 705148,
       "overlap_count": 733,
-      "jaccard": 0.001093,
+      "jaccard": 0.001039,
       "smaller_set_overlap": 0.75645,
       "shared_domain_sample": [
         "1500020991.vodplayer.wxamedia.com",
@@ -10383,17 +10383,19 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 17028,
-      "right_count": 670671,
-      "overlap_count": 3252,
-      "jaccard": 0.004751,
-      "smaller_set_overlap": 0.19098,
+      "right_count": 705148,
+      "overlap_count": 3715,
+      "jaccard": 0.005171,
+      "smaller_set_overlap": 0.21817,
       "shared_domain_sample": [
         "000dn.com",
         "003store.com",
         "00oo00.com",
         "022aifang.com",
+        "025suyu.com",
         "0265331.com",
         "0798ls.com",
+        "0937jyg.com",
         "0gw7e6s3wrao9y3q.pro",
         "0sywjs4r1x.com",
         "0x01n2ptpuz3.com",
@@ -10435,9 +10437,7 @@
         "100fenlm.com",
         "1017.cn",
         "10desires.com",
-        "11.96131.com.cn",
-        "1133.cc",
-        "114com.cc"
+        "11.96131.com.cn"
       ]
     },
     {
@@ -10867,9 +10867,9 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 267,
-      "right_count": 670671,
+      "right_count": 705148,
       "overlap_count": 51,
-      "jaccard": 7.6e-05,
+      "jaccard": 7.2e-05,
       "smaller_set_overlap": 0.191011,
       "shared_domain_sample": [
         "7eer.net",
@@ -11155,7 +11155,7 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 0,
-      "right_count": 670671,
+      "right_count": 705148,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -11298,7 +11298,7 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 115,
-      "right_count": 670671,
+      "right_count": 705148,
       "overlap_count": 6,
       "jaccard": 9e-06,
       "smaller_set_overlap": 0.052174,
@@ -11449,17 +11449,19 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 16125,
-      "right_count": 670671,
-      "overlap_count": 2653,
-      "jaccard": 0.003878,
-      "smaller_set_overlap": 0.164527,
+      "right_count": 705148,
+      "overlap_count": 3043,
+      "jaccard": 0.004237,
+      "smaller_set_overlap": 0.188713,
       "shared_domain_sample": [
         "000dn.com",
         "003store.com",
         "00oo00.com",
         "022aifang.com",
+        "025suyu.com",
         "0265331.com",
         "0798ls.com",
+        "0937jyg.com",
         "0gw7e6s3wrao9y3q.pro",
         "0sywjs4r1x.com",
         "0x01n2ptpuz3.com",
@@ -11501,9 +11503,7 @@
         "100fenlm.com",
         "1017.cn",
         "10desires.com",
-        "11.96131.com.cn",
-        "1133.cc",
-        "114com.cc"
+        "11.96131.com.cn"
       ]
     },
     {
@@ -11887,10 +11887,10 @@
         "hagezi/dns-blocklists",
         "marco-acorte/antispam-it"
       ],
-      "left_count": 670671,
+      "left_count": 705148,
       "right_count": 346345,
       "overlap_count": 56,
-      "jaccard": 5.5e-05,
+      "jaccard": 5.3e-05,
       "smaller_set_overlap": 0.000162,
       "shared_domain_sample": [
         "across.it",
@@ -11951,18 +11951,20 @@
         "hagezi/dns-blocklists",
         "nthack/Shadowrocket-ADBlock-Rules-Easy"
       ],
-      "left_count": 670671,
+      "left_count": 705148,
       "right_count": 16125,
-      "overlap_count": 2653,
-      "jaccard": 0.003878,
-      "smaller_set_overlap": 0.164527,
+      "overlap_count": 3043,
+      "jaccard": 0.004237,
+      "smaller_set_overlap": 0.188713,
       "shared_domain_sample": [
         "000dn.com",
         "003store.com",
         "00oo00.com",
         "022aifang.com",
+        "025suyu.com",
         "0265331.com",
         "0798ls.com",
+        "0937jyg.com",
         "0gw7e6s3wrao9y3q.pro",
         "0sywjs4r1x.com",
         "0x01n2ptpuz3.com",
@@ -12004,9 +12006,7 @@
         "100fenlm.com",
         "1017.cn",
         "10desires.com",
-        "11.96131.com.cn",
-        "1133.cc",
-        "114com.cc"
+        "11.96131.com.cn"
       ]
     },
     {
@@ -12015,11 +12015,11 @@
         "hagezi/dns-blocklists",
         "pengelana/blocklist"
       ],
-      "left_count": 670671,
+      "left_count": 705148,
       "right_count": 226570,
-      "overlap_count": 141564,
-      "jaccard": 0.187334,
-      "smaller_set_overlap": 0.624814,
+      "overlap_count": 152774,
+      "jaccard": 0.19613,
+      "smaller_set_overlap": 0.674291,
       "shared_domain_sample": [
         "0--4.com",
         "0--d.com",
@@ -12068,9 +12068,9 @@
         "00.org",
         "00.quest",
         "00.wine",
+        "000-054343-info.weebly.com",
         "000-anti.com",
-        "0000000000000.com",
-        "00000001.com"
+        "0000000000000.com"
       ]
     },
     {
@@ -12079,62 +12079,62 @@
         "hagezi/dns-blocklists",
         "phishdestroy/destroylist"
       ],
-      "left_count": 670671,
+      "left_count": 705148,
       "right_count": 234768,
-      "overlap_count": 9789,
-      "jaccard": 0.010929,
-      "smaller_set_overlap": 0.041696,
+      "overlap_count": 12681,
+      "jaccard": 0.013676,
+      "smaller_set_overlap": 0.054015,
       "shared_domain_sample": [
+        "008963466.weebly.com",
+        "009090334mn.vercel.app",
+        "00loo0j.weebly.com",
         "01.apswatchclub.shop",
         "0465kk.com",
         "09.2026x02find.shop",
         "0auth2.1mb.site",
+        "0i3n894u-dpwyvwoituy1.edgeone.dev",
         "0nedrive.dropcloud.it",
         "0ps8tslaiu.memphisbopclub.com",
         "1-slots.world",
+        "100k4yo.netlify.app",
         "1010.archi",
         "101film.live",
         "106b.com",
         "108studija.lt",
+        "109tyesy.vercel.app",
         "10killawm-awm.digital",
         "10vor10.net",
         "11586bets10.com",
         "11vet.com",
         "11wealth.com",
         "1217.cc",
+        "128tyesy.vercel.app",
+        "137tyesy.vercel.app",
         "140aba.senes.at",
         "140bae.senes.at",
         "1479182-coinbase.com",
         "150100.cn",
         "15052233.com",
         "158-158-1-61.cprapid.com",
+        "160tyesy.vercel.app",
+        "161tyesy.vercel.app",
+        "164tyesy.vercel.app",
+        "165tyesy.vercel.app",
+        "166tyesy.vercel.app",
+        "170tyesy.vercel.app",
+        "171tyesy.vercel.app",
+        "172tyesy.vercel.app",
+        "173tyesy.vercel.app",
+        "177tyesy.vercel.app",
+        "181tyesy.vercel.app",
+        "185tyesy.vercel.app",
+        "186tyesy.vercel.app",
+        "187tyesy.vercel.app",
         "188betguanfang.com",
+        "189tyesy.vercel.app",
+        "190tyesy.vercel.app",
         "1cftplatforma.digital",
-        "1fuel.io",
-        "1kdailyprofit.net",
-        "1kdailyprofitpro.digital",
-        "1pro.club",
-        "1sea.nikens.at",
-        "1spin.club",
-        "1webmail-free.clients-2.com",
-        "1wfqxn.life",
-        "1win.fyi",
-        "1win.ng",
-        "1win.pro",
-        "1xbetindonesia.bet",
-        "1xslotc.top",
-        "1xslotswin-cl.com",
-        "2026f1storeplvip.shop",
-        "2026jysk.com",
-        "2026jysk.live",
-        "2026onlinealid.software",
-        "2026pl-zooart.shop",
-        "2026rituals.com",
-        "2026rituals.shop",
-        "2026sheaps.com",
-        "2026strausseu.shop",
-        "2026summerclearance.com",
-        "2026ukaldihot.shop"
+        "1fuel.io"
       ]
     },
     {
@@ -12143,7 +12143,7 @@
         "hagezi/dns-blocklists",
         "sefinek/Sefinek-Blocklist-Collection"
       ],
-      "left_count": 670671,
+      "left_count": 705148,
       "right_count": 81,
       "overlap_count": 2,
       "jaccard": 3e-06,
@@ -12159,14 +12159,15 @@
         "hagezi/dns-blocklists",
         "sve1r/Rules-For-Quantumult-X"
       ],
-      "left_count": 670671,
+      "left_count": 705148,
       "right_count": 106541,
-      "overlap_count": 39211,
-      "jaccard": 0.053131,
-      "smaller_set_overlap": 0.368037,
+      "overlap_count": 41931,
+      "jaccard": 0.054473,
+      "smaller_set_overlap": 0.393567,
       "shared_domain_sample": [
         "0.myikas.com",
         "000dn.com",
+        "0013.cc",
         "0019x.com",
         "002777.xyz",
         "003store.com",
@@ -12174,6 +12175,7 @@
         "00609c257b.com",
         "00oo00.com",
         "00px.net",
+        "01.gxso.net",
         "01168nl.com",
         "011qt7cln.com",
         "015ea24446.com",
@@ -12183,6 +12185,7 @@
         "0214217ebc.com",
         "02228640b9.com",
         "022aifang.com",
+        "025suyu.com",
         "029519cbdc.com",
         "02exl1ql2l.com",
         "039858f297.com",
@@ -12196,10 +12199,12 @@
         "0591101.com",
         "0592.mobi",
         "05b9daf35c.com",
+        "06362.com",
         "066b7e895c.com",
         "06cp8ypn8j.com",
         "06evyxnibl.com",
         "070880.com",
+        "07171.com",
         "0755rc.com",
         "07634.com",
         "07780778.com",
@@ -12209,12 +12214,7 @@
         "0880559526.com",
         "0941.org",
         "0af2a962b0102942d9a7df351b20be55.com",
-        "0b6rvr210q.com",
-        "0b74655a28.com",
-        "0bb8jytek.com",
-        "0c2bddd1f6.com",
-        "0cdn.xyz",
-        "0cf.io"
+        "0b6rvr210q.com"
       ]
     },
     {
@@ -12223,17 +12223,18 @@
         "hagezi/dns-blocklists",
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
-      "left_count": 670671,
+      "left_count": 705148,
       "right_count": 52444,
-      "overlap_count": 50753,
-      "jaccard": 0.075485,
-      "smaller_set_overlap": 0.967756,
+      "overlap_count": 51064,
+      "jaccard": 0.072275,
+      "smaller_set_overlap": 0.973686,
       "shared_domain_sample": [
         "000491b06a.com",
         "0017c6c37c.com",
         "0019x.com",
         "003store.com",
         "00427011ae.com",
+        "005ad66f1d.com",
         "00609c257b.com",
         "009f45b51c.com",
         "00a39e6dfd.com",
@@ -12277,8 +12278,7 @@
         "054ii.com",
         "058d79990c.com",
         "059f25bd5b.com",
-        "05b9daf35c.com",
-        "0628ba07b4.com"
+        "05b9daf35c.com"
       ]
     },
     {
@@ -12287,11 +12287,11 @@
         "hagezi/dns-blocklists",
         "zangadoprojets/pi-hole-blocklist"
       ],
-      "left_count": 670671,
+      "left_count": 705148,
       "right_count": 57637,
-      "overlap_count": 172,
-      "jaccard": 0.000236,
-      "smaller_set_overlap": 0.002984,
+      "overlap_count": 173,
+      "jaccard": 0.000227,
+      "smaller_set_overlap": 0.003002,
       "shared_domain_sample": [
         "ads.facebook.com",
         "an.facebook.com",
@@ -12351,17 +12351,18 @@
         "hagezi/dns-blocklists",
         "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
       ],
-      "left_count": 670671,
+      "left_count": 705148,
       "right_count": 49086,
-      "overlap_count": 47896,
-      "jaccard": 0.071289,
-      "smaller_set_overlap": 0.975757,
+      "overlap_count": 48069,
+      "jaccard": 0.06807,
+      "smaller_set_overlap": 0.979281,
       "shared_domain_sample": [
         "000491b06a.com",
         "0017c6c37c.com",
         "0019x.com",
         "003store.com",
         "00427011ae.com",
+        "005ad66f1d.com",
         "00609c257b.com",
         "009f45b51c.com",
         "00a39e6dfd.com",
@@ -12405,8 +12406,7 @@
         "054ii.com",
         "058d79990c.com",
         "059f25bd5b.com",
-        "05b9daf35c.com",
-        "0628ba07b4.com"
+        "05b9daf35c.com"
       ]
     },
     {
@@ -13501,7 +13501,7 @@
       "shared_domain_sample": []
     }
   ],
-  "cross_policy_conflict_domain_count": 3497,
+  "cross_policy_conflict_domain_count": 3498,
   "cross_policy_conflict_sample": [
     {
       "domain": "000webhost.com",
@@ -13620,6 +13620,13 @@
       "policies": [
         "DIRECT",
         "PROXY"
+      ]
+    },
+    {
+      "domain": "127.com",
+      "policies": [
+        "DIRECT",
+        "REJECT"
       ]
     },
     {
@@ -14897,13 +14904,6 @@
       "policies": [
         "DIRECT",
         "PROXY"
-      ]
-    },
-    {
-      "domain": "airbrake.io",
-      "policies": [
-        "PROXY",
-        "REJECT"
       ]
     }
   ],
