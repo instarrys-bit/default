@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import task_scheduler
+import task_result_verifier
 from remote_task_queue_runtime import enqueue_remote
 from task_result_verifier import verify_pending_remote
 
@@ -220,7 +221,8 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
             "prepared_at": "2026-11-03T04:00:00Z",
         }
         self.client.add_run(task["task_id"], status="in_progress")
-        with patch.object(task_scheduler, "GitHubWorkflowClient", return_value=self.client):
+        with patch.object(task_scheduler, "GitHubWorkflowClient", return_value=self.client), \
+             patch.object(task_result_verifier, "GitHubWorkflowClient", return_value=self.client):
             report = task_scheduler.run_scheduler_once(
                 self.store, self.registry, self.adapters,
                 worker_id="workflow-test", max_tasks=1, root=self.root, now=self.now,
