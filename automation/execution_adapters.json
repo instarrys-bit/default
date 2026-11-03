@@ -1015,6 +1015,26 @@
             "name": "automation_task_id",
             "type": "string",
             "required": false
+          },
+          {
+            "name": "baseline_source_event",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "baseline_source_actor",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "baseline_source_before",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "baseline_source_sha",
+            "type": "string",
+            "required": false
           }
         ],
         "allowed_refs": [
