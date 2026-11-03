@@ -13,8 +13,6 @@ on:
       - "reports/lifecycle/**"
   schedule:
     - cron: "17 * * * *"
-  workflow_dispatch:
-
 permissions:
   contents: read
 
