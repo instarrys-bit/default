@@ -63,7 +63,7 @@ def validate_execution_adapters(root=ROOT,adapters_path=None,registry_path=None)
         if not isinstance(callers,list) or any(not isinstance(x,str) or not x for x in callers) or len(callers)!=len(set(callers)): raise ValueError(f"{tid}.allowed_callers invalid")
         if enabled!=(orch.get("enabled") is True) or callers!=orch.get("allowed_callers",[]): raise ValueError(f"{tid} adapter activation/callers must match registry orchestration")
         timeout=a.get("timeout_seconds")
-        if isinstance(timeout,bool) or not isinstance(timeout,int) or not 1<=timeout<=21600: raise ValueError(f"{tid}.timeout_seconds invalid")
+        if isinstance(timeout,bool) or not isinstance(timeout,int) or not 1<=timeout<=3600: raise ValueError(f"{tid}.timeout_seconds invalid")
         retry=a.get("retry")
         attempts=retry.get("max_attempts") if isinstance(retry,dict) else None
         if isinstance(attempts,bool) or not isinstance(attempts,int) or not 0<=attempts<=orch.get("max_attempts",0): raise ValueError(f"{tid} retry budget exceeds orchestration policy")
