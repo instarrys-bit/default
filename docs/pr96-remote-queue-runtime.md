@@ -28,10 +28,9 @@ Examples:
 export GITHUB_TOKEN='...'
 python scripts/remote_task_queue_runtime.py --repository owner/repo --branch main validate
 python scripts/remote_task_queue_runtime.py --repository owner/repo --branch main enqueue --task-json task.json
-python scripts/remote_task_queue_runtime.py --repository owner/repo --branch main claim --worker-id worker-01
 ```
 
-Completion requires the task ID, worker ID, lease token, and exactly one result or error JSON file. Expired leases can be recovered with `recover-expired`.
+Claims are scheduler-gated: callers must use the registered scheduler, which preflights the adapter and passes only eligible task IDs into the CAS claim operation. Completion requires the task ID, worker ID, lease token, and exactly one result or error JSON file. Successful remote completions enter `VERIFYING` and cannot become `SUCCEEDED` until the independent verifier accepts the reviewed output contract. Expired leases can be recovered with `recover-expired`.
 
 ## Activation and safety boundaries
 
