@@ -18,7 +18,7 @@ class ProductionIntentTests(unittest.TestCase):
         self.manifest_path.write_text(json.dumps({
             "schema_version": 1,
             "production_input_paths": ["sources/policy.json", "shadowrocket/ss.conf"],
-            "non_production_path_patterns": ["reports/**", "rulesets/**", "automation/**", "tests/**"]
+            "non_production_path_patterns": ["reports/**", "rulesets/**", "automation/**", "tests/**", ".github/workflows/dashboard-pages.yml", "dashboard/**", "scripts/build_dashboard_snapshot.py"]
         }), encoding="utf-8")
         (self.root / "sources").mkdir()
         (self.root / "sources" / "policy.json").write_text('{"policy":1}', encoding="utf-8")
@@ -42,6 +42,16 @@ class ProductionIntentTests(unittest.TestCase):
     def test_unknown_paths_require_review_instead_of_triggering_production(self):
         result = classify_paths(["new/unregistered.py"], self.manifest)
         self.assertEqual(result["status"], "REVIEW_REQUIRED")
+
+    def test_dashboard_only_paths_do_not_create_production_demand(self):
+        result = classify_paths([
+            ".github/workflows/dashboard-pages.yml",
+            "dashboard/index.html",
+            "dashboard/README.md",
+            "scripts/build_dashboard_snapshot.py",
+        ], self.manifest)
+        self.assertEqual(result["status"], "NO_INPUT_CHANGE")
+
 
     def test_read_only_user_config_is_a_production_input(self):
         self.assertIn("shadowrocket/ss.conf", self.manifest["production_input_paths"])
