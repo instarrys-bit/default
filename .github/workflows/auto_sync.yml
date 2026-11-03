@@ -3,9 +3,6 @@ name: Shadowrocket Deterministic Domain Audit (User Config Baseline)
 run-name: Automation task ${{ inputs.automation_task_id || 'manual' }}
 
 on:
-  schedule:
-    - cron: "0 20 * * 0"
-    # Beijing time: every Monday at 04:00.
   workflow_dispatch:
     inputs:
       restore_ids:
