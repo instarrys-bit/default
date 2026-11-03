@@ -26,6 +26,15 @@ main{width:min(100%,1440px);margin:0 auto;padding:14px}
 .section{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin:0 0 6px;padding-left:2px}
 .section:before{content:"";width:3px;height:13px;border-radius:3px;background:var(--blue)}
 .rows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}
+.review-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.review-stat{min-width:0;padding:9px 10px;border:1px solid rgba(40,57,84,.8);border-radius:9px;background:rgba(10,18,33,.28)}
+.review-stat .label{font-size:10px;line-height:1.25}
+.review-stat .value{font-size:19px;font-weight:750;line-height:1.2;margin-top:5px;font-variant-numeric:tabular-nums}
+.review-stat.warn .value{color:var(--amber)}.review-stat.bad .value{color:var(--red)}.review-stat.ok .value{color:var(--green)}
+.review-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:10px;color:var(--muted);font-size:10px}
+.review-head b{color:var(--text);font-size:13px;font-variant-numeric:tabular-nums}
+@media(max-width:700px){.review-stats{gap:6px;margin-top:9px}.review-stat{padding:8px}.review-stat .label{font-size:9px}.review-stat .value{font-size:17px}}
+@media(max-width:390px){.review-stats{gap:5px}.review-stat{padding:7px 6px}.review-stat .value{font-size:15px}}
 .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:6px 0;border-bottom:1px solid rgba(40,57,84,.75);min-width:0}
 .row:last-child{border-bottom:0}
 .row .muted{min-width:0;overflow-wrap:anywhere}
@@ -76,9 +85,18 @@ const total=Math.max(1,Number(d.rulesets.published_total)||0);let inv="";
 for(const p of ["DIRECT","PROXY","REJECT"]){const v=Number(d.rulesets.by_policy[p]||0);const label={DIRECT:"直连 DIRECT",PROXY:"代理 PROXY",REJECT:"拦截 REJECT"}[p];inv+='<div class="barrow"><b>'+label+'</b><div class="track"><div class="fill '+p.toLowerCase()+'" style="width:'+Math.min(100,v/total*100)+'%"></div></div><b class="status">'+n(v)+'</b></div>'}
 inv+='<div class="rows">'+row("发布容量上限",n(d.rulesets.max_published)+" 条")+row("当前容量占用",d.rulesets.max_published?((d.rulesets.published_total/d.rulesets.max_published)*100).toFixed(1)+"%":"—")+'</div>';
 el("inventory").innerHTML=inv;
-const cr=d.candidate_review||{},sc=cr.status_counts||{};const recorded=Number(cr.history_recorded)||0,missing=Number(cr.missing_history)||0,approved=Number(sc.APPROVED)||0;const pass=recorded?Math.min(100,approved/recorded*100):0;
-const statusRows=["REVIEW","CONFLICT","POLICY_CONFLICT","RISK_HOLD","ALREADY_COVERED","APPROVED","UNREVIEWED"].map(k=>row(({REVIEW:"待进一步审核",CONFLICT:"配置冲突",POLICY_CONFLICT:"策略冲突",RISK_HOLD:"风险隔离",ALREADY_COVERED:"配置已覆盖",APPROVED:"自动审核通过",UNREVIEWED:"没有审核记录"})[k],n(sc[k]||0),k==="APPROVED"?"ok":k==="UNREVIEWED"?"warn":""));
-el("review").innerHTML='<div class="bar-meta"><span>当前候选池审核记录覆盖率</span><b>'+(Number(cr.candidate_total)?(recorded/Number(cr.candidate_total)*100).toFixed(1):"0.0")+'%</b></div><div class="track"><div class="fill" style="width:'+(Number(cr.candidate_total)?Math.min(100,recorded/Number(cr.candidate_total)*100):0)+'%"></div></div><div class="rows">'+row("当前候选池",n(cr.candidate_total))+row("已有历史审核记录",n(recorded))+row("尚无审核记录",n(missing),missing?"warn":"ok")+row("审核账本记录总量",n(cr.review_ledger_total))+row("审核游标状态",cr.cursor_status||"未知")+row("游标候选数",n(cr.cursor_candidate_count))+'</div><div class="rows">'+statusRows.join("")+'</div><div class="note">按当前候选域名与审核账本匹配；历史记录不等于当前证据指纹已复核。数据变化后须由确定性审核程序重新判定。</div>';
+const cr=d.candidate_review||{},sc=cr.status_counts||{};
+const candidateTotal=Number(cr.candidate_total)||0,recorded=Number(cr.history_recorded)||0,missing=Number(cr.missing_history)||0;
+const coverage=candidateTotal?Math.min(100,recorded/candidateTotal*100):0;
+const reviewStats=[
+["无审核记录",missing,missing?"warn":"ok"],
+["待进一步审核",Number(sc.REVIEW)||0,(Number(sc.REVIEW)||0)?"warn":""],
+["配置/策略冲突",(Number(sc.CONFLICT)||0)+(Number(sc.POLICY_CONFLICT)||0),(Number(sc.CONFLICT)||0)+(Number(sc.POLICY_CONFLICT)||0)?"bad":""],
+["风险隔离",Number(sc.RISK_HOLD)||0,(Number(sc.RISK_HOLD)||0)?"bad":""],
+["自动审核通过",Number(sc.APPROVED)||0,"ok"],
+["配置已覆盖",Number(sc.ALREADY_COVERED)||0,""]
+];
+el("review").innerHTML='<div class="review-head"><span>审核记录覆盖率</span><b>'+coverage.toFixed(1)+'%</b></div><div class="track" style="margin-top:6px"><div class="fill" style="width:'+coverage+'%"></div></div><div class="bar-meta"><span>候选池 '+n(candidateTotal)+'</span><span>已有记录 '+n(recorded)+' / 无记录 '+n(missing)+'</span></div><div class="review-stats">'+reviewStats.map(([label,value,cls])=>'<div class="review-stat '+cls+'"><div class="label">'+label+'</div><div class="value">'+n(value)+'</div></div>').join("")+'</div><div class="note">覆盖率表示候选域名匹配到历史审核记录，不代表当前证据已重新审核；数据变化后由审核程序重新判定。</div>';
 const q=d.queue.by_status||{};const queued=Number(q.QUEUED||0),running=Number(q.CLAIMED||0),verifying=Number(q.VERIFYING||0),active=queued+running+verifying;
 el("queue").innerHTML='<div class="rows">'+row("未完成任务",n(active),active?"warn":"ok")+row("等待处理",n(queued))+row("正在执行",n(running))+row("正在核验",n(verifying),"warn")+row("已完成",n(q.SUCCEEDED||0),"ok")+row("多次失败，已暂停",n(q.DEAD_LETTER||0),"bad")+'</div>';
 const published=Number(d.lifecycle.published_rule_count)||0,milestone=Number(d.lifecycle.next_milestone)||0;const progress=milestone?Math.min(100,published/milestone*100):0;
