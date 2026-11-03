@@ -125,7 +125,7 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
                     raise ValueError("resource_contract resource_keys must be unique canonical relative paths")
                 lease_seconds = resource_contract.get("lease_seconds")
                 if isinstance(lease_seconds, bool) or not isinstance(lease_seconds, int) or not 1 <= lease_seconds <= 21600:
-                    raise ValueError("resource_contract lease_seconds must be from 1 to 3600")
+                    raise ValueError("resource_contract lease_seconds must be from 1 to 21600")
             expected_interface = (
                 "reviewed" if adapter.get("adapter_type") == "python_cli"
                 else "workflow_dispatch_reviewed" if adapter.get("adapter_type") == "github_actions_workflow"
