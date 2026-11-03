@@ -475,12 +475,13 @@ def main(argv: list[str] | None = None) -> int:
     persistent["assessment_count"] = len(history)
     assert_optional_write_lease(RUNTIME_OUTPUT, required=args.task_input is not None)
     RUNTIME_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    write_document(RUNTIME_OUTPUT, result, "assessments")
+    write_document(RUNTIME_OUTPUT, result, "assessments", lease_required=args.task_input is not None)
     assert_optional_write_lease(OUTPUT, required=args.task_input is not None)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    write_document(OUTPUT, compact_assessment_result(persistent), "assessments")
+    write_document(OUTPUT, compact_assessment_result(persistent), "assessments", lease_required=args.task_input is not None)
     assert_optional_write_lease(REPORT, required=args.task_input is not None)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
+    assert_optional_write_lease(REPORT, required=args.task_input is not None)
     REPORT.write_text(render_report(assessments, drift_summary), encoding="utf-8")
     print(json.dumps({
         "assessed": len(assessments),
