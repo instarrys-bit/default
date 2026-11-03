@@ -160,6 +160,37 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         self.assertIn("not an ancestor", result.stdout)
         self.assertEqual(git(self.work, "rev-parse", "HEAD"), local_commit)
 
+    def test_generated_outputs_do_not_create_new_production_demand(self):
+        compare = {
+            "status": "ahead",
+            "files": [
+                {"filename": "reports/automation/heartbeat.json", "status": "modified"},
+                {"filename": "rulesets/direct.list", "status": "modified"},
+                {"filename": "sources/source_activation_log.json", "status": "modified"},
+            ],
+        }
+        result = self.run_check_only(compare)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("No declared production inputs changed", result.stdout)
+
+    def test_declared_production_input_change_requires_new_audit(self):
+        compare = {
+            "status": "ahead",
+            "files": [
+                {"filename": "scripts/build_rulesets.py", "status": "modified"},
+                {"filename": "reports/automation/heartbeat.json", "status": "modified"},
+            ],
+        }
+        result = self.run_check_only(compare)
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("A declared production input changed", result.stdout)
+
+    def test_ss_conf_is_a_read_only_production_input(self):
+        compare = {"status": "ahead", "files": [{"filename": "shadowrocket/ss.conf", "status": "modified"}]}
+        result = self.run_check_only(compare)
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("A declared production input changed", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()
