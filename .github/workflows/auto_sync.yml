@@ -648,6 +648,9 @@ jobs:
             exit 1
           }
 
+          # Even a no-change run must finish under its original fencing epoch.
+          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID" --proof-json "$RESOURCE_LEASE_PROOF"
+
           if git diff --cached --quiet; then
             echo "No audit output changes."
             exit 0
