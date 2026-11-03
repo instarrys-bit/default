@@ -184,7 +184,7 @@ def ensure_protected_config_unchanged(before_digest: str, task: dict, store,
     try:
         complete_remote(
             task["task_id"], task["lease"]["owner"], task["lease"]["token"],
-            success=False, error=error, store=store, registry=registry, now=now_utc(),
+            success=False, error=error, store=store, registry=registry, now=now,
         )
     finally:
         raise ProtectedConfigMutationError(error["message"])
@@ -258,8 +258,10 @@ def clear_workflow_dispatch_intent(task: dict, store, registry: dict) -> None:
     store.mutate(mutate)
 
 
-def execute_claimed_workflow_task(task: dict, adapter: dict, store, registry: dict, adapters: dict) -> dict:
+def execute_claimed_workflow_task(task: dict, adapter: dict, store, registry: dict,
+                                   adapters: dict, now: datetime | None = None) -> dict:
     """Persist intent, dispatch once, then move the task to independent verification."""
+    now = now or now_utc()
     try:
         client = GitHubWorkflowClient(
             store.repository, token=store.token, timeout=adapter["timeout_seconds"]
@@ -284,10 +286,10 @@ def execute_claimed_workflow_task(task: dict, adapter: dict, store, registry: di
             return {"task_id": task["task_id"], "status": completed["status"], "error": error}
         pending = complete_remote(
             task["task_id"], task["lease"]["owner"], task["lease"]["token"],
-            success=True, result=result, store=store, registry=registry, now=now_utc(),
+            success=True, result=result, store=store, registry=registry, now=now,
         )
         verification = verify_pending_remote(
-            store, registry, adapters, now_utc(), workflow_client=client
+            store, registry, adapters, now, workflow_client=client
         )
         snapshot = store.read().document
         final_task = next(item for item in snapshot["tasks"] if item["task_id"] == task["task_id"])
@@ -312,7 +314,7 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
                          now: datetime | None = None) -> dict:
     now = now or now_utc()
     if adapter.get("adapter_type") == "github_actions_workflow":
-        return execute_claimed_workflow_task(task, adapter, store, registry, adapters)
+        return execute_claimed_workflow_task(task, adapter, store, registry, adapters, now)
     entrypoint = adapter["entrypoint"]
     script_path = (root / entrypoint["path"]).resolve()
     input_errors = validate_json_schema(task["input"], adapter["input_contract"])
