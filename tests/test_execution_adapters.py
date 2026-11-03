@@ -95,9 +95,6 @@ class ExecutionAdapterTests(unittest.TestCase):
             line for line in path.read_text(encoding="utf-8").splitlines()
             if not line.startswith("run-name:")
         ) + "\n", encoding="utf-8")
-        doc["adapters"][1]["workflow"]["inputs"] = [
-            {"name": "item", "type": "string", "required": True}
-        ]
         ap.write_text(json.dumps(doc), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "automation_task_id"):
             validate_execution_adapters(root, ap, rp)
