@@ -79,6 +79,17 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("run.get(\"head_branch\") != \"main\"", watchdog)
         self.assertIn("gh run cancel", watchdog)
 
+    def test_top_level_watchdog_supervises_remote_queue_fail_closed(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        self.assertIn("task-queue-supervision:", workflow)
+        self.assertIn("group: shadowrocket-task-queue", workflow)
+        self.assertIn("contents: write", workflow)
+        self.assertIn("persist-credentials: false", workflow)
+        self.assertIn("GITHUB_TOKEN: ${{ github.token }}", workflow)
+        self.assertIn("python3 scripts/task_scheduler.py", workflow)
+        self.assertIn("--max-tasks 1 run-once", workflow)
+        self.assertIn("github.event.workflow_run.head_branch == 'main'", workflow)
+
     def test_watchdog_deduplicates_all_active_run_states_before_dispatch(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         for status in ("queued", "pending", "waiting", "requested", "in_progress"):
