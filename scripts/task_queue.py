@@ -122,7 +122,7 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
         if attempts > max_attempts or max_attempts > orchestration.get("max_attempts", -1):
             raise ValueError(f"{task_id} attempts exceed the registered retry budget")
         timeout = orchestration.get("timeout_seconds")
-        if isinstance(timeout, bool) or not isinstance(timeout, int) or not 1 <= timeout <= 3600:
+        if isinstance(timeout, bool) or not isinstance(timeout, int) or not 1 <= timeout <= 21600:
             raise ValueError(f"{task_id} target has no valid registered timeout")
         if not isinstance(task["input"], dict):
             raise ValueError(f"{task_id}.input must be an object")
@@ -237,7 +237,7 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
         if not isinstance(resource_lease, dict) or resource_lease.get("status") not in {"ACTIVE", "RELEASED", "LOST"}:
             raise ValueError(f"{task_id}.resource_lease is invalid")
         seconds = resource_lease.get("lease_seconds")
-        if isinstance(seconds, bool) or not isinstance(seconds, int) or not 1 <= seconds <= 3600:
+        if isinstance(seconds, bool) or not isinstance(seconds, int) or not 1 <= seconds <= 21600:
             raise ValueError(f"{task_id}.resource_lease.lease_seconds is invalid")
         resources = resource_lease.get("resources")
         if not isinstance(resources, dict) or not resources:
