@@ -59,7 +59,7 @@
     "Python adapter input and output contracts are not yet complete.",
     "Per-capability dependency edges have not yet been separated from shared-library imports and workflow aggregation.",
     "Write-path ownership and indirect side effects still require machine-checked coverage.",
-    "Resource locking and artifact lineage are not yet enforced as a unified contract.",
+    "Resource lease enforcement currently covers the scheduler-mediated production workflow; per-capability resource contracts and artifact lineage are not yet complete.",
     "The declared review-engine version is not yet pinned to a verified source revision.",
     "The production workflow now holds a scheduler-issued logical resource lease and checks its live fencing epoch before publishing; independent Python writer adapters remain disabled until each has a complete contract and compatible enforcement."
   ],
