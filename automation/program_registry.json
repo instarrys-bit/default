@@ -1037,7 +1037,7 @@
       "capabilities": [
         "deterministic_audit"
       ],
-      "invocation": "weekly schedule, relevant push, manual dispatch",
+      "invocation": "Watchdog durable task-queue dispatch and manual workflow dispatch",
       "inputs": [
         "GitHub event payload",
         "repository state and declared workflow inputs"
