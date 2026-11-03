@@ -91,7 +91,8 @@ class GitHubWorkflowClient:
         return value
 
     def get_workflow(self, workflow_path: str) -> dict:
-        return self.request("GET", f"actions/workflows/{quote(workflow_path, safe='/')}")
+        filename = workflow_path.rsplit("/", 1)[-1]
+        return self.request("GET", f"actions/workflows/{quote(filename, safe='')}")
 
     def get_ref(self, ref: str) -> dict:
         encoded = quote(ref, safe="/")
