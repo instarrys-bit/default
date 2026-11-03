@@ -678,11 +678,10 @@ jobs:
             --arg conclusion "$conclusion" \
             --arg audit_result "$AUDIT_RESULT" \
             --arg publish_result "$PUBLISH_RESULT" \
-            '{task_id:$task_id,run_id:$run_id,run_attempt:$run_attempt,head_sha:$head_sha,conclusion:$conclusion,audit_result:$audit_result,publish_result:$publish_result}')"
+            '{event_type:"automation-production-completed",client_payload:{task_id:$task_id,run_id:$run_id,run_attempt:$run_attempt,head_sha:$head_sha,conclusion:$conclusion,audit_result:$audit_result,publish_result:$publish_result}}')"
           printf '%s' "$payload" | gh api "repos/$REPO/dispatches" \
             --method POST \
             -H "Accept: application/vnd.github+json" \
-            -f event_type=automation-production-completed \
             --input -
 
   resolve-failure:
