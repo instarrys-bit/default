@@ -18,8 +18,8 @@ is_docs_only_compare() {
 # production-input freshness check. Unknown paths fail closed and require review.
 is_known_non_input_path() {
   case "$1" in
-    docs/*|rulesets/*|reports/*|\\
-    automation/heartbeat.json|automation/state_store.json|\\
+    docs/*|rulesets/*|reports/*|\
+    automation/heartbeat.json|automation/state_store.json|\
     sources/source_activation_log.json|sources/policy_source_overlap.json)
       return 0 ;;
     *) return 1 ;;
