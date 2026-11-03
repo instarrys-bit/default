@@ -152,6 +152,8 @@ def audit_activation_readiness(root: Path = ROOT,
                 reasons.append("main is not an allowlisted dispatch ref")
 
             sections = workflow_permission_sections(content)
+            if not sections:
+                reasons.append("workflow has no explicit token permission contract")
             write_scopes = sorted({
                 f"{scope}:write"
                 for section in sections for scope, access in section.items()
@@ -178,6 +180,7 @@ def audit_activation_readiness(root: Path = ROOT,
                 reasons.append("workflow may write protected shadowrocket/ss.conf")
             row["least_privilege_canary_candidate"] = (
                 workflow.get("dispatchable") is True
+                and bool(sections)
                 and not write_scopes
                 and not side_effects
                 and caller_permissions_ready
