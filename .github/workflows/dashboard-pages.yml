@@ -22,6 +22,7 @@ on:
     - cron: "17 * * * *"
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: github-pages-dashboard
@@ -37,6 +38,9 @@ jobs:
         with:
           ref: main
       - name: Build sanitized dashboard data
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: python3 scripts/build_dashboard_snapshot.py
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
