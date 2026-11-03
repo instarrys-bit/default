@@ -47,8 +47,17 @@ def restore_state(archive: Path, root: Path) -> dict:
             path = PurePosixPath(name)
             if path.is_absolute() or ".." in path.parts:
                 raise ValueError(f"unsafe state archive path: {name}")
-            if member.issym() or member.islnk() or not (member.isfile() or member.isdir()):
+            # GNU tar encodes a repeated identical input path as a self-hardlink.
+            # Accept only that exact legacy duplicate after its regular file was
+            # already restored; reject all other links and duplicate regular entries.
+            if member.islnk():
+                if member.linkname == name and name in seen:
+                    continue
                 raise ValueError(f"unsupported state archive entry: {name}")
+            if member.issym() or not (member.isfile() or member.isdir()):
+                raise ValueError(f"unsupported state archive entry: {name}")
+            if name in seen:
+                raise ValueError(f"duplicate state archive entry: {name}")
             destination = (root / Path(*path.parts)).resolve()
             if destination != root and root not in destination.parents:
                 raise ValueError(f"state path escapes repository: {name}")
