@@ -43,7 +43,7 @@ class TaskResultVerifierTests(unittest.TestCase):
             "properties": {"ok": {"type": "boolean"}},
             "additionalProperties": False,
         }
-        self.adapters = {"adapters": [{
+        self.adapters = {"schema_version": 1, "adapters": [{
             "target_program_id": "script_target",
             "enabled": True,
             "interface_status": "reviewed",
@@ -85,7 +85,7 @@ class TaskResultVerifierTests(unittest.TestCase):
     def test_missing_reviewed_contract_blocks_without_mutation(self):
         task = self.make_verifying_task({"ok": True})
         before = copy.deepcopy(self.store.document)
-        report = verify_pending_remote(self.store, self.registry, {"adapters": []}, self.now)
+        report = verify_pending_remote(self.store, self.registry, {"schema_version": 1, "adapters": []}, self.now)
         self.assertEqual(report["verified"], [])
         self.assertEqual(report["rejected"], [])
         self.assertEqual(report["blocked"][0]["task_id"], task["task_id"])
