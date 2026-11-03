@@ -1117,7 +1117,8 @@
         "script_refresh_ruleset_manifest",
         "script_verify_published_rulesets",
         "script_watchdog_recovery_policy",
-        "script_task_scheduler"
+        "script_task_scheduler",
+        "script_production_intent"
       ],
       "dispatches": [
         "workflow_auto_sync"
