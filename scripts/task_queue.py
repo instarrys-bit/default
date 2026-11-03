@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 QUEUE_PATH = Path("automation/task_queue.json")
 REGISTRY_PATH = Path("automation/program_registry.json")
 TASK_ID_RE = re.compile(r"^task_[0-9a-f]{24}$")
-STATUSES = {"QUEUED", "CLAIMED", "SUCCEEDED", "FAILED", "CANCELLED", "DEAD_LETTER"}
+STATUSES = {"QUEUED", "CLAIMED", "VERIFYING", "SUCCEEDED", "FAILED", "CANCELLED", "DEAD_LETTER"}
 TERMINAL = {"SUCCEEDED", "FAILED", "CANCELLED", "DEAD_LETTER"}
 
 
@@ -77,6 +77,9 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
         if task_id in task_ids:
             raise ValueError(f"duplicate task_id: {task_id}")
         task_ids.add(task_id)
+        execution_backend = task.get("execution_backend")
+        if execution_backend is not None and execution_backend != "github_contents":
+            raise ValueError(f"{task_id}.execution_backend is unsupported")
         idem = task["idempotency_key"]
         if not isinstance(idem, str) or not 1 <= len(idem) <= 200:
             raise ValueError(f"{task_id}.idempotency_key must contain 1 to 200 characters")
@@ -131,7 +134,8 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
             raise ValueError(f"{task_id}.state_history must end with the current status")
         allowed_transitions = {
             "QUEUED": {"CLAIMED", "CANCELLED"},
-            "CLAIMED": {"SUCCEEDED", "FAILED", "QUEUED", "DEAD_LETTER"},
+            "CLAIMED": {"VERIFYING", "SUCCEEDED", "FAILED", "QUEUED", "DEAD_LETTER"},
+            "VERIFYING": {"SUCCEEDED", "FAILED", "QUEUED", "DEAD_LETTER"},
             "FAILED": {"QUEUED", "DEAD_LETTER", "CANCELLED"},
             "SUCCEEDED": set(),
             "CANCELLED": set(),
@@ -149,13 +153,31 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
         elif lease is not None:
             raise ValueError(f"{task_id} must not retain a lease while status is {status}")
         result = task["result"]
-        if status == "SUCCEEDED" and not isinstance(result, dict):
-            raise ValueError(f"{task_id} SUCCEEDED task requires a result object")
+        if status in {"VERIFYING", "SUCCEEDED"} and not isinstance(result, dict):
+            raise ValueError(f"{task_id} {status} task requires a result object")
         if result is not None and not isinstance(result, dict):
             raise ValueError(f"{task_id}.result must be an object or null")
         error = task["last_error"]
         if error is not None and not isinstance(error, dict):
             raise ValueError(f"{task_id}.last_error must be an object or null")
+        verification = task.get("verification")
+        if verification is not None:
+            if not isinstance(verification, dict):
+                raise ValueError(f"{task_id}.verification must be an object or null")
+            if verification.get("verifier_program_id") not in by_id:
+                raise ValueError(f"{task_id}.verification references an unknown verifier program")
+            if verification.get("status") not in {"passed", "failed"}:
+                raise ValueError(f"{task_id}.verification.status must be passed or failed")
+            parse_utc(verification.get("verified_at"), f"{task_id}.verification.verified_at")
+            if not isinstance(verification.get("contract_sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", verification["contract_sha256"]):
+                raise ValueError(f"{task_id}.verification.contract_sha256 must be a SHA-256 digest")
+            if status == "VERIFYING":
+                raise ValueError(f"{task_id} VERIFYING task must not retain a previous verification")
+            if status == "SUCCEEDED" and verification["status"] != "passed":
+                raise ValueError(f"{task_id} SUCCEEDED task requires passed verification")
+        if execution_backend == "github_contents" and status == "SUCCEEDED":
+            if not isinstance(verification, dict) or verification.get("status") != "passed":
+                raise ValueError(f"{task_id} GitHub-backed SUCCEEDED task requires independent verification")
 
     return {"valid": True, "task_count": len(tasks), "revision": revision}
 

@@ -1262,7 +1262,8 @@
         "script_validate_execution_adapters",
         "script_validate_program_registry",
         "script_verify_baseline",
-        "script_remote_task_queue_runtime"
+        "script_remote_task_queue_runtime",
+        "script_task_result_verifier"
       ],
       "dispatches": [],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
@@ -1360,6 +1361,40 @@
       "dispatches": [],
       "permission_boundary": "Requires caller-provided GitHub Contents read/write permission; this component grants no permissions and must never modify shadowrocket/ss.conf.",
       "health_check": "Unit tests for remote enqueue, idempotency, priority claims, lease ownership, retry/dead-letter transitions, and expired-lease recovery.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_task_result_verifier",
+      "path": "scripts/task_result_verifier.py",
+      "kind": "python_component",
+      "responsibility": "independently validate remote task result payloads against reviewed deterministic output contracts",
+      "capabilities": [
+        "task_result_verification"
+      ],
+      "invocation": "python_cli",
+      "inputs": [
+        "remote task queue snapshot",
+        "program registry",
+        "reviewed execution adapter output contracts"
+      ],
+      "outputs": [
+        "verified task IDs",
+        "rejected task IDs",
+        "blocked verification reasons"
+      ],
+      "depends_on": [
+        "script_remote_task_queue_runtime",
+        "script_task_queue",
+        "script_task_queue_runtime"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Requires caller-provided GitHub Contents read/write permission to persist verification transitions; never modifies shadowrocket/ss.conf, rulesets, or DNS.",
+      "health_check": "Deterministic JSON Schema subset tests, fail-closed unsupported keyword tests, and CAS-backed VERIFYING-to-terminal/retry transition tests.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],
