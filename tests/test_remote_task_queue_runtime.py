@@ -70,7 +70,7 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
 
     def test_completion_requires_matching_lease(self):
         enqueue_remote(self.payload(), self.store, self.registry, self.now)
-        task = claim_remote("worker-a", self.store, self.registry, self.now)
+        task = self.claim("worker-a", self.now)
         with self.assertRaisesRegex(ValueError, "mismatch"):
             complete_remote(task["task_id"], "worker-b", task["lease"]["token"],
                             success=True, result={"ok": True}, store=self.store,
