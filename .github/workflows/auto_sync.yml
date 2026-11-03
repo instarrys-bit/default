@@ -33,6 +33,18 @@ on:
         description: 'Original push SHA for config baseline registration'
         required: false
         type: string
+      production_fingerprint:
+        description: 'Watchdog-computed production input fingerprint'
+        required: false
+        type: string
+      production_decision:
+        description: 'Watchdog production intent decision'
+        required: false
+        type: string
+      production_reason:
+        description: 'Auditable reason for this production task'
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -64,6 +76,9 @@ jobs:
       - name: Verify Watchdog-owned durable task dispatch
         env:
           AUTOMATION_TASK_ID: ${{ inputs.automation_task_id }}
+          PRODUCTION_FINGERPRINT: ${{ inputs.production_fingerprint }}
+          PRODUCTION_DECISION: ${{ inputs.production_decision }}
+          PRODUCTION_REASON: ${{ inputs.production_reason }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -99,6 +114,20 @@ jobs:
           ):
               raise SystemExit("The queue record does not authorize this exact Watchdog production audit dispatch.")
 
+          production_fingerprint = os.environ.get("PRODUCTION_FINGERPRINT", "")
+          production_decision = os.environ.get("PRODUCTION_DECISION", "")
+          production_reason = os.environ.get("PRODUCTION_REASON", "")
+          if production_fingerprint:
+              task_input = task.get("input")
+              if (
+                  not isinstance(task_input, dict)
+                  or task_input.get("production_fingerprint") != production_fingerprint
+                  or task_input.get("production_decision") != production_decision
+                  or task_input.get("production_reason") != production_reason
+                  or production_decision not in {"INPUT_CHANGED", "SCHEDULE_DUE", "RECOVERY_REQUIRED"}
+                  or not production_reason
+              ):
+                  raise SystemExit("The dispatched production intent does not match the durable task input.")
           if task.get("status") == "VERIFYING":
               result = task.get("result")
               if (
@@ -109,6 +138,27 @@ jobs:
                   raise SystemExit("The VERIFYING task has no matching persisted dispatch submission.")
 
           print(f"Authorized Watchdog production audit task {task_id}, attempt {attempt}.")
+          PY
+
+      - name: Capture and verify the exact production input fingerprint
+        env:
+          PRODUCTION_FINGERPRINT: ${{ inputs.production_fingerprint }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from production_intent import load_manifest, compute_fingerprint
+          manifest = load_manifest(Path("automation/production_inputs.json"))
+          actual = compute_fingerprint(Path("."), manifest)
+          expected = os.environ.get("PRODUCTION_FINGERPRINT", "")
+          if expected and expected != actual:
+              raise SystemExit("The dispatched production fingerprint does not match the checked-out input snapshot.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
+              stream.write(f"PRODUCTION_INPUT_FINGERPRINT={actual}\n")
+          print(f"Captured production input fingerprint {actual}.")
           PY
 
       - name: Stop stale audit before discovery and source downloads
@@ -122,7 +172,7 @@ jobs:
 
       - name: Compile and run deterministic review tests
         run: |
-          python3 -m py_compile scripts/restore_automation_state.py scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/import_request_observations.py scripts/lifecycle_gate.py scripts/lifecycle_audit.py scripts/auto_activate_sources.py scripts/build_project_status.py scripts/build_rule_provenance.py scripts/refresh_ruleset_manifest.py scripts/diagnose_workflow_failure.py scripts/append_step_summary.py scripts/apply_safe_repair.py scripts/review_cursor.py scripts/persist_review_cursor.py scripts/json_document_store.py scripts/verify_published_rulesets.py
+          python3 -m py_compile scripts/production_intent.py scripts/restore_automation_state.py scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/source_registry.py scripts/build_rulesets.py scripts/validate_config.py scripts/verify_baseline.py scripts/audit_source_lineage.py scripts/discover_sources.py scripts/assess_sources.py scripts/build_source_candidates.py scripts/audit_policy_source_overlap.py scripts/audit_external_domains.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/import_request_observations.py scripts/lifecycle_gate.py scripts/lifecycle_audit.py scripts/auto_activate_sources.py scripts/build_project_status.py scripts/build_rule_provenance.py scripts/refresh_ruleset_manifest.py scripts/diagnose_workflow_failure.py scripts/append_step_summary.py scripts/apply_safe_repair.py scripts/review_cursor.py scripts/persist_review_cursor.py scripts/json_document_store.py scripts/verify_published_rulesets.py
           python3 -m unittest discover -s tests -v
 
       - name: Discover candidate source repositories (non-activating)
@@ -321,15 +371,29 @@ jobs:
           python3 - <<'PY'
           import json
           import os
+          import sys
           from datetime import datetime, timezone
+          sys.path.insert(0, "scripts")
+          from production_intent import load_manifest, compute_fingerprint, compute_output_fingerprint
+          from pathlib import Path
+          manifest = load_manifest(Path("automation/production_inputs.json"))
+          input_fingerprint = os.environ["PRODUCTION_INPUT_FINGERPRINT"]
+          post_run_input_fingerprint = compute_fingerprint(Path("."), manifest)
+          output_fingerprint = compute_output_fingerprint(Path("."))
           record = {
-              "schema_version": 1,
+              "schema_version": 3,
+              "input_fingerprint": input_fingerprint,
+              "post_run_input_fingerprint": post_run_input_fingerprint,
+              "output_fingerprint": output_fingerprint,
+              "input_manifest_schema_version": manifest["schema_version"],
               "status": "audit_passed",
               "workflow": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
               "run_id": os.environ["GITHUB_RUN_ID"],
               "run_attempt": int(os.environ["GITHUB_RUN_ATTEMPT"]),
               "event": os.environ["GITHUB_EVENT_NAME"],
               "source_commit": os.environ["GITHUB_SHA"],
+              "production_decision": os.environ.get("PRODUCTION_DECISION", ""),
+              "production_reason": os.environ.get("PRODUCTION_REASON", ""),
               "recorded_at_utc": datetime.now(timezone.utc).isoformat(),
               "checks": {
                   "deterministic_tests": "passed",

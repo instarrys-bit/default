@@ -16,6 +16,20 @@ Its only business deliverable is the validated DIRECT, PROXY, and REJECT rule se
 
 GitHub documents that workflow dispatch events are an exception to the normal rule that events created with `GITHUB_TOKEN` do not start new workflow runs. This permits request intake to wake the Watchdog without directly invoking the production worker.
 
+## Production-demand decision
+
+Production demand is classified by the deterministic `scripts/production_intent.py` component against the explicit `automation/production_inputs.json` manifest. The manifest separates rule-producing inputs from generated state, reports, queue records, module files, and unrelated workflow maintenance. A changed path that is not classified is `REVIEW_REQUIRED`; it does not automatically start production.
+
+The successful audit heartbeat records three distinct fingerprints:
+
+- `input_fingerprint`: the exact production inputs captured before the audit starts.
+- `post_run_input_fingerprint`: the resulting input baseline after the audit's own approved source-registry updates.
+- `output_fingerprint`: the content fingerprint of the published DIRECT, PROXY, and REJECT lists.
+
+The Watchdog compares current inputs with the post-run baseline, preventing the audit's own source-registry updates from recursively scheduling another audit. The durable task queue records the pre-run fingerprint, decision, and reason alongside the task lifecycle and independent verification result.
+
+Only registered input changes or the configured eight-day scheduled refresh create ordinary production demand. Completion notifications and workflow-completion observations are supervision-only. Active tasks suppress duplicates; already-successful fingerprints are reused; bounded timeout and integrity recovery carry explicit recovery reasons and separate idempotency keys.
+
 ## Watchdog and task execution
 
 The Watchdog has four responsibilities:

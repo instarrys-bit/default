@@ -39,7 +39,9 @@ class ProductionQueueRoutingTests(unittest.TestCase):
         self.assertIn('if [ "$SOURCE_SHA" = "$current_sha" ]', workflow)
         self.assertIn("Same-SHA deterministic failure requires diagnosis", workflow)
         self.assertIn('recovery_kind="superseded_inputs"', workflow)
-        self.assertIn('idempotency_key="auto-sync-superseded:$SOURCE_RUN_ID"', workflow)
+        self.assertIn('idempotency_key="production:input:$current_fingerprint"', workflow)
+        self.assertIn("recomputing intent against current main", workflow)
+        self.assertNotIn('idempotency_key="auto-sync-superseded:$SOURCE_RUN_ID"', workflow)
         self.assertIn("bash scripts/verify_publish_base.sh --check-only", workflow)
 
     def test_observation_intake_dispatches_watchdog_not_auto_sync(self):

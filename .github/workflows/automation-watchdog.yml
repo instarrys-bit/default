@@ -167,12 +167,31 @@ jobs:
               echo "Automatic infrastructure retry suppressed by bounded recovery policy."
               exit 0
             fi
-            idempotency_key="auto-sync-recovery:$SOURCE_RUN_ID"
+            recovery_fingerprint="$(jq -r '.production_fingerprint // empty' <<< "$audit_input_json")"
+            if [ -n "$recovery_fingerprint" ]; then
+              idempotency_key="production:recovery:$recovery_fingerprint:$SOURCE_RUN_ID"
+            else
+              idempotency_key="auto-sync-recovery:$SOURCE_RUN_ID"
+            fi
           else
-            echo "The source audit was superseded by meaningful main-branch changes; enqueueing a fresh audit against current main."
-            idempotency_key="auto-sync-superseded:$SOURCE_RUN_ID"
+            echo "The source audit was superseded by meaningful main-branch input changes; recomputing intent against current main."
+            checkout_sha="$(git rev-parse HEAD)"
+            if [ "$checkout_sha" != "$current_sha" ]; then
+              echo "Watchdog checkout is behind current main; superseded recovery will be reconsidered on the next reconciliation."
+              exit 0
+            fi
+            current_fingerprint="$(python3 - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from production_intent import load_manifest, compute_fingerprint
+          manifest = load_manifest(Path("automation/production_inputs.json"))
+          print(compute_fingerprint(Path("."), manifest))
+          PY
+          )"
+            audit_input_json="$(jq --arg fingerprint "$current_fingerprint" --arg reason "new production input superseded the failed audit; re-evaluating current main" '. + {production_fingerprint:$fingerprint,production_decision:"INPUT_CHANGED",production_reason:$reason}' <<< "$audit_input_json")"
+            idempotency_key="production:input:$current_fingerprint"
           fi
-
           printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$idempotency_key" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
 
       - name: Report degraded source discovery health
@@ -220,6 +239,12 @@ jobs:
           runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
 
           current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
+          checkout_sha="$(git rev-parse HEAD)"
+          if [ "$checkout_sha" != "$current_sha" ]; then
+            echo "Watchdog checkout is behind current main; refusing to decide from a stale input snapshot."
+            echo "block_manifest=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if jq -e '[.workflow_runs[] | select(.head_branch == "main" and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
             echo "A main-branch deterministic audit is already queued or running; no duplicate dispatch."
             echo "block_manifest=true" >> "$GITHUB_OUTPUT"
@@ -228,48 +253,67 @@ jobs:
 
           last_success="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .created_at // empty' <<< "$runs")"
           last_success_sha="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .head_sha // empty' <<< "$runs")"
-          age_seconds="$(python3 - "$last_success" <<'PY'
-          import sys
-          from datetime import datetime, timezone
-          value = sys.argv[1]
-          if not value:
-              print(10**9)
-          else:
-              stamp = datetime.fromisoformat(value.replace("Z", "+00:00"))
-              print(max(0, int((datetime.now(timezone.utc) - stamp).total_seconds())))
-          PY
-          )"
 
-          # Watchdog owns the audit cadence. An 8-day threshold tolerates queue delays
-          # while recovering missed or stalled production audit tasks.
-          audit_base_stale=0
-          if [ -z "$last_success_sha" ]; then
-            audit_base_stale=1
-          elif [ "$last_success_sha" != "$current_sha" ]; then
+          last_success_fingerprint=""
+          heartbeat_at=""
+          if [ -s reports/automation/heartbeat.json ]; then
+            last_success_fingerprint="$(jq -r '.post_run_input_fingerprint // .input_fingerprint // empty' reports/automation/heartbeat.json)"
+            heartbeat_at="$(jq -r '.recorded_at_utc // empty' reports/automation/heartbeat.json)"
+          fi
+
+          paths_json='[]'
+          if [ -n "$last_success_sha" ] && [ "$last_success_sha" != "$current_sha" ]; then
             compare_json="$(gh api "repos/$REPO/compare/$last_success_sha...$current_sha" 2>/dev/null || true)"
             if [ -z "$compare_json" ] || ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null; then
-              audit_base_stale=1
+              paths_json='["__compare_unavailable__"]'
             else
-              compare_file="$RUNNER_TEMP/audit-compare-last-success.json"
-              printf '%s' "$compare_json" > "$compare_file"
-              if ! GITHUB_SHA="$last_success_sha" COMPARE_JSON_FILE="$compare_file" bash scripts/verify_publish_base.sh --check-only; then
-                audit_base_stale=1
-              fi
+              paths_json="$(jq -c '[.files[].filename]' <<< "$compare_json")"
             fi
           fi
 
-          if [ "$audit_base_stale" = "1" ] || [ "$age_seconds" -gt 691200 ]; then
-            echo "Last successful audit is stale or contains non-documentation changes since its audited commit (age=${age_seconds}s, audited=$last_success_sha, current=$current_sha); enqueueing a durable audit task."
-            audit_input_json='{}'
-            if [ "$ORIGIN_EVENT" = "push" ]; then
-              audit_input_json="$(jq -cn --arg event "$ORIGIN_EVENT" --arg actor "$ORIGIN_ACTOR" --arg before "$ORIGIN_BEFORE" --arg sha "$ORIGIN_SHA" '{baseline_source_event:$event,baseline_source_actor:$actor,baseline_source_before:$before,baseline_source_sha:$sha}')"
-            fi
-            printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-stale:$current_sha" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
-            echo "block_manifest=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "Last successful audit is healthy; any intervening main changes are documentation-only (${age_seconds}s ago)."
-            echo "block_manifest=false" >> "$GITHUB_OUTPUT"
-          fi
+          active_fingerprints="$(jq -c '[.tasks[] | select(.status == "QUEUED" or .status == "CLAIMED" or .status == "VERIFYING") | .input.production_fingerprint // empty] | map(select(type == "string")) | unique' automation/task_queue.json)"
+          successful_fingerprints="$(jq -c '[.tasks[] | select(.status == "SUCCEEDED" and .verification.status == "passed") | .input.production_fingerprint // empty] | map(select(type == "string")) | unique' automation/task_queue.json)"
+
+          intent_json="$(python3 scripts/production_intent.py \
+            --event "$ORIGIN_EVENT" \
+            --paths-json "$paths_json" \
+            --last-success-fingerprint "$last_success_fingerprint" \
+            --last-success-at "$heartbeat_at" \
+            --active-fingerprints-json "$active_fingerprints" \
+            --successful-fingerprints-json "$successful_fingerprints")"
+          decision="$(jq -r '.decision' <<< "$intent_json")"
+          fingerprint="$(jq -r '.fingerprint' <<< "$intent_json")"
+          echo "$intent_json" >> "$GITHUB_STEP_SUMMARY"
+
+          case "$decision" in
+            INPUT_CHANGED|SCHEDULE_DUE)
+              echo "Production is required: $decision ($fingerprint)."
+              audit_input_json="$(jq -cn --arg fingerprint "$fingerprint" --arg decision "$decision" --arg reason "$(jq -r '.reason' <<< "$intent_json")" --arg event "$ORIGIN_EVENT" --arg actor "$ORIGIN_ACTOR" --arg before "$ORIGIN_BEFORE" --arg sha "$ORIGIN_SHA" '{production_fingerprint:$fingerprint,production_decision:$decision,production_reason:$reason,baseline_source_event:$event,baseline_source_actor:$actor,baseline_source_before:$before,baseline_source_sha:$sha}')"
+              production_key="$(jq -r '.idempotency_key' <<< "$intent_json")"
+              printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$production_key" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
+              echo "block_manifest=true" >> "$GITHUB_OUTPUT"
+              ;;
+            REVIEW_REQUIRED)
+              echo "Production was not dispatched: an unregistered or unclassifiable change requires review."
+              echo "block_manifest=true" >> "$GITHUB_OUTPUT"
+              title="Production input classification requires review"
+              issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
+              body="The Watchdog found a repository change that is not registered as a production input or known non-production path. No production task was created. Inspect the intent report in this run and update automation/production_inputs.json through review."
+              if [ -n "$issue" ] && [ "$issue" != "null" ]; then
+                gh issue comment "$issue" --repo "$REPO" --body "$body"
+              else
+                gh issue create --repo "$REPO" --title "$title" --body "$body"
+              fi
+              ;;
+            IN_PROGRESS|ALREADY_SATISFIED|OBSERVE_ONLY)
+              echo "No production task required: $decision."
+              echo "block_manifest=false" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "Unexpected production intent decision: $decision" >&2
+              exit 1
+              ;;
+          esac
 
   task-queue-supervision:
     needs: [health-check, stale-run-watch, manifest-integrity]
@@ -359,6 +403,7 @@ jobs:
           ' "$current_main" <<< "$runs")"
 
           timed_out_any=0
+          timed_out_run_id=""
           if [ -n "$stale_lines" ]; then
             while read -r stale_id reason run_sha; do
               [ -n "$stale_id" ] || continue
@@ -377,7 +422,7 @@ jobs:
               fi
               echo "Cancelling audit $stale_id ($reason); current main is $current_main."
               gh run cancel "$stale_id" --repo "$REPO" || true
-              if [ "$reason" = "timeout" ]; then timed_out_any=1; fi
+              if [ "$reason" = "timeout" ]; then timed_out_any=1; timed_out_run_id="$stale_id"; fi
             done <<< "$stale_lines"
             sleep 10
             runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
@@ -389,52 +434,31 @@ jobs:
             exit 0
           fi
 
-          last_success="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .created_at // empty' <<< "$runs")"
-          last_success_sha="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .head_sha // empty' <<< "$runs")"
-          age_seconds="$(python3 - "$last_success" <<'PY'
-          import sys
-          from datetime import datetime, timezone
-          value = sys.argv[1]
-          if not value:
-              print(10**9)
-          else:
-              stamp = datetime.fromisoformat(value.replace("Z", "+00:00"))
-              print(max(0, int((datetime.now(timezone.utc) - stamp).total_seconds())))
-          PY
-          )"
-
-          audit_base_stale=0
-          if [ -z "$last_success_sha" ]; then
-            audit_base_stale=1
-          elif [ "$last_success_sha" != "$current_main" ]; then
-            compare_json="$(gh api "repos/$REPO/compare/$last_success_sha...$current_main" 2>/dev/null || true)"
-            if [ -z "$compare_json" ] || ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null; then
-              audit_base_stale=1
-            else
-              compare_file="$RUNNER_TEMP/last-success-base-compare.json"
-              printf '%s' "$compare_json" > "$compare_file"
-              if ! GITHUB_SHA="$last_success_sha" COMPARE_JSON_FILE="$compare_file" bash scripts/verify_publish_base.sh --check-only; then
-                audit_base_stale=1
-              fi
-            fi
-          fi
-
-          if [ "$timed_out_any" = "1" ] || [ "$audit_base_stale" = "1" ] || [ "$age_seconds" -gt 691200 ]; then
+          # Normal input-change and scheduled-refresh decisions are centralized
+          # in health-check. This job may enqueue only a bounded timeout recovery.
+          if [ "$timed_out_any" = "1" ]; then
             decision="$(python3 scripts/watchdog_recovery_policy.py --source-run-id 0 --source-sha "$current_main" <<< "$runs")"
-            echo "$decision" | jq -r '"Scheduled recovery policy: " + .reason + "; prior retryable failures=" + (.prior_retryable_failures|tostring) + "; prior deterministic failures=" + (.prior_non_retryable_failures|tostring) + "."'
+            echo "$decision" | jq -r '"Timeout recovery policy: " + .reason + "; prior retryable failures=" + (.prior_retryable_failures|tostring) + "; prior deterministic failures=" + (.prior_non_retryable_failures|tostring) + "."'
             if [ "$(jq -r '.allowed' <<< "$decision")" != "true" ]; then
               echo "$decision" >> "$GITHUB_STEP_SUMMARY"
-              echo "Scheduled recovery suppressed; diagnosis, cooldown, or retry limit prevents another dispatch."
-              exit 0
-            fi
-            echo "No publishable current-main audit is active and the last successful audit is stale or superseded; enqueueing one bounded replacement."
-            printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-stale:$current_main" --priority 100 enqueue-auto-sync
-          else
-            echo "The latest successful audit is healthy; intervening main changes are documentation or strictly verified queue state."
-            issue="$(gh issue list --repo "$REPO" --state open --search "stalled audit in:title" --json number,title --jq '.[0].number')"
-            if [ -n "$issue" ] && [ "$issue" != "null" ]; then
-              gh issue comment "$issue" --repo "$REPO" --body "A successful audit now matches current main $current_main and is within the eight-day health window."
-              gh issue close "$issue" --repo "$REPO"
+              echo "Timeout recovery suppressed by bounded recovery policy."
+            else
+              checkout_sha="$(git rev-parse HEAD)"
+              if [ "$checkout_sha" != "$current_main" ]; then
+                echo "Watchdog checkout is behind current main; timeout recovery will be reconsidered on the next reconciliation."
+                exit 0
+              fi
+              current_fingerprint="$(python3 - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from production_intent import load_manifest, compute_fingerprint
+          manifest = load_manifest(Path("automation/production_inputs.json"))
+          print(compute_fingerprint(Path("."), manifest))
+          PY
+          )"
+              recovery_input="$(jq -cn --arg fingerprint "$current_fingerprint" --arg reason "bounded recovery after watchdog cancellation of a timed-out audit" '{production_fingerprint:$fingerprint,production_decision:"RECOVERY_REQUIRED",production_reason:$reason}')"
+              printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "production:recovery:$current_fingerprint:$timed_out_run_id" --priority 100 --input-json "$recovery_input" enqueue-auto-sync
             fi
           fi
 
@@ -535,8 +559,23 @@ jobs:
             echo "A deterministic audit for current main ($current_sha) is already queued or running; waiting for its completion."
             exit 0
           fi
-          echo "No current-main audit is active. Enqueueing one bounded reconciliation audit for $current_sha."
-          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-manifest:$current_sha" --priority 100 enqueue-auto-sync
+          checkout_sha="$(git rev-parse HEAD)"
+          if [ "$checkout_sha" != "$current_sha" ]; then
+            echo "Manifest verifier checkout is behind current main; deferring reconciliation."
+            exit 0
+          fi
+          current_fingerprint="$(python3 - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from production_intent import load_manifest, compute_fingerprint
+          manifest = load_manifest(Path("automation/production_inputs.json"))
+          print(compute_fingerprint(Path("."), manifest))
+          PY
+          )"
+          integrity_input="$(jq -cn --arg fingerprint "$current_fingerprint" --arg reason "bounded reconciliation after published manifest integrity mismatch" '{production_fingerprint:$fingerprint,production_decision:"RECOVERY_REQUIRED",production_reason:$reason}')"
+          echo "No current-main audit is active. Enqueueing one bounded integrity reconciliation for $current_sha."
+          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "production:integrity:$current_fingerprint" --priority 100 --input-json "$integrity_input" enqueue-auto-sync
 
       - name: Open manifest metadata repair incident
         if: ${{ always() && (steps.refresh.outcome == 'failure' || steps.publish.outcome == 'failure') }}
