@@ -218,6 +218,10 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         pre_sync = WORKFLOW.read_text(encoding="utf-8")
         self.assertEqual(pre_sync.count("python3 scripts/sync_ruleset_config_conflicts.py"), 2)
         self.assertIn("Remove published and queued rules that conflict with ss.conf", pre_sync)
+        self.assertIn('BASELINE_SOURCE_SHA: ${{ inputs.baseline_source_sha }}', pre_sync)
+        self.assertIn('(\"baseline_source_sha\", \"BASELINE_SOURCE_SHA\")', pre_sync)
+        self.assertIn("does not match the durable Watchdog task input", pre_sync)
+        self.assertIn("not a full Git commit SHA", pre_sync)
         self.assertIn("Reconcile final ss.conf scope coverage after all rule mutations", pre_sync)
         self.assertIn("group: shadowrocket-main-writer", pre_sync)
 
