@@ -68,11 +68,7 @@ jobs:
           RUN_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"
-          if [ "$current_main" != "$RUN_SHA" ]; then
-            echo "Audit commit $RUN_SHA is stale; current main is $current_main. Stopping before source discovery." >&2
-            exit 1
-          fi
+          bash scripts/verify_publish_base.sh --check-only
 
       - name: Compile and run deterministic review tests
         run: |
@@ -198,11 +194,7 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"
-          if [ "$current_main" != "$GITHUB_SHA" ]; then
-            echo "Audit commit $GITHUB_SHA is stale; current main is $current_main. Refusing to spend resources on stale review inputs." >&2
-            exit 1
-          fi
+          bash scripts/verify_publish_base.sh --check-only
       - name: "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services"
         run: python3 scripts/deterministic_review.py
 
