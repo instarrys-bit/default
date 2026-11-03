@@ -155,6 +155,39 @@ def decide(*, event: str, current_fingerprint: str, last_success_fingerprint: st
     return {**base, "decision": "ALREADY_SATISFIED", "reason": "inputs are unchanged and the refresh interval is not due", "age_seconds": age}
 
 
+
+def register_unclassified_paths(paths, ledger, event, revision, run_id, run_url, now=None):
+    """Record unknown paths in the Watchdog inbox; never treat registration as approval."""
+    if ledger.get("schema_version") != 1 or not isinstance(ledger.get("entries"), list):
+        raise ValueError("unsupported Watchdog registration ledger")
+    stamp = now or datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    entries = {item["path"]: item for item in ledger["entries"]}
+    normalized = set()
+    for raw in paths:
+        if not isinstance(raw, str):
+            raise ValueError("unregistered paths must be strings")
+        path = raw.strip().removeprefix("./")
+        if not path or path.startswith("/") or "\\\\" in path or any(part in {"", ".", ".."} for part in path.split("/")):
+            raise ValueError("unsafe or invalid repository path: " + repr(raw))
+        if any(ord(char) < 32 for char in path):
+            raise ValueError("control characters are not allowed in repository paths")
+        normalized.add(path)
+    for path in sorted(normalized):
+        item = entries.get(path)
+        if item is None:
+            item = {"path": path, "status": "PENDING_CLASSIFICATION",
+                    "first_seen_at": stamp, "last_seen_at": stamp, "seen_count": 0}
+            entries[path] = item
+        item["last_seen_at"] = stamp
+        item["seen_count"] += 1
+        item["last_seen_event"] = event
+        item["last_seen_revision"] = revision
+        item["last_seen_run_id"] = str(run_id)
+        item["last_seen_run_url"] = run_url
+    ledger["entries"] = sorted(entries.values(), key=lambda item: item["path"])
+    ledger["updated_at"] = stamp
+    return ledger
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, default=Path("automation/production_inputs.json"))
