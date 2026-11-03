@@ -23,10 +23,11 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
     def test_assessor_fences_each_logical_output_before_writing(self):
         source = (ROOT / "scripts" / "assess_sources.py").read_text(encoding="utf-8")
         for target in ("RUNTIME_OUTPUT", "OUTPUT", "REPORT"):
-            self.assertIn(f"assert_optional_write_lease({target})", source)
+            self.assertIn(f"assert_optional_write_lease({target}, required=args.task_input is not None)", source)
         scheduler = (ROOT / "scripts" / "task_scheduler.py").read_text(encoding="utf-8")
         self.assertIn('"AUTOMATION_QUEUE_SNAPSHOT": str(snapshot_path)', scheduler)
         self.assertIn('"AUTOMATION_RESOURCE_LEASE_PROOF"', scheduler)
+        self.assertIn('"AUTOMATION_QUEUE_TOKEN": store.token', scheduler)
 
     def test_accepts_bounded_independent_task_input(self):
         with tempfile.TemporaryDirectory() as directory:
