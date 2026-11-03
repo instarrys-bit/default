@@ -109,6 +109,33 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertTrue(result["should_produce"])
         self.assertEqual(result["idempotency_key"], f"production:input:{self.fp}:commit-a")
 
+    def test_config_a_to_b_to_a_reconciles_even_when_a_was_previously_successful(self):
+        config = self.root / "shadowrocket" / "ss.conf"
+        config.write_text("[Rule]\\nDOMAIN,alpha.example,DIRECT\\n", encoding="utf-8")
+        fingerprint_a = compute_fingerprint(self.root, self.manifest)
+        config.write_text("[Rule]\\nDOMAIN,beta.example,PROXY\\n", encoding="utf-8")
+        fingerprint_b = compute_fingerprint(self.root, self.manifest)
+        self.assertNotEqual(fingerprint_a, fingerprint_b)
+
+        # Revert to A after B was the last successful generation.
+        config.write_text("[Rule]\\nDOMAIN,alpha.example,DIRECT\\n", encoding="utf-8")
+        fingerprint_reverted = compute_fingerprint(self.root, self.manifest)
+        self.assertEqual(fingerprint_reverted, fingerprint_a)
+        classification = classify_paths(["shadowrocket/ss.conf"], self.manifest)
+        result = decide(
+            event="push", current_fingerprint=fingerprint_reverted,
+            last_success_fingerprint=fingerprint_b,
+            path_classification=classification,
+            successful_fingerprints={fingerprint_a, fingerprint_b},
+            revision="revert-commit", now=self.now,
+        )
+        self.assertEqual(result["decision"], "INPUT_CHANGED")
+        self.assertTrue(result["should_produce"])
+        self.assertEqual(
+            result["idempotency_key"],
+            f"production:input:{fingerprint_a}:revert-commit",
+        )
+
     def test_same_revert_revision_is_idempotent_but_later_revert_is_new_work(self):
         args = dict(event="push", current_fingerprint=self.fp,
             last_success_fingerprint="different", path_classification={"status":"INPUT_CHANGED"},
