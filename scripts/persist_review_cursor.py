@@ -33,7 +33,7 @@ def persist_cursor(artifact: Path, destination: Path) -> str:
     if type(batch_size) is not int or batch_size < 1:
         raise ValueError("invalid cursor batch size")
     destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    destination.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Persisted in-progress review cursor at index {next_index}/{candidate_count}.")
     return "in_progress"
 
