@@ -192,7 +192,8 @@
         "independent_verification_required": true,
         "artifact_verifier": {
           "path": "scripts/verify_assess_sources_artifacts.py",
-          "output_field": "artifact_verification"
+          "output_field": "artifact_verification",
+          "program_id": "script_verify_assess_sources_artifacts"
         }
       },
       "resource_contract": {
