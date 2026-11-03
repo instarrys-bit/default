@@ -36,6 +36,8 @@ class TaskSchedulerTests(unittest.TestCase):
     def setUp(self):
         self.root = Path(tempfile.mkdtemp())
         (self.root / "scripts").mkdir()
+        (self.root / "shadowrocket").mkdir()
+        (self.root / "shadowrocket" / "ss.conf").write_text("[General]\\n", encoding="utf-8")
         self.script = self.root / "scripts" / "target.py"
         self.script.write_text(
             "import json, os, sys\n"
@@ -139,6 +141,21 @@ class TaskSchedulerTests(unittest.TestCase):
         self.assertEqual(plan["eligible_task_ids"], [])
         self.assertIn("input contract failed", plan["blocked"][0]["reason"])
         self.assertEqual(self.store.document["tasks"][0]["status"], "QUEUED")
+
+    def test_child_modification_of_protected_config_stops_scheduler(self):
+        self.script.write_text(
+            "from pathlib import Path\\n"
+            "Path('shadowrocket/ss.conf').write_text('changed\\\\n', encoding='utf-8')\\n"
+            "print('{\\\"ok\\\": true, \\\"value\\\": 7, \\\"token_visible\\\": false}')\\n",
+            encoding="utf-8",
+        )
+        self.enqueue()
+        with self.assertRaisesRegex(RuntimeError, "scheduler stopped fail-closed"):
+            run_scheduler_once(
+                self.store, self.registry, self.adapters,
+                worker_id="scheduler-test", max_tasks=1, root=self.root, now=self.now,
+            )
+        self.assertNotEqual((self.root / "shadowrocket" / "ss.conf").read_text(encoding="utf-8"), "[General]\\n")
 
     def test_shell_execution_and_unreviewed_placeholders_are_rejected(self):
         self.adapters["adapters"][1]["entrypoint"]["shell"] = True
