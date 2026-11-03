@@ -144,6 +144,30 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
             "input": {"domains": "example.com"},
         }, self.store, self.registry, self.now)["task"]
 
+    def test_watchdog_can_enqueue_production_audit_idempotently(self):
+        registry = {"programs": [
+            {"id": "workflow_automation_watchdog", "path": ".github/workflows/automation-watchdog.yml",
+             "kind": "github_actions_workflow", "capabilities": ["top_level_supervision"],
+             "orchestration": {"enabled": False, "allowed_callers": [], "max_attempts": 0, "timeout_seconds": 300}},
+            {"id": "workflow_auto_sync", "path": ".github/workflows/auto_sync.yml",
+             "kind": "github_actions_workflow", "capabilities": ["deterministic_audit"],
+             "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
+                               "max_attempts": 1, "timeout_seconds": 300}},
+        ]}
+        store = MemoryStore()
+        key = "auto-sync-stale:" + "a" * 40
+        first = task_scheduler.enqueue_auto_sync_task(store, registry, idempotency_key=key, priority=90)
+        second = task_scheduler.enqueue_auto_sync_task(store, registry, idempotency_key=key, priority=90)
+        saved = store.document["tasks"][0]
+        self.assertTrue(first["created"])
+        self.assertFalse(second["created"])
+        self.assertEqual(first["task_id"], second["task_id"])
+        self.assertEqual(saved["requester_program_id"], "workflow_automation_watchdog")
+        self.assertEqual(saved["target_program_id"], "workflow_auto_sync")
+        self.assertEqual(saved["capability"], "deterministic_audit")
+        self.assertEqual(saved["input"], {})
+        self.assertEqual(saved["status"], "QUEUED")
+
     def test_scheduler_dispatches_once_and_leaves_task_verifying(self):
         task = self.enqueue()
         with patch.object(task_scheduler, "GitHubWorkflowClient", return_value=self.client):
