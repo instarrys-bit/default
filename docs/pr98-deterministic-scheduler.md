@@ -25,7 +25,7 @@ Only eligible task IDs are passed to the CAS claim operation. The claim callback
 
 - The scheduler invokes the exact registered Python entrypoint with an argument array and `shell=False`.
 - Task input is written to a temporary JSON file and deleted after execution.
-- Child processes receive only a small non-secret environment allowlist. GitHub tokens and runner credentials are not inherited.
+- Child processes receive only a small non-secret environment allowlist. The scheduler also temporarily removes credential-like variables from its own process environment while the child runs, preventing the child from reading the parent's `/proc/.../environ` on the runner.
 - The protected `shadowrocket/ss.conf` file is hashed before and after child execution. Any detected change fails the task and stops the scheduler.
 - A scheduler workflow must use checkout with `persist-credentials: false`; the scheduler must receive its own narrowly scoped queue-storage token, which is never passed to child programs.
 
