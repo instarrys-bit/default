@@ -56,20 +56,42 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
-      - name: Keep owner-controlled config and baseline unchanged in pull requests
-        if: ${{ github.event_name == 'pull_request' }}
+      - name: Protect owner-controlled config baseline in non-main validation
+        if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref != 'refs/heads/main') }}
         env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          EVENT_NAME: ${{ github.event_name }}
+          PUSH_BEFORE: ${{ github.event.before }}
+          CURRENT_SHA: ${{ github.sha }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
-          if ! git diff --quiet "$BASE_SHA" "$HEAD_SHA" -- shadowrocket/ss.conf sources/policy.json; then
-            echo "Pull requests may not change the owner-controlled Shadowrocket config or its approved-baseline policy." >&2
+          base_sha="$PUSH_BEFORE"
+          head_sha="$CURRENT_SHA"
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            base_sha="$PR_BASE_SHA"
+            head_sha="$PR_HEAD_SHA"
+          fi
+          if [ -z "$base_sha" ] || [[ "$base_sha" =~ ^0+$ ]]; then
+            base_sha="$(git merge-base origin/main "$head_sha")"
+          fi
+          if ! git diff --quiet "$base_sha" "$head_sha" -- shadowrocket/ss.conf; then
+            echo "Non-main validation cannot approve or change shadowrocket/ss.conf." >&2
             exit 1
           fi
-          echo "The pull request leaves ss.conf and its baseline policy unchanged; continuing read-only structural checks without attempting baseline registration."
+          git show "$base_sha:sources/policy.json" > "$RUNNER_TEMP/base-policy.json"
+          git show "$head_sha:sources/policy.json" > "$RUNNER_TEMP/head-policy.json"
+          python3 - "$RUNNER_TEMP/base-policy.json" "$RUNNER_TEMP/head-policy.json" <<'PY'
+          import json, sys
+          from pathlib import Path
+          base = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          head = json.loads(Path(sys.argv[2]).read_text(encoding="utf-8"))
+          if base.get("managed_config_guard") != head.get("managed_config_guard"):
+              raise SystemExit("Non-main validation cannot change the owner-approved config baseline metadata.")
+          PY
+          echo "The non-main change leaves ss.conf and its approved-baseline metadata unchanged; continuing read-only structural checks."
       - name: Recover owner-approved config baseline in validation workspace
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -80,10 +102,10 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
         run: python scripts/register_config_baseline.py
       - name: Verify owner-approved config baseline
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         run: python scripts/verify_baseline.py --allow-owner-push-change
       - name: Audit config drift against the approved baseline
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         run: python scripts/audit_config_drift.py --allow-owner-push-change
       - run: python scripts/audit_ruleset_references.py
       - run: python scripts/audit_ruleset_config_overlap.py
