@@ -1,5 +1,6 @@
 # Request observations enter only as unclassified candidates; trusted source evidence controls policy.
 name: Shadowrocket Deterministic Domain Audit (User Config Baseline)
+run-name: Automation task ${{ inputs.automation_task_id || 'manual' }}
 
 on:
   schedule:
@@ -13,6 +14,10 @@ on:
         type: string
       restore_conflict_ids:
         description: 'Comma-separated config-conflict archive IDs to restore after rechecking ss.conf (optional)'
+        required: false
+        type: string
+      automation_task_id:
+        description: 'Internal task correlation ID; leave blank for manual runs'
         required: false
         type: string
   push:
