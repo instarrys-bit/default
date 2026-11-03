@@ -244,12 +244,10 @@ jobs:
             else
               paths_json="$(jq -c '[.files[].filename]' <<< "$compare_json")"
             fi
-          elif [ -z "$last_success_sha" ]; then
-            paths_json='["__no_successful_audit__"]'
           fi
 
           active_fingerprints="$(jq -c '[.tasks[] | select(.status == "QUEUED" or .status == "CLAIMED" or .status == "VERIFYING") | .input.production_fingerprint // empty] | map(select(type == "string")) | unique' automation/task_queue.json)"
-          successful_fingerprints="$(jq -c '[.tasks[] | select(.status == "SUCCEEDED" and .verification.status == "passed") | .input.production_intent.fingerprint // empty] | map(select(type == "string")) | unique' automation/task_queue.json)"
+          successful_fingerprints="$(jq -c '[.tasks[] | select(.status == "SUCCEEDED" and .verification.status == "passed") | .input.production_fingerprint // empty] | map(select(type == "string")) | unique' automation/task_queue.json)"
 
           intent_json="$(python3 scripts/production_intent.py \
             --event "$ORIGIN_EVENT" \
