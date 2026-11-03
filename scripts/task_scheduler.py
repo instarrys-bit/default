@@ -509,16 +509,17 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
                     success=False, error=error, store=store, registry=registry, now=now_utc(),
                 )
                 return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
-            result_path = Path(directory) / "task-result.json"
-            result_path.write_text(json.dumps(result, ensure_ascii=False), encoding="utf-8")
             verifier_path = (root / artifact_verifier["path"]).resolve()
-            verifier_command = [sys.executable, str(verifier_path), "--result-json-file", str(result_path)]
             try:
-                verified = subprocess.run(
-                    verifier_command, cwd=root, env=safe_child_environment(root),
-                    shell=False, capture_output=True, text=True,
-                    stdin=subprocess.DEVNULL, timeout=min(adapter["timeout_seconds"], 60), check=False,
-                )
+                with tempfile.TemporaryDirectory(prefix="artifact-verifier-") as verifier_directory:
+                    result_path = Path(verifier_directory) / "task-result.json"
+                    result_path.write_text(json.dumps(result, ensure_ascii=False), encoding="utf-8")
+                    verifier_command = [sys.executable, str(verifier_path), "--result-json-file", str(result_path)]
+                    verified = subprocess.run(
+                        verifier_command, cwd=root, env=safe_child_environment(root),
+                        shell=False, capture_output=True, text=True,
+                        stdin=subprocess.DEVNULL, timeout=min(adapter["timeout_seconds"], 60), check=False,
+                    )
             except subprocess.TimeoutExpired:
                 verified = None
             if verified is None or verified.returncode != 0:
