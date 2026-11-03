@@ -164,8 +164,12 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
                 raise ValueError(f"{task_id}.dispatch_intent.workflow_id must be a positive integer")
             if dispatch_intent.get("task_id") != task_id:
                 raise ValueError(f"{task_id}.dispatch_intent task ID mismatch")
-            if dispatch_intent.get("correlation_title") != f"Automation task {task_id}":
-                raise ValueError(f"{task_id}.dispatch_intent correlation title mismatch")
+            dispatch_attempt = dispatch_intent.get("dispatch_attempt")
+            if isinstance(dispatch_attempt, bool) or not isinstance(dispatch_attempt, int) or dispatch_attempt < 1 or dispatch_attempt > attempts:
+                raise ValueError(f"{task_id}.dispatch_intent dispatch attempt is invalid")
+            expected_correlation = f"{task_id}-a{dispatch_attempt}"
+            if dispatch_intent.get("correlation_id") != expected_correlation or dispatch_intent.get("correlation_title") != f"Automation task {expected_correlation}":
+                raise ValueError(f"{task_id}.dispatch_intent correlation identity mismatch")
             if not isinstance(dispatch_intent.get("workflow_path"), str) or not dispatch_intent["workflow_path"].startswith(".github/workflows/"):
                 raise ValueError(f"{task_id}.dispatch_intent workflow path is invalid")
             if not isinstance(dispatch_intent.get("ref"), str) or not dispatch_intent["ref"]:
