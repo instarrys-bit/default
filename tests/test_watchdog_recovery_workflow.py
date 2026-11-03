@@ -149,7 +149,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         queue_start = workflow.index("  task-queue-supervision:", health_start)
         health = workflow[health_start:queue_start]
         self.assertIn("scripts/production_intent.py", health)
-        self.assertIn('--idempotency-key "production:$fingerprint"', health)
+        self.assertIn("production_key=", health)
+        self.assertIn('--idempotency-key "$production_key"', health)
         self.assertIn("REVIEW_REQUIRED", health)
         stale_start = workflow.index("  stale-run-watch:")
         manifest_start = workflow.index("  manifest-integrity:", stale_start)
@@ -157,6 +158,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("audit_base_stale", stale)
         self.assertNotIn("auto-sync-stale:", stale)
         self.assertIn("bounded timeout recovery", stale)
+        self.assertIn("production:recovery:$current_fingerprint:$timed_out_run_id", stale)
 
     def test_successful_heartbeat_persists_the_production_input_fingerprint(self):
         audit = AUTO_SYNC.read_text(encoding="utf-8")
