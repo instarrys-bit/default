@@ -20,6 +20,14 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
             "max_total_bytes": assess_sources.MAX_TOTAL_BYTES,
         })
 
+    def test_assessor_fences_each_logical_output_before_writing(self):
+        source = (ROOT / "scripts" / "assess_sources.py").read_text(encoding="utf-8")
+        for target in ("RUNTIME_OUTPUT", "OUTPUT", "REPORT"):
+            self.assertIn(f"assert_optional_write_lease({target})", source)
+        scheduler = (ROOT / "scripts" / "task_scheduler.py").read_text(encoding="utf-8")
+        self.assertIn('"AUTOMATION_QUEUE_SNAPSHOT": str(snapshot_path)', scheduler)
+        self.assertIn('"AUTOMATION_RESOURCE_LEASE_PROOF"', scheduler)
+
     def test_accepts_bounded_independent_task_input(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "input.json"
