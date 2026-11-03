@@ -159,13 +159,12 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
         item.get("target_program_id"): item
         for item in adapter_items if isinstance(item, dict)
     }
-    verified: list[str] = []
-    rejected: list[str] = []
-    blocked: list[dict] = []
-
     def mutate(queue: dict):
         validate_envelope(queue)
         validate_candidate(queue, registry)
+        verified: list[str] = []
+        rejected: list[str] = []
+        blocked: list[dict] = []
         changed = False
         for task in queue["tasks"]:
             if task.get("status") != "VERIFYING":
@@ -215,8 +214,7 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
         validate_candidate(queue, registry)
         return queue, {"verified": verified, "rejected": rejected, "blocked": blocked}
 
-    result = store.mutate(mutate)
-    return result
+    return store.mutate(mutate)
 
 
 def main() -> int:
