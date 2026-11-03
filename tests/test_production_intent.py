@@ -84,6 +84,26 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertEqual(result["decision"], "REVIEW_REQUIRED")
         self.assertFalse(result["should_produce"])
 
+    def test_input_change_uses_stable_fingerprint_idempotency_key(self):
+        result = decide(event="push", current_fingerprint=self.fp,
+            last_success_fingerprint="old", path_classification={"status":"INPUT_CHANGED"},
+            last_success_at=None, now=self.now)
+        self.assertEqual(result["idempotency_key"], f"production:input:{self.fp}")
+
+    def test_scheduled_refresh_key_is_scoped_to_last_success_generation(self):
+        stamp = (self.now - timedelta(days=9)).isoformat()
+        result = decide(event="schedule", current_fingerprint=self.fp,
+            last_success_fingerprint=self.fp, path_classification={"status":"NO_INPUT_CHANGE"},
+            last_success_at=stamp, successful_fingerprints={self.fp}, now=self.now)
+        self.assertEqual(result["idempotency_key"], f"production:schedule:{self.fp}:{stamp}")
+
+    def test_reverted_to_previously_successful_fingerprint_does_not_rebuild_on_push(self):
+        result = decide(event="push", current_fingerprint=self.fp,
+            last_success_fingerprint="different", path_classification={"status":"INPUT_CHANGED"},
+            last_success_at=self.now.isoformat(), successful_fingerprints={self.fp}, now=self.now)
+        self.assertEqual(result["decision"], "ALREADY_SATISFIED")
+        self.assertFalse(result["should_produce"])
+
 
 if __name__ == "__main__":
     unittest.main()
