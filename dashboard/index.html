@@ -24,7 +24,8 @@ main{max-width:1240px;margin:auto;padding:28px 20px 60px}.top{display:flex;justi
 const n=v=>Number.isFinite(Number(v))?Number(v).toLocaleString("zh-CN"):"—";
 const el=id=>document.getElementById(id);
 const row=(k,v,cls="")=>'<div class="row"><span class="muted">'+k+'</span><span class="status '+cls+'">'+v+'</span></div>';
-async function load(){try{const r=await fetch("./data.json",{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);const d=await r.json();
+let lastSuccessfulLoad = null;
+async function load(){try{const r=await fetch("./data.json?refresh="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);const d=await r.json();lastSuccessfulLoad=new Date();
 const cards=[["已发布规则总量",n(d.rulesets.published_total)],["已审核候选",n(d.review.reviewed_total)],["待处理队列",n(d.rulesets.queued_total)],["规则来源",n(d.sources.source_count)]];
 el("summary").innerHTML=cards.map(x=>'<div class="panel"><div class="label">'+x[0]+'</div><div class="metric">'+x[1]+'</div></div>').join("");
 const total=Math.max(1,d.rulesets.published_total||0);let inv="";for(const p of ["DIRECT","PROXY","REJECT"]){const v=d.rulesets.by_policy[p]||0;inv+='<div class="barrow"><b>'+p+'</b><div class="track"><div class="fill '+p.toLowerCase()+'" style="width:'+Math.min(100,v/total*100)+'%"></div></div><b>'+n(v)+'</b></div>'}inv+=row("发布容量",n(d.rulesets.max_published)+" 条")+row("容量使用率",d.rulesets.max_published?((d.rulesets.published_total/d.rulesets.max_published)*100).toFixed(1)+"%":"—");el("inventory").innerHTML=inv;
@@ -32,7 +33,8 @@ let rev=row("审核候选总数",n(d.review.reviewed_total))+row("批准记录",
 const p=d.production;el("production").innerHTML=row("生产执行任务",n(p.total_tasks))+row("成功并核验",n(p.succeeded),"ok")+row("执行中 / 待核验",n(p.active),"warn")+row("失败 / 死信",n(p.dead_letter),"bad")+row("最近成功核验",p.last_success_verified_at||"暂无记录")+row("下次生产预期",p.next_expected_at||"尚无可验证时间记录")+ '<div class="note">生产周期按 8 天策略计算；仅在存在成功核验记录时展示预计时间。</div>';
 el("queue").innerHTML=row("队列任务总数",n(d.queue.total))+row("QUEUED",n(d.queue.by_status.QUEUED))+row("CLAIMED",n(d.queue.by_status.CLAIMED))+row("VERIFYING",n(d.queue.by_status.VERIFYING),"warn")+row("SUCCEEDED",n(d.queue.by_status.SUCCEEDED),"ok")+row("DEAD_LETTER",n(d.queue.by_status.DEAD_LETTER),"bad")+row("规则待发布数",n(d.rulesets.queued_total));
 el("lifecycle").innerHTML=row("当前发布量",n(d.lifecycle.published_rule_count))+row("下一审核里程碑",n(d.lifecycle.next_milestone))+row("规则上限",n(d.lifecycle.max_published_rules))+row("生命周期状态",d.lifecycle.status||"未知")+row("本次审核状态",d.lifecycle.latest_review_status||"暂无记录")+row("最近审核时间",d.lifecycle.last_successful_review_at||"暂无记录");
-el("updated").textContent="数据更新时间："+d.generated_at+" · 数据提交版本："+(d.source_commit||"未知")+" · 本页仅展示汇总数据，不提供任何生产、部署或配置操作。历史抓取批次、归档、生命周期删除/恢复事件尚无完整事件账本，因此不伪造累计值。";
-}catch(e){el("updated").textContent="数据读取失败："+e.message+"。请稍后重试或检查看板数据构建任务。";}}
+el("updated").textContent="数据更新时间："+d.generated_at+" · 页面最近拉取："+lastSuccessfulLoad.toLocaleTimeString("zh-CN")+" · 数据提交版本："+(d.source_commit||"未知")+" · 本页仅展示汇总数据，不提供任何生产、部署或配置操作。历史抓取批次、归档、生命周期删除/恢复事件尚无完整事件账本，因此不伪造累计值。";
+}catch(e){const status=el("updated");status.textContent="数据刷新失败："+e.message+"。保留页面现有数据，等待下次自动重试。";}}
 load();
+setInterval(load,30000);
 </script></body></html>
