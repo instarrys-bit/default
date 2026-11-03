@@ -17,11 +17,11 @@ class AdapterActivationAuditTests(unittest.TestCase):
         self.assertFalse(report["activation_performed"])
         self.assertEqual(report["program_count"], 53)
         self.assertEqual(report["adapter_count"], 53)
-        self.assertEqual(report["enabled_adapter_count"], 1)
+        self.assertEqual(report["enabled_adapter_count"], 2)
         self.assertTrue(report["watchdog_caller_permissions_ready"])
         self.assertEqual(
             [row["program_id"] for row in report["adapters"] if row["enabled"]],
-            ["workflow_self_healing_tests"],
+            ["workflow_auto_sync", "workflow_self_healing_tests"],
         )
 
     def test_identifies_only_low_privilege_dispatchable_workflow_as_canary(self):
