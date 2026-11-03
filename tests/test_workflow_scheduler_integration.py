@@ -226,7 +226,7 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
         with patch.object(task_scheduler, "GitHubWorkflowClient", return_value=self.client):
             report = task_scheduler.run_scheduler_once(
                 self.store, registry, adapters,
-                worker_id="watchdog-config-test", max_tasks=1, root=self.root, now=self.now,
+                worker_id="watchdog-config-test", max_tasks=1, root=self.root, now=datetime.now(timezone.utc),
             )
         self.assertEqual(report["processed_count"], 1, repr(report))
         dispatched = self.client.dispatches[0][2]
