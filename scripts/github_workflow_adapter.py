@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Reviewed GitHub Actions workflow-dispatch and run-correlation primitives.
+"""GitHub Actions workflow dispatch and run-correlation primitives.
 
-This module is deliberately not wired into the scheduler in this change.
-It defines and tests the API boundary first; dispatch remains disabled until
-scheduler integration and independent run verification are reviewed.
+Production use is gated by the scheduler's reviewed adapter, caller allowlist,
+allowlisted ref, persisted dispatch intent, and independent run verifier.
 """
 from __future__ import annotations
 
@@ -285,7 +284,7 @@ def main() -> int:
             "correlation_input": "automation_task_id",
             "run_identity": ["workflow_id", "event", "head_branch", "head_sha", "display_title"],
             "success_requires": "completed workflow run with conclusion=success",
-            "dispatch_enabled_by_this_module": False,
+            "production_dispatch_requires_enabled_reviewed_adapter": True,
         }, sort_keys=True))
     else:
         parser.print_help()
