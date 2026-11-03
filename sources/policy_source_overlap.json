@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "feed_count": 196,
-  "total_bytes_read": 148152450,
+  "total_bytes_read": 148152332,
   "max_file_bytes": 30000000,
   "max_total_bytes": 500000000,
   "publisher_counts": {
@@ -6431,7 +6431,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 270,
-      "right_count": 234769,
+      "right_count": 234768,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -7168,7 +7168,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 580,
-      "right_count": 234769,
+      "right_count": 234768,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -8023,7 +8023,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 155422,
-      "right_count": 234769,
+      "right_count": 234768,
       "overlap_count": 10,
       "jaccard": 2.6e-05,
       "smaller_set_overlap": 6.4e-05,
@@ -8813,7 +8813,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 52427,
-      "right_count": 234769,
+      "right_count": 234768,
       "overlap_count": 11,
       "jaccard": 3.8e-05,
       "smaller_set_overlap": 0.00021,
@@ -9521,7 +9521,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 45081,
-      "right_count": 234769,
+      "right_count": 234768,
       "overlap_count": 9,
       "jaccard": 3.2e-05,
       "smaller_set_overlap": 0.0002,
@@ -10055,7 +10055,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 969,
-      "right_count": 234769,
+      "right_count": 234768,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -10588,7 +10588,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 17028,
-      "right_count": 234769,
+      "right_count": 234768,
       "overlap_count": 4,
       "jaccard": 1.6e-05,
       "smaller_set_overlap": 0.000235,
@@ -10977,7 +10977,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 267,
-      "right_count": 234769,
+      "right_count": 234768,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -11207,7 +11207,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 0,
-      "right_count": 234769,
+      "right_count": 234768,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -11359,7 +11359,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 115,
-      "right_count": 234769,
+      "right_count": 234768,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -11654,7 +11654,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 16125,
-      "right_count": 234769,
+      "right_count": 234768,
       "overlap_count": 2,
       "jaccard": 8e-06,
       "smaller_set_overlap": 0.000124,
@@ -12080,10 +12080,10 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 670671,
-      "right_count": 234769,
-      "overlap_count": 9790,
-      "jaccard": 0.010931,
-      "smaller_set_overlap": 0.041701,
+      "right_count": 234768,
+      "overlap_count": 9789,
+      "jaccard": 0.010929,
+      "smaller_set_overlap": 0.041696,
       "shared_domain_sample": [
         "01.apswatchclub.shop",
         "0465kk.com",
@@ -12446,7 +12446,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 346345,
-      "right_count": 234769,
+      "right_count": 234768,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -12593,7 +12593,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 16125,
-      "right_count": 234769,
+      "right_count": 234768,
       "overlap_count": 2,
       "jaccard": 8e-06,
       "smaller_set_overlap": 0.000124,
@@ -12827,7 +12827,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 226570,
-      "right_count": 234769,
+      "right_count": 234768,
       "overlap_count": 12998,
       "jaccard": 0.028991,
       "smaller_set_overlap": 0.057369,
@@ -13108,7 +13108,7 @@
         "phishdestroy/destroylist",
         "sefinek/Sefinek-Blocklist-Collection"
       ],
-      "left_count": 234769,
+      "left_count": 234768,
       "right_count": 81,
       "overlap_count": 1,
       "jaccard": 4e-06,
@@ -13123,7 +13123,7 @@
         "phishdestroy/destroylist",
         "sve1r/Rules-For-Quantumult-X"
       ],
-      "left_count": 234769,
+      "left_count": 234768,
       "right_count": 106541,
       "overlap_count": 13,
       "jaccard": 3.8e-05,
@@ -13150,7 +13150,7 @@
         "phishdestroy/destroylist",
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
-      "left_count": 234769,
+      "left_count": 234768,
       "right_count": 52444,
       "overlap_count": 11,
       "jaccard": 3.8e-05,
@@ -13175,7 +13175,7 @@
         "phishdestroy/destroylist",
         "zangadoprojets/pi-hole-blocklist"
       ],
-      "left_count": 234769,
+      "left_count": 234768,
       "right_count": 57637,
       "overlap_count": 0,
       "jaccard": 0.0,
@@ -13188,7 +13188,7 @@
         "phishdestroy/destroylist",
         "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
       ],
-      "left_count": 234769,
+      "left_count": 234768,
       "right_count": 49086,
       "overlap_count": 10,
       "jaccard": 3.5e-05,
