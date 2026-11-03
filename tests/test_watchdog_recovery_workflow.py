@@ -188,6 +188,18 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('production_decision:"RECOVERY_REQUIRED"', workflow)
         self.assertNotIn('idempotency-key "auto-sync-manifest:', workflow)
 
+    def test_different_active_fingerprint_waits_instead_of_queuing_parallel_production(self):
+        intent = (ROOT / "scripts" / "production_intent.py").read_text(encoding="utf-8")
+        self.assertIn("WAIT_FOR_ACTIVE", intent)
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        self.assertIn("IN_PROGRESS|WAIT_FOR_ACTIVE|ALREADY_SATISFIED|OBSERVE_ONLY", workflow)
+
+    def test_same_sha_failure_with_stale_task_fingerprint_is_reconciled(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        self.assertIn("The task's input fingerprint is stale even if its workflow run SHA equals current main", workflow)
+        self.assertIn("Same-SHA failure with an unchanged production fingerprint requires diagnosis", workflow)
+        self.assertIn("production:input:$current_fingerprint", workflow)
+
 
 if __name__ == "__main__":
     unittest.main()
