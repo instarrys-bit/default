@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-baseline-2026.11.04.1",
+  "release_id": "shadowrocket-automation-baseline-2026.11.04.2",
   "release_status": "baseline_snapshot",
   "created_on": "2026-11-04",
-  "purpose": "Pin the currently reviewed automation components under one release identity without changing component schemas or enabling new execution capabilities.",
+  "purpose": "Pin the post-migration automation baseline with Watchdog-owned production dispatch and live resource fencing at the publish boundary.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "ee1d9738c11b269317af4c1ec5dddc14b6e52041"
+      "git_blob_sha": "3069dd9c86a25a5ab8e27be3d24025519ad9e43c"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "b266437eee2a17b75b9f7d721124ddba414dee3e"
+      "git_blob_sha": "c90150d2071957fa2d8f0a5af50b0c7bec81b84f"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -28,7 +28,7 @@
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "e62ef3dd301fdcce64209a453cf9691ac861aab7"
+      "git_blob_sha": "16ad4cfeba839c2da25be96b008214457c74ddd2"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -60,7 +60,8 @@
     "Per-capability dependency edges have not yet been separated from shared-library imports and workflow aggregation.",
     "Write-path ownership and indirect side effects still require machine-checked coverage.",
     "Resource locking and artifact lineage are not yet enforced as a unified contract.",
-    "The declared review-engine version is not yet pinned to a verified source revision."
+    "The declared review-engine version is not yet pinned to a verified source revision.",
+    "The production workflow now holds a scheduler-issued logical resource lease and checks its live fencing epoch before publishing; independent Python writer adapters remain disabled until each has a complete contract and compatible enforcement."
   ],
   "next_migration_gate": {
     "required_before_independent_python_dispatch": [
