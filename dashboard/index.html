@@ -14,7 +14,7 @@ main{max-width:1240px;margin:auto;padding:28px 20px 60px}.top{display:flex;justi
 </head>
 <body><main>
 <header class="top"><div><h1>规则集自动化 · 运营看板</h1><div class="sub">只读运营视图｜数据来自仓库已提交的生产记录</div></div><span class="pill">READ ONLY · 无生产控制权限</span></header>
-<div class="grid" id="summary"><div class="panel"><div class="label">已发布规则总量</div><div class="metric">—</div></div><div class="panel"><div class="label">本轮审核候选</div><div class="metric">—</div></div><div class="panel"><div class="label">待处理队列</div><div class="metric">—</div></div><div class="panel"><div class="label">来源数量</div><div class="metric">—</div></div></div>
+<div class="grid" id="summary"><div class="panel"><div class="label">已发布规则总量</div><div class="metric">—</div></div><div class="panel"><div class="label">累计已审核候选</div><div class="metric">—</div></div><div class="panel"><div class="label">规则待发布</div><div class="metric">—</div></div><div class="panel"><div class="label">来源数量</div><div class="metric">—</div></div></div>
 <h2 class="section">规则集库存</h2><div class="panel" id="inventory"><div class="empty">正在读取数据…</div></div>
 <div class="split"><section><h2 class="section">审核与筛选</h2><div class="panel" id="review"><div class="empty">正在读取数据…</div></div></section><section><h2 class="section">生产运行状态</h2><div class="panel" id="production"><div class="empty">正在读取数据…</div></div></section></div>
 <div class="split"><section><h2 class="section">任务队列</h2><div class="panel" id="queue"><div class="empty">正在读取数据…</div></div></section><section><h2 class="section">生命周期管理</h2><div class="panel" id="lifecycle"><div class="empty">正在读取数据…</div></div></section></div>
@@ -32,7 +32,7 @@ let rev=row("审核候选总数",n(d.review.reviewed_total))+row("批准记录",
 const p=d.production;el("production").innerHTML=row("生产执行任务",n(p.total_tasks))+row("成功并核验",n(p.succeeded),"ok")+row("执行中 / 待核验",n(p.active),"warn")+row("失败 / 死信",n(p.dead_letter),"bad")+row("最近成功核验",p.last_success_verified_at||"暂无记录")+row("下次生产预期",p.next_expected_at||"尚无可验证时间记录")+ '<div class="note">生产周期按 8 天策略计算；仅在存在成功核验记录时展示预计时间。</div>';
 el("queue").innerHTML=row("队列任务总数",n(d.queue.total))+row("QUEUED",n(d.queue.by_status.QUEUED))+row("CLAIMED",n(d.queue.by_status.CLAIMED))+row("VERIFYING",n(d.queue.by_status.VERIFYING),"warn")+row("SUCCEEDED",n(d.queue.by_status.SUCCEEDED),"ok")+row("DEAD_LETTER",n(d.queue.by_status.DEAD_LETTER),"bad")+row("规则待发布数",n(d.rulesets.queued_total));
 el("lifecycle").innerHTML=row("当前发布量",n(d.lifecycle.published_rule_count))+row("下一审核里程碑",n(d.lifecycle.next_milestone))+row("规则上限",n(d.lifecycle.max_published_rules))+row("生命周期状态",d.lifecycle.status||"未知")+row("本次审核状态",d.lifecycle.latest_review_status||"暂无记录")+row("最近审核时间",d.lifecycle.last_successful_review_at||"暂无记录");
-el("updated").textContent="数据更新时间："+d.generated_at+" · 数据提交版本："+(d.source_commit||"未知")+" · 本页仅展示汇总数据，不提供任何生产、部署或配置操作。";
+el("updated").textContent="数据更新时间："+d.generated_at+" · 数据提交版本："+(d.source_commit||"未知")+" · 本页仅展示汇总数据，不提供任何生产、部署或配置操作。历史抓取批次、归档、生命周期删除/恢复事件尚无完整事件账本，因此不伪造累计值。";
 }catch(e){el("updated").textContent="数据读取失败："+e.message+"。请稍后重试或检查看板数据构建任务。";}}
 load();
 </script></body></html>
