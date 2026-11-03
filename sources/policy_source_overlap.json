@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "feed_count": 196,
-  "total_bytes_read": 148025364,
+  "total_bytes_read": 148152450,
   "max_file_bytes": 30000000,
   "max_total_bytes": 500000000,
   "publisher_counts": {
@@ -6112,9 +6112,9 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 270,
-      "right_count": 52060,
+      "right_count": 52427,
       "overlap_count": 21,
-      "jaccard": 0.000401,
+      "jaccard": 0.000399,
       "smaller_set_overlap": 0.077778,
       "shared_domain_sample": [
         "affiliatefuture.com",
@@ -6431,7 +6431,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 270,
-      "right_count": 234723,
+      "right_count": 234769,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -6506,9 +6506,9 @@
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 270,
-      "right_count": 52045,
+      "right_count": 52444,
       "overlap_count": 21,
-      "jaccard": 0.000402,
+      "jaccard": 0.000399,
       "smaller_set_overlap": 0.077778,
       "shared_domain_sample": [
         "affiliatefuture.com",
@@ -6647,9 +6647,9 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 580,
-      "right_count": 52060,
+      "right_count": 52427,
       "overlap_count": 183,
-      "jaccard": 0.003489,
+      "jaccard": 0.003464,
       "smaller_set_overlap": 0.315517,
       "shared_domain_sample": [
         "51.la",
@@ -7168,7 +7168,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 580,
-      "right_count": 234723,
+      "right_count": 234769,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -7258,9 +7258,9 @@
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 580,
-      "right_count": 52045,
+      "right_count": 52444,
       "overlap_count": 136,
-      "jaccard": 0.002591,
+      "jaccard": 0.002571,
       "smaller_set_overlap": 0.234483,
       "shared_domain_sample": [
         "51.la",
@@ -7399,10 +7399,10 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 155422,
-      "right_count": 52060,
+      "right_count": 52427,
       "overlap_count": 4121,
-      "jaccard": 0.020264,
-      "smaller_set_overlap": 0.079159,
+      "jaccard": 0.020228,
+      "smaller_set_overlap": 0.078605,
       "shared_domain_sample": [
         "0emn.com",
         "0fmm.com",
@@ -8023,7 +8023,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 155422,
-      "right_count": 234723,
+      "right_count": 234769,
       "overlap_count": 10,
       "jaccard": 2.6e-05,
       "smaller_set_overlap": 6.4e-05,
@@ -8124,10 +8124,10 @@
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 155422,
-      "right_count": 52045,
+      "right_count": 52444,
       "overlap_count": 4109,
-      "jaccard": 0.020206,
-      "smaller_set_overlap": 0.078951,
+      "jaccard": 0.020166,
+      "smaller_set_overlap": 0.07835,
       "shared_domain_sample": [
         "0emn.com",
         "0fmm.com",
@@ -8283,10 +8283,10 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "NZNL31/Shadowrocket-Ad-DNS-Leak-Rules"
       ],
-      "left_count": 52060,
+      "left_count": 52427,
       "right_count": 45081,
       "overlap_count": 13797,
-      "jaccard": 0.165543,
+      "jaccard": 0.164817,
       "smaller_set_overlap": 0.306049,
       "shared_domain_sample": [
         "0019x.com",
@@ -8347,10 +8347,10 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "TG-Twilight/AWAvenue-Ads-Rule"
       ],
-      "left_count": 52060,
+      "left_count": 52427,
       "right_count": 969,
       "overlap_count": 64,
-      "jaccard": 0.001208,
+      "jaccard": 0.0012,
       "smaller_set_overlap": 0.066047,
       "shared_domain_sample": [
         "ad.12306.cn",
@@ -8411,10 +8411,10 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "YanbingJiang/Shadowrocket_diy_rules"
       ],
-      "left_count": 52060,
+      "left_count": 52427,
       "right_count": 17028,
       "overlap_count": 2450,
-      "jaccard": 0.036766,
+      "jaccard": 0.036564,
       "smaller_set_overlap": 0.143881,
       "shared_domain_sample": [
         "003store.com",
@@ -8475,10 +8475,10 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "anudeepND/whitelist"
       ],
-      "left_count": 52060,
+      "left_count": 52427,
       "right_count": 267,
       "overlap_count": 21,
-      "jaccard": 0.000401,
+      "jaccard": 0.000399,
       "smaller_set_overlap": 0.078652,
       "shared_domain_sample": [
         "affiliatefuture.com",
@@ -8510,7 +8510,7 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "badmojr/1Hosts"
       ],
-      "left_count": 52060,
+      "left_count": 52427,
       "right_count": 0,
       "overlap_count": 0,
       "jaccard": 0.0,
@@ -8523,10 +8523,10 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "furkan-bayrak/lg-tv-blocklist"
       ],
-      "left_count": 52060,
+      "left_count": 52427,
       "right_count": 115,
       "overlap_count": 3,
-      "jaccard": 5.8e-05,
+      "jaccard": 5.7e-05,
       "smaller_set_overlap": 0.026087,
       "shared_domain_sample": [
         "ad.lgappstv.com",
@@ -8540,10 +8540,10 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "h2y/Shadowrocket-ADBlock-Rules"
       ],
-      "left_count": 52060,
+      "left_count": 52427,
       "right_count": 16125,
       "overlap_count": 2250,
-      "jaccard": 0.034125,
+      "jaccard": 0.033936,
       "smaller_set_overlap": 0.139535,
       "shared_domain_sample": [
         "003store.com",
@@ -8604,11 +8604,11 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "hagezi/dns-blocklists"
       ],
-      "left_count": 52060,
+      "left_count": 52427,
       "right_count": 670671,
-      "overlap_count": 50601,
-      "jaccard": 0.075285,
-      "smaller_set_overlap": 0.971975,
+      "overlap_count": 50766,
+      "jaccard": 0.075507,
+      "smaller_set_overlap": 0.968318,
       "shared_domain_sample": [
         "000491b06a.com",
         "0017c6c37c.com",
@@ -8668,7 +8668,7 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "marco-acorte/antispam-it"
       ],
-      "left_count": 52060,
+      "left_count": 52427,
       "right_count": 346345,
       "overlap_count": 2,
       "jaccard": 5e-06,
@@ -8684,10 +8684,10 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "nthack/Shadowrocket-ADBlock-Rules-Easy"
       ],
-      "left_count": 52060,
+      "left_count": 52427,
       "right_count": 16125,
       "overlap_count": 2250,
-      "jaccard": 0.034125,
+      "jaccard": 0.033936,
       "smaller_set_overlap": 0.139535,
       "shared_domain_sample": [
         "003store.com",
@@ -8748,11 +8748,11 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "pengelana/blocklist"
       ],
-      "left_count": 52060,
+      "left_count": 52427,
       "right_count": 226570,
-      "overlap_count": 16404,
-      "jaccard": 0.062557,
-      "smaller_set_overlap": 0.315098,
+      "overlap_count": 16406,
+      "jaccard": 0.062477,
+      "smaller_set_overlap": 0.31293,
       "shared_domain_sample": [
         "0019x.com",
         "01counter.com",
@@ -8812,11 +8812,11 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "phishdestroy/destroylist"
       ],
-      "left_count": 52060,
-      "right_count": 234723,
+      "left_count": 52427,
+      "right_count": 234769,
       "overlap_count": 11,
       "jaccard": 3.8e-05,
-      "smaller_set_overlap": 0.000211,
+      "smaller_set_overlap": 0.00021,
       "shared_domain_sample": [
         "aifpleasurebeh.org",
         "cddtsecure.com",
@@ -8837,7 +8837,7 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "sefinek/Sefinek-Blocklist-Collection"
       ],
-      "left_count": 52060,
+      "left_count": 52427,
       "right_count": 81,
       "overlap_count": 0,
       "jaccard": 0.0,
@@ -8850,11 +8850,11 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "sve1r/Rules-For-Quantumult-X"
       ],
-      "left_count": 52060,
+      "left_count": 52427,
       "right_count": 106541,
       "overlap_count": 21928,
-      "jaccard": 0.160441,
-      "smaller_set_overlap": 0.421206,
+      "jaccard": 0.160012,
+      "smaller_set_overlap": 0.418258,
       "shared_domain_sample": [
         "0019x.com",
         "003store.com",
@@ -8914,11 +8914,11 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
-      "left_count": 52060,
-      "right_count": 52045,
-      "overlap_count": 51992,
-      "jaccard": 0.997678,
-      "smaller_set_overlap": 0.998982,
+      "left_count": 52427,
+      "right_count": 52444,
+      "overlap_count": 52359,
+      "jaccard": 0.997086,
+      "smaller_set_overlap": 0.998703,
       "shared_domain_sample": [
         "000491b06a.com",
         "0017c6c37c.com",
@@ -8978,7 +8978,7 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "zangadoprojets/pi-hole-blocklist"
       ],
-      "left_count": 52060,
+      "left_count": 52427,
       "right_count": 57637,
       "overlap_count": 0,
       "jaccard": 0.0,
@@ -8991,11 +8991,11 @@
         "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
         "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
       ],
-      "left_count": 52060,
+      "left_count": 52427,
       "right_count": 49086,
-      "overlap_count": 48777,
-      "jaccard": 0.93141,
-      "smaller_set_overlap": 0.993705,
+      "overlap_count": 49086,
+      "jaccard": 0.936273,
+      "smaller_set_overlap": 1.0,
       "shared_domain_sample": [
         "000491b06a.com",
         "0017c6c37c.com",
@@ -9521,7 +9521,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 45081,
-      "right_count": 234723,
+      "right_count": 234769,
       "overlap_count": 9,
       "jaccard": 3.2e-05,
       "smaller_set_overlap": 0.0002,
@@ -9621,9 +9621,9 @@
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 45081,
-      "right_count": 52045,
+      "right_count": 52444,
       "overlap_count": 13729,
-      "jaccard": 0.164622,
+      "jaccard": 0.163838,
       "smaller_set_overlap": 0.304541,
       "shared_domain_sample": [
         "0019x.com",
@@ -10055,7 +10055,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 969,
-      "right_count": 234723,
+      "right_count": 234769,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -10145,9 +10145,9 @@
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 969,
-      "right_count": 52045,
+      "right_count": 52444,
       "overlap_count": 63,
-      "jaccard": 0.00119,
+      "jaccard": 0.001181,
       "smaller_set_overlap": 0.065015,
       "shared_domain_sample": [
         "ad.12306.cn",
@@ -10588,7 +10588,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 17028,
-      "right_count": 234723,
+      "right_count": 234769,
       "overlap_count": 4,
       "jaccard": 1.6e-05,
       "smaller_set_overlap": 0.000235,
@@ -10683,9 +10683,9 @@
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 17028,
-      "right_count": 52045,
+      "right_count": 52444,
       "overlap_count": 2446,
-      "jaccard": 0.036712,
+      "jaccard": 0.036493,
       "smaller_set_overlap": 0.143646,
       "shared_domain_sample": [
         "003store.com",
@@ -10977,7 +10977,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 267,
-      "right_count": 234723,
+      "right_count": 234769,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -11052,9 +11052,9 @@
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 267,
-      "right_count": 52045,
+      "right_count": 52444,
       "overlap_count": 21,
-      "jaccard": 0.000402,
+      "jaccard": 0.000399,
       "smaller_set_overlap": 0.078652,
       "shared_domain_sample": [
         "affiliatefuture.com",
@@ -11207,7 +11207,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 0,
-      "right_count": 234723,
+      "right_count": 234769,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -11246,7 +11246,7 @@
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 0,
-      "right_count": 52045,
+      "right_count": 52444,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -11359,7 +11359,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 115,
-      "right_count": 234723,
+      "right_count": 234769,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -11402,9 +11402,9 @@
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 115,
-      "right_count": 52045,
+      "right_count": 52444,
       "overlap_count": 3,
-      "jaccard": 5.8e-05,
+      "jaccard": 5.7e-05,
       "smaller_set_overlap": 0.026087,
       "shared_domain_sample": [
         "ad.lgappstv.com",
@@ -11654,7 +11654,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 16125,
-      "right_count": 234723,
+      "right_count": 234769,
       "overlap_count": 2,
       "jaccard": 8e-06,
       "smaller_set_overlap": 0.000124,
@@ -11747,9 +11747,9 @@
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 16125,
-      "right_count": 52045,
+      "right_count": 52444,
       "overlap_count": 2249,
-      "jaccard": 0.034117,
+      "jaccard": 0.033911,
       "smaller_set_overlap": 0.139473,
       "shared_domain_sample": [
         "003store.com",
@@ -12080,10 +12080,10 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 670671,
-      "right_count": 234723,
-      "overlap_count": 9760,
-      "jaccard": 0.010897,
-      "smaller_set_overlap": 0.041581,
+      "right_count": 234769,
+      "overlap_count": 9790,
+      "jaccard": 0.010931,
+      "smaller_set_overlap": 0.041701,
       "shared_domain_sample": [
         "01.apswatchclub.shop",
         "0465kk.com",
@@ -12224,10 +12224,10 @@
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 670671,
-      "right_count": 52045,
-      "overlap_count": 50640,
-      "jaccard": 0.075349,
-      "smaller_set_overlap": 0.973004,
+      "right_count": 52444,
+      "overlap_count": 50753,
+      "jaccard": 0.075485,
+      "smaller_set_overlap": 0.967756,
       "shared_domain_sample": [
         "000491b06a.com",
         "0017c6c37c.com",
@@ -12446,7 +12446,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 346345,
-      "right_count": 234723,
+      "right_count": 234769,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -12487,7 +12487,7 @@
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 346345,
-      "right_count": 52045,
+      "right_count": 52444,
       "overlap_count": 2,
       "jaccard": 5e-06,
       "smaller_set_overlap": 3.8e-05,
@@ -12593,7 +12593,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 16125,
-      "right_count": 234723,
+      "right_count": 234769,
       "overlap_count": 2,
       "jaccard": 8e-06,
       "smaller_set_overlap": 0.000124,
@@ -12686,9 +12686,9 @@
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 16125,
-      "right_count": 52045,
+      "right_count": 52444,
       "overlap_count": 2249,
-      "jaccard": 0.034117,
+      "jaccard": 0.033911,
       "smaller_set_overlap": 0.139473,
       "shared_domain_sample": [
         "003store.com",
@@ -12827,10 +12827,10 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 226570,
-      "right_count": 234723,
-      "overlap_count": 12953,
-      "jaccard": 0.028891,
-      "smaller_set_overlap": 0.05717,
+      "right_count": 234769,
+      "overlap_count": 12998,
+      "jaccard": 0.028991,
+      "smaller_set_overlap": 0.057369,
       "shared_domain_sample": [
         "008963466.weebly.com",
         "009090334mn.vercel.app",
@@ -12968,10 +12968,10 @@
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 226570,
-      "right_count": 52045,
-      "overlap_count": 16402,
-      "jaccard": 0.062552,
-      "smaller_set_overlap": 0.31515,
+      "right_count": 52444,
+      "overlap_count": 16404,
+      "jaccard": 0.062465,
+      "smaller_set_overlap": 0.312791,
       "shared_domain_sample": [
         "0019x.com",
         "01counter.com",
@@ -13108,7 +13108,7 @@
         "phishdestroy/destroylist",
         "sefinek/Sefinek-Blocklist-Collection"
       ],
-      "left_count": 234723,
+      "left_count": 234769,
       "right_count": 81,
       "overlap_count": 1,
       "jaccard": 4e-06,
@@ -13123,7 +13123,7 @@
         "phishdestroy/destroylist",
         "sve1r/Rules-For-Quantumult-X"
       ],
-      "left_count": 234723,
+      "left_count": 234769,
       "right_count": 106541,
       "overlap_count": 13,
       "jaccard": 3.8e-05,
@@ -13150,11 +13150,11 @@
         "phishdestroy/destroylist",
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
-      "left_count": 234723,
-      "right_count": 52045,
+      "left_count": 234769,
+      "right_count": 52444,
       "overlap_count": 11,
       "jaccard": 3.8e-05,
-      "smaller_set_overlap": 0.000211,
+      "smaller_set_overlap": 0.00021,
       "shared_domain_sample": [
         "aifpleasurebeh.org",
         "cddtsecure.com",
@@ -13175,7 +13175,7 @@
         "phishdestroy/destroylist",
         "zangadoprojets/pi-hole-blocklist"
       ],
-      "left_count": 234723,
+      "left_count": 234769,
       "right_count": 57637,
       "overlap_count": 0,
       "jaccard": 0.0,
@@ -13188,7 +13188,7 @@
         "phishdestroy/destroylist",
         "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
       ],
-      "left_count": 234723,
+      "left_count": 234769,
       "right_count": 49086,
       "overlap_count": 10,
       "jaccard": 3.5e-05,
@@ -13226,7 +13226,7 @@
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 81,
-      "right_count": 52045,
+      "right_count": 52444,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -13265,10 +13265,10 @@
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
       "left_count": 106541,
-      "right_count": 52045,
+      "right_count": 52444,
       "overlap_count": 21874,
-      "jaccard": 0.160001,
-      "smaller_set_overlap": 0.42029,
+      "jaccard": 0.159535,
+      "smaller_set_overlap": 0.417093,
       "shared_domain_sample": [
         "0019x.com",
         "003store.com",
@@ -13416,7 +13416,7 @@
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
         "zangadoprojets/pi-hole-blocklist"
       ],
-      "left_count": 52045,
+      "left_count": 52444,
       "right_count": 57637,
       "overlap_count": 0,
       "jaccard": 0.0,
@@ -13429,11 +13429,11 @@
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever",
         "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
       ],
-      "left_count": 52045,
+      "left_count": 52444,
       "right_count": 49086,
-      "overlap_count": 48830,
-      "jaccard": 0.933634,
-      "smaller_set_overlap": 0.994785,
+      "overlap_count": 49086,
+      "jaccard": 0.93597,
+      "smaller_set_overlap": 1.0,
       "shared_domain_sample": [
         "000491b06a.com",
         "0017c6c37c.com",

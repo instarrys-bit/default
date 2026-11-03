@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T21:59:40.999842+00:00",
+  "generated_at": "2026-11-03T08:14:02.335301+00:00",
   "health": "CHECK",
   "integrity": {
     "config_baseline_match": true,
@@ -86,21 +86,21 @@
     "stalled": false
   },
   "rule_provenance": {
-    "rule_count": 169996,
-    "exact_file_line_evidence_count": 267520,
+    "rule_count": 170363,
+    "exact_file_line_evidence_count": 268053,
     "snapshot_membership_evidence_count": 2,
     "missing_line_number_count": 2,
     "rules_without_current_review_count": 5178
   },
   "review": {
-    "candidate_count": 165535,
+    "candidate_count": 165902,
     "approved_count": 3370,
-    "ledger_approved_count": 61195,
-    "approved_not_published_count": 57825,
+    "ledger_approved_count": 61278,
+    "approved_not_published_count": 57908,
     "approved_not_published_reasons": {
       "baseline_conflict": 0,
       "config_conflict_archive": 0,
-      "other": 57825
+      "other": 57908
     },
     "approved_not_published_samples": {
       "baseline_conflict": [],
@@ -2910,6 +2910,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,22hgc.com",
           "domain": "22hgc.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,22n5xlc6n0.com",
+          "domain": "22n5xlc6n0.com"
         },
         {
           "policy": "REJECT",
@@ -7143,6 +7148,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,6013847d95.com",
+          "domain": "6013847d95.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,6036e059c4.com",
           "domain": "6036e059c4.com"
         },
@@ -7950,6 +7960,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,6o719vq4x.com",
           "domain": "6o719vq4x.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,6oozp2z9keti3yoxpw1.cfd",
+          "domain": "6oozp2z9keti3yoxpw1.cfd"
         },
         {
           "policy": "REJECT",
@@ -10200,6 +10215,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,940haloix.net",
           "domain": "940haloix.net"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,941nmfbtkfv5t2or4lu1oelc.cfd",
+          "domain": "941nmfbtkfv5t2or4lu1oelc.cfd"
         },
         {
           "policy": "REJECT",
@@ -29563,6 +29583,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,alivelinen.com",
+          "domain": "alivelinen.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,aliveprompt.com",
           "domain": "aliveprompt.com"
         },
@@ -31085,6 +31110,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,amunfezanttor.com",
           "domain": "amunfezanttor.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,amusedlotus.com",
+          "domain": "amusedlotus.com"
         },
         {
           "policy": "REJECT",
@@ -37718,6 +37748,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,aoaussresxgsv.website",
+          "domain": "aoaussresxgsv.website"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,aodnc.christianbook.com",
           "domain": "aodnc.christianbook.com"
         },
@@ -41485,6 +41520,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,arvigorothan.com",
           "domain": "arvigorothan.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,arxahqjztjnj.com",
+          "domain": "arxahqjztjnj.com"
         },
         {
           "policy": "REJECT",
@@ -45915,6 +45955,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,baffleoeillet.cfd",
           "domain": "baffleoeillet.cfd"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,bagave.com",
+          "domain": "bagave.com"
         },
         {
           "policy": "REJECT",
@@ -52548,6 +52593,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,blooiedairioaters.qpon",
+          "domain": "blooiedairioaters.qpon"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,bloomanalytics.io",
           "domain": "bloomanalytics.io"
         },
@@ -54995,6 +55045,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN,bravedkarren.com",
           "domain": "bravedkarren.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,bravefork.com",
+          "domain": "bravefork.com"
         },
         {
           "policy": "REJECT",
@@ -59813,6 +59868,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,cannelssouagga.cfd",
+          "domain": "cannelssouagga.cfd"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,cannerymyocyte.qpon",
           "domain": "cannerymyocyte.qpon"
         },
@@ -62753,6 +62813,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,cecaatef.qpon",
+          "domain": "cecaatef.qpon"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,cecalselionsplays.cfd",
           "domain": "cecalselionsplays.cfd"
         },
@@ -63340,6 +63405,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,cfarvjcutttkn.website",
           "domain": "cfarvjcutttkn.website"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,cfgqshboimq.com",
+          "domain": "cfgqshboimq.com"
         },
         {
           "policy": "REJECT",
@@ -83503,6 +83573,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,damasfraela.qpon",
+          "domain": "damasfraela.qpon"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,damasksnunship.qpon",
           "domain": "damasksnunship.qpon"
         },
@@ -87873,6 +87948,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,dewtrymayhems.qpon",
+          "domain": "dewtrymayhems.qpon"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,dewwormna.cyou",
           "domain": "dewwormna.cyou"
         },
@@ -88108,6 +88188,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,dfxkgwatxjvrmg.com",
+          "domain": "dfxkgwatxjvrmg.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,dfxwdc.com",
           "domain": "dfxwdc.com"
         },
@@ -88155,6 +88240,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,dggazqmcpmtwc.website",
           "domain": "dggazqmcpmtwc.website"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,dgirryscjxbr.com",
+          "domain": "dgirryscjxbr.com"
         },
         {
           "policy": "REJECT",
@@ -96093,6 +96183,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,duskishmim.com",
+          "domain": "duskishmim.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,dusqghom.com",
           "domain": "dusqghom.com"
         },
@@ -101258,6 +101353,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,enheartsteamed.com",
+          "domain": "enheartsteamed.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,enhvgxojuhaim.website",
           "domain": "enhvgxojuhaim.website"
         },
@@ -102835,6 +102935,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN,esellerate.net",
           "domain": "esellerate.net"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,eseonssfrhbkt.website",
+          "domain": "eseonssfrhbkt.website"
         },
         {
           "policy": "REJECT",
@@ -106083,6 +106188,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,eyescrod.cyou",
+          "domain": "eyescrod.cyou"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,eyeshadowkeynote.com",
           "domain": "eyeshadowkeynote.com"
         },
@@ -107155,6 +107265,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN,fallowshuile.cfd",
           "domain": "fallowshuile.cfd"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,fallyensuing.com",
+          "domain": "fallyensuing.com"
         },
         {
           "policy": "REJECT",
@@ -116378,6 +116493,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,gargilwaxbird.com",
+          "domain": "gargilwaxbird.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,gargledforwrap.cfd",
           "domain": "gargledforwrap.cfd"
         },
@@ -117513,6 +117633,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,gentoz.xyz",
+          "domain": "gentoz.xyz"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,genuine-crash.com",
           "domain": "genuine-crash.com"
         },
@@ -118415,6 +118540,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,ggai12250cp.com",
           "domain": "ggai12250cp.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,ggcysjrdoptow.website",
+          "domain": "ggcysjrdoptow.website"
         },
         {
           "policy": "REJECT",
@@ -120008,6 +120138,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,glqxmrisxuaq.com",
+          "domain": "glqxmrisxuaq.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,glrmizercblpd.com",
           "domain": "glrmizercblpd.com"
         },
@@ -121005,6 +121140,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,golnkz.com",
           "domain": "golnkz.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,golokamedakaoilers.cfd",
+          "domain": "golokamedakaoilers.cfd"
         },
         {
           "policy": "REJECT",
@@ -125023,6 +125163,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,haidukdallansert.cyou",
+          "domain": "haidukdallansert.cyou"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,haikarerate.qpon",
           "domain": "haikarerate.qpon"
         },
@@ -125905,6 +126050,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,hashtloftman.com",
           "domain": "hashtloftman.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,hasidiccudaboled.qpon",
+          "domain": "hasidiccudaboled.qpon"
         },
         {
           "policy": "REJECT",
@@ -131203,6 +131353,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,hulledbubinga.com",
+          "domain": "hulledbubinga.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,hulloedunregal.cfd",
           "domain": "hulloedunregal.cfd"
         },
@@ -131918,6 +132073,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,hydrousmurasoaty.cyou",
+          "domain": "hydrousmurasoaty.cyou"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,hyfiwldsulvvb.website",
           "domain": "hyfiwldsulvvb.website"
         },
@@ -132450,6 +132610,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,i5le8m3qxs.com",
           "domain": "i5le8m3qxs.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,i5n7j18plvvgkw4fg4ukbmzxhb9fz.cfd",
+          "domain": "i5n7j18plvvgkw4fg4ukbmzxhb9fz.cfd"
         },
         {
           "policy": "REJECT",
@@ -133730,6 +133895,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,igvnfhtdjqkqx.website",
           "domain": "igvnfhtdjqkqx.website"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,igwnocrej.com",
+          "domain": "igwnocrej.com"
         },
         {
           "policy": "REJECT",
@@ -140493,6 +140663,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,jaegersrefence.cyou",
+          "domain": "jaegersrefence.cyou"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,jagevirom.com",
           "domain": "jagevirom.com"
         },
@@ -142650,6 +142825,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN,jpgsqhhnzdqmi.website",
           "domain": "jpgsqhhnzdqmi.website"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,jprtyvsdttwhl.com",
+          "domain": "jprtyvsdttwhl.com"
         },
         {
           "policy": "REJECT",
@@ -145808,6 +145988,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,khcyjamnkrznp.website",
+          "domain": "khcyjamnkrznp.website"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,khedahsbonnne.cyou",
           "domain": "khedahsbonnne.cyou"
         },
@@ -146345,6 +146530,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN,kismatrotesrhaphe.qpon",
           "domain": "kismatrotesrhaphe.qpon"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,kisrawurmalfalcons.cfd",
+          "domain": "kisrawurmalfalcons.cfd"
         },
         {
           "policy": "REJECT",
@@ -148935,6 +149125,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN,laiciselobbers.qpon",
           "domain": "laiciselobbers.qpon"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,laicjing.cyou",
+          "domain": "laicjing.cyou"
         },
         {
           "policy": "REJECT",
@@ -153978,6 +154173,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,locatedufflescivets.qpon",
+          "domain": "locatedufflescivets.qpon"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,locatesprolin.cfd",
           "domain": "locatesprolin.cfd"
         },
@@ -158028,6 +158228,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,ltp96v3f1o77fn.cfd",
+          "domain": "ltp96v3f1o77fn.cfd"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,ltrkecmxdrvfjh.com",
           "domain": "ltrkecmxdrvfjh.com"
         },
@@ -159380,6 +159585,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN,macawsfitlycymrite.qpon",
           "domain": "macawsfitlycymrite.qpon"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,macecuttyscallom.qpon",
+          "domain": "macecuttyscallom.qpon"
         },
         {
           "policy": "REJECT",
@@ -169658,6 +169868,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,moosedrizzle.com",
+          "domain": "moosedrizzle.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,mootedacouchy.com",
           "domain": "mootedacouchy.com"
         },
@@ -170093,6 +170308,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,moulagebaconer.com",
+          "domain": "moulagebaconer.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,moumaiphuch.net",
           "domain": "moumaiphuch.net"
         },
@@ -170490,6 +170710,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,mraza2dosa.com",
           "domain": "mraza2dosa.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,mrcodzgurlrgw.website",
+          "domain": "mrcodzgurlrgw.website"
         },
         {
           "policy": "REJECT",
@@ -180358,6 +180583,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,ogavjmydvhvqe.com",
+          "domain": "ogavjmydvhvqe.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,ogfbb.net",
           "domain": "ogfbb.net"
         },
@@ -184253,6 +184483,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,ouptvhdqi.com",
+          "domain": "ouptvhdqi.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,ouraidream.com",
           "domain": "ouraidream.com"
         },
@@ -185078,6 +185313,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,owytgmalqrefj.website",
+          "domain": "owytgmalqrefj.website"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,ox1.vietstock.vn",
           "domain": "ox1.vietstock.vn"
         },
@@ -185505,6 +185745,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,p0h1nfzc2.com",
           "domain": "p0h1nfzc2.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,p0m1qlvawp.com",
+          "domain": "p0m1qlvawp.com"
         },
         {
           "policy": "REJECT",
@@ -188768,6 +189013,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,penancesealike.cyou",
+          "domain": "penancesealike.cyou"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,penbardvenatic.qpon",
           "domain": "penbardvenatic.qpon"
         },
@@ -188790,6 +189040,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN,pendhissing.qpon",
           "domain": "pendhissing.qpon"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,pendomunreel.qpon",
+          "domain": "pendomunreel.qpon"
         },
         {
           "policy": "REJECT",
@@ -190793,6 +191048,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,pifjnobjj.com",
+          "domain": "pifjnobjj.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,pig.pupuapi.com",
           "domain": "pig.pupuapi.com"
         },
@@ -190830,6 +191090,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN,pigsneyyfacks.cfd",
           "domain": "pigsneyyfacks.cfd"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,pigstykea.cyou",
+          "domain": "pigstykea.cyou"
         },
         {
           "policy": "REJECT",
@@ -191305,6 +191570,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,pipetmosette.com",
           "domain": "pipetmosette.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,pipettecakiest.qpon",
+          "domain": "pipettecakiest.qpon"
         },
         {
           "policy": "REJECT",
@@ -193190,6 +193460,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN,plbqsafhuanug.com",
           "domain": "plbqsafhuanug.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,pleasantalpaca.com",
+          "domain": "pleasantalpaca.com"
         },
         {
           "policy": "REJECT",
@@ -195853,6 +196128,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,ppusgevajvllj.website",
+          "domain": "ppusgevajvllj.website"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,ppwkgmwwqfytb.website",
           "domain": "ppwkgmwwqfytb.website"
         },
@@ -197290,6 +197570,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,proadscdn.com",
           "domain": "proadscdn.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,proapoetics.com",
+          "domain": "proapoetics.com"
         },
         {
           "policy": "REJECT",
@@ -205443,6 +205728,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,rapidadexchange.com",
+          "domain": "rapidadexchange.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,rapidbidding.com",
           "domain": "rapidbidding.com"
         },
@@ -206395,6 +206685,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,realmedia-a800.d4p.net",
           "domain": "realmedia-a800.d4p.net"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,realmgaw.cyou",
+          "domain": "realmgaw.cyou"
         },
         {
           "policy": "REJECT",
@@ -207555,6 +207850,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,reenakun.com",
           "domain": "reenakun.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,reengelinn.cfd",
+          "domain": "reengelinn.cfd"
         },
         {
           "policy": "REJECT",
@@ -209980,6 +210280,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,reversionprunesterrific.com",
           "domain": "reversionprunesterrific.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,reveteowning.qpon",
+          "domain": "reveteowning.qpon"
         },
         {
           "policy": "REJECT",
@@ -217758,6 +218063,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,scalpracoccyx.cfd",
+          "domain": "scalpracoccyx.cfd"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,scalyreward.com",
           "domain": "scalyreward.com"
         },
@@ -218748,6 +219058,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,scutalriotersungrown.qpon",
+          "domain": "scutalriotersungrown.qpon"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,scuteslemurprovide.qpon",
           "domain": "scuteslemurprovide.qpon"
         },
@@ -219380,6 +219695,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,seatedsaintinsist.com",
           "domain": "seatedsaintinsist.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,seaterangrily.cyou",
+          "domain": "seaterangrily.cyou"
         },
         {
           "policy": "REJECT",
@@ -226700,6 +227020,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN,sievingcarobsinflue.cyou",
           "domain": "sievingcarobsinflue.cyou"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,siftoctaveuntimed.qpon",
+          "domain": "siftoctaveuntimed.qpon"
         },
         {
           "policy": "REJECT",
@@ -237123,6 +237448,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,starkenpuggish.cyou",
+          "domain": "starkenpuggish.cyou"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,starkyroamer.qpon",
           "domain": "starkyroamer.qpon"
         },
@@ -245528,6 +245858,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,talayotparecy.cfd",
+          "domain": "talayotparecy.cfd"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,talbotsinc.tt.omtrdc.net",
           "domain": "talbotsinc.tt.omtrdc.net"
         },
@@ -250933,6 +251268,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,timbernobtuse.cyou",
+          "domain": "timbernobtuse.cyou"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,timbresthump.qpon",
           "domain": "timbresthump.qpon"
         },
@@ -251545,6 +251885,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN,tkmedia.aotter.net",
           "domain": "tkmedia.aotter.net"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,tkmylieugyuit.website",
+          "domain": "tkmylieugyuit.website"
         },
         {
           "policy": "REJECT",
@@ -260538,6 +260883,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,uadllyad.com",
+          "domain": "uadllyad.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,uahvjbwddzoki.com",
           "domain": "uahvjbwddzoki.com"
         },
@@ -261190,6 +261540,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN,ugtfb.betterworldbooks.com",
           "domain": "ugtfb.betterworldbooks.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,ugyoqbzzvaoyl.website",
+          "domain": "ugyoqbzzvaoyl.website"
         },
         {
           "policy": "REJECT",
@@ -262415,6 +262770,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN,uncoyunboxed.cyou",
           "domain": "uncoyunboxed.cyou"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,uncrestenure.qpon",
+          "domain": "uncrestenure.qpon"
         },
         {
           "policy": "REJECT",
@@ -265913,6 +266273,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,uxee5bmf1k.com",
+          "domain": "uxee5bmf1k.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,uxirxhplkjpke.website",
           "domain": "uxirxhplkjpke.website"
         },
@@ -268270,6 +268635,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN,vgce7f2t1ee4ehh3ql6m1qccgzf.cfd",
           "domain": "vgce7f2t1ee4ehh3ql6m1qccgzf.cfd"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,vgdzmvqyzjkuvv.com",
+          "domain": "vgdzmvqyzjkuvv.com"
         },
         {
           "policy": "REJECT",
@@ -270780,6 +271150,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN,vqserve.com",
           "domain": "vqserve.com"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,vqxtiyetmrzdd.website",
+          "domain": "vqxtiyetmrzdd.website"
         },
         {
           "policy": "REJECT",
@@ -277828,6 +278203,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,woolseygatemen.com",
+          "domain": "woolseygatemen.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,woolworthsfoodgroup.tt.omtrdc.net",
           "domain": "woolworthsfoodgroup.tt.omtrdc.net"
         },
@@ -278568,6 +278948,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,wrfvpmsqphvan.website",
+          "domain": "wrfvpmsqphvan.website"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN,wridelamiterbezanty.cyou",
           "domain": "wridelamiterbezanty.cyou"
         },
@@ -278850,6 +279235,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,wt2x6p7j.xyz",
           "domain": "wt2x6p7j.xyz"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,wtaacealspvmo.website",
+          "domain": "wtaacealspvmo.website"
         },
         {
           "policy": "REJECT",
@@ -281108,6 +281498,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,xkp30u4pxh.com",
+          "domain": "xkp30u4pxh.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,xktoy8fub.com",
           "domain": "xktoy8fub.com"
         },
@@ -282798,6 +283193,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,xysterrevulse.cyou",
+          "domain": "xysterrevulse.cyou"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,xyz0k4gfs.xyz",
           "domain": "xyz0k4gfs.xyz"
         },
@@ -283200,6 +283600,11 @@
           "policy": "REJECT",
           "rule": "DOMAIN,yardanghypnic.cyou",
           "domain": "yardanghypnic.cyou"
+        },
+        {
+          "policy": "REJECT",
+          "rule": "DOMAIN,yardexhumerthymyl.cyou",
+          "domain": "yardexhumerthymyl.cyou"
         },
         {
           "policy": "REJECT",
@@ -286863,6 +287268,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,zeniththunder.com",
+          "domain": "zeniththunder.com"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,zenithurbanflirtatious.com",
           "domain": "zenithurbanflirtatious.com"
         },
@@ -288303,6 +288713,11 @@
         },
         {
           "policy": "REJECT",
+          "rule": "DOMAIN,zoxmmkinismbq.website",
+          "domain": "zoxmmkinismbq.website"
+        },
+        {
+          "policy": "REJECT",
           "rule": "DOMAIN-SUFFIX,zoxyxrmbk.com",
           "domain": "zoxyxrmbk.com"
         },
@@ -289233,13 +289648,13 @@
         }
       ]
     },
-    "held_count": 162165,
+    "held_count": 162532,
     "status_counts": {
       "ALREADY_COVERED": 9576,
-      "APPROVED": 61195,
-      "CONFLICT": 36411,
+      "APPROVED": 61278,
+      "CONFLICT": 36587,
       "POLICY_CONFLICT": 717,
-      "REVIEW": 57620,
+      "REVIEW": 57728,
       "RISK_HOLD": 16
     }
   },

@@ -99,8 +99,8 @@
     },
     {
       "id": "auto-johnshall-shadowrocket-adblock-rules-forever-4d665bed",
-      "sha256": "0f7971d36942e5397293f446c301f02dfa75680ee739ab3bef42cab3f55275a4",
-      "entries": 52060,
+      "sha256": "e406b78fa856d2bb287fc456a083cd3c2d1896e47c6b01cd1c9364e441493bd3",
+      "entries": 52427,
       "classification": "REJECT",
       "role": "primary_candidate_source",
       "lineage_status": "unverified",
@@ -108,14 +108,14 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 0,
+      "new_entries": 367,
       "removed_entries": 0,
       "baseline_initialized": false,
       "bootstrap_enqueued": false
     },
     {
       "id": "auto-johnshall-shadowrocket-adblock-rules-forever-68903a21",
-      "sha256": "f0482b042c53ba011db4d47446ad55f9d1848892528167619948d4f1a35f6133",
+      "sha256": "3440ea63bc3f0ff8f99804f005830bd2633104622499c9967038380c9c012ae1",
       "entries": 30183,
       "classification": "PROXY",
       "role": "primary_candidate_source",
@@ -382,30 +382,30 @@
       "baseline_initialized": false
     }
   },
-  "reviewed_total": 165535,
+  "reviewed_total": 165902,
   "approved_total": 3370,
-  "held_total": 162165,
+  "held_total": 162532,
   "reject_manual_approval_required": true,
   "reject_manual_approval_count": 0,
-  "reject_manual_hold_count": 57825,
+  "reject_manual_hold_count": 57908,
   "status_count": {
     "ALREADY_COVERED": 9576,
-    "APPROVED": 61195,
-    "CONFLICT": 36411,
+    "APPROVED": 61278,
+    "CONFLICT": 36587,
     "POLICY_CONFLICT": 717,
-    "REVIEW": 57620,
+    "REVIEW": 57728,
     "RISK_HOLD": 16
   },
   "deterministic_review_progress": {
-    "candidate_total": 165535,
+    "candidate_total": 165902,
     "approved_total": 3370,
-    "held_total": 162165,
+    "held_total": 162532,
     "status_count": {
       "ALREADY_COVERED": 9576,
-      "APPROVED": 61195,
-      "CONFLICT": 36411,
+      "APPROVED": 61278,
+      "CONFLICT": 36587,
       "POLICY_CONFLICT": 717,
-      "REVIEW": 57620,
+      "REVIEW": 57728,
       "RISK_HOLD": 16
     }
   },

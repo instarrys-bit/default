@@ -7,7 +7,7 @@
 | Repository | Parser candidate | Policy candidate | Domain entries | Drift | Evidence |
 |---|---|---|---:|---|---|
 | ZingyAwesome/easylists-for-pihole | domain-only | — | 40558 | baseline_initialized | none |
-| ZingyAwesome/easylists-for-pihole | domain-only | — | 5662 | baseline_initialized | none |
+| ZingyAwesome/easylists-for-pihole | domain-only | — | 5671 | baseline_initialized | none |
 | ZingyAwesome/easylists-for-pihole | domain-only | — | 22 | baseline_initialized | none |
 | ZingyAwesome/easylists-for-pihole | domain-only | — | 23 | baseline_initialized | none |
 | ZingyAwesome/easylists-for-pihole | domain-only | — | 5256 | baseline_initialized | none |
@@ -451,10 +451,10 @@
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 6 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 5 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 4 | baseline_initialized | none |
-| phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
+| phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
-| phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 3 | baseline_initialized | none |
+| phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 4 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 5 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
@@ -693,7 +693,7 @@
 | phishdestroy/namesilo-evidence | domain-only | — | 53 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 82 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 102 | baseline_initialized | none |
-| phishdestroy/namesilo-evidence | domain-only | — | 89 | baseline_initialized | none |
+| phishdestroy/namesilo-evidence | domain-only | — | 91 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 85 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 102 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 104 | baseline_initialized | none |
@@ -794,11 +794,11 @@
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 3 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 8 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 17 | baseline_initialized | none |
-| phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 13 | baseline_initialized | none |
+| phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 14 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 5 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 5 | baseline_initialized | none |
-| phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 8 | baseline_initialized | none |
+| phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 9 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 6 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 3 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 3 | baseline_initialized | none |
@@ -1057,12 +1057,12 @@
 | phishdestroy/namesilo-evidence | domain-only | — | 186 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 191 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 173 | baseline_initialized | none |
-| phishdestroy/namesilo-evidence | domain-only | — | 181 | baseline_initialized | none |
+| phishdestroy/namesilo-evidence | domain-only | — | 183 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 190 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 218 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 239 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 185 | baseline_initialized | none |
-| phishdestroy/namesilo-evidence | domain-only | — | 219 | baseline_initialized | none |
+| phishdestroy/namesilo-evidence | domain-only | — | 222 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 269 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 240 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 217 | baseline_initialized | none |
@@ -1163,26 +1163,26 @@
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 11 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 16 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 19 | baseline_initialized | none |
-| phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 7 | baseline_initialized | none |
+| phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 8 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 26 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 9 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 6 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 4 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 8 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 21 | baseline_initialized | none |
-| phishdestroy/namesilo-evidence | domain-only | — | 20 | baseline_initialized | none |
+| phishdestroy/namesilo-evidence | domain-only | — | 22 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 29 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 22 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 28 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 8 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 14 | baseline_initialized | none |
-| phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 18 | baseline_initialized | none |
-| phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 10 | baseline_initialized | none |
+| phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 19 | baseline_initialized | none |
+| phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 12 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 20 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 17 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 21 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
-| phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 14 | baseline_initialized | none |
+| phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 15 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | unsupported_or_too_small | — | 19 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 22 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 24 | baseline_initialized | none |
@@ -1433,12 +1433,12 @@
 | phishdestroy/namesilo-evidence | domain-only | — | 264 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 249 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 268 | baseline_initialized | none |
-| phishdestroy/namesilo-evidence | domain-only | — | 464 | baseline_initialized | none |
+| phishdestroy/namesilo-evidence | domain-only | — | 471 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 392 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 355 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 412 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 331 | baseline_initialized | none |
-| phishdestroy/namesilo-evidence | domain-only | — | 325 | baseline_initialized | none |
+| phishdestroy/namesilo-evidence | domain-only | — | 327 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 487 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 522 | baseline_initialized | none |
 | phishdestroy/namesilo-evidence | domain-only | — | 583 | baseline_initialized | none |
@@ -1841,7 +1841,7 @@
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 3 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
-| phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 3 | baseline_initialized | none |
+| phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 4 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
@@ -1907,7 +1907,7 @@
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 3 | baseline_initialized | none |
-| phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 5 | baseline_initialized | none |
+| phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 6 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 3 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
@@ -1939,7 +1939,7 @@
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 4 | baseline_initialized | none |
-| phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
+| phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 6 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 3 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
@@ -1991,7 +1991,7 @@
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 6 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 3 | baseline_initialized | none |
-| phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
+| phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 4 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 5 | baseline_initialized | none |
@@ -2156,7 +2156,7 @@
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 3 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 6 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 3 | baseline_initialized | none |
-| phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 6 | baseline_initialized | none |
+| phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 7 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 4 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 4 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
@@ -2579,7 +2579,7 @@
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 7 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 17 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 11 | baseline_initialized | none |
-| phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 12 | baseline_initialized | none |
+| phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 13 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 10 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 9 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 14 | baseline_initialized | none |
@@ -2642,7 +2642,7 @@
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
-| phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
+| phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 3 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 3 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
@@ -2773,7 +2773,7 @@
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 11 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 17 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | domain-only | — | 31 | baseline_initialized | none |
-| phishdestroy/nicenic-evidence | domain-only | — | 36 | baseline_initialized | none |
+| phishdestroy/nicenic-evidence | domain-only | — | 37 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | domain-only | — | 24 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | domain-only | — | 20 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | domain-only | — | 22 | baseline_initialized | none |
@@ -3004,7 +3004,7 @@
 | phishdestroy/nicenic-evidence | domain-only | — | 38 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | domain-only | — | 26 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 18 | baseline_initialized | none |
-| phishdestroy/nicenic-evidence | domain-only | — | 20 | baseline_initialized | none |
+| phishdestroy/nicenic-evidence | domain-only | — | 21 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | domain-only | — | 25 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | domain-only | — | 31 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | domain-only | — | 38 | baseline_initialized | none |
@@ -3073,7 +3073,7 @@
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
-| phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
+| phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 2 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | unsupported_or_too_small | — | 1 | baseline_initialized | none |
@@ -3228,12 +3228,12 @@
 | phishdestroy/nicenic-evidence | domain-only | — | 27 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | domain-only | — | 38 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | domain-only | — | 35 | baseline_initialized | none |
-| phishdestroy/nicenic-evidence | domain-only | — | 28 | baseline_initialized | none |
+| phishdestroy/nicenic-evidence | domain-only | — | 29 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | domain-only | — | 39 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | domain-only | — | 27 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | domain-only | — | 27 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | domain-only | — | 31 | baseline_initialized | none |
-| phishdestroy/nicenic-evidence | domain-only | — | 22 | baseline_initialized | none |
+| phishdestroy/nicenic-evidence | domain-only | — | 23 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | domain-only | — | 31 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | domain-only | — | 22 | baseline_initialized | none |
 | phishdestroy/nicenic-evidence | domain-only | — | 31 | baseline_initialized | none |
@@ -5011,7 +5011,7 @@
 
 - New source files: 4023
 - Changed source files: 20
-- Added domain entries: 4623238
+- Added domain entries: 4623289
 - Removed domain entries: 0
 - Policy changes: 0
 
@@ -5029,8 +5029,8 @@
 ### ZingyAwesome/easylists-for-pihole
 
 - URL: https://raw.githubusercontent.com/ZingyAwesome/easylists-for-pihole/master/language/chinese.txt
-- SHA-256: f9af2f6f0a83e0b02b3bd113ab75e1cb366856a84219d4280380430d6f185d24
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 5662; duplicate lines: 0
+- SHA-256: 6c6a94793dcc0cbffcd8ad3ffba7d2feeade92fbfe657736ff5825bc9ce9931d
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 5671; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -5506,7 +5506,7 @@
 ### phishdestroy/namesilo-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/namesilo-evidence/main/data/ioc/brand_domains.txt
-- SHA-256: addba64c5fcb341cad6817b1f43616cba46793bab076753dcce911e518ef9efc
+- SHA-256: 03b6bcc2d9ccb587aea1f74081af4a1f69101cf4700d934641ab619bbab9037f
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -5533,7 +5533,7 @@
 ### phishdestroy/namesilo-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/namesilo-evidence/main/data/ioc/serial_emails.txt
-- SHA-256: b6d2f78b8a5ba5baa8e7db3331bf5727df6d48670335353f2df53ffd9a5413ca
+- SHA-256: 11643cf094d51ac373229c3912f49b726f256d8c049323dae94f2238c3c6de7c
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -5542,7 +5542,7 @@
 ### phishdestroy/namesilo-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/namesilo-evidence/main/data/ioc/shared_ips.txt
-- SHA-256: 5671f148202928e9a94307ac22ecb03cf690d5297870a949452e40132e4d31ae
+- SHA-256: 4878469d26217981a0d5b597ec3b84254408853a8c7ef5c0890cd96b701b8d42
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -9025,8 +9025,8 @@
 ### phishdestroy/namesilo-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/namesilo-evidence/main/data/new/1996/04/1996-04-11.txt
-- SHA-256: 34c7b136d5705976931ec1bfd5c6e11effacf54e7fdbac4582ad5a30cb227f63
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 1; duplicate lines: 0
+- SHA-256: 9e1e7c379fa814bb2824a8a49b3a4c3668b956faba1c547c2584ce4eba0319d6
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 2; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -9052,8 +9052,8 @@
 ### phishdestroy/namesilo-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/namesilo-evidence/main/data/new/1996/04/1996-04-14.txt
-- SHA-256: 2012d57c0fdeaf105591c3d23e7bc27d3ce6fb4ed7975c61d5203b3506f23aa8
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 3; duplicate lines: 0
+- SHA-256: c225c160a364082adffc2445ba12cc64037e781e70c394a85d1b9962993696e1
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 4; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -11203,8 +11203,8 @@
 ### phishdestroy/namesilo-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/namesilo-evidence/main/data/new/1996/1996-04.txt
-- SHA-256: a73e2b4e63a35628719bd8cd3af502d20f7fab9516dfa7f3e5037edc2ba3d2f2
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 89; duplicate lines: 0
+- SHA-256: 3e7b0a28ccb768f072deeb111bf54613f177d2bdb7776863a32ead6ab8e573e5
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 91; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -12112,8 +12112,8 @@
 ### phishdestroy/namesilo-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/namesilo-evidence/main/data/new/1997/04/1997-04-10.txt
-- SHA-256: 586df8018be85058a670bdf1e62dbba219a6ab8240ea48454049acd9c8ae498e
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 13; duplicate lines: 0
+- SHA-256: b4e1bae9bdd9c0d5f1b5518047a079e7bf5b1242021ddf46b8ec627bcd123d3c
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 14; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -12148,8 +12148,8 @@
 ### phishdestroy/namesilo-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/namesilo-evidence/main/data/new/1997/04/1997-04-15.txt
-- SHA-256: 9da4c27fead332b14237eaba7d645c1352d410cab1de75eb62b9cf182597f1ec
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 8; duplicate lines: 0
+- SHA-256: 044b3d039f8fd50bd8d0942e44e2d618f341e4cdddc5009fdd310ef039100f1e
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 9; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -14479,8 +14479,8 @@
 ### phishdestroy/namesilo-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/namesilo-evidence/main/data/new/1997/1997-04.txt
-- SHA-256: 1b80c82594e29d413518ec41441dbf5f8e0d9ef73f59c71858c36588fc5c6643
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 181; duplicate lines: 0
+- SHA-256: 1de7efe830aa3c20bd8ebdd05c41199fec862ecb0ad243c19c7ab211aa110aee
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 183; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -14524,8 +14524,8 @@
 ### phishdestroy/namesilo-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/namesilo-evidence/main/data/new/1997/1997-09.txt
-- SHA-256: f6ec90d5ae8b544a51b16ce99b76c4301dd643fcbed4d8c839acf2b2a2791b7b
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 219; duplicate lines: 0
+- SHA-256: ecacdd86fd6fbc4d56ce93807be2a66339b54df170c12f5e8d4dd5b4398a42a4
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 222; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -15433,8 +15433,8 @@
 ### phishdestroy/namesilo-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/namesilo-evidence/main/data/new/1998/04/1998-04-08.txt
-- SHA-256: aaaba5a98ba1f8392ca66c22791cdec0cd106d3de4cd574526c7e8f59fb46a0e
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 7; duplicate lines: 0
+- SHA-256: 091da18a9c0066dff6557b6b467784f489ed96efc604298d2950018b68353c15
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 8; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -15496,8 +15496,8 @@
 ### phishdestroy/namesilo-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/namesilo-evidence/main/data/new/1998/04/1998-04-15.txt
-- SHA-256: acc21e9f659fc42563ce59a4d7341b09e53a65b73dd930af3e3e7382aece53f2
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 20; duplicate lines: 0
+- SHA-256: daadce041d22758bd1eac2b5957ab4e45b57b5f62ff27eb8e1a6dfecdc5217a8
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 22; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -15550,8 +15550,8 @@
 ### phishdestroy/namesilo-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/namesilo-evidence/main/data/new/1998/04/1998-04-21.txt
-- SHA-256: a4a8bb9822b0b98507ce1876b6ee5064c01f75edaf4bb7d18d1aa00b399681e6
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 18; duplicate lines: 0
+- SHA-256: d8b123c9182366b2622144fdf2381949c6b7231a5fa6c2f96c67332705a94376
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 19; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -15559,8 +15559,8 @@
 ### phishdestroy/namesilo-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/namesilo-evidence/main/data/new/1998/04/1998-04-22.txt
-- SHA-256: 6c0b6e932c3a6f8ad0dcfa967919f13cd35b7197c4fcc6d604bbe11a1e01050e
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 10; duplicate lines: 0
+- SHA-256: e65e648e56a0fbe97b7368ed2d2ffce0d4fc37f0b98a367f14a6ee8e9717e6be
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 12; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -15604,8 +15604,8 @@
 ### phishdestroy/namesilo-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/namesilo-evidence/main/data/new/1998/04/1998-04-27.txt
-- SHA-256: 4daba761e8ba20cc4ef6608d5ceb3dbac21eb35f9b02e219cab20b8347f26653
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 14; duplicate lines: 0
+- SHA-256: 1cf0733fc4b1d6e3ff2ba232b9eb648e4bccfb6a0f4015b398ebf2560c9c7252
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 15; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -17863,8 +17863,8 @@
 ### phishdestroy/namesilo-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/namesilo-evidence/main/data/new/1998/1998-04.txt
-- SHA-256: 0646c5767a74d1b36fc1929f8e7ed47462feeedf629629da0a2ec56517ada8d6
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 464; duplicate lines: 0
+- SHA-256: 516a65ef0188b62ed7274ff5164d3e3629bb7199bae39a9ed8ab55c4ffdc9d02
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 471; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -17908,8 +17908,8 @@
 ### phishdestroy/namesilo-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/namesilo-evidence/main/data/new/1998/1998-09.txt
-- SHA-256: 89d456281ac57145b85598b3b8fc2d17215b8a836e9f2187f0462ce5b99c2bae
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 325; duplicate lines: 0
+- SHA-256: 019ffcfd1c01c5595c028eb1e9622d0bc345a012804486679d4b968ad13ce56a
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 327; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -19915,7 +19915,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http-tested/discord.txt
-- SHA-256: 2a44147844728abf28ce86008108cd1cf6b7e8560b997ac85bd67accfa78921d
+- SHA-256: efc06dcb8e88c1f6134b6f69ba60dfd14b3f2270b0146ed1852a8163d0c4d25e
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -19924,7 +19924,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http-tested/facebook.txt
-- SHA-256: 99174c15d9e5263b8eb83e67ae9b7eac3f2d6ef666e2b74ba7dec36c8a1a7106
+- SHA-256: a5adb59ef68c2fc6f9487eefc4d4cf243839ff4aa04d2f8daedc1bf4ab505215
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -19933,7 +19933,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http-tested/google.txt
-- SHA-256: c32f2c86a9eea636c46bf5be106a96d43ed496d8cc9b9840bfdaf812fa91c334
+- SHA-256: f6722c3f883872ba843e586291e08465c987dcb84753959e14a8e3eed9a14313
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -19942,7 +19942,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http-tested/instagram.txt
-- SHA-256: 802c42c9a2147b00e5f1f07824dc09eb2225818a87e06adde73191df12cc8036
+- SHA-256: 4a7988edc7b54e75f39f0ed6dcdec4d5e988ec9d5b459f5e190e039b19bc179e
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -19951,7 +19951,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http-tested/microsoft.txt
-- SHA-256: d0c03aa3d9e838d3194de6f7895c6e63306fc370f06c7ef32351e6517b3ae008
+- SHA-256: d33d786796f79bd0fd7c208dfeb22b1952100a36a94bcf2e3bc437ff0ff9ee7b
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -19960,7 +19960,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http-tested/tiktok.txt
-- SHA-256: 0f3d91bd68cf2046cf15270b5f199efff3d449d2d0febe4a881d064a494a9947
+- SHA-256: 15067559eac505beee4c173ea4f7535c588687a40e6cd50106601e4099093e47
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -19969,7 +19969,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http-tested/twitter.txt
-- SHA-256: 1ba78ba40a42ad971bc87c64f69da858701c62f3ae7c6ce79556a9e55cc8b5e2
+- SHA-256: 4ee7e3c1d4779911da7adb2960f704e4997ba48a6e2de839d98968ab75fd05c1
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -19978,7 +19978,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http-tested/whatsapp.txt
-- SHA-256: 7b208d299abfd2f8cd6228681af928afdf13e94798f0a5fe99a3cd274bf4b7a5
+- SHA-256: c6be8f27a89a6fe12ee7e7576ca313955786544eaaaf475f23b51edec17db435
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -19987,7 +19987,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http-tested/youtube.txt
-- SHA-256: a3040856408e9dd91c79f846a87fde601f161a9da10130685faff90f18f48f71
+- SHA-256: 53feae190e0b7893eb6811a6b372b381342bd7d10456f110609968747fb52f93
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -19996,7 +19996,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/http.txt
-- SHA-256: 1ba7eec02fe6a3ebdd0ef360c560e68fc1342d1039f57bcc782d812eb449d4b0
+- SHA-256: 25067483f6c02b909f8bba8cd7cad1837a9aabc269a9f8671389df191376fd55
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 1; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20005,7 +20005,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https-tested/discord.txt
-- SHA-256: 8206f4ab48cafe7fbc1894abbe82c51b634c01404329184fafd870e065ff30e3
+- SHA-256: edbeabb0be07cdfa42f3018f2892531ded1954a6a229f42b5deca1347b6553d5
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20014,7 +20014,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https-tested/facebook.txt
-- SHA-256: 0d9cca73890d6d2eae58528dec2e8305a7eafb9bcf863b60662bcd36fad78f53
+- SHA-256: 35e62c92712e68fc5978241c8d38dad91b7fa8c8b21ec6fe964e04594fb2c69c
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20023,7 +20023,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https-tested/google.txt
-- SHA-256: 69eb21bf8a6b13146adcdb672f94a9cb06cb6431f5a76bf082c48199009cac3c
+- SHA-256: 3136f0f40a4a64030c58ad51fd1f51068757ff12d4f674f62c73b72bef01c0e1
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20032,7 +20032,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https-tested/instagram.txt
-- SHA-256: 2c37452e127e49aebcf97fee38490da3b31a4e7a7ccf23a58a3ab07027de1e28
+- SHA-256: defb475c41618c99d14396d42a81e33a7d58f35945abeb1f28ed1d96776998c7
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20041,7 +20041,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https-tested/microsoft.txt
-- SHA-256: 124cb0dd4e4f61c657a2366effda02abefb952d9d3063e03b821ab5c7d243748
+- SHA-256: dfab326fa6f785c3ad2cc20d23dece6aa78c3c4a1daa8af9289f379e607ae1ab
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20050,7 +20050,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https-tested/tiktok.txt
-- SHA-256: e9c03b98af1d36e32420fc235d6143a302d42702266d9d7023c17d003912fbe5
+- SHA-256: 3f6c3cfe354c62323d33af9fdd75508aafea7ef6f27bc25f014671f3d0586b82
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20059,7 +20059,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https-tested/twitter.txt
-- SHA-256: 05ffb84b3a4eba92065208114c2d8b8acb3e19d0dd9eb4cf1db53d161d6b52a0
+- SHA-256: 92f07437b02ff0c201fb6f60e8108718a3b007ac2b5ec87bf5def8be16b62bbd
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20068,7 +20068,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https-tested/whatsapp.txt
-- SHA-256: e00f48fca9c131dcd403097e3eb99b54bfb233ce330a57e03c9b2c8483a407a5
+- SHA-256: 54cb522ff5657011534a6a35104410f7832b3934d2ad46edb37122782f8a68f6
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20077,7 +20077,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https-tested/youtube.txt
-- SHA-256: 8129e070b0a39606a60d5295f6fc28345dc3898cc9d0bb3ac4d310278aa2cad9
+- SHA-256: 1e96a99e4a3929371f680218a3797edbeb30a3fd2712e9f0cb7737d3b6a0b542
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20086,7 +20086,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/https.txt
-- SHA-256: cd37f90ff50fcc94c1c7f56b3bdf54bb8ef450aa857b6b9f6574a96a193b19cb
+- SHA-256: 8828155fd561e1fa61729b9032b4a1f057876b72d168466b8a8b843d6e4ab983
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 1; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20095,7 +20095,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/socks4.txt
-- SHA-256: 7c32adc978e470db0775a23127a4c2fb79a95b22f22da54fa88fba2ea9acee9c
+- SHA-256: ad374922e482b06a3de5dcd2aa869bf9bc9953a809e8c5fe3e4101154b0a203d
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -20104,7 +20104,7 @@
 ### Vann-Dev/proxy-list
 
 - URL: https://raw.githubusercontent.com/Vann-Dev/proxy-list/main/proxies/socks5.txt
-- SHA-256: 5899d45471ec3eb21c5579e67781ec1da005bbeea4a7a5120ae857c5ff046858
+- SHA-256: 464c4a043f14dcbfeba254f4316ff089e6989d61bacf175498f93e66b504b77e
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -21112,7 +21112,7 @@
 ### phishdestroy/nicenic-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/nicenic-evidence/main/data/ioc/brand_domains.txt
-- SHA-256: 6b747541f86f470a3d216940f6145770655ff5b7bdfedca26503570290cf992c
+- SHA-256: d48c25a950cca605c95e714acd69e2ff32501b07fecae3592c62926331b394be
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -21121,7 +21121,7 @@
 ### phishdestroy/nicenic-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/nicenic-evidence/main/data/ioc/serial_emails.txt
-- SHA-256: d8270d6268eee5bf3fc82135dcb8a3950b7f5cf48ba09b9a8ab43f381dee4dc4
+- SHA-256: c5762fa2dbc2a675f993b556b1d53a36ada55ae11240fd92d5ed8c9786fcfe0e
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -21130,7 +21130,7 @@
 ### phishdestroy/nicenic-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/nicenic-evidence/main/data/ioc/shared_ips.txt
-- SHA-256: 437f101f2c86c497c5d5e638f571093a8dc644c1db2ef99468175605efbb31b0
+- SHA-256: 938d99b252cfc29d791d39139fb18800de0b1ee0f89f3fd8e2d7e98170971ebc
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -21535,8 +21535,8 @@
 ### phishdestroy/nicenic-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/nicenic-evidence/main/data/new/1998/1998-04.txt
-- SHA-256: 8223a051b733d8a0bc592e385a6ee5bc1e20485c0ecb09d674544053b5ad0ca1
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 3; duplicate lines: 0
+- SHA-256: 67ddcee8d235d5eeb2628c00c8a50e01872609d79e473463a5050c10b3453e36
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 4; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -22129,8 +22129,8 @@
 ### phishdestroy/nicenic-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/nicenic-evidence/main/data/new/2000/2000-04.txt
-- SHA-256: 96ab6146d76e97df82e9e1242bb42f2d3b455f7790f80e394a5df8ad6d95a0be
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 5; duplicate lines: 0
+- SHA-256: 6950e6615987d5bc468318695bf244acff2ce21208218f85fa4d6b251a81da0d
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 6; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -22417,8 +22417,8 @@
 ### phishdestroy/nicenic-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/nicenic-evidence/main/data/new/2001/2001-04.txt
-- SHA-256: 4315473c3d29002b0c4c0238e483f456f1b7927bcbc02ab57ef4339bb0492b92
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 2; duplicate lines: 0
+- SHA-256: 18438b547a815ce624465ac2e91f10fb8e06e466aba188134192ab7799039a6b
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 6; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -22885,8 +22885,8 @@
 ### phishdestroy/nicenic-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/nicenic-evidence/main/data/new/2002/2002-09.txt
-- SHA-256: 933a8b2a8d2e0d9999b4725574369b302b9ac28f5eb3c6b0f2b5bb1a55bd4358
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 1; duplicate lines: 0
+- SHA-256: c0b041bd4af09c754a493b40667cf1b3b318eb5884d0ec3a042aa5121e00086f
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 2; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -24370,8 +24370,8 @@
 ### phishdestroy/nicenic-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/nicenic-evidence/main/data/new/2005/2005-04.txt
-- SHA-256: 28a4e2160e40dda2b6971fc6bea0563dfcf2567eb02079a7f250cbd8a346c077
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 6; duplicate lines: 0
+- SHA-256: be63114f0da7ef3543ce64761c8a4bbf428c3cd12efb862591fcb561c59bd7cd
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 7; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -28177,8 +28177,8 @@
 ### phishdestroy/nicenic-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/nicenic-evidence/main/data/new/2009/2009-04.txt
-- SHA-256: 1d155ea0cf9a471d95087ecb2ed13362de1752e71e6e53aca76b2475708cc4fe
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 12; duplicate lines: 0
+- SHA-256: 19c8855445e2f57b4f4ade5216cdb2ac64640f082b713e8f548dc60e7d3fe0cf
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 13; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -28744,8 +28744,8 @@
 ### phishdestroy/nicenic-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/nicenic-evidence/main/data/new/2010/04/2010-04-20.txt
-- SHA-256: 52ea8480c411cbb50ee3d474e5bbb9938ac687c73940ee828bc69e059c038de3
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 2; duplicate lines: 0
+- SHA-256: 190cf093a5581b9aa572d1045a79385563edb48afb80eba28c4d93ca87fc7194
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 3; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -29923,8 +29923,8 @@
 ### phishdestroy/nicenic-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/nicenic-evidence/main/data/new/2010/2010-04.txt
-- SHA-256: f020713e5b83b3404b3ce529f64a06e913e43f243e1c521f865ceec6f6a1e75f
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 36; duplicate lines: 0
+- SHA-256: ab788d619ff4c35f8e61f1ddf0dc1e8127c6b6455acfd7b161691a5765eef8ff
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 37; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -32002,8 +32002,8 @@
 ### phishdestroy/nicenic-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/nicenic-evidence/main/data/new/2011/2011-08.txt
-- SHA-256: b3b828aea1d9167ff03bd5cc9ccb24f61a34fb5f62d1787317f76b5696bdb719
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 20; duplicate lines: 0
+- SHA-256: c51001df121e63b421dd9afebf8107bc65cb08b47fe1be14f257f49c55049f13
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 21; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -32623,8 +32623,8 @@
 ### phishdestroy/nicenic-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/nicenic-evidence/main/data/new/2012/04/2012-04-15.txt
-- SHA-256: 5e49a1610d979676937c837ae40284c364501140ec7df0ff72783f25d04220eb
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 1; duplicate lines: 0
+- SHA-256: ac07526e903caf1a644b7ddbf0b5f08766a17bba42ce29d038eaee97f4c10f1c
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 2; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -34018,8 +34018,8 @@
 ### phishdestroy/nicenic-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/nicenic-evidence/main/data/new/2012/2012-04.txt
-- SHA-256: afb510dc636ebfcf2004428b491affd13adc43866dae6d60f5591abfd0584501
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 28; duplicate lines: 0
+- SHA-256: 4f54a5f34ae8a5fdf80b7f0aab9f0d95a8aacf837b6fb615a81455772b01f344
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 29; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -34063,8 +34063,8 @@
 ### phishdestroy/nicenic-evidence
 
 - URL: https://raw.githubusercontent.com/phishdestroy/nicenic-evidence/main/data/new/2012/2012-09.txt
-- SHA-256: ceebb663d9dcfca5386c7a9237d1788dbe396da12ef046567da48da8141ea857
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 22; duplicate lines: 0
+- SHA-256: 6393be20ddf2db4531a83710fc98d25aa80aa9e59c9168a565b1dfbecae50735
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 23; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
@@ -41713,7 +41713,7 @@
 ### guandasheng/adguardhome
 
 - URL: https://raw.githubusercontent.com/guandasheng/adguardhome/main/rule/hosts.txt
-- SHA-256: ff0120d7f2e5bfdba88b8db9a22ca403bd28aec7641a2ba094aeff3d028817fa
+- SHA-256: 1e68384b1504f093ba843e70922ebb945711c4081056b6a0172b83212b3f3214
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -41722,7 +41722,7 @@
 ### guandasheng/adguardhome
 
 - URL: https://raw.githubusercontent.com/guandasheng/adguardhome/main/rule/modify.txt
-- SHA-256: 25ee9966ed1965f358fd4ad195186d39cd9f52f6e6eb3395a5a525e20c2432bf
+- SHA-256: c6e387f2d3ca84725661b70b61ae83e8f57136678194ba963c51c1c2914de6c2
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 20; domain-only: 22; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
@@ -41740,7 +41740,7 @@
 ### guandasheng/adguardhome
 
 - URL: https://raw.githubusercontent.com/guandasheng/adguardhome/main/rule/regex.txt
-- SHA-256: a57dc1236dc73f2ab8c9f4c527423d91e097b4ec113deb7accb417941b8a7c99
+- SHA-256: bf8667c2e50ce6f67e809c2d17de0380065653e045cb886caa45ee88f528a088
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}

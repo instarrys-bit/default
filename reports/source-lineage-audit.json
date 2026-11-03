@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-02T21:52:21.163315+00:00",
+  "audited_at": "2026-11-03T08:07:28.284629+00:00",
   "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
   "source_count": 13,
   "audited_source_count": 11,
@@ -51300,7 +51300,7 @@
       "lineage_status": "unverified",
       "evidence_url": "https://github.com/nthack/Shadowrocket-ADBlock-Rules-Easy/blob/master/README.md",
       "fetched_url": "https://raw.githubusercontent.com/nthack/Shadowrocket-ADBlock-Rules-Easy/master/README.md",
-      "evidence_sha256": "934f76ccc0e844441b045508d991202cb485b73e322534b231a0148ddd410d8a",
+      "evidence_sha256": "6862edfca0bae18b99a5be49edbf2dd28374cdb410507f58e61f5bd070f9dfd2",
       "evidence_bytes": 4302,
       "declared_upstream_count": 0,
       "discovered_upstream_count": 1,

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "completed_at": "2026-11-02T21:58:21.557586+00:00",
+  "completed_at": "2026-11-03T08:12:49.253207+00:00",
   "config_path": "shadowrocket/ss.conf",
   "config_read_only": true,
   "config_blob_sha": "3fb030163c6daf3f5e5c7af37625ae1745e5c315",
@@ -920,10 +920,10 @@
   ],
   "policy": "Only candidates fully covered by an explicit DIRECT/PROXY DOMAIN or DOMAIN-SUFFIX scope in ss.conf, or fully covered by skip-proxy, are removed from published and queued external rules. Narrower exact or child-suffix exceptions do not remove broader parent suffix candidates. REJECT rules in ss.conf are excluded from automated analysis; blocking decisions remain user-owned. Rule order and precedence are never evaluated. Historical archive entries are rechecked against current full-scope coverage and superseded when coverage no longer exists. Keyword, regex, conditional, and partial overlaps are not evaluated or deleted.",
   "errors": [],
-  "workflow_run_id": "41530371581",
+  "workflow_run_id": "41598180048",
   "sync_passes": [
     {
-      "completed_at": "2026-11-02T21:51:49.136020+00:00",
+      "completed_at": "2026-11-03T08:06:42.991552+00:00",
       "published_before": {
         "DIRECT": 143,
         "PROXY": 3222,
@@ -941,7 +941,7 @@
       "restore_refused_count": 0
     },
     {
-      "completed_at": "2026-11-02T21:58:21.557586+00:00",
+      "completed_at": "2026-11-03T08:12:49.253207+00:00",
       "published_before": {
         "DIRECT": 143,
         "PROXY": 3222,
