@@ -1,11 +1,22 @@
 {
-  "revision": 2,
+  "revision": 3,
   "schema_version": 1,
   "tasks": [
     {
       "attempts": 1,
       "capability": "repair_validation",
       "created_at": "2026-11-03T06:47:57Z",
+      "dispatch_intent": {
+        "correlation_id": "task_4bb1ec0f7ba4339e02ab2966-a1",
+        "correlation_title": "Automation task task_4bb1ec0f7ba4339e02ab2966-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-03T06:49:58Z",
+        "ref": "main",
+        "requested_head_sha": "1fb81b17112e63729afe388f9a30c946a63f928d",
+        "task_id": "task_4bb1ec0f7ba4339e02ab2966",
+        "workflow_id": 404456867,
+        "workflow_path": ".github/workflows/self-healing-tests.yml"
+      },
       "execution_backend": "github_contents",
       "idempotency_key": "approved-self-healing-tests-canary-2026-11-03-02ab2966",
       "input": {},
