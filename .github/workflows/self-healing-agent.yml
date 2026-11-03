@@ -275,11 +275,17 @@ jobs:
 
   resolve-validator-incidents:
     permissions:
+      contents: read
       issues: write
     if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.name == 'Validate Shadowrocket config against user baseline' && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 3
     steps:
+      - name: Checkout incident state helper
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          persist-credentials: false
       - name: Close recovered validator incidents
         env:
           GH_TOKEN: ${{ github.token }}
