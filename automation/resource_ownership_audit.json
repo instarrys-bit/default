@@ -11,9 +11,12 @@
       "scripts/lifecycle_audit.py",
       "scripts/sync_ruleset_config_conflicts.py",
       "scripts/refresh_ruleset_manifest.py",
-      "scripts/json_document_store.py"
+      "scripts/json_document_store.py",
+      "scripts/discover_sources.py",
+      "scripts/assess_sources.py",
+      "scripts/build_source_candidates.py"
     ],
-    "limitation": "Static source review of identified entrypoints; indirect helper writes, runtime-selected paths, and all call sites are not yet exhaustively traced."
+    "limitation": "Static review of named entrypoints and direct write call sites only. Dynamic helper behavior is documented where inspected; complete transitive caller coverage, runtime-selected paths, and all writers still require machine-checked tracing."
   },
   "protected_resources": {
     "shadowrocket/ss.conf": {
@@ -120,6 +123,50 @@
       "required_mode": "exclusive_per_output",
       "status": "partial_static_audit",
       "note": "Exact report path inventory is not complete; avoid concurrent same-path writes."
+    },
+    {
+      "id": "source_discovery_artifacts",
+      "paths": [
+        "sources/discovered_sources.json",
+        "reports/source-discovery.md",
+        "GITHUB_STEP_SUMMARY (environment-selected, warning/success path)"
+      ],
+      "known_writers": [
+        "script_discover_sources"
+      ],
+      "lock_key": "resource:sources/discovered_sources.json",
+      "required_mode": "exclusive",
+      "status": "direct_write_paths_confirmed_dynamic_document_store_children",
+      "note": "discovered_sources.json is written through json_document_store; the logical-document lease must cover adjacent manifest, content-addressed shards, staging and old-shard cleanup. The report and optional step summary are separate outputs."
+    },
+    {
+      "id": "source_assessment_artifacts",
+      "paths": [
+        "sources/source_assessments.json",
+        "data/source_assessments_runtime.json",
+        "reports/source-assessment.md"
+      ],
+      "known_writers": [
+        "script_assess_sources"
+      ],
+      "lock_key": "resource:sources/source_assessments.json+data/source_assessments_runtime.json+reports/source-assessment.md",
+      "required_mode": "exclusive",
+      "status": "direct_write_paths_confirmed_dynamic_document_store_children",
+      "note": "The assessor reads discovered_sources.json and prior source_assessments.json, then writes persistent history, runtime snapshot and Markdown report. Both JSON documents may create manifest/shard directories and remove old shard directories after manifest replacement."
+    },
+    {
+      "id": "source_candidate_artifacts",
+      "paths": [
+        "sources/source_candidates.json",
+        "reports/source-candidate-matrix.md"
+      ],
+      "known_writers": [
+        "script_build_source_candidates"
+      ],
+      "lock_key": "resource:sources/source_candidates.json+reports/source-candidate-matrix.md",
+      "required_mode": "exclusive",
+      "status": "direct_write_paths_confirmed_dynamic_document_store_children",
+      "note": "Candidate matrix reads runtime or persistent assessments plus source lineage, then writes a logical JSON document through json_document_store and a Markdown report."
     }
   ],
   "scheduling_gates": {
