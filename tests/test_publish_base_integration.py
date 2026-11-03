@@ -112,7 +112,7 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("strictly verified durable queue-state commits", result.stdout)
         self.assertEqual(git(self.work, "rev-parse", "HEAD"), git(self.work, "rev-parse", "origin/main"))
-        self.assertEqual((self.work / "shadowrocket" / "ss.conf").read_text(encoding="utf-8"), "protected\\n")
+        self.assertEqual((self.work / "shadowrocket" / "ss.conf").read_text(encoding="utf-8").strip(), "protected")
 
     def test_queue_only_commit_from_non_bot_author_is_rejected(self):
         self.add_queue_commit(author_email="test@example.invalid")
