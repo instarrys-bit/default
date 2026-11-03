@@ -139,7 +139,7 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
             "FAILED": {"QUEUED", "DEAD_LETTER", "CANCELLED"},
             "SUCCEEDED": set(),
             "CANCELLED": set(),
-            "DEAD_LETTER": set(),
+            "DEAD_LETTER": {"VERIFYING"},
         }
         for previous, current in zip(history, history[1:]):
             if current not in allowed_transitions[previous]:
@@ -155,6 +155,9 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
         if any(previous == "QUEUED" and current == "VERIFYING" for previous, current in zip(history, history[1:])):
             if not isinstance(task.get("dispatch_intent"), dict):
                 raise ValueError(f"{task_id} may enter VERIFYING from QUEUED only through a persisted workflow dispatch intent")
+        if any(previous == "DEAD_LETTER" and current == "VERIFYING" for previous, current in zip(history, history[1:])):
+            if not isinstance(task.get("dispatch_intent"), dict):
+                raise ValueError(f"{task_id} may leave DEAD_LETTER for VERIFYING only to reconcile a persisted workflow dispatch intent")
         dispatch_intent = task.get("dispatch_intent")
         if dispatch_intent is not None:
             if not isinstance(dispatch_intent, dict):
