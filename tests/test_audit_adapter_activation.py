@@ -15,7 +15,7 @@ class AdapterActivationAuditTests(unittest.TestCase):
         report = audit_activation_readiness(ROOT)
         self.assertTrue(report["read_only"])
         self.assertFalse(report["activation_performed"])
-        self.assertEqual(report["program_count"], 53)
+        self.assertEqual(report["program_count"], 54)
         self.assertEqual(report["adapter_count"], 53)
         self.assertEqual(report["enabled_adapter_count"], 2)
         self.assertTrue(report["watchdog_caller_permissions_ready"])
