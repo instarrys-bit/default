@@ -131,6 +131,16 @@ def decide(*, event: str, current_fingerprint: str, last_success_fingerprint: st
     last = parse_timestamp(last_success_at)
     age = None if last is None else max(0, int((now - last).total_seconds()))
     refresh_due = event == "schedule" and (last is None or age >= refresh_after_seconds)
+    # A changed input must be reconciled even if this exact fingerprint succeeded
+    # in the past: stateful archives and outputs may have moved on (A -> B -> A).
+    if path_classification["status"] == "INPUT_CHANGED":
+        generation = revision or "unversioned"
+        return {
+            **base, "decision": "INPUT_CHANGED",
+            "reason": "a registered production input changed; prior success for the same fingerprint does not prove current state is reconciled",
+            "should_produce": True,
+            "idempotency_key": f"production:input:{current_fingerprint}:{generation}",
+        }
     if current_fingerprint in successful_fingerprints:
         if refresh_due:
             generation = last_success_at or "bootstrap"
@@ -150,6 +160,7 @@ def main() -> int:
     parser.add_argument("--root", type=Path, default=Path("."))
     parser.add_argument("--paths-json", default="[]")
     parser.add_argument("--event", required=True)
+    parser.add_argument("--revision", default="")
     parser.add_argument("--last-success-fingerprint", default="")
     parser.add_argument("--last-success-at", default="")
     parser.add_argument("--active-fingerprints-json", default="[]")
@@ -172,6 +183,7 @@ def main() -> int:
             last_success_fingerprint=args.last_success_fingerprint or None,
             path_classification=classification, last_success_at=args.last_success_at or None,
             active_fingerprints=active, successful_fingerprints=successful,
+            revision=args.revision or None,
             refresh_after_seconds=args.refresh_after_seconds,
         )
         result["path_classification"] = classification
