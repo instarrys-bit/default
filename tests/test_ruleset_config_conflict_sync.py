@@ -274,6 +274,43 @@ class ConfigConflictSyncTests(unittest.TestCase):
             self.assertEqual(len(restored["restored"]), 1)
             self.assertIn("DOMAIN,api.example.com", (root / "rulesets" / "direct.list").read_text())
 
+    def test_config_rollback_releases_archived_rule_to_normal_builder_gate(self):
+        from build_rulesets import previously_published_reject_rules
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            make_root(
+                root,
+                config_with_rules(["DOMAIN,ads.example.com,REJECT"]),
+                reject="DOMAIN,ads.example.com\\n",
+            )
+            sync(root=root, now="2026-11-01T00:00:00+00:00")
+            archive_path = root / "rulesets" / "config_conflict_archive.json"
+            archived = json.loads(archive_path.read_text(encoding="utf-8"))
+            self.assertEqual(len(archived["items"]), 1)
+            self.assertEqual(archived["items"][0]["origin"], "published_ruleset")
+
+            # Owner removes the covering config rule. The next sync pass
+            # supersedes the conflict so the normal builder can reconsider it.
+            (root / "shadowrocket" / "ss.conf").write_text(
+                config_with_rules([]), encoding="utf-8"
+            )
+            sync(root=root, now="2026-11-02T00:00:00+00:00")
+            archived = json.loads(archive_path.read_text(encoding="utf-8"))
+            item = archived["items"][0]
+            self.assertTrue(item.get("superseded_at"))
+            self.assertFalse(item.get("restored_at"))
+
+            # Prior published REJECT authorization survives; pending-only
+            # REJECT entries do not gain authorization from the archive.
+            authorized = previously_published_reject_rules(set(), archived)
+            self.assertIn("DOMAIN,ads.example.com", authorized)
+            pending = {"items": [{**item, "origin": "pending_queue"}]}
+            self.assertNotIn(
+                "DOMAIN,ads.example.com",
+                previously_published_reject_rules(set(), pending),
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
