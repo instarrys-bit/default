@@ -16,7 +16,8 @@ from pathlib import Path
 from remote_task_queue_runtime import (
     claim_remote, complete_remote, make_store, validate_candidate, validate_envelope,
 )
-from task_queue_runtime import authorize, now_utc, stamp
+from task_queue_runtime import authorize, now_utc
+from github_queue_store import QueueStoreError
 from task_result_verifier import (
     validate_json_schema, validate_schema_definition, verify_pending_remote,
 )
@@ -152,6 +153,18 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
     now = now or now_utc()
     entrypoint = adapter["entrypoint"]
     script_path = (root / entrypoint["path"]).resolve()
+    input_errors = validate_json_schema(task["input"], adapter["input_contract"])
+    if input_errors:
+        error = {
+            "type": "input_contract_changed_after_plan",
+            "message": "Claimed task input no longer satisfies the reviewed input contract.",
+            "details": input_errors[:20],
+        }
+        completed_task = complete_remote(
+            task["task_id"], task["lease"]["owner"], task["lease"]["token"],
+            success=False, error=error, store=store, registry=registry, now=now_utc(),
+        )
+        return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
     argv_values = {
         "task_id": task["task_id"],
         "idempotency_key": task["idempotency_key"],
@@ -178,7 +191,7 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
             error = {"type": "execution_timeout", "message": "Registered program exceeded its adapter timeout."}
             completed_task = complete_remote(
                 task["task_id"], task["lease"]["owner"], task["lease"]["token"],
-                success=False, error=error, store=store, registry=registry, now=now,
+                success=False, error=error, store=store, registry=registry, now=now_utc(),
             )
             return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
         except OSError as exc:
@@ -219,9 +232,9 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
 
         pending = complete_remote(
             task["task_id"], task["lease"]["owner"], task["lease"]["token"],
-            success=True, result=result, store=store, registry=registry, now=now,
+            success=True, result=result, store=store, registry=registry, now=now_utc(),
         )
-        verification = verify_pending_remote(store, registry, adapters, now)
+        verification = verify_pending_remote(store, registry, adapters, now_utc())
         snapshot = store.read().document
         final_task = next(item for item in snapshot["tasks"] if item["task_id"] == task["task_id"])
         return {
@@ -239,21 +252,23 @@ def run_scheduler_once(store, registry: dict, adapters: dict, *,
         raise ValueError("max_tasks must be an integer from 1 to 10")
     if not isinstance(worker_id, str) or not worker_id.strip():
         raise ValueError("worker_id is required")
-    now = now or now_utc()
-    initial_verification = verify_pending_remote(store, registry, adapters, now)
+    fixed_now = now
+    initial_now = now or now_utc()
+    initial_verification = verify_pending_remote(store, registry, adapters, initial_now)
     processed = []
     blocked_seen = {}
 
     for _ in range(max_tasks):
         snapshot = store.read().document
-        plan = build_execution_plan(snapshot, registry, adapters, root, now)
+        iteration_now = fixed_now or now_utc()
+        plan = build_execution_plan(snapshot, registry, adapters, root, iteration_now)
         for item in plan["blocked"]:
             blocked_seen[item["task_id"]] = item["reason"]
         eligible = set(plan["eligible_task_ids"])
         if not eligible:
             break
         task = claim_remote(
-            worker_id, store, registry, eligible_task_ids=eligible, now=now
+            worker_id, store, registry, eligible_task_ids=eligible, now=iteration_now
         )
         if task is None:
             continue
@@ -295,7 +310,7 @@ def main() -> int:
                 max_tasks=args.max_tasks,
             ), ensure_ascii=False))
         return 0
-    except (ValueError, OSError) as exc:
+    except (ValueError, OSError, QueueStoreError) as exc:
         print(f"SCHEDULER ERROR: {exc}", file=sys.stderr)
         return 1
 
