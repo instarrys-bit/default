@@ -152,6 +152,36 @@ class ConfigConflictSyncTests(unittest.TestCase):
             self.assertEqual(report["pending_queue_removed_count"], 1)
             self.assertTrue(report["config_read_only"])
 
+    def test_reject_config_suffix_removes_covered_rules_from_all_rule_sets_and_queue(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            queue = {
+                "schema_version": 1,
+                "max_published_rules": 30000,
+                "queued_count": 1,
+                "items": [{
+                    "policy": "PROXY", "scope": "exact_candidate",
+                    "domain": "queued.example.com", "queued_at": "2026-11-02T00:00:00Z"
+                }]
+            }
+            make_root(
+                root,
+                config_with_rules(["DOMAIN-SUFFIX,example.com,REJECT"]),
+                direct="DOMAIN,api.example.com\\n",
+                proxy="DOMAIN,web.example.com\\n",
+                reject="DOMAIN,ads.example.com\\n",
+                queue=queue,
+            )
+            report = sync(root=root, now="2026-11-03T00:00:00+00:00")
+            self.assertEqual(report["published_removed_count"], 3)
+            self.assertEqual(report["pending_queue_removed_count"], 1)
+            for policy in ("direct", "proxy", "reject"):
+                self.assertEqual((root / "rulesets" / f"{policy}.list").read_text(), "")
+            archive = json.loads((root / "rulesets" / "config_conflict_archive.json").read_text())
+            self.assertEqual(len(archive["items"]), 4)
+            self.assertTrue(all(item["config_sha256"] for item in archive["items"]))
+            self.assertEqual(report["config_sha256"], archive["items"][0]["config_sha256"])
+
     def test_sync_retains_parent_direct_when_config_has_exact_reject_exception(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
