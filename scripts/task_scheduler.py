@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import string
@@ -10,7 +11,6 @@ import subprocess
 import sys
 import tempfile
 import uuid
-from datetime import datetime
 from pathlib import Path
 
 from remote_task_queue_runtime import (
@@ -140,10 +140,39 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
     return {"eligible_task_ids": eligible, "blocked": blocked}
 
 
+class ProtectedConfigMutationError(RuntimeError):
+    """Stop the scheduler if a child process changes the protected primary config."""
+
+
+def protected_config_digest(root: Path = ROOT) -> str:
+    path = root / "shadowrocket" / "ss.conf"
+    if not path.is_file():
+        raise ValueError("protected config guard unavailable: shadowrocket/ss.conf is missing")
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def ensure_protected_config_unchanged(before_digest: str, task: dict, store,
+                                      registry: dict, root: Path = ROOT) -> None:
+    after_digest = protected_config_digest(root)
+    if after_digest == before_digest:
+        return
+    error = {
+        "type": "protected_config_mutation_detected",
+        "message": "Child program changed shadowrocket/ss.conf; scheduler stopped fail-closed.",
+    }
+    try:
+        complete_remote(
+            task["task_id"], task["lease"]["owner"], task["lease"]["token"],
+            success=False, error=error, store=store, registry=registry, now=now_utc(),
+        )
+    finally:
+        raise ProtectedConfigMutationError(error["message"])
+
+
 def safe_child_environment(root: Path = ROOT) -> dict[str, str]:
     """Pass only non-secret runtime basics; never inherit GitHub or runner credentials."""
     environment = {key: os.environ[key] for key in SAFE_ENV_KEYS if key in os.environ}
-    environment["PYTHONPATH"] = str(root / "scripts")
+    environment["PYTHONPATH"] = os.pathsep.join((str(root), str(root / "scripts")))
     return environment
 
 
@@ -165,6 +194,7 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
             success=False, error=error, store=store, registry=registry, now=now_utc(),
         )
         return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
+    protected_digest = protected_config_digest(root)
     argv_values = {
         "task_id": task["task_id"],
         "idempotency_key": task["idempotency_key"],
@@ -188,6 +218,7 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
                 check=False,
             )
         except subprocess.TimeoutExpired:
+            ensure_protected_config_unchanged(protected_digest, task, store, registry, root)
             error = {"type": "execution_timeout", "message": "Registered program exceeded its adapter timeout."}
             completed_task = complete_remote(
                 task["task_id"], task["lease"]["owner"], task["lease"]["token"],
@@ -202,6 +233,7 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
             )
             return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
 
+        ensure_protected_config_unchanged(protected_digest, task, store, registry, root)
         if completed.returncode != 0:
             error = {
                 "type": "program_exit_nonzero",
@@ -310,7 +342,7 @@ def main() -> int:
                 max_tasks=args.max_tasks,
             ), ensure_ascii=False))
         return 0
-    except (ValueError, OSError, QueueStoreError) as exc:
+    except (ValueError, OSError, QueueStoreError, ProtectedConfigMutationError) as exc:
         print(f"SCHEDULER ERROR: {exc}", file=sys.stderr)
         return 1
 
