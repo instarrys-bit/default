@@ -28,7 +28,7 @@ execution engine.
 - This adapter does not provide distributed leases, workflow dispatch,
   independent completion verification, or watchdog recovery. Those remain
   separate follow-up work.
-- No adapter is enabled by this PR. No ruleset or `shadowrocket/ss.conf`
+- The new storage module is registered as a Python component and its execution adapter remains disabled/unreviewed. No ruleset or `shadowrocket/ss.conf`
   content is changed.
 
 ## Validation
