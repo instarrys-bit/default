@@ -1,5 +1,5 @@
 {
-  "revision": 61,
+  "revision": 62,
   "schema_version": 1,
   "tasks": [
     {
@@ -831,7 +831,7 @@
       }
     },
     {
-      "attempts": 0,
+      "attempts": 1,
       "capability": "deterministic_audit",
       "created_at": "2026-11-03T18:01:33Z",
       "execution_backend": "github_contents",
@@ -846,16 +846,21 @@
         "production_reason": "a registered production input changed; prior success for the same fingerprint does not prove current state is reconciled"
       },
       "last_error": null,
-      "lease": null,
+      "lease": {
+        "expires_at": "2026-11-03T18:07:09Z",
+        "owner": "41689687842",
+        "token": "599a5711c302acc46ed34b80eda76275"
+      },
       "max_attempts": 1,
       "not_before": "2026-11-03T18:01:33Z",
       "priority": 100,
       "requester_program_id": "workflow_automation_watchdog",
       "result": null,
       "state_history": [
-        "QUEUED"
+        "QUEUED",
+        "CLAIMED"
       ],
-      "status": "QUEUED",
+      "status": "CLAIMED",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_f3f9ba4a645a475594a4438b",
       "trace_id": "f0e49718bd444598aa09e39e34164ad9"
