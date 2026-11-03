@@ -1673,6 +1673,38 @@
         "max_attempts": 0,
         "timeout_seconds": 300
       }
+    },
+    {
+      "id": "script_resource_lease_runtime",
+      "path": "scripts/resource_lease_runtime.py",
+      "kind": "python_component",
+      "responsibility": "manage CAS-backed exclusive resource leases and monotonic fencing tokens for task-owned resources",
+      "capabilities": [
+        "resource_lease_management",
+        "stale_writer_fencing"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "Durable task queue snapshot",
+        "Claimed task identity and task lease token",
+        "Canonical repository-relative resource keys",
+        "Lease duration and UTC time"
+      ],
+      "outputs": [
+        "Atomic all-or-none resource lease result",
+        "Per-resource lease ID and fencing token",
+        "Read-only lease registry summary"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No direct GitHub token grant. Queue mutations require the existing SHA-CAS store supplied by an authorized caller; module does not dispatch work or write production resources.",
+      "health_check": "Dedicated tests in tests/test_resource_lease_runtime.py cover atomic acquisition, conflict handling, expiration takeover, monotonic fencing, stale release rejection, and unsafe paths.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     }
   ]
 }
