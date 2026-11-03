@@ -97,6 +97,29 @@ class AssessSourcesArtifactVerifierTests(unittest.TestCase):
             with self.assertRaisesRegex(task_scheduler.ProtectedConfigMutationError, "read-only resources"):
                 task_scheduler.ensure_read_only_resources_unchanged(before, root)
 
+    def test_task_mode_requires_lease_proof(self):
+        with patch.dict("os.environ", {}, clear=True):
+            with self.assertRaisesRegex(ValueError, "requires an active resource lease proof"):
+                assess_sources.assert_optional_write_lease(assess_sources.RUNTIME_OUTPUT, required=True)
+
+    def test_verifier_rejects_missing_empty_artifacts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            runtime = root / "runtime.json"
+            persistent = root / "persistent.json"
+            report = root / "report.md"
+            result_path = root / "result.json"
+            result_path.write_text(json.dumps({
+                "assessed": 0, "bytes_read": 0, "parser_candidates": 0,
+                "policy_candidates": 0, "activated": 0,
+            }), encoding="utf-8")
+            with patch.object(verify_assess_sources_artifacts, "ROOT", root), \
+                 patch.object(verify_assess_sources_artifacts, "RUNTIME", runtime), \
+                 patch.object(verify_assess_sources_artifacts, "PERSISTENT", persistent), \
+                 patch.object(verify_assess_sources_artifacts, "REPORT", report):
+                with self.assertRaisesRegex(ValueError, "required assessment artifact is missing"):
+                    verify_assess_sources_artifacts.verify(result_path)
+
     def test_rejects_any_source_activation(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
