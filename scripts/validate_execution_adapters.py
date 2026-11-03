@@ -70,6 +70,7 @@ def validate_execution_adapters(root=ROOT,adapters_path=None,registry_path=None)
         completion=a.get("completion")
         if not isinstance(completion,dict) or completion.get("independent_verification_required") is not True: raise ValueError(f"{tid} requires independent completion verification")
         resource_contract=a.get("resource_contract")
+        if tid=="workflow_auto_sync" and enabled and resource_contract is None: raise ValueError("workflow_auto_sync requires an exclusive fenced resource_contract")
         if resource_contract is not None:
             if not isinstance(resource_contract,dict) or resource_contract.get("mode")!="exclusive" or resource_contract.get("fencing_required") is not True: raise ValueError(f"{tid} resource_contract must require exclusive fenced leases")
             keys=resource_contract.get("resource_keys")
