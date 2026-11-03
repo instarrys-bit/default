@@ -4,7 +4,9 @@
 This is a non-activating gate: it never edits the trusted source registry.
 """
 from __future__ import annotations
+import argparse
 import hashlib
+import os
 import json
 import re
 import urllib.error
@@ -12,6 +14,7 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 from json_document_store import read_document, write_document
+from resource_lease_runtime import assert_resource_lease_from_environment
 from datetime import datetime, timezone
 from datetime import datetime, timezone
 
@@ -34,7 +37,7 @@ class AssessmentBudgetExceeded(Exception):
     pass
 
 
-def fetch_raw(url: str, repository: str, max_allowed_bytes: int | None = None) -> bytes:
+def fetch_raw(url: str, repository: str, max_allowed_bytes: int | None = None, max_file_bytes: int = MAX_BYTES) -> bytes:
     parsed = urllib.parse.urlparse(url)
     if parsed.scheme != "https" or parsed.hostname != "raw.githubusercontent.com" or parsed.username or parsed.password or parsed.port not in (None, 443):
         raise ValueError("assessment accepts only HTTPS raw.githubusercontent.com URLs")
@@ -44,7 +47,9 @@ def fetch_raw(url: str, repository: str, max_allowed_bytes: int | None = None) -
     if SENSITIVE_PATH_RE.search(parsed.path):
         raise ValueError("sensitive path is excluded from assessment")
     request = urllib.request.Request(url, headers={"User-Agent": "Shadowrocket-Source-Assessor/1.0"})
-    limit = MAX_BYTES if max_allowed_bytes is None else min(MAX_BYTES, max(0, int(max_allowed_bytes)))
+    if isinstance(max_file_bytes, bool) or not isinstance(max_file_bytes, int) or max_file_bytes < 1 or max_file_bytes > MAX_BYTES:
+        raise ValueError("max_file_bytes is outside the allowed assessment limit")
+    limit = max_file_bytes if max_allowed_bytes is None else min(max_file_bytes, max(0, int(max_allowed_bytes)))
     if limit <= 0:
         raise AssessmentBudgetExceeded("aggregate assessment byte budget exhausted")
     with urllib.request.urlopen(request, timeout=10) as response:
@@ -347,13 +352,45 @@ def assessment_cache_hit(previous: dict | None, content_sha256: str, policy_clai
         and not previous.get("error")
     )
 
-def main() -> int:
+def load_task_options(path: Path | None) -> dict:
+    defaults = {"max_urls": MAX_URLS, "max_file_bytes": MAX_BYTES, "max_total_bytes": MAX_TOTAL_BYTES}
+    if path is None:
+        return defaults
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"cannot read assessment task input: {exc}") from exc
+    if not isinstance(value, dict) or set(value) != set(defaults):
+        raise ValueError("assessment task input must contain exactly max_urls, max_file_bytes and max_total_bytes")
+    bounds = {"max_urls": (1, 20), "max_file_bytes": (1, 1_000_000), "max_total_bytes": (1, 10_000_000)}
+    for key, (minimum, maximum) in bounds.items():
+        item = value[key]
+        if isinstance(item, bool) or not isinstance(item, int) or not minimum <= item <= maximum:
+            raise ValueError(f"{key} must be an integer from {minimum} to {maximum}")
+    if value["max_total_bytes"] < value["max_file_bytes"]:
+        raise ValueError("max_total_bytes must be at least max_file_bytes")
+    return value
+
+
+def assert_optional_write_lease(path: Path) -> None:
+    if os.environ.get("AUTOMATION_RESOURCE_LEASE_PROOF"):
+        assert_resource_lease_from_environment(path.relative_to(ROOT).as_posix())
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--task-input", type=Path)
+    args = parser.parse_args(argv)
+    options = load_task_options(args.task_input)
+    max_urls = options["max_urls"]
+    max_file_bytes = options["max_file_bytes"]
+    max_total_bytes = options["max_total_bytes"]
     discovery = read_document(INPUT, "candidates", {"candidates": []})
     previous_data = read_document(OUTPUT, "assessments", {"assessments": []})
     previous_by_url = {x.get("url"): x for x in previous_data.get("assessments", []) if x.get("url")}
     previous_cursor = previous_data.get("next_cursor_url")
     candidate_urls = flatten_candidate_urls(discovery.get("candidates", []))
-    batch = rotate_assessment_urls(candidate_urls, previous_cursor, MAX_URLS)
+    batch = rotate_assessment_urls(candidate_urls, previous_cursor, max_urls)
     assessments = []
     total_bytes_read = 0
     batch_id = datetime.now(timezone.utc).isoformat()
@@ -362,7 +399,7 @@ def main() -> int:
         repository = candidate["repository"]
         url = candidate["url"]
         try:
-            payload = fetch_raw(url, repository, MAX_TOTAL_BYTES - total_bytes_read)
+            payload = fetch_raw(url, repository, max_total_bytes - total_bytes_read, max_file_bytes=max_file_bytes)
             total_bytes_read += len(payload)
             content_hash = hashlib.sha256(payload).hexdigest()
             previous = previous_by_url.get(url)
@@ -425,7 +462,7 @@ def main() -> int:
         "batch_id": batch_id,
         "next_cursor_url": next_cursor,
         "total_bytes_read": total_bytes_read,
-        "assessment_capacity": {"max_urls": MAX_URLS, "max_file_bytes": MAX_BYTES, "max_total_bytes": MAX_TOTAL_BYTES},
+        "assessment_capacity": {"max_urls": max_urls, "max_file_bytes": max_file_bytes, "max_total_bytes": max_total_bytes},
         "drift_summary": drift_summary,
         "activation_count": 0,
         "assessments": assessments,
@@ -434,11 +471,14 @@ def main() -> int:
     persistent = dict(result)
     persistent["assessments"] = list(history.values())
     persistent["assessment_count"] = len(history)
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    assert_optional_write_lease(RUNTIME_OUTPUT)
     RUNTIME_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    REPORT.parent.mkdir(parents=True, exist_ok=True)
     write_document(RUNTIME_OUTPUT, result, "assessments")
+    assert_optional_write_lease(OUTPUT)
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     write_document(OUTPUT, compact_assessment_result(persistent), "assessments")
+    assert_optional_write_lease(REPORT)
+    REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text(render_report(assessments, drift_summary), encoding="utf-8")
     print(json.dumps({
         "assessed": len(assessments),
