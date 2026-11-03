@@ -58,7 +58,7 @@ def fetch_raw(url: str, repository: str, max_allowed_bytes: int | None = None, m
             raise ValueError("unexpected rule-list response")
         data = response.read(limit + 1)
     if len(data) > limit:
-        if max_allowed_bytes is not None and limit < MAX_BYTES:
+        if max_allowed_bytes is not None and limit < max_file_bytes:
             raise AssessmentBudgetExceeded("source file deferred because it exceeds remaining aggregate byte budget")
         raise ValueError("rule-list exceeds assessment size limit")
     return data
