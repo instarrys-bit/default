@@ -6,7 +6,6 @@ This is a non-activating gate: it never edits the trusted source registry.
 from __future__ import annotations
 import argparse
 import hashlib
-import os
 import json
 import os
 import re
@@ -480,6 +479,7 @@ def main(argv: list[str] | None = None) -> int:
     assert_optional_write_lease(OUTPUT, required=args.task_input is not None)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     write_document(OUTPUT, compact_assessment_result(persistent), "assessments", lease_required=args.task_input is not None)
+    assert_optional_write_lease(REPORT, required=args.task_input is not None)
     assert_optional_write_lease(REPORT, required=args.task_input is not None)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     assert_optional_write_lease(REPORT, required=args.task_input is not None)
