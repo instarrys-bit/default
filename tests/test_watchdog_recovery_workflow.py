@@ -133,6 +133,16 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn('"automation/task_queue.json"', workflow.split("permissions:", 1)[0])
         self.assertNotIn('"rulesets/**"', workflow.split("permissions:", 1)[0])
         self.assertNotIn('"sources/**"', workflow.split("permissions:", 1)[0])
+    def test_completion_dispatch_cannot_create_production_demand(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        step = workflow.split("      - name: Detect stale successful audit and recover", 1)[1].split("  task-queue-supervision:", 1)[0]
+        self.assertIn("github.event_name == 'push'", step)
+        self.assertIn("github.event_name == 'schedule'", step)
+        self.assertIn("github.event_name == 'workflow_dispatch'", step)
+        self.assertNotIn("github.event_name == 'repository_dispatch'", step)
+        self.assertIn("repository_dispatch:", workflow)
+        self.assertIn("automation-production-completed", workflow)
+
 
 if __name__ == "__main__":
     unittest.main()
