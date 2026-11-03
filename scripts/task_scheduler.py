@@ -277,7 +277,17 @@ def execute_claimed_workflow_task(task: dict, adapter: dict, store, registry: di
         client = GitHubWorkflowClient(
             store.repository, token=store.token, timeout=adapter["timeout_seconds"]
         )
-        prepared = prepare_dispatch(client, adapter, task, ref=store.branch)
+        dispatch_task = dict(task)
+        dispatch_task["input"] = dict(task.get("input") or {})
+        resource_lease = task.get("resource_lease")
+        if isinstance(adapter.get("resource_contract"), dict):
+            if not isinstance(resource_lease, dict) or resource_lease.get("status") != "ACTIVE":
+                raise ValueError("workflow dispatch requires an active task resource lease")
+            resources = resource_lease.get("resources")
+            if not isinstance(resources, dict) or set(resources) != set(adapter["resource_contract"].get("resource_keys", [])):
+                raise ValueError("task resource lease does not match the adapter's reviewed resource set")
+            dispatch_task["input"]["resource_lease_proof"] = json.dumps(resources, sort_keys=True, separators=(",", ":"))
+        prepared = prepare_dispatch(client, adapter, dispatch_task, ref=store.branch)
         persisted = persist_workflow_dispatch_intent(task, prepared, store, registry)
         intent = dict(persisted)
         intent["inputs"] = prepared["inputs"]
