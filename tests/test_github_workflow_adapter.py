@@ -113,7 +113,7 @@ class WorkflowAdapterTests(unittest.TestCase):
         result = submit_dispatch(self.client, intent)
         self.assertEqual(self.client.dispatched, [(
             1234, "main",
-            {"domains": "example.com", "automation_task_id": self.task["task_id"]},
+            {"domains": "example.com", "automation_task_id": self.task["task_id"] + "-a1"},
         )])
         self.assertEqual(result["dispatch_state"], "submitted")
         self.assertEqual(result["task_id"], self.task["task_id"])
