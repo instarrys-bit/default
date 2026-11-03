@@ -21,12 +21,15 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/**"
-      - "rulesets/**"
-      - "sources/**"
+      - "sources/policy.json"
+      - "sources/domain_sources.json"
+      - "sources/policy_approvals.json"
+      - "sources/protected_domains.json"
+      - "sources/request_domain_observations.json"
+      - "sources/reject_manual_approvals.json"
       - "scripts/**"
       - "tests/**"
       - "shadowrocket/ss.conf"
-      - "automation/task_queue.json"
       - "automation/program_registry.json"
       - "automation/execution_adapters.json"
 
@@ -45,6 +48,10 @@ jobs:
       block_manifest: ${{ steps.stale-recovery.outputs.block_manifest }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
+    permissions:
+      actions: write
+      contents: write
+      issues: write
     steps:
       - name: Checkout watchdog policy code
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -104,8 +111,8 @@ jobs:
             exit 0
           fi
 
-          echo "Source run $SOURCE_RUN_ID failed with a retryable infrastructure conclusion; dispatching bounded workflow_dispatch recovery."
-          gh workflow run auto_sync.yml --ref main --repo "$REPO"
+          echo "Source run $SOURCE_RUN_ID failed with a retryable infrastructure conclusion; enqueueing bounded recovery through the durable task queue."
+          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-recovery:$SOURCE_RUN_ID" --priority 100 enqueue-auto-sync
 
       - name: Report degraded source discovery health
         if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success' }}
@@ -181,8 +188,8 @@ jobs:
           fi
 
           if [ "$audit_base_stale" = "1" ] || [ "$age_seconds" -gt 691200 ]; then
-            echo "Last successful audit is stale or contains non-documentation changes since its audited commit (age=${age_seconds}s, audited=$last_success_sha, current=$current_sha); dispatching recovery run."
-            gh workflow run auto_sync.yml --ref main --repo "$REPO"
+            echo "Last successful audit is stale or contains non-documentation changes since its audited commit (age=${age_seconds}s, audited=$last_success_sha, current=$current_sha); enqueueing a durable audit task."
+            printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-stale:$current_sha" --priority 80 enqueue-auto-sync
             echo "block_manifest=true" >> "$GITHUB_OUTPUT"
           else
             echo "Last successful audit is healthy; any intervening main changes are documentation-only (${age_seconds}s ago)."
@@ -226,7 +233,7 @@ jobs:
   stale-run-watch:
     permissions:
       actions: write
-      contents: read
+      contents: write
       issues: write
     if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-24.04
@@ -337,8 +344,8 @@ jobs:
               echo "Scheduled recovery suppressed; diagnosis, cooldown, or retry limit prevents another dispatch."
               exit 0
             fi
-            echo "No publishable current-main audit is active and the last successful audit is stale or superseded; dispatching one bounded replacement."
-            gh workflow run auto_sync.yml --ref main --repo "$REPO"
+            echo "No publishable current-main audit is active and the last successful audit is stale or superseded; enqueueing one bounded replacement."
+            printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-stale:$current_main" --priority 100 enqueue-auto-sync
           else
             echo "The latest successful audit is healthy; any intervening main changes are documentation-only."
             issue="$(gh issue list --repo "$REPO" --state open --search "stalled audit in:title" --json number,title --jq '.[0].number')"
@@ -445,8 +452,8 @@ jobs:
             echo "A deterministic audit for current main ($current_sha) is already queued or running; waiting for its completion."
             exit 0
           fi
-          echo "No current-main audit is active. Dispatching one bounded reconciliation audit for $current_sha."
-          gh workflow run auto_sync.yml --ref main --repo "$REPO"
+          echo "No current-main audit is active. Enqueueing one bounded reconciliation audit for $current_sha."
+          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-manifest:$current_sha" --priority 100 enqueue-auto-sync
 
       - name: Open manifest metadata repair incident
         if: ${{ always() && (steps.refresh.outcome == 'failure' || steps.publish.outcome == 'failure') }}
