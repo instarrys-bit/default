@@ -92,6 +92,7 @@ def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
                 return queue, {"created": False, "task": old}
         item = {
             "task_id": task_id,
+            "execution_backend": "github_contents",
             "idempotency_key": idem,
             "trace_id": trace_id,
             "requester_program_id": task["requester_program_id"],
