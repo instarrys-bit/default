@@ -182,6 +182,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
     def test_all_watchdog_recovery_dispatches_carry_auditable_production_intent(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("production:recovery:$recovery_fingerprint:$SOURCE_RUN_ID", workflow)
+        self.assertIn("recomputing intent against current main", workflow)
+        self.assertIn("production:input:$current_fingerprint", workflow)
         self.assertIn("production:integrity:$current_fingerprint", workflow)
         self.assertIn('production_decision:"RECOVERY_REQUIRED"', workflow)
         self.assertNotIn('idempotency-key "auto-sync-manifest:', workflow)
