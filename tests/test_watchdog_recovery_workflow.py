@@ -86,7 +86,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
     def test_top_level_watchdog_supervises_remote_queue_fail_closed(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("task-queue-supervision:", workflow)
-        self.assertIn("group: shadowrocket-task-queue", workflow)
+        self.assertIn("group: shadowrocket-main-writer", workflow)
+        self.assertIn("needs: [health-check, stale-run-watch, manifest-integrity]", workflow)
         job_start = workflow.index("  task-queue-supervision:")
         job_end = workflow.index("  stale-run-watch:", job_start)
         queue_job = workflow[job_start:job_end]
