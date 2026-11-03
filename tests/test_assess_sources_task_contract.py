@@ -86,6 +86,27 @@ class AssessSourcesArtifactVerifierTests(unittest.TestCase):
                  patch.object(verify_assess_sources_artifacts, "REPORT", report):
                 self.assertTrue(verify_assess_sources_artifacts.verify(result_path)["valid"])
 
+    def test_read_only_digest_tracks_sharded_document_contents(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            logical = root / "sources" / "discovered_sources.json"
+            logical.parent.mkdir(parents=True)
+            manifest = logical.with_name(logical.name + ".manifest.json")
+            shard_dir = logical.parent / (logical.name + ".parts-test")
+            shard_dir.mkdir()
+            shard = shard_dir / "part-000000.jsonl"
+            shard.write_text('{"url":"https://example.com"}\\n', encoding="utf-8")
+            manifest.write_text(json.dumps({
+                "schema_version": 1, "format": "jsonl-shards-v1",
+                "logical_path": logical.name, "collection_key": "candidates",
+                "record_count": 1, "shard_directory": shard_dir.name,
+                "shards": [{"file": shard.name}],
+            }), encoding="utf-8")
+            before = task_scheduler.read_only_resource_digests(root, ["sources/discovered_sources.json"])
+            shard.write_text('{"url":"https://changed.example"}\\n', encoding="utf-8")
+            after = task_scheduler.read_only_resource_digests(root, ["sources/discovered_sources.json"])
+            self.assertNotEqual(before, after)
+
     def test_scheduler_protects_declared_read_only_resources(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
