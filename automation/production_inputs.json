@@ -46,7 +46,6 @@
     "scripts/verify_published_rulesets.py"
   ],
   "non_production_path_patterns": [
-    "docs/**",
     "tests/**",
     "rulesets/**",
     "reports/**",
@@ -88,10 +87,19 @@
     "scripts/production_intent.py",
     "modules/**",
     "sources/review_cursor.json",
-    "sources/source_snapshots/**",
+    "sources/source_snapshots/**"
+  ],
+  "unknown_path_policy": "review_required",
+  "monitoring_path_patterns": [
+    ".github/workflows/dashboard-pages.yml",
+    "dashboard/**",
+    "scripts/build_dashboard_snapshot.py"
+  ],
+  "documentation_path_patterns": [
+    "dashboard/README.md",
+    "docs/**",
     "README*",
     "LICENSE*",
     "NOTICE*"
-  ],
-  "unknown_path_policy": "review_required"
+  ]
 }

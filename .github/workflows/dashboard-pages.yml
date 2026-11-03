@@ -18,7 +18,7 @@ on:
     workflows:
       - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
       - "Shadowrocket automation watchdog"
-    types: [completed]
+    types: [requested, in_progress, completed]
   schedule:
     - cron: "17 * * * *"
 permissions:

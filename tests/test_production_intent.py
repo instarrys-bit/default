@@ -18,7 +18,9 @@ class ProductionIntentTests(unittest.TestCase):
         self.manifest_path.write_text(json.dumps({
             "schema_version": 1,
             "production_input_paths": ["sources/policy.json", "shadowrocket/ss.conf"],
-            "non_production_path_patterns": ["reports/**", "rulesets/**", "automation/**", "tests/**"]
+            "non_production_path_patterns": ["reports/**", "rulesets/**", "automation/**", "tests/**"],
+            "monitoring_path_patterns": ["dashboard/**", ".github/workflows/dashboard-pages.yml", "scripts/build_dashboard_snapshot.py"],
+            "documentation_path_patterns": ["docs/**", "dashboard/README.md"]
         }), encoding="utf-8")
         (self.root / "sources").mkdir()
         (self.root / "sources" / "policy.json").write_text('{"policy":1}', encoding="utf-8")
@@ -38,6 +40,17 @@ class ProductionIntentTests(unittest.TestCase):
     def test_generated_outputs_do_not_create_production_demand(self):
         result = classify_paths(["reports/status.json", "rulesets/direct.list", "automation/task_queue.json"], self.manifest)
         self.assertEqual(result["status"], "NO_INPUT_CHANGE")
+
+    def test_monitoring_paths_are_classified_without_production_demand(self):
+        result = classify_paths(["dashboard/index.html", "scripts/build_dashboard_snapshot.py"], self.manifest)
+        self.assertEqual(result["status"], "NO_INPUT_CHANGE")
+        self.assertEqual(result["monitoring_changes"], ["dashboard/index.html", "scripts/build_dashboard_snapshot.py"])
+        self.assertEqual(result["unknown_changes"], [])
+
+    def test_documentation_paths_are_classified_without_production_demand(self):
+        result = classify_paths(["dashboard/README.md"], self.manifest)
+        self.assertEqual(result["status"], "NO_INPUT_CHANGE")
+        self.assertEqual(result["documentation_changes"], ["dashboard/README.md"])
 
     def test_unknown_paths_require_review_instead_of_triggering_production(self):
         result = classify_paths(["new/unregistered.py"], self.manifest)
@@ -157,9 +170,11 @@ class ProductionIntentTests(unittest.TestCase):
         path.write_text(json.dumps({
             "schema_version": 1,
             "production_input_paths": ["reports/important.json"],
-            "non_production_path_patterns": ["reports/**"]
+            "non_production_path_patterns": ["reports/**"],
+            "monitoring_path_patterns": ["dashboard/**"],
+            "documentation_path_patterns": []
         }), encoding="utf-8")
-        with self.assertRaisesRegex(ValueError, "also match non-production patterns"):
+        with self.assertRaisesRegex(ValueError, "also match"):
             load_manifest(path)
 
     def test_different_active_fingerprint_blocks_a_second_production_task(self):
