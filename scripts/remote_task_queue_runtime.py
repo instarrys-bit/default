@@ -175,10 +175,10 @@ def complete_remote(task_id: str, worker_id: str, lease_token: str, *,
             raise ValueError("failed completion requires an error object")
         task["lease"] = None
         if success:
-            task["status"] = "SUCCEEDED"
+            task["status"] = "VERIFYING"
             task["result"] = result
             task["last_error"] = None
-            task["state_history"].append("SUCCEEDED")
+            task["state_history"].append("VERIFYING")
         else:
             task["last_error"] = error
             task["state_history"].append("FAILED")
