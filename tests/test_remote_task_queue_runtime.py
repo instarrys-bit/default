@@ -92,14 +92,14 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
     def test_expired_lease_is_recovered(self):
         enqueue_remote(self.payload(), self.store, self.registry, self.now)
         task = claim_remote("worker-a", self.store, self.registry, self.now)
-        recovered = recover_remote(self.store, self.now + timedelta(seconds=121))
+        recovered = recover_remote(self.store, self.registry, self.now + timedelta(seconds=121))
         self.assertEqual(len(recovered), 1)
         self.assertEqual(recovered[0]["task_id"], task["task_id"])
         self.assertEqual(recovered[0]["status"], "QUEUED")
 
     def test_empty_claim_and_recovery_do_not_write(self):
         self.assertIsNone(claim_remote("worker-a", self.store, self.registry, self.now))
-        self.assertEqual(recover_remote(self.store, self.now), [])
+        self.assertEqual(recover_remote(self.store, self.registry, self.now), [])
         self.assertEqual(self.store.writes, 0)
 
 
