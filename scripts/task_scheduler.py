@@ -127,7 +127,14 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
                 if isinstance(lease_seconds, bool) or not isinstance(lease_seconds, int) or not 1 <= lease_seconds <= 21600:
                     raise ValueError("resource_contract lease_seconds must be from 1 to 21600")
             read_only_resources = adapter.get("read_only_resources", [])
-            read_only_resource_digests(root, read_only_resources)
+            read_only_digests = read_only_resource_digests(root, read_only_resources)
+            required_read_only = adapter.get("required_read_only_resources", [])
+            if (not isinstance(required_read_only,list)
+                    or any(path not in read_only_resources for path in required_read_only)):
+                raise ValueError("required_read_only_resources must be a subset of read_only_resources")
+            missing_inputs=[path for path in required_read_only if read_only_digests.get(path) is None]
+            if missing_inputs:
+                raise ValueError("required input artifacts are missing: "+", ".join(missing_inputs))
             if isinstance(resource_contract, dict) and set(read_only_resources) & set(resource_contract.get("resource_keys", [])):
                 raise ValueError("a resource cannot be both read-only and exclusively writable")
             completion = adapter.get("completion", {})
@@ -219,7 +226,36 @@ def read_only_resource_digests(root: Path, paths: list[str]) -> dict[str, str | 
             raise ValueError(f"read-only resource resolves outside repository: {relative}")
         if path.exists() and not path.is_file():
             raise ValueError(f"read-only resource must be a file: {relative}")
-        result[relative]=hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
+        digest=hashlib.sha256()
+        found=False
+        if path.is_file():
+            digest.update(b"legacy-json\\0")
+            digest.update(path.read_bytes())
+            found=True
+        manifest=path.with_name(path.name + ".manifest.json")
+        if manifest.is_file():
+            try:
+                value=json.loads(manifest.read_text(encoding="utf-8"))
+            except (OSError,json.JSONDecodeError) as exc:
+                raise ValueError(f"read-only document manifest is invalid: {relative}") from exc
+            directory=value.get("shard_directory")
+            shards=value.get("shards")
+            if (value.get("logical_path")!=path.name or not isinstance(directory,str)
+                    or Path(directory).name!=directory or not isinstance(shards,list)):
+                raise ValueError(f"read-only document manifest identity is invalid: {relative}")
+            digest.update(b"manifest\\0")
+            digest.update(manifest.read_bytes())
+            for shard in shards:
+                name=shard.get("file") if isinstance(shard,dict) else None
+                if not isinstance(name,str) or Path(name).name!=name or not name.endswith(".jsonl"):
+                    raise ValueError(f"read-only document shard entry is invalid: {relative}")
+                shard_path=manifest.parent/directory/name
+                if not shard_path.is_file():
+                    raise ValueError(f"read-only document shard is missing: {relative}/{directory}/{name}")
+                digest.update(name.encode("utf-8")+b"\\0")
+                digest.update(hashlib.sha256(shard_path.read_bytes()).digest())
+            found=True
+        result[relative]=digest.hexdigest() if found else None
     return result
 
 
