@@ -105,14 +105,19 @@ def decide(*, event: str, current_fingerprint: str, last_success_fingerprint: st
         return {**base, "decision": "REVIEW_REQUIRED", "reason": "changed paths include unregistered files"}
     if current_fingerprint in active_fingerprints:
         return {**base, "decision": "IN_PROGRESS", "reason": "the same input fingerprint already has an active task"}
-    if current_fingerprint != last_success_fingerprint:
-        return {**base, "decision": "INPUT_CHANGED", "reason": "current production input fingerprint differs from the last successful audit", "should_produce": True}
-    if current_fingerprint in successful_fingerprints and event != "schedule":
-        return {**base, "decision": "ALREADY_SATISFIED", "reason": "the current input fingerprint already has a verified successful result"}
     last = parse_timestamp(last_success_at)
     age = None if last is None else max(0, int((now - last).total_seconds()))
-    if event == "schedule" and (last is None or age >= refresh_after_seconds):
-        return {**base, "decision": "SCHEDULE_DUE", "reason": "the configured refresh interval has elapsed", "should_produce": True, "age_seconds": age}
+    refresh_due = event == "schedule" and (last is None or age >= refresh_after_seconds)
+    if current_fingerprint in successful_fingerprints:
+        if refresh_due:
+            generation = last_success_at or "bootstrap"
+            return {**base, "decision": "SCHEDULE_DUE", "reason": "the configured refresh interval has elapsed", "should_produce": True, "age_seconds": age, "idempotency_key": f"production:schedule:{current_fingerprint}:{generation}"}
+        return {**base, "decision": "ALREADY_SATISFIED", "reason": "this input fingerprint already has a verified successful result", "age_seconds": age}
+    if current_fingerprint != last_success_fingerprint:
+        return {**base, "decision": "INPUT_CHANGED", "reason": "current production input fingerprint differs from the last successful audit", "should_produce": True, "idempotency_key": f"production:input:{current_fingerprint}"}
+    if refresh_due:
+        generation = last_success_at or "bootstrap"
+        return {**base, "decision": "SCHEDULE_DUE", "reason": "the configured refresh interval has elapsed", "should_produce": True, "age_seconds": age, "idempotency_key": f"production:schedule:{current_fingerprint}:{generation}"}
     return {**base, "decision": "ALREADY_SATISFIED", "reason": "inputs are unchanged and the refresh interval is not due", "age_seconds": age}
 
 
