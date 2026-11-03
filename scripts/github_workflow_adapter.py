@@ -24,6 +24,10 @@ class WorkflowDispatchOutcomeUnknown(WorkflowAPIError):
     """The dispatch request may have reached GitHub, but no response was received."""
 
 
+class WorkflowDispatchRejected(WorkflowAPIError):
+    """GitHub explicitly rejected a dispatch request; retry may be safe."""
+
+
 class AmbiguousWorkflowRun(WorkflowAPIError):
     """More than one run matches a task correlation marker."""
 
@@ -66,6 +70,12 @@ class GitHubWorkflowClient:
                 if not raw:
                     return None
         except HTTPError as exc:
+            if method == "POST" and path.endswith("/dispatches"):
+                if 400 <= exc.code < 500:
+                    raise WorkflowDispatchRejected(f"GitHub rejected workflow dispatch with HTTP {exc.code}") from None
+                raise WorkflowDispatchOutcomeUnknown(
+                    f"GitHub dispatch endpoint returned HTTP {exc.code}; reconcile by task correlation before retrying"
+                ) from None
             raise WorkflowAPIError(f"GitHub Actions API returned HTTP {exc.code}") from None
         except (URLError, TimeoutError, OSError):
             if method == "POST" and path.endswith("/dispatches"):
