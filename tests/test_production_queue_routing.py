@@ -40,6 +40,8 @@ class ProductionQueueRoutingTests(unittest.TestCase):
         self.assertIn("Same-SHA deterministic failure requires diagnosis", workflow)
         self.assertIn('recovery_kind="superseded_inputs"', workflow)
         self.assertIn('idempotency_key="production:input:$current_fingerprint:$current_sha"', workflow)
+        self.assertIn('baseline_source_sha:$sha', workflow)
+        self.assertIn('--arg sha "$current_sha"', workflow)
         self.assertIn("recomputing intent against current main", workflow)
         self.assertNotIn('idempotency_key="auto-sync-superseded:$SOURCE_RUN_ID"', workflow)
         self.assertIn("bash scripts/verify_publish_base.sh --check-only", workflow)
