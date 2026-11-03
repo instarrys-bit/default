@@ -4,7 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from register_unclassified_paths import register_paths
+from production_intent import register_unclassified_paths as register_paths
 
 
 class WatchdogRegistrationTests(unittest.TestCase):
