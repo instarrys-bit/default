@@ -162,6 +162,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
     config_blob_sha = hashlib.sha1(
         b"blob " + str(len(config_bytes)).encode("ascii") + bytes([0]) + config_bytes
     ).hexdigest()
+    config_sha256 = hashlib.sha256(config_bytes).hexdigest()
 
     expected = {policy.lower() + ".list" for policy in POLICIES}
     actual = {path.name for path in rules_dir.glob("*.list")}
@@ -237,6 +238,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
             "origin": origin,
             "removed_at": timestamp,
             "config_blob_sha": config_blob_sha,
+            "config_sha256": config_sha256,
             "config_rule_line": result.get("config_line"),
             "config_rule": result.get("config_rule"),
             "effective_config_policy": result.get("effective_policy"),
@@ -404,6 +406,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "config_path": "shadowrocket/ss.conf",
         "config_read_only": True,
         "config_blob_sha": config_blob_sha,
+        "config_sha256": config_sha256,
         "ruleset_reference_count": ruleset_reference_count,
         "config_rule_line_count": len(explicit_config_rules),
         "published_before": before_counts,
@@ -449,7 +452,8 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "# RULE-SET / ss.conf conflict synchronization",
         "",
         "- Config: " + report["config_path"] + " (read-only)",
-        "- Config blob SHA: " + config_blob_sha,
+        "- Config Git blob SHA: " + config_blob_sha,
+        "- Config SHA256: " + config_sha256,
         "- Explicit config rule lines inspected: " + str(len(config_rules)),
         "- Published rules removed: " + str(report["published_removed_count"]),
         "- Pending queue entries removed: " + str(report["pending_queue_removed_count"]),
