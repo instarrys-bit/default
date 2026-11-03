@@ -8,9 +8,16 @@ on:
       - "scripts/build_dashboard_snapshot.py"
       - "rulesets/**"
       - "automation/task_queue.json"
+      - "automation/program_registry.json"
+      - "automation/execution_adapters.json"
       - "sources/domain_reviews.json"
       - "data/candidates.json"
       - "reports/lifecycle/**"
+  workflow_run:
+    workflows:
+      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
+      - "Shadowrocket automation watchdog"
+    types: [completed]
   schedule:
     - cron: "17 * * * *"
 permissions:
@@ -18,14 +25,17 @@ permissions:
 
 concurrency:
   group: github-pages-dashboard
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout latest main snapshot
         uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Build sanitized dashboard data
         run: python3 scripts/build_dashboard_snapshot.py
       - name: Configure GitHub Pages
@@ -37,6 +47,7 @@ jobs:
 
   deploy:
     needs: build
+    if: ${{ needs.build.result == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       pages: write
