@@ -25,6 +25,9 @@ on:
       - "scripts/**"
       - "tests/**"
       - "shadowrocket/ss.conf"
+      - "automation/task_queue.json"
+      - "automation/program_registry.json"
+      - "automation/execution_adapters.json"
 
 permissions:
   actions: write
