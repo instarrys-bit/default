@@ -291,7 +291,7 @@ def inspect_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict:
     if any(run.get(key) != value for key, value in required.items()):
         raise WorkflowAPIError("workflow run identity does not match the persisted dispatch intent")
     if run.get("head_sha") != listed.get("head_sha"):
-        raise WorkflowAPIError("workflow run commit SHA changed between list and detail reads")
+        raise WorkflowAPIError("workflow run identity commit SHA changed between list and detail reads")
     head_sha_relationship = validate_run_head_sha(client, intent, run.get("head_sha"))
     if run.get("status") != "completed":
         return {"state": "pending", "run_id": run_id, "html_url": run.get("html_url"), "run_status": run.get("status")}
