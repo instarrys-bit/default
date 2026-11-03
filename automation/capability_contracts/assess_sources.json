@@ -115,7 +115,10 @@
       "reports/source-assessment.md"
     ],
     "dynamic_children_share_parent_lease": true,
-    "lock_scope_note": "The parent scheduler atomically acquires all logical resource keys. Before each filesystem mutation, the child re-reads the durable GitHub task queue and verifies CLAIMED task identity, active task lease, exact resource proof and fencing token. Logical document leases cover base JSON, adjacent manifest, content-addressed shards, staging, atomic manifest switch and old-shard cleanup. The shared logical/production-pipeline key serializes against workflow_auto_sync."
+    "lock_scope_note": "Live queue is re-read before every write boundary. The three logical output leases cover base JSON, adjacent manifests, content-addressed shards, staging, atomic manifest switch and old-shard cleanup. Shared logical/production-pipeline key serializes against workflow_auto_sync. The discovered_sources predecessor is required and its full legacy or sharded content digest is checked before and after execution.",
+    "required_predecessor_artifacts": [
+      "sources/discovered_sources.json"
+    ]
   },
   "execution_semantics": {
     "network_access": true,
