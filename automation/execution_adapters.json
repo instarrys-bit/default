@@ -1050,6 +1050,11 @@
             "name": "production_reason",
             "type": "string",
             "required": false
+          },
+          {
+            "name": "resource_lease_proof",
+            "type": "string",
+            "required": true
           }
         ],
         "allowed_refs": [
@@ -1075,6 +1080,16 @@
           "conclusion"
         ],
         "independent_verification_required": true
+      },
+      "resource_contract": {
+        "mode": "exclusive",
+        "resource_keys": [
+          "logical/production-pipeline"
+        ],
+        "lease_seconds": 3600,
+        "fencing_required": true,
+        "enforcement_boundary": "live task-queue proof checked by the audit gate and immediately before publish push",
+        "coverage": "scheduler-mediated production workflow; independent Python writers remain disabled until separately contracted"
       }
     },
     {
