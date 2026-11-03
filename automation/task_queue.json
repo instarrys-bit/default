@@ -1,5 +1,5 @@
 {
-  "revision": 52,
+  "revision": 53,
   "schema_version": 1,
   "tasks": [
     {
@@ -689,24 +689,34 @@
         "production_reason": "current production input fingerprint differs from the last successful audit"
       },
       "last_error": null,
-      "lease": {
-        "expires_at": "2026-11-03T11:53:59Z",
-        "owner": "41630441790",
-        "token": "389205db5f578acc59bd0126cc95a43a"
-      },
+      "lease": null,
       "max_attempts": 1,
       "not_before": "2026-11-03T11:48:42Z",
       "priority": 100,
       "requester_program_id": "workflow_automation_watchdog",
-      "result": null,
+      "result": {
+        "correlation_id": "task_ab4ab361bcb748e188f72d92-a1",
+        "correlation_title": "Automation task task_ab4ab361bcb748e188f72d92-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-03T11:49:01Z",
+        "ref": "main",
+        "requested_head_sha": "2b3715ab002110b50135731855a9a40746cda73f",
+        "submitted_at": "2026-11-03T11:49:03Z",
+        "task_id": "task_ab4ab361bcb748e188f72d92",
+        "workflow_id": 402712272,
+        "workflow_path": ".github/workflows/auto_sync.yml"
+      },
       "state_history": [
         "QUEUED",
-        "CLAIMED"
+        "CLAIMED",
+        "VERIFYING"
       ],
-      "status": "CLAIMED",
+      "status": "VERIFYING",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_ab4ab361bcb748e188f72d92",
-      "trace_id": "3a49f7604d9e4bf3a2f55dc66e7e1200"
+      "trace_id": "3a49f7604d9e4bf3a2f55dc66e7e1200",
+      "verification": null
     }
   ]
 }
