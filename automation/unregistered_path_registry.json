@@ -1,5 +1,6 @@
 {
   "schema_version": 1,
   "purpose": "Watchdog inbox for unregistered repository paths; registration is not approval.",
-  "entries": []
+  "entries": [],
+  "updated_at": "2026-11-04T01:34:00+08:00"
 }
