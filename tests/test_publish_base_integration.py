@@ -138,7 +138,7 @@ class PublishBaseIntegrationTests(unittest.TestCase):
     def test_api_check_rejects_untrusted_queue_commit(self):
         result = self.run_check_only(self.queue_compare(author_email="test@example.invalid"))
         self.assertNotEqual(result.returncode, 0, result.stdout)
-        self.assertIn("unverified repository state", result.stdout)
+        self.assertIn("A declared production input changed", result.stdout)
 
     def test_non_documentation_change_is_rejected_without_rebase(self):
         self.add_remote_commit("scripts/build_config.py", "changed\n", "script update")
