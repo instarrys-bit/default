@@ -156,8 +156,18 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
         ]}
         store = MemoryStore()
         key = "auto-sync-stale:" + "a" * 40
-        first = task_scheduler.enqueue_auto_sync_task(store, registry, idempotency_key=key, priority=90)
-        second = task_scheduler.enqueue_auto_sync_task(store, registry, idempotency_key=key, priority=90)
+        origin = {
+            "baseline_source_event": "push",
+            "baseline_source_actor": "instarrys-bit",
+            "baseline_source_before": "b" * 40,
+            "baseline_source_sha": "a" * 40,
+        }
+        first = task_scheduler.enqueue_auto_sync_task(
+            store, registry, idempotency_key=key, priority=90, input_payload=origin,
+        )
+        second = task_scheduler.enqueue_auto_sync_task(
+            store, registry, idempotency_key=key, priority=90, input_payload=origin,
+        )
         saved = store.document["tasks"][0]
         self.assertTrue(first["created"])
         self.assertFalse(second["created"])
@@ -165,7 +175,7 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
         self.assertEqual(saved["requester_program_id"], "workflow_automation_watchdog")
         self.assertEqual(saved["target_program_id"], "workflow_auto_sync")
         self.assertEqual(saved["capability"], "deterministic_audit")
-        self.assertEqual(saved["input"], {})
+        self.assertEqual(saved["input"], origin)
         self.assertEqual(saved["status"], "QUEUED")
 
     def test_scheduler_dispatches_once_and_leaves_task_verifying(self):
