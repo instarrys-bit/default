@@ -28,7 +28,7 @@ The successful audit heartbeat records three distinct fingerprints:
 
 The Watchdog compares current inputs with the post-run baseline, preventing the audit's own source-registry updates from recursively scheduling another audit. The durable task queue records the pre-run fingerprint, decision, and reason alongside the task lifecycle and independent verification result.
 
-Only registered input changes or the configured eight-day scheduled refresh create ordinary production demand. Completion notifications and workflow-completion observations are supervision-only. Active tasks suppress duplicates; already-successful fingerprints are reused; bounded timeout and integrity recovery carry explicit recovery reasons and separate idempotency keys.
+Only registered input changes or the configured eight-day scheduled refresh create ordinary production demand. Completion notifications and workflow-completion observations are supervision-only. An active task with the same fingerprint suppresses duplicates; a different active fingerprint makes the Watchdog wait for that task to settle before scheduling the replacement. Already-successful fingerprints are reused; bounded timeout and integrity recovery carry explicit recovery reasons and separate idempotency keys.
 
 ## Watchdog and task execution
 
