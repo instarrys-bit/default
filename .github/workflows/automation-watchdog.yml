@@ -266,7 +266,8 @@ jobs:
             INPUT_CHANGED|SCHEDULE_DUE)
               echo "Production is required: $decision ($fingerprint)."
               audit_input_json="$(jq -cn --arg fingerprint "$fingerprint" --arg decision "$decision" --arg reason "$(jq -r '.reason' <<< "$intent_json")" --arg event "$ORIGIN_EVENT" --arg actor "$ORIGIN_ACTOR" --arg before "$ORIGIN_BEFORE" --arg sha "$ORIGIN_SHA" '{production_intent:{fingerprint:$fingerprint,decision:$decision,reason:$reason,detected_event:$event},baseline_source_event:$event,baseline_source_actor:$actor,baseline_source_before:$before,baseline_source_sha:$sha}')"
-              printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "production:$fingerprint" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
+              production_key="$(jq -r '.idempotency_key' <<< "$intent_json")"
+              printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$production_key" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
               echo "block_manifest=true" >> "$GITHUB_OUTPUT"
               ;;
             REVIEW_REQUIRED)
@@ -379,6 +380,7 @@ jobs:
           ' "$current_main" <<< "$runs")"
 
           timed_out_any=0
+          timed_out_run_id=""
           if [ -n "$stale_lines" ]; then
             while read -r stale_id reason run_sha; do
               [ -n "$stale_id" ] || continue
@@ -397,7 +399,7 @@ jobs:
               fi
               echo "Cancelling audit $stale_id ($reason); current main is $current_main."
               gh run cancel "$stale_id" --repo "$REPO" || true
-              if [ "$reason" = "timeout" ]; then timed_out_any=1; fi
+              if [ "$reason" = "timeout" ]; then timed_out_any=1; timed_out_run_id="$stale_id"; fi
             done <<< "$stale_lines"
             sleep 10
             runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
@@ -428,7 +430,7 @@ jobs:
           PY
           )"
               recovery_input="$(jq -cn --arg fingerprint "$current_fingerprint" --arg reason "bounded recovery after watchdog cancellation of a timed-out audit" '{production_intent:{fingerprint:$fingerprint,decision:"RECOVERY_REQUIRED",reason:$reason}}')"
-              printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "production:$current_fingerprint" --priority 100 --input-json "$recovery_input" enqueue-auto-sync
+              printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "production:recovery:$current_fingerprint:$timed_out_run_id" --priority 100 --input-json "$recovery_input" enqueue-auto-sync
             fi
           fi
 
