@@ -102,6 +102,62 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
         self.assertEqual(recovered[0]["task_id"], task["task_id"])
         self.assertEqual(recovered[0]["status"], "QUEUED")
 
+    def test_resource_contract_is_claimed_atomically_and_held_through_verification(self):
+        enqueue_remote(self.payload(), self.store, self.registry, self.now)
+        eligible = {task["task_id"] for task in self.store.document["tasks"]}
+        task = claim_remote(
+            "worker-a", self.store, self.registry, eligible_task_ids=eligible,
+            resource_keys_by_target={"script_target": {
+                "resource_keys": ["rulesets/direct.list", "rulesets/manifest.json"],
+                "lease_seconds": 60,
+            }},
+            now=self.now,
+        )
+        self.assertEqual(task["resource_lease"]["status"], "ACTIVE")
+        proof = task["resource_lease"]["resources"]
+        self.assertEqual(set(proof), {"rulesets/direct.list", "rulesets/manifest.json"})
+        done = complete_remote(task["task_id"], "worker-a", task["lease"]["token"],
+                               success=True, result={"run_id": 1}, store=self.store,
+                               registry=self.registry, now=self.now)
+        self.assertEqual(done["status"], "VERIFYING")
+        for key, item in proof.items():
+            record = self.store.document["resource_leases"][key]
+            self.assertEqual(record["status"], "ACTIVE")
+            self.assertEqual(record["fencing_token"], item["fencing_token"])
+
+    def test_resource_conflict_leaves_task_queued_without_partial_claim(self):
+        enqueue_remote(self.payload(idempotency_key="first"), self.store, self.registry, self.now)
+        enqueue_remote(self.payload(idempotency_key="second"), self.store, self.registry, self.now)
+        keys = {"script_target": {"resource_keys": ["rulesets/manifest.json"], "lease_seconds": 60}}
+        first_id = self.store.document["tasks"][0]["task_id"]
+        first = claim_remote("worker-a", self.store, self.registry,
+                             eligible_task_ids={first_id}, resource_keys_by_target=keys, now=self.now)
+        self.assertIsNotNone(first)
+        second_id = next(x["task_id"] for x in self.store.document["tasks"] if x["task_id"] != first_id)
+        blocked = claim_remote("worker-b", self.store, self.registry,
+                               eligible_task_ids={second_id}, resource_keys_by_target=keys, now=self.now)
+        self.assertIsNone(blocked)
+        second = next(x for x in self.store.document["tasks"] if x["task_id"] == second_id)
+        self.assertEqual(second["status"], "QUEUED")
+        self.assertEqual(second["attempts"], 0)
+        self.assertIsNone(second["lease"])
+
+    def test_failed_task_releases_its_resource_lease(self):
+        enqueue_remote(self.payload(), self.store, self.registry, self.now)
+        task_id = self.store.document["tasks"][0]["task_id"]
+        task = claim_remote("worker-a", self.store, self.registry,
+                            eligible_task_ids={task_id},
+                            resource_keys_by_target={"script_target": {
+                                "resource_keys": ["rulesets/manifest.json"], "lease_seconds": 60}},
+                            now=self.now)
+        failed = complete_remote(task_id, "worker-a", task["lease"]["token"],
+                                 success=False, error={"type": "test"}, store=self.store,
+                                 registry=self.registry, now=self.now)
+        self.assertEqual(failed["status"], "QUEUED")
+        record = self.store.document["resource_leases"]["rulesets/manifest.json"]
+        self.assertEqual(record["status"], "RELEASED")
+        self.assertEqual(record["fencing_token"], task["resource_lease"]["resources"]["rulesets/manifest.json"]["fencing_token"])
+
     def test_empty_claim_and_recovery_do_not_write(self):
         self.assertIsNone(self.claim("worker-a", self.now))
         self.assertEqual(recover_remote(self.store, self.registry, self.now), [])

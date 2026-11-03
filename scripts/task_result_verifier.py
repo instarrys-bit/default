@@ -16,6 +16,7 @@ from remote_task_queue_runtime import (
 from task_queue_runtime import now_utc, stamp
 from github_queue_store import QueueStoreError
 from github_workflow_adapter import GitHubWorkflowClient, WorkflowAPIError, inspect_correlated_run
+from resource_lease_runtime import renew_resource_leases_in_queue, release_resource_leases_in_queue
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -283,6 +284,14 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
                         if task.get("result", {}).get("run_evidence") != evidence:
                             task["result"]["run_evidence"] = evidence
                             changed = True
+                    if task.get("resource_lease", {}).get("status") == "ACTIVE":
+                        if renew_resource_leases_in_queue(queue, task, now):
+                            changed = True
+                        else:
+                            task["resource_lease"]["status"] = "LOST"
+                            task["resource_lease"]["lost_at"] = stamp(now)
+                            blocked.append({"task_id": task["task_id"], "reason": "resource lease expired or was fenced by a newer owner while workflow is pending"})
+                            changed = True
                     blocked.append({"task_id": task["task_id"], "reason": observation.get("reason", "workflow run is still pending")})
                     continue
                 if observation.get("state") not in {"success", "failure"}:
@@ -331,6 +340,12 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
                         task["status"] = "DEAD_LETTER"
                         task["state_history"].append("DEAD_LETTER")
                     rejected.append(task["task_id"])
+                if task.get("resource_lease", {}).get("status") == "ACTIVE":
+                    try:
+                        release_resource_leases_in_queue(queue, task, now)
+                    except ValueError:
+                        task["resource_lease"]["status"] = "LOST"
+                        task["resource_lease"]["lost_at"] = stamp(now)
                 changed = True
                 continue
 
@@ -372,6 +387,12 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
                 task["last_error"] = None
                 task["state_history"].append("SUCCEEDED")
                 verified.append(task["task_id"])
+            if task.get("resource_lease", {}).get("status") == "ACTIVE":
+                try:
+                    release_resource_leases_in_queue(queue, task, now)
+                except ValueError:
+                    task["resource_lease"]["status"] = "LOST"
+                    task["resource_lease"]["lost_at"] = stamp(now)
             changed = True
         if changed:
             queue["revision"] += 1

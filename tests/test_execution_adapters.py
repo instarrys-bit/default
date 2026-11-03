@@ -123,6 +123,16 @@ class ExecutionAdapterTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "actions:write and contents:write"):
             validate_execution_adapters(root, ap, rp)
 
+    def test_rejects_invalid_resource_lease_contract(self):
+        root, ap, rp, doc = self.make_repo()
+        doc["adapters"][0]["resource_contract"] = {
+            "mode": "shared", "fencing_required": False,
+            "resource_keys": ["../unsafe"], "lease_seconds": 60,
+        }
+        ap.write_text(json.dumps(doc), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "resource_contract"):
+            validate_execution_adapters(root, ap, rp)
+
     def test_rejects_workflow_input_drift(self):
         root, ap, rp, doc = self.make_repo()
         doc["adapters"][1]["workflow"]["inputs"] = []

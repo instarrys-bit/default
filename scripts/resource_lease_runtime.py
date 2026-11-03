@@ -66,6 +66,92 @@ def checked_record(value, key):
     return value
 
 
+def acquire_resource_leases_in_queue(queue, task, worker_id, task_lease_token, resource_keys, *, lease_seconds, now, lease_id):
+    """Pure queue mutation helper; caller owns the enclosing CAS transaction."""
+    validate_envelope(queue)
+    claimed_task(queue, task["task_id"], worker_id, task_lease_token, now)
+    keys=normalize_keys(resource_keys)
+    if isinstance(lease_seconds,bool) or not isinstance(lease_seconds,int) or not 1<=lease_seconds<=3600:
+        raise ValueError("lease_seconds must be 1..3600")
+    expiry=min(now+timedelta(seconds=lease_seconds),utc(task["lease"]["expires_at"]))
+    leases=queue.setdefault("resource_leases",{})
+    if not isinstance(leases,dict): raise ValueError("resource_leases must be an object")
+    plan={}
+    for key in keys:
+        old=checked_record(leases.get(key),key)
+        if old is None: plan[key]=(lease_id,1,False); continue
+        active=old["status"]=="ACTIVE" and utc(old["expires_at"])>now
+        same=(old.get("task_id")==task["task_id"] and old.get("worker_id")==worker_id and old.get("task_lease_token")==task_lease_token)
+        if active and not same: return {"acquired":False,"blocked_resource":key}
+        plan[key]=(old["lease_id"],old["fencing_token"],True) if active else (lease_id,old["fencing_token"]+1,False)
+    resources={}
+    for key,(current_id,fence,reuse) in plan.items():
+        old=leases.get(key) or {}
+        leases[key]={"status":"ACTIVE","task_id":task["task_id"],"worker_id":worker_id,
+          "task_lease_token":task_lease_token,"lease_id":current_id,"fencing_token":fence,
+          "acquired_at":old.get("acquired_at",stamp(now)) if reuse else stamp(now),
+          "renewed_at":stamp(now),"expires_at":stamp(expiry),"released_at":None}
+        resources[key]={"lease_id":current_id,"fencing_token":fence}
+    return {"acquired":True,"resources":resources,"expires_at":stamp(expiry),"lease_seconds":lease_seconds}
+
+
+def release_resource_leases_in_queue(queue, task, now):
+    lease=task.get("resource_lease")
+    if not isinstance(lease,dict): return []
+    resources=lease.get("resources")
+    if not isinstance(resources,dict) or not resources: raise ValueError("task resource lease proof is malformed")
+    leases=queue.get("resource_leases")
+    if not isinstance(leases,dict): raise ValueError("resource lease registry is missing")
+    for key,item in resources.items():
+        record=checked_record(leases.get(key),key)
+        if record is None or record.get("status")!="ACTIVE" or record.get("task_id")!=task["task_id"] or record.get("lease_id")!=item.get("lease_id") or record.get("fencing_token")!=item.get("fencing_token"):
+            raise ValueError(f"stale resource lease cannot be released: {key}")
+    for key in resources:
+        leases[key]["status"]="RELEASED"; leases[key]["released_at"]=stamp(now); leases[key]["expires_at"]=stamp(now)
+    lease["status"]="RELEASED"; lease["released_at"]=stamp(now)
+    return sorted(resources)
+
+
+def renew_resource_leases_in_queue(queue, task, now):
+    lease=task.get("resource_lease")
+    if not isinstance(lease,dict): return True
+    resources=lease.get("resources")
+    seconds=lease.get("lease_seconds")
+    if not isinstance(resources,dict) or not resources or isinstance(seconds,bool) or not isinstance(seconds,int) or not 1<=seconds<=3600:
+        raise ValueError("task resource lease renewal contract is malformed")
+    leases=queue.get("resource_leases")
+    if not isinstance(leases,dict): raise ValueError("resource lease registry is missing")
+    for key,item in resources.items():
+        record=checked_record(leases.get(key),key)
+        if record is None or record.get("status")!="ACTIVE" or record.get("task_id")!=task["task_id"] or record.get("lease_id")!=item.get("lease_id") or record.get("fencing_token")!=item.get("fencing_token"):
+            return False
+        if utc(record["expires_at"])<=now: return False
+    expiry=stamp(now+timedelta(seconds=seconds))
+    for key in resources:
+        leases[key]["expires_at"]=expiry; leases[key]["renewed_at"]=stamp(now)
+    lease["expires_at"]=expiry
+    return True
+
+
+def extend_resource_leases_for_verification(queue, task, now):
+    lease=task.get("resource_lease")
+    if not isinstance(lease,dict): return
+    seconds=lease.get("lease_seconds")
+    resources=lease.get("resources")
+    if isinstance(seconds,bool) or not isinstance(seconds,int) or not 1<=seconds<=3600 or not isinstance(resources,dict):
+        raise ValueError("task resource lease metadata is malformed")
+    leases=queue.get("resource_leases")
+    if not isinstance(leases,dict): raise ValueError("resource lease registry is missing")
+    expiry=stamp(now+timedelta(seconds=seconds))
+    for key,item in resources.items():
+        record=checked_record(leases.get(key),key)
+        if record is None or record.get("status")!="ACTIVE" or record.get("task_id")!=task["task_id"] or record.get("lease_id")!=item.get("lease_id") or record.get("fencing_token")!=item.get("fencing_token"):
+            raise ValueError(f"resource lease changed before verification: {key}")
+    for key in resources:
+        leases[key]["expires_at"]=expiry; leases[key]["renewed_at"]=stamp(now)
+    lease["expires_at"]=expiry
+
+
 def acquire_resource_leases(task_id, worker_id, task_lease_token, resource_keys, store, *, lease_seconds=300, now=None):
     if not isinstance(task_id, str) or not task_id or not isinstance(worker_id, str) or not worker_id.strip() or not isinstance(task_lease_token, str) or not task_lease_token:
         raise ValueError("task_id, worker_id and task_lease_token are required")
