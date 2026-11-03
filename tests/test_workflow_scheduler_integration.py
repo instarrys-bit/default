@@ -199,12 +199,20 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
             "      production_fingerprint:\\n        required: false\\n        type: string\\n"
             "      production_decision:\\n        required: false\\n        type: string\\n"
             "      production_reason:\\n        required: false\\n        type: string\\n"
-            "      automation_task_id:\\n        required: false\\n        type: string\\n",
+            "      automation_task_id:\\n        required: false\\n        type: string\\n"
+            "      resource_lease_proof:\\n        required: true\\n        type: string\\n",
             encoding="utf-8",
         )
         adapter = copy.deepcopy(self.adapter)
         adapter["target_program_id"] = "workflow_auto_sync"
         adapter["allowed_callers"] = ["workflow_automation_watchdog"]
+        adapter["workflow"]["inputs"].append(
+            {"name": "resource_lease_proof", "type": "string", "required": True}
+        )
+        adapter["resource_contract"] = {
+            "mode": "exclusive", "resource_keys": ["logical/production-pipeline"],
+            "lease_seconds": 21600, "fencing_required": True,
+        }
         adapter["workflow"]["inputs"].extend([
             {"name": "baseline_source_event", "type": "string", "required": False},
             {"name": "baseline_source_actor", "type": "string", "required": False},
