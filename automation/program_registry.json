@@ -1078,7 +1078,8 @@
         "script_sync_ruleset_config_conflicts",
         "script_validate_config",
         "script_verify_baseline",
-        "script_verify_published_rulesets"
+        "script_verify_published_rulesets",
+        "script_persist_review_cursor"
       ],
       "dispatches": [],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
@@ -1506,6 +1507,34 @@
       "dispatches": [],
       "permission_boundary": "Read-only repository inspection; no network access, no queue mutation, no adapter activation, and no changes to shadowrocket/ss.conf.",
       "health_check": "Tests validate disabled-by-default state, workflow permission scope parsing, read-only canary classification, and protected-config write detection.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_persist_review_cursor",
+      "path": "scripts/persist_review_cursor.py",
+      "kind": "python_component",
+      "responsibility": "validate and persist resumable review cursor checkpoints from failed audit artifacts",
+      "capabilities": [
+        "review_cursor_persistence",
+        "failure_recovery"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "review cursor checkpoint artifact JSON",
+        "destination path for the persisted checkpoint"
+      ],
+      "outputs": [
+        "validated in-progress cursor checkpoint, safe missing-artifact no-op, or completed-checkpoint cleanup"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem authority is limited to the explicit cursor artifact and destination paths; Git staging permissions remain controlled by the invoking workflow job.",
+      "health_check": "Covered by dedicated cursor persistence unit tests and the repository deterministic test suite.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],
