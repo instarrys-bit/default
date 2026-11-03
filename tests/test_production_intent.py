@@ -90,8 +90,8 @@ class ProductionIntentTests(unittest.TestCase):
     def test_input_change_uses_stable_fingerprint_idempotency_key(self):
         result = decide(event="push", current_fingerprint=self.fp,
             last_success_fingerprint="old", path_classification={"status":"INPUT_CHANGED"},
-            last_success_at=None, now=self.now)
-        self.assertEqual(result["idempotency_key"], f"production:input:{self.fp}")
+            last_success_at=None, revision="commit-a", now=self.now)
+        self.assertEqual(result["idempotency_key"], f"production:input:{self.fp}:commit-a")
 
     def test_scheduled_refresh_key_is_scoped_to_last_success_generation(self):
         stamp = (self.now - timedelta(days=9)).isoformat()
