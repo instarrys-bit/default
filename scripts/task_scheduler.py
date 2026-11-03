@@ -238,6 +238,10 @@ def read_only_resource_digests(root: Path, paths: list[str]) -> dict[str, str | 
                 value=json.loads(manifest.read_text(encoding="utf-8"))
             except (OSError,json.JSONDecodeError) as exc:
                 raise ValueError(f"read-only document manifest is invalid: {relative}") from exc
+            if not isinstance(value,dict):
+                raise ValueError(f"read-only document manifest must be an object: {relative}")
+            if not manifest.resolve().is_relative_to(root.resolve()):
+                raise ValueError(f"read-only document manifest resolves outside repository: {relative}")
             directory=value.get("shard_directory")
             shards=value.get("shards")
             if (value.get("logical_path")!=path.name or not isinstance(directory,str)
@@ -250,6 +254,8 @@ def read_only_resource_digests(root: Path, paths: list[str]) -> dict[str, str | 
                 if not isinstance(name,str) or Path(name).name!=name or not name.endswith(".jsonl"):
                     raise ValueError(f"read-only document shard entry is invalid: {relative}")
                 shard_path=manifest.parent/directory/name
+                if not shard_path.resolve().is_relative_to(root.resolve()):
+                    raise ValueError(f"read-only document shard resolves outside repository: {relative}/{directory}/{name}")
                 if not shard_path.is_file():
                     raise ValueError(f"read-only document shard is missing: {relative}/{directory}/{name}")
                 digest.update(name.encode("utf-8")+b"\\0")
