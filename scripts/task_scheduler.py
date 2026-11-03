@@ -212,7 +212,7 @@ def persist_workflow_dispatch_intent(task: dict, intent: dict, store, registry: 
     """Persist correlation identity before the non-idempotent GitHub dispatch call."""
     stable = {key: intent[key] for key in (
         "workflow_id", "workflow_path", "ref", "requested_head_sha",
-        "task_id", "correlation_title", "prepared_at",
+        "task_id", "dispatch_attempt", "correlation_id", "correlation_title", "prepared_at",
     )}
     def mutate(queue):
         validate_envelope(queue)
