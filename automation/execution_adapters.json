@@ -1008,6 +1008,11 @@
             "name": "restore_conflict_ids",
             "type": "string",
             "required": false
+          },
+          {
+            "name": "automation_task_id",
+            "type": "string",
+            "required": false
           }
         ],
         "allowed_refs": [
@@ -1044,7 +1049,13 @@
       "workflow": {
         "path": ".github/workflows/automation-watchdog.yml",
         "dispatchable": true,
-        "inputs": [],
+        "inputs": [
+          {
+            "name": "automation_task_id",
+            "type": "string",
+            "required": false
+          }
+        ],
         "allowed_refs": [
           "main"
         ],
@@ -1084,6 +1095,11 @@
             "name": "domains",
             "type": "string",
             "required": true
+          },
+          {
+            "name": "automation_task_id",
+            "type": "string",
+            "required": false
           }
         ],
         "allowed_refs": [
@@ -1155,7 +1171,13 @@
       "workflow": {
         "path": ".github/workflows/self-healing-tests.yml",
         "dispatchable": true,
-        "inputs": [],
+        "inputs": [
+          {
+            "name": "automation_task_id",
+            "type": "string",
+            "required": false
+          }
+        ],
         "allowed_refs": [
           "main"
         ],
@@ -1337,6 +1359,31 @@
       },
       "completion": {
         "success_condition": "only_reviewed_adapter_tasks_are_executed_and_results_are_independently_verified",
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "script_github_workflow_adapter",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/github_workflow_adapter.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_interface_review"
+      },
+      "completion": {
+        "success_condition": "workflow_run_identity_matches_and_completed_conclusion_is_success",
         "independent_verification_required": true
       }
     }

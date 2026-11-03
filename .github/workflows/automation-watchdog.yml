@@ -1,10 +1,16 @@
 name: Shadowrocket automation watchdog
+run-name: Automation task ${{ inputs.automation_task_id || 'manual' }}
 
 on:
   schedule:
     - cron: "0 * * * *"
     - cron: "30 22 * * *"
   workflow_dispatch:
+    inputs:
+      automation_task_id:
+        description: 'Internal task correlation ID; leave blank for manual runs'
+        required: false
+        type: string
   workflow_run:
     workflows:
       - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
