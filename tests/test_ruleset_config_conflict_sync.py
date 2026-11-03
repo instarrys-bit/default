@@ -336,9 +336,9 @@ class ConfigConflictSyncTests(unittest.TestCase):
             ])
             make_root(
                 root, config_a,
-                direct="DOMAIN,api.example.com\\n",
-                proxy="DOMAIN-SUFFIX,web.example.com\\n",
-                reject="DOMAIN,ads.example.com\\n",
+                direct="DOMAIN,api.example.com\n",
+                proxy="DOMAIN-SUFFIX,web.example.com\n",
+                reject="DOMAIN,ads.example.com\n",
                 queue=queue,
             )
             config_path = root / "shadowrocket" / "ss.conf"
