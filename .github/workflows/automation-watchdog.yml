@@ -206,7 +206,10 @@ jobs:
           GITHUB_REF_NAME: main
         run: |
           set -euo pipefail
-          python3 scripts/task_scheduler.py --repository "$GITHUB_REPOSITORY" --branch main --max-tasks 1 run-once | tee /tmp/task-scheduler-report.json
+          queue_token="$GITHUB_TOKEN"
+          unset GITHUB_TOKEN
+          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --token-stdin --repository "$GITHUB_REPOSITORY" --branch main --max-tasks 1 run-once | tee /tmp/task-scheduler-report.json
+          unset queue_token
           cat /tmp/task-scheduler-report.json >> "$GITHUB_STEP_SUMMARY"
 
   stale-run-watch:
