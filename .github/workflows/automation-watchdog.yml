@@ -87,9 +87,34 @@ jobs:
               exit 0
               ;;
           esac
-          if [ "$SOURCE_EVENT" != "schedule" ] && [ "$SOURCE_EVENT" != "push" ]; then
+          if [ "$SOURCE_EVENT" != "schedule" ] && [ "$SOURCE_EVENT" != "push" ] && [ "$SOURCE_EVENT" != "workflow_dispatch" ]; then
             echo "No automatic recovery for source event=$SOURCE_EVENT."
             exit 0
+          fi
+
+          audit_input_json='{}'
+          if [ "$SOURCE_EVENT" = "workflow_dispatch" ]; then
+            display_title="$(gh api "repos/$REPO/actions/runs/$SOURCE_RUN_ID" --jq .display_title)"
+            source_task_id="$(python3 - "$display_title" <<'PY'
+          import re, sys
+          match = re.fullmatch(r"Automation task (task_[0-9a-f]{24})-a[1-9][0-9]*", sys.argv[1])
+          print(match.group(1) if match else "")
+          PY
+          )"
+            if [ -z "$source_task_id" ]; then
+              echo "Workflow-dispatch run has no durable queue task correlation; refusing automatic retry."
+              exit 0
+            fi
+            queue_content="$(gh api "repos/$REPO/contents/automation/task_queue.json" --jq .content)"
+            audit_input_json="$(QUEUE_CONTENT="$queue_content" python3 - "$source_task_id" <<'PY'
+          import base64, json, os, sys
+          queue = json.loads(base64.b64decode(os.environ["QUEUE_CONTENT"]).decode("utf-8"))
+          task = next((item for item in queue.get("tasks", []) if item.get("task_id") == sys.argv[1]), None)
+          if task is None or not isinstance(task.get("input"), dict):
+              raise SystemExit("Correlated durable queue task or its input is missing; refusing retry.")
+          print(json.dumps(task["input"], ensure_ascii=False, separators=(",", ":")))
+          PY
+          )"
           fi
 
           runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
@@ -112,7 +137,7 @@ jobs:
           fi
 
           echo "Source run $SOURCE_RUN_ID failed with a retryable infrastructure conclusion; enqueueing bounded recovery through the durable task queue."
-          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-recovery:$SOURCE_RUN_ID" --priority 100 enqueue-auto-sync
+          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-recovery:$SOURCE_RUN_ID" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
 
       - name: Report degraded source discovery health
         if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success' }}
@@ -150,6 +175,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
+          ORIGIN_EVENT: ${{ github.event_name }}
+          ORIGIN_ACTOR: ${{ github.actor }}
+          ORIGIN_BEFORE: ${{ github.event.before }}
+          ORIGIN_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
           runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
@@ -189,7 +218,11 @@ jobs:
 
           if [ "$audit_base_stale" = "1" ] || [ "$age_seconds" -gt 691200 ]; then
             echo "Last successful audit is stale or contains non-documentation changes since its audited commit (age=${age_seconds}s, audited=$last_success_sha, current=$current_sha); enqueueing a durable audit task."
-            printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-stale:$current_sha" --priority 80 enqueue-auto-sync
+            audit_input_json='{}'
+            if [ "$ORIGIN_EVENT" = "push" ]; then
+              audit_input_json="$(jq -cn --arg event "$ORIGIN_EVENT" --arg actor "$ORIGIN_ACTOR" --arg before "$ORIGIN_BEFORE" --arg sha "$ORIGIN_SHA" '{baseline_source_event:$event,baseline_source_actor:$actor,baseline_source_before:$before,baseline_source_sha:$sha}')"
+            fi
+            printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "auto-sync-stale:$current_sha" --priority 80 --input-json "$audit_input_json" enqueue-auto-sync
             echo "block_manifest=true" >> "$GITHUB_OUTPUT"
           else
             echo "Last successful audit is healthy; any intervening main changes are documentation-only (${age_seconds}s ago)."
