@@ -1,13 +1,11 @@
 import json
 import os
+import sys
 import tempfile
 import unittest
-from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import patch
 
-from pathlib import Path
-import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
@@ -37,7 +35,7 @@ class TaskSchedulerTests(unittest.TestCase):
         self.root = Path(tempfile.mkdtemp())
         (self.root / "scripts").mkdir()
         (self.root / "shadowrocket").mkdir()
-        (self.root / "shadowrocket" / "ss.conf").write_text("[General]\\n", encoding="utf-8")
+        (self.root / "shadowrocket" / "ss.conf").write_text("[General]\n", encoding="utf-8")
         self.script = self.root / "scripts" / "target.py"
         self.script.write_text(
             "import json, os, sys\n"
@@ -144,9 +142,10 @@ class TaskSchedulerTests(unittest.TestCase):
 
     def test_child_modification_of_protected_config_stops_scheduler(self):
         self.script.write_text(
-            "from pathlib import Path\\n"
-            "Path('shadowrocket/ss.conf').write_text('changed\\\\n', encoding='utf-8')\\n"
-            "print('{\\\"ok\\\": true, \\\"value\\\": 7, \\\"token_visible\\\": false}')\\n",
+            "import json\n"
+            "from pathlib import Path\n"
+            "Path('shadowrocket/ss.conf').write_text('changed', encoding='utf-8')\n"
+            "print(json.dumps({'ok': True, 'value': 7, 'token_visible': False}))\n",
             encoding="utf-8",
         )
         self.enqueue()
@@ -155,7 +154,7 @@ class TaskSchedulerTests(unittest.TestCase):
                 self.store, self.registry, self.adapters,
                 worker_id="scheduler-test", max_tasks=1, root=self.root, now=self.now,
             )
-        self.assertNotEqual((self.root / "shadowrocket" / "ss.conf").read_text(encoding="utf-8"), "[General]\\n")
+        self.assertNotEqual((self.root / "shadowrocket" / "ss.conf").read_text(encoding="utf-8"), "[General]\n")
 
     def test_shell_execution_and_unreviewed_placeholders_are_rejected(self):
         self.adapters["adapters"][1]["entrypoint"]["shell"] = True
