@@ -56,7 +56,20 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
+      - name: Keep owner-controlled config and baseline unchanged in pull requests
+        if: ${{ github.event_name == 'pull_request' }}
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          if ! git diff --quiet "$BASE_SHA" "$HEAD_SHA" -- shadowrocket/ss.conf sources/policy.json; then
+            echo "Pull requests may not change the owner-controlled Shadowrocket config or its approved-baseline policy." >&2
+            exit 1
+          fi
+          echo "The pull request leaves ss.conf and its baseline policy unchanged; continuing read-only structural checks without attempting baseline registration."
       - name: Recover owner-approved config baseline in validation workspace
+        if: ${{ github.event_name != 'pull_request' }}
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -66,8 +79,12 @@ jobs:
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
           GITHUB_SHA: ${{ github.sha }}
         run: python scripts/register_config_baseline.py
-      - run: python scripts/verify_baseline.py --allow-owner-push-change
-      - run: python scripts/audit_config_drift.py --allow-owner-push-change
+      - name: Verify owner-approved config baseline
+        if: ${{ github.event_name != 'pull_request' }}
+        run: python scripts/verify_baseline.py --allow-owner-push-change
+      - name: Audit config drift against the approved baseline
+        if: ${{ github.event_name != 'pull_request' }}
+        run: python scripts/audit_config_drift.py --allow-owner-push-change
       - run: python scripts/audit_ruleset_references.py
       - run: python scripts/audit_ruleset_config_overlap.py
       - run: python scripts/validate_config.py
