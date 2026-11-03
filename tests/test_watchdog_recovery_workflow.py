@@ -104,5 +104,14 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
             self.assertIn(f'.status == "{status}"', workflow)
         self.assertIn("A deterministic audit for current main", workflow)
 
+    def test_queue_and_activation_contract_changes_wake_the_watchdog(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        for path in (
+            "automation/task_queue.json",
+            "automation/program_registry.json",
+            "automation/execution_adapters.json",
+        ):
+            self.assertIn(f'      - "{path}"', workflow)
+
 if __name__ == "__main__":
     unittest.main()
