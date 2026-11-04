@@ -14,7 +14,7 @@ def make_root(root, config, direct="", proxy="", reject="", queue=None):
     (root / "shadowrocket").mkdir()
     (root / "rulesets").mkdir()
     (root / "reports").mkdir()
-    (root / "shadowrocket" / "ss.conf").write_text(config, encoding="utf-8")
+    (root / "shadowrocket" / "uu.conf").write_text(config, encoding="utf-8")
     (root / "rulesets" / "direct.list").write_text(direct, encoding="utf-8")
     (root / "rulesets" / "proxy.list").write_text(proxy, encoding="utf-8")
     (root / "rulesets" / "reject.list").write_text(reject, encoding="utf-8")
@@ -267,7 +267,7 @@ class ConfigConflictSyncTests(unittest.TestCase):
             sync(root=root, now="2026-11-01T00:00:00+00:00")
             archive = json.loads((root / "rulesets" / "config_conflict_archive.json").read_text())
             item_id = archive["items"][0]["id"]
-            (root / "shadowrocket" / "ss.conf").write_text(
+            (root / "shadowrocket" / "uu.conf").write_text(
                 config_with_rules([]), encoding="utf-8"
             )
             restored = sync(root=root, restore_ids=[item_id], now="2026-11-02T00:00:00+00:00")
@@ -292,7 +292,7 @@ class ConfigConflictSyncTests(unittest.TestCase):
 
             # Owner removes the covering config rule. The next sync pass
             # supersedes the conflict so the normal builder can reconsider it.
-            (root / "shadowrocket" / "ss.conf").write_text(
+            (root / "shadowrocket" / "uu.conf").write_text(
                 config_with_rules([]), encoding="utf-8"
             )
             sync(root=root, now="2026-11-02T00:00:00+00:00")
@@ -341,7 +341,7 @@ class ConfigConflictSyncTests(unittest.TestCase):
                 reject="DOMAIN,ads.example.com\n",
                 queue=queue,
             )
-            config_path = root / "shadowrocket" / "ss.conf"
+            config_path = root / "shadowrocket" / "uu.conf"
             original_a = config_path.read_bytes()
             self.assertEqual(config_path.read_bytes(), original_a)
 
@@ -371,7 +371,7 @@ class ConfigConflictSyncTests(unittest.TestCase):
                 last_success_fingerprint="a" * 64,
                 path_classification={
                     "status": "INPUT_CHANGED",
-                    "production_input_changes": ["shadowrocket/ss.conf"],
+                    "production_input_changes": ["modules/uu.conf"],
                     "non_production_changes": [],
                     "unknown_changes": [],
                 },
