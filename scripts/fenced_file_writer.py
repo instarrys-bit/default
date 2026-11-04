@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PROTECTED_PATHS = {"shadowrocket/ss.conf"}
+PROTECTED_PATHS = {"shadowrocket/ss.conf", "modules/uu.conf"}
 _INSTALLED = False
 
 
@@ -38,12 +38,12 @@ def _repo_relative(path) -> str | None:
         pass
     resolved_value = resolved_relative.as_posix()
     if lexical_value in PROTECTED_PATHS or resolved_value in PROTECTED_PATHS:
-        raise PermissionError("owner-managed protected file is read-only: shadowrocket/ss.conf")
+        raise PermissionError("owner-managed protected file is read-only")
     return resolved_value if resolved_value not in {"", "."} else None
 
 
 def authorize_write_path(path) -> None:
-    """Reject the owner config unconditionally and fence every repo-local write."""
+    """Reject owner-managed configs unconditionally and fence every repo-local write."""
     relative = _repo_relative(path)
     if relative is None:
         # A pre-existing external hard link to the protected config has a different
