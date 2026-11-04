@@ -389,8 +389,12 @@ def assert_workflow_resource_lease(queue, task_id, proof, *, now=None):
     if not isinstance(task_id,str) or not task_id or not isinstance(proof,dict) or not proof:
         raise ValueError("workflow task ID and resource proof are required")
     task=next((x for x in queue["tasks"] if isinstance(x,dict) and x.get("task_id")==task_id),None)
-    if task is None or task.get("status") not in {"CLAIMED","VERIFYING"}:
-        raise ValueError("workflow task is not active in CLAIMED or VERIFYING state")
+    if task is None:
+        raise ValueError("workflow task does not exist in the durable queue")
+    # Task lifecycle and resource-lock lifecycle are separate. A concurrent
+    # verifier may advance the task while this workflow still holds its writer
+    # lease. Authorization rests on the immutable dispatch intent and the live,
+    # fenced resource lease below, not on a transient task status label.
     if task.get("target_program_id")!="workflow_auto_sync" or task.get("requester_program_id")!="workflow_automation_watchdog":
         raise ValueError("resource proof is not bound to the Watchdog production workflow")
     intent=task.get("dispatch_intent")
