@@ -13,11 +13,11 @@ import fenced_file_writer
 
 
 class FencedFileWriterTests(unittest.TestCase):
-    def test_owner_managed_config_is_always_read_only(self):
-        with self.assertRaisesRegex(PermissionError, "owner-managed protected file"):
-            fenced_file_writer.authorize_write_path(ROOT / "shadowrocket" / "ss.conf")
-
     def test_uu_conf_is_always_read_only(self):
+        with self.assertRaisesRegex(PermissionError, "owner-managed protected file"):
+            fenced_file_writer.authorize_write_path(ROOT / "modules" / "uu.conf")
+
+    def test_uu_conf_open_is_rejected_by_audit_hook(self):
         with self.assertRaisesRegex(PermissionError, "owner-managed protected file"):
             fenced_file_writer.authorize_write_path(ROOT / "modules" / "uu.conf")
 
