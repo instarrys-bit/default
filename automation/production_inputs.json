@@ -4,7 +4,7 @@
   "production_input_paths": [
     "automation/production_inputs.json",
     ".github/workflows/auto_sync.yml",
-    "shadowrocket/ss.conf",
+    "modules/uu.conf",
     "sources/domain_sources.json",
     "sources/legacy_managed_rules.json",
     "sources/policy.json",
