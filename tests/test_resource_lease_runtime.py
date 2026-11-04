@@ -189,7 +189,15 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
         live = LiveStore(self.store.document)
         with tempfile.TemporaryDirectory() as directory:
             snapshot = Path(directory) / "queue.json"
-            snapshot.write_text(json.dumps(self.store.document), encoding="utf-8")
+            snapshot_document = copy.deepcopy(self.store.document)
+            snapshot_task = snapshot_document["tasks"][0]
+            snapshot_task["status"] = "CLAIMED"
+            snapshot_task["lease"] = {
+                "owner": "worker_a",
+                "token": "task-token-a",
+                "expires_at": (self.now - timedelta(seconds=1)).isoformat(timespec="seconds").replace("+00:00", "Z"),
+            }
+            snapshot.write_text(json.dumps(snapshot_document), encoding="utf-8")
             env = {
                 "AUTOMATION_QUEUE_SNAPSHOT": str(snapshot),
                 "AUTOMATION_QUEUE_REPOSITORY": "owner/repo",
