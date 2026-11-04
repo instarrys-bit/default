@@ -27,11 +27,11 @@ Manifest: [rulesets/manifest.json](rulesets/manifest.json).
 
 ## Main configuration
 
-[shadowrocket/ss.conf](shadowrocket/ss.conf) is the user-owned authoritative configuration.
+[modules/uu.conf](modules/uu.conf) is the user-owned authoritative configuration.
 
 Subscription URL:
 
-`https://raw.githubusercontent.com/instarrys-bit/default/main/shadowrocket/ss.conf`
+`https://raw.githubusercontent.com/instarrys-bit/default/main/modules/uu.conf`
 
 Automation may read this file for integrity and conflict checks. It must never modify, stage, or commit it.
 
