@@ -167,7 +167,7 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
                 raise ValueError(f"{task_id}.assessment_checkpoint exceeds its storage bound")
         resolution = task.get("resolution")
         if resolution is not None:
-            if (status != "CANCELLED" or "DEAD_LETTER" not in history[:-1]
+            if (status != "CANCELLED" or "DEAD_LETTER" not in task.get("state_history", [])[:-1]
                     or not isinstance(resolution, dict)
                     or resolution.get("schema_version") != 1
                     or resolution.get("disposition") != "superseded"
