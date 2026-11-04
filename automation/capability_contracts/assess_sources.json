@@ -210,7 +210,7 @@
     "registry_dependency_program_id": "script_discover_sources",
     "required_predecessor_artifact": "sources/discovered_sources.json",
     "input_snapshot_validation": "The scheduler hashes the complete legacy/sharded discovered_sources document before and after assessment and rejects publication if it changes.",
-    "scheduler_enforcement": "The Watchdog supplies a successful workflow_run event proof. The scheduler validates producer identity, exact workflow name, numeric workflow run ID, full producer commit SHA, allowlisted artifact path and current complete legacy/sharded artifact digest before claim."
+    "scheduler_enforcement": "The Watchdog supplies a successful workflow_run event proof. The scheduler validates producer identity, exact workflow name, numeric workflow run ID, full producer commit SHA, allowlisted artifact path and current complete legacy/sharded artifact digest before claim. This check is performed by scheduler.build_execution_plan before the task becomes eligible for claim."
   },
   "permission_boundary": {
     "filesystem": "Write only the three declared logical output resources and their document-store temporary/manifest/shard children. Publish only persistent assessment history and report; runtime fingerprint data remains runner-local.",

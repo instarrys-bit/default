@@ -333,7 +333,7 @@ class ProductionIntentTests(unittest.TestCase):
                 path = runner / "sources" / "request_domain_observations.json"
                 payload = json.loads(path.read_text(encoding="utf-8"))
                 merged = merge_request_observations(domains, payload, run_id, now="2026-11-04T00:00:00Z")
-                path.write_text(json.dumps(merged, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+                path.write_text(json.dumps(merged, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
                 git(runner, "add", "sources/request_domain_observations.json")
                 git(runner, "commit", "-m", "intake " + run_id)
 
@@ -350,7 +350,7 @@ class ProductionIntentTests(unittest.TestCase):
             merged_b = merge_request_observations(
                 batches[runner_b][0], latest, batches[runner_b][1], now="2026-11-04T00:00:01Z"
             )
-            path_b.write_text(json.dumps(merged_b, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+            path_b.write_text(json.dumps(merged_b, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
             git(runner_b, "add", "sources/request_domain_observations.json")
             git(runner_b, "commit", "-m", "retry intake run-b against latest main")
             git(runner_b, "push", "origin", "HEAD:main")

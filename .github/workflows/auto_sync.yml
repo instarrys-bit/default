@@ -788,9 +788,6 @@ jobs:
     name: Persist failed-run cursor under Watchdog resource lease
     needs: audit
     if: ${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled') }}
-    concurrency:
-      group: shadowrocket-main-writer
-      cancel-in-progress: false
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:

@@ -38,12 +38,13 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn("group: shadowrocket-main-writer", auto_sync)
-        # Intake is a hostname-ledger writer. It uses a per-run slot plus
-        # non-force rebase retries so a pending user submission is not dropped.
+        # Intake uses a per-run slot and replays the same batch from latest main.
         self.assertIn("group: shadowrocket-request-intake-", intake)
         self.assertIn("github.run_id", intake)
         self.assertIn("for attempt in 1 2 3; do", intake)
-        self.assertIn("git rebase origin/main", intake)
+        self.assertIn("git reset --hard origin/main", intake)
+        self.assertIn("--merge-observations", intake)
+        self.assertNotIn("git rebase origin/main", intake)
         manifest_writer = watchdog.split("  manifest-integrity:", 1)[1]
         self.assertIn("group: shadowrocket-main-writer", manifest_writer)
         self.assertNotIn("github-only-domain-intake", intake)

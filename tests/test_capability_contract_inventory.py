@@ -348,7 +348,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(entries["script_apply_safe_repair"]["publish_resources"], [])
         self.assertTrue(entries["script_diagnose_workflow_failure"]["ephemeral_unpublished_resources"])
         self.assertTrue(entries["script_incident_state"]["ephemeral_unpublished_resources"])
-        self.assertIn("$RUNNER_TEMP/review_cursor.json", entries["script_persist_review_cursor"]["ephemeral_unpublished_resources"])
+        self.assertEqual(entries["script_persist_review_cursor"]["ephemeral_unpublished_resources"], [])
         self.assertEqual(entries["script_build_dashboard_snapshot"]["writes"], ["dashboard/data.json"])
         self.assertEqual(entries["script_append_step_summary"]["writes"], ["$GITHUB_STEP_SUMMARY"])
         self.assertTrue(all("modules/uu.conf" not in item["writes"] for item in entries.values()))
@@ -398,8 +398,8 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         entries = {item["program_id"]: item for item in writes["confirmed_write_sets"]}
         self.assertIn("<caller-supplied --out path>", entries["script_incident_state"]["writes"])
         self.assertIn("/tmp/incident-state-body.md", entries["script_incident_state"]["ephemeral_unpublished_resources"])
-        self.assertIn("<caller-supplied --destination path>", entries["script_persist_review_cursor"]["writes"])
-        self.assertEqual(entries["script_persist_review_cursor"]["publish_resources"], [])
+        self.assertEqual(entries["script_persist_review_cursor"]["writes"], ["sources/review_cursor.json"])
+        self.assertEqual(entries["script_persist_review_cursor"]["publish_resources"], ["sources/review_cursor.json"])
         self.assertIn("task-input.json", entries["script_task_scheduler"]["ephemeral_unpublished_resources"])
         self.assertEqual(entries["script_task_scheduler"]["publish_resources"], [])
 
