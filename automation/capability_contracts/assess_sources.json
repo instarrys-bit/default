@@ -138,7 +138,7 @@
       "Temporary staging directories and temporary files may be created and removed."
     ],
     "protected_paths": {
-      "shadowrocket/ss.conf": "not read or written by this entrypoint",
+      "modules/uu.conf": "not read or written by this entrypoint",
       "sources/domain_sources.json": "not written; assessment does not activate sources"
     },
     "publication_policy": {
@@ -148,7 +148,7 @@
       ],
       "excluded_resources": [
         "data/source_assessments_runtime.json",
-        "shadowrocket/ss.conf",
+        "modules/uu.conf",
         "sources/domain_sources.json"
       ],
       "method": "After independent artifact verification, scheduler commits only allowlisted persistent history/report paths and their manifest/shard children; it fetches and rebases onto latest main, checks live leases and protected/read-only digests, then performs a non-force push and confirms the remote main SHA."
@@ -216,7 +216,7 @@
     "filesystem": "Write only the three declared logical output resources and their document-store temporary/manifest/shard children. Publish only persistent assessment history and report; runtime fingerprint data remains runner-local.",
     "network": "HTTPS raw.githubusercontent.com only, repository-bound URL and same-host redirect checks.",
     "github_api": "Read-only GitHub Contents API access verifies live leases; scheduler uses the same scoped Actions token to publish only allowlisted persistent artifacts via a non-force Git push. The assessor performs no GitHub API writes.",
-    "protected_config": "shadowrocket/ss.conf is immutable and outside this capability's write set."
+    "protected_config": "modules/uu.conf is immutable and outside this capability's write set."
   },
   "blockers": [
     "Watchdog workflow enqueue integration is not yet installed; the adapter remains disabled until a reviewed Watchdog event path is merged.",
