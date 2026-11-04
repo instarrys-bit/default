@@ -103,7 +103,7 @@ def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
                 if any(old.get(k) != task.get(k, 50 if k == "priority" else {}) for k in fields):
                     raise ValueError("idempotency_key is already used for a different task payload")
                 if authorization:
-                    validate_manual_authorization_consumption(queue, old)
+                    validate_manual_authorization_consumption(queue, old, authorization)
                 validate_candidate(queue, registry)
                 return queue, {"created": False, "task": old}
         if authorization:
@@ -163,8 +163,8 @@ def claim_remote(worker_id: str, store: GitHubContentsQueueStore,
                 continue
             if datetime.fromisoformat(task["not_before"].replace("Z", "+00:00")) > now:
                 continue
-            validate_manual_authorization(task, manual_authorization_context_from_environment())
-            validate_manual_authorization_consumption(queue, task)
+            authorization = validate_manual_authorization(task, manual_authorization_context_from_environment())
+            validate_manual_authorization_consumption(queue, task, authorization)
             policy = authorize(task, by_id)
             eligible.append((task, policy))
         if not eligible:
@@ -230,8 +230,8 @@ def complete_remote(task_id: str, worker_id: str, lease_token: str, *,
             raise ValueError("lease owner or token mismatch")
         if datetime.fromisoformat(lease["expires_at"].replace("Z", "+00:00")) <= now:
             raise ValueError("lease has expired; recover the task before completing it")
-        validate_manual_authorization(task, manual_authorization_context_from_environment())
-        validate_manual_authorization_consumption(queue, task)
+        authorization = validate_manual_authorization(task, manual_authorization_context_from_environment())
+        validate_manual_authorization_consumption(queue, task, authorization)
         authorize(task, by_id)
         if success and not isinstance(result, dict):
             raise ValueError("successful completion requires a result object")
