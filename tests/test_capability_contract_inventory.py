@@ -281,5 +281,30 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertIn("script_register_config_baseline", group["writers"])
         self.assertEqual(ownership["status"], "partial_static_audit")
 
+
+    def test_durable_task_queue_writers_are_classified_as_sha_cas_control_plane(self):
+        writes = load_json("automation/resource_write_sets.json")
+        entries = {item["program_id"]: item for item in writes["confirmed_write_sets"]}
+        remote = entries["script_remote_task_queue_runtime"]
+        store = entries["script_github_queue_store"]
+        self.assertEqual(remote["writes"], ["automation/task_queue.json"])
+        self.assertEqual(store["writes"], ["automation/task_queue.json"])
+        self.assertEqual(remote["control_plane_consistency"], "sha_cas")
+        self.assertIn("blind writes are prohibited", remote["write_boundary_fencing"])
+        group = next(
+            item for item in writes["confirmed_shared_write_groups"]
+            if item["resource"] == "durable task queue control-plane state"
+        )
+        self.assertEqual(group["mode"], "compare_and_swap")
+        self.assertIn("workflow_automation_watchdog", group["writers"])
+
+        ownership = load_json("automation/resource_ownership_audit.json")
+        audit_group = next(
+            item for item in ownership["resource_groups"]
+            if item["id"] == "durable_task_queue_control_plane"
+        )
+        self.assertEqual(audit_group["status"], "sha_cas_control_plane_reviewed")
+        self.assertEqual(ownership["status"], "partial_static_audit")
+
 if __name__ == "__main__":
     unittest.main()
