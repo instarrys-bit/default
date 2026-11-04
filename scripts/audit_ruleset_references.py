@@ -12,7 +12,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG = ROOT / "shadowrocket" / "uu.conf"
+CONFIG = ROOT / "modules" / "uu.conf"
 RULESETS = ROOT / "rulesets"
 MANIFEST = RULESETS / "manifest.json"
 REPORT_JSON = ROOT / "reports" / "ruleset-reference-audit.json"
