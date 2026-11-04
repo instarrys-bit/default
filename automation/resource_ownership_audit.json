@@ -304,8 +304,8 @@
       ],
       "lock_key": "git-blob-sha-cas:automation/unregistered_path_registry.json",
       "required_mode": "compare_and_swap",
-      "status": "cas_conflict_fails_closed_concurrency_unproven",
-      "note": "Watchdog reads the current Blob SHA and writes with conditional Contents API PUT. Run-ID-scoped concurrency does not serialize separate Watchdog runs; conflict fails closed but there is no bounded reread/merge/retry proof."
+      "status": "bounded_cas_retry_implemented_concurrent_integration_unproven",
+      "note": "Watchdog now re-reads the current Blob SHA and re-merges the same run-scoped paths on each of up to three conditional Contents API PUT attempts. observed_run_ids makes retries idempotent when another run updates the path between attempts. Conflicts after the third attempt fail closed. Distinct runs remain concurrent; parallel-run integration/no-lost-update proof is outstanding."
     },
     {
       "id": "request_intake_observations",
