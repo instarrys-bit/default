@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Register ss.conf changes only when the repository owner pushed them to the protected branch."""
+"""Register uu.conf changes only when the repository owner pushed them to the protected branch."""
 from __future__ import annotations
 
 if __import__("os").environ.get("AUTOMATION_WRITE_GUARD") == "1":
@@ -17,7 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICY = ROOT / "sources" / "policy.json"
-CONFIG = ROOT / "shadowrocket" / "ss.conf"
+CONFIG = ROOT / "modules" / "uu.conf"
 
 
 def git_blob_sha(data: bytes) -> str:
@@ -37,7 +37,7 @@ def owner_approved_push_changed_config() -> bool:
         ["git", "diff", "--name-only", before, after],
         cwd=ROOT, check=True, capture_output=True, text=True,
     )
-    return "shadowrocket/ss.conf" in result.stdout.splitlines()
+    return "modules/uu.conf" in result.stdout.splitlines()
 
 
 def owner_approved_config_history(guard: dict) -> list[str]:
@@ -98,9 +98,9 @@ def main() -> int:
     if not direct_push_approval and not recovered_commits:
         if changed:
             raise ValueError(
-                "ss.conf differs from the approved baseline, but no current or recoverable owner-approved config change was verified; refusing automatic approval."
+                "uu.conf differs from the approved baseline, but no current or recoverable owner-approved config change was verified; refusing automatic approval."
             )
-        print(json.dumps({"registered": False, "reason": "no owner-approved ss.conf change", "blob_sha": actual}))
+        print(json.dumps({"registered": False, "reason": "no owner-approved uu.conf change", "blob_sha": actual}))
         return 0
 
     if not changed:
@@ -115,7 +115,7 @@ def main() -> int:
         "reason": (
             "Register the exact config version from an owner-authored push."
             if direct_push_approval else
-            "Recover an interrupted registration after verifying every intervening ss.conf-changing commit is associated with the repository owner on GitHub. Automation does not edit ss.conf."
+            "Recover an interrupted registration after verifying every intervening uu.conf-changing commit is associated with the repository owner on GitHub. Automation does not edit uu.conf."
         ),
         "approval_mode": approval_mode,
         "config_change_commits": recovered_commits,
