@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from production_intent import classify_paths, compute_fingerprint, compute_output_fingerprint, decide, load_manifest
+from production_intent import classify_paths, compute_fingerprint, compute_output_fingerprint, decide, load_manifest, register_unclassified_paths
 
 
 class ProductionIntentTests(unittest.TestCase):
@@ -217,6 +217,45 @@ class ProductionIntentTests(unittest.TestCase):
         policy["dns_invariants"]["direct"] = "resolver-b"
         policy_path.write_text(json.dumps(policy), encoding="utf-8")
         self.assertNotEqual(compute_fingerprint(self.root, self.manifest), baseline)
+
+
+    def test_watchdog_registry_registration_is_idempotent_across_interleaved_cas_retries(self):
+        ledger = {"schema_version": 1, "entries": []}
+        first = register_unclassified_paths(
+            ["new/path.py"], ledger, "push", "sha-a", "run-a", "https://example/run-a",
+            now="2026-11-04T00:00:00Z",
+        )
+        self.assertEqual(first["entries"][0]["seen_count"], 1)
+
+        second = register_unclassified_paths(
+            ["new/path.py"], first, "push", "sha-b", "run-b", "https://example/run-b",
+            now="2026-11-04T00:00:01Z",
+        )
+        self.assertEqual(second["entries"][0]["seen_count"], 2)
+
+        # Simulate run A losing its first CAS update, then retrying after run B
+        # has successfully published. The replay must not count run A twice.
+        replay = register_unclassified_paths(
+            ["new/path.py"], second, "push", "sha-a", "run-a", "https://example/run-a",
+            now="2026-11-04T00:00:02Z",
+        )
+        entry = replay["entries"][0]
+        self.assertEqual(entry["seen_count"], 2)
+        self.assertEqual(entry["observed_run_ids"], ["run-a", "run-b"])
+        self.assertEqual(entry["last_seen_run_id"], "run-a")
+
+    def test_watchdog_registry_registration_preserves_concurrent_distinct_paths(self):
+        ledger = {"schema_version": 1, "entries": []}
+        left = register_unclassified_paths(
+            ["alpha/path.py"], ledger, "push", "sha-a", "run-a", "https://example/run-a",
+            now="2026-11-04T00:00:00Z",
+        )
+        merged = register_unclassified_paths(
+            ["beta/path.py"], left, "push", "sha-b", "run-b", "https://example/run-b",
+            now="2026-11-04T00:00:01Z",
+        )
+        self.assertEqual([item["path"] for item in merged["entries"]], ["alpha/path.py", "beta/path.py"])
+        self.assertEqual([item["seen_count"] for item in merged["entries"]], [1, 1])
 
 if __name__ == "__main__":
     unittest.main()
