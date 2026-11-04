@@ -221,6 +221,8 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
         )
         task = self.store.document["tasks"][0]
         task["status"] = "VERIFYING"
+        # complete_remote() clears the worker lease before child workflow verification.
+        task["lease"] = None
         task["target_program_id"] = "workflow_auto_sync"
         task["requester_program_id"] = "workflow_automation_watchdog"
         task["attempts"] = 1
@@ -259,6 +261,11 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
             with patch.dict("os.environ", env, clear=False):
                 with patch.object(resource_lease_runtime, "GitHubContentsQueueStore", return_value=live):
                     self.assertTrue(assert_resource_lease_from_environment("reports/project-status.json"))
+                    record = live.document["resource_leases"]["logical/production-pipeline"]
+                    record["task_lease_token"] = "stale-token"
+                    with self.assertRaisesRegex(ValueError, "no matching active resource lease"):
+                        assert_resource_lease_from_environment("reports/project-status.json")
+                    record["task_lease_token"] = "task-token-a"
                     live.document["tasks"][0]["dispatch_intent"]["ref"] = "feature"
                     with self.assertRaisesRegex(ValueError, "exact Watchdog production dispatch"):
                         assert_resource_lease_from_environment("reports/project-status.json")
