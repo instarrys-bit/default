@@ -18,80 +18,101 @@
     },
     {
       "path": "automation/assessment_canary_request.json",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-04T00:19:07.637195Z",
       "last_seen_at": "2026-11-04T00:27:44.968689Z",
       "seen_count": 3,
       "last_seen_event": "push",
       "last_seen_revision": "ed7d8af9bb4314eeed6dd6765f06c14ac55a924a",
       "last_seen_run_id": "41746911914",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41746911914"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41746911914",
+      "classified_at": "2026-11-04T00:45:00Z",
+      "classification_reason": "One-shot bounded assessment Canary request; consumed during the successful Canary run and absent from current main. Historical control metadata only, not a policy input.",
+      "classification_basis": "Reviewed the current file contents and its callers. This path controls orchestration, capability contracts, release/resource governance, or task verification; it does not supply DIRECT/PROXY/REJECT policy inputs. Explicitly excluded from production-demand classification, while production_input_paths remains authoritative for actual policy inputs."
     },
     {
       "path": "automation/capability_contract_inventory.json",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-03T18:58:58.359070Z",
       "last_seen_at": "2026-11-04T00:30:42.349242Z",
       "seen_count": 11,
       "last_seen_event": "schedule",
       "last_seen_revision": "1e0d8c94b3d7f912bceac96127280d5d305498b8",
       "last_seen_run_id": "41747283045",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41747283045"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41747283045",
+      "classified_at": "2026-11-04T00:45:00Z",
+      "classification_reason": "Generated governance inventory describing capability contract completeness and dispatch readiness; does not define DIRECT/PROXY/REJECT policy.",
+      "classification_basis": "Reviewed the current file contents and its callers. This path controls orchestration, capability contracts, release/resource governance, or task verification; it does not supply DIRECT/PROXY/REJECT policy inputs. Explicitly excluded from production-demand classification, while production_input_paths remains authoritative for actual policy inputs."
     },
     {
       "path": "automation/capability_contracts/assess_sources.json",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-03T19:06:35.005041Z",
       "last_seen_at": "2026-11-04T00:30:42.349242Z",
       "seen_count": 10,
       "last_seen_event": "schedule",
       "last_seen_revision": "1e0d8c94b3d7f912bceac96127280d5d305498b8",
       "last_seen_run_id": "41747283045",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41747283045"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41747283045",
+      "classified_at": "2026-11-04T00:45:00Z",
+      "classification_reason": "Execution contract for the bounded source-assessment capability; defines task I/O, resource boundaries and verification, not domain routing policy.",
+      "classification_basis": "Reviewed the current file contents and its callers. This path controls orchestration, capability contracts, release/resource governance, or task verification; it does not supply DIRECT/PROXY/REJECT policy inputs. Explicitly excluded from production-demand classification, while production_input_paths remains authoritative for actual policy inputs."
     },
     {
       "path": "automation/production_workflow_map.json",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-03T19:06:35.005041Z",
       "last_seen_at": "2026-11-04T00:30:42.349242Z",
       "seen_count": 10,
       "last_seen_event": "schedule",
       "last_seen_revision": "1e0d8c94b3d7f912bceac96127280d5d305498b8",
       "last_seen_run_id": "41747283045",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41747283045"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41747283045",
+      "classified_at": "2026-11-04T00:45:00Z",
+      "classification_reason": "Static mapping of production workflow steps and program invocations; orchestration metadata, not a policy input.",
+      "classification_basis": "Reviewed the current file contents and its callers. This path controls orchestration, capability contracts, release/resource governance, or task verification; it does not supply DIRECT/PROXY/REJECT policy inputs. Explicitly excluded from production-demand classification, while production_input_paths remains authoritative for actual policy inputs."
     },
     {
       "path": "automation/release_manifest.json",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-03T18:58:58.359070Z",
       "last_seen_at": "2026-11-04T00:30:42.349242Z",
       "seen_count": 11,
       "last_seen_event": "schedule",
       "last_seen_revision": "1e0d8c94b3d7f912bceac96127280d5d305498b8",
       "last_seen_run_id": "41747283045",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41747283045"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41747283045",
+      "classified_at": "2026-11-04T00:45:00Z",
+      "classification_reason": "Version and compatibility pins for automation components; release governance metadata, not a policy input.",
+      "classification_basis": "Reviewed the current file contents and its callers. This path controls orchestration, capability contracts, release/resource governance, or task verification; it does not supply DIRECT/PROXY/REJECT policy inputs. Explicitly excluded from production-demand classification, while production_input_paths remains authoritative for actual policy inputs."
     },
     {
       "path": "automation/resource_ownership_audit.json",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-03T18:58:58.359070Z",
       "last_seen_at": "2026-11-04T00:30:42.349242Z",
       "seen_count": 11,
       "last_seen_event": "schedule",
       "last_seen_revision": "1e0d8c94b3d7f912bceac96127280d5d305498b8",
       "last_seen_run_id": "41747283045",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41747283045"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41747283045",
+      "classified_at": "2026-11-04T00:45:00Z",
+      "classification_reason": "Static audit of resource ownership and write contention; execution safety metadata, not a policy input.",
+      "classification_basis": "Reviewed the current file contents and its callers. This path controls orchestration, capability contracts, release/resource governance, or task verification; it does not supply DIRECT/PROXY/REJECT policy inputs. Explicitly excluded from production-demand classification, while production_input_paths remains authoritative for actual policy inputs."
     },
     {
       "path": "automation/resource_write_sets.json",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-03T19:06:35.005041Z",
       "last_seen_at": "2026-11-04T00:30:42.349242Z",
       "seen_count": 10,
       "last_seen_event": "schedule",
       "last_seen_revision": "1e0d8c94b3d7f912bceac96127280d5d305498b8",
       "last_seen_run_id": "41747283045",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41747283045"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41747283045",
+      "classified_at": "2026-11-04T00:45:00Z",
+      "classification_reason": "Static inventory of program write sets and resource locks; execution safety metadata, not a policy input.",
+      "classification_basis": "Reviewed the current file contents and its callers. This path controls orchestration, capability contracts, release/resource governance, or task verification; it does not supply DIRECT/PROXY/REJECT policy inputs. Explicitly excluded from production-demand classification, while production_input_paths remains authoritative for actual policy inputs."
     },
     {
       "path": "dashboard/README.md",
@@ -137,36 +158,45 @@
     },
     {
       "path": "scripts/resource_lease_runtime.py",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-03T19:06:35.005041Z",
       "last_seen_at": "2026-11-04T00:30:42.349242Z",
       "seen_count": 10,
       "last_seen_event": "schedule",
       "last_seen_revision": "1e0d8c94b3d7f912bceac96127280d5d305498b8",
       "last_seen_run_id": "41747283045",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41747283045"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41747283045",
+      "classified_at": "2026-11-04T00:45:00Z",
+      "classification_reason": "Runtime enforcement for task/resource leases and fencing; execution-control code, not a domain-policy rule source.",
+      "classification_basis": "Reviewed the current file contents and its callers. This path controls orchestration, capability contracts, release/resource governance, or task verification; it does not supply DIRECT/PROXY/REJECT policy inputs. Explicitly excluded from production-demand classification, while production_input_paths remains authoritative for actual policy inputs."
     },
     {
       "path": "scripts/validate_release_manifest.py",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-03T18:58:58.359070Z",
       "last_seen_at": "2026-11-04T00:30:42.349242Z",
       "seen_count": 11,
       "last_seen_event": "schedule",
       "last_seen_revision": "1e0d8c94b3d7f912bceac96127280d5d305498b8",
       "last_seen_run_id": "41747283045",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41747283045"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41747283045",
+      "classified_at": "2026-11-04T00:45:00Z",
+      "classification_reason": "Validator for automation release pins and compatibility metadata; validation code, not a domain-policy rule source.",
+      "classification_basis": "Reviewed the current file contents and its callers. This path controls orchestration, capability contracts, release/resource governance, or task verification; it does not supply DIRECT/PROXY/REJECT policy inputs. Explicitly excluded from production-demand classification, while production_input_paths remains authoritative for actual policy inputs."
     },
     {
       "path": "scripts/verify_assess_sources_artifacts.py",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-03T23:58:20.171594Z",
       "last_seen_at": "2026-11-04T00:30:42.349242Z",
       "seen_count": 6,
       "last_seen_event": "schedule",
       "last_seen_revision": "1e0d8c94b3d7f912bceac96127280d5d305498b8",
       "last_seen_run_id": "41747283045",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41747283045"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41747283045",
+      "classified_at": "2026-11-04T00:45:00Z",
+      "classification_reason": "Independent verifier for source-assessment task artifacts; validation code, not a domain-policy rule source.",
+      "classification_basis": "Reviewed the current file contents and its callers. This path controls orchestration, capability contracts, release/resource governance, or task verification; it does not supply DIRECT/PROXY/REJECT policy inputs. Explicitly excluded from production-demand classification, while production_input_paths remains authoritative for actual policy inputs."
     }
   ],
   "updated_at": "2026-11-04T00:30:42.349242Z"

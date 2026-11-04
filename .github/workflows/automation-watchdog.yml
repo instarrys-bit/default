@@ -358,6 +358,26 @@ jobs:
             fi
           fi
 
+          # Control-plane governance files are reviewed and classified in the
+          # Watchdog inbox. They must not create policy-production demand by
+          # themselves. An exact path explicitly listed as a production input
+          # always wins over this classification.
+          paths_json="$(jq -c \
+            --slurpfile ledger automation/unregistered_path_registry.json \
+            --slurpfile manifest automation/production_inputs.json \
+            'map(select(. as $path |
+              (($manifest[0].production_input_paths | index($path)) != null) or
+              ([
+                $ledger[0].entries[]
+                | select(
+                    .status == "CLASSIFIED_CONTROL_PLANE" or
+                    .status == "CLASSIFIED_MONITORING" or
+                    .status == "CLASSIFIED_DOCUMENTATION"
+                  )
+                | .path
+              ] | index($path) == null)
+            ))' <<< "$paths_json")"
+
           active_fingerprints="$(jq -c '[.tasks[] | select(.status == "QUEUED" or .status == "CLAIMED" or .status == "VERIFYING") | .input.production_fingerprint // empty] | map(select(type == "string")) | unique' automation/task_queue.json)"
           successful_fingerprints="$(jq -c '[.tasks[] | select(.status == "SUCCEEDED" and .verification.status == "passed") | .input.production_fingerprint // empty] | map(select(type == "string")) | unique' automation/task_queue.json)"
 
