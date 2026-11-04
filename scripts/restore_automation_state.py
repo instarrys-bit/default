@@ -132,7 +132,7 @@ def restore_publish_outputs(archive: Path, root: Path) -> dict:
             if path.is_absolute() or not path.parts or ".." in path.parts:
                 raise ValueError(f"unsafe publish archive path: {raw_name}")
             name = path.as_posix()
-            if name == "shadowrocket/ss.conf":
+            if name == "modules/uu.conf":
                 raise ValueError("publish artifact contains owner-managed read-only config")
             if member.islnk():
                 if member.linkname == raw_name and name in seen:
