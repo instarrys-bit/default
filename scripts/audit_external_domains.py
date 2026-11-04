@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only scope-coverage audit of a pinned external domain list against ss.conf."""
+"""Read-only scope-coverage audit of a pinned external domain list against uu.conf."""
 from __future__ import annotations
 
 if __import__("os").environ.get("AUTOMATION_WRITE_GUARD") == "1":
@@ -17,7 +17,7 @@ from domain_rule_engine import RuleIndex, load_domain_rules, ancestors
 from audit_ruleset_config_overlap import scope_covers_candidate, scope_intersects
 
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG = ROOT / "shadowrocket" / "ss.conf"
+CONFIG = ROOT / "shadowrocket" / "uu.conf"
 SOURCE_URL = "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list"
 MIN_EXPECTED_ENTRIES = 50000
 MAX_BYTES = 30_000_000
@@ -144,7 +144,7 @@ def main() -> int:
         "- A child exact or child-suffix exception does not fully cover a broader source suffix candidate.",
         "- Mixed-policy coverage is reported without selecting a winner.",
         "- Conditional rules are counted but not evaluated here; the deterministic reviewer applies its separate conservative REVIEW hold.",
-        "- No external policy is inferred, and no candidate is imported into ss.conf.",
+        "- No external policy is inferred, and no candidate is imported into uu.conf.",
         "- No existing rule, DNS setting, node, rule order, or subscription is modified.",
         "- The source hash is recorded each run; additions and removals are compared against the rolling snapshot by the collector. Format or size anomalies fail closed.", "",
     ]
