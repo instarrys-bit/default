@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PROTECTED_PATHS = {"shadowrocket/ss.conf", "modules/uu.conf"}
+PROTECTED_PATHS = {"modules/uu.conf"}
 _INSTALLED = False
 
 
