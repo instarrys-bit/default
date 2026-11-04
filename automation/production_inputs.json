@@ -43,7 +43,8 @@
     "scripts/review_cursor.py",
     "scripts/persist_review_cursor.py",
     "scripts/json_document_store.py",
-    "scripts/verify_published_rulesets.py"
+    "scripts/verify_published_rulesets.py",
+    "scripts/fenced_file_writer.py"
   ],
   "non_production_path_patterns": [
     "tests/**",
