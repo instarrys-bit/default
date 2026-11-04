@@ -129,6 +129,10 @@ class AssessSourcesArtifactVerifierTests(unittest.TestCase):
                 object(), {}, {}, worker_id="canary-worker", task_id=""
             )
 
+    def test_scheduler_task_id_filter_rejects_whitespace(self):
+        with self.assertRaises(ValueError):
+            task_scheduler.filter_eligible_task_ids({"task_assessment"}, "   ")
+
     def test_artifact_publication_allowlist_excludes_ephemeral_and_protected_files(self):
         persistent = "sources/source_assessments.json"
         self.assertTrue(task_scheduler.publishable_resource_path(persistent, [persistent]))
