@@ -31,7 +31,7 @@ A domain with current evidence under multiple policies remains isolated. Do not 
 
 ### Main-configuration baseline mismatch
 
-Treat an unexplained change to `shadowrocket/ss.conf` as an integrity failure. Do not overwrite the file or silently update the baseline. Confirm owner approval and use the designated baseline process.
+Treat an unexplained change to `modules/uu.conf` as an integrity failure. Do not overwrite the file or silently update the baseline. Confirm owner approval and use the designated baseline process.
 
 ### Capacity reached
 
@@ -42,6 +42,6 @@ A full ruleset pauses publication, not candidate collection or review. Inspect t
 Static checks cannot prove that Shadowrocket, DNS paths, apps, or system services behave as expected. Reproduce on the target device and record the observation separately from static validation.
 ## Configuration-conflict recovery
 
-Configuration-conflict removals are tracked separately from lifecycle deletions. Review `rulesets/config_conflict_archive.json` and the recovery IDs in `reports/ruleset-config-conflict-sync.md`. If a removal is confirmed to be erroneous, provide its ID through `restore_conflict_ids` in the manual GitHub Actions workflow. The restore process rechecks the current `ss.conf`, skip-proxy entries, published rules, and pending queue for cross-policy overlap; unsafe restorations are rejected.
+Configuration-conflict removals are tracked separately from lifecycle deletions. Review `rulesets/config_conflict_archive.json` and the recovery IDs in `reports/ruleset-config-conflict-sync.md`. If a removal is confirmed to be erroneous, provide its ID through `restore_conflict_ids` in the manual GitHub Actions workflow. The restore process rechecks the current `uu.conf`, skip-proxy entries, published rules, and pending queue for cross-policy overlap; unsafe restorations are rejected.
 
 Lifecycle deletion recovery uses `restore_ids` instead. Never substitute one recovery ID type for the other.
