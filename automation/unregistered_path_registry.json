@@ -173,6 +173,20 @@
       "classification_basis": "Historical, non-authoritative config candidate only. The production baseline is modules/uu.conf; these candidate paths are not production inputs and are not consumed by current publication workflows."
     },
     {
+      "path": "dashboard/README.md",
+      "status": "CLASSIFIED_DOCUMENTATION",
+      "first_seen_at": "2026-11-03T17:12:05.157284Z",
+      "last_seen_at": "2026-11-03T17:41:44.084601Z",
+      "seen_count": 2,
+      "last_seen_event": "push",
+      "last_seen_revision": "7c376836232c1fda8ee40d91bab0e7d7255f501f",
+      "last_seen_run_id": "41686591077",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41686591077",
+      "classified_at": "2026-11-04T18:00:00+08:00",
+      "classification_reason": "Documentation for the operations dashboard.",
+      "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
+    },
+    {
       "path": "dashboard/index.html",
       "status": "CLASSIFIED_MONITORING",
       "first_seen_at": "2026-11-03T17:12:05.157284Z",
@@ -187,18 +201,102 @@
       "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
     },
     {
-      "path": "dashboard/README.md",
-      "status": "CLASSIFIED_DOCUMENTATION",
-      "first_seen_at": "2026-11-03T17:12:05.157284Z",
-      "last_seen_at": "2026-11-03T17:41:44.084601Z",
-      "seen_count": 2,
+      "path": "modules/AdBlock.sgmodule",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-04T21:51:30.606119Z",
+      "last_seen_at": "2026-11-04T21:51:30.606119Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "41919876229"
+      ],
       "last_seen_event": "push",
-      "last_seen_revision": "7c376836232c1fda8ee40d91bab0e7d7255f501f",
-      "last_seen_run_id": "41686591077",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41686591077",
-      "classified_at": "2026-11-04T18:00:00+08:00",
-      "classification_reason": "Documentation for the operations dashboard.",
-      "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
+      "last_seen_revision": "c798fe06a6cae1f542a7bdd4435123f85df71a5b",
+      "last_seen_run_id": "41919876229",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41919876229"
+    },
+    {
+      "path": "modules/adblock/dev/Clean_Pro.js",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-04T21:51:30.606119Z",
+      "last_seen_at": "2026-11-04T21:51:30.606119Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "41919876229"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "c798fe06a6cae1f542a7bdd4435123f85df71a5b",
+      "last_seen_run_id": "41919876229",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41919876229"
+    },
+    {
+      "path": "modules/adblock/scripts/AdBlock_Original.sgmodule",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-04T21:51:30.606119Z",
+      "last_seen_at": "2026-11-04T21:51:30.606119Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "41919876229"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "c798fe06a6cae1f542a7bdd4435123f85df71a5b",
+      "last_seen_run_id": "41919876229",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41919876229"
+    },
+    {
+      "path": "modules/adblock/scripts/Clean_Pro.js",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-04T21:51:30.606119Z",
+      "last_seen_at": "2026-11-04T21:51:30.606119Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "41919876229"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "c798fe06a6cae1f542a7bdd4435123f85df71a5b",
+      "last_seen_run_id": "41919876229",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41919876229"
+    },
+    {
+      "path": "modules/adblock/scripts/Clean_Pro_Request.js",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-04T21:51:30.606119Z",
+      "last_seen_at": "2026-11-04T21:51:30.606119Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "41919876229"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "c798fe06a6cae1f542a7bdd4435123f85df71a5b",
+      "last_seen_run_id": "41919876229",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41919876229"
+    },
+    {
+      "path": "modules/adblock/scripts/youtube_protobuf_response_filter.js",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-04T21:51:30.606119Z",
+      "last_seen_at": "2026-11-04T21:51:30.606119Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "41919876229"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "c798fe06a6cae1f542a7bdd4435123f85df71a5b",
+      "last_seen_run_id": "41919876229",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41919876229"
+    },
+    {
+      "path": "modules/temp-test/Sr_Youtube_Clean.js",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-04T21:51:30.606119Z",
+      "last_seen_at": "2026-11-04T21:51:30.606119Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "41919876229"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "c798fe06a6cae1f542a7bdd4435123f85df71a5b",
+      "last_seen_run_id": "41919876229",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41919876229"
     },
     {
       "path": "scripts/build_dashboard_snapshot.py",
@@ -293,5 +391,5 @@
       "classification_basis": "Reviewed as a recovery-evidence verifier only. It validates completed workflow/job/verification-step evidence and emits a verification result; it does not create or publish routing rules."
     }
   ],
-  "updated_at": "2026-11-04T20:05:17.100115Z"
+  "updated_at": "2026-11-04T21:51:30.606119Z"
 }
