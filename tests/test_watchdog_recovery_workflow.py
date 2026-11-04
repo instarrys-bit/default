@@ -215,7 +215,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertEqual(queue_job.count("\n    env:\n"), 1)
         self.assertIn('      PYTHONDONTWRITEBYTECODE: "1"', queue_job)
         stale_job = workflow.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
-        self.assertIn('CURRENT_MAIN="$current_main" RUNS_JSON="$runs" python3 - <<\'PY\'', stale_job)
+        self.assertIn("fromdateiso8601", stale_job)
+        self.assertIn("> 21600", stale_job)
         self.assertNotIn('CURRENT_MAIN="$current_main" RUNS_JSON=', stale_job)
         self.assertNotIn("python3 -c '", stale_job)
         self.assertNotIn('last_success="$(jq -r', workflow)
