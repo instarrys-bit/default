@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "940b24c4a6a08db7be4c71779c88c217992cde00"
+      "git_blob_sha": "f6c572a5ea47ea06944db6ff1b693c7c547384f7"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -55,10 +55,6 @@
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
       "git_blob_sha": "8279a833c480f476687c25ba34349fcc439bd78d"
-    },
-    "watchdog_stale_run_candidates": {
-      "path": "scripts/watchdog_stale_run_candidates.py",
-      "git_blob_sha": "a9a93032ae9545632ceee0c60bf65997e6a2d795"
     }
   },
   "compatibility": {
