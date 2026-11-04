@@ -36,7 +36,7 @@
       "verification_status": "declared_in_ruleset_manifest_only"
     },
     "config_baseline": {
-      "path": "shadowrocket/ss.conf",
+      "path": "modules/uu.conf",
       "git_blob_sha": "ef6b9d5e5db7f1355d06a0a834ce4f32b26f5677",
       "access": "read_only"
     }
