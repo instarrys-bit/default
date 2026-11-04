@@ -1422,8 +1422,8 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
-    "release_manifest_blob_sha": "8f6d2b43f34ee801b45784e355b4d60d03ecb710",
-    "program_registry_blob_sha": "d4cf970870f4b51d40c1f70c7d4347a035d4b960",
+    "release_manifest_blob_sha": "3752b5194c818f65d20fae4446974500dce74009",
+    "program_registry_blob_sha": "ab5f92f25e97d62b9fd35d4097109f9fad892c6b",
     "execution_adapters_blob_sha": "97d18a09763f851362e0bd5400dad856ae1f448b",
     "added_after_release_baseline": true,
     "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 53 Python components are now partitioned into 36 direct/helper writer entries, 16 reviewed non-writers and one external GitHub Actions dispatch side-effect adapter.",
