@@ -25,12 +25,12 @@ class FencedFileWriterTests(unittest.TestCase):
         with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "0"}, clear=False):
             fenced_file_writer.authorize_write_path(ROOT / "shadowrocket" / "ss.conf")
 
-    def test_repo_local_write_requires_live_lease_in_production_mode(self):
-        target = ROOT / "sources" / "review_cursor.json"
+    def test_protected_ruleset_write_requires_live_lease_in_production_mode(self):
+        target = ROOT / "rulesets" / "review_cursor.json"
         with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "1"}, clear=False):
             with patch("resource_lease_runtime.assert_resource_lease_from_environment") as check:
                 fenced_file_writer.authorize_write_path(target)
-                check.assert_called_once_with("sources/review_cursor.json")
+                check.assert_called_once_with("rulesets/review_cursor.json")
 
     def test_resource_lease_guard_covers_only_config_modules_scripts_and_rulesets(self):
         protected_targets = (
@@ -73,7 +73,7 @@ class FencedFileWriterTests(unittest.TestCase):
                     check.assert_not_called()
 
     def test_local_unit_test_writes_do_not_require_a_production_lease(self):
-        target = ROOT / "sources" / "review_cursor.json"
+        target = ROOT / "reports" / "review_cursor.json"
         with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "0"}, clear=False):
             with patch("resource_lease_runtime.assert_resource_lease_from_environment") as check:
                 fenced_file_writer.authorize_write_path(target)
@@ -83,12 +83,12 @@ class FencedFileWriterTests(unittest.TestCase):
         with self.assertRaisesRegex(PermissionError, "owner-managed protected file"):
             fenced_file_writer._audit_hook("os.remove", (ROOT / "modules" / "uu.conf", -1))
 
-    def test_audit_hook_checks_repo_local_open_before_write(self):
-        target = ROOT / "sources" / "test-only.json"
+    def test_audit_hook_checks_protected_open_before_write(self):
+        target = ROOT / "modules" / "test-only.js"
         with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "1"}, clear=False):
             with patch("resource_lease_runtime.assert_resource_lease_from_environment") as check:
                 fenced_file_writer._audit_hook("open", (target, "w", os.O_WRONLY | os.O_CREAT))
-                check.assert_called_once_with("sources/test-only.json")
+                check.assert_called_once_with("modules/test-only.js")
 
     def test_fenced_task_process_denies_all_child_process_creation_events(self):
         events = (
@@ -114,7 +114,7 @@ class FencedFileWriterTests(unittest.TestCase):
     def test_runtime_trace_records_only_repository_paths_and_no_file_contents(self):
         with tempfile.TemporaryDirectory() as directory:
             trace = Path(directory) / "trace.jsonl"
-            target = ROOT / "sources" / "trace-fixture.json"
+            target = ROOT / "rulesets" / "trace-fixture.json"
             with patch.dict(os.environ, {
                 "AUTOMATION_WRITE_TRACE_PATH": str(trace),
                 "GITHUB_WORKFLOW": "test-workflow",
@@ -126,7 +126,7 @@ class FencedFileWriterTests(unittest.TestCase):
                 fenced_file_writer._record_write_trace(Path(directory) / "external.tmp", "open")
             rows = [json.loads(line) for line in trace.read_text(encoding="utf-8").splitlines()]
             self.assertEqual(len(rows), 1)
-            self.assertEqual(rows[0]["path"], "sources/trace-fixture.json")
+            self.assertEqual(rows[0]["path"], "rulesets/trace-fixture.json")
             self.assertEqual(rows[0]["operation"], "open")
             self.assertEqual(rows[0]["workflow"], "test-workflow")
             self.assertEqual(rows[0]["run_id"], "12345")
