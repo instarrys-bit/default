@@ -10,7 +10,7 @@ The system's deliverable is the published rule-set data:
 - `PROXY`
 - `REJECT`
 
-The automation does not maintain the Shadowrocket module, its supporting scripts, MITM behavior, client deployment, or the user's configuration file. It may read `shadowrocket/ss.conf` to register an owner-approved baseline and audit rule conflicts or references. It must never modify that file.
+The automation does not maintain the Shadowrocket module, its supporting scripts, MITM behavior, client deployment, or the user's configuration file. It may read `modules/uu.conf` to register an owner-approved baseline and audit rule conflicts or references. It must never modify that file.
 
 ## Architecture
 
@@ -80,7 +80,7 @@ No AI or LLM review is part of this pipeline.
 | New REJECT rules | Candidate evidence may be prepared; human approval remains mandatory |
 | Manifest, lifecycle state, provenance, reports | Maintained and independently validated |
 | Automation task queue | Maintained through CAS-backed queue operations |
-| `shadowrocket/ss.conf` | Read-only baseline and conflict/reference audit; never edited |
+| `modules/uu.conf` | Read-only baseline and conflict/reference audit; never edited |
 | Shadowrocket modules, supporting scripts, MITM, deployment | Outside this repository automation system's maintenance scope |
 
 The audit job uses read-only repository content permission. The publisher receives content write permission only for the allowlisted rule-set artifacts and related approved metadata. The publisher checks its audited base before writing and independently verifies the remote result.

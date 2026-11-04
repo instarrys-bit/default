@@ -37,4 +37,4 @@ It then fetches the run details independently and checks the same identity field
 - The Watchdog scheduler can only dispatch a workflow after its adapter and target orchestration are explicitly reviewed and enabled.
 - CI uses fake GitHub clients. It does not dispatch real workflows.
 - No workflow adapter is automatically enabled by this PR.
-- No rulesets, DNS, routing policy, or `shadowrocket/ss.conf` are modified.
+- No rulesets, DNS, routing policy, or `modules/uu.conf` are modified.

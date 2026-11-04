@@ -31,6 +31,6 @@ A successful HTTP dispatch response is not task success. The independent run ins
 - All existing workflow adapters remain disabled with empty caller allowlists.
 - The production scheduler still executes only its existing reviewed Python CLI adapter path; this PR does not dispatch workflows.
 - No workflow is automatically invoked by CI. Tests use a fake GitHub API client.
-- No rulesets, DNS, routing policy, or `shadowrocket/ss.conf` are changed.
+- No rulesets, DNS, routing policy, or `modules/uu.conf` are changed.
 
 The next integration step is to add a durable dispatch-intent transition to the queue, wire the scheduler to submit once, and extend the independent verifier to reconcile correlated run evidence without replaying a possibly accepted dispatch.
