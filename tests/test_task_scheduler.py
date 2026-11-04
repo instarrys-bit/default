@@ -174,7 +174,7 @@ class TaskSchedulerTests(unittest.TestCase):
              "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
                                "max_attempts": 1, "timeout_seconds": 480}},
         ]}
-        adapters = {"adapters": [{
+        adapters = {"schema_version": 1, "adapters": [{
             "target_program_id": "script_assess_sources", "enabled": True,
             "adapter_type": "python_cli", "interface_status": "reviewed",
             "input_contract": {"type": "object", "required": ["predecessor"], "properties": {"predecessor": {"type": "object"}}},
