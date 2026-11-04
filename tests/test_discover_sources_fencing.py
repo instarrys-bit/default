@@ -18,6 +18,7 @@ class DiscoverSourcesFencingTests(unittest.TestCase):
             output = root / "sources" / "discovered_sources.json"
             report = root / "reports" / "source-discovery.md"
             data = {"candidate_count": 0, "candidates": []}
+            report.parent.mkdir(parents=True, exist_ok=True)
             with patch.object(discover_sources, "OUTPUT", output), \
                  patch.object(discover_sources, "REPORT", report), \
                  patch.object(discover_sources, "write_document") as write_document, \
