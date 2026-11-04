@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 from github_queue_store import GitHubContentsQueueStore, QueueStoreError
-from task_queue_runtime import authorize, manual_authorization_context_from_environment, validate_manual_authorization, now_utc, stamp
+from task_queue_runtime import (\n    authorize, manual_authorization_context_from_environment, validate_manual_authorization,\n    manual_authorization_record, validate_manual_authorization_consumption, now_utc, stamp,\n)
 from task_queue import validate_task_queue
 from resource_lease_runtime import (
     acquire_resource_leases_in_queue, extend_resource_leases_for_verification,
@@ -76,7 +76,7 @@ def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
     now = now or now_utc()
     programs = registry["programs"]
     by_id = {p.get("id"): p for p in programs if isinstance(p, dict)}
-    validate_manual_authorization(task, manual_authorization_context_from_environment())
+    authorization = validate_manual_authorization(task, manual_authorization_context_from_environment())
     policy = authorize(task, by_id)
     idem = task.get("idempotency_key")
     if not isinstance(idem, str) or not 1 <= len(idem) <= 200:
@@ -99,8 +99,16 @@ def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
                 fields = ("requester_program_id", "target_program_id", "capability", "priority", "input")
                 if any(old.get(k) != task.get(k, 50 if k == "priority" else {}) for k in fields):
                     raise ValueError("idempotency_key is already used for a different task payload")
+                if authorization:
+                    validate_manual_authorization_consumption(queue, old)
                 validate_candidate(queue, registry)
                 return queue, {"created": False, "task": old}
+        if authorization:
+            ledger = queue.setdefault("manual_authorizations", {})
+            if not isinstance(ledger, dict):
+                raise ValueError("manual authorization consumption ledger must be an object")
+            if authorization["run_id"] in ledger:
+                raise ValueError("manual authorization has already been consumed by another task")
         item = {
             "task_id": task_id,
             "execution_backend": "github_contents",
@@ -116,6 +124,10 @@ def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
             "state_history": ["QUEUED"],
         }
         queue["tasks"].append(item)
+        if authorization:
+            queue["manual_authorizations"][authorization["run_id"]] = manual_authorization_record(
+                item, authorization, stamp(now)
+            )
         queue["revision"] += 1
         validate_candidate(queue, registry)
         return queue, {"created": True, "task": item}
@@ -149,6 +161,7 @@ def claim_remote(worker_id: str, store: GitHubContentsQueueStore,
             if datetime.fromisoformat(task["not_before"].replace("Z", "+00:00")) > now:
                 continue
             validate_manual_authorization(task, manual_authorization_context_from_environment())
+            validate_manual_authorization_consumption(queue, task)
             policy = authorize(task, by_id)
             eligible.append((task, policy))
         if not eligible:
@@ -214,6 +227,8 @@ def complete_remote(task_id: str, worker_id: str, lease_token: str, *,
             raise ValueError("lease owner or token mismatch")
         if datetime.fromisoformat(lease["expires_at"].replace("Z", "+00:00")) <= now:
             raise ValueError("lease has expired; recover the task before completing it")
+        validate_manual_authorization(task, manual_authorization_context_from_environment())
+        validate_manual_authorization_consumption(queue, task)
         authorize(task, by_id)
         if success and not isinstance(result, dict):
             raise ValueError("successful completion requires a result object")
