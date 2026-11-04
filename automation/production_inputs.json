@@ -86,7 +86,6 @@
     "automation/unregistered_path_registry.json",
     "automation/production_intent_ledger.json",
     "scripts/production_intent.py",
-    "modules/**",
     "sources/review_cursor.json",
     "sources/source_snapshots/**"
   ],
