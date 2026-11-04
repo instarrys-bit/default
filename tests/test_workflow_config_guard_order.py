@@ -275,6 +275,10 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("sources/policy.json", publish)
         self.assertIn("automation/release_manifest.json", publish)
         self.assertIn("automation/production_workflow_map.json", publish)
+        archive = workflow.split("          base_files=(", 1)[1].split("          )", 1)[0]
+        self.assertNotIn("sources/policy.json", archive)
+        restore = (ROOT / "scripts" / "restore_automation_state.py").read_text(encoding="utf-8")
+        self.assertNotIn('"sources/policy.json"', restore.split("PUBLISH_FILES = {", 1)[1].split("}", 1)[0])
         registrar = (ROOT / "scripts" / "register_config_baseline.py").read_text(encoding="utf-8")
         self.assertIn("build_release_pin_updates", registrar)
 
