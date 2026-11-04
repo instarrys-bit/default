@@ -1421,13 +1421,13 @@
     "The 53 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and one external workflow-dispatch side-effect adapter. Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
-    "release_manifest_blob_sha": "e1aa2200531a9acd662e4a71f2713d9821d5c6fe",
+    "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
+    "release_manifest_blob_sha": "53e52d53fa3b5a5e65fe4dceaed7002304fd708e",
     "program_registry_blob_sha": "d4cf970870f4b51d40c1f70c7d4347a035d4b960",
-    "execution_adapters_blob_sha": "b9bad9786b927b98634ec956b3eb343f6fd8d43e",
+    "execution_adapters_blob_sha": "97d18a09763f851362e0bd5400dad856ae1f448b",
     "added_after_release_baseline": true,
     "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 53 Python components are now partitioned into 36 direct/helper writer entries, 16 reviewed non-writers and one external GitHub Actions dispatch side-effect adapter.",
-    "reviewed_at": "2026-11-04",
+    "reviewed_at": "2026-11-05",
     "central_write_guard_test": "tests/test_fenced_file_writer.py::test_every_registered_python_component_installs_the_guard",
     "runtime_trace_evidence": {
       "trace_script": "scripts/fenced_file_writer.py",
