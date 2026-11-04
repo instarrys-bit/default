@@ -121,8 +121,9 @@ class AssessSourcesArtifactVerifierTests(unittest.TestCase):
 
     def test_scheduler_task_id_filter_is_exact_and_does_not_expand_eligibility(self):
         eligible = {"task_assessment", "task_production"}
-        self.assertEqual(eligible & {"task_assessment"}, {"task_assessment"})
-        self.assertFalse(eligible & {"task_unknown"})
+        self.assertEqual(task_scheduler.filter_eligible_task_ids(eligible, "task_assessment"), {"task_assessment"})
+        self.assertEqual(task_scheduler.filter_eligible_task_ids(eligible, "task_unknown"), set())
+        self.assertEqual(task_scheduler.filter_eligible_task_ids(eligible), eligible)
         with self.assertRaises(ValueError):
             task_scheduler.run_scheduler_once(
                 object(), {}, {}, worker_id="canary-worker", task_id=""
