@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 import sys
@@ -334,6 +335,73 @@ class TaskSchedulerTests(unittest.TestCase):
         plan = build_execution_plan(self.store.document, self.registry, self.adapters, self.root, self.now)
         self.assertIn("unsupported placeholder", plan["blocked"][0]["reason"])
 
+
+
+    def test_hold_preserves_expired_lease_pending_failed_and_manual_authorization_states(self):
+        self.enqueue()
+        base = self.store.document["tasks"][0]
+        expired = copy.deepcopy(base)
+        expired.update({
+            "status": "CLAIMED",
+            "attempts": 1,
+            "lease": {"owner": "stale-worker", "token": "stale-token",
+                      "expires_at": (self.now - timedelta(seconds=1)).isoformat().replace("+00:00", "Z")},
+            "state_history": ["QUEUED", "CLAIMED"],
+        })
+        pending = copy.deepcopy(base)
+        pending.update({
+            "task_id": "task_pending_dispatch",
+            "idempotency_key": "pending-dispatch",
+            "status": "VERIFYING",
+            "lease": None,
+            "dispatch": {"status": "PENDING", "run_id": "41840000001"},
+            "state_history": ["QUEUED", "CLAIMED", "VERIFYING"],
+        })
+        failed = copy.deepcopy(base)
+        failed.update({
+            "task_id": "task_failed_workflow",
+            "idempotency_key": "failed-workflow",
+            "status": "VERIFYING",
+            "lease": None,
+            "dispatch": {"status": "COMPLETED", "conclusion": "failure", "run_id": "41840000002"},
+            "state_history": ["QUEUED", "CLAIMED", "VERIFYING"],
+        })
+        manual = copy.deepcopy(base)
+        manual.update({
+            "task_id": "task_manual_request",
+            "idempotency_key": "manual-request",
+            "input": {
+                "production_decision": "USER_AUTHORIZED_MANUAL_AUDIT",
+                "authorization_requested": True,
+                "authorization_run_id": "41840000003",
+            },
+            "state_history": ["QUEUED"],
+        })
+        self.store.document["tasks"] = [expired, pending, failed, manual]
+        self.store.document["resource_leases"] = {
+            "rulesets/manifest.json": {
+                "status": "ACTIVE", "owner_task_id": expired["task_id"],
+                "owner": "stale-worker", "fencing_token": 7,
+                "expires_at": expired["lease"]["expires_at"],
+            }
+        }
+        before = json.loads(json.dumps(self.store.document))
+        writes_before = self.store.writes
+        control = self.root / "automation" / "production_control.json"
+        control.write_text(json.dumps({"schema_version": 1, "dispatch_mode": "hold"}), encoding="utf-8")
+
+        with patch("task_scheduler.recover_remote", side_effect=AssertionError("expired lease recovery must not run under HOLD")), \
+             patch("task_scheduler.verify_pending_remote", side_effect=AssertionError("pending/failed dispatch verification must not run under HOLD")), \
+             patch("task_scheduler.claim_remote", side_effect=AssertionError("manual or ordinary tasks must not be claimed under HOLD")):
+            report = run_scheduler_once(
+                self.store, self.registry, self.adapters,
+                worker_id="scheduler-hold-matrix", max_tasks=10, root=self.root, now=self.now,
+            )
+
+        self.assertEqual(report["dispatch_mode"], "hold")
+        self.assertEqual(report["processed_count"], 0)
+        self.assertEqual(self.store.writes, writes_before)
+        self.assertEqual(self.store.document, before)
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
