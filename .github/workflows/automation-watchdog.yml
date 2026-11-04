@@ -375,7 +375,6 @@ jobs:
             exit 0
           fi
 
-          last_success="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .created_at // empty' <<< "$runs")"
           last_success_sha="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .head_sha // empty' <<< "$runs")"
 
           last_success_fingerprint=""
@@ -726,6 +725,7 @@ jobs:
     env:
       GITHUB_ACTOR_ID: ${{ github.actor_id }}
       GITHUB_MANUAL_AUDIT_REQUEST: ${{ inputs.request_deterministic_audit }}
+      PYTHONDONTWRITEBYTECODE: "1"
     needs: [health-check, stale-run-watch, manifest-integrity]
     if: ${{ always() && needs.health-check.result == 'success' && ((github.event_name != 'schedule' && github.event_name != 'workflow_dispatch') || needs.stale-run-watch.result == 'success') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main') && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[assessment-canary]')) }}
     concurrency:
@@ -736,8 +736,6 @@ jobs:
       contents: write
     runs-on: ubuntu-24.04
     timeout-minutes: 8
-    env:
-      PYTHONDONTWRITEBYTECODE: "1"
     steps:
       - name: Checkout scheduler code without persisted credentials
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -823,11 +821,12 @@ jobs:
           current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"
           runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
 
-          stale_lines="$(python3 -c '
-          import json, sys
+          stale_lines="$(CURRENT_MAIN="$current_main" RUNS_JSON="$runs" python3 - <<'PY'
+          import json, os
           from datetime import datetime, timezone
-          current_main = sys.argv[1]
-          payload = json.load(sys.stdin)
+
+          current_main = os.environ["CURRENT_MAIN"]
+          payload = json.loads(os.environ["RUNS_JSON"])
           now = datetime.now(timezone.utc)
           for run in payload.get("workflow_runs", []):
               if run.get("status") == "completed":
@@ -847,7 +846,8 @@ jobs:
               started = datetime.fromisoformat(stamp.replace("Z", "+00:00"))
               if (now - started).total_seconds() > 21600:
                   print(run_id, "timeout", run.get("head_sha", ""))
-          ' "$current_main" <<< "$runs")"
+          PY
+          )"
 
           timed_out_any=0
           timed_out_run_id=""
