@@ -88,4 +88,4 @@ A successful GitHub Actions run alone is not proof that every source is healthy.
 
 ## Configuration boundary
 
-`shadowrocket/ss.conf` is an owner-controlled input to conflict and reference checks. The ruleset automation may read it, register an owner-approved baseline, and report conflicts. It must not edit it, change DNS, alter routing policy, or manage Shadowrocket modules and MITM behavior.
+`modules/uu.conf` is an owner-controlled input to conflict and reference checks. The ruleset automation may read it, register an owner-approved baseline, and report conflicts. It must not edit it, change DNS, alter routing policy, or manage Shadowrocket modules and MITM behavior.
