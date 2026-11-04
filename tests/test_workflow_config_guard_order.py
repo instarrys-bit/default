@@ -48,12 +48,15 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("group: shadowrocket-main-writer", manifest_writer)
         self.assertNotIn("github-only-domain-intake", intake)
 
-    def test_request_intake_retries_non_fast_forward_without_force_push(self):
+    def test_request_intake_replays_same_run_batch_against_latest_main_without_force_push(self):
         intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
         self.assertIn("for attempt in 1 2 3; do", intake)
         self.assertIn("git fetch origin main", intake)
-        self.assertIn("git rebase origin/main", intake)
+        self.assertIn("git reset --hard origin/main", intake)
+        self.assertIn("--merge-observations", intake)
+        self.assertIn('--intake-run-id "$GITHUB_RUN_ID"', intake)
         self.assertIn("git push origin HEAD:main", intake)
+        self.assertNotIn("git rebase origin/main", intake)
         self.assertNotIn("git push --force", intake)
 
     def test_self_healing_never_cancels_non_main_runs_or_cross_closes_incidents(self):
@@ -332,6 +335,20 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         canary_end = watchdog.index("  task-queue-supervision:", canary_start)
         canary = watchdog[canary_start:canary_end]
         self.assertIn("if: ${{ false }}", canary)
+
+
+    def test_watchdog_registry_cas_retries_by_rereading_and_merging_latest_blob(self):
+        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
+        start = watchdog.index('registry_published=false')
+        end = watchdog.index('title="Production input classification requires review"', start)
+        block = watchdog[start:end]
+        self.assertIn("for attempt in 1 2 3; do", block)
+        self.assertLess(block.index('for attempt in 1 2 3; do'), block.index('gh api "repos/$REPO/contents/automation/unregistered_path_registry.json"'))
+        self.assertIn('registration_result="$(python3 scripts/production_intent.py', block)
+        self.assertIn('-f sha="$registry_sha"', block)
+        self.assertIn('sleep "$attempt"', block)
+        self.assertIn("Could not merge the unregistered-path ledger after three Blob-SHA CAS attempts.", block)
+        self.assertIn('if [ "$registry_published" != "true" ]; then', block)
 
 if __name__ == "__main__":
     unittest.main()

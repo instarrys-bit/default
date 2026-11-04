@@ -24,7 +24,7 @@ class WatchdogRegistrationTests(unittest.TestCase):
         args = dict(event="push", revision="abc123", run_id="42",
                     run_url="https://example.test/run", now="2026-11-04T00:00:00Z")
         register_paths(["dashboard/index.html"], ledger, **args)
-        register_paths(["dashboard/index.html", "dashboard/index.html"], ledger, **args)
+        register_paths(["dashboard/index.html", "dashboard/index.html"], ledger, **{**args, "run_id": "43"})
         self.assertEqual(len(ledger["entries"]), 1)
         self.assertEqual(ledger["entries"][0]["seen_count"], 2)
 

@@ -1,4 +1,5 @@
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -7,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from production_intent import classify_paths, compute_fingerprint, compute_output_fingerprint, decide, load_manifest
+from production_intent import classify_paths, compute_fingerprint, compute_output_fingerprint, decide, load_manifest, register_unclassified_paths, merge_request_observations
 
 
 class ProductionIntentTests(unittest.TestCase):
@@ -217,6 +218,149 @@ class ProductionIntentTests(unittest.TestCase):
         policy["dns_invariants"]["direct"] = "resolver-b"
         policy_path.write_text(json.dumps(policy), encoding="utf-8")
         self.assertNotEqual(compute_fingerprint(self.root, self.manifest), baseline)
+
+
+    def test_watchdog_registry_registration_is_idempotent_across_interleaved_cas_retries(self):
+        ledger = {"schema_version": 1, "entries": []}
+        first = register_unclassified_paths(
+            ["new/path.py"], ledger, "push", "sha-a", "run-a", "https://example/run-a",
+            now="2026-11-04T00:00:00Z",
+        )
+        self.assertEqual(first["entries"][0]["seen_count"], 1)
+
+        second = register_unclassified_paths(
+            ["new/path.py"], first, "push", "sha-b", "run-b", "https://example/run-b",
+            now="2026-11-04T00:00:01Z",
+        )
+        self.assertEqual(second["entries"][0]["seen_count"], 2)
+
+        # Simulate run A losing its first CAS update, then retrying after run B
+        # has successfully published. The replay must not count run A twice.
+        replay = register_unclassified_paths(
+            ["new/path.py"], second, "push", "sha-a", "run-a", "https://example/run-a",
+            now="2026-11-04T00:00:02Z",
+        )
+        entry = replay["entries"][0]
+        self.assertEqual(entry["seen_count"], 2)
+        self.assertEqual(entry["observed_run_ids"], ["run-a", "run-b"])
+        self.assertEqual(entry["last_seen_run_id"], "run-a")
+
+    def test_watchdog_registry_registration_preserves_concurrent_distinct_paths(self):
+        ledger = {"schema_version": 1, "entries": []}
+        left = register_unclassified_paths(
+            ["alpha/path.py"], ledger, "push", "sha-a", "run-a", "https://example/run-a",
+            now="2026-11-04T00:00:00Z",
+        )
+        merged = register_unclassified_paths(
+            ["beta/path.py"], left, "push", "sha-b", "run-b", "https://example/run-b",
+            now="2026-11-04T00:00:01Z",
+        )
+        self.assertEqual([item["path"] for item in merged["entries"]], ["alpha/path.py", "beta/path.py"])
+        self.assertEqual([item["seen_count"] for item in merged["entries"]], [1, 1])
+
+
+    def test_request_observation_merge_is_idempotent_by_run_and_preserves_counts(self):
+        empty = {"schema_version": 1, "observations": []}
+        first = merge_request_observations(
+            ["shared.example", "shared.example", "alpha.example"], empty, "run-a",
+            now="2026-11-04T00:00:00Z",
+        )
+        self.assertEqual(
+            next(item for item in first["observations"] if item["domain"] == "shared.example")["observations"],
+            2,
+        )
+        second = merge_request_observations(
+            ["shared.example", "beta.example"], first, "run-b",
+            now="2026-11-04T00:00:01Z",
+        )
+        replay = merge_request_observations(
+            ["shared.example", "shared.example", "alpha.example"], second, "run-a",
+            now="2026-11-04T00:00:02Z",
+        )
+        shared = next(item for item in replay["observations"] if item["domain"] == "shared.example")
+        self.assertEqual(shared["observations"], 3)
+        self.assertEqual(shared["observed_run_ids"], ["run-a", "run-b"])
+        self.assertEqual(
+            [item["domain"] for item in replay["observations"]],
+            ["alpha.example", "beta.example", "shared.example"],
+        )
+
+    def test_request_observation_merge_rejects_invalid_hosts_and_schema(self):
+        with self.assertRaisesRegex(ValueError, "invalid hostname"):
+            merge_request_observations(["https://bad.example/path"], {"schema_version": 1, "observations": []}, "run-x")
+        with self.assertRaisesRegex(ValueError, "unsupported observation ledger schema"):
+            merge_request_observations(["good.example"], {"schema_version": 2, "observations": []}, "run-x")
+
+    def test_two_runner_git_ref_cas_retry_replays_batch_without_losing_observations(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            bare = root / "remote.git"
+            seed = root / "seed"
+            runner_a = root / "runner-a"
+            runner_b = root / "runner-b"
+
+            def git(cwd, *args, check=True):
+                return subprocess.run(
+                    ["git", *args], cwd=cwd, check=check,
+                    capture_output=True, text=True,
+                )
+
+            git(root, "init", "--bare", "--initial-branch=main", str(bare))
+            git(root, "init", "--initial-branch=main", str(seed))
+            git(seed, "config", "user.name", "test")
+            git(seed, "config", "user.email", "test@example.invalid")
+            ledger_path = seed / "sources" / "request_domain_observations.json"
+            ledger_path.parent.mkdir(parents=True)
+            ledger_path.write_text(json.dumps({"schema_version": 1, "observations": []}), encoding="utf-8")
+            git(seed, "add", "sources/request_domain_observations.json")
+            git(seed, "commit", "-m", "initial observation ledger")
+            git(seed, "remote", "add", "origin", str(bare))
+            git(seed, "push", "-u", "origin", "main")
+
+            git(root, "clone", str(bare), str(runner_a))
+            git(root, "clone", str(bare), str(runner_b))
+            for runner in (runner_a, runner_b):
+                git(runner, "config", "user.name", "intake-bot")
+                git(runner, "config", "user.email", "intake@example.invalid")
+
+            batches = {
+                runner_a: (["alpha.example", "shared.example"], "run-a"),
+                runner_b: (["beta.example", "shared.example"], "run-b"),
+            }
+            for runner, (domains, run_id) in batches.items():
+                git(runner, "fetch", "origin", "main")
+                git(runner, "reset", "--hard", "origin/main")
+                path = runner / "sources" / "request_domain_observations.json"
+                payload = json.loads(path.read_text(encoding="utf-8"))
+                merged = merge_request_observations(domains, payload, run_id, now="2026-11-04T00:00:00Z")
+                path.write_text(json.dumps(merged, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+                git(runner, "add", "sources/request_domain_observations.json")
+                git(runner, "commit", "-m", "intake " + run_id)
+
+            git(runner_a, "push", "origin", "HEAD:main")
+            first_b_push = git(runner_b, "push", "origin", "HEAD:main", check=False)
+            self.assertNotEqual(first_b_push.returncode, 0, "stale runner must not overwrite the advanced main ref")
+
+            # Workflow retry: re-read main, discard only the stale runner workspace
+            # commit, then reapply the immutable submitted batch with the same run ID.
+            git(runner_b, "fetch", "origin", "main")
+            git(runner_b, "reset", "--hard", "origin/main")
+            path_b = runner_b / "sources" / "request_domain_observations.json"
+            latest = json.loads(path_b.read_text(encoding="utf-8"))
+            merged_b = merge_request_observations(
+                batches[runner_b][0], latest, batches[runner_b][1], now="2026-11-04T00:00:01Z"
+            )
+            path_b.write_text(json.dumps(merged_b, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+            git(runner_b, "add", "sources/request_domain_observations.json")
+            git(runner_b, "commit", "-m", "retry intake run-b against latest main")
+            git(runner_b, "push", "origin", "HEAD:main")
+
+            final_raw = git(root, "--git-dir", str(bare), "show", "main:sources/request_domain_observations.json").stdout
+            final = json.loads(final_raw)
+            rows = {item["domain"]: item for item in final["observations"]}
+            self.assertEqual(set(rows), {"alpha.example", "beta.example", "shared.example"})
+            self.assertEqual(rows["shared.example"]["observations"], 2)
+            self.assertEqual(rows["shared.example"]["observed_run_ids"], ["run-a", "run-b"])
 
 if __name__ == "__main__":
     unittest.main()
