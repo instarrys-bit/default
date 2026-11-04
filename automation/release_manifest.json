@@ -46,7 +46,7 @@
     },
     "task_queue_validator": {
       "path": "scripts/task_queue.py",
-      "git_blob_sha": "b46e2c0cea2625ef0525851ebaa95d93ae6aee5"
+      "git_blob_sha": "b46e2e0ccea2625ef0525851ebaa95d93ae6aee5"
     },
     "task_result_verifier": {
       "path": "scripts/task_result_verifier.py",
