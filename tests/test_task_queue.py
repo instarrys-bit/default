@@ -102,6 +102,23 @@ class TaskQueueTests(unittest.TestCase):
         self.write_task(queue, terminal)
         self.assertEqual(self.validate(root, queue, registry)["task_count"], 1)
 
+    def test_exhausted_failed_history_remains_valid_when_target_is_disabled(self):
+        root, queue, registry = self.make_store()
+        data = json.loads(registry.read_text(encoding="utf-8"))
+        data["programs"][1]["orchestration"]["enabled"] = False
+        data["programs"][1]["orchestration"]["allowed_callers"] = []
+        data["programs"][1]["orchestration"]["max_attempts"] = 0
+        registry.write_text(json.dumps(data), encoding="utf-8")
+        terminal = self.task(
+            status="FAILED",
+            attempts=1,
+            max_attempts=1,
+            state_history=["QUEUED", "CLAIMED", "FAILED"],
+            last_error={"type": "bounded_canary_failed", "message": "publisher cache filter"},
+        )
+        self.write_task(queue, terminal)
+        self.assertEqual(self.validate(root, queue, registry)["task_count"], 1)
+
     def test_rejects_unauthorized_requester(self):
         root, queue, registry = self.make_store()
         self.write_task(queue, self.task(requester_program_id="script_unknown"))
