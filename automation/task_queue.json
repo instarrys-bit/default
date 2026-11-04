@@ -14,11 +14,11 @@
     },
     "logical/production-pipeline": {
       "acquired_at": "2026-11-04T21:52:00Z",
-      "expires_at": "2026-11-04T21:57:00Z",
+      "expires_at": "2026-11-05T03:52:01Z",
       "fencing_token": 5,
       "lease_id": "866123dde842d4eec32ea72a39dcc528",
       "released_at": null,
-      "renewed_at": "2026-11-04T21:52:00Z",
+      "renewed_at": "2026-11-04T21:52:01Z",
       "status": "ACTIVE",
       "task_id": "task_d07a49ba8a2249a6a489299d",
       "task_lease_token": "0b4374051902e9da91ad4f89238a9c0a",
@@ -38,11 +38,11 @@
     },
     "sources/review_cursor.json": {
       "acquired_at": "2026-11-04T21:52:00Z",
-      "expires_at": "2026-11-04T21:57:00Z",
+      "expires_at": "2026-11-05T03:52:01Z",
       "fencing_token": 2,
       "lease_id": "866123dde842d4eec32ea72a39dcc528",
       "released_at": null,
-      "renewed_at": "2026-11-04T21:52:00Z",
+      "renewed_at": "2026-11-04T21:52:01Z",
       "status": "ACTIVE",
       "task_id": "task_d07a49ba8a2249a6a489299d",
       "task_lease_token": "0b4374051902e9da91ad4f89238a9c0a",
@@ -61,7 +61,7 @@
       "worker_id": "assessment-canary-41746911914"
     }
   },
-  "revision": 88,
+  "revision": 89,
   "schema_version": 1,
   "tasks": [
     {
@@ -90,31 +90,15 @@
         "production_fingerprint": "a25f230e0b2e22623d9481033ae3b87e8b1132fde0dd26775c1ffc62d92b035e",
         "production_reason": "a registered production input changed; prior success for the same fingerprint does not prove current state is reconciled"
       },
-      "last_error": {
-        "evidence": {
-          "conclusion": "failure",
-          "head_sha": "6c4089d81e9509542801eee00b198ac37477d31d",
-          "head_sha_relationship": "queue_intent_commit_only",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/41904541191",
-          "requested_head_sha": "2f59c1806697d6750728505983357391f4806704",
-          "run_id": 41904541191,
-          "status": "completed"
-        },
-        "message": "workflow completed with conclusion 'failure'",
-        "type": "workflow_run_failed"
-      },
-      "lease": {
-        "expires_at": "2026-11-04T21:57:00Z",
-        "owner": "41919876229",
-        "token": "0b4374051902e9da91ad4f89238a9c0a"
-      },
+      "last_error": null,
+      "lease": null,
       "max_attempts": 2,
       "not_before": "2026-11-04T20:21:30Z",
       "priority": 100,
       "requester_program_id": "workflow_automation_watchdog",
       "resource_lease": {
         "acquired_at": "2026-11-04T21:52:00Z",
-        "expires_at": "2026-11-04T21:57:00Z",
+        "expires_at": "2026-11-05T03:52:01Z",
         "lease_seconds": 21600,
         "resources": {
           "logical/production-pipeline": {
@@ -129,23 +113,14 @@
         "status": "ACTIVE"
       },
       "result": {
-        "correlation_id": "task_d07a49ba8a2249a6a489299d-a1",
-        "correlation_title": "Automation task task_d07a49ba8a2249a6a489299d-a1",
-        "dispatch_attempt": 1,
+        "correlation_id": "task_d07a49ba8a2249a6a489299d-a2",
+        "correlation_title": "Automation task task_d07a49ba8a2249a6a489299d-a2",
+        "dispatch_attempt": 2,
         "dispatch_state": "submitted",
-        "prepared_at": "2026-11-04T20:13:27Z",
+        "prepared_at": "2026-11-04T21:52:02Z",
         "ref": "main",
-        "requested_head_sha": "2f59c1806697d6750728505983357391f4806704",
-        "run_evidence": {
-          "conclusion": "failure",
-          "head_sha": "6c4089d81e9509542801eee00b198ac37477d31d",
-          "head_sha_relationship": "queue_intent_commit_only",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/41904541191",
-          "requested_head_sha": "2f59c1806697d6750728505983357391f4806704",
-          "run_id": 41904541191,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-04T20:13:29Z",
+        "requested_head_sha": "4a2e484a839b54d34979066e95ac32c7eca3f428",
+        "submitted_at": "2026-11-04T21:52:05Z",
         "task_id": "task_d07a49ba8a2249a6a489299d",
         "workflow_id": 402712272,
         "workflow_path": ".github/workflows/auto_sync.yml"
@@ -156,18 +131,14 @@
         "VERIFYING",
         "FAILED",
         "QUEUED",
-        "CLAIMED"
+        "CLAIMED",
+        "VERIFYING"
       ],
-      "status": "CLAIMED",
+      "status": "VERIFYING",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_d07a49ba8a2249a6a489299d",
       "trace_id": "d987b6b4dc5749ba8e3c115faac3094e",
-      "verification": {
-        "contract_sha256": "2ea47e4b72a16a24ce703a5eac4822d2b0ca6939a4357147ea83419376b51750",
-        "status": "failed",
-        "verified_at": "2026-11-04T20:21:00Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
+      "verification": null
     }
   ]
 }
