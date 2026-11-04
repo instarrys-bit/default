@@ -8,12 +8,12 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "279f8d14d1aad62d1342ba07063aa8d52e410a80"
+      "git_blob_sha": "ea3c35c1d0cb8ae6fff5f2debfbd3aa77369e245"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "45967d0d88392369252b7a4427aaba41d9dcdda8"
+      "git_blob_sha": "150837b4650b36b8ecfdcdeebbbddc749de59cd6"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "4c89fdb5c90c9020eeccea7b154ab09c8b9de431"
+      "git_blob_sha": "c219bbec103d51d91a9acbce15fa81072c3160d0"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -78,6 +78,8 @@
   "python_adapter_policy": {
     "schema_version": 1,
     "default_decision": "deny",
-    "allowed_adapters": []
+    "allowed_adapters": [
+      "script_assess_sources"
+    ]
   }
 }
