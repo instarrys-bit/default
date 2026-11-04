@@ -134,10 +134,10 @@
     "model_api_calls": 0
   },
   "managed_config_guard": {
-    "path": "shadowrocket/ss.conf",
-    "approved_git_blob_sha": "daa84802764de63c24da1e727ed233bab2e9151f",
+    "path": "modules/uu.conf",
+    "approved_git_blob_sha": "50f03fa6494eab5d31c7c2684bb3e662c98af6e5",
     "immutable": true,
-    "description": "Authoritative user-managed Shadowrocket config baseline. Read-only for automation; derived rule audits must evaluate against this file.",
+    "description": "Sole authoritative owner-managed Shadowrocket config baseline; automation is read-only.",
     "last_user_approved_baseline_update": {
       "previous_blob_sha": "b87f4c3bf13ed76d7f01ecc77266793da0e7556b",
       "new_blob_sha": "daa84802764de63c24da1e727ed233bab2e9151f",
