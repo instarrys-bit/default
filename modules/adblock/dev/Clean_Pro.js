@@ -1156,9 +1156,30 @@
     "statementBannerRenderer"
   ]);
 
-  function processYouTubeJsonString(rawText) {
+  function processYouTubeJsonString(rawText, filterHomeShorts = false) {
     const obj = JSON.parse(rawText);
     let dirty = false;
+
+    function textValue(node) {
+      if (!node || typeof node !== "object") return "";
+      if (typeof node.simpleText === "string") return node.simpleText;
+      if (Array.isArray(node.runs)) return node.runs.map(x => x && x.text || "").join("");
+      return "";
+    }
+
+    function isShortsShelf(node) {
+      if (!node || typeof node !== "object") return false;
+      if (node.reelShelfRenderer) return true;
+      const rich = node.richShelfRenderer;
+      if (rich && /\\bshorts\\b/i.test(textValue(rich.title))) return true;
+      if (node.richSectionRenderer) {
+        const content = node.richSectionRenderer.content || {};
+        if (content.reelShelfRenderer) return true;
+        const shelf = content.richShelfRenderer;
+        if (shelf && /\\bshorts\\b/i.test(textValue(shelf.title))) return true;
+      }
+      return false;
+    }
 
     function isYtJsonAdElement(el) {
       if (!el || typeof el !== "object") return false;
@@ -1168,11 +1189,14 @@
       return false;
     }
 
-    function walkYtInPlace(node) {
+    function walkYtInPlace(node, isRoot = false) {
       if (!node || typeof node !== "object") return;
       if (Array.isArray(node)) {
         for (let i = node.length - 1; i >= 0; i--) {
           if (isYtJsonAdElement(node[i])) {
+            node.splice(i, 1);
+            dirty = true;
+          } else if (filterHomeShorts && isShortsShelf(node[i])) {
             node.splice(i, 1);
             dirty = true;
           } else {
@@ -1185,13 +1209,25 @@
         if (YT_JSON_AD_KEYS.has(k)) {
           delete node[k];
           dirty = true;
+        } else if (filterHomeShorts && isShortsShelf({ [k]: node[k] })) {
+          delete node[k];
+          dirty = true;
         } else if (node[k] && typeof node[k] === "object") {
           walkYtInPlace(node[k]);
         }
       }
     }
 
-    walkYtInPlace(obj);
+    // Keep the filter scoped to the home feed; never remove Shorts from watch/reel pages.
+    if (filterHomeShorts) {
+      const hasHomeBrowseStructure = !!(
+        obj && obj.contents &&
+        (obj.contents.twoColumnBrowseResultsRenderer || obj.contents.singleColumnBrowseResultsRenderer)
+      );
+      if (!hasHomeBrowseStructure) filterHomeShorts = false;
+    }
+
+    walkYtInPlace(obj, true);
     return { body: dirty ? JSON.stringify(obj) : rawText, modified: dirty };
   }
 
@@ -1330,7 +1366,8 @@
       if (isJsonContent) {
         const text = getTextBody($response);
         if (!text) return $done({});
-        const res = processYouTubeJsonString(text);
+        // Only suppress the Shorts shelf on the YouTube home browse feed.
+        const res = processYouTubeJsonString(text, url.includes("/browse") && /browseId=FEwhat_to_watch|browseId%3DFEwhat_to_watch/.test(url));
         return res.modified ? $done({ body: res.body }) : $done({});
       }
 
