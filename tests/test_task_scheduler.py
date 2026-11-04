@@ -37,6 +37,11 @@ class TaskSchedulerTests(unittest.TestCase):
         (self.root / "scripts").mkdir()
         (self.root / "shadowrocket").mkdir()
         (self.root / "shadowrocket" / "ss.conf").write_text("[General]\n", encoding="utf-8")
+        (self.root / "automation").mkdir()
+        (self.root / "automation" / "production_control.json").write_text(
+            json.dumps({"schema_version": 1, "dispatch_mode": "enabled"}),
+            encoding="utf-8",
+        )
         self.script = self.root / "scripts" / "target.py"
         self.script.write_text(
             "import json, os, sys\n"
@@ -260,6 +265,32 @@ class TaskSchedulerTests(unittest.TestCase):
         self.assertEqual(plan["eligible_task_ids"], [])
         self.assertIn("input contract failed", plan["blocked"][0]["reason"])
         self.assertEqual(self.store.document["tasks"][0]["status"], "QUEUED")
+
+    def test_hold_stops_scheduler_before_recovery_verification_or_claim(self):
+        self.enqueue()
+        control = self.root / "automation" / "production_control.json"
+        control.write_text(json.dumps({"schema_version": 1, "dispatch_mode": "hold"}), encoding="utf-8")
+        writes_before = self.store.writes
+        with patch("task_scheduler.recover_remote", side_effect=AssertionError("recovery must not run under HOLD")), \
+             patch("task_scheduler.verify_pending_remote", side_effect=AssertionError("verification must not run under HOLD")):
+            report = run_scheduler_once(
+                self.store, self.registry, self.adapters,
+                worker_id="scheduler-test", max_tasks=1, root=self.root, now=self.now,
+            )
+        self.assertEqual(report["dispatch_mode"], "hold")
+        self.assertEqual(report["processed_count"], 0)
+        self.assertEqual(report["recovered_count"], 0)
+        self.assertEqual(report["initial_verification"]["held"], True)
+        self.assertEqual(self.store.writes, writes_before)
+        self.assertEqual(self.store.document["tasks"][0]["status"], "QUEUED")
+
+    def test_missing_or_invalid_production_control_fails_closed(self):
+        control = self.root / "automation" / "production_control.json"
+        control.unlink()
+        from task_scheduler import production_dispatch_mode
+        self.assertEqual(production_dispatch_mode(self.root), "hold")
+        control.write_text("{invalid", encoding="utf-8")
+        self.assertEqual(production_dispatch_mode(self.root), "hold")
 
     def test_scheduler_recovers_expired_leases_before_planning(self):
         task = self.enqueue()["task"]

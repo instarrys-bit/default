@@ -907,6 +907,19 @@ def filter_eligible_task_ids(eligible_task_ids: set[str], task_id: str | None = 
     return eligible_task_ids.intersection({task_id})
 
 
+def production_dispatch_mode(root: Path = ROOT) -> str:
+    """Fail closed unless the repository explicitly enables production dispatch."""
+    path = Path(root) / "automation" / "production_control.json"
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return "hold"
+    if (not isinstance(document, dict) or document.get("schema_version") != 1
+            or document.get("dispatch_mode") not in {"enabled", "hold"}):
+        return "hold"
+    return document["dispatch_mode"]
+
+
 def run_scheduler_once(store, registry: dict, adapters: dict, *,
                        worker_id: str, max_tasks: int = 1, task_id: str | None = None,
                        root: Path = ROOT, now: datetime | None = None) -> dict:
@@ -918,6 +931,19 @@ def run_scheduler_once(store, registry: dict, adapters: dict, *,
         raise ValueError("task_id filter must be a non-empty string")
     fixed_now = now
     initial_now = now or now_utc()
+    dispatch_mode = production_dispatch_mode(root)
+    if dispatch_mode != "enabled":
+        snapshot = store.read().document
+        validate_candidate(snapshot, registry)
+        return {
+            "dispatch_mode": "hold",
+            "processed_count": 0,
+            "processed": [],
+            "blocked": [],
+            "initial_verification": {"verified_count": 0, "deferred_count": 0, "held": True},
+            "recovered_count": 0,
+            "queue_revision": snapshot["revision"],
+        }
     recovered = recover_remote(store, registry, initial_now)
     initial_verification = verify_pending_remote(store, registry, adapters, initial_now)
     processed = []
