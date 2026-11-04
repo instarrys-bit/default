@@ -38,9 +38,9 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn("group: shadowrocket-main-writer", auto_sync)
-        # Intake uses a per-run slot and replays the same batch from latest main.
-        self.assertIn("group: shadowrocket-request-intake-", intake)
-        self.assertIn("github.run_id", intake)
+        # Intake shares the repository-wide writer lock; Git-ref CAS remains a second safeguard.
+        self.assertIn("group: shadowrocket-main-writer", intake)
+        self.assertIn("cancel-in-progress: false", intake)
         self.assertIn("for attempt in 1 2 3; do", intake)
         self.assertIn("git reset --hard origin/main", intake)
         self.assertIn("--merge-observations", intake)
