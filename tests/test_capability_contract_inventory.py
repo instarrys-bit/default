@@ -66,6 +66,16 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(entry["dispatch_status"], "disabled")
         self.assertEqual(inventory["summary"]["independently_dispatchable_python_components"], 0)
 
+    def test_assessment_adapter_has_scheduler_enforced_typed_predecessor(self):
+        adapters = load_json("automation/execution_adapters.json")
+        contract = load_json("automation/capability_contracts/assess_sources.json")
+        adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "script_assess_sources")
+        self.assertEqual(adapter["dependency_contract"]["predecessor_program_id"], "script_discover_sources")
+        self.assertEqual(adapter["dependency_contract"]["artifact_path"], "sources/discovered_sources.json")
+        self.assertIn("predecessor", adapter["input_contract"]["required"])
+        self.assertIn("scheduler.build_execution_plan", contract["dependency_edges"]["scheduler_enforcement"])
+        self.assertFalse(adapter["enabled"])
+
     def test_assessment_restore_writer_is_registered_under_shared_mutex(self):
         audit = load_json("automation/resource_ownership_audit.json")
         writes = load_json("automation/resource_write_sets.json")
