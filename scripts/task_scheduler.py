@@ -493,6 +493,11 @@ def is_generated_python_cache_path(path: str) -> bool:
     return "__pycache__" in parts or path.endswith(".pyc")
 
 
+def generated_python_cache_paths(paths) -> list[str]:
+    """Return disposable Python bytecode paths that must never be published."""
+    return sorted({path for path in paths if is_generated_python_cache_path(path)})
+
+
 def publishable_resource_path(path: str, resources: list[str]) -> bool:
     """Accept only exact logical outputs and their known JSONL document-store children."""
     for logical in resources:
@@ -587,6 +592,10 @@ def publish_task_artifacts(task: dict, adapter: dict, store, protected_digest: s
     if outside:
         raise ValueError("refusing to publish unrelated workspace changes: "+", ".join(outside[:20]))
     staged_before={item for item in run_git(["diff","--cached","--name-only","-z"],env).split("\0") if item}
+    staged_cache=generated_python_cache_paths(staged_before)
+    if staged_cache:
+        run_git(["restore","--staged","--",*staged_cache],env)
+        staged_before.difference_update(staged_cache)
     outside=sorted(path for path in staged_before if not allowed_publish(path))
     if outside:
         raise ValueError("pre-staged files exceed the persistent artifact allowlist: "+", ".join(outside[:20]))
@@ -594,6 +603,10 @@ def publish_task_artifacts(task: dict, adapter: dict, store, protected_digest: s
     if publish_changed:
         run_git(["add","-A","--",*sorted(publish_changed)],env)
     staged={item for item in run_git(["diff","--cached","--name-only","-z"],env).split("\0") if item}
+    staged_cache=generated_python_cache_paths(staged)
+    if staged_cache:
+        run_git(["restore","--staged","--",*staged_cache],env)
+        staged.difference_update(staged_cache)
     outside=sorted(path for path in staged if not allowed_publish(path))
     if outside:
         raise ValueError("staged artifact set exceeds publish allowlist: "+", ".join(outside[:20]))
