@@ -436,6 +436,10 @@ def _validate_checkpoint_writer(queue: dict, batch_id: str, predecessor: dict):
     task = next((item for item in queue.get("tasks", []) if item.get("task_id") == task_id), None)
     if not isinstance(task, dict) or task.get("target_program_id") != "script_assess_sources" or task.get("status") != "CLAIMED":
         raise ValueError("assessment checkpoint requires the active claimed source-assessment task")
+    task_predecessor = (task.get("input") or {}).get("predecessor")
+    expected_batch_id = "discovery-run:" + str(predecessor.get("workflow_run_id")) + ":" + str(predecessor.get("artifact_sha256", ""))[:12]
+    if task_predecessor != predecessor or batch_id != expected_batch_id:
+        raise ValueError("assessment checkpoint is not bound to this task's immutable predecessor")
     lease = task.get("lease") or {}
     now = datetime.now(timezone.utc)
     if lease.get("owner") != worker_id or lease.get("token") != task_token:
@@ -572,6 +576,9 @@ def main(argv: list[str] | None = None) -> int:
         url = candidate["url"]
         if url in completed_checkpoint:
             item = dict(completed_checkpoint[url])
+            restored_bytes = item.get("bytes", 0)
+            if isinstance(restored_bytes, int) and not isinstance(restored_bytes, bool) and restored_bytes >= 0:
+                total_bytes_read += restored_bytes
             item["drift"] = compare_drift(item, previous_by_url.get(url))
             assessments.append(item)
             continue
