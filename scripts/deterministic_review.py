@@ -15,7 +15,7 @@ from review_cursor import snapshot_digest,resume_index,checkpoint
 from json_document_store import read_document,write_document,iter_document_records
 from audit_ruleset_config_overlap import scope_covers_candidate
 ROOT=Path(__file__).resolve().parents[1]
-CONFIG=ROOT/"shadowrocket/ss.conf"
+CONFIG=ROOT/"modules/uu.conf"
 POLICY=ROOT/"sources/domain_sources.json"
 PROTECTED=ROOT/"sources/protected_domains.json"
 CANDIDATES=ROOT/"data/candidates.json"
@@ -400,7 +400,7 @@ def main():
             "risk_check":"VETO" if status=="RISK_HOLD" else "PASS",
             "decision_engine":"deterministic-domain-audit/4.1","reviewed_at":now,
             "review_fingerprint":input_fingerprint,
-            "config_authority":"shadowrocket/ss.conf"
+            "config_authority":"modules/uu.conf"
         }
         previous_policy=str(previous_record.get("policy","")).upper() if previous_record else ""
         previous_scope=str(previous_record.get("source_entry_type","exact_candidate")) if previous_record else "exact_candidate"
