@@ -149,7 +149,8 @@ jobs:
           if (
               task.get("target_program_id") != "workflow_auto_sync"
               or task.get("requester_program_id") != "workflow_automation_watchdog"
-              or task.get("status") not in {"CLAIMED", "VERIFYING"}
+              # Task status is deliberately not an authorization gate here: the independent
+          # live resource-lease/fencing check below is authoritative during verifier races.
               or task.get("attempts") != attempt
               or not isinstance(intent, dict)
               or intent.get("task_id") != task_id
@@ -643,7 +644,8 @@ jobs:
           intent = task.get("dispatch_intent") if isinstance(task, dict) else None
           if (not isinstance(task, dict) or task.get("target_program_id") != "workflow_auto_sync"
                   or task.get("requester_program_id") != "workflow_automation_watchdog"
-                  or task.get("status") not in {"CLAIMED", "VERIFYING"}
+                  # Task status is deliberately not an authorization gate here: the independent
+          # live resource-lease/fencing check below is authoritative during verifier races.
                   or task.get("attempts") != attempt or not isinstance(intent, dict)
                   or intent.get("task_id") != task_id or intent.get("dispatch_attempt") != attempt
                   or intent.get("correlation_id") != correlation
