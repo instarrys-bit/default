@@ -181,8 +181,8 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.04.9",
-    "release_manifest_blob_sha": "624f61ed01ad39b7d9bb54fb30bbf4159274edce",
-    "program_registry_blob_sha": "c9812d227da4cae3f85e1ce6a462a39125b85f8e",
+    "release_manifest_blob_sha": "d6258a141533b31f6450a578a7fac1219a143700",
+    "program_registry_blob_sha": "83a43255ccfbbc32b8f4b63983356676408533c9",
     "execution_adapters_blob_sha": "51b4a61c3764e4446dae93d6c0ffc26d7a062afe",
     "added_after_release_baseline": false,
     "note": "References the refreshed baseline snapshot. This is review provenance only, not dispatch authorization; independent Python dispatch remains blocked by the release compatibility and runtime-enforcement gates."
