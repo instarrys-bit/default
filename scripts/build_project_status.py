@@ -108,7 +108,7 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
     queued = len(queue.get("items", []))
 
     guard = policy.get("managed_config_guard", {})
-    config_path = root / str(guard.get("path", "shadowrocket/ss.conf"))
+    config_path = root / str(guard.get("path", "modules/uu.conf"))
     actual_config_sha = git_blob_sha(config_path.read_bytes()) if config_path.exists() else None
     approved_config_sha = guard.get("approved_git_blob_sha")
     config_match = bool(actual_config_sha and approved_config_sha and actual_config_sha == approved_config_sha)
