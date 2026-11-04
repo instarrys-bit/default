@@ -303,6 +303,44 @@
       "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof."
     },
     {
+      "program_id": "script_register_config_baseline",
+      "source": "scripts/register_config_baseline.py",
+      "writes": [
+        "sources/policy.json",
+        "automation/release_manifest.json",
+        "automation/production_workflow_map.json",
+        "automation/resource_write_sets.json"
+      ],
+      "document_store": [],
+      "dynamic_children": [],
+      "read_resources": [
+        "modules/uu.conf",
+        "sources/policy.json",
+        "automation/release_manifest.json",
+        "automation/production_workflow_map.json",
+        "automation/resource_write_sets.json",
+        "owner-authored GitHub commit history"
+      ],
+      "side_effects": [
+        "Uses git history and GitHub commit-author association checks to approve only owner-authored modules/uu.conf changes.",
+        "Updates only baseline/pin metadata; never changes modules/uu.conf.",
+        "The same update refreshes the release-manifest pins in the workflow map and this write inventory."
+      ],
+      "evidence": "main() verifies the exact current config blob and owner-authored push/history before changing metadata. build_release_pin_updates() prepares release_manifest.json, production_workflow_map.json, and resource_write_sets.json pin updates; main() then writes those three files together with sources/policy.json.",
+      "lease_keys": [
+        "logical/production-pipeline"
+      ],
+      "lease_enforcement": "In the production auto_sync invocation, the central fenced_file_writer is active and requires the live Watchdog task/resource lease before each repository mutation. The validate-config workflow has contents:read and only mutates its ephemeral validation workspace; it cannot publish repository changes.",
+      "publish_resources": [
+        "sources/policy.json",
+        "automation/release_manifest.json",
+        "automation/production_workflow_map.json",
+        "automation/resource_write_sets.json"
+      ],
+      "ephemeral_unpublished_resources": [],
+      "write_boundary_fencing": "All four durable files are committed by the auto_sync publisher under the same exclusive logical/production-pipeline lease, after a fresh live fencing-token assertion. modules/uu.conf is read-only and excluded from every write set."
+    },
+    {
       "program_id": "script_select_domain_rules",
       "source": "scripts/select_domain_rules.py",
       "writes": [
@@ -384,6 +422,23 @@
       "mode": "exclusive",
       "enforcement": "durable task queue lease with monotonically increasing fencing token; publish gate re-reads live queue before git push",
       "note": "Shared coarse mutex serializes workflow_auto_sync with the independently scheduled source assessor; each JSON/report output also has its own logical resource lease."
+    },
+    {
+      "resource": "owner-approved config baseline metadata",
+      "paths": [
+        "sources/policy.json",
+        "automation/release_manifest.json",
+        "automation/production_workflow_map.json",
+        "automation/resource_write_sets.json"
+      ],
+      "writers": [
+        "script_register_config_baseline",
+        "workflow_auto_sync"
+      ],
+      "lock_key": "logical/production-pipeline",
+      "mode": "exclusive",
+      "enforcement": "The production registration step runs only after Watchdog task and live resource lease verification. The central write guard checks the live fencing token before each local file mutation; the publish step re-reads and asserts the same lease immediately before the non-force main push. Validation-workflow copies are runner-local and have contents:read only.",
+      "note": "These files hold the approval record and derived pins for the exact owner-authored modules/uu.conf blob. Historical state restoration is not permitted to replace sources/policy.json or the release-pin metadata."
     }
   ],
   "not_yet_proven": [
