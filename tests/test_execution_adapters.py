@@ -37,7 +37,7 @@ class ExecutionAdapterTests(unittest.TestCase):
             "policy": {
                 "deny_by_default": True, "all_adapters_disabled_by_default": True,
                 "shell_execution": "prohibited",
-                "protected_config": "No adapter may modify shadowrocket/ss.conf.",
+                "protected_config": "No adapter may modify modules/uu.conf.",
                 "permission_rule": "least privilege", "completion_rule": "independent verification",
             },
             "adapters": [
