@@ -475,12 +475,15 @@ def publish_task_artifacts(task: dict, adapter: dict, store, protected_digest: s
     resources=adapter.get("publish_resources",[])
     if not resources:
         return {"published":False,"commit_sha":"","paths":[]}
-    if not isinstance(resources,list) or len(resources)!=len(set(resources)):
-        raise ValueError("publish_resources must be a unique path list")
+    write_resources=adapter.get("write_resources",[])
+    if (not isinstance(resources,list) or len(resources)!=len(set(resources))
+            or not isinstance(write_resources,list) or len(write_resources)!=len(set(write_resources))):
+        raise ValueError("publish_resources and write_resources must be unique path lists")
     contract=adapter.get("resource_contract",{})
     keys=contract.get("resource_keys",[]) if isinstance(contract,dict) else []
-    if any(path not in keys or path=="shadowrocket/ss.conf" for path in resources):
-        raise ValueError("publish_resources must be a subset of exclusive non-config resource keys")
+    if (any(path not in keys or path=="shadowrocket/ss.conf" for path in write_resources)
+            or any(path not in write_resources for path in resources)):
+        raise ValueError("publish_resources must be a subset of exclusive non-config write_resources")
     if any(not isinstance(path,str) or path.startswith("/") or chr(92) in path
            or any(part in {"",".",".."} for part in path.split("/")) for path in resources):
         raise ValueError("publish_resources contains an unsafe repository path")
@@ -505,7 +508,9 @@ def publish_task_artifacts(task: dict, adapter: dict, store, protected_digest: s
         "GIT_CONFIG_VALUE_0":"AUTHORIZATION: basic "+auth,
         "GIT_TERMINAL_PROMPT":"0",
     })
-    def allowed(path):
+    def allowed_workspace(path):
+        return publishable_resource_path(path,write_resources)
+    def allowed_publish(path):
         return publishable_resource_path(path,resources)
 
     changed=set()
@@ -515,13 +520,18 @@ def publish_task_artifacts(task: dict, adapter: dict, store, protected_digest: s
         ["ls-files","--others","--exclude-standard","-z"],
     ):
         changed.update(item for item in run_git(command,env).split("\0") if item)
-    outside=sorted(path for path in changed if not allowed(path))
+    outside=sorted(path for path in changed if not allowed_workspace(path))
     if outside:
         raise ValueError("refusing to publish unrelated workspace changes: "+", ".join(outside[:20]))
-    if changed:
-        run_git(["add","-A","--",*sorted(changed)],env)
-    staged={item for item in run_git(["diff","--cached","--name-only","-z"],env).split("\\0") if item}
-    outside=sorted(path for path in staged if not allowed(path))
+    staged_before={item for item in run_git(["diff","--cached","--name-only","-z"],env).split("\0") if item}
+    outside=sorted(path for path in staged_before if not allowed_publish(path))
+    if outside:
+        raise ValueError("pre-staged files exceed the persistent artifact allowlist: "+", ".join(outside[:20]))
+    publish_changed={path for path in changed if allowed_publish(path)}
+    if publish_changed:
+        run_git(["add","-A","--",*sorted(publish_changed)],env)
+    staged={item for item in run_git(["diff","--cached","--name-only","-z"],env).split("\0") if item}
+    outside=sorted(path for path in staged if not allowed_publish(path))
     if outside:
         raise ValueError("staged artifact set exceeds publish allowlist: "+", ".join(outside[:20]))
     if not staged:
