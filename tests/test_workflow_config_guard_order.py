@@ -63,7 +63,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
     def test_self_healing_never_cancels_non_main_runs_or_cross_closes_incidents(self):
         healing = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
-        self.assertIn('if run.get("head_branch") != "main":', watchdog)
+        self.assertIn('select(.status != "completed" and .head_branch == "main" and .id != null)', watchdog)
         self.assertNotIn("gh run cancel", healing)
         self.assertIn('select(.head_branch == "main" and .id > $failed)', healing)
         self.assertIn("workflow=deterministic_audit;run_id=", healing)

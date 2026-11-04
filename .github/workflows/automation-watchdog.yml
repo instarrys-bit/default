@@ -151,15 +151,7 @@ jobs:
                   echo "Watchdog checkout is behind current main; failed-audit recovery will be reconsidered on the next reconciliation."
                   exit 0
                 fi
-                current_fingerprint="$(python3 - <<'PY'
-          import sys
-          from pathlib import Path
-          sys.path.insert(0, "scripts")
-          from production_intent import load_manifest, compute_fingerprint
-          manifest = load_manifest(Path("automation/production_inputs.json"))
-          print(compute_fingerprint(Path("."), manifest))
-          PY
-          )"
+                current_fingerprint="$(python3 -c 'import sys; from pathlib import Path; sys.path.insert(0, "scripts"); from production_intent import load_manifest, compute_fingerprint; manifest = load_manifest(Path("automation/production_inputs.json")); print(compute_fingerprint(Path("."), manifest))')"
                 if [ "$task_fingerprint" != "$current_fingerprint" ]; then
                   echo "The task's input fingerprint is stale even if its workflow run SHA equals current main; replacing it with the current input fingerprint."
                   recovery_kind="superseded_inputs"
@@ -375,7 +367,6 @@ jobs:
             exit 0
           fi
 
-          last_success="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .created_at // empty' <<< "$runs")"
           last_success_sha="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .head_sha // empty' <<< "$runs")"
 
           last_success_fingerprint=""
@@ -726,6 +717,7 @@ jobs:
     env:
       GITHUB_ACTOR_ID: ${{ github.actor_id }}
       GITHUB_MANUAL_AUDIT_REQUEST: ${{ inputs.request_deterministic_audit }}
+      PYTHONDONTWRITEBYTECODE: "1"
     needs: [health-check, stale-run-watch, manifest-integrity]
     if: ${{ always() && needs.health-check.result == 'success' && ((github.event_name != 'schedule' && github.event_name != 'workflow_dispatch') || needs.stale-run-watch.result == 'success') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main') && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[assessment-canary]')) }}
     concurrency:
@@ -736,8 +728,6 @@ jobs:
       contents: write
     runs-on: ubuntu-24.04
     timeout-minutes: 8
-    env:
-      PYTHONDONTWRITEBYTECODE: "1"
     steps:
       - name: Checkout scheduler code without persisted credentials
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -823,31 +813,17 @@ jobs:
           current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"
           runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
 
-          stale_lines="$(python3 -c '
-          import json, sys
-          from datetime import datetime, timezone
-          current_main = sys.argv[1]
-          payload = json.load(sys.stdin)
-          now = datetime.now(timezone.utc)
-          for run in payload.get("workflow_runs", []):
-              if run.get("status") == "completed":
-                  continue
-              # Production recovery must never cancel runs from non-main branches.
-              if run.get("head_branch") != "main":
-                  continue
-              run_id = run.get("id")
-              if not run_id:
-                  continue
-              if run.get("head_sha") != current_main:
-                  print(run_id, "superseded", run.get("head_sha", ""))
-                  continue
-              stamp = run.get("run_started_at") or run.get("created_at")
-              if not stamp:
-                  continue
-              started = datetime.fromisoformat(stamp.replace("Z", "+00:00"))
-              if (now - started).total_seconds() > 21600:
-                  print(run_id, "timeout", run.get("head_sha", ""))
-          ' "$current_main" <<< "$runs")"
+          stale_lines="$(jq -r --arg sha "$current_main" '
+            .workflow_runs[]
+            | select(.status != "completed" and .head_branch == "main" and .id != null)
+            | if .head_sha != $sha then [.id, "superseded", (.head_sha // "")]
+              else
+                ((.run_started_at // .created_at // "") | try fromdateiso8601 catch null) as $started
+                | select($started != null and (now - $started) > 21600)
+                | [.id, "timeout", (.head_sha // "")]
+              end
+            | @tsv
+          ' <<< "$runs")"
 
           timed_out_any=0
           timed_out_run_id=""
@@ -905,17 +881,7 @@ jobs:
           PY
           )"
               recovery_input="$(jq -cn --arg fingerprint "$current_fingerprint" --arg reason "bounded recovery after watchdog cancellation of a timed-out audit" '{production_fingerprint:$fingerprint,production_decision:"RECOVERY_REQUIRED",production_reason:$reason}')"
-              dispatch_mode="$(python3 - <<'PY'
-              import json
-              from pathlib import Path
-              try:
-                  control = json.loads(Path("automation/production_control.json").read_text(encoding="utf-8"))
-              except (OSError, json.JSONDecodeError):
-                  control = {}
-              mode = control.get("dispatch_mode") if isinstance(control, dict) and type(control.get("schema_version")) is int and control.get("schema_version") == 1 else "hold"
-              print(mode if mode in {"enabled", "hold"} else "hold")
-              PY
-              )"
+              dispatch_mode="$(jq -r 'if type == "object" and .schema_version == 1 and (.dispatch_mode == "enabled" or .dispatch_mode == "hold") then .dispatch_mode else "hold" end' automation/production_control.json 2>/dev/null || printf 'hold')"
               if [ "$dispatch_mode" = "enabled" ]; then
                 printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "production:recovery:$current_fingerprint:$timed_out_run_id" --priority 100 --input-json "$recovery_input" enqueue-auto-sync
               else

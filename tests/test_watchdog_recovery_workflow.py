@@ -92,7 +92,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("stale-run-watch:", healing)
         self.assertIn("run_started_at", watchdog)
         self.assertIn("21600", watchdog)
-        self.assertIn("run.get(\"head_branch\") != \"main\"", watchdog)
+        self.assertIn('select(.status != "completed" and .head_branch == "main" and .id != null)', watchdog)
+        self.assertIn('if .head_sha != $sha then', watchdog)
         self.assertIn("gh run cancel", watchdog)
 
     def test_top_level_watchdog_supervises_remote_queue_fail_closed(self):
@@ -207,6 +208,19 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("The task's input fingerprint is stale even if its workflow run SHA equals current main", workflow)
         self.assertIn("Same-SHA failure with an unchanged production fingerprint requires diagnosis", workflow)
         self.assertIn("production:input:$current_fingerprint", workflow)
+
+
+    def test_watchdog_has_unique_job_environment_and_parseable_stale_run_script(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        queue_job = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
+        self.assertEqual(queue_job.count("\n    env:\n"), 1)
+        self.assertIn('      PYTHONDONTWRITEBYTECODE: "1"', queue_job)
+        stale_job = workflow.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
+        self.assertIn("fromdateiso8601", stale_job)
+        self.assertIn("> 21600", stale_job)
+        self.assertNotIn('CURRENT_MAIN="$current_main" RUNS_JSON=', stale_job)
+        self.assertNotIn("python3 -c '", stale_job)
+        self.assertNotIn('last_success="$(jq -r', workflow)
 
 
 if __name__ == "__main__":
