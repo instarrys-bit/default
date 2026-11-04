@@ -54,6 +54,9 @@ concurrency:
 
 jobs:
   health-check:
+    concurrency:
+      group: shadowrocket-main-writer
+      cancel-in-progress: false
     env:
       GITHUB_ACTOR_ID: ${{ github.actor_id }}
       GITHUB_MANUAL_AUDIT_REQUEST: ${{ inputs.request_deterministic_audit }}
