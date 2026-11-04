@@ -1389,6 +1389,22 @@
       "mode": "exclusive",
       "enforcement": "Current production writes are serialized by the auto_sync logical/production-pipeline lease and central write guard. build_rule_provenance uses write_document with lease_required default false; restore uses explicit allowlisted archive paths.",
       "note": "Lease must cover base file, manifest, shard set, staging, atomic switch and cleanup."
+    },
+    {
+      "resource": "sources/review_cursor.json",
+      "paths": [
+        "sources/review_cursor.json"
+      ],
+      "writers": [
+        "script_deterministic_review",
+        "script_persist_review_cursor",
+        "script_restore_automation_state",
+        "workflow_auto_sync"
+      ],
+      "lock_key": "logical/production-pipeline + sources/review_cursor.json",
+      "mode": "exclusive",
+      "enforcement": "The Watchdog-dispatched production task holds both logical/production-pipeline and sources/review_cursor.json fencing leases. The failed-run recovery job revalidates the exact live task proof before mutation and shares the shadowrocket-main-writer concurrency group.",
+      "note": "The failed/cancelled audit cursor is validated and persisted only to the canonical checkpoint path. No other repository path is staged by the recovery job."
     }
   ],
   "not_yet_proven": [
