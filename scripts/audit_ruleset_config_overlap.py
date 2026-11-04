@@ -210,7 +210,7 @@ def audit(config_text: str, ledger: dict) -> dict:
         counts[result["status"]] = counts.get(result["status"], 0) + 1
     return {
         "schema_version": 2,
-        "config_path": "shadowrocket/ss.conf",
+        "config_path": "modules/uu.conf",
         "config_is_read_only": True,
         "config_rule_line_count": sum(1 for _, line in rules if len(line.split(",")) >= 3 and line.split(",", 1)[0].strip().upper() in {"DOMAIN", "DOMAIN-SUFFIX"} and line.split(",")[2].strip().upper() in {"DIRECT", "PROXY", "REJECT"}),
         "skip_proxy_entry_count": len(skip_proxy_entries),
@@ -237,7 +237,7 @@ def main() -> int:
     REPORT_JSON.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     lines = [
         "# RULE-SET / user-config scope coverage audit", "",
-        "- Authority: read-only shadowrocket/ss.conf",
+        "- Authority: read-only modules/uu.conf",
         f"- Explicit config rule lines: {report['config_rule_line_count']}",
         f"- Ledger candidates: {report['candidate_count']}",
         f"- Result: {'PASS' if report['passed'] else 'FAIL'}", "",
