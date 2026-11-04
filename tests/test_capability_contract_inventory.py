@@ -363,6 +363,10 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(groups["active_source_registry_and_activation"]["status"], "production_registry_writer_central_pipeline_fence_only")
         self.assertEqual(groups["policy_source_overlap_audit"]["status"], "audit_output_central_pipeline_fence_only")
         self.assertIn("script_auto_activate_sources", groups["active_source_registry_and_activation"]["known_writers"])
+        self.assertIn("script_restore_automation_state", groups["source_candidate_artifacts"]["known_writers"])
+        self.assertIn("script_restore_automation_state", groups["source_discovery_artifacts"]["known_writers"])
+        self.assertIn("script_restore_automation_state", groups["published_ruleset_artifacts"]["known_writers"])
+        self.assertIn("script_restore_automation_state", groups["ruleset_manifest"]["known_writers"])
         self.assertEqual(audit["status"], "partial_static_audit")
 
         intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
