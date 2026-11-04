@@ -379,7 +379,9 @@ def assert_resource_lease_from_environment(resource_path):
         try:
             snapshot=json.loads(Path(snapshot_path).read_text(encoding="utf-8"))
             snapshot_task=next((x for x in snapshot.get("tasks",[]) if isinstance(x,dict) and x.get("task_id")==task_id),None)
-            if isinstance(snapshot_task,dict) and snapshot_task.get("status")=="VERIFYING":
+            if (isinstance(snapshot_task,dict)
+                    and snapshot_task.get("target_program_id")=="workflow_auto_sync"
+                    and snapshot_task.get("requester_program_id")=="workflow_automation_watchdog"):
                 _assert_workflow_resource_context(snapshot,task_id,worker_id,task_token,proof,now)
             else:
                 snapshot_task=_active_writer_task(snapshot,task_id,worker_id,task_token,now)
@@ -396,7 +398,9 @@ def assert_resource_lease_from_environment(resource_path):
     live_queue=store.read().document
     live_now=datetime.now(timezone.utc)
     live_task=next((x for x in live_queue.get("tasks",[]) if isinstance(x,dict) and x.get("task_id")==task_id),None)
-    if isinstance(live_task,dict) and live_task.get("status")=="VERIFYING":
+    if (isinstance(live_task,dict)
+            and live_task.get("target_program_id")=="workflow_auto_sync"
+            and live_task.get("requester_program_id")=="workflow_automation_watchdog"):
         return _assert_workflow_resource_context(live_queue,task_id,worker_id,task_token,proof,live_now)
     live_task=_active_writer_task(live_queue,task_id,worker_id,task_token,live_now)
     return _assert_live_writer_fence(live_queue,live_task,lease_key,item,live_now)
