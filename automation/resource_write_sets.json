@@ -387,14 +387,13 @@
     }
   ],
   "not_yet_proven": [
-    "Complete transitive write sets for every registered Python component.",
     "All writers and readers of lifecycle/archive/report resources.",
     "Dynamic path selection from environment variables across all scripts.",
-    "Atomic multi-resource lease acquisition and lease fencing at every write boundary.",
     "Runtime proof that every declared write set matches actual filesystem mutations.",
     "Complete transitive write sets and resource ownership for all 53 registered Python components.",
     "Runtime proof that declared writes and shared-resource locks match all actual filesystem mutations.",
-    "Cross-workflow and non-auto_sync writers of the same lifecycle, archive, report and ruleset resources must be enumerated and shown to acquire compatible live resource leases; the auto_sync process guard does not prove those independent entry points."
+    "Cross-workflow and non-auto_sync writers of the same lifecycle, archive, report and ruleset resources must be enumerated and shown to acquire compatible live resource leases; the auto_sync process guard does not prove those independent entry points.",
+    "Atomic multi-resource lease acquisition and compatibility of per-resource locks across all independent/cross-workflow writers remain unproven; the central auto_sync guard proves the shared pipeline fence only for that guarded production invocation."
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.04.1",
@@ -403,7 +402,8 @@
     "execution_adapters_blob_sha": "570db5f82cadfe44aedb4652f629a5b4df32f0e0",
     "added_after_release_baseline": true,
     "note": "Refreshed static evidence against the current 53-component registry, auto_sync audit-job guard activation, and central fenced_file_writer implementation. This does not complete transitive ownership for all cross-workflow writers or authorize independent dispatch.",
-    "reviewed_at": "2026-11-04"
+    "reviewed_at": "2026-11-04",
+    "central_write_guard_test": "tests/test_fenced_file_writer.py::test_every_registered_python_component_installs_the_guard"
   },
   "scheduler_lock_contract": {
     "logical_resource_key": "logical/production-pipeline",
