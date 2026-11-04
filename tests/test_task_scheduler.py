@@ -12,7 +12,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from remote_task_queue_runtime import claim_remote, enqueue_remote
 from task_queue_runtime import now_utc
-from task_scheduler import run_scheduler_once, build_execution_plan
+from task_scheduler import run_scheduler_once, build_execution_plan, enqueue_source_assessment_task
 
 
 class MemoryStore:
@@ -107,6 +107,92 @@ class TaskSchedulerTests(unittest.TestCase):
             "capability": "test_capability",
             "input": payload if payload is not None else {"value": 7},
         }, self.store, self.registry, self.now)
+
+    def test_source_assessment_enqueue_requires_enabled_watchdog_capability_and_pins_predecessor(self):
+        source_root = self.root
+        (source_root / "sources").mkdir(exist_ok=True)
+        artifact = source_root / "sources" / "discovered_sources.json"
+        artifact.write_text('{"candidates":[]}\\n', encoding="utf-8")
+        registry = {"programs": [
+            {"id": "workflow_automation_watchdog", "capabilities": ["top_level_supervision"]},
+            {"id": "script_assess_sources", "capabilities": ["source_assessment"],
+             "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
+                               "max_attempts": 1, "timeout_seconds": 480}},
+        ]}
+        schema = {
+            "type": "object",
+            "required": ["max_urls", "max_file_bytes", "max_total_bytes", "predecessor"],
+            "properties": {
+                "max_urls": {"type": "integer", "minimum": 1, "maximum": 20},
+                "max_file_bytes": {"type": "integer", "minimum": 1, "maximum": 1000000},
+                "max_total_bytes": {"type": "integer", "minimum": 1, "maximum": 10000000},
+                "predecessor": {"type": "object"},
+            },
+            "additionalProperties": False,
+        }
+        adapters = {"adapters": [{
+            "target_program_id": "script_assess_sources", "enabled": True,
+            "adapter_type": "python_cli", "interface_status": "reviewed",
+            "input_contract": schema,
+        }]}
+        from task_scheduler import read_only_resource_digests
+        digest = read_only_resource_digests(source_root, ["sources/discovered_sources.json"])["sources/discovered_sources.json"]
+        payload = {
+            "max_urls": 1, "max_file_bytes": 1000000, "max_total_bytes": 1000000,
+            "predecessor": {
+                "program_id": "script_discover_sources",
+                "workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
+                "workflow_run_id": "41770000000",
+                "workflow_head_sha": "a" * 40,
+                "artifact_path": "sources/discovered_sources.json",
+                "artifact_sha256": digest,
+            },
+        }
+        first = enqueue_source_assessment_task(
+            self.store, registry, adapters,
+            idempotency_key="source-assessment:41770000000",
+            input_payload=payload, root=source_root,
+        )
+        second = enqueue_source_assessment_task(
+            self.store, registry, adapters,
+            idempotency_key="source-assessment:41770000000",
+            input_payload=payload, root=source_root,
+        )
+        self.assertTrue(first["created"])
+        self.assertFalse(second["created"])
+        self.assertEqual(first["task_id"], second["task_id"])
+        self.assertEqual(self.store.document["tasks"][0]["requester_program_id"], "workflow_automation_watchdog")
+        self.assertEqual(self.store.document["tasks"][0]["target_program_id"], "script_assess_sources")
+
+    def test_source_assessment_enqueue_rejects_stale_predecessor_digest(self):
+        source_root = self.root
+        (source_root / "sources").mkdir(exist_ok=True)
+        (source_root / "sources" / "discovered_sources.json").write_text('{"candidates":[]}\\n', encoding="utf-8")
+        registry = {"programs": [
+            {"id": "workflow_automation_watchdog", "capabilities": ["top_level_supervision"]},
+            {"id": "script_assess_sources", "capabilities": ["source_assessment"],
+             "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
+                               "max_attempts": 1, "timeout_seconds": 480}},
+        ]}
+        adapters = {"adapters": [{
+            "target_program_id": "script_assess_sources", "enabled": True,
+            "adapter_type": "python_cli", "interface_status": "reviewed",
+            "input_contract": {"type": "object", "required": ["predecessor"], "properties": {"predecessor": {"type": "object"}}},
+        }]}
+        payload = {"predecessor": {
+            "program_id": "script_discover_sources",
+            "workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
+            "workflow_run_id": "41770000001",
+            "workflow_head_sha": "a" * 40,
+            "artifact_path": "sources/discovered_sources.json",
+            "artifact_sha256": "0" * 64,
+        }}
+        with self.assertRaisesRegex(ValueError, "no longer matches"):
+            enqueue_source_assessment_task(
+                self.store, registry, adapters,
+                idempotency_key="source-assessment:41770000001",
+                input_payload=payload, root=source_root,
+            )
 
     def test_reviewed_python_adapter_executes_and_is_independently_verified(self):
         task = self.enqueue()["task"]
