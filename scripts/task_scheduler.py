@@ -328,6 +328,7 @@ def safe_child_environment(root: Path = ROOT) -> dict[str, str]:
     """Pass only non-secret runtime basics; never inherit GitHub or runner credentials."""
     environment = {key: os.environ[key] for key in SAFE_ENV_KEYS if key in os.environ}
     environment["PYTHONPATH"] = os.pathsep.join((str(root), str(root / "scripts")))
+    environment["PYTHONDONTWRITEBYTECODE"] = "1"
     return environment
 
 
@@ -437,6 +438,11 @@ def execute_claimed_workflow_task(task: dict, adapter: dict, store, registry: di
         return {"task_id": task["task_id"], "status": completed["status"], "error": error}
 
 
+def is_generated_python_cache_path(path: str) -> bool:
+    parts=Path(path).parts
+    return "__pycache__" in parts or path.endswith(".pyc")
+
+
 def publishable_resource_path(path: str, resources: list[str]) -> bool:
     """Accept only exact logical outputs and their known JSONL document-store children."""
     for logical in resources:
@@ -523,7 +529,10 @@ def publish_task_artifacts(task: dict, adapter: dict, store, protected_digest: s
         ["diff","--cached","--name-only","-z"],
         ["ls-files","--others","--exclude-standard","-z"],
     ):
-        changed.update(item for item in run_git(command,env).split("\0") if item)
+        changed.update(
+            item for item in run_git(command,env).split("\0")
+            if item and not is_generated_python_cache_path(item)
+        )
     outside=sorted(path for path in changed if not allowed_workspace(path))
     if outside:
         raise ValueError("refusing to publish unrelated workspace changes: "+", ".join(outside[:20]))

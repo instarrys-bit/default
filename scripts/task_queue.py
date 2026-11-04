@@ -102,10 +102,6 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
         if task["capability"] not in target_program.get("capabilities", []):
             raise ValueError(f"{task_id} requests a capability not declared by {target}")
         orchestration = target_program.get("orchestration", {})
-        if orchestration.get("enabled") is not True:
-            raise ValueError(f"{task_id} target program is not enabled for orchestration: {target}")
-        if requester not in orchestration.get("allowed_callers", []):
-            raise ValueError(f"{task_id} requester is not allowed to call {target}: {requester}")
         parse_utc(task["created_at"], f"{task_id}.created_at")
         parse_utc(task["not_before"], f"{task_id}.not_before")
         priority = task["priority"]
@@ -119,8 +115,16 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
             raise ValueError(f"{task_id}.attempts must be a non-negative integer")
         if isinstance(max_attempts, bool) or not isinstance(max_attempts, int) or not 0 <= max_attempts <= 5:
             raise ValueError(f"{task_id}.max_attempts must be an integer from 0 to 5")
-        if attempts > max_attempts or max_attempts > orchestration.get("max_attempts", -1):
-            raise ValueError(f"{task_id} attempts exceed the registered retry budget")
+        if attempts > max_attempts:
+            raise ValueError(f"{task_id} attempts exceed its stored retry budget")
+        active_or_retryable = status in {"QUEUED", "CLAIMED", "VERIFYING"} or (status == "FAILED" and attempts < max_attempts)
+        if active_or_retryable:
+            if orchestration.get("enabled") is not True:
+                raise ValueError(f"{task_id} target program is not enabled for orchestration: {target}")
+            if requester not in orchestration.get("allowed_callers", []):
+                raise ValueError(f"{task_id} requester is not allowed to call {target}: {requester}")
+            if max_attempts > orchestration.get("max_attempts", -1):
+                raise ValueError(f"{task_id} attempts exceed the registered retry budget")
         timeout = orchestration.get("timeout_seconds")
         if isinstance(timeout, bool) or not isinstance(timeout, int) or not 1 <= timeout <= 3600:
             raise ValueError(f"{task_id} target has no valid registered timeout")

@@ -440,6 +440,8 @@ jobs:
       contents: write
     runs-on: ubuntu-24.04
     timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
     steps:
       - name: Checkout current main without persisted credentials
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -634,6 +636,8 @@ jobs:
       contents: write
     runs-on: ubuntu-24.04
     timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
     steps:
       - name: Checkout scheduler code without persisted credentials
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4

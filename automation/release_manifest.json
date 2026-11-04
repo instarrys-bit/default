@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-baseline-2026.11.04.4",
+  "release_id": "shadowrocket-automation-baseline-2026.11.04.6",
   "release_status": "baseline_snapshot",
   "created_on": "2026-11-04",
-  "purpose": "Pin the baseline with the first independently scheduled source-assessment capability fully contracted and a one-shot bounded Watchdog canary harness; general Python adapter activation remains disabled.",
+  "purpose": "Pin the source-assessment capability with fenced persistent publication, terminal queue history compatibility, and a cache-safe one-shot Watchdog canary.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "f3b2897f31bc1dc013a07d771c97820a6a09413e"
+      "git_blob_sha": "f8774fc6f27909f180fa8c546dd4aa9e83659d2f"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",

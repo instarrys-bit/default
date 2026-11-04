@@ -129,6 +129,15 @@ class AssessSourcesArtifactVerifierTests(unittest.TestCase):
                 object(), {}, {}, worker_id="canary-worker", task_id=""
             )
 
+    def test_generated_python_cache_is_excluded_from_artifact_workspace(self):
+        self.assertTrue(task_scheduler.is_generated_python_cache_path(
+            "scripts/__pycache__/task_scheduler.cpython-311.pyc"
+        ))
+        self.assertFalse(task_scheduler.is_generated_python_cache_path(
+            "sources/source_assessments.json"
+        ))
+        self.assertEqual(task_scheduler.safe_child_environment(task_scheduler.ROOT)["PYTHONDONTWRITEBYTECODE"], "1")
+
     def test_scheduler_task_id_filter_rejects_whitespace(self):
         with self.assertRaises(ValueError):
             task_scheduler.filter_eligible_task_ids({"task_assessment"}, "   ")
