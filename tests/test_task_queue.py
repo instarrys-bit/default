@@ -73,7 +73,7 @@ class TaskQueueTests(unittest.TestCase):
     def assessment_task(self, **overrides):
         root, queue, registry = self.make_store()
         data = json.loads(registry.read_text(encoding="utf-8"))
-        data["programs"][1].update({
+        data["programs"].append({
             "id": "script_assess_sources",
             "capabilities": ["source_assessment"],
             "orchestration": {
