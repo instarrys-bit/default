@@ -85,7 +85,7 @@ def build_report(config_bytes: bytes, expected_blob_sha: str, config_path: str,
         "mitm_section_present": "MITM" in sections,
         "mitm_enabled": mitm_enabled,
         "limitations": [
-            "The current shadowrocket/ss.conf is the sole policy and configuration reference for this audit.",
+            "The current modules/uu.conf is the sole policy and configuration reference for this audit.",
             "The automation reads this file and does not modify it.",
             "DNS values and MITM state are reported as observed facts, not rewritten or inferred.",
             "Static checks cannot verify runtime behavior inside the Shadowrocket app."
@@ -137,7 +137,7 @@ def main() -> int:
             lines.append(f"- `{key}` expected: " + " | ".join(f"`{x}`" for x in drift["expected"]))
             lines.append("  actual: " + " | ".join(f"`{x}`" for x in drift["actual"]))
     lines.extend(["", "## Interpretation", "",
-        "All checks use the current user-managed `shadowrocket/ss.conf` as the sole authority.",
+        "All checks use the current user-managed `modules/uu.conf` as the sole authority.",
         "A registered-hash mismatch means the config changed without its baseline record being updated; it does not authorize the automation to rewrite the config.",
         "DNS and MITM are reported only. No settings are added, removed, or changed.", ""])
     REPORT_MD.write_text("\n".join(lines), encoding="utf-8")
