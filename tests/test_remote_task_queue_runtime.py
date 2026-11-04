@@ -1,6 +1,8 @@
 import copy
+import os
 import sys
 import unittest
+from unittest.mock import patch
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -50,6 +52,57 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
                  "priority": 50, "input": {"value": 1}}
         value.update(overrides)
         return value
+
+    def test_manual_enqueue_requires_trusted_watchdog_dispatch_context(self):
+        env = {
+            "GITHUB_REPOSITORY": "instarrys-bit/default",
+            "GITHUB_WORKFLOW_REF": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
+            "GITHUB_EVENT_NAME": "workflow_dispatch", "GITHUB_ACTOR": "maintainer",
+            "GITHUB_ACTOR_ID": "678", "GITHUB_RUN_ID": "123",
+            "GITHUB_RUN_ATTEMPT": "1", "GITHUB_REF": "refs/heads/main",
+            "GITHUB_SHA": "a" * 40, "GITHUB_MANUAL_AUDIT_REQUEST": "true",
+        }
+        payload = self.payload(input={
+            "production_decision": "USER_AUTHORIZED_MANUAL_AUDIT",
+            "production_fingerprint": "fp", "authorization_run_id": "123",
+            "authorization_run_attempt": "1", "authorization_actor": "maintainer",
+            "authorization_actor_id": "678", "authorization_repository": "instarrys-bit/default",
+            "authorization_workflow_ref": env["GITHUB_WORKFLOW_REF"],
+            "authorization_event": "workflow_dispatch", "authorization_ref": "refs/heads/main",
+            "authorization_head_sha": "a" * 40, "authorization_requested": True, "baseline_source_event": "workflow_dispatch",
+            "baseline_source_sha": "a" * 40,
+        })
+        with patch.dict(os.environ, env, clear=True):
+            created = enqueue_remote(payload, self.store, self.registry, self.now)
+        self.assertTrue(created["created"])
+        replay = dict(env)
+        replay["GITHUB_RUN_ATTEMPT"] = "2"
+        with patch.dict(os.environ, replay, clear=True):
+            with self.assertRaisesRegex(ValueError, "authorization_run_attempt"):
+                self.claim("worker-replay", self.now)
+
+    def test_manual_enqueue_rejects_non_dispatch_or_wrong_workflow(self):
+        env = {
+            "GITHUB_REPOSITORY": "instarrys-bit/default",
+            "GITHUB_WORKFLOW_REF": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
+            "GITHUB_EVENT_NAME": "schedule", "GITHUB_ACTOR": "maintainer", "GITHUB_MANUAL_AUDIT_REQUEST": "true",
+            "GITHUB_ACTOR_ID": "678", "GITHUB_RUN_ID": "123",
+            "GITHUB_RUN_ATTEMPT": "1", "GITHUB_REF": "refs/heads/main",
+            "GITHUB_SHA": "a" * 40,
+        }
+        payload = self.payload(input={
+            "production_decision": "USER_AUTHORIZED_MANUAL_AUDIT",
+            "production_fingerprint": "fp", "authorization_run_id": "123",
+            "authorization_run_attempt": "1", "authorization_actor": "maintainer",
+            "authorization_actor_id": "678", "authorization_repository": "instarrys-bit/default",
+            "authorization_workflow_ref": env["GITHUB_WORKFLOW_REF"],
+            "authorization_event": "workflow_dispatch", "authorization_ref": "refs/heads/main",
+            "authorization_head_sha": "a" * 40, "authorization_requested": True, "baseline_source_event": "workflow_dispatch",
+            "baseline_source_sha": "a" * 40,
+        })
+        with patch.dict(os.environ, env, clear=True):
+            with self.assertRaisesRegex(ValueError, "workflow_dispatch"):
+                enqueue_remote(payload, self.store, self.registry, self.now)
 
     def test_enqueue_is_idempotent_and_rejects_payload_reuse(self):
         first = enqueue_remote(self.payload(), self.store, self.registry, self.now)

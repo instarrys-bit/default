@@ -26,7 +26,10 @@ from remote_task_queue_runtime import (
     claim_remote, complete_remote, enqueue_remote, make_store, recover_remote,
     validate_candidate, validate_envelope,
 )
-from task_queue_runtime import authorize, now_utc
+from task_queue_runtime import (
+    authorize, manual_authorization_context_from_environment,
+    validate_manual_authorization, now_utc,
+)
 from github_queue_store import QueueStoreError
 from resource_lease_runtime import assert_resource_lease, claimed_task
 from task_result_verifier import (
@@ -119,6 +122,7 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
             if target is None:
                 raise ValueError("target program is not registered")
             protected_config_digest(root)
+            validate_manual_authorization(task, manual_authorization_context_from_environment())
             authorize(task, by_id)
             if not isinstance(adapter, dict) or adapter.get("enabled") is not True:
                 raise ValueError("target adapter is disabled")

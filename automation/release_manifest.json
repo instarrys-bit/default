@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-baseline-2026.11.04.10",
+  "release_id": "shadowrocket-automation-baseline-2026.11.04.11",
   "release_status": "baseline_snapshot",
   "created_on": "2026-11-04",
-  "purpose": "Refresh watchdog workflow pin after fail-closed HOLD guards were added to recovery enqueue paths and the legacy assessment canary was disabled pending trusted authorization.",
+  "purpose": "Pin the watchdog workflow after binding one-shot manual audit authorization to the exact trusted GitHub run attempt.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "744756d77859c107ced2d4ff7d3a1026c86e984b"
+      "git_blob_sha": "6f0f966e3ff1b02fad957b022eaca7d0b66f7875"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
