@@ -64,12 +64,12 @@ class TaskQueueRuntimeTests(unittest.TestCase):
             "authorization_actor_id": "678", "authorization_repository": "instarrys-bit/default",
             "authorization_workflow_ref": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
             "authorization_event": "workflow_dispatch", "authorization_ref": "refs/heads/main",
-            "authorization_head_sha": "a" * 40, "baseline_source_event": "workflow_dispatch",
+            "authorization_head_sha": "a" * 40, "authorization_requested": True, "baseline_source_event": "workflow_dispatch",
             "baseline_source_sha": "a" * 40}}
         context = {"repository": "instarrys-bit/default",
             "workflow_ref": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
             "event": "workflow_dispatch", "actor": "maintainer", "actor_id": "678",
-            "run_id": "123", "run_attempt": "2", "ref": "refs/heads/main", "sha": "a" * 40}
+            "run_id": "123", "run_attempt": "2", "ref": "refs/heads/main", "sha": "a" * 40, "manual_audit_requested": "true"}
         validate_manual_authorization(task, context)
 
     def test_manual_authorization_rejects_replay_and_forged_identity(self):
