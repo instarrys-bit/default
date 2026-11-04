@@ -226,9 +226,10 @@ def merge_request_observations(submitted, payload, run_id, now=None):
         run_ids = old.get("observed_run_ids", [])
         if not isinstance(run_ids, list) or any(not isinstance(value, str) for value in run_ids):
             raise ValueError("observed_run_ids must be a string array")
-        if run_key not in run_ids:
-            old["observations"] = int(old.get("observations", 0)) + counts[domain]
-            run_ids.append(run_key)
+        if run_key in run_ids:
+            continue
+        old["observations"] = int(old.get("observations", 0)) + counts[domain]
+        run_ids.append(run_key)
         old["domain"] = domain
         old["observed_run_ids"] = run_ids
         old["first_seen"] = old.get("first_seen") or stamp
