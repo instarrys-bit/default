@@ -83,7 +83,7 @@ class DiagnoseWorkflowFailureTests(unittest.TestCase):
 
     def test_config_baseline_mismatch_is_reported_without_authorizing_config_edits(self):
         result = diagnose(
-            "ERROR: User config baseline mismatch for shadowrocket/ss.conf: "
+            "ERROR: User config baseline mismatch for modules/uu.conf: "
             + "2e528134059b629605d20b52481516dd16a53580; expected "
             + "315b8fbd168b834df9dbc52b551b823221c5d99f\n"
             + "##[error]Process completed with exit code 1.",
@@ -97,22 +97,22 @@ class DiagnoseWorkflowFailureTests(unittest.TestCase):
 
     def test_baseline_registration_failure_is_classified_as_config_baseline_mismatch(self):
         result = diagnose(
-            "ERROR: ss.conf differs from the approved baseline, but this run is not an owner-authored push changing ss.conf; refusing automatic approval.\\n"
+            "ERROR: uu.conf differs from the approved baseline, but this run is not an owner-authored push changing uu.conf; refusing automatic approval.\\n"
             "##[error]Process completed with exit code 1.",
             "789",
         )
         self.assertEqual(result["classification"], "CONFIG_BASELINE_MISMATCH")
         self.assertIsNone(result["repair_id"])
         self.assertFalse(result["automatic_code_change_allowed"])
-        self.assertTrue(any("ss.conf" in item for item in result["evidence"]))
+        self.assertTrue(any("uu.conf" in item for item in result["evidence"]))
 
 
     def test_baseline_diagnostics_cover_both_verification_and_registration_errors(self):
         samples = [
-            "ERROR: User config baseline mismatch for shadowrocket/ss.conf: "
+            "ERROR: User config baseline mismatch for modules/uu.conf: "
             "2e528134059b629605d20b52481516dd16a53580; expected "
             "315b8fbd168b834df9dbc52b551b823221c5d99f",
-            "ERROR: ss.conf differs from the approved baseline, but this run is not an owner-authored push changing ss.conf; refusing automatic approval.",
+            "ERROR: uu.conf differs from the approved baseline, but this run is not an owner-authored push changing uu.conf; refusing automatic approval.",
         ]
         for sample in samples:
             with self.subTest(sample=sample):
