@@ -1321,58 +1321,45 @@
     return null;
   }
 
-  // Request-side initplayback handling: delegate only candidate URLs to the Cloudflare API.
-  // The candidate check is local; URL rewriting happens remotely. Any error fails open.
-  const INITPLAYBACK_API_URL = "https://inner-archetype.pages.dev/api/initplayback";
-
-  function hasInitplaybackCandidate(rawUrl) {
+  // Local initplayback handling. The "oad" key is a historical candidate only;
+  // keep this narrow and fail open until current request logs confirm its effect.
+  function stripInitplaybackAdParam(rawUrl) {
     if (typeof rawUrl !== "string" ||
-        !/^https:\/\/[\w-]+\.googlevideo\.com\/initplayback\?/i.test(rawUrl)) {
-      return false;
+        !/^https:\/\/[\w-]+\.googlevideo\.com\/initplayback(?:\?|$)/i.test(rawUrl)) {
+      return null;
     }
     const hashIndex = rawUrl.indexOf("#");
+    const fragment = hashIndex >= 0 ? rawUrl.slice(hashIndex) : "";
     const withoutFragment = hashIndex >= 0 ? rawUrl.slice(0, hashIndex) : rawUrl;
     const queryIndex = withoutFragment.indexOf("?");
-    if (queryIndex < 0) return false;
-    return withoutFragment.slice(queryIndex + 1).split("&").some(segment => {
-      const equalsIndex = segment.indexOf("=");
-      const key = equalsIndex >= 0 ? segment.slice(0, equalsIndex) : segment;
-      return key === "oad";
-    });
+    if (queryIndex < 0) return null;
+
+    const base = withoutFragment.slice(0, queryIndex);
+    const parts = withoutFragment.slice(queryIndex + 1).split("&");
+    const kept = [];
+    let changed = false;
+    for (const part of parts) {
+      const equalsIndex = part.indexOf("=");
+      const key = equalsIndex >= 0 ? part.slice(0, equalsIndex) : part;
+      if (key === "oad") changed = true;
+      else kept.push(part);
+    }
+    if (!changed) return null;
+    return {
+      url: base + (kept.length ? "?" + kept.join("&") : "") + fragment,
+      changed: true
+    };
   }
 
   function dispatchRequest() {
     const request = typeof $request !== "undefined" && $request ? $request : null;
-    if (!request || typeof request.url !== "string" || !hasInitplaybackCandidate(request.url)) {
+    if (!request || typeof request.url !== "string") return $done({});
+    try {
+      const patch = stripInitplaybackAdParam(request.url);
+      return patch && patch.changed ? $done({ url: patch.url }) : $done({});
+    } catch (_) {
       return $done({});
     }
-    if (typeof $httpClient === "undefined" || !$httpClient || typeof $httpClient.post !== "function") {
-      return $done({});
-    }
-
-    const options = {
-      url: INITPLAYBACK_API_URL,
-      headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify({ url: request.url })
-    };
-
-    return $httpClient.post(options, function(error, response, data) {
-      try {
-        const status = response && Number(response.statusCode);
-        if (error || !response || !Number.isFinite(status) || status < 200 || status >= 300) {
-          return $done({});
-        }
-        const result = typeof data === "string" ? JSON.parse(data) : data;
-        if (!result || result.ok !== true || typeof result.url !== "string" ||
-            result.url.length > 8192) {
-          return $done({});
-        }
-        if (result.changed === true && result.url !== request.url) {
-          return $done({ url: result.url });
-        }
-      } catch (_) {}
-      return $done({});
-    });
   }
 
   function dispatchResponse() {
