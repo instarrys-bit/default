@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "40094ceb17f9291392419090610f08b5dbac8c64",
-  "registry_blob_sha": "d4cf970870f4b51d40c1f70c7d4347a035d4b960",
+  "workflow_blob_sha": "a08faba621caada93318cf9b90215716cf23953c",
+  "registry_blob_sha": "e0f1959761c942013818615c6b0176325045696f",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 6,
@@ -645,8 +645,8 @@
     "Dashboard generation is observer-only and is not a production stage."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
-    "release_manifest_blob_sha": "10298b666568d70775c17a33573a5e923d17a61b",
+    "release_id": "shadowrocket-automation-baseline-2026.11.05.2",
+    "release_manifest_blob_sha": "c6ff2ffab94758a48dba409fd031d38cc80663f6",
     "program_registry_blob_sha": "d4cf970870f4b51d40c1f70c7d4347a035d4b960",
     "execution_adapters_blob_sha": "97d18a09763f851362e0bd5400dad856ae1f448b",
     "added_after_release_baseline": true,
