@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "inventory_id": "resource-write-sets-2026.11.04.3",
+  "inventory_id": "resource-write-sets-2026.11.04.4",
   "status": "partial_static_entrypoint_review",
   "policy": {
     "lock_identity": "canonical logical resource path, not program ID",
@@ -124,6 +124,217 @@
         "workflow_auto_sync"
       ],
       "additional_writer_boundary": "auto_sync publish job restores allowlisted assessment history and report artifacts from an audited archive under the same live logical/production-pipeline lease; the fenced_file_writer audit hook validates that lease before each restore filesystem mutation."
+    },
+    {
+      "program_id": "script_audit_config_drift",
+      "source": "scripts/audit_config_drift.py",
+      "writes": [
+        "reports/config-drift-audit.json",
+        "reports/config-drift-audit.md"
+      ],
+      "document_store": [],
+      "dynamic_children": [],
+      "read_resources": [
+        "modules/uu.conf",
+        "sources/policy.json"
+      ],
+      "side_effects": [
+        "Read-only config/DNS/MITM drift report; returns nonzero when the approved baseline or invariants fail."
+      ],
+      "evidence": "main() writes REPORT_JSON and REPORT_MD after comparing the current config against the owner-approved policy baseline.",
+      "lease_keys": [
+        "logical/production-pipeline",
+        "reports/config-drift-audit.json",
+        "reports/config-drift-audit.md"
+      ],
+      "lease_enforcement": "Current auto_sync invocation uses the central live production-pipeline fence; restore_automation_state may restore both report artifacts under the same fence.",
+      "publish_resources": [
+        "reports/config-drift-audit.json",
+        "reports/config-drift-audit.md"
+      ],
+      "ephemeral_unpublished_resources": [],
+      "write_boundary_fencing": "Read-only with respect to modules/uu.conf; only audit report artifacts are written."
+    },
+    {
+      "program_id": "script_audit_external_domains",
+      "source": "scripts/audit_external_domains.py",
+      "writes": [
+        "reports/external-domain-audit.md"
+      ],
+      "document_store": [],
+      "dynamic_children": [],
+      "read_resources": [
+        "modules/uu.conf",
+        "pinned external domain source URL"
+      ],
+      "side_effects": [
+        "Read-only external-domain scope coverage audit; no config or ruleset mutation."
+      ],
+      "evidence": "main() renders the audit and writes reports/external-domain-audit.md.",
+      "lease_keys": [
+        "logical/production-pipeline",
+        "reports/external-domain-audit.md"
+      ],
+      "lease_enforcement": "Current auto_sync invocation uses the central live production-pipeline fence; restore_automation_state may restore the same report from its allowlisted publish archive.",
+      "publish_resources": [
+        "reports/external-domain-audit.md"
+      ],
+      "ephemeral_unpublished_resources": [],
+      "write_boundary_fencing": "Report-only output. modules/uu.conf remains read-only and is not a write target."
+    },
+    {
+      "program_id": "script_audit_policy_source_overlap",
+      "source": "scripts/audit_policy_source_overlap.py",
+      "writes": [
+        "sources/policy_source_overlap.json",
+        "reports/policy-source-overlap.md"
+      ],
+      "document_store": [],
+      "dynamic_children": [],
+      "read_resources": [
+        "sources/source_assessments.json"
+      ],
+      "side_effects": [
+        "Audit-only overlap/contradiction analysis; never registers sources, changes policy or publishes rules."
+      ],
+      "evidence": "main() reads source assessments and writes sources/policy_source_overlap.json plus reports/policy-source-overlap.md.",
+      "lease_keys": [
+        "logical/production-pipeline",
+        "sources/policy_source_overlap.json",
+        "reports/policy-source-overlap.md"
+      ],
+      "lease_enforcement": "Current auto_sync invocation uses the central live production-pipeline fence; restore_automation_state may restore both outputs from the publish archive under the same fence.",
+      "publish_resources": [
+        "sources/policy_source_overlap.json",
+        "reports/policy-source-overlap.md"
+      ],
+      "ephemeral_unpublished_resources": [],
+      "write_boundary_fencing": "Audit artifact writer only. It does not alter active source registry or routing policy. Same-path restore writer is serialized in auto_sync; non-auto_sync writer compatibility remains unproven."
+    },
+    {
+      "program_id": "script_audit_ruleset_config_overlap",
+      "source": "scripts/audit_ruleset_config_overlap.py",
+      "writes": [
+        "reports/ruleset-config-overlap-audit.json",
+        "reports/ruleset-config-overlap-audit.md"
+      ],
+      "document_store": [],
+      "dynamic_children": [],
+      "read_resources": [
+        "modules/uu.conf",
+        "sources/domain_reviews.json"
+      ],
+      "side_effects": [
+        "Read-only scope-coverage audit between candidate decisions and user-owned config; does not select a winner or mutate config."
+      ],
+      "evidence": "main() writes REPORT_JSON and REPORT_MD after evaluating the review ledger against config scopes.",
+      "lease_keys": [
+        "logical/production-pipeline",
+        "reports/ruleset-config-overlap-audit.json",
+        "reports/ruleset-config-overlap-audit.md"
+      ],
+      "lease_enforcement": "Current auto_sync invocation uses the central live production-pipeline fence; restore_automation_state may restore both report artifacts under the same fence.",
+      "publish_resources": [
+        "reports/ruleset-config-overlap-audit.json",
+        "reports/ruleset-config-overlap-audit.md"
+      ],
+      "ephemeral_unpublished_resources": [],
+      "write_boundary_fencing": "Read-only with respect to modules/uu.conf; only audit report artifacts are written."
+    },
+    {
+      "program_id": "script_audit_ruleset_references",
+      "source": "scripts/audit_ruleset_references.py",
+      "writes": [
+        "reports/ruleset-reference-audit.json",
+        "reports/ruleset-reference-audit.md"
+      ],
+      "document_store": [],
+      "dynamic_children": [],
+      "read_resources": [
+        "modules/uu.conf",
+        "rulesets/manifest.json",
+        "rulesets/direct.list",
+        "rulesets/proxy.list",
+        "rulesets/reject.list"
+      ],
+      "side_effects": [
+        "Read-only consistency audit of config RULE-SET references and generated files."
+      ],
+      "evidence": "main() writes REPORT_JSON and REPORT_MD after inspecting config and manifest.",
+      "lease_keys": [
+        "logical/production-pipeline",
+        "reports/ruleset-reference-audit.json",
+        "reports/ruleset-reference-audit.md"
+      ],
+      "lease_enforcement": "Current auto_sync invocation uses the central live production-pipeline fence; restore_automation_state may restore both report artifacts under the same fence.",
+      "publish_resources": [
+        "reports/ruleset-reference-audit.json",
+        "reports/ruleset-reference-audit.md"
+      ],
+      "ephemeral_unpublished_resources": [],
+      "write_boundary_fencing": "Read-only with respect to modules/uu.conf and ruleset list files; only audit report artifacts are written."
+    },
+    {
+      "program_id": "script_audit_source_lineage",
+      "source": "scripts/audit_source_lineage.py",
+      "writes": [
+        "reports/source-lineage-audit.json"
+      ],
+      "document_store": [],
+      "dynamic_children": [],
+      "read_resources": [
+        "sources/domain_sources.json",
+        "sources/discovered_sources.json"
+      ],
+      "side_effects": [
+        "Read-only lineage/reference audit; output is an audit report and does not promote source lineage to verified."
+      ],
+      "evidence": "main() reads the active source registry and discovery document, then writes reports/source-lineage-audit.json.",
+      "lease_keys": [
+        "logical/production-pipeline",
+        "reports/source-lineage-audit.json"
+      ],
+      "lease_enforcement": "Current auto_sync invocation uses the central live production-pipeline fence; publish restoration may restore the same report path under the same fence.",
+      "publish_resources": [
+        "reports/source-lineage-audit.json"
+      ],
+      "ephemeral_unpublished_resources": [],
+      "write_boundary_fencing": "Report output is runner-workspace generated and later allowlist-published; it is not a routing policy input. Same-path report writer serialization remains part of the partial report audit."
+    },
+    {
+      "program_id": "script_auto_activate_sources",
+      "source": "scripts/auto_activate_sources.py",
+      "writes": [
+        "sources/domain_sources.json",
+        "sources/source_activation_log.json",
+        "reports/source-activation.md"
+      ],
+      "document_store": [],
+      "dynamic_children": [],
+      "read_resources": [
+        "sources/source_candidates.json",
+        "sources/domain_sources.json",
+        "sources/discovered_sources.json",
+        "sources/source_activation_log.json"
+      ],
+      "side_effects": [
+        "Activates stable, policy-evidenced source repositories in the active source registry; this changes future production input collection, but does not directly publish domain rules."
+      ],
+      "evidence": "main() reads domain_sources.json and source_candidates.json, calls activate(), then directly rewrites sources/domain_sources.json and sources/source_activation_log.json and writes reports/source-activation.md.",
+      "lease_keys": [
+        "logical/production-pipeline",
+        "sources/domain_sources.json",
+        "sources/source_activation_log.json",
+        "reports/source-activation.md"
+      ],
+      "lease_enforcement": "Current auto_sync invocation is protected by the Watchdog logical production-pipeline live lease and central fenced_file_writer mutation hook. restore_automation_state is another allowlisted writer for the same registry/log/report paths. This script has no explicit per-resource lease assertion.",
+      "publish_resources": [
+        "sources/domain_sources.json",
+        "sources/source_activation_log.json",
+        "reports/source-activation.md"
+      ],
+      "ephemeral_unpublished_resources": [],
+      "write_boundary_fencing": "This is a production input registry writer, not merely a report generator. It remains serialized within the current auto_sync pipeline; independent dispatch requires compatible per-resource leases for the registry, activation log and report."
     },
     {
       "program_id": "script_build_dashboard_snapshot",
@@ -846,35 +1057,60 @@
   ],
   "confirmed_shared_write_groups": [
     {
-      "resource": "rulesets/direct.list, rulesets/proxy.list, rulesets/reject.list",
-      "writers": [
-        "script_build_rulesets",
-        "script_lifecycle_audit",
-        "script_sync_ruleset_config_conflicts"
+      "resource": "active source registry and activation log",
+      "paths": [
+        "sources/domain_sources.json",
+        "sources/source_activation_log.json"
       ],
-      "lock_key": "resource:rulesets/published-lists",
-      "mode": "exclusive"
+      "writers": [
+        "script_auto_activate_sources",
+        "script_restore_automation_state",
+        "workflow_auto_sync"
+      ],
+      "lock_key": "logical/production-pipeline + sources/domain_sources.json + sources/source_activation_log.json",
+      "mode": "exclusive",
+      "enforcement": "Current auto_sync production writes and publish restoration are serialized by the live Watchdog logical production-pipeline fence and central mutation hook; auto_activate_sources does not request explicit per-resource leases.",
+      "note": "Source activation changes future production input collection. Treat as a production registry writer, not a report-only stage; independent dispatch remains blocked until compatible per-resource lease proof exists."
     },
     {
-      "resource": "rulesets/manifest.json",
+      "resource": "automation/unregistered_path_registry.json",
       "writers": [
-        "script_build_rulesets",
-        "script_lifecycle_audit",
-        "script_sync_ruleset_config_conflicts",
-        "script_refresh_ruleset_manifest"
+        "script_production_intent",
+        "workflow_automation_watchdog"
       ],
-      "lock_key": "resource:rulesets/manifest.json",
-      "mode": "exclusive"
+      "lock_key": "git-blob-sha-cas:automation/unregistered_path_registry.json",
+      "mode": "compare_and_swap",
+      "enforcement": "Watchdog re-reads the current Contents Blob SHA on each of up to three attempts, merges the same run-scoped paths into the latest ledger, and performs a conditional Contents API PUT. Registration records observed_run_ids for retry idempotency. Exhausted conflicts fail closed.",
+      "note": "Bounded three-attempt CAS merge is implemented; distinct Watchdog runs are not serialized by their run-ID concurrency groups. Concurrent-run integration tests and no-lost-update proof remain outstanding."
     },
     {
-      "resource": "rulesets/pending_queue.json",
+      "resource": "data/domain_candidates.json logical document",
       "writers": [
-        "script_build_rulesets",
-        "script_lifecycle_audit",
-        "script_sync_ruleset_config_conflicts"
+        "script_collect_domains",
+        "script_import_request_observations",
+        "script_restore_automation_state",
+        "workflow_auto_sync"
       ],
-      "lock_key": "resource:rulesets/pending_queue.json",
-      "mode": "exclusive"
+      "lock_key": "resource:data/domain_candidates.json",
+      "mode": "exclusive",
+      "enforcement": "Current writes occur in the serialized auto_sync production pipeline under the central live fencing guard. import_request_observations and collect_domains use write_document without lease_required=True; restore path is separately fenced by the same production mutex.",
+      "note": "Lease must cover legacy base JSON, adjacent manifest, all content-addressed shard files, staging directories, manifest switch and old shard cleanup."
+    },
+    {
+      "resource": "durable task queue control-plane state",
+      "paths": [
+        "automation/task_queue.json"
+      ],
+      "writers": [
+        "script_remote_task_queue_runtime",
+        "script_github_queue_store",
+        "script_task_scheduler",
+        "workflow_automation_watchdog"
+      ],
+      "lock_key": "git-blob-sha-cas:automation/task_queue.json",
+      "mode": "compare_and_swap",
+      "enforcement": "GitHubContentsQueueStore reads the current queue Blob SHA and requires that exact SHA for every Contents API update. On explicit conflict it re-reads and re-applies the deterministic mutator within a bounded retry budget. The candidate queue is independently validated before and after each mutation. Manual authorization consumption is appended atomically with the task and keyed by Watchdog run ID.",
+      "note": "This is control-plane queue state, not a production resource lease. The local task_queue_runtime uses only runner-local flock/atomic replace and is not treated as a shared cross-runner writer."
     },
     {
       "resource": "logical/production-pipeline",
@@ -905,20 +1141,14 @@
       "note": "These files hold the approval record and derived pins for the exact owner-authored modules/uu.conf blob. Historical state restoration is not permitted to replace sources/policy.json or the release-pin metadata."
     },
     {
-      "resource": "durable task queue control-plane state",
-      "paths": [
-        "automation/task_queue.json"
-      ],
+      "resource": "rulesets/direct.list, rulesets/proxy.list, rulesets/reject.list",
       "writers": [
-        "script_remote_task_queue_runtime",
-        "script_github_queue_store",
-        "script_task_scheduler",
-        "workflow_automation_watchdog"
+        "script_build_rulesets",
+        "script_lifecycle_audit",
+        "script_sync_ruleset_config_conflicts"
       ],
-      "lock_key": "git-blob-sha-cas:automation/task_queue.json",
-      "mode": "compare_and_swap",
-      "enforcement": "GitHubContentsQueueStore reads the current queue Blob SHA and requires that exact SHA for every Contents API update. On explicit conflict it re-reads and re-applies the deterministic mutator within a bounded retry budget. The candidate queue is independently validated before and after each mutation. Manual authorization consumption is appended atomically with the task and keyed by Watchdog run ID.",
-      "note": "This is control-plane queue state, not a production resource lease. The local task_queue_runtime uses only runner-local flock/atomic replace and is not treated as a shared cross-runner writer."
+      "lock_key": "resource:rulesets/published-lists",
+      "mode": "exclusive"
     },
     {
       "resource": "rulesets/lifecycle_state.json",
@@ -932,17 +1162,47 @@
       "note": "Lifecycle gate updates scheduling state; keep this separate from the lifecycle audit's published lists, pending queue, archives and manifest."
     },
     {
-      "resource": "data/domain_candidates.json logical document",
+      "resource": "rulesets/manifest.json",
       "writers": [
-        "script_collect_domains",
-        "script_import_request_observations",
+        "script_build_rulesets",
+        "script_lifecycle_audit",
+        "script_sync_ruleset_config_conflicts",
+        "script_refresh_ruleset_manifest"
+      ],
+      "lock_key": "resource:rulesets/manifest.json",
+      "mode": "exclusive"
+    },
+    {
+      "resource": "rulesets/pending_queue.json",
+      "writers": [
+        "script_build_rulesets",
+        "script_lifecycle_audit",
+        "script_sync_ruleset_config_conflicts"
+      ],
+      "lock_key": "resource:rulesets/pending_queue.json",
+      "mode": "exclusive"
+    },
+    {
+      "resource": "sources/policy_source_overlap.json",
+      "writers": [
+        "script_audit_policy_source_overlap",
         "script_restore_automation_state",
         "workflow_auto_sync"
       ],
-      "lock_key": "resource:data/domain_candidates.json",
+      "lock_key": "resource:sources/policy_source_overlap.json",
       "mode": "exclusive",
-      "enforcement": "Current writes occur in the serialized auto_sync production pipeline under the central live fencing guard. import_request_observations and collect_domains use write_document without lease_required=True; restore path is separately fenced by the same production mutex.",
-      "note": "Lease must cover legacy base JSON, adjacent manifest, all content-addressed shard files, staging directories, manifest switch and old shard cleanup."
+      "enforcement": "Current auto_sync writes and archive restoration share the live production-pipeline fence.",
+      "note": "Audit artifact only; no source activation or policy mutation."
+    },
+    {
+      "resource": "sources/request_domain_observations.json",
+      "writers": [
+        "workflow_request_intake"
+      ],
+      "lock_key": "git-ref-cas:sources/request_domain_observations.json",
+      "mode": "optimistic_git_ref_compare_and_swap",
+      "enforcement": "request-intake now retains the immutable submitted batch in RUNNER_TEMP and, on each of up to three attempts, fetches latest main, resets the isolated workspace, replays the same run-ID idempotent merge, and performs a non-force push. The helper records observed_run_ids so a lost push response followed by workflow rerun is a no-op.",
+      "note": "A bare-Git integration test simulates two runner clones that start from the same base, race to push, and verifies the loser fetches/resets/replays and preserves both distinct and overlapping hostnames. Real GitHub Actions concurrent-run integration remains outstanding."
     },
     {
       "resource": "sources/rule_provenance.json logical document",
@@ -955,38 +1215,18 @@
       "mode": "exclusive",
       "enforcement": "Current production writes are serialized by the auto_sync logical/production-pipeline lease and central write guard. build_rule_provenance uses write_document with lease_required default false; restore uses explicit allowlisted archive paths.",
       "note": "Lease must cover base file, manifest, shard set, staging, atomic switch and cleanup."
-    },
-    {
-      "resource": "automation/unregistered_path_registry.json",
-      "writers": [
-        "script_production_intent",
-        "workflow_automation_watchdog"
-      ],
-      "lock_key": "git-blob-sha-cas:automation/unregistered_path_registry.json",
-      "mode": "compare_and_swap",
-      "enforcement": "Watchdog re-reads the current Contents Blob SHA on each of up to three attempts, merges the same run-scoped paths into the latest ledger, and performs a conditional Contents API PUT. Registration records observed_run_ids for retry idempotency. Exhausted conflicts fail closed.",
-      "note": "Bounded three-attempt CAS merge is implemented; distinct Watchdog runs are not serialized by their run-ID concurrency groups. Concurrent-run integration tests and no-lost-update proof remain outstanding."
-    },
-    {
-      "resource": "sources/request_domain_observations.json",
-      "writers": [
-        "workflow_request_intake"
-      ],
-      "lock_key": "git-ref-cas:sources/request_domain_observations.json",
-      "mode": "optimistic_git_ref_compare_and_swap",
-      "enforcement": "request-intake now retains the immutable submitted batch in RUNNER_TEMP and, on each of up to three attempts, fetches latest main, resets the isolated workspace, replays the same run-ID idempotent merge, and performs a non-force push. The helper records observed_run_ids so a lost push response followed by workflow rerun is a no-op.",
-      "note": "A bare-Git integration test simulates two runner clones that start from the same base, race to push, and verifies the loser fetches/resets/replays and preserves both distinct and overlapping hostnames. Real GitHub Actions concurrent-run integration remains outstanding."
     }
   ],
   "not_yet_proven": [
-    "Complete transitive write sets for every registered Python component; the inventory now records the direct writer entrypoints found in this pass but is not a machine-verified filesystem trace.",
+    "Complete transitive write sets for every registered Python component; the inventory now records 34 direct writer entrypoints found in this pass but is not a machine-verified filesystem trace.",
     "Dynamic path selection and caller-controlled output paths require runtime enforcement tests, especially diagnosis, incident-state, review-cursor and repair utilities.",
     "Cross-workflow request-intake and Watchdog writes to automation/unregistered_path_registry.json need concurrent-run integration tests proving bounded CAS conflict recovery and no lost updates.",
     "Cross-workflow request-intake pushes to sources/request_domain_observations.json use run-ID concurrency groups plus git fetch/rebase/push retry; concurrent same-domain and different-domain runs, conflict retries and retry exhaustion still need integration proof.",
     "Shared JSON document writers for data/domain_candidates.json and sources/rule_provenance.json need compatible per-document leases, including all manifest/shard/staging/cleanup mutations and restore paths.",
     "All lifecycle, archive, ruleset list, manifest and report writers must be enumerated against actual workflow call sites; auto_sync's central write fence does not prove independent non-auto_sync writers.",
     "Atomic multi-resource lease acquisition and compatibility of per-resource locks across all independent/cross-workflow writers remain unproven.",
-    "Static entrypoint inventory does not prove absence of unregistered dynamic writes, subprocess writes, external API mutations or filesystem writes hidden behind imported helpers."
+    "Static entrypoint inventory does not prove absence of unregistered dynamic writes, subprocess writes, external API mutations or filesystem writes hidden behind imported helpers.",
+    "All remaining registered Python components must be checked for indirect writes through imported helpers, subprocesses and dynamically selected outputs; report-only writers and active source-registry writers must remain distinct."
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
@@ -994,7 +1234,7 @@
     "program_registry_blob_sha": "279f8d14d1aad62d1342ba07063aa8d52e410a80",
     "execution_adapters_blob_sha": "45967d0d88392369252b7a4427aaba41d9dcdda8",
     "added_after_release_baseline": true,
-    "note": "Expanded the direct writer inventory from 15 to 27 Python entrypoints, including lifecycle state, imported request observations, rule provenance, restore, safe repair, diagnostics, incident state, review cursor, production intent, scheduler temp artifacts, dashboard snapshot and step summary. This remains a partial static review; cross-workflow CAS/rebase integration evidence and full transitive write proof are still blocking. Watchdog unregistered-path registration now re-reads and merges the latest Blob SHA on up to three conditional PUT attempts; registration is idempotent per observed run ID, while true concurrent-run integration proof remains outstanding. Request-intake now replays the same run-ID idempotent hostname batch from latest main on bounded non-force Git-ref CAS attempts; bare-Git two-run simulation covers overlapping and distinct hostnames.",
+    "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking.",
     "reviewed_at": "2026-11-04",
     "central_write_guard_test": "tests/test_fenced_file_writer.py::test_every_registered_python_component_installs_the_guard"
   },
