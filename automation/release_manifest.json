@@ -48,6 +48,18 @@
     "source_assessor": {
       "path": "scripts/assess_sources.py",
       "git_blob_sha": "5b8e0f0fd3d31312990b889a761b1a1ceab16ffb"
+    },
+    "task_queue_validator": {
+      "path": "scripts/task_queue.py",
+      "git_blob_sha": "3d433ed9438925daa268f286339026c41dd1d5c0"
+    },
+    "task_result_verifier": {
+      "path": "scripts/task_result_verifier.py",
+      "git_blob_sha": "003590eb4385a680cc347f38776838c688027cdb"
+    },
+    "assessment_checkpoint_contract": {
+      "path": "automation/capability_contracts/assess_sources.json",
+      "git_blob_sha": "eac9fb491f4f79580099c042bc2f733fb68ebc1c"
     }
   },
   "compatibility": {
