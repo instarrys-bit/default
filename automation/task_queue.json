@@ -2,11 +2,11 @@
   "resource_leases": {
     "data/source_assessments_runtime.json": {
       "acquired_at": "2026-11-04T00:28:16Z",
-      "expires_at": "2026-11-04T00:36:16Z",
+      "expires_at": "2026-11-04T00:36:29Z",
       "fencing_token": 2,
       "lease_id": "5f102e8d96ca2b0bb7b3a7265d658516",
       "released_at": null,
-      "renewed_at": "2026-11-04T00:28:16Z",
+      "renewed_at": "2026-11-04T00:28:29Z",
       "status": "ACTIVE",
       "task_id": "task_57fb8781b99241818ff96c02",
       "task_lease_token": "2d0d3590516212d7af2b94c886638b96",
@@ -14,11 +14,11 @@
     },
     "logical/production-pipeline": {
       "acquired_at": "2026-11-04T00:28:16Z",
-      "expires_at": "2026-11-04T00:36:16Z",
+      "expires_at": "2026-11-04T00:36:29Z",
       "fencing_token": 2,
       "lease_id": "5f102e8d96ca2b0bb7b3a7265d658516",
       "released_at": null,
-      "renewed_at": "2026-11-04T00:28:16Z",
+      "renewed_at": "2026-11-04T00:28:29Z",
       "status": "ACTIVE",
       "task_id": "task_57fb8781b99241818ff96c02",
       "task_lease_token": "2d0d3590516212d7af2b94c886638b96",
@@ -26,11 +26,11 @@
     },
     "reports/source-assessment.md": {
       "acquired_at": "2026-11-04T00:28:16Z",
-      "expires_at": "2026-11-04T00:36:16Z",
+      "expires_at": "2026-11-04T00:36:29Z",
       "fencing_token": 2,
       "lease_id": "5f102e8d96ca2b0bb7b3a7265d658516",
       "released_at": null,
-      "renewed_at": "2026-11-04T00:28:16Z",
+      "renewed_at": "2026-11-04T00:28:29Z",
       "status": "ACTIVE",
       "task_id": "task_57fb8781b99241818ff96c02",
       "task_lease_token": "2d0d3590516212d7af2b94c886638b96",
@@ -38,18 +38,18 @@
     },
     "sources/source_assessments.json": {
       "acquired_at": "2026-11-04T00:28:16Z",
-      "expires_at": "2026-11-04T00:36:16Z",
+      "expires_at": "2026-11-04T00:36:29Z",
       "fencing_token": 2,
       "lease_id": "5f102e8d96ca2b0bb7b3a7265d658516",
       "released_at": null,
-      "renewed_at": "2026-11-04T00:28:16Z",
+      "renewed_at": "2026-11-04T00:28:29Z",
       "status": "ACTIVE",
       "task_id": "task_57fb8781b99241818ff96c02",
       "task_lease_token": "2d0d3590516212d7af2b94c886638b96",
       "worker_id": "assessment-canary-41746911914"
     }
   },
-  "revision": 71,
+  "revision": 72,
   "schema_version": 1,
   "tasks": [
     {
@@ -1020,18 +1020,14 @@
         "max_urls": 1
       },
       "last_error": null,
-      "lease": {
-        "expires_at": "2026-11-04T00:36:16Z",
-        "owner": "assessment-canary-41746911914",
-        "token": "2d0d3590516212d7af2b94c886638b96"
-      },
+      "lease": null,
       "max_attempts": 1,
       "not_before": "2026-11-04T00:28:14Z",
       "priority": 100,
       "requester_program_id": "workflow_automation_watchdog",
       "resource_lease": {
         "acquired_at": "2026-11-04T00:28:16Z",
-        "expires_at": "2026-11-04T00:36:16Z",
+        "expires_at": "2026-11-04T00:36:29Z",
         "lease_seconds": 480,
         "resources": {
           "data/source_assessments_runtime.json": {
@@ -1053,15 +1049,43 @@
         },
         "status": "ACTIVE"
       },
-      "result": null,
+      "result": {
+        "activated": 0,
+        "artifact_publication": {
+          "commit_sha": "f2a2e1e192f97cd3a29498afc6e47baa1f9ae625",
+          "paths": [
+            "reports/source-assessment.md",
+            "sources/source_assessments.json"
+          ],
+          "published": true
+        },
+        "artifact_verification": {
+          "activation_count": 0,
+          "assessed": 1,
+          "historical_assessments": 9019,
+          "report_bytes": 1370,
+          "valid": true,
+          "verified_artifacts": [
+            "data/source_assessments_runtime.json",
+            "sources/source_assessments.json",
+            "reports/source-assessment.md"
+          ]
+        },
+        "assessed": 1,
+        "bytes_read": 900520,
+        "parser_candidates": 1,
+        "policy_candidates": 0
+      },
       "state_history": [
         "QUEUED",
-        "CLAIMED"
+        "CLAIMED",
+        "VERIFYING"
       ],
-      "status": "CLAIMED",
+      "status": "VERIFYING",
       "target_program_id": "script_assess_sources",
       "task_id": "task_57fb8781b99241818ff96c02",
-      "trace_id": "73e9aca62976469eabd6603d54f3cfc1"
+      "trace_id": "73e9aca62976469eabd6603d54f3cfc1",
+      "verification": null
     }
   ]
 }
