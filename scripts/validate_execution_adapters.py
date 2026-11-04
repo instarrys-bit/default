@@ -82,9 +82,12 @@ def validate_execution_adapters(root=ROOT,adapters_path=None,registry_path=None)
         required_read_only=a.get("required_read_only_resources",[])
         if not isinstance(required_read_only,list) or any(path not in read_only for path in required_read_only) or len(required_read_only)!=len(set(required_read_only)): raise ValueError(f"{tid} required_read_only_resources must be a unique subset of read_only_resources")
         publish=a.get("publish_resources",[])
+        write_resources=a.get("write_resources",[])
         resource_contract=a.get("resource_contract")
         resource_keys=resource_contract.get("resource_keys",[]) if isinstance(resource_contract,dict) else []
-        if not isinstance(publish,list) or len(publish)!=len(set(publish)) or any(path not in resource_keys or path=="shadowrocket/ss.conf" for path in publish): raise ValueError(f"{tid} publish_resources must be a unique subset of exclusive non-config resource keys")
+        if (not isinstance(write_resources,list) or len(write_resources)!=len(set(write_resources))
+                or any(path not in resource_keys or path=="shadowrocket/ss.conf" for path in write_resources)): raise ValueError(f"{tid} write_resources must be a unique subset of exclusive non-config resource keys")
+        if not isinstance(publish,list) or len(publish)!=len(set(publish)) or any(path not in write_resources for path in publish): raise ValueError(f"{tid} publish_resources must be a unique subset of write_resources")
         if publish:
             completion=a.get("completion",{})
             verifier=completion.get("artifact_verifier") if isinstance(completion,dict) else None
