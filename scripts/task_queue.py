@@ -165,6 +165,18 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
                 raise ValueError(f"{task_id}.assessment_checkpoint last URL is not completed")
             if len(json.dumps(checkpoint, ensure_ascii=False).encode("utf-8")) > 30_000_000:
                 raise ValueError(f"{task_id}.assessment_checkpoint exceeds its storage bound")
+        resolution = task.get("resolution")
+        if resolution is not None:
+            if (status != "CANCELLED" or "DEAD_LETTER" not in history[:-1]
+                    or not isinstance(resolution, dict)
+                    or resolution.get("schema_version") != 1
+                    or resolution.get("disposition") != "superseded"
+                    or not isinstance(resolution.get("reason"), str)
+                    or not resolution["reason"].strip()
+                    or not isinstance(resolution.get("superseded_by_main_sha"), str)
+                    or not re.fullmatch(r"[0-9a-f]{40}", resolution.get("superseded_by_main_sha", ""))):
+                raise ValueError(f"{task_id}.resolution is invalid for a superseded DEAD_LETTER task")
+            parse_utc(resolution.get("resolved_at"), f"{task_id}.resolution.resolved_at")
         checkpoint_summary = task.get("assessment_checkpoint_summary")
         if checkpoint_summary is not None:
             if (target != "script_assess_sources" or status != "SUCCEEDED"
@@ -187,7 +199,7 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
             "FAILED": {"QUEUED", "DEAD_LETTER", "CANCELLED"},
             "SUCCEEDED": set(),
             "CANCELLED": set(),
-            "DEAD_LETTER": {"VERIFYING"},
+            "DEAD_LETTER": {"VERIFYING", "CANCELLED"},
         }
         for previous, current in zip(history, history[1:]):
             if current not in allowed_transitions[previous]:
