@@ -246,8 +246,9 @@
       },
       "timeout_seconds": 240,
       "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_idempotent_checkpoint_recovery"
+        "max_attempts": 2,
+        "policy": "bounded_retry_same_predecessor_batch",
+        "description": "Up to two retries; each attempt derives the same bounded URL batch from the immutable discovery workflow run ID and artifact digest."
       },
       "completion": {
         "success_condition": "exit_zero_schema_valid_and_independent_artifact_verifier_valid",
