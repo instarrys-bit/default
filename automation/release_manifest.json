@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
+  "release_id": "shadowrocket-automation-baseline-2026.11.05.2",
   "release_status": "baseline_snapshot",
-  "created_on": "2026-11-04",
-  "purpose": "Pin the Watchdog workflow after task-scoped single-use manual authorization and bounded CAS retries for the unregistered-path ledger.",
+  "created_on": "2026-11-05",
+  "purpose": "Pin the production automation after combined Python and shell/Git persistent repository write tracing.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
