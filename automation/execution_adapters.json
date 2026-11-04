@@ -1291,12 +1291,12 @@
         "mode": "exclusive",
         "resource_keys": [
           "logical/production-pipeline",
-          "automation/review_cursor_checkpoint.json"
+          "sources/review_cursor.json"
         ],
         "lease_seconds": 21600,
         "fencing_required": true,
         "enforcement_boundary": "live task-queue proof checked by the audit gate and immediately before publish push",
-        "coverage": "Exclusive logical/production-pipeline lease plus automation/review_cursor_checkpoint.json lease; audit, publish and failed-run cursor persistence share the same Watchdog-issued fencing proof."
+        "coverage": "Exclusive logical/production-pipeline lease plus the shared sources/review_cursor.json lease; audit cursor writes and failed-run checkpoint persistence use the same Watchdog-issued fencing proof."
       }
     },
     {
