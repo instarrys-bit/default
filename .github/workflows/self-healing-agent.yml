@@ -330,8 +330,7 @@ jobs:
           agent_issues="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select(.title | startswith("Self-healing agent failure: config_validator (source run ")) | select(.body | contains("shadowrocket-automation:agent_failure;workflow=config_validator;source_run_id=")) | select(((.body | capture("shadowrocket-automation:agent_failure;workflow=config_validator;source_run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
           while IFS= read -r issue; do
             [ -n "$issue" ] || continue
-            gh issue comment "$issue" --repo "$REPO" --body "The config-baseline validator has recovered on a later main-branch run: $RUN_URL"
-            gh issue close "$issue" --repo "$REPO"
+            gh issue comment "$issue" --repo "$REPO" --body "The config-baseline validator has recovered on a later main-branch run: $RUN_URL. This self-healing-agent incident remains open pending verified agent recovery."
           done <<< "$agent_issues"
 
 
@@ -401,6 +400,5 @@ jobs:
           agent_issues="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select(.title | startswith("Self-healing agent failure: deterministic_audit (source run ")) | select(.body | contains("shadowrocket-automation:agent_failure;workflow=deterministic_audit;source_run_id=")) | select(((.body | capture("shadowrocket-automation:agent_failure;workflow=deterministic_audit;source_run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
           while IFS= read -r issue; do
             [ -n "$issue" ] || continue
-            gh issue comment "$issue" --repo "$REPO" --body "The deterministic audit and publish have recovered on a later main-branch run: $RUN_URL"
-            gh issue close "$issue" --repo "$REPO"
+            gh issue comment "$issue" --repo "$REPO" --body "The deterministic audit and publish have recovered on a later main-branch run: $RUN_URL. This self-healing-agent incident remains open pending verified agent recovery."
           done <<< "$agent_issues"
