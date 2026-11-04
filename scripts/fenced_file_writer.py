@@ -67,7 +67,7 @@ def _record_write_trace(path, operation: str) -> None:
         destination = Path(trace_path)
         destination.parent.mkdir(parents=True, exist_ok=True)
         with _ORIGINAL_OPEN(destination, "a", encoding="utf-8") as stream:
-            stream.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\\n")
+            stream.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
     finally:
         _TRACE_ACTIVE = False
 
