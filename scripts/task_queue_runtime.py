@@ -79,7 +79,7 @@ def manual_authorization_context_from_environment():
         "repository": "GITHUB_REPOSITORY", "workflow_ref": "GITHUB_WORKFLOW_REF",
         "event": "GITHUB_EVENT_NAME", "actor": "GITHUB_ACTOR",
         "actor_id": "GITHUB_ACTOR_ID", "run_id": "GITHUB_RUN_ID",
-        "run_attempt": "GITHUB_RUN_ATTEMPT", "ref": "GITHUB_REF", "sha": "GITHUB_SHA",
+        "run_attempt": "GITHUB_RUN_ATTEMPT", "ref": "GITHUB_REF", "sha": "GITHUB_SHA", "manual_audit_requested": "GITHUB_MANUAL_AUDIT_REQUEST",
     }.items()}
 
 
@@ -98,7 +98,7 @@ def validate_manual_authorization(task, context=None):
         return
     context = context if isinstance(context, dict) else manual_authorization_context_from_environment()
     required = ("repository", "workflow_ref", "event", "actor", "actor_id",
-                "run_id", "run_attempt", "ref", "sha")
+                "run_id", "run_attempt", "ref", "sha", "manual_audit_requested")
     if any(not isinstance(context.get(k), str) or not context[k].strip() for k in required):
         raise ValueError("trusted GitHub Actions run identity is incomplete")
     expected_workflow = f'{context["repository"]}/.github/workflows/automation-watchdog.yml@refs/heads/main'
@@ -117,6 +117,7 @@ def validate_manual_authorization(task, context=None):
         "authorization_event": context["event"],
         "authorization_ref": context["ref"],
         "authorization_head_sha": context["sha"],
+        "authorization_requested": True,
         "baseline_source_event": context["event"],
         "baseline_source_sha": context["sha"],
     }
