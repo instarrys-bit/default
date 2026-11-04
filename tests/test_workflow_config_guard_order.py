@@ -115,11 +115,11 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
 
     def test_config_conflicts_are_checked_before_and_after_rule_mutations(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        pre = workflow.index("Remove published and queued rules that conflict with ss.conf")
+        pre = workflow.index("Remove published and queued rules that conflict with uu.conf")
         collect = workflow.index("Collect and cross-check all enabled domain sources")
         build = workflow.index("Build standalone DIRECT, PROXY and REJECT rule sets")
         lifecycle = workflow.index("Run conservative lifecycle audit and selectable restoration")
-        final = workflow.index("Reconcile final ss.conf scope coverage after all rule mutations")
+        final = workflow.index("Reconcile final uu.conf scope coverage after all rule mutations")
         validate = workflow.index("Validate Shadowrocket config structure")
         self.assertLess(pre, collect)
         self.assertLess(collect, build)
@@ -142,8 +142,8 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
 
     def test_publisher_explicitly_protects_user_managed_config(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn('git diff --quiet "$GITHUB_SHA" -- shadowrocket/ss.conf', workflow)
-        self.assertIn('git diff --cached --quiet "$GITHUB_SHA" -- shadowrocket/ss.conf', workflow)
+        self.assertIn('git diff --quiet "$GITHUB_SHA" -- modules/uu.conf', workflow)
+        self.assertIn('git diff --cached --quiet "$GITHUB_SHA" -- modules/uu.conf', workflow)
 
 
     def test_audit_incidents_close_only_after_full_audit_and_publish_success(self):
@@ -159,9 +159,9 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
 
     def test_config_reconciliation_does_not_evaluate_rule_precedence(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn("Reconcile final ss.conf scope coverage after all rule mutations", workflow)
+        self.assertIn("Reconcile final uu.conf scope coverage after all rule mutations", workflow)
         self.assertIn("Audit candidate scope coverage against user config (read-only)", workflow)
-        self.assertNotIn("ss.conf precedence", workflow)
+        self.assertNotIn("uu.conf precedence", workflow)
         audit = (ROOT / "scripts" / "audit_ruleset_config_overlap.py").read_text(encoding="utf-8")
         self.assertIn("No rule order, first-match winner, or precedence is evaluated.", audit)
         sync = (ROOT / "scripts" / "sync_ruleset_config_conflicts.py").read_text(encoding="utf-8")
@@ -189,7 +189,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
     def test_non_main_config_validation_does_not_approve_or_edit_owner_baseline(self):
         validation = (ROOT / ".github" / "workflows" / "validate-config.yml").read_text(encoding="utf-8")
         self.assertIn("Protect owner-controlled config baseline in non-main validation", validation)
-        self.assertIn('git diff --quiet "$base_sha" "$head_sha" -- shadowrocket/ss.conf', validation)
+        self.assertIn('git diff --quiet "$base_sha" "$head_sha" -- modules/uu.conf', validation)
         self.assertIn('base.get("managed_config_guard") != head.get("managed_config_guard")', validation)
         self.assertIn("github.ref == 'refs/heads/main'", validation)
         self.assertIn("Verify owner-approved config baseline", validation)
@@ -218,8 +218,8 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         production_inputs = (ROOT / "automation" / "production_inputs.json").read_text(encoding="utf-8")
         production_intent = (ROOT / "scripts" / "production_intent.py").read_text(encoding="utf-8")
         scheduler = (ROOT / "scripts" / "task_scheduler.py").read_text(encoding="utf-8")
-        self.assertIn('"shadowrocket/ss.conf"', watchdog)
-        self.assertIn('"shadowrocket/ss.conf"', production_inputs)
+        self.assertIn('"modules/uu.conf"', watchdog)
+        self.assertIn('"modules/uu.conf"', production_inputs)
         self.assertIn('INPUT_CHANGED|SCHEDULE_DUE)', watchdog)
         self.assertIn('enqueue-auto-sync', watchdog)
         self.assertIn('--revision "$ORIGIN_SHA"', watchdog)
@@ -227,7 +227,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn('revision: str | None = None', production_intent)
         self.assertIn('path_classification["status"] == "INPUT_CHANGED"', production_intent)
         self.assertIn('if path in inputs:', production_intent)
-        self.assertIn('"shadowrocket/ss.conf"', production_inputs)
+        self.assertIn('"modules/uu.conf"', production_inputs)
         self.assertIn('protected_config_digest(root)', scheduler)
         self.assertIn('ensure_protected_config_unchanged', scheduler)
 
@@ -236,12 +236,12 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         # monitor or a second workflow.
         pre_sync = WORKFLOW.read_text(encoding="utf-8")
         self.assertEqual(pre_sync.count("python3 scripts/sync_ruleset_config_conflicts.py"), 2)
-        self.assertIn("Remove published and queued rules that conflict with ss.conf", pre_sync)
+        self.assertIn("Remove published and queued rules that conflict with uu.conf", pre_sync)
         self.assertIn('BASELINE_SOURCE_SHA: ${{ inputs.baseline_source_sha }}', pre_sync)
         self.assertIn('(\"baseline_source_sha\", \"BASELINE_SOURCE_SHA\")', pre_sync)
         self.assertIn("does not match the durable Watchdog task input", pre_sync)
         self.assertIn("not a full Git commit SHA", pre_sync)
-        self.assertIn("Reconcile final ss.conf scope coverage after all rule mutations", pre_sync)
+        self.assertIn("Reconcile final uu.conf scope coverage after all rule mutations", pre_sync)
         self.assertIn("group: shadowrocket-main-writer", pre_sync)
 
 
