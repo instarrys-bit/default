@@ -20,7 +20,7 @@ class ConfigBaselineRegistrationTests(unittest.TestCase):
         "GITHUB_SHA": "b" * 40,
     }, clear=True)
     def test_owner_push_changing_ss_conf_is_approved(self, mocked):
-        mocked.return_value.stdout = "shadowrocket/ss.conf\n"
+        mocked.return_value.stdout = "modules/uu.conf\n"
         self.assertTrue(owner_approved_push_changed_config())
 
     @patch("register_config_baseline.subprocess.run")
@@ -65,7 +65,7 @@ class ConfigBaselineRegistrationTests(unittest.TestCase):
             SimpleNamespace(returncode=0, stdout="instarrys-bit\n"),
             SimpleNamespace(returncode=0, stdout="instarrys-bit\n"),
         ]
-        guard = {"path": "shadowrocket/ss.conf", "last_user_approved_baseline_update": {"commit_sha": "c" * 40}}
+        guard = {"path": "modules/uu.conf", "last_user_approved_baseline_update": {"commit_sha": "c" * 40}}
         self.assertEqual(owner_approved_config_history(guard), ["a" * 40, "b" * 40])
 
     @patch("register_config_baseline.subprocess.run")
@@ -84,7 +84,7 @@ class ConfigBaselineRegistrationTests(unittest.TestCase):
             SimpleNamespace(returncode=0, stdout=("a" * 40) + "\n"),
             SimpleNamespace(returncode=0, stdout="someone-else\n"),
         ]
-        guard = {"path": "shadowrocket/ss.conf", "last_user_approved_baseline_update": {"commit_sha": "c" * 40}}
+        guard = {"path": "modules/uu.conf", "last_user_approved_baseline_update": {"commit_sha": "c" * 40}}
         self.assertEqual(owner_approved_config_history(guard), [])
 
     @patch("register_config_baseline.subprocess.run")
@@ -98,7 +98,7 @@ class ConfigBaselineRegistrationTests(unittest.TestCase):
         "GITHUB_SHA": "e" * 40,
     }, clear=True)
     def test_scheduled_run_cannot_recover_config_history(self, mocked):
-        guard = {"path": "shadowrocket/ss.conf", "last_user_approved_baseline_update": {"commit_sha": "c" * 40}}
+        guard = {"path": "modules/uu.conf", "last_user_approved_baseline_update": {"commit_sha": "c" * 40}}
         self.assertEqual(owner_approved_config_history(guard), [])
         mocked.assert_not_called()
 
