@@ -133,7 +133,7 @@
         },
         {
           "order": 219,
-          "name": "Register repository-owner-approved ss.conf changes (never edit the config)",
+          "name": "Register repository-owner-approved uu.conf changes (never edit the config)",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
             "script_register_config_baseline"
@@ -163,7 +163,7 @@
         },
         {
           "order": 279,
-          "name": "Remove published and queued rules that conflict with ss.conf",
+          "name": "Remove published and queued rules that conflict with uu.conf",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
             "script_sync_ruleset_config_conflicts",
@@ -294,7 +294,7 @@
         },
         {
           "order": 343,
-          "name": "Reconcile final ss.conf scope coverage after all rule mutations",
+          "name": "Reconcile final uu.conf scope coverage after all rule mutations",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
             "script_sync_ruleset_config_conflicts",
