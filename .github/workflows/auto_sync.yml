@@ -545,7 +545,6 @@ jobs:
             reports/ruleset-reference-audit.json
             reports/ruleset-config-conflict-sync.md
             reports/ruleset-config-conflict-sync.json
-            sources/policy.json
             reports/ruleset-config-overlap-audit.md
             reports/ruleset-config-overlap-audit.json
             reports/source-lineage-audit.json
