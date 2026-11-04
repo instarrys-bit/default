@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from remote_task_queue_runtime import (
-    claim_remote, complete_remote, enqueue_remote, recover_remote,
+    claim_remote, complete_remote, enqueue_remote, recover_remote, resolve_superseded_dead_letters,
 )
 
 
@@ -272,6 +272,73 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
         record = self.store.document["resource_leases"]["rulesets/manifest.json"]
         self.assertEqual(record["status"], "RELEASED")
         self.assertEqual(record["fencing_token"], task["resource_lease"]["resources"]["rulesets/manifest.json"]["fencing_token"])
+
+    def create_dead_letter_auto_sync(self, source_sha, idempotency_key):
+        created = enqueue_remote(self.payload(
+            idempotency_key=idempotency_key,
+            requester_program_id="workflow_automation_watchdog",
+            target_program_id="workflow_auto_sync",
+            capability="deterministic_audit",
+            input={"baseline_source_event": "push", "baseline_source_sha": source_sha},
+        ), self.store, self.registry, self.now)
+        task_id = created["task"]["task_id"]
+        claimed = claim_remote("watchdog-worker", self.store, self.registry,
+                               eligible_task_ids={task_id}, now=self.now)
+        return complete_remote(
+            task_id, "watchdog-worker", claimed["lease"]["token"],
+            success=False,
+            error={"type": "workflow_run_failed", "message": "old workflow failed",
+                   "evidence": {"status": "completed", "conclusion": "failure", "run_id": 456}},
+            store=self.store, registry=self.registry, now=self.now,
+        )
+
+    def test_superseded_dead_letter_is_cancelled_with_auditable_current_main_resolution(self):
+        old_sha = "a" * 40
+        current_sha = "b" * 40
+        task = self.create_dead_letter_auto_sync(old_sha, "production:old-main:1")
+        self.assertEqual(task["status"], "DEAD_LETTER")
+        resolved = resolve_superseded_dead_letters(self.store, self.registry, current_sha, self.now)
+        self.assertEqual([item["task_id"] for item in resolved], [task["task_id"]])
+        saved = self.store.document["tasks"][0]
+        self.assertEqual(saved["status"], "CANCELLED")
+        self.assertEqual(saved["state_history"][-2:], ["DEAD_LETTER", "CANCELLED"])
+        self.assertEqual(saved["resolution"]["disposition"], "superseded")
+        self.assertEqual(saved["resolution"]["superseded_by_main_sha"], current_sha)
+        self.assertEqual(saved["resolution"]["evidence"]["original_source_sha"], old_sha)
+        self.assertEqual(resolve_superseded_dead_letters(self.store, self.registry, current_sha, self.now), [])
+
+    def test_dead_letter_for_current_main_is_not_superseded(self):
+        current_sha = "c" * 40
+        task = self.create_dead_letter_auto_sync(current_sha, "production:current-main:1")
+        resolved = resolve_superseded_dead_letters(self.store, self.registry, current_sha, self.now)
+        self.assertEqual(resolved, [])
+        self.assertEqual(self.store.document["tasks"][0]["status"], "DEAD_LETTER")
+
+    def test_legacy_assessment_canary_without_predecessor_is_resolved_not_replayed(self):
+        self.registry["programs"].append({
+            "id": "script_assess_sources", "capabilities": ["source_assessment"],
+            "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
+                              "max_attempts": 1, "timeout_seconds": 240},
+        })
+        created = enqueue_remote(self.payload(
+            idempotency_key="legacy-assessment-canary:once",
+            requester_program_id="workflow_automation_watchdog",
+            target_program_id="script_assess_sources",
+            capability="source_assessment",
+            input={"max_urls": 1},
+        ), self.store, self.registry, self.now)
+        task_id = created["task"]["task_id"]
+        claimed = claim_remote("assessor-worker", self.store, self.registry,
+                               eligible_task_ids={task_id}, now=self.now)
+        complete_remote(
+            task_id, "assessor-worker", claimed["lease"]["token"],
+            success=False, error={"type": "artifact_publication_failed", "message": "legacy canary"},
+            store=self.store, registry=self.registry, now=self.now,
+        )
+        resolved = resolve_superseded_dead_letters(self.store, self.registry, "d" * 40, self.now)
+        self.assertEqual([item["task_id"] for item in resolved], [task_id])
+        self.assertEqual(self.store.document["tasks"][0]["status"], "CANCELLED")
+        self.assertIn("no trusted discovery predecessor", self.store.document["tasks"][0]["resolution"]["reason"])
 
     def test_empty_claim_and_recovery_do_not_write(self):
         self.assertIsNone(self.claim("worker-a", self.now))
