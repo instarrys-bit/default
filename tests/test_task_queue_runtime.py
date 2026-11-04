@@ -135,7 +135,7 @@ class TaskQueueRuntimeTests(unittest.TestCase):
         task = self.manual_authorization_task(
             authorization_target_program_id="script_target"
         )
-        with self.assertRaisesRegex(ValueError, "workflow_auto_sync"):
+        with self.assertRaisesRegex(ValueError, "authorization_target_program_id"):
             validate_manual_authorization(task, context)
         task = self.manual_authorization_task()
         task["target_program_id"] = "script_target"
