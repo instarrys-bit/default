@@ -244,8 +244,7 @@
       "source": "scripts/discover_sources.py",
       "writes": [
         "sources/discovered_sources.json",
-        "reports/source-discovery.md",
-        "GITHUB_STEP_SUMMARY (if set; warning path overwrites, success path appends)"
+        "reports/source-discovery.md"
       ],
       "document_store": [
         "sources/discovered_sources.json"
@@ -261,8 +260,11 @@
       "side_effects": [
         "Bounded GitHub repository search and repository-tree/README reads; no source activation."
       ],
-      "evidence": "main() reads existing discovery inventory, then calls write_document(OUTPUT, merged, 'candidates') and writes REPORT.",
-      "write_boundary_fencing": "Discovery calls write_document with lease_required=True for the logical document, covering the base JSON, adjacent manifest, content-addressed shards, staging, atomic switches and old-shard cleanup; it also asserts the live report lease immediately before writing reports/source-discovery.md. The fenced_file_writer audit hook independently checks each repository-local mutation. GITHUB_STEP_SUMMARY remains per-run ephemeral output."
+      "evidence": "main() reads the prior discovery inventory, writes the merged logical document through json_document_store, writes reports/source-discovery.md, and optionally writes the per-run GITHUB_STEP_SUMMARY.",
+      "write_boundary_fencing": "Discovery calls write_document with lease_required=True for the logical document, covering the base JSON, adjacent manifest, content-addressed shards, staging, atomic switches and old-shard cleanup; it also asserts the live report lease immediately before writing reports/source-discovery.md. The fenced_file_writer audit hook independently checks each repository-local mutation. GITHUB_STEP_SUMMARY remains per-run ephemeral output.",
+      "ephemeral_outputs": [
+        "GITHUB_STEP_SUMMARY (runner-local; warning path overwrites and success path appends)"
+      ]
     },
     {
       "program_id": "script_lifecycle_audit",

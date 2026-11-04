@@ -93,6 +93,18 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertFalse(restore["orchestration"]["enabled"])
         self.assertFalse(next(item for item in adapters["adapters"] if item["target_program_id"] == "script_restore_automation_state")["enabled"])
 
+    def test_discovery_step_summary_is_not_a_shared_repository_resource(self):
+        audit = load_json("automation/resource_ownership_audit.json")
+        writes = load_json("automation/resource_write_sets.json")
+        group = next(item for item in audit["resource_groups"] if item["id"] == "source_discovery_artifacts")
+        entry = next(item for item in writes["confirmed_write_sets"] if item["program_id"] == "script_discover_sources")
+        self.assertNotIn("GITHUB_STEP_SUMMARY", group["paths"])
+        self.assertNotIn("GITHUB_STEP_SUMMARY", entry["writes"])
+        self.assertTrue(any(item.startswith("GITHUB_STEP_SUMMARY") for item in entry["ephemeral_outputs"]))
+        self.assertIn("reports/source-discovery.md", entry["writes"])
+        self.assertIn("lease_required=True", entry["write_boundary_fencing"])
+        self.assertIn("reports/source-discovery.md", entry["write_boundary_fencing"])
+
     def test_dashboard_report_writer_is_registered_in_shared_report_ownership(self):
         audit = load_json("automation/resource_ownership_audit.json")
         writes = load_json("automation/resource_write_sets.json")
