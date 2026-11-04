@@ -212,6 +212,7 @@
         "sources/request_domain_observations.json"
       ],
       "known_writers": [
+        "script_production_intent",
         "workflow_request_intake"
       ],
       "lock_key": "git-ref-cas:sources/request_domain_observations.json",
