@@ -306,5 +306,68 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(audit_group["status"], "sha_cas_control_plane_reviewed")
         self.assertEqual(ownership["status"], "partial_static_audit")
 
+
+    def test_newly_identified_direct_writers_are_registered_with_scoped_outputs(self):
+        writes = load_json("automation/resource_write_sets.json")
+        entries = {item["program_id"]: item for item in writes["confirmed_write_sets"]}
+        required = {
+            "script_lifecycle_gate",
+            "script_import_request_observations",
+            "script_build_rule_provenance",
+            "script_restore_automation_state",
+            "script_apply_safe_repair",
+            "script_diagnose_workflow_failure",
+            "script_incident_state",
+            "script_persist_review_cursor",
+            "script_production_intent",
+            "script_task_scheduler",
+            "script_build_dashboard_snapshot",
+            "script_append_step_summary",
+        }
+        self.assertTrue(required.issubset(entries))
+        self.assertEqual(entries["script_lifecycle_gate"]["writes"], ["rulesets/lifecycle_state.json"])
+        self.assertIn("data/domain_candidates.json", entries["script_import_request_observations"]["writes"])
+        self.assertIn("sources/rule_provenance.json", entries["script_build_rule_provenance"]["writes"])
+        self.assertIn("logical/production-pipeline", entries["script_restore_automation_state"]["lease_keys"])
+        self.assertEqual(entries["script_apply_safe_repair"]["publish_resources"], [])
+        self.assertTrue(entries["script_diagnose_workflow_failure"]["ephemeral_unpublished_resources"])
+        self.assertTrue(entries["script_incident_state"]["ephemeral_unpublished_resources"])
+        self.assertIn("$RUNNER_TEMP/review_cursor.json", entries["script_persist_review_cursor"]["ephemeral_unpublished_resources"])
+        self.assertEqual(entries["script_build_dashboard_snapshot"]["writes"], ["dashboard/data.json"])
+        self.assertEqual(entries["script_append_step_summary"]["writes"], ["$GITHUB_STEP_SUMMARY"])
+        self.assertTrue(all("modules/uu.conf" not in item["writes"] for item in entries.values()))
+        self.assertEqual(writes["status"], "partial_static_entrypoint_review")
+
+    def test_shared_document_and_workflow_cas_gaps_are_explicit(self):
+        writes = load_json("automation/resource_write_sets.json")
+        audit = load_json("automation/resource_ownership_audit.json")
+        groups = {item["id"]: item for item in audit["resource_groups"]}
+        self.assertIn("data/domain_candidates.json logical document", {item["resource"] for item in writes["confirmed_shared_write_groups"]})
+        self.assertIn("sources/rule_provenance.json logical document", {item["resource"] for item in writes["confirmed_shared_write_groups"]})
+        self.assertEqual(groups["domain_candidate_buffer"]["status"], "known_shared_writers_central_pipeline_fence_only")
+        self.assertEqual(groups["rule_provenance_ledger"]["status"], "known_shared_writers_central_pipeline_fence_only")
+        self.assertEqual(groups["watchdog_unregistered_path_registry"]["status"], "cas_conflict_fails_closed_concurrency_unproven")
+        self.assertEqual(groups["request_intake_observations"]["status"], "rebase_retry_implemented_concurrent_integration_unproven")
+        self.assertEqual(audit["status"], "partial_static_audit")
+
+        intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
+        self.assertIn("shadowrocket-request-intake-${{ github.run_id }}", intake)
+        self.assertIn("git fetch origin main", intake)
+        self.assertIn("git rebase origin/main", intake)
+        self.assertIn("attempt -lt 3", intake)
+        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        self.assertIn("automation/unregistered_path_registry.json", watchdog)
+        self.assertIn("-f sha=\"$registry_sha\"", watchdog)
+
+    def test_dynamic_ephemeral_writers_are_not_misclassified_as_shared_repo_writers(self):
+        writes = load_json("automation/resource_write_sets.json")
+        entries = {item["program_id"]: item for item in writes["confirmed_write_sets"]}
+        self.assertIn("<caller-supplied --out path>", entries["script_incident_state"]["writes"])
+        self.assertIn("/tmp/incident-state-body.md", entries["script_incident_state"]["ephemeral_unpublished_resources"])
+        self.assertIn("<caller-supplied --destination path>", entries["script_persist_review_cursor"]["writes"])
+        self.assertEqual(entries["script_persist_review_cursor"]["publish_resources"], [])
+        self.assertIn("task-input.json", entries["script_task_scheduler"]["ephemeral_unpublished_resources"])
+        self.assertEqual(entries["script_task_scheduler"]["publish_resources"], [])
+
 if __name__ == "__main__":
     unittest.main()
