@@ -136,7 +136,7 @@ class AssessSourcesArtifactVerifierTests(unittest.TestCase):
         self.assertFalse(task_scheduler.is_generated_python_cache_path(
             "sources/source_assessments.json"
         ))
-        self.assertEqual(task_scheduler.safe_child_environment()["PYTHONDONTWRITEBYTECODE"], "1")
+        self.assertEqual(task_scheduler.safe_child_environment(task_scheduler.ROOT)["PYTHONDONTWRITEBYTECODE"], "1")
 
     def test_scheduler_task_id_filter_rejects_whitespace(self):
         with self.assertRaises(ValueError):
