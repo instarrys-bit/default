@@ -37,7 +37,7 @@ def owner_approved_push_changed_config() -> bool:
         ["git", "diff", "--name-only", before, after],
         cwd=ROOT, check=True, capture_output=True, text=True,
     )
-    return "shadowrocket/ss.conf" in result.stdout.splitlines()
+    return "modules/uu.conf" in result.stdout.splitlines()
 
 
 def owner_approved_config_history(guard: dict) -> list[str]:
