@@ -185,5 +185,38 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertFalse(result["should_produce"])
 
 
+
+    def test_owner_baseline_bookkeeping_does_not_change_fingerprint(self):
+        policy_path = self.root / "sources" / "policy.json"
+        policy_path.write_text(json.dumps({
+            "policy_revision": 1,
+            "dns_invariants": {"direct": "resolver-a"},
+            "managed_config_guard": {
+                "path": "modules/uu.conf",
+                "approved_git_blob_sha": "a" * 40,
+                "immutable": True,
+                "last_user_approved_baseline_update": {
+                    "previous_blob_sha": "b" * 40,
+                    "new_blob_sha": "a" * 40,
+                    "registered_at": "2026-11-04T00:00:00Z",
+                },
+            },
+        }), encoding="utf-8")
+        baseline = compute_fingerprint(self.root, self.manifest)
+
+        policy = json.loads(policy_path.read_text(encoding="utf-8"))
+        policy["managed_config_guard"]["approved_git_blob_sha"] = "c" * 40
+        policy["managed_config_guard"]["last_user_approved_baseline_update"] = {
+            "previous_blob_sha": "a" * 40,
+            "new_blob_sha": "c" * 40,
+            "registered_at": "2026-11-05T00:00:00Z",
+        }
+        policy_path.write_text(json.dumps(policy), encoding="utf-8")
+        self.assertEqual(compute_fingerprint(self.root, self.manifest), baseline)
+
+        policy["dns_invariants"]["direct"] = "resolver-b"
+        policy_path.write_text(json.dumps(policy), encoding="utf-8")
+        self.assertNotEqual(compute_fingerprint(self.root, self.manifest), baseline)
+
 if __name__ == "__main__":
     unittest.main()
