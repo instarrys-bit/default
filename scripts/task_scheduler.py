@@ -133,8 +133,12 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
             if not isinstance(publish_resources,list) or len(publish_resources)!=len(set(publish_resources)):
                 raise ValueError("publish_resources must be a unique path list")
             if publish_resources:
-                if not isinstance(resource_contract,dict) or any(path not in resource_contract.get("resource_keys",[]) or path=="shadowrocket/ss.conf" for path in publish_resources):
-                    raise ValueError("publish_resources must be a subset of exclusive non-config resource keys")
+                write_resources=adapter.get("write_resources",[])
+                resource_keys=resource_contract.get("resource_keys",[]) if isinstance(resource_contract,dict) else []
+                if (not isinstance(write_resources,list) or len(write_resources)!=len(set(write_resources))
+                        or any(path not in resource_keys or path=="shadowrocket/ss.conf" for path in write_resources)
+                        or any(path not in write_resources for path in publish_resources)):
+                    raise ValueError("write_resources and publish_resources must be unique nested subsets of exclusive non-config resource keys")
                 if not isinstance(adapter.get("completion",{}).get("artifact_verifier"),dict):
                     raise ValueError("publishing task artifacts requires an independent artifact verifier")
                 output_contract=adapter.get("output_contract")
