@@ -88,14 +88,14 @@ def validate_manual_authorization(task, context=None):
     payload = task.get("input") if isinstance(task, dict) else None
     if not isinstance(payload, dict):
         return
-    markers = {"production_decision", "authorization_run_id", "authorization_run_attempt",
-               "authorization_actor", "authorization_actor_id", "authorization_repository",
-               "authorization_workflow_ref", "authorization_event", "authorization_ref",
-               "authorization_head_sha"}
-    if not markers.intersection(payload):
-        return
+    authorization_fields = {"authorization_run_id", "authorization_run_attempt",
+                            "authorization_actor", "authorization_actor_id",
+                            "authorization_repository", "authorization_workflow_ref",
+                            "authorization_event", "authorization_ref", "authorization_head_sha"}
     if payload.get("production_decision") != "USER_AUTHORIZED_MANUAL_AUDIT":
-        raise ValueError("manual authorization marker is invalid or incomplete")
+        if authorization_fields.intersection(payload):
+            raise ValueError("manual authorization marker is invalid or incomplete")
+        return
     context = context if isinstance(context, dict) else manual_authorization_context_from_environment()
     required = ("repository", "workflow_ref", "event", "actor", "actor_id",
                 "run_id", "run_attempt", "ref", "sha")
