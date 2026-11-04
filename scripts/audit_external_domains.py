@@ -17,7 +17,7 @@ from domain_rule_engine import RuleIndex, load_domain_rules, ancestors
 from audit_ruleset_config_overlap import scope_covers_candidate, scope_intersects
 
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG = ROOT / "shadowrocket" / "uu.conf"
+CONFIG = ROOT / "modules" / "uu.conf"
 SOURCE_URL = "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list"
 MIN_EXPECTED_ENTRIES = 50000
 MAX_BYTES = 30_000_000
