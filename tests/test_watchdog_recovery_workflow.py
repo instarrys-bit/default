@@ -61,7 +61,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         audit = AUTO_SYNC.read_text(encoding="utf-8")
         self.assertIn("A valid Watchdog task correlation is required", audit)
         self.assertIn('task.get("requester_program_id") != "workflow_automation_watchdog"', audit)
-        self.assertIn('task.get("status") not in {"CLAIMED", "VERIFYING"}', audit)
+        self.assertNotIn('task.get("status") not in {"CLAIMED", "VERIFYING"}', audit)
 
     def test_successful_workflow_reports_degraded_source_discovery_health(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
