@@ -382,7 +382,8 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(audit["status"], "partial_static_audit")
 
         intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
-        self.assertIn("shadowrocket-request-intake-${{ github.run_id }}", intake)
+        self.assertIn("group: shadowrocket-main-writer", intake)
+        self.assertIn("cancel-in-progress: false", intake)
         self.assertIn("git fetch origin main", intake)
         self.assertIn("git reset --hard origin/main", intake)
         self.assertIn("--merge-observations", intake)
