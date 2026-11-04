@@ -570,20 +570,21 @@
         "automation/task_queue.json"
       ],
       "side_effects": [
-        "Computes production fingerprint/decision without writing by default; registration mode merges unclassified paths into the Watchdog inbox. The Watchdog then publishes the file via GitHub Contents API."
+        "Computes production fingerprint/decision without writing by default; registration mode merges unclassified paths into the Watchdog inbox. The Watchdog then publishes the file via GitHub Contents API.",
+        "Bounded CAS retry re-reads the latest ledger and re-applies the same run registration; observed_run_ids prevents duplicate seen_count increments for interleaved retries."
       ],
-      "evidence": "--register-ledger mode writes the supplied JSON path; automation-watchdog.yml passes automation/unregistered_path_registry.json, reads the current Blob SHA and performs a Contents API PUT with that SHA.",
+      "evidence": "--register-ledger mode writes the supplied JSON path; automation-watchdog.yml passes automation/unregistered_path_registry.json, re-reads its current Blob SHA on each of up to three attempts, re-merges the current run, and performs a conditional Contents API PUT.",
       "lease_keys": [
         "git-blob-sha-cas:automation/unregistered_path_registry.json"
       ],
-      "lease_enforcement": "GitHub Contents PUT is conditional on the previously read Blob SHA and fails closed on conflict. Watchdog concurrency group is run-ID scoped; bounded reread/merge/retry and cross-run integration proof are not present.",
+      "lease_enforcement": "Watchdog now performs up to three Contents Blob-SHA CAS attempts. Each attempt re-reads the latest ledger, reapplies the same run-scoped registration, and conditionally PUTs using the freshly read SHA. Registration stores observed_run_ids so replay remains idempotent even when another run updates the same path between attempts. Exhausted retries fail closed. Cross-run integration proof is still required.",
       "publish_resources": [
         "automation/unregistered_path_registry.json"
       ],
       "ephemeral_unpublished_resources": [
         "runner-local registration staging copy before Contents API publication"
       ],
-      "write_boundary_fencing": "Control-plane file uses optimistic Blob-SHA CAS, not a production resource lease. Concurrent Watchdog runs may conflict; current path fails closed rather than silently overwriting, but successful merge/retry and no-lost-update proof remain outstanding."
+      "write_boundary_fencing": "Control-plane file uses bounded optimistic Blob-SHA CAS rather than a production resource lease. Separate Watchdog runs can race, but each conflict triggers a fresh read/merge/retry up to three times; a failed or exhausted update stops without blind overwrite. The registration merge is idempotent by run ID."
     },
     {
       "program_id": "script_refresh_ruleset_manifest",
@@ -956,8 +957,8 @@
       ],
       "lock_key": "git-blob-sha-cas:automation/unregistered_path_registry.json",
       "mode": "compare_and_swap",
-      "enforcement": "Watchdog reads the current Contents Blob SHA and includes it in the subsequent Contents API PUT; conflicts fail closed. Watchdog concurrency is run-ID scoped and there is no bounded re-read/merge/retry loop.",
-      "note": "No blind overwrite is allowed, but concurrent runs can fail with a conflict. Add parallel-run tests for distinct and overlapping path registration and no-lost-update semantics."
+      "enforcement": "Watchdog re-reads the current Contents Blob SHA on each of up to three attempts, merges the same run-scoped paths into the latest ledger, and performs a conditional Contents API PUT. Registration records observed_run_ids for retry idempotency. Exhausted conflicts fail closed.",
+      "note": "Bounded three-attempt CAS merge is implemented; distinct Watchdog runs are not serialized by their run-ID concurrency groups. Concurrent-run integration tests and no-lost-update proof remain outstanding."
     },
     {
       "resource": "sources/request_domain_observations.json",
@@ -986,7 +987,7 @@
     "program_registry_blob_sha": "279f8d14d1aad62d1342ba07063aa8d52e410a80",
     "execution_adapters_blob_sha": "45967d0d88392369252b7a4427aaba41d9dcdda8",
     "added_after_release_baseline": true,
-    "note": "Expanded the direct writer inventory from 15 to 27 Python entrypoints, including lifecycle state, imported request observations, rule provenance, restore, safe repair, diagnostics, incident state, review cursor, production intent, scheduler temp artifacts, dashboard snapshot and step summary. This remains a partial static review; cross-workflow CAS/rebase integration evidence and full transitive write proof are still blocking.",
+    "note": "Expanded the direct writer inventory from 15 to 27 Python entrypoints, including lifecycle state, imported request observations, rule provenance, restore, safe repair, diagnostics, incident state, review cursor, production intent, scheduler temp artifacts, dashboard snapshot and step summary. This remains a partial static review; cross-workflow CAS/rebase integration evidence and full transitive write proof are still blocking. Watchdog unregistered-path registration now re-reads and merges the latest Blob SHA on up to three conditional PUT attempts; registration is idempotent per observed run ID, while true concurrent-run integration proof remains outstanding.",
     "reviewed_at": "2026-11-04",
     "central_write_guard_test": "tests/test_fenced_file_writer.py::test_every_registered_python_component_installs_the_guard"
   },
