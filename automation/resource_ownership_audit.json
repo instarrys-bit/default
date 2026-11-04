@@ -4,8 +4,8 @@
   "status": "partial_static_audit",
   "purpose": "Identify known overlapping write resources before independent capability scheduling. This inventory is deliberately fail-closed and is not an execution authorization.",
   "evidence_scope": {
-    "registry_blob_sha": "279f8d14d1aad62d1342ba07063aa8d52e410a80",
-    "adapters_blob_sha": "45967d0d88392369252b7a4427aaba41d9dcdda8",
+    "registry_blob_sha": "ea3c35c1d0cb8ae6fff5f2debfbd3aa77369e245",
+    "adapters_blob_sha": "150837b4650b36b8ecfdcdeebbbddc749de59cd6",
     "inspected_sources": [
       ".github/workflows/auto_sync.yml",
       ".github/workflows/automation-watchdog.yml",
@@ -72,7 +72,7 @@
       "tests/test_task_queue_runtime.py",
       "tests/test_workflow_config_guard_order.py"
     ],
-    "limitation": "All 53 registered Python components are now statically classified as 36 direct/helper writer entries, 16 reviewed non-writers and one external GitHub workflow-dispatch side-effect adapter. This remains a partial static audit: runtime imports, subprocesses, caller-selected paths and true cross-run GitHub API behavior are not exhaustively traced or exercised.",
+    "limitation": "All 53 registered Python components are statically classified. Source assessment is dispatchable only through the successful main-branch Watchdog workflow_run gate, with per-write fenced leases and independent artifact verification. Runtime imports, subprocesses, caller-selected paths and true cross-run GitHub API behavior are not exhaustively traced or exercised.",
     "reviewed_at": "2026-11-04"
   },
   "protected_resources": {
