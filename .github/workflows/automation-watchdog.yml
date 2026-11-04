@@ -821,7 +821,7 @@ jobs:
           current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"
           runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
 
-          stale_lines="$(CURRENT_MAIN="$current_main" RUNS_JSON="$runs" python3 - <<'PY'
+          CURRENT_MAIN="$current_main" RUNS_JSON="$runs" python3 - <<'PY' > "$RUNNER_TEMP/watchdog-stale-lines"
           import json, os
           from datetime import datetime, timezone
 
@@ -847,7 +847,7 @@ jobs:
               if (now - started).total_seconds() > 21600:
                   print(run_id, "timeout", run.get("head_sha", ""))
           PY
-          )"
+          stale_lines="$(cat "$RUNNER_TEMP/watchdog-stale-lines")"
 
           timed_out_any=0
           timed_out_run_id=""
