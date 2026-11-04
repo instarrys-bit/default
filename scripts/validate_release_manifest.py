@@ -160,15 +160,52 @@ def _validate_python_adapter_policy(root: Path, policy: object,
             if record.get(field) != _canonical_digest(value):
                 raise ValueError(f"{target_id} {field} does not match the current contract")
         if (adapter.get("enabled") is not True or adapter.get("interface_status") != "reviewed"
+                or adapter.get("adapter_type") != "python_cli"
                 or orchestration.get("enabled") is not True):
-            raise ValueError(f"{target_id} is allowlisted but its adapter interface or orchestration is not enabled and reviewed")
+            raise ValueError(f"{target_id} is allowlisted but its Python CLI interface or orchestration is not enabled and reviewed")
+        if (entrypoint.get("executable") != "python3" or entrypoint.get("shell") is not False
+                or not isinstance(entrypoint.get("argv_template"), list)):
+            raise ValueError(f"{target_id} entrypoint must use python3 without a shell and declare argv_template")
         for field in ("input_contract", "output_contract", "resource_contract"):
             if not isinstance(adapter.get(field), dict):
                 raise ValueError(f"{target_id} requires a reviewed {field}")
-        if adapter["resource_contract"].get("mode") != "exclusive" or adapter["resource_contract"].get("fencing_required") is not True:
-            raise ValueError(f"{target_id} resource contract must be exclusive and fenced")
-        if not isinstance(digest_fields["verifier_contract_sha256"], dict):
+        resource = adapter["resource_contract"]
+        keys = resource.get("resource_keys")
+        lease_seconds = resource.get("lease_seconds")
+        if (resource.get("mode") != "exclusive" or resource.get("fencing_required") is not True
+                or not isinstance(keys, list) or not keys or len(keys) != len(set(keys))
+                or isinstance(lease_seconds, bool) or not isinstance(lease_seconds, int)
+                or not 1 <= lease_seconds <= 21600):
+            raise ValueError(f"{target_id} resource contract must declare unique exclusive fenced keys and a bounded lease")
+        write_resources = adapter.get("write_resources", [])
+        publish_resources = adapter.get("publish_resources", [])
+        if (not isinstance(write_resources, list) or len(write_resources) != len(set(write_resources))
+                or not isinstance(publish_resources, list) or len(publish_resources) != len(set(publish_resources))
+                or any(path not in keys or path == "shadowrocket/ss.conf" for path in write_resources)
+                or any(path not in write_resources for path in publish_resources)):
+            raise ValueError(f"{target_id} write and publish paths must be nested within fenced resources and exclude the config baseline")
+        dependency = adapter.get("dependency_contract")
+        if dependency is not None:
+            predecessor = dependency.get("predecessor_program_id") if isinstance(dependency, dict) else None
+            if (not isinstance(predecessor, str) or predecessor not in by_program
+                    or predecessor not in program.get("depends_on", [])
+                    or not isinstance(dependency.get("artifact_path"), str)
+                    or not isinstance(dependency.get("producer_workflow_name"), str)
+                    or dependency.get("edge_type") != "intended_successful_workflow_run_with_immutable_artifact_digest"
+                    or not isinstance(dependency.get("enforcement"), str)
+                    or not dependency["enforcement"].strip()):
+                raise ValueError(f"{target_id} dependency contract must bind a registered typed predecessor and immutable workflow evidence")
+        completion = adapter.get("completion")
+        verifier = digest_fields["verifier_contract_sha256"]
+        if (not isinstance(completion, dict) or completion.get("independent_verification_required") is not True
+                or not isinstance(verifier, dict)):
             raise ValueError(f"{target_id} requires an independent artifact verifier contract")
+        verifier_program = by_program.get(verifier.get("program_id"))
+        if (not isinstance(verifier_program, dict) or verifier_program.get("path") != verifier.get("path")
+                or verifier_program.get("kind") != "python_component"):
+            raise ValueError(f"{target_id} verifier identity must match a registered Python component")
+        if any(caller not in by_program for caller in callers):
+            raise ValueError(f"{target_id} caller allowlist contains an unregistered program")
 
     enabled = {
         target_id for target_id, adapter in by_target.items()
