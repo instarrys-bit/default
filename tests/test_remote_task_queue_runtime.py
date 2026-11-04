@@ -279,5 +279,31 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
         self.assertEqual(self.store.writes, 0)
 
 
+
+    def test_expired_manual_task_is_dead_lettered_without_reusing_its_grant(self):
+        env = {
+            "GITHUB_REPOSITORY": "instarrys-bit/default",
+            "GITHUB_WORKFLOW_REF": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
+            "GITHUB_EVENT_NAME": "workflow_dispatch", "GITHUB_ACTOR": "maintainer",
+            "GITHUB_ACTOR_ID": "678", "GITHUB_RUN_ID": "123",
+            "GITHUB_RUN_ATTEMPT": "1", "GITHUB_REF": "refs/heads/main",
+            "GITHUB_SHA": "a" * 40, "GITHUB_MANUAL_AUDIT_REQUEST": "true",
+        }
+        with patch.dict(os.environ, env, clear=True):
+            created = enqueue_remote(self.manual_payload(), self.store, self.registry, self.now)
+            claimed = self.claim("manual-worker", self.now)
+        self.assertEqual(claimed["task_id"], created["task"]["task_id"])
+        recovered = recover_remote(self.store, self.registry, self.now + timedelta(seconds=301))
+        self.assertEqual(len(recovered), 1)
+        self.assertEqual(recovered[0]["status"], "DEAD_LETTER")
+        self.assertEqual(recovered[0]["attempts"], 1)
+        self.assertEqual(self.store.document["manual_authorizations"]["123"]["task_id"], claimed["task_id"])
+        with patch.dict(os.environ, env, clear=True):
+            with self.assertRaisesRegex(ValueError, "already been consumed"):
+                enqueue_remote(
+                    self.manual_payload("production:manual-authorized:fp:123:after-expiry"),
+                    self.store, self.registry, self.now + timedelta(seconds=302),
+                )
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
