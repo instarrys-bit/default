@@ -139,6 +139,34 @@
       "classification_basis": "Reviewed the current file contents and its callers. This path controls orchestration, capability contracts, release/resource governance, or task verification; it does not supply DIRECT/PROXY/REJECT policy inputs. Explicitly excluded from production-demand classification, while production_input_paths remains authoritative for actual policy inputs."
     },
     {
+      "path": "candidates/ss.conf.oiu-fusion-candidate",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-04T20:05:17.100115Z",
+      "last_seen_at": "2026-11-04T20:05:17.100115Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "41903086391"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "72e119a031970b652ede40d2263412c968168138",
+      "last_seen_run_id": "41903086391",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41903086391"
+    },
+    {
+      "path": "candidates/ss.conf.oiu-merged",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-04T20:05:17.100115Z",
+      "last_seen_at": "2026-11-04T20:05:17.100115Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "41903086391"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "72e119a031970b652ede40d2263412c968168138",
+      "last_seen_run_id": "41903086391",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41903086391"
+    },
+    {
       "path": "dashboard/README.md",
       "status": "CLASSIFIED_DOCUMENTATION",
       "first_seen_at": "2026-11-03T17:12:05.157284Z",
@@ -259,5 +287,5 @@
       "classification_basis": "Reviewed as a recovery-evidence verifier only. It validates completed workflow/job/verification-step evidence and emits a verification result; it does not create or publish routing rules."
     }
   ],
-  "updated_at": "2026-11-04T04:56:47.404975Z"
+  "updated_at": "2026-11-04T20:05:17.100115Z"
 }
