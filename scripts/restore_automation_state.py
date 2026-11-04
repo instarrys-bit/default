@@ -35,7 +35,7 @@ REQUIRED_ANY_GROUPS = (
     {"sources/domain_reviews.json", "sources/domain_reviews.json.manifest.json"},
 )
 PUBLISH_FILES = {
-    "sources/policy.json", "sources/domain_sources.json", "sources/source_activation_log.json",
+    "sources/domain_sources.json", "sources/source_activation_log.json",
     "sources/policy_source_overlap.json", "sources/discovered_sources.json",
     "sources/discovered_sources.json.manifest.json", "sources/source_assessments.json",
     "sources/source_assessments.json.manifest.json", "sources/source_candidates.json",
