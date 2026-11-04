@@ -202,7 +202,7 @@ def merge_request_observations(submitted, payload, run_id, now=None):
     if len(submitted) > 500:
         raise ValueError("maximum 500 hostnames per intake run")
     normalized = [value.strip().lower().rstrip(".") for value in submitted]
-    pattern = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
+    pattern = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
     invalid = sorted({value for value in normalized if not pattern.fullmatch(value)})
     if invalid:
         raise ValueError("invalid hostname(s): " + ", ".join(invalid[:30]))
