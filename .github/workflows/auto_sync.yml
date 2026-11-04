@@ -10,7 +10,7 @@ on:
         required: false
         type: string
       restore_conflict_ids:
-        description: 'Comma-separated config-conflict archive IDs to restore after rechecking ss.conf (optional)'
+        description: 'Comma-separated config-conflict archive IDs to restore after rechecking uu.conf (optional)'
         required: false
         type: string
       automation_task_id:
@@ -268,7 +268,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-      - name: Register repository-owner-approved ss.conf changes (never edit the config)
+      - name: Register repository-owner-approved uu.conf changes (never edit the config)
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -328,7 +328,7 @@ jobs:
             echo "No prior state artifact found; using repository bootstrap state."
           fi
 
-      - name: Remove published and queued rules that conflict with ss.conf
+      - name: Remove published and queued rules that conflict with uu.conf
         env:
           RULESET_CONFIG_RESTORE_IDS: ${{ github.event.inputs.restore_conflict_ids || '' }}
           RULESET_CONFIG_REPORT_AGGREGATION: "1"
@@ -392,7 +392,7 @@ jobs:
           python3 scripts/lifecycle_audit.py
           if [ -f reports/lifecycle/latest.md ]; then python3 scripts/append_step_summary.py --input reports/lifecycle/latest.md; fi
 
-      - name: Reconcile final ss.conf scope coverage after all rule mutations
+      - name: Reconcile final uu.conf scope coverage after all rule mutations
         env:
           RULESET_CONFIG_REPORT_AGGREGATION: "1"
         run: |
@@ -479,7 +479,7 @@ jobs:
                   "source_and_rule_audits": "passed"
               },
               "protected_config": {
-                  "path": "shadowrocket/ss.conf",
+                  "path": "modules/uu.conf",
                   "modified_by_automation": False
               }
           }
@@ -693,8 +693,8 @@ jobs:
           python3 scripts/restore_automation_state.py --publish-outputs --archive "$archive" --root .
 
           # The user-managed config is immutable: audit artifacts may never alter it.
-          git diff --quiet "$GITHUB_SHA" -- shadowrocket/ss.conf || {
-            echo "Protected config shadowrocket/ss.conf changed during audit packaging; refusing to publish."
+          git diff --quiet "$GITHUB_SHA" -- modules/uu.conf || {
+            echo "Protected config modules/uu.conf changed during audit packaging; refusing to publish."
             exit 1
           }
 
@@ -755,8 +755,8 @@ jobs:
           done
 
           # Explicitly fail if the protected config somehow entered the staged commit.
-          git diff --cached --quiet "$GITHUB_SHA" -- shadowrocket/ss.conf || {
-            echo "Protected config shadowrocket/ss.conf is staged; refusing to commit."
+          git diff --cached --quiet "$GITHUB_SHA" -- modules/uu.conf || {
+            echo "Protected config modules/uu.conf is staged; refusing to commit."
             exit 1
           }
 
