@@ -10,7 +10,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PYTHON_HEREDOC = re.compile(r"^ *(?:python|python3)\\b.*<<\\s*(['\\"])PY\\1\\s*$")
+PYTHON_HEREDOC = re.compile(r"^ *(?:python|python3)\b.*<<\s*(['\"])PY\1\s*$")
 
 
 def extract_python_heredocs(source: str):
@@ -23,7 +23,7 @@ def extract_python_heredocs(source: str):
         end = next((cursor for cursor in range(index + 1, len(lines)) if lines[cursor] == terminator), None)
         if end is None:
             raise ValueError(f"unterminated Python heredoc at line {index + 1}")
-        body = textwrap.dedent("\\n".join(lines[index + 1:end]))
+        body = textwrap.dedent("\n".join(lines[index + 1:end]))
         if not body.strip():
             raise ValueError(f"empty Python heredoc at line {index + 1}")
         yield index + 1, body
@@ -46,11 +46,11 @@ class WorkflowEmbeddedPythonTests(unittest.TestCase):
 
     def test_extractor_preserves_nested_python_indentation(self):
         source = (
-            "      python3 - <<'PY'\\n"
-            "      value = 1\\n"
-            "      if value:\\n"
-            "          print(value)\\n"
-            "      PY\\n"
+            "      python3 - <<'PY'\n"
+            "      value = 1\n"
+            "      if value:\n"
+            "          print(value)\n"
+            "      PY\n"
         )
         blocks = list(extract_python_heredocs(source))
         self.assertEqual(len(blocks), 1)
@@ -58,7 +58,7 @@ class WorkflowEmbeddedPythonTests(unittest.TestCase):
 
     def test_extractor_rejects_unterminated_heredoc(self):
         with self.assertRaisesRegex(ValueError, "unterminated Python heredoc"):
-            list(extract_python_heredocs("    python3 - <<'PY'\\n    value = 1\\n"))
+            list(extract_python_heredocs("    python3 - <<'PY'\n    value = 1\n"))
 
 
 if __name__ == "__main__":
