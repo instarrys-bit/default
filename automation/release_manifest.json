@@ -8,12 +8,12 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "29a784cdc3d248f3a2a1f1fa944cde570ab0886e"
+      "git_blob_sha": "319bef10c0eed9a79f96fab9c711f1b7e448338d"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "9eaa66c78e007b6d5ad442fd8ca9f27f775741c9"
+      "git_blob_sha": "b61b472e3a75fd5807440b698a21b8d8d974bdcc"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -58,9 +58,9 @@
   "known_gaps": [
     "Write-path ownership and indirect side effects still require machine-checked coverage across all independent writers.",
     "The declared review-engine version is not yet pinned to a verified source revision.",
-    "Source assessment now has a concrete bounded I/O/resource/lease/verifier contract and explicit discovery predecessor; typed dependency enforcement, durable idempotency/checkpoint recovery and complete transitive writer proof remain blocking.",
+    "Source assessment retries now replay a deterministic batch bound to the producer run ID and discovery artifact digest; per-source durable progress checkpoints and complete transitive writer proof remain outstanding.",
     "Resource ownership audit is still a partial static review; restore_automation_state is an additional serialized writer for source assessment history/report artifacts.",
-    "Source assessment is now enqueued by the Watchdog after a successful main-branch production workflow_run; durable idempotency/checkpoint recovery and complete transitive writer proof remain blocking.",
+    "Source assessment retries now replay a deterministic batch bound to the producer run ID and discovery artifact digest; per-source durable progress checkpoints and complete transitive writer proof remain outstanding.",
     "Review cursor checkpoint persistence is protected by the production workflow's top-level main-writer concurrency group and the live Watchdog fencing lease; complete transitive writer tracing remains outstanding."
   ],
   "next_migration_gate": {
@@ -83,10 +83,10 @@
         "target_program_id": "script_assess_sources",
         "capability": "source_assessment",
         "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
-        "adapter_entry_sha256": "cc94ed767b4b998bc99469dd22ec857429d6f08e895973dfee0feea43cc8eeda",
-        "registry_entry_sha256": "6200c1822d69c499314c571deee997bacb545c4df755584323c535bf40737818",
+        "adapter_entry_sha256": "9a988e3ffa97f1fbb42d98650e84fdca3578a1ffb498609ef3c997ff32ec5f9a",
+        "registry_entry_sha256": "152b8d43034e40cbda5cf7a3cce55bb062a757f3bbe9949ca2e5e5696dc1e3ad",
         "source_path": "scripts/assess_sources.py",
-        "source_git_blob_sha": "cd9ff31732d88be297bd1a2b54c976192b432258",
+        "source_git_blob_sha": "ed987da5a6008e4b5328d7bbef25089bf4be64f1",
         "allowed_callers": [
           "workflow_automation_watchdog"
         ],
