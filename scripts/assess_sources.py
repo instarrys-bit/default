@@ -590,9 +590,6 @@ def main(argv: list[str] | None = None) -> int:
             item["stars"] = candidate["stars"]
             item["archived"] = candidate["archived"]
             item["assessed_at"] = batch_id
-            if predecessor is not None:
-                persist_assessment_checkpoint(batch_id, predecessor, item)
-            assessments.append(item)
         except AssessmentBudgetExceeded:
             budget_exhausted = True
             break
@@ -609,6 +606,12 @@ def main(argv: list[str] | None = None) -> int:
                 "domain_keyword_rules_ignored": 0, "ip_asn_rules_ignored": 0,
                 "explicit_action_counts": {}, "assessed_at": batch_id,
             })
+            continue
+        # Persist outside the network-error handler: a stale fencing proof or
+        # queue CAS failure must abort the task, never masquerade as a bad URL.
+        if predecessor is not None:
+            persist_assessment_checkpoint(batch_id, predecessor, item)
+        assessments.append(item)
     for item in assessments:
         if "drift" not in item:
             item["drift"] = compare_drift(item, previous_by_url.get(item.get("url")))
