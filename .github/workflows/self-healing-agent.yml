@@ -228,13 +228,13 @@ jobs:
           fi
 
           gh issue view "$existing" --repo "$REPO" --json body --jq .body > /tmp/incident-body.md
-          python3 scripts/incident_state.py \\
-            --body-file /tmp/incident-body.md \\
-            --workflow "$workflow_key" \\
-            --source-sha "$FAILED_SHA" \\
-            --classification "$classification" \\
-            --event-id "failure-run-$RUN_ID" \\
-            --target-state MANUAL_INTERVENTION \\
+          python3 scripts/incident_state.py \
+            --body-file /tmp/incident-body.md \
+            --workflow "$workflow_key" \
+            --source-sha "$FAILED_SHA" \
+            --classification "$classification" \
+            --event-id "failure-run-$RUN_ID" \
+            --target-state MANUAL_INTERVENTION \
             --out /tmp/incident-state-body.md
           gh issue edit "$existing" --repo "$REPO" --body-file /tmp/incident-state-body.md
 
