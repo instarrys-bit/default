@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "inventory_id": "resource-write-sets-2026.11.04.4",
+  "inventory_id": "resource-write-sets-2026.11.04.5",
   "status": "partial_static_entrypoint_review",
   "policy": {
     "lock_identity": "canonical logical resource path, not program ID",
@@ -738,6 +738,45 @@
       "write_boundary_fencing": "No shared repository resource ownership claimed for current temporary outputs; issue updates are a separate external control-plane side effect."
     },
     {
+      "program_id": "script_json_document_store",
+      "source": "scripts/json_document_store.py",
+      "writes": [
+        "<caller-supplied logical JSON document path>",
+        "<logical-name>.manifest.json",
+        "<logical-name>.parts-<digest>/part-*.jsonl",
+        "<logical-name>.parts.tmp-* staging paths",
+        "superseded <logical-name>.parts-* directories"
+      ],
+      "document_store": [
+        "caller-selected logical JSON document"
+      ],
+      "dynamic_children": [
+        "legacy base file",
+        "adjacent manifest",
+        "content-addressed JSONL shard directory and part files",
+        "temporary staging files/directories",
+        "superseded shard directories removed after manifest switch"
+      ],
+      "read_resources": [
+        "caller-selected logical JSON document"
+      ],
+      "side_effects": [
+        "Shared storage helper used by multiple registered programs; performs atomic legacy-file replacement or sharded JSONL writes, manifest switch, and cleanup."
+      ],
+      "evidence": "_atomic_write() creates a temporary file, writes and fsyncs it, then os.replace()s the target. write_document() may write a legacy file or create a staging directory, shard files, atomically replace the manifest, remove the old base file and delete superseded shard directories.",
+      "lease_keys": [
+        "resource:<canonical logical document path>"
+      ],
+      "lease_enforcement": "write_document accepts lease_required but defaults to false; callers must hold one compatible lease across base, manifest, shards, staging, switch and cleanup. The auto_sync central fenced_file_writer checks each repository-local mutation under the live logical/production-pipeline proof; independent callers need explicit per-document lease proof.",
+      "publish_resources": [
+        "caller-selected logical JSON document and all authoritative child paths"
+      ],
+      "ephemeral_unpublished_resources": [
+        "temporary staging files and directories"
+      ],
+      "write_boundary_fencing": "Low-level shared writer helper, not an independently dispatchable capability. Resource identity is the canonical logical document path, never the helper/program ID."
+    },
+    {
       "program_id": "script_lifecycle_audit",
       "source": "scripts/lifecycle_audit.py",
       "writes": [
@@ -932,6 +971,36 @@
       "write_boundary_fencing": "Every durable update uses the GitHub Contents API SHA compare-and-swap store; blind writes are prohibited, explicit conflicts trigger re-read/reapply, and validate_candidate() checks the complete queue before and after each mutation. The manual_authorizations ledger is part of the same CAS-protected queue document.",
       "lease_keys": [],
       "control_plane_consistency": "sha_cas"
+    },
+    {
+      "program_id": "script_resource_lease_runtime",
+      "source": "scripts/resource_lease_runtime.py",
+      "writes": [
+        "automation/task_queue.json"
+      ],
+      "document_store": [],
+      "dynamic_children": [],
+      "read_resources": [
+        "automation/task_queue.json",
+        "automation/program_registry.json",
+        "automation/execution_adapters.json",
+        "automation/production_control.json"
+      ],
+      "side_effects": [
+        "Acquires, renews, asserts and releases durable resource leases by mutating the task queue through GitHubContentsQueueStore."
+      ],
+      "evidence": "CLI commands construct GitHubContentsQueueStore and invoke queue mutators for lease acquisition/renewal/release; the store performs Contents API writes using the current Blob SHA.",
+      "lease_keys": [
+        "git-blob-sha-cas:automation/task_queue.json",
+        "resource:<canonical logical resource path>"
+      ],
+      "lease_enforcement": "Durable queue changes use GitHubContentsQueueStore Blob-SHA compare-and-swap and queue validation; resource fencing tokens are checked against the exact active task and lease proof.",
+      "publish_resources": [
+        "automation/task_queue.json"
+      ],
+      "ephemeral_unpublished_resources": [],
+      "control_plane_consistency": "sha_cas",
+      "write_boundary_fencing": "Control-plane queue writer only. It does not write production rule resources directly; it mutates the durable lease records that gate those writes."
     },
     {
       "program_id": "script_restore_automation_state",
@@ -1148,6 +1217,7 @@
       "writers": [
         "script_collect_domains",
         "script_import_request_observations",
+        "script_json_document_store",
         "script_restore_automation_state",
         "workflow_auto_sync"
       ],
@@ -1162,8 +1232,9 @@
         "automation/task_queue.json"
       ],
       "writers": [
-        "script_remote_task_queue_runtime",
         "script_github_queue_store",
+        "script_remote_task_queue_runtime",
+        "script_resource_lease_runtime",
         "script_task_scheduler",
         "workflow_automation_watchdog"
       ],
@@ -1306,6 +1377,7 @@
       "resource": "sources/rule_provenance.json logical document",
       "writers": [
         "script_build_rule_provenance",
+        "script_json_document_store",
         "script_restore_automation_state",
         "workflow_auto_sync"
       ],
@@ -1324,7 +1396,8 @@
     "All lifecycle, archive, ruleset list, manifest and report writers must be enumerated against actual workflow call sites; auto_sync's central write fence does not prove independent non-auto_sync writers.",
     "Atomic multi-resource lease acquisition and compatibility of per-resource locks across all independent/cross-workflow writers remain unproven.",
     "Static entrypoint inventory does not prove absence of unregistered dynamic writes, subprocess writes, external API mutations or filesystem writes hidden behind imported helpers.",
-    "All remaining registered Python components must be checked for indirect writes through imported helpers, subprocesses and dynamically selected outputs; report-only writers and active source-registry writers must remain distinct."
+    "All remaining registered Python components must be checked for indirect writes through imported helpers, subprocesses and dynamically selected outputs; report-only writers and active source-registry writers must remain distinct.",
+    "The 53 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and one external workflow-dispatch side-effect adapter. Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths."
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
@@ -1332,7 +1405,7 @@
     "program_registry_blob_sha": "279f8d14d1aad62d1342ba07063aa8d52e410a80",
     "execution_adapters_blob_sha": "45967d0d88392369252b7a4427aaba41d9dcdda8",
     "added_after_release_baseline": true,
-    "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group.",
+    "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 53 Python components are now partitioned into 36 direct/helper writer entries, 16 reviewed non-writers and one external GitHub Actions dispatch side-effect adapter.",
     "reviewed_at": "2026-11-04",
     "central_write_guard_test": "tests/test_fenced_file_writer.py::test_every_registered_python_component_installs_the_guard"
   },
@@ -1345,5 +1418,116 @@
     "purpose": "Serialize scheduler-mediated production audits and hold the lock through asynchronous workflow verification; the live fencing proof is checked at audit start and immediately before publishing to main.",
     "coverage_boundary": "Scheduler-mediated production workflow and independently scheduled source assessor share logical/production-pipeline. Assessor also fences each logical output and every JSON document-store mutation. Other future independent Python writers must declare compatible contracts before enablement.",
     "current_enforcement_pr": "#168 merged"
-  }
+  },
+  "reviewed_non_writers": [
+    {
+      "program_id": "script_domain_rule_engine",
+      "source": "scripts/domain_rule_engine.py",
+      "classification": "pure_library_no_repository_mutation",
+      "evidence": "Domain parsing/indexing helpers; static scan found no filesystem mutation or external write calls."
+    },
+    {
+      "program_id": "script_review_cursor",
+      "source": "scripts/review_cursor.py",
+      "classification": "pure_library_no_repository_mutation",
+      "evidence": "Cursor parsing/hash/checkpoint helper functions only; no direct file mutation sites."
+    },
+    {
+      "program_id": "script_source_registry",
+      "source": "scripts/source_registry.py",
+      "classification": "pure_validation_library_no_repository_mutation",
+      "evidence": "Registry schema/identity validation helpers only; no direct file mutation sites."
+    },
+    {
+      "program_id": "script_task_queue",
+      "source": "scripts/task_queue.py",
+      "classification": "queue_validation_library_no_repository_mutation",
+      "evidence": "Validates task envelopes and durable queue document structure; persistence is delegated to remote/local queue runtime and GitHubContentsQueueStore."
+    },
+    {
+      "program_id": "script_validate_config",
+      "source": "scripts/validate_config.py",
+      "classification": "read_only_validator",
+      "evidence": "Reads the config and rule inputs and emits validation results; no repository file mutation sites."
+    },
+    {
+      "program_id": "script_validate_program_registry",
+      "source": "scripts/validate_program_registry.py",
+      "classification": "read_only_validator",
+      "evidence": "Reads registry/workflow metadata and validates program contracts; no repository file mutation sites."
+    },
+    {
+      "program_id": "script_verify_baseline",
+      "source": "scripts/verify_baseline.py",
+      "classification": "read_only_baseline_verifier",
+      "evidence": "Reads modules/uu.conf, sources/policy.json and owner-authored commit evidence; does not update the config or baseline metadata."
+    },
+    {
+      "program_id": "script_verify_published_rulesets",
+      "source": "scripts/verify_published_rulesets.py",
+      "classification": "read_only_publication_verifier",
+      "evidence": "Fetches/compares published ruleset files and prints verification results; no repository file mutation sites."
+    },
+    {
+      "program_id": "script_verify_recovery_run",
+      "source": "scripts/verify_recovery_run.py",
+      "classification": "read_only_recovery_verifier",
+      "evidence": "Reads workflow run/job evidence and emits a verification result; no repository file mutation sites."
+    },
+    {
+      "program_id": "script_watchdog_recovery_policy",
+      "source": "scripts/watchdog_recovery_policy.py",
+      "classification": "pure_policy_library_no_repository_mutation",
+      "evidence": "Computes bounded recovery eligibility from supplied run metadata; no filesystem or external write calls."
+    },
+    {
+      "program_id": "script_validate_execution_adapters",
+      "source": "scripts/validate_execution_adapters.py",
+      "classification": "read_only_adapter_validator",
+      "evidence": "Reads workflow dispatch interfaces and adapter metadata and validates contracts; no repository file mutation sites."
+    },
+    {
+      "program_id": "script_task_result_verifier",
+      "source": "scripts/task_result_verifier.py",
+      "classification": "in_memory_task_transition_verifier",
+      "evidence": "Builds/validates task verification transitions in memory; durable queue persistence is performed by the scheduler/remote queue store."
+    },
+    {
+      "program_id": "script_audit_adapter_activation",
+      "source": "scripts/audit_adapter_activation.py",
+      "classification": "read_only_activation_audit",
+      "evidence": "Reads registry, adapters and source files to report readiness; explicitly reports activation_performed=false and does not change adapter state."
+    },
+    {
+      "program_id": "script_validate_release_manifest",
+      "source": "scripts/validate_release_manifest.py",
+      "classification": "read_only_release_validator",
+      "evidence": "Reads release pins and compatibility contracts and fails closed on mismatches; no repository file mutation sites."
+    },
+    {
+      "program_id": "script_verify_assess_sources_artifacts",
+      "source": "scripts/verify_assess_sources_artifacts.py",
+      "classification": "read_only_artifact_verifier",
+      "evidence": "Reads producer artifacts, run identity and hashes to verify assessment outputs; no repository file mutation sites."
+    },
+    {
+      "program_id": "script_fenced_file_writer",
+      "source": "scripts/fenced_file_writer.py",
+      "classification": "filesystem_mutation_guard_not_writer",
+      "evidence": "Installs audit hooks that reject/validate mutation events; it does not itself create or modify repository resources."
+    }
+  ],
+  "control_plane_side_effects": [
+    {
+      "program_id": "script_github_workflow_adapter",
+      "source": "scripts/github_workflow_adapter.py",
+      "classification": "external_github_actions_dispatch_side_effect",
+      "side_effects": [
+        "POSTs a workflow_dispatch request to the GitHub Actions API for the exact reviewed workflow/ref/input contract.",
+        "Reads workflow run history to correlate and independently verify the dispatched run."
+      ],
+      "file_writes": [],
+      "control_plane_boundary": "Dispatch must be preceded by persisted durable dispatch intent; ambiguous API outcomes are reconciled by task correlation before retry. Adapter remains disabled for production Python components by default."
+    }
+  ]
 }
