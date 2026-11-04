@@ -47,13 +47,13 @@
     "unknown_versions_are_blocking": true
   },
   "execution_policy": {
-    "new_python_adapters_enabled": false,
     "existing_adapter_enablement_unchanged": true,
     "watchdog_is_top_level_orchestrator": true,
     "dashboard_is_read_only_observer": true,
     "production_may_not_write_config_baseline": true,
     "ruleset_writers_require_resource_exclusive_lease": true,
-    "reject_rule_publication_requires_explicit_approval": true
+    "reject_rule_publication_requires_explicit_approval": true,
+    "python_adapter_default_deny": true
   },
   "known_gaps": [
     "Write-path ownership and indirect side effects still require machine-checked coverage across all independent writers.",
@@ -74,5 +74,10 @@
       "Run isolated canary tests with all new adapters disabled by default."
     ],
     "completion_status": "blocked_pending_contract_and_runtime_enforcement"
+  },
+  "python_adapter_policy": {
+    "schema_version": 1,
+    "default_decision": "deny",
+    "allowed_adapters": []
   }
 }
