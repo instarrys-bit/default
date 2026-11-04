@@ -116,7 +116,8 @@
           "parser_candidates",
           "policy_candidates",
           "activated",
-          "artifact_verification"
+          "artifact_verification",
+          "artifact_publication"
         ],
         "properties": {
           "assessed": {
@@ -179,6 +180,29 @@
                 }
               }
             }
+          },
+          "artifact_publication": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "published",
+              "commit_sha",
+              "paths"
+            ],
+            "properties": {
+              "published": {
+                "type": "boolean"
+              },
+              "commit_sha": {
+                "type": "string"
+              },
+              "paths": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       },
@@ -204,7 +228,7 @@
           "data/source_assessments_runtime.json",
           "reports/source-assessment.md"
         ],
-        "lease_seconds": 300,
+        "lease_seconds": 420,
         "fencing_required": true,
         "coverage": "exclusive logical document locks cover legacy JSON, adjacent manifests, content-addressed shard directories, temporary staging and old-shard cleanup; shared logical/production-pipeline key serializes against the production workflow"
       },
@@ -214,6 +238,10 @@
       ],
       "required_read_only_resources": [
         "sources/discovered_sources.json"
+      ],
+      "publish_resources": [
+        "sources/source_assessments.json",
+        "reports/source-assessment.md"
       ]
     },
     {
