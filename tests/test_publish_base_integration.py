@@ -32,7 +32,7 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         (self.work / "automation").mkdir()
         (self.work / "automation" / "task_queue.json").write_text(json.dumps({"revision": 0}) + chr(10), encoding="utf-8")
         (self.work / "docs" / "guide.md").write_text("initial\n", encoding="utf-8")
-        (self.work / "shadowrocket" / "ss.conf").write_text("protected\n", encoding="utf-8")
+        (self.work / "shadowrocket" / "uu.conf").write_text("protected\n", encoding="utf-8")
         git(self.work, "add", ".")
         git(self.work, "commit", "-m", "initial")
         git(self.work, "push", "-u", "origin", "main")
@@ -106,7 +106,7 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertEqual(git(self.work, "rev-parse", "HEAD"), git(self.work, "rev-parse", "origin/main"))
         self.assertEqual((self.work / "docs" / "guide.md").read_text(encoding="utf-8"), "updated docs\n")
-        self.assertEqual((self.work / "shadowrocket" / "ss.conf").read_text(encoding="utf-8"), "protected\n")
+        self.assertEqual((self.work / "shadowrocket" / "uu.conf").read_text(encoding="utf-8"), "protected\n")
 
     def test_verified_queue_only_commit_rebases_to_current_main(self):
         self.add_queue_commit()
@@ -114,7 +114,7 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("strictly verified durable queue-state commits", result.stdout)
         self.assertEqual(git(self.work, "rev-parse", "HEAD"), git(self.work, "rev-parse", "origin/main"))
-        self.assertEqual((self.work / "shadowrocket" / "ss.conf").read_text(encoding="utf-8").strip(), "protected")
+        self.assertEqual((self.work / "shadowrocket" / "uu.conf").read_text(encoding="utf-8").strip(), "protected")
 
     def test_queue_only_commit_from_non_bot_author_is_rejected(self):
         self.add_queue_commit(author_email="test@example.invalid")
@@ -192,7 +192,7 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         self.assertIn("A declared production input changed", result.stdout)
 
     def test_ss_conf_is_a_read_only_production_input(self):
-        compare = {"status": "ahead", "files": [{"filename": "shadowrocket/ss.conf", "status": "modified"}]}
+        compare = {"status": "ahead", "files": [{"filename": "modules/uu.conf", "status": "modified"}]}
         result = self.run_check_only(compare)
         self.assertNotEqual(result.returncode, 0, result.stdout)
         self.assertIn("A declared production input changed", result.stdout)
