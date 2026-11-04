@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-baseline-2026.11.05.2",
+  "release_id": "shadowrocket-automation-baseline-2026.11.05.3",
   "release_status": "baseline_snapshot",
   "created_on": "2026-11-05",
-  "purpose": "Pin production workflow with persistent shell and Git repository-tree write tracing and corrected production-intent path classification.",
+  "purpose": "Pin the production workflow with persistent shell/Git repository-tree tracing and correct VERIFYING-state resource-lease enforcement after workflow dispatch.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
@@ -60,6 +60,11 @@
       "path": "scripts/capture_git_write_trace.py",
       "git_blob_sha": "a88030039f797ca8b3c517fdb4be21d4c78aac09",
       "verification_status": "covered_by_deterministic_unit_tests_and_production_audit_publish_steps"
+    },
+    "resource_lease_runtime": {
+      "path": "scripts/resource_lease_runtime.py",
+      "git_blob_sha": "7499e1311812f359a4eb25ef1763aca146b9684e",
+      "verification_status": "covered_by_VERIFYING_state_live_fencing_regression_test"
     }
   },
   "compatibility": {
