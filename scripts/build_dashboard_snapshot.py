@@ -2,7 +2,6 @@
 """Build a sanitized, read-only GitHub Pages operations snapshot."""
 import json
 import os
-import re
 import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
