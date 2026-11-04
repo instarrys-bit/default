@@ -20,9 +20,12 @@
       "scripts/resource_lease_runtime.py",
       "scripts/fenced_file_writer.py",
       ".github/workflows/auto_sync.yml",
-      "scripts/build_project_status.py"
+      "scripts/build_project_status.py",
+      "tests/test_fenced_file_writer.py",
+      "tests/test_workflow_config_guard_order.py"
     ],
-    "limitation": "Static review of named entrypoints and direct write call sites only. Dynamic helper behavior is documented where inspected; complete transitive caller coverage, runtime-selected paths, and all writers still require machine-checked tracing."
+    "limitation": "Static review confirms all 53 registered Python components install the central fenced_file_writer audit hook, and auto_sync enables AUTOMATION_WRITE_GUARD=1 plus AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after exact Watchdog task/lease validation. The hook checks repository-local mutating opens and filesystem mutation events against the live queue and fencing proof. This proves the guarded auto_sync production path, but not complete transitive writer coverage, runtime-selected paths, or compatible leases for every independent/cross-workflow writer; those remain subject to machine-checked tracing.",
+    "reviewed_at": "2026-11-04"
   },
   "protected_resources": {
     "modules/uu.conf": {
