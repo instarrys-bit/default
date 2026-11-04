@@ -1290,12 +1290,13 @@
       "resource_contract": {
         "mode": "exclusive",
         "resource_keys": [
-          "logical/production-pipeline"
+          "logical/production-pipeline",
+          "sources/review_cursor.json"
         ],
         "lease_seconds": 21600,
         "fencing_required": true,
         "enforcement_boundary": "live task-queue proof checked by the audit gate and immediately before publish push",
-        "coverage": "scheduler-mediated production workflow; independent Python writers remain disabled until separately contracted"
+        "coverage": "Exclusive logical/production-pipeline lease plus the shared sources/review_cursor.json lease; audit cursor writes and failed-run checkpoint persistence use the same Watchdog-issued fencing proof."
       }
     },
     {

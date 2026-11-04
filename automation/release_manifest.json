@@ -13,7 +13,7 @@
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "150837b4650b36b8ecfdcdeebbbddc749de59cd6"
+      "git_blob_sha": "9eaa66c78e007b6d5ad442fd8ca9f27f775741c9"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -28,7 +28,7 @@
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "dbe3a5f8059cf7d779f6af64ef51f378a6e4daf5"
+      "git_blob_sha": "ce2fa07432958622251c9900ec5accf56324b471"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -58,10 +58,10 @@
   "known_gaps": [
     "Write-path ownership and indirect side effects still require machine-checked coverage across all independent writers.",
     "The declared review-engine version is not yet pinned to a verified source revision.",
-    "Durable failed-run cursor persistence is deferred until a Watchdog-leased capability owns that write.",
     "Source assessment now has a concrete bounded I/O/resource/lease/verifier contract and explicit discovery predecessor; typed dependency enforcement, durable idempotency/checkpoint recovery and complete transitive writer proof remain blocking.",
     "Resource ownership audit is still a partial static review; restore_automation_state is an additional serialized writer for source assessment history/report artifacts.",
-    "Source assessment is now enqueued by the Watchdog after a successful main-branch production workflow_run; durable idempotency/checkpoint recovery and complete transitive writer proof remain blocking."
+    "Source assessment is now enqueued by the Watchdog after a successful main-branch production workflow_run; durable idempotency/checkpoint recovery and complete transitive writer proof remain blocking.",
+    "Review cursor checkpoint persistence is now performed by the Watchdog-dispatched production task under the live logical/production-pipeline and sources/review_cursor.json fencing leases; complete transitive writer tracing remains outstanding."
   ],
   "next_migration_gate": {
     "required_before_independent_python_dispatch": [

@@ -785,40 +785,58 @@ jobs:
           python3 scripts/append_step_summary.py --input /tmp/publish-verification.json
 
   persist-review-cursor:
-    name: Validate failed-run cursor without bypassing Watchdog
+    name: Persist failed-run cursor under Watchdog resource lease
     needs: audit
     if: ${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled') }}
+    concurrency:
+      group: shadowrocket-main-writer
+      cancel-in-progress: false
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
-      contents: read
+      actions: read
+      contents: write
     steps:
-      - name: Checkout exact failed-run source
+      - name: Checkout current main for a single-path checkpoint update
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ref: ${{ github.sha }}
-          fetch-depth: 1
-          persist-credentials: false
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
       - name: Download failed-run cursor checkpoint
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: review-cursor-checkpoint
           path: cursor-artifact
         continue-on-error: true
-      - name: Validate checkpoint in runner temporary storage only
+      - name: Revalidate live Watchdog lease and persist only the cursor checkpoint
         env:
-          AUTOMATION_WRITE_GUARD: "0"
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          AUTOMATION_TASK_ID_BASE: ${{ inputs.automation_task_id }}
+          RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
         run: |
           set -euo pipefail
+          if [ -z "$AUTOMATION_TASK_ID_BASE" ] || [ -z "$RESOURCE_LEASE_PROOF" ]; then
+            echo "No Watchdog task proof was supplied; refusing durable cursor persistence."
+            exit 1
+          fi
+          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py \
+            --repository "$GITHUB_REPOSITORY" --branch main --token-stdin \
+            assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE" --proof-json "$RESOURCE_LEASE_PROOF"
           python3 scripts/persist_review_cursor.py \
             --cursor-artifact cursor-artifact/review_cursor.json \
-            --destination "$RUNNER_TEMP/review_cursor.json"
-          if [[ -f "$RUNNER_TEMP/review_cursor.json" ]]; then
-            echo "Validated an in-progress checkpoint in ephemeral runner storage."
-            echo "Durable repository persistence is intentionally deferred to a Watchdog-leased task."
-          else
-            echo "No in-progress cursor checkpoint was produced; no repository state was changed."
+            --destination sources/review_cursor.json
+          if git diff --quiet -- sources/review_cursor.json; then
+            echo "No checkpoint change to publish."
+            exit 0
           fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- sources/review_cursor.json
+          git diff --cached --check
+          git commit -m "Persist failed deterministic review cursor"
+          git push origin HEAD:main
 
   notify-failure:
     if: ${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled' || needs.publish.result == 'failure' || needs.publish.result == 'cancelled') }}

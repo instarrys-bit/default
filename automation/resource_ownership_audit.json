@@ -5,7 +5,7 @@
   "purpose": "Identify known overlapping write resources before independent capability scheduling. This inventory is deliberately fail-closed and is not an execution authorization.",
   "evidence_scope": {
     "registry_blob_sha": "ea3c35c1d0cb8ae6fff5f2debfbd3aa77369e245",
-    "adapters_blob_sha": "150837b4650b36b8ecfdcdeebbbddc749de59cd6",
+    "adapters_blob_sha": "9eaa66c78e007b6d5ad442fd8ca9f27f775741c9",
     "inspected_sources": [
       ".github/workflows/auto_sync.yml",
       ".github/workflows/automation-watchdog.yml",
@@ -240,16 +240,18 @@
     {
       "id": "review_cursor_checkpoint",
       "paths": [
-        "review cursor/checkpoint path (runtime-selected)"
+        "sources/review_cursor.json"
       ],
       "known_writers": [
         "script_deterministic_review",
-        "script_restore_automation_state"
+        "script_persist_review_cursor",
+        "script_restore_automation_state",
+        "workflow_auto_sync"
       ],
-      "lock_key": "resource:<canonical-cursor-path>",
-      "required_mode": "exclusive_per_cursor",
-      "status": "partial_static_audit",
-      "note": "The durable sources/review_cursor.json checkpoint is written by script_deterministic_review and can be restored from the allowlisted state archive by script_restore_automation_state. script_persist_review_cursor currently writes only RUNNER_TEMP/review_cursor.json and is not a durable repository writer."
+      "lock_key": "logical/production-pipeline + sources/review_cursor.json",
+      "required_mode": "exclusive",
+      "status": "watchdog_fenced_single_writer",
+      "note": "The deterministic review writes the checkpoint under the production task's shared logical/production-pipeline lease. On failed/cancelled audit, persist_review_cursor.py validates the uploaded checkpoint and updates/removes only sources/review_cursor.json after revalidating the same live Watchdog task proof; the job is serialized by shadowrocket-main-writer. Archive restoration is serialized by the same production mutex."
     },
     {
       "id": "rule_provenance_ledger",
