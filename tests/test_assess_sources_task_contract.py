@@ -166,7 +166,7 @@ class AssessSourcesArtifactVerifierTests(unittest.TestCase):
             "data/source_assessments_runtime.json", [persistent]
         ))
         self.assertFalse(task_scheduler.publishable_resource_path(
-            "shadowrocket/ss.conf", [persistent]
+            "modules/uu.conf", [persistent]
         ))
 
     def test_task_mode_requires_lease_proof(self):
