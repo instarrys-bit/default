@@ -64,6 +64,8 @@
     "automation/state_store.json",
     "automation/task_queue.json",
     "automation/unregistered_path_registry.json",
+    "candidates/ss.conf.oiu-fusion-candidate",
+    "candidates/ss.conf.oiu-merged",
     "data/**",
     "reports/**",
     "rulesets/**",
