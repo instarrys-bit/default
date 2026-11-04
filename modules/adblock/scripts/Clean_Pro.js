@@ -1479,7 +1479,7 @@
       processXJsonString,
       processInstagramJsonString,
       processYouTubeJsonString,
-      stripInitplaybackAdParam,
+      hasInitplaybackCandidate,
       loadAdCache,
       DEFAULT_OPTS
     };
