@@ -59,6 +59,18 @@
       "classification_basis": "Reviewed the current file contents and its callers. This path controls orchestration, capability contracts, release/resource governance, or task verification; it does not supply DIRECT/PROXY/REJECT policy inputs. Explicitly excluded from production-demand classification, while production_input_paths remains authoritative for actual policy inputs."
     },
     {
+      "path": "automation/production_control.json",
+      "status": "CLASSIFIED_CONTROL_PLANE",
+      "first_seen_at": "2026-11-04T00:45:00Z",
+      "last_seen_at": "2026-11-04T00:45:00Z",
+      "seen_count": 1,
+      "last_seen_event": "engineering-change",
+      "last_seen_revision": "d10427bfd8e3839db6836ed57553521cb2cd5b45",
+      "classified_at": "2026-11-04T00:45:00Z",
+      "classification_reason": "Explicit Watchdog production dispatch hold switch. It governs whether automatic production tasks may be dispatched; it is not a DIRECT/PROXY/REJECT policy input.",
+      "classification_basis": "Control-plane governance setting. Unknown or invalid values fail closed; enabling automatic dispatch requires an explicit owner change."
+    },
+    {
       "path": "automation/production_workflow_map.json",
       "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-03T19:06:35.005041Z",
@@ -115,20 +127,6 @@
       "classification_basis": "Reviewed the current file contents and its callers. This path controls orchestration, capability contracts, release/resource governance, or task verification; it does not supply DIRECT/PROXY/REJECT policy inputs. Explicitly excluded from production-demand classification, while production_input_paths remains authoritative for actual policy inputs."
     },
     {
-      "path": "dashboard/README.md",
-      "status": "CLASSIFIED_DOCUMENTATION",
-      "first_seen_at": "2026-11-03T17:12:05.157284Z",
-      "last_seen_at": "2026-11-03T17:41:44.084601Z",
-      "seen_count": 2,
-      "last_seen_event": "push",
-      "last_seen_revision": "7c376836232c1fda8ee40d91bab0e7d7255f501f",
-      "last_seen_run_id": "41686591077",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41686591077",
-      "classified_at": "2026-11-04T18:00:00+08:00",
-      "classification_reason": "Documentation for the operations dashboard.",
-      "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
-    },
-    {
       "path": "dashboard/index.html",
       "status": "CLASSIFIED_MONITORING",
       "first_seen_at": "2026-11-03T17:12:05.157284Z",
@@ -140,6 +138,20 @@
       "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41686591077",
       "classified_at": "2026-11-04T18:00:00+08:00",
       "classification_reason": "Read-only operations dashboard presentation; displays production state and does not mutate production inputs or outputs.",
+      "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
+    },
+    {
+      "path": "dashboard/README.md",
+      "status": "CLASSIFIED_DOCUMENTATION",
+      "first_seen_at": "2026-11-03T17:12:05.157284Z",
+      "last_seen_at": "2026-11-03T17:41:44.084601Z",
+      "seen_count": 2,
+      "last_seen_event": "push",
+      "last_seen_revision": "7c376836232c1fda8ee40d91bab0e7d7255f501f",
+      "last_seen_run_id": "41686591077",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41686591077",
+      "classified_at": "2026-11-04T18:00:00+08:00",
+      "classification_reason": "Documentation for the operations dashboard.",
       "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
     },
     {
