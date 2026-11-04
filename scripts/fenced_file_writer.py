@@ -10,7 +10,18 @@ ROOT = Path(__file__).resolve().parents[1]
 _ORIGINAL_OPEN = open
 _TRACE_ACTIVE = False
 PROTECTED_PATHS = {"modules/uu.conf"}
+# Resource-lease fencing is intentionally limited to production config,
+# module, script, and published ruleset paths. Other repository artifacts
+# (reports, docs, automation state, etc.) are not gated by this file guard.
+FENCED_PREFIXES = ("modules/", "scripts/", "rulesets/")
+FENCED_EXACT_PATHS = {"shadowrocket/ss.conf"}
 _INSTALLED = False
+
+def _requires_resource_lease(relative: str | None) -> bool:
+    if not relative:
+        return False
+    return relative in FENCED_EXACT_PATHS or relative.startswith(FENCED_PREFIXES)
+
 
 
 def _repo_relative(path) -> str | None:
@@ -52,7 +63,7 @@ def _record_write_trace(path, operation: str) -> None:
     if not trace_path or _TRACE_ACTIVE:
         return
     relative = _repo_relative(path)
-    if relative is None:
+    if not _requires_resource_lease(relative):
         return
     record = {
         "operation": operation,
@@ -95,7 +106,10 @@ def authorize_write_path(path) -> None:
         return
     if relative in PROTECTED_PATHS:
         raise PermissionError(f"owner-managed protected file is read-only: {relative}")
-    if os.environ.get("AUTOMATION_REQUIRE_RESOURCE_LEASE") != "1":
+    if (
+        os.environ.get("AUTOMATION_REQUIRE_RESOURCE_LEASE") != "1"
+        or not _requires_resource_lease(relative)
+    ):
         return
     from resource_lease_runtime import assert_resource_lease_from_environment
     assert_resource_lease_from_environment(relative)
