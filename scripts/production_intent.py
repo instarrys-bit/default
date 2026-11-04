@@ -214,11 +214,22 @@ def register_unclassified_paths(paths, ledger, event, revision, run_id, run_url,
             item = {"path": path, "status": "PENDING_CLASSIFICATION",
                     "first_seen_at": stamp, "last_seen_at": stamp, "seen_count": 0}
             entries[path] = item
+        observed_runs = item.get("observed_run_ids", [])
+        if not isinstance(observed_runs, list) or any(not isinstance(value, str) for value in observed_runs):
+            raise ValueError("observed_run_ids must be a string array")
+        run_key = str(run_id)
+        if run_key not in observed_runs:
+            # Preserve compatibility with legacy entries whose last run predates
+            # observed_run_ids, while making a retry idempotent after an intervening
+            # concurrent run has updated last_seen_run_id.
+            if item.get("last_seen_run_id") != run_key:
+                item["seen_count"] += 1
+            observed_runs.append(run_key)
+        item["observed_run_ids"] = observed_runs
         item["last_seen_at"] = stamp
-        item["seen_count"] += 1
         item["last_seen_event"] = event
         item["last_seen_revision"] = revision
-        item["last_seen_run_id"] = str(run_id)
+        item["last_seen_run_id"] = run_key
         item["last_seen_run_url"] = run_url
     ledger["entries"] = sorted(entries.values(), key=lambda item: item["path"])
     ledger["updated_at"] = stamp
