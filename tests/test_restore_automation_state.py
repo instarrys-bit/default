@@ -114,11 +114,11 @@ class RestoreAutomationStateTests(unittest.TestCase):
                 ("reports/project-status.md", "ok"),
                 ("rulesets/direct.list", "DOMAIN,example.com\\n"),
                 ("sources/domain_reviews.json", "{\"reviews\":[]}"),
-                ("shadowrocket/ss.conf", "must-not-copy"),
+                ("modules/uu.conf", "must-not-copy"),
             ])
             with self.assertRaisesRegex(ValueError, "owner-managed read-only config"):
                 restore_publish_outputs(archive, repo)
-            self.assertFalse((repo/"shadowrocket/ss.conf").exists())
+            self.assertFalse((repo/"modules/uu.conf").exists())
             self.assertFalse((repo/"sources/policy.json").exists())
 
     def test_publish_restore_copies_reports_rulesets_and_shards(self):
