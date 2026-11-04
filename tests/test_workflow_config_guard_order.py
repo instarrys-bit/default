@@ -165,7 +165,9 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("github.event.workflow_run.conclusion == 'success'", resolver)
         self.assertIn("UNCLASSIFIED_STEP_FAILURE", resolver)
         self.assertIn("TEST_FAILURE", resolver)
-        self.assertIn("gh issue close", resolver)
+        self.assertIn('close_issue "$issue"', resolver)
+        self.assertIn('gh api --method PATCH "repos/$REPO/issues/$issue_number" -f state=closed >/dev/null', resolver)
+        self.assertNotIn("gh issue close", resolver)
 
 
     def test_config_reconciliation_does_not_evaluate_rule_precedence(self):
