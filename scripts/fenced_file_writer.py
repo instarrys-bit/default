@@ -102,6 +102,13 @@ def authorize_write_path(path) -> None:
 
 
 def _audit_hook(event: str, args: tuple) -> None:
+    # Capability children must not escape Python-level filesystem fencing by
+    # launching shell, Git, or any other descendant process.
+    if os.environ.get("AUTOMATION_TASK_PROCESS") == "1" and event in {
+        "subprocess.Popen", "os.system", "os.exec", "os.spawn",
+        "os.posix_spawn", "os.fork", "os.forkpty", "os.startfile", "pty.spawn",
+    }:
+        raise PermissionError("child-process creation is prohibited in fenced production task processes")
     if event == "open" and args:
         mode = args[1] if len(args) > 1 else None
         flags = args[2] if len(args) > 2 else 0

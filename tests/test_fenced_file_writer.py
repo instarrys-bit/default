@@ -57,6 +57,23 @@ class FencedFileWriterTests(unittest.TestCase):
                 fenced_file_writer._audit_hook("open", (target, "w", os.O_WRONLY | os.O_CREAT))
                 check.assert_called_once_with("sources/test-only.json")
 
+    def test_fenced_task_process_denies_all_child_process_creation_events(self):
+        events = (
+            "subprocess.Popen", "os.system", "os.exec", "os.spawn",
+            "os.posix_spawn", "os.fork", "os.forkpty", "os.startfile", "pty.spawn",
+        )
+        with patch.dict(os.environ, {"AUTOMATION_TASK_PROCESS": "1"}, clear=False):
+            for event in events:
+                with self.subTest(event=event):
+                    with self.assertRaisesRegex(
+                        PermissionError, "child-process creation is prohibited"
+                    ):
+                        fenced_file_writer._audit_hook(event, ())
+
+    def test_process_creation_policy_is_scoped_to_task_children(self):
+        with patch.dict(os.environ, {"AUTOMATION_TASK_PROCESS": "0"}, clear=False):
+            fenced_file_writer._audit_hook("subprocess.Popen", ())
+
     def test_audit_hook_denies_descriptor_based_mutation(self):
         with self.assertRaisesRegex(PermissionError, "descriptor-based filesystem mutations"):
             fenced_file_writer._audit_hook("os.utime", (7, None, None))
