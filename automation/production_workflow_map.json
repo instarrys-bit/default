@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "40094ceb17f9291392419090610f08b5dbac8c64",
-  "registry_blob_sha": "d4cf970870f4b51d40c1f70c7d4347a035d4b960",
+  "workflow_blob_sha": "a476cc031ad8f0c3c2ff5dc52f6bc5762da11eb6",
+  "registry_blob_sha": "e0f1959761c942013818615c6b0176325045696f",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 6,
@@ -682,12 +682,12 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
-    "release_manifest_blob_sha": "e1aa2200531a9acd662e4a71f2713d9821d5c6fe",
-    "program_registry_blob_sha": "d4cf970870f4b51d40c1f70c7d4347a035d4b960",
+    "release_manifest_blob_sha": "d2d5b322bc1b9fa3aa3125eccc1904fc6c078938",
+    "program_registry_blob_sha": "e0f1959761c942013818615c6b0176325045696f",
     "execution_adapters_blob_sha": "b9bad9786b927b98634ec956b3eb343f6fd8d43e",
     "added_after_release_baseline": true,
     "note": "Refreshed against the exact current main workflow, registry, release manifest and adapter blobs. This remains static inventory evidence, not execution authorization.",
-    "reviewed_at": "2026-11-04",
+    "reviewed_at": "2026-11-05",
     "registry_blob_sha": "ea3c35c1d0cb8ae6fff5f2debfbd3aa77369e245"
   }
 }
