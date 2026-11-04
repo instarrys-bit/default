@@ -84,6 +84,23 @@ def classify_paths(paths: Iterable[str], manifest: dict) -> dict:
     }
 
 
+def _fingerprint_input_bytes(relative: str, data: bytes) -> bytes:
+    """Exclude only owner-baseline bookkeeping; the config blob remains a separate input."""
+    if relative != "sources/policy.json":
+        return data
+    try:
+        policy = json.loads(data.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ValueError("sources/policy.json must be valid UTF-8 JSON for fingerprinting") from exc
+    guard = policy.get("managed_config_guard") if isinstance(policy, dict) else None
+    if isinstance(guard, dict):
+        guard.pop("approved_git_blob_sha", None)
+        guard.pop("last_user_approved_baseline_update", None)
+    return json.dumps(
+        policy, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    ).encode("utf-8")
+
+
 def compute_fingerprint(root: Path, manifest: dict) -> str:
     entries = {}
     for relative in sorted(manifest["production_input_paths"]):
@@ -93,7 +110,7 @@ def compute_fingerprint(root: Path, manifest: dict) -> str:
         if not path.is_file():
             entries[relative] = "MISSING"
             continue
-        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        digest = hashlib.sha256(_fingerprint_input_bytes(relative, path.read_bytes())).hexdigest()
         entries[relative] = digest
     payload = json.dumps(
         {"manifest_schema_version": manifest["schema_version"], "inputs": entries},
