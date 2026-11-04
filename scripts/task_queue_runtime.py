@@ -6,7 +6,7 @@ if __import__("os").environ.get("AUTOMATION_WRITE_GUARD") == "1":
     from fenced_file_writer import install_write_guard as _install_write_guard
     _install_write_guard()
 
-import argparse, fcntl, json, os, secrets, sys, tempfile, uuid
+import argparse, fcntl, hashlib, json, os, secrets, sys, tempfile, uuid
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -84,18 +84,20 @@ def manual_authorization_context_from_environment():
 
 
 def validate_manual_authorization(task, context=None):
-    """Reject forged, stale, replayed, or non-Watchdog manual audit requests."""
+    """Validate trusted Watchdog identity and bind approval to one exact task scope."""
     payload = task.get("input") if isinstance(task, dict) else None
     if not isinstance(payload, dict):
-        return
-    authorization_fields = {"authorization_run_id", "authorization_run_attempt",
-                            "authorization_actor", "authorization_actor_id",
-                            "authorization_repository", "authorization_workflow_ref",
-                            "authorization_event", "authorization_ref", "authorization_head_sha"}
+        return None
+    authorization_fields = {
+        "authorization_run_id", "authorization_run_attempt", "authorization_actor",
+        "authorization_actor_id", "authorization_repository", "authorization_workflow_ref",
+        "authorization_event", "authorization_ref", "authorization_head_sha",
+        "authorization_target_program_id", "authorization_idempotency_key",
+    }
     if payload.get("production_decision") != "USER_AUTHORIZED_MANUAL_AUDIT":
         if authorization_fields.intersection(payload):
             raise ValueError("manual authorization marker is invalid or incomplete")
-        return
+        return None
     context = context if isinstance(context, dict) else manual_authorization_context_from_environment()
     required = ("repository", "workflow_ref", "event", "actor", "actor_id",
                 "run_id", "run_attempt", "ref", "sha", "manual_audit_requested")
@@ -107,6 +109,13 @@ def validate_manual_authorization(task, context=None):
             or not context["actor_id"].isdigit() or not context["run_id"].isdigit()
             or not context["run_attempt"].isdigit() or context["manual_audit_requested"] != "true"):
         raise ValueError("manual audit must originate from a main-branch Watchdog workflow_dispatch")
+    if (task.get("requester_program_id") != "workflow_automation_watchdog"
+            or task.get("target_program_id") != "workflow_auto_sync"
+            or task.get("capability") != "deterministic_audit"):
+        raise ValueError("manual authorization is scoped only to the Watchdog deterministic_audit task")
+    idem = task.get("idempotency_key")
+    if not isinstance(idem, str) or not idem:
+        raise ValueError("manual authorization requires a durable task idempotency key")
     expected = {
         "authorization_run_id": context["run_id"],
         "authorization_run_attempt": context["run_attempt"],
@@ -118,14 +127,93 @@ def validate_manual_authorization(task, context=None):
         "authorization_ref": context["ref"],
         "authorization_head_sha": context["sha"],
         "authorization_requested": True,
+        "authorization_target_program_id": task["target_program_id"],
+        "authorization_idempotency_key": idem,
         "baseline_source_event": context["event"],
         "baseline_source_sha": context["sha"],
     }
     for key, value in expected.items():
         if payload.get(key) != value:
-            raise ValueError(f"manual audit authorization does not match trusted workflow run: {key}")
-    if not isinstance(payload.get("production_fingerprint"), str) or not payload["production_fingerprint"]:
+            raise ValueError(f"manual audit authorization does not match trusted workflow/task scope: {key}")
+    fingerprint = payload.get("production_fingerprint")
+    if not isinstance(fingerprint, str) or not fingerprint:
         raise ValueError("manual audit authorization requires a production input fingerprint")
+    scope = {
+        "repository": context["repository"],
+        "workflow_ref": context["workflow_ref"],
+        "event": context["event"],
+        "actor": context["actor"],
+        "actor_id": context["actor_id"],
+        "run_id": context["run_id"],
+        "run_attempt": context["run_attempt"],
+        "ref": context["ref"],
+        "head_sha": context["sha"],
+        "requester_program_id": task["requester_program_id"],
+        "target_program_id": task["target_program_id"],
+        "capability": task["capability"],
+        "idempotency_key": idem,
+        "production_fingerprint": fingerprint,
+    }
+    scope["scope_sha256"] = hashlib.sha256(
+        json.dumps(scope, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    return scope
+
+
+def manual_authorization_record(task, authorization, consumed_at):
+    """Create the durable, task-bound one-shot consumption record."""
+    if not isinstance(authorization, dict):
+        return None
+    return {
+        "task_id": task["task_id"],
+        "run_id": authorization["run_id"],
+        "run_attempt": authorization["run_attempt"],
+        "actor_id": authorization["actor_id"],
+        "repository": authorization["repository"],
+        "workflow_ref": authorization["workflow_ref"],
+        "event": authorization["event"],
+        "ref": authorization["ref"],
+        "head_sha": authorization["head_sha"],
+        "requester_program_id": task["requester_program_id"],
+        "target_program_id": task["target_program_id"],
+        "capability": task["capability"],
+        "idempotency_key": task["idempotency_key"],
+        "production_fingerprint": authorization["production_fingerprint"],
+        "scope_sha256": authorization["scope_sha256"],
+        "consumed_at": consumed_at,
+    }
+
+
+def validate_manual_authorization_consumption(queue, task):
+    """Require the exact durable queue record that consumed this workflow-run grant."""
+    payload = task.get("input") if isinstance(task, dict) else None
+    if not isinstance(payload, dict) or payload.get("production_decision") != "USER_AUTHORIZED_MANUAL_AUDIT":
+        return None
+    run_id = payload.get("authorization_run_id")
+    ledger = queue.get("manual_authorizations", {}) if isinstance(queue, dict) else {}
+    record = ledger.get(run_id) if isinstance(ledger, dict) and isinstance(run_id, str) else None
+    expected = {
+        "task_id": task.get("task_id"),
+        "run_id": run_id,
+        "run_attempt": payload.get("authorization_run_attempt"),
+        "actor_id": payload.get("authorization_actor_id"),
+        "repository": payload.get("authorization_repository"),
+        "workflow_ref": payload.get("authorization_workflow_ref"),
+        "event": payload.get("authorization_event"),
+        "ref": payload.get("authorization_ref"),
+        "head_sha": payload.get("authorization_head_sha"),
+        "requester_program_id": task.get("requester_program_id"),
+        "target_program_id": task.get("target_program_id"),
+        "capability": task.get("capability"),
+        "idempotency_key": task.get("idempotency_key"),
+        "production_fingerprint": payload.get("production_fingerprint"),
+    }
+    if not isinstance(record, dict) or any(record.get(k) != v for k, v in expected.items()):
+        raise ValueError("manual authorization has no matching durable one-shot task-consumption record")
+    if not isinstance(record.get("scope_sha256"), str) or len(record["scope_sha256"]) != 64:
+        raise ValueError("manual authorization consumption record has an invalid scope digest")
+    return record
+
 
 def enqueue_task(task,queue_path=QUEUE,registry_path=REGISTRY,now=None):
     if not isinstance(task,dict): raise ValueError("task payload must be an object")
