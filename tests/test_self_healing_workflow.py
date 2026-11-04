@@ -45,7 +45,7 @@ class SelfHealingWorkflowTests(unittest.TestCase):
     def test_manifest_reconciliation_runs_after_final_config_scope_coverage(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
         self.assertLess(
-            workflow.index("Reconcile final ss.conf scope coverage after all rule mutations"),
+            workflow.index("Reconcile final uu.conf scope coverage after all rule mutations"),
             workflow.index("Reconcile final RULE-SET manifest counts"),
         )
         self.assertLess(
@@ -87,7 +87,7 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn("expected_staged_path=\"tests/test_workflow_config_guard_order.py\"", workflow)
         self.assertIn('staged_paths="$(git diff --cached --name-only)"', workflow)
         self.assertNotIn("git add -A", workflow)
-        self.assertNotIn("git add shadowrocket/ss.conf", workflow)
+        self.assertNotIn("git add modules/uu.conf", workflow)
 
 
     def test_config_validator_failures_are_monitored_and_incidents_are_resolved_on_recovery(self):
@@ -198,7 +198,7 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn("base_cooldown: timedelta = timedelta(minutes=15)", policy)
         self.assertNotIn("gh run cancel", watchdog.split("  stale-run-watch:", 1)[0])
         self.assertIn("persist-credentials: false", watchdog)
-        self.assertNotIn("shadowrocket/ss.conf", policy)
+        self.assertNotIn("modules/uu.conf", policy)
         stale_watcher = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("scripts/watchdog_recovery_policy.py --source-run-id 0 --source-sha", stale_watcher)
         self.assertIn("Timeout recovery suppressed by bounded recovery policy", stale_watcher)
