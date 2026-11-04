@@ -907,31 +907,6 @@ def filter_eligible_task_ids(eligible_task_ids: set[str], task_id: str | None = 
     return eligible_task_ids.intersection({task_id})
 
 
-def load_dispatch_control(root: Path = ROOT) -> dict:
-    """Read the global dispatch switch and narrowly scoped HOLD exceptions."""
-    path = Path(root) / "automation/production_control.json"
-    try:
-        document = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return {"mode": "hold", "hold_allowlisted_programs": [], "reason": "missing_or_invalid_control"}
-    if not isinstance(document, dict) or document.get("schema_version") != 1:
-        return {"mode": "hold", "hold_allowlisted_programs": [], "reason": "invalid_control_schema"}
-    policy = document.get("policy")
-    if not isinstance(policy, dict):
-        return {"mode": "hold", "hold_allowlisted_programs": [], "reason": "invalid_control_policy"}
-    mode = document.get("dispatch_mode")
-    allowlist = policy.get("hold_allowlisted_programs", [])
-    if (not isinstance(allowlist, list)
-            or any(not isinstance(item, str) or not item.strip() for item in allowlist)
-            or len(allowlist) != len(set(allowlist))):
-        return {"mode": "hold", "hold_allowlisted_programs": [], "reason": "invalid_hold_allowlist"}
-    if mode == "enabled" and policy.get("automatic_watchdog_dispatch") is True:
-        return {"mode": "enabled", "hold_allowlisted_programs": allowlist, "reason": "enabled"}
-    if mode == "hold":
-        return {"mode": "hold", "hold_allowlisted_programs": allowlist, "reason": "hold"}
-    return {"mode": "hold", "hold_allowlisted_programs": [], "reason": "unknown_or_inconsistent_mode"}
-
-
 def run_scheduler_once(store, registry: dict, adapters: dict, *,
                        worker_id: str, max_tasks: int = 1, task_id: str | None = None,
                        root: Path = ROOT, now: datetime | None = None) -> dict:
@@ -941,7 +916,6 @@ def run_scheduler_once(store, registry: dict, adapters: dict, *,
         raise ValueError("worker_id is required")
     if task_id is not None and (not isinstance(task_id,str) or not task_id.strip()):
         raise ValueError("task_id filter must be a non-empty string")
-    dispatch_control = load_dispatch_control(root)
     fixed_now = now
     initial_now = now or now_utc()
     recovered = recover_remote(store, registry, initial_now)
@@ -957,21 +931,6 @@ def run_scheduler_once(store, registry: dict, adapters: dict, *,
             blocked_seen[item["task_id"]] = item["reason"]
         eligible = set(plan["eligible_task_ids"])
         eligible = filter_eligible_task_ids(eligible, task_id)
-        if dispatch_control["mode"] == "hold":
-            task_by_id = {item.get("task_id"): item for item in snapshot.get("tasks", []) if isinstance(item, dict)}
-            permitted = set(dispatch_control["hold_allowlisted_programs"])
-            hold_eligible = set()
-            for candidate_id in eligible:
-                candidate = task_by_id.get(candidate_id, {})
-                target_id = candidate.get("target_program_id")
-                requester_id = candidate.get("requester_program_id")
-                if target_id in permitted and requester_id == "workflow_automation_watchdog":
-                    hold_eligible.add(candidate_id)
-                else:
-                    blocked_seen[candidate_id] = (
-                        "global HOLD: task is not an explicitly allowlisted Watchdog capability"
-                    )
-            eligible = hold_eligible
         if not eligible:
             break
         resource_keys_by_target = {
@@ -997,8 +956,6 @@ def run_scheduler_once(store, registry: dict, adapters: dict, *,
         "initial_verification": initial_verification,
         "recovered_count": len(recovered),
         "queue_revision": final_snapshot["revision"],
-        "dispatch_mode": dispatch_control["mode"],
-        "dispatch_control_reason": dispatch_control["reason"],
     }
 
 
