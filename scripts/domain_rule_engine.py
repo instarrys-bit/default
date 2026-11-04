@@ -35,7 +35,7 @@ def ancestors(domain: str):
 
 def load_domain_rules(config_path: Path):
     if not config_path.is_file():
-        raise ValueError("user-managed shadowrocket/ss.conf baseline is missing")
+        raise ValueError("user-managed modules/uu.conf baseline is missing")
     content = config_path.read_text(encoding="utf-8")
     if content.count("[Rule]") != 1 or content.count("[Host]") != 1:
         raise ValueError("cannot uniquely isolate user-config [Rule] section")
