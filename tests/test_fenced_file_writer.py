@@ -21,10 +21,6 @@ class FencedFileWriterTests(unittest.TestCase):
         with self.assertRaisesRegex(PermissionError, "owner-managed protected file"):
             fenced_file_writer._audit_hook("open", (ROOT / "modules" / "uu.conf", "w", os.O_WRONLY))
 
-    def test_ss_conf_is_not_owner_protected_anymore(self):
-        with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "0"}, clear=False):
-            fenced_file_writer.authorize_write_path(ROOT / "shadowrocket" / "ss.conf")
-
     def test_protected_ruleset_write_requires_live_lease_in_production_mode(self):
         target = ROOT / "rulesets" / "review_cursor.json"
         with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "1"}, clear=False):
@@ -32,12 +28,11 @@ class FencedFileWriterTests(unittest.TestCase):
                 fenced_file_writer.authorize_write_path(target)
                 check.assert_called_once_with("rulesets/review_cursor.json")
 
-    def test_resource_lease_guard_covers_only_config_modules_scripts_and_rulesets(self):
+    def test_resource_lease_guard_covers_only_modules_scripts_and_rulesets(self):
         protected_targets = (
             ROOT / "modules" / "adblock" / "scripts" / "Clean_Pro.js",
             ROOT / "scripts" / "build_rulesets.py",
             ROOT / "rulesets" / "direct.list",
-            ROOT / "shadowrocket" / "ss.conf",
         )
         with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "1"}, clear=False):
             with patch("resource_lease_runtime.assert_resource_lease_from_environment") as check:
@@ -49,7 +44,6 @@ class FencedFileWriterTests(unittest.TestCase):
                         "modules/adblock/scripts/Clean_Pro.js",
                         "scripts/build_rulesets.py",
                         "rulesets/direct.list",
-                        "shadowrocket/ss.conf",
                     ],
                 )
 
