@@ -66,10 +66,10 @@ def diagnose(log_text: str, run_id: str = "") -> dict:
     elif baseline_match:
         code = "CONFIG_BASELINE_MISMATCH"
         summary = (
-            "The current ss.conf blob differs from its registered baseline. "
+            "The current uu.conf blob differs from its registered baseline. "
             "The config remains read-only; only verified repository-owner config history may be registered."
         )
-        evidence = [line.strip() for line in lines if "ss.conf" in line.lower() and "baseline" in line.lower()][:5]
+        evidence = [line.strip() for line in lines if "uu.conf" in line.lower() and "baseline" in line.lower()][:5]
     elif re.search(r"differs from manifest .* count None", log_text, re.IGNORECASE):
         code = "RULESET_MANIFEST_COUNT_MISSING"
         summary = "The final RULE-SET audit could not read a policy count from the manifest."
