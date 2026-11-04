@@ -2,54 +2,54 @@
   "resource_leases": {
     "data/source_assessments_runtime.json": {
       "acquired_at": "2026-11-04T00:28:16Z",
-      "expires_at": "2026-11-04T00:36:29Z",
+      "expires_at": "2026-11-04T00:28:30Z",
       "fencing_token": 2,
       "lease_id": "5f102e8d96ca2b0bb7b3a7265d658516",
-      "released_at": null,
+      "released_at": "2026-11-04T00:28:30Z",
       "renewed_at": "2026-11-04T00:28:29Z",
-      "status": "ACTIVE",
+      "status": "RELEASED",
       "task_id": "task_57fb8781b99241818ff96c02",
       "task_lease_token": "2d0d3590516212d7af2b94c886638b96",
       "worker_id": "assessment-canary-41746911914"
     },
     "logical/production-pipeline": {
       "acquired_at": "2026-11-04T00:28:16Z",
-      "expires_at": "2026-11-04T00:36:29Z",
+      "expires_at": "2026-11-04T00:28:30Z",
       "fencing_token": 2,
       "lease_id": "5f102e8d96ca2b0bb7b3a7265d658516",
-      "released_at": null,
+      "released_at": "2026-11-04T00:28:30Z",
       "renewed_at": "2026-11-04T00:28:29Z",
-      "status": "ACTIVE",
+      "status": "RELEASED",
       "task_id": "task_57fb8781b99241818ff96c02",
       "task_lease_token": "2d0d3590516212d7af2b94c886638b96",
       "worker_id": "assessment-canary-41746911914"
     },
     "reports/source-assessment.md": {
       "acquired_at": "2026-11-04T00:28:16Z",
-      "expires_at": "2026-11-04T00:36:29Z",
+      "expires_at": "2026-11-04T00:28:30Z",
       "fencing_token": 2,
       "lease_id": "5f102e8d96ca2b0bb7b3a7265d658516",
-      "released_at": null,
+      "released_at": "2026-11-04T00:28:30Z",
       "renewed_at": "2026-11-04T00:28:29Z",
-      "status": "ACTIVE",
+      "status": "RELEASED",
       "task_id": "task_57fb8781b99241818ff96c02",
       "task_lease_token": "2d0d3590516212d7af2b94c886638b96",
       "worker_id": "assessment-canary-41746911914"
     },
     "sources/source_assessments.json": {
       "acquired_at": "2026-11-04T00:28:16Z",
-      "expires_at": "2026-11-04T00:36:29Z",
+      "expires_at": "2026-11-04T00:28:30Z",
       "fencing_token": 2,
       "lease_id": "5f102e8d96ca2b0bb7b3a7265d658516",
-      "released_at": null,
+      "released_at": "2026-11-04T00:28:30Z",
       "renewed_at": "2026-11-04T00:28:29Z",
-      "status": "ACTIVE",
+      "status": "RELEASED",
       "task_id": "task_57fb8781b99241818ff96c02",
       "task_lease_token": "2d0d3590516212d7af2b94c886638b96",
       "worker_id": "assessment-canary-41746911914"
     }
   },
-  "revision": 72,
+  "revision": 73,
   "schema_version": 1,
   "tasks": [
     {
@@ -1029,6 +1029,7 @@
         "acquired_at": "2026-11-04T00:28:16Z",
         "expires_at": "2026-11-04T00:36:29Z",
         "lease_seconds": 480,
+        "released_at": "2026-11-04T00:28:30Z",
         "resources": {
           "data/source_assessments_runtime.json": {
             "fencing_token": 2,
@@ -1047,7 +1048,7 @@
             "lease_id": "5f102e8d96ca2b0bb7b3a7265d658516"
           }
         },
-        "status": "ACTIVE"
+        "status": "RELEASED"
       },
       "result": {
         "activated": 0,
@@ -1079,13 +1080,19 @@
       "state_history": [
         "QUEUED",
         "CLAIMED",
-        "VERIFYING"
+        "VERIFYING",
+        "SUCCEEDED"
       ],
-      "status": "VERIFYING",
+      "status": "SUCCEEDED",
       "target_program_id": "script_assess_sources",
       "task_id": "task_57fb8781b99241818ff96c02",
       "trace_id": "73e9aca62976469eabd6603d54f3cfc1",
-      "verification": null
+      "verification": {
+        "contract_sha256": "62ac443cad6163ad97228edb26976548922245c5da991db5d835a5425b12b284",
+        "status": "passed",
+        "verified_at": "2026-11-04T00:28:30Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
     }
   ]
 }
