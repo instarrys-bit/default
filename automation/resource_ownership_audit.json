@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audit_id": "resource-ownership-audit-2026.11.04.1",
+  "audit_id": "resource-ownership-audit-2026.11.04.2",
   "status": "partial_static_audit",
   "purpose": "Identify known overlapping write resources before independent capability scheduling. This inventory is deliberately fail-closed and is not an execution authorization.",
   "evidence_scope": {
@@ -8,16 +8,29 @@
     "adapters_blob_sha": "45967d0d88392369252b7a4427aaba41d9dcdda8",
     "inspected_sources": [
       ".github/workflows/auto_sync.yml",
+      ".github/workflows/automation-watchdog.yml",
+      ".github/workflows/dashboard-pages.yml",
+      ".github/workflows/request-intake.yml",
+      ".github/workflows/self-healing-agent.yml",
       ".github/workflows/validate-config.yml",
+      "scripts/append_step_summary.py",
+      "scripts/apply_safe_repair.py",
       "scripts/assess_sources.py",
+      "scripts/build_dashboard_snapshot.py",
       "scripts/build_project_status.py",
+      "scripts/build_rule_provenance.py",
       "scripts/build_rulesets.py",
       "scripts/build_source_candidates.py",
+      "scripts/diagnose_workflow_failure.py",
       "scripts/discover_sources.py",
       "scripts/fenced_file_writer.py",
       "scripts/github_queue_store.py",
+      "scripts/import_request_observations.py",
+      "scripts/incident_state.py",
       "scripts/json_document_store.py",
       "scripts/lifecycle_audit.py",
+      "scripts/lifecycle_gate.py",
+      "scripts/persist_review_cursor.py",
       "scripts/production_intent.py",
       "scripts/refresh_ruleset_manifest.py",
       "scripts/register_config_baseline.py",
@@ -38,7 +51,7 @@
       "tests/test_task_queue_runtime.py",
       "tests/test_workflow_config_guard_order.py"
     ],
-    "limitation": "Static review confirms the listed direct writers and fenced production registration path. Complete transitive write sets, dynamic path resolution, and cross-workflow compatible leases for every independent writer remain unproven; the audit remains partial.",
+    "limitation": "The inventory now covers 27 direct Python writer entrypoints and named workflow publication paths discovered in this pass. It remains partial: cross-workflow CAS/rebase behavior has not been exercised under concurrent runners, dynamic outputs and imported helpers are not exhaustively traced, and compatible resource leases for every independent writer are not proven.",
     "reviewed_at": "2026-11-04"
   },
   "protected_resources": {
@@ -231,6 +244,96 @@
       "required_mode": "exclusive",
       "status": "direct_write_paths_confirmed_dynamic_document_store_children",
       "note": "discovered_sources.json is written through json_document_store with an explicit logical-document lease assertion covering the base file, adjacent manifest, content-addressed shards, staging and old-shard cleanup. reports/source-discovery.md has a separate explicit live lease assertion. GITHUB_STEP_SUMMARY is a per-run ephemeral output and is intentionally excluded from shared repository resource ownership."
+    },
+    {
+      "id": "domain_candidate_buffer",
+      "paths": [
+        "data/domain_candidates.json",
+        "data/domain_candidates.json.manifest.json",
+        "data/domain_candidates.json.parts-<digest>/part-*.jsonl",
+        "data/domain_candidates.json.parts.tmp-*"
+      ],
+      "known_writers": [
+        "script_collect_domains",
+        "script_import_request_observations",
+        "script_restore_automation_state"
+      ],
+      "lock_key": "resource:data/domain_candidates.json + logical/production-pipeline",
+      "required_mode": "exclusive",
+      "status": "known_shared_writers_central_pipeline_fence_only",
+      "note": "Two active auto_sync steps write the same logical JSON document. Both write_document calls omit lease_required=True, so current safety relies on the shared Watchdog production-pipeline mutex and central per-filesystem-mutation fencing hook. Restore can replace the same logical document from allowlisted artifacts. Cross-workflow compatible per-document lease proof remains missing."
+    },
+    {
+      "id": "rule_provenance_ledger",
+      "paths": [
+        "sources/rule_provenance.json",
+        "sources/rule_provenance.json.manifest.json",
+        "sources/rule_provenance.json.parts-<digest>/part-*.jsonl",
+        "sources/rule_provenance.json.parts.tmp-*"
+      ],
+      "known_writers": [
+        "script_build_rule_provenance",
+        "script_restore_automation_state"
+      ],
+      "lock_key": "resource:sources/rule_provenance.json + logical/production-pipeline",
+      "required_mode": "exclusive",
+      "status": "known_shared_writers_central_pipeline_fence_only",
+      "note": "The provenance builder writes the logical document through json_document_store; publish restoration may restore the same path and shards. Current auto_sync execution shares the production-pipeline fence, but no independent per-document lease is requested by the builder."
+    },
+    {
+      "id": "lifecycle_gate_state",
+      "paths": [
+        "rulesets/lifecycle_state.json"
+      ],
+      "known_writers": [
+        "script_lifecycle_gate"
+      ],
+      "lock_key": "resource:rulesets/lifecycle_state.json",
+      "required_mode": "exclusive",
+      "status": "direct_writer_identified_fence_only",
+      "note": "lifecycle_gate.py writes milestone/monthly review state directly. The current auto_sync call is protected by the central production-pipeline fence; no separate per-resource lease assertion exists in the script."
+    },
+    {
+      "id": "watchdog_unregistered_path_registry",
+      "paths": [
+        "automation/unregistered_path_registry.json"
+      ],
+      "known_writers": [
+        "script_production_intent",
+        "workflow_automation_watchdog"
+      ],
+      "lock_key": "git-blob-sha-cas:automation/unregistered_path_registry.json",
+      "required_mode": "compare_and_swap",
+      "status": "cas_conflict_fails_closed_concurrency_unproven",
+      "note": "Watchdog reads the current Blob SHA and writes with conditional Contents API PUT. Run-ID-scoped concurrency does not serialize separate Watchdog runs; conflict fails closed but there is no bounded reread/merge/retry proof."
+    },
+    {
+      "id": "request_intake_observations",
+      "paths": [
+        "sources/request_domain_observations.json"
+      ],
+      "known_writers": [
+        "workflow_request_intake"
+      ],
+      "lock_key": "git-ref-cas:sources/request_domain_observations.json",
+      "required_mode": "optimistic_git_ref_compare_and_swap",
+      "status": "rebase_retry_implemented_concurrent_integration_unproven",
+      "note": "Distinct run IDs do not share a concurrency group. Workflow commits and attempts fetch/rebase/push up to three times after non-fast-forward; integration evidence for concurrent same/different-domain merges, conflicts and retry exhaustion is outstanding."
+    },
+    {
+      "id": "self_healing_repair_branch_outputs",
+      "paths": [
+        ".github/workflows/auto_sync.yml",
+        "tests/test_workflow_config_guard_order.py"
+      ],
+      "known_writers": [
+        "script_apply_safe_repair",
+        "workflow_self_healing_agent"
+      ],
+      "lock_key": "self-heal/run-<workflow_run_id>",
+      "required_mode": "isolated_branch_then_pull_request",
+      "status": "allowlisted_pr_only_not_main_writer",
+      "note": "The repair script modifies only one of two hard-coded paths, then the workflow stages exactly the selected path and publishes a run-specific PR branch. No direct main write is performed."
     }
   ],
   "scheduling_gates": {
