@@ -7,7 +7,7 @@
     "dynamic_document_store_children": "must be covered by the logical document lease",
     "overlapping_writers": "must serialize until a single-writer boundary is enforced",
     "protected_config": {
-      "path": "shadowrocket/ss.conf",
+      "path": "modules/uu.conf",
       "access": "read_only",
       "writers_allowed": []
     },
@@ -103,7 +103,7 @@
         "reports/ruleset-config-conflict-sync.json",
         "rulesets/deletion_archive.json",
         "reports/lifecycle/latest.json",
-        "shadowrocket/ss.conf"
+        "modules/uu.conf"
       ],
       "side_effects": [
         "Read-only aggregation of production state; writes two dashboard/status report artifacts."
@@ -125,7 +125,7 @@
         "sources/domain_reviews.json",
         "sources/domain_sources.json",
         "data/candidates.json",
-        "shadowrocket/ss.conf",
+        "modules/uu.conf",
         "sources/protected_domains.json",
         "sources/reject_manual_approvals.json",
         "rulesets/deletion_archive.json",
@@ -222,7 +222,7 @@
         "sources/domain_reviews.json.parts.tmp-*"
       ],
       "read_resources": [
-        "shadowrocket/ss.conf",
+        "modules/uu.conf",
         "sources/domain_sources.json",
         "sources/protected_domains.json",
         "data/candidates.json",
@@ -312,7 +312,7 @@
       "document_store": [],
       "dynamic_children": [],
       "read_resources": [
-        "shadowrocket/ss.conf",
+        "modules/uu.conf",
         "sources/policy_approvals.json",
         "pinned external ad-domain source URL"
       ],
@@ -335,7 +335,7 @@
         "reports/ruleset-config-conflict-sync.md"
       ],
       "side_effects": [
-        "Reads shadowrocket/ss.conf and never writes it.",
+        "Reads modules/uu.conf and never writes it.",
         "Can restore selected archive IDs into rule outputs/queue after rechecking current config."
       ],
       "evidence": "sync() writes changed policy lists, archive, queue and two reports.",
