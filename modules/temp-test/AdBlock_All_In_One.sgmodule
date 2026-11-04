@@ -1,26 +1,15 @@
 #!name=AdBlock All-in-One (Test)
 #!desc=测试版：保留原模块规则与重写，统一映射 Sr_All_In_One_Pro.js；移除重复脚本映射及 Map Local。仅供 Shadowrocket 设备验证。
 [Rule]
-# === 1. YouTube / X / Instagram / Google QUIC 回退规则 ===
-AND,((DOMAIN-SUFFIX,googlevideo.com),(PROTOCOL,UDP)),REJECT
-AND,((DOMAIN,youtubei.googleapis.com),(PROTOCOL,UDP)),REJECT
-AND,((DOMAIN-SUFFIX,youtube.com),(PROTOCOL,UDP)),REJECT
-AND,((DOMAIN-SUFFIX,ytimg.com),(PROTOCOL,UDP)),REJECT
-AND,((DOMAIN-SUFFIX,ggpht.com),(PROTOCOL,UDP)),REJECT
-AND,((DOMAIN-SUFFIX,googleapis.com),(PROTOCOL,UDP)),REJECT
-AND,((DOMAIN-SUFFIX,google.com),(PROTOCOL,UDP)),REJECT
-AND,((DOMAIN-SUFFIX,gstatic.com),(PROTOCOL,UDP)),REJECT
-AND,((DOMAIN-SUFFIX,x.com),(PROTOCOL,UDP)),REJECT
-AND,((DOMAIN-SUFFIX,twitter.com),(PROTOCOL,UDP)),REJECT
-AND,((DOMAIN-SUFFIX,twimg.com),(PROTOCOL,UDP)),REJECT
-AND,((DOMAIN-SUFFIX,instagram.com),(PROTOCOL,UDP)),REJECT
-AND,((DOMAIN-SUFFIX,cdninstagram.com),(PROTOCOL,UDP)),REJECT
+# === 1. QUIC 回退：复用 uu.conf 已有 UDP/443 规则，仅补缺失目标 ===
+AND,((DOMAIN,youtubei.googleapis.com),(PROTOCOL,UDP),(DST-PORT,443)),REJECT
+AND,((DOMAIN-SUFFIX,instagram.com),(PROTOCOL,UDP),(DST-PORT,443)),REJECT
+AND,((DOMAIN-SUFFIX,cdninstagram.com),(PROTOCOL,UDP),(DST-PORT,443)),REJECT
 
 # === 2. 广告与遥测域名拦截 ===
 DOMAIN-SUFFIX,doubleclick.net,REJECT
 DOMAIN-SUFFIX,googlesyndication.com,REJECT
 DOMAIN-SUFFIX,googleadservices.com,REJECT
-DOMAIN,adservice.google.com,REJECT
 DOMAIN-SUFFIX,ads.youtube.com,REJECT
 DOMAIN,ad.youtube.com,REJECT
 DOMAIN,ads-api.x.com,REJECT
@@ -34,7 +23,6 @@ DOMAIN-SUFFIX,ads-twitter.com,REJECT
 DOMAIN-SUFFIX,impression.instagram.com,REJECT
 DOMAIN,graph.instagram.com.edgekey.net,REJECT
 DOMAIN,ogads-pa.clients6.google.com,REJECT
-DOMAIN,firebaselogging-pa.googleapis.com,REJECT
 DOMAIN-SUFFIX,app-measurement.com,REJECT
 DOMAIN-SUFFIX,app-analytics-services.com,REJECT
 
@@ -65,4 +53,4 @@ SR_All_In_One_Pro = type=http-response,pattern=^https:\/\/(youtubei\.googleapis\
 
 [MITM]
 # 仅保留当前原模块已列出的 MITM 主机；不扩大证书拦截范围。
-hostname = %APPEND% -redirector*.googlevideo.com, *.googlevideo.com, youtubei.googleapis.com, www.youtube.com, s.youtube.com, m.youtube.com, www.google.com, api.x.com, x.com, m.google.com, ogs.google.com, ads-api.x.com, ads-api.twitter.com, twitter.com, www.instagram.com
+hostname = %APPEND% -redirector*.googlevideo.com, *.googlevideo.com, youtubei.googleapis.com, www.youtube.com, s.youtube.com, m.youtube.com, www.google.com, api.x.com, x.com, m.google.com, ogs.google.com, www.instagram.com
