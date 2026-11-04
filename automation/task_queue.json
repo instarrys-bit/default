@@ -2,54 +2,54 @@
   "resource_leases": {
     "data/source_assessments_runtime.json": {
       "acquired_at": "2026-11-04T00:19:53Z",
-      "expires_at": "2026-11-04T00:27:53Z",
+      "expires_at": "2026-11-04T00:20:00Z",
       "fencing_token": 1,
       "lease_id": "381dfbea84461fb0c5d4ba3eed7567b3",
-      "released_at": null,
+      "released_at": "2026-11-04T00:20:00Z",
       "renewed_at": "2026-11-04T00:19:53Z",
-      "status": "ACTIVE",
+      "status": "RELEASED",
       "task_id": "task_f03548ea9f0f4d11b5771753",
       "task_lease_token": "7541ccb951332c1cb4ddc866a66fd444",
       "worker_id": "assessment-canary-41745835923"
     },
     "logical/production-pipeline": {
       "acquired_at": "2026-11-04T00:19:53Z",
-      "expires_at": "2026-11-04T00:27:53Z",
+      "expires_at": "2026-11-04T00:20:00Z",
       "fencing_token": 1,
       "lease_id": "381dfbea84461fb0c5d4ba3eed7567b3",
-      "released_at": null,
+      "released_at": "2026-11-04T00:20:00Z",
       "renewed_at": "2026-11-04T00:19:53Z",
-      "status": "ACTIVE",
+      "status": "RELEASED",
       "task_id": "task_f03548ea9f0f4d11b5771753",
       "task_lease_token": "7541ccb951332c1cb4ddc866a66fd444",
       "worker_id": "assessment-canary-41745835923"
     },
     "reports/source-assessment.md": {
       "acquired_at": "2026-11-04T00:19:53Z",
-      "expires_at": "2026-11-04T00:27:53Z",
+      "expires_at": "2026-11-04T00:20:00Z",
       "fencing_token": 1,
       "lease_id": "381dfbea84461fb0c5d4ba3eed7567b3",
-      "released_at": null,
+      "released_at": "2026-11-04T00:20:00Z",
       "renewed_at": "2026-11-04T00:19:53Z",
-      "status": "ACTIVE",
+      "status": "RELEASED",
       "task_id": "task_f03548ea9f0f4d11b5771753",
       "task_lease_token": "7541ccb951332c1cb4ddc866a66fd444",
       "worker_id": "assessment-canary-41745835923"
     },
     "sources/source_assessments.json": {
       "acquired_at": "2026-11-04T00:19:53Z",
-      "expires_at": "2026-11-04T00:27:53Z",
+      "expires_at": "2026-11-04T00:20:00Z",
       "fencing_token": 1,
       "lease_id": "381dfbea84461fb0c5d4ba3eed7567b3",
-      "released_at": null,
+      "released_at": "2026-11-04T00:20:00Z",
       "renewed_at": "2026-11-04T00:19:53Z",
-      "status": "ACTIVE",
+      "status": "RELEASED",
       "task_id": "task_f03548ea9f0f4d11b5771753",
       "task_lease_token": "7541ccb951332c1cb4ddc866a66fd444",
       "worker_id": "assessment-canary-41745835923"
     }
   },
-  "revision": 68,
+  "revision": 69,
   "schema_version": 1,
   "tasks": [
     {
@@ -962,12 +962,11 @@
         "max_total_bytes": 1000000,
         "max_urls": 1
       },
-      "last_error": null,
-      "lease": {
-        "expires_at": "2026-11-04T00:27:53Z",
-        "owner": "assessment-canary-41745835923",
-        "token": "7541ccb951332c1cb4ddc866a66fd444"
+      "last_error": {
+        "message": "refusing to publish unrelated workspace changes: scripts/__pycache__/github_queue_store.cpython-311.pyc, scripts/__pycache__/github_workflow_adapter.cpython-311.pyc, scripts/__pycache__/json_document_store.cpython-311.pyc, scripts/__pycache__/remote_task_queue_runtime.cpython-311.pyc, scripts/__pycache__/resource_lease_runtime.cpython-311.pyc, scripts/__pycache__/task_queue.cpython-311.pyc, scripts/__pycache__/task_queue_runtime.cpython-311.pyc, scripts/__pycache__/task_result_verifier.cpython-311.pyc",
+        "type": "artifact_publication_failed"
       },
+      "lease": null,
       "max_attempts": 1,
       "not_before": "2026-11-04T00:19:50Z",
       "priority": 100,
@@ -976,6 +975,7 @@
         "acquired_at": "2026-11-04T00:19:53Z",
         "expires_at": "2026-11-04T00:27:53Z",
         "lease_seconds": 480,
+        "released_at": "2026-11-04T00:20:00Z",
         "resources": {
           "data/source_assessments_runtime.json": {
             "fencing_token": 1,
@@ -994,14 +994,16 @@
             "lease_id": "381dfbea84461fb0c5d4ba3eed7567b3"
           }
         },
-        "status": "ACTIVE"
+        "status": "RELEASED"
       },
       "result": null,
       "state_history": [
         "QUEUED",
-        "CLAIMED"
+        "CLAIMED",
+        "FAILED",
+        "DEAD_LETTER"
       ],
-      "status": "CLAIMED",
+      "status": "DEAD_LETTER",
       "target_program_id": "script_assess_sources",
       "task_id": "task_f03548ea9f0f4d11b5771753",
       "trace_id": "0e79fb65f00a4e88a3f8cc67b218bbfc"
