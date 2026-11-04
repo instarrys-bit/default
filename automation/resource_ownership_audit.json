@@ -111,14 +111,15 @@
         "automation/task_queue.json"
       ],
       "writers": [
-        "script_remote_task_queue_runtime",
         "script_github_queue_store",
+        "script_remote_task_queue_runtime",
+        "script_resource_lease_runtime",
         "script_task_scheduler",
         "workflow_automation_watchdog"
       ],
       "lease_key": "git-blob-sha-cas:automation/task_queue.json",
       "status": "sha_cas_control_plane_reviewed",
-      "note": "The durable queue is control-plane state, not a production resource lease. GitHubContentsQueueStore requires the exact current Blob SHA for every update and retries only explicit SHA conflicts; the complete candidate queue is independently validated before and after mutation. Manual authorization is consumed once per Watchdog run ID and stored atomically with the exact task ID, target, idempotency key, fingerprint, and trusted run scope. Local task_queue_runtime is runner-local flock/atomic replace only, not a cross-runner shared writer."
+      "note": "The durable queue is control-plane state, not a production resource lease. GitHubContentsQueueStore requires the exact current Blob SHA for every update and retries only explicit SHA conflicts; the complete candidate queue is independently validated before and after mutation. Manual authorization is consumed once per Watchdog run ID and stored atomically with the exact task ID, target, idempotency key, fingerprint, and trusted run scope. Local task_queue_runtime is runner-local flock/atomic replace only, not a cross-runner shared writer. script_resource_lease_runtime also mutates the queue's lease records through the same SHA-CAS store; it is a control-plane lease writer, not a direct production-resource writer."
     },
     {
       "id": "lifecycle_gate_state",
@@ -323,7 +324,7 @@
       "lock_key": "resource:<canonical-document-path>",
       "required_mode": "exclusive_per_document",
       "status": "dynamic_path_requires_runtime_lock",
-      "note": "The storage helper uses atomic replacement, JSONL shards, manifest switching, and old-shard cleanup. Locking by program ID is insufficient; lock the canonical document path and include manifest/shards in the same lease."
+      "note": "The storage helper uses atomic replacement, JSONL shards, manifest switching, and old-shard cleanup. Locking by program ID is insufficient; lock the canonical document path and include manifest/shards in the same lease. The low-level helper is itself registered as a dynamic writer; callers must declare the canonical document and lease across all helper-managed child mutations."
     },
     {
       "id": "source_assessment_artifacts",
