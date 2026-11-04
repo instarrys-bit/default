@@ -35,7 +35,8 @@ def owner_approved_push_changed_config() -> bool:
         ["git", "diff", "--name-only", before, after],
         cwd=ROOT, check=True, capture_output=True, text=True,
     )
-    return "shadowrocket/ss.conf" in result.stdout.splitlines()
+    policy = json.loads(POLICY.read_text(encoding="utf-8"))
+    return policy["managed_config_guard"]["path"] in result.stdout.splitlines()
 
 
 def main() -> int:
