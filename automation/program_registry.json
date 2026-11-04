@@ -80,7 +80,9 @@
         "data/source_assessments_runtime.json current batch and ephemeral fingerprints (runner-local, never committed)",
         "reports/source-assessment.md human-readable report (published)"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "script_discover_sources"
+      ],
       "dispatches": [],
       "permission_boundary": "Read discovered_sources.json and prior source_assessments.json; write only sources/source_assessments.json, data/source_assessments_runtime.json and reports/source-assessment.md under exclusive live-fenced resource leases; publish only persistent history and report via a fenced GitHub commit; HTTPS reads only from repository-bound raw.githubusercontent.com; sources/domain_sources.json and shadowrocket/ss.conf are read-only.",
       "health_check": "The scheduler validates the task input schema, resource fencing is checked before each artifact write, and verify_assess_sources_artifacts.py independently verifies runtime/history/report consistency.",
@@ -1216,9 +1218,14 @@
       ],
       "depends_on": [
         "script_apply_safe_repair",
+        "script_assess_sources",
         "script_diagnose_workflow_failure",
+        "script_fenced_file_writer",
         "script_incident_state",
         "script_refresh_ruleset_manifest",
+        "script_resource_lease_runtime",
+        "script_restore_automation_state",
+        "script_task_scheduler",
         "script_validate_release_manifest",
         "script_verify_recovery_run",
         "script_watchdog_recovery_policy"

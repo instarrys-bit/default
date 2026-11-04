@@ -2,11 +2,11 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-2026.11.04.2",
   "status": "baseline_inventory",
-  "source_registry_blob_sha": "c9812d227da4cae3f85e1ce6a462a39125b85f8e",
+  "source_registry_blob_sha": "f3f7ed1ce7f063412d18dde0b6c061457664f7fa",
   "summary": {
     "registered_programs": 60,
     "python_components": 53,
-    "python_components_with_concrete_io_contract": 0,
+    "python_components_with_concrete_io_contract": 1,
     "python_components_with_declared_registry_dependencies": 4,
     "independently_dispatchable_python_components": 0,
     "note": "Counts reflect registry declarations, not runtime call-graph completeness."
@@ -101,7 +101,9 @@
       "declared_capabilities": [
         "source_assessment"
       ],
-      "registry_dependencies": [],
+      "registry_dependencies": [
+        "script_discover_sources"
+      ],
       "current_registry_inputs": [
         "sources/discovered_sources.json candidate collection",
         "sources/source_assessments.json prior history and cursor",
@@ -114,21 +116,14 @@
         "reports/source-assessment.md human-readable report (published)"
       ],
       "current_invocation": "python_module_or_workflow_step",
-      "contract_status": "source_reviewed_documented_not_dispatchable",
+      "contract_status": "concrete_io_contract_documented_runtime_gate_pending",
       "dispatch_status": "disabled",
       "missing_contract_fields": [
-        "input_schema",
-        "output_schema",
-        "read_resources",
-        "write_resources",
-        "transitive_side_effects",
-        "dependency_edges",
-        "idempotency_key",
-        "resource_lease_keys",
-        "success_predicate",
-        "independent_verifier"
+        "typed_dependency_edge_validation",
+        "durable_idempotency_or_checkpoint_recovery",
+        "complete_transitive_side_effect_verification"
       ],
-      "audit_note": "Bounded task-input CLI, exclusive resource leases, and independent artifact verification are implemented and exercised by a one-shot scheduler canary. Regular adapter dispatch remains disabled; this inventory record is not dispatch authorization.",
+      "audit_note": "Concrete bounded I/O, resource, lease, publication and independent-verifier contract is documented. Source discovery is now an explicit registry predecessor. Non-idempotent cursor/timestamp updates remain no-retry; restore workflow is a second writer serialized by the shared production mutex. Dispatch remains disabled pending these remaining gates.",
       "contract_sample_path": "automation/capability_contracts/assess_sources.json"
     },
     {

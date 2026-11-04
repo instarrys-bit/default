@@ -3,8 +3,8 @@
   "contract_id": "capability-script-assess-sources-v1",
   "program_id": "script_assess_sources",
   "implementation_path": "scripts/assess_sources.py",
-  "implementation_blob_sha": "02c90fec4681bb147f58ec62440ed741a11b2c84",
-  "review_status": "implementation_reviewed_pending_ci",
+  "implementation_blob_sha": "4a436482766fa97a9908a61b0172247efb7311bc",
+  "review_status": "contract_documented_pending_runtime_gates",
   "dispatch_status": "disabled",
   "entrypoint": {
     "command": [
@@ -160,9 +160,12 @@
   },
   "dependency_edges": {
     "required_predecessor": "script_discover_sources",
-    "edge_semantics": "assess_sources consumes the discovered_sources snapshot produced by discover_sources; it does not dispatch that predecessor itself.",
-    "registry_dependency_declared": false,
-    "note": "The scheduler enforces sources/discovered_sources.json as a required read-only predecessor artifact and compares its complete legacy/sharded digest before and after execution; it does not dispatch the discovery predecessor itself."
+    "edge_semantics": "Watchdog schedules discovery before assessment or requires an existing validated discovery artifact; assessment never dispatches discovery itself.",
+    "registry_dependency_declared": true,
+    "note": "The scheduler enforces sources/discovered_sources.json as a required read-only predecessor artifact and compares its complete legacy/sharded digest before and after execution; it does not dispatch the discovery predecessor itself.",
+    "registry_dependency_program_id": "script_discover_sources",
+    "required_predecessor_artifact": "sources/discovered_sources.json",
+    "input_snapshot_validation": "The scheduler hashes the complete legacy/sharded discovered_sources document before and after assessment and rejects publication if it changes."
   },
   "permission_boundary": {
     "filesystem": "Write only the three declared logical output resources and their document-store temporary/manifest/shard children. Publish only persistent assessment history and report; runtime fingerprint data remains runner-local.",
@@ -171,14 +174,15 @@
     "protected_config": "shadowrocket/ss.conf is immutable and outside this capability's write set."
   },
   "blockers": [
-    "The inventory drift regression tests and full repository CI must pass.",
-    "The capability contract and implementation pins must be included in a validated release baseline.",
-    "The adapter remains disabled until the regular Watchdog dispatch path passes a controlled post-merge verification."
+    "Add typed dependency-edge enforcement so script_discover_sources is a verified predecessor, not merely a registry label.",
+    "Implement durable idempotency or checkpoint/replay semantics before enabling retries; max_attempts remains zero.",
+    "Complete transitive writer inventory and prove restore_automation_state publication shares the live production mutex.",
+    "Run regular Watchdog dispatch only after adapter enablement is independently validated; no temporary canary override."
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.04.9",
-    "release_manifest_blob_sha": "624f61ed01ad39b7d9bb54fb30bbf4159274edce",
-    "program_registry_blob_sha": "c9812d227da4cae3f85e1ce6a462a39125b85f8e",
+    "release_manifest_blob_sha": "d6258a141533b31f6450a578a7fac1219a143700",
+    "program_registry_blob_sha": "f3f7ed1ce7f063412d18dde0b6c061457664f7fa",
     "execution_adapters_blob_sha": "51b4a61c3764e4446dae93d6c0ffc26d7a062afe",
     "added_after_release_baseline": false,
     "note": "References the refreshed baseline snapshot. This is review provenance only, not dispatch authorization; independent Python dispatch remains blocked by the release compatibility and runtime-enforcement gates."

@@ -69,7 +69,12 @@
       ],
       "lease_seconds": 480,
       "publication": "After artifact verification, scheduler commits only persistent history/report and document-store manifest/shards using a non-force push after rebase; runtime fingerprint data is never committed.",
-      "write_boundary_fencing": "Per-write live lease/fencing is implemented for both JSON document-store mutations and Markdown report output; independent adapter remains disabled."
+      "write_boundary_fencing": "Per-write live lease/fencing is implemented for assessment writes; auto_sync restoration is separately fenced by the shared logical production mutex. Independent adapter remains disabled.",
+      "additional_serialized_writers": [
+        "script_restore_automation_state",
+        "workflow_auto_sync"
+      ],
+      "additional_writer_boundary": "auto_sync publish job restores allowlisted assessment history and report artifacts from an audited archive under the same live logical/production-pipeline lease; the fenced_file_writer audit hook validates that lease before each restore filesystem mutation."
     },
     {
       "program_id": "script_build_project_status",

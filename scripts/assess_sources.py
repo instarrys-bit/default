@@ -483,7 +483,6 @@ def main(argv: list[str] | None = None) -> int:
     assert_optional_write_lease(OUTPUT, required=args.task_input is not None)
     write_document(OUTPUT, compact_assessment_result(persistent), "assessments", lease_required=args.task_input is not None)
     assert_optional_write_lease(REPORT, required=args.task_input is not None)
-    assert_optional_write_lease(REPORT, required=args.task_input is not None)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     assert_optional_write_lease(REPORT, required=args.task_input is not None)
     REPORT.write_text(render_report(assessments, drift_summary), encoding="utf-8")
