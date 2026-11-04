@@ -5,7 +5,7 @@
     "registration_required_for": "Any Python component under scripts/ and any GitHub Actions workflow under .github/workflows/.",
     "collaboration_rule": "A program may run independently under its own entry point. Cross-program orchestration requires an explicit registry entry and declared workflow dependencies or dispatch targets.",
     "permission_rule": "Registry declarations describe boundaries; they never grant permissions. The workflow job's least-privilege permissions remain authoritative.",
-    "activation_rule": "Registration is mandatory for CI acceptance, but does not by itself authorize automatic dispatch, rule activation, publication, or modification of shadowrocket/ss.conf."
+    "activation_rule": "Registration is mandatory for CI acceptance, but does not by itself authorize automatic dispatch, rule activation, publication, or modification of modules/uu.conf."
   },
   "programs": [
     {
@@ -84,7 +84,7 @@
         "script_discover_sources"
       ],
       "dispatches": [],
-      "permission_boundary": "Read discovered_sources.json and prior source_assessments.json; write only sources/source_assessments.json, data/source_assessments_runtime.json and reports/source-assessment.md under exclusive live-fenced resource leases; publish only persistent history and report via a fenced GitHub commit; HTTPS reads only from repository-bound raw.githubusercontent.com; sources/domain_sources.json and shadowrocket/ss.conf are read-only.",
+      "permission_boundary": "Read discovered_sources.json and prior source_assessments.json; write only sources/source_assessments.json, data/source_assessments_runtime.json and reports/source-assessment.md under exclusive live-fenced resource leases; publish only persistent history and report via a fenced GitHub commit; HTTPS reads only from repository-bound raw.githubusercontent.com; sources/domain_sources.json and modules/uu.conf are read-only.",
       "health_check": "The scheduler validates the task input schema, resource fencing is checked before each artifact write, and verify_assess_sources_artifacts.py independently verifies runtime/history/report consistency.",
       "orchestration": {
         "enabled": false,
@@ -1383,7 +1383,7 @@
         "script_task_queue"
       ],
       "dispatches": [],
-      "permission_boundary": "Requires caller-provided GitHub Contents read/write permission; this component grants no permissions and must never modify shadowrocket/ss.conf.",
+      "permission_boundary": "Requires caller-provided GitHub Contents read/write permission; this component grants no permissions and must never modify modules/uu.conf.",
       "health_check": "Unit tests for remote enqueue, idempotency, priority claims, lease ownership, retry/dead-letter transitions, and expired-lease recovery.",
       "orchestration": {
         "enabled": false,
@@ -1420,7 +1420,7 @@
         "script_github_workflow_adapter"
       ],
       "dispatches": [],
-      "permission_boundary": "Requires caller-provided GitHub Contents read/write permission to persist verification transitions; never modifies shadowrocket/ss.conf, rulesets, or DNS.",
+      "permission_boundary": "Requires caller-provided GitHub Contents read/write permission to persist verification transitions; never modifies modules/uu.conf, rulesets, or DNS.",
       "health_check": "Tests cover deterministic JSON contract validation, workflow run correlation, identity/SHA checks, pending state, success/failure conclusions, and CAS-backed task transitions.",
       "orchestration": {
         "enabled": false,
@@ -1459,7 +1459,7 @@
         "script_github_workflow_adapter"
       ],
       "dispatches": [],
-      "permission_boundary": "Requires caller-provided GitHub Contents read/write permission. Child programs receive only a non-secret environment allowlist, no shell, and no GitHub token. The scheduler does not modify shadowrocket/ss.conf.",
+      "permission_boundary": "Requires caller-provided GitHub Contents read/write permission. Child programs receive only a non-secret environment allowlist, no shell, and no GitHub token. The scheduler does not modify modules/uu.conf.",
       "health_check": "Tests cover disabled-adapter blocking, reviewed Python execution, workflow dispatch authorization, durable intent recovery, duplicate-dispatch prevention, and independent workflow run verification.",
       "orchestration": {
         "enabled": false,
@@ -1492,7 +1492,7 @@
       ],
       "depends_on": [],
       "dispatches": [],
-      "permission_boundary": "Requires caller-provided actions:write for dispatch and actions:read for run inspection. Tokens are never returned in results or passed to child programs. This module does not modify shadowrocket/ss.conf.",
+      "permission_boundary": "Requires caller-provided actions:write for dispatch and actions:read for run inspection. Tokens are never returned in results or passed to child programs. This module does not modify modules/uu.conf.",
       "health_check": "Unit tests cover caller/ref/input authorization, live workflow identity, correlation marker injection, ambiguous run detection, run identity validation, and completed-success verification.",
       "orchestration": {
         "enabled": false,
@@ -1522,7 +1522,7 @@
       ],
       "depends_on": [],
       "dispatches": [],
-      "permission_boundary": "Read-only repository inspection; no network access, no queue mutation, no adapter activation, and no changes to shadowrocket/ss.conf.",
+      "permission_boundary": "Read-only repository inspection; no network access, no queue mutation, no adapter activation, and no changes to modules/uu.conf.",
       "health_check": "Tests validate disabled-by-default state, workflow permission scope parsing, read-only canary classification, and protected-config write detection.",
       "orchestration": {
         "enabled": false,
@@ -1582,7 +1582,7 @@
       ],
       "depends_on": [],
       "dispatches": [],
-      "permission_boundary": "Read-only deterministic classification and hashing. No network access, queue writes, ruleset writes, or modification of shadowrocket/ss.conf.",
+      "permission_boundary": "Read-only deterministic classification and hashing. No network access, queue writes, ruleset writes, or modification of modules/uu.conf.",
       "health_check": "Dedicated deterministic unit tests plus Watchdog workflow integration tests.",
       "orchestration": {
         "enabled": false,
@@ -1613,7 +1613,7 @@
       ],
       "depends_on": [],
       "dispatches": [],
-      "permission_boundary": "Read-only repository inputs; writes only the generated dashboard snapshot in the workflow workspace. No GitHub API write permission, no production dispatch, no edits to repository state or shadowrocket/ss.conf.",
+      "permission_boundary": "Read-only repository inputs; writes only the generated dashboard snapshot in the workflow workspace. No GitHub API write permission, no production dispatch, no edits to repository state or modules/uu.conf.",
       "health_check": "Python compilation and deterministic snapshot-schema tests; Pages workflow build result.",
       "orchestration": {
         "enabled": false,
@@ -1763,7 +1763,7 @@
       ],
       "depends_on": [],
       "dispatches": [],
-      "permission_boundary": "Library only; no independent execution, credentials, network access, or authority to edit shadowrocket/ss.conf.",
+      "permission_boundary": "Library only; no independent execution, credentials, network access, or authority to edit modules/uu.conf.",
       "health_check": "Covered by tests/test_fenced_file_writer.py and the full deterministic unit suite.",
       "orchestration": {
         "enabled": false,
