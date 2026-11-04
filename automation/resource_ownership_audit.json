@@ -25,7 +25,7 @@
     "limitation": "Static review of named entrypoints and direct write call sites only. Dynamic helper behavior is documented where inspected; complete transitive caller coverage, runtime-selected paths, and all writers still require machine-checked tracing."
   },
   "protected_resources": {
-    "shadowrocket/ss.conf": {
+    "modules/uu.conf": {
       "access": "read_only",
       "writers_allowed": [],
       "enforcement_evidence": "task_scheduler protected-config digest guard and auto_sync publish-job pre/post staging checks",
@@ -193,7 +193,7 @@
       "The scheduler atomically acquires the shared production mutex and all declared output leases.",
       "The child re-reads live queue state and checks the exact active fencing token at every filesystem mutation boundary.",
       "The independent verifier accepts only matching runtime/persistent/report artifacts.",
-      "A controlled post-merge scheduler canary passes without changing shadowrocket/ss.conf."
+      "A controlled post-merge scheduler canary passes without changing modules/uu.conf."
     ]
   }
 }
