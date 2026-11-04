@@ -84,8 +84,8 @@ class ExecutionAdapterTests(unittest.TestCase):
         audit_adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "workflow_auto_sync")
         self.assertEqual(audit_program["orchestration"]["allowed_callers"], ["workflow_automation_watchdog"])
         self.assertEqual(audit_adapter["allowed_callers"], ["workflow_automation_watchdog"])
-        self.assertEqual(audit_program["orchestration"]["max_attempts"], 1)
-        self.assertEqual(audit_adapter["retry"]["max_attempts"], 0)
+        self.assertEqual(audit_program["orchestration"]["max_attempts"], 2)
+        self.assertEqual(audit_adapter["retry"]["max_attempts"], 1)
 
     def test_valid_minimal_inventory(self):
         root, ap, rp, _ = self.make_repo()
