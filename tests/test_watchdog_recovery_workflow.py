@@ -209,5 +209,17 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("production:input:$current_fingerprint", workflow)
 
 
+    def test_watchdog_has_unique_job_environment_and_parseable_stale_run_script(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        queue_job = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
+        self.assertEqual(queue_job.count("\n    env:\n"), 1)
+        self.assertIn('      PYTHONDONTWRITEBYTECODE: "1"', queue_job)
+        stale_job = workflow.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
+        self.assertIn('RUNS_JSON="$runs" python3 - <<\'PY\'', stale_job)
+        self.assertIn('payload = json.loads(os.environ["RUNS_JSON"])', stale_job)
+        self.assertNotIn("python3 -c '", stale_job)
+        self.assertNotIn('last_success="$(jq -r', workflow)
+
+
 if __name__ == "__main__":
     unittest.main()
