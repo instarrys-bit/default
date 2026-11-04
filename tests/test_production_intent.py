@@ -62,6 +62,12 @@ class ProductionIntentTests(unittest.TestCase):
         result = classify_paths(["modules/uu.conf"], self.manifest)
         self.assertEqual(result["status"], "INPUT_CHANGED")
 
+    def test_repository_manifest_classifies_owner_config_as_production_input(self):
+        manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
+        result = classify_paths(["modules/uu.conf"], manifest)
+        self.assertEqual(result["status"], "INPUT_CHANGED")
+        self.assertEqual(result["production_input_changes"], ["modules/uu.conf"])
+
     def test_completion_and_workflow_run_events_never_create_demand(self):
         for event in ("repository_dispatch", "workflow_run"):
             result = decide(event=event, current_fingerprint=self.fp,
