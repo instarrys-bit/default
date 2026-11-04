@@ -223,31 +223,61 @@ def release_resource_leases(task_id, worker_id, task_lease_token, resources, sto
 
 
 def _active_writer_task(queue, task_id, worker_id, task_lease_token, now):
+    """Validate the task owner while CLAIMED, or its live resource fence while VERIFYING.
+
+    complete_remote() deliberately clears the worker lease when it transitions a
+    dispatched workflow to VERIFYING. The resource lease remains active through
+    independent workflow verification and is the authority for writes in that
+    phase; requiring task.lease here would reject every legitimate child-workflow
+    write after dispatch.
+    """
     validate_envelope(queue)
     task=next((x for x in queue["tasks"] if isinstance(x,dict) and x.get("task_id")==task_id),None)
-    if task is None or task.get("status") not in {"CLAIMED","VERIFYING"}:
+    if task is None:
+        raise ValueError("resource write task does not exist")
+    status=task.get("status")
+    if status=="CLAIMED":
+        lease=task.get("lease")
+        if (not isinstance(lease,dict) or lease.get("owner")!=worker_id
+                or not secrets.compare_digest(str(lease.get("token","")),str(task_lease_token))):
+            raise ValueError("resource write task lease owner or token mismatch")
+        if utc(lease.get("expires_at"))<=now:
+            raise ValueError("resource write task lease has expired")
+        return task
+    if status!="VERIFYING":
         raise ValueError("resource write requires an active CLAIMED or VERIFYING task")
-    lease=task.get("lease")
-    if (not isinstance(lease,dict) or lease.get("owner")!=worker_id
-            or not secrets.compare_digest(str(lease.get("token","")),str(task_lease_token))):
-        raise ValueError("resource write task lease owner or token mismatch")
-    if utc(lease.get("expires_at"))<=now:
-        raise ValueError("resource write task lease has expired")
-    if task.get("status")=="VERIFYING":
-        intent=task.get("dispatch_intent")
-        attempt=task.get("attempts")
-        if (task.get("target_program_id")!="workflow_auto_sync"
-                or task.get("requester_program_id")!="workflow_automation_watchdog"
-                or not isinstance(intent,dict) or intent.get("task_id")!=task_id
-                or intent.get("dispatch_attempt")!=attempt
-                or intent.get("correlation_id")!=f"{task_id}-a{attempt}"
-                or intent.get("workflow_path")!=".github/workflows/auto_sync.yml"
-                or intent.get("ref")!="main"):
-            raise ValueError("VERIFYING resource writes require the exact Watchdog production dispatch")
-    return task
+
+    intent=task.get("dispatch_intent")
+    attempt=task.get("attempts")
+    if (task.get("target_program_id")!="workflow_auto_sync"
+            or task.get("requester_program_id")!="workflow_automation_watchdog"
+            or not isinstance(intent,dict) or intent.get("task_id")!=task_id
+            or intent.get("dispatch_attempt")!=attempt
+            or intent.get("correlation_id")!=f"{task_id}-a{attempt}"
+            or intent.get("workflow_path")!=".github/workflows/auto_sync.yml"
+            or intent.get("ref")!="main"):
+        raise ValueError("VERIFYING resource writes require the exact Watchdog production dispatch")
+
+    resource_lease=task.get("resource_lease")
+    declared=resource_lease.get("resources") if isinstance(resource_lease,dict) and resource_lease.get("status")=="ACTIVE" else None
+    leases=queue.get("resource_leases")
+    if not isinstance(declared,dict) or not declared or not isinstance(leases,dict):
+        raise ValueError("VERIFYING task has no active resource lease")
+    for raw_key,item in declared.items():
+        key=resource_key(raw_key)
+        record=checked_record(leases.get(key),key)
+        if (record is not None and record.get("status")=="ACTIVE"
+                and record.get("task_id")==task_id
+                and record.get("worker_id")==worker_id
+                and record.get("task_lease_token")==task_lease_token
+                and record.get("lease_id")==item.get("lease_id")
+                and record.get("fencing_token")==item.get("fencing_token")
+                and utc(record["expires_at"])>now):
+            return task
+    raise ValueError("VERIFYING task has no matching active resource lease for this worker and token")
 
 
-def _assert_live_writer_fence(queue, task, resource_path, proof_item, now):
+def _assert_live_writer_fence(queue, task, resource_path, proof_item, now, worker_id, task_lease_token):
     lease=task.get("resource_lease")
     declared=lease.get("resources") if isinstance(lease,dict) and lease.get("status")=="ACTIVE" else None
     if not isinstance(declared,dict) or declared.get(resource_path)!=proof_item:
@@ -256,11 +286,10 @@ def _assert_live_writer_fence(queue, task, resource_path, proof_item, now):
     if not isinstance(leases,dict):
         raise ValueError("durable resource lease registry is missing")
     record=checked_record(leases.get(resource_path),resource_path)
-    task_lease=task["lease"]
     if (record is None or record.get("status")!="ACTIVE"
             or record.get("task_id")!=task["task_id"]
-            or record.get("worker_id")!=task_lease.get("owner")
-            or record.get("task_lease_token")!=task_lease.get("token")
+            or record.get("worker_id")!=worker_id
+            or record.get("task_lease_token")!=task_lease_token
             or record.get("lease_id")!=proof_item.get("lease_id")
             or record.get("fencing_token")!=proof_item.get("fencing_token")):
         raise ValueError(f"resource lease fencing check failed: {resource_path}")
@@ -367,7 +396,7 @@ def assert_resource_lease_from_environment(resource_path):
         try:
             snapshot=json.loads(Path(snapshot_path).read_text(encoding="utf-8"))
             snapshot_task=_active_writer_task(snapshot,task_id,worker_id,task_token,now)
-            _assert_live_writer_fence(snapshot,snapshot_task,lease_key,item,now)
+            _assert_live_writer_fence(snapshot,snapshot_task,lease_key,item,now,worker_id,task_token)
         except (OSError,json.JSONDecodeError) as exc:
             raise ValueError("resource lease claim snapshot is unreadable") from exc
     store=GitHubContentsQueueStore(
@@ -379,7 +408,7 @@ def assert_resource_lease_from_environment(resource_path):
     )
     live_queue=store.read().document
     live_task=_active_writer_task(live_queue,task_id,worker_id,task_token,datetime.now(timezone.utc))
-    return _assert_live_writer_fence(live_queue,live_task,lease_key,item,datetime.now(timezone.utc))
+    return _assert_live_writer_fence(live_queue,live_task,lease_key,item,datetime.now(timezone.utc),worker_id,task_token)
 
 
 def assert_workflow_resource_lease(queue, task_id, proof, *, now=None):
