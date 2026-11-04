@@ -131,7 +131,7 @@
     "required_predecessor_artifacts": [
       "sources/discovered_sources.json"
     ],
-    "lease_seconds": 420,
+    "lease_seconds": 480,
     "publish_resources": [
       "sources/source_assessments.json",
       "reports/source-assessment.md"
@@ -145,7 +145,7 @@
     "idempotency_key": "Not implemented; cursor rotation and assessed_at timestamps change persisted state.",
     "retry_policy": "No automatic retry; cursor rotation and assessed_at timestamps are non-idempotent.",
     "timeout_seconds": 240,
-    "timeout_note": "Task input caps each run at 20 URLs, 1 MB per URL and 10 MB aggregate; child timeout is 240 seconds and the task/resource lease is 420 seconds to cover verification and fenced publication.",
+    "timeout_note": "Task input caps each run at 20 URLs, 1 MB per URL and 10 MB aggregate; child timeout is 240 seconds and the task/resource lease is 480 seconds to cover verification and fenced publication.",
     "success_predicate": [
       "Process exits with code 0.",
       "stdout is exactly one parseable JSON object with all required fields.",
