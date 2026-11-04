@@ -93,6 +93,16 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertFalse(restore["orchestration"]["enabled"])
         self.assertFalse(next(item for item in adapters["adapters"] if item["target_program_id"] == "script_restore_automation_state")["enabled"])
 
+    def test_dashboard_report_writer_is_registered_in_shared_report_ownership(self):
+        audit = load_json("automation/resource_ownership_audit.json")
+        writes = load_json("automation/resource_write_sets.json")
+        group = next(item for item in audit["resource_groups"] if item["id"] == "reports_and_audit_outputs")
+        entry = next(item for item in writes["confirmed_write_sets"] if item["program_id"] == "script_build_project_status")
+        self.assertIn("script_build_project_status", group["known_writers"])
+        self.assertIn("reports/project-status.json", entry["writes"])
+        self.assertIn("reports/project-status.md", entry["writes"])
+        self.assertIn("scripts/build_project_status.py", audit["evidence_scope"]["inspected_sources"])
+
     def test_assessment_contract_dependency_matches_registry(self):
         registry = load_json("automation/program_registry.json")
         inventory = load_json("automation/capability_contract_inventory.json")
