@@ -68,6 +68,17 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertEqual(result["status"], "INPUT_CHANGED")
         self.assertEqual(result["production_input_changes"], ["modules/uu.conf"])
 
+    def test_repository_manifest_classifies_removed_historical_config_candidates_as_non_production(self):
+        manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
+        paths = [
+            "candidates/ss.conf.oiu-fusion-candidate",
+            "candidates/ss.conf.oiu-merged",
+        ]
+        result = classify_paths(paths, manifest)
+        self.assertEqual(result["status"], "NO_INPUT_CHANGE")
+        self.assertCountEqual(result["non_production_changes"], paths)
+        self.assertEqual(result["unknown_changes"], [])
+
     def test_repository_manifest_classifies_governance_metadata_as_non_production(self):
         manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
         paths = [
