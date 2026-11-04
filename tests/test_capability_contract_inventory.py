@@ -346,7 +346,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertIn("sources/rule_provenance.json logical document", {item["resource"] for item in writes["confirmed_shared_write_groups"]})
         self.assertEqual(groups["domain_candidate_buffer"]["status"], "known_shared_writers_central_pipeline_fence_only")
         self.assertEqual(groups["rule_provenance_ledger"]["status"], "known_shared_writers_central_pipeline_fence_only")
-        self.assertEqual(groups["watchdog_unregistered_path_registry"]["status"], "cas_conflict_fails_closed_concurrency_unproven")
+        self.assertEqual(groups["watchdog_unregistered_path_registry"]["status"], "bounded_cas_retry_implemented_concurrent_integration_unproven")
         self.assertEqual(groups["request_intake_observations"]["status"], "rebase_retry_implemented_concurrent_integration_unproven")
         self.assertEqual(audit["status"], "partial_static_audit")
 
