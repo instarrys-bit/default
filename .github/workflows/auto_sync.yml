@@ -654,11 +654,11 @@ jobs:
           }
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
               for key, value in values.items():
-                  stream.write(f"{key}={value}\\n")
+                  stream.write(f"{key}={value}\n")
               delimiter = "__PUBLISH_RESOURCE_PROOF__"
               if delimiter in proof_text:
                   raise SystemExit("Invalid publish proof delimiter.")
-              stream.write(f"AUTOMATION_RESOURCE_LEASE_PROOF<<{delimiter}\\n{proof_text}\\n{delimiter}\\n")
+              stream.write(f"AUTOMATION_RESOURCE_LEASE_PROOF<<{delimiter}\n{proof_text}\n{delimiter}\n")
           PY
 
       - name: Verify live Watchdog resource lease before artifact restoration
