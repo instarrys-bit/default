@@ -10,7 +10,7 @@
     "permission_rule": "This file never grants GitHub permissions; caller workflow jobs must declare least-privilege permissions.",
     "completion_rule": "No task is successful until target completion and independent result verification both pass.",
     "queue_separation": "This orchestration contract is separate from rulesets/pending_queue.json.",
-    "protected_config": "No adapter may modify shadowrocket/ss.conf."
+    "protected_config": "No adapter may modify modules/uu.conf."
   },
   "adapters": [
     {
