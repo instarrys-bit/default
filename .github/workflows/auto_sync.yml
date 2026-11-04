@@ -546,8 +546,6 @@ jobs:
             reports/ruleset-config-conflict-sync.md
             reports/ruleset-config-conflict-sync.json
             sources/policy.json
-            automation/release_manifest.json
-            automation/production_workflow_map.json
             reports/ruleset-config-overlap-audit.md
             reports/ruleset-config-overlap-audit.json
             reports/source-lineage-audit.json
@@ -704,6 +702,8 @@ jobs:
           # Missing optional files must not abort an otherwise valid publication.
           publish_paths=(
             sources/policy.json
+            automation/release_manifest.json
+            automation/production_workflow_map.json
             sources/domain_sources.json
             sources/source_activation_log.json
             reports/lifecycle
