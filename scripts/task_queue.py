@@ -267,6 +267,15 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
             raise ValueError("manual authorization task target/idempotency binding is invalid")
         if not isinstance(record.get("scope_sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", record["scope_sha256"]):
             raise ValueError("manual authorization scope digest is invalid")
+        if (not isinstance(record.get("run_attempt"), str) or not record["run_attempt"].isdigit()
+                or not isinstance(record.get("actor_id"), str) or not record["actor_id"].isdigit()
+                or record.get("event") != "workflow_dispatch"
+                or record.get("ref") != "refs/heads/main"
+                or not isinstance(record.get("repository"), str) or not record["repository"].strip()
+                or record.get("workflow_ref") != f'{record["repository"]}/.github/workflows/automation-watchdog.yml@refs/heads/main'
+                or not isinstance(record.get("head_sha"), str)
+                or not re.fullmatch(r"[0-9a-f]{40}", record["head_sha"])):
+            raise ValueError("manual authorization trusted workflow identity is invalid")
         parse_utc(record.get("consumed_at"), f"manual_authorizations.{run_id}.consumed_at")
     for task in tasks:
         payload = task.get("input") if isinstance(task, dict) else None
