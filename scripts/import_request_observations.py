@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """Merge observed request hostnames into the candidate buffer without assigning policy."""
 from __future__ import annotations
+
+if __import__("os").environ.get("AUTOMATION_WRITE_GUARD") == "1":
+    from fenced_file_writer import install_write_guard as _install_write_guard
+    _install_write_guard()
+
 import json, re
 from pathlib import Path
 from json_document_store import read_document, write_document
