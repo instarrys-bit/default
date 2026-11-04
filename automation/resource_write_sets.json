@@ -91,7 +91,7 @@
       "ephemeral_unpublished_resources": [
         "data/source_assessments_runtime.json"
       ],
-      "lease_seconds": 420,
+      "lease_seconds": 480,
       "publication": "After artifact verification, scheduler commits only persistent history/report and document-store manifest/shards using a non-force push after rebase; runtime fingerprint data is never committed."
     },
     {
