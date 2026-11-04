@@ -13,16 +13,16 @@
       "worker_id": "assessment-canary-41746911914"
     },
     "logical/production-pipeline": {
-      "acquired_at": "2026-11-04T00:28:16Z",
-      "expires_at": "2026-11-04T00:28:30Z",
-      "fencing_token": 2,
-      "lease_id": "5f102e8d96ca2b0bb7b3a7265d658516",
-      "released_at": "2026-11-04T00:28:30Z",
-      "renewed_at": "2026-11-04T00:28:29Z",
-      "status": "RELEASED",
-      "task_id": "task_57fb8781b99241818ff96c02",
-      "task_lease_token": "2d0d3590516212d7af2b94c886638b96",
-      "worker_id": "assessment-canary-41746911914"
+      "acquired_at": "2026-11-04T00:39:20Z",
+      "expires_at": "2026-11-04T00:44:20Z",
+      "fencing_token": 3,
+      "lease_id": "5bbebd7bcd956e03d20b8388bb599be0",
+      "released_at": null,
+      "renewed_at": "2026-11-04T00:39:20Z",
+      "status": "ACTIVE",
+      "task_id": "task_411472105e814fe2b76c6156",
+      "task_lease_token": "984c8a81d38c546cec268db5f30d02fc",
+      "worker_id": "41748386002"
     },
     "reports/source-assessment.md": {
       "acquired_at": "2026-11-04T00:28:16Z",
@@ -49,7 +49,7 @@
       "worker_id": "assessment-canary-41746911914"
     }
   },
-  "revision": 74,
+  "revision": 75,
   "schema_version": 1,
   "tasks": [
     {
@@ -1095,7 +1095,7 @@
       }
     },
     {
-      "attempts": 0,
+      "attempts": 1,
       "capability": "deterministic_audit",
       "created_at": "2026-11-04T00:39:09Z",
       "execution_backend": "github_contents",
@@ -1110,16 +1110,33 @@
         "production_reason": "a registered production input changed; prior success for the same fingerprint does not prove current state is reconciled"
       },
       "last_error": null,
-      "lease": null,
+      "lease": {
+        "expires_at": "2026-11-04T00:44:20Z",
+        "owner": "41748386002",
+        "token": "984c8a81d38c546cec268db5f30d02fc"
+      },
       "max_attempts": 1,
       "not_before": "2026-11-04T00:39:09Z",
       "priority": 100,
       "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-04T00:39:20Z",
+        "expires_at": "2026-11-04T00:44:20Z",
+        "lease_seconds": 21600,
+        "resources": {
+          "logical/production-pipeline": {
+            "fencing_token": 3,
+            "lease_id": "5bbebd7bcd956e03d20b8388bb599be0"
+          }
+        },
+        "status": "ACTIVE"
+      },
       "result": null,
       "state_history": [
-        "QUEUED"
+        "QUEUED",
+        "CLAIMED"
       ],
-      "status": "QUEUED",
+      "status": "CLAIMED",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_411472105e814fe2b76c6156",
       "trace_id": "de6d454a4f8d41ec8445e4697d300edf"
