@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
+  "release_id": "shadowrocket-automation-baseline-2026.11.05.2",
   "release_status": "baseline_snapshot",
   "created_on": "2026-11-05",
-  "purpose": "Pin the Watchdog automation after cross-workflow writer serialization and durable per-URL source-assessment checkpoints.",
+  "purpose": "Pin production workflow with persistent shell and Git repository-tree write tracing and corrected production-intent path classification.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "ab5f92f25e97d62b9fd35d4097109f9fad892c6b"
+      "git_blob_sha": "e041b917149acc3c1b3457380c2a6304dad19f4d"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -28,7 +28,7 @@
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "8fb6c9b1d880b6e9e9245751abb39b404a60a6eb"
+      "git_blob_sha": "8a65fb3082c573b5fdd91095770852c6b362eb90"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -55,6 +55,11 @@
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
       "git_blob_sha": "8279a833c480f476687c25ba34349fcc439bd78d"
+    },
+    "runtime_write_trace_collector": {
+      "path": "scripts/capture_git_write_trace.py",
+      "git_blob_sha": "a88030039f797ca8b3c517fdb4be21d4c78aac09",
+      "verification_status": "covered_by_deterministic_unit_tests_and_production_audit_publish_steps"
     }
   },
   "compatibility": {
@@ -77,7 +82,7 @@
     "Resource ownership audit is still a partial static review; restore_automation_state is an additional serialized writer for source assessment history/report artifacts.",
     "Review cursor checkpoint persistence is protected by the production workflow's top-level main-writer concurrency group and the live Watchdog fencing lease; complete transitive writer tracing remains outstanding.",
     "The production workflow now permits one bounded retry after a verified failed run; cancelled/superseded task classification remains conservative and terminal history is retained.",
-    "Path-only runtime write traces are uploaded for production audit and publish jobs; traces cover Python filesystem audit events but do not prove shell/git child-process writes or complete transitive runtime behavior.",
+    "Runtime write traces combine Python filesystem audit events with persistent Git repository-tree deltas from shell/Git activity; transient write-and-revert operations, .git metadata, external filesystem/API side effects and unexecuted paths remain outside coverage.",
     "Durable per-URL assessment checkpoints are implemented in the task queue; live multi-run interruption/resume integration evidence is still pending."
   ],
   "next_migration_gate": {
