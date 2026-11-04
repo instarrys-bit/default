@@ -20,67 +20,67 @@
       "path": "automation/capability_contract_inventory.json",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-03T18:58:58.359070Z",
-      "last_seen_at": "2026-11-03T23:58:20.171594Z",
-      "seen_count": 6,
+      "last_seen_at": "2026-11-04T00:09:41.693689Z",
+      "seen_count": 7,
       "last_seen_event": "push",
-      "last_seen_revision": "6d193e0a3e4ff96bb4b6e6205d4443034a210205",
-      "last_seen_run_id": "41743187476",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41743187476"
+      "last_seen_revision": "d14a85fea841ae4443933d4676b96bbdec6db8ca",
+      "last_seen_run_id": "41744650865",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41744650865"
     },
     {
       "path": "automation/capability_contracts/assess_sources.json",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-03T19:06:35.005041Z",
-      "last_seen_at": "2026-11-03T23:58:20.171594Z",
-      "seen_count": 5,
+      "last_seen_at": "2026-11-04T00:09:41.693689Z",
+      "seen_count": 6,
       "last_seen_event": "push",
-      "last_seen_revision": "6d193e0a3e4ff96bb4b6e6205d4443034a210205",
-      "last_seen_run_id": "41743187476",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41743187476"
+      "last_seen_revision": "d14a85fea841ae4443933d4676b96bbdec6db8ca",
+      "last_seen_run_id": "41744650865",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41744650865"
     },
     {
       "path": "automation/production_workflow_map.json",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-03T19:06:35.005041Z",
-      "last_seen_at": "2026-11-03T23:58:20.171594Z",
-      "seen_count": 5,
+      "last_seen_at": "2026-11-04T00:09:41.693689Z",
+      "seen_count": 6,
       "last_seen_event": "push",
-      "last_seen_revision": "6d193e0a3e4ff96bb4b6e6205d4443034a210205",
-      "last_seen_run_id": "41743187476",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41743187476"
+      "last_seen_revision": "d14a85fea841ae4443933d4676b96bbdec6db8ca",
+      "last_seen_run_id": "41744650865",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41744650865"
     },
     {
       "path": "automation/release_manifest.json",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-03T18:58:58.359070Z",
-      "last_seen_at": "2026-11-03T23:58:20.171594Z",
-      "seen_count": 6,
+      "last_seen_at": "2026-11-04T00:09:41.693689Z",
+      "seen_count": 7,
       "last_seen_event": "push",
-      "last_seen_revision": "6d193e0a3e4ff96bb4b6e6205d4443034a210205",
-      "last_seen_run_id": "41743187476",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41743187476"
+      "last_seen_revision": "d14a85fea841ae4443933d4676b96bbdec6db8ca",
+      "last_seen_run_id": "41744650865",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41744650865"
     },
     {
       "path": "automation/resource_ownership_audit.json",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-03T18:58:58.359070Z",
-      "last_seen_at": "2026-11-03T23:58:20.171594Z",
-      "seen_count": 6,
+      "last_seen_at": "2026-11-04T00:09:41.693689Z",
+      "seen_count": 7,
       "last_seen_event": "push",
-      "last_seen_revision": "6d193e0a3e4ff96bb4b6e6205d4443034a210205",
-      "last_seen_run_id": "41743187476",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41743187476"
+      "last_seen_revision": "d14a85fea841ae4443933d4676b96bbdec6db8ca",
+      "last_seen_run_id": "41744650865",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41744650865"
     },
     {
       "path": "automation/resource_write_sets.json",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-03T19:06:35.005041Z",
-      "last_seen_at": "2026-11-03T23:58:20.171594Z",
-      "seen_count": 5,
+      "last_seen_at": "2026-11-04T00:09:41.693689Z",
+      "seen_count": 6,
       "last_seen_event": "push",
-      "last_seen_revision": "6d193e0a3e4ff96bb4b6e6205d4443034a210205",
-      "last_seen_run_id": "41743187476",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41743187476"
+      "last_seen_revision": "d14a85fea841ae4443933d4676b96bbdec6db8ca",
+      "last_seen_run_id": "41744650865",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41744650865"
     },
     {
       "path": "dashboard/README.md",
@@ -128,35 +128,35 @@
       "path": "scripts/resource_lease_runtime.py",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-03T19:06:35.005041Z",
-      "last_seen_at": "2026-11-03T23:58:20.171594Z",
-      "seen_count": 5,
+      "last_seen_at": "2026-11-04T00:09:41.693689Z",
+      "seen_count": 6,
       "last_seen_event": "push",
-      "last_seen_revision": "6d193e0a3e4ff96bb4b6e6205d4443034a210205",
-      "last_seen_run_id": "41743187476",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41743187476"
+      "last_seen_revision": "d14a85fea841ae4443933d4676b96bbdec6db8ca",
+      "last_seen_run_id": "41744650865",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41744650865"
     },
     {
       "path": "scripts/validate_release_manifest.py",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-03T18:58:58.359070Z",
-      "last_seen_at": "2026-11-03T23:58:20.171594Z",
-      "seen_count": 6,
+      "last_seen_at": "2026-11-04T00:09:41.693689Z",
+      "seen_count": 7,
       "last_seen_event": "push",
-      "last_seen_revision": "6d193e0a3e4ff96bb4b6e6205d4443034a210205",
-      "last_seen_run_id": "41743187476",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41743187476"
+      "last_seen_revision": "d14a85fea841ae4443933d4676b96bbdec6db8ca",
+      "last_seen_run_id": "41744650865",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41744650865"
     },
     {
       "path": "scripts/verify_assess_sources_artifacts.py",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-03T23:58:20.171594Z",
-      "last_seen_at": "2026-11-03T23:58:20.171594Z",
-      "seen_count": 1,
+      "last_seen_at": "2026-11-04T00:09:41.693689Z",
+      "seen_count": 2,
       "last_seen_event": "push",
-      "last_seen_revision": "6d193e0a3e4ff96bb4b6e6205d4443034a210205",
-      "last_seen_run_id": "41743187476",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41743187476"
+      "last_seen_revision": "d14a85fea841ae4443933d4676b96bbdec6db8ca",
+      "last_seen_run_id": "41744650865",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41744650865"
     }
   ],
-  "updated_at": "2026-11-03T23:58:20.171594Z"
+  "updated_at": "2026-11-04T00:09:41.693689Z"
 }
