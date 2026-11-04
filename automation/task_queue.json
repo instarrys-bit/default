@@ -14,11 +14,11 @@
     },
     "logical/production-pipeline": {
       "acquired_at": "2026-11-04T00:39:20Z",
-      "expires_at": "2026-11-04T00:44:20Z",
+      "expires_at": "2026-11-04T06:39:21Z",
       "fencing_token": 3,
       "lease_id": "5bbebd7bcd956e03d20b8388bb599be0",
       "released_at": null,
-      "renewed_at": "2026-11-04T00:39:20Z",
+      "renewed_at": "2026-11-04T00:39:21Z",
       "status": "ACTIVE",
       "task_id": "task_411472105e814fe2b76c6156",
       "task_lease_token": "984c8a81d38c546cec268db5f30d02fc",
@@ -49,7 +49,7 @@
       "worker_id": "assessment-canary-41746911914"
     }
   },
-  "revision": 76,
+  "revision": 77,
   "schema_version": 1,
   "tasks": [
     {
@@ -1121,18 +1121,14 @@
         "production_reason": "a registered production input changed; prior success for the same fingerprint does not prove current state is reconciled"
       },
       "last_error": null,
-      "lease": {
-        "expires_at": "2026-11-04T00:44:20Z",
-        "owner": "41748386002",
-        "token": "984c8a81d38c546cec268db5f30d02fc"
-      },
+      "lease": null,
       "max_attempts": 1,
       "not_before": "2026-11-04T00:39:09Z",
       "priority": 100,
       "requester_program_id": "workflow_automation_watchdog",
       "resource_lease": {
         "acquired_at": "2026-11-04T00:39:20Z",
-        "expires_at": "2026-11-04T00:44:20Z",
+        "expires_at": "2026-11-04T06:39:21Z",
         "lease_seconds": 21600,
         "resources": {
           "logical/production-pipeline": {
@@ -1142,15 +1138,29 @@
         },
         "status": "ACTIVE"
       },
-      "result": null,
+      "result": {
+        "correlation_id": "task_411472105e814fe2b76c6156-a1",
+        "correlation_title": "Automation task task_411472105e814fe2b76c6156-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-04T00:39:22Z",
+        "ref": "main",
+        "requested_head_sha": "834260c3c784be67487692db65b7be14f4098fb8",
+        "submitted_at": "2026-11-04T00:39:25Z",
+        "task_id": "task_411472105e814fe2b76c6156",
+        "workflow_id": 402712272,
+        "workflow_path": ".github/workflows/auto_sync.yml"
+      },
       "state_history": [
         "QUEUED",
-        "CLAIMED"
+        "CLAIMED",
+        "VERIFYING"
       ],
-      "status": "CLAIMED",
+      "status": "VERIFYING",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_411472105e814fe2b76c6156",
-      "trace_id": "de6d454a4f8d41ec8445e4697d300edf"
+      "trace_id": "de6d454a4f8d41ec8445e4697d300edf",
+      "verification": null
     }
   ]
 }
