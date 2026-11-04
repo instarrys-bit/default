@@ -86,7 +86,8 @@
         "required": [
           "max_urls",
           "max_file_bytes",
-          "max_total_bytes"
+          "max_total_bytes",
+          "predecessor"
         ],
         "properties": {
           "max_urls": {
@@ -103,6 +104,44 @@
             "type": "integer",
             "minimum": 1,
             "maximum": 10000000
+          },
+          "predecessor": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "program_id",
+              "workflow_name",
+              "workflow_run_id",
+              "workflow_head_sha",
+              "artifact_path",
+              "artifact_sha256"
+            ],
+            "properties": {
+              "program_id": {
+                "type": "string",
+                "const": "script_discover_sources"
+              },
+              "workflow_name": {
+                "type": "string",
+                "const": "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
+              },
+              "workflow_run_id": {
+                "type": "string",
+                "pattern": "^[0-9]+$"
+              },
+              "workflow_head_sha": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              "artifact_path": {
+                "type": "string",
+                "const": "sources/discovered_sources.json"
+              },
+              "artifact_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
           }
         }
       },
@@ -247,7 +286,14 @@
         "sources/source_assessments.json",
         "data/source_assessments_runtime.json",
         "reports/source-assessment.md"
-      ]
+      ],
+      "dependency_contract": {
+        "predecessor_program_id": "script_discover_sources",
+        "artifact_path": "sources/discovered_sources.json",
+        "producer_workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
+        "edge_type": "successful_workflow_run_with_immutable_artifact_digest",
+        "enforcement": "Watchdog enqueues only from a successful matching workflow_run event; scheduler checks exact producer identity, run metadata and current artifact digest before claim."
+      }
     },
     {
       "target_program_id": "script_audit_config_drift",
