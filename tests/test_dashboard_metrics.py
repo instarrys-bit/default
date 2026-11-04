@@ -32,8 +32,11 @@ class WatchdogScheduleDashboardTests(unittest.TestCase):
         self.assertEqual(result["next_scheduled_trigger_at"], "2026-11-04T23:00:00+00:00")
 
     def test_unknown_cron_fails_closed(self):
-        result = watchdog_schedule('on:\\n  schedule:\\n    - cron: "*/5 * * * *"\\n',
-                                   datetime(2026, 11, 4, 22, 10, tzinfo=timezone.utc))
+        unsupported = """on:
+  schedule:
+    - cron: "*/5 * * * *"
+"""
+        result = watchdog_schedule(unsupported, datetime(2026, 11, 4, 22, 10, tzinfo=timezone.utc))
         self.assertIsNone(result["next_scheduled_trigger_at"])
         self.assertEqual(result["schedule_state"], "unsupported_cron")
 
