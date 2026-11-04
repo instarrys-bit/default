@@ -96,7 +96,7 @@
           }
         }
       },
-      "note": "The scheduler validates the predecessor proof. For task execution, workflow_run_id plus artifact_sha256 deterministically selects the same bounded URL batch on every retry; manual legacy execution continues to use the persisted rotation cursor."
+      "note": "The scheduler validates the predecessor proof. workflow_run_id plus artifact_sha256 deterministically selects the same bounded URL batch on every retry. Each completed URL result, including its domain fingerprints and SHA-256 digest, is persisted immediately in the claimed task's assessment_checkpoint using the durable task queue's Contents-Blob-SHA CAS under the live task/resource fencing proof; a retry restores completed results and fetches only incomplete or failed URLs. Legacy manual execution continues to use the persisted rotation cursor."
     }
   },
   "outputs": {
@@ -186,10 +186,10 @@
     "side_effect_class": "bounded_network_read_and_repository_artifact_write",
     "deterministic": false,
     "idempotent": false,
-    "idempotency_key": "Not implemented; cursor rotation and assessed_at timestamps change persisted state.",
-    "retry_policy": "No automatic retry; cursor rotation and assessed_at timestamps are non-idempotent.",
+    "idempotency_key": "task_id + predecessor workflow_run_id + predecessor artifact_sha256 + URL; completed URL results are immutable within the task checkpoint.",
+    "retry_policy": "Resume the same predecessor-bound batch from the durable task-queue checkpoint. Reuse every completed URL result; repeat network reads only for URLs not yet checkpointed or whose prior fetch failed before a result was stored.",
     "timeout_seconds": 240,
-    "timeout_note": "Task input caps each run at 20 URLs, 1 MB per URL and 10 MB aggregate; child timeout is 240 seconds and the task/resource lease is 480 seconds to cover verification and fenced publication.",
+    "timeout_note": "Task input caps each run at 20 URLs, 1 MB per URL and 10 MB aggregate. Each successful URL is checkpointed immediately by a fenced queue CAS; task/resource lease is 480 seconds to cover assessment, independent verification and fenced artifact publication.",
     "success_predicate": [
       "Process exits with code 0.",
       "stdout is exactly one parseable JSON object with all required fields.",
@@ -200,7 +200,9 @@
       "Independent artifact verifier returns valid=true.",
       "Persistent history and report are committed to main, or an independently verified no-op is recorded; runtime fingerprints remain uncommitted."
     ],
-    "independent_verifier": "scripts/verify_assess_sources_artifacts.py independently checks runtime/persistent counts, fingerprints exclusion, report presence and non-activation; scheduler then publishes only the two persistent resources."
+    "independent_verifier": "scripts/verify_assess_sources_artifacts.py independently checks runtime/persistent counts, fingerprints exclusion, report presence and non-activation; scheduler then publishes only the two persistent resources.",
+    "remote_fetches_may_repeat": true,
+    "repository_writes": "Each successful URL result is persisted to the task's progress_checkpoint in automation/task_queue.json using atomic Blob-SHA CAS and the active task/resource fencing proof. Final persistent history and report are committed to main after independent verification; runtime fingerprints remain uncommitted."
   },
   "dependency_edges": {
     "required_predecessor": "script_discover_sources",
@@ -215,15 +217,14 @@
   "permission_boundary": {
     "filesystem": "Write only the three declared logical output resources and their document-store temporary/manifest/shard children. Publish only persistent assessment history and report; runtime fingerprint data remains runner-local.",
     "network": "HTTPS raw.githubusercontent.com only, repository-bound URL and same-host redirect checks.",
-    "github_api": "Read-only GitHub Contents API access verifies live leases; scheduler uses the same scoped Actions token to publish only allowlisted persistent artifacts via a non-force Git push. The assessor performs no GitHub API writes.",
+    "github_api": "Read and CAS-update the durable task queue using the scheduler-supplied token. Per-URL checkpoint mutations are restricted to the currently claimed task and require matching worker/task lease plus live resource fencing tokens; the scheduler separately publishes only allowlisted persistent artifacts via a non-force Git push. The assessor performs no other GitHub API writes.",
     "protected_config": "modules/uu.conf is immutable and outside this capability's write set."
   },
   "blockers": [
-    "Implement durable idempotency or checkpoint/replay semantics before enabling retries; max_attempts remains one total execution.",
     "Complete transitive writer inventory and runtime tracing beyond the named source-assessment paths.",
     "Run a regular Watchdog-dispatched task and verify queue completion, artifacts, publication and protected-config invariance.",
-    "Durable idempotency/checkpoint recovery is not implemented; adapter is limited to one execution attempt per discovery run.",
-    "Complete transitive writer inventory and runtime tracing beyond the declared source-assessment resources remains outstanding."
+    "Complete transitive writer inventory and runtime tracing beyond the declared source-assessment resources remains outstanding.",
+    "Complete transitive writer inventory and runtime tracing beyond the named source-assessment paths."
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.04.9",
@@ -245,7 +246,8 @@
     "total_attempts_including_initial": true,
     "identity": "workflow_run_id + artifact_sha256",
     "batch_selection": "deterministic stable offset",
-    "remote_fetches_may_repeat": true,
-    "repository_writes": "only final verified history/runtime/report outputs under live fenced leases"
+    "resume": "durable per-URL result checkpoint in automation/task_queue.json, atomically updated with queue Blob-SHA CAS under active task/resource fencing",
+    "remote_fetches_may_repeat": "only for URLs not yet checkpointed or whose previous fetch failed before a result was persisted",
+    "repository_writes": "per-URL durable queue checkpoint; final verified history/report outputs under live fenced leases"
   }
 }
