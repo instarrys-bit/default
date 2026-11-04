@@ -56,8 +56,11 @@ def _audit_hook(event: str, args: tuple) -> None:
         if writing:
             authorize_write_path(args[0])
         return
-    if event in {"os.remove", "os.rmdir", "os.mkdir", "os.chmod", "os.chown", "os.truncate"} and args:
-        authorize_write_path(args[0])
+    if event in {"os.remove", "os.rmdir", "os.mkdir", "os.chmod", "os.chown", "os.truncate", "os.utime"} and args:
+        path = args[0]
+        if isinstance(path, int):
+            raise PermissionError("descriptor-based filesystem mutations are denied by the production write guard")
+        authorize_write_path(path)
         return
     if event in {"os.rename", "os.replace"} and len(args) >= 2:
         authorize_write_path(args[0])
