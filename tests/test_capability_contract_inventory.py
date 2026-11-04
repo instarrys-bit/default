@@ -323,6 +323,13 @@ class CapabilityContractInventoryTests(unittest.TestCase):
             "script_task_scheduler",
             "script_build_dashboard_snapshot",
             "script_append_step_summary",
+            "script_auto_activate_sources",
+            "script_audit_source_lineage",
+            "script_audit_policy_source_overlap",
+            "script_audit_external_domains",
+            "script_audit_config_drift",
+            "script_audit_ruleset_references",
+            "script_audit_ruleset_config_overlap",
         }
         self.assertTrue(required.issubset(entries))
         self.assertEqual(entries["script_lifecycle_gate"]["writes"], ["rulesets/lifecycle_state.json"])
@@ -336,6 +343,10 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(entries["script_build_dashboard_snapshot"]["writes"], ["dashboard/data.json"])
         self.assertEqual(entries["script_append_step_summary"]["writes"], ["$GITHUB_STEP_SUMMARY"])
         self.assertTrue(all("modules/uu.conf" not in item["writes"] for item in entries.values()))
+        self.assertIn("sources/domain_sources.json", entries["script_auto_activate_sources"]["writes"])
+        self.assertIn("sources/source_activation_log.json", entries["script_auto_activate_sources"]["writes"])
+        self.assertIn("sources/policy_source_overlap.json", entries["script_audit_policy_source_overlap"]["writes"])
+        self.assertIn("reports/source-lineage-audit.json", entries["script_audit_source_lineage"]["writes"])
         self.assertEqual(writes["status"], "partial_static_entrypoint_review")
 
     def test_shared_document_and_workflow_cas_gaps_are_explicit(self):
@@ -348,6 +359,9 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(groups["rule_provenance_ledger"]["status"], "known_shared_writers_central_pipeline_fence_only")
         self.assertEqual(groups["watchdog_unregistered_path_registry"]["status"], "bounded_cas_retry_implemented_concurrent_integration_unproven")
         self.assertEqual(groups["request_intake_observations"]["status"], "git_ref_cas_replay_bare_repo_integration_tested_github_runner_unverified")
+        self.assertEqual(groups["active_source_registry_and_activation"]["status"], "production_registry_writer_central_pipeline_fence_only")
+        self.assertEqual(groups["policy_source_overlap_audit"]["status"], "audit_output_central_pipeline_fence_only")
+        self.assertIn("script_auto_activate_sources", groups["active_source_registry_and_activation"]["known_writers"])
         self.assertEqual(audit["status"], "partial_static_audit")
 
         intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
