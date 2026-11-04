@@ -95,9 +95,17 @@ class TaskQueueRuntimeTests(unittest.TestCase):
 
     def test_manual_authorization_rejects_incomplete_payload(self):
         with self.assertRaisesRegex(ValueError, "invalid or incomplete"):
-            validate_manual_authorization({"input": {"production_decision": "USER_AUTHORIZED_MANUAL_AUDIT_INVALID"}}, {})
+            validate_manual_authorization({"input": {
+                "production_decision": "RECOVERY_REQUIRED", "authorization_run_id": "123"
+            }}, {})
         with self.assertRaisesRegex(ValueError, "trusted GitHub Actions run identity"):
             validate_manual_authorization({"input": {"production_decision": "USER_AUTHORIZED_MANUAL_AUDIT"}}, {})
+
+    def test_non_manual_production_decisions_do_not_require_manual_authorization(self):
+        validate_manual_authorization({"input": {
+            "production_decision": "RECOVERY_REQUIRED",
+            "production_reason": "bounded recovery"
+        }}, {})
 
     def test_enqueue_is_idempotent(self):
         first = self.enqueue()
