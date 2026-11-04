@@ -263,5 +263,20 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("group: shadowrocket-main-writer", pre_sync)
 
 
+
+    def test_owner_config_registration_precedes_fingerprint_and_deterministic_tests(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        registration = workflow.index("Register repository-owner-approved uu.conf changes")
+        fingerprint = workflow.index("Capture and verify the exact production input fingerprint")
+        tests = workflow.index("Compile and run deterministic review tests")
+        self.assertLess(registration, fingerprint)
+        self.assertLess(fingerprint, tests)
+        publish = workflow.split("          publish_paths=(", 1)[1].split("          )", 1)[0]
+        self.assertIn("sources/policy.json", publish)
+        self.assertIn("automation/release_manifest.json", publish)
+        self.assertIn("automation/production_workflow_map.json", publish)
+        registrar = (ROOT / "scripts" / "register_config_baseline.py").read_text(encoding="utf-8")
+        self.assertIn("build_release_pin_updates", registrar)
+
 if __name__ == "__main__":
     unittest.main()
