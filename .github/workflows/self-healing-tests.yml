@@ -21,6 +21,14 @@ on:
       - "tests/test_watchdog_recovery_policy.py"
       - "tests/test_verify_recovery_run.py"
       - "tests/test_incident_state.py"
+      - "automation/release_manifest.json"
+      - "automation/program_registry.json"
+      - "automation/execution_adapters.json"
+      - "automation/capability_contract_inventory.json"
+      - "automation/capability_contracts/**"
+      - "scripts/validate_release_manifest.py"
+      - "tests/test_release_manifest.py"
+      - "tests/test_capability_contract_inventory.py"
   workflow_dispatch:
     inputs:
       automation_task_id:

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-2026.11.04.2",
   "status": "baseline_inventory",
-  "source_registry_blob_sha": "f88671403df785c1d9f14cc1b22cd87141c25837",
+  "source_registry_blob_sha": "c9812d227da4cae3f85e1ce6a462a39125b85f8e",
   "summary": {
     "registered_programs": 60,
     "python_components": 53,
