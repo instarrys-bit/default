@@ -813,8 +813,17 @@ jobs:
           current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"
           runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
 
-          python3 scripts/watchdog_stale_run_candidates.py --current-main "$current_main" <<< "$runs" > "$RUNNER_TEMP/watchdog-stale-lines"
-          stale_lines="$(cat "$RUNNER_TEMP/watchdog-stale-lines")"
+          stale_lines="$(jq -r --arg sha "$current_main" '
+            .workflow_runs[]
+            | select(.status != "completed" and .head_branch == "main" and .id != null)
+            | if .head_sha != $sha then [.id, "superseded", (.head_sha // "")]
+              else
+                ((.run_started_at // .created_at // "") | try fromdateiso8601 catch null) as $started
+                | select($started != null and (now - $started) > 21600)
+                | [.id, "timeout", (.head_sha // "")]
+              end
+            | @tsv
+          ' <<< "$runs")"
 
           timed_out_any=0
           timed_out_run_id=""
