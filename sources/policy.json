@@ -123,7 +123,7 @@
       "Single-label root suffix entries are excluded; duplicate entries are deduplicated"
     ],
     "review_status": "A single-source candidate or a candidate below the two-publisher corroboration threshold remains REVIEW; cross-policy conflicts and critical-function risks are held.",
-    "publish_gate": "No automatic writes to the user-managed shadowrocket/ss.conf. Derived rule-set outputs only.",
+    "publish_gate": "No automatic writes to the user-managed modules/uu.conf. Derived rule-set outputs only.",
     "decision_engine": "deterministic-domain-audit/4.0",
     "confidence_interpretation": "Operational evidence score, not a statistical probability or guarantee of safe blocking.",
     "publication_mode": "deterministic-evidence-reviewed-derived-rulesets",
@@ -134,14 +134,14 @@
     "model_api_calls": 0
   },
   "managed_config_guard": {
-    "path": "shadowrocket/ss.conf",
-    "approved_git_blob_sha": "daa84802764de63c24da1e727ed233bab2e9151f",
+    "path": "modules/uu.conf",
+    "approved_git_blob_sha": "50f03fa6494eab5d31c7c2684bb3e662c98af6e5",
     "immutable": true,
     "description": "Authoritative user-managed Shadowrocket config baseline. Read-only for automation; derived rule audits must evaluate against this file.",
     "last_user_approved_baseline_update": {
       "previous_blob_sha": "b87f4c3bf13ed76d7f01ecc77266793da0e7556b",
-      "new_blob_sha": "daa84802764de63c24da1e727ed233bab2e9151f",
-      "reason": "Recover an interrupted registration after verifying every intervening ss.conf-changing commit is associated with the repository owner on GitHub. Automation does not edit ss.conf.",
+      "new_blob_sha": "50f03fa6494eab5d31c7c2684bb3e662c98af6e5",
+      "reason": "Owner designated modules/uu.conf as the sole authoritative Shadowrocket configuration baseline.",
       "approval_mode": "recovered_owner_authored_config_history",
       "config_change_commits": [
         "8996af8a530e47585979badfee575ca76a04a38a",
