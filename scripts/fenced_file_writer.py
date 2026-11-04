@@ -50,9 +50,16 @@ def authorize_write_path(path) -> None:
         # pathname but the same inode; deny it as well.
         try:
             candidate_stat = Path(os.fsdecode(path)).stat()
-            protected_stat = (ROOT / "shadowrocket" / "ss.conf").stat()
-            if (candidate_stat.st_dev, candidate_stat.st_ino) == (protected_stat.st_dev, protected_stat.st_ino):
-                raise PermissionError("owner-managed protected file is read-only: shadowrocket/ss.conf")
+            protected_stats = [
+                (ROOT / item).stat()
+                for item in PROTECTED_PATHS
+                if (ROOT / item).exists()
+            ]
+            if any(
+                (candidate_stat.st_dev, candidate_stat.st_ino) == (item.st_dev, item.st_ino)
+                for item in protected_stats
+            ):
+                raise PermissionError("owner-managed protected file is read-only")
         except FileNotFoundError:
             pass
         return
