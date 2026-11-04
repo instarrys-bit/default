@@ -449,6 +449,7 @@ jobs:
           install_write_guard()
           from production_intent import load_manifest, compute_fingerprint, compute_output_fingerprint
           from pathlib import Path
+          Path("reports/automation").mkdir(parents=True, exist_ok=True)
           manifest = load_manifest(Path("automation/production_inputs.json"))
           input_fingerprint = os.environ["PRODUCTION_INPUT_FINGERPRINT"]
           post_run_input_fingerprint = compute_fingerprint(Path("."), manifest)
@@ -492,7 +493,6 @@ jobs:
           GITHUB_RUN_ID: ${{ github.run_id }}
           GITHUB_SHA: ${{ github.sha }}
         run: |
-          mkdir -p reports/automation
           python3 - <<'PY'
           import json, os, sys
           sys.path.insert(0, "scripts")
@@ -660,7 +660,16 @@ jobs:
                   raise SystemExit("Invalid publish proof delimiter.")
               stream.write(f"AUTOMATION_RESOURCE_LEASE_PROOF<<{delimiter}\\n{proof_text}\\n{delimiter}\\n")
           PY
-          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$task_id" --proof-json "$RESOURCE_LEASE_PROOF"
+
+      - name: Verify live Watchdog resource lease before artifact restoration
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
+        run: |
+          set -euo pipefail
+          test -n "${AUTOMATION_TASK_ID_BASE:-}"
+          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE" --proof-json "$RESOURCE_LEASE_PROOF"
 
       - name: Download audited outputs
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
