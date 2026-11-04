@@ -330,8 +330,8 @@ def _assert_live_writer_fence(queue, task, resource_path, proof_item, now):
 def assert_resource_lease_from_environment(resource_path):
     """Read the durable queue at every filesystem mutation and enforce live fencing."""
     resource_path=resource_key(resource_path)
-    if resource_path=="shadowrocket/ss.conf":
-        raise ValueError("shadowrocket/ss.conf is an owner-managed read-only resource")
+    if resource_path=="modules/uu.conf":
+        raise ValueError("modules/uu.conf is an owner-managed read-only resource")
     required=("AUTOMATION_QUEUE_REPOSITORY","AUTOMATION_QUEUE_TOKEN",
               "AUTOMATION_QUEUE_BRANCH","AUTOMATION_QUEUE_PATH",
               "AUTOMATION_TASK_ID","AUTOMATION_WORKER_ID",
