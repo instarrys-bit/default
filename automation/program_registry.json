@@ -1775,6 +1775,34 @@
         "max_attempts": 0,
         "timeout_seconds": 60
       }
+    },
+    {
+      "id": "script_capture_git_write_trace",
+      "path": "scripts/capture_git_write_trace.py",
+      "kind": "python_component",
+      "responsibility": "capture persistent repository-tree changes made by shell and Git child processes for the production runtime write trace",
+      "capabilities": [
+        "runtime_write_tracing"
+      ],
+      "invocation": "workflow_step",
+      "inputs": [
+        "The initial checkout commit SHA",
+        "Git committed, staged, unstaged and non-ignored untracked repository paths at end of job"
+      ],
+      "outputs": [
+        "Path-only JSONL records appended to RUNNER_TEMP runtime trace",
+        "A count and before/after commit SHA summary"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Read-only Git tree inspection. Writes only the path-only trace under RUNNER_TEMP; no repository file or GitHub API mutation authority.",
+      "health_check": "Covered by tests/test_capture_git_write_trace.py and the production workflow's always-run capture step.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 60
+      }
     }
   ]
 }
