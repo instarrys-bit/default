@@ -396,10 +396,10 @@
     "Atomic multi-resource lease acquisition and compatibility of per-resource locks across all independent/cross-workflow writers remain unproven; the central auto_sync guard proves the shared pipeline fence only for that guarded production invocation."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-baseline-2026.11.04.1",
-    "release_manifest_blob_sha": "1a4221816d274bf0afc2a7347892faebdce2af54",
-    "program_registry_blob_sha": "6f04f9473541cd569125f70c20fa3278bb34713d",
-    "execution_adapters_blob_sha": "570db5f82cadfe44aedb4652f629a5b4df32f0e0",
+    "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
+    "release_manifest_blob_sha": "f0ab6414a317c29b484dd2c408c59aa2239fc159",
+    "program_registry_blob_sha": "279f8d14d1aad62d1342ba07063aa8d52e410a80",
+    "execution_adapters_blob_sha": "45967d0d88392369252b7a4427aaba41d9dcdda8",
     "added_after_release_baseline": true,
     "note": "Refreshed static evidence against the current 53-component registry, auto_sync audit-job guard activation, and central fenced_file_writer implementation. This does not complete transitive ownership for all cross-workflow writers or authorize independent dispatch.",
     "reviewed_at": "2026-11-04",

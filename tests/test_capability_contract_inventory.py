@@ -110,6 +110,25 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(mapping["summary"]["job_count"], len(mapping["job_graph"]))
         self.assertEqual(mapping["summary"]["step_count"], actual_count)
 
+    def test_resource_write_inventory_is_pinned_to_current_release_and_components(self):
+        writes = load_json("automation/resource_write_sets.json")
+        release = load_json("automation/release_manifest.json")
+        registry_path = "automation/program_registry.json"
+        adapters_path = "automation/execution_adapters.json"
+        self.assertEqual(writes["review_context"]["release_id"], release["release_id"])
+        self.assertEqual(
+            writes["review_context"]["release_manifest_blob_sha"],
+            git_blob_sha("automation/release_manifest.json"),
+        )
+        self.assertEqual(
+            writes["review_context"]["program_registry_blob_sha"],
+            git_blob_sha(registry_path),
+        )
+        self.assertEqual(
+            writes["review_context"]["execution_adapters_blob_sha"],
+            git_blob_sha(adapters_path),
+        )
+
     def test_assessment_remains_closed_until_all_dispatch_gates_pass(self):
         registry = load_json("automation/program_registry.json")
         adapters = load_json("automation/execution_adapters.json")
