@@ -821,32 +821,7 @@ jobs:
           current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"
           runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
 
-          CURRENT_MAIN="$current_main" RUNS_JSON="$runs" python3 - <<'PY' > "$RUNNER_TEMP/watchdog-stale-lines"
-          import json, os
-          from datetime import datetime, timezone
-
-          current_main = os.environ["CURRENT_MAIN"]
-          payload = json.loads(os.environ["RUNS_JSON"])
-          now = datetime.now(timezone.utc)
-          for run in payload.get("workflow_runs", []):
-              if run.get("status") == "completed":
-                  continue
-              # Production recovery must never cancel runs from non-main branches.
-              if run.get("head_branch") != "main":
-                  continue
-              run_id = run.get("id")
-              if not run_id:
-                  continue
-              if run.get("head_sha") != current_main:
-                  print(run_id, "superseded", run.get("head_sha", ""))
-                  continue
-              stamp = run.get("run_started_at") or run.get("created_at")
-              if not stamp:
-                  continue
-              started = datetime.fromisoformat(stamp.replace("Z", "+00:00"))
-              if (now - started).total_seconds() > 21600:
-                  print(run_id, "timeout", run.get("head_sha", ""))
-          PY
+          python3 scripts/watchdog_stale_run_candidates.py --current-main "$current_main" <<< "$runs" > "$RUNNER_TEMP/watchdog-stale-lines"
           stale_lines="$(cat "$RUNNER_TEMP/watchdog-stale-lines")"
 
           timed_out_any=0
