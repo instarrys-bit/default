@@ -42,7 +42,7 @@
     }
   },
   "compatibility": {
-    "status": "baseline_pins_synchronized",
+    "status": "not_yet_machine_verified",
     "rule": "A task may run only when its pinned registry, adapter, workflow, review-engine, and config-baseline versions satisfy an explicitly validated compatibility contract.",
     "unknown_versions_are_blocking": true
   },
