@@ -392,6 +392,14 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
                 task["status"] = "SUCCEEDED"
                 task["last_error"] = None
                 task["state_history"].append("SUCCEEDED")
+                if target == "script_assess_sources":
+                    checkpoint = task.pop("assessment_checkpoint", None)
+                    if isinstance(checkpoint, dict):
+                        task["assessment_checkpoint_summary"] = {
+                            "batch_id": checkpoint.get("batch_id"),
+                            "completed_url_count": len(checkpoint.get("completed", {})),
+                            "last_successful_url": checkpoint.get("last_successful_url"),
+                        }
                 verified.append(task["task_id"])
             if task.get("resource_lease", {}).get("status") == "ACTIVE":
                 try:
