@@ -54,7 +54,7 @@
     },
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
-      "git_blob_sha": "eac9fb491f4f79580099c042bc2f733fb68ebc1c"
+      "git_blob_sha": "8279a833c480f476687c25ba34349fcc439bd78d"
     }
   },
   "compatibility": {
