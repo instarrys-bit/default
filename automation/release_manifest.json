@@ -28,7 +28,7 @@
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "ce2fa07432958622251c9900ec5accf56324b471"
+      "git_blob_sha": "3ed663eacb0a47a9a5095f7e7cec99aa2f8d33c1"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -61,7 +61,7 @@
     "Source assessment now has a concrete bounded I/O/resource/lease/verifier contract and explicit discovery predecessor; typed dependency enforcement, durable idempotency/checkpoint recovery and complete transitive writer proof remain blocking.",
     "Resource ownership audit is still a partial static review; restore_automation_state is an additional serialized writer for source assessment history/report artifacts.",
     "Source assessment is now enqueued by the Watchdog after a successful main-branch production workflow_run; durable idempotency/checkpoint recovery and complete transitive writer proof remain blocking.",
-    "Review cursor checkpoint persistence is now performed by the Watchdog-dispatched production task under the live logical/production-pipeline and sources/review_cursor.json fencing leases; complete transitive writer tracing remains outstanding."
+    "Review cursor checkpoint persistence is protected by the production workflow's top-level main-writer concurrency group and the live Watchdog fencing lease; complete transitive writer tracing remains outstanding."
   ],
   "next_migration_gate": {
     "required_before_independent_python_dispatch": [
