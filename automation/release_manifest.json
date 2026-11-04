@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-baseline-2026.11.04.3",
+  "release_id": "shadowrocket-automation-baseline-2026.11.04.4",
   "release_status": "baseline_snapshot",
   "created_on": "2026-11-04",
-  "purpose": "Pin the automation baseline with Watchdog-owned production dispatch and a first independently schedulable source-assessment capability implemented but disabled pending controlled canary.",
+  "purpose": "Pin the baseline with the first independently scheduled source-assessment capability fully contracted and a one-shot bounded Watchdog canary harness; general Python adapter activation remains disabled.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "4f57c597eafa5bb652597ae9af7431a9d98c9f1c"
+      "git_blob_sha": "0d588aaafbf2c0c1f22d61c1fcbde72562ba5c39"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "8c2e8e25706ee3367512a1ba28e25d9515feeb9d"
+      "git_blob_sha": "f3b2897f31bc1dc013a07d771c97820a6a09413e"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -58,7 +58,7 @@
   "known_gaps": [
     "Other Python capability input/output contracts and dependency edges remain incomplete.",
     "Write-path ownership and indirect side effects still require machine-checked coverage across all independent writers.",
-    "The source-assessment adapter is fully contracted and live-fenced but remains disabled until CI, merge and controlled canary pass.",
+    "The source-assessment adapter remains disabled in main; the one-shot canary uses a temporary runner-local override and does not enable general dispatch.",
     "The declared review-engine version is not yet pinned to a verified source revision."
   ],
   "next_migration_gate": {
