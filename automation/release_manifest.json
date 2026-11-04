@@ -13,7 +13,7 @@
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "bba533ca6cbd9534a7ba53daa23a3016d2ffe049"
+      "git_blob_sha": "2a96bbacf08cbfaebbf4312eb5eb07666d3b0584"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
