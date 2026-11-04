@@ -743,7 +743,7 @@ if __name__=="__main__":
 
 class UserConfigBaselineTests(unittest.TestCase):
     def test_domain_review_and_rule_builder_use_user_managed_config(self):
-        expected = ROOT / "shadowrocket" / "uu.conf"
+        expected = ROOT / "modules" / "uu.conf"
         self.assertEqual(REVIEW_CONFIG, expected)
         self.assertEqual(RULESET_CONFIG, expected)
         self.assertEqual(SELECTOR_CONFIG, expected)
