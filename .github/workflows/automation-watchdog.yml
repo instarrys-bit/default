@@ -151,15 +151,7 @@ jobs:
                   echo "Watchdog checkout is behind current main; failed-audit recovery will be reconsidered on the next reconciliation."
                   exit 0
                 fi
-                current_fingerprint="$(python3 - <<'PY'
-          import sys
-          from pathlib import Path
-          sys.path.insert(0, "scripts")
-          from production_intent import load_manifest, compute_fingerprint
-          manifest = load_manifest(Path("automation/production_inputs.json"))
-          print(compute_fingerprint(Path("."), manifest))
-          PY
-          )"
+                current_fingerprint="$(python3 -c 'import sys; from pathlib import Path; sys.path.insert(0, "scripts"); from production_intent import load_manifest, compute_fingerprint; manifest = load_manifest(Path("automation/production_inputs.json")); print(compute_fingerprint(Path("."), manifest))')"
                 if [ "$task_fingerprint" != "$current_fingerprint" ]; then
                   echo "The task's input fingerprint is stale even if its workflow run SHA equals current main; replacing it with the current input fingerprint."
                   recovery_kind="superseded_inputs"
@@ -880,17 +872,7 @@ jobs:
           PY
           )"
               recovery_input="$(jq -cn --arg fingerprint "$current_fingerprint" --arg reason "bounded recovery after watchdog cancellation of a timed-out audit" '{production_fingerprint:$fingerprint,production_decision:"RECOVERY_REQUIRED",production_reason:$reason}')"
-              dispatch_mode="$(python3 - <<'PY'
-              import json
-              from pathlib import Path
-              try:
-                  control = json.loads(Path("automation/production_control.json").read_text(encoding="utf-8"))
-              except (OSError, json.JSONDecodeError):
-                  control = {}
-              mode = control.get("dispatch_mode") if isinstance(control, dict) and type(control.get("schema_version")) is int and control.get("schema_version") == 1 else "hold"
-              print(mode if mode in {"enabled", "hold"} else "hold")
-              PY
-              )"
+              dispatch_mode="$(jq -r 'if type == "object" and .schema_version == 1 and (.dispatch_mode == "enabled" or .dispatch_mode == "hold") then .dispatch_mode else "hold" end' automation/production_control.json 2>/dev/null || printf 'hold')"
               if [ "$dispatch_mode" = "enabled" ]; then
                 printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "production:recovery:$current_fingerprint:$timed_out_run_id" --priority 100 --input-json "$recovery_input" enqueue-auto-sync
               else
