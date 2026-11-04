@@ -17,6 +17,15 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("group: shadowrocket-main-writer", queue)
         self.assertIn("cancel-in-progress: false", health)
         self.assertIn("cancel-in-progress: false", queue)
+    def test_superseded_dead_letters_are_resolved_before_scheduler_run(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        job = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
+        resolve = job.index("Resolve superseded historical DEAD_LETTER tasks through queue CAS")
+        run_once = job.index("Recover leases, verify results, and run one bounded task")
+        self.assertLess(resolve, run_once)
+        self.assertIn('--current-main-sha "$current_main" resolve-superseded-dead-letters', job)
+        self.assertIn("unset GH_TOKEN", job)
+
     def test_watchdog_observes_completed_main_audit_runs(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("workflow_run:", workflow)
