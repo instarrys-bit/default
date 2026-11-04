@@ -253,5 +253,33 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         )
 
 
+
+    def test_owner_config_baseline_metadata_writer_is_inventoried_and_fenced(self):
+        writes = load_json("automation/resource_write_sets.json")
+        entry = next(
+            item for item in writes["confirmed_write_sets"]
+            if item["program_id"] == "script_register_config_baseline"
+        )
+        self.assertEqual(
+            set(entry["writes"]),
+            {
+                "sources/policy.json",
+                "automation/release_manifest.json",
+                "automation/production_workflow_map.json",
+                "automation/resource_write_sets.json",
+            },
+        )
+        self.assertIn("logical/production-pipeline", entry["lease_keys"])
+        self.assertIn("modules/uu.conf is read-only", entry["write_boundary_fencing"])
+
+        ownership = load_json("automation/resource_ownership_audit.json")
+        group = next(
+            item for item in ownership["resource_groups"]
+            if item["id"] == "owner_config_baseline_metadata"
+        )
+        self.assertEqual(group["lease_key"], "logical/production-pipeline")
+        self.assertIn("script_register_config_baseline", group["writers"])
+        self.assertEqual(ownership["status"], "partial_static_audit")
+
 if __name__ == "__main__":
     unittest.main()
