@@ -1421,12 +1421,12 @@
     "The 53 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and one external workflow-dispatch side-effect adapter. Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-baseline-2026.11.05.2",
-    "release_manifest_blob_sha": "8edb61786c54b6e00944495cdd1d970749a2cf7a",
+    "release_id": "shadowrocket-automation-baseline-2026.11.05.3",
+    "release_manifest_blob_sha": "67fc9f1da2bac750ad83d87f323fcc1d5e9746cf",
     "program_registry_blob_sha": "e041b917149acc3c1b3457380c2a6304dad19f4d",
     "execution_adapters_blob_sha": "97d18a09763f851362e0bd5400dad856ae1f448b",
     "added_after_release_baseline": true,
-    "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 54 Python components are now partitioned into 36 direct/helper writer entries, 17 reviewed non-writers and one external GitHub Actions dispatch side-effect adapter.",
+    "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 54 Python components are now partitioned into 36 direct/helper writer entries, 17 reviewed non-writers and one external GitHub Actions dispatch side-effect adapter. The workflow runtime guard distinguishes CLAIMED child-task leases from VERIFYING production-workflow resource leases, preserving fencing after dispatch handoff.",
     "reviewed_at": "2026-11-05",
     "central_write_guard_test": "tests/test_fenced_file_writer.py::test_every_registered_python_component_installs_the_guard",
     "runtime_trace_evidence": {
