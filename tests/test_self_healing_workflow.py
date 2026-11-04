@@ -55,7 +55,9 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         watchdog = WATCHDOG.read_text(encoding="utf-8")
         auto_sync = AUTO_SYNC.read_text(encoding="utf-8")
         self.assertIn("timeout-minutes: 300", auto_sync)
-        self.assertIn("> 21600", watchdog)
+        helper = (ROOT / "scripts" / "watchdog_stale_run_candidates.py").read_text(encoding="utf-8")
+        self.assertIn("watchdog_stale_run_candidates.py", watchdog)
+        self.assertIn("timeout_seconds: int = 21600", helper)
 
     def test_manifest_reconciliation_runs_after_final_config_scope_coverage(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
@@ -144,7 +146,9 @@ class SelfHealingWorkflowTests(unittest.TestCase):
 
     def test_stale_watch_cancels_superseded_audits_before_timeout(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
-        self.assertIn('run.get("head_sha") != current_main', workflow)
+        helper = (ROOT / "scripts" / "watchdog_stale_run_candidates.py").read_text(encoding="utf-8")
+        self.assertIn("watchdog_stale_run_candidates.py", workflow)
+        self.assertIn("if run_sha != current_main:", helper)
         self.assertIn('repos/$REPO/compare/$run_sha...$current_main', workflow)
         self.assertIn('only docs/ changed after its audited commit', workflow)
         self.assertIn('gh run cancel "$stale_id"', workflow)
