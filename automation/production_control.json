@@ -7,6 +7,6 @@
     "automatic_watchdog_dispatch": false,
     "explicit_manual_watchdog_authorization": true,
     "unknown_or_invalid_mode": "hold",
-    "protected_config": "shadowrocket/ss.conf remains read-only"
+    "protected_config": "modules/uu.conf remains the sole authoritative read-only config baseline"
   }
 }
