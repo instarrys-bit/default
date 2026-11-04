@@ -204,6 +204,8 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn('target_id == "workflow_auto_sync" and resource_contract is None', scheduler)
         self.assertIn("Verify live Watchdog resource lease before production audit", workflow)
         self.assertGreaterEqual(workflow.count("assert-workflow --task-id"), 2)
+        self.assertIn('assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE"', workflow)
+        self.assertNotIn('assert-workflow --task-id "$AUTOMATION_TASK_ID"', workflow)
         publish_start = workflow.index("      - name: Verify base commit and safely publish allowlisted outputs")
         publish_end = workflow.index("      - name: Independently verify committed remote rulesets", publish_start)
         publish_step = workflow[publish_start:publish_end]
