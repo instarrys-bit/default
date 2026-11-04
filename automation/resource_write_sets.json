@@ -109,7 +109,7 @@
         "Read-only aggregation of production state; writes two dashboard/status report artifacts."
       ],
       "evidence": "build_status() creates reports/ and directly writes project-status.json and project-status.md with Path.write_text.",
-      "write_boundary_fencing": "Discovery now calls write_document with lease_required=True for the logical document, covering the base JSON, adjacent manifest, content-addressed shards, staging, atomic switches and old-shard cleanup; it also asserts the live report lease immediately before writing reports/source-discovery.md. The fenced_file_writer audit hook independently checks each repository-local mutation. GITHUB_STEP_SUMMARY remains per-run ephemeral output."
+      "write_boundary_fencing": "No script-level lease/fencing assertion at individual filesystem mutations. Current production invocation is serialized through workflow_auto_sync's shared logical production-pipeline lease and guarded by workflow publication checks; this is not equivalent to per-write fencing."
     },
     {
       "program_id": "script_build_rulesets",
@@ -262,7 +262,7 @@
         "Bounded GitHub repository search and repository-tree/README reads; no source activation."
       ],
       "evidence": "main() reads existing discovery inventory, then calls write_document(OUTPUT, merged, 'candidates') and writes REPORT.",
-      "write_boundary_fencing": "No script-level lease/fencing assertion at individual filesystem mutations. Current production invocation is serialized through workflow_auto_sync's shared logical production-pipeline lease and guarded by workflow publication checks; this is not equivalent to per-write fencing."
+      "write_boundary_fencing": "Discovery calls write_document with lease_required=True for the logical document, covering the base JSON, adjacent manifest, content-addressed shards, staging, atomic switches and old-shard cleanup; it also asserts the live report lease immediately before writing reports/source-discovery.md. The fenced_file_writer audit hook independently checks each repository-local mutation. GITHUB_STEP_SUMMARY remains per-run ephemeral output."
     },
     {
       "program_id": "script_lifecycle_audit",
