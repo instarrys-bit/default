@@ -9,6 +9,14 @@ AUTO_SYNC = ROOT / ".github" / "workflows" / "auto_sync.yml"
 
 
 class WatchdogRecoveryWorkflowTests(unittest.TestCase):
+    def test_watchdog_queue_and_health_writers_share_main_writer_lock(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        health = workflow.split("  health-check:", 1)[1].split("  assessment-canary:", 1)[0]
+        queue = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
+        self.assertIn("group: shadowrocket-main-writer", health)
+        self.assertIn("group: shadowrocket-main-writer", queue)
+        self.assertIn("cancel-in-progress: false", health)
+        self.assertIn("cancel-in-progress: false", queue)
     def test_watchdog_observes_completed_main_audit_runs(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("workflow_run:", workflow)

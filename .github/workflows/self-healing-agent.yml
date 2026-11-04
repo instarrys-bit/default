@@ -10,8 +10,9 @@ on:
 permissions:
   contents: read
 
+# Repairs and issue-driven repository changes share the main-writer lock.
 concurrency:
-  group: shadowrocket-self-healing-agent
+  group: shadowrocket-main-writer
   cancel-in-progress: false
 
 jobs:

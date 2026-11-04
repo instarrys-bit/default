@@ -5,10 +5,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github" / "workflows" / "self-healing-agent.yml"
 AUTO_SYNC = ROOT / ".github" / "workflows" / "auto_sync.yml"
+REQUEST_INTAKE = ROOT / ".github" / "workflows" / "request-intake.yml"
 WATCHDOG = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
 
 
 class SelfHealingWorkflowTests(unittest.TestCase):
+    def test_repository_mutating_workflows_share_the_main_writer_concurrency_group(self):
+        healing = WORKFLOW.read_text(encoding="utf-8")
+        intake = REQUEST_INTAKE.read_text(encoding="utf-8")
+        audit = AUTO_SYNC.read_text(encoding="utf-8")
+        for workflow in (healing, intake, audit):
+            self.assertIn("group: shadowrocket-main-writer", workflow)
+            self.assertIn("cancel-in-progress: false", workflow)
     def test_repair_is_bounded_and_does_not_auto_merge(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("fix_stale_audit_concurrency_contract", workflow)
