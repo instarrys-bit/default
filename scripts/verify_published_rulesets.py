@@ -93,7 +93,7 @@ def main():
     manifest=json.loads(git_show(ref,"rulesets/manifest.json"))
     queue=json.loads(git_show(ref,"rulesets/pending_queue.json"))
     policy=json.loads(git_show(ref,"sources/policy.json"))
-    config=git_show(ref,"shadowrocket/ss.conf")
+    config=git_show(ref,"modules/uu.conf")
     files={p.lower()+".list":git_show(ref,"rulesets/"+p.lower()+".list") for p in POLICIES}
     result=verify_artifacts(manifest,queue,files,policy,config)
     result["remote_ref"]=ref
