@@ -215,44 +215,91 @@ def validate_manual_authorization_consumption(queue, task):
     return record
 
 
-def enqueue_task(task,queue_path=QUEUE,registry_path=REGISTRY,now=None):
-    if not isinstance(task,dict): raise ValueError("task payload must be an object")
+def enqueue_task(task, queue_path=QUEUE, registry_path=REGISTRY, now=None):
+    if not isinstance(task, dict):
+        raise ValueError("task payload must be an object")
+    authorization = validate_manual_authorization(task, manual_authorization_context_from_environment())
     with queue_lock(queue_path):
-        queue,by_id=context(queue_path,registry_path); policy=authorize(task,by_id)
-        idem=task.get("idempotency_key")
-        if not isinstance(idem,str) or not 1<=len(idem)<=200: raise ValueError("idempotency_key must contain 1 to 200 characters")
+        queue, by_id = context(queue_path, registry_path)
+        policy = authorize(task, by_id)
+        idem = task.get("idempotency_key")
+        if not isinstance(idem, str) or not 1 <= len(idem) <= 200:
+            raise ValueError("idempotency_key must contain 1 to 200 characters")
         for old in queue["tasks"]:
-            if old.get("idempotency_key")==idem:
-                fields=("requester_program_id","target_program_id","capability","priority","input")
-                if any(old.get(k)!=task.get(k,50 if k=="priority" else {}) for k in fields):
+            if old.get("idempotency_key") == idem:
+                fields = ("requester_program_id", "target_program_id", "capability", "priority", "input")
+                if any(old.get(k) != task.get(k, 50 if k == "priority" else {}) for k in fields):
                     raise ValueError("idempotency_key is already used for a different task payload")
-                return {"created":False,"task":old}
-        priority=task.get("priority",50); payload=task.get("input",{})
-        if isinstance(priority,bool) or not isinstance(priority,int) or not 0<=priority<=100: raise ValueError("priority must be an integer from 0 to 100")
-        if not isinstance(payload,dict): raise ValueError("input must be an object")
-        now=now or now_utc()
-        item={"task_id":"task_"+uuid.uuid4().hex[:24],"idempotency_key":idem,"trace_id":str(task.get("trace_id") or uuid.uuid4().hex),
-              "requester_program_id":task["requester_program_id"],"target_program_id":task["target_program_id"],"capability":task["capability"],
-              "created_at":stamp(now),"not_before":stamp(now),"priority":priority,"status":"QUEUED","attempts":0,
-              "max_attempts":policy["max_attempts"],"input":payload,"lease":None,"result":None,"last_error":None,"state_history":["QUEUED"]}
-        queue["tasks"].append(item); queue["revision"]+=1; atomic_write(queue_path,queue)
-        return {"created":True,"task":item}
+                if authorization:
+                    validate_manual_authorization_consumption(queue, old)
+                return {"created": False, "task": old}
+        if authorization:
+            ledger = queue.setdefault("manual_authorizations", {})
+            if not isinstance(ledger, dict):
+                raise ValueError("manual authorization consumption ledger must be an object")
+            if authorization["run_id"] in ledger:
+                raise ValueError("manual authorization has already been consumed by another task")
+        priority = task.get("priority", 50)
+        payload = task.get("input", {})
+        if isinstance(priority, bool) or not isinstance(priority, int) or not 0 <= priority <= 100:
+            raise ValueError("priority must be an integer from 0 to 100")
+        if not isinstance(payload, dict):
+            raise ValueError("input must be an object")
+        now = now or now_utc()
+        item = {
+            "task_id": "task_" + uuid.uuid4().hex[:24],
+            "idempotency_key": idem,
+            "trace_id": str(task.get("trace_id") or uuid.uuid4().hex),
+            "requester_program_id": task["requester_program_id"],
+            "target_program_id": task["target_program_id"],
+            "capability": task["capability"],
+            "created_at": stamp(now), "not_before": stamp(now),
+            "priority": priority, "status": "QUEUED", "attempts": 0,
+            "max_attempts": policy["max_attempts"], "input": payload,
+            "lease": None, "result": None, "last_error": None,
+            "state_history": ["QUEUED"],
+        }
+        queue["tasks"].append(item)
+        if authorization:
+            queue["manual_authorizations"][authorization["run_id"]] = manual_authorization_record(
+                item, authorization, stamp(now)
+            )
+        queue["revision"] += 1
+        atomic_write(queue_path, queue)
+        return {"created": True, "task": item}
 
-def claim_next(worker_id,queue_path=QUEUE,registry_path=REGISTRY,now=None):
-    if not isinstance(worker_id,str) or not worker_id.strip(): raise ValueError("worker_id is required")
-    now=now or now_utc()
+
+def claim_next(worker_id, queue_path=QUEUE, registry_path=REGISTRY, now=None):
+    if not isinstance(worker_id, str) or not worker_id.strip():
+        raise ValueError("worker_id is required")
+    now = now or now_utc()
     with queue_lock(queue_path):
-        queue,by_id=context(queue_path,registry_path); eligible=[]
+        queue, by_id = context(queue_path, registry_path)
+        eligible = []
         for task in queue["tasks"]:
-            if task.get("status")!="QUEUED": continue
-            if datetime.fromisoformat(task["not_before"].replace("Z","+00:00"))>now: continue
-            policy=authorize(task,by_id); eligible.append((task,policy))
-        if not eligible: return None
-        eligible.sort(key=lambda pair:(-pair[0]["priority"],pair[0]["created_at"],pair[0]["task_id"]))
-        task,policy=eligible[0]
-        task["status"]="CLAIMED"; task["attempts"]+=1; task["state_history"].append("CLAIMED")
-        task["lease"]={"owner":worker_id,"token":secrets.token_hex(16),"expires_at":stamp(now+timedelta(seconds=policy["timeout_seconds"]))}
-        queue["revision"]+=1; atomic_write(queue_path,queue); return task
+            if task.get("status") != "QUEUED":
+                continue
+            if datetime.fromisoformat(task["not_before"].replace("Z", "+00:00")) > now:
+                continue
+            validate_manual_authorization(task, manual_authorization_context_from_environment())
+            validate_manual_authorization_consumption(queue, task)
+            policy = authorize(task, by_id)
+            eligible.append((task, policy))
+        if not eligible:
+            return None
+        eligible.sort(key=lambda pair: (-pair[0]["priority"], pair[0]["created_at"], pair[0]["task_id"]))
+        task, policy = eligible[0]
+        task["status"] = "CLAIMED"
+        task["attempts"] += 1
+        task["state_history"].append("CLAIMED")
+        task["lease"] = {
+            "owner": worker_id, "token": secrets.token_hex(16),
+            "expires_at": stamp(now + timedelta(seconds=policy["timeout_seconds"])),
+        }
+        queue["revision"] += 1
+        atomic_write(queue_path, queue)
+        return task
+
 
 def complete_task(task_id,worker_id,lease_token,*,success,result=None,error=None,queue_path=QUEUE,registry_path=REGISTRY,now=None):
     now=now or now_utc()
@@ -264,6 +311,8 @@ def complete_task(task_id,worker_id,lease_token,*,success,result=None,error=None
         if task.get("status")!="CLAIMED" or not isinstance(lease,dict): raise ValueError("task is not currently claimed")
         if lease.get("owner")!=worker_id or not secrets.compare_digest(str(lease.get("token","")),str(lease_token)): raise ValueError("lease owner or token mismatch")
         if datetime.fromisoformat(lease["expires_at"].replace("Z","+00:00"))<=now: raise ValueError("lease has expired; recover the task before completing it")
+        validate_manual_authorization(task, manual_authorization_context_from_environment())
+        validate_manual_authorization_consumption(queue, task)
         authorize(task,by_id)
         if success and not isinstance(result,dict): raise ValueError("successful completion requires a result object")
         if not success and not isinstance(error,dict): raise ValueError("failed completion requires an error object")
