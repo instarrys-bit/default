@@ -785,7 +785,7 @@ jobs:
   persist-review-cursor:
     name: Validate failed-run cursor without bypassing Watchdog
     needs: audit
-    if: ${{ always() && needs.audit.result == 'failure' }}
+    if: ${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
@@ -819,7 +819,7 @@ jobs:
           fi
 
   notify-failure:
-    if: ${{ always() && (needs.audit.result == 'failure' || needs.publish.result == 'failure') }}
+    if: ${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled' || needs.publish.result == 'failure' || needs.publish.result == 'cancelled') }}
     needs: [audit, publish]
     runs-on: ubuntu-24.04
     permissions:
@@ -832,9 +832,11 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           COMMIT_SHA: ${{ github.sha }}
           RUN_ID: ${{ github.run_id }}
+          AUDIT_RESULT: ${{ needs.audit.result }}
+          PUBLISH_RESULT: ${{ needs.publish.result }}
         run: |
-          title="Shadowrocket automation failure (run $RUN_ID)"
-          body="The deterministic pipeline failed.\n\nRun: $RUN_URL\nCommit: $COMMIT_SHA\n\n<!-- shadowrocket-automation:workflow=auto_sync;run_id=$RUN_ID -->\n\nPlease inspect the failed job and logs. This issue is maintained automatically."
+          title="Shadowrocket automation incident (run $RUN_ID)"
+          body="The deterministic pipeline ended with audit=$AUDIT_RESULT and publish=$PUBLISH_RESULT.\n\nRun: $RUN_URL\nCommit: $COMMIT_SHA\n\n<!-- shadowrocket-automation:workflow=auto_sync;run_id=$RUN_ID -->\n\nPlease inspect the run and logs. This issue is maintained automatically."
           existing="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title | jq --arg title "$title" -r '.[] | select(.title == $title) | .number' | head -n 1)"
           if [ -n "$existing" ] && [ "$existing" != "null" ]; then
             gh issue comment "$existing" --repo "$REPO" --body "$body"
