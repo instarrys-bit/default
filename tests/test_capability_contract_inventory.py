@@ -52,6 +52,37 @@ class CapabilityContractInventoryTests(unittest.TestCase):
             self.assertEqual(entry["registry_dependencies"], registered["depends_on"], program_id)
             self.assertEqual(entry["current_invocation"], registered["invocation"], program_id)
 
+    def test_assessment_remains_closed_until_all_dispatch_gates_pass(self):
+        registry = load_json("automation/program_registry.json")
+        adapters = load_json("automation/execution_adapters.json")
+        inventory = load_json("automation/capability_contract_inventory.json")
+        program = next(item for item in registry["programs"] if item["id"] == "script_assess_sources")
+        adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "script_assess_sources")
+        entry = next(item for item in inventory["programs"] if item["id"] == "script_assess_sources")
+        self.assertFalse(program["orchestration"]["enabled"])
+        self.assertEqual(program["orchestration"]["allowed_callers"], [])
+        self.assertFalse(adapter["enabled"])
+        self.assertEqual(adapter["allowed_callers"], [])
+        self.assertEqual(entry["dispatch_status"], "disabled")
+        self.assertEqual(inventory["summary"]["independently_dispatchable_python_components"], 0)
+
+    def test_assessment_restore_writer_is_registered_under_shared_mutex(self):
+        audit = load_json("automation/resource_ownership_audit.json")
+        writes = load_json("automation/resource_write_sets.json")
+        registry = load_json("automation/program_registry.json")
+        adapters = load_json("automation/execution_adapters.json")
+        group = next(item for item in audit["resource_groups"] if item["id"] == "source_assessment_artifacts")
+        entry = next(item for item in writes["confirmed_write_sets"] if item["program_id"] == "script_assess_sources")
+        self.assertEqual(audit["evidence_scope"]["registry_blob_sha"], git_blob_sha("automation/program_registry.json"))
+        self.assertEqual(audit["evidence_scope"]["adapters_blob_sha"], git_blob_sha("automation/execution_adapters.json"))
+        self.assertIn("script_restore_automation_state", group["known_writers"])
+        self.assertIn("workflow_auto_sync", group["known_writers"])
+        self.assertIn("script_restore_automation_state", entry["additional_serialized_writers"])
+        self.assertIn("logical/production-pipeline", entry["lease_keys"])
+        restore = next(item for item in registry["programs"] if item["id"] == "script_restore_automation_state")
+        self.assertFalse(restore["orchestration"]["enabled"])
+        self.assertFalse(next(item for item in adapters["adapters"] if item["target_program_id"] == "script_restore_automation_state")["enabled"])
+
     def test_assessment_contract_dependency_matches_registry(self):
         registry = load_json("automation/program_registry.json")
         inventory = load_json("automation/capability_contract_inventory.json")
