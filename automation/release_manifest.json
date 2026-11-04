@@ -63,7 +63,7 @@
     },
     "resource_lease_runtime": {
       "path": "scripts/resource_lease_runtime.py",
-      "git_blob_sha": "7499e1311812f359a4eb25ef1763aca146b9684e",
+      "git_blob_sha": "b6fda4d9dfb61d7a72e9f5e8a80a5c4cca9c238a",
       "verification_status": "covered_by_VERIFYING_state_live_fencing_regression_test"
     }
   },
