@@ -826,14 +826,14 @@ jobs:
             assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE" --proof-json "$RESOURCE_LEASE_PROOF"
           python3 scripts/persist_review_cursor.py \
             --cursor-artifact cursor-artifact/review_cursor.json \
-            --destination automation/review_cursor_checkpoint.json
-          if git diff --quiet -- automation/review_cursor_checkpoint.json; then
+            --destination sources/review_cursor.json
+          if git diff --quiet -- sources/review_cursor.json; then
             echo "No checkpoint change to publish."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- automation/review_cursor_checkpoint.json
+          git add -- sources/review_cursor.json
           git diff --cached --check
           git commit -m "Persist failed deterministic review cursor"
           git push origin HEAD:main
