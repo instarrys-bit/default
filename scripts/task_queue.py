@@ -136,6 +136,44 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
             raise ValueError(f"{task_id} target has no valid registered timeout")
         if not isinstance(task["input"], dict):
             raise ValueError(f"{task_id}.input must be an object")
+        checkpoint = task.get("assessment_checkpoint")
+        if checkpoint is not None:
+            if target != "script_assess_sources" or status == "SUCCEEDED":
+                raise ValueError(f"{task_id}.assessment_checkpoint is not allowed for this task state or target")
+            if (not isinstance(checkpoint, dict) or checkpoint.get("schema_version") != 1
+                    or not isinstance(checkpoint.get("batch_id"), str)
+                    or not re.fullmatch(r"discovery-run:[0-9]+:[0-9a-f]{12}", checkpoint.get("batch_id", ""))
+                    or not isinstance(checkpoint.get("predecessor_artifact_sha256"), str)
+                    or not re.fullmatch(r"[0-9a-f]{64}", checkpoint.get("predecessor_artifact_sha256", ""))
+                    or not isinstance(checkpoint.get("completed"), dict)
+                    or len(checkpoint["completed"]) > 20):
+                raise ValueError(f"{task_id}.assessment_checkpoint envelope is invalid")
+            parse_utc(checkpoint.get("updated_at"), f"{task_id}.assessment_checkpoint.updated_at")
+            completed = checkpoint["completed"]
+            for url, record in completed.items():
+                if (not isinstance(url, str) or not url.startswith("https://raw.githubusercontent.com/")
+                        or not isinstance(record, dict) or not isinstance(record.get("result"), dict)
+                        or record["result"].get("url") != url
+                        or not isinstance(record.get("result_sha256"), str)
+                        or not re.fullmatch(r"[0-9a-f]{64}", record["result_sha256"])):
+                    raise ValueError(f"{task_id}.assessment_checkpoint contains an invalid URL result")
+                encoded = json.dumps(record["result"], sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+                if hashlib.sha256(encoded).hexdigest() != record["result_sha256"]:
+                    raise ValueError(f"{task_id}.assessment_checkpoint result digest mismatch")
+            last_url = checkpoint.get("last_successful_url")
+            if last_url is not None and last_url not in completed:
+                raise ValueError(f"{task_id}.assessment_checkpoint last URL is not completed")
+            if len(json.dumps(checkpoint, ensure_ascii=False).encode("utf-8")) > 30_000_000:
+                raise ValueError(f"{task_id}.assessment_checkpoint exceeds its storage bound")
+        checkpoint_summary = task.get("assessment_checkpoint_summary")
+        if checkpoint_summary is not None:
+            if (target != "script_assess_sources" or status != "SUCCEEDED"
+                    or not isinstance(checkpoint_summary, dict)
+                    or not isinstance(checkpoint_summary.get("batch_id"), str)
+                    or isinstance(checkpoint_summary.get("completed_url_count"), bool)
+                    or not isinstance(checkpoint_summary.get("completed_url_count"), int)
+                    or not 0 <= checkpoint_summary["completed_url_count"] <= 20):
+                raise ValueError(f"{task_id}.assessment_checkpoint_summary is invalid")
         lease = task["lease"]
         history = task["state_history"]
         if not isinstance(history, list) or not history or any(state not in STATUSES for state in history):

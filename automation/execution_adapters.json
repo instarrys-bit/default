@@ -248,7 +248,7 @@
       "retry": {
         "max_attempts": 2,
         "policy": "bounded_retry_same_predecessor_batch",
-        "description": "Up to two retries; each attempt derives the same bounded URL batch from the immutable discovery workflow run ID and artifact digest."
+        "description": "Retries reuse the same predecessor-bound URL batch and restore completed URL results from the durable task-queue checkpoint; only incomplete or failed URL fetches are repeated."
       },
       "completion": {
         "success_condition": "exit_zero_schema_valid_and_independent_artifact_verifier_valid",
@@ -269,7 +269,7 @@
         ],
         "lease_seconds": 480,
         "fencing_required": true,
-        "coverage": "exclusive logical document locks cover legacy JSON, adjacent manifests, content-addressed shard directories, temporary staging and old-shard cleanup; shared logical/production-pipeline key serializes against the production workflow"
+        "coverage": "Exclusive logical document locks cover legacy JSON, adjacent manifests, content-addressed shard directories, temporary staging and old-shard cleanup. After each URL result, the assessor atomically CAS-updates the current task's assessment_checkpoint in automation/task_queue.json; the update is fenced by the active task lease and both logical/production-pipeline and sources/source_assessments.json resource leases. Retries restore completed URL results and continue with the first incomplete URL."
       },
       "read_only_resources": [
         "sources/discovered_sources.json",

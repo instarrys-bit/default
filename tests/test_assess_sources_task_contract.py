@@ -12,7 +12,96 @@ import task_scheduler
 import verify_assess_sources_artifacts
 
 
+class CheckpointMemoryStore:
+    def __init__(self, document):
+        self.document = document
+
+    def read(self):
+        import copy
+        return type("Snapshot", (), {"document": copy.deepcopy(self.document)})()
+
+    def mutate(self, mutator):
+        import copy
+        candidate, result = mutator(copy.deepcopy(self.document))
+        if candidate != self.document:
+            self.document = candidate
+        return result
+
+
 class AssessSourcesTaskInputTests(unittest.TestCase):
+    def checkpoint_fixture(self):
+        from datetime import datetime, timedelta, timezone
+        now = datetime.now(timezone.utc)
+        task_id = "task_" + "a" * 24
+        proof = {
+            "logical/production-pipeline": {"lease_id": "pipeline-lease", "fencing_token": 4},
+            "sources/source_assessments.json": {"lease_id": "history-lease", "fencing_token": 7},
+        }
+        task_token = "task-lease-token"
+        predecessor = {"artifact_sha256": "b" * 64, "workflow_run_id": "123"}
+        task = {
+            "task_id": task_id, "target_program_id": "script_assess_sources",
+            "input": {"predecessor": predecessor},
+            "status": "CLAIMED",
+            "lease": {"owner": "worker-test", "token": task_token,
+                      "expires_at": (now + timedelta(minutes=10)).isoformat().replace("+00:00", "Z")},
+            "resource_lease": {"status": "ACTIVE", "resources": proof},
+        }
+        resource_leases = {}
+        for key, item in proof.items():
+            resource_leases[key] = {
+                "status": "ACTIVE", "task_id": task_id, "worker_id": "worker-test",
+                "task_lease_token": task_token, **item,
+                "expires_at": (now + timedelta(minutes=10)).isoformat().replace("+00:00", "Z"),
+            }
+        store = CheckpointMemoryStore({
+            "schema_version": 1, "revision": 0, "tasks": [task],
+            "resource_leases": resource_leases,
+        })
+        env = {
+            "AUTOMATION_TASK_ID": task_id,
+            "AUTOMATION_WORKER_ID": "worker-test",
+            "AUTOMATION_TASK_LEASE_TOKEN": task_token,
+            "AUTOMATION_RESOURCE_LEASE_PROOF": json.dumps(proof),
+        }
+        return store, env, predecessor
+
+    def test_each_completed_url_is_durably_checkpointed_and_restored(self):
+        store, env, predecessor = self.checkpoint_fixture()
+        item = {
+            "url": "https://raw.githubusercontent.com/example/repo/main/list.txt",
+            "repository": "example/repo", "parser_candidate": "domain-only",
+            "domain_fingerprints": ["abc123"],
+        }
+        with patch.dict("os.environ", env, clear=True), \
+             patch.object(assess_sources, "assert_resource_lease_from_environment"), \
+             patch("remote_task_queue_runtime.validate_candidate"):
+            assess_sources.persist_assessment_checkpoint(
+                "discovery-run:123:" + predecessor["artifact_sha256"][:12],
+                predecessor, item, store=store, registry={},
+            )
+            restored = assess_sources.load_assessment_checkpoint(
+                "discovery-run:123:" + predecessor["artifact_sha256"][:12],
+                predecessor, store=store, registry={},
+            )
+        self.assertEqual(restored[item["url"]], item)
+        saved = store.document["tasks"][0]["assessment_checkpoint"]
+        self.assertEqual(saved["last_successful_url"], item["url"])
+        self.assertEqual(len(saved["completed"]), 1)
+
+    def test_checkpoint_rejects_stale_fencing_token(self):
+        store, env, predecessor = self.checkpoint_fixture()
+        item = {"url": "https://raw.githubusercontent.com/example/repo/main/list.txt"}
+        store.document["resource_leases"]["sources/source_assessments.json"]["fencing_token"] = 8
+        with patch.dict("os.environ", env, clear=True), \
+             patch.object(assess_sources, "assert_resource_lease_from_environment"), \
+             patch("remote_task_queue_runtime.validate_candidate"):
+            with self.assertRaisesRegex(ValueError, "fencing proof is stale"):
+                assess_sources.persist_assessment_checkpoint(
+                    "discovery-run:123:" + predecessor["artifact_sha256"][:12],
+                    predecessor, item, store=store, registry={},
+                )
+
     def test_default_limits_preserve_existing_workflow_behavior(self):
         self.assertEqual(assess_sources.load_task_options(None), {
             "max_urls": assess_sources.MAX_URLS,

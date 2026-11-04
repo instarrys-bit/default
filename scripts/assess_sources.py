@@ -408,6 +408,142 @@ def assert_optional_write_lease(path: Path, *, required: bool = False) -> None:
         assert_resource_lease_from_environment(path.relative_to(ROOT).as_posix())
 
 
+def _checkpoint_runtime(store=None, registry=None):
+    """Resolve the queue CAS client used for durable per-URL progress."""
+    if store is None:
+        from remote_task_queue_runtime import make_store
+        store = make_store(
+            os.environ.get("AUTOMATION_QUEUE_REPOSITORY"),
+            os.environ.get("AUTOMATION_QUEUE_BRANCH"),
+            os.environ.get("AUTOMATION_QUEUE_PATH", "automation/task_queue.json"),
+            token=os.environ.get("AUTOMATION_QUEUE_TOKEN"),
+        )
+    if registry is None:
+        registry = json.loads((ROOT / "automation/program_registry.json").read_text(encoding="utf-8"))
+    return store, registry
+
+
+def _validate_checkpoint_writer(queue: dict, batch_id: str, predecessor: dict):
+    """Bind checkpoint mutation to the current task, task lease and every live fence."""
+    from datetime import datetime, timezone
+    task_id = os.environ.get("AUTOMATION_TASK_ID", "")
+    worker_id = os.environ.get("AUTOMATION_WORKER_ID", "")
+    task_token = os.environ.get("AUTOMATION_TASK_LEASE_TOKEN", "")
+    try:
+        proof = json.loads(os.environ.get("AUTOMATION_RESOURCE_LEASE_PROOF", "{}"))
+    except json.JSONDecodeError as exc:
+        raise ValueError("assessment checkpoint resource proof is malformed") from exc
+    task = next((item for item in queue.get("tasks", []) if item.get("task_id") == task_id), None)
+    if not isinstance(task, dict) or task.get("target_program_id") != "script_assess_sources" or task.get("status") != "CLAIMED":
+        raise ValueError("assessment checkpoint requires the active claimed source-assessment task")
+    task_predecessor = (task.get("input") or {}).get("predecessor")
+    expected_batch_id = "discovery-run:" + str(predecessor.get("workflow_run_id")) + ":" + str(predecessor.get("artifact_sha256", ""))[:12]
+    if task_predecessor != predecessor or batch_id != expected_batch_id:
+        raise ValueError("assessment checkpoint is not bound to this task's immutable predecessor")
+    lease = task.get("lease") or {}
+    now = datetime.now(timezone.utc)
+    if lease.get("owner") != worker_id or lease.get("token") != task_token:
+        raise ValueError("assessment checkpoint task lease identity changed")
+    if datetime.fromisoformat(lease["expires_at"].replace("Z", "+00:00")) <= now:
+        raise ValueError("assessment checkpoint task lease expired")
+    resource_lease = task.get("resource_lease") or {}
+    declared = resource_lease.get("resources")
+    if resource_lease.get("status") != "ACTIVE" or not isinstance(declared, dict) or declared != proof:
+        raise ValueError("assessment checkpoint resource proof is no longer active")
+    leases = queue.get("resource_leases")
+    if not isinstance(leases, dict):
+        raise ValueError("assessment checkpoint resource lease registry is missing")
+    for key, item in proof.items():
+        record = leases.get(key)
+        if (not isinstance(record, dict) or record.get("status") != "ACTIVE"
+                or record.get("task_id") != task_id
+                or record.get("worker_id") != worker_id
+                or record.get("task_lease_token") != task_token
+                or record.get("lease_id") != item.get("lease_id")
+                or record.get("fencing_token") != item.get("fencing_token")
+                or datetime.fromisoformat(record["expires_at"].replace("Z", "+00:00")) <= now):
+            raise ValueError("assessment checkpoint fencing proof is stale: " + str(key))
+    if "sources/source_assessments.json" not in proof or "logical/production-pipeline" not in proof:
+        raise ValueError("assessment checkpoint requires both source-history and production-pipeline leases")
+    checkpoint = task.get("assessment_checkpoint")
+    if checkpoint is not None:
+        if (not isinstance(checkpoint, dict) or checkpoint.get("schema_version") != 1
+                or checkpoint.get("batch_id") != batch_id
+                or checkpoint.get("predecessor_artifact_sha256") != predecessor.get("artifact_sha256")
+                or not isinstance(checkpoint.get("completed"), dict)):
+            raise ValueError("existing assessment checkpoint belongs to a different immutable batch")
+    return task, checkpoint
+
+
+def load_assessment_checkpoint(batch_id: str, predecessor: dict, *, store=None, registry=None) -> dict:
+    """Read completed URL results from the durable queue checkpoint for this task."""
+    assert_resource_lease_from_environment("sources/source_assessments.json")
+    store, registry = _checkpoint_runtime(store, registry)
+    from remote_task_queue_runtime import validate_candidate, validate_envelope
+    queue = store.read().document
+    validate_envelope(queue)
+    validate_candidate(queue, registry)
+    _, checkpoint = _validate_checkpoint_writer(queue, batch_id, predecessor)
+    if checkpoint is None:
+        return {}
+    completed = checkpoint["completed"]
+    if len(completed) > 20:
+        raise ValueError("assessment checkpoint exceeds the bounded 20-URL batch")
+    restored = {}
+    for url, record in completed.items():
+        if (not isinstance(url, str) or not isinstance(record, dict)
+                or not isinstance(record.get("result"), dict)
+                or record.get("result", {}).get("url") != url):
+            raise ValueError("assessment checkpoint contains a malformed URL result")
+        expected = hashlib.sha256(json.dumps(record["result"], sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")).hexdigest()
+        if record.get("result_sha256") != expected:
+            raise ValueError("assessment checkpoint result digest mismatch")
+        restored[url] = dict(record["result"])
+    return restored
+
+
+def persist_assessment_checkpoint(batch_id: str, predecessor: dict, result: dict, *, store=None, registry=None) -> None:
+    """CAS-persist one completed URL result under the live task/resource fencing proof."""
+    if not isinstance(result, dict) or not isinstance(result.get("url"), str):
+        raise ValueError("assessment checkpoint result requires a URL")
+    assert_resource_lease_from_environment("sources/source_assessments.json")
+    store, registry = _checkpoint_runtime(store, registry)
+    from remote_task_queue_runtime import validate_candidate, validate_envelope
+    from task_queue_runtime import stamp, now_utc
+    result_json = json.dumps(result, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    result_sha = hashlib.sha256(result_json.encode("utf-8")).hexdigest()
+
+    def mutate(queue):
+        validate_envelope(queue)
+        validate_candidate(queue, registry)
+        task, checkpoint = _validate_checkpoint_writer(queue, batch_id, predecessor)
+        if checkpoint is None:
+            checkpoint = {
+                "schema_version": 1,
+                "batch_id": batch_id,
+                "predecessor_artifact_sha256": predecessor["artifact_sha256"],
+                "completed": {},
+                "last_successful_url": None,
+                "updated_at": stamp(now_utc()),
+            }
+            task["assessment_checkpoint"] = checkpoint
+        existing = checkpoint["completed"].get(result["url"])
+        if existing is not None:
+            if existing.get("result_sha256") != result_sha:
+                raise ValueError("assessment checkpoint URL already has a different completed result")
+            return queue, {"stored": False, "url": result["url"]}
+        if len(checkpoint["completed"]) >= 20:
+            raise ValueError("assessment checkpoint reached the bounded 20-URL limit")
+        checkpoint["completed"][result["url"]] = {"result": json.loads(result_json), "result_sha256": result_sha}
+        checkpoint["last_successful_url"] = result["url"]
+        checkpoint["updated_at"] = stamp(now_utc())
+        queue["revision"] += 1
+        validate_candidate(queue, registry)
+        return queue, {"stored": True, "url": result["url"]}
+
+    store.mutate(mutate)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--task-input", type=Path)
@@ -428,12 +564,24 @@ def main(argv: list[str] | None = None) -> int:
     else:
         batch = rotate_assessment_urls(candidate_urls, previous_cursor, max_urls)
         batch_id = datetime.now(timezone.utc).isoformat()
+    completed_checkpoint = (
+        load_assessment_checkpoint(batch_id, predecessor)
+        if predecessor is not None else {}
+    )
     assessments = []
     total_bytes_read = 0
     budget_exhausted = False
     for candidate in batch:
         repository = candidate["repository"]
         url = candidate["url"]
+        if url in completed_checkpoint:
+            item = dict(completed_checkpoint[url])
+            restored_bytes = item.get("bytes", 0)
+            if isinstance(restored_bytes, int) and not isinstance(restored_bytes, bool) and restored_bytes >= 0:
+                total_bytes_read += restored_bytes
+            item["drift"] = compare_drift(item, previous_by_url.get(url))
+            assessments.append(item)
+            continue
         try:
             payload = fetch_raw(url, repository, max_total_bytes - total_bytes_read, max_file_bytes=max_file_bytes)
             total_bytes_read += len(payload)
@@ -449,7 +597,6 @@ def main(argv: list[str] | None = None) -> int:
             item["stars"] = candidate["stars"]
             item["archived"] = candidate["archived"]
             item["assessed_at"] = batch_id
-            assessments.append(item)
         except AssessmentBudgetExceeded:
             budget_exhausted = True
             break
@@ -466,8 +613,15 @@ def main(argv: list[str] | None = None) -> int:
                 "domain_keyword_rules_ignored": 0, "ip_asn_rules_ignored": 0,
                 "explicit_action_counts": {}, "assessed_at": batch_id,
             })
+            continue
+        # Persist outside the network-error handler: a stale fencing proof or
+        # queue CAS failure must abort the task, never masquerade as a bad URL.
+        if predecessor is not None:
+            persist_assessment_checkpoint(batch_id, predecessor, item)
+        assessments.append(item)
     for item in assessments:
-        item["drift"] = compare_drift(item, previous_by_url.get(item.get("url")))
+        if "drift" not in item:
+            item["drift"] = compare_drift(item, previous_by_url.get(item.get("url")))
     drift_summary = {
         "new_source_files": sum(1 for x in assessments if x.get("drift", {}).get("status") == "baseline_initialized"),
         "changed_source_files": sum(1 for x in assessments if x.get("drift", {}).get("status", "").startswith(("domain_set_changed", "content_changed"))),

@@ -113,16 +113,16 @@
         "stdout JSON: assessed, bytes_read, parser_candidates, policy_candidates, activated=0, artifact_verification, artifact_publication",
         "sources/source_assessments.json persistent history (published)",
         "data/source_assessments_runtime.json current batch and ephemeral fingerprints (runner-local, never committed)",
-        "reports/source-assessment.md human-readable report (published)"
+        "reports/source-assessment.md human-readable report (published)",
+        "automation/task_queue.json task.assessment_checkpoint: per-URL result and fingerprint checkpoint (durable CAS state; removed after successful independent verification)"
       ],
       "current_invocation": "python_module_or_workflow_step",
       "contract_status": "concrete_io_typed_predecessor_and_watchdog_event_dispatch_enabled",
       "dispatch_status": "enabled",
       "missing_contract_fields": [
-        "complete_transitive_side_effect_verification",
-        "per_source_durable_progress_checkpoint"
+        "complete_transitive_side_effect_verification"
       ],
-      "audit_note": "Task retries derive a fixed bounded URL batch from the immutable predecessor workflow run ID and artifact digest. Remote reads may repeat, but the same batch is replayed; durable per-source progress checkpoints are not yet implemented.",
+      "audit_note": "Task retries derive a fixed bounded URL batch from the immutable predecessor workflow run ID and artifact digest. Each completed URL result is persisted immediately in the durable task queue under live task/resource fencing; retries restore completed results and continue with the first incomplete URL. This does not complete the separate transitive writer/runtime tracing review.",
       "contract_sample_path": "automation/capability_contracts/assess_sources.json"
     },
     {

@@ -646,9 +646,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
-    "release_manifest_blob_sha": "e1aa2200531a9acd662e4a71f2713d9821d5c6fe",
+    "release_manifest_blob_sha": "e9c8b587b316a55a1cfdbfdf28df57df1bb7272a",
     "program_registry_blob_sha": "d4cf970870f4b51d40c1f70c7d4347a035d4b960",
-    "execution_adapters_blob_sha": "b9bad9786b927b98634ec956b3eb343f6fd8d43e",
+    "execution_adapters_blob_sha": "97d18a09763f851362e0bd5400dad856ae1f448b",
     "added_after_release_baseline": true,
     "note": "Refreshed against the exact current main workflow, registry, release manifest and adapter blobs. This remains static inventory evidence, not execution authorization.",
     "reviewed_at": "2026-11-04",

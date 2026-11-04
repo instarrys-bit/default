@@ -1,4 +1,6 @@
 import copy
+import json
+import hashlib
 import sys
 import unittest
 from datetime import datetime, timezone
@@ -38,6 +40,9 @@ class TaskResultVerifierTests(unittest.TestCase):
             {"id": "script_task_result_verifier", "capabilities": ["task_result_verification"],
              "orchestration": {"enabled": False, "allowed_callers": [],
                                "max_attempts": 0, "timeout_seconds": 300}},
+            {"id": "script_assess_sources", "capabilities": ["source_assessment"],
+             "orchestration": {"enabled": True, "allowed_callers": ["script_requester"],
+                               "max_attempts": 2, "timeout_seconds": 240}},
         ]}
         self.now = datetime(2026, 11, 3, 4, 0, tzinfo=timezone.utc)
         self.schema = {
@@ -46,13 +51,22 @@ class TaskResultVerifierTests(unittest.TestCase):
             "properties": {"ok": {"type": "boolean"}},
             "additionalProperties": False,
         }
-        self.adapters = {"schema_version": 1, "adapters": [{
-            "target_program_id": "script_target",
-            "adapter_type": "python_cli",
-            "enabled": True,
-            "interface_status": "reviewed",
-            "output_contract": self.schema,
-        }]}
+        self.adapters = {"schema_version": 1, "adapters": [
+            {
+                "target_program_id": "script_target",
+                "adapter_type": "python_cli",
+                "enabled": True,
+                "interface_status": "reviewed",
+                "output_contract": self.schema,
+            },
+            {
+                "target_program_id": "script_assess_sources",
+                "adapter_type": "python_cli",
+                "enabled": True,
+                "interface_status": "reviewed",
+                "output_contract": self.schema,
+            },
+        ]}
 
     def make_verifying_task(self, result):
         task = {"idempotency_key": "verifier:test:once",
@@ -78,6 +92,53 @@ class TaskResultVerifierTests(unittest.TestCase):
         self.assertEqual(saved["status"], "SUCCEEDED")
         self.assertEqual(saved["verification"]["status"], "passed")
         self.assertEqual(saved["verification"]["verifier_program_id"], "script_task_result_verifier")
+
+    def make_assessment_verifying_task(self, result):
+        task = {"idempotency_key": "assessment-checkpoint:test:once",
+                "requester_program_id": "script_requester",
+                "target_program_id": "script_assess_sources",
+                "capability": "source_assessment", "input": {}}
+        enqueue_remote(task, self.store, self.registry, self.now)
+        eligible = {item["task_id"] for item in self.store.document["tasks"]}
+        claimed = claim_remote("worker-a", self.store, self.registry,
+                               eligible_task_ids=eligible, now=self.now)
+        verifying = complete_remote(
+            claimed["task_id"], "worker-a", claimed["lease"]["token"],
+            success=True, result=result, store=self.store,
+            registry=self.registry, now=self.now,
+        )
+        checkpoint_url = "https://raw.githubusercontent.com/example/repo/main/list.txt"
+        checkpoint_result = {"url": checkpoint_url}
+        checkpoint_digest = hashlib.sha256(json.dumps(
+            checkpoint_result, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+        ).encode("utf-8")).hexdigest()
+        self.store.document["tasks"][0]["assessment_checkpoint"] = {
+            "schema_version": 1, "batch_id": "discovery-run:123:abcdef123456",
+            "predecessor_artifact_sha256": "b" * 64,
+            "completed": {checkpoint_url: {
+                "result": checkpoint_result,
+                "result_sha256": checkpoint_digest,
+            }},
+            "last_successful_url": checkpoint_url,
+            "updated_at": "2026-11-05T00:00:00Z",
+        }
+        return verifying
+
+    def test_assessment_checkpoint_is_cleared_only_after_successful_verification(self):
+        task = self.make_assessment_verifying_task({"ok": True})
+        report = verify_pending_remote(self.store, self.registry, self.adapters, self.now)
+        self.assertEqual(report["verified"], [task["task_id"]])
+        saved = self.store.document["tasks"][0]
+        self.assertNotIn("assessment_checkpoint", saved)
+        self.assertEqual(saved["assessment_checkpoint_summary"]["completed_url_count"], 1)
+
+    def test_assessment_checkpoint_survives_failed_verification_for_retry(self):
+        task = self.make_assessment_verifying_task({"ok": "wrong"})
+        report = verify_pending_remote(self.store, self.registry, self.adapters, self.now)
+        self.assertEqual(report["rejected"], [task["task_id"]])
+        saved = self.store.document["tasks"][0]
+        self.assertIn("assessment_checkpoint", saved)
+        self.assertEqual(saved["status"], "QUEUED")
 
     def test_invalid_result_is_retried_and_not_marked_successful(self):
         task = self.make_verifying_task({"ok": "not-a-boolean"})
