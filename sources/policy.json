@@ -139,25 +139,16 @@
     "immutable": true,
     "description": "Authoritative user-managed Shadowrocket config baseline. Read-only for automation; derived rule audits must evaluate against this file.",
     "last_user_approved_baseline_update": {
-      "previous_blob_sha": "b87f4c3bf13ed76d7f01ecc77266793da0e7556b",
-      "new_blob_sha": "daa84802764de63c24da1e727ed233bab2e9151f",
-      "reason": "Recover an interrupted registration after verifying every intervening uu.conf-changing commit is associated with the repository owner on GitHub. Automation does not edit uu.conf.",
-      "approval_mode": "recovered_owner_authored_config_history",
+      "previous_blob_sha": null,
+      "new_blob_sha": "3b9a39cfae94803937addd4949042e9dc0ceaed2",
+      "reason": "Register modules/uu.conf as the sole current user-owned configuration baseline from the repository-owner-authored commit that added it. Automation does not edit this file.",
+      "approval_mode": "owner_push_changed_config",
       "config_change_commits": [
-        "8996af8a530e47585979badfee575ca76a04a38a",
-        "7c376836232c1fda8ee40d91bab0e7d7255f501f",
-        "bd8d96e54b374f6abe30425ab0aea1a56e1c73eb",
-        "9ae9993d851a81231a98d8d041d4f499475cf920",
-        "f11460c4e79dfdc3f1d0fe94d932ac8c96fcbab4",
-        "610f631c5ccbce61df551993cdb80b14ff1afc1c",
-        "bd97bdc55ead8a4ccfddde33b3ffa7de355c9c0f",
-        "404294351140e43beb7aaeb5949f67c0b6129486",
-        "ba3df60101797ffc0a977dfac5298b91b6b9cbec",
-        "f207017c0830fd53f48294d01fa0404eaa54a081"
+        "c8ea0505a00856d8029e3cb45aa4db011374dcc7"
       ],
-      "actor": "github-actions[bot]",
-      "commit_sha": "09457fd03856c6264b9d47eac993252f86c3d609",
-      "registered_at": "2026-11-03T18:17:58.128395+00:00"
+      "actor": "instarrys-bit",
+      "commit_sha": "c8ea0505a00856d8029e3cb45aa4db011374dcc7",
+      "registered_at": "2026-11-04T09:03:22Z"
     }
   }
 }
