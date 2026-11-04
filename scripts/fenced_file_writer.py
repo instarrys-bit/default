@@ -14,13 +14,12 @@ PROTECTED_PATHS = {"modules/uu.conf"}
 # module, script, and published ruleset paths. Other repository artifacts
 # (reports, docs, automation state, etc.) are not gated by this file guard.
 FENCED_PREFIXES = ("modules/", "scripts/", "rulesets/")
-FENCED_EXACT_PATHS = {"shadowrocket/ss.conf"}
 _INSTALLED = False
 
 def _requires_resource_lease(relative: str | None) -> bool:
     if not relative:
         return False
-    return relative in FENCED_EXACT_PATHS or relative.startswith(FENCED_PREFIXES)
+    return relative.startswith(FENCED_PREFIXES)
 
 
 
@@ -84,7 +83,7 @@ def _record_write_trace(path, operation: str) -> None:
 
 
 def authorize_write_path(path) -> None:
-    """Reject owner-managed configs unconditionally and fence every repo-local write."""
+    """Reject owner-managed protected files and fence production modules, scripts, and rulesets."""
     relative = _repo_relative(path)
     if relative is None:
         # A pre-existing external hard link to the protected config has a different
