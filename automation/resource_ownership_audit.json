@@ -4,8 +4,8 @@
   "status": "partial_static_audit",
   "purpose": "Identify known overlapping write resources before independent capability scheduling. This inventory is deliberately fail-closed and is not an execution authorization.",
   "evidence_scope": {
-    "registry_blob_sha": "ee1d9738c11b269317af4c1ec5dddc14b6e52041",
-    "adapters_blob_sha": "b266437eee2a17b75b9f7d721124ddba414dee3e",
+    "registry_blob_sha": "83a43255ccfbbc32b8f4b63983356676408533c9",
+    "adapters_blob_sha": "51b4a61c3764e4446dae93d6c0ffc26d7a062afe",
     "inspected_sources": [
       "scripts/build_rulesets.py",
       "scripts/lifecycle_audit.py",
@@ -14,7 +14,12 @@
       "scripts/json_document_store.py",
       "scripts/discover_sources.py",
       "scripts/assess_sources.py",
-      "scripts/build_source_candidates.py"
+      "scripts/build_source_candidates.py",
+      "scripts/restore_automation_state.py",
+      "scripts/task_scheduler.py",
+      "scripts/resource_lease_runtime.py",
+      "scripts/fenced_file_writer.py",
+      ".github/workflows/auto_sync.yml"
     ],
     "limitation": "Static review of named entrypoints and direct write call sites only. Dynamic helper behavior is documented where inspected; complete transitive caller coverage, runtime-selected paths, and all writers still require machine-checked tracing."
   },
@@ -147,12 +152,14 @@
         "reports/source-assessment.md"
       ],
       "known_writers": [
-        "script_assess_sources"
+        "script_assess_sources",
+        "script_restore_automation_state",
+        "workflow_auto_sync"
       ],
       "lock_key": "logical/production-pipeline + sources/source_assessments.json + data/source_assessments_runtime.json + reports/source-assessment.md",
       "required_mode": "exclusive",
-      "status": "live_fenced_logical_document_locks_reviewed_pending_ci",
-      "note": "Scheduler atomically acquires shared logical/production-pipeline mutex plus exclusive leases for all three outputs. Child re-reads live queue and checks exact fencing token before each JSON base/manifest/shard/staging/cleanup mutation and report write. After independent verification, scheduler publishes only persistent history and report using fetch/rebase/non-force push; runtime fingerprints stay runner-local. Sharded read-only discovery input is hashed before and after execution.",
+      "status": "live_fenced_writers_reviewed_partial_transitive_audit",
+      "note": "Scheduler atomically acquires shared logical/production-pipeline mutex plus exclusive leases for all three outputs. Child re-reads live queue and checks exact fencing token before each JSON base/manifest/shard/staging/cleanup mutation and report write. After independent verification, scheduler publishes only persistent history and report using fetch/rebase/non-force push; runtime fingerprints stay runner-local. Sharded read-only discovery input is hashed before and after execution. The auto_sync publish job also restores allowlisted assessment history and report artifacts from the audited archive; restore_automation_state.py is fenced by the same live logical/production-pipeline lease, so it is serialized against independent assessment.",
       "lease_seconds": 480,
       "publish_resources": [
         "sources/source_assessments.json",
