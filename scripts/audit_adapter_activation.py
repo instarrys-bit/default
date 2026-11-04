@@ -182,7 +182,7 @@ def audit_activation_readiness(root: Path = ROOT,
             if not all(scope in required for scope in ("actions:write", "contents:write")):
                 reasons.append("workflow adapter does not declare both required caller permission scopes")
             if "possible_protected_config_write" in side_effects:
-                reasons.append("workflow may write protected shadowrocket/ss.conf")
+                reasons.append("workflow may write protected modules/uu.conf")
             row["least_privilege_canary_candidate"] = (
                 workflow.get("dispatchable") is True
                 and bool(sections)
