@@ -70,9 +70,12 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
 
     def test_automation_incidents_are_bound_to_exact_workflow_runs(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn("Shadowrocket automation failure (run $RUN_ID)", workflow)
+        self.assertIn("Shadowrocket automation incident (run $RUN_ID)", workflow)
         self.assertIn("workflow=auto_sync;run_id=$RUN_ID", workflow)
         self.assertIn("capture(\"shadowrocket-automation:workflow=auto_sync;run_id=", workflow)
+        resolver = workflow.split("  resolve-failure:", 1)[1]
+        self.assertIn("Shadowrocket automation failure (run ", resolver)
+        self.assertIn("Shadowrocket automation incident (run ", resolver)
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn("Close recovered manifest integrity incidents", watchdog)
         self.assertIn("steps.verify.outcome == 'success'", watchdog)
