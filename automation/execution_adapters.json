@@ -242,6 +242,11 @@
       "publish_resources": [
         "sources/source_assessments.json",
         "reports/source-assessment.md"
+      ],
+      "write_resources": [
+        "sources/source_assessments.json",
+        "data/source_assessments_runtime.json",
+        "reports/source-assessment.md"
       ]
     },
     {
