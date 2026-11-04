@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "inventory_id": "resource-write-sets-2026.11.04.5",
+  "inventory_id": "resource-write-sets-2026.11.05.3",
   "status": "partial_static_entrypoint_review",
   "policy": {
     "lock_identity": "canonical logical resource path, not program ID",
@@ -1549,6 +1549,12 @@
       "source": "scripts/fenced_file_writer.py",
       "classification": "filesystem_mutation_guard_not_writer",
       "evidence": "Installs audit hooks that reject/validate mutation events; it does not itself create or modify repository resources."
+    },
+    {
+      "program_id": "script_capture_git_write_trace",
+      "source": "scripts/capture_git_write_trace.py",
+      "classification": "read_only_repository_delta_observer",
+      "evidence": "Reads committed, staged, unstaged and non-ignored untracked Git path deltas; writes only path-only JSONL trace records under RUNNER_TEMP outside the repository."
     }
   ],
   "control_plane_side_effects": [
