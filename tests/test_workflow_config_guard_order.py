@@ -333,5 +333,19 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         canary = watchdog[canary_start:canary_end]
         self.assertIn("if: ${{ false }}", canary)
 
+
+    def test_watchdog_registry_cas_retries_by_rereading_and_merging_latest_blob(self):
+        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
+        start = watchdog.index('registry_published=false')
+        end = watchdog.index('title="Production input classification requires review"', start)
+        block = watchdog[start:end]
+        self.assertIn("for attempt in 1 2 3; do", block)
+        self.assertLess(block.index('for attempt in 1 2 3; do'), block.index('gh api "repos/$REPO/contents/automation/unregistered_path_registry.json"'))
+        self.assertIn('registration_result="$(python3 scripts/production_intent.py', block)
+        self.assertIn('-f sha="$registry_sha"', block)
+        self.assertIn('sleep "$attempt"', block)
+        self.assertIn("Could not merge the unregistered-path ledger after three Blob-SHA CAS attempts.", block)
+        self.assertIn('if [ "$registry_published" != "true" ]; then', block)
+
 if __name__ == "__main__":
     unittest.main()
