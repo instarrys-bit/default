@@ -838,24 +838,28 @@
       "program_id": "script_persist_review_cursor",
       "source": "scripts/persist_review_cursor.py",
       "writes": [
-        "<caller-supplied --destination path>"
+        "sources/review_cursor.json"
       ],
       "document_store": [],
       "dynamic_children": [],
       "read_resources": [
-        "<caller-supplied --cursor-artifact path>"
+        "runner artifact review_cursor.json"
       ],
       "side_effects": [
-        "Validates and copies a cursor checkpoint; current auto_sync caller writes only $RUNNER_TEMP/review_cursor.json."
+        "Validates the cursor artifact; atomically writes an in-progress checkpoint or removes a stale checkpoint when the artifact is complete.",
+        "No other repository path is staged or committed by the persistence job."
       ],
       "evidence": "persist_cursor() replaces/deletes the destination and writes the validated JSON; workflow explicitly selects RUNNER_TEMP and states durable repository persistence is deferred.",
-      "lease_keys": [],
-      "lease_enforcement": "Current workflow destination is runner-local ephemeral storage; future durable persistence requires a Watchdog-leased owner and a declared shared resource.",
-      "publish_resources": [],
-      "ephemeral_unpublished_resources": [
-        "$RUNNER_TEMP/review_cursor.json"
+      "lease_keys": [
+        "logical/production-pipeline",
+        "sources/review_cursor.json"
       ],
-      "write_boundary_fencing": "Current invocation does not mutate repository state; the script accepts a dynamic destination and must not be independently dispatched with an arbitrary repository path."
+      "lease_enforcement": "Workflow re-reads and validates the live Watchdog task/resource proof immediately before the single-file mutation; the shared main-writer concurrency group serializes publication. The auto_sync task holds exclusive logical/production-pipeline and sources/review_cursor.json leases.",
+      "publish_resources": [
+        "sources/review_cursor.json"
+      ],
+      "ephemeral_unpublished_resources": [],
+      "write_boundary_fencing": "Destination is fixed to sources/review_cursor.json by the workflow invocation; no caller-selected repository path. The exact Watchdog task lease and fencing token are revalidated before writing."
     },
     {
       "program_id": "script_production_intent",
