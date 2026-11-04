@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
+import re
 from contextlib import contextmanager
 import json
 import os
@@ -21,6 +23,7 @@ from remote_task_queue_runtime import (
 )
 from task_queue_runtime import authorize, now_utc
 from github_queue_store import QueueStoreError
+from resource_lease_runtime import assert_resource_lease, claimed_task
 from task_result_verifier import (
     validate_json_schema, validate_schema_definition, verify_pending_remote,
 )
@@ -419,6 +422,119 @@ def execute_claimed_workflow_task(task: dict, adapter: dict, store, registry: di
         return {"task_id": task["task_id"], "status": completed["status"], "error": error}
 
 
+def publishable_resource_path(path: str, resources: list[str]) -> bool:
+    """Accept only exact logical outputs and their known JSONL document-store children."""
+    for logical in resources:
+        base=re.escape(logical)
+        if path in {logical, logical + ".manifest.json"}:
+            return True
+        if re.fullmatch(base + r"\\.parts-[0-9a-f]{16}/part-[0-9]{6}\\.jsonl", path):
+            return True
+    return False
+
+
+def assert_live_task_resource_proofs(task: dict, adapter: dict, store) -> dict:
+    """Re-read the durable queue and validate every lease before artifact publication."""
+    snapshot=store.read().document
+    task_id=task["task_id"]
+    worker_id=task["lease"]["owner"]
+    task_token=task["lease"]["token"]
+    live_task=claimed_task(snapshot,task_id,worker_id,task_token,now_utc())
+    live_proof=live_task.get("resource_lease")
+    expected=task.get("resource_lease")
+    if (not isinstance(live_proof,dict) or live_proof.get("status")!="ACTIVE"
+            or not isinstance(expected,dict) or live_proof.get("resources")!=expected.get("resources")):
+        raise ValueError("live task resource lease proof changed before artifact publication")
+    resources=expected.get("resources")
+    contract=adapter.get("resource_contract",{})
+    if not isinstance(resources,dict) or set(resources)!=set(contract.get("resource_keys",[])):
+        raise ValueError("task resource lease does not match the reviewed publish contract")
+    for path,proof in resources.items():
+        assert_resource_lease(
+            snapshot,task_id=task_id,worker_id=worker_id,task_lease_token=task_token,
+            resource_path=path,lease_id=proof.get("lease_id"),
+            fencing_token=proof.get("fencing_token"),now=now_utc(),
+        )
+    return resources
+
+
+def publish_task_artifacts(task: dict, adapter: dict, store, protected_digest: str,
+                           read_only_before: dict[str,str|None], root: Path = ROOT) -> dict:
+    """Commit only allowlisted persistent artifacts after independent verification."""
+    resources=adapter.get("publish_resources",[])
+    if not resources:
+        return {"published":False,"commit_sha":"","paths":[]}
+    if not isinstance(resources,list) or len(resources)!=len(set(resources)):
+        raise ValueError("publish_resources must be a unique path list")
+    contract=adapter.get("resource_contract",{})
+    keys=contract.get("resource_keys",[]) if isinstance(contract,dict) else []
+    if any(path not in keys or path=="shadowrocket/ss.conf" for path in resources):
+        raise ValueError("publish_resources must be a subset of exclusive non-config resource keys")
+    if any(not isinstance(path,str) or path.startswith("/") or chr(92) in path
+           or any(part in {"",".",".."} for part in path.split("/")) for path in resources):
+        raise ValueError("publish_resources contains an unsafe repository path")
+
+    def run_git(args, env, *, timeout=45):
+        completed=subprocess.run(
+            ["git",*args],cwd=root,env=env,shell=False,capture_output=True,
+            text=True,stdin=subprocess.DEVNULL,timeout=timeout,check=False,
+        )
+        if completed.returncode!=0:
+            raise RuntimeError("artifact publication git command failed: "+completed.stderr[-1500:])
+        return completed.stdout
+
+    env=os.environ.copy()
+    for key in list(env):
+        if any(marker in key.upper() for marker in ("TOKEN","SECRET","PASSWORD","CREDENTIAL","PRIVATE_KEY")):
+            env.pop(key,None)
+    auth=base64.b64encode(("x-access-token:"+store.token).encode("utf-8")).decode("ascii")
+    env.update({
+        "GIT_CONFIG_COUNT":"1",
+        "GIT_CONFIG_KEY_0":"http.https://github.com/.extraheader",
+        "GIT_CONFIG_VALUE_0":"AUTHORIZATION: basic "+auth,
+        "GIT_TERMINAL_PROMPT":"0",
+    })
+    def allowed(path):
+        return publishable_resource_path(path,resources)
+
+    changed=set()
+    for command in (
+        ["diff","--name-only","-z"],
+        ["diff","--cached","--name-only","-z"],
+        ["ls-files","--others","--exclude-standard","-z"],
+    ):
+        changed.update(item for item in run_git(command,env).split("\\0") if item)
+    outside=sorted(path for path in changed if not allowed(path))
+    if outside:
+        raise ValueError("refusing to publish unrelated workspace changes: "+", ".join(outside[:20]))
+    if changed:
+        run_git(["add","-A","--",*sorted(changed)],env)
+    staged={item for item in run_git(["diff","--cached","--name-only","-z"],env).split("\\0") if item}
+    outside=sorted(path for path in staged if not allowed(path))
+    if outside:
+        raise ValueError("staged artifact set exceeds publish allowlist: "+", ".join(outside[:20]))
+    if not staged:
+        return {"published":False,"commit_sha":"","paths":[]}
+    run_git(["diff","--cached","--check"],env)
+    run_git(["config","user.name","github-actions[bot]"],env)
+    run_git(["config","user.email","41898282+github-actions[bot]@users.noreply.github.com"],env)
+    assert_live_task_resource_proofs(task,adapter,store)
+    run_git(["commit","-m","Publish bounded source assessment artifacts"],env)
+    run_git(["fetch","origin","main"],env)
+    run_git(["rebase","origin/main"],env)
+    if protected_config_digest(root)!=protected_digest:
+        raise ProtectedConfigMutationError("Protected config changed while rebasing assessment artifact publication.")
+    ensure_read_only_resources_unchanged(read_only_before,root)
+    assert_live_task_resource_proofs(task,adapter,store)
+    run_git(["push","origin","HEAD:main"],env)
+    published_sha=run_git(["rev-parse","HEAD"],env).strip()
+    remote=run_git(["ls-remote","origin","refs/heads/main"],env).strip().split()
+    if not remote or remote[0]!=published_sha:
+        raise RuntimeError("artifact publication could not be independently confirmed on main")
+    assert_live_task_resource_proofs(task,adapter,store)
+    return {"published":True,"commit_sha":published_sha,"paths":sorted(staged)}
+
+
 def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
                          adapters: dict, root: Path = ROOT,
                          now: datetime | None = None) -> dict:
@@ -595,6 +711,9 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
                 return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
             result[output_field] = verification_result
             try:
+                publication=publish_task_artifacts(task,adapter,store,protected_digest,read_only_before,root)
+                if adapter.get("publish_resources"):
+                    result["artifact_publication"]=publication
                 ensure_read_only_resources_unchanged(read_only_before, root)
             except ProtectedConfigMutationError as exc:
                 error = {"type": "read_only_resource_mutation_detected", "message": str(exc)}
