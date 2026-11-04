@@ -56,12 +56,15 @@ class FencedFileWriterTests(unittest.TestCase):
     def test_every_registered_python_component_installs_the_guard(self):
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
         components = [item for item in registry["programs"] if item.get("kind") == "python_component"]
-        self.assertEqual(len(components), 52)
+        self.assertEqual(len(components), 53)
         missing = []
         for item in components:
             path = ROOT / item["path"]
             source = path.read_text(encoding="utf-8")
-            if "_install_write_guard" not in source:
+            if item["id"] == "script_fenced_file_writer":
+                if "def install_write_guard" not in source:
+                    missing.append(item["path"])
+            elif "_install_write_guard" not in source:
                 missing.append(item["path"])
         self.assertEqual(missing, [], f"Python components missing write guard: {missing}")
 

@@ -61,15 +61,17 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("GH_TOKEN", repair_step)
         self.assertIn("persist-credentials: false", workflow)
 
-    def test_owner_baseline_is_persisted_after_failed_audit(self):
+    def test_failed_run_cursor_recovery_cannot_write_repository_state(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
-        cursor_job = workflow.split("  persist-review-cursor:", 1)[1]
-        self.assertIn("Persist owner-approved config baseline even when audit fails", cursor_job)
-        self.assertIn("python3 scripts/register_config_baseline.py", cursor_job)
-        self.assertIn("for path in sources/policy.json sources/review_cursor.json; do", cursor_job)
-        self.assertIn('git add -- "$path"', cursor_job)
-        self.assertIn("Optional persistence path absent; skipping:", cursor_job)
-        self.assertLess(cursor_job.index("Persist owner-approved config baseline even when audit fails"), cursor_job.index("git add -- \"$path\""))
+        cursor_job = workflow.split("  persist-review-cursor:", 1)[1].split("  notify-failure:", 1)[0]
+        self.assertIn("contents: read", cursor_job)
+        self.assertIn("persist-credentials: false", cursor_job)
+        self.assertIn('destination "$RUNNER_TEMP/review_cursor.json"', cursor_job)
+        self.assertIn("Durable repository persistence is intentionally deferred to a Watchdog-leased task.", cursor_job)
+        self.assertNotIn("register_config_baseline.py", cursor_job)
+        self.assertNotIn("git add", cursor_job)
+        self.assertNotIn("git commit", cursor_job)
+        self.assertNotIn("git push", cursor_job)
 
     def test_missing_or_completed_review_cursor_is_a_successful_noop(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
