@@ -21,6 +21,35 @@ def as_int(value):
     return value if isinstance(value, int) and not isinstance(value, bool) else 0
 
 
+def watchdog_schedule(workflow_text, now=None):
+    """Return the next UTC workflow trigger; unknown cron forms fail closed."""
+    now = now or datetime.now(timezone.utc)
+    if now.tzinfo is None:
+        raise ValueError("watchdog schedule clock must be timezone-aware")
+    now = now.astimezone(timezone.utc)
+    expressions = []
+    for line in workflow_text.splitlines():
+        item = line.strip()
+        if item.startswith("- cron:"):
+            expression = item[len("- cron:"):].strip().strip("\"'")
+            if expression:
+                expressions.append(expression)
+    if not expressions:
+        return {"cron": [], "next_scheduled_trigger_at": None, "schedule_state": "unavailable"}
+    candidates = []
+    for expression in expressions:
+        if expression == "0 * * * *":
+            candidates.append(now.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1))
+        elif expression == "30 22 * * *":
+            candidate = now.replace(hour=22, minute=30, second=0, microsecond=0)
+            if candidate <= now:
+                candidate += timedelta(days=1)
+            candidates.append(candidate)
+        else:
+            return {"cron": expressions, "next_scheduled_trigger_at": None, "schedule_state": "unsupported_cron"}
+    return {"cron": expressions, "next_scheduled_trigger_at": min(candidates).isoformat(), "schedule_state": "known"}
+
+
 def build_candidate_review_metrics(candidates, review_records, cursor=None, ledger_updated_at=None):
     candidate_domains = {
         str(item.get("domain", "")).lower().rstrip(".")
@@ -86,14 +115,6 @@ def main():
                   and (t.get("verification") or {}).get("verified_at")]
     successful.sort(key=lambda t: str((t.get("verification") or {}).get("verified_at", "")))
     last_verified = (successful[-1].get("verification") or {}).get("verified_at") if successful else None
-    next_expected = None
-    if last_verified:
-        try:
-            parsed = datetime.fromisoformat(last_verified.replace("Z", "+00:00"))
-            next_expected = (parsed + timedelta(days=8)).astimezone(timezone.utc).isoformat()
-        except ValueError:
-            pass
-    
     counts = manifest.get("rule_count", {}) if isinstance(manifest.get("rule_count"), dict) else {}
     published = as_int(manifest.get("published_rule_total"))
     max_published = as_int(manifest.get("max_published_rules"))
@@ -104,11 +125,17 @@ def main():
     source_count = as_int(manifest.get("source_count"))
     
     def watchdog_status():
+        workflow_path = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
+        try:
+            schedule = watchdog_schedule(workflow_path.read_text(encoding="utf-8"))
+        except OSError as exc:
+            print("watchdog schedule unavailable: " + str(exc))
+            schedule = {"cron": [], "next_scheduled_trigger_at": None, "schedule_state": "unavailable"}
         repo = os.environ.get("GITHUB_REPOSITORY", "")
         token = os.environ.get("GH_TOKEN", "")
         if not repo or not token:
             return {"workflow_state": "unknown", "last_run_status": "unknown",
-                    "last_run_conclusion": None, "last_run_at": None}
+                    "last_run_conclusion": None, "last_run_at": None, **schedule}
         headers = {"Accept": "application/vnd.github+json",
                    "Authorization": "Bearer " + token,
                    "X-GitHub-Api-Version": "2022-11-28"}
@@ -124,12 +151,13 @@ def main():
             return {"workflow_state": workflow.get("state", "unknown"),
                     "last_run_status": latest.get("status", "unknown"),
                     "last_run_conclusion": latest.get("conclusion"),
-                    "last_run_at": latest.get("run_started_at") or latest.get("created_at")}
+                    "last_run_at": latest.get("run_started_at") or latest.get("created_at"),
+                    **schedule}
         except Exception as exc:
             print("watchdog status unavailable: " + str(exc))
             return {"workflow_state": "unknown", "last_run_status": "unknown",
-                    "last_run_conclusion": None, "last_run_at": None}
-    
+                    "last_run_conclusion": None, "last_run_at": None, **schedule}
+
     
     snapshot = {
         "schema_version": 1,
@@ -160,7 +188,9 @@ def main():
             "active": sum(prod_status.get(s, 0) for s in ("QUEUED", "CLAIMED", "VERIFYING")),
             "dead_letter": prod_status.get("DEAD_LETTER", 0),
             "last_success_verified_at": last_verified,
-            "next_expected_at": next_expected
+            "next_task_eligible_at": None,
+            "task_eligibility_state": "conditional_unknown",
+            "task_eligibility_note": "A scheduled workflow trigger does not guarantee production dispatch; Watchdog evaluates input fingerprints, queue state, leases, and the production hold control."
         },
         "lifecycle": {
             "published_rule_count": as_int(lifecycle.get("published_rule_count", lifecycle_report.get("published_rule_count"))),
