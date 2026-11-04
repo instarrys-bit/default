@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from remote_task_queue_runtime import claim_remote, enqueue_remote
 from task_queue_runtime import now_utc, stamp, manual_authorization_record, validate_manual_authorization
-from task_scheduler import run_scheduler_once, build_execution_plan, enqueue_source_assessment_task
+from task_scheduler import run_scheduler_once, build_execution_plan, enqueue_source_assessment_task, generated_python_cache_paths
 
 
 class MemoryStore:
@@ -33,6 +33,19 @@ class MemoryStore:
 
 
 class TaskSchedulerTests(unittest.TestCase):
+    def test_generated_python_cache_paths_are_discarded_from_artifact_sets(self):
+        paths = [
+            "scripts/__pycache__/task_scheduler.cpython-311.pyc",
+            "scripts/__pycache__/nested/module.pyc",
+            "sources/source_assessments.json",
+            "reports/source-assessment.md",
+        ]
+        self.assertEqual(
+            generated_python_cache_paths(paths),
+            ["scripts/__pycache__/nested/module.pyc",
+             "scripts/__pycache__/task_scheduler.cpython-311.pyc"],
+        )
+
     def setUp(self):
         self.root = Path(tempfile.mkdtemp())
         (self.root / "scripts").mkdir()
