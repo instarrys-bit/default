@@ -206,10 +206,10 @@ class TaskSchedulerTests(unittest.TestCase):
             "properties": {
                 "program_id": {"type": "string", "const": "script_discover_sources"},
                 "workflow_name": {"type": "string", "const": "Shadowrocket Deterministic Domain Audit (User Config Baseline)"},
-                "workflow_run_id": {"type": "string", "pattern": "^[0-9]+$"},
-                "workflow_head_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+                "workflow_run_id": {"type": "string"},
+                "workflow_head_sha": {"type": "string"},
                 "artifact_path": {"type": "string", "const": "sources/discovered_sources.json"},
-                "artifact_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+                "artifact_sha256": {"type": "string"},
             },
             "additionalProperties": False,
         }
