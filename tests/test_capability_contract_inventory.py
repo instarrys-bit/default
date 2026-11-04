@@ -297,6 +297,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         )
         self.assertEqual(group["mode"], "compare_and_swap")
         self.assertIn("workflow_automation_watchdog", group["writers"])
+        self.assertIn("script_resource_lease_runtime", group["writers"])
 
         ownership = load_json("automation/resource_ownership_audit.json")
         audit_group = next(
@@ -304,6 +305,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
             if item["id"] == "durable_task_queue_control_plane"
         )
         self.assertEqual(audit_group["status"], "sha_cas_control_plane_reviewed")
+        self.assertIn("script_resource_lease_runtime", audit_group["writers"])
         self.assertEqual(ownership["status"], "partial_static_audit")
 
 
@@ -330,6 +332,8 @@ class CapabilityContractInventoryTests(unittest.TestCase):
             "script_audit_config_drift",
             "script_audit_ruleset_references",
             "script_audit_ruleset_config_overlap",
+            "script_json_document_store",
+            "script_resource_lease_runtime",
         }
         self.assertTrue(required.issubset(entries))
         self.assertEqual(entries["script_lifecycle_gate"]["writes"], ["rulesets/lifecycle_state.json"])
@@ -390,6 +394,24 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(entries["script_persist_review_cursor"]["publish_resources"], [])
         self.assertIn("task-input.json", entries["script_task_scheduler"]["ephemeral_unpublished_resources"])
         self.assertEqual(entries["script_task_scheduler"]["publish_resources"], [])
+
+
+    def test_every_registered_python_component_has_an_explicit_write_side_effect_classification(self):
+        registry = load_json("automation/program_registry.json")
+        writes = load_json("automation/resource_write_sets.json")
+        python_ids = {item["id"] for item in registry["programs"] if item["kind"] == "python_component"}
+        writer_ids = {item["program_id"] for item in writes["confirmed_write_sets"]}
+        nonwriter_ids = {item["program_id"] for item in writes["reviewed_non_writers"]}
+        external_ids = {item["program_id"] for item in writes["control_plane_side_effects"]}
+        self.assertFalse(writer_ids & nonwriter_ids)
+        self.assertFalse(writer_ids & external_ids)
+        self.assertFalse(nonwriter_ids & external_ids)
+        self.assertEqual(writer_ids | nonwriter_ids | external_ids, python_ids)
+        self.assertEqual(len(writer_ids), 36)
+        self.assertEqual(len(nonwriter_ids), 16)
+        self.assertEqual(external_ids, {"script_github_workflow_adapter"})
+        self.assertIn("script_resource_lease_runtime", writer_ids)
+        self.assertIn("script_json_document_store", writer_ids)
 
 if __name__ == "__main__":
     unittest.main()
