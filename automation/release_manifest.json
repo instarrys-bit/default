@@ -37,12 +37,12 @@
     },
     "config_baseline": {
       "path": "modules/uu.conf",
-      "git_blob_sha": "b7bb8dfbf4f65a1b52cfe9a81e3bb8ca07807e9f",
+      "git_blob_sha": "ce4176b564478c1f83f01b7c9559ddcf39453413",
       "access": "read_only"
     }
   },
   "compatibility": {
-    "status": "not_yet_machine_verified",
+    "status": "baseline_pins_synchronized",
     "rule": "A task may run only when its pinned registry, adapter, workflow, review-engine, and config-baseline versions satisfy an explicitly validated compatibility contract.",
     "unknown_versions_are_blocking": true
   },
