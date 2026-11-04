@@ -152,7 +152,15 @@
       "lock_key": "logical/production-pipeline + sources/source_assessments.json + data/source_assessments_runtime.json + reports/source-assessment.md",
       "required_mode": "exclusive",
       "status": "live_fenced_logical_document_locks_reviewed_pending_ci",
-      "note": "Scheduler atomically acquires the shared logical/production-pipeline mutex plus one exclusive lease per output. Before every JSON base/manifest/shard/staging/cleanup mutation and report write, the child re-reads the live queue and checks the exact lease/fencing token. Sharded read-only discovery input is hashed before and after execution. Static inventory remains partial for unrelated writers."
+      "note": "Scheduler atomically acquires shared logical/production-pipeline mutex plus exclusive leases for all three outputs. Child re-reads live queue and checks exact fencing token before each JSON base/manifest/shard/staging/cleanup mutation and report write. After independent verification, scheduler publishes only persistent history and report using fetch/rebase/non-force push; runtime fingerprints stay runner-local. Sharded read-only discovery input is hashed before and after execution.",
+      "lease_seconds": 480,
+      "publish_resources": [
+        "sources/source_assessments.json",
+        "reports/source-assessment.md"
+      ],
+      "ephemeral_unpublished_resources": [
+        "data/source_assessments_runtime.json"
+      ]
     },
     {
       "id": "source_candidate_artifacts",
