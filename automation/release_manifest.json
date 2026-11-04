@@ -71,6 +71,6 @@
       "Verify config-baseline immutability before and after execution.",
       "Run isolated canary tests with all new adapters disabled by default."
     ],
-    "completion_status": "first_capability_implemented_pending_ci_merge_and_canary"
+    "completion_status": "blocked_pending_contract_and_runtime_enforcement"
   }
 }
