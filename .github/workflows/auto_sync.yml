@@ -102,6 +102,10 @@ jobs:
 
           task_id, attempt_text = match.groups()
           attempt = int(attempt_text)
+          # The workflow input is a correlation ID (task_id + attempt). The
+          # resource lease verifier must receive the canonical queue task ID.
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
+              stream.write(f"AUTOMATION_TASK_ID_BASE={task_id}\\n")
           queue = json.loads(Path("automation/task_queue.json").read_text(encoding="utf-8"))
           task = next((item for item in queue.get("tasks", []) if item.get("task_id") == task_id), None)
           if task is None:
@@ -168,11 +172,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          AUTOMATION_TASK_ID: ${{ inputs.automation_task_id }}
           RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
         run: |
           set -euo pipefail
-          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID" --proof-json "$RESOURCE_LEASE_PROOF"
+          test -n "${AUTOMATION_TASK_ID_BASE:-}"
+          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE" --proof-json "$RESOURCE_LEASE_PROOF"
 
       - name: Capture and verify the exact production input fingerprint
         env:
