@@ -328,6 +328,7 @@ def safe_child_environment(root: Path = ROOT) -> dict[str, str]:
     """Pass only non-secret runtime basics; never inherit GitHub or runner credentials."""
     environment = {key: os.environ[key] for key in SAFE_ENV_KEYS if key in os.environ}
     environment["PYTHONPATH"] = os.pathsep.join((str(root), str(root / "scripts")))
+    environment["PYTHONDONTWRITEBYTECODE"] = "1"
     return environment
 
 
