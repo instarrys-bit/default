@@ -19,7 +19,8 @@
       "scripts/task_scheduler.py",
       "scripts/resource_lease_runtime.py",
       "scripts/fenced_file_writer.py",
-      ".github/workflows/auto_sync.yml"
+      ".github/workflows/auto_sync.yml",
+      "scripts/build_project_status.py"
     ],
     "limitation": "Static review of named entrypoints and direct write call sites only. Dynamic helper behavior is documented where inspected; complete transitive caller coverage, runtime-selected paths, and all writers still require machine-checked tracing."
   },
@@ -122,12 +123,13 @@
         "script_build_rulesets",
         "script_lifecycle_audit",
         "script_sync_ruleset_config_conflicts",
-        "script_refresh_ruleset_manifest"
+        "script_refresh_ruleset_manifest",
+        "script_build_project_status"
       ],
       "lock_key": "resource:<canonical-report-path>",
       "required_mode": "exclusive_per_output",
       "status": "partial_static_audit",
-      "note": "Exact report path inventory is not complete; avoid concurrent same-path writes."
+      "note": "Exact report path inventory remains incomplete. Confirmed dashboard outputs include reports/project-status.json and reports/project-status.md; per-output canonical locks and same-path writer overlap still require complete transitive audit. Avoid concurrent same-path writes."
     },
     {
       "id": "source_discovery_artifacts",
