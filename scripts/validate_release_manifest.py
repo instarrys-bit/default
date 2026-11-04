@@ -9,6 +9,7 @@ if __import__("os").environ.get("AUTOMATION_WRITE_GUARD") == "1":
 
 import argparse
 import datetime as dt
+import hashlib
 import json
 import re
 import subprocess
@@ -73,6 +74,112 @@ def _validate_blob_pin(root: Path, path: str, sha: str, label: str) -> None:
         if candidate.returncode == 0 and candidate.stdout.strip() == sha:
             return
     raise ValueError(f"{label} blob does not match {path} in reachable Git history")
+
+
+def _canonical_digest(value: object) -> str:
+    payload = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _validate_python_adapter_policy(root: Path, policy: object,
+                                    adapters_doc: dict, registry_doc: dict,
+                                    release_id: str) -> int:
+    if not isinstance(policy, dict) or policy.get("schema_version") != 1:
+        raise ValueError("python_adapter_policy schema_version must be 1")
+    if policy.get("default_decision") != "deny":
+        raise ValueError("python_adapter_policy default_decision must be deny")
+    records = policy.get("allowed_adapters")
+    if not isinstance(records, list):
+        raise ValueError("python_adapter_policy.allowed_adapters must be an array")
+    required_fields = {
+        "target_program_id", "capability", "release_id", "adapter_entry_sha256",
+        "registry_entry_sha256", "source_path", "source_git_blob_sha",
+        "allowed_callers", "input_contract_sha256", "output_contract_sha256",
+        "dependency_contract_sha256", "resource_contract_sha256",
+        "verifier_contract_sha256",
+    }
+    programs = registry_doc.get("programs")
+    adapters = adapters_doc.get("adapters")
+    if not isinstance(programs, list) or not isinstance(adapters, list):
+        raise ValueError("Python adapter policy requires valid registry and adapter arrays")
+    by_program = {item.get("id"): item for item in programs if isinstance(item, dict)}
+    by_target = {}
+    for item in adapters:
+        if isinstance(item, dict) and item.get("target_kind") == "python_component":
+            target = item.get("target_program_id")
+            if not isinstance(target, str) or not target or target in by_target:
+                raise ValueError("Python adapter target IDs must be unique")
+            by_target[target] = item
+
+    indexed = {}
+    for record in records:
+        if not isinstance(record, dict) or set(record) != required_fields:
+            raise ValueError("each Python adapter allowlist record must contain exactly the reviewed pin fields")
+        target_id = record.get("target_program_id")
+        if not isinstance(target_id, str) or not target_id or target_id in indexed:
+            raise ValueError("Python adapter allowlist target IDs must be unique non-empty strings")
+        indexed[target_id] = record
+        adapter = by_target.get(target_id)
+        program = by_program.get(target_id)
+        if not isinstance(adapter, dict) or not isinstance(program, dict):
+            raise ValueError(f"allowlisted Python adapter is not present in registry and adapter inventory: {target_id}")
+        if record.get("release_id") != release_id:
+            raise ValueError(f"{target_id} release_id does not match the current release")
+        capabilities = program.get("capabilities")
+        capability = record.get("capability")
+        if not isinstance(capabilities, list) or capability not in capabilities:
+            raise ValueError(f"{target_id} allowlisted capability is not declared by its registry entry")
+        if record["adapter_entry_sha256"] != _canonical_digest(adapter):
+            raise ValueError(f"{target_id} adapter entry digest does not match the current adapter")
+        if record["registry_entry_sha256"] != _canonical_digest(program):
+            raise ValueError(f"{target_id} registry entry digest does not match the current registry")
+        entrypoint = adapter.get("entrypoint")
+        source_path = record.get("source_path")
+        if (not isinstance(entrypoint, dict) or source_path != entrypoint.get("path")
+                or source_path != program.get("path") or not isinstance(source_path, str)):
+            raise ValueError(f"{target_id} source path does not match adapter entrypoint and registry")
+        if record["source_git_blob_sha"] != _git(root, "hash-object", source_path):
+            raise ValueError(f"{target_id} source blob pin does not match the current entrypoint")
+        _validate_blob_pin(root, source_path, record["source_git_blob_sha"], f"{target_id}.source")
+        callers = record.get("allowed_callers")
+        orchestration = program.get("orchestration", {})
+        if (not isinstance(callers, list) or not callers
+                or callers != sorted(set(callers))
+                or callers != sorted(adapter.get("allowed_callers", []))
+                or callers != sorted(orchestration.get("allowed_callers", []))):
+            raise ValueError(f"{target_id} caller allowlist does not match adapter and registry")
+        digest_fields = {
+            "input_contract_sha256": adapter.get("input_contract"),
+            "output_contract_sha256": adapter.get("output_contract"),
+            "dependency_contract_sha256": adapter.get("dependency_contract"),
+            "resource_contract_sha256": adapter.get("resource_contract"),
+            "verifier_contract_sha256": adapter.get("completion", {}).get("artifact_verifier")
+                if isinstance(adapter.get("completion"), dict) else None,
+        }
+        for field, value in digest_fields.items():
+            if record.get(field) != _canonical_digest(value):
+                raise ValueError(f"{target_id} {field} does not match the current contract")
+        if (adapter.get("enabled") is not True or adapter.get("interface_status") != "reviewed"
+                or orchestration.get("enabled") is not True):
+            raise ValueError(f"{target_id} is allowlisted but its adapter interface or orchestration is not enabled and reviewed")
+        for field in ("input_contract", "output_contract", "resource_contract"):
+            if not isinstance(adapter.get(field), dict):
+                raise ValueError(f"{target_id} requires a reviewed {field}")
+        if adapter["resource_contract"].get("mode") != "exclusive" or adapter["resource_contract"].get("fencing_required") is not True:
+            raise ValueError(f"{target_id} resource contract must be exclusive and fenced")
+        if not isinstance(digest_fields["verifier_contract_sha256"], dict):
+            raise ValueError(f"{target_id} requires an independent artifact verifier contract")
+
+    enabled = {
+        target_id for target_id, adapter in by_target.items()
+        if adapter.get("enabled") is True
+    }
+    if enabled != set(indexed):
+        missing = sorted(enabled - set(indexed))
+        stale = sorted(set(indexed) - enabled)
+        raise ValueError("enabled Python adapters and exact release allowlist differ; missing="
+                         + ",".join(missing) + "; not_enabled=" + ",".join(stale))
+    return len(enabled)
 
 
 def validate_release_manifest(root: Path = ROOT, manifest_path: Path | None = None) -> dict:
@@ -142,7 +249,7 @@ def validate_release_manifest(root: Path = ROOT, manifest_path: Path | None = No
 
     policy = doc.get("execution_policy")
     required_policy = {
-        "new_python_adapters_enabled": False,
+        "python_adapter_default_deny": True,
         "existing_adapter_enablement_unchanged": True,
         "watchdog_is_top_level_orchestrator": True,
         "dashboard_is_read_only_observer": True,
@@ -158,16 +265,10 @@ def validate_release_manifest(root: Path = ROOT, manifest_path: Path | None = No
 
     adapters_path = root / "automation/execution_adapters.json"
     adapters_doc = _load_json(adapters_path, "execution adapters")
-    adapters = adapters_doc.get("adapters")
-    if not isinstance(adapters, list):
-        raise ValueError("execution adapters must contain an adapters array")
-    enabled_python = [
-        item.get("target_program_id", "<unknown>")
-        for item in adapters
-        if isinstance(item, dict) and item.get("target_kind") == "python_component" and item.get("enabled") is True
-    ]
-    if enabled_python:
-        raise ValueError("Python adapters must remain disabled: " + ", ".join(enabled_python))
+    registry_doc = _load_json(root / "automation/program_registry.json", "program registry")
+    enabled_python = _validate_python_adapter_policy(
+        root, doc.get("python_adapter_policy"), adapters_doc, registry_doc, release_id,
+    )
 
     gaps = doc.get("known_gaps")
     if not isinstance(gaps, list) or not gaps or any(not isinstance(x, str) or not x.strip() for x in gaps):
@@ -183,7 +284,7 @@ def validate_release_manifest(root: Path = ROOT, manifest_path: Path | None = No
         "release_id": release_id,
         "schema_version": version,
         "verified_git_blob_pins": len(checked) + len(EXPECTED_PINS),
-        "python_adapters_enabled": 0,
+        "python_adapters_enabled": enabled_python,
         "independent_python_dispatch": "blocked",
     }
 
