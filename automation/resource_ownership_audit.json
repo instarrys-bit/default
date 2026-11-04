@@ -4,7 +4,7 @@
   "status": "partial_static_audit",
   "purpose": "Identify known overlapping write resources before independent capability scheduling. This inventory is deliberately fail-closed and is not an execution authorization.",
   "evidence_scope": {
-    "registry_blob_sha": "d4cf970870f4b51d40c1f70c7d4347a035d4b960",
+    "registry_blob_sha": "e0f1959761c942013818615c6b0176325045696f",
     "adapters_blob_sha": "b9bad9786b927b98634ec956b3eb343f6fd8d43e",
     "inspected_sources": [
       ".github/workflows/auto_sync.yml",
@@ -70,10 +70,12 @@
       "tests/test_restore_automation_state.py",
       "tests/test_task_queue.py",
       "tests/test_task_queue_runtime.py",
-      "tests/test_workflow_config_guard_order.py"
+      "tests/test_workflow_config_guard_order.py",
+      "scripts/capture_git_write_trace.py",
+      "tests/test_capture_git_write_trace.py"
     ],
-    "limitation": "All 53 registered Python components are statically classified. Production audit and publish jobs now upload path-only runtime write traces from the Python filesystem audit hook. Source assessment uses a deterministic producer-scoped retry batch. Shell/git child processes, runtime imports not exercised, caller-selected external paths and true cross-run GitHub API behavior are not exhaustively traced or exercised.",
-    "reviewed_at": "2026-11-04",
+    "limitation": "All 54 registered Python components are statically classified. Production audit and publish jobs upload combined path-only Python audit-hook events and end-of-job Git tree snapshots. The snapshots capture persistent repository-tree changes from shell/Git subprocesses, but not transient write-and-revert activity, Git metadata changes, external services, caller-selected external paths or unexecuted code paths. True cross-run GitHub Actions concurrency behavior remains subject to integration evidence.",
+    "reviewed_at": "2026-11-05",
     "runtime_trace": {
       "enabled": true,
       "trace_script": "scripts/fenced_file_writer.py",
@@ -91,7 +93,9 @@
         "lease_required"
       ],
       "data_policy": "repository-relative paths and run metadata only; no file contents, tokens or lease fencing secrets",
-      "limitation": "Python audit-hook filesystem events only; shell/git child processes, external services and unexecuted code paths are not captured."
+      "limitation": "Python audit-hook events plus persistent repository-tree deltas from shell/Git children; transient write-and-revert, .git metadata, external services and unexecuted code paths are not captured.",
+      "git_snapshot_script": "scripts/capture_git_write_trace.py",
+      "capture_mode": "end-of-job Git tree delta against the initial checkout SHA; includes committed, staged, unstaged and non-ignored untracked paths"
     }
   },
   "protected_resources": {
@@ -148,11 +152,12 @@
         "script_remote_task_queue_runtime",
         "script_resource_lease_runtime",
         "script_task_scheduler",
-        "workflow_automation_watchdog"
+        "workflow_automation_watchdog",
+        "script_assess_sources"
       ],
       "lease_key": "git-blob-sha-cas:automation/task_queue.json",
       "status": "sha_cas_control_plane_reviewed",
-      "note": "The durable queue is control-plane state, not a production resource lease. GitHubContentsQueueStore requires the exact current Blob SHA for every update and retries only explicit SHA conflicts; the complete candidate queue is independently validated before and after mutation. Manual authorization is consumed once per Watchdog run ID and stored atomically with the exact task ID, target, idempotency key, fingerprint, and trusted run scope. Local task_queue_runtime is runner-local flock/atomic replace only, not a cross-runner shared writer. script_resource_lease_runtime also mutates the queue's lease records through the same SHA-CAS store; it is a control-plane lease writer, not a direct production-resource writer."
+      "note": "The durable queue is control-plane state, not a production resource lease. GitHubContentsQueueStore requires the exact current Blob SHA for every update and retries only explicit SHA conflicts; the complete candidate queue is independently validated before and after mutation. Manual authorization is consumed once per Watchdog run ID and stored atomically with the exact task ID, target, idempotency key, fingerprint, and trusted run scope. Local task_queue_runtime is runner-local flock/atomic replace only, not a cross-runner shared writer. script_resource_lease_runtime also mutates the queue's lease records through the same SHA-CAS store; it is a control-plane lease writer, not a direct production-resource writer. Source assessor writes per-URL progress_checkpoint metadata through the same queue Blob-SHA CAS, rechecking the active task lease and all live resource fencing tokens for each completed URL."
     },
     {
       "id": "lifecycle_gate_state",
