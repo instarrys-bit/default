@@ -46,9 +46,9 @@ class FencedFileWriterTests(unittest.TestCase):
                 fenced_file_writer.authorize_write_path(target)
                 check.assert_not_called()
 
-    def test_audit_hook_rejects_protected_config_open(self):
+    def test_audit_hook_rejects_protected_config_unlink(self):
         with self.assertRaisesRegex(PermissionError, "owner-managed protected file"):
-            fenced_file_writer._audit_hook("open", (ROOT / "modules" / "uu.conf", "w", os.O_WRONLY))
+            fenced_file_writer._audit_hook("os.remove", (ROOT / "modules" / "uu.conf", -1))
 
     def test_audit_hook_checks_repo_local_open_before_write(self):
         target = ROOT / "sources" / "test-only.json"
