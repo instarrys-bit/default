@@ -47,13 +47,6 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertEqual(result["status"], "NO_INPUT_CHANGE")
         self.assertEqual(result["monitoring_changes"], ["dashboard/index.html", "scripts/build_dashboard_snapshot.py"])
         self.assertEqual(result["unknown_changes"], [])
-        ledger = json.loads((ROOT / "automation" / "unregistered_path_registry.json").read_text(encoding="utf-8"))
-        entries = {item["path"]: item for item in ledger["entries"]}
-        for path in paths:
-            self.assertEqual(entries[path]["status"], "CLASSIFIED_DOCUMENTATION")
-            self.assertTrue(entries[path]["classification_reason"])
-            self.assertTrue(entries[path]["classification_basis"])
-
     def test_documentation_paths_are_classified_without_production_demand(self):
         result = classify_paths(["dashboard/README.md"], self.manifest)
         self.assertEqual(result["status"], "NO_INPUT_CHANGE")
@@ -84,6 +77,12 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertEqual(result["status"], "NO_INPUT_CHANGE")
         self.assertCountEqual(result["non_production_changes"], paths)
         self.assertEqual(result["unknown_changes"], [])
+        ledger = json.loads((ROOT / "automation" / "unregistered_path_registry.json").read_text(encoding="utf-8"))
+        entries = {item["path"]: item for item in ledger["entries"]}
+        for path in paths:
+            self.assertEqual(entries[path]["status"], "CLASSIFIED_DOCUMENTATION")
+            self.assertTrue(entries[path]["classification_reason"])
+            self.assertTrue(entries[path]["classification_basis"])
 
     def test_repository_manifest_classifies_governance_metadata_as_non_production(self):
         manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
