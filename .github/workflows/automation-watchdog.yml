@@ -780,6 +780,25 @@ jobs:
           printf '%s' "$queue_token" | python3 scripts/task_scheduler.py             --repository "$GITHUB_REPOSITORY" --branch main --token-stdin             --idempotency-key "source-assessment:$SOURCE_RUN_ID"             --priority 60 --input-json "$task_input" enqueue-source-assessment
           unset queue_token
 
+      - name: Resolve superseded historical DEAD_LETTER tasks through queue CAS
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"
+          checkout_sha="$(git rev-parse HEAD)"
+          if [ "$current_main" != "$checkout_sha" ]; then
+            echo "Refusing dead-letter resolution from a stale checkout."
+            exit 1
+          fi
+          queue_token="$GH_TOKEN"
+          unset GH_TOKEN
+          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py \
+            --repository "$REPO" --branch main --token-stdin \
+            --current-main-sha "$current_main" resolve-superseded-dead-letters
+          unset queue_token
+
       - name: Recover leases, verify results, and run one bounded task
         env:
           GITHUB_TOKEN: ${{ github.token }}
