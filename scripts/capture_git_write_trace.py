@@ -43,7 +43,7 @@ def collect_changed_paths(baseline_sha: str, root: Path = ROOT, runner=git_outpu
     )
     for command in commands:
         raw = runner(command, root)
-        for encoded in raw.split(b"\\0"):
+        for encoded in raw.split(b"\0"):
             if not encoded:
                 continue
             path = encoded.decode("utf-8", errors="surrogateescape")
@@ -72,7 +72,7 @@ def append_trace(paths: list[str], baseline_sha: str, trace_path: Path) -> dict:
                 "lease_required": lease_required,
                 "baseline_sha": baseline_sha,
                 "head_sha": head_sha,
-            }, sort_keys=True) + "\\n")
+            }, sort_keys=True) + "\n")
         stream.write(json.dumps({
             "operation": "shell_git_repository_scan_complete",
             "changed_path_count": len(paths),
@@ -82,7 +82,7 @@ def append_trace(paths: list[str], baseline_sha: str, trace_path: Path) -> dict:
             "lease_required": lease_required,
             "baseline_sha": baseline_sha,
             "head_sha": head_sha,
-        }, sort_keys=True) + "\\n")
+        }, sort_keys=True) + "\n")
     return {"changed_path_count": len(paths), "baseline_sha": baseline_sha, "head_sha": head_sha}
 
 
