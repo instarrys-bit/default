@@ -18,7 +18,7 @@ The verifier records its program ID, timestamp, contract digest, and pass/fail s
 - No program receives a caller allowlist or automatic dispatch authorization.
 - Existing local queue runtime compatibility is preserved; this two-phase success gate is applied to the GitHub-backed remote runtime.
 - The verifier checks output structure against an approved contract. It does not prove that an external side effect occurred; future adapters must define trustworthy evidence requirements where that matters.
-- No rulesets, routing policy, DNS settings, or `shadowrocket/ss.conf` are modified.
+- No rulesets, routing policy, DNS settings, or `modules/uu.conf` are modified.
 - Scheduler and Watchdog integration remain separate follow-up work.
 
 ## Validation
