@@ -224,12 +224,13 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
             "worker-a", self.store, self.registry, eligible_task_ids=eligible,
             resource_keys_by_target={"script_target": {
                 "resource_keys": ["rulesets/direct.list", "rulesets/manifest.json"],
-                "lease_seconds": 60,
+                "lease_seconds": 3600,
             }},
             now=self.now,
         )
         self.assertEqual(task["resource_lease"]["status"], "ACTIVE")
         proof = task["resource_lease"]["resources"]
+        claim_expiry = task["resource_lease"]["expires_at"]
         self.assertEqual(set(proof), {"rulesets/direct.list", "rulesets/manifest.json"})
         done = complete_remote(task["task_id"], "worker-a", task["lease"]["token"],
                                success=True, result={"run_id": 1}, store=self.store,
@@ -239,6 +240,11 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
             record = self.store.document["resource_leases"][key]
             self.assertEqual(record["status"], "ACTIVE")
             self.assertEqual(record["fencing_token"], item["fencing_token"])
+            self.assertEqual(
+                record["expires_at"],
+                (self.now + timedelta(seconds=3600)).isoformat(timespec="seconds").replace("+00:00", "Z"),
+            )
+            self.assertNotEqual(record["expires_at"], claim_expiry)
 
     def test_resource_conflict_leaves_task_queued_without_partial_claim(self):
         enqueue_remote(self.payload(idempotency_key="first"), self.store, self.registry, self.now)
