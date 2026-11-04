@@ -36,7 +36,7 @@ def diagnose(log_text: str, run_id: str = "") -> dict:
     evidence = []
     stale_match = STALE_AUDIT_PATTERN.search(log_text)
     baseline_match = re.search(
-        r"(?:User config baseline mismatch for shadowrocket/ss\.conf:\s*[0-9a-f]{40};\s*expected\s*[0-9a-f]{40}|ss\.conf differs from the approved baseline)",
+        r"(?:User config baseline mismatch for modules/uu\.conf:\s*[0-9a-f]{40};\s*expected\s*[0-9a-f]{40}|uu\.conf differs from the approved baseline)",
         log_text,
         re.IGNORECASE,
     )
