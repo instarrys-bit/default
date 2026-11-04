@@ -82,7 +82,7 @@ def append_trace(paths: list[str], baseline_sha: str, trace_path: Path) -> dict:
             "lease_required": lease_required,
             "baseline_sha": baseline_sha,
             "head_sha": head_sha,
-        }, sort_keys=True) + "\\n")
+        }, sort_keys=True) + "\n")
     return {"changed_path_count": len(paths), "baseline_sha": baseline_sha, "head_sha": head_sha}
 
 
