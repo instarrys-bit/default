@@ -1,3 +1,4 @@
+import hashlib
 import json
 import sys
 import tempfile
@@ -68,6 +69,64 @@ class TaskQueueTests(unittest.TestCase):
         root, queue, registry = self.make_store()
         self.write_task(queue, self.task())
         self.assertEqual(self.validate(root, queue, registry)["task_count"], 1)
+
+    def assessment_task(self, **overrides):
+        root, queue, registry = self.make_store()
+        data = json.loads(registry.read_text(encoding="utf-8"))
+        data["programs"][1].update({
+            "id": "script_assess_sources",
+            "capabilities": ["source_assessment"],
+            "orchestration": {
+                "enabled": True, "allowed_callers": ["script_requester"],
+                "max_attempts": 2, "timeout_seconds": 240,
+            },
+        })
+        registry.write_text(json.dumps(data), encoding="utf-8")
+        result = {
+            "url": "https://raw.githubusercontent.com/example/repo/main/list.txt",
+            "parser_candidate": "domain-only",
+            "domain_fingerprints": ["a" * 32],
+        }
+        digest = hashlib.sha256(json.dumps(
+            result, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+        ).encode("utf-8")).hexdigest()
+        checkpoint = {
+            "schema_version": 1,
+            "batch_id": "discovery-run:123456:abcdef123456",
+            "predecessor_artifact_sha256": "b" * 64,
+            "completed": {result["url"]: {"result": result, "result_sha256": digest}},
+            "last_successful_url": result["url"],
+            "updated_at": "2026-11-05T00:00:00Z",
+        }
+        task = self.task(
+            target_program_id="script_assess_sources",
+            capability="source_assessment",
+            assessment_checkpoint=checkpoint,
+            **overrides,
+        )
+        return root, queue, registry, task
+
+    def test_valid_bounded_assessment_checkpoint_is_accepted(self):
+        root, queue, registry, task = self.assessment_task()
+        self.write_task(queue, task)
+        self.assertEqual(self.validate(root, queue, registry)["task_count"], 1)
+
+    def test_assessment_checkpoint_rejects_digest_mismatch(self):
+        root, queue, registry, task = self.assessment_task()
+        task["assessment_checkpoint"]["completed"][
+            "https://raw.githubusercontent.com/example/repo/main/list.txt"
+        ]["result_sha256"] = "0" * 64
+        self.write_task(queue, task)
+        with self.assertRaisesRegex(ValueError, "result digest mismatch"):
+            self.validate(root, queue, registry)
+
+    def test_assessment_checkpoint_is_rejected_for_non_assessment_task(self):
+        root, queue, registry, task = self.assessment_task()
+        task["target_program_id"] = "script_target"
+        task["capability"] = "test_capability"
+        self.write_task(queue, task)
+        with self.assertRaisesRegex(ValueError, "not allowed"):
+            self.validate(root, queue, registry)
 
     def test_rejects_duplicate_idempotency_key(self):
         root, queue, registry = self.make_store()
