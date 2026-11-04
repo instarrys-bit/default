@@ -11,7 +11,7 @@ from capture_git_write_trace import collect_changed_paths
 class GitWriteTraceTests(unittest.TestCase):
     def test_collects_committed_worktree_staged_and_untracked_paths(self):
         outputs = iter([
-            b"sources/a.json\\0reports/b.md\\0",
+            b"sources/a.json\0reports/b.md\\0",
             b"scripts/c.py\\0",
             b"rulesets/direct.list\\0",
             b"reports/new.md\\0",
