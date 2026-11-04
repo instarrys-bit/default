@@ -5,7 +5,7 @@
   "purpose": "Identify known overlapping write resources before independent capability scheduling. This inventory is deliberately fail-closed and is not an execution authorization.",
   "evidence_scope": {
     "registry_blob_sha": "f3f7ed1ce7f063412d18dde0b6c061457664f7fa",
-    "adapters_blob_sha": "bba533ca6cbd9534a7ba53daa23a3016d2ffe049",
+    "adapters_blob_sha": "2a96bbacf08cbfaebbf4312eb5eb07666d3b0584",
     "inspected_sources": [
       "scripts/build_rulesets.py",
       "scripts/lifecycle_audit.py",
