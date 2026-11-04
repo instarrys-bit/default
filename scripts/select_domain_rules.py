@@ -20,7 +20,7 @@ from domain_rule_engine import load_domain_rules
 from audit_ruleset_config_overlap import scope_covers_candidate
 
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG = ROOT / "shadowrocket" / "uu.conf"
+CONFIG = ROOT / "modules" / "uu.conf"
 APPROVALS = ROOT / "sources" / "policy_approvals.json"
 REPORT = ROOT / "reports" / "rule-selector-audit.md"
 OUTPUT = ROOT / "reports" / "approved-domain-rules.list"
