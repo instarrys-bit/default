@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 from github_queue_store import GitHubContentsQueueStore, QueueStoreError
-from task_queue_runtime import authorize, now_utc, stamp
+from task_queue_runtime import authorize, manual_authorization_context_from_environment, validate_manual_authorization, now_utc, stamp
 from task_queue import validate_task_queue
 from resource_lease_runtime import (
     acquire_resource_leases_in_queue, extend_resource_leases_for_verification,
@@ -76,6 +76,7 @@ def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
     now = now or now_utc()
     programs = registry["programs"]
     by_id = {p.get("id"): p for p in programs if isinstance(p, dict)}
+    validate_manual_authorization(task, manual_authorization_context_from_environment())
     policy = authorize(task, by_id)
     idem = task.get("idempotency_key")
     if not isinstance(idem, str) or not 1 <= len(idem) <= 200:
@@ -147,6 +148,7 @@ def claim_remote(worker_id: str, store: GitHubContentsQueueStore,
                 continue
             if datetime.fromisoformat(task["not_before"].replace("Z", "+00:00")) > now:
                 continue
+            validate_manual_authorization(task, manual_authorization_context_from_environment())
             policy = authorize(task, by_id)
             eligible.append((task, policy))
         if not eligible:
