@@ -17,10 +17,10 @@ permissions:
   contents: write
   actions: write
 
-# Each attempt rebuilds the same run-scoped merge from latest main and pushes
-# with Git's non-force ref compare-and-swap; separate runs never overwrite one another.
+# Serialize this repository writer with production publication, Watchdog state
+# mutations and self-healing repairs. Git-ref CAS remains a second safety layer.
 concurrency:
-  group: shadowrocket-request-intake-${{ github.run_id }}
+  group: shadowrocket-main-writer
   cancel-in-progress: false
 
 jobs:
