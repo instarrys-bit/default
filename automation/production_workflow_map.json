@@ -645,8 +645,8 @@
     "Dashboard generation is observer-only and is not a production stage."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
-    "release_manifest_blob_sha": "e9c8b587b316a55a1cfdbfdf28df57df1bb7272a",
+    "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
+    "release_manifest_blob_sha": "10298b666568d70775c17a33573a5e923d17a61b",
     "program_registry_blob_sha": "d4cf970870f4b51d40c1f70c7d4347a035d4b960",
     "execution_adapters_blob_sha": "97d18a09763f851362e0bd5400dad856ae1f448b",
     "added_after_release_baseline": true,
