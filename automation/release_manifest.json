@@ -99,7 +99,7 @@
       {
         "target_program_id": "script_assess_sources",
         "capability": "source_assessment",
-        "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
+        "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
         "adapter_entry_sha256": "60379726ac7dbfd6348a9f0a8685432d3b9632b56765aa198a5ba45862c7b53b",
         "registry_entry_sha256": "152b8d43034e40cbda5cf7a3cce55bb062a757f3bbe9949ca2e5e5696dc1e3ad",
         "source_path": "scripts/assess_sources.py",
