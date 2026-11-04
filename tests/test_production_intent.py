@@ -24,8 +24,8 @@ class ProductionIntentTests(unittest.TestCase):
         }), encoding="utf-8")
         (self.root / "sources").mkdir()
         (self.root / "sources" / "policy.json").write_text('{"policy":1}', encoding="utf-8")
-        (self.root / "shadowrocket").mkdir()
-        (self.root / "shadowrocket" / "uu.conf").write_text("[General]", encoding="utf-8")
+        (self.root / "modules").mkdir()
+        (self.root / "modules" / "uu.conf").write_text("[General]", encoding="utf-8")
         self.manifest = load_manifest(self.manifest_path)
         self.now = datetime(2026, 11, 3, tzinfo=timezone.utc)
         self.fp = compute_fingerprint(self.root, self.manifest)
@@ -123,7 +123,7 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertEqual(result["idempotency_key"], f"production:input:{self.fp}:commit-a")
 
     def test_config_a_to_b_to_a_reconciles_even_when_a_was_previously_successful(self):
-        config = self.root / "shadowrocket" / "uu.conf"
+        config = self.root / "modules" / "uu.conf"
         config.write_text("[Rule]\\nDOMAIN,alpha.example,DIRECT\\n", encoding="utf-8")
         fingerprint_a = compute_fingerprint(self.root, self.manifest)
         config.write_text("[Rule]\\nDOMAIN,beta.example,PROXY\\n", encoding="utf-8")
