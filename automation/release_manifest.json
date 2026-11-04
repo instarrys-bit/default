@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
+  "release_id": "shadowrocket-automation-baseline-2026.11.05.3",
   "release_status": "baseline_snapshot",
   "created_on": "2026-11-05",
-  "purpose": "Pin the Watchdog automation after cross-workflow writer serialization and durable per-URL source-assessment checkpoints.",
+  "purpose": "Pin durable per-URL assessment checkpoints and audited supersession of obsolete dead-letter tasks.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "c219bbec103d51d91a9acbce15fa81072c3160d0"
+      "git_blob_sha": "409cc65f48b39458cfd254cb2cc6bf1532ff306d"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -46,7 +46,7 @@
     },
     "task_queue_validator": {
       "path": "scripts/task_queue.py",
-      "git_blob_sha": "3d433ed9438925daa268f286339026c41dd1d5c0"
+      "git_blob_sha": "b46e2c0cea2625ef0525851ebaa95d93ae6aee5"
     },
     "task_result_verifier": {
       "path": "scripts/task_result_verifier.py",
@@ -55,6 +55,14 @@
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
       "git_blob_sha": "8279a833c480f476687c25ba34349fcc439bd78d"
+    },
+    "remote_task_queue_runtime": {
+      "path": "scripts/remote_task_queue_runtime.py",
+      "git_blob_sha": "a4f4afd11aa46e9cff5fbb7b9e19ceac7715c53c"
+    },
+    "task_scheduler": {
+      "path": "scripts/task_scheduler.py",
+      "git_blob_sha": "229bafd1526789482738da30550a2d9e997587a4"
     }
   },
   "compatibility": {
@@ -76,9 +84,10 @@
     "The declared review-engine version is not yet pinned to a verified source revision.",
     "Resource ownership audit is still a partial static review; restore_automation_state is an additional serialized writer for source assessment history/report artifacts.",
     "Review cursor checkpoint persistence is protected by the production workflow's top-level main-writer concurrency group and the live Watchdog fencing lease; complete transitive writer tracing remains outstanding.",
-    "The production workflow now permits one bounded retry after a verified failed run; cancelled/superseded task classification remains conservative and terminal history is retained.",
+    "Dead-letter resolution is now explicit for completed failures tied to older main commits and legacy assessor canaries without a trusted predecessor; unknown dispatch outcomes and current-main failures remain fail-closed for verified reconciliation.",
     "Path-only runtime write traces are uploaded for production audit and publish jobs; traces cover Python filesystem audit events but do not prove shell/git child-process writes or complete transitive runtime behavior.",
-    "Durable per-URL assessment checkpoints are implemented in the task queue; live multi-run interruption/resume integration evidence is still pending."
+    "Durable per-URL assessment checkpoints are implemented in the task queue; live multi-run interruption/resume integration evidence is still pending.",
+    "Live Watchdog integration must confirm that current-main production demand is enqueued or proven unnecessary before historical dead-letter supersession is recorded."
   ],
   "next_migration_gate": {
     "required_before_independent_python_dispatch": [
@@ -99,7 +108,7 @@
       {
         "target_program_id": "script_assess_sources",
         "capability": "source_assessment",
-        "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
+        "release_id": "shadowrocket-automation-baseline-2026.11.05.3",
         "adapter_entry_sha256": "60379726ac7dbfd6348a9f0a8685432d3b9632b56765aa198a5ba45862c7b53b",
         "registry_entry_sha256": "152b8d43034e40cbda5cf7a3cce55bb062a757f3bbe9949ca2e5e5696dc1e3ad",
         "source_path": "scripts/assess_sources.py",
