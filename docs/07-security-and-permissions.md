@@ -24,26 +24,18 @@ Do not bypass fail-closed rebase behavior or resolve output conflicts by blindly
 
 The GitHub-only observed-domain intake accepts hostnames, not full URLs or request data. It must not accept query strings, headers, request bodies, or client identifiers. This is a manual GitHub Actions intake path, not a continuously listening server or automatic device telemetry channel.
 
-The YouTube initplayback observer is documented to record hostnames locally only. It must not store full URLs or initiate network requests.
+## Optional ad-block module
 
-## Optional modules and third-party code
+The current optional module is `modules/AdBlock.sgmodule`. It maps the repository-maintained `modules/adblock/scripts/Clean_Pro.js` script. Other experimental or legacy ad-block scripts are not part of the current module mapping.
 
-Files under `modules/` are optional. Their presence does not imply activation, compatibility, or device validation.
+The presence of a module does not imply activation, compatibility, or device validation. Runtime changes require a separate audit, explicit scope, tests, and authorization.
 
-The repository retains the Maasea Apache 2.0 license file for the relevant derivative code. Preserve required license and provenance notices when modifying or redistributing third-party-derived code. Do not remove upstream attribution or license material.
+## Third-party source and license handling
+
+The repository's domain-source registry records external rule publishers and available lineage evidence. Rule data obtained from external publishers is not original project-authored data merely because it is stored or normalized in this repository.
+
+Preserve applicable upstream license terms, copyright notices, and provenance records when retaining or redistributing third-party-derived material. Do not claim that all repository content is original without a separate code, data, history, and license audit.
 
 ## Safe change boundary
 
 Documentation-only work must not alter scripts, workflow permissions, rule lists, source registries, generated state, or the protected configuration. Runtime changes require a separate audit, explicit scope, tests, and authorization.
-## Optional module inventory
-
-The documented optional assets include:
-
-- `modules/AdBlock.sgmodule` — user-maintained ad-handling module.
-- `modules/adblock/scripts/Social_Adblock.js` — social/search response handling.
-- `modules/adblock/scripts/youtube_initplayback_observer.js` — local-only hostname observation for YouTube initplayback; no full URL storage or network request.
-- `modules/adblock/scripts/youtube_protobuf_response_filter.js` — project-maintained derivative based on Maasea upstream code.
-
-The former standalone `youtube-ads.sgmodule` is no longer part of the current repository layout. The presence of these files does not mean they are enabled in `uu.conf` or validated on a device.
-
-The upstream Apache 2.0 license is retained at `modules/adblock/LICENSE-APACHE-2.0-Maasea`. Preserve its license and required notices.
