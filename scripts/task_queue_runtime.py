@@ -72,6 +72,60 @@ def authorize(task,by_id):
     if isinstance(timeout,bool) or not isinstance(timeout,int) or not 1<=timeout<=3600: raise ValueError("target timeout must be from 1 to 3600 seconds")
     return policy
 
+
+def manual_authorization_context_from_environment():
+    """Trusted GitHub Actions identity for the current run attempt."""
+    return {key: os.environ.get(env, "") for key, env in {
+        "repository": "GITHUB_REPOSITORY", "workflow_ref": "GITHUB_WORKFLOW_REF",
+        "event": "GITHUB_EVENT_NAME", "actor": "GITHUB_ACTOR",
+        "actor_id": "GITHUB_ACTOR_ID", "run_id": "GITHUB_RUN_ID",
+        "run_attempt": "GITHUB_RUN_ATTEMPT", "ref": "GITHUB_REF", "sha": "GITHUB_SHA",
+    }.items()}
+
+
+def validate_manual_authorization(task, context=None):
+    """Reject forged, stale, replayed, or non-Watchdog manual audit requests."""
+    payload = task.get("input") if isinstance(task, dict) else None
+    if not isinstance(payload, dict):
+        return
+    markers = {"production_decision", "authorization_run_id", "authorization_run_attempt",
+               "authorization_actor", "authorization_actor_id", "authorization_repository",
+               "authorization_workflow_ref", "authorization_event", "authorization_ref",
+               "authorization_head_sha"}
+    if not markers.intersection(payload):
+        return
+    if payload.get("production_decision") != "USER_AUTHORIZED_MANUAL_AUDIT":
+        raise ValueError("manual authorization marker is invalid or incomplete")
+    context = context if isinstance(context, dict) else manual_authorization_context_from_environment()
+    required = ("repository", "workflow_ref", "event", "actor", "actor_id",
+                "run_id", "run_attempt", "ref", "sha")
+    if any(not isinstance(context.get(k), str) or not context[k].strip() for k in required):
+        raise ValueError("trusted GitHub Actions run identity is incomplete")
+    expected_workflow = f'{context["repository"]}/.github/workflows/automation-watchdog.yml@refs/heads/main'
+    if (context["event"] != "workflow_dispatch" or context["ref"] != "refs/heads/main"
+            or context["workflow_ref"] != expected_workflow
+            or not context["actor_id"].isdigit() or not context["run_id"].isdigit()
+            or not context["run_attempt"].isdigit()):
+        raise ValueError("manual audit must originate from a main-branch Watchdog workflow_dispatch")
+    expected = {
+        "authorization_run_id": context["run_id"],
+        "authorization_run_attempt": context["run_attempt"],
+        "authorization_actor": context["actor"],
+        "authorization_actor_id": context["actor_id"],
+        "authorization_repository": context["repository"],
+        "authorization_workflow_ref": context["workflow_ref"],
+        "authorization_event": context["event"],
+        "authorization_ref": context["ref"],
+        "authorization_head_sha": context["sha"],
+        "baseline_source_event": context["event"],
+        "baseline_source_sha": context["sha"],
+    }
+    for key, value in expected.items():
+        if payload.get(key) != value:
+            raise ValueError(f"manual audit authorization does not match trusted workflow run: {key}")
+    if not isinstance(payload.get("production_fingerprint"), str) or not payload["production_fingerprint"]:
+        raise ValueError("manual audit authorization requires a production input fingerprint")
+
 def enqueue_task(task,queue_path=QUEUE,registry_path=REGISTRY,now=None):
     if not isinstance(task,dict): raise ValueError("task payload must be an object")
     with queue_lock(queue_path):
