@@ -72,8 +72,27 @@
       "tests/test_task_queue_runtime.py",
       "tests/test_workflow_config_guard_order.py"
     ],
-    "limitation": "All 53 registered Python components are statically classified. Source assessment is dispatchable only through the successful main-branch Watchdog workflow_run gate, with per-write fenced leases and independent artifact verification. Runtime imports, subprocesses, caller-selected paths and true cross-run GitHub API behavior are not exhaustively traced or exercised.",
-    "reviewed_at": "2026-11-04"
+    "limitation": "All 53 registered Python components are statically classified. Production audit and publish jobs now upload path-only runtime write traces from the Python filesystem audit hook. Source assessment uses a deterministic producer-scoped retry batch. Shell/git child processes, runtime imports not exercised, caller-selected external paths and true cross-run GitHub API behavior are not exhaustively traced or exercised.",
+    "reviewed_at": "2026-11-04",
+    "runtime_trace": {
+      "enabled": true,
+      "trace_script": "scripts/fenced_file_writer.py",
+      "workflow_path": ".github/workflows/auto_sync.yml",
+      "artifacts": [
+        "automation-runtime-write-trace-audit",
+        "automation-runtime-write-trace-publish"
+      ],
+      "fields": [
+        "operation",
+        "path",
+        "workflow",
+        "run_id",
+        "task_id",
+        "lease_required"
+      ],
+      "data_policy": "repository-relative paths and run metadata only; no file contents, tokens or lease fencing secrets",
+      "limitation": "Python audit-hook filesystem events only; shell/git child processes, external services and unexecuted code paths are not captured."
+    }
   },
   "protected_resources": {
     "modules/uu.conf": {
