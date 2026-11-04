@@ -1104,7 +1104,7 @@
       "id": "workflow_automation_watchdog",
       "path": ".github/workflows/automation-watchdog.yml",
       "kind": "github_actions_workflow",
-      "responsibility": "supervise audit health, bounded recovery, stale-run monitoring, manifest integrity, remote task queue leases, and deterministic task execution",
+      "responsibility": "top-level Watchdog for health, bounded recovery, queue leases, deterministic task scheduling, and explicit one-shot capability canaries",
       "capabilities": [
         "top_level_supervision",
         "remote_task_queue_supervision"
@@ -1127,6 +1127,7 @@
         "script_production_intent"
       ],
       "dispatches": [
+        "script_assess_sources",
         "workflow_auto_sync"
       ],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
