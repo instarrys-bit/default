@@ -83,7 +83,16 @@
         "data/source_assessments_runtime.json",
         "reports/source-assessment.md"
       ],
-      "lease_enforcement": "Live GitHub queue read and fencing-token assertion immediately before each JSON base/manifest/shard/staging/cleanup mutation and before Markdown report write."
+      "lease_enforcement": "Live GitHub queue read and fencing-token assertion immediately before each JSON base/manifest/shard/staging/cleanup mutation and before Markdown report write.",
+      "publish_resources": [
+        "sources/source_assessments.json",
+        "reports/source-assessment.md"
+      ],
+      "ephemeral_unpublished_resources": [
+        "data/source_assessments_runtime.json"
+      ],
+      "lease_seconds": 480,
+      "publication": "After artifact verification, scheduler commits only persistent history/report and document-store manifest/shards using a non-force push after rebase; runtime fingerprint data is never committed."
     },
     {
       "program_id": "script_build_source_candidates",
