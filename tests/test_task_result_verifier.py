@@ -1,4 +1,5 @@
 import copy
+import hashlib
 import sys
 import unittest
 from datetime import datetime, timezone
@@ -105,13 +106,20 @@ class TaskResultVerifierTests(unittest.TestCase):
             success=True, result=result, store=self.store,
             registry=self.registry, now=self.now,
         )
+        checkpoint_url = "https://raw.githubusercontent.com/example/repo/main/list.txt"
+        checkpoint_result = {"url": checkpoint_url}
+        checkpoint_digest = hashlib.sha256(json.dumps(
+            checkpoint_result, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+        ).encode("utf-8")).hexdigest()
         self.store.document["tasks"][0]["assessment_checkpoint"] = {
-            "schema_version": 1, "batch_id": "discovery-run:123:abc",
-            "completed": {"https://example.test/list": {
-                "result": {"url": "https://example.test/list"},
-                "result_sha256": "a" * 64,
+            "schema_version": 1, "batch_id": "discovery-run:123:abcdef123456",
+            "predecessor_artifact_sha256": "b" * 64,
+            "completed": {checkpoint_url: {
+                "result": checkpoint_result,
+                "result_sha256": checkpoint_digest,
             }},
-            "last_successful_url": "https://example.test/list",
+            "last_successful_url": checkpoint_url,
+            "updated_at": "2026-11-05T00:00:00Z",
         }
         return verifying
 
