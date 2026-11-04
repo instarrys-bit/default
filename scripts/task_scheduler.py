@@ -145,7 +145,7 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
                 write_resources=adapter.get("write_resources",[])
                 resource_keys=resource_contract.get("resource_keys",[]) if isinstance(resource_contract,dict) else []
                 if (not isinstance(write_resources,list) or len(write_resources)!=len(set(write_resources))
-                        or any(path not in resource_keys or path=="shadowrocket/ss.conf" for path in write_resources)
+                        or any(path not in resource_keys or path=="modules/uu.conf" for path in write_resources)
                         or any(path not in write_resources for path in publish_resources)):
                     raise ValueError("write_resources and publish_resources must be unique nested subsets of exclusive non-config resource keys")
                 if not isinstance(adapter.get("completion",{}).get("artifact_verifier"),dict):
@@ -265,7 +265,7 @@ class ProtectedConfigMutationError(RuntimeError):
 def protected_config_digest(root: Path = ROOT) -> str:
     path = root / "shadowrocket" / "ss.conf"
     if not path.is_file():
-        raise ValueError("protected config guard unavailable: shadowrocket/ss.conf is missing")
+        raise ValueError("protected config guard unavailable: modules/uu.conf is missing")
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
@@ -334,7 +334,7 @@ def ensure_protected_config_unchanged(before_digest: str, task: dict, store,
         return
     error = {
         "type": "protected_config_mutation_detected",
-        "message": "Child program changed shadowrocket/ss.conf; scheduler stopped fail-closed.",
+        "message": "Child program changed modules/uu.conf; scheduler stopped fail-closed.",
     }
     try:
         complete_remote(
@@ -528,7 +528,7 @@ def publish_task_artifacts(task: dict, adapter: dict, store, protected_digest: s
         raise ValueError("publish_resources and write_resources must be unique path lists")
     contract=adapter.get("resource_contract",{})
     keys=contract.get("resource_keys",[]) if isinstance(contract,dict) else []
-    if (any(path not in keys or path=="shadowrocket/ss.conf" for path in write_resources)
+    if (any(path not in keys or path=="modules/uu.conf" for path in write_resources)
             or any(path not in write_resources for path in resources)):
         raise ValueError("publish_resources must be a subset of exclusive non-config write_resources")
     if any(not isinstance(path,str) or path.startswith("/") or chr(92) in path
