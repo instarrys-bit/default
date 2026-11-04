@@ -67,6 +67,17 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn('workflow_key="deterministic_audit"', healing)
         self.assertIn('title="Self-healing incident: $classification ($workflow_key; ${FAILED_SHA:0:8})"', healing)
         self.assertIn('title="Self-healing agent failure: $workflow_key (source run $SOURCE_RUN_ID)"', healing)
+        self.assertNotIn("gh issue close", healing)
+        self.assertEqual(healing.count('close_issue "$issue"'), 2)
+        self.assertEqual(healing.count('gh api --method PATCH "repos/$REPO/issues/$issue_number" -f state=closed >/dev/null'), 2)
+        in_incident_command = False
+        for line in healing.splitlines():
+            if "python3 scripts/incident_state.py" in line:
+                in_incident_command = True
+            if in_incident_command:
+                self.assertFalse(line.endswith("\\\\"), line)
+                if "--out " in line:
+                    in_incident_command = False
 
     def test_automation_incidents_are_bound_to_exact_workflow_runs(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
@@ -154,7 +165,9 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("github.event.workflow_run.conclusion == 'success'", resolver)
         self.assertIn("UNCLASSIFIED_STEP_FAILURE", resolver)
         self.assertIn("TEST_FAILURE", resolver)
-        self.assertIn("gh issue close", resolver)
+        self.assertIn('close_issue "$issue"', resolver)
+        self.assertIn('gh api --method PATCH "repos/$REPO/issues/$issue_number" -f state=closed >/dev/null', resolver)
+        self.assertNotIn("gh issue close", resolver)
 
 
     def test_config_reconciliation_does_not_evaluate_rule_precedence(self):
