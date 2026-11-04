@@ -22,11 +22,11 @@ See the [manifest](../rulesets/manifest.json) for publication metadata.
 
 ## Main configuration
 
-The authoritative user-owned configuration is [shadowrocket/ss.conf](../shadowrocket/ss.conf).
+The authoritative user-owned configuration is [modules/uu.conf](../modules/uu.conf).
 
 Subscription URL:
 
-`https://raw.githubusercontent.com/instarrys-bit/default/main/shadowrocket/ss.conf`
+`https://raw.githubusercontent.com/instarrys-bit/default/main/modules/uu.conf`
 
 Automation may read the file for integrity and conflict checks. It must not modify, stage, or commit it. Moving scripts or modules into this repository does not enable them or change DNS, routing, or MITM settings.
 
