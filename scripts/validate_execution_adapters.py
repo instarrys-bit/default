@@ -42,7 +42,7 @@ def validate_execution_adapters(root=ROOT,adapters_path=None,registry_path=None)
     doc,reg=load(ap,"execution adapters"),load(rp,"program registry")
     if doc.get("schema_version")!=1: raise ValueError("unsupported execution adapter schema_version")
     pol=doc.get("policy")
-    expected={"deny_by_default":True,"all_adapters_disabled_by_default":True,"shell_execution":"prohibited","protected_config":"No adapter may modify shadowrocket/ss.conf."}
+    expected={"deny_by_default":True,"all_adapters_disabled_by_default":True,"shell_execution":"prohibited","protected_config":"No adapter may modify modules/uu.conf."}
     if not isinstance(pol,dict): raise ValueError("execution adapter policy must be an object")
     for k,v in expected.items():
         if pol.get(k)!=v: raise ValueError(f"policy {k} must equal {v!r}")
@@ -91,7 +91,7 @@ def validate_execution_adapters(root=ROOT,adapters_path=None,registry_path=None)
         resource_contract=a.get("resource_contract")
         resource_keys=resource_contract.get("resource_keys",[]) if isinstance(resource_contract,dict) else []
         if (not isinstance(write_resources,list) or len(write_resources)!=len(set(write_resources))
-                or any(path not in resource_keys or path=="shadowrocket/ss.conf" for path in write_resources)): raise ValueError(f"{tid} write_resources must be a unique subset of exclusive non-config resource keys")
+                or any(path not in resource_keys or path=="modules/uu.conf" for path in write_resources)): raise ValueError(f"{tid} write_resources must be a unique subset of exclusive non-config resource keys")
         if not isinstance(publish,list) or len(publish)!=len(set(publish)) or any(path not in write_resources for path in publish): raise ValueError(f"{tid} publish_resources must be a unique subset of write_resources")
         if publish:
             completion=a.get("completion",{})
