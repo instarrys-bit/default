@@ -15,8 +15,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         resolve = job.index("Resolve superseded historical DEAD_LETTER tasks through queue CAS")
         run_once = job.index("Recover leases, verify results, and run one bounded task")
         self.assertLess(resolve, run_once)
-        self.assertIn("current_main=\\"$(gh api", job)
-        self.assertIn("--current-main-sha \\"$current_main\\" resolve-superseded-dead-letters", job)
+        self.assertIn('current_main="$(gh api', job)
+        self.assertIn('--current-main-sha "$current_main" resolve-superseded-dead-letters', job)
         self.assertIn("unset GH_TOKEN", job)
 
     def test_watchdog_observes_completed_main_audit_runs(self):
