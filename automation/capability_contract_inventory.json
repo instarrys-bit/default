@@ -116,14 +116,14 @@
         "reports/source-assessment.md human-readable report (published)"
       ],
       "current_invocation": "python_module_or_workflow_step",
-      "contract_status": "concrete_io_contract_documented_runtime_gate_pending",
+      "contract_status": "concrete_io_typed_predecessor_documented_runtime_gate_pending",
       "dispatch_status": "disabled",
       "missing_contract_fields": [
-        "typed_dependency_edge_validation",
         "durable_idempotency_or_checkpoint_recovery",
-        "complete_transitive_side_effect_verification"
+        "complete_transitive_side_effect_verification",
+        "watchdog_enqueue_integration"
       ],
-      "audit_note": "Concrete bounded I/O, resource, lease, publication and independent-verifier contract is documented. Source discovery is now an explicit registry predecessor. Non-idempotent cursor/timestamp updates remain no-retry; restore workflow is a second writer serialized by the shared production mutex. Dispatch remains disabled pending these remaining gates.",
+      "audit_note": "Concrete bounded I/O, resource, lease, publication, independent-verifier and typed discovery-predecessor contracts are documented and scheduler-enforced. Regular Watchdog enqueue integration remains pending; dispatch stays disabled.",
       "contract_sample_path": "automation/capability_contracts/assess_sources.json"
     },
     {
