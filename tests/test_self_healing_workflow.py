@@ -76,7 +76,9 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn('destination sources/review_cursor.json', cursor_job)
         self.assertIn("assert-workflow", cursor_job)
         self.assertIn("RESOURCE_LEASE_PROOF", cursor_job)
-        self.assertIn("shadowrocket-main-writer", cursor_job)
+        workflow_concurrency = workflow.split("jobs:", 1)[0]
+        self.assertIn("group: shadowrocket-main-writer", workflow_concurrency)
+        self.assertNotIn("concurrency:", cursor_job)
         self.assertIn("git add -- sources/review_cursor.json", cursor_job)
         self.assertIn("git push origin HEAD:main", cursor_job)
         self.assertNotIn("modules/uu.conf", cursor_job)
