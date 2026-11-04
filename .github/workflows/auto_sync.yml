@@ -105,7 +105,7 @@ jobs:
           # The workflow input is a correlation ID (task_id + attempt). The
           # resource lease verifier must receive the canonical queue task ID.
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
-              stream.write(f"AUTOMATION_TASK_ID_BASE={task_id}\\n")
+              stream.write(f"AUTOMATION_TASK_ID_BASE={task_id}\n")
           queue = json.loads(Path("automation/task_queue.json").read_text(encoding="utf-8"))
           task = next((item for item in queue.get("tasks", []) if item.get("task_id") == task_id), None)
           if task is None:
