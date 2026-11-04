@@ -354,7 +354,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertIn("shadowrocket-request-intake-${{ github.run_id }}", intake)
         self.assertIn("git fetch origin main", intake)
         self.assertIn("git rebase origin/main", intake)
-        self.assertIn("attempt -lt 3", intake)
+        self.assertIn("for attempt in 1 2 3; do", intake)
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn("automation/unregistered_path_registry.json", watchdog)
         self.assertIn("-f sha=\"$registry_sha\"", watchdog)
