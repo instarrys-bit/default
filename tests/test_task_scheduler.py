@@ -440,5 +440,25 @@ class TaskSchedulerTests(unittest.TestCase):
         self.assertEqual(self.store.writes, writes_before)
         self.assertEqual(self.store.document, before)
 
+
+    def test_read_only_plan_under_hold_reports_no_eligible_tasks_without_mutation(self):
+        self.enqueue()
+        control = self.root / "automation" / "production_control.json"
+        control.write_text(json.dumps({"schema_version": 1, "dispatch_mode": "hold"}), encoding="utf-8")
+        before = json.loads(json.dumps(self.store.document))
+        writes_before = self.store.writes
+
+        plan = build_execution_plan(
+            self.store.document, self.registry, self.adapters, self.root, self.now
+        )
+
+        self.assertEqual(plan["dispatch_mode"], "hold")
+        self.assertTrue(plan["read_only"])
+        self.assertEqual(plan["eligible_task_ids"], [])
+        self.assertEqual(len(plan["blocked"]), 1)
+        self.assertIn("read-only planning only", plan["blocked"][0]["reason"])
+        self.assertEqual(self.store.writes, writes_before)
+        self.assertEqual(self.store.document, before)
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
