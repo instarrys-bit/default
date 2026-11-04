@@ -48,12 +48,15 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("group: shadowrocket-main-writer", manifest_writer)
         self.assertNotIn("github-only-domain-intake", intake)
 
-    def test_request_intake_retries_non_fast_forward_without_force_push(self):
+    def test_request_intake_replays_same_run_batch_against_latest_main_without_force_push(self):
         intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
         self.assertIn("for attempt in 1 2 3; do", intake)
         self.assertIn("git fetch origin main", intake)
-        self.assertIn("git rebase origin/main", intake)
+        self.assertIn("git reset --hard origin/main", intake)
+        self.assertIn("--merge-observations", intake)
+        self.assertIn('--intake-run-id "$GITHUB_RUN_ID"', intake)
         self.assertIn("git push origin HEAD:main", intake)
+        self.assertNotIn("git rebase origin/main", intake)
         self.assertNotIn("git push --force", intake)
 
     def test_self_healing_never_cancels_non_main_runs_or_cross_closes_incidents(self):
