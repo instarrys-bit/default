@@ -119,6 +119,25 @@ class AssessSourcesArtifactVerifierTests(unittest.TestCase):
             with self.assertRaisesRegex(task_scheduler.ProtectedConfigMutationError, "read-only resources"):
                 task_scheduler.ensure_read_only_resources_unchanged(before, root)
 
+    def test_artifact_publication_allowlist_excludes_ephemeral_and_protected_files(self):
+        persistent = "sources/source_assessments.json"
+        self.assertTrue(task_scheduler.publishable_resource_path(persistent, [persistent]))
+        self.assertTrue(task_scheduler.publishable_resource_path(
+            persistent + ".manifest.json", [persistent]
+        ))
+        self.assertTrue(task_scheduler.publishable_resource_path(
+            persistent + ".parts-0123456789abcdef/part-000000.jsonl", [persistent]
+        ))
+        self.assertFalse(task_scheduler.publishable_resource_path(
+            persistent + ".parts.tmp-abc/part-000000.jsonl", [persistent]
+        ))
+        self.assertFalse(task_scheduler.publishable_resource_path(
+            "data/source_assessments_runtime.json", [persistent]
+        ))
+        self.assertFalse(task_scheduler.publishable_resource_path(
+            "shadowrocket/ss.conf", [persistent]
+        ))
+
     def test_task_mode_requires_lease_proof(self):
         with patch.dict("os.environ", {}, clear=True):
             with self.assertRaisesRegex(ValueError, "requires an active resource lease proof"):

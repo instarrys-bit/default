@@ -3,7 +3,7 @@
   "contract_id": "capability-script-assess-sources-v1",
   "program_id": "script_assess_sources",
   "implementation_path": "scripts/assess_sources.py",
-  "implementation_blob_sha": "pending-main-merge",
+  "implementation_blob_sha": "b729970c440f8051307fd141b0959d475c6717a4",
   "review_status": "implementation_reviewed_pending_ci",
   "dispatch_status": "disabled",
   "entrypoint": {
@@ -73,17 +73,17 @@
     "repository_artifacts": [
       {
         "path": "sources/source_assessments.json",
-        "mode": "write",
+        "mode": "write_and_publish",
         "purpose": "persistent assessment history and cursor"
       },
       {
         "path": "data/source_assessments_runtime.json",
-        "mode": "write",
-        "purpose": "current batch result"
+        "mode": "runner_local_ephemeral",
+        "purpose": "current batch result and ephemeral fingerprints; never committed"
       },
       {
         "path": "reports/source-assessment.md",
-        "mode": "write",
+        "mode": "write_and_publish",
         "purpose": "human-readable assessment report"
       }
     ],
@@ -96,6 +96,18 @@
     "protected_paths": {
       "shadowrocket/ss.conf": "not read or written by this entrypoint",
       "sources/domain_sources.json": "not written; assessment does not activate sources"
+    },
+    "publication_policy": {
+      "publish_resources": [
+        "sources/source_assessments.json",
+        "reports/source-assessment.md"
+      ],
+      "excluded_resources": [
+        "data/source_assessments_runtime.json",
+        "shadowrocket/ss.conf",
+        "sources/domain_sources.json"
+      ],
+      "method": "After independent artifact verification, scheduler commits only allowlisted persistent history/report paths and their manifest/shard children; it fetches and rebases onto latest main, checks live leases and protected/read-only digests, then performs a non-force push and confirms the remote main SHA."
     }
   },
   "resource_contract": {
@@ -115,9 +127,14 @@
       "reports/source-assessment.md"
     ],
     "dynamic_children_share_parent_lease": true,
-    "lock_scope_note": "Live queue is re-read before every write boundary. The three logical output leases cover base JSON, adjacent manifests, content-addressed shards, staging, atomic manifest switch and old-shard cleanup. Shared logical/production-pipeline key serializes against workflow_auto_sync. The discovered_sources predecessor is required and its full legacy or sharded content digest is checked before and after execution.",
+    "lock_scope_note": "Live queue is re-read before every write boundary. The three logical output leases cover base JSON, adjacent manifests, content-addressed shards, staging, atomic manifest switch and old-shard cleanup. Shared logical/production-pipeline key serializes against workflow_auto_sync. The discovered_sources predecessor is required and its full legacy or sharded content digest is checked before and after execution. Only persistent history and report are committed; runtime fingerprints remain runner-local.",
     "required_predecessor_artifacts": [
       "sources/discovered_sources.json"
+    ],
+    "lease_seconds": 480,
+    "publish_resources": [
+      "sources/source_assessments.json",
+      "reports/source-assessment.md"
     ]
   },
   "execution_semantics": {
@@ -128,39 +145,41 @@
     "idempotency_key": "Not implemented; cursor rotation and assessed_at timestamps change persisted state.",
     "retry_policy": "No automatic retry; cursor rotation and assessed_at timestamps are non-idempotent.",
     "timeout_seconds": 240,
-    "timeout_note": "Current maximum of 5,000 URLs with per-request network timeout does not establish a safe total runtime bound; benchmark and explicit batch-size input are required.",
+    "timeout_note": "Task input caps each run at 20 URLs, 1 MB per URL and 10 MB aggregate; child timeout is 240 seconds and the task/resource lease is 480 seconds to cover verification and fenced publication.",
     "success_predicate": [
       "Process exits with code 0.",
       "stdout is exactly one parseable JSON object with all required fields.",
       "activated equals 0.",
       "persistent and runtime assessment documents pass schema and shard-integrity verification.",
       "report exists and is non-empty.",
-      "Protected config digest is unchanged."
+      "Protected config digest is unchanged.",
+      "Independent artifact verifier returns valid=true.",
+      "Persistent history and report are committed to main, or an independently verified no-op is recorded; runtime fingerprints remain uncommitted."
     ],
-    "independent_verifier": "scripts/verify_assess_sources_artifacts.py independently checks runtime/persistent counts, fingerprints exclusion, report presence and non-activation."
+    "independent_verifier": "scripts/verify_assess_sources_artifacts.py independently checks runtime/persistent counts, fingerprints exclusion, report presence and non-activation; scheduler then publishes only the two persistent resources."
   },
   "dependency_edges": {
     "required_predecessor": "script_discover_sources",
     "edge_semantics": "assess_sources consumes the discovered_sources snapshot produced by discover_sources; it does not dispatch that predecessor itself.",
     "registry_dependency_declared": false,
-    "note": "The dependency must become a scheduler-enforced artifact dependency with snapshot identity, not merely a workflow ordering assumption."
+    "note": "The scheduler enforces sources/discovered_sources.json as a required read-only predecessor artifact and compares its complete legacy/sharded digest before and after execution; it does not dispatch the discovery predecessor itself."
   },
   "permission_boundary": {
-    "filesystem": "Write only the three declared logical output resources and their document-store temporary/manifest/shard children.",
+    "filesystem": "Write only the three declared logical output resources and their document-store temporary/manifest/shard children. Publish only persistent assessment history and report; runtime fingerprint data remains runner-local.",
     "network": "HTTPS raw.githubusercontent.com only, repository-bound URL and same-host redirect checks.",
-    "github_api": "Read-only GitHub Contents API access is used solely to re-read the durable task queue and verify live fencing before writes; the assessor performs no GitHub API writes.",
+    "github_api": "Read-only GitHub Contents API access verifies live leases; scheduler uses the same scoped Actions token to publish only allowlisted persistent artifacts via a non-force Git push. The assessor performs no GitHub API writes.",
     "protected_config": "shadowrocket/ss.conf is immutable and outside this capability's write set."
   },
   "blockers": [
     "CI and full repository test suite must pass.",
     "Merge and post-merge controlled scheduler canary remain outstanding.",
-    "Adapter remains disabled until the controlled canary proves live fencing and artifact verification in GitHub Actions."
+    "Adapter remains disabled until the controlled canary proves live fencing, persistent artifact publication and independent verification in GitHub Actions."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-baseline-2026.11.04.1",
+    "release_id": "shadowrocket-automation-baseline-2026.11.04.3",
     "release_manifest_blob_sha": "1a4221816d274bf0afc2a7347892faebdce2af54",
-    "program_registry_blob_sha": "ead514c6013b563b6ed02b93fb88be17adf2617f",
-    "execution_adapters_blob_sha": "0de9d5ab91358434de523518af9b084de43885e1",
+    "program_registry_blob_sha": "4f57c597eafa5bb652597ae9af7431a9d98c9f1c",
+    "execution_adapters_blob_sha": "570db5f82cadfe44aedb4652f629a5b4df32f0e0",
     "added_after_release_baseline": true,
     "note": "This is a review-context pointer, not a dispatch authorization or claim that all runtime guarantees are implemented."
   }
