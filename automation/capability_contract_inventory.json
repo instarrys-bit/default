@@ -103,10 +103,15 @@
       ],
       "registry_dependencies": [],
       "current_registry_inputs": [
-        "CLI arguments and/or imported Python inputs as defined by the implementation"
+        "sources/discovered_sources.json candidate collection",
+        "sources/source_assessments.json prior history and cursor",
+        "validated task input: max_urls (1-20), max_file_bytes (1-1000000), max_total_bytes (1-10000000)"
       ],
       "current_registry_outputs": [
-        "Return values and/or repository artifacts as defined by the implementation"
+        "stdout JSON: assessed, bytes_read, parser_candidates, policy_candidates, activated=0, artifact_verification, artifact_publication",
+        "sources/source_assessments.json persistent history (published)",
+        "data/source_assessments_runtime.json current batch and ephemeral fingerprints (runner-local, never committed)",
+        "reports/source-assessment.md human-readable report (published)"
       ],
       "current_invocation": "python_module_or_workflow_step",
       "contract_status": "source_reviewed_documented_not_dispatchable",
