@@ -70,10 +70,11 @@
       "tests/test_restore_automation_state.py",
       "tests/test_task_queue.py",
       "tests/test_task_queue_runtime.py",
-      "tests/test_workflow_config_guard_order.py"
+      "tests/test_workflow_config_guard_order.py",
+      "tests/test_watchdog_recovery_workflow.py"
     ],
     "limitation": "All 53 registered Python components are statically classified. Production audit and publish jobs now upload path-only runtime write traces from the Python filesystem audit hook. Source assessment uses a deterministic producer-scoped retry batch. Shell/git child processes, runtime imports not exercised, caller-selected external paths and true cross-run GitHub API behavior are not exhaustively traced or exercised.",
-    "reviewed_at": "2026-11-04",
+    "reviewed_at": "2026-11-05",
     "runtime_trace": {
       "enabled": true,
       "trace_script": "scripts/fenced_file_writer.py",
@@ -92,7 +93,8 @@
       ],
       "data_policy": "repository-relative paths and run metadata only; no file contents, tokens or lease fencing secrets",
       "limitation": "Python audit-hook filesystem events only; shell/git child processes, external services and unexecuted code paths are not captured."
-    }
+    },
+    "dead_letter_resolution": "Only completed, stale-source workflow failures and legacy assessor canaries without a trusted predecessor are terminally superseded through queue Blob-SHA CAS; unknown dispatch outcomes and tasks tied to current main are not cancelled."
   },
   "protected_resources": {
     "modules/uu.conf": {
