@@ -18,7 +18,10 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 from github_queue_store import GitHubContentsQueueStore, QueueStoreError
-from task_queue_runtime import (\n    authorize, manual_authorization_context_from_environment, validate_manual_authorization,\n    manual_authorization_record, validate_manual_authorization_consumption, now_utc, stamp,\n)
+from task_queue_runtime import (
+    authorize, manual_authorization_context_from_environment, validate_manual_authorization,
+    manual_authorization_record, validate_manual_authorization_consumption, now_utc, stamp,
+)
 from task_queue import validate_task_queue
 from resource_lease_runtime import (
     acquire_resource_leases_in_queue, extend_resource_leases_for_verification,
