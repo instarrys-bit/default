@@ -12,7 +12,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG = ROOT / "shadowrocket" / "uu.conf"
+CONFIG = ROOT / "modules" / "uu.conf"
 LEDGER = ROOT / "sources" / "domain_reviews.json"
 REPORT_JSON = ROOT / "reports" / "ruleset-config-overlap-audit.json"
 REPORT_MD = ROOT / "reports" / "ruleset-config-overlap-audit.md"
