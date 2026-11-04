@@ -25,8 +25,8 @@ class ProjectStatusTests(unittest.TestCase):
             (root / "rulesets/direct.list").write_text("DOMAIN,direct.example\n", encoding="utf-8")
             (root / "rulesets/proxy.list").write_text("DOMAIN-SUFFIX,proxy.example\n", encoding="utf-8")
             (root / "rulesets/reject.list").write_text("DOMAIN,blocked.example\n", encoding="utf-8")
-            (root / "shadowrocket/ss.conf").write_text("[General]\n", encoding="utf-8")
-            config_sha = git_blob_sha((root / "shadowrocket/ss.conf").read_bytes())
+            (root / "modules/uu.conf").write_text("[General]\n", encoding="utf-8")
+            config_sha = git_blob_sha((root / "modules/uu.conf").read_bytes())
 
             def save(path, value):
                 (root / path).write_text(json.dumps(value), encoding="utf-8")
@@ -52,7 +52,7 @@ class ProjectStatusTests(unittest.TestCase):
                 {"id": "r2", "classification": "REJECT", "independence_group": "r2"}
             ]})
             save("sources/policy.json", {"managed_config_guard": {
-                "path": "shadowrocket/ss.conf", "approved_git_blob_sha": config_sha
+                "path": "modules/uu.conf", "approved_git_blob_sha": config_sha
             }})
             save("data/candidates.json", {
                 "candidate_count": 5, "candidates": [{}, {}, {}, {}, {}],
