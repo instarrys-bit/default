@@ -17,8 +17,8 @@ permissions:
   contents: write
   actions: write
 
-# Intake commits are rebased safely on push; do not let a shared pending
-# writer slot discard a user's submitted hostname batch.
+# Each attempt rebuilds the same run-scoped merge from latest main and pushes
+# with Git's non-force ref compare-and-swap; separate runs never overwrite one another.
 concurrency:
   group: shadowrocket-request-intake-${{ github.run_id }}
   cancel-in-progress: false
@@ -33,73 +33,75 @@ jobs:
         with:
           persist-credentials: true
 
-      - name: Validate and merge submitted hostnames
+      - name: Validate and persist submitted hostnames
         env:
           DOMAINS: ${{ inputs.domains }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
           import json, os, re
-          from datetime import datetime, timezone
           from pathlib import Path
 
           raw = os.environ.get("DOMAINS", "")
-          submitted = [x.strip().lower().rstrip(".") for x in re.split(r"[\s,;]+", raw) if x.strip()]
+          submitted = [value.strip().lower().rstrip(".") for value in re.split(r"[\\s,;]+", raw) if value.strip()]
           if not submitted:
               raise SystemExit("No hostnames supplied.")
           if len(submitted) > 500:
               raise SystemExit("Maximum 500 hostnames per intake run.")
 
-          pattern = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
-          invalid = sorted({d for d in submitted if not pattern.fullmatch(d)})
+          pattern = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
+          invalid = sorted({value for value in submitted if not pattern.fullmatch(value)})
           if invalid:
               raise SystemExit("Invalid hostname(s): " + ", ".join(invalid[:30]))
 
-          now = datetime.now(timezone.utc).isoformat(timespec="seconds")
-          path = Path("sources/request_domain_observations.json")
-          payload = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"schema_version": 1, "observations": []}
-          if payload.get("schema_version") != 1 or not isinstance(payload.get("observations"), list):
-              raise SystemExit("Unsupported observation ledger schema.")
+          destination = Path(os.environ["RUNNER_TEMP"]) / "request-domains.json"
+          destination.write_text(json.dumps(submitted, ensure_ascii=False) + "\\n", encoding="utf-8")
+          print(f"Validated {len(submitted)} hostname observations; merge will replay against the latest main on each CAS attempt.")
 
-          rows = {row["domain"]: row for row in payload["observations"]}
-          for domain in sorted(set(submitted)):
-              old = rows.get(domain, {})
-              rows[domain] = {
-                  "domain": domain,
-                  "first_seen": old.get("first_seen") or now,
-                  "last_seen": now,
-                  "observations": int(old.get("observations", 0)) + submitted.count(domain),
-                  "intake": "github-workflow-dispatch"
-              }
-
-          payload = {"schema_version": 1, "observations": [rows[k] for k in sorted(rows)]}
-          path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-          print(f"Accepted {len(submitted)} hostname observations; {len(rows)} unique hostnames in ledger.")
-          PY
-
-      - name: Commit observation ledger
+      - name: Commit observation ledger with bounded Git-ref CAS
         run: |
           set -euo pipefail
-          git add -- sources/request_domain_observations.json
-          if git diff --cached --quiet; then
-            echo "Observation ledger unchanged."
-          else
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          published=false
+
+          # Keep the submitted batch in RUNNER_TEMP. Each attempt starts from the
+          # latest main and deterministically reapplies the same run-scoped batch.
+          # This avoids JSON rebase conflicts and makes a lost push response safe.
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            python3 scripts/production_intent.py \\
+              --event workflow_dispatch \\
+              --merge-observations \\
+              --observations-input "$RUNNER_TEMP/request-domains.json" \\
+              --intake-run-id "$GITHUB_RUN_ID"
+            git add -- sources/request_domain_observations.json
+
+            if git diff --cached --quiet; then
+              echo "This intake run is already present in the latest observation ledger."
+              published=true
+              break
+            fi
+
             git commit -m "Import observed domains through GitHub Actions"
-            for attempt in 1 2 3; do
-              if git push origin HEAD:main; then
-                echo "Observation ledger committed to main."
-                break
-              fi
-              if [ "$attempt" -eq 3 ]; then
-                echo "Could not publish the observation ledger after three safe push attempts." >&2
-                exit 1
-              fi
-              echo "Main advanced during intake publication; rebasing the isolated observation commit (attempt $attempt)."
-              git fetch origin main
-              git rebase origin/main
-            done
+            if git push origin HEAD:main; then
+              echo "Observation ledger committed to main."
+              published=true
+              break
+            fi
+
+            if [ "$attempt" -eq 3 ]; then
+              echo "Could not publish the observation ledger after three Git-ref CAS attempts." >&2
+              exit 1
+            fi
+            echo "Main advanced during intake publication; rebuilding the merge from latest main (attempt $attempt)."
+            sleep "$attempt"
+          done
+
+          if [ "$published" != "true" ]; then
+            echo "Observation ledger was not published; failing closed." >&2
+            exit 1
           fi
 
       - name: Request ruleset audit through Watchdog queue
