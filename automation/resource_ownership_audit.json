@@ -7,24 +7,31 @@
     "registry_blob_sha": "279f8d14d1aad62d1342ba07063aa8d52e410a80",
     "adapters_blob_sha": "45967d0d88392369252b7a4427aaba41d9dcdda8",
     "inspected_sources": [
-      "scripts/build_rulesets.py",
-      "scripts/lifecycle_audit.py",
-      "scripts/sync_ruleset_config_conflicts.py",
-      "scripts/refresh_ruleset_manifest.py",
-      "scripts/json_document_store.py",
-      "scripts/discover_sources.py",
-      "scripts/assess_sources.py",
-      "scripts/build_source_candidates.py",
-      "scripts/restore_automation_state.py",
-      "scripts/task_scheduler.py",
-      "scripts/resource_lease_runtime.py",
-      "scripts/fenced_file_writer.py",
       ".github/workflows/auto_sync.yml",
+      ".github/workflows/validate-config.yml",
+      "scripts/assess_sources.py",
       "scripts/build_project_status.py",
+      "scripts/build_rulesets.py",
+      "scripts/build_source_candidates.py",
+      "scripts/discover_sources.py",
+      "scripts/fenced_file_writer.py",
+      "scripts/json_document_store.py",
+      "scripts/lifecycle_audit.py",
+      "scripts/production_intent.py",
+      "scripts/refresh_ruleset_manifest.py",
+      "scripts/register_config_baseline.py",
+      "scripts/resource_lease_runtime.py",
+      "scripts/restore_automation_state.py",
+      "scripts/sync_ruleset_config_conflicts.py",
+      "scripts/task_scheduler.py",
+      "scripts/verify_baseline.py",
+      "tests/test_config_baseline_registration.py",
       "tests/test_fenced_file_writer.py",
+      "tests/test_production_intent.py",
+      "tests/test_restore_automation_state.py",
       "tests/test_workflow_config_guard_order.py"
     ],
-    "limitation": "Static review confirms all 53 registered Python components install the central fenced_file_writer audit hook, and auto_sync enables AUTOMATION_WRITE_GUARD=1 plus AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after exact Watchdog task/lease validation. The hook checks repository-local mutating opens and filesystem mutation events against the live queue and fencing proof. This proves the guarded auto_sync production path, but not complete transitive writer coverage, runtime-selected paths, or compatible leases for every independent/cross-workflow writer; those remain subject to machine-checked tracing.",
+    "limitation": "Static review confirms the listed direct writers and fenced production registration path. Complete transitive write sets, dynamic path resolution, and cross-workflow compatible leases for every independent writer remain unproven; the audit remains partial.",
     "reviewed_at": "2026-11-04"
   },
   "protected_resources": {
@@ -36,6 +43,22 @@
     }
   },
   "resource_groups": [
+    {
+      "id": "owner_config_baseline_metadata",
+      "paths": [
+        "sources/policy.json",
+        "automation/release_manifest.json",
+        "automation/production_workflow_map.json",
+        "automation/resource_write_sets.json"
+      ],
+      "writers": [
+        "script_register_config_baseline",
+        "workflow_auto_sync"
+      ],
+      "lease_key": "logical/production-pipeline",
+      "status": "live_fenced_production_writer_reviewed",
+      "note": "The owner baseline registrar writes only approval/pin metadata after verifying the exact owner-authored modules/uu.conf change. In auto_sync, these writes are guarded by the live Watchdog task/resource lease and the publisher reasserts the same fencing epoch before push. validate-config writes only its ephemeral workspace with contents:read. Historical artifact restore is explicitly excluded from these resources. This covers the registered production path; broader cross-workflow ownership audit remains partial."
+    },
     {
       "id": "published_ruleset_artifacts",
       "paths": [
@@ -52,6 +75,38 @@
       "required_mode": "exclusive",
       "status": "overlap_confirmed",
       "note": "All three entrypoints can affect published policy lists; serialize them until a single-writer ownership boundary is enforced."
+    },
+    {
+      "id": "reports_and_audit_outputs",
+      "paths": [
+        "reports/** (entrypoint-specific)"
+      ],
+      "known_writers": [
+        "script_build_rulesets",
+        "script_lifecycle_audit",
+        "script_sync_ruleset_config_conflicts",
+        "script_refresh_ruleset_manifest",
+        "script_build_project_status"
+      ],
+      "lock_key": "resource:<canonical-report-path>",
+      "required_mode": "exclusive_per_output",
+      "status": "partial_static_audit",
+      "note": "Exact report path inventory remains incomplete. Confirmed dashboard outputs include reports/project-status.json and reports/project-status.md; per-output canonical locks and same-path writer overlap still require complete transitive audit. Avoid concurrent same-path writes."
+    },
+    {
+      "id": "review_cursor_checkpoint",
+      "paths": [
+        "review cursor/checkpoint path (runtime-selected)"
+      ],
+      "known_writers": [
+        "script_review_cursor",
+        "script_persist_review_cursor",
+        "script_deterministic_review"
+      ],
+      "lock_key": "resource:<canonical-cursor-path>",
+      "required_mode": "exclusive_per_cursor",
+      "status": "partial_static_audit",
+      "note": "Resolve the concrete path and all helper call sites before dispatch."
     },
     {
       "id": "ruleset_manifest",
@@ -103,52 +158,6 @@
       "note": "The storage helper uses atomic replacement, JSONL shards, manifest switching, and old-shard cleanup. Locking by program ID is insufficient; lock the canonical document path and include manifest/shards in the same lease."
     },
     {
-      "id": "review_cursor_checkpoint",
-      "paths": [
-        "review cursor/checkpoint path (runtime-selected)"
-      ],
-      "known_writers": [
-        "script_review_cursor",
-        "script_persist_review_cursor",
-        "script_deterministic_review"
-      ],
-      "lock_key": "resource:<canonical-cursor-path>",
-      "required_mode": "exclusive_per_cursor",
-      "status": "partial_static_audit",
-      "note": "Resolve the concrete path and all helper call sites before dispatch."
-    },
-    {
-      "id": "reports_and_audit_outputs",
-      "paths": [
-        "reports/** (entrypoint-specific)"
-      ],
-      "known_writers": [
-        "script_build_rulesets",
-        "script_lifecycle_audit",
-        "script_sync_ruleset_config_conflicts",
-        "script_refresh_ruleset_manifest",
-        "script_build_project_status"
-      ],
-      "lock_key": "resource:<canonical-report-path>",
-      "required_mode": "exclusive_per_output",
-      "status": "partial_static_audit",
-      "note": "Exact report path inventory remains incomplete. Confirmed dashboard outputs include reports/project-status.json and reports/project-status.md; per-output canonical locks and same-path writer overlap still require complete transitive audit. Avoid concurrent same-path writes."
-    },
-    {
-      "id": "source_discovery_artifacts",
-      "paths": [
-        "sources/discovered_sources.json",
-        "reports/source-discovery.md"
-      ],
-      "known_writers": [
-        "script_discover_sources"
-      ],
-      "lock_key": "resource:sources/discovered_sources.json",
-      "required_mode": "exclusive",
-      "status": "direct_write_paths_confirmed_dynamic_document_store_children",
-      "note": "discovered_sources.json is written through json_document_store with an explicit logical-document lease assertion covering the base file, adjacent manifest, content-addressed shards, staging and old-shard cleanup. reports/source-discovery.md has a separate explicit live lease assertion. GITHUB_STEP_SUMMARY is a per-run ephemeral output and is intentionally excluded from shared repository resource ownership."
-    },
-    {
       "id": "source_assessment_artifacts",
       "paths": [
         "sources/source_assessments.json",
@@ -186,6 +195,20 @@
       "required_mode": "exclusive",
       "status": "direct_write_paths_confirmed_dynamic_document_store_children",
       "note": "Candidate matrix reads runtime or persistent assessments plus source lineage, then writes a logical JSON document through json_document_store and a Markdown report."
+    },
+    {
+      "id": "source_discovery_artifacts",
+      "paths": [
+        "sources/discovered_sources.json",
+        "reports/source-discovery.md"
+      ],
+      "known_writers": [
+        "script_discover_sources"
+      ],
+      "lock_key": "resource:sources/discovered_sources.json",
+      "required_mode": "exclusive",
+      "status": "direct_write_paths_confirmed_dynamic_document_store_children",
+      "note": "discovered_sources.json is written through json_document_store with an explicit logical-document lease assertion covering the base file, adjacent manifest, content-addressed shards, staging and old-shard cleanup. reports/source-discovery.md has a separate explicit live lease assertion. GITHUB_STEP_SUMMARY is a per-run ephemeral output and is intentionally excluded from shared repository resource ownership."
     }
   ],
   "scheduling_gates": {
