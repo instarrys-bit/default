@@ -24,6 +24,38 @@ def git_blob_sha(data: bytes) -> str:
     return hashlib.sha1(b"blob " + str(len(data)).encode("ascii") + bytes([0]) + data).hexdigest()
 
 
+def build_release_pin_updates(root: Path, config_path: str, config_sha: str) -> tuple[str, str, str]:
+    """Prepare consistent release, workflow-map, and write-inventory pins."""
+    release_path = root / "automation" / "release_manifest.json"
+    workflow_map_path = root / "automation" / "production_workflow_map.json"
+    write_sets_path = root / "automation" / "resource_write_sets.json"
+
+    release = json.loads(release_path.read_text(encoding="utf-8"))
+    pins = release.get("implementation_pins")
+    config_pin = pins.get("config_baseline") if isinstance(pins, dict) else None
+    if (not isinstance(config_pin, dict) or config_pin.get("path") != config_path
+            or config_pin.get("access") != "read_only"):
+        raise ValueError("release manifest must pin the same read-only owner config path")
+    config_pin["git_blob_sha"] = config_sha
+    release_text = json.dumps(release, ensure_ascii=False, indent=2) + "\n"
+    release_sha = git_blob_sha(release_text.encode("utf-8"))
+
+    workflow_map = json.loads(workflow_map_path.read_text(encoding="utf-8"))
+    review_context = workflow_map.get("review_context")
+    if not isinstance(review_context, dict) or not isinstance(review_context.get("release_manifest_blob_sha"), str):
+        raise ValueError("production workflow map is missing its release-manifest blob pin")
+    review_context["release_manifest_blob_sha"] = release_sha
+    workflow_map_text = json.dumps(workflow_map, ensure_ascii=False, indent=2) + "\n"
+
+    write_sets = json.loads(write_sets_path.read_text(encoding="utf-8"))
+    write_context = write_sets.get("review_context")
+    if not isinstance(write_context, dict) or not isinstance(write_context.get("release_manifest_blob_sha"), str):
+        raise ValueError("resource write inventory is missing its release-manifest blob pin")
+    write_context["release_manifest_blob_sha"] = release_sha
+    write_sets_text = json.dumps(write_sets, ensure_ascii=False, indent=2) + "\n"
+    return release_text, workflow_map_text, write_sets_text
+
+
 def owner_approved_push_changed_config() -> bool:
     if os.environ.get("GITHUB_EVENT_NAME") != "push":
         return False
@@ -123,7 +155,11 @@ def main() -> int:
         "commit_sha": os.environ.get("GITHUB_SHA"),
         "registered_at": datetime.now(timezone.utc).isoformat(),
     }
+    release_manifest_text, workflow_map_text, write_sets_text = build_release_pin_updates(ROOT, guard["path"], actual)
     POLICY.write_text(json.dumps(policy, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (ROOT / "automation" / "release_manifest.json").write_text(release_manifest_text, encoding="utf-8")
+    (ROOT / "automation" / "production_workflow_map.json").write_text(workflow_map_text, encoding="utf-8")
+    (ROOT / "automation" / "resource_write_sets.json").write_text(write_sets_text, encoding="utf-8")
     print(json.dumps({
         "registered": True,
         "path": guard["path"],
