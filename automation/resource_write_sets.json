@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "inventory_id": "resource-write-sets-2026.11.04.5",
+  "inventory_id": "resource-write-sets-2026.11.05.2",
   "status": "partial_static_entrypoint_review",
   "policy": {
     "lock_identity": "canonical logical resource path, not program ID",
@@ -1246,7 +1246,7 @@
       "lock_key": "git-blob-sha-cas:automation/task_queue.json",
       "mode": "compare_and_swap",
       "enforcement": "GitHubContentsQueueStore reads the current queue Blob SHA and requires that exact SHA for every Contents API update. On explicit conflict it re-reads and re-applies the deterministic mutator within a bounded retry budget. The candidate queue is independently validated before and after each mutation. Manual authorization consumption is appended atomically with the task and keyed by Watchdog run ID.",
-      "note": "This is control-plane queue state, not a production resource lease. The local task_queue_runtime uses only runner-local flock/atomic replace and is not treated as a shared cross-runner writer. Source assessor progress checkpoints are updated through the same queue Contents-Blob-SHA CAS; each mutation revalidates the claimed task lease and all live resource fencing tokens before recording a completed URL result."
+      "note": "This is control-plane queue state, not a production resource lease. The local task_queue_runtime uses only runner-local flock/atomic replace and is not treated as a shared cross-runner writer. Source assessor progress checkpoints are updated through the same queue Contents-Blob-SHA CAS; each mutation revalidates the claimed task lease and all live resource fencing tokens before recording a completed URL result. Watchdog task-queue supervision now resolves only completed DEAD_LETTER failures whose immutable source commit is older than current main, plus legacy assessment canaries without a trusted predecessor. Resolution uses the same queue CAS, preserves last_error/dispatch evidence and state history, and records a terminal CANCELLED supersession record; current-main and unknown-outcome tasks remain untouched."
     },
     {
       "resource": "logical/production-pipeline",
@@ -1421,8 +1421,8 @@
     "The 53 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and one external workflow-dispatch side-effect adapter. Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
-    "release_manifest_blob_sha": "e9c8b587b316a55a1cfdbfdf28df57df1bb7272a",
+    "release_id": "shadowrocket-automation-baseline-2026.11.05.3",
+    "release_manifest_blob_sha": "29431ebe49f0de2b63ea3020e31deb816c499f6a",
     "program_registry_blob_sha": "d4cf970870f4b51d40c1f70c7d4347a035d4b960",
     "execution_adapters_blob_sha": "97d18a09763f851362e0bd5400dad856ae1f448b",
     "added_after_release_baseline": true,
