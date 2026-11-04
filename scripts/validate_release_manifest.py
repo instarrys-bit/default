@@ -27,7 +27,7 @@ EXPECTED_COMPONENTS = {
 EXPECTED_PINS = {
     "watchdog_workflow": ".github/workflows/automation-watchdog.yml",
     "production_workflow": ".github/workflows/auto_sync.yml",
-    "config_baseline": "shadowrocket/ss.conf",
+    "config_baseline": "modules/uu.conf",
 }
 
 
@@ -191,7 +191,7 @@ def _validate_python_adapter_policy(root: Path, policy: object,
                 or not isinstance(publish_resources, list)
                 or any(not isinstance(path, str) or not path for path in publish_resources)
                 or len(publish_resources) != len(set(publish_resources))
-                or any(path not in keys or path == "shadowrocket/ss.conf" for path in write_resources)
+                or any(path not in keys or path == "modules/uu.conf" for path in write_resources)
                 or any(path not in write_resources for path in publish_resources)):
             raise ValueError(f"{target_id} write and publish paths must be nested within fenced resources and exclude the config baseline")
         dependency = adapter.get("dependency_contract")
