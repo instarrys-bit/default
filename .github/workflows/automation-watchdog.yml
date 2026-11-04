@@ -36,7 +36,7 @@ on:
       - "sources/reject_manual_approvals.json"
       - "scripts/**"
       - "tests/**"
-      - "shadowrocket/ss.conf"
+      - "modules/uu.conf"
       - "automation/program_registry.json"
       - "automation/execution_adapters.json"
 
@@ -546,7 +546,7 @@ jobs:
           expected_config = marker.get("expected_config_blob_sha")
           expected_domains = marker.get("expected_domain_sources_blob_sha")
           for path, expected in (
-              ("shadowrocket/ss.conf", expected_config),
+              ("modules/uu.conf", expected_config),
               ("sources/domain_sources.json", expected_domains),
           ):
               actual = subprocess.check_output(["git", "rev-parse", f"HEAD:{path}"], text=True).strip()
@@ -652,7 +652,7 @@ jobs:
               raise SystemExit("Published commit is missing the assessment report.")
           if not any(path == "sources/source_assessments.json" or path == "sources/source_assessments.json.manifest.json" or path.startswith("sources/source_assessments.json.parts-") for path in paths):
               raise SystemExit("Published commit is missing persistent assessment history.")
-          if any(path.startswith("data/source_assessments_runtime.json") or path == "shadowrocket/ss.conf" for path in paths):
+          if any(path.startswith("data/source_assessments_runtime.json") or path == "modules/uu.conf" for path in paths):
               raise SystemExit("Canary attempted to publish an ephemeral or protected path.")
           commit = publication.get("commit_sha", "")
           if not commit:
@@ -665,7 +665,7 @@ jobs:
           if sorted(commit_paths) != sorted(paths):
               raise SystemExit("Published commit file list does not match scheduler publication evidence.")
           for path, expected in (
-              ("shadowrocket/ss.conf", marker["expected_config_blob_sha"]),
+              ("modules/uu.conf", marker["expected_config_blob_sha"]),
               ("sources/domain_sources.json", marker["expected_domain_sources_blob_sha"]),
           ):
               actual = subprocess.check_output(
@@ -999,7 +999,7 @@ jobs:
         run: |
           set -euo pipefail
           title="RULE-SET manifest metadata repair failed"
-          body="Watchdog could not safely reconcile manifest metadata from the committed DIRECT/PROXY/REJECT files. No rule file or ss.conf was modified.\n\nRun: $RUN_URL\n\nInspect the manifest refresh or manifest-only publish step. The issue is intentionally fail-closed; no source rebuild was dispatched."
+          body="Watchdog could not safely reconcile manifest metadata from the committed DIRECT/PROXY/REJECT files. No rule file or uu.conf was modified.\n\nRun: $RUN_URL\n\nInspect the manifest refresh or manifest-only publish step. The issue is intentionally fail-closed; no source rebuild was dispatched."
           issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
           if [ -n "$issue" ] && [ "$issue" != "null" ]; then
             gh issue comment "$issue" --repo "$REPO" --body "$body"
