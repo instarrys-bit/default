@@ -149,6 +149,8 @@ class TaskQueueRuntimeTests(unittest.TestCase):
             }}, {})
         with self.assertRaisesRegex(ValueError, "trusted GitHub Actions run identity"):
             validate_manual_authorization({"input": {"production_decision": "USER_AUTHORIZED_MANUAL_AUDIT"}}, {})
+        with self.assertRaisesRegex(ValueError, "invalid or incomplete"):
+            validate_manual_authorization({"input": {"authorization_requested": True}}, {})
 
     def test_non_manual_production_decisions_do_not_require_manual_authorization(self):
         validate_manual_authorization({"input": {
