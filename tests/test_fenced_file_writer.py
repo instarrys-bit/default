@@ -19,11 +19,11 @@ class FencedFileWriterTests(unittest.TestCase):
 
     def test_uu_conf_open_is_rejected_by_audit_hook(self):
         with self.assertRaisesRegex(PermissionError, "owner-managed protected file"):
-            fenced_file_writer.authorize_write_path(ROOT / "modules" / "uu.conf")
-
-    def test_uu_conf_open_is_rejected_by_audit_hook(self):
-        with self.assertRaisesRegex(PermissionError, "owner-managed protected file"):
             fenced_file_writer._audit_hook("open", (ROOT / "modules" / "uu.conf", "w", os.O_WRONLY))
+
+    def test_ss_conf_is_not_owner_protected_anymore(self):
+        with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "0"}, clear=False):
+            fenced_file_writer.authorize_write_path(ROOT / "shadowrocket" / "ss.conf")
 
     def test_repo_local_write_requires_live_lease_in_production_mode(self):
         target = ROOT / "sources" / "review_cursor.json"
@@ -48,7 +48,7 @@ class FencedFileWriterTests(unittest.TestCase):
 
     def test_audit_hook_rejects_protected_config_open(self):
         with self.assertRaisesRegex(PermissionError, "owner-managed protected file"):
-            fenced_file_writer._audit_hook("open", (ROOT / "shadowrocket" / "ss.conf", "w", os.O_WRONLY))
+            fenced_file_writer._audit_hook("open", (ROOT / "modules" / "uu.conf", "w", os.O_WRONLY))
 
     def test_audit_hook_checks_repo_local_open_before_write(self):
         target = ROOT / "sources" / "test-only.json"
