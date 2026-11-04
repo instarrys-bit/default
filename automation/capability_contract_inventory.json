@@ -8,7 +8,7 @@
     "python_components": 53,
     "python_components_with_concrete_io_contract": 1,
     "python_components_with_declared_registry_dependencies": 4,
-    "independently_dispatchable_python_components": 0,
+    "independently_dispatchable_python_components": 1,
     "note": "Counts reflect registry declarations, not runtime call-graph completeness."
   },
   "policy": {
@@ -116,14 +116,13 @@
         "reports/source-assessment.md human-readable report (published)"
       ],
       "current_invocation": "python_module_or_workflow_step",
-      "contract_status": "concrete_io_typed_predecessor_documented_runtime_gate_pending",
-      "dispatch_status": "disabled",
+      "contract_status": "concrete_io_typed_predecessor_and_watchdog_event_dispatch_enabled",
+      "dispatch_status": "enabled",
       "missing_contract_fields": [
         "durable_idempotency_or_checkpoint_recovery",
-        "complete_transitive_side_effect_verification",
-        "watchdog_enqueue_integration"
+        "complete_transitive_side_effect_verification"
       ],
-      "audit_note": "Concrete bounded I/O, resource, lease, publication, independent-verifier and typed discovery-predecessor contracts are documented and scheduler-enforced. Regular Watchdog enqueue integration remains pending; dispatch stays disabled.",
+      "audit_note": "The Watchdog enqueues this capability only after the exact production workflow succeeds on main; the scheduler validates run identity and the complete predecessor artifact digest. Execution is one-shot per producer run; durable retry/checkpoint recovery and full transitive writer proof remain outstanding.",
       "contract_sample_path": "automation/capability_contracts/assess_sources.json"
     },
     {
