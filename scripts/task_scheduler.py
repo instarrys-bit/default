@@ -793,6 +793,16 @@ def enqueue_auto_sync_task(store, registry: dict, *, idempotency_key: str,
     }
 
 
+def filter_eligible_task_ids(eligible_task_ids: set[str], task_id: str | None = None) -> set[str]:
+    if not isinstance(eligible_task_ids,set):
+        raise ValueError("eligible task IDs must be a set")
+    if task_id is None:
+        return set(eligible_task_ids)
+    if not isinstance(task_id,str) or not task_id.strip():
+        raise ValueError("task_id filter must be a non-empty string")
+    return eligible_task_ids.intersection({task_id})
+
+
 def run_scheduler_once(store, registry: dict, adapters: dict, *,
                        worker_id: str, max_tasks: int = 1, task_id: str | None = None,
                        root: Path = ROOT, now: datetime | None = None) -> dict:
@@ -816,8 +826,7 @@ def run_scheduler_once(store, registry: dict, adapters: dict, *,
         for item in plan["blocked"]:
             blocked_seen[item["task_id"]] = item["reason"]
         eligible = set(plan["eligible_task_ids"])
-        if task_id is not None:
-            eligible.intersection_update({task_id})
+        eligible = filter_eligible_task_ids(eligible, task_id)
         if not eligible:
             break
         resource_keys_by_target = {
