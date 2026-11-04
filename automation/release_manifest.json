@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-baseline-2026.11.04.11",
+  "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
   "release_status": "baseline_snapshot",
   "created_on": "2026-11-04",
-  "purpose": "Pin the watchdog workflow after binding one-shot manual audit authorization to the exact trusted GitHub run attempt.",
+  "purpose": "Pin the sole owner-designated Shadowrocket configuration baseline at modules/uu.conf.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
@@ -36,8 +36,8 @@
       "verification_status": "declared_in_ruleset_manifest_only"
     },
     "config_baseline": {
-      "path": "shadowrocket/ss.conf",
-      "git_blob_sha": "ef6b9d5e5db7f1355d06a0a834ce4f32b26f5677",
+      "path": "modules/uu.conf",
+      "git_blob_sha": "50f03fa6494eab5d31c7c2684bb3e662c98af6e5",
       "access": "read_only"
     }
   },
