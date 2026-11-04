@@ -1,9 +1,9 @@
 /**
- * Shadowrocket All-in-One AdBlock & Enhance Pro Engine (sr_all_in_one_pro.js)
+ * Clean Pro — Shadowrocket response filtering and enhancement engine
  *
  * Unified Dual-Mode Architecture:
  * [Mode A - Binary Wire-Stream Engine] -> YouTube / YouTube Music App (Protobuf)
- *   1. 64-Bit Safe Tag & Varint Codec (lossless on massive field numbers like 465160965)
+ *   1. Bounded Protobuf Tag & Varint Codec (lossless on massive field numbers like 465160965)
  *   2. Zero-Copy Subarray Passthrough (ultra-low memory footprint for iOS 15MB NE limit)
  *   3. Onesie Encryption Downgrade (/config & /log_event key stripping)
  *   4. Video Player Ad Removal (adPlacements, adSlots, pagead conversion ping)
@@ -90,89 +90,125 @@
   }
 
   // ============================================================================
-  // PART 1: 64-BIT SAFE PROTOBUF WIRE ENGINE (YOUTUBE BINARY MODE)
+  // PART 1: BOUNDED PROTOBUF WIRE CODEC (YOUTUBE BINARY MODE)
   // ============================================================================
+  // Independent, bounded Protobuf wire codec.
+  // It preserves raw field payloads and rejects malformed/truncated input.
   class SafeWireReader {
-    constructor(buf) {
+    constructor(buf, limits) {
+      if (!(buf instanceof Uint8Array)) throw new TypeError("Expected Uint8Array");
       this.buf = buf;
       this.pos = 0;
       this.len = buf.length;
+      this.maxDepth = limits && Number.isInteger(limits.maxDepth) ? limits.maxDepth : 64;
+      this.lastFieldNo = 0;
     }
 
     eof() {
-      return this.pos >= this.len;
+      return this.pos === this.len;
+    }
+
+    _readVarintRaw() {
+      const start = this.pos;
+      let value = 0;
+      let factor = 1;
+      for (let i = 0; i < 10; i++) {
+        if (this.pos >= this.len) throw new RangeError("Truncated protobuf varint");
+        const byte = this.buf[this.pos++];
+        if (i === 9 && byte > 1) throw new RangeError("Protobuf varint exceeds 64 bits");
+        value += (byte & 0x7f) * factor;
+        if ((byte & 0x80) === 0) return { value, start, end: this.pos };
+        factor *= 128;
+      }
+      throw new RangeError("Protobuf varint exceeds 10 bytes");
     }
 
     varintNumber() {
-      let result = 0;
-      let multiplier = 1;
-      while (this.pos < this.len) {
-        const b = this.buf[this.pos++];
-        result += (b & 0x7f) * multiplier;
-        if ((b & 0x80) === 0) return result;
-        multiplier *= 128;
-        if (multiplier > 9007199254740992) {
-          while (this.pos < this.len && (this.buf[this.pos++] & 0x80) !== 0) {}
-          return result;
-        }
+      const result = this._readVarintRaw().value;
+      if (!Number.isSafeInteger(result)) {
+        throw new RangeError("Protobuf integer exceeds JavaScript safe integer range");
       }
-      throw new RangeError("Unexpected EOF reading varint");
+      return result;
     }
 
     tag() {
       const rawTag = this.varintNumber();
       const wireType = rawTag % 8;
       const fieldNo = Math.floor(rawTag / 8);
-      if (fieldNo <= 0 || wireType < 0 || wireType > 5) {
-        throw new Error(`Invalid protobuf tag: field=${fieldNo}, wt=${wireType}`);
+      if (!Number.isInteger(fieldNo) || fieldNo < 1 || fieldNo > 536870911 || wireType > WT_32) {
+        throw new Error("Invalid protobuf tag");
       }
+      this.lastFieldNo = fieldNo;
       return [fieldNo, wireType];
     }
 
     bytes() {
       const length = this.varintNumber();
-      const start = this.pos;
-      const end = start + length;
-      if (end > this.len || length < 0) {
-        throw new RangeError("Out of bounds reading length-delimited bytes");
+      if (!Number.isSafeInteger(length) || length < 0 || length > this.len - this.pos) {
+        throw new RangeError("Invalid or truncated length-delimited field");
       }
-      this.pos = end;
-      return this.buf.subarray(start, end);
+      const start = this.pos;
+      this.pos += length;
+      return this.buf.subarray(start, this.pos);
     }
 
     string() {
       return bytesToUtf8(this.bytes());
     }
 
-    skip(wireType) {
-      const start = this.pos;
+    _skipValue(wireType) {
       switch (wireType) {
         case WT_VARINT:
-          while (this.pos < this.len && (this.buf[this.pos++] & 0x80) !== 0) {}
-          break;
+          this._readVarintRaw();
+          return;
         case WT_64:
+          if (this.len - this.pos < 8) throw new RangeError("Truncated fixed64 field");
           this.pos += 8;
-          break;
+          return;
         case WT_LEN: {
-          const len = this.varintNumber();
-          this.pos += len;
-          break;
-        }
-        case WT_SGROUP: {
-          while (!this.eof()) {
-            const [, wt] = this.tag();
-            if (wt === WT_EGROUP) break;
-            this.skip(wt);
+          const length = this.varintNumber();
+          if (!Number.isSafeInteger(length) || length < 0 || length > this.len - this.pos) {
+            throw new RangeError("Invalid or truncated length-delimited field");
           }
-          break;
+          this.pos += length;
+          return;
         }
         case WT_32:
+          if (this.len - this.pos < 4) throw new RangeError("Truncated fixed32 field");
           this.pos += 4;
-          break;
+          return;
         default:
-          throw new Error(`Unsupported wire type: ${wireType}`);
+          throw new Error("Invalid wire value");
       }
-      if (this.pos > this.len) throw new RangeError("Unexpected EOF skipping field");
+    }
+
+    skip(wireType) {
+      const start = this.pos;
+      if (wireType === WT_EGROUP) throw new Error("Unexpected end-group tag");
+      if (wireType !== WT_SGROUP) {
+        this._skipValue(wireType);
+        return this.buf.subarray(start, this.pos);
+      }
+
+      const stack = [this.lastFieldNo];
+      if (stack.length > this.maxDepth) throw new RangeError("Protobuf group nesting limit exceeded");
+      while (stack.length) {
+        const rawTag = this._readVarintRaw().value;
+        if (!Number.isSafeInteger(rawTag)) throw new RangeError("Invalid group tag");
+        const fieldNo = Math.floor(rawTag / 8);
+        const nestedWireType = rawTag % 8;
+        if (fieldNo < 1 || fieldNo > 536870911 || nestedWireType > WT_32) {
+          throw new Error("Invalid group tag");
+        }
+        if (nestedWireType === WT_EGROUP) {
+          if (stack.pop() !== fieldNo) throw new Error("Mismatched protobuf end-group tag");
+        } else if (nestedWireType === WT_SGROUP) {
+          stack.push(fieldNo);
+          if (stack.length > this.maxDepth) throw new RangeError("Protobuf group nesting limit exceeded");
+        } else {
+          this._skipValue(nestedWireType);
+        }
+      }
       return this.buf.subarray(start, this.pos);
     }
   }
@@ -184,18 +220,17 @@
     }
 
     _flushScratch() {
-      if (this.scratch.length > 0) {
+      if (this.scratch.length) {
         this.chunks.push(new Uint8Array(this.scratch));
         this.scratch = [];
       }
     }
 
     varintNumber(value) {
-      let v = Math.floor(value);
-      if (v < 0) {
-        let big = BigInt(v);
-        const mask = (1n << 64n) - 1n;
-        big &= mask;
+      if (!Number.isSafeInteger(value)) throw new RangeError("Writer requires a safe integer");
+      if (value < 0) {
+        if (typeof BigInt !== "function") throw new Error("BigInt is required for negative int64 values");
+        let big = BigInt(value) & ((1n << 64n) - 1n);
         while (big > 0x7fn) {
           this.scratch.push(Number((big & 0x7fn) | 0x80n));
           big >>= 7n;
@@ -203,16 +238,22 @@
         this.scratch.push(Number(big));
         return this;
       }
+      let v = value;
       while (v > 127) {
-        this.scratch.push((v & 0x7f) | 0x80);
+        this.scratch.push((v % 128) | 0x80);
         v = Math.floor(v / 128);
       }
-      this.scratch.push(v & 0x7f);
+      this.scratch.push(v);
       return this;
     }
 
     tag(fieldNo, wireType) {
-      return this.varintNumber(fieldNo * 8 + (wireType & 7));
+      if (!Number.isInteger(fieldNo) || fieldNo < 1 || fieldNo > 536870911 ||
+          !Number.isInteger(wireType) || wireType < 0 || wireType > 5 ||
+          wireType === WT_SGROUP || wireType === WT_EGROUP) {
+        throw new RangeError("Invalid protobuf field tag");
+      }
+      return this.varintNumber(fieldNo * 8 + wireType);
     }
 
     raw(bytes) {
@@ -223,6 +264,7 @@
     }
 
     bytes(payload) {
+      if (!(payload instanceof Uint8Array)) throw new TypeError("Expected Uint8Array payload");
       this.varintNumber(payload.length);
       return this.raw(payload);
     }
@@ -238,15 +280,18 @@
 
     finish() {
       this._flushScratch();
-      if (this.chunks.length === 0) return new Uint8Array(0);
+      if (!this.chunks.length) return new Uint8Array(0);
       if (this.chunks.length === 1) return this.chunks[0];
       let total = 0;
-      for (let i = 0; i < this.chunks.length; i++) total += this.chunks[i].length;
+      for (const chunk of this.chunks) {
+        total += chunk.length;
+        if (!Number.isSafeInteger(total)) throw new RangeError("Encoded message is too large");
+      }
       const out = new Uint8Array(total);
       let offset = 0;
-      for (let i = 0; i < this.chunks.length; i++) {
-        out.set(this.chunks[i], offset);
-        offset += this.chunks[i].length;
+      for (const chunk of this.chunks) {
+        out.set(chunk, offset);
+        offset += chunk.length;
       }
       return out;
     }
@@ -1111,9 +1156,30 @@
     "statementBannerRenderer"
   ]);
 
-  function processYouTubeJsonString(rawText) {
+  function processYouTubeJsonString(rawText, filterHomeShorts = false) {
     const obj = JSON.parse(rawText);
     let dirty = false;
+
+    function textValue(node) {
+      if (!node || typeof node !== "object") return "";
+      if (typeof node.simpleText === "string") return node.simpleText;
+      if (Array.isArray(node.runs)) return node.runs.map(x => x && x.text || "").join("");
+      return "";
+    }
+
+    function isShortsShelf(node) {
+      if (!node || typeof node !== "object") return false;
+      if (node.reelShelfRenderer) return true;
+      const rich = node.richShelfRenderer;
+      if (rich && /\\bshorts\\b/i.test(textValue(rich.title))) return true;
+      if (node.richSectionRenderer) {
+        const content = node.richSectionRenderer.content || {};
+        if (content.reelShelfRenderer) return true;
+        const shelf = content.richShelfRenderer;
+        if (shelf && /\\bshorts\\b/i.test(textValue(shelf.title))) return true;
+      }
+      return false;
+    }
 
     function isYtJsonAdElement(el) {
       if (!el || typeof el !== "object") return false;
@@ -1123,11 +1189,14 @@
       return false;
     }
 
-    function walkYtInPlace(node) {
+    function walkYtInPlace(node, isRoot = false) {
       if (!node || typeof node !== "object") return;
       if (Array.isArray(node)) {
         for (let i = node.length - 1; i >= 0; i--) {
           if (isYtJsonAdElement(node[i])) {
+            node.splice(i, 1);
+            dirty = true;
+          } else if (filterHomeShorts && isShortsShelf(node[i])) {
             node.splice(i, 1);
             dirty = true;
           } else {
@@ -1140,13 +1209,25 @@
         if (YT_JSON_AD_KEYS.has(k)) {
           delete node[k];
           dirty = true;
+        } else if (filterHomeShorts && isShortsShelf({ [k]: node[k] })) {
+          delete node[k];
+          dirty = true;
         } else if (node[k] && typeof node[k] === "object") {
           walkYtInPlace(node[k]);
         }
       }
     }
 
-    walkYtInPlace(obj);
+    // Keep the filter scoped to the home feed; never remove Shorts from watch/reel pages.
+    if (filterHomeShorts) {
+      const hasHomeBrowseStructure = !!(
+        obj && obj.contents &&
+        (obj.contents.twoColumnBrowseResultsRenderer || obj.contents.singleColumnBrowseResultsRenderer)
+      );
+      if (!hasHomeBrowseStructure) filterHomeShorts = false;
+    }
+
+    walkYtInPlace(obj, true);
     return { body: dirty ? JSON.stringify(obj) : rawText, modified: dirty };
   }
 
@@ -1285,7 +1366,15 @@
       if (isJsonContent) {
         const text = getTextBody($response);
         if (!text) return $done({});
-        const res = processYouTubeJsonString(text);
+        // YouTube mobile browse requests carry the feed ID in their JSON request body.
+        let isHomeBrowse = false;
+        if (url.includes("/browse") && typeof $request !== "undefined" && typeof $request.body === "string") {
+          try {
+            const requestData = JSON.parse($request.body);
+            isHomeBrowse = requestData.browseId === "FEwhat_to_watch";
+          } catch (_) {}
+        }
+        const res = processYouTubeJsonString(text, isHomeBrowse);
         return res.modified ? $done({ body: res.body }) : $done({});
       }
 
