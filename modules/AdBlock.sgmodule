@@ -30,12 +30,12 @@ DOMAIN-SUFFIX,app-analytics-services.com,REJECT
 ^https?:\/\/(www|m)\.google\.[a-z.]+\/(aclk|pagead|ads|adwords|gen_204\?.*ad).* _ reject-200
 ^https?:\/\/ogs\.google\.[a-z.]+\/widget\/app\/so _ reject-200
 
-# === 6. Instagram 广告接口 ===
+# === 5. Instagram 广告接口 ===
 ^https?:\/\/(i|graph|www)\.instagram\.com\/api\/v1\/(ads|ad_topics|feed\/injected_reels_media|qp\/batch_fetch|wwwgraphql\/ig\/query\?.*ad).* _ reject-dict
 ^https?:\/\/graph\.instagram\.com\/logging_client_events _ reject-dict
 
 [Script]
-Clean_Pro = type=http-response,pattern=^https:\/\/(youtubei\.googleapis\.com\/youtubei\/v1\/(browse|next|player|search|reel\/reel_watch_sequence|guide|account\/get_setting|get_watch|log_event|config)(\?.*)?|api\.x\.com\/(graphql\/.+|1\.1\/.+|2\/timeline\/.+)|x\.com\/i\/api\/graphql\/.+|www\.instagram\.com\/(api\/v1\/(feed|discover|clips|stories)\/.+|graphql\/query.*)|www\.google\.com\/search\?.*|m\.google\.com\/search\?.*)$,requires-body=true,max-size=-1,binary-body-mode=1,timeout=10,script-path=https://raw.githubusercontent.com/instarrys-bit/default/main/modules/adblock/scripts/Clean_Pro.js,argument="{\"captionLang\":\"off\",\"blockUpload\":true,\"blockImmersive\":true,\"blockShortsTab\":false,\"blockShortsFeed\":true}"
+Clean_Pro = type=http-response,pattern=^https:\/\/(youtubei\.googleapis\.com\/youtubei\/v1\/(browse|next|player|search|reel\/reel_watch_sequence|guide|account\/get_setting|get_watch|log_event|config)(\?.*)?|www\.instagram\.com\/(api\/v1\/(feed|discover|clips|stories)\/.+|graphql\/query.*)|www\.google\.com\/search\?.*|m\.google\.com\/search\?.*)$,requires-body=true,max-size=-1,binary-body-mode=1,timeout=10,script-path=https://raw.githubusercontent.com/instarrys-bit/default/main/modules/adblock/scripts/Clean_Pro.js,argument="{\"captionLang\":\"off\",\"blockUpload\":true,\"blockImmersive\":true,\"blockShortsTab\":false,\"blockShortsFeed\":true}"
 
 [MITM]
 # 仅保留当前原模块已列出的 MITM 主机；不扩大证书拦截范围。
