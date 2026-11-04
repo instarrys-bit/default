@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -303,7 +304,7 @@ class TaskQueueRuntimeTests(unittest.TestCase):
             "GITHUB_RUN_ATTEMPT": "1", "GITHUB_REF": "refs/heads/main",
             "GITHUB_SHA": "a" * 40, "GITHUB_MANUAL_AUDIT_REQUEST": "true",
         }
-        with patch.dict("os.environ", env, clear=True):
+        with patch.dict(os.environ, env, clear=True):
             first = enqueue_task(task, self.queue, self.registry, self.now)
             replay = enqueue_task(task, self.queue, self.registry, self.now)
             self.assertTrue(first["created"])
