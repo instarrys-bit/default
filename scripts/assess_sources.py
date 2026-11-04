@@ -336,6 +336,23 @@ def rotate_assessment_urls(items: list[dict], cursor_url: str | None, limit: int
                 break
     return (items[start:] + items[:start])[:max(0, int(limit))]
 
+
+def rotate_assessment_urls_for_task(items: list[dict], predecessor: dict, limit: int = MAX_URLS) -> list[dict]:
+    """Choose a stable batch for a producer run so queue retries cannot advance the cursor."""
+    if not items:
+        return []
+    if not isinstance(predecessor, dict):
+        raise ValueError("task assessment requires a predecessor proof")
+    run_id = predecessor.get("workflow_run_id")
+    artifact_sha = predecessor.get("artifact_sha256")
+    if not isinstance(run_id, str) or not run_id.isdigit():
+        raise ValueError("task predecessor workflow_run_id must be numeric")
+    if not isinstance(artifact_sha, str) or not re.fullmatch(r"[0-9a-f]{64}", artifact_sha):
+        raise ValueError("task predecessor artifact digest must be a full SHA-256")
+    seed = hashlib.sha256((run_id + ":" + artifact_sha).encode("ascii")).digest()
+    start = int.from_bytes(seed[:8], "big") % len(items)
+    return (items[start:] + items[:start])[:max(0, int(limit))]
+
 def compact_assessment_result(result: dict) -> dict:
     """Persist metadata only; keep per-domain fingerprints ephemeral for same-run analysis."""
     compact = dict(result)
@@ -404,10 +421,15 @@ def main(argv: list[str] | None = None) -> int:
     previous_by_url = {x.get("url"): x for x in previous_data.get("assessments", []) if x.get("url")}
     previous_cursor = previous_data.get("next_cursor_url")
     candidate_urls = flatten_candidate_urls(discovery.get("candidates", []))
-    batch = rotate_assessment_urls(candidate_urls, previous_cursor, max_urls)
+    predecessor = options.get("predecessor") if args.task_input is not None else None
+    if predecessor is not None:
+        batch = rotate_assessment_urls_for_task(candidate_urls, predecessor, max_urls)
+        batch_id = "discovery-run:" + predecessor["workflow_run_id"] + ":" + predecessor["artifact_sha256"][:12]
+    else:
+        batch = rotate_assessment_urls(candidate_urls, previous_cursor, max_urls)
+        batch_id = datetime.now(timezone.utc).isoformat()
     assessments = []
     total_bytes_read = 0
-    batch_id = datetime.now(timezone.utc).isoformat()
     budget_exhausted = False
     for candidate in batch:
         repository = candidate["repository"]
