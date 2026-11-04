@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "8fb6c9b1d880b6e9e9245751abb39b404a60a6eb",
-  "registry_blob_sha": "ab5f92f25e97d62b9fd35d4097109f9fad892c6b",
+  "workflow_blob_sha": "8a65fb3082c573b5fdd91095770852c6b362eb90",
+  "registry_blob_sha": "e041b917149acc3c1b3457380c2a6304dad19f4d",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 6,
-    "step_count": 55,
+    "step_count": 59,
     "independent_python_dispatch_enabled": true
   },
   "job_graph": [
@@ -29,6 +29,14 @@
         },
         {
           "order": 2,
+          "name": "Capture initial repository baseline for shell and Git write tracing",
+          "execution_kind": "workflow_native",
+          "invoked_program_ids": [],
+          "validation_program_ids": [],
+          "unresolved_script_paths": []
+        },
+        {
+          "order": 3,
           "name": "Set up Python",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -40,11 +48,11 @@
           "invoked_program_ids": [],
           "validation_program_ids": [],
           "unresolved_script_paths": [],
-          "order": 3,
+          "order": 4,
           "name": "Enable path-only runtime write trace"
         },
         {
-          "order": 4,
+          "order": 5,
           "name": "Verify Watchdog-owned durable task dispatch",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -52,7 +60,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 5,
+          "order": 6,
           "name": "Verify live Watchdog resource lease before production audit",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -60,7 +68,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 6,
+          "order": 7,
           "name": "Register repository-owner-approved uu.conf changes (never edit the config)",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -70,7 +78,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 7,
+          "order": 8,
           "name": "Verify registered user config baseline",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -80,7 +88,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 8,
+          "order": 9,
           "name": "Capture and verify the exact production input fingerprint",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -88,7 +96,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 9,
+          "order": 10,
           "name": "Stop stale audit before discovery and source downloads",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -96,7 +104,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 10,
+          "order": 11,
           "name": "Compile and run deterministic review tests",
           "execution_kind": "test_or_compile",
           "invoked_program_ids": [],
@@ -139,7 +147,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 11,
+          "order": 12,
           "name": "Discover candidate source repositories (non-activating)",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -149,7 +157,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 12,
+          "order": 13,
           "name": "Assess discovered rule-list syntax and policy claims",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -160,7 +168,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 13,
+          "order": 14,
           "name": "Preserve complete source assessment report",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -168,7 +176,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 14,
+          "order": 15,
           "name": "Restore prior high-volume automation state",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -178,7 +186,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 15,
+          "order": 16,
           "name": "Remove published and queued rules that conflict with uu.conf",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -189,7 +197,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 16,
+          "order": 17,
           "name": "Import observed request hostnames as unclassified candidates",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -199,7 +207,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 17,
+          "order": 18,
           "name": "Audit public source lineage and shared upstreams",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -209,7 +217,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 18,
+          "order": 19,
           "name": "Audit domain-level policy-source overlap and contradictions",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -220,7 +228,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 19,
+          "order": 20,
           "name": "Build automated source candidate and lineage matrix",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -231,7 +239,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 20,
+          "order": 21,
           "name": "Admit stable policy-evidenced sources without AI review",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -242,7 +250,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 21,
+          "order": 22,
           "name": "Collect and cross-check all enabled domain sources",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -252,7 +260,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 22,
+          "order": 23,
           "name": "Stop stale audit before expensive deterministic review",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -260,7 +268,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 23,
+          "order": 24,
           "name": "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -270,7 +278,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 24,
+          "order": 25,
           "name": "Preserve resumable review cursor checkpoint",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -278,7 +286,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 25,
+          "order": 26,
           "name": "Build standalone DIRECT, PROXY and REJECT rule sets",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -288,7 +296,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 26,
+          "order": 27,
           "name": "Evaluate lifecycle milestones and monthly capacity review",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -298,7 +306,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 27,
+          "order": 28,
           "name": "Run conservative lifecycle audit and selectable restoration",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -309,7 +317,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 28,
+          "order": 29,
           "name": "Reconcile final uu.conf scope coverage after all rule mutations",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -320,7 +328,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 29,
+          "order": 30,
           "name": "Reconcile final RULE-SET manifest counts",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -330,7 +338,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 30,
+          "order": 31,
           "name": "Build append-only rule-level provenance ledger",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -340,7 +348,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 31,
+          "order": 32,
           "name": "Validate Shadowrocket config structure",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -350,7 +358,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 32,
+          "order": 33,
           "name": "Audit RULE-SET references against generated outputs (read-only)",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -361,7 +369,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 33,
+          "order": 34,
           "name": "Audit candidate scope coverage against user config (read-only)",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -372,7 +380,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 34,
+          "order": 35,
           "name": "Audit managed config drift (read-only)",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -383,7 +391,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 35,
+          "order": 36,
           "name": "Run read-only full-source regression audit",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -394,7 +402,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 36,
+          "order": 37,
           "name": "Build consolidated project status",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -405,7 +413,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 37,
+          "order": 38,
           "name": "Write successful audit heartbeat",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -413,7 +421,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 38,
+          "order": 39,
           "name": "Record durable automation state pointer",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -421,7 +429,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 39,
+          "order": 40,
           "name": "Package allowlisted audit outputs",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -429,10 +437,20 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 40,
+          "order": 41,
           "name": "Upload allowlisted audit outputs",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
+          "validation_program_ids": [],
+          "unresolved_script_paths": []
+        },
+        {
+          "order": 42,
+          "name": "Capture persistent repository changes from shell and Git (audit)",
+          "execution_kind": "python_capability_invocation",
+          "invoked_program_ids": [
+            "script_capture_git_write_trace"
+          ],
           "validation_program_ids": [],
           "unresolved_script_paths": []
         },
@@ -441,7 +459,7 @@
           "invoked_program_ids": [],
           "validation_program_ids": [],
           "unresolved_script_paths": [],
-          "order": 41,
+          "order": 43,
           "name": "Upload runtime filesystem write trace (audit)"
         }
       ]
@@ -465,15 +483,23 @@
           "unresolved_script_paths": []
         },
         {
+          "order": 2,
+          "name": "Capture initial repository baseline for shell and Git write tracing",
+          "execution_kind": "workflow_native",
+          "invoked_program_ids": [],
+          "validation_program_ids": [],
+          "unresolved_script_paths": []
+        },
+        {
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
           "validation_program_ids": [],
           "unresolved_script_paths": [],
-          "order": 2,
+          "order": 3,
           "name": "Enable path-only runtime write trace"
         },
         {
-          "order": 3,
+          "order": 4,
           "name": "Revalidate Watchdog task and export canonical lease context",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -481,7 +507,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 4,
+          "order": 5,
           "name": "Verify live Watchdog resource lease before artifact restoration",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -489,7 +515,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 5,
+          "order": 6,
           "name": "Download audited outputs",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -497,7 +523,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 6,
+          "order": 7,
           "name": "Verify base commit and safely publish allowlisted outputs",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -505,7 +531,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 7,
+          "order": 8,
           "name": "Independently verify committed remote rulesets",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -516,11 +542,21 @@
           "unresolved_script_paths": []
         },
         {
+          "order": 9,
+          "name": "Capture persistent repository changes from shell and Git (publish)",
+          "execution_kind": "python_capability_invocation",
+          "invoked_program_ids": [
+            "script_capture_git_write_trace"
+          ],
+          "validation_program_ids": [],
+          "unresolved_script_paths": []
+        },
+        {
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
           "validation_program_ids": [],
           "unresolved_script_paths": [],
-          "order": 8,
+          "order": 10,
           "name": "Upload runtime filesystem write trace (publish)"
         }
       ]
@@ -645,13 +681,13 @@
     "Dashboard generation is observer-only and is not a production stage."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
-    "release_manifest_blob_sha": "3752b5194c818f65d20fae4446974500dce74009",
-    "program_registry_blob_sha": "ab5f92f25e97d62b9fd35d4097109f9fad892c6b",
+    "release_id": "shadowrocket-automation-baseline-2026.11.05.2",
+    "release_manifest_blob_sha": "8edb61786c54b6e00944495cdd1d970749a2cf7a",
+    "program_registry_blob_sha": "e041b917149acc3c1b3457380c2a6304dad19f4d",
     "execution_adapters_blob_sha": "97d18a09763f851362e0bd5400dad856ae1f448b",
     "added_after_release_baseline": true,
-    "note": "Refreshed against the exact current main workflow, registry, release manifest and adapter blobs. This remains static inventory evidence, not execution authorization.",
-    "reviewed_at": "2026-11-04",
-    "registry_blob_sha": "ea3c35c1d0cb8ae6fff5f2debfbd3aa77369e245"
+    "note": "Refreshed against the current production workflow, registry and release manifest. Includes path-only persistent Git tree delta tracing for shell/Git activity; remains static inventory evidence, not execution authorization.",
+    "reviewed_at": "2026-11-05",
+    "registry_blob_sha": "e041b917149acc3c1b3457380c2a6304dad19f4d"
   }
 }
