@@ -27,7 +27,7 @@ permissions:
 
 concurrency:
   group: github-pages-dashboard
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
