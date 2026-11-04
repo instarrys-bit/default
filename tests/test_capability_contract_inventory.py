@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import unittest
 from pathlib import Path
@@ -51,6 +52,63 @@ class CapabilityContractInventoryTests(unittest.TestCase):
             self.assertEqual(entry["declared_capabilities"], registered["capabilities"], program_id)
             self.assertEqual(entry["registry_dependencies"], registered["depends_on"], program_id)
             self.assertEqual(entry["current_invocation"], registered["invocation"], program_id)
+
+    def test_production_workflow_map_matches_current_workflow_and_registry_blobs(self):
+        mapping = load_json("automation/production_workflow_map.json")
+        workflow_path = ".github/workflows/auto_sync.yml"
+        registry_path = "automation/program_registry.json"
+        self.assertEqual(mapping["workflow_blob_sha"], git_blob_sha(workflow_path))
+        self.assertEqual(mapping["registry_blob_sha"], git_blob_sha(registry_path))
+        self.assertEqual(
+            mapping["review_context"]["release_manifest_blob_sha"],
+            git_blob_sha("automation/release_manifest.json"),
+        )
+        self.assertEqual(
+            mapping["review_context"]["program_registry_blob_sha"],
+            git_blob_sha(registry_path),
+        )
+        self.assertEqual(
+            mapping["review_context"]["execution_adapters_blob_sha"],
+            git_blob_sha("automation/execution_adapters.json"),
+        )
+        self.assertEqual(
+            mapping["status"],
+            "static_step_mapping_not_execution_authorization",
+        )
+
+        lines = (ROOT / workflow_path).read_text(encoding="utf-8").splitlines()
+        actual_by_job = {}
+        for job in mapping["job_graph"]:
+            start = next(
+                index for index, line in enumerate(lines)
+                if line == f"  {job['id']}:"
+            )
+            end = next(
+                (
+                    index for index in range(start + 1, len(lines))
+                    if lines[index].startswith("  ")
+                    and not lines[index].startswith("    ")
+                    and lines[index].rstrip().endswith(":")
+                ),
+                len(lines),
+            )
+            names = []
+            for line in lines[start + 1:end]:
+                match = re.match(r"^\s+- name:\s*(.+)$", line)
+                if match:
+                    names.append(match.group(1).strip().strip("\\\"'"))
+            actual_by_job[job["id"]] = names
+            mapped_names = [step["name"] for step in job["steps"]]
+            self.assertEqual(mapped_names, names, job["id"])
+            self.assertEqual(
+                [step["order"] for step in job["steps"]],
+                sorted(step["order"] for step in job["steps"]),
+                job["id"],
+            )
+
+        actual_count = sum(len(names) for names in actual_by_job.values())
+        self.assertEqual(mapping["summary"]["job_count"], len(mapping["job_graph"]))
+        self.assertEqual(mapping["summary"]["step_count"], actual_count)
 
     def test_assessment_remains_closed_until_all_dispatch_gates_pass(self):
         registry = load_json("automation/program_registry.json")
