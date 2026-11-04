@@ -153,7 +153,11 @@
         "reports/config-drift-audit.md"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Read-only with respect to modules/uu.conf; only audit report artifacts are written."
+      "write_boundary_fencing": "Read-only with respect to modules/uu.conf; only audit report artifacts are written.",
+      "additional_serialized_writers": [
+        "script_restore_automation_state"
+      ],
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
     },
     {
       "program_id": "script_audit_external_domains",
@@ -180,7 +184,11 @@
         "reports/external-domain-audit.md"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Report-only output. modules/uu.conf remains read-only and is not a write target."
+      "write_boundary_fencing": "Report-only output. modules/uu.conf remains read-only and is not a write target.",
+      "additional_serialized_writers": [
+        "script_restore_automation_state"
+      ],
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
     },
     {
       "program_id": "script_audit_policy_source_overlap",
@@ -209,7 +217,11 @@
         "reports/policy-source-overlap.md"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Audit artifact writer only. It does not alter active source registry or routing policy. Same-path restore writer is serialized in auto_sync; non-auto_sync writer compatibility remains unproven."
+      "write_boundary_fencing": "Audit artifact writer only. It does not alter active source registry or routing policy. Same-path restore writer is serialized in auto_sync; non-auto_sync writer compatibility remains unproven.",
+      "additional_serialized_writers": [
+        "script_restore_automation_state"
+      ],
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
     },
     {
       "program_id": "script_audit_ruleset_config_overlap",
@@ -239,7 +251,11 @@
         "reports/ruleset-config-overlap-audit.md"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Read-only with respect to modules/uu.conf; only audit report artifacts are written."
+      "write_boundary_fencing": "Read-only with respect to modules/uu.conf; only audit report artifacts are written.",
+      "additional_serialized_writers": [
+        "script_restore_automation_state"
+      ],
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
     },
     {
       "program_id": "script_audit_ruleset_references",
@@ -272,7 +288,11 @@
         "reports/ruleset-reference-audit.md"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Read-only with respect to modules/uu.conf and ruleset list files; only audit report artifacts are written."
+      "write_boundary_fencing": "Read-only with respect to modules/uu.conf and ruleset list files; only audit report artifacts are written.",
+      "additional_serialized_writers": [
+        "script_restore_automation_state"
+      ],
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
     },
     {
       "program_id": "script_audit_source_lineage",
@@ -299,7 +319,11 @@
         "reports/source-lineage-audit.json"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Report output is runner-workspace generated and later allowlist-published; it is not a routing policy input. Same-path report writer serialization remains part of the partial report audit."
+      "write_boundary_fencing": "Report output is runner-workspace generated and later allowlist-published; it is not a routing policy input. Same-path report writer serialization remains part of the partial report audit.",
+      "additional_serialized_writers": [
+        "script_restore_automation_state"
+      ],
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
     },
     {
       "program_id": "script_auto_activate_sources",
@@ -397,7 +421,11 @@
         "Read-only aggregation of production state; writes two dashboard/status report artifacts."
       ],
       "evidence": "build_status() creates reports/ and directly writes project-status.json and project-status.md with Path.write_text.",
-      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof."
+      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof.",
+      "additional_serialized_writers": [
+        "script_restore_automation_state"
+      ],
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
     },
     {
       "program_id": "script_build_rule_provenance",
@@ -437,7 +465,11 @@
         "sources/rule_provenance.json"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Central filesystem audit hook enforces the live production lease in auto_sync; the restore path is fenced under the same coarse mutex. Per-document lease and non-auto_sync writer compatibility remain unproven."
+      "write_boundary_fencing": "Central filesystem audit hook enforces the live production lease in auto_sync; the restore path is fenced under the same coarse mutex. Per-document lease and non-auto_sync writer compatibility remain unproven.",
+      "additional_serialized_writers": [
+        "script_restore_automation_state"
+      ],
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
     },
     {
       "program_id": "script_build_rulesets",
@@ -469,7 +501,11 @@
         "REJECT additions remain gated by existing publication/manual-approval checks."
       ],
       "evidence": "main() reads the above policy and state inputs, writes pending_queue.json, all three policy lists and rulesets/manifest.json.",
-      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof."
+      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof.",
+      "additional_serialized_writers": [
+        "script_restore_automation_state"
+      ],
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
     },
     {
       "program_id": "script_build_source_candidates",
@@ -495,7 +531,11 @@
         "Builds non-activating source candidate matrix; no active source registry write."
       ],
       "evidence": "main() selects runtime or persistent assessment input, reads lineage, then calls write_document(OUTPUT, result, 'candidates') and writes REPORT.",
-      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof."
+      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof.",
+      "additional_serialized_writers": [
+        "script_restore_automation_state"
+      ],
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
     },
     {
       "program_id": "script_collect_domains",
@@ -615,7 +655,11 @@
       "write_boundary_fencing": "Discovery calls write_document with lease_required=True for the logical document, covering the base JSON, adjacent manifest, content-addressed shards, staging, atomic switches and old-shard cleanup; it also asserts the live report lease immediately before writing reports/source-discovery.md. The fenced_file_writer audit hook independently checks each repository-local mutation. GITHUB_STEP_SUMMARY remains per-run ephemeral output.",
       "ephemeral_outputs": [
         "GITHUB_STEP_SUMMARY (runner-local; warning path overwrites and success path appends)"
-      ]
+      ],
+      "additional_serialized_writers": [
+        "script_restore_automation_state"
+      ],
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
     },
     {
       "program_id": "script_github_queue_store",
@@ -712,7 +756,11 @@
         "May delete eligible published rules and update lifecycle/archive state; may restore explicitly selected IDs."
       ],
       "evidence": "main() writes policy lists, observations, archive, queue, manifest and lifecycle reports.",
-      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof."
+      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof.",
+      "additional_serialized_writers": [
+        "script_restore_automation_state"
+      ],
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
     },
     {
       "program_id": "script_lifecycle_gate",
@@ -741,7 +789,11 @@
         "rulesets/lifecycle_state.json"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Central fenced_file_writer covers this registered auto_sync invocation only. Cross-workflow writers and non-auto_sync calls require a compatible explicit lease before independent dispatch."
+      "write_boundary_fencing": "Central fenced_file_writer covers this registered auto_sync invocation only. Cross-workflow writers and non-auto_sync calls require a compatible explicit lease before independent dispatch.",
+      "additional_serialized_writers": [
+        "script_restore_automation_state"
+      ],
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
     },
     {
       "program_id": "script_persist_review_cursor",
@@ -817,7 +869,11 @@
         "scripts/build_rulesets.py"
       ],
       "evidence": "refresh() reads all three list files and build_rulesets.py, then replaces rulesets/manifest.json.",
-      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof."
+      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof.",
+      "additional_serialized_writers": [
+        "script_restore_automation_state"
+      ],
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
     },
     {
       "program_id": "script_register_config_baseline",
@@ -1000,7 +1056,11 @@
         "Can restore selected archive IDs into rule outputs/queue after rechecking current config."
       ],
       "evidence": "sync() writes changed policy lists, archive, queue and two reports.",
-      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof."
+      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof.",
+      "additional_serialized_writers": [
+        "script_restore_automation_state"
+      ],
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
     },
     {
       "program_id": "script_task_queue_runtime",
@@ -1115,13 +1175,14 @@
     {
       "resource": "logical/production-pipeline",
       "writers": [
-        "workflow_auto_sync",
-        "script_assess_sources"
+        "script_assess_sources",
+        "script_restore_automation_state",
+        "workflow_auto_sync"
       ],
       "lock_key": "logical/production-pipeline",
       "mode": "exclusive",
       "enforcement": "durable task queue lease with monotonically increasing fencing token; publish gate re-reads live queue before git push",
-      "note": "Shared coarse mutex serializes workflow_auto_sync with the independently scheduled source assessor; each JSON/report output also has its own logical resource lease."
+      "note": "Shared coarse mutex serializes workflow_auto_sync with the independently scheduled source assessor; each JSON/report output also has its own logical resource lease. The allowlisted publish restore is invoked by workflow_auto_sync and is implemented by script_restore_automation_state under this same mutex."
     },
     {
       "resource": "owner-approved config baseline metadata",
@@ -1145,6 +1206,7 @@
       "writers": [
         "script_build_rulesets",
         "script_lifecycle_audit",
+        "script_restore_automation_state",
         "script_sync_ruleset_config_conflicts"
       ],
       "lock_key": "resource:rulesets/published-lists",
@@ -1154,6 +1216,7 @@
       "resource": "rulesets/lifecycle_state.json",
       "writers": [
         "script_lifecycle_gate",
+        "script_restore_automation_state",
         "workflow_auto_sync"
       ],
       "lock_key": "resource:rulesets/lifecycle_state.json",
@@ -1166,8 +1229,9 @@
       "writers": [
         "script_build_rulesets",
         "script_lifecycle_audit",
-        "script_sync_ruleset_config_conflicts",
-        "script_refresh_ruleset_manifest"
+        "script_refresh_ruleset_manifest",
+        "script_restore_automation_state",
+        "script_sync_ruleset_config_conflicts"
       ],
       "lock_key": "resource:rulesets/manifest.json",
       "mode": "exclusive"
@@ -1177,10 +1241,43 @@
       "writers": [
         "script_build_rulesets",
         "script_lifecycle_audit",
+        "script_restore_automation_state",
         "script_sync_ruleset_config_conflicts"
       ],
       "lock_key": "resource:rulesets/pending_queue.json",
       "mode": "exclusive"
+    },
+    {
+      "resource": "source candidate artifact document",
+      "paths": [
+        "sources/source_candidates.json",
+        "reports/source-candidate-matrix.md"
+      ],
+      "writers": [
+        "script_build_source_candidates",
+        "script_restore_automation_state",
+        "workflow_auto_sync"
+      ],
+      "lock_key": "logical/production-pipeline + resource-specific document/report lease",
+      "mode": "exclusive",
+      "enforcement": "Current production builder and publish restore are serialized by the Watchdog logical production-pipeline live fence. The JSON document writer additionally uses its documented logical-document lease where explicitly asserted.",
+      "note": "Restore can write the same allowlisted base/manifest/shards/report; all dynamic document children and cleanup operations must remain within the same logical resource lease."
+    },
+    {
+      "resource": "source discovery artifact document",
+      "paths": [
+        "sources/discovered_sources.json",
+        "reports/source-discovery.md"
+      ],
+      "writers": [
+        "script_discover_sources",
+        "script_restore_automation_state",
+        "workflow_auto_sync"
+      ],
+      "lock_key": "logical/production-pipeline + resource-specific document/report lease",
+      "mode": "exclusive",
+      "enforcement": "Current production builder and publish restore are serialized by the Watchdog logical production-pipeline live fence. The JSON document writer additionally uses its documented logical-document lease where explicitly asserted.",
+      "note": "Restore can write the same allowlisted base/manifest/shards/report; all dynamic document children and cleanup operations must remain within the same logical resource lease."
     },
     {
       "resource": "sources/policy_source_overlap.json",
@@ -1235,7 +1332,7 @@
     "program_registry_blob_sha": "279f8d14d1aad62d1342ba07063aa8d52e410a80",
     "execution_adapters_blob_sha": "45967d0d88392369252b7a4427aaba41d9dcdda8",
     "added_after_release_baseline": true,
-    "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking.",
+    "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group.",
     "reviewed_at": "2026-11-04",
     "central_write_guard_test": "tests/test_fenced_file_writer.py::test_every_registered_python_component_installs_the_guard"
   },
