@@ -79,7 +79,23 @@
     "schema_version": 1,
     "default_decision": "deny",
     "allowed_adapters": [
-      "script_assess_sources"
+      {
+        "target_program_id": "script_assess_sources",
+        "capability": "source_assessment",
+        "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
+        "adapter_entry_sha256": "cc94ed767b4b998bc99469dd22ec857429d6f08e895973dfee0feea43cc8eeda",
+        "registry_entry_sha256": "6200c1822d69c499314c571deee997bacb545c4df755584323c535bf40737818",
+        "source_path": "scripts/assess_sources.py",
+        "source_git_blob_sha": "cd9ff31732d88be297bd1a2b54c976192b432258",
+        "allowed_callers": [
+          "workflow_automation_watchdog"
+        ],
+        "input_contract_sha256": "b599edb647c6ef9be050ccfa8ec5eb85e3685e4960d1f2a73ba173bc4da9aac9",
+        "output_contract_sha256": "62ac443cad6163ad97228edb26976548922245c5da991db5d835a5425b12b284",
+        "dependency_contract_sha256": "f1a1b391d716b049be291e73c6906ff85ba8bd5baa610a1731a6d86dcf0e8aac",
+        "resource_contract_sha256": "7727133aa95d054b07d5a8fd68c97756305b03b8e68a630a0c394a17ab012b01",
+        "verifier_contract_sha256": "601c151692490aa9f8eb5b669c223e7c5be7eddfd8e16daf21b785097a7e662d"
+      }
     ]
   }
 }
