@@ -20,7 +20,7 @@ class ProjectStatusTests(unittest.TestCase):
     def test_consolidated_report_checks_config_rules_sources_queue_and_recovery(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            for folder in ("rulesets", "sources", "data", "reports/lifecycle", "shadowrocket"):
+            for folder in ("rulesets", "sources", "data", "reports/lifecycle", "modules"):
                 (root / folder).mkdir(parents=True, exist_ok=True)
             (root / "rulesets/direct.list").write_text("DOMAIN,direct.example\n", encoding="utf-8")
             (root / "rulesets/proxy.list").write_text("DOMAIN-SUFFIX,proxy.example\n", encoding="utf-8")
