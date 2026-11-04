@@ -38,6 +38,10 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
             {"id": "script_target", "capabilities": ["test_capability"],
              "orchestration": {"enabled": True, "allowed_callers": ["script_requester"],
                                "max_attempts": 2, "timeout_seconds": 120}},
+            {"id": "workflow_automation_watchdog", "capabilities": ["top_level_supervision"]},
+            {"id": "workflow_auto_sync", "capabilities": ["deterministic_audit"],
+             "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
+                               "max_attempts": 1, "timeout_seconds": 300}},
         ]}
         self.now = datetime(2026, 11, 3, 4, 0, tzinfo=timezone.utc)
 
@@ -53,6 +57,32 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
         value.update(overrides)
         return value
 
+    def manual_payload(self, idem="production:manual-authorized:fp:123"):
+        return self.payload(
+            idempotency_key=idem,
+            requester_program_id="workflow_automation_watchdog",
+            target_program_id="workflow_auto_sync",
+            capability="deterministic_audit",
+            input={
+                "production_decision": "USER_AUTHORIZED_MANUAL_AUDIT",
+                "production_fingerprint": "fp",
+                "authorization_run_id": "123",
+                "authorization_run_attempt": "1",
+                "authorization_actor": "maintainer",
+                "authorization_actor_id": "678",
+                "authorization_repository": "instarrys-bit/default",
+                "authorization_workflow_ref": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
+                "authorization_event": "workflow_dispatch",
+                "authorization_ref": "refs/heads/main",
+                "authorization_head_sha": "a" * 40,
+                "authorization_requested": True,
+                "authorization_target_program_id": "workflow_auto_sync",
+                "authorization_idempotency_key": idem,
+                "baseline_source_event": "workflow_dispatch",
+                "baseline_source_sha": "a" * 40,
+            },
+        )
+
     def test_manual_enqueue_requires_trusted_watchdog_dispatch_context(self):
         env = {
             "GITHUB_REPOSITORY": "instarrys-bit/default",
@@ -62,24 +92,56 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
             "GITHUB_RUN_ATTEMPT": "1", "GITHUB_REF": "refs/heads/main",
             "GITHUB_SHA": "a" * 40, "GITHUB_MANUAL_AUDIT_REQUEST": "true",
         }
-        payload = self.payload(input={
-            "production_decision": "USER_AUTHORIZED_MANUAL_AUDIT",
-            "production_fingerprint": "fp", "authorization_run_id": "123",
-            "authorization_run_attempt": "1", "authorization_actor": "maintainer",
-            "authorization_actor_id": "678", "authorization_repository": "instarrys-bit/default",
-            "authorization_workflow_ref": env["GITHUB_WORKFLOW_REF"],
-            "authorization_event": "workflow_dispatch", "authorization_ref": "refs/heads/main",
-            "authorization_head_sha": "a" * 40, "authorization_requested": True, "baseline_source_event": "workflow_dispatch",
-            "baseline_source_sha": "a" * 40,
-        })
+        payload = self.manual_payload()
         with patch.dict(os.environ, env, clear=True):
             created = enqueue_remote(payload, self.store, self.registry, self.now)
+            replayed = enqueue_remote(payload, self.store, self.registry, self.now)
         self.assertTrue(created["created"])
+        self.assertFalse(replayed["created"])
+        self.assertEqual(created["task"]["task_id"], replayed["task"]["task_id"])
+        record = self.store.document["manual_authorizations"]["123"]
+        self.assertEqual(record["task_id"], created["task"]["task_id"])
+        self.assertEqual(record["target_program_id"], "workflow_auto_sync")
+        self.assertEqual(record["idempotency_key"], payload["idempotency_key"])
+        self.assertEqual(len(record["scope_sha256"]), 64)
+
         replay = dict(env)
         replay["GITHUB_RUN_ATTEMPT"] = "2"
         with patch.dict(os.environ, replay, clear=True):
             with self.assertRaisesRegex(ValueError, "authorization_run_attempt"):
                 self.claim("worker-replay", self.now)
+
+    def test_manual_authorization_run_can_be_consumed_by_only_one_task(self):
+        env = {
+            "GITHUB_REPOSITORY": "instarrys-bit/default",
+            "GITHUB_WORKFLOW_REF": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
+            "GITHUB_EVENT_NAME": "workflow_dispatch", "GITHUB_ACTOR": "maintainer",
+            "GITHUB_ACTOR_ID": "678", "GITHUB_RUN_ID": "123",
+            "GITHUB_RUN_ATTEMPT": "1", "GITHUB_REF": "refs/heads/main",
+            "GITHUB_SHA": "a" * 40, "GITHUB_MANUAL_AUDIT_REQUEST": "true",
+        }
+        with patch.dict(os.environ, env, clear=True):
+            enqueue_remote(self.manual_payload(), self.store, self.registry, self.now)
+            with self.assertRaisesRegex(ValueError, "already been consumed"):
+                enqueue_remote(
+                    self.manual_payload("production:manual-authorized:fp:123:second"),
+                    self.store, self.registry, self.now,
+                )
+
+    def test_manual_authorization_ledger_must_match_the_task(self):
+        env = {
+            "GITHUB_REPOSITORY": "instarrys-bit/default",
+            "GITHUB_WORKFLOW_REF": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
+            "GITHUB_EVENT_NAME": "workflow_dispatch", "GITHUB_ACTOR": "maintainer",
+            "GITHUB_ACTOR_ID": "678", "GITHUB_RUN_ID": "123",
+            "GITHUB_RUN_ATTEMPT": "1", "GITHUB_REF": "refs/heads/main",
+            "GITHUB_SHA": "a" * 40, "GITHUB_MANUAL_AUDIT_REQUEST": "true",
+        }
+        with patch.dict(os.environ, env, clear=True):
+            enqueue_remote(self.manual_payload(), self.store, self.registry, self.now)
+            self.store.document["manual_authorizations"]["123"]["target_program_id"] = "script_target"
+            with self.assertRaisesRegex(ValueError, "consumption record"):
+                self.claim("worker-tamper", self.now)
 
     def test_manual_enqueue_rejects_non_dispatch_or_wrong_workflow(self):
         env = {

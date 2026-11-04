@@ -1,7 +1,9 @@
 import json
+import os
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -36,6 +38,17 @@ class TaskQueueRuntimeTests(unittest.TestCase):
                     "timeout_seconds": 120,
                 },
             },
+            {"id": "workflow_automation_watchdog", "capabilities": ["top_level_supervision"]},
+            {
+                "id": "workflow_auto_sync",
+                "capabilities": ["deterministic_audit"],
+                "orchestration": {
+                    "enabled": True,
+                    "allowed_callers": ["workflow_automation_watchdog"],
+                    "max_attempts": 1,
+                    "timeout_seconds": 300,
+                },
+            },
         ]
         self.registry.write_text(json.dumps({"programs": programs}), encoding="utf-8")
         self.queue.write_text(json.dumps({"schema_version": 1, "revision": 0, "tasks": []}), encoding="utf-8")
@@ -57,34 +70,55 @@ class TaskQueueRuntimeTests(unittest.TestCase):
     def enqueue(self, **overrides):
         return enqueue_task(self.payload(**overrides), self.queue, self.registry, self.now)
 
-    def test_manual_authorization_is_bound_to_exact_watchdog_run_attempt(self):
-        task = {"input": {"production_decision": "USER_AUTHORIZED_MANUAL_AUDIT",
-            "production_fingerprint": "fp", "authorization_run_id": "123",
-            "authorization_run_attempt": "2", "authorization_actor": "maintainer",
-            "authorization_actor_id": "678", "authorization_repository": "instarrys-bit/default",
+    def manual_authorization_task(self, **payload_overrides):
+        idem = "production:manual-authorized:fp:123"
+        payload = {
+            "production_decision": "USER_AUTHORIZED_MANUAL_AUDIT",
+            "production_fingerprint": "fp",
+            "authorization_run_id": "123",
+            "authorization_run_attempt": "2",
+            "authorization_actor": "maintainer",
+            "authorization_actor_id": "678",
+            "authorization_repository": "instarrys-bit/default",
             "authorization_workflow_ref": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
-            "authorization_event": "workflow_dispatch", "authorization_ref": "refs/heads/main",
-            "authorization_head_sha": "a" * 40, "authorization_requested": True, "baseline_source_event": "workflow_dispatch",
-            "baseline_source_sha": "a" * 40}}
-        context = {"repository": "instarrys-bit/default",
+            "authorization_event": "workflow_dispatch",
+            "authorization_ref": "refs/heads/main",
+            "authorization_head_sha": "a" * 40,
+            "authorization_requested": True,
+            "authorization_target_program_id": "workflow_auto_sync",
+            "authorization_idempotency_key": idem,
+            "baseline_source_event": "workflow_dispatch",
+            "baseline_source_sha": "a" * 40,
+        }
+        payload.update(payload_overrides)
+        return {
+            "idempotency_key": idem,
+            "requester_program_id": "workflow_automation_watchdog",
+            "target_program_id": "workflow_auto_sync",
+            "capability": "deterministic_audit",
+            "input": payload,
+        }
+
+    def manual_authorization_context(self):
+        return {
+            "repository": "instarrys-bit/default",
             "workflow_ref": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
             "event": "workflow_dispatch", "actor": "maintainer", "actor_id": "678",
-            "run_id": "123", "run_attempt": "2", "ref": "refs/heads/main", "sha": "a" * 40, "manual_audit_requested": "true"}
-        validate_manual_authorization(task, context)
+            "run_id": "123", "run_attempt": "2", "ref": "refs/heads/main",
+            "sha": "a" * 40, "manual_audit_requested": "true",
+        }
+
+    def test_manual_authorization_is_bound_to_exact_watchdog_run_attempt_and_task_scope(self):
+        scope = validate_manual_authorization(
+            self.manual_authorization_task(), self.manual_authorization_context()
+        )
+        self.assertEqual(scope["target_program_id"], "workflow_auto_sync")
+        self.assertEqual(scope["idempotency_key"], "production:manual-authorized:fp:123")
+        self.assertEqual(len(scope["scope_sha256"]), 64)
 
     def test_manual_authorization_rejects_replay_and_forged_identity(self):
-        task = {"input": {"production_decision": "USER_AUTHORIZED_MANUAL_AUDIT",
-            "production_fingerprint": "fp", "authorization_run_id": "123",
-            "authorization_run_attempt": "2", "authorization_actor": "maintainer",
-            "authorization_actor_id": "678", "authorization_repository": "instarrys-bit/default",
-            "authorization_workflow_ref": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
-            "authorization_event": "workflow_dispatch", "authorization_ref": "refs/heads/main",
-            "authorization_head_sha": "a" * 40, "baseline_source_event": "workflow_dispatch",
-            "baseline_source_sha": "a" * 40}}
-        context = {"repository": "instarrys-bit/default",
-            "workflow_ref": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
-            "event": "workflow_dispatch", "actor": "maintainer", "actor_id": "678",
-            "run_id": "123", "run_attempt": "2", "ref": "refs/heads/main", "sha": "a" * 40}
+        task = self.manual_authorization_task()
+        context = self.manual_authorization_context()
         for key, value in (("run_id", "999"), ("run_attempt", "3"), ("actor_id", "1"),
                            ("event", "schedule"), ("ref", "refs/heads/feature"),
                            ("sha", "b" * 40), ("workflow_ref", "attacker/repo/.github/workflows/evil.yml@refs/heads/main")):
@@ -93,6 +127,21 @@ class TaskQueueRuntimeTests(unittest.TestCase):
             with self.subTest(key=key), self.assertRaises(ValueError):
                 validate_manual_authorization(task, altered)
 
+    def test_manual_authorization_rejects_target_or_idempotency_scope_mismatch(self):
+        context = self.manual_authorization_context()
+        task = self.manual_authorization_task(authorization_idempotency_key="different-key")
+        with self.assertRaisesRegex(ValueError, "authorization_idempotency_key"):
+            validate_manual_authorization(task, context)
+        task = self.manual_authorization_task(
+            authorization_target_program_id="script_target"
+        )
+        with self.assertRaisesRegex(ValueError, "authorization_target_program_id"):
+            validate_manual_authorization(task, context)
+        task = self.manual_authorization_task()
+        task["target_program_id"] = "script_target"
+        with self.assertRaisesRegex(ValueError, "scoped only"):
+            validate_manual_authorization(task, context)
+
     def test_manual_authorization_rejects_incomplete_payload(self):
         with self.assertRaisesRegex(ValueError, "invalid or incomplete"):
             validate_manual_authorization({"input": {
@@ -100,6 +149,8 @@ class TaskQueueRuntimeTests(unittest.TestCase):
             }}, {})
         with self.assertRaisesRegex(ValueError, "trusted GitHub Actions run identity"):
             validate_manual_authorization({"input": {"production_decision": "USER_AUTHORIZED_MANUAL_AUDIT"}}, {})
+        with self.assertRaisesRegex(ValueError, "invalid or incomplete"):
+            validate_manual_authorization({"input": {"authorization_requested": True}}, {})
 
     def test_non_manual_production_decisions_do_not_require_manual_authorization(self):
         validate_manual_authorization({"input": {
@@ -219,6 +270,54 @@ class TaskQueueRuntimeTests(unittest.TestCase):
                           success=True, result={"ok": True}, queue_path=self.queue,
                           registry_path=self.registry, now=self.now + timedelta(seconds=121))
 
+
+
+    def test_local_queue_consumes_manual_authorization_once_for_exact_task(self):
+        idem = "production:manual-authorized:fp:123"
+        task = {
+            "idempotency_key": idem,
+            "requester_program_id": "workflow_automation_watchdog",
+            "target_program_id": "workflow_auto_sync",
+            "capability": "deterministic_audit",
+            "input": {
+                "production_decision": "USER_AUTHORIZED_MANUAL_AUDIT",
+                "production_fingerprint": "fp",
+                "authorization_run_id": "123",
+                "authorization_run_attempt": "1",
+                "authorization_actor": "maintainer",
+                "authorization_actor_id": "678",
+                "authorization_repository": "instarrys-bit/default",
+                "authorization_workflow_ref": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
+                "authorization_event": "workflow_dispatch",
+                "authorization_ref": "refs/heads/main",
+                "authorization_head_sha": "a" * 40,
+                "authorization_requested": True,
+                "authorization_target_program_id": "workflow_auto_sync",
+                "authorization_idempotency_key": idem,
+                "baseline_source_event": "workflow_dispatch",
+                "baseline_source_sha": "a" * 40,
+            },
+        }
+        env = {
+            "GITHUB_REPOSITORY": "instarrys-bit/default",
+            "GITHUB_WORKFLOW_REF": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
+            "GITHUB_EVENT_NAME": "workflow_dispatch", "GITHUB_ACTOR": "maintainer",
+            "GITHUB_ACTOR_ID": "678", "GITHUB_RUN_ID": "123",
+            "GITHUB_RUN_ATTEMPT": "1", "GITHUB_REF": "refs/heads/main",
+            "GITHUB_SHA": "a" * 40, "GITHUB_MANUAL_AUDIT_REQUEST": "true",
+        }
+        with patch.dict(os.environ, env, clear=True):
+            first = enqueue_task(task, self.queue, self.registry, self.now)
+            replay = enqueue_task(task, self.queue, self.registry, self.now)
+            self.assertTrue(first["created"])
+            self.assertFalse(replay["created"])
+            record = json.loads(self.queue.read_text(encoding="utf-8"))["manual_authorizations"]["123"]
+            self.assertEqual(record["task_id"], first["task"]["task_id"])
+            with self.assertRaisesRegex(ValueError, "already been consumed"):
+                second = dict(task)
+                second["idempotency_key"] = idem + ":second"
+                second["input"] = dict(task["input"], authorization_idempotency_key=idem + ":second")
+                enqueue_task(second, self.queue, self.registry, self.now)
 
 if __name__ == "__main__":
     unittest.main()

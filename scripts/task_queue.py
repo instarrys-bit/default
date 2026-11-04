@@ -8,6 +8,7 @@ if __import__("os").environ.get("AUTOMATION_WRITE_GUARD") == "1":
 
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -215,6 +216,99 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
         if execution_backend == "github_contents" and status == "SUCCEEDED":
             if not isinstance(verification, dict) or verification.get("status") != "passed":
                 raise ValueError(f"{task_id} GitHub-backed SUCCEEDED task requires independent verification")
+
+    manual_authorizations = queue.get("manual_authorizations", {})
+    if not isinstance(manual_authorizations, dict):
+        raise ValueError("manual_authorizations must be an object")
+    task_by_id = {item["task_id"]: item for item in tasks if isinstance(item, dict) and isinstance(item.get("task_id"), str)}
+    consumed_task_ids: set[str] = set()
+    for run_id, record in manual_authorizations.items():
+        if not isinstance(run_id, str) or not run_id.isdigit() or not isinstance(record, dict):
+            raise ValueError("manual authorization ledger key/record is invalid")
+        required_record_fields = {
+            "task_id", "run_id", "run_attempt", "actor_id", "repository",
+            "workflow_ref", "event", "ref", "head_sha", "requester_program_id",
+            "target_program_id", "capability", "idempotency_key",
+            "production_fingerprint", "scope_sha256", "consumed_at",
+        }
+        if required_record_fields - set(record):
+            raise ValueError("manual authorization consumption record is incomplete")
+        task_id = record.get("task_id")
+        if not isinstance(task_id, str) or task_id not in task_by_id or task_id in consumed_task_ids:
+            raise ValueError("manual authorization must consume one unique existing task")
+        consumed_task_ids.add(task_id)
+        task = task_by_id[task_id]
+        payload = task.get("input")
+        if not isinstance(payload, dict) or payload.get("production_decision") != "USER_AUTHORIZED_MANUAL_AUDIT":
+            raise ValueError("manual authorization record must reference a manually authorized task")
+        expected = {
+            "run_id": payload.get("authorization_run_id"),
+            "run_attempt": payload.get("authorization_run_attempt"),
+            "actor_id": payload.get("authorization_actor_id"),
+            "repository": payload.get("authorization_repository"),
+            "workflow_ref": payload.get("authorization_workflow_ref"),
+            "event": payload.get("authorization_event"),
+            "ref": payload.get("authorization_ref"),
+            "head_sha": payload.get("authorization_head_sha"),
+            "requester_program_id": task.get("requester_program_id"),
+            "target_program_id": task.get("target_program_id"),
+            "capability": task.get("capability"),
+            "idempotency_key": task.get("idempotency_key"),
+            "production_fingerprint": payload.get("production_fingerprint"),
+        }
+        if run_id != payload.get("authorization_run_id") or record.get("task_id") != task_id:
+            raise ValueError("manual authorization run/task binding is invalid")
+        if any(record.get(field) != value for field, value in expected.items()):
+            raise ValueError("manual authorization consumption record does not match its task scope")
+        if (task.get("requester_program_id") != "workflow_automation_watchdog"
+                or task.get("target_program_id") != "workflow_auto_sync"
+                or task.get("capability") != "deterministic_audit"
+                or payload.get("authorization_target_program_id") != task.get("target_program_id")
+                or payload.get("authorization_idempotency_key") != task.get("idempotency_key")
+                or payload.get("authorization_requested") is not True
+                or payload.get("baseline_source_event") != payload.get("authorization_event")
+                or payload.get("baseline_source_sha") != payload.get("authorization_head_sha")):
+            raise ValueError("manual authorization task target/idempotency binding is invalid")
+        if not isinstance(record.get("scope_sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", record["scope_sha256"]):
+            raise ValueError("manual authorization scope digest is invalid")
+        scope = {
+            "repository": payload["authorization_repository"],
+            "workflow_ref": payload["authorization_workflow_ref"],
+            "event": payload["authorization_event"],
+            "actor": payload["authorization_actor"],
+            "actor_id": payload["authorization_actor_id"],
+            "run_id": payload["authorization_run_id"],
+            "run_attempt": payload["authorization_run_attempt"],
+            "ref": payload["authorization_ref"],
+            "head_sha": payload["authorization_head_sha"],
+            "requester_program_id": task["requester_program_id"],
+            "target_program_id": task["target_program_id"],
+            "capability": task["capability"],
+            "idempotency_key": task["idempotency_key"],
+            "production_fingerprint": payload["production_fingerprint"],
+        }
+        expected_scope_sha = hashlib.sha256(
+            json.dumps(scope, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        ).hexdigest()
+        if record["scope_sha256"] != expected_scope_sha:
+            raise ValueError("manual authorization scope digest does not match its persisted task")
+        if (not isinstance(record.get("run_attempt"), str) or not record["run_attempt"].isdigit()
+                or not isinstance(record.get("actor_id"), str) or not record["actor_id"].isdigit()
+                or record.get("event") != "workflow_dispatch"
+                or record.get("ref") != "refs/heads/main"
+                or not isinstance(record.get("repository"), str) or not record["repository"].strip()
+                or record.get("workflow_ref") != f'{record["repository"]}/.github/workflows/automation-watchdog.yml@refs/heads/main'
+                or not isinstance(record.get("head_sha"), str)
+                or not re.fullmatch(r"[0-9a-f]{40}", record["head_sha"])):
+            raise ValueError("manual authorization trusted workflow identity is invalid")
+        parse_utc(record.get("consumed_at"), f"manual_authorizations.{run_id}.consumed_at")
+    for task in tasks:
+        payload = task.get("input") if isinstance(task, dict) else None
+        if isinstance(payload, dict) and payload.get("production_decision") == "USER_AUTHORIZED_MANUAL_AUDIT":
+            run_id = payload.get("authorization_run_id")
+            record = manual_authorizations.get(run_id) if isinstance(run_id, str) else None
+            if not isinstance(record, dict) or record.get("task_id") != task.get("task_id"):
+                raise ValueError("manually authorized task lacks its durable one-shot consumption record")
 
     resource_leases = queue.get("resource_leases", {})
     if not isinstance(resource_leases, dict):

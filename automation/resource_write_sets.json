@@ -267,6 +267,25 @@
       ]
     },
     {
+      "program_id": "script_github_queue_store",
+      "source": "scripts/github_queue_store.py",
+      "writes": [
+        "automation/task_queue.json"
+      ],
+      "document_store": [
+        "automation/task_queue.json"
+      ],
+      "dynamic_children": [],
+      "read_resources": [
+        "automation/task_queue.json"
+      ],
+      "side_effects": [],
+      "evidence": "GitHubContentsQueueStore.compare_and_swap() requires the current content SHA; mutate() retries only explicit 409/422 SHA conflicts and never performs blind writes.",
+      "write_boundary_fencing": "Control-plane queue persistence is serialized by SHA-CAS on the exact current Blob SHA; this is distinct from production resource leases and does not authorize rule/config publication.",
+      "lease_keys": [],
+      "control_plane_consistency": "sha_cas"
+    },
+    {
       "program_id": "script_lifecycle_audit",
       "source": "scripts/lifecycle_audit.py",
       "writes": [
@@ -341,6 +360,26 @@
       "write_boundary_fencing": "All four durable files are committed by the auto_sync publisher under the same exclusive logical/production-pipeline lease, after a fresh live fencing-token assertion. modules/uu.conf is read-only and excluded from every write set."
     },
     {
+      "program_id": "script_remote_task_queue_runtime",
+      "source": "scripts/remote_task_queue_runtime.py",
+      "writes": [
+        "automation/task_queue.json"
+      ],
+      "document_store": [
+        "automation/task_queue.json"
+      ],
+      "dynamic_children": [],
+      "read_resources": [
+        "automation/task_queue.json",
+        "automation/program_registry.json"
+      ],
+      "side_effects": [],
+      "evidence": "enqueue_remote(), claim_remote(), complete_remote(), recover_remote(), and reconciliation helpers mutate the durable task queue through GitHubContentsQueueStore.mutate(). Manual authorization consumption is written atomically with the task in the same mutation.",
+      "write_boundary_fencing": "Every durable update uses the GitHub Contents API SHA compare-and-swap store; blind writes are prohibited, explicit conflicts trigger re-read/reapply, and validate_candidate() checks the complete queue before and after each mutation. The manual_authorizations ledger is part of the same CAS-protected queue document.",
+      "lease_keys": [],
+      "control_plane_consistency": "sha_cas"
+    },
+    {
       "program_id": "script_select_domain_rules",
       "source": "scripts/select_domain_rules.py",
       "writes": [
@@ -378,6 +417,26 @@
       ],
       "evidence": "sync() writes changed policy lists, archive, queue and two reports.",
       "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof."
+    },
+    {
+      "program_id": "script_task_queue_runtime",
+      "source": "scripts/task_queue_runtime.py",
+      "writes": [
+        "automation/task_queue.json"
+      ],
+      "document_store": [
+        "automation/task_queue.json"
+      ],
+      "dynamic_children": [],
+      "read_resources": [
+        "automation/task_queue.json",
+        "automation/program_registry.json"
+      ],
+      "side_effects": [],
+      "evidence": "Local enqueue_task(), claim_next(), complete_task(), and recover_expired() update the local queue file.",
+      "write_boundary_fencing": "Runner-local fcntl flock plus fsync/atomic replace; this is not a cross-runner lock or a durable GitHub writer. Production Watchdog scheduling uses the remote SHA-CAS runtime instead.",
+      "lease_keys": [],
+      "control_plane_consistency": "runner_local_lock"
     }
   ],
   "confirmed_shared_write_groups": [
@@ -439,6 +498,22 @@
       "mode": "exclusive",
       "enforcement": "The production registration step runs only after Watchdog task and live resource lease verification. The central write guard checks the live fencing token before each local file mutation; the publish step re-reads and asserts the same lease immediately before the non-force main push. Validation-workflow copies are runner-local and have contents:read only.",
       "note": "These files hold the approval record and derived pins for the exact owner-authored modules/uu.conf blob. Historical state restoration is not permitted to replace sources/policy.json or the release-pin metadata."
+    },
+    {
+      "resource": "durable task queue control-plane state",
+      "paths": [
+        "automation/task_queue.json"
+      ],
+      "writers": [
+        "script_remote_task_queue_runtime",
+        "script_github_queue_store",
+        "script_task_scheduler",
+        "workflow_automation_watchdog"
+      ],
+      "lock_key": "git-blob-sha-cas:automation/task_queue.json",
+      "mode": "compare_and_swap",
+      "enforcement": "GitHubContentsQueueStore reads the current queue Blob SHA and requires that exact SHA for every Contents API update. On explicit conflict it re-reads and re-applies the deterministic mutator within a bounded retry budget. The candidate queue is independently validated before and after each mutation. Manual authorization consumption is appended atomically with the task and keyed by Watchdog run ID.",
+      "note": "This is control-plane queue state, not a production resource lease. The local task_queue_runtime uses only runner-local flock/atomic replace and is not treated as a shared cross-runner writer."
     }
   ],
   "not_yet_proven": [
@@ -452,7 +527,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
-    "release_manifest_blob_sha": "d3a251b7e76ca0d4fece1361e71a7bbd45d0de1d",
+    "release_manifest_blob_sha": "151e3df17a85ce82e1d99af50a64c28761193fd8",
     "program_registry_blob_sha": "279f8d14d1aad62d1342ba07063aa8d52e410a80",
     "execution_adapters_blob_sha": "45967d0d88392369252b7a4427aaba41d9dcdda8",
     "added_after_release_baseline": true,
