@@ -111,7 +111,7 @@
       },
       {
         "id": "local_safety_veto",
-        "description": "Full-scope DIRECT/PROXY DOMAIN/DOMAIN-SUFFIX coverage, non-REJECT conditional AND/OR/NOT overlap, DOMAIN-KEYWORD, URL-REGEX, skip-proxy and protected-domain checks must pass. REJECT rules in ss.conf are excluded from automated analysis. Rule order and first-match precedence are not evaluated."
+        "description": "Full-scope DIRECT/PROXY DOMAIN/DOMAIN-SUFFIX coverage, non-REJECT conditional AND/OR/NOT overlap, DOMAIN-KEYWORD, URL-REGEX, skip-proxy and protected-domain checks must pass. REJECT rules in uu.conf are excluded from automated analysis. Rule order and first-match precedence are not evaluated."
       }
     ],
     "mandatory_vetoes": [
@@ -123,7 +123,7 @@
       "Single-label root suffix entries are excluded; duplicate entries are deduplicated"
     ],
     "review_status": "A single-source candidate or a candidate below the two-publisher corroboration threshold remains REVIEW; cross-policy conflicts and critical-function risks are held.",
-    "publish_gate": "No automatic writes to the user-managed shadowrocket/ss.conf. Derived rule-set outputs only.",
+    "publish_gate": "No automatic writes to the user-managed modules/uu.conf. Derived rule-set outputs only.",
     "decision_engine": "deterministic-domain-audit/4.0",
     "confidence_interpretation": "Operational evidence score, not a statistical probability or guarantee of safe blocking.",
     "publication_mode": "deterministic-evidence-reviewed-derived-rulesets",
@@ -134,14 +134,14 @@
     "model_api_calls": 0
   },
   "managed_config_guard": {
-    "path": "shadowrocket/ss.conf",
-    "approved_git_blob_sha": "daa84802764de63c24da1e727ed233bab2e9151f",
+    "path": "modules/uu.conf",
+    "approved_git_blob_sha": "3b9a39cfae94803937addd4949042e9dc0ceaed2",
     "immutable": true,
     "description": "Authoritative user-managed Shadowrocket config baseline. Read-only for automation; derived rule audits must evaluate against this file.",
     "last_user_approved_baseline_update": {
       "previous_blob_sha": "b87f4c3bf13ed76d7f01ecc77266793da0e7556b",
       "new_blob_sha": "daa84802764de63c24da1e727ed233bab2e9151f",
-      "reason": "Recover an interrupted registration after verifying every intervening ss.conf-changing commit is associated with the repository owner on GitHub. Automation does not edit ss.conf.",
+      "reason": "Recover an interrupted registration after verifying every intervening uu.conf-changing commit is associated with the repository owner on GitHub. Automation does not edit uu.conf.",
       "approval_mode": "recovered_owner_authored_config_history",
       "config_change_commits": [
         "8996af8a530e47585979badfee575ca76a04a38a",
