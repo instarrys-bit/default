@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "idempotency_key": "source-assessment-canary-2026-11-04-pr171",
+  "expected_config_blob_sha": "daa84802764de63c24da1e727ed233bab2e9151f",
+  "expected_domain_sources_blob_sha": "2d42eb7a1b74f1d23bca7cfaf6301665743300e8",
+  "input": {
+    "max_urls": 1,
+    "max_file_bytes": 1000000,
+    "max_total_bytes": 1000000
+  }
+}
