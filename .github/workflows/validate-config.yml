@@ -3,7 +3,7 @@ name: Validate Shadowrocket config against user baseline
 on:
   push:
     paths:
-      - "shadowrocket/ss.conf"
+      - "modules/uu.conf"
       - "scripts/validate_config.py"
       - "scripts/audit_config_drift.py"
       - "scripts/audit_ruleset_references.py"
@@ -32,7 +32,7 @@ on:
       - "scripts/**"
   pull_request:
     paths:
-      - "shadowrocket/ss.conf"
+      - "modules/uu.conf"
       - "scripts/**"
       - "sources/domain_sources.json"
       - "sources/policy.json"
@@ -79,8 +79,8 @@ jobs:
           if [ -z "$base_sha" ] || [[ "$base_sha" =~ ^0+$ ]]; then
             base_sha="$(git merge-base origin/main "$head_sha")"
           fi
-          if ! git diff --quiet "$base_sha" "$head_sha" -- shadowrocket/ss.conf; then
-            echo "Non-main validation cannot approve or change shadowrocket/ss.conf." >&2
+          if ! git diff --quiet "$base_sha" "$head_sha" -- modules/uu.conf; then
+            echo "Non-main validation cannot approve or change modules/uu.conf." >&2
             exit 1
           fi
           git show "$base_sha:sources/policy.json" > "$RUNNER_TEMP/base-policy.json"
@@ -93,7 +93,7 @@ jobs:
           if base.get("managed_config_guard") != head.get("managed_config_guard"):
               raise SystemExit("Non-main validation cannot change the owner-approved config baseline metadata.")
           PY
-          echo "The non-main change leaves ss.conf and its approved-baseline metadata unchanged; continuing read-only structural checks."
+          echo "The non-main change leaves uu.conf and its approved-baseline metadata unchanged; continuing read-only structural checks."
       - name: Recover owner-approved config baseline in validation workspace
         if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         env:
