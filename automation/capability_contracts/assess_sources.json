@@ -3,7 +3,7 @@
   "contract_id": "capability-script-assess-sources-v1",
   "program_id": "script_assess_sources",
   "implementation_path": "scripts/assess_sources.py",
-  "implementation_blob_sha": "ed987da5a6008e4b5328d7bbef25089bf4be64f1",
+  "implementation_blob_sha": "5b8e0f0fd3d31312990b889a761b1a1ceab16ffb",
   "review_status": "watchdog_successful_workflow_run_enqueue_installed",
   "dispatch_status": "enabled",
   "entrypoint": {
@@ -215,7 +215,7 @@
     "scheduler_enforcement": "The Watchdog supplies a successful workflow_run event proof. The scheduler validates producer identity, exact workflow name, numeric workflow run ID, full producer commit SHA, allowlisted artifact path and current complete legacy/sharded artifact digest before claim. This check is performed by scheduler.build_execution_plan before the task becomes eligible for claim."
   },
   "permission_boundary": {
-    "filesystem": "Write only the three declared logical output resources and their document-store temporary/manifest/shard children. Publish only persistent assessment history and report; runtime fingerprint data remains runner-local.",
+    "filesystem": "Write only the three declared logical output resources and their document-store temporary/manifest/shard children. The durable per-URL checkpoint is task.assessment_checkpoint in automation/task_queue.json, updated by bounded Contents-Blob-SHA CAS under the active task lease and all declared resource fencing tokens. Publish only persistent assessment history and report; runtime fingerprint data remains runner-local.",
     "network": "HTTPS raw.githubusercontent.com only, repository-bound URL and same-host redirect checks.",
     "github_api": "Read and CAS-update the durable task queue using the scheduler-supplied token. Per-URL checkpoint mutations are restricted to the currently claimed task and require matching worker/task lease plus live resource fencing tokens; the scheduler separately publishes only allowlisted persistent artifacts via a non-force Git push. The assessor performs no other GitHub API writes.",
     "protected_config": "modules/uu.conf is immutable and outside this capability's write set."
@@ -227,10 +227,10 @@
     "Complete transitive writer inventory and runtime tracing beyond the named source-assessment paths."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-baseline-2026.11.04.9",
-    "release_manifest_blob_sha": "762ad739a61be54e38576cf88c412b66778216ad",
+    "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
+    "release_manifest_blob_sha": "53e52d53fa3b5a5e65fe4dceaed7002304fd708e",
     "program_registry_blob_sha": "f3f7ed1ce7f063412d18dde0b6c061457664f7fa",
-    "execution_adapters_blob_sha": "2a96bbacf08cbfaebbf4312eb5eb07666d3b0584",
+    "execution_adapters_blob_sha": "97d18a09763f851362e0bd5400dad856ae1f448b",
     "added_after_release_baseline": false,
     "note": "References the refreshed baseline snapshot. This is review provenance only, not dispatch authorization; independent Python dispatch remains blocked by the release compatibility and runtime-enforcement gates."
   },
