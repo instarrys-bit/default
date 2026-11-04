@@ -623,6 +623,8 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
                 "AUTOMATION_QUEUE_BRANCH": store.branch,
                 "AUTOMATION_QUEUE_PATH": store.path,
                 "AUTOMATION_QUEUE_TOKEN": store.token,
+                "AUTOMATION_WRITE_GUARD": "1",
+                "AUTOMATION_REQUIRE_RESOURCE_LEASE": "1",
             })
         try:
             with without_parent_secrets():

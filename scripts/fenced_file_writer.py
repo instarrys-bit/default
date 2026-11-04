@@ -18,11 +18,19 @@ def _repo_relative(path) -> str | None:
     if not candidate.is_absolute():
         candidate = Path.cwd() / candidate
     try:
-        relative = candidate.resolve(strict=False).relative_to(ROOT.resolve())
-    except (OSError, ValueError):
+        lexical = candidate.relative_to(ROOT.resolve())
+    except ValueError:
         return None
-    value = relative.as_posix()
-    return value if value not in {"", "."} else None
+    try:
+        resolved = candidate.resolve(strict=False)
+        resolved.relative_to(ROOT.resolve())
+    except (OSError, ValueError) as exc:
+        raise PermissionError("repository write path escapes through a symlink") from exc
+    lexical_value = lexical.as_posix()
+    resolved_value = resolved.relative_to(ROOT.resolve()).as_posix()
+    if lexical_value in PROTECTED_PATHS or resolved_value in PROTECTED_PATHS:
+        raise PermissionError("owner-managed protected file is read-only: shadowrocket/ss.conf")
+    return resolved_value if resolved_value not in {"", "."} else None
 
 
 def authorize_write_path(path) -> None:

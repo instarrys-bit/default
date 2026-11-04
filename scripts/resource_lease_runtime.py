@@ -264,6 +264,64 @@ def _assert_live_writer_fence(queue, task, resource_path, proof_item, now):
     return True
 
 
+def _task_targets_workflow_auto_sync(snapshot_path, task_id):
+    if not snapshot_path:
+        return False
+    try:
+        snapshot=json.loads(Path(snapshot_path).read_text(encoding="utf-8"))
+    except (OSError,json.JSONDecodeError):
+        return False
+    task=next((x for x in snapshot.get("tasks",[]) if isinstance(x,dict) and x.get("task_id")==task_id),None)
+    return isinstance(task,dict) and task.get("target_program_id")=="workflow_auto_sync"
+
+
+def _active_writer_task(queue, task_id, worker_id, task_lease_token, now):
+    validate_envelope(queue)
+    task=next((x for x in queue["tasks"] if isinstance(x,dict) and x.get("task_id")==task_id),None)
+    if task is None or task.get("status") not in {"CLAIMED","VERIFYING"}:
+        raise ValueError("resource write requires an active CLAIMED or VERIFYING task")
+    lease=task.get("lease")
+    if (not isinstance(lease,dict) or lease.get("owner")!=worker_id
+            or not secrets.compare_digest(str(lease.get("token","")),str(task_lease_token))):
+        raise ValueError("resource write task lease owner or token mismatch")
+    if utc(lease.get("expires_at"))<=now:
+        raise ValueError("resource write task lease has expired")
+    if task.get("status")=="VERIFYING":
+        intent=task.get("dispatch_intent")
+        attempt=task.get("attempts")
+        if (task.get("target_program_id")!="workflow_auto_sync"
+                or task.get("requester_program_id")!="workflow_automation_watchdog"
+                or not isinstance(intent,dict) or intent.get("task_id")!=task_id
+                or intent.get("dispatch_attempt")!=attempt
+                or intent.get("correlation_id")!=f"{task_id}-a{attempt}"
+                or intent.get("workflow_path")!=".github/workflows/auto_sync.yml"
+                or intent.get("ref")!="main"):
+            raise ValueError("VERIFYING resource writes require the exact Watchdog production dispatch")
+    return task
+
+
+def _assert_live_writer_fence(queue, task, resource_path, proof_item, now):
+    lease=task.get("resource_lease")
+    declared=lease.get("resources") if isinstance(lease,dict) and lease.get("status")=="ACTIVE" else None
+    if not isinstance(declared,dict) or declared.get(resource_path)!=proof_item:
+        raise ValueError("live task resource proof does not match the fencing token")
+    leases=queue.get("resource_leases")
+    if not isinstance(leases,dict):
+        raise ValueError("durable resource lease registry is missing")
+    record=checked_record(leases.get(resource_path),resource_path)
+    task_lease=task["lease"]
+    if (record is None or record.get("status")!="ACTIVE"
+            or record.get("task_id")!=task["task_id"]
+            or record.get("worker_id")!=task_lease.get("owner")
+            or record.get("task_lease_token")!=task_lease.get("token")
+            or record.get("lease_id")!=proof_item.get("lease_id")
+            or record.get("fencing_token")!=proof_item.get("fencing_token")):
+        raise ValueError(f"resource lease fencing check failed: {resource_path}")
+    if utc(record["expires_at"])<=now:
+        raise ValueError(f"resource lease expired: {resource_path}")
+    return True
+
+
 def assert_resource_lease_from_environment(resource_path):
     """Read the durable queue at every filesystem mutation and enforce live fencing."""
     resource_path=resource_key(resource_path)
@@ -285,11 +343,13 @@ def assert_resource_lease_from_environment(resource_path):
     task_id=os.environ["AUTOMATION_TASK_ID"]
     worker_id=os.environ["AUTOMATION_WORKER_ID"]
     task_token=os.environ["AUTOMATION_TASK_LEASE_TOKEN"]
-    # workflow_auto_sync owns one exclusive pipeline mutex; independent adapters
-    # must provide their exact path-level lock instead of inheriting this alias.
-    if resource_path in proof:
-        lease_key=resource_path
-    elif "logical/production-pipeline" in proof:
+    matching=[key for key in proof if isinstance(key,str) and (
+        resource_path==key or resource_path.startswith(key+".") or resource_path.startswith(key+"/")
+        or key.startswith(resource_path.rstrip("/")+"/")
+    )]
+    if matching:
+        lease_key=max(matching,key=len)
+    elif "logical/production-pipeline" in proof and _task_targets_workflow_auto_sync(os.environ.get("AUTOMATION_QUEUE_SNAPSHOT"),task_id):
         lease_key="logical/production-pipeline"
     else:
         raise ValueError(f"resource lease proof does not cover write path {resource_path}")
