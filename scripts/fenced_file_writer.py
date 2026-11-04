@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """Fail-closed filesystem write guard for Watchdog-owned production runs."""
 from __future__ import annotations
+import json
 import os
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+_ORIGINAL_OPEN = open
+_TRACE_ACTIVE = False
 PROTECTED_PATHS = {"modules/uu.conf"}
 _INSTALLED = False
 
@@ -40,6 +43,33 @@ def _repo_relative(path) -> str | None:
     if lexical_value in PROTECTED_PATHS or resolved_value in PROTECTED_PATHS:
         raise PermissionError("owner-managed protected file is read-only")
     return resolved_value if resolved_value not in {"", "."} else None
+
+
+def _record_write_trace(path, operation: str) -> None:
+    """Append path-only runtime evidence outside the repository; never record file contents or secrets."""
+    global _TRACE_ACTIVE
+    trace_path = os.environ.get("AUTOMATION_WRITE_TRACE_PATH")
+    if not trace_path or _TRACE_ACTIVE:
+        return
+    relative = _repo_relative(path)
+    if relative is None:
+        return
+    record = {
+        "operation": operation,
+        "path": relative,
+        "workflow": os.environ.get("GITHUB_WORKFLOW", ""),
+        "run_id": os.environ.get("GITHUB_RUN_ID", ""),
+        "task_id": os.environ.get("AUTOMATION_TASK_ID") or os.environ.get("AUTOMATION_TASK_ID_BASE", ""),
+        "lease_required": os.environ.get("AUTOMATION_REQUIRE_RESOURCE_LEASE") == "1",
+    }
+    _TRACE_ACTIVE = True
+    try:
+        destination = Path(trace_path)
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        with _ORIGINAL_OPEN(destination, "a", encoding="utf-8") as stream:
+            stream.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
+    finally:
+        _TRACE_ACTIVE = False
 
 
 def authorize_write_path(path) -> None:
@@ -80,21 +110,26 @@ def _audit_hook(event: str, args: tuple) -> None:
             writing = writing or bool(flags & (os.O_WRONLY | os.O_RDWR | os.O_CREAT | os.O_TRUNC | os.O_APPEND))
         if writing:
             authorize_write_path(args[0])
+            _record_write_trace(args[0], "open")
         return
     if event in {"os.remove", "os.rmdir", "os.mkdir", "os.chmod", "os.chown", "os.truncate", "os.utime"} and args:
         path = args[0]
         if isinstance(path, int):
             raise PermissionError("descriptor-based filesystem mutations are denied by the production write guard")
         authorize_write_path(path)
+        _record_write_trace(path, event)
         return
     if event in {"os.rename", "os.replace"} and len(args) >= 2:
         authorize_write_path(args[0])
         authorize_write_path(args[1])
+        _record_write_trace(args[0], event + ":source")
+        _record_write_trace(args[1], event + ":destination")
         return
     if event in {"os.symlink", "os.link"} and len(args) >= 2:
         if event == "os.link":
             authorize_write_path(args[0])
         authorize_write_path(args[1])
+        _record_write_trace(args[1], event)
 
 
 def install_write_guard() -> bool:

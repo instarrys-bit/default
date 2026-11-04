@@ -61,6 +61,29 @@ class FencedFileWriterTests(unittest.TestCase):
         with self.assertRaisesRegex(PermissionError, "descriptor-based filesystem mutations"):
             fenced_file_writer._audit_hook("os.utime", (7, None, None))
 
+    def test_runtime_trace_records_only_repository_paths_and_no_file_contents(self):
+        with tempfile.TemporaryDirectory() as directory:
+            trace = Path(directory) / "trace.jsonl"
+            target = ROOT / "sources" / "trace-fixture.json"
+            with patch.dict(os.environ, {
+                "AUTOMATION_WRITE_TRACE_PATH": str(trace),
+                "GITHUB_WORKFLOW": "test-workflow",
+                "GITHUB_RUN_ID": "12345",
+                "AUTOMATION_TASK_ID": "task_example",
+                "AUTOMATION_REQUIRE_RESOURCE_LEASE": "1",
+            }, clear=False):
+                fenced_file_writer._record_write_trace(target, "open")
+                fenced_file_writer._record_write_trace(Path(directory) / "external.tmp", "open")
+            rows = [json.loads(line) for line in trace.read_text(encoding="utf-8").splitlines()]
+            self.assertEqual(len(rows), 1)
+            self.assertEqual(rows[0]["path"], "sources/trace-fixture.json")
+            self.assertEqual(rows[0]["operation"], "open")
+            self.assertEqual(rows[0]["workflow"], "test-workflow")
+            self.assertEqual(rows[0]["run_id"], "12345")
+            self.assertEqual(rows[0]["task_id"], "task_example")
+            self.assertTrue(rows[0]["lease_required"])
+            self.assertNotIn("contents", rows[0])
+
     def test_every_registered_python_component_installs_the_guard(self):
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
         components = [item for item in registry["programs"] if item.get("kind") == "python_component"]

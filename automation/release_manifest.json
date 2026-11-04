@@ -28,7 +28,7 @@
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "3ed663eacb0a47a9a5095f7e7cec99aa2f8d33c1"
+      "git_blob_sha": "40094ceb17f9291392419090610f08b5dbac8c64"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -62,7 +62,8 @@
     "Resource ownership audit is still a partial static review; restore_automation_state is an additional serialized writer for source assessment history/report artifacts.",
     "Source assessment retries now replay a deterministic batch bound to the producer run ID and discovery artifact digest; per-source durable progress checkpoints and complete transitive writer proof remain outstanding.",
     "Review cursor checkpoint persistence is protected by the production workflow's top-level main-writer concurrency group and the live Watchdog fencing lease; complete transitive writer tracing remains outstanding.",
-    "The production workflow now permits one bounded retry after a verified failed run; cancelled/superseded task classification remains conservative and terminal history is retained."
+    "The production workflow now permits one bounded retry after a verified failed run; cancelled/superseded task classification remains conservative and terminal history is retained.",
+    "Path-only runtime write traces are uploaded for production audit and publish jobs; traces cover Python filesystem audit events but do not prove shell/git child-process writes or complete transitive runtime behavior."
   ],
   "next_migration_gate": {
     "required_before_independent_python_dispatch": [
