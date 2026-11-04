@@ -190,7 +190,7 @@
       "last_seen_revision": "b9a701dd6752693c167b030a5cbd13d617e52da0",
       "last_seen_run_id": "41776163056",
       "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41776163056",
-      "classification_basis": "Reviewed as a safety/control-plane enforcement module. It rejects writes to the owner-managed shadowrocket/ss.conf and applies resource-lease checks; it does not supply DIRECT/PROXY/REJECT policy inputs."
+      "classification_basis": "Reviewed as a safety/control-plane enforcement module. It rejects writes to the owner-managed modules/uu.conf and applies resource-lease checks; it does not supply DIRECT/PROXY/REJECT policy inputs."
     },
     {
       "path": "scripts/resource_lease_runtime.py",
@@ -216,7 +216,7 @@
       "last_seen_revision": "b9a701dd6752693c167b030a5cbd13d617e52da0",
       "last_seen_run_id": "41776163056",
       "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41776163056",
-      "classification_basis": "Reviewed implementation and callers: currently invoked only for --self-test by validate-config; its normal mode reads ss.conf and explicit policy approvals but writes only reports/approved-domain-rules.list and reports/rule-selector-audit.md. It is not wired to published ruleset generation or production dispatch. Keep as control-plane analysis; any future integration into publication must explicitly reclassify/register its outputs as production inputs first."
+      "classification_basis": "Reviewed implementation and callers: currently invoked only for --self-test by validate-config; its normal mode reads uu.conf and explicit policy approvals but writes only reports/approved-domain-rules.list and reports/rule-selector-audit.md. It is not wired to published ruleset generation or production dispatch. Keep as control-plane analysis; any future integration into publication must explicitly reclassify/register its outputs as production inputs first."
     },
     {
       "path": "scripts/validate_release_manifest.py",
