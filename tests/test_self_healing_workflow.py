@@ -35,6 +35,13 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn("shadowrocket-automation:agent_failure;workflow=config_validator", workflow)
         self.assertIn("The deterministic audit and publish have recovered", workflow)
         self.assertIn("The config-baseline validator has recovered", workflow)
+        self.assertIn("This self-healing-agent incident remains open pending verified agent recovery.", workflow)
+        validator_resolver = workflow.split("  resolve-validator-incidents:", 1)[1].split("  resolve-audit-incidents:", 1)[0]
+        validator_agent_block = validator_resolver.split('agent_issues=', 1)[1].split('done <<< "$agent_issues"', 1)[0]
+        audit_resolver = workflow.split("  resolve-audit-incidents:", 1)[1]
+        audit_agent_block = audit_resolver.split('agent_issues=', 1)[1].split('done <<< "$agent_issues"', 1)[0]
+        self.assertNotIn('gh issue close "$issue"', validator_agent_block)
+        self.assertNotIn('gh issue close "$issue"', audit_agent_block)
 
     def test_stale_watchdog_threshold_exceeds_main_job_timeout(self):
         watchdog = WATCHDOG.read_text(encoding="utf-8")
