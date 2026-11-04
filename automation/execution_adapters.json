@@ -291,8 +291,8 @@
         "predecessor_program_id": "script_discover_sources",
         "artifact_path": "sources/discovered_sources.json",
         "producer_workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
-        "edge_type": "successful_workflow_run_with_immutable_artifact_digest",
-        "enforcement": "Watchdog enqueues only from a successful matching workflow_run event; scheduler checks exact producer identity, run metadata and current artifact digest before claim."
+        "edge_type": "intended_successful_workflow_run_with_immutable_artifact_digest",
+        "enforcement": "Scheduler validates producer identity, run metadata and current artifact digest. The Watchdog workflow event gate that supplies successful-run evidence is pending; adapter remains disabled until that gate is installed."
       }
     },
     {
