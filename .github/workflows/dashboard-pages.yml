@@ -18,7 +18,7 @@ on:
     workflows:
       - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
       - "Shadowrocket automation watchdog"
-    types: [requested, in_progress, completed]
+    types: [in_progress, completed]
   schedule:
     - cron: "17 * * * *"
 permissions:
@@ -27,7 +27,7 @@ permissions:
 
 concurrency:
   group: github-pages-dashboard
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
