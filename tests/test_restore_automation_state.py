@@ -2,7 +2,7 @@ import io, sys, tarfile, tempfile, unittest
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from restore_automation_state import restore_state
+from restore_automation_state import restore_state, restore_publish_outputs
 
 class RestoreAutomationStateTests(unittest.TestCase):
     def make_archive(self, path, entries):
@@ -104,6 +104,51 @@ class RestoreAutomationStateTests(unittest.TestCase):
             ])
             with self.assertRaisesRegex(ValueError, "duplicate"):
                 restore_state(archive, root / "repo")
+
+
+    def test_publish_restore_copies_only_allowlisted_outputs_and_rejects_config(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp); archive=root/"audit.tar.gz"; repo=root/"repo"
+            self.make_archive(archive, [
+                ("sources/policy.json", "{}"),
+                ("reports/project-status.md", "ok"),
+                ("rulesets/direct.list", "DOMAIN,example.com\\n"),
+                ("sources/domain_reviews.json", "{\"reviews\":[]}"),
+                ("shadowrocket/ss.conf", "must-not-copy"),
+            ])
+            with self.assertRaisesRegex(ValueError, "owner-managed read-only config"):
+                restore_publish_outputs(archive, repo)
+            self.assertFalse((repo/"shadowrocket/ss.conf").exists())
+            self.assertFalse((repo/"sources/policy.json").exists())
+
+    def test_publish_restore_copies_reports_rulesets_and_shards(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp); archive=root/"audit.tar.gz"; repo=root/"repo"
+            self.make_archive(archive, [
+                ("sources/policy.json", "{}"),
+                ("reports/project-status.md", "ok"),
+                ("rulesets/direct.list", "DOMAIN,example.com\\n"),
+                ("sources/source_assessments.json.manifest.json", "{}"),
+                ("sources/source_assessments.json.parts-abcd/part-000000.jsonl", "{}\\n"),
+                ("sources/domain_reviews.json", "ignored"),
+            ])
+            result=restore_publish_outputs(archive, repo)
+            self.assertEqual(result["restored_files"], 5)
+            self.assertTrue((repo/"sources/policy.json").exists())
+            self.assertTrue((repo/"rulesets/direct.list").exists())
+            self.assertTrue((repo/"sources/source_assessments.json.parts-abcd/part-000000.jsonl").exists())
+            self.assertFalse((repo/"sources/domain_reviews.json").exists())
+
+    def test_publish_restore_removes_legacy_monolith_when_manifest_is_present(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp); archive=root/"audit.tar.gz"; repo=root/"repo"
+            (repo/"sources").mkdir(parents=True)
+            (repo/"sources/discovered_sources.json").write_text("legacy", encoding="utf-8")
+            self.make_archive(archive, [("sources/discovered_sources.json.manifest.json", "{}")])
+            restore_publish_outputs(archive, repo)
+            self.assertFalse((repo/"sources/discovered_sources.json").exists())
+            self.assertTrue((repo/"sources/discovered_sources.json.manifest.json").exists())
+
 
 if __name__ == "__main__":
     unittest.main()

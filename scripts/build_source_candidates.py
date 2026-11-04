@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """Join parser, policy and lineage evidence into a non-activating source candidate matrix."""
 from __future__ import annotations
+
+if __import__("os").environ.get("AUTOMATION_WRITE_GUARD") == "1":
+    from fenced_file_writer import install_write_guard as _install_write_guard
+    _install_write_guard()
+
 import json
 from collections import defaultdict
 from pathlib import Path

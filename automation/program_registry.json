@@ -1053,7 +1053,6 @@
       ],
       "depends_on": [
         "script_append_step_summary",
-        "script_apply_safe_repair",
         "script_assess_sources",
         "script_audit_config_drift",
         "script_audit_external_domains",
@@ -1068,21 +1067,15 @@
         "script_build_source_candidates",
         "script_collect_domains",
         "script_deterministic_review",
-        "script_diagnose_workflow_failure",
         "script_discover_sources",
-        "script_domain_rule_engine",
         "script_import_request_observations",
-        "script_json_document_store",
         "script_lifecycle_audit",
         "script_lifecycle_gate",
         "script_persist_review_cursor",
-        "script_production_intent",
         "script_refresh_ruleset_manifest",
         "script_register_config_baseline",
         "script_resource_lease_runtime",
         "script_restore_automation_state",
-        "script_review_cursor",
-        "script_source_registry",
         "script_sync_ruleset_config_conflicts",
         "script_validate_config",
         "script_verify_baseline",
@@ -1737,6 +1730,33 @@
       "dispatches": [],
       "permission_boundary": "Read-only filesystem access; no network, no repository mutation, no source activation, and no configuration access.",
       "health_check": "Invoked by task_scheduler only through the reviewed assess_sources completion artifact_verifier contract.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 60
+      }
+    },
+    {
+      "id": "script_fenced_file_writer",
+      "path": "scripts/fenced_file_writer.py",
+      "kind": "python_component",
+      "responsibility": "enforce owner-config immutability and live resource-lease checks for repository-local filesystem mutations",
+      "capabilities": [
+        "filesystem_write_guard"
+      ],
+      "invocation": "imported_module",
+      "inputs": [
+        "filesystem mutation audit events",
+        "Watchdog task and resource lease environment"
+      ],
+      "outputs": [
+        "allow mutation only when the owner-config and live fencing policies pass"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Library only; no independent execution, credentials, network access, or authority to edit shadowrocket/ss.conf.",
+      "health_check": "Covered by tests/test_fenced_file_writer.py and the full deterministic unit suite.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],

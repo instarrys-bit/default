@@ -6,6 +6,11 @@ programs, grant permissions, or decide whether a task may be completed.
 """
 from __future__ import annotations
 
+if __import__("os").environ.get("AUTOMATION_WRITE_GUARD") == "1":
+    from fenced_file_writer import install_write_guard as _install_write_guard
+    _install_write_guard()
+
+
 import base64
 import copy
 import json
