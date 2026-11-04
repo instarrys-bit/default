@@ -38,8 +38,10 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
             "sources/source_assessments.json": {"lease_id": "history-lease", "fencing_token": 7},
         }
         task_token = "task-lease-token"
+        predecessor = {"artifact_sha256": "b" * 64, "workflow_run_id": "123"}
         task = {
             "task_id": task_id, "target_program_id": "script_assess_sources",
+            "input": {"predecessor": predecessor},
             "status": "CLAIMED",
             "lease": {"owner": "worker-test", "token": task_token,
                       "expires_at": (now + timedelta(minutes=10)).isoformat().replace("+00:00", "Z")},
@@ -62,7 +64,6 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
             "AUTOMATION_TASK_LEASE_TOKEN": task_token,
             "AUTOMATION_RESOURCE_LEASE_PROOF": json.dumps(proof),
         }
-        predecessor = {"artifact_sha256": "b" * 64}
         return store, env, predecessor
 
     def test_each_completed_url_is_durably_checkpointed_and_restored(self):
