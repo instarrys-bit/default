@@ -3,8 +3,8 @@
   "contract_id": "capability-script-assess-sources-v1",
   "program_id": "script_assess_sources",
   "implementation_path": "scripts/assess_sources.py",
-  "implementation_blob_sha": "4a436482766fa97a9908a61b0172247efb7311bc",
-  "review_status": "contract_documented_pending_runtime_gates",
+  "implementation_blob_sha": "cd9ff31732d88be297bd1a2b54c976192b432258",
+  "review_status": "typed_predecessor_and_dispatch_contract_documented_pending_watchdog_integration",
   "dispatch_status": "disabled",
   "entrypoint": {
     "command": [
@@ -53,6 +53,53 @@
     "environment": {
       "github_token_required": true,
       "other_environment_inputs": "Read-only GitHub Contents API credential supplied by the parent scheduler to re-read live task/resource lease state before each write; no GitHub API write capability is used by the assessor."
+    },
+    "task_input": {
+      "required": [
+        "max_urls",
+        "max_file_bytes",
+        "max_total_bytes",
+        "predecessor"
+      ],
+      "predecessor_proof": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "program_id",
+          "workflow_name",
+          "workflow_run_id",
+          "workflow_head_sha",
+          "artifact_path",
+          "artifact_sha256"
+        ],
+        "properties": {
+          "program_id": {
+            "type": "string",
+            "const": "script_discover_sources"
+          },
+          "workflow_name": {
+            "type": "string",
+            "const": "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
+          },
+          "workflow_run_id": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "workflow_head_sha": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "artifact_path": {
+            "type": "string",
+            "const": "sources/discovered_sources.json"
+          },
+          "artifact_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      },
+      "note": "The predecessor metadata is validated by the scheduler and retained in the durable task record; the assessor uses only the three bounded numeric options."
     }
   },
   "outputs": {
@@ -165,7 +212,8 @@
     "note": "The scheduler enforces sources/discovered_sources.json as a required read-only predecessor artifact and compares its complete legacy/sharded digest before and after execution; it does not dispatch the discovery predecessor itself.",
     "registry_dependency_program_id": "script_discover_sources",
     "required_predecessor_artifact": "sources/discovered_sources.json",
-    "input_snapshot_validation": "The scheduler hashes the complete legacy/sharded discovered_sources document before and after assessment and rejects publication if it changes."
+    "input_snapshot_validation": "The scheduler hashes the complete legacy/sharded discovered_sources document before and after assessment and rejects publication if it changes.",
+    "scheduler_enforcement": "task_scheduler.build_execution_plan validates the producer program, exact workflow name, numeric workflow run ID, full producer commit SHA, allowlisted artifact path, and current complete legacy/sharded artifact digest before claim."
   },
   "permission_boundary": {
     "filesystem": "Write only the three declared logical output resources and their document-store temporary/manifest/shard children. Publish only persistent assessment history and report; runtime fingerprint data remains runner-local.",
@@ -174,10 +222,10 @@
     "protected_config": "shadowrocket/ss.conf is immutable and outside this capability's write set."
   },
   "blockers": [
-    "Add typed dependency-edge enforcement so script_discover_sources is a verified predecessor, not merely a registry label.",
-    "Implement durable idempotency or checkpoint/replay semantics before enabling retries; max_attempts remains zero.",
-    "Complete transitive writer inventory and prove restore_automation_state publication shares the live production mutex.",
-    "Run regular Watchdog dispatch only after adapter enablement is independently validated; no temporary canary override."
+    "Watchdog workflow enqueue integration is not yet installed; the adapter remains disabled until a reviewed Watchdog event path is merged.",
+    "Implement durable idempotency or checkpoint/replay semantics before enabling retries; max_attempts remains one total execution.",
+    "Complete transitive writer inventory and runtime tracing beyond the named source-assessment paths.",
+    "Run a regular Watchdog-dispatched task and verify queue completion, artifacts, publication and protected-config invariance."
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.04.9",
@@ -186,5 +234,12 @@
     "execution_adapters_blob_sha": "51b4a61c3764e4446dae93d6c0ffc26d7a062afe",
     "added_after_release_baseline": false,
     "note": "References the refreshed baseline snapshot. This is review provenance only, not dispatch authorization; independent Python dispatch remains blocked by the release compatibility and runtime-enforcement gates."
+  },
+  "dependency_contract": {
+    "predecessor_program_id": "script_discover_sources",
+    "artifact_path": "sources/discovered_sources.json",
+    "producer_workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
+    "edge_type": "successful_workflow_run_with_immutable_artifact_digest",
+    "enforcement": "Watchdog enqueues only from a successful matching workflow_run event; scheduler checks exact producer identity, run metadata and current artifact digest before claim."
   }
 }
