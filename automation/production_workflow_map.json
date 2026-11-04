@@ -498,14 +498,14 @@
       "needs": [
         "audit"
       ],
-      "condition": "${{ always() && needs.audit.result == 'failure' }}",
+      "condition": "${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled') }}",
       "permissions": {
         "contents": "write"
       },
       "steps": [
         {
           "order": 794,
-          "name": "Checkout exact failed-run source",
+          "name": "Checkout current main for a single-path checkpoint update",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
           "validation_program_ids": [],
@@ -521,7 +521,7 @@
         },
         {
           "order": 806,
-          "name": "Validate checkpoint in runner temporary storage only",
+          "name": "Revalidate live Watchdog lease and persist only the cursor checkpoint",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
             "script_persist_review_cursor"
@@ -613,7 +613,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
-    "release_manifest_blob_sha": "ea58e2e4091632e3c32e2daa6374fa4e606940d1",
+    "release_manifest_blob_sha": "2031c9a68337ea352d104d169f355e71727db173",
     "program_registry_blob_sha": "29a784cdc3d248f3a2a1f1fa944cde570ab0886e",
     "execution_adapters_blob_sha": "9eaa66c78e007b6d5ad442fd8ca9f27f775741c9",
     "added_after_release_baseline": true,
