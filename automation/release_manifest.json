@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-baseline-2026.11.04.2",
+  "release_id": "shadowrocket-automation-baseline-2026.11.04.3",
   "release_status": "baseline_snapshot",
   "created_on": "2026-11-04",
-  "purpose": "Pin the post-migration automation baseline with Watchdog-owned production dispatch and live resource fencing at the publish boundary.",
+  "purpose": "Pin the automation baseline with Watchdog-owned production dispatch and a first independently schedulable source-assessment capability implemented but disabled pending controlled canary.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "3069dd9c86a25a5ab8e27be3d24025519ad9e43c"
+      "git_blob_sha": "e6019a7b1aeeae488e5840d6abd76ecf918a6d51"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "c90150d2071957fa2d8f0a5af50b0c7bec81b84f"
+      "git_blob_sha": "ebb3c9faf515835c1ad7dc46872c4166bae752b0"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -56,12 +56,10 @@
     "reject_rule_publication_requires_explicit_approval": true
   },
   "known_gaps": [
-    "Python adapter input and output contracts are not yet complete.",
-    "Per-capability dependency edges have not yet been separated from shared-library imports and workflow aggregation.",
-    "Write-path ownership and indirect side effects still require machine-checked coverage.",
-    "Resource lease enforcement currently covers the scheduler-mediated production workflow; per-capability resource contracts and artifact lineage are not yet complete.",
-    "The declared review-engine version is not yet pinned to a verified source revision.",
-    "The production workflow now holds a scheduler-issued logical resource lease and checks its live fencing epoch before publishing; independent Python writer adapters remain disabled until each has a complete contract and compatible enforcement."
+    "Other Python capability input/output contracts and dependency edges remain incomplete.",
+    "Write-path ownership and indirect side effects still require machine-checked coverage across all independent writers.",
+    "The source-assessment adapter is fully contracted and live-fenced but remains disabled until CI, merge and controlled canary pass.",
+    "The declared review-engine version is not yet pinned to a verified source revision."
   ],
   "next_migration_gate": {
     "required_before_independent_python_dispatch": [
@@ -73,6 +71,6 @@
       "Verify config-baseline immutability before and after execution.",
       "Run isolated canary tests with all new adapters disabled by default."
     ],
-    "completion_status": "blocked_pending_contract_and_runtime_enforcement"
+    "completion_status": "first_capability_implemented_pending_ci_merge_and_canary"
   }
 }
