@@ -3,7 +3,7 @@
   "contract_id": "capability-script-assess-sources-v1",
   "program_id": "script_assess_sources",
   "implementation_path": "scripts/assess_sources.py",
-  "implementation_blob_sha": "b729970c440f8051307fd141b0959d475c6717a4",
+  "implementation_blob_sha": "02c90fec4681bb147f58ec62440ed741a11b2c84",
   "review_status": "implementation_reviewed_pending_ci",
   "dispatch_status": "disabled",
   "entrypoint": {
@@ -21,7 +21,7 @@
       "{task_input_file}"
     ],
     "task_scheduler_compatible": true,
-    "reason": "Bounded task-input CLI and live fenced write contract implemented; adapter remains disabled pending CI, merge and controlled canary."
+    "reason": "Bounded task-input CLI, per-write resource fencing and independent artifact verification are implemented; regular adapter dispatch remains disabled pending the final release gate."
   },
   "inputs": {
     "repository_snapshot": [
@@ -171,9 +171,9 @@
     "protected_config": "shadowrocket/ss.conf is immutable and outside this capability's write set."
   },
   "blockers": [
-    "CI and full repository test suite must pass.",
-    "Merge and post-merge controlled scheduler canary remain outstanding.",
-    "Adapter remains disabled until the controlled canary proves live fencing, persistent artifact publication and independent verification in GitHub Actions."
+    "The inventory drift regression tests and full repository CI must pass.",
+    "The capability contract and implementation pins must be included in a validated release baseline.",
+    "The adapter remains disabled until the regular Watchdog dispatch path passes a controlled post-merge verification."
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.04.6",
