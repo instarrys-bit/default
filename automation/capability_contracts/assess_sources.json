@@ -176,7 +176,7 @@
     "Adapter remains disabled until the controlled canary proves live fencing, persistent artifact publication and independent verification in GitHub Actions."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-baseline-2026.11.04.5",
+    "release_id": "shadowrocket-automation-baseline-2026.11.04.6",
     "release_manifest_blob_sha": "1a4221816d274bf0afc2a7347892faebdce2af54",
     "program_registry_blob_sha": "6f04f9473541cd569125f70c20fa3278bb34713d",
     "execution_adapters_blob_sha": "570db5f82cadfe44aedb4652f629a5b4df32f0e0",
