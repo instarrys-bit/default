@@ -87,6 +87,11 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
         (self.root / "scripts").mkdir()
         (self.root / "shadowrocket").mkdir()
         (self.root / "shadowrocket" / "ss.conf").write_text("[General]\n", encoding="utf-8")
+        (self.root / "automation").mkdir()
+        (self.root / "automation" / "production_control.json").write_text(
+            '{"schema_version": 1, "dispatch_mode": "enabled"}',
+            encoding="utf-8",
+        )
         (self.root / ".github" / "workflows").mkdir(parents=True)
         (self.root / ".github" / "workflows" / "workflow-target.yml").write_text(
             "run-name: Automation task \${{ inputs.automation_task_id || 'manual' }}\n"
