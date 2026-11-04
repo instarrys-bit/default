@@ -8,6 +8,7 @@ if __import__("os").environ.get("AUTOMATION_WRITE_GUARD") == "1":
 
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -263,10 +264,34 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
                 or task.get("target_program_id") != "workflow_auto_sync"
                 or task.get("capability") != "deterministic_audit"
                 or payload.get("authorization_target_program_id") != task.get("target_program_id")
-                or payload.get("authorization_idempotency_key") != task.get("idempotency_key")):
+                or payload.get("authorization_idempotency_key") != task.get("idempotency_key")
+                or payload.get("authorization_requested") is not True
+                or payload.get("baseline_source_event") != payload.get("authorization_event")
+                or payload.get("baseline_source_sha") != payload.get("authorization_head_sha")):
             raise ValueError("manual authorization task target/idempotency binding is invalid")
         if not isinstance(record.get("scope_sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", record["scope_sha256"]):
             raise ValueError("manual authorization scope digest is invalid")
+        scope = {
+            "repository": payload["authorization_repository"],
+            "workflow_ref": payload["authorization_workflow_ref"],
+            "event": payload["authorization_event"],
+            "actor": payload["authorization_actor"],
+            "actor_id": payload["authorization_actor_id"],
+            "run_id": payload["authorization_run_id"],
+            "run_attempt": payload["authorization_run_attempt"],
+            "ref": payload["authorization_ref"],
+            "head_sha": payload["authorization_head_sha"],
+            "requester_program_id": task["requester_program_id"],
+            "target_program_id": task["target_program_id"],
+            "capability": task["capability"],
+            "idempotency_key": task["idempotency_key"],
+            "production_fingerprint": payload["production_fingerprint"],
+        }
+        expected_scope_sha = hashlib.sha256(
+            json.dumps(scope, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        ).hexdigest()
+        if record["scope_sha256"] != expected_scope_sha:
+            raise ValueError("manual authorization scope digest does not match its persisted task")
         if (not isinstance(record.get("run_attempt"), str) or not record["run_attempt"].isdigit()
                 or not isinstance(record.get("actor_id"), str) or not record["actor_id"].isdigit()
                 or record.get("event") != "workflow_dispatch"
