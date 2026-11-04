@@ -8,7 +8,7 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "d4cf970870f4b51d40c1f70c7d4347a035d4b960"
+      "git_blob_sha": "e0f1959761c942013818615c6b0176325045696f"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -28,7 +28,7 @@
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "40094ceb17f9291392419090610f08b5dbac8c64"
+      "git_blob_sha": "a476cc031ad8f0c3c2ff5dc52f6bc5762da11eb6"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -39,6 +39,10 @@
       "path": "modules/uu.conf",
       "git_blob_sha": "ce4176b564478c1f83f01b7c9559ddcf39453413",
       "access": "read_only"
+    },
+    "git_write_trace_capture": {
+      "path": "scripts/capture_git_write_trace.py",
+      "git_blob_sha": "a88030039f797ca8b3c517fdb4be21d4c78aac09"
     }
   },
   "compatibility": {
@@ -63,7 +67,7 @@
     "Source assessment retries now replay a deterministic batch bound to the producer run ID and discovery artifact digest; per-source durable progress checkpoints and complete transitive writer proof remain outstanding.",
     "Review cursor checkpoint persistence is protected by the production workflow's top-level main-writer concurrency group and the live Watchdog fencing lease; complete transitive writer tracing remains outstanding.",
     "The production workflow now permits one bounded retry after a verified failed run; cancelled/superseded task classification remains conservative and terminal history is retained.",
-    "Path-only runtime write traces are uploaded for production audit and publish jobs; traces cover Python filesystem audit events but do not prove shell/git child-process writes or complete transitive runtime behavior."
+    "Combined Python audit-hook events and end-of-job Git tree snapshots capture executed Python filesystem events and persistent repository-tree changes from shell/Git subprocesses. Transient write-and-revert activity, Git metadata changes, external filesystem/API side effects and unexecuted code paths remain unproven."
   ],
   "next_migration_gate": {
     "required_before_independent_python_dispatch": [
