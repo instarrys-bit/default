@@ -79,7 +79,7 @@ def inspect_rule_layout(config_text: str, observed: list[dict]) -> tuple[dict, l
     # Record the configured RULE-SET order for visibility only; do not resolve policy winners from it.
 
     layout = {
-        "expected_ruleset_order": "authoritative order from shadowrocket/ss.conf",
+        "expected_ruleset_order": "authoritative order from modules/uu.conf",
         "observed_ruleset_order": [f"{file}:{policy}" for file, policy in observed_order],
         "marker_lines": positions,
         "passed": not errors,
@@ -215,7 +215,7 @@ def inspect(config_text: str, manifest: dict, ruleset_dir: Path = RULESETS) -> d
         )
 
     return {
-        "schema_version": 2, "config_path": "shadowrocket/ss.conf",
+        "schema_version": 2, "config_path": "modules/uu.conf",
         "config_rule_set_reference_count": len(refs), "references": observed,
         "managed_output_files": sorted(expected_files), "file_stats": file_stats,
         "cross_file_duplicates": cross_file_duplicates,
@@ -232,7 +232,7 @@ def main() -> int:
     REPORT_JSON.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     lines = [
         "# RULE-SET reference audit", "",
-        "- Config authority: shadowrocket/ss.conf",
+        "- Config authority: modules/uu.conf",
         f"- RULE-SET references: {report['config_rule_set_reference_count']}",
         f"- Result: {'PASS' if report['passed'] else 'FAIL'}",
         f"- External RULE-SET order: {' -> '.join(item.split(':', 1)[1] for item in report['layout']['observed_ruleset_order'])}",
