@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-baseline-2026.11.04.8",
+  "release_id": "shadowrocket-automation-baseline-2026.11.04.9",
   "release_status": "baseline_snapshot",
   "created_on": "2026-11-04",
-  "purpose": "Pin the Watchdog production dispatch environment fix and retain the lease-gated, owner-config immutable execution boundary.",
+  "purpose": "Refresh the baseline snapshot to the current main-branch registry, adapters, workflows, ruleset manifest and read-only owner configuration after capability inventory drift controls were merged.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
@@ -28,7 +28,7 @@
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "a31c6365bb18427c7f2db53fbb2dd7ee85877297"
+      "git_blob_sha": "c6945265b4fce6fd151361d1a2822bf51638b66d"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -37,7 +37,7 @@
     },
     "config_baseline": {
       "path": "shadowrocket/ss.conf",
-      "git_blob_sha": "daa84802764de63c24da1e727ed233bab2e9151f",
+      "git_blob_sha": "ef6b9d5e5db7f1355d06a0a834ce4f32b26f5677",
       "access": "read_only"
     }
   },
@@ -56,9 +56,9 @@
     "reject_rule_publication_requires_explicit_approval": true
   },
   "known_gaps": [
-    "Other Python capability input/output contracts and dependency edges remain incomplete.",
+    "Capability inventory freshness is now machine-checked, but complete runtime input/output contracts and typed dependency edges remain incomplete for most Python components.",
     "Write-path ownership and indirect side effects still require machine-checked coverage across all independent writers.",
-    "The source-assessment adapter remains disabled in main; the one-shot canary uses a temporary runner-local override and does not enable general dispatch.",
+    "The source-assessment adapter remains disabled in main; its one-shot canary used a temporary runner-local override and does not authorize general dispatch.",
     "The declared review-engine version is not yet pinned to a verified source revision.",
     "Durable failed-run cursor persistence is deferred until a Watchdog-leased capability owns that write."
   ],
