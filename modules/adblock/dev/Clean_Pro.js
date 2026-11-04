@@ -3,7 +3,7 @@
  *
  * Unified Dual-Mode Architecture:
  * [Mode A - Binary Wire-Stream Engine] -> YouTube / YouTube Music App (Protobuf)
- *   1. 64-Bit Safe Tag & Varint Codec (lossless on massive field numbers like 465160965)
+ *   1. Bounded Protobuf Tag & Varint Codec (lossless on massive field numbers like 465160965)
  *   2. Zero-Copy Subarray Passthrough (ultra-low memory footprint for iOS 15MB NE limit)
  *   3. Onesie Encryption Downgrade (/config & /log_event key stripping)
  *   4. Video Player Ad Removal (adPlacements, adSlots, pagead conversion ping)
@@ -101,6 +101,7 @@
       this.pos = 0;
       this.len = buf.length;
       this.maxDepth = limits && Number.isInteger(limits.maxDepth) ? limits.maxDepth : 64;
+      this.lastFieldNo = 0;
     }
 
     eof() {
@@ -134,11 +135,10 @@
       const rawTag = this.varintNumber();
       const wireType = rawTag % 8;
       const fieldNo = Math.floor(rawTag / 8);
-      if (!Number.isInteger(fieldNo) || fieldNo < 1 || fieldNo > 536870911 ||
-          wireType === WT_SGROUP || wireType === WT_EGROUP ||
-          wireType > WT_32) {
+      if (!Number.isInteger(fieldNo) || fieldNo < 1 || fieldNo > 536870911 || wireType > WT_32) {
         throw new Error("Invalid protobuf tag");
       }
+      this.lastFieldNo = fieldNo;
       return [fieldNo, wireType];
     }
 
@@ -156,31 +156,58 @@
       return bytesToUtf8(this.bytes());
     }
 
-    skip(wireType) {
-      const start = this.pos;
+    _skipValue(wireType) {
       switch (wireType) {
-        case WT_VARINT: {
+        case WT_VARINT:
           this._readVarintRaw();
-          break;
-        }
+          return;
         case WT_64:
           if (this.len - this.pos < 8) throw new RangeError("Truncated fixed64 field");
           this.pos += 8;
-          break;
+          return;
         case WT_LEN: {
           const length = this.varintNumber();
           if (!Number.isSafeInteger(length) || length < 0 || length > this.len - this.pos) {
             throw new RangeError("Invalid or truncated length-delimited field");
           }
           this.pos += length;
-          break;
+          return;
         }
         case WT_32:
           if (this.len - this.pos < 4) throw new RangeError("Truncated fixed32 field");
           this.pos += 4;
-          break;
+          return;
         default:
-          throw new Error("Unsupported protobuf wire type");
+          throw new Error("Invalid wire value");
+      }
+    }
+
+    skip(wireType) {
+      const start = this.pos;
+      if (wireType === WT_EGROUP) throw new Error("Unexpected end-group tag");
+      if (wireType !== WT_SGROUP) {
+        this._skipValue(wireType);
+        return this.buf.subarray(start, this.pos);
+      }
+
+      const stack = [this.lastFieldNo];
+      if (stack.length > this.maxDepth) throw new RangeError("Protobuf group nesting limit exceeded");
+      while (stack.length) {
+        const rawTag = this._readVarintRaw().value;
+        if (!Number.isSafeInteger(rawTag)) throw new RangeError("Invalid group tag");
+        const fieldNo = Math.floor(rawTag / 8);
+        const nestedWireType = rawTag % 8;
+        if (fieldNo < 1 || fieldNo > 536870911 || nestedWireType > WT_32) {
+          throw new Error("Invalid group tag");
+        }
+        if (nestedWireType === WT_EGROUP) {
+          if (stack.pop() !== fieldNo) throw new Error("Mismatched protobuf end-group tag");
+        } else if (nestedWireType === WT_SGROUP) {
+          stack.push(fieldNo);
+          if (stack.length > this.maxDepth) throw new RangeError("Protobuf group nesting limit exceeded");
+        } else {
+          this._skipValue(nestedWireType);
+        }
       }
       return this.buf.subarray(start, this.pos);
     }
