@@ -1325,7 +1325,7 @@
   // All other query components are preserved byte-for-byte; malformed/unknown URLs pass through.
   function stripInitplaybackAdParam(rawUrl) {
     if (typeof rawUrl !== "string" ||
-        !/^https?:\\/\\/[\\w-]+\\.googlevideo\\.com\\/initplayback(?:\\?|$)/i.test(rawUrl)) {
+        !/^https?:\/\/[\w-]+\.googlevideo\.com\/initplayback(?:\?|$)/i.test(rawUrl)) {
       return null;
     }
 
