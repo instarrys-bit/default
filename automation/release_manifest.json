@@ -19,11 +19,6 @@
       "path": "rulesets/manifest.json",
       "schema_version": 2,
       "git_blob_sha": "b92d23fa80689aeb7188642a28b81adb0d157bb0"
-    },
-    "assess_sources_contract": {
-      "path": "automation/capability_contracts/assess_sources.json",
-      "schema_version": 1,
-      "git_blob_sha": "8279a833c480f476687c25ba34349fcc439bd78d"
     }
   },
   "implementation_pins": {
