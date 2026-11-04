@@ -2,7 +2,6 @@
   "schema_version": 1,
   "purpose": "Explicit allowlist of repository files whose content can change the DIRECT/PROXY/REJECT production result.",
   "production_input_paths": [
-    "automation/production_inputs.json",
     ".github/workflows/auto_sync.yml",
     "modules/uu.conf",
     "sources/domain_sources.json",
@@ -55,6 +54,7 @@
     "automation/capability_contract_inventory.json",
     "automation/execution_adapters.json",
     "automation/heartbeat.json",
+    "automation/production_inputs.json",
     "automation/production_intent_ledger.json",
     "automation/production_workflow_map.json",
     "automation/program_registry.json",
@@ -71,6 +71,7 @@
     "rulesets/**",
     "scripts/audit_adapter_activation.py",
     "scripts/audit_ruleset_config_overlap.py",
+    "scripts/capture_git_write_trace.py",
     "scripts/github_queue_store.py",
     "scripts/github_workflow_adapter.py",
     "scripts/incident_state.py",
