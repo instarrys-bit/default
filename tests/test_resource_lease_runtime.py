@@ -41,7 +41,7 @@ def queue_with_task(task_id, worker, token, expiry):
 
 class ResourceLeaseRuntimeTests(unittest.TestCase):
     def setUp(self):
-        self.now = datetime(2026, 11, 4, 12, 0, tzinfo=timezone.utc)
+        self.now = datetime.now(timezone.utc).replace(microsecond=0)
         expiry = (self.now + timedelta(minutes=10)).isoformat().replace("+00:00", "Z")
         self.store = MemoryStore(queue_with_task("task_a", "worker_a", "task-token-a", expiry))
 
