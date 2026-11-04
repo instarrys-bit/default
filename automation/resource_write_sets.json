@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "inventory_id": "resource-write-sets-2026.11.04.5",
+  "inventory_id": "resource-write-sets-2026.11.05.1",
   "status": "partial_static_entrypoint_review",
   "policy": {
     "lock_identity": "canonical logical resource path, not program ID",
@@ -1420,8 +1420,8 @@
     "The 53 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and one external workflow-dispatch side-effect adapter. Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
-    "release_manifest_blob_sha": "d2d5b322bc1b9fa3aa3125eccc1904fc6c078938",
+    "release_id": "shadowrocket-automation-baseline-2026.11.05.2",
+    "release_manifest_blob_sha": "52a720cc896a22d620f6fc18a6630bb2799e572a",
     "program_registry_blob_sha": "e0f1959761c942013818615c6b0176325045696f",
     "execution_adapters_blob_sha": "b9bad9786b927b98634ec956b3eb343f6fd8d43e",
     "added_after_release_baseline": true,
