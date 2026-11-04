@@ -92,7 +92,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("stale-run-watch:", healing)
         self.assertIn("run_started_at", watchdog)
         self.assertIn("21600", watchdog)
-        self.assertIn("run.get(\"head_branch\") != \"main\"", watchdog)
+        self.assertIn('select(.status != "completed" and .head_branch == "main" and .id != null)', watchdog)
+        self.assertIn('if .head_sha != $sha then', watchdog)
         self.assertIn("gh run cancel", watchdog)
 
     def test_top_level_watchdog_supervises_remote_queue_fail_closed(self):
