@@ -52,6 +52,24 @@ class CapabilityContractInventoryTests(unittest.TestCase):
             self.assertEqual(entry["registry_dependencies"], registered["depends_on"], program_id)
             self.assertEqual(entry["current_invocation"], registered["invocation"], program_id)
 
+    def test_assessment_contract_dependency_matches_registry(self):
+        registry = load_json("automation/program_registry.json")
+        inventory = load_json("automation/capability_contract_inventory.json")
+        contract = load_json("automation/capability_contracts/assess_sources.json")
+        registered = next(item for item in registry["programs"] if item["id"] == "script_assess_sources")
+        entry = next(item for item in inventory["programs"] if item["id"] == "script_assess_sources")
+        self.assertIn("script_discover_sources", registered["depends_on"])
+        self.assertEqual(entry["registry_dependencies"], registered["depends_on"])
+        self.assertTrue(contract["dependency_edges"]["registry_dependency_declared"])
+        self.assertEqual(
+            contract["dependency_edges"]["registry_dependency_program_id"],
+            "script_discover_sources",
+        )
+        self.assertEqual(
+            contract["dependency_edges"]["required_predecessor_artifact"],
+            "sources/discovered_sources.json",
+        )
+
     def test_contract_sample_paths_and_implementation_pins_are_current(self):
         inventory = load_json("automation/capability_contract_inventory.json")
         for entry in inventory["programs"]:
