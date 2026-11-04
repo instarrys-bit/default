@@ -26,30 +26,6 @@
   },
   "confirmed_write_sets": [
     {
-      "program_id": "script_discover_sources",
-      "source": "scripts/discover_sources.py",
-      "writes": [
-        "sources/discovered_sources.json",
-        "reports/source-discovery.md",
-        "GITHUB_STEP_SUMMARY (if set; warning path overwrites, success path appends)"
-      ],
-      "document_store": [
-        "sources/discovered_sources.json"
-      ],
-      "dynamic_children": [
-        "sources/discovered_sources.json.manifest.json",
-        "sources/discovered_sources.json.parts-<digest>/part-*.jsonl",
-        "sources/discovered_sources.json.parts.tmp-*"
-      ],
-      "read_resources": [
-        "sources/discovered_sources.json"
-      ],
-      "side_effects": [
-        "Bounded GitHub repository search and repository-tree/README reads; no source activation."
-      ],
-      "evidence": "main() reads existing discovery inventory, then calls write_document(OUTPUT, merged, 'candidates') and writes REPORT."
-    },
-    {
       "program_id": "script_assess_sources",
       "source": "scripts/assess_sources.py",
       "writes": [
@@ -92,32 +68,43 @@
         "data/source_assessments_runtime.json"
       ],
       "lease_seconds": 480,
-      "publication": "After artifact verification, scheduler commits only persistent history/report and document-store manifest/shards using a non-force push after rebase; runtime fingerprint data is never committed."
+      "publication": "After artifact verification, scheduler commits only persistent history/report and document-store manifest/shards using a non-force push after rebase; runtime fingerprint data is never committed.",
+      "write_boundary_fencing": "Per-write live lease/fencing is implemented for both JSON document-store mutations and Markdown report output; independent adapter remains disabled."
     },
     {
-      "program_id": "script_build_source_candidates",
-      "source": "scripts/build_source_candidates.py",
+      "program_id": "script_build_project_status",
+      "source": "scripts/build_project_status.py",
       "writes": [
-        "sources/source_candidates.json",
-        "reports/source-candidate-matrix.md"
+        "reports/project-status.json",
+        "reports/project-status.md"
       ],
-      "document_store": [
-        "sources/source_candidates.json"
-      ],
-      "dynamic_children": [
-        "sources/source_candidates.json.manifest.json",
-        "sources/source_candidates.json.parts-<digest>/part-*.jsonl",
-        "sources/source_candidates.json.parts.tmp-*"
-      ],
+      "document_store": [],
+      "dynamic_children": [],
       "read_resources": [
-        "data/source_assessments_runtime.json (preferred when present)",
-        "sources/source_assessments.json (fallback)",
-        "reports/source-lineage-audit.json"
+        "rulesets/manifest.json",
+        "rulesets/lifecycle_state.json",
+        "rulesets/pending_queue.json",
+        "sources/domain_sources.json",
+        "data/candidates.json",
+        "sources/source_activation_log.json",
+        "sources/discovered_sources.json",
+        "sources/source_assessments.json",
+        "sources/source_candidates.json",
+        "sources/domain_reviews.json",
+        "sources/rule_provenance.json",
+        "reports/source-lineage-audit.json",
+        "sources/policy.json",
+        "rulesets/config_conflict_archive.json",
+        "reports/ruleset-config-conflict-sync.json",
+        "rulesets/deletion_archive.json",
+        "reports/lifecycle/latest.json",
+        "shadowrocket/ss.conf"
       ],
       "side_effects": [
-        "Builds non-activating source candidate matrix; no active source registry write."
+        "Read-only aggregation of production state; writes two dashboard/status report artifacts."
       ],
-      "evidence": "main() selects runtime or persistent assessment input, reads lineage, then calls write_document(OUTPUT, result, 'candidates') and writes REPORT."
+      "evidence": "build_status() creates reports/ and directly writes project-status.json and project-status.md with Path.write_text.",
+      "write_boundary_fencing": "No script-level lease/fencing assertion at individual filesystem mutations. Current production invocation is serialized through workflow_auto_sync's shared logical production-pipeline lease and guarded by workflow publication checks; this is not equivalent to per-write fencing."
     },
     {
       "program_id": "script_build_rulesets",
@@ -148,7 +135,129 @@
         "All three policy lists are rewritten; pending queue and manifest are rewritten.",
         "REJECT additions remain gated by existing publication/manual-approval checks."
       ],
-      "evidence": "main() reads the above policy and state inputs, writes pending_queue.json, all three policy lists and rulesets/manifest.json."
+      "evidence": "main() reads the above policy and state inputs, writes pending_queue.json, all three policy lists and rulesets/manifest.json.",
+      "write_boundary_fencing": "No script-level lease/fencing assertion at individual filesystem mutations. Current production invocation is serialized through workflow_auto_sync's shared logical production-pipeline lease and guarded by workflow publication checks; this is not equivalent to per-write fencing."
+    },
+    {
+      "program_id": "script_build_source_candidates",
+      "source": "scripts/build_source_candidates.py",
+      "writes": [
+        "sources/source_candidates.json",
+        "reports/source-candidate-matrix.md"
+      ],
+      "document_store": [
+        "sources/source_candidates.json"
+      ],
+      "dynamic_children": [
+        "sources/source_candidates.json.manifest.json",
+        "sources/source_candidates.json.parts-<digest>/part-*.jsonl",
+        "sources/source_candidates.json.parts.tmp-*"
+      ],
+      "read_resources": [
+        "data/source_assessments_runtime.json (preferred when present)",
+        "sources/source_assessments.json (fallback)",
+        "reports/source-lineage-audit.json"
+      ],
+      "side_effects": [
+        "Builds non-activating source candidate matrix; no active source registry write."
+      ],
+      "evidence": "main() selects runtime or persistent assessment input, reads lineage, then calls write_document(OUTPUT, result, 'candidates') and writes REPORT.",
+      "write_boundary_fencing": "No script-level lease/fencing assertion at individual filesystem mutations. Current production invocation is serialized through workflow_auto_sync's shared logical production-pipeline lease and guarded by workflow publication checks; this is not equivalent to per-write fencing."
+    },
+    {
+      "program_id": "script_collect_domains",
+      "source": "scripts/collect_domains.py",
+      "writes": [
+        "data/source_snapshots/<source_id>.txt (one file for each current non-stale source)",
+        "data/domain_candidates.json (JSON document or manifest/shard/staging children)",
+        "data/source_pending.json",
+        "data/candidates.json (JSON document or manifest/shard/staging children)"
+      ],
+      "document_store": [
+        "data/domain_candidates.json",
+        "data/candidates.json"
+      ],
+      "dynamic_children": [
+        "data/domain_candidates.json.manifest.json",
+        "data/domain_candidates.json.parts-<digest>/part-*.jsonl",
+        "data/domain_candidates.json.parts.tmp-*",
+        "data/candidates.json.manifest.json",
+        "data/candidates.json.parts-<digest>/part-*.jsonl",
+        "data/candidates.json.parts.tmp-*",
+        "data/source_snapshots/<source_id>.txt"
+      ],
+      "read_resources": [
+        "sources/domain_sources.json",
+        "data/domain_candidates.json",
+        "data/source_pending.json",
+        "data/source_snapshots/<source_id>.txt",
+        "data/primary_snapshot.txt (legacy fallback)",
+        "data/secondary_snapshot.txt (legacy fallback)"
+      ],
+      "side_effects": [
+        "Bounded HTTPS reads from registered raw.githubusercontent.com source URLs; writes source snapshots and candidate buffers; no activation."
+      ],
+      "evidence": "main() writes every current source snapshot with Path.write_text, writes data/domain_candidates.json and data/candidates.json through write_document with its default lease_required=false, and directly replaces data/source_pending.json.",
+      "write_boundary_fencing": "No script-level lease/fencing assertion at individual filesystem mutations. Current production invocation is serialized through workflow_auto_sync's shared logical production-pipeline lease and guarded by workflow publication checks; this is not equivalent to per-write fencing."
+    },
+    {
+      "program_id": "script_deterministic_review",
+      "source": "scripts/deterministic_review.py",
+      "writes": [
+        "sources/domain_reviews.json (JSON document or manifest/shard/staging children)",
+        "sources/review_cursor.json",
+        "sources/review_cursor.json.tmp"
+      ],
+      "document_store": [
+        "sources/domain_reviews.json"
+      ],
+      "dynamic_children": [
+        "sources/domain_reviews.json.manifest.json",
+        "sources/domain_reviews.json.parts-<digest>/part-*.jsonl",
+        "sources/domain_reviews.json.parts.tmp-*"
+      ],
+      "read_resources": [
+        "shadowrocket/ss.conf",
+        "sources/domain_sources.json",
+        "sources/protected_domains.json",
+        "data/candidates.json",
+        "sources/source_candidates.json",
+        "reports/source-lineage-audit.json",
+        "rulesets/lifecycle_state.json",
+        "rulesets/direct.list",
+        "rulesets/proxy.list",
+        "rulesets/reject.list"
+      ],
+      "side_effects": [
+        "Resumable deterministic review; updates the review cursor and ledger in bounded checkpoints."
+      ],
+      "evidence": "main() checkpoints sources/domain_reviews.json through write_document with lease_required defaulting to false and writes sources/review_cursor.json through atomic_json using a sibling .tmp file and replace.",
+      "write_boundary_fencing": "No script-level lease/fencing assertion at individual filesystem mutations. Current production invocation is serialized through workflow_auto_sync's shared logical production-pipeline lease and guarded by workflow publication checks; this is not equivalent to per-write fencing."
+    },
+    {
+      "program_id": "script_discover_sources",
+      "source": "scripts/discover_sources.py",
+      "writes": [
+        "sources/discovered_sources.json",
+        "reports/source-discovery.md",
+        "GITHUB_STEP_SUMMARY (if set; warning path overwrites, success path appends)"
+      ],
+      "document_store": [
+        "sources/discovered_sources.json"
+      ],
+      "dynamic_children": [
+        "sources/discovered_sources.json.manifest.json",
+        "sources/discovered_sources.json.parts-<digest>/part-*.jsonl",
+        "sources/discovered_sources.json.parts.tmp-*"
+      ],
+      "read_resources": [
+        "sources/discovered_sources.json"
+      ],
+      "side_effects": [
+        "Bounded GitHub repository search and repository-tree/README reads; no source activation."
+      ],
+      "evidence": "main() reads existing discovery inventory, then calls write_document(OUTPUT, merged, 'candidates') and writes REPORT.",
+      "write_boundary_fencing": "No script-level lease/fencing assertion at individual filesystem mutations. Current production invocation is serialized through workflow_auto_sync's shared logical production-pipeline lease and guarded by workflow publication checks; this is not equivalent to per-write fencing."
     },
     {
       "program_id": "script_lifecycle_audit",
@@ -168,7 +277,43 @@
         "External DNS-over-HTTPS queries to configured resolvers.",
         "May delete eligible published rules and update lifecycle/archive state; may restore explicitly selected IDs."
       ],
-      "evidence": "main() writes policy lists, observations, archive, queue, manifest and lifecycle reports."
+      "evidence": "main() writes policy lists, observations, archive, queue, manifest and lifecycle reports.",
+      "write_boundary_fencing": "No script-level lease/fencing assertion at individual filesystem mutations. Current production invocation is serialized through workflow_auto_sync's shared logical production-pipeline lease and guarded by workflow publication checks; this is not equivalent to per-write fencing."
+    },
+    {
+      "program_id": "script_refresh_ruleset_manifest",
+      "source": "scripts/refresh_ruleset_manifest.py",
+      "writes": [
+        "rulesets/manifest.json"
+      ],
+      "read_resources": [
+        "rulesets/direct.list",
+        "rulesets/proxy.list",
+        "rulesets/reject.list",
+        "scripts/build_rulesets.py"
+      ],
+      "evidence": "refresh() reads all three list files and build_rulesets.py, then replaces rulesets/manifest.json.",
+      "write_boundary_fencing": "No script-level lease/fencing assertion at individual filesystem mutations. Current production invocation is serialized through workflow_auto_sync's shared logical production-pipeline lease and guarded by workflow publication checks; this is not equivalent to per-write fencing."
+    },
+    {
+      "program_id": "script_select_domain_rules",
+      "source": "scripts/select_domain_rules.py",
+      "writes": [
+        "reports/approved-domain-rules.list",
+        "reports/rule-selector-audit.md"
+      ],
+      "document_store": [],
+      "dynamic_children": [],
+      "read_resources": [
+        "shadowrocket/ss.conf",
+        "sources/policy_approvals.json",
+        "pinned external ad-domain source URL"
+      ],
+      "side_effects": [
+        "Fetches one pinned external domain source; outputs an approval-gated report/list under reports/, not one of the three published ruleset files."
+      ],
+      "evidence": "main() creates output/report parent directories and writes reports/approved-domain-rules.list and reports/rule-selector-audit.md directly with Path.write_text.",
+      "write_boundary_fencing": "No script-level lease/fencing assertion observed. Current registry/adapter must be checked before any dispatch; this program is not included in workflow_auto_sync's explicit step sequence."
     },
     {
       "program_id": "script_sync_ruleset_config_conflicts",
@@ -186,21 +331,8 @@
         "Reads shadowrocket/ss.conf and never writes it.",
         "Can restore selected archive IDs into rule outputs/queue after rechecking current config."
       ],
-      "evidence": "sync() writes changed policy lists, archive, queue and two reports."
-    },
-    {
-      "program_id": "script_refresh_ruleset_manifest",
-      "source": "scripts/refresh_ruleset_manifest.py",
-      "writes": [
-        "rulesets/manifest.json"
-      ],
-      "read_resources": [
-        "rulesets/direct.list",
-        "rulesets/proxy.list",
-        "rulesets/reject.list",
-        "scripts/build_rulesets.py"
-      ],
-      "evidence": "refresh() reads all three list files and build_rulesets.py, then replaces rulesets/manifest.json."
+      "evidence": "sync() writes changed policy lists, archive, queue and two reports.",
+      "write_boundary_fencing": "No script-level lease/fencing assertion at individual filesystem mutations. Current production invocation is serialized through workflow_auto_sync's shared logical production-pipeline lease and guarded by workflow publication checks; this is not equivalent to per-write fencing."
     }
   ],
   "confirmed_shared_write_groups": [
@@ -252,15 +384,19 @@
     "All writers and readers of lifecycle/archive/report resources.",
     "Dynamic path selection from environment variables across all scripts.",
     "Atomic multi-resource lease acquisition and lease fencing at every write boundary.",
-    "Runtime proof that every declared write set matches actual filesystem mutations."
+    "Runtime proof that every declared write set matches actual filesystem mutations.",
+    "Per-write fencing at each filesystem mutation is not implemented for collect_domains, deterministic_review, build_project_status, discover_sources, build_source_candidates, build_rulesets, lifecycle_audit, sync_ruleset_config_conflicts, or refresh_ruleset_manifest.",
+    "Complete transitive write sets and resource ownership for all 52 registered Python components.",
+    "Runtime proof that declared writes and shared-resource locks match all actual filesystem mutations."
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.04.1",
     "release_manifest_blob_sha": "1a4221816d274bf0afc2a7347892faebdce2af54",
-    "program_registry_blob_sha": "ead514c6013b563b6ed02b93fb88be17adf2617f",
-    "execution_adapters_blob_sha": "0de9d5ab91358434de523518af9b084de43885e1",
+    "program_registry_blob_sha": "6f04f9473541cd569125f70c20fa3278bb34713d",
+    "execution_adapters_blob_sha": "570db5f82cadfe44aedb4652f629a5b4df32f0e0",
     "added_after_release_baseline": true,
-    "note": "This is a review-context pointer, not a dispatch authorization or claim that all runtime guarantees are implemented."
+    "note": "Static entrypoint review refreshed against the current main-branch Registry and Adapter blobs. This remains a partial inventory, not a runtime write-set proof or dispatch grant.",
+    "reviewed_at": "2026-11-04"
   },
   "scheduler_lock_contract": {
     "logical_resource_key": "logical/production-pipeline",
