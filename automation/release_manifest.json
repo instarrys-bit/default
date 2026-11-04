@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
+  "release_id": "shadowrocket-automation-baseline-2026.11.05.2",
   "release_status": "baseline_snapshot",
   "created_on": "2026-11-05",
-  "purpose": "Pin the Watchdog automation after cross-workflow writer serialization and durable per-URL source-assessment checkpoints.",
+  "purpose": "Pin production workflow with persistent shell and Git repository-tree write tracing and updated observer classification.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "d4cf970870f4b51d40c1f70c7d4347a035d4b960"
+      "git_blob_sha": "e0f1959761c942013818615c6b0176325045696f"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -28,7 +28,7 @@
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "40094ceb17f9291392419090610f08b5dbac8c64"
+      "git_blob_sha": "a08faba621caada93318cf9b90215716cf23953c"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
