@@ -10,6 +10,7 @@ if __import__("os").environ.get("AUTOMATION_WRITE_GUARD") == "1":
 import argparse
 import json
 import os
+import re
 import secrets
 import sys
 import tempfile
@@ -294,6 +295,112 @@ def recover_remote(store: GitHubContentsQueueStore, registry: dict, now: datetim
             queue["revision"] += 1
         validate_candidate(queue, registry)
         return queue, recovered
+    return store.mutate(mutate)
+
+
+def resolve_superseded_dead_letters(
+    store: GitHubContentsQueueStore,
+    registry: dict,
+    current_main_sha: str,
+    now: datetime | None = None,
+) -> list[dict]:
+    """Resolve terminal tasks whose source inputs are provably obsolete.
+
+    This is not a retry or a success transition. It preserves DEAD_LETTER
+    evidence and records a terminal CANCELLED resolution only when the
+    original workflow run is completed and its requested source commit is
+    older than the current main, or when a legacy assessor canary has no
+    trusted predecessor artifact to replay.
+    """
+    now = now or now_utc()
+    if not isinstance(current_main_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", current_main_sha):
+        raise ValueError("current main SHA must be a full lowercase Git commit SHA")
+
+    def mutate(queue: dict):
+        validate_envelope(queue)
+        validate_candidate(queue, registry)
+        resolved = []
+        replacements = [
+            task for task in queue["tasks"]
+            if task.get("target_program_id") == "workflow_auto_sync"
+            and task.get("status") in {"QUEUED", "CLAIMED", "VERIFYING"}
+        ]
+        replacement_ids = {
+            task.get("task_id")
+            for task in replacements
+            if (task.get("input") or {}).get("baseline_source_sha") == current_main_sha
+            or (task.get("dispatch_intent") or {}).get("requested_head_sha") == current_main_sha
+        }
+        replacement_task_id = sorted(replacement_ids)[0] if replacement_ids else None
+
+        for task in queue["tasks"]:
+            if task.get("status") != "DEAD_LETTER":
+                continue
+            if task.get("lease") is not None:
+                raise ValueError("DEAD_LETTER task unexpectedly retains a worker lease")
+            resource_lease = task.get("resource_lease")
+            if isinstance(resource_lease, dict) and resource_lease.get("status") == "ACTIVE":
+                raise ValueError("DEAD_LETTER task unexpectedly retains an active resource lease")
+
+            target = task.get("target_program_id")
+            payload = task.get("input") if isinstance(task.get("input"), dict) else {}
+            last_error = task.get("last_error") if isinstance(task.get("last_error"), dict) else {}
+            reason = None
+            source_sha = None
+            evidence = {}
+
+            if target == "workflow_auto_sync":
+                intent = task.get("dispatch_intent") if isinstance(task.get("dispatch_intent"), dict) else {}
+                failure_evidence = last_error.get("evidence") if isinstance(last_error.get("evidence"), dict) else {}
+                source_sha = payload.get("baseline_source_sha") or intent.get("requested_head_sha")
+                conclusion = failure_evidence.get("conclusion")
+                if failure_evidence.get("status") != "completed" or conclusion not in {"failure", "cancelled", "timed_out"}:
+                    continue
+                if not isinstance(source_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", source_sha):
+                    continue
+                if source_sha == current_main_sha:
+                    continue
+                reason = "completed production workflow belongs to an older main input; current Watchdog reconciliation owns the replacement decision"
+                evidence = {
+                    "original_source_sha": source_sha,
+                    "workflow_run_id": failure_evidence.get("run_id"),
+                    "workflow_conclusion": conclusion,
+                    "requested_head_sha": intent.get("requested_head_sha"),
+                }
+            elif target == "script_assess_sources":
+                predecessor = payload.get("predecessor")
+                valid_predecessor = (
+                    isinstance(predecessor, dict)
+                    and isinstance(predecessor.get("workflow_run_id"), str)
+                    and predecessor["workflow_run_id"].isdigit()
+                    and isinstance(predecessor.get("artifact_sha256"), str)
+                    and re.fullmatch(r"[0-9a-f]{64}", predecessor["artifact_sha256"])
+                )
+                if valid_predecessor or last_error.get("type") != "artifact_publication_failed":
+                    continue
+                reason = "legacy assessment canary has no trusted discovery predecessor and cannot be safely replayed"
+                evidence = {"legacy_task_id": task.get("task_id")}
+            else:
+                continue
+
+            task["status"] = "CANCELLED"
+            task["state_history"].append("CANCELLED")
+            task["resolution"] = {
+                "schema_version": 1,
+                "disposition": "superseded",
+                "reason": reason,
+                "superseded_by_main_sha": current_main_sha,
+                "replacement_task_id": replacement_task_id if target == "workflow_auto_sync" else None,
+                "evidence": evidence,
+                "resolved_at": stamp(now),
+            }
+            resolved.append(task)
+
+        if resolved:
+            queue["revision"] += 1
+        validate_candidate(queue, registry)
+        return queue, resolved
+
     return store.mutate(mutate)
 
 
