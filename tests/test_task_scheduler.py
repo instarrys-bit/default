@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 import sys
@@ -11,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from remote_task_queue_runtime import claim_remote, enqueue_remote
-from task_queue_runtime import now_utc
+from task_queue_runtime import now_utc, stamp, manual_authorization_record, validate_manual_authorization
 from task_scheduler import run_scheduler_once, build_execution_plan, enqueue_source_assessment_task
 
 
@@ -334,6 +335,110 @@ class TaskSchedulerTests(unittest.TestCase):
         plan = build_execution_plan(self.store.document, self.registry, self.adapters, self.root, self.now)
         self.assertIn("unsupported placeholder", plan["blocked"][0]["reason"])
 
+
+
+    def test_hold_preserves_expired_lease_pending_failed_and_manual_authorization_states(self):
+        self.enqueue()
+        base = self.store.document["tasks"][0]
+        expired = copy.deepcopy(base)
+        expired.update({
+            "task_id": "task_" + "1" * 24,
+            "idempotency_key": "expired-task",
+            "status": "CLAIMED",
+            "attempts": 1,
+            "lease": {"owner": "stale-worker", "token": "stale-token",
+                      "expires_at": (self.now - timedelta(seconds=1)).isoformat().replace("+00:00", "Z")},
+            "state_history": ["QUEUED", "CLAIMED"],
+        })
+        pending = copy.deepcopy(base)
+        pending.update({
+            "task_id": "task_" + "2" * 24,
+            "idempotency_key": "pending-dispatch",
+            "status": "VERIFYING",
+            "attempts": 1,
+            "lease": None,
+            "result": {"dispatch_status": "PENDING", "workflow_run_id": 41840000001},
+            "state_history": ["QUEUED", "CLAIMED", "VERIFYING"],
+        })
+        failed = copy.deepcopy(base)
+        failed.update({
+            "task_id": "task_" + "3" * 24,
+            "idempotency_key": "failed-workflow",
+            "status": "VERIFYING",
+            "attempts": 1,
+            "lease": None,
+            "result": {"dispatch_status": "COMPLETED", "workflow_conclusion": "failure",
+                       "workflow_run_id": 41840000002},
+            "state_history": ["QUEUED", "CLAIMED", "VERIFYING"],
+        })
+
+        self.registry["programs"].extend([
+            {"id": "workflow_automation_watchdog", "capabilities": ["top_level_supervision"]},
+            {"id": "workflow_auto_sync", "capabilities": ["deterministic_audit"],
+             "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
+                               "max_attempts": 1, "timeout_seconds": 300}},
+        ])
+        manual_idem = "production:manual-authorized:fp:41840000003"
+        manual = {
+            "task_id": "task_" + "4" * 24,
+            "idempotency_key": manual_idem,
+            "trace_id": "manual-hold-test",
+            "requester_program_id": "workflow_automation_watchdog",
+            "target_program_id": "workflow_auto_sync",
+            "capability": "deterministic_audit",
+            "created_at": stamp(self.now), "not_before": stamp(self.now),
+            "priority": 100, "status": "QUEUED", "attempts": 0,
+            "max_attempts": 1,
+            "input": {
+                "production_decision": "USER_AUTHORIZED_MANUAL_AUDIT",
+                "production_fingerprint": "fp",
+                "authorization_run_id": "41840000003",
+                "authorization_run_attempt": "1",
+                "authorization_actor": "maintainer",
+                "authorization_actor_id": "678",
+                "authorization_repository": "instarrys-bit/default",
+                "authorization_workflow_ref": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
+                "authorization_event": "workflow_dispatch",
+                "authorization_ref": "refs/heads/main",
+                "authorization_head_sha": "a" * 40,
+                "authorization_requested": True,
+                "authorization_target_program_id": "workflow_auto_sync",
+                "authorization_idempotency_key": manual_idem,
+                "baseline_source_event": "workflow_dispatch",
+                "baseline_source_sha": "a" * 40,
+            },
+            "lease": None, "result": None, "last_error": None,
+            "state_history": ["QUEUED"],
+        }
+        trusted_context = {
+            "repository": "instarrys-bit/default",
+            "workflow_ref": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
+            "event": "workflow_dispatch", "actor": "maintainer", "actor_id": "678",
+            "run_id": "41840000003", "run_attempt": "1", "ref": "refs/heads/main",
+            "sha": "a" * 40, "manual_audit_requested": "true",
+        }
+        authorization = validate_manual_authorization(manual, trusted_context)
+        manual_record = manual_authorization_record(manual, authorization, stamp(self.now))
+
+        self.store.document["tasks"] = [expired, pending, failed, manual]
+        self.store.document["manual_authorizations"] = {"41840000003": manual_record}
+        before = json.loads(json.dumps(self.store.document))
+        writes_before = self.store.writes
+        control = self.root / "automation" / "production_control.json"
+        control.write_text(json.dumps({"schema_version": 1, "dispatch_mode": "hold"}), encoding="utf-8")
+
+        with patch("task_scheduler.recover_remote", side_effect=AssertionError("expired lease recovery must not run under HOLD")), \
+             patch("task_scheduler.verify_pending_remote", side_effect=AssertionError("pending/failed dispatch verification must not run under HOLD")), \
+             patch("task_scheduler.claim_remote", side_effect=AssertionError("manual or ordinary tasks must not be claimed under HOLD")):
+            report = run_scheduler_once(
+                self.store, self.registry, self.adapters,
+                worker_id="scheduler-hold-matrix", max_tasks=10, root=self.root, now=self.now,
+            )
+
+        self.assertEqual(report["dispatch_mode"], "hold")
+        self.assertEqual(report["processed_count"], 0)
+        self.assertEqual(self.store.writes, writes_before)
+        self.assertEqual(self.store.document, before)
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
