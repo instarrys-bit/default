@@ -25,9 +25,9 @@ class ConfigConflictRunReportTests(unittest.TestCase):
     def test_repeated_sync_passes_keep_first_pass_deletions(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            for folder in ("shadowrocket", "rulesets", "reports"):
+            for folder in ("modules", "rulesets", "reports"):
                 (root / folder).mkdir()
-            (root / "shadowrocket" / "uu.conf").write_text(
+            (root / "modules" / "uu.conf").write_text(
                 config_with_rules(["DOMAIN,api.example.com,PROXY"]), encoding="utf-8"
             )
             (root / "rulesets" / "direct.list").write_text(
