@@ -15,7 +15,7 @@ import fenced_file_writer
 class FencedFileWriterTests(unittest.TestCase):
     def test_owner_managed_config_is_always_read_only(self):
         with self.assertRaisesRegex(PermissionError, "owner-managed protected file"):
-            fenced_file_writer.authorize_write_path(ROOT / "shadowrocket" / "ss.conf")
+            fenced_file_writer.authorize_write_path(ROOT / "modules" / "uu.conf")
 
     def test_repo_local_write_requires_live_lease_in_production_mode(self):
         target = ROOT / "sources" / "review_cursor.json"
@@ -40,7 +40,7 @@ class FencedFileWriterTests(unittest.TestCase):
 
     def test_audit_hook_rejects_protected_config_open(self):
         with self.assertRaisesRegex(PermissionError, "owner-managed protected file"):
-            fenced_file_writer._audit_hook("open", (ROOT / "shadowrocket" / "ss.conf", "w", os.O_WRONLY))
+            fenced_file_writer._audit_hook("open", (ROOT / "modules" / "uu.conf", "w", os.O_WRONLY))
 
     def test_audit_hook_checks_repo_local_open_before_write(self):
         target = ROOT / "sources" / "test-only.json"
@@ -71,14 +71,14 @@ class FencedFileWriterTests(unittest.TestCase):
     def test_external_symlink_into_protected_config_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             alias = Path(directory) / "config-link"
-            alias.symlink_to(ROOT / "shadowrocket" / "ss.conf")
+            alias.symlink_to(ROOT / "modules" / "uu.conf")
             with self.assertRaisesRegex(PermissionError, "owner-managed protected file"):
                 fenced_file_writer.authorize_write_path(alias)
 
     def test_external_hardlink_to_protected_config_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             alias = Path(directory) / "config-hardlink"
-            os.link(ROOT / "shadowrocket" / "ss.conf", alias)
+            os.link(ROOT / "modules" / "uu.conf", alias)
             with self.assertRaisesRegex(PermissionError, "owner-managed protected file"):
                 fenced_file_writer.authorize_write_path(alias)
 
