@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "dispatch_mode": "hold",
+  "updated_at": "2026-11-04T00:45:00Z",
+  "reason": "Engineering closure is in progress. Automatic production dispatch remains held until the owner explicitly changes dispatch_mode to enabled.",
+  "policy": {
+    "automatic_watchdog_dispatch": false,
+    "explicit_manual_watchdog_authorization": true,
+    "unknown_or_invalid_mode": "hold",
+    "protected_config": "shadowrocket/ss.conf remains read-only"
+  }
+}
