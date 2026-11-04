@@ -81,6 +81,15 @@ def validate_execution_adapters(root=ROOT,adapters_path=None,registry_path=None)
         if not isinstance(read_only,list) or any(not isinstance(path,str) or not path or path.startswith("/") or chr(92) in path or any(part in {"",".",".."} for part in path.split("/")) for path in read_only) or len(read_only)!=len(set(read_only)): raise ValueError(f"{tid} read_only_resources invalid")
         required_read_only=a.get("required_read_only_resources",[])
         if not isinstance(required_read_only,list) or any(path not in read_only for path in required_read_only) or len(required_read_only)!=len(set(required_read_only)): raise ValueError(f"{tid} required_read_only_resources must be a unique subset of read_only_resources")
+        publish=a.get("publish_resources",[])
+        resource_contract=a.get("resource_contract")
+        resource_keys=resource_contract.get("resource_keys",[]) if isinstance(resource_contract,dict) else []
+        if not isinstance(publish,list) or len(publish)!=len(set(publish)) or any(path not in resource_keys or path=="shadowrocket/ss.conf" for path in publish): raise ValueError(f"{tid} publish_resources must be a unique subset of exclusive non-config resource keys")
+        if publish:
+            completion=a.get("completion",{})
+            verifier=completion.get("artifact_verifier") if isinstance(completion,dict) else None
+            output=a.get("output_contract")
+            if not isinstance(verifier,dict) or not isinstance(output,dict) or "artifact_publication" not in output.get("required",[]): raise ValueError(f"{tid} publishing requires an independent verifier and artifact_publication output")
         if resource_contract is not None and set(read_only)&set(resource_contract.get("resource_keys",[])): raise ValueError(f"{tid} resource cannot be both read-only and writable")
         artifact_verifier=completion.get("artifact_verifier")
         if artifact_verifier is not None:
