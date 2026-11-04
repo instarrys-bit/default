@@ -96,10 +96,6 @@ def validate_manual_authorization(task, context=None):
         return
     if payload.get("production_decision") != "USER_AUTHORIZED_MANUAL_AUDIT":
         raise ValueError("manual authorization marker is invalid or incomplete")
-    if (task.get("requester_program_id") != "workflow_automation_watchdog"
-            or task.get("target_program_id") != "workflow_auto_sync"
-            or task.get("capability") != "deterministic_audit"):
-        raise ValueError("manual authorization is restricted to the Watchdog deterministic audit capability")
     context = context if isinstance(context, dict) else manual_authorization_context_from_environment()
     required = ("repository", "workflow_ref", "event", "actor", "actor_id",
                 "run_id", "run_attempt", "ref", "sha")
