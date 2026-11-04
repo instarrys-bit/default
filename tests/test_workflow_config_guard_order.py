@@ -4,6 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github" / "workflows" / "auto_sync.yml"
+WATCHDOG_WORKFLOW = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
 
 
 class WorkflowConfigGuardOrderTests(unittest.TestCase):
@@ -285,6 +286,24 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertNotIn('"sources/policy.json"', restore.split("PUBLISH_FILES = {", 1)[1].split("}", 1)[0])
         registrar = (ROOT / "scripts" / "register_config_baseline.py").read_text(encoding="utf-8")
         self.assertIn("build_release_pin_updates", registrar)
+
+
+    def test_manual_authorization_is_bound_to_one_durable_task_scope(self):
+        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
+        key_position = watchdog.index('manual_key="production:manual-authorized:')
+        input_position = watchdog.index("manual_input=", key_position)
+        self.assertLess(key_position, input_position)
+        self.assertIn("authorization_target_program_id:$target", watchdog)
+        self.assertIn("authorization_idempotency_key:$idem", watchdog)
+
+        runtime = (ROOT / "scripts" / "task_queue_runtime.py").read_text(encoding="utf-8")
+        remote = (ROOT / "scripts" / "remote_task_queue_runtime.py").read_text(encoding="utf-8")
+        validator = (ROOT / "scripts" / "task_queue.py").read_text(encoding="utf-8")
+        self.assertIn('task.get("target_program_id") != "workflow_auto_sync"', runtime)
+        self.assertIn('queue.setdefault("manual_authorizations", {})', remote)
+        self.assertIn("validate_manual_authorization_consumption", remote)
+        self.assertIn('manual_authorizations = queue.get("manual_authorizations", {})', validator)
+        self.assertIn("manual authorization has already been consumed", runtime)
 
 if __name__ == "__main__":
     unittest.main()
