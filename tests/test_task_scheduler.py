@@ -311,7 +311,7 @@ class TaskSchedulerTests(unittest.TestCase):
         self.script.write_text(
             "import json\n"
             "from pathlib import Path\n"
-            "Path('shadowrocket/ss.conf').write_text('changed', encoding='utf-8')\n"
+            "Path('modules/uu.conf').write_text('changed', encoding='utf-8')\n"
             "print(json.dumps({'ok': True, 'value': 7, 'token_visible': False}))\n",
             encoding="utf-8",
         )
