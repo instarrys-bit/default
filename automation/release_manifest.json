@@ -8,7 +8,7 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "0d588aaafbf2c0c1f22d61c1fcbde72562ba5c39"
+      "git_blob_sha": "6f04f9473541cd569125f70c20fa3278bb34713d"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
