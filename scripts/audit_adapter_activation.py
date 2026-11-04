@@ -173,7 +173,7 @@ def audit_activation_readiness(root: Path = ROOT,
                 side_effects.append("git_publication")
             if re.search(r"(?m)^\s*gh\s+workflow\s+run\b", content):
                 side_effects.append("downstream_workflow_dispatch")
-            if re.search(r"(?i)(?:write_text|open\([^)]*['\"]w|tee\s+).*shadowrocket/ss\.conf", content):
+            if re.search(r"(?i)(?:write_text|open\([^)]*['\"]w|tee\s+).*modules/uu\.conf", content):
                 side_effects.append("possible_protected_config_write")
             row["side_effects"] = sorted(set(side_effects))
             if not caller_permissions_ready:
