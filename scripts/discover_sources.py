@@ -19,6 +19,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 from json_document_store import read_document, write_document
+from resource_lease_runtime import assert_resource_lease_from_environment
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "sources/discovered_sources.json"
@@ -438,6 +439,13 @@ def readme_snapshot(repo_data: dict, previous: dict | None = None) -> tuple[str,
     claims = extract_readme_policy_claims(readme, urls)
     return readme, digest, urls, claims, False
 
+def persist_discovery_outputs(merged: dict) -> None:
+    """Persist the discovery inventory and report under their exact live leases."""
+    write_document(OUTPUT, merged, "candidates", lease_required=True)
+    assert_resource_lease_from_environment("reports/source-discovery.md")
+    REPORT.write_text(render_report(merged), encoding="utf-8")
+
+
 def main() -> int:
     token = os.environ.get("GITHUB_TOKEN", "")
     existing = read_document(OUTPUT, "candidates", {"candidates": []})
@@ -584,11 +592,10 @@ def main() -> int:
         summary = os.environ.get("GITHUB_STEP_SUMMARY")
         if summary:
             Path(summary).write_text("## Source discovery warning\n\n" + message + "\n", encoding="utf-8")
-        return 0
+        return 2
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
-    write_document(OUTPUT, merged, "candidates")
-    REPORT.write_text(render_report(merged), encoding="utf-8")
+    persist_discovery_outputs(merged)
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:
         with Path(summary).open("a", encoding="utf-8") as stream:
