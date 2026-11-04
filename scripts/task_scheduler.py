@@ -100,6 +100,19 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
     now = now or now_utc()
     validate_envelope(queue)
     validate_candidate(queue, registry)
+    dispatch_mode = production_dispatch_mode(root)
+    if dispatch_mode != "enabled":
+        return {
+            "dispatch_mode": dispatch_mode,
+            "read_only": True,
+            "queue_revision": queue.get("revision"),
+            "eligible_task_ids": [],
+            "blocked": [
+                {"task_id": task.get("task_id"), "reason": f"production dispatch is {dispatch_mode}; read-only planning only"}
+                for task in queue.get("tasks", [])
+                if isinstance(task, dict) and task.get("status") == "QUEUED"
+            ],
+        }
     programs = registry.get("programs")
     if not isinstance(programs, list):
         raise ValueError("program registry is invalid")

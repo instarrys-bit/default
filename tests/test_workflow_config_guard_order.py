@@ -305,5 +305,33 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn('manual_authorizations = queue.get("manual_authorizations", {})', validator)
         self.assertIn("manual authorization has already been consumed", runtime)
 
+
+    def test_manual_watchdog_dispatch_holds_before_building_or_enqueuing_task(self):
+        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
+        manual_gate = watchdog.index('if [ "$ORIGIN_EVENT" = "workflow_dispatch" ] && [ "${{ inputs.request_deterministic_audit }}" = "true" ]; then')
+        hold_gate = watchdog.index('if [ "$manual_dispatch_mode" != "enabled" ]; then', manual_gate)
+        task_key = watchdog.index('manual_key="production:manual-authorized:', manual_gate)
+        enqueue = watchdog.index("enqueue-auto-sync", task_key)
+        self.assertLess(manual_gate, hold_gate)
+        self.assertLess(hold_gate, task_key)
+        self.assertLess(task_key, enqueue)
+
+
+    def test_watchdog_has_one_trusted_direct_scheduler_entry_and_disabled_canary(self):
+        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
+        supervision_start = watchdog.index("  task-queue-supervision:")
+        stale_start = watchdog.index("  stale-run-watch:", supervision_start)
+        supervision = watchdog[supervision_start:stale_start]
+        self.assertEqual(supervision.count("run-once"), 1)
+        self.assertIn("GITHUB_ACTOR_ID: ${{ github.actor_id }}", supervision)
+        self.assertIn("GITHUB_MANUAL_AUDIT_REQUEST: ${{ inputs.request_deterministic_audit }}", supervision)
+        self.assertIn("GITHUB_REF_NAME: main", supervision)
+        self.assertIn("GITHUB_REPOSITORY: ${{ github.repository }}", supervision)
+
+        canary_start = watchdog.index("  assessment-canary:")
+        canary_end = watchdog.index("  task-queue-supervision:", canary_start)
+        canary = watchdog[canary_start:canary_end]
+        self.assertIn("if: ${{ false }}", canary)
+
 if __name__ == "__main__":
     unittest.main()
