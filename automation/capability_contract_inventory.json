@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "audit_id": "capability-contract-inventory-2026.11.04.2",
+  "audit_id": "capability-contract-inventory-2026.11.05.2",
   "status": "baseline_inventory",
-  "source_registry_blob_sha": "ab5f92f25e97d62b9fd35d4097109f9fad892c6b",
+  "source_registry_blob_sha": "e041b917149acc3c1b3457380c2a6304dad19f4d",
   "summary": {
-    "registered_programs": 60,
-    "python_components": 53,
-    "python_components_with_concrete_io_contract": 1,
-    "python_components_with_declared_registry_dependencies": 4,
+    "registered_programs": 61,
+    "python_components": 54,
+    "python_components_with_concrete_io_contract": 2,
+    "python_components_with_declared_registry_dependencies": 5,
     "independently_dispatchable_python_components": 1,
     "note": "Counts reflect registry declarations, not runtime call-graph completeness."
   },
@@ -1710,6 +1710,32 @@
         "independent_verifier"
       ],
       "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_capture_git_write_trace",
+      "path": "scripts/capture_git_write_trace.py",
+      "declared_capabilities": [
+        "runtime_write_tracing"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "Initial checkout commit SHA",
+        "Git committed, staged, unstaged and non-ignored untracked repository paths"
+      ],
+      "current_registry_outputs": [
+        "Path-only JSONL records under RUNNER_TEMP",
+        "Before/after commit SHA and changed-path count"
+      ],
+      "current_invocation": "workflow_step",
+      "contract_status": "concrete_io_path_only_repository_delta_capture",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "transient write-and-revert activity",
+        "external filesystem and API side effects",
+        "Git metadata changes outside the repository tree"
+      ],
+      "audit_note": "The production audit and publish jobs invoke this helper after their main steps. It captures persistent repository-tree deltas attributable to shell/Git subprocesses, complementing Python audit-hook events; it does not prove transient, external, or unexecuted side effects.",
+      "contract_sample_path": "tests/test_capture_git_write_trace.py"
     }
   ]
 }
