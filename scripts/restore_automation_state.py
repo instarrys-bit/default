@@ -121,8 +121,11 @@ def publish_allowed(name: str) -> bool:
 def restore_publish_outputs(archive: Path, root: Path) -> dict:
     """Restore only explicitly publishable outputs, under the caller's live write fence."""
     root = root.resolve()
-    restored, total_bytes, seen = [], 0, set()
+    restored, total_bytes = [], 0
     with tarfile.open(archive, "r:gz") as tar:
+        selected = []
+        seen = set()
+        # Validate the complete archive before the first repository mutation.
         for member in tar.getmembers():
             raw_name = member.name
             path = PurePosixPath(raw_name.rstrip("/"))
@@ -141,12 +144,15 @@ def restore_publish_outputs(archive: Path, root: Path) -> dict:
                 continue
             if name in seen:
                 raise ValueError(f"duplicate publish archive entry: {name}")
+            seen.add(name)
             destination = (root / Path(*path.parts)).resolve(strict=False)
             if destination != root and root not in destination.parents:
                 raise ValueError(f"publish path escapes repository: {name}")
+            selected.append((member, name, path, destination))
+
+        for member, name, path, destination in selected:
             if member.isdir():
                 destination.mkdir(parents=True, exist_ok=True)
-                seen.add(name)
                 continue
             source = tar.extractfile(member)
             if source is None:
@@ -161,7 +167,6 @@ def restore_publish_outputs(archive: Path, root: Path) -> dict:
                     output.write(chunk)
             temporary.replace(destination)
             restored.append(name)
-            seen.add(name)
             total_bytes += member.size
 
     for base in ("sources/discovered_sources.json", "sources/source_assessments.json", "sources/source_candidates.json"):

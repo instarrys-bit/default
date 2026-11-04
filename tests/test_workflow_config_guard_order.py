@@ -95,7 +95,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         )[0]
         self.assertIn("reports/automation/state_store.json", package)
         self.assertIn("declare -A archive_seen=()", package)
-        self.assertIn('tar -czf audit-output.tar.gz -- "${archive_inputs[@]}"', package)
+        self.assertIn('tar -czf "$RUNNER_TEMP/audit-output.tar.gz" -- "${archive_inputs[@]}"', package)
         self.assertIn("data/domain_candidates.json", package)
 
     def test_large_state_is_artifact_backed_not_committed_as_giant_json(self):
