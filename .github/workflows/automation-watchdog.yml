@@ -393,8 +393,22 @@ jobs:
           fingerprint="$(jq -r '.fingerprint' <<< "$intent_json")"
           echo "$intent_json" >> "$GITHUB_STEP_SUMMARY"
 
+          # Automatic production dispatch is an explicit control-plane switch.
+          # Missing or invalid settings fail closed. The one-shot manual path
+          # above remains available only through an explicit user authorization.
+          production_dispatch_mode="$(jq -r '.dispatch_mode // "hold"' automation/production_control.json)"
+          if [ "$production_dispatch_mode" != "enabled" ]; then
+            production_dispatch_mode="hold"
+          fi
+
           case "$decision" in
             INPUT_CHANGED|SCHEDULE_DUE)
+              if [ "$production_dispatch_mode" != "enabled" ]; then
+                echo "Production demand detected ($decision), but automatic dispatch is held by automation/production_control.json." >> "$GITHUB_STEP_SUMMARY"
+                echo "No production task was enqueued. Explicit one-shot user authorization remains available through the Watchdog manual control."
+                echo "block_manifest=true" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
               echo "Production is required: $decision ($fingerprint)."
               audit_input_json="$(jq -cn --arg fingerprint "$fingerprint" --arg decision "$decision" --arg reason "$(jq -r '.reason' <<< "$intent_json")" --arg event "$ORIGIN_EVENT" --arg actor "$ORIGIN_ACTOR" --arg before "$ORIGIN_BEFORE" --arg sha "$ORIGIN_SHA" '{production_fingerprint:$fingerprint,production_decision:$decision,production_reason:$reason,baseline_source_event:$event,baseline_source_actor:$actor,baseline_source_before:$before,baseline_source_sha:$sha}')"
               production_key="$(jq -r '.idempotency_key' <<< "$intent_json")"
