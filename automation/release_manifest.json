@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-baseline-2026.11.04.11",
+  "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
   "release_status": "baseline_snapshot",
   "created_on": "2026-11-04",
   "purpose": "Pin the watchdog workflow after binding one-shot manual audit authorization to the exact trusted GitHub run attempt.",
@@ -8,12 +8,12 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "f3f7ed1ce7f063412d18dde0b6c061457664f7fa"
+      "git_blob_sha": "279f8d14d1aad62d1342ba07063aa8d52e410a80"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "2a96bbacf08cbfaebbf4312eb5eb07666d3b0584"
+      "git_blob_sha": "45967d0d88392369252b7a4427aaba41d9dcdda8"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -24,11 +24,11 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "6f0f966e3ff1b02fad957b022eaca7d0b66f7875"
+      "git_blob_sha": "3926a162e83a8076f98ab3b66315ee227e33347c"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "c6945265b4fce6fd151361d1a2822bf51638b66d"
+      "git_blob_sha": "49b0343722541b7e2fac15d86578f0fe011ac4cd"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -37,7 +37,7 @@
     },
     "config_baseline": {
       "path": "modules/uu.conf",
-      "git_blob_sha": "ef6b9d5e5db7f1355d06a0a834ce4f32b26f5677",
+      "git_blob_sha": "3b9a39cfae94803937addd4949042e9dc0ceaed2",
       "access": "read_only"
     }
   },
