@@ -359,6 +359,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(groups["rule_provenance_ledger"]["status"], "known_shared_writers_central_pipeline_fence_only")
         self.assertEqual(groups["watchdog_unregistered_path_registry"]["status"], "bounded_cas_retry_implemented_concurrent_integration_unproven")
         self.assertEqual(groups["request_intake_observations"]["status"], "git_ref_cas_replay_bare_repo_integration_tested_github_runner_unverified")
+        self.assertIn("script_production_intent", groups["request_intake_observations"]["known_writers"])
         self.assertEqual(groups["active_source_registry_and_activation"]["status"], "production_registry_writer_central_pipeline_fence_only")
         self.assertEqual(groups["policy_source_overlap_audit"]["status"], "audit_output_central_pipeline_fence_only")
         self.assertIn("script_auto_activate_sources", groups["active_source_registry_and_activation"]["known_writers"])
