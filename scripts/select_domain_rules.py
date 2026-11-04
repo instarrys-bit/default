@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Approval-gated selector; canonical ss.conf is authoritative and read-only."""
+"""Approval-gated selector; canonical uu.conf is authoritative and read-only."""
 from __future__ import annotations
 
 if __import__("os").environ.get("AUTOMATION_WRITE_GUARD") == "1":
@@ -20,7 +20,7 @@ from domain_rule_engine import load_domain_rules
 from audit_ruleset_config_overlap import scope_covers_candidate
 
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG = ROOT / "shadowrocket" / "ss.conf"
+CONFIG = ROOT / "shadowrocket" / "uu.conf"
 APPROVALS = ROOT / "sources" / "policy_approvals.json"
 REPORT = ROOT / "reports" / "rule-selector-audit.md"
 OUTPUT = ROOT / "reports" / "approved-domain-rules.list"
@@ -117,7 +117,7 @@ def main() -> None:
         return
     candidates = load_candidates()
     rules, conditional, ignored = load_domain_rules(CONFIG)
-    # REJECT decisions in ss.conf are user-owned and excluded from this tool.
+    # REJECT decisions in uu.conf are user-owned and excluded from this tool.
     rules = [rule for rule in rules if rule.policy in {"DIRECT", "PROXY"}]
     conditional = [item for item in conditional if item[1].rsplit(",", 1)[-1].strip().upper() != "REJECT"]
     approvals = load_approvals(candidates)
@@ -186,11 +186,11 @@ def main() -> None:
         "- Only DOMAIN or DOMAIN-SUFFIX entries with an explicitly approved DIRECT/PROXY/REJECT policy are generated.",
         "- A candidate is covered only by a single explicit DIRECT/PROXY config scope that fully contains its complete source scope.",
         "- Child exact or child-suffix exceptions do not suppress broader suffix candidates.",
-        "- REJECT rules in ss.conf are excluded from automated analysis; blocking decisions remain user-owned.",
+        "- REJECT rules in uu.conf are excluded from automated analysis; blocking decisions remain user-owned.",
         "- Mixed-policy coverage is held for review without selecting a winner.",
         "- No rule order, first-match policy, or precedence is inferred.",
         "- Conditional AND/OR/NOT rules are counted but are not flattened into unconditional domain rules.",
-        "- Existing ss.conf, DNS, nodes, rule order, and subscription are never modified.",
+        "- Existing uu.conf, DNS, nodes, rule order, and subscription are never modified.",
         f"- Generated rules file: `{OUTPUT.relative_to(ROOT)}` ({len(generated)} rules)", "",
     ]
     REPORT.write_text("\n".join(report), encoding="utf-8")
