@@ -110,7 +110,7 @@
         "input_contract_sha256": "b599edb647c6ef9be050ccfa8ec5eb85e3685e4960d1f2a73ba173bc4da9aac9",
         "output_contract_sha256": "62ac443cad6163ad97228edb26976548922245c5da991db5d835a5425b12b284",
         "dependency_contract_sha256": "f1a1b391d716b049be291e73c6906ff85ba8bd5baa610a1731a6d86dcf0e8aac",
-        "resource_contract_sha256": "7727133aa95d054b07d5a8fd68c97756305b03b8e68a630a0c394a17ab012b01",
+        "resource_contract_sha256": "edc555138f60711412db16184ee40727dbebaed1ff91b82b7a80dafbf243eff8",
         "verifier_contract_sha256": "601c151692490aa9f8eb5b669c223e7c5be7eddfd8e16daf21b785097a7e662d"
       }
     ]
