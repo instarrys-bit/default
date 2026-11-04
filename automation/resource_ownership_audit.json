@@ -144,7 +144,7 @@
       "lock_key": "resource:sources/discovered_sources.json",
       "required_mode": "exclusive",
       "status": "direct_write_paths_confirmed_dynamic_document_store_children",
-      "note": "discovered_sources.json is written through json_document_store; the logical-document lease must cover adjacent manifest, content-addressed shards, staging and old-shard cleanup. The report and optional step summary are separate outputs."
+      "note": "discovered_sources.json is written through json_document_store with an explicit logical-document lease assertion covering the base file, adjacent manifest, content-addressed shards, staging and old-shard cleanup. reports/source-discovery.md has a separate explicit live lease assertion. GITHUB_STEP_SUMMARY is a per-run ephemeral output, not a shared repository resource."
     },
     {
       "id": "source_assessment_artifacts",
