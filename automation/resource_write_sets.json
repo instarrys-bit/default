@@ -559,7 +559,8 @@
       "program_id": "script_production_intent",
       "source": "scripts/production_intent.py",
       "writes": [
-        "<caller-supplied --register-ledger path; current path automation/unregistered_path_registry.json>"
+        "<caller-supplied --register-ledger path; current Watchdog path automation/unregistered_path_registry.json>",
+        "sources/request_domain_observations.json"
       ],
       "document_store": [],
       "dynamic_children": [],
@@ -567,24 +568,30 @@
         "automation/production_inputs.json",
         "automation/unregistered_path_registry.json",
         "repository changed-path list",
-        "automation/task_queue.json"
+        "automation/task_queue.json",
+        "<caller-supplied --observations-input JSON array>",
+        "sources/request_domain_observations.json"
       ],
       "side_effects": [
         "Computes production fingerprint/decision without writing by default; registration mode merges unclassified paths into the Watchdog inbox. The Watchdog then publishes the file via GitHub Contents API.",
-        "Bounded CAS retry re-reads the latest ledger and re-applies the same run registration; observed_run_ids prevents duplicate seen_count increments for interleaved retries."
+        "Bounded CAS retry re-reads the latest ledger and re-applies the same run registration; observed_run_ids prevents duplicate seen_count increments for interleaved retries.",
+        "The --merge-observations mode deterministically merges a validated hostname batch into sources/request_domain_observations.json and records observed_run_ids to make same-run replay idempotent."
       ],
-      "evidence": "--register-ledger mode writes the supplied JSON path; automation-watchdog.yml passes automation/unregistered_path_registry.json, re-reads its current Blob SHA on each of up to three attempts, re-merges the current run, and performs a conditional Contents API PUT.",
+      "evidence": "--register-ledger mode writes the supplied Watchdog inbox path; automation-watchdog.yml re-reads the latest Blob SHA on each of up to three attempts and conditionally PUTs the merged ledger. --merge-observations mode reads a runner-temp submitted batch and the latest sources/request_domain_observations.json, then writes the merged ledger; request-intake.yml fetches origin/main and resets its isolated runner workspace to that exact latest commit before each merge/commit/non-force push attempt.",
       "lease_keys": [
-        "git-blob-sha-cas:automation/unregistered_path_registry.json"
+        "git-blob-sha-cas:automation/unregistered_path_registry.json",
+        "git-ref-cas:sources/request_domain_observations.json"
       ],
-      "lease_enforcement": "Watchdog now performs up to three Contents Blob-SHA CAS attempts. Each attempt re-reads the latest ledger, reapplies the same run-scoped registration, and conditionally PUTs using the freshly read SHA. Registration stores observed_run_ids so replay remains idempotent even when another run updates the same path between attempts. Exhausted retries fail closed. Cross-run integration proof is still required.",
+      "lease_enforcement": "Watchdog registry publication uses up to three conditional Contents Blob-SHA CAS attempts with fresh read/merge and observed_run_ids idempotency. Request-intake publication uses up to three Git-ref CAS attempts: fetch latest main, reset only the isolated runner workspace to origin/main, reapply the immutable submitted batch with run-ID idempotency, commit and non-force push. A rejected push causes a fresh replay, not a conflicting JSON rebase. Both paths fail closed on exhausted retries. Cross-run GitHub runner integration is not performed here; the bare-repository two-run simulation is tested.",
       "publish_resources": [
-        "automation/unregistered_path_registry.json"
+        "automation/unregistered_path_registry.json",
+        "sources/request_domain_observations.json"
       ],
       "ephemeral_unpublished_resources": [
-        "runner-local registration staging copy before Contents API publication"
+        "runner-local registration staging copy",
+        "$RUNNER_TEMP/request-domains.json"
       ],
-      "write_boundary_fencing": "Control-plane file uses bounded optimistic Blob-SHA CAS rather than a production resource lease. Separate Watchdog runs can race, but each conflict triggers a fresh read/merge/retry up to three times; a failed or exhausted update stops without blind overwrite. The registration merge is idempotent by run ID."
+      "write_boundary_fencing": "These are separate control-plane ledgers, not DIRECT/PROXY/REJECT rule outputs. Watchdog uses Blob-SHA CAS; request intake uses non-force Git ref CAS and run-scoped idempotent replay. Neither path writes modules/uu.conf or directly dispatches production publication."
     },
     {
       "program_id": "script_refresh_ruleset_manifest",
@@ -967,8 +974,8 @@
       ],
       "lock_key": "git-ref-cas:sources/request_domain_observations.json",
       "mode": "optimistic_git_ref_compare_and_swap",
-      "enforcement": "request-intake writes a workspace file, commits, then fetches/rebases and retries non-fast-forward push up to three times. Workflow concurrency group includes github.run_id and therefore does not serialize distinct runs.",
-      "note": "CAS/rebase logic is present, but concurrent-run integration tests for same-domain merge, different-domain merge, rebase conflicts, bounded retry exhaustion and no lost observations remain missing."
+      "enforcement": "request-intake now retains the immutable submitted batch in RUNNER_TEMP and, on each of up to three attempts, fetches latest main, resets the isolated workspace, replays the same run-ID idempotent merge, and performs a non-force push. The helper records observed_run_ids so a lost push response followed by workflow rerun is a no-op.",
+      "note": "A bare-Git integration test simulates two runner clones that start from the same base, race to push, and verifies the loser fetches/resets/replays and preserves both distinct and overlapping hostnames. Real GitHub Actions concurrent-run integration remains outstanding."
     }
   ],
   "not_yet_proven": [
@@ -987,7 +994,7 @@
     "program_registry_blob_sha": "279f8d14d1aad62d1342ba07063aa8d52e410a80",
     "execution_adapters_blob_sha": "45967d0d88392369252b7a4427aaba41d9dcdda8",
     "added_after_release_baseline": true,
-    "note": "Expanded the direct writer inventory from 15 to 27 Python entrypoints, including lifecycle state, imported request observations, rule provenance, restore, safe repair, diagnostics, incident state, review cursor, production intent, scheduler temp artifacts, dashboard snapshot and step summary. This remains a partial static review; cross-workflow CAS/rebase integration evidence and full transitive write proof are still blocking. Watchdog unregistered-path registration now re-reads and merges the latest Blob SHA on up to three conditional PUT attempts; registration is idempotent per observed run ID, while true concurrent-run integration proof remains outstanding.",
+    "note": "Expanded the direct writer inventory from 15 to 27 Python entrypoints, including lifecycle state, imported request observations, rule provenance, restore, safe repair, diagnostics, incident state, review cursor, production intent, scheduler temp artifacts, dashboard snapshot and step summary. This remains a partial static review; cross-workflow CAS/rebase integration evidence and full transitive write proof are still blocking. Watchdog unregistered-path registration now re-reads and merges the latest Blob SHA on up to three conditional PUT attempts; registration is idempotent per observed run ID, while true concurrent-run integration proof remains outstanding. Request-intake now replays the same run-ID idempotent hostname batch from latest main on bounded non-force Git-ref CAS attempts; bare-Git two-run simulation covers overlapping and distinct hostnames.",
     "reviewed_at": "2026-11-04",
     "central_write_guard_test": "tests/test_fenced_file_writer.py::test_every_registered_python_component_installs_the_guard"
   },
