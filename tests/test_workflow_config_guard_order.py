@@ -305,5 +305,16 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn('manual_authorizations = queue.get("manual_authorizations", {})', validator)
         self.assertIn("manual authorization has already been consumed", runtime)
 
+
+    def test_manual_watchdog_dispatch_holds_before_building_or_enqueuing_task(self):
+        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
+        manual_gate = watchdog.index('if [ "$ORIGIN_EVENT" = "workflow_dispatch" ] && [ "${{ inputs.request_deterministic_audit }}" = "true" ]; then')
+        hold_gate = watchdog.index('if [ "$manual_dispatch_mode" != "enabled" ]; then', manual_gate)
+        task_key = watchdog.index('manual_key="production:manual-authorized:', manual_gate)
+        enqueue = watchdog.index("enqueue-auto-sync", task_key)
+        self.assertLess(manual_gate, hold_gate)
+        self.assertLess(hold_gate, task_key)
+        self.assertLess(task_key, enqueue)
+
 if __name__ == "__main__":
     unittest.main()
