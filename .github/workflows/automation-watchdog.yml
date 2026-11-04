@@ -321,6 +321,22 @@ jobs:
           # A manual authorization is an explicit one-shot request, not a bypass
           # of the normal Watchdog queue, unknown-path gate, or protected baseline.
           if [ "$ORIGIN_EVENT" = "workflow_dispatch" ] && [ "${{ inputs.request_deterministic_audit }}" = "true" ]; then
+            manual_dispatch_mode="$(python3 - <<'PY'
+          import json
+          from pathlib import Path
+          try:
+              control = json.loads(Path("automation/production_control.json").read_text(encoding="utf-8"))
+          except (OSError, json.JSONDecodeError):
+              control = {}
+          mode = control.get("dispatch_mode") if isinstance(control, dict) and type(control.get("schema_version")) is int and control.get("schema_version") == 1 else "hold"
+          print(mode if mode in {"enabled", "hold"} else "hold")
+          PY
+          )"
+            if [ "$manual_dispatch_mode" != "enabled" ]; then
+              echo "HOLD: explicit manual audit request was not enqueued; production dispatch remains held." >> "$GITHUB_STEP_SUMMARY"
+              echo "block_manifest=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
             pending_paths="$(jq '[.entries[] | select(.status == "PENDING_CLASSIFICATION")] | length' automation/unregistered_path_registry.json)"
             if [ "$pending_paths" -gt 0 ]; then
               echo "Manual audit blocked: $pending_paths unclassified paths remain in the Watchdog inbox."
