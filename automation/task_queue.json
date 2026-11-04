@@ -14,11 +14,11 @@
     },
     "logical/production-pipeline": {
       "acquired_at": "2026-11-04T20:13:25Z",
-      "expires_at": "2026-11-04T20:18:25Z",
+      "expires_at": "2026-11-05T02:13:26Z",
       "fencing_token": 4,
       "lease_id": "0d3f826e418542d1459bd32ddff2ceee",
       "released_at": null,
-      "renewed_at": "2026-11-04T20:13:25Z",
+      "renewed_at": "2026-11-04T20:13:26Z",
       "status": "ACTIVE",
       "task_id": "task_d07a49ba8a2249a6a489299d",
       "task_lease_token": "c6cda323838bfc0c6709d9910fd4f70e",
@@ -38,11 +38,11 @@
     },
     "sources/review_cursor.json": {
       "acquired_at": "2026-11-04T20:13:25Z",
-      "expires_at": "2026-11-04T20:18:25Z",
+      "expires_at": "2026-11-05T02:13:26Z",
       "fencing_token": 1,
       "lease_id": "0d3f826e418542d1459bd32ddff2ceee",
       "released_at": null,
-      "renewed_at": "2026-11-04T20:13:25Z",
+      "renewed_at": "2026-11-04T20:13:26Z",
       "status": "ACTIVE",
       "task_id": "task_d07a49ba8a2249a6a489299d",
       "task_lease_token": "c6cda323838bfc0c6709d9910fd4f70e",
@@ -61,7 +61,7 @@
       "worker_id": "assessment-canary-41746911914"
     }
   },
-  "revision": 83,
+  "revision": 84,
   "schema_version": 1,
   "tasks": [
     {
@@ -91,18 +91,14 @@
         "production_reason": "a registered production input changed; prior success for the same fingerprint does not prove current state is reconciled"
       },
       "last_error": null,
-      "lease": {
-        "expires_at": "2026-11-04T20:18:25Z",
-        "owner": "41904446034",
-        "token": "c6cda323838bfc0c6709d9910fd4f70e"
-      },
+      "lease": null,
       "max_attempts": 2,
       "not_before": "2026-11-04T20:12:54Z",
       "priority": 100,
       "requester_program_id": "workflow_automation_watchdog",
       "resource_lease": {
         "acquired_at": "2026-11-04T20:13:25Z",
-        "expires_at": "2026-11-04T20:18:25Z",
+        "expires_at": "2026-11-05T02:13:26Z",
         "lease_seconds": 21600,
         "resources": {
           "logical/production-pipeline": {
@@ -116,15 +112,29 @@
         },
         "status": "ACTIVE"
       },
-      "result": null,
+      "result": {
+        "correlation_id": "task_d07a49ba8a2249a6a489299d-a1",
+        "correlation_title": "Automation task task_d07a49ba8a2249a6a489299d-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-04T20:13:27Z",
+        "ref": "main",
+        "requested_head_sha": "2f59c1806697d6750728505983357391f4806704",
+        "submitted_at": "2026-11-04T20:13:29Z",
+        "task_id": "task_d07a49ba8a2249a6a489299d",
+        "workflow_id": 402712272,
+        "workflow_path": ".github/workflows/auto_sync.yml"
+      },
       "state_history": [
         "QUEUED",
-        "CLAIMED"
+        "CLAIMED",
+        "VERIFYING"
       ],
-      "status": "CLAIMED",
+      "status": "VERIFYING",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_d07a49ba8a2249a6a489299d",
-      "trace_id": "d987b6b4dc5749ba8e3c115faac3094e"
+      "trace_id": "d987b6b4dc5749ba8e3c115faac3094e",
+      "verification": null
     }
   ]
 }
