@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RULESETS = ROOT / "rulesets"
-CONFIG = ROOT / "shadowrocket" / "ss.conf"
+CONFIG = ROOT / "modules" / "uu.conf"
 ARCHIVE = RULESETS / "config_conflict_archive.json"
 REPORT_JSON = ROOT / "reports" / "ruleset-config-conflict-sync.json"
 REPORT_MD = ROOT / "reports" / "ruleset-config-conflict-sync.md"
@@ -108,7 +108,7 @@ def _archive_id(policy: str, line: str, config_blob_sha: str) -> str:
 def _merge_report_for_run(previous: dict, current: dict) -> dict:
     """Preserve every sync pass report within one GitHub Actions run."""
     if previous.get("config_blob_sha") != current.get("config_blob_sha"):
-        raise ValueError("ss.conf changed during one workflow run; refusing to merge conflict reports")
+        raise ValueError("uu.conf changed during one workflow run; refusing to merge conflict reports")
 
     merged = dict(current)
     merged["published_before"] = previous.get("published_before", current["published_before"])
@@ -144,7 +144,7 @@ def _merge_report_for_run(previous: dict, current: dict) -> dict:
 def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | None = None) -> dict:
     root = Path(root)
     rules_dir = root / "rulesets"
-    config_path = root / "shadowrocket" / "ss.conf"
+    config_path = root / "modules" / "uu.conf"
     archive_path = rules_dir / "config_conflict_archive.json"
     report_json = root / "reports" / "ruleset-config-conflict-sync.json"
     report_md = root / "reports" / "ruleset-config-conflict-sync.md"
@@ -197,7 +197,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         if current_result["status"] == "NO_CONFLICT":
             item["superseded_at"] = timestamp
             item["superseded_by_config_blob_sha"] = config_blob_sha
-            item["superseded_reason"] = "Current ss.conf no longer overlaps this archived external rule; it may be reconsidered by the normal evidence gate."
+            item["superseded_reason"] = "Current uu.conf no longer overlaps this archived external rule; it may be reconsidered by the normal evidence gate."
             archive_changed = True
             continue
         key = (archived_policy, archived_line)
@@ -408,7 +408,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
     report = {
         "schema_version": 1,
         "completed_at": timestamp,
-        "config_path": "shadowrocket/ss.conf",
+        "config_path": "modules/uu.conf",
         "config_read_only": True,
         "config_blob_sha": config_blob_sha,
         "config_sha256": config_sha256,
@@ -429,7 +429,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         "active_archive_count": sum(1 for x in archive["items"] if not x.get("restored_at") and not x.get("superseded_at")),
         "restoration_option_count": len(restoration_options),
         "restoration_options": restoration_options,
-        "policy": "Candidates fully covered by an explicit DOMAIN or DOMAIN-SUFFIX rule with DIRECT, PROXY, or REJECT policy in ss.conf, or fully covered by skip-proxy, are removed from published and queued external rules. The ss.conf policy wins regardless of whether it matches the external policy. Narrower exact or child-suffix exceptions do not remove broader parent suffix candidates. Rule order and precedence are not evaluated. Historical archive entries are rechecked against current full-scope coverage and superseded when coverage no longer exists; the normal builder then reconsiders eligible records using current evidence and publication gates. Keyword, regex, conditional, and partial overlaps are not automatically resolved.",
+        "policy": "Candidates fully covered by an explicit DOMAIN or DOMAIN-SUFFIX rule with DIRECT, PROXY, or REJECT policy in uu.conf, or fully covered by skip-proxy, are removed from published and queued external rules. The uu.conf policy wins regardless of whether it matches the external policy. Narrower exact or child-suffix exceptions do not remove broader parent suffix candidates. Rule order and precedence are not evaluated. Historical archive entries are rechecked against current full-scope coverage and superseded when coverage no longer exists; the normal builder then reconsiders eligible records using current evidence and publication gates. Keyword, regex, conditional, and partial overlaps are not automatically resolved.",
         "errors": [],
     }
     run_id = os.environ.get("GITHUB_RUN_ID", "").strip() if os.environ.get("RULESET_CONFIG_REPORT_AGGREGATION") == "1" else ""
@@ -454,7 +454,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
     report_json.parent.mkdir(parents=True, exist_ok=True)
     report_json.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     lines = [
-        "# RULE-SET / ss.conf conflict synchronization",
+        "# RULE-SET / uu.conf conflict synchronization",
         "",
         "- Config: " + report["config_path"] + " (read-only)",
         "- Config Git blob SHA: " + config_blob_sha,
@@ -492,7 +492,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
     ) if restoration_options else lines.append("- None")
     lines.extend([
         "",
-        "The script never writes to shadowrocket/ss.conf. Archived entries are automatically reconsidered when the current config no longer fully covers them; publication still requires the normal evidence and REJECT authorization gates. Explicit DOMAIN and DOMAIN-SUFFIX rules with DIRECT, PROXY, and REJECT policies are compared; rule order, precedence, keyword, regex, conditional, and partial overlaps are not inferred.",
+        "The script never writes to shadowrocket/uu.conf. Archived entries are automatically reconsidered when the current config no longer fully covers them; publication still requires the normal evidence and REJECT authorization gates. Explicit DOMAIN and DOMAIN-SUFFIX rules with DIRECT, PROXY, and REJECT policies are compared; rule order, precedence, keyword, regex, conditional, and partial overlaps are not inferred.",
         "Paste selected IDs into the workflow_dispatch input restore_conflict_ids.",
         "",
     ])
