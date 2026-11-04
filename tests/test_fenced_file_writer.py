@@ -68,6 +68,27 @@ class FencedFileWriterTests(unittest.TestCase):
                 missing.append(item["path"])
         self.assertEqual(missing, [], f"Python components missing write guard: {missing}")
 
+    def test_external_symlink_into_protected_config_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            alias = Path(directory) / "config-link"
+            alias.symlink_to(ROOT / "shadowrocket" / "ss.conf")
+            with self.assertRaisesRegex(PermissionError, "owner-managed protected file"):
+                fenced_file_writer.authorize_write_path(alias)
+
+    def test_external_hardlink_to_protected_config_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            alias = Path(directory) / "config-hardlink"
+            os.link(ROOT / "shadowrocket" / "ss.conf", alias)
+            with self.assertRaisesRegex(PermissionError, "owner-managed protected file"):
+                fenced_file_writer.authorize_write_path(alias)
+
+    def test_repository_symlink_cannot_escape_to_external_directory(self):
+        with tempfile.TemporaryDirectory() as external, tempfile.TemporaryDirectory(dir=ROOT) as inside:
+            link = Path(inside) / "escape"
+            link.symlink_to(external, target_is_directory=True)
+            with self.assertRaisesRegex(PermissionError, "escapes through a symlink"):
+                fenced_file_writer.authorize_write_path(link / "outside.txt")
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -18,16 +18,25 @@ def _repo_relative(path) -> str | None:
     if not candidate.is_absolute():
         candidate = Path.cwd() / candidate
     try:
-        lexical = candidate.relative_to(ROOT.resolve())
-    except ValueError:
-        return None
-    try:
         resolved = candidate.resolve(strict=False)
-        resolved.relative_to(ROOT.resolve())
-    except (OSError, ValueError) as exc:
-        raise PermissionError("repository write path escapes through a symlink") from exc
-    lexical_value = lexical.as_posix()
-    resolved_value = resolved.relative_to(ROOT.resolve()).as_posix()
+    except OSError as exc:
+        raise PermissionError("repository write path cannot be resolved safely") from exc
+    try:
+        resolved_relative = resolved.relative_to(ROOT.resolve())
+    except ValueError:
+        # A path lexically inside the repository must not escape through a symlink.
+        try:
+            candidate.relative_to(ROOT.resolve())
+        except ValueError:
+            return None
+        raise PermissionError("repository write path escapes through a symlink")
+    lexical_value = None
+    try:
+        lexical_value = candidate.relative_to(ROOT.resolve()).as_posix()
+    except ValueError:
+        # External symlinks/hardlinks resolving into the repository are still protected.
+        pass
+    resolved_value = resolved_relative.as_posix()
     if lexical_value in PROTECTED_PATHS or resolved_value in PROTECTED_PATHS:
         raise PermissionError("owner-managed protected file is read-only: shadowrocket/ss.conf")
     return resolved_value if resolved_value not in {"", "."} else None
@@ -37,6 +46,15 @@ def authorize_write_path(path) -> None:
     """Reject the owner config unconditionally and fence every repo-local write."""
     relative = _repo_relative(path)
     if relative is None:
+        # A pre-existing external hard link to the protected config has a different
+        # pathname but the same inode; deny it as well.
+        try:
+            candidate_stat = Path(os.fsdecode(path)).stat()
+            protected_stat = (ROOT / "shadowrocket" / "ss.conf").stat()
+            if (candidate_stat.st_dev, candidate_stat.st_ino) == (protected_stat.st_dev, protected_stat.st_ino):
+                raise PermissionError("owner-managed protected file is read-only: shadowrocket/ss.conf")
+        except FileNotFoundError:
+            pass
         return
     if relative in PROTECTED_PATHS:
         raise PermissionError(f"owner-managed protected file is read-only: {relative}")
@@ -67,6 +85,8 @@ def _audit_hook(event: str, args: tuple) -> None:
         authorize_write_path(args[1])
         return
     if event in {"os.symlink", "os.link"} and len(args) >= 2:
+        if event == "os.link":
+            authorize_write_path(args[0])
         authorize_write_path(args[1])
 
 
