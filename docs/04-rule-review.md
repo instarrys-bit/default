@@ -41,7 +41,7 @@ Exact domains and suffix rules may be published. A `DOMAIN-SUFFIX` candidate req
 
 ## Main-configuration precedence
 
-The user-maintained `shadowrocket/ss.conf` is authoritative. Automation may read it and compare its recorded Git blob SHA. Only an owner-approved baseline change may update the approved baseline metadata. The automation must never modify the configuration itself.
+The user-maintained `modules/uu.conf` is authoritative. Automation may read it and compare its recorded Git blob SHA. Only an owner-approved baseline change may update the approved baseline metadata. The automation must never modify the configuration itself.
 
 ## Review ledger
 
