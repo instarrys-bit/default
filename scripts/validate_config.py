@@ -14,7 +14,7 @@ import re
 import sys
 
 # The user's current managed config is the only authoritative validation target.
-CONFIGS = (Path("shadowrocket/ss.conf"),)
+CONFIGS = (Path("modules/uu.conf"),)
 POLICIES = {"DIRECT", "PROXY", "REJECT"}
 KNOWN_TYPES = {
     "AND", "OR", "NOT", "DOMAIN", "DOMAIN-SUFFIX", "DOMAIN-KEYWORD",
