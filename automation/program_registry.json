@@ -91,7 +91,7 @@
         "allowed_callers": [
           "workflow_automation_watchdog"
         ],
-        "max_attempts": 1,
+        "max_attempts": 3,
         "timeout_seconds": 480
       }
     },
