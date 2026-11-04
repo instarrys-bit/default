@@ -126,12 +126,13 @@
         "rulesets/lifecycle_state.json"
       ],
       "known_writers": [
-        "script_lifecycle_gate"
+        "script_lifecycle_gate",
+        "script_restore_automation_state"
       ],
       "lock_key": "resource:rulesets/lifecycle_state.json",
       "required_mode": "exclusive",
       "status": "direct_writer_identified_fence_only",
-      "note": "lifecycle_gate.py writes milestone/monthly review state directly. The current auto_sync call is protected by the central production-pipeline fence; no separate per-resource lease assertion exists in the script."
+      "note": "lifecycle_gate.py writes milestone/monthly review state directly. The current auto_sync call is protected by the central production-pipeline fence; no separate per-resource lease assertion exists in the script. Allowlisted publish-mode restore is an additional writer and is serialized by the same auto_sync logical production-pipeline fence."
     },
     {
       "id": "owner_config_baseline_metadata",
@@ -174,6 +175,7 @@
       "known_writers": [
         "script_build_rulesets",
         "script_lifecycle_audit",
+        "script_restore_automation_state",
         "script_sync_ruleset_config_conflicts"
       ],
       "lock_key": "resource:rulesets/published-lists",
@@ -226,14 +228,13 @@
         "review cursor/checkpoint path (runtime-selected)"
       ],
       "known_writers": [
-        "script_review_cursor",
-        "script_persist_review_cursor",
-        "script_deterministic_review"
+        "script_deterministic_review",
+        "script_restore_automation_state"
       ],
       "lock_key": "resource:<canonical-cursor-path>",
       "required_mode": "exclusive_per_cursor",
       "status": "partial_static_audit",
-      "note": "Resolve the concrete path and all helper call sites before dispatch."
+      "note": "The durable sources/review_cursor.json checkpoint is written by script_deterministic_review and can be restored from the allowlisted state archive by script_restore_automation_state. script_persist_review_cursor currently writes only RUNNER_TEMP/review_cursor.json and is not a durable repository writer."
     },
     {
       "id": "rule_provenance_ledger",
@@ -260,8 +261,9 @@
       "known_writers": [
         "script_build_rulesets",
         "script_lifecycle_audit",
-        "script_sync_ruleset_config_conflicts",
-        "script_refresh_ruleset_manifest"
+        "script_refresh_ruleset_manifest",
+        "script_restore_automation_state",
+        "script_sync_ruleset_config_conflicts"
       ],
       "lock_key": "resource:rulesets/manifest.json",
       "required_mode": "exclusive",
@@ -278,6 +280,8 @@
       "known_writers": [
         "script_build_rulesets",
         "script_lifecycle_audit",
+        "script_lifecycle_gate",
+        "script_restore_automation_state",
         "script_sync_ruleset_config_conflicts"
       ],
       "lock_key": "resource:rulesets/state",
@@ -306,10 +310,15 @@
         "path-selected JSON documents and their adjacent .manifest.json / shard files"
       ],
       "known_writers": [
-        "script_json_document_store",
+        "script_assess_sources",
+        "script_build_rule_provenance",
+        "script_build_source_candidates",
         "script_collect_domains",
         "script_deterministic_review",
-        "script_import_request_observations"
+        "script_discover_sources",
+        "script_import_request_observations",
+        "script_json_document_store",
+        "script_restore_automation_state"
       ],
       "lock_key": "resource:<canonical-document-path>",
       "required_mode": "exclusive_per_document",
@@ -348,12 +357,14 @@
         "reports/source-candidate-matrix.md"
       ],
       "known_writers": [
-        "script_build_source_candidates"
+        "script_build_source_candidates",
+        "script_restore_automation_state",
+        "workflow_auto_sync"
       ],
       "lock_key": "resource:sources/source_candidates.json+reports/source-candidate-matrix.md",
       "required_mode": "exclusive",
       "status": "direct_write_paths_confirmed_dynamic_document_store_children",
-      "note": "Candidate matrix reads runtime or persistent assessments plus source lineage, then writes a logical JSON document through json_document_store and a Markdown report."
+      "note": "Candidate matrix reads runtime or persistent assessments plus source lineage, then writes a logical JSON document through json_document_store and a Markdown report. Allowlisted publish-mode restore is an additional writer and is serialized by the same auto_sync logical production-pipeline fence."
     },
     {
       "id": "source_discovery_artifacts",
@@ -362,12 +373,14 @@
         "reports/source-discovery.md"
       ],
       "known_writers": [
-        "script_discover_sources"
+        "script_discover_sources",
+        "script_restore_automation_state",
+        "workflow_auto_sync"
       ],
       "lock_key": "resource:sources/discovered_sources.json",
       "required_mode": "exclusive",
       "status": "direct_write_paths_confirmed_dynamic_document_store_children",
-      "note": "discovered_sources.json is written through json_document_store with an explicit logical-document lease assertion covering the base file, adjacent manifest, content-addressed shards, staging and old-shard cleanup. reports/source-discovery.md has a separate explicit live lease assertion. GITHUB_STEP_SUMMARY is a per-run ephemeral output and is intentionally excluded from shared repository resource ownership."
+      "note": "discovered_sources.json is written through json_document_store with an explicit logical-document lease assertion covering the base file, adjacent manifest, content-addressed shards, staging and old-shard cleanup. reports/source-discovery.md has a separate explicit live lease assertion. GITHUB_STEP_SUMMARY is a per-run ephemeral output and is intentionally excluded from shared repository resource ownership. Allowlisted publish-mode restore is an additional writer and is serialized by the same auto_sync logical production-pipeline fence."
     },
     {
       "id": "watchdog_unregistered_path_registry",
