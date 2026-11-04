@@ -184,7 +184,7 @@ def manual_authorization_record(task, authorization, consumed_at):
     }
 
 
-def validate_manual_authorization_consumption(queue, task):
+def validate_manual_authorization_consumption(queue, task, authorization=None):
     """Require the exact durable queue record that consumed this workflow-run grant."""
     payload = task.get("input") if isinstance(task, dict) else None
     if not isinstance(payload, dict) or payload.get("production_decision") != "USER_AUTHORIZED_MANUAL_AUDIT":
@@ -212,6 +212,8 @@ def validate_manual_authorization_consumption(queue, task):
         raise ValueError("manual authorization has no matching durable one-shot task-consumption record")
     if not isinstance(record.get("scope_sha256"), str) or len(record["scope_sha256"]) != 64:
         raise ValueError("manual authorization consumption record has an invalid scope digest")
+    if isinstance(authorization, dict) and record["scope_sha256"] != authorization.get("scope_sha256"):
+        raise ValueError("manual authorization scope digest does not match the trusted run/task context")
     return record
 
 
@@ -231,7 +233,7 @@ def enqueue_task(task, queue_path=QUEUE, registry_path=REGISTRY, now=None):
                 if any(old.get(k) != task.get(k, 50 if k == "priority" else {}) for k in fields):
                     raise ValueError("idempotency_key is already used for a different task payload")
                 if authorization:
-                    validate_manual_authorization_consumption(queue, old)
+                    validate_manual_authorization_consumption(queue, old, authorization)
                 return {"created": False, "task": old}
         if authorization:
             ledger = queue.setdefault("manual_authorizations", {})
@@ -281,8 +283,8 @@ def claim_next(worker_id, queue_path=QUEUE, registry_path=REGISTRY, now=None):
                 continue
             if datetime.fromisoformat(task["not_before"].replace("Z", "+00:00")) > now:
                 continue
-            validate_manual_authorization(task, manual_authorization_context_from_environment())
-            validate_manual_authorization_consumption(queue, task)
+            authorization = validate_manual_authorization(task, manual_authorization_context_from_environment())
+            validate_manual_authorization_consumption(queue, task, authorization)
             policy = authorize(task, by_id)
             eligible.append((task, policy))
         if not eligible:
@@ -311,8 +313,8 @@ def complete_task(task_id,worker_id,lease_token,*,success,result=None,error=None
         if task.get("status")!="CLAIMED" or not isinstance(lease,dict): raise ValueError("task is not currently claimed")
         if lease.get("owner")!=worker_id or not secrets.compare_digest(str(lease.get("token","")),str(lease_token)): raise ValueError("lease owner or token mismatch")
         if datetime.fromisoformat(lease["expires_at"].replace("Z","+00:00"))<=now: raise ValueError("lease has expired; recover the task before completing it")
-        validate_manual_authorization(task, manual_authorization_context_from_environment())
-        validate_manual_authorization_consumption(queue, task)
+        authorization = validate_manual_authorization(task, manual_authorization_context_from_environment())
+        validate_manual_authorization_consumption(queue, task, authorization)
         authorize(task,by_id)
         if success and not isinstance(result,dict): raise ValueError("successful completion requires a result object")
         if not success and not isinstance(error,dict): raise ValueError("failed completion requires an error object")
