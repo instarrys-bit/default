@@ -366,6 +366,9 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertIn("script_production_intent", groups["request_intake_observations"]["known_writers"])
         self.assertEqual(groups["active_source_registry_and_activation"]["status"], "production_registry_writer_central_pipeline_fence_only")
         self.assertEqual(groups["policy_source_overlap_audit"]["status"], "audit_output_central_pipeline_fence_only")
+        doc_store = groups["shared_json_document_store"]
+        self.assertIn("script_json_document_store", doc_store["known_writers"])
+        self.assertIn("script_resource_lease_runtime", groups["durable_task_queue_control_plane"]["writers"])
         self.assertIn("script_auto_activate_sources", groups["active_source_registry_and_activation"]["known_writers"])
         self.assertIn("script_restore_automation_state", groups["source_candidate_artifacts"]["known_writers"])
         self.assertIn("script_restore_automation_state", groups["source_discovery_artifacts"]["known_writers"])
