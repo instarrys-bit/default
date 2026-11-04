@@ -119,6 +119,7 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
             if target is None:
                 raise ValueError("target program is not registered")
             protected_config_digest(root)
+            validate_manual_authorization(task, manual_authorization_context_from_environment())
             authorize(task, by_id)
             if not isinstance(adapter, dict) or adapter.get("enabled") is not True:
                 raise ValueError("target adapter is disabled")
