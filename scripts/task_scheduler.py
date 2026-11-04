@@ -158,6 +158,34 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
             missing_inputs=[path for path in required_read_only if read_only_digests.get(path) is None]
             if missing_inputs:
                 raise ValueError("required input artifacts are missing: "+", ".join(missing_inputs))
+            dependency = adapter.get("dependency_contract")
+            if dependency is not None:
+                if not isinstance(dependency, dict):
+                    raise ValueError("dependency_contract must be an object")
+                predecessor_id = dependency.get("predecessor_program_id")
+                artifact_path = dependency.get("artifact_path")
+                workflow_name = dependency.get("producer_workflow_name")
+                proof = task.get("input", {}).get("predecessor")
+                if (not isinstance(predecessor_id, str) or not isinstance(artifact_path, str)
+                        or not isinstance(workflow_name, str) or artifact_path not in required_read_only
+                        or not isinstance(proof, dict)):
+                    raise ValueError("typed predecessor contract or task proof is incomplete")
+                expected_proof = {
+                    "program_id": predecessor_id,
+                    "workflow_name": workflow_name,
+                    "artifact_path": artifact_path,
+                }
+                if any(proof.get(key) != value for key, value in expected_proof.items()):
+                    raise ValueError("typed predecessor identity does not match the reviewed contract")
+                if (not isinstance(proof.get("workflow_run_id"), str)
+                        or not proof["workflow_run_id"].isdigit()
+                        or not isinstance(proof.get("workflow_head_sha"), str)
+                        or not re.fullmatch(r"[0-9a-f]{40}", proof["workflow_head_sha"])
+                        or not isinstance(proof.get("artifact_sha256"), str)
+                        or not re.fullmatch(r"[0-9a-f]{64}", proof["artifact_sha256"])):
+                    raise ValueError("typed predecessor run or artifact digest is malformed")
+                if read_only_digests.get(artifact_path) != proof["artifact_sha256"]:
+                    raise ValueError("typed predecessor artifact digest changed before task execution")
             if isinstance(resource_contract, dict) and set(read_only_resources) & set(resource_contract.get("resource_keys", [])):
                 raise ValueError("a resource cannot be both read-only and exclusively writable")
             completion = adapter.get("completion", {})
@@ -785,6 +813,66 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
         }
 
 
+def enqueue_source_assessment_task(store, registry: dict, adapters: dict, *,
+                                   idempotency_key: str, input_payload: dict,
+                                   priority: int = 60, root: Path = ROOT) -> dict:
+    """Enqueue one bounded assessment only from a successful discovery-producing Watchdog event."""
+    if not isinstance(idempotency_key, str) or not idempotency_key.startswith("source-assessment:"):
+        raise ValueError("source assessment requires a Watchdog-scoped idempotency key")
+    if not isinstance(input_payload, dict):
+        raise ValueError("source assessment input must be an object")
+    predecessor = input_payload.get("predecessor")
+    if not isinstance(predecessor, dict):
+        raise ValueError("source assessment requires a typed predecessor artifact proof")
+    expected_fields = {"program_id", "workflow_name", "workflow_run_id", "workflow_head_sha", "artifact_path", "artifact_sha256"}
+    if set(predecessor) != expected_fields:
+        raise ValueError("predecessor proof must contain exactly the reviewed discovery provenance fields")
+    if predecessor.get("program_id") != "script_discover_sources":
+        raise ValueError("source assessment predecessor must be script_discover_sources")
+    if predecessor.get("workflow_name") != "Shadowrocket Deterministic Domain Audit (User Config Baseline)":
+        raise ValueError("source assessment predecessor workflow is not the reviewed production workflow")
+    if not isinstance(predecessor.get("workflow_run_id"), str) or not predecessor["workflow_run_id"].isdigit():
+        raise ValueError("predecessor workflow_run_id must be a decimal string")
+    if not isinstance(predecessor.get("workflow_head_sha"), str) or not re.fullmatch(r"[0-9a-f]{40}", predecessor["workflow_head_sha"]):
+        raise ValueError("predecessor workflow_head_sha must be a full Git commit SHA")
+    if predecessor.get("artifact_path") != "sources/discovered_sources.json":
+        raise ValueError("source assessment predecessor artifact path is not allowlisted")
+    if not isinstance(predecessor.get("artifact_sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", predecessor["artifact_sha256"]):
+        raise ValueError("predecessor artifact_sha256 must be a full SHA-256 digest")
+    current = read_only_resource_digests(root, [predecessor["artifact_path"]]).get(predecessor["artifact_path"])
+    if current is None or current != predecessor["artifact_sha256"]:
+        raise ValueError("discovery predecessor artifact is missing or no longer matches its event snapshot")
+    adapter = adapter_index(adapters).get("script_assess_sources")
+    if not isinstance(adapter, dict) or adapter.get("enabled") is not True:
+        raise ValueError("source assessment adapter is disabled")
+    if adapter.get("adapter_type") != "python_cli" or adapter.get("interface_status") != "reviewed":
+        raise ValueError("source assessment adapter interface is not reviewed")
+    errors = validate_json_schema(input_payload, adapter.get("input_contract"))
+    if errors:
+        raise ValueError("source assessment input contract failed: " + "; ".join(errors[:5]))
+    expected_key = f"source-assessment:{predecessor['workflow_run_id']}"
+    if idempotency_key != expected_key:
+        raise ValueError("source assessment idempotency key must be bound to its producer workflow run")
+    result = enqueue_remote({
+        "idempotency_key": idempotency_key,
+        "trace_id": f"discovery-run:{predecessor['workflow_run_id']}:{predecessor['workflow_head_sha'][:12]}",
+        "requester_program_id": "workflow_automation_watchdog",
+        "target_program_id": "script_assess_sources",
+        "capability": "source_assessment",
+        "priority": priority,
+        "input": input_payload,
+    }, store, registry)
+    task = result["task"]
+    return {
+        "created": result["created"],
+        "task_id": task["task_id"],
+        "status": task["status"],
+        "idempotency_key": task["idempotency_key"],
+        "predecessor_artifact_sha256": predecessor["artifact_sha256"],
+        "predecessor_workflow_run_id": predecessor["workflow_run_id"],
+    }
+
+
 def enqueue_auto_sync_task(store, registry: dict, *, idempotency_key: str,
                            priority: int = 80, input_payload: dict | None = None) -> dict:
     """Enqueue the production audit only through the top-level Watchdog identity."""
@@ -885,11 +973,11 @@ def main() -> int:
     parser.add_argument("--idempotency-key")
     parser.add_argument("--priority", type=int, default=80)
     parser.add_argument("--input-json", default="{}")
-    parser.add_argument("command", choices=["plan", "run-once", "enqueue-auto-sync"])
+    parser.add_argument("command", choices=["plan", "run-once", "enqueue-auto-sync", "enqueue-source-assessment"])
     args = parser.parse_args()
     try:
         token = sys.stdin.read().strip() if args.token_stdin else None
-        if args.command in {"run-once", "enqueue-auto-sync"} and not token:
+        if args.command in {"run-once", "enqueue-auto-sync", "enqueue-source-assessment"} and not token:
             raise ValueError(f"{args.command} requires a queue token supplied through --token-stdin")
         store = make_store(args.repository, args.branch, args.queue_path, token=token)
         registry = load_object(args.registry, "program registry")
@@ -897,6 +985,19 @@ def main() -> int:
         if args.command == "plan":
             plan = build_execution_plan(store.read().document, registry, adapters)
             print(json.dumps(plan, ensure_ascii=False))
+        elif args.command == "enqueue-source-assessment":
+            if not isinstance(args.idempotency_key, str) or not args.idempotency_key:
+                raise ValueError("enqueue-source-assessment requires --idempotency-key")
+            if not 0 <= args.priority <= 100:
+                raise ValueError("--priority must be an integer from 0 to 100")
+            try:
+                input_payload = json.loads(args.input_json)
+            except json.JSONDecodeError as exc:
+                raise ValueError(f"--input-json is invalid JSON: {exc}") from exc
+            print(json.dumps(enqueue_source_assessment_task(
+                store, registry, adapters, idempotency_key=args.idempotency_key,
+                priority=args.priority, input_payload=input_payload,
+            ), ensure_ascii=False))
         elif args.command == "enqueue-auto-sync":
             if not isinstance(args.idempotency_key, str) or not args.idempotency_key:
                 raise ValueError("enqueue-auto-sync requires --idempotency-key")

@@ -34,6 +34,14 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
             path = Path(directory) / "input.json"
             path.write_text(json.dumps({
                 "max_urls": 20, "max_file_bytes": 1_000_000, "max_total_bytes": 10_000_000,
+                "predecessor": {
+                    "program_id": "script_discover_sources",
+                    "workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
+                    "workflow_run_id": "41770000000",
+                    "workflow_head_sha": "a" * 40,
+                    "artifact_path": "sources/discovered_sources.json",
+                    "artifact_sha256": "b" * 64,
+                },
             }), encoding="utf-8")
             self.assertEqual(assess_sources.load_task_options(path)["max_urls"], 20)
 

@@ -364,8 +364,15 @@ def load_task_options(path: Path | None) -> dict:
         value = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         raise ValueError(f"cannot read assessment task input: {exc}") from exc
-    if not isinstance(value, dict) or set(value) != set(defaults):
-        raise ValueError("assessment task input must contain exactly max_urls, max_file_bytes and max_total_bytes")
+    allowed = set(defaults) | {"predecessor"}
+    if not isinstance(value, dict) or set(value) != allowed:
+        raise ValueError("assessment task input must contain the three bounded options and a typed predecessor proof")
+    predecessor = value.get("predecessor")
+    required_predecessor_fields = {"program_id", "workflow_name", "workflow_run_id", "workflow_head_sha", "artifact_path", "artifact_sha256"}
+    if not isinstance(predecessor, dict) or set(predecessor) != required_predecessor_fields:
+        raise ValueError("assessment predecessor proof is malformed")
+    if predecessor.get("program_id") != "script_discover_sources" or predecessor.get("artifact_path") != "sources/discovered_sources.json":
+        raise ValueError("assessment predecessor identity or artifact path is invalid")
     bounds = {"max_urls": (1, 20), "max_file_bytes": (1, 1_000_000), "max_total_bytes": (1, 10_000_000)}
     for key, (minimum, maximum) in bounds.items():
         item = value[key]
