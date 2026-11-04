@@ -135,13 +135,13 @@ jobs:
               "AUTOMATION_REQUIRE_RESOURCE_LEASE": "1",
           }
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
-              stream.write(f"AUTOMATION_TASK_ID_BASE={task_id}\\n")
+              stream.write(f"AUTOMATION_TASK_ID_BASE={task_id}\n")
               for key, value in env_values.items():
-                  stream.write(f"{key}={value}\\n")
+                  stream.write(f"{key}={value}\n")
           delimiter = "__WATCHDOG_RESOURCE_PROOF__"
               if delimiter in proof_text:
                   raise SystemExit("The resource proof contains an invalid environment delimiter.")
-              stream.write(f"AUTOMATION_RESOURCE_LEASE_PROOF<<{delimiter}\\n{proof_text}\\n{delimiter}\\n")
+              stream.write(f"AUTOMATION_RESOURCE_LEASE_PROOF<<{delimiter}\n{proof_text}\n{delimiter}\n")
 
           intent = task.get("dispatch_intent")
           if (
