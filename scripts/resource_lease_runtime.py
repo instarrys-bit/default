@@ -327,6 +327,18 @@ def _assert_live_writer_fence(queue, task, resource_path, proof_item, now):
     return True
 
 
+def _assert_workflow_resource_context(queue, task_id, worker_id, task_token, proof, now):
+    assert_workflow_resource_lease(queue, task_id, proof, now=now)
+    leases = queue.get("resource_leases")
+    if not isinstance(leases, dict):
+        raise ValueError("durable resource lease registry is missing")
+    for key in proof:
+        record = checked_record(leases.get(key), key)
+        if record is None or record.get("worker_id") != worker_id or record.get("task_lease_token") != task_token:
+            raise ValueError("workflow resource lease identity mismatch")
+    return True
+
+
 def assert_resource_lease_from_environment(resource_path):
     """Read the durable queue at every filesystem mutation and enforce live fencing."""
     resource_path=resource_key(resource_path)
@@ -366,8 +378,12 @@ def assert_resource_lease_from_environment(resource_path):
     if snapshot_path:
         try:
             snapshot=json.loads(Path(snapshot_path).read_text(encoding="utf-8"))
-            snapshot_task=_active_writer_task(snapshot,task_id,worker_id,task_token,now)
-            _assert_live_writer_fence(snapshot,snapshot_task,lease_key,item,now)
+            snapshot_task=next((x for x in snapshot.get("tasks",[]) if isinstance(x,dict) and x.get("task_id")==task_id),None)
+            if isinstance(snapshot_task,dict) and snapshot_task.get("status")=="VERIFYING":
+                _assert_workflow_resource_context(snapshot,task_id,worker_id,task_token,proof,now)
+            else:
+                snapshot_task=_active_writer_task(snapshot,task_id,worker_id,task_token,now)
+                _assert_live_writer_fence(snapshot,snapshot_task,lease_key,item,now)
         except (OSError,json.JSONDecodeError) as exc:
             raise ValueError("resource lease claim snapshot is unreadable") from exc
     store=GitHubContentsQueueStore(
@@ -378,8 +394,12 @@ def assert_resource_lease_from_environment(resource_path):
         timeout=10,
     )
     live_queue=store.read().document
-    live_task=_active_writer_task(live_queue,task_id,worker_id,task_token,datetime.now(timezone.utc))
-    return _assert_live_writer_fence(live_queue,live_task,lease_key,item,datetime.now(timezone.utc))
+    live_now=datetime.now(timezone.utc)
+    live_task=next((x for x in live_queue.get("tasks",[]) if isinstance(x,dict) and x.get("task_id")==task_id),None)
+    if isinstance(live_task,dict) and live_task.get("status")=="VERIFYING":
+        return _assert_workflow_resource_context(live_queue,task_id,worker_id,task_token,proof,live_now)
+    live_task=_active_writer_task(live_queue,task_id,worker_id,task_token,live_now)
+    return _assert_live_writer_fence(live_queue,live_task,lease_key,item,live_now)
 
 
 def assert_workflow_resource_lease(queue, task_id, proof, *, now=None):
