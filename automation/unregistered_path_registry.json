@@ -140,7 +140,7 @@
     },
     {
       "path": "candidates/ss.conf.oiu-fusion-candidate",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "CLASSIFIED_DOCUMENTATION",
       "first_seen_at": "2026-11-04T20:05:17.100115Z",
       "last_seen_at": "2026-11-04T20:05:17.100115Z",
       "seen_count": 1,
@@ -150,11 +150,14 @@
       "last_seen_event": "push",
       "last_seen_revision": "72e119a031970b652ede40d2263412c968168138",
       "last_seen_run_id": "41903086391",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41903086391"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41903086391",
+      "classified_at": "2026-11-05",
+      "classification_reason": "Historical full-config fusion candidate. The review report explicitly marks it superseded and unsuitable for deployment because it changed the MITM section.",
+      "classification_basis": "Historical, non-authoritative config candidate only. The production baseline is modules/uu.conf; these candidate paths are not production inputs and are not consumed by current publication workflows."
     },
     {
       "path": "candidates/ss.conf.oiu-merged",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "CLASSIFIED_DOCUMENTATION",
       "first_seen_at": "2026-11-04T20:05:17.100115Z",
       "last_seen_at": "2026-11-04T20:05:17.100115Z",
       "seen_count": 1,
@@ -164,21 +167,10 @@
       "last_seen_event": "push",
       "last_seen_revision": "72e119a031970b652ede40d2263412c968168138",
       "last_seen_run_id": "41903086391",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41903086391"
-    },
-    {
-      "path": "dashboard/README.md",
-      "status": "CLASSIFIED_DOCUMENTATION",
-      "first_seen_at": "2026-11-03T17:12:05.157284Z",
-      "last_seen_at": "2026-11-03T17:41:44.084601Z",
-      "seen_count": 2,
-      "last_seen_event": "push",
-      "last_seen_revision": "7c376836232c1fda8ee40d91bab0e7d7255f501f",
-      "last_seen_run_id": "41686591077",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41686591077",
-      "classified_at": "2026-11-04T18:00:00+08:00",
-      "classification_reason": "Documentation for the operations dashboard.",
-      "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41903086391",
+      "classified_at": "2026-11-05",
+      "classification_reason": "Historical merged-config candidate snapshot. It is not the authoritative production config and no active workflow consumes it.",
+      "classification_basis": "Historical, non-authoritative config candidate only. The production baseline is modules/uu.conf; these candidate paths are not production inputs and are not consumed by current publication workflows."
     },
     {
       "path": "dashboard/index.html",
@@ -192,6 +184,20 @@
       "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41686591077",
       "classified_at": "2026-11-04T18:00:00+08:00",
       "classification_reason": "Read-only operations dashboard presentation; displays production state and does not mutate production inputs or outputs.",
+      "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
+    },
+    {
+      "path": "dashboard/README.md",
+      "status": "CLASSIFIED_DOCUMENTATION",
+      "first_seen_at": "2026-11-03T17:12:05.157284Z",
+      "last_seen_at": "2026-11-03T17:41:44.084601Z",
+      "seen_count": 2,
+      "last_seen_event": "push",
+      "last_seen_revision": "7c376836232c1fda8ee40d91bab0e7d7255f501f",
+      "last_seen_run_id": "41686591077",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41686591077",
+      "classified_at": "2026-11-04T18:00:00+08:00",
+      "classification_reason": "Documentation for the operations dashboard.",
       "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
     },
     {
