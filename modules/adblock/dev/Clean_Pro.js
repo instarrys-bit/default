@@ -1366,8 +1366,15 @@
       if (isJsonContent) {
         const text = getTextBody($response);
         if (!text) return $done({});
-        // Only suppress the Shorts shelf on the YouTube home browse feed.
-        const res = processYouTubeJsonString(text, url.includes("/browse") && /browseId=FEwhat_to_watch|browseId%3DFEwhat_to_watch/.test(url));
+        // YouTube mobile browse requests carry the feed ID in their JSON request body.
+        let isHomeBrowse = false;
+        if (url.includes("/browse") && typeof $request !== "undefined" && typeof $request.body === "string") {
+          try {
+            const requestData = JSON.parse($request.body);
+            isHomeBrowse = requestData.browseId === "FEwhat_to_watch";
+          } catch (_) {}
+        }
+        const res = processYouTubeJsonString(text, isHomeBrowse);
         return res.modified ? $done({ body: res.body }) : $done({});
       }
 
