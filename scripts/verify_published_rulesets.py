@@ -75,7 +75,7 @@ def verify_artifacts(manifest, queue, rule_files, policy, config_bytes):
     approved_sha=guard.get("approved_git_blob_sha")
     actual_sha=git_blob_sha(config_bytes)
     if not approved_sha or approved_sha!=actual_sha:
-        raise ValueError("protected ss.conf Git blob SHA differs from the approved baseline")
+        raise ValueError("protected uu.conf Git blob SHA differs from the approved baseline")
     if manifest.get("review_engine")!="deterministic-domain-audit/4.1":
         raise ValueError("manifest reviewer version does not match the deployed deterministic reviewer")
     return {"status":"PASS","published_rule_total":total,"rule_count":counts,"rule_sha256":sha_report,"queued_rule_total":len(queue_items),"capacity_remaining":30000-total,"ss_conf_git_blob_sha":actual_sha}
@@ -93,7 +93,7 @@ def main():
     manifest=json.loads(git_show(ref,"rulesets/manifest.json"))
     queue=json.loads(git_show(ref,"rulesets/pending_queue.json"))
     policy=json.loads(git_show(ref,"sources/policy.json"))
-    config=git_show(ref,"shadowrocket/ss.conf")
+    config=git_show(ref,"modules/uu.conf")
     files={p.lower()+".list":git_show(ref,"rulesets/"+p.lower()+".list") for p in POLICIES}
     result=verify_artifacts(manifest,queue,files,policy,config)
     result["remote_ref"]=ref
