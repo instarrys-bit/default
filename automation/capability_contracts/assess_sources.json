@@ -4,8 +4,8 @@
   "program_id": "script_assess_sources",
   "implementation_path": "scripts/assess_sources.py",
   "implementation_blob_sha": "cd9ff31732d88be297bd1a2b54c976192b432258",
-  "review_status": "typed_predecessor_and_dispatch_contract_documented_pending_watchdog_integration",
-  "dispatch_status": "disabled",
+  "review_status": "watchdog_successful_workflow_run_enqueue_installed",
+  "dispatch_status": "enabled",
   "entrypoint": {
     "command": [
       "python3",
@@ -204,13 +204,13 @@
   },
   "dependency_edges": {
     "required_predecessor": "script_discover_sources",
-    "edge_semantics": "The intended producer is script_discover_sources inside a successful auto_sync workflow run. The Watchdog workflow enqueue gate is pending; until it is installed the source assessment adapter remains disabled.",
+    "edge_semantics": "The Watchdog workflow_run gate enqueues only after a successful main-branch run of the exact discovery-producing production workflow and binds run ID, head SHA and current discovered_sources artifact digest.",
     "registry_dependency_declared": true,
-    "note": "The scheduler enforces sources/discovered_sources.json as a required read-only predecessor artifact and compares its complete legacy/sharded digest before and after execution; it does not dispatch the discovery predecessor itself.",
+    "note": "The Watchdog event gate supplies successful-run provenance; the scheduler validates producer identity, run metadata and the complete current legacy/sharded artifact digest before claim, and the assessor rechecks the predecessor digest before and after execution.",
     "registry_dependency_program_id": "script_discover_sources",
     "required_predecessor_artifact": "sources/discovered_sources.json",
     "input_snapshot_validation": "The scheduler hashes the complete legacy/sharded discovered_sources document before and after assessment and rejects publication if it changes.",
-    "scheduler_enforcement": "task_scheduler.build_execution_plan validates producer identity, exact workflow name, numeric workflow run ID, full producer commit SHA, allowlisted artifact path, and current complete legacy/sharded artifact digest before claim. The scheduler does not independently query GitHub Actions run conclusions; the pending Watchdog event gate must supply that evidence."
+    "scheduler_enforcement": "The Watchdog supplies a successful workflow_run event proof. The scheduler validates producer identity, exact workflow name, numeric workflow run ID, full producer commit SHA, allowlisted artifact path and current complete legacy/sharded artifact digest before claim."
   },
   "permission_boundary": {
     "filesystem": "Write only the three declared logical output resources and their document-store temporary/manifest/shard children. Publish only persistent assessment history and report; runtime fingerprint data remains runner-local.",
@@ -219,10 +219,11 @@
     "protected_config": "modules/uu.conf is immutable and outside this capability's write set."
   },
   "blockers": [
-    "Watchdog workflow enqueue integration is not yet installed; the adapter remains disabled until a reviewed Watchdog event path is merged.",
     "Implement durable idempotency or checkpoint/replay semantics before enabling retries; max_attempts remains one total execution.",
     "Complete transitive writer inventory and runtime tracing beyond the named source-assessment paths.",
-    "Run a regular Watchdog-dispatched task and verify queue completion, artifacts, publication and protected-config invariance."
+    "Run a regular Watchdog-dispatched task and verify queue completion, artifacts, publication and protected-config invariance.",
+    "Durable idempotency/checkpoint recovery is not implemented; adapter is limited to one execution attempt per discovery run.",
+    "Complete transitive writer inventory and runtime tracing beyond the declared source-assessment resources remains outstanding."
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.04.9",
@@ -237,6 +238,6 @@
     "artifact_path": "sources/discovered_sources.json",
     "producer_workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
     "edge_type": "intended_successful_workflow_run_with_immutable_artifact_digest",
-    "enforcement": "Scheduler validates producer identity, run metadata and current artifact digest. The Watchdog workflow event gate that supplies successful-run evidence is pending; adapter remains disabled until that gate is installed."
+    "enforcement": "Watchdog enqueues only from the successful production workflow_run event on main; scheduler verifies the immutable predecessor identity and artifact digest."
   }
 }
