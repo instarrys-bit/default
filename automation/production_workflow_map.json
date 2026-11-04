@@ -2,12 +2,12 @@
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
   "workflow_blob_sha": "dbe3a5f8059cf7d779f6af64ef51f378a6e4daf5",
-  "registry_blob_sha": "279f8d14d1aad62d1342ba07063aa8d52e410a80",
+  "registry_blob_sha": "ea3c35c1d0cb8ae6fff5f2debfbd3aa77369e245",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 6,
     "step_count": 51,
-    "independent_python_dispatch_enabled": false
+    "independent_python_dispatch_enabled": true
   },
   "job_graph": [
     {
@@ -600,7 +600,8 @@
     "The publish job is a separate privileged boundary with contents:write and must remain a gated workflow-level operation.",
     "Failure cursor persistence, incident creation, Watchdog completion notification and incident resolution are separate recovery/notification jobs, not ordinary production capabilities.",
     "The compile/test step references many scripts for validation only; those references must not be interpreted as execution edges.",
-    "Workflow-native shell, artifact, GitHub API and GitHub issue actions remain orchestration capabilities and need explicit contracts before decomposition."
+    "Workflow-native shell, artifact, GitHub API and GitHub issue actions remain orchestration capabilities and need explicit contracts before decomposition.",
+    "Source assessment is dispatched by automation-watchdog only after the exact production discovery workflow completes successfully on main; it is not an independent direct-dispatch path."
   ],
   "decomposition_constraints": [
     "Preserve the audit -> publish dependency and the existing single-writer concurrency boundary.",
