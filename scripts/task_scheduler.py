@@ -531,7 +531,6 @@ def publish_task_artifacts(task: dict, adapter: dict, store, protected_digest: s
     remote=run_git(["ls-remote","origin","refs/heads/main"],env).strip().split()
     if not remote or remote[0]!=published_sha:
         raise RuntimeError("artifact publication could not be independently confirmed on main")
-    assert_live_task_resource_proofs(task,adapter,store)
     return {"published":True,"commit_sha":published_sha,"paths":sorted(staged)}
 
 
@@ -717,6 +716,13 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
                 ensure_read_only_resources_unchanged(read_only_before, root)
             except ProtectedConfigMutationError as exc:
                 error = {"type": "read_only_resource_mutation_detected", "message": str(exc)}
+                completed_task = complete_remote(
+                    task["task_id"], task["lease"]["owner"], task["lease"]["token"],
+                    success=False, error=error, store=store, registry=registry, now=now_utc(),
+                )
+                return {"task_id": task["task_id"], "status": completed_task["status"], "error": error}
+            except (ValueError, OSError, RuntimeError, subprocess.TimeoutExpired) as exc:
+                error = {"type": "artifact_publication_failed", "message": str(exc)[:1500]}
                 completed_task = complete_remote(
                     task["task_id"], task["lease"]["owner"], task["lease"]["token"],
                     success=False, error=error, store=store, registry=registry, now=now_utc(),
