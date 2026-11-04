@@ -38,7 +38,7 @@ Claims are scheduler-gated: callers must use the registered scheduler, which pre
 - The adapter is unreviewed, has no input/output contract, and has an empty caller allowlist.
 - This PR does not dispatch programs or start background workers.
 - This PR does not grant GitHub permissions; the calling workflow or operator must provide them.
-- The runtime must only write the queue document path supplied to the storage store. It does not read or modify `shadowrocket/ss.conf`, routing rules, or DNS settings.
+- The runtime must only write the queue document path supplied to the storage store. It does not read or modify `modules/uu.conf`, routing rules, or DNS settings.
 - A successful queue-state write is not proof that the target program executed successfully. Completion is a separate lease-authenticated state transition; independent task-result verification and scheduler/Watchdog integration remain follow-up work.
 
 ## Validation
