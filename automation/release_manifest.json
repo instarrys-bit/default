@@ -8,12 +8,12 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "319bef10c0eed9a79f96fab9c711f1b7e448338d"
+      "git_blob_sha": "d4cf970870f4b51d40c1f70c7d4347a035d4b960"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "b61b472e3a75fd5807440b698a21b8d8d974bdcc"
+      "git_blob_sha": "b9bad9786b927b98634ec956b3eb343f6fd8d43e"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -61,7 +61,8 @@
     "Source assessment retries now replay a deterministic batch bound to the producer run ID and discovery artifact digest; per-source durable progress checkpoints and complete transitive writer proof remain outstanding.",
     "Resource ownership audit is still a partial static review; restore_automation_state is an additional serialized writer for source assessment history/report artifacts.",
     "Source assessment retries now replay a deterministic batch bound to the producer run ID and discovery artifact digest; per-source durable progress checkpoints and complete transitive writer proof remain outstanding.",
-    "Review cursor checkpoint persistence is protected by the production workflow's top-level main-writer concurrency group and the live Watchdog fencing lease; complete transitive writer tracing remains outstanding."
+    "Review cursor checkpoint persistence is protected by the production workflow's top-level main-writer concurrency group and the live Watchdog fencing lease; complete transitive writer tracing remains outstanding.",
+    "The production workflow now permits one bounded retry after a verified failed run; cancelled/superseded task classification remains conservative and terminal history is retained."
   ],
   "next_migration_gate": {
     "required_before_independent_python_dispatch": [
