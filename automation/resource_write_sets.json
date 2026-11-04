@@ -1427,7 +1427,20 @@
     "added_after_release_baseline": true,
     "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 53 Python components are now partitioned into 36 direct/helper writer entries, 16 reviewed non-writers and one external GitHub Actions dispatch side-effect adapter.",
     "reviewed_at": "2026-11-04",
-    "central_write_guard_test": "tests/test_fenced_file_writer.py::test_every_registered_python_component_installs_the_guard"
+    "central_write_guard_test": "tests/test_fenced_file_writer.py::test_every_registered_python_component_installs_the_guard",
+    "runtime_trace_evidence": {
+      "trace_script": "scripts/fenced_file_writer.py",
+      "workflow_jobs": [
+        "audit",
+        "publish"
+      ],
+      "artifacts": [
+        "automation-runtime-write-trace-audit",
+        "automation-runtime-write-trace-publish"
+      ],
+      "data_policy": "paths and run metadata only; no file contents or credentials",
+      "limitation": "does not observe shell/git subprocess writes or prove unexecuted call paths"
+    }
   },
   "scheduler_lock_contract": {
     "logical_resource_key": "logical/production-pipeline",
