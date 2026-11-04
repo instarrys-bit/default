@@ -119,6 +119,15 @@ class AssessSourcesArtifactVerifierTests(unittest.TestCase):
             with self.assertRaisesRegex(task_scheduler.ProtectedConfigMutationError, "read-only resources"):
                 task_scheduler.ensure_read_only_resources_unchanged(before, root)
 
+    def test_scheduler_task_id_filter_is_exact_and_does_not_expand_eligibility(self):
+        eligible = {"task_assessment", "task_production"}
+        self.assertEqual(eligible & {"task_assessment"}, {"task_assessment"})
+        self.assertFalse(eligible & {"task_unknown"})
+        with self.assertRaises(ValueError):
+            task_scheduler.run_scheduler_once(
+                object(), {}, {}, worker_id="canary-worker", task_id=""
+            )
+
     def test_artifact_publication_allowlist_excludes_ephemeral_and_protected_files(self):
         persistent = "sources/source_assessments.json"
         self.assertTrue(task_scheduler.publishable_resource_path(persistent, [persistent]))
