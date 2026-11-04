@@ -9,7 +9,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from types import SimpleNamespace
-from register_config_baseline import (\n    build_release_pin_updates, git_blob_sha, owner_approved_push_changed_config, owner_approved_config_history,\n)
+from register_config_baseline import (
+    build_release_pin_updates, git_blob_sha, owner_approved_push_changed_config, owner_approved_config_history,
+)
 
 
 class ConfigBaselineRegistrationTests(unittest.TestCase):
