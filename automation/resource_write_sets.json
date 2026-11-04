@@ -99,7 +99,7 @@
       ],
       "side_effects": [
         "HTTPS reads restricted to raw.githubusercontent.com with repository binding and same-host redirect validation.",
-        "Rotates the assessment cursor and writes assessed_at timestamps; execution is not idempotent."
+        "Task retries derive the same bounded URL batch from the immutable producer run ID and discovery artifact digest; remote reads may repeat, while final history/report writes replace the same logical documents under live fenced leases."
       ],
       "evidence": "main() reads discovery and prior assessment documents, then calls write_document for runtime and persistent outputs and writes REPORT.",
       "lease_keys": [
@@ -1421,9 +1421,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
-    "release_manifest_blob_sha": "2031c9a68337ea352d104d169f355e71727db173",
-    "program_registry_blob_sha": "29a784cdc3d248f3a2a1f1fa944cde570ab0886e",
-    "execution_adapters_blob_sha": "9eaa66c78e007b6d5ad442fd8ca9f27f775741c9",
+    "release_manifest_blob_sha": "f1b763f9066681a9b22bf7c00fd8ca2c0beb329a",
+    "program_registry_blob_sha": "319bef10c0eed9a79f96fab9c711f1b7e448338d",
+    "execution_adapters_blob_sha": "b61b472e3a75fd5807440b698a21b8d8d974bdcc",
     "added_after_release_baseline": true,
     "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 53 Python components are now partitioned into 36 direct/helper writer entries, 16 reviewed non-writers and one external GitHub Actions dispatch side-effect adapter.",
     "reviewed_at": "2026-11-04",

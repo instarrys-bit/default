@@ -3,7 +3,7 @@
   "contract_id": "capability-script-assess-sources-v1",
   "program_id": "script_assess_sources",
   "implementation_path": "scripts/assess_sources.py",
-  "implementation_blob_sha": "cd9ff31732d88be297bd1a2b54c976192b432258",
+  "implementation_blob_sha": "ed987da5a6008e4b5328d7bbef25089bf4be64f1",
   "review_status": "watchdog_successful_workflow_run_enqueue_installed",
   "dispatch_status": "enabled",
   "entrypoint": {
@@ -21,7 +21,7 @@
       "{task_input_file}"
     ],
     "task_scheduler_compatible": true,
-    "reason": "Bounded task-input CLI, per-write resource fencing and independent artifact verification are implemented; regular adapter dispatch remains disabled pending the final release gate."
+    "reason": "Watchdog-gated scheduler dispatch is enabled; bounded retries reuse the same producer-run-scoped URL batch and never activate sources."
   },
   "inputs": {
     "repository_snapshot": [
@@ -96,7 +96,7 @@
           }
         }
       },
-      "note": "The predecessor metadata is validated by the scheduler and retained in the durable task record; the assessor uses only the three bounded numeric options."
+      "note": "The scheduler validates the predecessor proof. For task execution, workflow_run_id plus artifact_sha256 deterministically selects the same bounded URL batch on every retry; manual legacy execution continues to use the persisted rotation cursor."
     }
   },
   "outputs": {
@@ -239,5 +239,13 @@
     "producer_workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
     "edge_type": "intended_successful_workflow_run_with_immutable_artifact_digest",
     "enforcement": "Watchdog enqueues only from the successful production workflow_run event on main; scheduler verifies the immutable predecessor identity and artifact digest."
+  },
+  "retry_policy": {
+    "max_attempts": 3,
+    "total_attempts_including_initial": true,
+    "identity": "workflow_run_id + artifact_sha256",
+    "batch_selection": "deterministic stable offset",
+    "remote_fetches_may_repeat": true,
+    "repository_writes": "only final verified history/runtime/report outputs under live fenced leases"
   }
 }

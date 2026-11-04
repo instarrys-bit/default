@@ -2,7 +2,7 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-2026.11.04.2",
   "status": "baseline_inventory",
-  "source_registry_blob_sha": "29a784cdc3d248f3a2a1f1fa944cde570ab0886e",
+  "source_registry_blob_sha": "319bef10c0eed9a79f96fab9c711f1b7e448338d",
   "summary": {
     "registered_programs": 60,
     "python_components": 53,
@@ -119,10 +119,10 @@
       "contract_status": "concrete_io_typed_predecessor_and_watchdog_event_dispatch_enabled",
       "dispatch_status": "enabled",
       "missing_contract_fields": [
-        "durable_idempotency_or_checkpoint_recovery",
-        "complete_transitive_side_effect_verification"
+        "complete_transitive_side_effect_verification",
+        "per_source_durable_progress_checkpoint"
       ],
-      "audit_note": "The Watchdog enqueues this capability only after the exact production workflow succeeds on main; the scheduler validates run identity and the complete predecessor artifact digest. Execution is one-shot per producer run; durable retry/checkpoint recovery and full transitive writer proof remain outstanding.",
+      "audit_note": "Task retries derive a fixed bounded URL batch from the immutable predecessor workflow run ID and artifact digest. Remote reads may repeat, but the same batch is replayed; durable per-source progress checkpoints are not yet implemented.",
       "contract_sample_path": "automation/capability_contracts/assess_sources.json"
     },
     {

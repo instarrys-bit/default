@@ -30,6 +30,25 @@ class AssessmentQueueTests(unittest.TestCase):
         items = [{"url": "a"}, {"url": "b"}, {"url": "c"}]
         self.assertEqual(assessor.rotate_assessment_urls(items, "missing", 2), items[:2])
 
+
+    def test_task_retry_reuses_the_same_bounded_batch_for_same_predecessor(self):
+        assessor = load_assessor()
+        items = [{"url": f"https://raw.githubusercontent.com/o/r/main/{n}.list"} for n in range(23)]
+        predecessor = {"workflow_run_id": "41870001234", "artifact_sha256": "a" * 64}
+        first = assessor.rotate_assessment_urls_for_task(items, predecessor, 20)
+        retry = assessor.rotate_assessment_urls_for_task(items, predecessor, 20)
+        self.assertEqual(first, retry)
+        self.assertEqual(len(first), 20)
+        self.assertEqual(len({item["url"] for item in first}), 20)
+
+    def test_task_batch_rejects_unbound_or_malformed_predecessor(self):
+        assessor = load_assessor()
+        items = [{"url": "https://raw.githubusercontent.com/o/r/main/a.list"}]
+        with self.assertRaisesRegex(ValueError, "workflow_run_id"):
+            assessor.rotate_assessment_urls_for_task(items, {"workflow_run_id": "bad", "artifact_sha256": "a" * 64}, 1)
+        with self.assertRaisesRegex(ValueError, "artifact digest"):
+            assessor.rotate_assessment_urls_for_task(items, {"workflow_run_id": "123", "artifact_sha256": "bad"}, 1)
+
     def test_candidate_urls_are_deduplicated_and_seeded_first(self):
         assessor = load_assessor()
         candidates = [
