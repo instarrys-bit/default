@@ -173,7 +173,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
         manifest = json.loads((ROOT / "automation" / "production_inputs.json").read_text(encoding="utf-8"))
         self.assertIn("script_production_intent", {item["id"] for item in registry["programs"]})
-        self.assertIn("shadowrocket/ss.conf", manifest["production_input_paths"])
+        self.assertIn("modules/uu.conf", manifest["production_input_paths"])
         adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         workflow_adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "workflow_auto_sync")
         declared_inputs = {item["name"] for item in workflow_adapter["workflow"]["inputs"]}
