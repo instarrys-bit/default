@@ -408,7 +408,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
     report = {
         "schema_version": 1,
         "completed_at": timestamp,
-        "config_path": "shadowrocket/ss.conf",
+        "config_path": "modules/uu.conf",
         "config_read_only": True,
         "config_blob_sha": config_blob_sha,
         "config_sha256": config_sha256,
@@ -492,7 +492,7 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
     ) if restoration_options else lines.append("- None")
     lines.extend([
         "",
-        "The script never writes to shadowrocket/ss.conf. Archived entries are automatically reconsidered when the current config no longer fully covers them; publication still requires the normal evidence and REJECT authorization gates. Explicit DOMAIN and DOMAIN-SUFFIX rules with DIRECT, PROXY, and REJECT policies are compared; rule order, precedence, keyword, regex, conditional, and partial overlaps are not inferred.",
+        "The script never writes to modules/uu.conf. Archived entries are automatically reconsidered when the current config no longer fully covers them; publication still requires the normal evidence and REJECT authorization gates. Explicit DOMAIN and DOMAIN-SUFFIX rules with DIRECT, PROXY, and REJECT policies are compared; rule order, precedence, keyword, regex, conditional, and partial overlaps are not inferred.",
         "Paste selected IDs into the workflow_dispatch input restore_conflict_ids.",
         "",
     ])
