@@ -17,7 +17,7 @@ class ProductionIntentTests(unittest.TestCase):
         self.manifest_path = self.root / "automation" / "production_inputs.json"
         self.manifest_path.write_text(json.dumps({
             "schema_version": 1,
-            "production_input_paths": ["sources/policy.json", "shadowrocket/ss.conf"],
+            "production_input_paths": ["sources/policy.json", "modules/uu.conf"],
             "non_production_path_patterns": ["reports/**", "rulesets/**", "automation/**", "tests/**"],
             "monitoring_path_patterns": ["dashboard/**", ".github/workflows/dashboard-pages.yml", "scripts/build_dashboard_snapshot.py"],
             "documentation_path_patterns": ["docs/**", "dashboard/README.md"]
@@ -25,7 +25,7 @@ class ProductionIntentTests(unittest.TestCase):
         (self.root / "sources").mkdir()
         (self.root / "sources" / "policy.json").write_text('{"policy":1}', encoding="utf-8")
         (self.root / "shadowrocket").mkdir()
-        (self.root / "shadowrocket" / "ss.conf").write_text("[General]", encoding="utf-8")
+        (self.root / "shadowrocket" / "uu.conf").write_text("[General]", encoding="utf-8")
         self.manifest = load_manifest(self.manifest_path)
         self.now = datetime(2026, 11, 3, tzinfo=timezone.utc)
         self.fp = compute_fingerprint(self.root, self.manifest)
@@ -57,8 +57,8 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertEqual(result["status"], "REVIEW_REQUIRED")
 
     def test_read_only_user_config_is_a_production_input(self):
-        self.assertIn("shadowrocket/ss.conf", self.manifest["production_input_paths"])
-        result = classify_paths(["shadowrocket/ss.conf"], self.manifest)
+        self.assertIn("modules/uu.conf", self.manifest["production_input_paths"])
+        result = classify_paths(["modules/uu.conf"], self.manifest)
         self.assertEqual(result["status"], "INPUT_CHANGED")
 
     def test_completion_and_workflow_run_events_never_create_demand(self):
@@ -123,7 +123,7 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertEqual(result["idempotency_key"], f"production:input:{self.fp}:commit-a")
 
     def test_config_a_to_b_to_a_reconciles_even_when_a_was_previously_successful(self):
-        config = self.root / "shadowrocket" / "ss.conf"
+        config = self.root / "shadowrocket" / "uu.conf"
         config.write_text("[Rule]\\nDOMAIN,alpha.example,DIRECT\\n", encoding="utf-8")
         fingerprint_a = compute_fingerprint(self.root, self.manifest)
         config.write_text("[Rule]\\nDOMAIN,beta.example,PROXY\\n", encoding="utf-8")
@@ -134,7 +134,7 @@ class ProductionIntentTests(unittest.TestCase):
         config.write_text("[Rule]\\nDOMAIN,alpha.example,DIRECT\\n", encoding="utf-8")
         fingerprint_reverted = compute_fingerprint(self.root, self.manifest)
         self.assertEqual(fingerprint_reverted, fingerprint_a)
-        classification = classify_paths(["shadowrocket/ss.conf"], self.manifest)
+        classification = classify_paths(["modules/uu.conf"], self.manifest)
         result = decide(
             event="push", current_fingerprint=fingerprint_reverted,
             last_success_fingerprint=fingerprint_b,
