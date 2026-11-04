@@ -27,7 +27,7 @@ class ConfigConflictRunReportTests(unittest.TestCase):
             root = Path(tmp)
             for folder in ("shadowrocket", "rulesets", "reports"):
                 (root / folder).mkdir()
-            (root / "shadowrocket" / "ss.conf").write_text(
+            (root / "shadowrocket" / "uu.conf").write_text(
                 config_with_rules(["DOMAIN,api.example.com,PROXY"]), encoding="utf-8"
             )
             (root / "rulesets" / "direct.list").write_text(
