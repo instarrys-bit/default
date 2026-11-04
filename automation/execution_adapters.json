@@ -1274,8 +1274,8 @@
       },
       "timeout_seconds": 30,
       "retry": {
-        "max_attempts": 0,
-        "policy": "single_attempt_no_automatic_redispatch"
+        "max_attempts": 1,
+        "policy": "one_bounded_retry_after_verified_failure"
       },
       "completion": {
         "success_condition": "run_status_completed_and_conclusion_success",
