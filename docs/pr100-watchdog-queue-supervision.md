@@ -21,10 +21,10 @@ The job performs one bounded scheduler pass:
 - Scheduler execution is bounded to one task per Watchdog invocation and to Python CLI adapters with enabled, reviewed interfaces and explicit caller allowlists.
 - Workflow-dispatch adapters remain unsupported by this scheduler version and are blocked.
 - Expired leases are recovered; verification failures retry under the existing bounded policy.
-- Any detected child-process change to `shadowrocket/ss.conf` fails the task and stops the scheduler.
+- Any detected child-process change to `modules/uu.conf` fails the task and stops the scheduler.
 
 ## Current activation state
 
 All 50 registered execution adapters remain disabled. Therefore the Watchdog can recover leases, verify any already-pending results with an approved contract, and report blocked queue items, but it cannot launch any registered program at this time. CI validates the workflow and tests the scheduler using temporary fixture programs; it does not run production queue execution.
 
-No rule sets, DNS, routing policy, or `shadowrocket/ss.conf` are changed by this PR.
+No rule sets, DNS, routing policy, or `modules/uu.conf` are changed by this PR.
