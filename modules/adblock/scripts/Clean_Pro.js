@@ -1321,11 +1321,48 @@
     return null;
   }
 
-  function dispatch() {
-    if (typeof $response === "undefined" || !$response) {
-      $done({});
-      return;
+  // Request-side initplayback handling: remove only the verified legacy "oad" query key.
+  // All other query components are preserved byte-for-byte; malformed/unknown URLs pass through.
+  function stripInitplaybackAdParam(rawUrl) {
+    if (typeof rawUrl !== "string" ||
+        !/^https?:\\/\\/[\\w-]+\\.googlevideo\\.com\\/initplayback(?:\\?|$)/i.test(rawUrl)) {
+      return null;
     }
+
+    const fragmentIndex = rawUrl.indexOf("#");
+    const fragment = fragmentIndex >= 0 ? rawUrl.slice(fragmentIndex) : "";
+    const withoutFragment = fragmentIndex >= 0 ? rawUrl.slice(0, fragmentIndex) : rawUrl;
+    const queryIndex = withoutFragment.indexOf("?");
+    if (queryIndex < 0) return null;
+
+    const base = withoutFragment.slice(0, queryIndex);
+    const segments = withoutFragment.slice(queryIndex + 1).split("&");
+    const kept = [];
+    let removed = false;
+
+    for (const segment of segments) {
+      const equalsIndex = segment.indexOf("=");
+      const key = equalsIndex >= 0 ? segment.slice(0, equalsIndex) : segment;
+      if (key === "oad") {
+        removed = true;
+      } else {
+        kept.push(segment);
+      }
+    }
+
+    if (!removed) return null;
+    const query = kept.join("&");
+    return { url: base + (query ? "?" + query : "") + fragment };
+  }
+
+  function dispatchRequest() {
+    const request = typeof $request !== "undefined" && $request ? $request : null;
+    if (!request || typeof request.url !== "string") return $done({});
+    const patch = stripInitplaybackAdParam(request.url);
+    return patch ? $done(patch) : $done({});
+  }
+
+  function dispatchResponse() {
 
     const url = (typeof $request !== "undefined" && $request.url) || "";
     const headers = ($response && $response.headers) || {};
@@ -1407,6 +1444,13 @@
     $done({});
   }
 
+  function dispatch() {
+    if (typeof $response === "undefined" || !$response) {
+      return dispatchRequest();
+    }
+    return dispatchResponse();
+  }
+
   if (typeof module !== "undefined" && module.exports) {
     module.exports = {
       SafeWireReader,
@@ -1422,6 +1466,7 @@
       processXJsonString,
       processInstagramJsonString,
       processYouTubeJsonString,
+      stripInitplaybackAdParam,
       loadAdCache,
       DEFAULT_OPTS
     };
