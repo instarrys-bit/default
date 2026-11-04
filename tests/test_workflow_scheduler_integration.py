@@ -86,7 +86,7 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
         self.root = Path(tempfile.mkdtemp())
         (self.root / "scripts").mkdir()
         (self.root / "shadowrocket").mkdir()
-        (self.root / "shadowrocket" / "ss.conf").write_text("[General]\n", encoding="utf-8")
+        (self.root / "shadowrocket" / "uu.conf").write_text("[General]\n", encoding="utf-8")
         (self.root / "automation").mkdir()
         (self.root / "automation" / "production_control.json").write_text(
             '{"schema_version": 1, "dispatch_mode": "enabled"}',
@@ -236,7 +236,7 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
             "baseline_source_sha": "a" * 40,
             "production_fingerprint": "f" * 64,
             "production_decision": "INPUT_CHANGED",
-            "production_reason": "shadowrocket/ss.conf changed",
+            "production_reason": "modules/uu.conf changed",
         }
         task_scheduler.enqueue_auto_sync_task(
             self.store, registry, idempotency_key="config-baseline:" + "a" * 40,
