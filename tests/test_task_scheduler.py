@@ -35,8 +35,8 @@ class TaskSchedulerTests(unittest.TestCase):
     def setUp(self):
         self.root = Path(tempfile.mkdtemp())
         (self.root / "scripts").mkdir()
-        (self.root / "shadowrocket").mkdir()
-        (self.root / "shadowrocket" / "ss.conf").write_text("[General]\n", encoding="utf-8")
+        (self.root / "modules").mkdir()
+        (self.root / "modules" / "uu.conf").write_text("[General]\n", encoding="utf-8")
         (self.root / "automation").mkdir()
         (self.root / "automation" / "production_control.json").write_text(
             json.dumps({"schema_version": 1, "dispatch_mode": "enabled"}),
