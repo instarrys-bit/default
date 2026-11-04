@@ -1,51 +1,49 @@
 # Shadowrocket Ruleset Automation
 
-A deterministic project for collecting, reviewing, building, validating, and publishing three Shadowrocket domain-rule policies: **DIRECT**, **PROXY**, and **REJECT**.
+A lightweight, deterministic project for producing and publishing three Shadowrocket rule sets: **DIRECT**, **PROXY**, and **REJECT**.
 
-## Documentation
+## How it works
 
-- [Documentation index](docs/README.md)
-- [Quick Start](docs/01-quick-start.md)
-- [Project Architecture](docs/02-project-architecture.md)
-- [Automation Pipeline](docs/03-automation-pipeline.md)
-- [Rule Review](docs/04-rule-review.md)
-- [Source Governance](docs/05-source-governance.md)
-- [Capacity and Lifecycle](docs/06-capacity-and-lifecycle.md)
-- [Security and Permissions](docs/07-security-and-permissions.md)
-- [Operations](docs/08-operations.md)
-- [Development and Maintenance](docs/09-development-and-maintenance.md)
+1. **Collect** — discover approved rule sources and collect domain candidates.
+2. **Filter** — normalize candidates, compare evidence, resolve conflicts, and apply policy checks.
+3. **Publish** — build, validate, and publish the three rule lists.
 
-## Published rulesets
+Published lists:
 
-| Policy | File |
-|---|---|
-| DIRECT | [rulesets/direct.list](rulesets/direct.list) |
-| PROXY | [rulesets/proxy.list](rulesets/proxy.list) |
-| REJECT | [rulesets/reject.list](rulesets/reject.list) |
+- [DIRECT](rulesets/direct.list)
+- [PROXY](rulesets/proxy.list)
+- [REJECT](rulesets/reject.list)
 
 Manifest: [rulesets/manifest.json](rulesets/manifest.json).
 
-## Main configuration
+## Components
 
-[modules/uu.conf](modules/uu.conf) is the user-owned authoritative configuration.
+| Component | File | Purpose |
+|---|---|---|
+| Module | [modules/AdBlock.sgmodule](modules/AdBlock.sgmodule) | Shadowrocket ad-block module; maps the cleaning script |
+| Script | [modules/adblock/scripts/Clean_Pro.js](modules/adblock/scripts/Clean_Pro.js) | Handles supported app/web request and response filtering |
+| Configuration | [modules/uu.conf](modules/uu.conf) | User-owned Shadowrocket configuration; consumes rulesets and remains read-only to automation |
 
-Subscription URL:
+The ruleset pipeline and the ad-block module/script are separate parts of the project. The pipeline maintains the published rule data; it does not rewrite the module, script, or user configuration.
+
+Configuration subscription URL:
 
 `https://raw.githubusercontent.com/instarrys-bit/default/main/modules/uu.conf`
 
-Automation may read this file for integrity and conflict checks. It must never modify, stage, or commit it.
+## Automation
 
-## Operational status
+The GitHub Actions workflows and Python scripts handle source discovery, collection, deterministic review, rule building, validation, and publication.
 
+- [Documentation](docs/README.md)
 - [Project status](reports/project-status.md)
 - [Latest lifecycle report](reports/lifecycle/latest.md)
 - [Configuration conflict report](reports/ruleset-config-conflict-sync.md)
 
-## Non-negotiable boundaries
+## Safety boundaries
 
-- Exactly three policies: DIRECT, PROXY, and REJECT.
-- Deterministic review with no AI/LLM dependency.
-- A combined publication ceiling of 30,000 unique rules; eligible overflow remains queued.
-- Conservative lifecycle deletion with auditable recovery.
-- The main configuration remains user-controlled and read-only to automation.
-- Static validation does not replace target-device testing.
+- Exactly three published policies: DIRECT, PROXY, and REJECT.
+- Rule review is deterministic; no AI/LLM classification dependency.
+- The combined publication limit is 30,000 unique rules; qualified overflow remains queued.
+- New REJECT rules require human approval.
+- `modules/uu.conf` is a user-owned file: automation may audit it but must never modify it.
+- Static validation does not replace testing in Shadowrocket on the target device.
