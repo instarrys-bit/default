@@ -1321,48 +1321,11 @@
     return null;
   }
 
-  // Local initplayback handling. The "oad" key is a historical candidate only;
-  // keep this narrow and fail open until current request logs confirm its effect.
-  function stripInitplaybackAdParam(rawUrl) {
-    if (typeof rawUrl !== "string" ||
-        !/^https:\/\/[\w-]+\.googlevideo\.com\/initplayback(?:\?|$)/i.test(rawUrl)) {
-      return null;
+  function dispatch() {
+    if (typeof $response === "undefined" || !$response) {
+      $done({});
+      return;
     }
-    const hashIndex = rawUrl.indexOf("#");
-    const fragment = hashIndex >= 0 ? rawUrl.slice(hashIndex) : "";
-    const withoutFragment = hashIndex >= 0 ? rawUrl.slice(0, hashIndex) : rawUrl;
-    const queryIndex = withoutFragment.indexOf("?");
-    if (queryIndex < 0) return null;
-
-    const base = withoutFragment.slice(0, queryIndex);
-    const parts = withoutFragment.slice(queryIndex + 1).split("&");
-    const kept = [];
-    let changed = false;
-    for (const part of parts) {
-      const equalsIndex = part.indexOf("=");
-      const key = equalsIndex >= 0 ? part.slice(0, equalsIndex) : part;
-      if (key === "oad") changed = true;
-      else kept.push(part);
-    }
-    if (!changed) return null;
-    return {
-      url: base + (kept.length ? "?" + kept.join("&") : "") + fragment,
-      changed: true
-    };
-  }
-
-  function dispatchRequest() {
-    const request = typeof $request !== "undefined" && $request ? $request : null;
-    if (!request || typeof request.url !== "string") return $done({});
-    try {
-      const patch = stripInitplaybackAdParam(request.url);
-      return patch && patch.changed ? $done({ url: patch.url }) : $done({});
-    } catch (_) {
-      return $done({});
-    }
-  }
-
-  function dispatchResponse() {
 
     const url = (typeof $request !== "undefined" && $request.url) || "";
     const headers = ($response && $response.headers) || {};
@@ -1444,13 +1407,6 @@
     $done({});
   }
 
-  function dispatch() {
-    if (typeof $response === "undefined" || !$response) {
-      return dispatchRequest();
-    }
-    return dispatchResponse();
-  }
-
   if (typeof module !== "undefined" && module.exports) {
     module.exports = {
       SafeWireReader,
@@ -1466,7 +1422,6 @@
       processXJsonString,
       processInstagramJsonString,
       processYouTubeJsonString,
-      hasInitplaybackCandidate,
       loadAdCache,
       DEFAULT_OPTS
     };
