@@ -94,7 +94,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
             )
             names = []
             for line in lines[start + 1:end]:
-                match = re.match(r"^\\s+- name:\\s*(.+)$", line)
+                match = re.match(r"^\s+- name:\s*(.+)$", line)
                 if match:
                     names.append(match.group(1).strip().strip("\\\"'"))
             actual_by_job[job["id"]] = names
