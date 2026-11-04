@@ -32,6 +32,39 @@ class FencedFileWriterTests(unittest.TestCase):
                 fenced_file_writer.authorize_write_path(target)
                 check.assert_called_once_with("sources/review_cursor.json")
 
+    def test_resource_lease_guard_covers_only_config_modules_scripts_and_rulesets(self):
+        protected_targets = (
+            ROOT / "modules" / "adblock" / "scripts" / "Clean_Pro.js",
+            ROOT / "scripts" / "build_rulesets.py",
+            ROOT / "rulesets" / "direct.list",
+            ROOT / "shadowrocket" / "ss.conf",
+        )
+        with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "1"}, clear=False):
+            with patch("resource_lease_runtime.assert_resource_lease_from_environment") as check:
+                for target in protected_targets:
+                    fenced_file_writer.authorize_write_path(target)
+                self.assertEqual(
+                    [call.args[0] for call in check.call_args_list],
+                    [
+                        "modules/adblock/scripts/Clean_Pro.js",
+                        "scripts/build_rulesets.py",
+                        "rulesets/direct.list",
+                        "shadowrocket/ss.conf",
+                    ],
+                )
+
+    def test_reports_docs_and_automation_state_are_outside_resource_lease_guard(self):
+        unprotected_targets = (
+            ROOT / "reports" / "audit.md",
+            ROOT / "docs" / "operations.md",
+            ROOT / "automation" / "task_queue.json",
+        )
+        with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "1"}, clear=False):
+            with patch("resource_lease_runtime.assert_resource_lease_from_environment") as check:
+                for target in unprotected_targets:
+                    fenced_file_writer.authorize_write_path(target)
+                check.assert_not_called()
+
     def test_non_repository_temporary_files_are_not_subject_to_repository_lease(self):
         with tempfile.TemporaryDirectory() as directory:
             with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "1"}, clear=False):
