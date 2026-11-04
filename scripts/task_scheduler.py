@@ -793,13 +793,25 @@ def enqueue_auto_sync_task(store, registry: dict, *, idempotency_key: str,
     }
 
 
+def filter_eligible_task_ids(eligible_task_ids: set[str], task_id: str | None = None) -> set[str]:
+    if not isinstance(eligible_task_ids,set):
+        raise ValueError("eligible task IDs must be a set")
+    if task_id is None:
+        return set(eligible_task_ids)
+    if not isinstance(task_id,str) or not task_id.strip():
+        raise ValueError("task_id filter must be a non-empty string")
+    return eligible_task_ids.intersection({task_id})
+
+
 def run_scheduler_once(store, registry: dict, adapters: dict, *,
-                       worker_id: str, max_tasks: int = 1,
+                       worker_id: str, max_tasks: int = 1, task_id: str | None = None,
                        root: Path = ROOT, now: datetime | None = None) -> dict:
     if not isinstance(max_tasks, int) or isinstance(max_tasks, bool) or not 1 <= max_tasks <= 10:
         raise ValueError("max_tasks must be an integer from 1 to 10")
     if not isinstance(worker_id, str) or not worker_id.strip():
         raise ValueError("worker_id is required")
+    if task_id is not None and (not isinstance(task_id,str) or not task_id.strip()):
+        raise ValueError("task_id filter must be a non-empty string")
     fixed_now = now
     initial_now = now or now_utc()
     recovered = recover_remote(store, registry, initial_now)
@@ -814,6 +826,7 @@ def run_scheduler_once(store, registry: dict, adapters: dict, *,
         for item in plan["blocked"]:
             blocked_seen[item["task_id"]] = item["reason"]
         eligible = set(plan["eligible_task_ids"])
+        eligible = filter_eligible_task_ids(eligible, task_id)
         if not eligible:
             break
         resource_keys_by_target = {
@@ -851,6 +864,7 @@ def main() -> int:
     parser.add_argument("--adapters", type=Path, default=ADAPTERS)
     parser.add_argument("--worker-id", default=os.environ.get("GITHUB_RUN_ID") or ("scheduler-" + uuid.uuid4().hex[:12]))
     parser.add_argument("--max-tasks", type=int, default=1)
+    parser.add_argument("--task-id", help="Run only this eligible durable task ID")
     parser.add_argument("--token-stdin", action="store_true")
     parser.add_argument("--idempotency-key")
     parser.add_argument("--priority", type=int, default=80)
@@ -883,7 +897,7 @@ def main() -> int:
         else:
             print(json.dumps(run_scheduler_once(
                 store, registry, adapters, worker_id=args.worker_id,
-                max_tasks=args.max_tasks,
+                max_tasks=args.max_tasks, task_id=args.task_id,
             ), ensure_ascii=False))
         return 0
     except (ValueError, OSError, QueueStoreError, ProtectedConfigMutationError) as exc:
