@@ -67,9 +67,11 @@
       "target_program_id": "script_assess_sources",
       "target_kind": "python_component",
       "adapter_type": "python_cli",
-      "enabled": false,
+      "enabled": true,
       "interface_status": "reviewed",
-      "allowed_callers": [],
+      "allowed_callers": [
+        "workflow_automation_watchdog"
+      ],
       "entrypoint": {
         "path": "scripts/assess_sources.py",
         "executable": "python3",
@@ -289,7 +291,7 @@
         "artifact_path": "sources/discovered_sources.json",
         "producer_workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
         "edge_type": "intended_successful_workflow_run_with_immutable_artifact_digest",
-        "enforcement": "Scheduler validates producer identity, run metadata and current artifact digest. The Watchdog workflow event gate that supplies successful-run evidence is pending; adapter remains disabled until that gate is installed."
+        "enforcement": "Watchdog workflow_run event gate accepts only a successful main-branch run of the exact discovery-producing production workflow, binds the numeric run ID and head SHA, hashes the current discovered_sources artifact, and enqueues an idempotent source-assessment task through the durable scheduler queue."
       }
     },
     {
