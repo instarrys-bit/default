@@ -1127,7 +1127,6 @@
         "script_production_intent"
       ],
       "dispatches": [
-        "script_assess_sources",
         "workflow_auto_sync"
       ],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
