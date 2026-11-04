@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-baseline-2026.11.04.9",
+  "release_id": "shadowrocket-automation-baseline-2026.11.04.10",
   "release_status": "baseline_snapshot",
   "created_on": "2026-11-04",
-  "purpose": "Refresh the baseline snapshot to the current main-branch registry, adapters, workflows, ruleset manifest and read-only owner configuration after capability inventory drift controls were merged.",
+  "purpose": "Refresh watchdog workflow pin after fail-closed HOLD guards were added to recovery enqueue paths and the legacy assessment canary was disabled pending trusted authorization.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "af23b3ba8eb4b67e343a1bfed85d4cd828ddbcda"
+      "git_blob_sha": "744756d77859c107ced2d4ff7d3a1026c86e984b"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
