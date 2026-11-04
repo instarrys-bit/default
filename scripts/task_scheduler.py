@@ -129,6 +129,17 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
                 lease_seconds = resource_contract.get("lease_seconds")
                 if isinstance(lease_seconds, bool) or not isinstance(lease_seconds, int) or not 1 <= lease_seconds <= 21600:
                     raise ValueError("resource_contract lease_seconds must be from 1 to 21600")
+            publish_resources = adapter.get("publish_resources", [])
+            if not isinstance(publish_resources,list) or len(publish_resources)!=len(set(publish_resources)):
+                raise ValueError("publish_resources must be a unique path list")
+            if publish_resources:
+                if not isinstance(resource_contract,dict) or any(path not in resource_contract.get("resource_keys",[]) or path=="shadowrocket/ss.conf" for path in publish_resources):
+                    raise ValueError("publish_resources must be a subset of exclusive non-config resource keys")
+                if not isinstance(adapter.get("completion",{}).get("artifact_verifier"),dict):
+                    raise ValueError("publishing task artifacts requires an independent artifact verifier")
+                output_contract=adapter.get("output_contract")
+                if not isinstance(output_contract,dict) or "artifact_publication" not in output_contract.get("required",[]):
+                    raise ValueError("publishing adapter output contract must require artifact_publication")
             read_only_resources = adapter.get("read_only_resources", [])
             read_only_digests = read_only_resource_digests(root, read_only_resources)
             required_read_only = adapter.get("required_read_only_resources", [])
@@ -428,7 +439,7 @@ def publishable_resource_path(path: str, resources: list[str]) -> bool:
         base=re.escape(logical)
         if path in {logical, logical + ".manifest.json"}:
             return True
-        if re.fullmatch(base + r"\\.parts-[0-9a-f]{16}/part-[0-9]{6}\\.jsonl", path):
+        if re.fullmatch(base + r"\.parts-[0-9a-f]{16}/part-[0-9]{6}\.jsonl", path):
             return True
     return False
 
@@ -503,7 +514,7 @@ def publish_task_artifacts(task: dict, adapter: dict, store, protected_digest: s
         ["diff","--cached","--name-only","-z"],
         ["ls-files","--others","--exclude-standard","-z"],
     ):
-        changed.update(item for item in run_git(command,env).split("\\0") if item)
+        changed.update(item for item in run_git(command,env).split("\0") if item)
     outside=sorted(path for path in changed if not allowed(path))
     if outside:
         raise ValueError("refusing to publish unrelated workspace changes: "+", ".join(outside[:20]))
