@@ -84,6 +84,17 @@ class ProductionIntentTests(unittest.TestCase):
             self.assertTrue(entries[path]["classification_reason"])
             self.assertTrue(entries[path]["classification_basis"])
 
+    def test_repository_manifest_classifies_its_own_manifest_and_trace_collector_as_non_production(self):
+        manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
+        paths = [
+            "automation/production_inputs.json",
+            "scripts/capture_git_write_trace.py",
+        ]
+        result = classify_paths(paths, manifest)
+        self.assertEqual(result["status"], "NO_INPUT_CHANGE")
+        self.assertCountEqual(result["non_production_changes"], paths)
+        self.assertEqual(result["unknown_changes"], [])
+
     def test_repository_manifest_classifies_governance_metadata_as_non_production(self):
         manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
         paths = [
