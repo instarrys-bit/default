@@ -54,6 +54,8 @@ concurrency:
 
 jobs:
   health-check:
+    env:
+      GITHUB_ACTOR_ID: ${{ github.actor_id }}
     outputs:
       block_manifest: ${{ steps.stale-recovery.outputs.block_manifest }}
     runs-on: ubuntu-24.04
@@ -344,7 +346,7 @@ jobs:
               echo "Manual audit blocked: production input fingerprint is empty."
               exit 1
             fi
-            manual_input="$(jq -cn --arg fingerprint "$manual_fingerprint" --arg sha "$current_sha" --arg run "$GITHUB_RUN_ID" '{production_fingerprint:$fingerprint,production_decision:"USER_AUTHORIZED_MANUAL_AUDIT",production_reason:"Explicit one-shot user authorization submitted through the Watchdog manual control.",baseline_source_event:"workflow_dispatch",baseline_source_sha:$sha,authorization_run_id:$run}')"
+            manual_input="$(jq -cn --arg fingerprint "$manual_fingerprint" --arg sha "$current_sha" --arg run "$GITHUB_RUN_ID" --arg attempt "$GITHUB_RUN_ATTEMPT" --arg actor "$GITHUB_ACTOR" --arg actor_id "$GITHUB_ACTOR_ID" --arg repo "$GITHUB_REPOSITORY" --arg workflow_ref "$GITHUB_WORKFLOW_REF" --arg ref "$GITHUB_REF" '{production_fingerprint:$fingerprint,production_decision:"USER_AUTHORIZED_MANUAL_AUDIT",production_reason:"Explicit one-shot user authorization submitted through the Watchdog manual control.",baseline_source_event:"workflow_dispatch",baseline_source_sha:$sha,authorization_run_id:$run,authorization_run_attempt:$attempt,authorization_actor:$actor,authorization_actor_id:$actor_id,authorization_repository:$repo,authorization_workflow_ref:$workflow_ref,authorization_event:"workflow_dispatch",authorization_ref:$ref,authorization_head_sha:$sha}')"
             manual_key="production:manual-authorized:$manual_fingerprint:$GITHUB_RUN_ID"
             echo "Enqueueing one explicitly authorized deterministic audit for current main $current_sha ($manual_fingerprint)."
             printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$manual_key" --priority 100 --input-json "$manual_input" enqueue-auto-sync
@@ -675,6 +677,8 @@ jobs:
             -f sha="$marker_sha" -f branch=main >/dev/null
 
   task-queue-supervision:
+    env:
+      GITHUB_ACTOR_ID: ${{ github.actor_id }}
     needs: [health-check, stale-run-watch, manifest-integrity]
     if: ${{ always() && needs.health-check.result == 'success' && ((github.event_name != 'schedule' && github.event_name != 'workflow_dispatch') || needs.stale-run-watch.result == 'success') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main') && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[assessment-canary]')) }}
     concurrency:
