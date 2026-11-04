@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
+  "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
   "release_status": "baseline_snapshot",
-  "created_on": "2026-11-04",
-  "purpose": "Pin the Watchdog workflow after task-scoped single-use manual authorization and bounded CAS retries for the unregistered-path ledger.",
+  "created_on": "2026-11-05",
+  "purpose": "Pin the Watchdog automation after cross-workflow writer serialization and durable per-URL source-assessment checkpoints.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
@@ -13,12 +13,17 @@
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "b9bad9786b927b98634ec956b3eb343f6fd8d43e"
+      "git_blob_sha": "97d18a09763f851362e0bd5400dad856ae1f448b"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
       "schema_version": 2,
       "git_blob_sha": "b92d23fa80689aeb7188642a28b81adb0d157bb0"
+    },
+    "assess_sources_contract": {
+      "path": "automation/capability_contracts/assess_sources.json",
+      "schema_version": 1,
+      "git_blob_sha": "eac9fb491f4f79580099c042bc2f733fb68ebc1c"
     }
   },
   "implementation_pins": {
@@ -42,7 +47,7 @@
     },
     "source_assessor": {
       "path": "scripts/assess_sources.py",
-      "git_blob_sha": "pending"
+      "git_blob_sha": "5b8e0f0fd3d31312990b889a761b1a1ceab16ffb"
     }
   },
   "compatibility": {
@@ -88,10 +93,10 @@
         "target_program_id": "script_assess_sources",
         "capability": "source_assessment",
         "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
-        "adapter_entry_sha256": "9a988e3ffa97f1fbb42d98650e84fdca3578a1ffb498609ef3c997ff32ec5f9a",
+        "adapter_entry_sha256": "60379726ac7dbfd6348a9f0a8685432d3b9632b56765aa198a5ba45862c7b53b",
         "registry_entry_sha256": "152b8d43034e40cbda5cf7a3cce55bb062a757f3bbe9949ca2e5e5696dc1e3ad",
         "source_path": "scripts/assess_sources.py",
-        "source_git_blob_sha": "ed987da5a6008e4b5328d7bbef25089bf4be64f1",
+        "source_git_blob_sha": "5b8e0f0fd3d31312990b889a761b1a1ceab16ffb",
         "allowed_callers": [
           "workflow_automation_watchdog"
         ],
