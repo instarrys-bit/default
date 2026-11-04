@@ -20,16 +20,16 @@ class ConfigBaselineTests(unittest.TestCase):
 
     def test_current_config_is_authority_and_dns_mitm_are_observations(self):
         content = b"[General]\ndns-server = quad9\n[Rule]\nDOMAIN,example.com,DIRECT\n[MITM]\nenable = true\n"
-        report = build_report(content, git_blob_sha(content), "shadowrocket/ss.conf")
+        report = build_report(content, git_blob_sha(content), "modules/uu.conf")
         self.assertTrue(report["baseline_matches_registered_blob"])
-        self.assertEqual(report["baseline_path"], "shadowrocket/ss.conf")
+        self.assertEqual(report["baseline_path"], "modules/uu.conf")
         self.assertEqual(report["dns_snapshot"]["dns-server"], ["quad9"])
         self.assertTrue(report["mitm_enabled"])
         self.assertEqual(report["rule_line_count"], 1)
 
     def test_unregistered_config_change_is_detected(self):
         content = b"[General]\ndns-server = changed\n"
-        report = build_report(content, "not-the-current-sha", "shadowrocket/ss.conf")
+        report = build_report(content, "not-the-current-sha", "modules/uu.conf")
         self.assertFalse(report["baseline_matches_registered_blob"])
 
 
