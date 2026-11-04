@@ -1226,6 +1226,7 @@
         "script_diagnose_workflow_failure",
         "script_fenced_file_writer",
         "script_incident_state",
+        "script_production_intent",
         "script_refresh_ruleset_manifest",
         "script_resource_lease_runtime",
         "script_restore_automation_state",
