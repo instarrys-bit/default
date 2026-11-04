@@ -14,6 +14,7 @@ from task_queue_runtime import (
     complete_task,
     enqueue_task,
     recover_expired,
+    validate_manual_authorization,
 )
 
 
@@ -55,6 +56,46 @@ class TaskQueueRuntimeTests(unittest.TestCase):
 
     def enqueue(self, **overrides):
         return enqueue_task(self.payload(**overrides), self.queue, self.registry, self.now)
+
+    def test_manual_authorization_is_bound_to_exact_watchdog_run_attempt(self):
+        task = {"input": {"production_decision": "USER_AUTHORIZED_MANUAL_AUDIT",
+            "production_fingerprint": "fp", "authorization_run_id": "123",
+            "authorization_run_attempt": "2", "authorization_actor": "maintainer",
+            "authorization_actor_id": "678", "authorization_repository": "instarrys-bit/default",
+            "authorization_workflow_ref": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
+            "authorization_event": "workflow_dispatch", "authorization_ref": "refs/heads/main",
+            "authorization_head_sha": "a" * 40, "baseline_source_event": "workflow_dispatch",
+            "baseline_source_sha": "a" * 40}}
+        context = {"repository": "instarrys-bit/default",
+            "workflow_ref": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
+            "event": "workflow_dispatch", "actor": "maintainer", "actor_id": "678",
+            "run_id": "123", "run_attempt": "2", "ref": "refs/heads/main", "sha": "a" * 40}
+        validate_manual_authorization(task, context)
+
+    def test_manual_authorization_rejects_replay_and_forged_identity(self):
+        task = {"input": {"production_decision": "USER_AUTHORIZED_MANUAL_AUDIT",
+            "production_fingerprint": "fp", "authorization_run_id": "123",
+            "authorization_run_attempt": "2", "authorization_actor": "maintainer",
+            "authorization_actor_id": "678", "authorization_repository": "instarrys-bit/default",
+            "authorization_workflow_ref": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
+            "authorization_event": "workflow_dispatch", "authorization_ref": "refs/heads/main",
+            "authorization_head_sha": "a" * 40, "baseline_source_event": "workflow_dispatch",
+            "baseline_source_sha": "a" * 40}}
+        context = {"repository": "instarrys-bit/default",
+            "workflow_ref": "instarrys-bit/default/.github/workflows/automation-watchdog.yml@refs/heads/main",
+            "event": "workflow_dispatch", "actor": "maintainer", "actor_id": "678",
+            "run_id": "123", "run_attempt": "2", "ref": "refs/heads/main", "sha": "a" * 40}
+        for key, value in (("run_id", "999"), ("run_attempt", "3"), ("actor_id", "1"),
+                           ("event", "schedule"), ("ref", "refs/heads/feature"),
+                           ("sha", "b" * 40), ("workflow_ref", "attacker/repo/.github/workflows/evil.yml@refs/heads/main")):
+            altered = dict(context)
+            altered[key] = value
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                validate_manual_authorization(task, altered)
+
+    def test_manual_authorization_rejects_incomplete_payload(self):
+        with self.assertRaisesRegex(ValueError, "invalid or incomplete"):
+            validate_manual_authorization({"input": {"production_decision": "USER_AUTHORIZED_MANUAL_AUDIT"}}, {})
 
     def test_enqueue_is_idempotent(self):
         first = self.enqueue()
