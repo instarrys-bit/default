@@ -316,5 +316,22 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertLess(hold_gate, task_key)
         self.assertLess(task_key, enqueue)
 
+
+    def test_watchdog_has_one_trusted_direct_scheduler_entry_and_disabled_canary(self):
+        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
+        supervision_start = watchdog.index("  task-queue-supervision:")
+        stale_start = watchdog.index("  stale-run-watch:", supervision_start)
+        supervision = watchdog[supervision_start:stale_start]
+        self.assertEqual(supervision.count("run-once"), 1)
+        self.assertIn("GITHUB_ACTOR_ID: ${{ github.actor_id }}", supervision)
+        self.assertIn("GITHUB_MANUAL_AUDIT_REQUEST: ${{ inputs.request_deterministic_audit }}", supervision)
+        self.assertIn("GITHUB_REF_NAME: main", supervision)
+        self.assertIn("GITHUB_REPOSITORY: ${{ github.repository }}", supervision)
+
+        canary_start = watchdog.index("  assessment-canary:")
+        canary_end = watchdog.index("  task-queue-supervision:", canary_start)
+        canary = watchdog[canary_start:canary_end]
+        self.assertIn("if: ${{ false }}", canary)
+
 if __name__ == "__main__":
     unittest.main()
