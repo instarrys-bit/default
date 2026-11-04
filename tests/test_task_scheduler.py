@@ -321,7 +321,7 @@ class TaskSchedulerTests(unittest.TestCase):
                 self.store, self.registry, self.adapters,
                 worker_id="scheduler-test", max_tasks=1, root=self.root, now=self.now,
             )
-        self.assertNotEqual((self.root / "shadowrocket" / "uu.conf").read_text(encoding="utf-8"), "[General]\n")
+        self.assertNotEqual((self.root / "modules" / "uu.conf").read_text(encoding="utf-8"), "[General]\n")
 
     def test_shell_execution_and_unreviewed_placeholders_are_rejected(self):
         self.adapters["adapters"][1]["entrypoint"]["shell"] = True
