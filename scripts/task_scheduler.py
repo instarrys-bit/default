@@ -263,7 +263,7 @@ class ProtectedConfigMutationError(RuntimeError):
 
 
 def protected_config_digest(root: Path = ROOT) -> str:
-    path = root / "shadowrocket" / "uu.conf"
+    path = root / "modules" / "uu.conf"
     if not path.is_file():
         raise ValueError("protected config guard unavailable: modules/uu.conf is missing")
     return hashlib.sha256(path.read_bytes()).hexdigest()
