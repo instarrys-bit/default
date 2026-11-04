@@ -60,7 +60,7 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
             "GITHUB_EVENT_NAME": "workflow_dispatch", "GITHUB_ACTOR": "maintainer",
             "GITHUB_ACTOR_ID": "678", "GITHUB_RUN_ID": "123",
             "GITHUB_RUN_ATTEMPT": "1", "GITHUB_REF": "refs/heads/main",
-            "GITHUB_SHA": "a" * 40,
+            "GITHUB_SHA": "a" * 40, "GITHUB_MANUAL_AUDIT_REQUEST": "true",
         }
         payload = self.payload(input={
             "production_decision": "USER_AUTHORIZED_MANUAL_AUDIT",
@@ -69,7 +69,7 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
             "authorization_actor_id": "678", "authorization_repository": "instarrys-bit/default",
             "authorization_workflow_ref": env["GITHUB_WORKFLOW_REF"],
             "authorization_event": "workflow_dispatch", "authorization_ref": "refs/heads/main",
-            "authorization_head_sha": "a" * 40, "baseline_source_event": "workflow_dispatch",
+            "authorization_head_sha": "a" * 40, "authorization_requested": True, "baseline_source_event": "workflow_dispatch",
             "baseline_source_sha": "a" * 40,
         })
         with patch.dict(os.environ, env, clear=True):
