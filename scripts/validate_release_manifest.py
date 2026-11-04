@@ -136,14 +136,18 @@ def _validate_python_adapter_policy(root: Path, policy: object,
         entrypoint = adapter.get("entrypoint")
         source_path = record.get("source_path")
         if (not isinstance(entrypoint, dict) or source_path != entrypoint.get("path")
-                or source_path != program.get("path") or not isinstance(source_path, str)):
-            raise ValueError(f"{target_id} source path does not match adapter entrypoint and registry")
+                or source_path != program.get("path") or not isinstance(source_path, str)
+                or source_path.startswith("/") or ".." in Path(source_path).parts
+                or Path(source_path).is_absolute()):
+            raise ValueError(f"{target_id} source path does not match a safe relative adapter entrypoint and registry path")
         if record["source_git_blob_sha"] != _git(root, "hash-object", source_path):
             raise ValueError(f"{target_id} source blob pin does not match the current entrypoint")
         _validate_blob_pin(root, source_path, record["source_git_blob_sha"], f"{target_id}.source")
         callers = record.get("allowed_callers")
         orchestration = program.get("orchestration", {})
-        if (not isinstance(callers, list) or not callers
+        if (not isinstance(orchestration, dict)
+                or not isinstance(callers, list) or not callers
+                or any(not isinstance(caller, str) or not caller for caller in callers)
                 or callers != sorted(set(callers))
                 or callers != sorted(adapter.get("allowed_callers", []))
                 or callers != sorted(orchestration.get("allowed_callers", []))):
@@ -173,14 +177,20 @@ def _validate_python_adapter_policy(root: Path, policy: object,
         keys = resource.get("resource_keys")
         lease_seconds = resource.get("lease_seconds")
         if (resource.get("mode") != "exclusive" or resource.get("fencing_required") is not True
-                or not isinstance(keys, list) or not keys or len(keys) != len(set(keys))
+                or not isinstance(keys, list) or not keys
+                or any(not isinstance(key, str) or not key for key in keys)
+                or len(keys) != len(set(keys))
                 or isinstance(lease_seconds, bool) or not isinstance(lease_seconds, int)
                 or not 1 <= lease_seconds <= 21600):
             raise ValueError(f"{target_id} resource contract must declare unique exclusive fenced keys and a bounded lease")
         write_resources = adapter.get("write_resources", [])
         publish_resources = adapter.get("publish_resources", [])
-        if (not isinstance(write_resources, list) or len(write_resources) != len(set(write_resources))
-                or not isinstance(publish_resources, list) or len(publish_resources) != len(set(publish_resources))
+        if (not isinstance(write_resources, list)
+                or any(not isinstance(path, str) or not path for path in write_resources)
+                or len(write_resources) != len(set(write_resources))
+                or not isinstance(publish_resources, list)
+                or any(not isinstance(path, str) or not path for path in publish_resources)
+                or len(publish_resources) != len(set(publish_resources))
                 or any(path not in keys or path == "shadowrocket/ss.conf" for path in write_resources)
                 or any(path not in write_resources for path in publish_resources)):
             raise ValueError(f"{target_id} write and publish paths must be nested within fenced resources and exclude the config baseline")
