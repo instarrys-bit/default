@@ -92,7 +92,7 @@ def validate_manual_authorization(task, context=None):
         "authorization_run_id", "authorization_run_attempt", "authorization_actor",
         "authorization_actor_id", "authorization_repository", "authorization_workflow_ref",
         "authorization_event", "authorization_ref", "authorization_head_sha",
-        "authorization_target_program_id", "authorization_idempotency_key",
+        "authorization_target_program_id", "authorization_idempotency_key", "authorization_requested",
     }
     if payload.get("production_decision") != "USER_AUTHORIZED_MANUAL_AUDIT":
         if authorization_fields.intersection(payload):
