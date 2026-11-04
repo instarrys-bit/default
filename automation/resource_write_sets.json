@@ -1415,21 +1415,22 @@
     "Shared JSON document writers for data/domain_candidates.json and sources/rule_provenance.json need compatible per-document leases, including all manifest/shard/staging/cleanup mutations and restore paths.",
     "All lifecycle, archive, ruleset list, manifest and report writers must be enumerated against actual workflow call sites; auto_sync's central write fence does not prove independent non-auto_sync writers.",
     "Atomic multi-resource lease acquisition and compatibility of per-resource locks across all independent/cross-workflow writers remain unproven.",
-    "Static entrypoint inventory does not prove absence of unregistered dynamic writes, subprocess writes, external API mutations or filesystem writes hidden behind imported helpers.",
+    "Static entrypoint inventory does not prove absence of unregistered dynamic writes, transient write-and-revert behavior, external API mutations or filesystem writes hidden behind imported helpers. End-of-job Git tree snapshots now capture persistent repository changes from shell/Git subprocesses.",
     "All remaining registered Python components must be checked for indirect writes through imported helpers, subprocesses and dynamically selected outputs; report-only writers and active source-registry writers must remain distinct.",
     "The 53 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and one external workflow-dispatch side-effect adapter. Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths."
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
     "release_manifest_blob_sha": "e1aa2200531a9acd662e4a71f2713d9821d5c6fe",
-    "program_registry_blob_sha": "d4cf970870f4b51d40c1f70c7d4347a035d4b960",
+    "program_registry_blob_sha": "e0f1959761c942013818615c6b0176325045696f",
     "execution_adapters_blob_sha": "b9bad9786b927b98634ec956b3eb343f6fd8d43e",
     "added_after_release_baseline": true,
     "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 53 Python components are now partitioned into 36 direct/helper writer entries, 16 reviewed non-writers and one external GitHub Actions dispatch side-effect adapter.",
-    "reviewed_at": "2026-11-04",
+    "reviewed_at": "2026-11-05",
     "central_write_guard_test": "tests/test_fenced_file_writer.py::test_every_registered_python_component_installs_the_guard",
     "runtime_trace_evidence": {
       "trace_script": "scripts/fenced_file_writer.py",
+      "shell_git_snapshot_script": "scripts/capture_git_write_trace.py",
       "workflow_jobs": [
         "audit",
         "publish"
@@ -1438,8 +1439,8 @@
         "automation-runtime-write-trace-audit",
         "automation-runtime-write-trace-publish"
       ],
-      "data_policy": "paths and run metadata only; no file contents or credentials",
-      "limitation": "does not observe shell/git subprocess writes or prove unexecuted call paths"
+      "data_policy": "repository-relative paths and run metadata only; no file contents or credentials",
+      "limitation": "captures persistent final repository-tree deltas from shell/Git children, not transient write-and-revert activity, external filesystem/API side effects, Git metadata changes or unexecuted call paths"
     }
   },
   "scheduler_lock_contract": {
@@ -1548,6 +1549,12 @@
       "source": "scripts/fenced_file_writer.py",
       "classification": "filesystem_mutation_guard_not_writer",
       "evidence": "Installs audit hooks that reject/validate mutation events; it does not itself create or modify repository resources."
+    },
+    {
+      "program_id": "script_capture_git_write_trace",
+      "source": "scripts/capture_git_write_trace.py",
+      "classification": "read_only_repository_delta_observer",
+      "evidence": "Reads committed, staged, unstaged and non-ignored untracked Git path deltas; writes only path-only JSONL trace records under RUNNER_TEMP outside the repository."
     }
   ],
   "control_plane_side_effects": [
