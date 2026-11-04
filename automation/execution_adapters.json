@@ -1825,7 +1825,7 @@
       "target_kind": "python_component",
       "adapter_type": "python_cli",
       "enabled": false,
-      "interface_status": "reviewed",
+      "interface_status": "unreviewed",
       "allowed_callers": [],
       "entrypoint": {
         "path": "scripts/fenced_file_writer.py",

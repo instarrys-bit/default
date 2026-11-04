@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-baseline-2026.11.04.6",
+  "release_id": "shadowrocket-automation-baseline-2026.11.04.7",
   "release_status": "baseline_snapshot",
   "created_on": "2026-11-04",
-  "purpose": "Pin the source-assessment capability with fenced persistent publication, terminal queue history compatibility, and a cache-safe one-shot Watchdog canary.",
+  "purpose": "Pin the Watchdog production write-guard rollout, owner-config immutability, and lease-gated recovery boundary.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "6f04f9473541cd569125f70c20fa3278bb34713d"
+      "git_blob_sha": "f88671403df785c1d9f14cc1b22cd87141c25837"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "570db5f82cadfe44aedb4652f629a5b4df32f0e0"
+      "git_blob_sha": "51b4a61c3764e4446dae93d6c0ffc26d7a062afe"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -59,7 +59,8 @@
     "Other Python capability input/output contracts and dependency edges remain incomplete.",
     "Write-path ownership and indirect side effects still require machine-checked coverage across all independent writers.",
     "The source-assessment adapter remains disabled in main; the one-shot canary uses a temporary runner-local override and does not enable general dispatch.",
-    "The declared review-engine version is not yet pinned to a verified source revision."
+    "The declared review-engine version is not yet pinned to a verified source revision.",
+    "Durable failed-run cursor persistence is deferred until a Watchdog-leased capability owns that write."
   ],
   "next_migration_gate": {
     "required_before_independent_python_dispatch": [
