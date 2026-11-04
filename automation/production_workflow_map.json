@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "dbe3a5f8059cf7d779f6af64ef51f378a6e4daf5",
+  "workflow_blob_sha": "ce2fa07432958622251c9900ec5accf56324b471",
   "registry_blob_sha": "ea3c35c1d0cb8ae6fff5f2debfbd3aa77369e245",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
@@ -598,7 +598,7 @@
   "architecture_findings": [
     "The audit job is a single sequential production chain; its Python steps are not independently dispatchable merely because they have registry entries.",
     "The publish job is a separate privileged boundary with contents:write and must remain a gated workflow-level operation.",
-    "Failure cursor persistence, incident creation, Watchdog completion notification and incident resolution are separate recovery/notification jobs, not ordinary production capabilities.",
+    "Failure cursor persistence is a separate recovery job; it now writes the canonical checkpoint only after live Watchdog lease revalidation. Incident creation, completion notification and incident resolution remain separate recovery/notification jobs.",
     "The compile/test step references many scripts for validation only; those references must not be interpreted as execution edges.",
     "Workflow-native shell, artifact, GitHub API and GitHub issue actions remain orchestration capabilities and need explicit contracts before decomposition.",
     "Source assessment is dispatched by automation-watchdog only after the exact production discovery workflow completes successfully on main; it is not an independent direct-dispatch path."
@@ -612,11 +612,12 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.04.12",
-    "release_manifest_blob_sha": "0eadfc6543b7b50ffdedd363405a94bb1ebf2a45",
+    "release_manifest_blob_sha": "faeae917ac9f4a26265d06d38213f48048920c71",
     "program_registry_blob_sha": "279f8d14d1aad62d1342ba07063aa8d52e410a80",
-    "execution_adapters_blob_sha": "45967d0d88392369252b7a4427aaba41d9dcdda8",
+    "execution_adapters_blob_sha": "9eaa66c78e007b6d5ad442fd8ca9f27f775741c9",
     "added_after_release_baseline": true,
     "note": "Refreshed against the exact current main workflow, registry, release manifest and adapter blobs. This remains static inventory evidence, not execution authorization.",
-    "reviewed_at": "2026-11-04"
+    "reviewed_at": "2026-11-04",
+    "registry_blob_sha": "ea3c35c1d0cb8ae6fff5f2debfbd3aa77369e245"
   }
 }
