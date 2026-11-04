@@ -163,5 +163,61 @@ class ConfigBaselineRegistrationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "same read-only owner config path"):
                 build_release_pin_updates(root, "modules/uu.conf", "c" * 40)
 
+
+    def test_owner_approved_config_registration_updates_all_release_and_inventory_pins(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "automation").mkdir()
+            release = {"schema_version": 1, "implementation_pins": {
+                "config_baseline": {
+                    "path": "modules/uu.conf", "git_blob_sha": "a" * 40, "access": "read_only"
+                }
+            }}
+            workflow_map = {"review_context": {"release_manifest_blob_sha": "b" * 40}}
+            write_sets = {"review_context": {"release_manifest_blob_sha": "b" * 40}}
+            (root / "automation" / "release_manifest.json").write_text(
+                json.dumps(release), encoding="utf-8"
+            )
+            (root / "automation" / "production_workflow_map.json").write_text(
+                json.dumps(workflow_map), encoding="utf-8"
+            )
+            (root / "automation" / "resource_write_sets.json").write_text(
+                json.dumps(write_sets), encoding="utf-8"
+            )
+
+            release_text, map_text, write_sets_text = build_release_pin_updates(
+                root, "modules/uu.conf", "c" * 40
+            )
+            release_sha = git_blob_sha(release_text.encode("utf-8"))
+            self.assertEqual(
+                json.loads(release_text)["implementation_pins"]["config_baseline"]["git_blob_sha"],
+                "c" * 40,
+            )
+            self.assertEqual(
+                json.loads(map_text)["review_context"]["release_manifest_blob_sha"], release_sha
+            )
+            self.assertEqual(
+                json.loads(write_sets_text)["review_context"]["release_manifest_blob_sha"], release_sha
+            )
+
+    def test_release_pin_update_rejects_non_owner_config_path(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "automation").mkdir()
+            (root / "automation" / "release_manifest.json").write_text(
+                json.dumps({"implementation_pins": {"config_baseline": {
+                    "path": "shadowrocket/ss.conf", "git_blob_sha": "a" * 40,
+                    "access": "read_only",
+                }}}),
+                encoding="utf-8",
+            )
+            for name in ("production_workflow_map.json", "resource_write_sets.json"):
+                (root / "automation" / name).write_text(
+                    json.dumps({"review_context": {"release_manifest_blob_sha": "b" * 40}}),
+                    encoding="utf-8",
+                )
+            with self.assertRaisesRegex(ValueError, "same read-only owner config path"):
+                build_release_pin_updates(root, "modules/uu.conf", "c" * 40)
+
 if __name__ == "__main__":
     unittest.main()
