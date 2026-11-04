@@ -158,6 +158,34 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
             missing_inputs=[path for path in required_read_only if read_only_digests.get(path) is None]
             if missing_inputs:
                 raise ValueError("required input artifacts are missing: "+", ".join(missing_inputs))
+            dependency = adapter.get("dependency_contract")
+            if dependency is not None:
+                if not isinstance(dependency, dict):
+                    raise ValueError("dependency_contract must be an object")
+                predecessor_id = dependency.get("predecessor_program_id")
+                artifact_path = dependency.get("artifact_path")
+                workflow_name = dependency.get("producer_workflow_name")
+                proof = task.get("input", {}).get("predecessor")
+                if (not isinstance(predecessor_id, str) or not isinstance(artifact_path, str)
+                        or not isinstance(workflow_name, str) or artifact_path not in required_read_only
+                        or not isinstance(proof, dict)):
+                    raise ValueError("typed predecessor contract or task proof is incomplete")
+                expected_proof = {
+                    "program_id": predecessor_id,
+                    "workflow_name": workflow_name,
+                    "artifact_path": artifact_path,
+                }
+                if any(proof.get(key) != value for key, value in expected_proof.items()):
+                    raise ValueError("typed predecessor identity does not match the reviewed contract")
+                if (not isinstance(proof.get("workflow_run_id"), str)
+                        or not proof["workflow_run_id"].isdigit()
+                        or not isinstance(proof.get("workflow_head_sha"), str)
+                        or not re.fullmatch(r"[0-9a-f]{40}", proof["workflow_head_sha"])
+                        or not isinstance(proof.get("artifact_sha256"), str)
+                        or not re.fullmatch(r"[0-9a-f]{64}", proof["artifact_sha256"])):
+                    raise ValueError("typed predecessor run or artifact digest is malformed")
+                if read_only_digests.get(artifact_path) != proof["artifact_sha256"]:
+                    raise ValueError("typed predecessor artifact digest changed before task execution")
             if isinstance(resource_contract, dict) and set(read_only_resources) & set(resource_contract.get("resource_keys", [])):
                 raise ValueError("a resource cannot be both read-only and exclusively writable")
             completion = adapter.get("completion", {})
