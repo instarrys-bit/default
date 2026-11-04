@@ -105,7 +105,7 @@ def validate_manual_authorization(task, context=None):
     if (context["event"] != "workflow_dispatch" or context["ref"] != "refs/heads/main"
             or context["workflow_ref"] != expected_workflow
             or not context["actor_id"].isdigit() or not context["run_id"].isdigit()
-            or not context["run_attempt"].isdigit()):
+            or not context["run_attempt"].isdigit() or context["manual_audit_requested"] != "true"):
         raise ValueError("manual audit must originate from a main-branch Watchdog workflow_dispatch")
     expected = {
         "authorization_run_id": context["run_id"],
