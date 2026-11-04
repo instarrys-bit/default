@@ -2,7 +2,7 @@ import io, sys, tarfile, tempfile, unittest
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from restore_automation_state import restore_state, restore_publish_outputs
+from restore_automation_state import PUBLISH_FILES, restore_state, restore_publish_outputs
 
 class RestoreAutomationStateTests(unittest.TestCase):
     def make_archive(self, path, entries):
@@ -133,8 +133,8 @@ class RestoreAutomationStateTests(unittest.TestCase):
                 ("sources/domain_reviews.json", "ignored"),
             ])
             result=restore_publish_outputs(archive, repo)
-            self.assertEqual(result["restored_files"], 5)
-            self.assertTrue((repo/"sources/policy.json").exists())
+            self.assertEqual(result["restored_files"], 4)
+            self.assertFalse((repo/"sources/policy.json").exists())
             self.assertTrue((repo/"rulesets/direct.list").exists())
             self.assertTrue((repo/"sources/source_assessments.json.parts-abcd/part-000000.jsonl").exists())
             self.assertFalse((repo/"sources/domain_reviews.json").exists())
@@ -149,6 +149,10 @@ class RestoreAutomationStateTests(unittest.TestCase):
             self.assertFalse((repo/"sources/discovered_sources.json").exists())
             self.assertTrue((repo/"sources/discovered_sources.json.manifest.json").exists())
 
+
+
+    def test_policy_input_is_not_restored_from_historical_audit_artifact(self):
+        self.assertNotIn("sources/policy.json", PUBLISH_FILES)
 
 if __name__ == "__main__":
     unittest.main()
