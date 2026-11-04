@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audit_id": "resource-ownership-audit-2026.11.04.3",
+  "audit_id": "resource-ownership-audit-2026.11.05.1",
   "status": "partial_static_audit",
   "purpose": "Identify known overlapping write resources before independent capability scheduling. This inventory is deliberately fail-closed and is not an execution authorization.",
   "evidence_scope": {
@@ -90,7 +90,10 @@
         "workflow",
         "run_id",
         "task_id",
-        "lease_required"
+        "lease_required",
+        "baseline_sha",
+        "head_sha",
+        "changed_path_count"
       ],
       "data_policy": "repository-relative paths and run metadata only; no file contents, tokens or lease fencing secrets",
       "limitation": "Python audit-hook events plus persistent repository-tree deltas from shell/Git children; transient write-and-revert, .git metadata, external services and unexecuted code paths are not captured.",
