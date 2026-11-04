@@ -16,7 +16,7 @@
     "python_adapter_activation": "deny_by_default",
     "registry_registration_is_not_dispatch_authorization": true,
     "dashboard_is_observer_only": true,
-    "protected_config": "shadowrocket/ss.conf is read-only",
+    "protected_config": "modules/uu.conf is read-only",
     "independent_dispatch_gate": "Every capability requires reviewed input/output schemas, transitive read/write sets, dependency semantics, idempotency, resource lease requirements, timeout/retry policy, and independent result verification."
   },
   "contract_fields_required": [
