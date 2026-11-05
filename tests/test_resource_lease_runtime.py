@@ -220,6 +220,9 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
             ["logical/production-pipeline"], self.store, now=self.now,
         )
         task = self.store.document["tasks"][0]
+        # The logical production-pipeline lease is valid only for the auto_sync
+        # writer; make that target explicit in this CLAIMED-task fixture.
+        task["target_program_id"] = "workflow_auto_sync"
         task["resource_lease"] = {
             "status": "ACTIVE", "resources": acquired["resources"],
             "lease_seconds": 300, "expires_at": acquired["expires_at"],
