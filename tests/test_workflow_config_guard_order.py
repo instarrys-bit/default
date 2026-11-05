@@ -240,10 +240,10 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertLess(publish_step.index("assert-workflow --task-id"), publish_step.index("git push origin HEAD:main"))
         self.assertIn("logical/production-pipeline", (ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         audit_job = workflow.split("  audit:", 1)[1].split("  publish:", 1)[0]
-        self.assertIn('AUTOMATION_WRITE_GUARD: "1"', audit_job)
-        self.assertIn('"AUTOMATION_REQUIRE_RESOURCE_LEASE": "1"', audit_job)
-        self.assertIn("assert_resource_lease_from_environment", (ROOT / "scripts" / "fenced_file_writer.py").read_text(encoding="utf-8"))
-        self.assertIn("AUTOMATION_REQUIRE_RESOURCE_LEASE", (ROOT / "scripts" / "fenced_file_writer.py").read_text(encoding="utf-8"))
+        self.assertIn("Isolate production writes in a temporary workspace", audit_job)
+        self.assertIn("git add -A -- rulesets/", workflow)
+        self.assertNotIn("git add -- sources/", workflow)
+        self.assertNotIn("AUTOMATION_WRITE_GUARD", workflow)
 
     def test_watchdog_owns_config_change_detection_and_sync_dispatch(self):
         watchdog_path = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
