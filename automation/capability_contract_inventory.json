@@ -675,37 +675,6 @@
       "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
     },
     {
-      "id": "script_fenced_file_writer",
-      "path": "scripts/fenced_file_writer.py",
-      "declared_capabilities": [
-        "filesystem_write_guard"
-      ],
-      "registry_dependencies": [],
-      "current_registry_inputs": [
-        "filesystem mutation audit events",
-        "Watchdog task and resource lease environment"
-      ],
-      "current_registry_outputs": [
-        "allow mutation only when the owner-config and live fencing policies pass"
-      ],
-      "current_invocation": "imported_module",
-      "contract_status": "incomplete",
-      "dispatch_status": "disabled",
-      "missing_contract_fields": [
-        "input_schema",
-        "output_schema",
-        "read_resources",
-        "write_resources",
-        "transitive_side_effects",
-        "dependency_edges",
-        "idempotency_key",
-        "resource_lease_keys",
-        "success_predicate",
-        "independent_verifier"
-      ],
-      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
-    },
-    {
       "id": "script_github_queue_store",
       "path": "scripts/github_queue_store.py",
       "declared_capabilities": [
@@ -909,38 +878,6 @@
       ],
       "current_registry_outputs": [
         "Return values and/or repository artifacts as defined by the implementation"
-      ],
-      "current_invocation": "python_module_or_workflow_step",
-      "contract_status": "incomplete",
-      "dispatch_status": "disabled",
-      "missing_contract_fields": [
-        "input_schema",
-        "output_schema",
-        "read_resources",
-        "write_resources",
-        "transitive_side_effects",
-        "dependency_edges",
-        "idempotency_key",
-        "resource_lease_keys",
-        "success_predicate",
-        "independent_verifier"
-      ],
-      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
-    },
-    {
-      "id": "script_persist_review_cursor",
-      "path": "scripts/persist_review_cursor.py",
-      "declared_capabilities": [
-        "review_cursor_persistence",
-        "failure_recovery"
-      ],
-      "registry_dependencies": [],
-      "current_registry_inputs": [
-        "review cursor checkpoint artifact JSON",
-        "destination path for the persisted checkpoint"
-      ],
-      "current_registry_outputs": [
-        "validated in-progress cursor checkpoint, safe missing-artifact no-op, or completed-checkpoint cleanup"
       ],
       "current_invocation": "python_module_or_workflow_step",
       "contract_status": "incomplete",
@@ -1710,31 +1647,6 @@
         "independent_verifier"
       ],
       "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
-    },
-    {
-      "id": "script_capture_git_write_trace",
-      "path": "scripts/capture_git_write_trace.py",
-      "declared_capabilities": [
-        "runtime_write_tracing"
-      ],
-      "registry_dependencies": [],
-      "current_registry_inputs": [
-        "Initial checkout commit SHA",
-        "Git committed, staged, unstaged and non-ignored untracked repository paths"
-      ],
-      "current_registry_outputs": [
-        "Path-only JSONL records under RUNNER_TEMP",
-        "Before/after commit SHA and changed-path count"
-      ],
-      "current_invocation": "workflow_step",
-      "contract_status": "concrete_io_path_only_repository_delta_capture",
-      "dispatch_status": "disabled",
-      "missing_contract_fields": [
-        "transient write-and-revert activity",
-        "external filesystem and API side effects",
-        "Git metadata changes outside repository tree"
-      ],
-      "audit_note": "Observer complements Python audit-hook events; it records persistent repository-tree deltas only and does not prove transient, external, or unexecuted side effects."
     }
   ],
   "workflow_capabilities": [
@@ -1745,7 +1657,6 @@
         "source_discovery"
       ],
       "registry_dependencies": [
-        "script_capture_git_write_trace",
         "script_discover_sources",
         "script_resource_lease_runtime"
       ],
@@ -1756,17 +1667,14 @@
         "main branch source snapshot"
       ],
       "current_registry_outputs": [
-        "sources/discovered_sources.json with workflow/run/head provenance",
-        "reports/source-discovery.md",
-        "source-discovery-output immutable artifact with logical-document SHA-256 proof"
+        "source-discovery-output immutable artifact with SHA-256 provenance proof"
       ],
       "contract_status": "workflow_and_typed_artifact_handoff_implemented_dormant",
       "dispatch_status": "disabled",
       "resource_keys": [
-        "sources/discovered_sources.json",
-        "reports/source-discovery.md"
+        "logical/source-discovery-run"
       ],
-      "verifier": "automation-watchdog workflow_run handler verifies exact run identity, uploaded artifact digest, producer metadata and equality with current main before enqueueing Assessment"
+      "verifier": "workflow_run handler validates exact producer identity and artifact digest; no equality check against a committed source document"
     }
   ]
 }

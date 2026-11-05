@@ -29,14 +29,6 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 2,
-          "name": "Capture initial repository baseline for shell and Git write tracing",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
           "order": 3,
           "name": "Set up Python",
           "execution_kind": "workflow_native",
@@ -45,12 +37,12 @@
           "unresolved_script_paths": []
         },
         {
+          "order": 4,
+          "name": "Isolate production writes in a temporary workspace",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
           "validation_program_ids": [],
-          "unresolved_script_paths": [],
-          "order": 4,
-          "name": "Enable path-only runtime write trace"
+          "unresolved_script_paths": []
         },
         {
           "order": 5,
@@ -141,7 +133,6 @@
             "script_append_step_summary",
             "script_apply_safe_repair",
             "script_review_cursor",
-            "script_persist_review_cursor",
             "script_json_document_store",
             "script_verify_published_rulesets"
           ],
@@ -164,24 +155,6 @@
           "invoked_program_ids": [
             "script_assess_sources",
             "script_append_step_summary"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
-          "order": 14,
-          "name": "Preserve complete source assessment report",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
-          "order": 15,
-          "name": "Restore prior high-volume automation state",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_restore_automation_state"
           ],
           "validation_program_ids": [],
           "unresolved_script_paths": []
@@ -422,14 +395,6 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 39,
-          "name": "Record durable automation state pointer",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
           "order": 40,
           "name": "Package allowlisted audit outputs",
           "execution_kind": "workflow_native",
@@ -444,24 +409,6 @@
           "invoked_program_ids": [],
           "validation_program_ids": [],
           "unresolved_script_paths": []
-        },
-        {
-          "order": 42,
-          "name": "Capture persistent repository changes from shell and Git (audit)",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_capture_git_write_trace"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": [],
-          "order": 43,
-          "name": "Upload runtime filesystem write trace (audit)"
         }
       ]
     },
@@ -482,22 +429,6 @@
           "invoked_program_ids": [],
           "validation_program_ids": [],
           "unresolved_script_paths": []
-        },
-        {
-          "order": 2,
-          "name": "Capture initial repository baseline for shell and Git write tracing",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": [],
-          "order": 3,
-          "name": "Enable path-only runtime write trace"
         },
         {
           "order": 4,
@@ -525,7 +456,7 @@
         },
         {
           "order": 7,
-          "name": "Verify base commit and safely publish allowlisted outputs",
+          "name": "Verify base commit and publish rulesets only",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
           "validation_program_ids": [],
@@ -539,76 +470,6 @@
             "script_verify_published_rulesets",
             "script_append_step_summary"
           ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
-          "order": 9,
-          "name": "Capture persistent repository changes from shell and Git (publish)",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_capture_git_write_trace"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": [],
-          "order": 10,
-          "name": "Upload runtime filesystem write trace (publish)"
-        }
-      ]
-    },
-    {
-      "id": "persist-review-cursor",
-      "needs": [
-        "audit"
-      ],
-      "condition": "${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled') }}",
-      "permissions": {
-        "contents": "write"
-      },
-      "steps": [
-        {
-          "order": 1,
-          "name": "Checkout current main for a single-path checkpoint update",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
-          "order": 2,
-          "name": "Download failed-run cursor checkpoint",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
-          "order": 3,
-          "name": "Revalidate exact Watchdog task and install live resource fence",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
-          "order": 4,
-          "name": "Persist only the cursor through the live filesystem fence",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
-          "order": 5,
-          "name": "Publish only the cursor checkpoint under the same live fence",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
           "validation_program_ids": [],
           "unresolved_script_paths": []
         }
@@ -716,12 +577,10 @@
         "workflow_name": "Shadowrocket Source Discovery (Watchdog)",
         "branch": "main",
         "writes": [
-          "sources/discovered_sources.json",
-          "reports/source-discovery.md"
+          "RUNNER_TEMP/source-discovery-output/**"
         ],
         "resource_keys": [
-          "sources/discovered_sources.json",
-          "reports/source-discovery.md"
+          "logical/source-discovery-run"
         ]
       },
       "handoff": {
@@ -741,7 +600,8 @@
           "exact producer run identity",
           "downloaded artifact logical-document digest",
           "producer metadata inside document",
-          "digest equality with current main"
+          "digest equality with current main",
+          "artifact digest and exact workflow-run provenance"
         ]
       },
       "consumer": {
