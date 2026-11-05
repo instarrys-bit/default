@@ -94,11 +94,11 @@
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "ad7e5a7566c4799bbfc5c1d8e9605dcca2e9f5af"
+      "git_blob_sha": "972e80039030c2951f3d1048042aef3a24018d50"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "23695c44bd74cf8d9f3df56f8bd4899270ac05ab"
+      "git_blob_sha": "c4e1c4f140e7b192e2075dcdedd854a7800134a8"
     }
   },
   "compatibility": {
