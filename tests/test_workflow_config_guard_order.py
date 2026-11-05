@@ -38,27 +38,23 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn("group: shadowrocket-main-writer", auto_sync)
-        # Intake shares the repository-wide writer lock; Git-ref CAS remains a second safeguard.
-        self.assertIn("group: shadowrocket-main-writer", intake)
-        self.assertIn("cancel-in-progress: false", intake)
-        self.assertIn("for attempt in 1 2 3; do", intake)
-        self.assertIn("git reset --hard origin/main", intake)
-        self.assertIn("--merge-observations", intake)
-        self.assertNotIn("git rebase origin/main", intake)
+        self.assertIn("group: shadowrocket-request-intake", intake)
+        self.assertNotIn("contents: write", intake)
+        self.assertNotIn("git push", intake)
+        self.assertIn("request_deterministic_audit=true", intake)
+        self.assertIn("task_scheduler.py", watchdog)
         manifest_writer = watchdog.split("  manifest-integrity:", 1)[1]
         self.assertIn("group: shadowrocket-main-writer", manifest_writer)
-        self.assertNotIn("github-only-domain-intake", intake)
 
-    def test_request_intake_replays_same_run_batch_against_latest_main_without_force_push(self):
+    def test_request_intake_uses_watchdog_task_input_without_repository_writes(self):
         intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
-        self.assertIn("for attempt in 1 2 3; do", intake)
-        self.assertIn("git fetch origin main", intake)
-        self.assertIn("git reset --hard origin/main", intake)
-        self.assertIn("--merge-observations", intake)
-        self.assertIn('--intake-run-id "$GITHUB_RUN_ID"', intake)
-        self.assertIn("git push origin HEAD:main", intake)
-        self.assertNotIn("git rebase origin/main", intake)
-        self.assertNotIn("git push --force", intake)
+        self.assertIn("Validate hostnames without repository writes", intake)
+        self.assertIn("request_observations_json", intake)
+        self.assertIn("Enqueue through the Watchdog control plane", intake)
+        self.assertNotIn("git fetch", intake)
+        self.assertNotIn("git reset", intake)
+        self.assertNotIn("git push", intake)
+        self.assertNotIn("sources/request_domain_observations.json", intake)
 
     def test_self_healing_never_cancels_non_main_runs_or_cross_closes_incidents(self):
         healing = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")
@@ -96,38 +92,35 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("Close recovered manifest integrity incidents", watchdog)
         self.assertIn("steps.verify.outcome == 'success'", watchdog)
 
-    def test_high_volume_state_is_restored_before_candidate_mutation(self):
+    def test_production_intermediates_run_only_in_temporary_workspace(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        restore = workflow.index("Restore prior high-volume automation state")
-        import_observations = workflow.index("Import observed request hostnames as unclassified candidates")
-        collect = workflow.index("Collect and cross-check all enabled domain sources")
-        self.assertLess(restore, import_observations)
-        self.assertLess(restore, collect)
-        self.assertIn("actions: read", workflow)
-        self.assertIn("retention-days: 90", workflow)
-        self.assertIn("fail_closed", workflow)
+        self.assertIn("Isolate production writes in a temporary workspace", workflow)
+        self.assertIn('workspace="$RUNNER_TEMP/production-workspace"', workflow)
+        self.assertIn('cp -a "$GITHUB_WORKSPACE/." "$workspace/"', workflow)
+        self.assertIn("Import observed request hostnames as unclassified candidates", workflow)
+        self.assertIn("Package ruleset outputs only", workflow)
+        self.assertNotIn("Restore prior high-volume automation state", workflow)
 
-    def test_state_pointer_is_in_audit_archive_before_publish(self):
+    def test_production_artifact_contains_only_rulesets(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        package = workflow.split("      - name: Package allowlisted audit outputs", 1)[1].split(
+        package = workflow.split("      - name: Package ruleset outputs only", 1)[1].split(
             "      - name: Upload allowlisted audit outputs", 1
         )[0]
-        self.assertIn("reports/automation/state_store.json", package)
-        self.assertIn("declare -A archive_seen=()", package)
-        self.assertIn('tar -czf "$RUNNER_TEMP/audit-output.tar.gz" -- "${archive_inputs[@]}"', package)
-        self.assertIn("data/domain_candidates.json", package)
+        self.assertIn('tar -czf "$RUNNER_TEMP/audit-output.tar.gz" -- rulesets', package)
+        self.assertNotIn("reports/", package)
+        self.assertNotIn("sources/", package)
+        self.assertNotIn("data/", package)
 
-    def test_large_state_is_artifact_backed_not_committed_as_giant_json(self):
+    def test_publisher_stages_rulesets_and_nothing_else(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         publish = workflow.split("      - name: Verify base commit and safely publish allowlisted outputs", 1)[1]
-        allowlist = publish.split("          publish_paths=(", 1)[1].split("          )", 1)[0]
-        for path in ("sources/domain_reviews.json", "sources/review_cursor.json",
-                     "sources/rule_provenance.json", "data/domain_candidates.json",
-                     "data/candidates.json", "data/source_pending.json", "data/source_snapshots/"):
-            self.assertNotIn(path, allowlist)
-        self.assertIn("reports/automation/state_store.json", allowlist)
-        self.assertIn('if [[ -e "$path" ]]', publish)
-        self.assertIn('git add -- "$path"', publish)
+        self.assertIn("git add -A -- rulesets/", publish)
+        self.assertIn('case "$path" in', publish)
+        self.assertIn("rulesets/*)", publish)
+        self.assertNotIn("publish_paths=(", publish)
+        self.assertNotIn("git add -- sources/", publish)
+        self.assertNotIn("git add -- reports/", publish)
+        self.assertNotIn("git add -- data/", publish)
 
     def test_config_conflicts_are_checked_before_and_after_rule_mutations(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
@@ -279,28 +272,21 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
 
 
 
-    def test_owner_config_registration_precedes_fingerprint_and_deterministic_tests(self):
+    def test_production_does_not_register_or_publish_owner_config_baseline(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        registration = workflow.index("Register repository-owner-approved uu.conf changes")
+        self.assertNotIn("Register repository-owner-approved uu.conf changes", workflow)
+        self.assertNotIn("scripts/register_config_baseline.py", workflow)
         fingerprint = workflow.index("Capture and verify the exact production input fingerprint")
         tests = workflow.index("Compile and run deterministic review tests")
-        self.assertLess(registration, fingerprint)
         self.assertLess(fingerprint, tests)
-        archive = workflow.split("          base_files=(", 1)[1].split("          )", 1)[0]
-        self.assertNotIn("sources/policy.json", archive)
-        publish = workflow.split("          publish_paths=(", 1)[1].split("          )", 1)[0]
-        for path in (
-            "sources/policy.json",
-            "automation/release_manifest.json",
-            "automation/production_workflow_map.json",
-            "automation/resource_write_sets.json",
-        ):
-            self.assertIn(path, publish)
+        package = workflow.split("      - name: Package ruleset outputs only", 1)[1].split(
+            "      - name: Upload allowlisted audit outputs", 1
+        )[0]
+        self.assertIn("rulesets", package)
+        self.assertNotIn("sources/policy.json", package)
         restore = (ROOT / "scripts" / "restore_automation_state.py").read_text(encoding="utf-8")
-        self.assertNotIn('"sources/policy.json"', restore.split("PUBLISH_FILES = {", 1)[1].split("}", 1)[0])
-        registrar = (ROOT / "scripts" / "register_config_baseline.py").read_text(encoding="utf-8")
-        self.assertIn("build_release_pin_updates", registrar)
-
+        self.assertIn('name.startswith("rulesets/")', restore)
+        self.assertNotIn("PUBLISH_FILES", restore)
 
     def test_manual_authorization_is_bound_to_one_durable_task_scope(self):
         watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
