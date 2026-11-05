@@ -309,9 +309,12 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
                     self.assertTrue(assert_resource_lease_from_environment("reports/project-status.json"))
                     record = live.document["resource_leases"]["logical/production-pipeline"]
                     record["task_lease_token"] = "stale-token"
+                    self.assertTrue(assert_resource_lease_from_environment("reports/project-status.json"))
+                    record["task_lease_token"] = "task-token-a"
+                    record["worker_id"] = "different-worker"
                     with self.assertRaisesRegex(ValueError, "no matching active resource lease"):
                         assert_resource_lease_from_environment("reports/project-status.json")
-                    record["task_lease_token"] = "task-token-a"
+                    record["worker_id"] = "worker_a"
                     live.document["tasks"][0]["dispatch_intent"]["ref"] = "feature"
                     with self.assertRaisesRegex(ValueError, "exact Watchdog production dispatch"):
                         assert_resource_lease_from_environment("reports/project-status.json")
