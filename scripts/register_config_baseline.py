@@ -87,6 +87,7 @@ def owner_approved_config_history(guard: dict) -> list[str]:
     after = os.environ.get("GITHUB_SHA", "")
     repo = os.environ.get("GITHUB_REPOSITORY", "")
     baseline_commit = str(guard.get("last_user_approved_baseline_update", {}).get("commit_sha", ""))
+    print(f"Baseline recovery context: event={event!r}, ref={ref!r}, owner={owner!r}, actor={actor!r}, after={after!r}, baseline_commit={baseline_commit!r}, repo={repo!r}", file=sys.stderr)
     if (
         not owner or ref != "refs/heads/main"
         or not after or not repo or not baseline_commit
