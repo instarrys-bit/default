@@ -174,7 +174,7 @@ button{font:inherit}
 <main class="shell">
 <header class="topbar compact-topbar">
  <div class="brand"><div class="brand-title">自动化运营控制台</div></div>
- <div class="top-meta"><span class="live-pill compact-clock"><i class="live-dot"></i><time id="clock">同步中…</time></span></div>
+ <div class="top-meta"><span class="live-pill compact-clock" id="sync-status" role="status" aria-live="polite"><i class="live-dot" id="sync-dot"></i><time id="clock">正在读取数据快照…</time></span></div>
 </header>
 <section class="kpis" id="summary">
  <article class="kpi published"><div class="kpi-label">已发布规则</div><div class="kpi-value">—</div><div class="kpi-foot">当前规则集规模</div></article>
@@ -206,9 +206,9 @@ const n=v=>Number.isFinite(Number(v))?Number(v).toLocaleString("zh-CN"):"—";
 const el=id=>document.getElementById(id);
 const fmtTime=v=>{if(!v)return "暂无记录";const d=new Date(v);if(Number.isNaN(d.getTime()))return v;return new Intl.DateTimeFormat("zh-CN",{timeZone:"Asia/Shanghai",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).format(d);};
 const pct=(v,t)=>t>0?Math.max(0,Math.min(100,v/t*100)):0;
-let lastSuccessfulLoad=null;
+let lastSuccessfulLoad=null;let snapshotGeneratedAt=null;let lastLoadError=null;
 async function load(){try{
- const r=await fetch("./data.json?refresh="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);const d=await r.json();lastSuccessfulLoad=new Date();
+ const r=await fetch("./data.json?refresh="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);const d=await r.json();lastSuccessfulLoad=new Date();snapshotGeneratedAt=d.generated_at?new Date(d.generated_at):null;lastLoadError=null;tickClock();
  const cards=[["已发布规则",n(d.rulesets.published_total),"当前规则集规模","published"],["候选池总量",n(d.candidate_review.candidate_total),"候选记录，不等同于待筛选","candidate"],["规则来源",n(d.sources.source_count),"当前纳入统计的来源数","sources"],["待人工审核 · REJECT",n(d.review.reject_manual_pending),"未经人工授权不会自动发布","alert"]];
  el("summary").innerHTML=cards.map(x=>'<article class="kpi '+x[3]+'"><div class="kpi-label">'+x[0]+'</div><div class="kpi-value">'+x[1]+'</div><div class="kpi-foot">'+x[2]+'</div></article>').join("");
  const a=d.automation||{};
@@ -254,7 +254,7 @@ async function load(){try{
   '<div class="task '+(queued?"active":"")+'"><div class="task-label">等待处理</div><div class="task-value">'+n(queued)+'</div><div class="task-state">QUEUED</div></div>'+
   '<div class="task '+(running||verifying?"active":"")+'"><div class="task-label">执行 / 核验</div><div class="task-value">'+n(running+verifying)+'</div><div class="task-state">RUNNING</div></div>'+
   '<div class="task '+(done?"done":"")+'"><div class="task-label">已完成任务</div><div class="task-value">'+n(done)+'</div><div class="task-state">SUCCEEDED</div></div></div>'+
-  '<div class="queue-foot"><span>未完成<b>'+n(active)+'</b></span><span>多次失败暂停<b style="color:'+(failed?"var(--red)":"#dce5f7")+'">'+n(failed)+'</b></span><span>最近监控<b>'+fmtTime(a.last_run_at)+'</b></span></div>';
+  '<div class="queue-foot"><span>未完成<b>'+n(active)+'</b></span><span>多次失败暂停<b style="color:'+(failed?"var(--red)":"#dce5f7")+'">'+n(failed)+'</b></span><span>最近监控<b>'+fmtTime(a.last_run_at)+'</b></span><span>生产派发<b>'+(d.production.dispatch_mode==="enabled"?"开启":d.production.dispatch_mode==="hold"?"暂停":"未知") +'</b></span></div>';
  const published=Number(d.lifecycle.published_rule_count)||0,milestone=Number(d.lifecycle.next_milestone)||0,progress=pct(published,milestone);
  const lifecycleStatus=d.lifecycle.status==="normal_incremental"?"按新增数量逐步检查":d.lifecycle.status||"暂时无法确认";
  const lastReview=d.lifecycle.latest_review_status==="not_due"?"尚未达到检查条件":d.lifecycle.latest_review_status||"暂无记录";
@@ -263,8 +263,8 @@ async function load(){try{
   '<div class="lifecycle-track"><div class="lifecycle-fill" style="width:'+progress+'%"></div></div>'+
   '<div class="lifecycle-details"><div class="lifecycle-detail"><span>节点进度</span><b>'+progress.toFixed(1)+'%</b></div><div class="lifecycle-detail"><span>检查安排</span><b>'+lifecycleStatus+'</b></div><div class="lifecycle-detail"><span>最近检查</span><b>'+lastReview+'</b></div><div class="lifecycle-detail"><span>容量上限</span><b>'+n(d.lifecycle.max_published_rules)+'</b></div><div class="lifecycle-detail"><span>最近成功检查</span><b>'+fmtTime(d.lifecycle.last_successful_review_at)+'</b></div><div class="lifecycle-detail"><span>监控状态</span><b class="'+stateClass+'">'+state+'</b></div></div>';
 
- }catch(e){const status=el("headline-time");if(status)status.textContent="数据更新失败，等待重试";}}
-function tickClock(){const node=el("clock");if(node)node.textContent=new Intl.DateTimeFormat("zh-CN",{timeZone:"Asia/Shanghai",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).format(new Date());}
+ }catch(e){lastLoadError=new Date();tickClock();}}
+function tickClock(){const node=el("clock");if(!node)return;const dot=el("sync-dot");if(!snapshotGeneratedAt||Number.isNaN(snapshotGeneratedAt.getTime())){node.textContent=lastLoadError?"数据读取失败，等待重试":"正在读取数据快照…";if(dot)dot.style.background=lastLoadError?"var(--red)":"var(--amber)";return;}const age=Math.max(0,Date.now()-snapshotGeneratedAt.getTime());const stale=age>75*60*1000;const stamp=new Intl.DateTimeFormat("zh-CN",{timeZone:"Asia/Shanghai",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).format(snapshotGeneratedAt);const pulled=lastSuccessfulLoad?Math.max(0,Math.floor((Date.now()-lastSuccessfulLoad.getTime())/1000)):null;node.textContent=(lastLoadError?"读取异常 · ":"")+(stale?"快照可能滞后 · ":"数据已同步 · ")+"快照 "+stamp+(pulled!==null?" · "+(pulled<5?"刚刚":pulled+"秒前")+"读取":"");if(dot)dot.style.background=lastLoadError||stale?"var(--amber)":"var(--green)";}
 tickClock();setInterval(tickClock,1000);load();setInterval(load,30000);
 </script>
 </body>

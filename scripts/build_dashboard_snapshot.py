@@ -88,6 +88,7 @@ def build_candidate_review_metrics(candidates, review_records, cursor=None, ledg
 def main():
     manifest = read_json("rulesets/manifest.json")
     queue_doc = read_json("automation/task_queue.json")
+    production_control = read_json("automation/production_control.json")
     pending = read_json("rulesets/pending_queue.json")
     lifecycle = read_json("rulesets/lifecycle_state.json")
     lifecycle_report = read_json("reports/lifecycle/latest.json")
@@ -188,6 +189,8 @@ def main():
         },
         "queue": {"total": len(tasks), "by_status": queue_status},
         "production": {
+            "dispatch_mode": production_control.get("dispatch_mode") if production_control.get("dispatch_mode") in ("enabled", "hold") else "unknown",
+            "dispatch_updated_at": production_control.get("updated_at") if isinstance(production_control.get("updated_at"), str) else None,
             "total_tasks": len(production_tasks),
             "succeeded": prod_status.get("SUCCEEDED", 0),
             "active": sum(prod_status.get(s, 0) for s in ("QUEUED", "CLAIMED", "VERIFYING")),
