@@ -65,6 +65,7 @@ jobs:
     env:
       PYTHONPATH: scripts
       AUTOMATION_WRITE_GUARD: "1"
+      SOURCE_DISCOVERY_MODE: ${{ vars.SOURCE_DISCOVERY_MODE || 'monolithic_fallback' }}
     permissions:
       contents: read
       actions: read
@@ -296,11 +297,13 @@ jobs:
           python3 -m unittest discover -s tests -v
 
       - name: Discover candidate source repositories (non-activating)
+        if: ${{ env.SOURCE_DISCOVERY_MODE != 'independent' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: python3 scripts/discover_sources.py
 
       - name: Assess discovered rule-list syntax and policy claims
+        if: ${{ env.SOURCE_DISCOVERY_MODE != 'independent' }}
         run: |
           python3 scripts/assess_sources.py
           python3 scripts/append_step_summary.py --input reports/source-assessment.md
