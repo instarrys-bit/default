@@ -739,6 +739,65 @@ jobs:
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
+      - name: Download artifact from the exact discovery workflow run
+        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: source-discovery-output
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/source-discovery-output
+
+      - name: Verify immutable discovery artifact against producer run and current main
+        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
+        env:
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+          SOURCE_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          SOURCE_WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
+          SOURCE_ARTIFACT_DIR: ${{ runner.temp }}/source-discovery-output
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from json_document_store import read_document
+          from task_scheduler import read_only_resource_digests
+          root = Path(os.environ["SOURCE_ARTIFACT_DIR"])
+          proof_files = list(root.rglob("source-discovery-proof.json"))
+          source_files = list(root.rglob("discovered_sources.json"))
+          if len(proof_files) != 1 or len(source_files) != 1:
+              raise SystemExit("The exact discovery run must contain one provenance proof and one discovery document.")
+          artifact_root = source_files[0].parent.parent
+          proof = json.loads(proof_files[0].read_text(encoding="utf-8"))
+          expected = {
+              "workflow_name": os.environ["SOURCE_WORKFLOW_NAME"],
+              "workflow_run_id": os.environ["SOURCE_RUN_ID"],
+              "workflow_head_sha": os.environ["SOURCE_HEAD_SHA"],
+              "artifact_path": "sources/discovered_sources.json",
+          }
+          if any(proof.get(key) != value for key, value in expected.items()):
+              raise SystemExit("Discovery artifact provenance does not match the completed producer run.")
+          artifact_digest = read_only_resource_digests(artifact_root, [expected["artifact_path"]])[expected["artifact_path"]]
+          if artifact_digest != proof.get("artifact_sha256"):
+              raise SystemExit("Downloaded discovery artifact digest does not match its immutable proof.")
+          artifact_document = read_document(source_files[0], "candidates", {"candidates": []})
+          if artifact_document.get("producer") != {
+              "workflow_name": expected["workflow_name"],
+              "workflow_run_id": expected["workflow_run_id"],
+              "workflow_head_sha": expected["workflow_head_sha"],
+          }:
+              raise SystemExit("Discovery document producer metadata is inconsistent.")
+          main_digest = read_only_resource_digests(Path("."), [expected["artifact_path"]])[expected["artifact_path"]]
+          if main_digest != artifact_digest:
+              raise SystemExit("The committed main discovery document no longer matches this producer artifact.")
+          main_document = read_document(Path(expected["artifact_path"]), "candidates", {"candidates": []})
+          if main_document.get("producer") != artifact_document.get("producer"):
+              raise SystemExit("The current main discovery document belongs to a different producer run.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
+              stream.write(f"SOURCE_ARTIFACT_SHA256={artifact_digest}\n")
+          PY
+
       - name: Enqueue source assessment after successful discovery workflow
         if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
         env:
@@ -755,18 +814,11 @@ jobs:
             echo "Watchdog checkout is stale; source assessment enqueue is deferred to the next reconciliation."
             exit 0
           fi
-          artifact_sha="$(python3 - <<'PY'
-          import sys
-          from pathlib import Path
-          sys.path.insert(0, "scripts")
-          from task_scheduler import read_only_resource_digests
-          value = read_only_resource_digests(Path("."), ["sources/discovered_sources.json"])
-          digest = value.get("sources/discovered_sources.json")
-          if not isinstance(digest, str) or len(digest) != 64:
-              raise SystemExit("discovery artifact is missing or has no complete SHA-256 digest")
-          print(digest)
-          PY
-          )"
+          artifact_sha="${SOURCE_ARTIFACT_SHA256:-}"
+          if [[ ! "$artifact_sha" =~ ^[0-9a-f]{64}$ ]]; then
+            echo "A verified immutable discovery artifact digest is required."
+            exit 1
+          fi
           predecessor="$(jq -cn             --arg program_id "script_discover_sources"             --arg workflow_name "$SOURCE_WORKFLOW_NAME"             --arg run_id "$SOURCE_RUN_ID"             --arg head_sha "$SOURCE_HEAD_SHA"             --arg artifact_path "sources/discovered_sources.json"             --arg artifact_sha256 "$artifact_sha"             '{program_id:$program_id,workflow_name:$workflow_name,workflow_run_id:$run_id,workflow_head_sha:$head_sha,artifact_path:$artifact_path,artifact_sha256:$artifact_sha256}')"
           task_input="$(jq -cn --argjson predecessor "$predecessor"             '{max_urls:20,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}')"
           queue_token="$GITHUB_TOKEN"
