@@ -17,6 +17,20 @@
       "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
     },
     {
+      "path": ".github/workflows/source-discovery.yml",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-05T13:01:25.893664Z",
+      "last_seen_at": "2026-11-05T13:01:25.893664Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "42031975537"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "b7035bb11da26f258b824c72c255811d46d9df7f",
+      "last_seen_run_id": "42031975537",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42031975537"
+    },
+    {
       "path": ".gitignore",
       "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-04T04:27:31.198341Z",
@@ -173,20 +187,6 @@
       "classification_basis": "Historical, non-authoritative config candidate only. The production baseline is modules/uu.conf; these candidate paths are not production inputs and are not consumed by current publication workflows."
     },
     {
-      "path": "dashboard/index.html",
-      "status": "CLASSIFIED_MONITORING",
-      "first_seen_at": "2026-11-03T17:12:05.157284Z",
-      "last_seen_at": "2026-11-03T17:41:44.084601Z",
-      "seen_count": 2,
-      "last_seen_event": "push",
-      "last_seen_revision": "7c376836232c1fda8ee40d91bab0e7d7255f501f",
-      "last_seen_run_id": "41686591077",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41686591077",
-      "classified_at": "2026-11-04T18:00:00+08:00",
-      "classification_reason": "Read-only operations dashboard presentation; displays production state and does not mutate production inputs or outputs.",
-      "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
-    },
-    {
       "path": "dashboard/README.md",
       "status": "CLASSIFIED_DOCUMENTATION",
       "first_seen_at": "2026-11-03T17:12:05.157284Z",
@@ -198,6 +198,20 @@
       "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41686591077",
       "classified_at": "2026-11-04T18:00:00+08:00",
       "classification_reason": "Documentation for the operations dashboard.",
+      "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
+    },
+    {
+      "path": "dashboard/index.html",
+      "status": "CLASSIFIED_MONITORING",
+      "first_seen_at": "2026-11-03T17:12:05.157284Z",
+      "last_seen_at": "2026-11-03T17:41:44.084601Z",
+      "seen_count": 2,
+      "last_seen_event": "push",
+      "last_seen_revision": "7c376836232c1fda8ee40d91bab0e7d7255f501f",
+      "last_seen_run_id": "41686591077",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41686591077",
+      "classified_at": "2026-11-04T18:00:00+08:00",
+      "classification_reason": "Read-only operations dashboard presentation; displays production state and does not mutate production inputs or outputs.",
       "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
     },
     {
@@ -297,23 +311,6 @@
       "classification_basis": "Confirmed against automation/production_inputs.json non_production_path_patterns and the repository's module/script layout. These files remain repository artifacts subject to write fencing, but they do not alter the production routing result. No DNS, MITM, routing, or ad-block implementation content is changed."
     },
     {
-      "path": "modules/adblock/scripts/Clean_Pro_Request.js",
-      "status": "NON_PRODUCTION",
-      "first_seen_at": "2026-11-04T21:51:30.606119Z",
-      "last_seen_at": "2026-11-04T21:58:12.213156Z",
-      "seen_count": 2,
-      "observed_run_ids": [
-        "41919876229",
-        "41920874061"
-      ],
-      "last_seen_event": "push",
-      "last_seen_revision": "69199dc63603fea9a86e297bbb95b5e966a7238d",
-      "last_seen_run_id": "41920874061",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41920874061",
-      "classification_reason": "Shadowrocket module/script implementation, backup, development or test artifact; not a DIRECT/PROXY/REJECT ruleset input and not consumed as a production routing source.",
-      "classification_basis": "Confirmed against automation/production_inputs.json non_production_path_patterns and the repository's module/script layout. These files remain repository artifacts subject to write fencing, but they do not alter the production routing result. No DNS, MITM, routing, or ad-block implementation content is changed."
-    },
-    {
       "path": "modules/adblock/scripts/Clean_Pro.js",
       "status": "NON_PRODUCTION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
@@ -337,6 +334,23 @@
       "last_seen_revision": "a2d85419af9da2aeb7238274449c38d69418b4bd",
       "last_seen_run_id": "42017129292",
       "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42017129292",
+      "classification_reason": "Shadowrocket module/script implementation, backup, development or test artifact; not a DIRECT/PROXY/REJECT ruleset input and not consumed as a production routing source.",
+      "classification_basis": "Confirmed against automation/production_inputs.json non_production_path_patterns and the repository's module/script layout. These files remain repository artifacts subject to write fencing, but they do not alter the production routing result. No DNS, MITM, routing, or ad-block implementation content is changed."
+    },
+    {
+      "path": "modules/adblock/scripts/Clean_Pro_Request.js",
+      "status": "NON_PRODUCTION",
+      "first_seen_at": "2026-11-04T21:51:30.606119Z",
+      "last_seen_at": "2026-11-04T21:58:12.213156Z",
+      "seen_count": 2,
+      "observed_run_ids": [
+        "41919876229",
+        "41920874061"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "69199dc63603fea9a86e297bbb95b5e966a7238d",
+      "last_seen_run_id": "41920874061",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41920874061",
       "classification_reason": "Shadowrocket module/script implementation, backup, development or test artifact; not a DIRECT/PROXY/REJECT ruleset input and not consumed as a production routing source.",
       "classification_basis": "Confirmed against automation/production_inputs.json non_production_path_patterns and the repository's module/script layout. These files remain repository artifacts subject to write fencing, but they do not alter the production routing result. No DNS, MITM, routing, or ad-block implementation content is changed."
     },
@@ -447,6 +461,20 @@
       "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
     },
     {
+      "path": "scripts/capture_git_write_trace.py",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-05T13:01:25.893664Z",
+      "last_seen_at": "2026-11-05T13:01:25.893664Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "42031975537"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "b7035bb11da26f258b824c72c255811d46d9df7f",
+      "last_seen_run_id": "42031975537",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42031975537"
+    },
+    {
       "path": "scripts/fenced_file_writer.py",
       "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-04T03:15:02.736672Z",
@@ -525,5 +553,5 @@
       "classification_basis": "Reviewed as a recovery-evidence verifier only. It validates completed workflow/job/verification-step evidence and emits a verification result; it does not create or publish routing rules."
     }
   ],
-  "updated_at": "2026-11-05T11:13:29.360523Z"
+  "updated_at": "2026-11-05T13:01:25.893664Z"
 }
