@@ -1454,7 +1454,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration1",
-    "release_manifest_blob_sha": "2755e352e390c79e9dfd33246f14d3913a6bf557",
+    "release_manifest_blob_sha": "841e4831ea819bc3a9d591240509d5589e037b22",
     "program_registry_blob_sha": "15943d2532b2d0d2291f1da61305d84e811b8f5a",
     "execution_adapters_blob_sha": "82012007de750c605d5ef27a355ece7321cdc51a",
     "added_after_release_baseline": true,
@@ -1805,6 +1805,18 @@
       ],
       "fence": "Live GitHub Contents queue proof validates exact Watchdog workflow_source_discovery dispatch identity and active per-resource lease IDs/fencing tokens immediately before commit and immediately before main push.",
       "boundary": "Only the discovered-source logical document family and discovery report may be staged; modules/uu.conf is checked unchanged before publication and after rebase. Adapter remains disabled pending HOLD/authorization."
+    },
+    {
+      "workflow_path": ".github/workflows/automation-watchdog.yml",
+      "step_name": "Enqueue source assessment after successful discovery workflow",
+      "mutation_kinds": [
+        "github_contents_put"
+      ],
+      "resources": [
+        "automation/task_queue.json"
+      ],
+      "fence": "task_scheduler.py persists through the GitHub Contents SHA-CAS queue store; candidate queue validation runs before and after mutation, and source-assessment:<workflow_run_id> is the idempotency key. The step is gated by exact successful main-branch producer evidence and by both Assessment adapter/orchestration caller gates.",
+      "boundary": "Durable control-plane task enqueue only. It does not run Assessment in this step or publish routing rules; Assessment remains disabled until the independent DAG is explicitly authorized."
     }
   ],
   "workflow_native_scan": {
