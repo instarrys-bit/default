@@ -75,14 +75,14 @@ def owner_approved_push_changed_config() -> bool:
 def owner_approved_config_history(guard: dict) -> list[str]:
     """Recover interrupted registration only from owner-authored config commits."""
     event = os.environ.get("GITHUB_EVENT_NAME", "")
-    if event not in {"push", "workflow_dispatch"}:
+    if event not in {"push", "workflow_dispatch", "schedule"}:
         return []
     actor = os.environ.get("GITHUB_ACTOR", "")
     owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "")
     ref = os.environ.get("GITHUB_REF", "")
     if event == "push" and (not actor or actor != owner):
         return []
-    if event == "workflow_dispatch" and ref != "refs/heads/main":
+    if event in {"workflow_dispatch", "schedule"} and ref != "refs/heads/main":
         return []
     after = os.environ.get("GITHUB_SHA", "")
     repo = os.environ.get("GITHUB_REPOSITORY", "")
