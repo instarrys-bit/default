@@ -67,6 +67,14 @@
     "task_scheduler": {
       "path": "scripts/task_scheduler.py",
       "git_blob_sha": "8d1d0049f8db01e9d43071aad8b1e60faac65a40"
+    },
+    "fenced_file_writer": {
+      "path": "scripts/fenced_file_writer.py",
+      "git_blob_sha": "702f1915b586791a58995f646dd914a41e20ab93"
+    },
+    "resource_lease_runtime": {
+      "path": "scripts/resource_lease_runtime.py",
+      "git_blob_sha": "39b8088eef67a914e99a232a41967045cd73f9b7"
     }
   },
   "compatibility": {
