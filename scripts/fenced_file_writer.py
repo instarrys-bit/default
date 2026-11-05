@@ -3,6 +3,7 @@
 from __future__ import annotations
 import json
 import os
+import stat
 import sys
 from pathlib import Path
 
@@ -17,6 +18,28 @@ _INSTALLED = False
 def _requires_resource_lease(relative: str | None) -> bool:
     return bool(relative)
 
+
+
+def _external_hardlink_alias(candidate: Path) -> str | None:
+    """Resolve a pre-existing external hardlink to its canonical repository path."""
+    try:
+        candidate_stat = candidate.stat()
+    except (FileNotFoundError, OSError):
+        return None
+    if not stat.S_ISREG(candidate_stat.st_mode) or candidate_stat.st_nlink < 2:
+        return None
+    root = ROOT.resolve()
+    for current, directories, files in os.walk(root, followlinks=False):
+        directories[:] = [name for name in directories if name not in {".git", ".venv", "__pycache__"}]
+        for name in files:
+            tracked = Path(current) / name
+            try:
+                item = tracked.stat(follow_symlinks=False)
+            except OSError:
+                continue
+            if stat.S_ISREG(item.st_mode) and (item.st_dev, item.st_ino) == (candidate_stat.st_dev, candidate_stat.st_ino):
+                return tracked.relative_to(root).as_posix()
+    return None
 
 
 def _repo_relative(path) -> str | None:
@@ -37,6 +60,11 @@ def _repo_relative(path) -> str | None:
         try:
             candidate.relative_to(ROOT.resolve())
         except ValueError:
+            # An external hardlink has an external pathname but shares the
+            # repository file's inode; map it back to the canonical resource.
+            alias = _external_hardlink_alias(candidate)
+            if alias is not None:
+                return alias
             return None
         raise PermissionError("repository write path escapes through a symlink")
     lexical_value = None
