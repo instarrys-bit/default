@@ -1570,5 +1570,28 @@
       "file_writes": [],
       "control_plane_boundary": "Dispatch must be preceded by persisted durable dispatch intent; ambiguous API outcomes are reconciled by task correlation before retry. Adapter remains disabled for production Python components by default."
     }
-  ]
+  ],
+  "direct_mutation_scan": {
+    "status": "partial_python_direct_callsite_scan",
+    "scanner": "tests/test_transitive_write_site_inventory.py",
+    "registered_component_count": 54,
+    "mutation_api_families": [
+      "Path/open write modes",
+      "Path write_text/write_bytes/unlink/mkdir/replace/rename/touch",
+      "os filesystem mutation functions",
+      "shutil copy/move/remove functions",
+      "json_document_store.write_document",
+      "task_queue_runtime.atomic_write",
+      "HTTP Request POST/PUT/PATCH/DELETE"
+    ],
+    "imported_helper_check": "Every locally imported helper with detected direct mutation sites must itself be registered and classified in the write, non-writer, or control-plane inventory.",
+    "limitations": [
+      "dynamic path resolution",
+      "workflow-native shell and Git mutations",
+      "runtime-selected output paths and symlink/hardlink alias resolution",
+      "transient write-and-revert activity",
+      "external filesystem/API effects not represented as literal Request methods",
+      "unexecuted runtime branches and indirect dynamic imports"
+    ]
+  }
 }
