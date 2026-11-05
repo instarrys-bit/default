@@ -1350,10 +1350,13 @@
         "script_restore_automation_state",
         "workflow_auto_sync"
       ],
-      "lock_key": "logical/production-pipeline + resource-specific document/report lease",
+      "lock_key": "sources/discovered_sources.json + reports/source-discovery.md (exclusive logical document and report leases shared with workflow_auto_sync)",
       "mode": "exclusive",
       "enforcement": "Current production builder and publish restore are serialized by the Watchdog logical production-pipeline live fence. The JSON document writer additionally uses its documented logical-document lease where explicitly asserted.",
-      "note": "Restore can write the same allowlisted base/manifest/shards/report; all dynamic document children and cleanup operations must remain within the same logical resource lease."
+      "note": "Restore can write the same allowlisted base/manifest/shards/report; all dynamic document children and cleanup operations must remain within the same logical resource lease. The dedicated source-discovery workflow is registered but its adapter remains disabled. It uses the exact same discovered_sources.json and report resource leases as workflow_auto_sync; immutable run artifact handoff is verified by Watchdog before assessment enqueue.",
+      "known_writers": [
+        "workflow_source_discovery"
+      ]
     },
     {
       "resource": "sources/policy_source_overlap.json",
@@ -1757,12 +1760,29 @@
       ],
       "fence": "GitHub Pages deployment action consumes the workflow's generated Pages artifact; no repository ref mutation.",
       "boundary": "External Pages publication, not a repository file writer."
+    },
+    {
+      "workflow_path": ".github/workflows/source-discovery.yml",
+      "step_name": "Publish discovery inventory under its exact resource leases",
+      "mutation_kinds": [
+        "git_add",
+        "git_commit",
+        "git_push"
+      ],
+      "resources": [
+        "sources/discovered_sources.json",
+        "sources/discovered_sources.json.manifest.json",
+        "sources/discovered_sources.json.parts-<digest>/part-*.jsonl",
+        "reports/source-discovery.md"
+      ],
+      "fence": "Live GitHub Contents queue proof validates exact Watchdog workflow_source_discovery dispatch identity and active per-resource lease IDs/fencing tokens immediately before commit and immediately before main push.",
+      "boundary": "Only the discovered-source logical document family and discovery report may be staged; modules/uu.conf is checked unchanged before publication and after rebase. Adapter remains disabled pending HOLD/authorization."
     }
   ],
   "workflow_native_scan": {
     "status": "partial_workflow_shell_pattern_scan",
     "scanner": "tests/test_workflow_native_write_inventory.py",
-    "workflow_count": 6,
+    "workflow_count": 7,
     "detected_mutation_families": [
       "git add/commit/push/reset/checkout",
       "GitHub Contents API PUT/DELETE",
