@@ -306,7 +306,7 @@ jobs:
           ORIGIN_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
+          runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: .workflow_runs}')"
 
           current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
           checkout_sha="$(git rev-parse HEAD)"
@@ -374,9 +374,9 @@ jobs:
             exit 0
           fi
 
-          # A prior audit may have stopped at the stale-base guard before review.
-          # Once current main classifies that exact advancement as safe, enqueue a
-          # fresh task; never rewrite or resurrect the historical DEAD_LETTER task.
+          # Reconcile only queue-backed audits stopped at the exact stale-base guard.
+          # The durable queue is the bounded source of failed task IDs; do not scan
+          # the entire Actions history on every hourly Watchdog pass.
           if [ "$ORIGIN_EVENT" = "push" ] || [ "$ORIGIN_EVENT" = "schedule" ]; then
             current_fingerprint="$(python3 - <<'PY'
           import sys
@@ -387,20 +387,15 @@ jobs:
           print(compute_fingerprint(Path("."), manifest))
           PY
           )"
-            for failed_run_id in $(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .name == "Shadowrocket Deterministic Domain Audit (User Config Baseline)" and .conclusion == "failure")] | sort_by(.id) | reverse | .[:20][]' <<< "$runs"); do
-              failed_jobs="$(gh api "repos/$REPO/actions/runs/$failed_run_id/jobs?per_page=100" 2>/dev/null || true)"
-              if [ -z "$failed_jobs" ] || ! jq -e '[.jobs[]?.steps[]? | select(.name == "Stop stale audit before expensive deterministic review" and .conclusion == "failure")] | length == 1' <<< "$failed_jobs" >/dev/null; then
-                continue
-              fi
-
-              failed_title="$(gh api "repos/$REPO/actions/runs/$failed_run_id" --jq .display_title)"
-              failed_task_id="$(python3 - "$failed_title" <<'PY'
-          import re, sys
-          match = re.fullmatch(r"Automation task (task_[0-9a-f]{24})-a[1-9][0-9]*", sys.argv[1])
-          print(match.group(1) if match else "")
-          PY
-          )"
-              if [ -z "$failed_task_id" ]; then
+            while IFS=$'\t' read -r failed_task_id failed_run_id; do
+              [ -n "$failed_task_id" ] && [ -n "$failed_run_id" ] || continue
+              failed_run_json="$(gh api "repos/$REPO/actions/runs/$failed_run_id" 2>/dev/null || true)"
+              if [ -z "$failed_run_json" ] || ! jq -e '
+                .head_branch == "main"
+                and .name == "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
+                and .conclusion == "failure"
+                and .event == "workflow_dispatch"
+              ' <<< "$failed_run_json" >/dev/null; then
                 continue
               fi
 
@@ -410,17 +405,19 @@ jobs:
                   and .target_program_id == "workflow_auto_sync"
                   and .status == "DEAD_LETTER"
                   and .verification.status == "failed"
-                  and (.last_error.evidence.run_id == $run or .result.run_evidence.run_id == $run)
+                  and .last_error.type == "workflow_run_failed"
+                  and .last_error.evidence.run_id == $run
                 )] | last | .input // empty
               ' automation/task_queue.json)"
-              if [ -z "$task_input" ] || [ "$task_input" = "null" ]; then
-                continue
-              fi
-              if [ "$(jq -r '.production_fingerprint // empty' <<< "$task_input")" != "$current_fingerprint" ]; then
+              if [ -z "$task_input" ] || [ "$task_input" = "null" ] || [ "$(jq -r '.production_fingerprint // empty' <<< "$task_input")" != "$current_fingerprint" ]; then
                 continue
               fi
 
-              failed_sha="$(gh api "repos/$REPO/actions/runs/$failed_run_id" --jq .head_sha)"
+              failed_jobs="$(gh api "repos/$REPO/actions/runs/$failed_run_id/jobs?per_page=100" 2>/dev/null || true)"
+              if [ -z "$failed_jobs" ] || ! jq -e '[.jobs[]?.steps[]? | select(.name == "Stop stale audit before expensive deterministic review" and .conclusion == "failure")] | length == 1' <<< "$failed_jobs" >/dev/null; then
+                continue
+              fi
+              failed_sha="$(jq -r '.head_sha // empty' <<< "$failed_run_json")"
               if [ -z "$failed_sha" ] || [ "$failed_sha" = "$current_sha" ]; then
                 continue
               fi
@@ -491,7 +488,18 @@ jobs:
               printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$recovery_key" --priority 100 --input-json "$recovery_input" enqueue-auto-sync
               echo "block_manifest=true" >> "$GITHUB_OUTPUT"
               exit 0
-            done
+            done < <(jq -r --arg fingerprint "$current_fingerprint" '
+              [.tasks[] | select(
+                .target_program_id == "workflow_auto_sync"
+                and .status == "DEAD_LETTER"
+                and .verification.status == "failed"
+                and .last_error.type == "workflow_run_failed"
+                and .input.production_fingerprint == $fingerprint
+                and (.last_error.evidence.run_id | type == "number")
+              )]
+              | sort_by(.created_at) | reverse | .[:20][]
+              | [.task_id, (.last_error.evidence.run_id | tostring)] | @tsv
+            ' automation/task_queue.json)
           fi
 
           last_success_sha="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .head_sha // empty' <<< "$runs")"
