@@ -1803,6 +1803,38 @@
         "max_attempts": 0,
         "timeout_seconds": 60
       }
+    },
+    {
+      "id": "workflow_source_discovery",
+      "path": ".github/workflows/source-discovery.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "independent, non-activating source discovery producer with immutable run-bound artifact handoff",
+      "capabilities": [
+        "source_discovery"
+      ],
+      "invocation": "Watchdog durable task-queue dispatch only; direct workflow dispatch requires a valid persisted queue correlation and resource lease proof",
+      "inputs": [
+        "Watchdog task correlation ID",
+        "exclusive resource lease proof",
+        "main-branch repository snapshot"
+      ],
+      "outputs": [
+        "sources/discovered_sources.json with producer workflow/run/head identity",
+        "reports/source-discovery.md",
+        "source-discovery-output artifact with SHA-256 provenance proof"
+      ],
+      "depends_on": [
+        "script_discover_sources"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Workflow adapter is disabled pending HOLD/authorization. When enabled, job permissions are limited to contents write and actions read; every repository mutation is guarded by the exact Watchdog task resource lease. No source activation.",
+      "health_check": "Successful workflow completion, exact run/head provenance, immutable uploaded artifact digest, and equality with the committed main-branch discovery document are required before Assessment enqueue.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 480
+      }
     }
   ]
 }
