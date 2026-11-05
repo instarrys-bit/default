@@ -3,7 +3,7 @@
   "contract_id": "capability-script-assess-sources-v1",
   "program_id": "script_assess_sources",
   "implementation_path": "scripts/assess_sources.py",
-  "implementation_blob_sha": "5b8e0f0fd3d31312990b889a761b1a1ceab16ffb",
+  "implementation_blob_sha": "5baf1cca8062b1f3b4e30298200efcc7683e122d",
   "review_status": "reviewed_waiting_for_dedicated_discovery_workflow",
   "dispatch_status": "disabled",
   "entrypoint": {
@@ -228,9 +228,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
-    "release_manifest_blob_sha": "53e52d53fa3b5a5e65fe4dceaed7002304fd708e",
-    "program_registry_blob_sha": "f3f7ed1ce7f063412d18dde0b6c061457664f7fa",
-    "execution_adapters_blob_sha": "97d18a09763f851362e0bd5400dad856ae1f448b",
+    "release_manifest_blob_sha": "4c4c2dfd8dbb6e80be388eb65e11ee51700c9046",
+    "program_registry_blob_sha": "5105f2c04affc964b5b6caf1de09561c5f8ab644",
+    "execution_adapters_blob_sha": "d40ed3c60452eeaa6e21888152394f0a68fd57c4",
     "added_after_release_baseline": false,
     "note": "References the refreshed baseline snapshot. This is review provenance only, not dispatch authorization; independent Python dispatch remains blocked by the release compatibility and runtime-enforcement gates."
   },
