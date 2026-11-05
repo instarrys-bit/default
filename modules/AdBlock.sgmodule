@@ -7,6 +7,7 @@ AND,((DOMAIN-SUFFIX,instagram.com),(PROTOCOL,UDP),(DST-PORT,443)),REJECT
 AND,((DOMAIN-SUFFIX,cdninstagram.com),(PROTOCOL,UDP),(DST-PORT,443)),REJECT
 
 # === 2. 广告与遥测域名拦截 ===
+DOMAIN,googleads.g.doubleclick.net,REJECT
 DOMAIN-SUFFIX,doubleclick.net,REJECT
 DOMAIN-SUFFIX,googlesyndication.com,REJECT
 DOMAIN-SUFFIX,googleadservices.com,REJECT
