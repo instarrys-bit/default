@@ -8,12 +8,12 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "5105f2c04affc964b5b6caf1de09561c5f8ab644"
+      "git_blob_sha": "15943d2532b2d0d2291f1da61305d84e811b8f5a"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "d40ed3c60452eeaa6e21888152394f0a68fd57c4"
+      "git_blob_sha": "82012007de750c605d5ef27a355ece7321cdc51a"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -24,11 +24,11 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "a4861d801b29df3a1adfcf9bfd16ee531c647e22"
+      "git_blob_sha": "dcd8cc5c6d8a03dfbce0dd53dd299648b4fc641b"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "a5cd1a0719bc383f89094d72443a2c8077275fef"
+      "git_blob_sha": "2179b603d497219d6537e1e90ef81d39a4b351f4"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -66,7 +66,7 @@
     },
     "task_scheduler": {
       "path": "scripts/task_scheduler.py",
-      "git_blob_sha": "95f84ee98e26c22af74b4fffcbb3f5d7306576fa"
+      "git_blob_sha": "dc6b4678b1518632019ef63978bd73ae982ef1c7"
     },
     "fenced_file_writer": {
       "path": "scripts/fenced_file_writer.py",
@@ -78,7 +78,7 @@
     },
     "source_discovery_workflow": {
       "path": ".github/workflows/source-discovery.yml",
-      "git_blob_sha": "923a8f0011b8aa2da1c519c6f0494b1f464783e8"
+      "git_blob_sha": "37b6755c29cd64eb71bc41afa2c332ebabe2f3df"
     },
     "source_discovery_implementation": {
       "path": "scripts/discover_sources.py",
@@ -86,11 +86,11 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "46eb82cdc96d6e13ed96755ff78664cc00a16537"
+      "git_blob_sha": "15943d2532b2d0d2291f1da61305d84e811b8f5a"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "82217c4725baa13572dc665fbee9cab4fb755841"
+      "git_blob_sha": "82012007de750c605d5ef27a355ece7321cdc51a"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
