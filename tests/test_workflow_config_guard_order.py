@@ -208,7 +208,10 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         validation = (ROOT / ".github" / "workflows" / "validate-config.yml").read_text(encoding="utf-8")
         self.assertIn("Protect owner-controlled config baseline in non-main validation", validation)
         self.assertIn('git diff --quiet "$base_sha" "$head_sha" -- modules/uu.conf', validation)
-        self.assertIn('base.get("managed_config_guard") != head.get("managed_config_guard")', validation)
+        self.assertIn('for key in ("path", "approved_git_blob_sha", "last_user_approved_baseline_update")', validation)
+        self.assertIn('allowed_guard_keys = {"immutable", "description", "content_immutable_to_automation", "content_protection", "baseline_metadata_policy"}', validation)
+        self.assertIn("Non-main validation changed a managed-config guard field outside the semantic policy allowlist.", validation)
+        self.assertNotIn('base.get("managed_config_guard") != head.get("managed_config_guard")', validation)
         self.assertIn("github.ref", validation)
         self.assertIn("github.event_name == 'pull_request'", validation)
         self.assertIn('git merge-base origin/main "$GITHUB_SHA"', validation)
@@ -357,6 +360,20 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn('sleep "$attempt"', block)
         self.assertIn("Could not merge the unregistered-path ledger after three Blob-SHA CAS attempts.", block)
         self.assertIn('if [ "$registry_published" != "true" ]; then', block)
+
+    def test_watchdog_sets_scripts_path_before_importing_active_fingerprint_helper(self):
+        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
+        marker = 'active_fingerprints="$(CURRENT_PRODUCTION_FINGERPRINT='
+        self.assertIn(marker, watchdog)
+        block = watchdog.split(marker, 1)[1].split("PY\\n", 1)[0]
+        self.assertIn('sys.path.insert(0, "scripts")', block)
+        self.assertIn("from production_intent import active_production_fingerprints", block)
+
+    def test_publish_step_keeps_canonical_task_id_from_revalidation(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        publish = workflow.split("  publish:", 1)[1]
+        step = publish.split("Verify base commit and safely publish allowlisted outputs", 1)[1].split("      - name: ", 1)[0]
+        self.assertNotIn("AUTOMATION_TASK_ID:", step)
 
 if __name__ == "__main__":
     unittest.main()

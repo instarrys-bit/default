@@ -185,26 +185,6 @@ class TaskQueueRuntimeTests(unittest.TestCase):
         self.assertEqual(second["idempotency_key"], "low")
         self.assertIsNone(claim_next("worker-c", self.queue, self.registry, self.now))
 
-    def test_auto_sync_claim_receives_six_hour_task_lease(self):
-        queued = enqueue_task({
-            "idempotency_key": "runtime:auto-sync:long-lease",
-            "trace_id": "trace-auto-sync-long-lease",
-            "requester_program_id": "workflow_automation_watchdog",
-            "target_program_id": "workflow_auto_sync",
-            "capability": "deterministic_audit",
-            "priority": 80,
-            "input": {},
-        }, self.queue, self.registry, self.now)
-        self.assertTrue(queued["created"])
-        registry = json.loads(self.registry.read_text(encoding="utf-8"))
-        auto_sync = next(p for p in registry["programs"] if p["id"] == "workflow_auto_sync")
-        auto_sync["orchestration"]["timeout_seconds"] = 21600
-        self.registry.write_text(json.dumps(registry), encoding="utf-8")
-        claimed = claim_next("worker-long", self.queue, self.registry, self.now)
-        self.assertEqual(claimed["task_id"], queued["task"]["task_id"])
-        expires = datetime.fromisoformat(claimed["lease"]["expires_at"].replace("Z", "+00:00"))
-        self.assertEqual(expires, self.now + timedelta(seconds=21600))
-
     def test_success_requires_matching_live_lease(self):
         self.enqueue()
         claimed = claim_next("worker-a", self.queue, self.registry, self.now)
@@ -338,6 +318,26 @@ class TaskQueueRuntimeTests(unittest.TestCase):
                 second["idempotency_key"] = idem + ":second"
                 second["input"] = dict(task["input"], authorization_idempotency_key=idem + ":second")
                 enqueue_task(second, self.queue, self.registry, self.now)
+
+    def test_auto_sync_claim_receives_six_hour_task_lease(self):
+        queued = enqueue_task({
+            "idempotency_key": "runtime:auto-sync:long-lease",
+            "trace_id": "trace-auto-sync-long-lease",
+            "requester_program_id": "workflow_automation_watchdog",
+            "target_program_id": "workflow_auto_sync",
+            "capability": "deterministic_audit",
+            "priority": 80,
+            "input": {},
+        }, self.queue, self.registry, self.now)
+        self.assertTrue(queued["created"])
+        registry = json.loads(self.registry.read_text(encoding="utf-8"))
+        auto_sync = next(p for p in registry["programs"] if p["id"] == "workflow_auto_sync")
+        auto_sync["orchestration"]["timeout_seconds"] = 21600
+        self.registry.write_text(json.dumps(registry), encoding="utf-8")
+        claimed = claim_next("worker-long", self.queue, self.registry, self.now)
+        self.assertEqual(claimed["task_id"], queued["task"]["task_id"])
+        expires = datetime.fromisoformat(claimed["lease"]["expires_at"].replace("Z", "+00:00"))
+        self.assertEqual(expires, self.now + timedelta(seconds=21600))
 
 if __name__ == "__main__":
     unittest.main()

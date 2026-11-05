@@ -71,13 +71,6 @@ class ProgramRegistryTests(unittest.TestCase):
         self.assertTrue(result["valid"])
         self.assertGreater(result["program_count"], 0)
 
-    def test_accepts_six_hour_orchestration_timeout(self):
-        root, registry = self.make_repo()
-        payload = json.loads(registry.read_text(encoding="utf-8"))
-        payload["programs"][1]["orchestration"]["timeout_seconds"] = 21600
-        registry.write_text(json.dumps(payload), encoding="utf-8")
-        self.assertEqual(validate_registry(root, registry)["program_count"], 2)
-
     def test_accepts_registered_program_and_declared_workflow_dependency(self):
         root, registry = self.make_repo()
         result = validate_registry(root, registry)
@@ -162,6 +155,13 @@ class ProgramRegistryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "duplicate program id"):
             validate_registry(root, registry)
 
+
+    def test_accepts_six_hour_orchestration_timeout(self):
+        root, registry = self.make_repo()
+        payload = json.loads(registry.read_text(encoding="utf-8"))
+        payload["programs"][1]["orchestration"]["timeout_seconds"] = 21600
+        registry.write_text(json.dumps(payload), encoding="utf-8")
+        self.assertEqual(validate_registry(root, registry)["program_count"], 2)
 
 if __name__ == "__main__":
     unittest.main()

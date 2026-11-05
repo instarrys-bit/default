@@ -1,4 +1,5 @@
 import copy
+import json
 import sys
 import tempfile
 import unittest
@@ -228,13 +229,25 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
             {"name": "production_reason", "type": "string", "required": False},
         ])
         adapters = {"schema_version": 1, "adapters": [adapter]}
+        manifest = {
+            "schema_version": 1,
+            "production_input_paths": ["modules/uu.conf"],
+            "non_production_path_patterns": [],
+        }
+        (self.root / "automation" / "production_inputs.json").write_text(
+            json.dumps(manifest), encoding="utf-8"
+        )
+        from production_intent import load_manifest, compute_fingerprint
+        production_fingerprint = compute_fingerprint(
+            self.root, load_manifest(self.root / "automation" / "production_inputs.json")
+        )
         origin = {
             "domains": "example.com",
             "baseline_source_event": "push",
             "baseline_source_actor": "repository-owner",
             "baseline_source_before": "b" * 40,
             "baseline_source_sha": "a" * 40,
-            "production_fingerprint": "f" * 64,
+            "production_fingerprint": production_fingerprint,
             "production_decision": "INPUT_CHANGED",
             "production_reason": "modules/uu.conf changed",
         }

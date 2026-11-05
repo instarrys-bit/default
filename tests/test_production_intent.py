@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from production_intent import classify_paths, compute_fingerprint, compute_output_fingerprint, decide, load_manifest, register_unclassified_paths, merge_request_observations
+from production_intent import classify_paths, compute_fingerprint, compute_output_fingerprint, decide, load_manifest, register_unclassified_paths, merge_request_observations, active_production_fingerprints, UNFINGERPRINTED_ACTIVE_PRODUCTION
 
 
 class ProductionIntentTests(unittest.TestCase):
@@ -426,6 +426,33 @@ class ProductionIntentTests(unittest.TestCase):
             self.assertEqual(set(rows), {"alpha.example", "beta.example", "shared.example"})
             self.assertEqual(rows["shared.example"]["observations"], 2)
             self.assertEqual(rows["shared.example"]["observed_run_ids"], ["run-a", "run-b"])
+
+    def test_stale_queued_production_task_does_not_block_current_input(self):
+        old = "a" * 64
+        queue = {"tasks": [
+            {"target_program_id": "workflow_auto_sync", "status": "QUEUED", "input": {"production_fingerprint": old}},
+            {"target_program_id": "workflow_auto_sync", "status": "QUEUED", "input": {"production_fingerprint": old}, "dispatch_intent": {"correlation_id": "persisted"}},
+            {"target_program_id": "workflow_auto_sync", "status": "QUEUED", "input": {"production_fingerprint": self.fp}},
+            {"target_program_id": "workflow_auto_sync", "status": "CLAIMED", "input": {"production_fingerprint": old}},
+            {"target_program_id": "workflow_auto_sync", "status": "VERIFYING", "input": {}},
+            {"target_program_id": "workflow_source_discovery", "status": "CLAIMED", "input": {"production_fingerprint": "b" * 64}},
+        ]}
+        self.assertEqual(
+            active_production_fingerprints(queue, self.fp),
+            sorted([self.fp, old, UNFINGERPRINTED_ACTIVE_PRODUCTION]),
+        )
+
+    def test_stale_queued_production_task_with_missing_fingerprint_does_not_block_replacement(self):
+        queue = {"tasks": [
+            {"target_program_id": "workflow_auto_sync", "status": "QUEUED", "input": {}},
+        ]}
+        self.assertEqual(active_production_fingerprints(queue, self.fp), [])
+
+    def test_active_fingerprint_reader_rejects_invalid_queue_or_current_digest(self):
+        with self.assertRaisesRegex(ValueError, "tasks array"):
+            active_production_fingerprints({}, self.fp)
+        with self.assertRaisesRegex(ValueError, "SHA-256"):
+            active_production_fingerprints({"tasks": []}, "not-a-digest")
 
 if __name__ == "__main__":
     unittest.main()

@@ -354,5 +354,59 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
                         assert_resource_lease_from_environment("reports/project-status.json")
 
 
+    def test_stale_checkout_snapshot_does_not_reject_renewed_live_resource_lease(self):
+        resource = "sources/discovered_sources.json"
+        acquired = acquire_resource_leases(
+            "task_a", "worker_a", "task-token-a", [resource], self.store, now=self.now,
+        )
+        task = self.store.document["tasks"][0]
+        task["resource_lease"] = {
+            "status": "ACTIVE", "resources": acquired["resources"],
+            "lease_seconds": 21600, "expires_at": acquired["expires_at"],
+        }
+        proof = acquired["resources"]
+
+        class LiveStore:
+            def __init__(self, document):
+                self.document = copy.deepcopy(document)
+            def read(self):
+                return type("Snapshot", (), {"document": copy.deepcopy(self.document)})()
+
+        live = LiveStore(self.store.document)
+        # Model the immutable checkout snapshot captured before the Watchdog
+        # renewed the lease: its resource expiry is now stale and in the past.
+        with tempfile.TemporaryDirectory() as directory:
+            snapshot = Path(directory) / "queue.json"
+            stale = copy.deepcopy(self.store.document)
+            stale_expiry = (self.now - timedelta(seconds=1)).isoformat().replace("+00:00", "Z")
+            stale["resource_leases"][resource]["expires_at"] = stale_expiry
+            stale["tasks"][0]["resource_lease"]["expires_at"] = stale_expiry
+            snapshot.write_text(json.dumps(stale), encoding="utf-8")
+
+            renewed_expiry = (self.now + timedelta(hours=6)).isoformat().replace("+00:00", "Z")
+            live.document["resource_leases"][resource]["expires_at"] = renewed_expiry
+            live.document["tasks"][0]["resource_lease"]["expires_at"] = renewed_expiry
+            env = {
+                "AUTOMATION_QUEUE_SNAPSHOT": str(snapshot),
+                "AUTOMATION_QUEUE_REPOSITORY": "owner/repo",
+                "AUTOMATION_QUEUE_TOKEN": "read-token",
+                "AUTOMATION_QUEUE_BRANCH": "main",
+                "AUTOMATION_QUEUE_PATH": "automation/task_queue.json",
+                "AUTOMATION_TASK_ID": "task_a",
+                "AUTOMATION_WORKER_ID": "worker_a",
+                "AUTOMATION_TASK_LEASE_TOKEN": "task-token-a",
+                "AUTOMATION_RESOURCE_LEASE_PROOF": json.dumps(proof),
+            }
+            with patch.dict("os.environ", env, clear=False):
+                with patch.object(resource_lease_runtime, "GitHubContentsQueueStore", return_value=live):
+                    self.assertTrue(assert_resource_lease_from_environment(resource))
+
+                    # The live queue remains authoritative: an actually expired
+                    # durable lease must still fail closed.
+                    live.document["resource_leases"][resource]["expires_at"] = stale_expiry
+                    with self.assertRaisesRegex(ValueError, "resource lease expired"):
+                        assert_resource_lease_from_environment(resource)
+
+
 if __name__ == "__main__":
     unittest.main()
