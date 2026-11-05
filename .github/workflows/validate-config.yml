@@ -83,22 +83,14 @@ jobs:
       - name: Protect owner-controlled config baseline in non-main validation
         if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref != 'refs/heads/main') }}
         env:
-          EVENT_NAME: ${{ github.event_name }}
-          PUSH_BEFORE: ${{ github.event.before }}
           CURRENT_SHA: ${{ github.sha }}
-          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
-          base_sha="$PUSH_BEFORE"
+          # PR events may carry a stale base SHA after main advances. Compare
+          # against the current main merge-base, never the branch's before SHA.
+          git fetch --no-tags origin main
           head_sha="$CURRENT_SHA"
-          if [ "$EVENT_NAME" = "pull_request" ]; then
-            base_sha="$PR_BASE_SHA"
-            head_sha="$PR_HEAD_SHA"
-          fi
-          if [ -z "$base_sha" ] || [[ "$base_sha" =~ ^0+$ ]]; then
-            base_sha="$(git merge-base origin/main "$head_sha")"
-          fi
+          base_sha="$(git merge-base origin/main "$head_sha")"
           if ! git diff --quiet "$base_sha" "$head_sha" -- modules/uu.conf; then
             echo "Non-main validation cannot approve or change modules/uu.conf." >&2
             exit 1
@@ -123,13 +115,14 @@ jobs:
           BASELINE_SOURCE_EVENT: ${{ (github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref != 'refs/heads/main')) && 'schedule' || github.event_name }}
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-          BASELINE_SOURCE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.sha }}
+          BASELINE_SOURCE_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          if [ "$GITHUB_EVENT_NAME" = "push" ] && [ "$GITHUB_REF" != "refs/heads/main" ]; then
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ] || { [ "$GITHUB_EVENT_NAME" = "push" ] && [ "$GITHUB_REF" != "refs/heads/main" ]; }; then
+            git fetch --no-tags origin main
             BASELINE_SOURCE_SHA="$(git merge-base origin/main "$GITHUB_SHA")"
             if [ -z "$BASELINE_SOURCE_SHA" ]; then
-              echo "Could not resolve the main-branch baseline for non-main validation." >&2
+              echo "Could not resolve the current main-branch baseline for non-main validation." >&2
               exit 1
             fi
             export BASELINE_SOURCE_SHA
