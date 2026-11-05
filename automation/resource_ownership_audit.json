@@ -285,8 +285,8 @@
       ],
       "lock_key": "logical/production-pipeline + sources/review_cursor.json",
       "required_mode": "exclusive",
-      "status": "watchdog_fenced_single_writer",
-      "note": "The deterministic review writes the checkpoint under the production task's shared logical/production-pipeline lease. On failed/cancelled audit, persist_review_cursor.py validates the uploaded checkpoint and updates/removes only sources/review_cursor.json after revalidating the same live Watchdog task proof; the job is serialized by shadowrocket-main-writer. Archive restoration is serialized by the same production mutex."
+      "status": "per_write_filesystem_fence_and_scoped_git_publish_revalidation",
+      "note": "The deterministic review writes the checkpoint under the production task's shared logical/production-pipeline lease. On failed/cancelled audit, persist_review_cursor.py validates the uploaded checkpoint and updates/removes only sources/review_cursor.json after the persist-review-cursor job installs the exact Watchdog resource lease environment and AUTOMATION_WRITE_GUARD. The filesystem guard re-reads the durable queue before each write. The cursor-only Git publication revalidates the same live workflow/task/resource proof before staging and immediately before push, and is serialized by shadowrocket-main-writer. Archive restoration is serialized by the same production mutex."
     },
     {
       "id": "rule_provenance_ledger",
