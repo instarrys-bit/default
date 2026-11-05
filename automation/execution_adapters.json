@@ -1913,6 +1913,64 @@
         "success_condition": "workflow_step_exit_code_zero_and_path_only_trace_artifact_uploaded",
         "independent_verification_required": true
       }
+    },
+    {
+      "target_program_id": "workflow_source_discovery",
+      "target_kind": "github_actions_workflow",
+      "adapter_type": "github_actions_workflow",
+      "enabled": false,
+      "interface_status": "workflow_dispatch_reviewed",
+      "allowed_callers": [],
+      "workflow": {
+        "path": ".github/workflows/source-discovery.yml",
+        "dispatchable": true,
+        "inputs": [
+          {
+            "name": "automation_task_id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "resource_lease_proof",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "allowed_refs": [
+          "main"
+        ],
+        "caller_permissions_required": [
+          "actions:write",
+          "contents:write"
+        ]
+      },
+      "timeout_seconds": 30,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_HOLD_authorization_and_DAG_acceptance"
+      },
+      "completion": {
+        "success_condition": "completed_successful_workflow_with_exact_producer_identity_and_verified_immutable_artifact",
+        "required_result_fields": [
+          "run_id",
+          "html_url",
+          "head_sha",
+          "status",
+          "conclusion"
+        ],
+        "independent_verification_required": true
+      },
+      "resource_contract": {
+        "mode": "exclusive",
+        "resource_keys": [
+          "sources/discovered_sources.json",
+          "reports/source-discovery.md"
+        ],
+        "lease_seconds": 1800,
+        "fencing_required": true,
+        "enforcement_boundary": "exact Watchdog dispatch identity and live per-resource fencing assertion before each filesystem mutation and immediately before main-branch publication",
+        "coverage": "Discovery document base JSON, manifest, content-addressed shards, staging and cleanup share one logical document lease; report uses its own exclusive lease."
+      }
     }
   ]
 }
