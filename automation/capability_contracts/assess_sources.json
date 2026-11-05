@@ -4,7 +4,7 @@
   "program_id": "script_assess_sources",
   "implementation_path": "scripts/assess_sources.py",
   "implementation_blob_sha": "5baf1cca8062b1f3b4e30298200efcc7683e122d",
-  "review_status": "reviewed_waiting_for_dedicated_discovery_workflow",
+  "review_status": "reviewed_waiting_for_HOLD_authorization_and_monolithic_cutover",
   "dispatch_status": "disabled",
   "entrypoint": {
     "command": [
@@ -206,13 +206,13 @@
   },
   "dependency_edges": {
     "required_predecessor": "script_discover_sources",
-    "edge_semantics": "The Watchdog workflow_run gate enqueues only after a successful main-branch run of the exact Shadowrocket Source Discovery (Watchdog) workflow and binds run ID, head SHA and current discovered_sources artifact digest.",
+    "edge_semantics": "The Watchdog workflow_run gate downloads the artifact from the exact successful main-branch Shadowrocket Source Discovery (Watchdog) run, validates producer run ID/head SHA and the logical-document digest, then enqueues Assessment idempotently.",
     "registry_dependency_declared": true,
-    "note": "The Watchdog event gate supplies successful-run provenance; the scheduler validates producer identity, run metadata and the complete current legacy/sharded artifact digest before claim, and the assessor rechecks the predecessor digest before and after execution.",
+    "note": "The producer commits and uploads the same complete legacy/sharded logical document. Watchdog verifies the exact run proof, downloaded artifact digest, embedded producer metadata and equality with current main; the scheduler independently rechecks the current logical-document digest before claim and the assessor rechecks it before and after execution.",
     "registry_dependency_program_id": "script_discover_sources",
     "required_predecessor_artifact": "sources/discovered_sources.json",
     "input_snapshot_validation": "The scheduler hashes the complete legacy/sharded discovered_sources document before and after assessment and rejects publication if it changes.",
-    "scheduler_enforcement": "The Watchdog supplies a successful workflow_run event proof. The scheduler validates producer identity, exact workflow name, numeric workflow run ID, full producer commit SHA, allowlisted artifact path and current complete legacy/sharded artifact digest before claim. This check is performed by scheduler.build_execution_plan before the task becomes eligible for claim."
+    "scheduler_enforcement": "The Watchdog downloads the artifact using the workflow_run ID, verifies the proof's workflow name, numeric run ID, full producer commit SHA, allowlisted artifact path and complete logical-document digest, then confirms that the current main document has the same digest and producer metadata. enqueue_source_assessment_task checks the digest again, and scheduler.build_execution_plan rejects changed or missing predecessor content before claim."
   },
   "permission_boundary": {
     "filesystem": "Write only the three declared logical output resources and their document-store temporary/manifest/shard children. The durable per-URL checkpoint is task.assessment_checkpoint in automation/task_queue.json, updated by bounded Contents-Blob-SHA CAS under the active task lease and all declared resource fencing tokens. Publish only persistent assessment history and report; runtime fingerprint data remains runner-local.",
@@ -221,10 +221,10 @@
     "protected_config": "modules/uu.conf is immutable and outside this capability's write set."
   },
   "blockers": [
-    "Complete transitive writer inventory and runtime tracing beyond the named source-assessment paths.",
-    "Run a regular Watchdog-dispatched task and verify queue completion, artifacts, publication and protected-config invariance.",
-    "Complete transitive writer inventory and runtime tracing beyond the declared source-assessment resources remains outstanding.",
-    "Dedicated discovery-only producer workflow is not yet present; independent assessment dispatch remains disabled to prevent duplicate assessment after monolithic auto_sync runs."
+    "The independent source-discovery workflow and immutable run-bound artifact handoff are implemented, but the producer adapter and program orchestration remain disabled pending HOLD/authorization.",
+    "The Assessment adapter remains disabled; the monolithic auto_sync discovery and assessment steps are intentionally retained until the independent edge is authorized and accepted, preventing a processing gap or duplicate assessment.",
+    "Complete transitive writer inventory, dynamic path resolution and cross-workflow concurrency/fencing evidence under #193 remain outstanding.",
+    "A regular Watchdog-dispatched discovery-to-assessment run and independent artifact/publication verification have not been performed; no production dispatch was authorized."
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
