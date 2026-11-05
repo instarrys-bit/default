@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "audit_id": "capability-contract-inventory-2026.11.04.2",
+  "audit_id": "capability-contract-inventory-2026.11.05.integration",
   "status": "baseline_inventory",
-  "source_registry_blob_sha": "ab5f92f25e97d62b9fd35d4097109f9fad892c6b",
+  "source_registry_blob_sha": "15943d2532b2d0d2291f1da61305d84e811b8f5a",
   "summary": {
-    "registered_programs": 60,
-    "python_components": 53,
+    "registered_programs": 62,
+    "python_components": 54,
     "python_components_with_concrete_io_contract": 1,
     "python_components_with_declared_registry_dependencies": 4,
-    "independently_dispatchable_python_components": 1,
+    "independently_dispatchable_python_components": 0,
     "note": "Counts reflect registry declarations, not runtime call-graph completeness."
   },
   "policy": {
@@ -117,12 +117,12 @@
         "automation/task_queue.json task.assessment_checkpoint: per-URL result and fingerprint checkpoint (durable CAS state; removed after successful independent verification)"
       ],
       "current_invocation": "python_module_or_workflow_step",
-      "contract_status": "concrete_io_typed_predecessor_and_watchdog_event_dispatch_enabled",
-      "dispatch_status": "enabled",
+      "contract_status": "concrete_io_typed_predecessor_waiting_for_dedicated_discovery_workflow",
+      "dispatch_status": "disabled",
       "missing_contract_fields": [
         "complete_transitive_side_effect_verification"
       ],
-      "audit_note": "Task retries derive a fixed bounded URL batch from the immutable predecessor workflow run ID and artifact digest. Each completed URL result is persisted immediately in the durable task queue under live task/resource fencing; retries restore completed results and continue with the first incomplete URL. This does not complete the separate transitive writer/runtime tracing review.",
+      "audit_note": "Typed immutable predecessor contract and fenced output contract are retained, but independent dispatch remains disabled until the dedicated discovery-only producer workflow exists and the monolithic assessment step is removed without duplication.",
       "contract_sample_path": "automation/capability_contracts/assess_sources.json"
     },
     {
@@ -1710,6 +1710,63 @@
         "independent_verifier"
       ],
       "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_capture_git_write_trace",
+      "path": "scripts/capture_git_write_trace.py",
+      "declared_capabilities": [
+        "runtime_write_tracing"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "Initial checkout commit SHA",
+        "Git committed, staged, unstaged and non-ignored untracked repository paths"
+      ],
+      "current_registry_outputs": [
+        "Path-only JSONL records under RUNNER_TEMP",
+        "Before/after commit SHA and changed-path count"
+      ],
+      "current_invocation": "workflow_step",
+      "contract_status": "concrete_io_path_only_repository_delta_capture",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "transient write-and-revert activity",
+        "external filesystem and API side effects",
+        "Git metadata changes outside repository tree"
+      ],
+      "audit_note": "Observer complements Python audit-hook events; it records persistent repository-tree deltas only and does not prove transient, external, or unexecuted side effects."
+    }
+  ],
+  "workflow_capabilities": [
+    {
+      "id": "workflow_source_discovery",
+      "path": ".github/workflows/source-discovery.yml",
+      "declared_capabilities": [
+        "source_discovery"
+      ],
+      "registry_dependencies": [
+        "script_capture_git_write_trace",
+        "script_discover_sources",
+        "script_resource_lease_runtime"
+      ],
+      "current_invocation": "Watchdog durable workflow-dispatch task; adapter and program orchestration remain disabled",
+      "current_registry_inputs": [
+        "automation_task_id correlation",
+        "resource_lease_proof",
+        "main branch source snapshot"
+      ],
+      "current_registry_outputs": [
+        "sources/discovered_sources.json with workflow/run/head provenance",
+        "reports/source-discovery.md",
+        "source-discovery-output immutable artifact with logical-document SHA-256 proof"
+      ],
+      "contract_status": "workflow_and_typed_artifact_handoff_implemented_dormant",
+      "dispatch_status": "disabled",
+      "resource_keys": [
+        "sources/discovered_sources.json",
+        "reports/source-discovery.md"
+      ],
+      "verifier": "automation-watchdog workflow_run handler verifies exact run identity, uploaded artifact digest, producer metadata and equality with current main before enqueueing Assessment"
     }
   ]
 }

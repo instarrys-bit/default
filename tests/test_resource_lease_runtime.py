@@ -214,6 +214,86 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
             with self.subTest(value=value), self.assertRaises(ValueError):
                 normalize_keys([value])
 
+    def test_claimed_writer_uses_live_resource_fence_not_mutable_task_lease(self):
+        acquired = acquire_resource_leases(
+            "task_a", "worker_a", "task-token-a",
+            ["logical/production-pipeline"], self.store, now=self.now,
+        )
+        task = self.store.document["tasks"][0]
+        # The logical production-pipeline lease is valid only for the auto_sync
+        # writer; make that target explicit in this CLAIMED-task fixture.
+        task["target_program_id"] = "workflow_auto_sync"
+        task["resource_lease"] = {
+            "status": "ACTIVE", "resources": acquired["resources"],
+            "lease_seconds": 300, "expires_at": acquired["expires_at"],
+        }
+        # Simulate scheduler task-lease rotation while the old resource fence
+        # remains active for the exact worker and fencing epoch.
+        task["lease"] = {"owner": "scheduler-refresh", "token": "rotated-task-token",
+                         "expires_at": (self.now + timedelta(minutes=10)).isoformat().replace("+00:00", "Z")}
+
+        class LiveStore:
+            def __init__(self, document):
+                self.document = copy.deepcopy(document)
+            def read(self):
+                return type("Snapshot", (), {"document": copy.deepcopy(self.document)})()
+
+        live = LiveStore(self.store.document)
+        with tempfile.TemporaryDirectory() as directory:
+            snapshot = Path(directory) / "queue.json"
+            snapshot.write_text(json.dumps(self.store.document), encoding="utf-8")
+            env = {
+                "AUTOMATION_QUEUE_SNAPSHOT": str(snapshot),
+                "AUTOMATION_QUEUE_REPOSITORY": "owner/repo",
+                "AUTOMATION_QUEUE_TOKEN": "read-token",
+                "AUTOMATION_QUEUE_BRANCH": "main",
+                "AUTOMATION_QUEUE_PATH": "automation/task_queue.json",
+                "AUTOMATION_TASK_ID": "task_a",
+                "AUTOMATION_WORKER_ID": "worker_a",
+                "AUTOMATION_TASK_LEASE_TOKEN": "task-token-a",
+                "AUTOMATION_RESOURCE_LEASE_PROOF": json.dumps(acquired["resources"]),
+            }
+            with patch.dict("os.environ", env, clear=False):
+                with patch.object(resource_lease_runtime, "GitHubContentsQueueStore", return_value=live):
+                    self.assertTrue(assert_resource_lease_from_environment("reports/project-status.json"))
+                    record = live.document["resource_leases"]["logical/production-pipeline"]
+                    record["task_lease_token"] = "stale-token"
+                    self.assertTrue(assert_resource_lease_from_environment("reports/project-status.json"))
+                    record["worker_id"] = "different-worker"
+                    with self.assertRaisesRegex(ValueError, "resource lease fencing check failed: logical/production-pipeline"):
+                        assert_resource_lease_from_environment("reports/project-status.json")
+
+    def test_workflow_source_discovery_verifying_task_requires_exact_dedicated_dispatch(self):
+        acquired = acquire_resource_leases(
+            "task_a", "worker_a", "task-token-a",
+            ["sources/discovered_sources.json", "reports/source-discovery.md"],
+            self.store, now=self.now,
+        )
+        task = self.store.document["tasks"][0]
+        task["status"] = "VERIFYING"
+        task["lease"] = None
+        task["target_program_id"] = "workflow_source_discovery"
+        task["requester_program_id"] = "workflow_automation_watchdog"
+        task["attempts"] = 1
+        task["dispatch_intent"] = {
+            "task_id": "task_a", "dispatch_attempt": 1,
+            "correlation_id": "task_a-a1",
+            "workflow_path": ".github/workflows/source-discovery.yml", "ref": "main",
+        }
+        task["resource_lease"] = {
+            "status": "ACTIVE", "resources": acquired["resources"],
+            "lease_seconds": 1800, "expires_at": acquired["expires_at"],
+        }
+        result = resource_lease_runtime.assert_workflow_resource_lease(
+            self.store.document, "task_a", acquired["resources"], now=self.now,
+        )
+        self.assertTrue(result["valid"])
+        task["dispatch_intent"]["workflow_path"] = ".github/workflows/auto_sync.yml"
+        with self.assertRaisesRegex(ValueError, "durable dispatch intent does not authorize"):
+            resource_lease_runtime.assert_workflow_resource_lease(
+                self.store.document, "task_a", acquired["resources"], now=self.now,
+            )
+
     def test_workflow_auto_sync_verifying_task_fences_every_repo_write_under_pipeline_lock(self):
         acquired = acquire_resource_leases(
             "task_a", "worker_a", "task-token-a",
@@ -221,6 +301,8 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
         )
         task = self.store.document["tasks"][0]
         task["status"] = "VERIFYING"
+        # complete_remote() clears the worker lease before child workflow verification.
+        task["lease"] = None
         task["target_program_id"] = "workflow_auto_sync"
         task["requester_program_id"] = "workflow_automation_watchdog"
         task["attempts"] = 1
@@ -259,6 +341,14 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
             with patch.dict("os.environ", env, clear=False):
                 with patch.object(resource_lease_runtime, "GitHubContentsQueueStore", return_value=live):
                     self.assertTrue(assert_resource_lease_from_environment("reports/project-status.json"))
+                    record = live.document["resource_leases"]["logical/production-pipeline"]
+                    record["task_lease_token"] = "stale-token"
+                    self.assertTrue(assert_resource_lease_from_environment("reports/project-status.json"))
+                    record["task_lease_token"] = "task-token-a"
+                    record["worker_id"] = "different-worker"
+                    with self.assertRaisesRegex(ValueError, "no matching active resource lease"):
+                        assert_resource_lease_from_environment("reports/project-status.json")
+                    record["worker_id"] = "worker_a"
                     live.document["tasks"][0]["dispatch_intent"]["ref"] = "feature"
                     with self.assertRaisesRegex(ValueError, "exact Watchdog production dispatch"):
                         assert_resource_lease_from_environment("reports/project-status.json")

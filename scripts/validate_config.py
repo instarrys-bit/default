@@ -17,7 +17,7 @@ import sys
 CONFIGS = (Path("modules/uu.conf"),)
 POLICIES = {"DIRECT", "PROXY", "REJECT"}
 KNOWN_TYPES = {
-    "AND", "OR", "NOT", "DOMAIN", "DOMAIN-SUFFIX", "DOMAIN-KEYWORD",
+    "AND", "OR", "NOT", "DOMAIN", "DOMAIN-SUFFIX", "DOMAIN-KEYWORD", "DOMAIN-WILDCARD",
     "IP-CIDR", "IP-CIDR6", "IP-ASN", "GEOIP", "RULE-SET",
     "USER-AGENT", "URL-REGEX", "FINAL", "DST-PORT",
 }
@@ -152,6 +152,15 @@ def validate(path):
                 errors.append((line_no, "invalid domain field", raw))
             if fields[2].upper() not in POLICIES:
                 errors.append((line_no, "invalid domain policy", raw))
+
+        if rule_type == "DOMAIN-WILDCARD":
+            wildcard = fields[1]
+            # Validate wildcard patterns by substituting each '*' with a
+            # legal label character, while requiring at least one wildcard.
+            if "*" not in wildcard or not DOMAIN_RE.fullmatch(wildcard.replace("*", "x")):
+                errors.append((line_no, "invalid domain wildcard pattern", raw))
+            if fields[2].upper() not in POLICIES:
+                errors.append((line_no, "invalid domain wildcard policy", raw))
 
     return errors
 

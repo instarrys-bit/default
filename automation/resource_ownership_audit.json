@@ -4,8 +4,8 @@
   "status": "partial_static_audit",
   "purpose": "Identify known overlapping write resources before independent capability scheduling. This inventory is deliberately fail-closed and is not an execution authorization.",
   "evidence_scope": {
-    "registry_blob_sha": "ab5f92f25e97d62b9fd35d4097109f9fad892c6b",
-    "adapters_blob_sha": "97d18a09763f851362e0bd5400dad856ae1f448b",
+    "registry_blob_sha": "15943d2532b2d0d2291f1da61305d84e811b8f5a",
+    "adapters_blob_sha": "82012007de750c605d5ef27a355ece7321cdc51a",
     "inspected_sources": [
       ".github/workflows/auto_sync.yml",
       ".github/workflows/automation-watchdog.yml",
@@ -70,9 +70,11 @@
       "tests/test_restore_automation_state.py",
       "tests/test_task_queue.py",
       "tests/test_task_queue_runtime.py",
-      "tests/test_workflow_config_guard_order.py"
+      "tests/test_workflow_config_guard_order.py",
+      "scripts/capture_git_write_trace.py",
+      ".github/workflows/source-discovery.yml"
     ],
-    "limitation": "All 53 registered Python components are statically classified. Production audit and publish jobs now upload path-only runtime write traces from the Python filesystem audit hook. Source assessment uses a deterministic producer-scoped retry batch. Shell/git child processes, runtime imports not exercised, caller-selected external paths and true cross-run GitHub API behavior are not exhaustively traced or exercised.",
+    "limitation": "All 54 registered Python components are statically classified. Production audit and publish jobs now upload path-only runtime write traces from the Python filesystem audit hook. Source assessment uses a deterministic producer-scoped retry batch. Persistent shell/Git repository-tree deltas are now captured; transient write-and-revert activity, Git metadata changes, runtime imports not exercised, caller-selected external paths and true cross-run GitHub API behavior are not exhaustively traced or exercised.",
     "reviewed_at": "2026-11-04",
     "runtime_trace": {
       "enabled": true,
@@ -91,8 +93,22 @@
         "lease_required"
       ],
       "data_policy": "repository-relative paths and run metadata only; no file contents, tokens or lease fencing secrets",
-      "limitation": "Python audit-hook filesystem events only; shell/git child processes, external services and unexecuted code paths are not captured."
-    }
+      "limitation": "Python audit-hook filesystem events plus persistent repository-tree deltas from shell/Git child processes; transient writes, Git metadata, external services and unexecuted code paths are not captured.",
+      "trace_scripts": [
+        "scripts/fenced_file_writer.py",
+        "scripts/capture_git_write_trace.py"
+      ]
+    },
+    "filesystem_guard_scope": "All repository-relative filesystem mutations require a live resource lease when AUTOMATION_WRITE_GUARD=1 and AUTOMATION_REQUIRE_RESOURCE_LEASE=1; modules/uu.conf is always denied.",
+    "alias_protection": "Repository symlinks resolve to canonical targets; external and internal hardlink aliases to repository files are denied.",
+    "alias_tests": [
+      "tests/test_fenced_file_writer.py::test_external_symlink_into_protected_config_is_rejected",
+      "tests/test_fenced_file_writer.py::test_external_hardlink_to_protected_config_is_rejected",
+      "tests/test_fenced_file_writer.py::test_external_symlink_to_shared_ruleset_keeps_canonical_lease_key",
+      "tests/test_fenced_file_writer.py::test_external_hardlink_to_shared_ruleset_is_denied",
+      "tests/test_fenced_file_writer.py::test_internal_hardlink_to_protected_config_is_denied",
+      "tests/test_fenced_file_writer.py::test_repository_symlink_cannot_escape_to_external_directory"
+    ]
   },
   "protected_resources": {
     "modules/uu.conf": {
@@ -269,8 +285,8 @@
       ],
       "lock_key": "logical/production-pipeline + sources/review_cursor.json",
       "required_mode": "exclusive",
-      "status": "watchdog_fenced_single_writer",
-      "note": "The deterministic review writes the checkpoint under the production task's shared logical/production-pipeline lease. On failed/cancelled audit, persist_review_cursor.py validates the uploaded checkpoint and updates/removes only sources/review_cursor.json after revalidating the same live Watchdog task proof; the job is serialized by shadowrocket-main-writer. Archive restoration is serialized by the same production mutex."
+      "status": "per_write_filesystem_fence_and_scoped_git_publish_revalidation",
+      "note": "The deterministic review writes the checkpoint under the production task's shared logical/production-pipeline lease. On failed/cancelled audit, persist_review_cursor.py validates the uploaded checkpoint and updates/removes only sources/review_cursor.json after the persist-review-cursor job installs the exact Watchdog resource lease environment and AUTOMATION_WRITE_GUARD. The filesystem guard re-reads the durable queue before each write. The cursor-only Git publication revalidates the same live workflow/task/resource proof before staging and immediately before push, and is serialized by shadowrocket-main-writer. Archive restoration is serialized by the same production mutex."
     },
     {
       "id": "rule_provenance_ledger",
@@ -411,12 +427,13 @@
       "known_writers": [
         "script_discover_sources",
         "script_restore_automation_state",
-        "workflow_auto_sync"
+        "workflow_auto_sync",
+        "workflow_source_discovery"
       ],
-      "lock_key": "resource:sources/discovered_sources.json",
+      "lock_key": "sources/discovered_sources.json + reports/source-discovery.md (exclusive per-resource leases shared with workflow_auto_sync)",
       "required_mode": "exclusive",
       "status": "direct_write_paths_confirmed_dynamic_document_store_children",
-      "note": "discovered_sources.json is written through json_document_store with an explicit logical-document lease assertion covering the base file, adjacent manifest, content-addressed shards, staging and old-shard cleanup. reports/source-discovery.md has a separate explicit live lease assertion. GITHUB_STEP_SUMMARY is a per-run ephemeral output and is intentionally excluded from shared repository resource ownership. Allowlisted publish-mode restore is an additional writer and is serialized by the same auto_sync logical production-pipeline fence."
+      "note": "discovered_sources.json is written through json_document_store with an explicit logical-document lease assertion covering the base file, adjacent manifest, content-addressed shards, staging and old-shard cleanup. reports/source-discovery.md has a separate explicit live lease assertion. GITHUB_STEP_SUMMARY is a per-run ephemeral output and is intentionally excluded from shared repository resource ownership. Allowlisted publish-mode restore is an additional writer and is serialized by the same auto_sync logical production-pipeline fence. The dedicated workflow_source_discovery writer now uses the same two exclusive resource keys as workflow_auto_sync and validates the exact Watchdog dispatch identity before writes. Its adapter remains disabled pending HOLD/authorization; the monolithic fallback remains active to avoid duplicate or missing assessment."
     },
     {
       "id": "watchdog_unregistered_path_registry",

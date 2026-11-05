@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Fail-closed filesystem write guard for Watchdog-owned production runs."""
+"""Fail-closed filesystem write guard for all repository-local mutations in authorized production runs."""
 from __future__ import annotations
 import json
 import os
+import stat
 import sys
 from pathlib import Path
 
@@ -10,17 +11,35 @@ ROOT = Path(__file__).resolve().parents[1]
 _ORIGINAL_OPEN = open
 _TRACE_ACTIVE = False
 PROTECTED_PATHS = {"modules/uu.conf"}
-# Resource-lease fencing is intentionally limited to production config,
-# module, script, and published ruleset paths. Other repository artifacts
-# (reports, docs, automation state, etc.) are not gated by this file guard.
-FENCED_PREFIXES = ("modules/", "scripts/", "rulesets/")
+# Every repository-relative mutation is lease-gated during an authorized
+# production task. Per-run temporary files outside the checkout remain exempt.
 _INSTALLED = False
 
 def _requires_resource_lease(relative: str | None) -> bool:
-    if not relative:
-        return False
-    return relative.startswith(FENCED_PREFIXES)
+    return bool(relative)
 
+
+
+def _external_hardlink_alias(candidate: Path) -> str | None:
+    """Resolve a pre-existing external hardlink to its canonical repository path."""
+    try:
+        candidate_stat = candidate.stat()
+    except (FileNotFoundError, OSError):
+        return None
+    if not stat.S_ISREG(candidate_stat.st_mode) or candidate_stat.st_nlink < 2:
+        return None
+    root = ROOT.resolve()
+    for current, directories, files in os.walk(root, followlinks=False):
+        directories[:] = [name for name in directories if name not in {".git", ".venv", "__pycache__"}]
+        for name in files:
+            tracked = Path(current) / name
+            try:
+                item = tracked.stat(follow_symlinks=False)
+            except OSError:
+                continue
+            if stat.S_ISREG(item.st_mode) and (item.st_dev, item.st_ino) == (candidate_stat.st_dev, candidate_stat.st_ino):
+                return tracked.relative_to(root).as_posix()
+    return None
 
 
 def _repo_relative(path) -> str | None:
@@ -41,6 +60,13 @@ def _repo_relative(path) -> str | None:
         try:
             candidate.relative_to(ROOT.resolve())
         except ValueError:
+            # An external hardlink has an external pathname but shares the
+            # repository file's inode; map it back to the canonical resource.
+            alias = _external_hardlink_alias(candidate)
+            if alias in PROTECTED_PATHS:
+                raise PermissionError("owner-managed protected file is read-only")
+            if alias is not None:
+                raise PermissionError("external hardlink alias to a repository resource is denied")
             return None
         raise PermissionError("repository write path escapes through a symlink")
     lexical_value = None
@@ -52,6 +78,11 @@ def _repo_relative(path) -> str | None:
     resolved_value = resolved_relative.as_posix()
     if lexical_value in PROTECTED_PATHS or resolved_value in PROTECTED_PATHS:
         raise PermissionError("owner-managed protected file is read-only")
+    try:
+        if resolved.is_file() and resolved.stat().st_nlink > 1:
+            raise PermissionError("hardlink aliases to repository resources are denied")
+    except OSError as exc:
+        raise PermissionError("repository hardlink state cannot be checked safely") from exc
     return resolved_value if resolved_value not in {"", "."} else None
 
 
@@ -83,7 +114,7 @@ def _record_write_trace(path, operation: str) -> None:
 
 
 def authorize_write_path(path) -> None:
-    """Reject owner-managed protected files and fence production modules, scripts, and rulesets."""
+    """Reject owner-managed config writes and require a live lease for every repository-local mutation."""
     relative = _repo_relative(path)
     if relative is None:
         # A pre-existing external hard link to the protected config has a different

@@ -76,6 +76,16 @@ def _validate_blob_pin(root: Path, path: str, sha: str, label: str) -> None:
     raise ValueError(f"{label} blob does not match {path} in reachable Git history")
 
 
+def _validate_config_baseline_pin(root: Path, config_pin: dict) -> None:
+    """The release pin must match the approved baseline, not unregistered working-tree drift."""
+    policy = _load_json(root / "sources" / "policy.json", "owner config policy")
+    guard = policy.get("managed_config_guard")
+    if (not isinstance(guard, dict)
+            or guard.get("path") != config_pin.get("path")
+            or guard.get("approved_git_blob_sha") != config_pin.get("git_blob_sha")):
+        raise ValueError("config_baseline pin must match the owner-approved managed_config_guard baseline")
+
+
 def _canonical_digest(value: object) -> str:
     payload = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
@@ -275,6 +285,7 @@ def validate_release_manifest(root: Path = ROOT, manifest_path: Path | None = No
     config = pins["config_baseline"]
     if config.get("access") != "read_only":
         raise ValueError("config_baseline access must remain read_only")
+    _validate_config_baseline_pin(root, config)
     review = pins.get("review_engine")
     if not isinstance(review, dict) or not isinstance(review.get("declared_version"), str) or not review["declared_version"].strip():
         raise ValueError("review_engine.declared_version is required")

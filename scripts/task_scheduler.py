@@ -23,7 +23,7 @@ from datetime import datetime
 from pathlib import Path
 
 from remote_task_queue_runtime import (
-    claim_remote, complete_remote, enqueue_remote, make_store, recover_remote,
+    claim_remote, complete_remote, enqueue_remote, make_store, recover_remote, resolve_superseded_dead_letters,
     validate_candidate, validate_envelope,
 )
 from task_queue_runtime import (
@@ -844,6 +844,36 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
         }
 
 
+def enqueue_source_discovery_task(store, registry: dict, *, idempotency_key: str,
+                                   priority: int = 55) -> dict:
+    """Enqueue at most one Watchdog discovery workflow per UTC day."""
+    match = re.fullmatch(r"source-discovery:(\d{4}-\d{2}-\d{2})", idempotency_key or "")
+    if not match:
+        raise ValueError("source discovery requires a UTC-day idempotency key: source-discovery:YYYY-MM-DD")
+    try:
+        datetime.strptime(match.group(1), "%Y-%m-%d")
+    except ValueError as exc:
+        raise ValueError("source discovery idempotency key contains an invalid UTC date") from exc
+    if isinstance(priority, bool) or not isinstance(priority, int) or not 0 <= priority <= 100:
+        raise ValueError("source discovery priority must be from 0 to 100")
+    result = enqueue_remote({
+        "idempotency_key": idempotency_key,
+        "trace_id": idempotency_key,
+        "requester_program_id": "workflow_automation_watchdog",
+        "target_program_id": "workflow_source_discovery",
+        "capability": "source_discovery",
+        "priority": priority,
+        "input": {},
+    }, store, registry)
+    task = result["task"]
+    return {
+        "created": result["created"],
+        "task_id": task["task_id"],
+        "status": task["status"],
+        "idempotency_key": task["idempotency_key"],
+    }
+
+
 def enqueue_source_assessment_task(store, registry: dict, adapters: dict, *,
                                    idempotency_key: str, input_payload: dict,
                                    priority: int = 60, root: Path = ROOT) -> dict:
@@ -860,7 +890,7 @@ def enqueue_source_assessment_task(store, registry: dict, adapters: dict, *,
         raise ValueError("predecessor proof must contain exactly the reviewed discovery provenance fields")
     if predecessor.get("program_id") != "script_discover_sources":
         raise ValueError("source assessment predecessor must be script_discover_sources")
-    if predecessor.get("workflow_name") != "Shadowrocket Deterministic Domain Audit (User Config Baseline)":
+    if predecessor.get("workflow_name") != "Shadowrocket Source Discovery (Watchdog)":
         raise ValueError("source assessment predecessor workflow is not the reviewed production workflow")
     if not isinstance(predecessor.get("workflow_run_id"), str) or not predecessor["workflow_run_id"].isdigit():
         raise ValueError("predecessor workflow_run_id must be a decimal string")
@@ -1030,11 +1060,12 @@ def main() -> int:
     parser.add_argument("--idempotency-key")
     parser.add_argument("--priority", type=int, default=80)
     parser.add_argument("--input-json", default="{}")
-    parser.add_argument("command", choices=["plan", "run-once", "enqueue-auto-sync", "enqueue-source-assessment"])
+    parser.add_argument("--current-main-sha", help="Current main commit used to resolve superseded terminal tasks")
+    parser.add_argument("command", choices=["plan", "run-once", "enqueue-auto-sync", "enqueue-source-discovery", "enqueue-source-assessment", "resolve-superseded-dead-letters"])
     args = parser.parse_args()
     try:
         token = sys.stdin.read().strip() if args.token_stdin else None
-        if args.command in {"run-once", "enqueue-auto-sync", "enqueue-source-assessment"} and not token:
+        if args.command in {"run-once", "enqueue-auto-sync", "enqueue-source-discovery", "enqueue-source-assessment", "resolve-superseded-dead-letters"} and not token:
             raise ValueError(f"{args.command} requires a queue token supplied through --token-stdin")
         store = make_store(args.repository, args.branch, args.queue_path, token=token)
         registry = load_object(args.registry, "program registry")
@@ -1042,6 +1073,11 @@ def main() -> int:
         if args.command == "plan":
             plan = build_execution_plan(store.read().document, registry, adapters)
             print(json.dumps(plan, ensure_ascii=False))
+        elif args.command == "enqueue-source-discovery":
+            print(json.dumps(enqueue_source_discovery_task(
+                store, registry, idempotency_key=args.idempotency_key,
+                priority=args.priority,
+            ), ensure_ascii=False))
         elif args.command == "enqueue-source-assessment":
             if not isinstance(args.idempotency_key, str) or not args.idempotency_key:
                 raise ValueError("enqueue-source-assessment requires --idempotency-key")
@@ -1055,6 +1091,13 @@ def main() -> int:
                 store, registry, adapters, idempotency_key=args.idempotency_key,
                 priority=args.priority, input_payload=input_payload,
             ), ensure_ascii=False))
+        elif args.command == "resolve-superseded-dead-letters":
+            if not args.current_main_sha:
+                raise ValueError("resolve-superseded-dead-letters requires --current-main-sha")
+            resolved = resolve_superseded_dead_letters(
+                store, registry, current_main_sha=args.current_main_sha,
+            )
+            print(json.dumps({"resolved_count": len(resolved), "tasks": resolved}, ensure_ascii=False))
         elif args.command == "enqueue-auto-sync":
             if not isinstance(args.idempotency_key, str) or not args.idempotency_key:
                 raise ValueError("enqueue-auto-sync requires --idempotency-key")

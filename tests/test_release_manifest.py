@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from validate_release_manifest import (
     _canonical_digest,
+    _validate_config_baseline_pin,
     _validate_python_adapter_policy,
     validate_release_manifest,
 )
@@ -38,11 +39,27 @@ class ReleaseManifestSmokeTests(unittest.TestCase):
         for item in manifest["component_schemas"].values():
             self.assertEqual(item["git_blob_sha"], blob_sha(item["path"]), item["path"])
 
-        for name in ("watchdog_workflow", "production_workflow", "config_baseline"):
+        for name in (
+            "watchdog_workflow", "production_workflow", "fenced_file_writer",
+            "resource_lease_runtime", "task_scheduler", "source_assessor",
+            "task_queue_validator", "task_result_verifier", "remote_task_queue_runtime",
+            "assessment_checkpoint_contract", "shell_git_write_trace",
+        ):
             item = manifest["implementation_pins"][name]
             self.assertEqual(item["git_blob_sha"], blob_sha(item["path"]), item["path"])
 
-        self.assertEqual(manifest["implementation_pins"]["config_baseline"]["access"], "read_only")
+        config_pin = manifest["implementation_pins"]["config_baseline"]
+        policy = json.loads((ROOT / "sources/policy.json").read_text(encoding="utf-8"))
+        self.assertEqual(config_pin["git_blob_sha"], policy["managed_config_guard"]["approved_git_blob_sha"])
+        self.assertEqual(config_pin["path"], policy["managed_config_guard"]["path"])
+        self.assertEqual(config_pin["access"], "read_only")
+
+    def test_config_release_pin_must_match_owner_approved_baseline_not_working_tree(self):
+        manifest = json.loads((ROOT / "automation/release_manifest.json").read_text(encoding="utf-8"))
+        config_pin = manifest["implementation_pins"]["config_baseline"]
+        _validate_config_baseline_pin(ROOT, config_pin)
+        with self.assertRaisesRegex(ValueError, "owner-approved"):
+            _validate_config_baseline_pin(ROOT, {**config_pin, "git_blob_sha": "0" * 40})
 
     def _allowlisted_assessment_fixture(self):
         adapters = json.loads((ROOT / "automation/execution_adapters.json").read_text(encoding="utf-8"))

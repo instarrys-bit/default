@@ -20,11 +20,11 @@ class AdapterActivationAuditTests(unittest.TestCase):
         adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         self.assertEqual(report["program_count"], len(registry["programs"]))
         self.assertEqual(report["adapter_count"], len(adapters["adapters"]))
-        self.assertEqual(report["enabled_adapter_count"], 3)
+        self.assertEqual(report["enabled_adapter_count"], 2)
         self.assertTrue(report["watchdog_caller_permissions_ready"])
         self.assertEqual(
             [row["program_id"] for row in report["adapters"] if row["enabled"]],
-            ["script_assess_sources", "workflow_auto_sync", "workflow_self_healing_tests"],
+            ["workflow_auto_sync", "workflow_self_healing_tests"],
         )
 
     def test_identifies_only_low_privilege_dispatchable_workflow_as_canary(self):

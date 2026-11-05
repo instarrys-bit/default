@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "inventory_id": "resource-write-sets-2026.11.04.5",
+  "inventory_id": "resource-write-sets-2026.11.05.integration1",
   "status": "partial_static_entrypoint_review",
   "policy": {
     "lock_identity": "canonical logical resource path, not program ID",
@@ -425,7 +425,10 @@
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
+      "lease_keys": [
+        "logical/production-pipeline"
+      ]
     },
     {
       "program_id": "script_build_rule_provenance",
@@ -505,7 +508,10 @@
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
+      "lease_keys": [
+        "logical/production-pipeline"
+      ]
     },
     {
       "program_id": "script_build_source_candidates",
@@ -535,7 +541,10 @@
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
+      "lease_keys": [
+        "logical/production-pipeline"
+      ]
     },
     {
       "program_id": "script_collect_domains",
@@ -571,7 +580,10 @@
         "Bounded HTTPS reads from registered raw.githubusercontent.com source URLs; writes source snapshots and candidate buffers; no activation."
       ],
       "evidence": "main() writes every current source snapshot with Path.write_text, writes data/domain_candidates.json and data/candidates.json through write_document with its default lease_required=false, and directly replaces data/source_pending.json.",
-      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof."
+      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof.",
+      "lease_keys": [
+        "logical/production-pipeline"
+      ]
     },
     {
       "program_id": "script_deterministic_review",
@@ -605,7 +617,10 @@
         "Resumable deterministic review; updates the review cursor and ledger in bounded checkpoints."
       ],
       "evidence": "main() checkpoints sources/domain_reviews.json through write_document with lease_required defaulting to false and writes sources/review_cursor.json through atomic_json using a sibling .tmp file and replace.",
-      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof."
+      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof.",
+      "lease_keys": [
+        "logical/production-pipeline"
+      ]
     },
     {
       "program_id": "script_diagnose_workflow_failure",
@@ -659,7 +674,11 @@
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
+      "lease_keys": [
+        "sources/discovered_sources.json",
+        "reports/source-discovery.md"
+      ]
     },
     {
       "program_id": "script_github_queue_store",
@@ -799,7 +818,10 @@
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
+      "lease_keys": [
+        "logical/production-pipeline"
+      ]
     },
     {
       "program_id": "script_lifecycle_gate",
@@ -916,7 +938,10 @@
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
+      "lease_keys": [
+        "logical/production-pipeline"
+      ]
     },
     {
       "program_id": "script_register_config_baseline",
@@ -1133,7 +1158,10 @@
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
+      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
+      "lease_keys": [
+        "logical/production-pipeline"
+      ]
     },
     {
       "program_id": "script_task_queue_runtime",
@@ -1350,10 +1378,13 @@
         "script_restore_automation_state",
         "workflow_auto_sync"
       ],
-      "lock_key": "logical/production-pipeline + resource-specific document/report lease",
+      "lock_key": "sources/discovered_sources.json + reports/source-discovery.md (exclusive logical document and report leases shared with workflow_auto_sync)",
       "mode": "exclusive",
       "enforcement": "Current production builder and publish restore are serialized by the Watchdog logical production-pipeline live fence. The JSON document writer additionally uses its documented logical-document lease where explicitly asserted.",
-      "note": "Restore can write the same allowlisted base/manifest/shards/report; all dynamic document children and cleanup operations must remain within the same logical resource lease."
+      "note": "Restore can write the same allowlisted base/manifest/shards/report; all dynamic document children and cleanup operations must remain within the same logical resource lease. The dedicated source-discovery workflow is registered but its adapter remains disabled. It uses the exact same discovered_sources.json and report resource leases as workflow_auto_sync; immutable run artifact handoff is verified by Watchdog before assessment enqueue.",
+      "known_writers": [
+        "workflow_source_discovery"
+      ]
     },
     {
       "resource": "sources/policy_source_overlap.json",
@@ -1418,19 +1449,20 @@
     "Atomic multi-resource lease acquisition and compatibility of per-resource locks across all independent/cross-workflow writers remain unproven.",
     "Static entrypoint inventory does not prove absence of unregistered dynamic writes, subprocess writes, external API mutations or filesystem writes hidden behind imported helpers.",
     "All remaining registered Python components must be checked for indirect writes through imported helpers, subprocesses and dynamically selected outputs; report-only writers and active source-registry writers must remain distinct.",
-    "The 53 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and one external workflow-dispatch side-effect adapter. Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths."
+    "The 54 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and one external workflow-dispatch side-effect adapter. Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths.",
+    "Persistent repository-tree tracing complements Python audit hooks but does not prove transient write-and-revert activity, Git metadata changes, external side effects or unexecuted call paths."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
-    "release_manifest_blob_sha": "3752b5194c818f65d20fae4446974500dce74009",
-    "program_registry_blob_sha": "ab5f92f25e97d62b9fd35d4097109f9fad892c6b",
-    "execution_adapters_blob_sha": "97d18a09763f851362e0bd5400dad856ae1f448b",
+    "release_id": "shadowrocket-automation-baseline-2026.11.05.integration1",
+    "release_manifest_blob_sha": "24e407e1b8f8809eb7932da94a5ba23ef3ed8e85",
+    "program_registry_blob_sha": "15943d2532b2d0d2291f1da61305d84e811b8f5a",
+    "execution_adapters_blob_sha": "82012007de750c605d5ef27a355ece7321cdc51a",
     "added_after_release_baseline": true,
-    "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 53 Python components are now partitioned into 36 direct/helper writer entries, 16 reviewed non-writers and one external GitHub Actions dispatch side-effect adapter.",
+    "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 54 Python components are now partitioned into 36 direct/helper writer entries and 17 reviewed non-writers, alongside one external GitHub Actions dispatch side-effect adapter.",
     "reviewed_at": "2026-11-05",
     "central_write_guard_test": "tests/test_fenced_file_writer.py::test_every_registered_python_component_installs_the_guard",
     "runtime_trace_evidence": {
-      "trace_script": "scripts/fenced_file_writer.py",
+      "trace_script": "scripts/capture_git_write_trace.py",
       "workflow_jobs": [
         "audit",
         "publish"
@@ -1439,8 +1471,8 @@
         "automation-runtime-write-trace-audit",
         "automation-runtime-write-trace-publish"
       ],
-      "data_policy": "paths and run metadata only; no file contents or credentials",
-      "limitation": "does not observe shell/git subprocess writes or prove unexecuted call paths"
+      "data_policy": "repository paths and run metadata only; no file contents or credentials",
+      "limitation": "captures persistent repository-tree deltas only; does not observe transient write-and-revert activity, Git metadata changes, external filesystem/API side effects or unexecuted paths"
     }
   },
   "scheduler_lock_contract": {
@@ -1549,6 +1581,12 @@
       "source": "scripts/fenced_file_writer.py",
       "classification": "filesystem_mutation_guard_not_writer",
       "evidence": "Installs audit hooks that reject/validate mutation events; it does not itself create or modify repository resources."
+    },
+    {
+      "program_id": "script_capture_git_write_trace",
+      "source": "scripts/capture_git_write_trace.py",
+      "classification": "read_only_repository_delta_observer",
+      "evidence": "Reads committed, staged, unstaged and non-ignored untracked Git path deltas; writes only path-only JSONL trace records under RUNNER_TEMP outside the repository."
     }
   ],
   "control_plane_side_effects": [
@@ -1563,5 +1601,254 @@
       "file_writes": [],
       "control_plane_boundary": "Dispatch must be preceded by persisted durable dispatch intent; ambiguous API outcomes are reconciled by task correlation before retry. Adapter remains disabled for production Python components by default."
     }
-  ]
+  ],
+  "direct_mutation_scan": {
+    "status": "partial_python_direct_callsite_scan",
+    "scanner": "tests/test_transitive_write_site_inventory.py",
+    "registered_component_count": 54,
+    "mutation_api_families": [
+      "Path/open write modes",
+      "Path write_text/write_bytes/unlink/mkdir/replace/rename/touch",
+      "os filesystem mutation functions",
+      "shutil copy/move/remove functions",
+      "json_document_store.write_document",
+      "task_queue_runtime.atomic_write",
+      "HTTP Request POST/PUT/PATCH/DELETE"
+    ],
+    "imported_helper_check": "Every locally imported helper with detected direct mutation sites must itself be registered and classified in the write, non-writer, or control-plane inventory.",
+    "limitations": [
+      "dynamic path resolution",
+      "workflow-native shell and Git mutations",
+      "runtime-selected output paths and symlink/hardlink alias resolution",
+      "transient write-and-revert activity",
+      "external filesystem/API effects not represented as literal Request methods",
+      "unexecuted runtime branches and indirect dynamic imports"
+    ]
+  },
+  "workflow_native_write_sites": [
+    {
+      "workflow_path": ".github/workflows/auto_sync.yml",
+      "step_name": "Verify base commit and safely publish allowlisted outputs",
+      "mutation_kinds": [
+        "git_add",
+        "git_commit",
+        "git_push"
+      ],
+      "resources": [
+        "rulesets/direct.list",
+        "rulesets/proxy.list",
+        "rulesets/reject.list",
+        "rulesets/manifest.json",
+        "rulesets/pending_queue.json",
+        "rulesets/archive.json",
+        "reports/"
+      ],
+      "fence": "Watchdog workflow_auto_sync task lease plus logical/production-pipeline resource lease; publish allowlist and protected-config digest checks before non-force push.",
+      "boundary": "Main-branch production publication; independently verify resulting commit and artifact digests."
+    },
+    {
+      "workflow_path": ".github/workflows/auto_sync.yml",
+      "step_name": "Publish only the cursor checkpoint under the same live fence",
+      "mutation_kinds": [
+        "git_add",
+        "git_commit",
+        "git_push"
+      ],
+      "resources": [
+        "sources/review_cursor.json"
+      ],
+      "fence": "The persist-review-cursor job installs AUTOMATION_WRITE_GUARD and the exact live resource lease environment before persist_review_cursor.py runs; the filesystem guard re-reads the durable queue before each write. The cursor-only Git publication revalidates the same workflow/task/resource proof before staging and immediately before push.",
+      "boundary": "Main-branch checkpoint publication is serialized by shadowrocket-main-writer; only sources/review_cursor.json may be staged, committed or pushed."
+    },
+    {
+      "workflow_path": ".github/workflows/automation-watchdog.yml",
+      "step_name": "Detect stale successful audit and recover",
+      "mutation_kinds": [
+        "github_contents_put"
+      ],
+      "resources": [
+        "automation/unregistered_path_registry.json"
+      ],
+      "fence": "GitHub Contents Blob-SHA conditional update with bounded reread/merge/retry; observed_run_ids makes replay idempotent.",
+      "boundary": "Control-plane registry CAS; retry exhaustion fails closed."
+    },
+    {
+      "workflow_path": ".github/workflows/automation-watchdog.yml",
+      "step_name": "Remove the one-shot canary request after successful verification",
+      "mutation_kinds": [
+        "github_contents_delete"
+      ],
+      "resources": [
+        "automation/assessment_canary_request.json"
+      ],
+      "fence": "Conditional GitHub Contents delete using the current blob SHA after verified canary completion.",
+      "boundary": "One-shot control-plane request deletion; no production ruleset write."
+    },
+    {
+      "workflow_path": ".github/workflows/automation-watchdog.yml",
+      "step_name": "Publish manifest-only metadata repair",
+      "mutation_kinds": [
+        "git_add",
+        "git_commit",
+        "git_push"
+      ],
+      "resources": [
+        "rulesets/manifest.json"
+      ],
+      "fence": "Main-branch guarded workflow and manifest-only allowlist; publication follows validation.",
+      "boundary": "Main-branch metadata-only commit; does not change DIRECT/PROXY/REJECT lists."
+    },
+    {
+      "workflow_path": ".github/workflows/request-intake.yml",
+      "step_name": "Commit observation ledger with bounded Git-ref CAS",
+      "mutation_kinds": [
+        "git_reset",
+        "git_add",
+        "git_commit",
+        "git_push"
+      ],
+      "resources": [
+        "sources/request_domain_observations.json"
+      ],
+      "fence": "Fetch/rebase/push retry with run-scoped execution; distinct-run serialization and no-lost-update behavior remain unproven.",
+      "boundary": "Main-branch observation ledger publication; bounded retry fails closed on conflict."
+    },
+    {
+      "workflow_path": ".github/workflows/request-intake.yml",
+      "step_name": "Request ruleset audit through Watchdog queue",
+      "mutation_kinds": [
+        "workflow_dispatch"
+      ],
+      "resources": [
+        "automation/task_queue.json"
+      ],
+      "fence": "Delegates to Watchdog scheduler; durable task queue update uses Contents Blob-SHA CAS and task identity.",
+      "boundary": "Control-plane request only; does not directly publish rulesets."
+    },
+    {
+      "workflow_path": ".github/workflows/self-healing-agent.yml",
+      "step_name": "Apply allowlisted repair and run tests",
+      "mutation_kinds": [
+        "git_checkout",
+        "git_add",
+        "git_commit"
+      ],
+      "resources": [
+        "self-heal/run-<run_id> working tree"
+      ],
+      "fence": "Hard-coded repair IDs and staged-path allowlist; isolated run-specific branch.",
+      "boundary": "Runner-local working tree and PR branch preparation only."
+    },
+    {
+      "workflow_path": ".github/workflows/self-healing-agent.yml",
+      "step_name": "Publish repair pull request",
+      "mutation_kinds": [
+        "git_push",
+        "workflow_dispatch"
+      ],
+      "resources": [
+        "self-heal/run-<run_id> branch",
+        "self-healing-tests workflow run"
+      ],
+      "fence": "Run-specific branch; PR publication is review-gated; tests are dispatched against the repair branch.",
+      "boundary": "PR branch and CI workflow side effects; main is not directly pushed."
+    },
+    {
+      "workflow_path": ".github/workflows/self-healing-agent.yml",
+      "step_name": "Close recovered validator incidents",
+      "mutation_kinds": [
+        "github_issue_patch"
+      ],
+      "resources": [
+        "GitHub validator incident issue state"
+      ],
+      "fence": "Closes only exact incident issues after verified recovery run evidence.",
+      "boundary": "GitHub issue metadata only."
+    },
+    {
+      "workflow_path": ".github/workflows/self-healing-agent.yml",
+      "step_name": "Close recovered deterministic-audit incidents",
+      "mutation_kinds": [
+        "github_issue_patch"
+      ],
+      "resources": [
+        "GitHub deterministic-audit incident issue state"
+      ],
+      "fence": "Closes only exact incident issues after full audit and publish success evidence.",
+      "boundary": "GitHub issue metadata only."
+    },
+    {
+      "workflow_path": ".github/workflows/dashboard-pages.yml",
+      "step_name": "Deploy to GitHub Pages",
+      "mutation_kinds": [
+        "github_pages_deployment"
+      ],
+      "resources": [
+        "GitHub Pages published dashboard"
+      ],
+      "fence": "GitHub Pages deployment action consumes the workflow's generated Pages artifact; no repository ref mutation.",
+      "boundary": "External Pages publication, not a repository file writer."
+    },
+    {
+      "workflow_path": ".github/workflows/source-discovery.yml",
+      "step_name": "Publish discovery inventory under its exact resource leases",
+      "mutation_kinds": [
+        "git_add",
+        "git_commit",
+        "git_push"
+      ],
+      "resources": [
+        "sources/discovered_sources.json",
+        "sources/discovered_sources.json.manifest.json",
+        "sources/discovered_sources.json.parts-<digest>/part-*.jsonl",
+        "reports/source-discovery.md"
+      ],
+      "fence": "Live GitHub Contents queue proof validates exact Watchdog workflow_source_discovery dispatch identity and active per-resource lease IDs/fencing tokens immediately before commit and immediately before main push.",
+      "boundary": "Only the discovered-source logical document family and discovery report may be staged; modules/uu.conf is checked unchanged before publication and after rebase. Adapter remains disabled pending HOLD/authorization."
+    },
+    {
+      "workflow_path": ".github/workflows/automation-watchdog.yml",
+      "step_name": "Enqueue source assessment after successful discovery workflow",
+      "mutation_kinds": [
+        "git_reset",
+        "github_contents_put"
+      ],
+      "resources": [
+        "automation/task_queue.json"
+      ],
+      "fence": "task_scheduler.py persists through the GitHub Contents SHA-CAS queue store; candidate queue validation runs before and after mutation, and source-assessment:<workflow_run_id> is the idempotency key. The step is gated by exact successful main-branch producer evidence and by both Assessment adapter/orchestration caller gates.",
+      "boundary": "Durable control-plane task enqueue only. It does not run Assessment in this step or publish routing rules; Assessment remains disabled until the independent DAG is explicitly authorized."
+    }
+  ],
+  "workflow_native_scan": {
+    "status": "partial_workflow_shell_pattern_scan",
+    "scanner": "tests/test_workflow_native_write_inventory.py",
+    "workflow_count": 7,
+    "detected_mutation_families": [
+      "git add/commit/push/reset/checkout",
+      "GitHub Contents API PUT/DELETE",
+      "GitHub issue PATCH",
+      "GitHub Actions workflow_dispatch",
+      "GitHub Pages deploy action"
+    ],
+    "limitations": [
+      "dynamic command construction",
+      "shell functions and sourced scripts",
+      "unrecognized HTTP mutation methods or API clients",
+      "side effects hidden inside third-party GitHub Actions",
+      "workflow steps not exercised in the current CI run",
+      "dynamic repository paths and cross-workflow concurrency"
+    ]
+  },
+  "filesystem_guard_coverage": {
+    "guard_path": "scripts/fenced_file_writer.py",
+    "scope": "all repository-relative filesystem mutation events when AUTOMATION_WRITE_GUARD=1 and AUTOMATION_REQUIRE_RESOURCE_LEASE=1",
+    "exclusions": [
+      "paths outside the repository checkout that are not symlink or hardlink aliases to repository files, including runner-local temporary files"
+    ],
+    "protected_path": "modules/uu.conf is always denied regardless of lease state",
+    "lease_resolution": "specific longest matching resource key; otherwise logical/production-pipeline is accepted only for the exact Watchdog-dispatched workflow_auto_sync task",
+    "limitation": "This guard change expands path coverage but does not prove every workflow enables the required environment flags, every resource path maps to a canonical narrow lease, or all cross-workflow writers share the same lock.",
+    "alias_handling": "Repository symlinks resolve to canonical target paths; external hardlinks to repository resources are detected by device/inode and denied; internal hardlink aliases are also denied."
+  }
 }

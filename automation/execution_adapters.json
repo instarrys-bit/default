@@ -67,11 +67,9 @@
       "target_program_id": "script_assess_sources",
       "target_kind": "python_component",
       "adapter_type": "python_cli",
-      "enabled": true,
+      "enabled": false,
       "interface_status": "reviewed",
-      "allowed_callers": [
-        "workflow_automation_watchdog"
-      ],
+      "allowed_callers": [],
       "entrypoint": {
         "path": "scripts/assess_sources.py",
         "executable": "python3",
@@ -125,7 +123,7 @@
               },
               "workflow_name": {
                 "type": "string",
-                "const": "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
+                "const": "Shadowrocket Source Discovery (Watchdog)"
               },
               "workflow_run_id": {
                 "type": "string"
@@ -246,9 +244,8 @@
       },
       "timeout_seconds": 240,
       "retry": {
-        "max_attempts": 2,
-        "policy": "bounded_retry_same_predecessor_batch",
-        "description": "Retries reuse the same predecessor-bound URL batch and restore completed URL results from the durable task-queue checkpoint; only incomplete or failed URL fetches are repeated."
+        "max_attempts": 0,
+        "policy": "disabled_until_dedicated_discovery_workflow_is_live"
       },
       "completion": {
         "success_condition": "exit_zero_schema_valid_and_independent_artifact_verifier_valid",
@@ -290,9 +287,9 @@
       "dependency_contract": {
         "predecessor_program_id": "script_discover_sources",
         "artifact_path": "sources/discovered_sources.json",
-        "producer_workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
+        "producer_workflow_name": "Shadowrocket Source Discovery (Watchdog)",
         "edge_type": "intended_successful_workflow_run_with_immutable_artifact_digest",
-        "enforcement": "Watchdog workflow_run event gate accepts only a successful main-branch run of the exact discovery-producing production workflow, binds the numeric run ID and head SHA, hashes the current discovered_sources artifact, and enqueues an idempotent source-assessment task through the durable scheduler queue."
+        "enforcement": "Watchdog downloads the artifact from the exact successful main-branch Shadowrocket Source Discovery (Watchdog) workflow_run, validates the producer run ID/head SHA and complete logical-document digest, confirms equality with current main, then enqueues an idempotent task. The scheduler independently rechecks the current digest before claim."
       }
     },
     {
@@ -1292,12 +1289,14 @@
         "mode": "exclusive",
         "resource_keys": [
           "logical/production-pipeline",
-          "sources/review_cursor.json"
+          "sources/review_cursor.json",
+          "sources/discovered_sources.json",
+          "reports/source-discovery.md"
         ],
         "lease_seconds": 21600,
         "fencing_required": true,
         "enforcement_boundary": "live task-queue proof checked by the audit gate and immediately before publish push",
-        "coverage": "Exclusive logical/production-pipeline lease plus the shared sources/review_cursor.json lease; audit cursor writes and failed-run checkpoint persistence use the same Watchdog-issued fencing proof."
+        "coverage": "Exclusive logical/production-pipeline lease plus the shared sources/review_cursor.json lease; audit cursor writes and failed-run checkpoint persistence use the same Watchdog-issued fencing proof. The monolithic fallback shares the exact sources/discovered_sources.json and reports/source-discovery.md locks with the dormant independent discovery workflow, preventing concurrent writers during the transition."
       }
     },
     {
@@ -1890,6 +1889,89 @@
       "completion": {
         "success_condition": "importable_library_and_unit_tests_pass",
         "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "script_capture_git_write_trace",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/capture_git_write_trace.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 60,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_observer_no_dispatch"
+      },
+      "completion": {
+        "success_condition": "workflow_step_exit_code_zero_and_path_only_trace_artifact_uploaded",
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "workflow_source_discovery",
+      "target_kind": "github_actions_workflow",
+      "adapter_type": "github_actions_workflow",
+      "enabled": false,
+      "interface_status": "workflow_dispatch_reviewed",
+      "allowed_callers": [],
+      "workflow": {
+        "path": ".github/workflows/source-discovery.yml",
+        "dispatchable": true,
+        "inputs": [
+          {
+            "name": "automation_task_id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "resource_lease_proof",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "allowed_refs": [
+          "main"
+        ],
+        "caller_permissions_required": [
+          "actions:write",
+          "contents:write"
+        ]
+      },
+      "timeout_seconds": 30,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_HOLD_authorization_and_DAG_acceptance"
+      },
+      "completion": {
+        "success_condition": "completed_successful_workflow_with_exact_producer_identity_and_verified_immutable_artifact",
+        "required_result_fields": [
+          "run_id",
+          "html_url",
+          "head_sha",
+          "status",
+          "conclusion"
+        ],
+        "independent_verification_required": true
+      },
+      "resource_contract": {
+        "mode": "exclusive",
+        "resource_keys": [
+          "sources/discovered_sources.json",
+          "reports/source-discovery.md"
+        ],
+        "lease_seconds": 1800,
+        "fencing_required": true,
+        "enforcement_boundary": "exact Watchdog dispatch identity and live per-resource fencing assertion before each filesystem mutation and immediately before main-branch publication",
+        "coverage": "Discovery document base JSON, manifest, content-addressed shards, staging and cleanup share one logical document lease; report uses its own exclusive lease."
       }
     }
   ]
