@@ -223,7 +223,7 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertFalse(result["should_produce"])
 
 
-    def test_repository_manifest_classifies_adblock_assets_as_non_production(self):
+    def test_adblock_assets_remain_pending_until_explicit_classification(self):
         manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
         paths = [
             "modules/AdBlock.sgmodule",
@@ -244,9 +244,9 @@ class ProductionIntentTests(unittest.TestCase):
         entries = {item["path"]: item for item in ledger["entries"]}
         for path in paths:
             with self.subTest(path=path):
-                self.assertNotEqual(entries[path]["status"], "PENDING_CLASSIFICATION")
-                self.assertTrue(entries[path]["classification_reason"])
-                self.assertTrue(entries[path]["classification_basis"])
+                self.assertEqual(entries[path]["status"], "PENDING_CLASSIFICATION")
+                self.assertFalse(entries[path].get("classification_reason"))
+                self.assertFalse(entries[path].get("classification_basis"))
 
 
 
