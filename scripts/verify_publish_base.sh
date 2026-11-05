@@ -71,6 +71,39 @@ is_queue_only_compare() {
   ' >/dev/null 2>&1
 }
 
+# Mixed comparisons are safe only when every commit that touched the durable
+# queue is independently verified as a single-file GitHub Actions bot update.
+is_verified_mixed_queue_and_non_input_compare() {
+  jq -e '
+    .status == "ahead" and .behind_by == 0
+    and (.ahead_by | type == "number")
+    and (.ahead_by >= 1 and .ahead_by <= 20)
+    and (.commits | length) == .ahead_by
+    and ([.files[].filename] | index("automation/task_queue.json") != null)
+    and ([.files[].filename | select(. != "automation/task_queue.json")] | length > 0)
+  ' <<< "$compare_json" >/dev/null 2>&1 || return 1
+  local queue_commit_seen=false commit_sha detail
+  while IFS= read -r commit_sha; do
+    [ -n "$commit_sha" ] || continue
+    detail="$(gh api "repos/$REPO/commits/$commit_sha")" || return 1
+    if jq -e '[.files[]?.filename] | index("automation/task_queue.json") != null' <<< "$detail" >/dev/null 2>&1; then
+      queue_commit_seen=true
+      jq -e '
+        .commit.message == "Update durable automation task queue"
+        and .commit.author.email == "41898282+github-actions[bot]@users.noreply.github.com"
+        and (.parents | length) == 1
+        and (.files | length) == 1
+        and .files[0].filename == "automation/task_queue.json"
+        and .files[0].status == "modified"
+      ' <<< "$detail" >/dev/null 2>&1 || return 1
+    fi
+  done < <(jq -r '.commits[].sha' <<< "$compare_json")
+  [ "$queue_commit_seen" = true ] || return 1
+  local non_queue_paths
+  non_queue_paths="$(jq -c '[.files[].filename | select(. != "automation/task_queue.json")]' <<< "$compare_json")"
+  is_non_input_path_set "$non_queue_paths"
+}
+
 if [ "$mode" = "--check-only" ]; then
   if [ -n "${COMPARE_JSON_FILE:-}" ]; then
     compare_json="$(cat "$COMPARE_JSON_FILE")"
@@ -98,6 +131,10 @@ if [ "$mode" = "--check-only" ]; then
     echo "Only strictly verified durable queue-state commits changed after the audited commit."
     exit 0
   fi
+  if is_verified_mixed_queue_and_non_input_compare; then
+    echo "Only strictly verified queue-state commits and manifest-classified non-production paths changed after the audited commit."
+    exit 0
+  fi
   if is_non_input_only_compare; then
     echo "No declared production inputs changed after the audited commit; generated outputs and unrelated state do not create production demand."
     exit 0
@@ -105,6 +142,35 @@ if [ "$mode" = "--check-only" ]; then
   echo "A declared production input changed after the audited commit; a new production audit is required." >&2
   exit 1
 fi
+
+# Publish-time equivalent: inspect the local Git history before rebasing.
+is_verified_mixed_queue_and_non_input_history() {
+  local base="$1" head="$2" paths_json="$3"
+  local commits commit parent_line author_email subject changed_status expected_status
+  commits="$(git rev-list --reverse "$base..$head")" || return 1
+  [ -n "$commits" ] || return 1
+  [ "$(wc -l <<< "$commits" | tr -d ' ')" -le 20 ] || return 1
+  local queue_commit_seen=false
+  expected_status="$(printf 'M\tautomation/task_queue.json')"
+  while IFS= read -r commit; do
+    [ -n "$commit" ] || continue
+    changed_status="$(git diff-tree --no-commit-id --name-status -r -m "$commit" | sort -u)"
+    if grep -Fq "automation/task_queue.json" <<< "$changed_status"; then
+      queue_commit_seen=true
+      parent_line="$(git rev-list --parents -n 1 "$commit")"
+      [ "$(wc -w <<< "$parent_line" | tr -d ' ')" -eq 2 ] || return 1
+      author_email="$(git show -s --format=%ae "$commit")"
+      subject="$(git show -s --format=%s "$commit")"
+      [ "$author_email" = "41898282+github-actions[bot]@users.noreply.github.com" ] || return 1
+      [ "$subject" = "Update durable automation task queue" ] || return 1
+      [ "$changed_status" = "$expected_status" ] || return 1
+    fi
+  done <<< "$commits"
+  [ "$queue_commit_seen" = true ] || return 1
+  local non_queue_paths
+  non_queue_paths="$(jq -c '[.[] | select(. != "automation/task_queue.json")]' <<< "$paths_json")"
+  is_non_input_path_set "$non_queue_paths"
+}
 
 if [ "$mode" != "publish" ]; then
   echo "Usage: $0 [--check-only]" >&2
@@ -172,6 +238,12 @@ if [ -n "$changed_paths" ]; then
   fi
 
   changed_paths_json="$(printf '%s\n' "$changed_paths" | jq -Rsc 'split("\n") | map(select(length > 0))')"
+  if grep -Fxq "automation/task_queue.json" <<< "$changed_paths" &&
+     is_verified_mixed_queue_and_non_input_history "$GITHUB_SHA" "$(git rev-parse origin/main)" "$changed_paths_json"; then
+    echo "Only strictly verified queue-state commits and manifest-classified non-production paths changed during audit; rebasing publication onto current main."
+    git reset --hard origin/main
+    exit 0
+  fi
   if is_non_input_path_set "$changed_paths_json"; then
     echo "Only manifest-classified non-production paths changed during audit; rebasing publication onto current main."
     git reset --hard origin/main

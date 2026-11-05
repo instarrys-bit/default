@@ -40,7 +40,10 @@ class PublishBaseIntegrationTests(unittest.TestCase):
                 ".github/workflows/automation-watchdog.yml",
                 "sources/source_activation_log.json", "scripts/resource_lease_runtime.py"
             ],
-            "monitoring_path_patterns": [],
+            "monitoring_path_patterns": [
+                "dashboard/**", ".github/workflows/dashboard-pages.yml",
+                "scripts/build_dashboard_snapshot.py"
+            ],
             "documentation_path_patterns": []
         }), encoding="utf-8")
         (self.work / "scripts" / "production_intent.py").write_text(
@@ -103,6 +106,30 @@ class PublishBaseIntegrationTests(unittest.TestCase):
             text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
         )
 
+    def run_check_only_with_commit_details(self, compare, details):
+        bin_dir = self.root / "bin"
+        bin_dir.mkdir(exist_ok=True)
+        gh = bin_dir / "gh"
+        gh.write_text(
+            "#!/usr/bin/env python3\n"
+            "import json, os, sys\n"
+            "sha = sys.argv[-1].rsplit('/', 1)[-1]\n"
+            "print(json.dumps(json.loads(os.environ['MOCK_GH_COMMITS'])[sha]))\n",
+            encoding="utf-8",
+        )
+        gh.chmod(0o755)
+        env = os.environ.copy()
+        env["GITHUB_SHA"] = self.base
+        env["COMPARE_JSON"] = json.dumps(compare)
+        env["GH_TOKEN"] = "test-token"
+        env["REPO"] = "instarrys-bit/default"
+        env["MOCK_GH_COMMITS"] = json.dumps(details)
+        env["PATH"] = str(bin_dir) + os.pathsep + env.get("PATH", "")
+        return subprocess.run(
+            ["bash", str(VERIFY_SCRIPT), "--check-only"], cwd=self.work, env=env,
+            text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        )
+
     def queue_compare(self, *, author_email="41898282+github-actions[bot]@users.noreply.github.com",
                       message="Update durable automation task queue", files=None, parent=None):
         return {
@@ -133,6 +160,26 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         self.assertEqual(git(self.work, "rev-parse", "HEAD"), git(self.work, "rev-parse", "origin/main"))
         self.assertEqual((self.work / "shadowrocket" / "uu.conf").read_text(encoding="utf-8").strip(), "protected")
 
+    def test_publish_accepts_verified_queue_commit_mixed_with_monitoring_change(self):
+        self.add_queue_commit()
+        git(self.work, "fetch", "origin")
+        git(self.work, "checkout", "-B", "main", "origin/main")
+        dashboard = self.work / "dashboard" / "index.html"
+        dashboard.parent.mkdir(parents=True, exist_ok=True)
+        dashboard.write_text("updated dashboard\n", encoding="utf-8")
+        snapshot = self.work / "scripts" / "build_dashboard_snapshot.py"
+        snapshot.write_text("updated snapshot\n", encoding="utf-8")
+        git(self.work, "add", "dashboard/index.html", "scripts/build_dashboard_snapshot.py")
+        git(self.work, "commit", "-m", "Refresh dashboard")
+        git(self.work, "push", "origin", "HEAD:main")
+        git(self.work, "checkout", "--detach", self.base)
+
+        result = self.run_guard()
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("strictly verified queue-state commits and manifest-classified non-production paths", result.stdout)
+        self.assertEqual(git(self.work, "rev-parse", "HEAD"), git(self.work, "rev-parse", "origin/main"))
+        self.assertEqual((self.work / "shadowrocket" / "uu.conf").read_text(encoding="utf-8"), "protected\n")
+
     def test_queue_only_commit_from_non_bot_author_is_rejected(self):
         self.add_queue_commit(author_email="test@example.invalid")
         result = self.run_guard()
@@ -156,6 +203,66 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         result = self.run_check_only(self.queue_compare(author_email="test@example.invalid"))
         self.assertNotEqual(result.returncode, 0, result.stdout)
         self.assertIn("A declared production input changed", result.stdout)
+
+    def test_api_check_accepts_verified_queue_commit_mixed_with_monitoring_changes(self):
+        queue_sha = "a" * 40
+        monitor_sha = "b" * 40
+        compare = {
+            "status": "ahead", "ahead_by": 2, "behind_by": 0,
+            "files": [
+                {"filename": "automation/task_queue.json", "status": "modified"},
+                {"filename": "dashboard/index.html", "status": "modified"},
+                {"filename": "scripts/build_dashboard_snapshot.py", "status": "modified"},
+            ],
+            "commits": [{"sha": queue_sha}, {"sha": monitor_sha}],
+        }
+        details = {
+            queue_sha: {
+                "commit": {
+                    "message": "Update durable automation task queue",
+                    "author": {"email": "41898282+github-actions[bot]@users.noreply.github.com"},
+                },
+                "parents": [{"sha": self.base}],
+                "files": [{"filename": "automation/task_queue.json", "status": "modified"}],
+            },
+            monitor_sha: {
+                "commit": {"message": "Refresh dashboard", "author": {"email": "test@example.invalid"}},
+                "parents": [{"sha": queue_sha}],
+                "files": [
+                    {"filename": "dashboard/index.html", "status": "modified"},
+                    {"filename": "scripts/build_dashboard_snapshot.py", "status": "modified"},
+                ],
+            },
+        }
+        result = self.run_check_only_with_commit_details(compare, details)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("strictly verified queue-state commits and manifest-classified non-production paths", result.stdout)
+
+    def test_api_check_rejects_queue_commit_mixed_with_another_file(self):
+        queue_sha = "a" * 40
+        compare = {
+            "status": "ahead", "ahead_by": 1, "behind_by": 0,
+            "files": [
+                {"filename": "automation/task_queue.json", "status": "modified"},
+                {"filename": "dashboard/index.html", "status": "modified"},
+            ],
+            "commits": [{"sha": queue_sha}],
+        }
+        details = {
+            queue_sha: {
+                "commit": {
+                    "message": "Update durable automation task queue",
+                    "author": {"email": "41898282+github-actions[bot]@users.noreply.github.com"},
+                },
+                "parents": [{"sha": self.base}],
+                "files": [
+                    {"filename": "automation/task_queue.json", "status": "modified"},
+                    {"filename": "dashboard/index.html", "status": "modified"},
+                ],
+            }
+        }
+        result = self.run_check_only_with_commit_details(compare, details)
+        self.assertNotEqual(result.returncode, 0, result.stdout)
 
     def test_manifest_classified_management_and_lease_changes_rebase(self):
         self.add_remote_commit(
