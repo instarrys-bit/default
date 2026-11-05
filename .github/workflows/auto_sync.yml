@@ -736,7 +736,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          AUTOMATION_TASK_ID: ${{ inputs.automation_task_id }}
           RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
         run: |
           set -euo pipefail
