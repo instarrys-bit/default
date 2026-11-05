@@ -85,7 +85,7 @@
       "worker_id": "assessment-canary-41746911914"
     }
   },
-  "revision": 155,
+  "revision": 156,
   "schema_version": 1,
   "tasks": [
     {
@@ -804,6 +804,36 @@
         "verified_at": "2026-11-05T19:31:36Z",
         "verifier_program_id": "script_task_result_verifier"
       }
+    },
+    {
+      "attempts": 0,
+      "capability": "deterministic_audit",
+      "created_at": "2026-11-05T19:36:31Z",
+      "execution_backend": "github_contents",
+      "idempotency_key": "production:input:df180588ade5b63905738d0aafc05e858c95c2b6f46c14ab5df44ea7b1e043dc:024000542127dcbb95935be910432e134012eb53",
+      "input": {
+        "baseline_source_actor": "instarrys-bit",
+        "baseline_source_before": "e0d1fd24d6614d9f907e875a30057e9ffb6638e7",
+        "baseline_source_event": "push",
+        "baseline_source_sha": "024000542127dcbb95935be910432e134012eb53",
+        "production_decision": "INPUT_CHANGED",
+        "production_fingerprint": "df180588ade5b63905738d0aafc05e858c95c2b6f46c14ab5df44ea7b1e043dc",
+        "production_reason": "a registered production input changed; prior success for the same fingerprint does not prove current state is reconciled"
+      },
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 2,
+      "not_before": "2026-11-05T19:36:31Z",
+      "priority": 100,
+      "requester_program_id": "workflow_automation_watchdog",
+      "result": null,
+      "state_history": [
+        "QUEUED"
+      ],
+      "status": "QUEUED",
+      "target_program_id": "workflow_auto_sync",
+      "task_id": "task_cfb86b5df0814206b4c0fe9f",
+      "trace_id": "31f75d780b344dbaad4c11197d282047"
     }
   ]
 }
