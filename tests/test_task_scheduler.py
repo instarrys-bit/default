@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from remote_task_queue_runtime import claim_remote, enqueue_remote
 from task_queue_runtime import now_utc, stamp, manual_authorization_record, validate_manual_authorization
-from task_scheduler import run_scheduler_once, build_execution_plan, enqueue_source_assessment_task, generated_python_cache_paths, publishable_resource_path
+from task_scheduler import run_scheduler_once, build_execution_plan, enqueue_source_assessment_task, enqueue_auto_sync_task, assert_current_production_input, generated_python_cache_paths, publishable_resource_path
 
 
 class MemoryStore:
@@ -478,6 +478,69 @@ class TaskSchedulerTests(unittest.TestCase):
         self.assertIn("read-only planning only", plan["blocked"][0]["reason"])
         self.assertEqual(self.store.writes, writes_before)
         self.assertEqual(self.store.document, before)
+
+    def test_scheduler_rejects_stale_or_missing_production_fingerprint_before_claim(self):
+        manifest = {
+            "schema_version": 1,
+            "production_input_paths": ["modules/uu.conf"],
+            "non_production_path_patterns": [],
+        }
+        (self.root / "automation" / "production_inputs.json").write_text(json.dumps(manifest), encoding="utf-8")
+        from production_intent import load_manifest, compute_fingerprint
+        current = compute_fingerprint(self.root, load_manifest(self.root / "automation" / "production_inputs.json"))
+        task = {"input": {"production_decision": "INPUT_CHANGED", "production_fingerprint": current}}
+        self.assertEqual(assert_current_production_input(task, self.root), current)
+        stale = {"input": {"production_decision": "INPUT_CHANGED", "production_fingerprint": "a" * 64}}
+        with self.assertRaisesRegex(ValueError, "fingerprint is stale"):
+            assert_current_production_input(stale, self.root)
+        missing = {"input": {"production_decision": "INPUT_CHANGED"}}
+        with self.assertRaisesRegex(ValueError, "missing a valid"):
+            assert_current_production_input(missing, self.root)
+
+    def test_new_production_enqueue_cancels_only_stale_unclaimed_automatic_tasks(self):
+        registry = {"programs": [
+            {"id": "workflow_automation_watchdog", "capabilities": ["top_level_supervision"]},
+            {"id": "workflow_auto_sync", "capabilities": ["deterministic_audit"],
+             "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
+                               "max_attempts": 2, "timeout_seconds": 300}},
+        ]}
+        store = MemoryStore()
+        old = enqueue_auto_sync_task(
+            store, registry, idempotency_key="production:input:" + "a" * 64 + ":old",
+            input_payload={"production_fingerprint": "a" * 64, "production_decision": "INPUT_CHANGED", "production_reason": "old input"},
+        )
+        current = "b" * 64
+        new = enqueue_auto_sync_task(
+            store, registry, idempotency_key="production:input:" + current + ":new",
+            input_payload={"production_fingerprint": current, "production_decision": "INPUT_CHANGED", "production_reason": "current input"},
+        )
+        tasks = {item["task_id"]: item for item in store.document["tasks"]}
+        self.assertEqual(tasks[old["task_id"]]["status"], "CANCELLED")
+        self.assertEqual(tasks[old["task_id"]]["state_history"], ["QUEUED", "CANCELLED"])
+        self.assertEqual(tasks[old["task_id"]]["last_error"]["type"], "stale_production_input_superseded")
+        self.assertEqual(tasks[new["task_id"]]["status"], "QUEUED")
+        self.assertEqual(tasks[new["task_id"]]["input"]["production_fingerprint"], current)
+
+    def test_same_fingerprint_queue_item_is_idempotent_and_not_superseded(self):
+        registry = {"programs": [
+            {"id": "workflow_automation_watchdog", "capabilities": ["top_level_supervision"]},
+            {"id": "workflow_auto_sync", "capabilities": ["deterministic_audit"],
+             "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
+                               "max_attempts": 2, "timeout_seconds": 300}},
+        ]}
+        store = MemoryStore()
+        fingerprint = "c" * 64
+        first = enqueue_auto_sync_task(
+            store, registry, idempotency_key="production:input:" + fingerprint + ":same",
+            input_payload={"production_fingerprint": fingerprint, "production_decision": "INPUT_CHANGED", "production_reason": "same input"},
+        )
+        replay = enqueue_auto_sync_task(
+            store, registry, idempotency_key="production:input:" + fingerprint + ":same",
+            input_payload={"production_fingerprint": fingerprint, "production_decision": "INPUT_CHANGED", "production_reason": "same input"},
+        )
+        self.assertFalse(replay["created"])
+        self.assertEqual(first["task_id"], replay["task_id"])
+        self.assertEqual(store.document["tasks"][0]["status"], "QUEUED")
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
