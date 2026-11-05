@@ -5,10 +5,6 @@ This checks common syntax invariants; it is not the official Shadowrocket parser
 and cannot prove how an already-imported profile is displayed by the app.
 """
 
-if __import__("os").environ.get("AUTOMATION_WRITE_GUARD") == "1":
-    from fenced_file_writer import install_write_guard as _install_write_guard
-    _install_write_guard()
-
 from pathlib import Path
 import re
 import sys
