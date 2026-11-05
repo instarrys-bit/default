@@ -189,5 +189,25 @@ class FencedFileWriterTests(unittest.TestCase):
                 fenced_file_writer.authorize_write_path(link / "outside.txt")
 
 
+    def test_audit_hook_resolves_fdopen_descriptor_before_authorizing_write(self):
+        target = ROOT / "sources" / "discovered_sources.json"
+        with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "1"}, clear=False):
+            with patch("fenced_file_writer.os.readlink", return_value=str(target)):
+                with patch("resource_lease_runtime.assert_resource_lease_from_environment") as check:
+                    fenced_file_writer._audit_hook("open", (42, "wb", 0))
+                    check.assert_called_once_with("sources/discovered_sources.json")
+
+    def test_audit_hook_rejects_fdopen_descriptor_for_uu_conf(self):
+        target = ROOT / "modules" / "uu.conf"
+        with patch("fenced_file_writer.os.readlink", return_value=str(target)):
+            with self.assertRaisesRegex(PermissionError, "owner-managed protected file"):
+                fenced_file_writer._audit_hook("open", (42, "wb", 0))
+
+    def test_audit_hook_fails_closed_when_fdopen_descriptor_cannot_be_resolved(self):
+        with patch("fenced_file_writer.os.readlink", side_effect=OSError("unavailable")):
+            with self.assertRaisesRegex(PermissionError, "cannot verify the target"):
+                fenced_file_writer._audit_hook("open", (42, "wb", 0))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
