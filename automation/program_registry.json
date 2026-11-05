@@ -1831,9 +1831,11 @@
       "health_check": "Successful workflow completion, exact run/head provenance, immutable uploaded artifact digest, and equality with the committed main-branch discovery document are required before Assessment enqueue.",
       "orchestration": {
         "enabled": false,
-        "allowed_callers": [],
-        "max_attempts": 0,
-        "timeout_seconds": 480
+        "allowed_callers": [
+          "workflow_automation_watchdog"
+        ],
+        "max_attempts": 1,
+        "timeout_seconds": 1800
       }
     }
   ]
