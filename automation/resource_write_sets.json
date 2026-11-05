@@ -1593,5 +1593,169 @@
       "external filesystem/API effects not represented as literal Request methods",
       "unexecuted runtime branches and indirect dynamic imports"
     ]
-  }
+  },
+  "workflow_native_write_sites": [
+    {
+      "workflow_path": ".github/workflows/auto_sync.yml",
+      "step_name": "Verify base commit and safely publish allowlisted outputs",
+      "mutation_kinds": [
+        "git_add",
+        "git_commit",
+        "git_push"
+      ],
+      "resources": [
+        "rulesets/direct.list",
+        "rulesets/proxy.list",
+        "rulesets/reject.list",
+        "rulesets/manifest.json",
+        "rulesets/pending_queue.json",
+        "rulesets/archive.json",
+        "reports/"
+      ],
+      "fence": "Watchdog workflow_auto_sync task lease plus logical/production-pipeline resource lease; publish allowlist and protected-config digest checks before non-force push.",
+      "boundary": "Main-branch production publication; independently verify resulting commit and artifact digests."
+    },
+    {
+      "workflow_path": ".github/workflows/auto_sync.yml",
+      "step_name": "Revalidate live Watchdog lease and persist only the cursor checkpoint",
+      "mutation_kinds": [
+        "git_add",
+        "git_commit",
+        "git_push"
+      ],
+      "resources": [
+        "sources/review_cursor.json"
+      ],
+      "fence": "Revalidate live Watchdog task and resource lease before publishing the cursor-only commit.",
+      "boundary": "Main-branch checkpoint publication; cursor is isolated from ruleset content."
+    },
+    {
+      "workflow_path": ".github/workflows/automation-watchdog.yml",
+      "step_name": "Detect stale successful audit and recover",
+      "mutation_kinds": [
+        "github_contents_put"
+      ],
+      "resources": [
+        "automation/unregistered_path_registry.json"
+      ],
+      "fence": "GitHub Contents Blob-SHA conditional update with bounded reread/merge/retry; observed_run_ids makes replay idempotent.",
+      "boundary": "Control-plane registry CAS; retry exhaustion fails closed."
+    },
+    {
+      "workflow_path": ".github/workflows/automation-watchdog.yml",
+      "step_name": "Remove the one-shot canary request after successful verification",
+      "mutation_kinds": [
+        "github_contents_delete"
+      ],
+      "resources": [
+        "automation/assessment_canary_request.json"
+      ],
+      "fence": "Conditional GitHub Contents delete using the current blob SHA after verified canary completion.",
+      "boundary": "One-shot control-plane request deletion; no production ruleset write."
+    },
+    {
+      "workflow_path": ".github/workflows/automation-watchdog.yml",
+      "step_name": "Publish manifest-only metadata repair",
+      "mutation_kinds": [
+        "git_add",
+        "git_commit",
+        "git_push"
+      ],
+      "resources": [
+        "rulesets/manifest.json"
+      ],
+      "fence": "Main-branch guarded workflow and manifest-only allowlist; publication follows validation.",
+      "boundary": "Main-branch metadata-only commit; does not change DIRECT/PROXY/REJECT lists."
+    },
+    {
+      "workflow_path": ".github/workflows/request-intake.yml",
+      "step_name": "Commit observation ledger with bounded Git-ref CAS",
+      "mutation_kinds": [
+        "git_reset",
+        "git_add",
+        "git_commit",
+        "git_push"
+      ],
+      "resources": [
+        "sources/request_domain_observations.json"
+      ],
+      "fence": "Fetch/rebase/push retry with run-scoped execution; distinct-run serialization and no-lost-update behavior remain unproven.",
+      "boundary": "Main-branch observation ledger publication; bounded retry fails closed on conflict."
+    },
+    {
+      "workflow_path": ".github/workflows/request-intake.yml",
+      "step_name": "Request ruleset audit through Watchdog queue",
+      "mutation_kinds": [
+        "workflow_dispatch"
+      ],
+      "resources": [
+        "automation/task_queue.json"
+      ],
+      "fence": "Delegates to Watchdog scheduler; durable task queue update uses Contents Blob-SHA CAS and task identity.",
+      "boundary": "Control-plane request only; does not directly publish rulesets."
+    },
+    {
+      "workflow_path": ".github/workflows/self-healing-agent.yml",
+      "step_name": "Apply allowlisted repair and run tests",
+      "mutation_kinds": [
+        "git_checkout",
+        "git_add"
+      ],
+      "resources": [
+        "self-heal/run-<run_id> working tree"
+      ],
+      "fence": "Hard-coded repair IDs and staged-path allowlist; isolated run-specific branch.",
+      "boundary": "Runner-local working tree and PR branch preparation only."
+    },
+    {
+      "workflow_path": ".github/workflows/self-healing-agent.yml",
+      "step_name": "Publish repair pull request",
+      "mutation_kinds": [
+        "git_push",
+        "workflow_dispatch"
+      ],
+      "resources": [
+        "self-heal/run-<run_id> branch",
+        "self-healing-tests workflow run"
+      ],
+      "fence": "Run-specific branch; PR publication is review-gated; tests are dispatched against the repair branch.",
+      "boundary": "PR branch and CI workflow side effects; main is not directly pushed."
+    },
+    {
+      "workflow_path": ".github/workflows/self-healing-agent.yml",
+      "step_name": "Close recovered validator incidents",
+      "mutation_kinds": [
+        "github_issue_patch"
+      ],
+      "resources": [
+        "GitHub validator incident issue state"
+      ],
+      "fence": "Closes only exact incident issues after verified recovery run evidence.",
+      "boundary": "GitHub issue metadata only."
+    },
+    {
+      "workflow_path": ".github/workflows/self-healing-agent.yml",
+      "step_name": "Close recovered deterministic-audit incidents",
+      "mutation_kinds": [
+        "github_issue_patch"
+      ],
+      "resources": [
+        "GitHub deterministic-audit incident issue state"
+      ],
+      "fence": "Closes only exact incident issues after full audit and publish success evidence.",
+      "boundary": "GitHub issue metadata only."
+    },
+    {
+      "workflow_path": ".github/workflows/dashboard-pages.yml",
+      "step_name": "Deploy to GitHub Pages",
+      "mutation_kinds": [
+        "github_pages_deployment"
+      ],
+      "resources": [
+        "GitHub Pages published dashboard"
+      ],
+      "fence": "GitHub Pages deployment action consumes the workflow's generated Pages artifact; no repository ref mutation.",
+      "boundary": "External Pages publication, not a repository file writer."
+    }
+  ]
 }
