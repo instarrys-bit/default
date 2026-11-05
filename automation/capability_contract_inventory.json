@@ -2,7 +2,7 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-2026.11.05.integration",
   "status": "baseline_inventory",
-  "source_registry_blob_sha": "46eb82cdc96d6e13ed96755ff78664cc00a16537",
+  "source_registry_blob_sha": "15943d2532b2d0d2291f1da61305d84e811b8f5a",
   "summary": {
     "registered_programs": 62,
     "python_components": 54,
@@ -1745,7 +1745,9 @@
         "source_discovery"
       ],
       "registry_dependencies": [
-        "script_discover_sources"
+        "script_capture_git_write_trace",
+        "script_discover_sources",
+        "script_resource_lease_runtime"
       ],
       "current_invocation": "Watchdog durable workflow-dispatch task; adapter and program orchestration remain disabled",
       "current_registry_inputs": [
