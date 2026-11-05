@@ -114,7 +114,7 @@ def _record_write_trace(path, operation: str) -> None:
 
 
 def authorize_write_path(path) -> None:
-    """Reject owner-managed protected files and fence production modules, scripts, and rulesets."""
+    """Reject owner-managed config writes and require a live lease for every repository-local mutation."""
     relative = _repo_relative(path)
     if relative is None:
         # A pre-existing external hard link to the protected config has a different
