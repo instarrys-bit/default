@@ -702,13 +702,13 @@
         "data/domain_candidates.json.parts.tmp-*"
       ],
       "read_resources": [
-        "RUNNER_TEMP/request_observations_json",
+        "request_observations_json task input",
         "data/domain_candidates.json"
       ],
       "side_effects": [
         "Merges observed hostnames into the unclassified candidate buffer; assigns no DIRECT/PROXY/REJECT policy."
       ],
-      "evidence": "main() reads RUNNER_TEMP/request_observations_json, merges the existing data/domain_candidates.json logical document, then calls write_document(BUFFER, buffer, 'candidates') with lease_required defaulting to false.",
+      "evidence": "main() reads the REQUEST_OBSERVATIONS_JSON task input, validates the hostname array, and writes only the unclassified data/domain_candidates.json logical document inside the isolated temporary workspace.",
       "lease_keys": [
         "logical/production-pipeline",
         "data/domain_candidates.json"
@@ -861,25 +861,20 @@
         "automation/production_inputs.json",
         "automation/unregistered_path_registry.json",
         "repository changed-path list",
-        "automation/task_queue.json",
-        "<caller-supplied --observations-input JSON array>",
-        "RUNNER_TEMP/request_observations_json"
+        "automation/task_queue.json"
       ],
       "side_effects": [
         "Computes production fingerprint/decision without writing by default; registration mode merges unclassified paths into the Watchdog inbox. The Watchdog then publishes the file via GitHub Contents API.",
-        "Bounded CAS retry re-reads the latest ledger and re-applies the same run registration; observed_run_ids prevents duplicate seen_count increments for interleaved retries.",
-        "The --merge-observations mode deterministically merges a validated hostname batch into RUNNER_TEMP/request_observations_json and records observed_run_ids to make same-run replay idempotent."
+        "Bounded CAS retry re-reads the latest ledger and re-applies the same run registration; observed_run_ids prevents duplicate seen_count increments for interleaved retries."
       ],
-      "evidence": "--register-ledger mode writes the supplied Watchdog inbox path; automation-watchdog.yml re-reads the latest Blob SHA on each of up to three attempts and conditionally PUTs the merged ledger. --merge-observations mode reads a runner-temp submitted batch and the latest RUNNER_TEMP/request_observations_json, then writes the merged ledger; request-intake validates hostnames and forwards the batch through a Watchdog task input; no repository ledger is written.",
+      "evidence": "--register-ledger mode writes only the Watchdog unregistered-path control-plane inbox through conditional GitHub Contents Blob-SHA compare-and-swap. It no longer handles request observation persistence.",
       "lease_keys": [
-        "git-blob-sha-cas:automation/unregistered_path_registry.json",
-        "Watchdog task-queue SHA-CAS"
+        "git-blob-sha-cas:automation/unregistered_path_registry.json"
       ],
-      "lease_enforcement": "Watchdog registry publication uses up to three conditional Contents Blob-SHA CAS attempts with fresh read/merge and observed_run_ids idempotency. Request-intake publication uses up to three Git-ref CAS attempts: fetch latest main, reset only the isolated runner workspace to origin/main, reapply the immutable submitted batch with run-ID idempotency, commit and non-force push. A rejected push causes a fresh replay, not a conflicting JSON rebase. Both paths fail closed on exhausted retries. Cross-run GitHub runner integration is not performed here; the bare-repository two-run simulation is tested.",
+      "lease_enforcement": "Watchdog registry publication uses conditional Contents Blob-SHA compare-and-swap with fresh read/merge and run-scoped idempotency.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [
-        "runner-local registration staging copy",
-        "$RUNNER_TEMP/request-domains.json"
+        "runner-local registration staging copy"
       ],
       "write_boundary_fencing": "Runtime writes are confined to the isolated RUNNER_TEMP workspace and are not published to repository paths."
     },
@@ -1319,17 +1314,6 @@
       "note": "Audit artifact only; no source activation or policy mutation."
     },
     {
-      "resource": "RUNNER_TEMP/request_observations_json",
-      "writers": [
-        "script_production_intent",
-        "workflow_request_intake"
-      ],
-      "lock_key": "Watchdog task-queue SHA-CAS",
-      "mode": "optimistic_git_ref_compare_and_swap",
-      "enforcement": "request-intake retains the validated batch in RUNNER_TEMP and forwards it through the Watchdog task queue; it does not commit repository files. The helper records observed_run_ids so a lost push response followed by workflow rerun is a no-op.",
-      "note": "A bare-Git integration test simulates two runner clones that start from the same base, race to push, and verifies the loser fetches/resets/replays and preserves both distinct and overlapping hostnames. Real GitHub Actions concurrent-run integration remains outstanding."
-    },
-    {
       "resource": "sources/rule_provenance.json logical document",
       "writers": [
         "script_build_rule_provenance",
@@ -1361,8 +1345,6 @@
   "not_yet_proven": [
     "Complete transitive write sets for every registered Python component; the inventory now records 34 direct writer entrypoints found in this pass but is not a machine-verified filesystem trace.",
     "Dynamic path selection and caller-controlled output paths require runtime enforcement tests, especially diagnosis, incident-state, review-cursor and repair utilities.",
-    "Cross-workflow request-intake and Watchdog writes to automation/unregistered_path_registry.json need concurrent-run integration tests proving bounded CAS conflict recovery and no lost updates.",
-    "Cross-workflow request-intake pushes to RUNNER_TEMP/request_observations_json use run-ID concurrency groups plus git fetch/rebase/push retry; concurrent same-domain and different-domain runs, conflict retries and retry exhaustion still need integration proof.",
     "Shared JSON document writers for data/domain_candidates.json and sources/rule_provenance.json need compatible per-document leases, including all manifest/shard/staging/cleanup mutations and restore paths.",
     "All lifecycle, archive, ruleset list, manifest and report writers must be enumerated against actual workflow call sites; auto_sync's central write fence does not prove independent non-auto_sync writers.",
     "Atomic multi-resource lease acquisition and compatibility of per-resource locks across all independent/cross-workflow writers remain unproven.",
