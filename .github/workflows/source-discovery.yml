@@ -179,7 +179,7 @@ jobs:
             exit 1
           }
           shopt -s nullglob
-          paths=(sources/discovered_sources.json sources/discovered_sources.json.manifest.json sources/discovered_sources.json.parts-* reports/source-discovery.md)
+          paths=(sources/discovered_sources.json* reports/source-discovery.md)
           git add -A -- "${paths[@]}"
           staged="$(git diff --cached --name-only)"
           if [ -z "$staged" ]; then
