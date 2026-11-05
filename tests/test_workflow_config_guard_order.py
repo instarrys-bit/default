@@ -204,13 +204,16 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertNotIn("precedence_resolved_overlaps", references)
 
 
-    def test_non_main_config_validation_does_not_approve_or_edit_owner_baseline(self):
+    def test_non_main_config_validation_uses_ephemeral_owner_verified_baseline(self):
         validation = (ROOT / ".github" / "workflows" / "validate-config.yml").read_text(encoding="utf-8")
         self.assertIn("Protect owner-controlled config baseline in non-main validation", validation)
         self.assertIn('git diff --quiet "$base_sha" "$head_sha" -- modules/uu.conf', validation)
         self.assertIn('base.get("managed_config_guard") != head.get("managed_config_guard")', validation)
-        self.assertIn("github.ref == 'refs/heads/main'", validation)
-        self.assertIn("Verify owner-approved config baseline", validation)
+        self.assertIn("github.ref", validation)
+        self.assertIn("github.event_name == 'pull_request'", validation)
+        self.assertIn("github.event.pull_request.base.sha", validation)
+        self.assertIn("python scripts/register_config_baseline.py", validation)
+        self.assertIn("python scripts/verify_baseline.py --baseline-only", validation)
         self.assertIn("Audit config drift against the approved baseline", validation)
 
 
