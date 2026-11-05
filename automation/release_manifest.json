@@ -24,11 +24,11 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "7ce3162c574f18610b4e33a8c27443e1d79044a2"
+      "git_blob_sha": "a4861d801b29df3a1adfcf9bfd16ee531c647e22"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "2c03e2a40acbf5c4741fd44d4df5dc71c385f323"
+      "git_blob_sha": "a5cd1a0719bc383f89094d72443a2c8077275fef"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -54,7 +54,7 @@
     },
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
-      "git_blob_sha": "d4bb6491bc4be78cbd637c35695e03d0881f8fae"
+      "git_blob_sha": "a15fd09e56e4e3d7d59894c4121bd9738e74378a"
     },
     "remote_task_queue_runtime": {
       "path": "scripts/remote_task_queue_runtime.py",
@@ -66,7 +66,7 @@
     },
     "task_scheduler": {
       "path": "scripts/task_scheduler.py",
-      "git_blob_sha": "8d1d0049f8db01e9d43071aad8b1e60faac65a40"
+      "git_blob_sha": "95f84ee98e26c22af74b4fffcbb3f5d7306576fa"
     },
     "fenced_file_writer": {
       "path": "scripts/fenced_file_writer.py",
@@ -74,7 +74,39 @@
     },
     "resource_lease_runtime": {
       "path": "scripts/resource_lease_runtime.py",
-      "git_blob_sha": "39b8088eef67a914e99a232a41967045cd73f9b7"
+      "git_blob_sha": "61b023da80721b9cafc654fc7a380d17aa17c3c5"
+    },
+    "source_discovery_workflow": {
+      "path": ".github/workflows/source-discovery.yml",
+      "git_blob_sha": "923a8f0011b8aa2da1c519c6f0494b1f464783e8"
+    },
+    "source_discovery_implementation": {
+      "path": "scripts/discover_sources.py",
+      "git_blob_sha": "07bc0fad55a92fe9873fe1444c272b853085af2a"
+    },
+    "program_registry": {
+      "path": "automation/program_registry.json",
+      "git_blob_sha": "46eb82cdc96d6e13ed96755ff78664cc00a16537"
+    },
+    "execution_adapters": {
+      "path": "automation/execution_adapters.json",
+      "git_blob_sha": "82217c4725baa13572dc665fbee9cab4fb755841"
+    },
+    "production_workflow_map": {
+      "path": "automation/production_workflow_map.json",
+      "git_blob_sha": "ad2dfb2cf82120177a64b6a41d23e6c52d2fe4cc"
+    },
+    "capability_contract_inventory": {
+      "path": "automation/capability_contract_inventory.json",
+      "git_blob_sha": "80010100a667e14afa20487e4d30554144fd0e47"
+    },
+    "resource_write_sets": {
+      "path": "automation/resource_write_sets.json",
+      "git_blob_sha": "638556f00a5c7bc4edea998d09cb5671d481ad6d"
+    },
+    "resource_ownership_audit": {
+      "path": "automation/resource_ownership_audit.json",
+      "git_blob_sha": "23695c44bd74cf8d9f3df56f8bd4899270ac05ab"
     }
   },
   "compatibility": {
@@ -98,7 +130,8 @@
     "Review cursor checkpoint persistence is protected by the production workflow's top-level main-writer concurrency group and the live Watchdog fencing lease; complete transitive writer tracing remains outstanding.",
     "Historical terminal tasks are resolved only when completed failure evidence proves their source SHA is superseded; unknown outcomes, current-main failures, active leases and unrelated task types remain untouched.",
     "Path-only runtime traces now include Python filesystem audit events and persistent repository-tree deltas made by shell/Git child processes; transient write-and-revert activity, Git metadata changes, external filesystem/API effects, and unexecuted paths remain unobserved.",
-    "Durable per-URL assessment checkpoints are implemented in the task queue; live multi-run interruption/resume integration evidence is still pending."
+    "Durable per-URL assessment checkpoints are implemented in the task queue; live multi-run interruption/resume integration evidence is still pending.",
+    "Independent source discovery workflow and immutable run-bound artifact handoff are implemented on the integration branch but remain dormant until HOLD/authorization and monolithic cutover; no production dispatch has occurred."
   ],
   "next_migration_gate": {
     "required_before_independent_python_dispatch": [
@@ -110,7 +143,7 @@
       "Verify config-baseline immutability before and after execution.",
       "Run isolated canary tests with all new adapters disabled by default."
     ],
-    "completion_status": "blocked_pending_contract_and_runtime_enforcement"
+    "completion_status": "blocked_pending_HOLD_authorization_transitive_writer_evidence_and_runtime_acceptance"
   },
   "python_adapter_policy": {
     "schema_version": 1,
