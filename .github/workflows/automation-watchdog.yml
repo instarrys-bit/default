@@ -826,6 +826,27 @@ jobs:
           printf '%s' "$queue_token" | python3 scripts/task_scheduler.py             --repository "$GITHUB_REPOSITORY" --branch main --token-stdin             --idempotency-key "source-assessment:$SOURCE_RUN_ID"             --priority 60 --input-json "$task_input" enqueue-source-assessment
           unset queue_token
 
+      - name: Enqueue independent source discovery only after its authorization gate opens
+        if: ${{ !(github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)') }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          test "$(jq -r '.dispatch_mode' automation/production_control.json)" = "enabled" || exit 0
+          adapter_enabled="$(jq -r '[.adapters[] | select(.target_program_id == "workflow_source_discovery")][0].enabled // false' automation/execution_adapters.json)"
+          program_enabled="$(jq -r '[.programs[] | select(.id == "workflow_source_discovery")][0].orchestration.enabled // false' automation/program_registry.json)"
+          caller_allowed="$(jq -r '[.adapters[] | select(.target_program_id == "workflow_source_discovery")][0].allowed_callers | index("workflow_automation_watchdog") != null' automation/execution_adapters.json)"
+          if [ "$adapter_enabled" != "true" ] || [ "$program_enabled" != "true" ] || [ "$caller_allowed" != "true" ]; then
+            echo "Independent source discovery remains dormant until adapter, orchestration and caller gates are all enabled."
+            exit 0
+          fi
+          main_sha="$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)"
+          queue_token="$GITHUB_TOKEN"
+          unset GITHUB_TOKEN
+          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin --idempotency-key "source-discovery:$main_sha" --priority 55 enqueue-source-discovery
+          unset queue_token
+
       - name: Recover leases, verify results, and run one bounded task
         env:
           GITHUB_TOKEN: ${{ github.token }}
