@@ -131,7 +131,7 @@ class FencedFileWriterTests(unittest.TestCase):
     def test_every_registered_python_component_installs_the_guard(self):
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
         components = [item for item in registry["programs"] if item.get("kind") == "python_component"]
-        self.assertEqual(len(components), 53)
+        self.assertEqual(len(components), 54)
         missing = []
         for item in components:
             path = ROOT / item["path"]
