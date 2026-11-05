@@ -127,7 +127,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('resource_lease.get("status") != "ACTIVE"', gate)
         self.assertIn('task_lease_token = lease.get("token") if isinstance(lease, dict) else "resource-fence-only"', gate)
         self.assertIn('workers.add(record.get("worker_id"))', gate)
-        self.assertIn('task lease owner differs from the active resource lease owner', gate)
+        self.assertIn('"AUTOMATION_WORKER_ID": worker_id', gate)
+        self.assertIn("resource lease owner is the write authority", gate)
 
     def test_successful_workflow_reports_degraded_source_discovery_health(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
