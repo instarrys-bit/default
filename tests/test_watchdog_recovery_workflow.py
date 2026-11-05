@@ -119,12 +119,14 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('task.get("requester_program_id") != "workflow_automation_watchdog"', audit)
         self.assertIn('task.get("status") not in {"CLAIMED", "VERIFYING"}', audit)
 
-    def test_failed_run_cursor_normalizes_watchdog_correlation_to_canonical_task_id(self):
+    def test_failed_run_cursor_is_temporary_and_not_persisted(self):
         audit = AUTO_SYNC.read_text(encoding="utf-8")
-        cursor = audit.split("  persist-review-cursor:", 1)[1].split("  notify-failure:", 1)[0]
-        self.assertIn('canonical_task_id="${AUTOMATION_TASK_CORRELATION%%-a*}"', cursor)
-        self.assertIn("assert-workflow --task-id \"$canonical_task_id\"", cursor)
-        self.assertIn("assert-workflow --task-id \"$AUTOMATION_TASK_ID_BASE\"", cursor)
+        self.assertNotIn("persist-review-cursor:", audit)
+        self.assertNotIn("scripts/persist_review_cursor.py", audit)
+        self.assertNotIn("sources/review_cursor.json", audit)
+        self.assertIn("Isolate production writes in a temporary workspace", audit)
+        self.assertIn("Package ruleset outputs only", audit)
+
     def test_independent_source_discovery_has_fenced_immutable_handoff_and_stays_dormant(self):
         source = (ROOT / ".github" / "workflows" / "source-discovery.yml").read_text(encoding="utf-8")
         watchdog = WATCHDOG.read_text(encoding="utf-8")
@@ -174,14 +176,14 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("gh issue close", workflow)
         self.assertIn("issues: write", workflow)
 
-    def test_successful_audit_writes_and_publishes_a_durable_heartbeat(self):
+    def test_successful_audit_heartbeat_is_run_scoped_not_published(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
         self.assertIn("Write successful audit heartbeat", workflow)
         self.assertIn('"status": "audit_passed"', workflow)
         self.assertIn('"modified_by_automation": False', workflow)
         self.assertIn("reports/automation/heartbeat.json", workflow)
-        self.assertIn("git add --", workflow)
-
+        self.assertIn("git add -A -- rulesets/", workflow)
+        self.assertNotIn("git add -- reports/automation/heartbeat.json", workflow)
 
     def test_existing_heartbeat_and_stale_run_monitor_cover_distinct_health_signals(self):
         audit = AUTO_SYNC.read_text(encoding="utf-8")
