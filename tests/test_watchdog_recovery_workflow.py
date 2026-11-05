@@ -112,7 +112,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("Downloaded discovery artifact digest does not match its immutable proof.", watchdog)
         self.assertIn("The committed main discovery document no longer matches this producer artifact.", watchdog)
         self.assertIn("enqueue-source-discovery", watchdog)
-        self.assertIn("adapter remains dormant", watchdog)
+        self.assertIn("Independent source discovery remains dormant", watchdog)
         # Keep the monolithic fallback until the independent adapter is authorized and live.
         self.assertIn("Discover candidate source repositories (non-activating)", audit)
         self.assertIn("Assess discovered rule-list syntax and policy claims", audit)
