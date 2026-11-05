@@ -67,11 +67,9 @@
       "target_program_id": "script_assess_sources",
       "target_kind": "python_component",
       "adapter_type": "python_cli",
-      "enabled": true,
+      "enabled": false,
       "interface_status": "reviewed",
-      "allowed_callers": [
-        "workflow_automation_watchdog"
-      ],
+      "allowed_callers": [],
       "entrypoint": {
         "path": "scripts/assess_sources.py",
         "executable": "python3",
@@ -246,9 +244,8 @@
       },
       "timeout_seconds": 240,
       "retry": {
-        "max_attempts": 2,
-        "policy": "bounded_retry_same_predecessor_batch",
-        "description": "Retries reuse the same predecessor-bound URL batch and restore completed URL results from the durable task-queue checkpoint; only incomplete or failed URL fetches are repeated."
+        "max_attempts": 0,
+        "policy": "disabled_until_dedicated_discovery_workflow_is_live"
       },
       "completion": {
         "success_condition": "exit_zero_schema_valid_and_independent_artifact_verifier_valid",
