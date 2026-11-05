@@ -129,23 +129,27 @@ class CapabilityContractInventoryTests(unittest.TestCase):
             git_blob_sha(adapters_path),
         )
 
-    def test_assessment_is_enabled_only_for_watchdog_success_event_dispatch(self):
+    def test_assessment_adapter_remains_disabled_until_dedicated_discovery_workflow_exists(self):
         registry = load_json("automation/program_registry.json")
         adapters = load_json("automation/execution_adapters.json")
         inventory = load_json("automation/capability_contract_inventory.json")
         program = next(item for item in registry["programs"] if item["id"] == "script_assess_sources")
         adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "script_assess_sources")
         entry = next(item for item in inventory["programs"] if item["id"] == "script_assess_sources")
-        self.assertTrue(program["orchestration"]["enabled"])
-        self.assertEqual(program["orchestration"]["allowed_callers"], ["workflow_automation_watchdog"])
-        self.assertTrue(adapter["enabled"])
-        self.assertEqual(adapter["allowed_callers"], ["workflow_automation_watchdog"])
-        self.assertEqual(entry["dispatch_status"], "enabled")
-        self.assertEqual(inventory["summary"]["independently_dispatchable_python_components"], 1)
+        self.assertFalse(program["orchestration"]["enabled"])
+        self.assertEqual(program["orchestration"]["allowed_callers"], [])
+        self.assertFalse(adapter["enabled"])
+        self.assertEqual(adapter["allowed_callers"], [])
+        self.assertEqual(entry["dispatch_status"], "disabled")
+        self.assertEqual(inventory["summary"]["independently_dispatchable_python_components"], 0)
         workflow = Path(".github/workflows/automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn("Enqueue source assessment after successful discovery workflow", workflow)
-        self.assertIn('github.event.workflow_run.conclusion == \'success\'', workflow)
-        self.assertIn("enqueue-source-assessment", workflow)
+        assessment_step = workflow.split("Enqueue source assessment after successful discovery workflow", 1)[1].split("Resolve superseded historical DEAD_LETTER", 1)[0]
+        self.assertIn("Shadowrocket Source Discovery (Watchdog)", assessment_step)
+        self.assertNotIn("Shadowrocket Deterministic Domain Audit (User Config Baseline)", assessment_step)
+        audit = Path(".github/workflows/auto_sync.yml").read_text(encoding="utf-8")
+        self.assertEqual(audit.count("python3 scripts/discover_sources.py"), 1)
+        self.assertEqual(audit.count("python3 scripts/assess_sources.py"), 1)
 
     def test_assessment_adapter_has_scheduler_enforced_typed_predecessor(self):
         adapters = load_json("automation/execution_adapters.json")
@@ -155,8 +159,9 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(adapter["dependency_contract"]["artifact_path"], "sources/discovered_sources.json")
         self.assertIn("predecessor", adapter["input_contract"]["required"])
         self.assertIn("scheduler.build_execution_plan", contract["dependency_edges"]["scheduler_enforcement"])
-        self.assertTrue(adapter["enabled"])
-        self.assertEqual(adapter["allowed_callers"], ["workflow_automation_watchdog"])
+        self.assertFalse(adapter["enabled"])
+        self.assertEqual(adapter["allowed_callers"], [])
+        self.assertEqual(adapter["dependency_contract"]["producer_workflow_name"], "Shadowrocket Source Discovery (Watchdog)")
 
     def test_assessment_restore_writer_is_registered_under_shared_mutex(self):
         audit = load_json("automation/resource_ownership_audit.json")
@@ -417,7 +422,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertFalse(nonwriter_ids & external_ids)
         self.assertEqual(writer_ids | nonwriter_ids | external_ids, python_ids)
         self.assertEqual(len(writer_ids), 36)
-        self.assertEqual(len(nonwriter_ids), 16)
+        self.assertEqual(len(nonwriter_ids), 17)
         self.assertEqual(external_ids, {"script_github_workflow_adapter"})
         self.assertIn("script_resource_lease_runtime", writer_ids)
         self.assertIn("script_json_document_store", writer_ids)

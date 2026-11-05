@@ -28,11 +28,17 @@ class FencedFileWriterTests(unittest.TestCase):
                 fenced_file_writer.authorize_write_path(target)
                 check.assert_called_once_with("rulesets/review_cursor.json")
 
-    def test_resource_lease_guard_covers_only_modules_scripts_and_rulesets(self):
+    def test_resource_lease_guard_covers_every_repository_relative_path(self):
         protected_targets = (
             ROOT / "modules" / "adblock" / "scripts" / "Clean_Pro.js",
             ROOT / "scripts" / "build_rulesets.py",
             ROOT / "rulesets" / "direct.list",
+            ROOT / "reports" / "audit.md",
+            ROOT / "docs" / "operations.md",
+            ROOT / "automation" / "task_queue.json",
+            ROOT / "sources" / "discovered_sources.json",
+            ROOT / "data" / "domain_candidates.json",
+            ROOT / "README.md",
         )
         with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "1"}, clear=False):
             with patch("resource_lease_runtime.assert_resource_lease_from_environment") as check:
@@ -44,20 +50,14 @@ class FencedFileWriterTests(unittest.TestCase):
                         "modules/adblock/scripts/Clean_Pro.js",
                         "scripts/build_rulesets.py",
                         "rulesets/direct.list",
+                        "reports/audit.md",
+                        "docs/operations.md",
+                        "automation/task_queue.json",
+                        "sources/discovered_sources.json",
+                        "data/domain_candidates.json",
+                        "README.md",
                     ],
                 )
-
-    def test_reports_docs_and_automation_state_are_outside_resource_lease_guard(self):
-        unprotected_targets = (
-            ROOT / "reports" / "audit.md",
-            ROOT / "docs" / "operations.md",
-            ROOT / "automation" / "task_queue.json",
-        )
-        with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "1"}, clear=False):
-            with patch("resource_lease_runtime.assert_resource_lease_from_environment") as check:
-                for target in unprotected_targets:
-                    fenced_file_writer.authorize_write_path(target)
-                check.assert_not_called()
 
     def test_non_repository_temporary_files_are_not_subject_to_repository_lease(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -131,7 +131,7 @@ class FencedFileWriterTests(unittest.TestCase):
     def test_every_registered_python_component_installs_the_guard(self):
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
         components = [item for item in registry["programs"] if item.get("kind") == "python_component"]
-        self.assertEqual(len(components), 53)
+        self.assertEqual(len(components), 54)
         missing = []
         for item in components:
             path = ROOT / item["path"]
@@ -155,6 +155,30 @@ class FencedFileWriterTests(unittest.TestCase):
             alias = Path(directory) / "config-hardlink"
             os.link(ROOT / "modules" / "uu.conf", alias)
             with self.assertRaisesRegex(PermissionError, "owner-managed protected file"):
+                fenced_file_writer.authorize_write_path(alias)
+
+    def test_external_symlink_to_shared_ruleset_keeps_canonical_lease_key(self):
+        with tempfile.TemporaryDirectory() as directory:
+            alias = Path(directory) / "ruleset-link"
+            alias.symlink_to(ROOT / "rulesets" / "direct.list")
+            with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "1"}, clear=False):
+                with patch("resource_lease_runtime.assert_resource_lease_from_environment") as check:
+                    fenced_file_writer.authorize_write_path(alias)
+                    check.assert_called_once_with("rulesets/direct.list")
+
+    def test_external_hardlink_to_shared_ruleset_is_denied(self):
+        with tempfile.TemporaryDirectory() as directory:
+            alias = Path(directory) / "ruleset-hardlink"
+            os.link(ROOT / "rulesets" / "direct.list", alias)
+            with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "1"}, clear=False):
+                with self.assertRaisesRegex(PermissionError, "hardlink alias"):
+                    fenced_file_writer.authorize_write_path(alias)
+
+    def test_internal_hardlink_to_protected_config_is_denied(self):
+        with tempfile.TemporaryDirectory(dir=ROOT / "modules") as directory:
+            alias = Path(directory) / "uu-conf-alias"
+            os.link(ROOT / "modules" / "uu.conf", alias)
+            with self.assertRaises(PermissionError):
                 fenced_file_writer.authorize_write_path(alias)
 
     def test_repository_symlink_cannot_escape_to_external_directory(self):

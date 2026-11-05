@@ -166,7 +166,7 @@ class TaskSchedulerTests(unittest.TestCase):
             "max_urls": 1, "max_file_bytes": 1000000, "max_total_bytes": 1000000,
             "predecessor": {
                 "program_id": "script_discover_sources",
-                "workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
+                "workflow_name": "Shadowrocket Source Discovery (Watchdog)",
                 "workflow_run_id": "41770000000",
                 "workflow_head_sha": "a" * 40,
                 "artifact_path": "sources/discovered_sources.json",
@@ -206,7 +206,7 @@ class TaskSchedulerTests(unittest.TestCase):
         }]}
         payload = {"predecessor": {
             "program_id": "script_discover_sources",
-            "workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
+            "workflow_name": "Shadowrocket Source Discovery (Watchdog)",
             "workflow_run_id": "41770000001",
             "workflow_head_sha": "a" * 40,
             "artifact_path": "sources/discovered_sources.json",
@@ -230,7 +230,7 @@ class TaskSchedulerTests(unittest.TestCase):
             "required": ["program_id", "workflow_name", "workflow_run_id", "workflow_head_sha", "artifact_path", "artifact_sha256"],
             "properties": {
                 "program_id": {"type": "string", "const": "script_discover_sources"},
-                "workflow_name": {"type": "string", "const": "Shadowrocket Deterministic Domain Audit (User Config Baseline)"},
+                "workflow_name": {"type": "string", "const": "Shadowrocket Source Discovery (Watchdog)"},
                 "workflow_run_id": {"type": "string"},
                 "workflow_head_sha": {"type": "string"},
                 "artifact_path": {"type": "string", "const": "sources/discovered_sources.json"},
@@ -242,8 +242,8 @@ class TaskSchedulerTests(unittest.TestCase):
         adapter["input_contract"] = {"type": "object", "required": ["value", "predecessor"], "properties": {"value": {"type": "integer"}, "predecessor": predecessor_schema}, "additionalProperties": False}
         adapter["read_only_resources"] = ["sources/discovered_sources.json"]
         adapter["required_read_only_resources"] = ["sources/discovered_sources.json"]
-        adapter["dependency_contract"] = {"predecessor_program_id": "script_discover_sources", "artifact_path": "sources/discovered_sources.json", "producer_workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)"}
-        payload = {"value": 7, "predecessor": {"program_id": "script_discover_sources", "workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)", "workflow_run_id": "41770000000", "workflow_head_sha": "a" * 40, "artifact_path": "sources/discovered_sources.json", "artifact_sha256": digest}}
+        adapter["dependency_contract"] = {"predecessor_program_id": "script_discover_sources", "artifact_path": "sources/discovered_sources.json", "producer_workflow_name": "Shadowrocket Source Discovery (Watchdog)"}
+        payload = {"value": 7, "predecessor": {"program_id": "script_discover_sources", "workflow_name": "Shadowrocket Source Discovery (Watchdog)", "workflow_run_id": "41770000000", "workflow_head_sha": "a" * 40, "artifact_path": "sources/discovered_sources.json", "artifact_sha256": digest}}
         enqueue_remote({"idempotency_key": "scheduler:typed-predecessor", "requester_program_id": "script_requester", "target_program_id": "script_target", "capability": "test_capability", "input": payload}, self.store, self.registry, self.now)
         plan = build_execution_plan(self.store.document, self.registry, self.adapters, self.root, self.now)
         self.assertEqual(len(plan["eligible_task_ids"]), 1)

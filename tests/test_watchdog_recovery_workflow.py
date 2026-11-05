@@ -17,11 +17,22 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("group: shadowrocket-main-writer", queue)
         self.assertIn("cancel-in-progress: false", health)
         self.assertIn("cancel-in-progress: false", queue)
+    def test_historical_dead_letter_resolution_is_not_scheduled(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        self.assertNotIn("Resolve superseded historical DEAD_LETTER tasks through queue CAS", workflow)
+        self.assertNotIn("resolve-superseded-dead-letters", workflow)
+        queue_job = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
+        self.assertIn("Recover leases, verify results, and run one bounded task", queue_job)
+
     def test_watchdog_observes_completed_main_audit_runs(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("workflow_run:", workflow)
         self.assertIn('    - cron: "0 * * * *"', workflow)
         self.assertIn('      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"', workflow)
+        self.assertIn('      - "Shadowrocket Source Discovery (Watchdog)"', workflow)
+        assessment_step = workflow.split("Enqueue source assessment after successful discovery workflow", 1)[1].split("Recover leases, verify results, and run one bounded task", 1)[0]
+        self.assertIn("github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)'", assessment_step)
+        self.assertNotIn("github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)'", assessment_step)
         self.assertIn('      - "Validate Shadowrocket config against user baseline"', workflow)
         self.assertIn('      - "Validate self-healing agent"', workflow)
         self.assertIn("types: [completed]", workflow)
@@ -30,6 +41,16 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('repos/$REPO/compare/$last_success_sha...$current_sha', workflow)
         self.assertIn("Normal input-change and scheduled-refresh decisions are centralized", workflow)
         self.assertIn("bash scripts/verify_publish_base.sh --check-only", workflow)
+
+    def test_non_main_push_uses_main_merge_base_not_branch_before_sha(self):
+        workflow = (ROOT / ".github" / "workflows" / "validate-config.yml").read_text(encoding="utf-8")
+        guard = workflow.split("Protect owner-controlled config baseline in non-main validation", 1)[1].split("Recover owner-approved config baseline", 1)[0]
+        self.assertIn('elif [ "$EVENT_NAME" = "push" ]; then', guard)
+        self.assertIn('git fetch --no-tags origin main', guard)
+        self.assertIn('base_sha="$(git merge-base origin/main "$head_sha")"', guard)
+        self.assertNotIn('base_sha="$PUSH_BEFORE"', guard)
+        self.assertIn('base_sha="$PR_BASE_SHA"', guard)
+        self.assertIn('head_sha="$PR_HEAD_SHA"', guard)
 
     def test_only_infrastructure_failures_trigger_bounded_scheduled_or_push_recovery(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
@@ -61,7 +82,53 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         audit = AUTO_SYNC.read_text(encoding="utf-8")
         self.assertIn("A valid Watchdog task correlation is required", audit)
         self.assertIn('task.get("requester_program_id") != "workflow_automation_watchdog"', audit)
-        self.assertNotIn('task.get("status") not in {"CLAIMED", "VERIFYING"}', audit)
+        self.assertIn('task.get("status") not in {"CLAIMED", "VERIFYING"}', audit)
+
+    def test_failed_run_cursor_normalizes_watchdog_correlation_to_canonical_task_id(self):
+        audit = AUTO_SYNC.read_text(encoding="utf-8")
+        cursor = audit.split("  persist-review-cursor:", 1)[1].split("  notify-failure:", 1)[0]
+        self.assertIn('canonical_task_id="${AUTOMATION_TASK_CORRELATION%%-a*}"', cursor)
+        self.assertIn("assert-workflow --task-id \"$canonical_task_id\"", cursor)
+        self.assertIn("assert-workflow --task-id \"$AUTOMATION_TASK_ID_BASE\"", cursor)
+    def test_independent_source_discovery_has_fenced_immutable_handoff_and_stays_dormant(self):
+        source = (ROOT / ".github" / "workflows" / "source-discovery.yml").read_text(encoding="utf-8")
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
+        audit = AUTO_SYNC.read_text(encoding="utf-8")
+        adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
+        registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
+        discovery_adapter = next(x for x in adapters["adapters"] if x["target_program_id"] == "workflow_source_discovery")
+        discovery_program = next(x for x in registry["programs"] if x["id"] == "workflow_source_discovery")
+        self.assertFalse(discovery_adapter["enabled"])
+        self.assertFalse(discovery_program["orchestration"]["enabled"])
+        self.assertEqual(discovery_adapter["workflow"]["path"], ".github/workflows/source-discovery.yml")
+        self.assertIn("Verify exact Watchdog dispatch and install live resource fence", source)
+        self.assertIn("resource_lease_runtime.py", source)
+        self.assertIn("AUTOMATION_WRITE_GUARD: \"1\"", source)
+        self.assertIn("Publish discovery inventory under its exact resource leases", source)
+        self.assertIn("Upload immutable discovery artifact and provenance proof", source)
+        self.assertIn("source-discovery-output", source)
+        self.assertIn("Download artifact from the exact discovery workflow run", watchdog)
+        self.assertIn("run-id: ${{ github.event.workflow_run.id }}", watchdog)
+        self.assertIn("Downloaded discovery artifact digest does not match its immutable proof.", watchdog)
+        self.assertIn("The committed main discovery document no longer matches this producer artifact.", watchdog)
+        self.assertIn("enqueue-source-discovery", watchdog)
+        self.assertIn("Independent source discovery remains dormant", watchdog)
+        # Keep the monolithic fallback until the independent adapter is authorized and live.
+        self.assertIn("Discover candidate source repositories (non-activating)", audit)
+        self.assertIn("Assess discovered rule-list syntax and policy claims", audit)
+        auto_sync = next(x for x in adapters["adapters"] if x["target_program_id"] == "workflow_auto_sync")
+        self.assertIn("sources/discovered_sources.json", auto_sync["resource_contract"]["resource_keys"])
+        self.assertIn("reports/source-discovery.md", auto_sync["resource_contract"]["resource_keys"])
+
+    def test_auto_sync_accepts_verifying_phase_resource_lease_after_task_lease_release(self):
+        audit = AUTO_SYNC.read_text(encoding="utf-8")
+        gate = audit.split("Verify Watchdog-owned durable task dispatch", 1)[1].split("Verify live Watchdog resource lease", 1)[0]
+        self.assertIn('task.get("status") not in {"CLAIMED", "VERIFYING"}', gate)
+        self.assertIn('resource_lease.get("status") != "ACTIVE"', gate)
+        self.assertIn('task_lease_token = lease.get("token") if isinstance(lease, dict) else "resource-fence-only"', gate)
+        self.assertIn('workers.add(record.get("worker_id"))', gate)
+        self.assertIn('"AUTOMATION_WORKER_ID": worker_id', gate)
+        self.assertIn("resource lease owner is the write authority", gate)
 
     def test_successful_workflow_reports_degraded_source_discovery_health(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")

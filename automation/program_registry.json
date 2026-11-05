@@ -87,11 +87,9 @@
       "permission_boundary": "Read discovered_sources.json and prior source_assessments.json; write only sources/source_assessments.json, data/source_assessments_runtime.json and reports/source-assessment.md under exclusive live-fenced resource leases; publish only persistent history and report via a fenced GitHub commit; HTTPS reads only from repository-bound raw.githubusercontent.com; sources/domain_sources.json and modules/uu.conf are read-only.",
       "health_check": "The scheduler validates the task input schema, resource fencing is checked before each artifact write, and verify_assess_sources_artifacts.py independently verifies runtime/history/report consistency.",
       "orchestration": {
-        "enabled": true,
-        "allowed_callers": [
-          "workflow_automation_watchdog"
-        ],
-        "max_attempts": 3,
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
         "timeout_seconds": 480
       }
     },
@@ -1083,7 +1081,8 @@
         "script_sync_ruleset_config_conflicts",
         "script_validate_config",
         "script_verify_baseline",
-        "script_verify_published_rulesets"
+        "script_verify_published_rulesets",
+        "script_capture_git_write_trace"
       ],
       "dispatches": [],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
@@ -1775,6 +1774,68 @@
         "allowed_callers": [],
         "max_attempts": 0,
         "timeout_seconds": 60
+      }
+    },
+    {
+      "id": "script_capture_git_write_trace",
+      "path": "scripts/capture_git_write_trace.py",
+      "kind": "python_component",
+      "responsibility": "capture persistent repository-tree changes made by shell and Git child processes for the production runtime write trace",
+      "capabilities": [
+        "runtime_write_tracing"
+      ],
+      "invocation": "workflow_step",
+      "inputs": [
+        "Initial checkout commit SHA",
+        "Git committed, staged, unstaged and non-ignored untracked repository paths at end of job"
+      ],
+      "outputs": [
+        "Path-only JSONL records under RUNNER_TEMP",
+        "Before/after commit SHA and changed-path count"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Read-only Git tree inspection. Writes only the path-only trace under RUNNER_TEMP outside the repository; no repository file or GitHub API mutation authority.",
+      "health_check": "Covered by tests/test_capture_git_write_trace.py and the production workflow always-run capture steps.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 60
+      }
+    },
+    {
+      "id": "workflow_source_discovery",
+      "path": ".github/workflows/source-discovery.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "independent, non-activating source discovery producer with immutable run-bound artifact handoff",
+      "capabilities": [
+        "source_discovery"
+      ],
+      "invocation": "Watchdog durable task-queue dispatch only; direct workflow dispatch requires a valid persisted queue correlation and resource lease proof",
+      "inputs": [
+        "Watchdog task correlation ID",
+        "exclusive resource lease proof",
+        "main-branch repository snapshot"
+      ],
+      "outputs": [
+        "sources/discovered_sources.json with producer workflow/run/head identity",
+        "reports/source-discovery.md",
+        "source-discovery-output artifact with SHA-256 provenance proof"
+      ],
+      "depends_on": [
+        "script_capture_git_write_trace",
+        "script_discover_sources",
+        "script_resource_lease_runtime"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Workflow adapter is disabled pending HOLD/authorization. When enabled, job permissions are limited to contents write and actions read; every repository mutation is guarded by the exact Watchdog task resource lease. No source activation.",
+      "health_check": "Successful workflow completion, exact run/head provenance, immutable uploaded artifact digest, and equality with the committed main-branch discovery document are required before Assessment enqueue.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 1800
       }
     }
   ]

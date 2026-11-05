@@ -94,7 +94,10 @@
     "sources/source_assessments.json*",
     "sources/source_candidates.json*",
     "sources/source_snapshots/**",
-    "tests/**"
+    "tests/**",
+    "modules/AdBlock.sgmodule",
+    "modules/adblock/**",
+    "modules/temp-test/Sr_Youtube_Clean.js"
   ],
   "unknown_path_policy": "review_required",
   "monitoring_path_patterns": [

@@ -593,6 +593,17 @@ def main() -> int:
         if summary:
             Path(summary).write_text("## Source discovery warning\n\n" + message + "\n", encoding="utf-8")
         return 2
+    producer_workflow = os.environ.get("GITHUB_WORKFLOW", "")
+    if producer_workflow == "Shadowrocket Source Discovery (Watchdog)":
+        producer_run_id = os.environ.get("GITHUB_RUN_ID", "")
+        producer_head_sha = os.environ.get("GITHUB_SHA", "")
+        if not producer_run_id.isdigit() or not re.fullmatch(r"[0-9a-f]{40}", producer_head_sha):
+            raise SystemExit("Dedicated discovery requires a numeric workflow run ID and full producer head SHA.")
+        merged["producer"] = {
+            "workflow_name": producer_workflow,
+            "workflow_run_id": producer_run_id,
+            "workflow_head_sha": producer_head_sha,
+        }
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     persist_discovery_outputs(merged)
