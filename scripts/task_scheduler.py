@@ -847,7 +847,7 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
 def enqueue_source_discovery_task(store, registry: dict, *, idempotency_key: str,
                                    priority: int = 55) -> dict:
     """Enqueue at most one Watchdog discovery workflow per UTC day."""
-    match = re.fullmatch(r"source-discovery:(\\d{4}-\\d{2}-\\d{2})", idempotency_key or "")
+    match = re.fullmatch(r"source-discovery:(\d{4}-\d{2}-\d{2})", idempotency_key or "")
     if not match:
         raise ValueError("source discovery requires a UTC-day idempotency key: source-discovery:YYYY-MM-DD")
     try:
