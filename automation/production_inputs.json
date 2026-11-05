@@ -11,9 +11,7 @@
     "sources/policy_approvals.json",
     "sources/protected_domains.json",
     "sources/reject_manual_approvals.json",
-    "sources/request_domain_observations.json",
     "scripts/restore_automation_state.py",
-    "scripts/register_config_baseline.py",
     "scripts/sync_ruleset_config_conflicts.py",
     "scripts/collect_domains.py",
     "scripts/deterministic_review.py",
@@ -41,10 +39,8 @@
     "scripts/append_step_summary.py",
     "scripts/apply_safe_repair.py",
     "scripts/review_cursor.py",
-    "scripts/persist_review_cursor.py",
     "scripts/json_document_store.py",
-    "scripts/verify_published_rulesets.py",
-    "scripts/fenced_file_writer.py"
+    "scripts/verify_published_rulesets.py"
   ],
   "non_production_path_patterns": [
     ".github/workflows/automation-watchdog.yml",
