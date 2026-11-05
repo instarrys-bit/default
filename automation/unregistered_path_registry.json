@@ -202,65 +202,62 @@
     },
     {
       "path": "modules/AdBlock.sgmodule",
-      "status": "CLASSIFIED_NON_PRODUCTION",
+      "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
-      "last_seen_at": "2026-11-04T22:52:50.695063Z",
-      "seen_count": 4,
+      "last_seen_at": "2026-11-05T02:40:45.394954Z",
+      "seen_count": 6,
       "observed_run_ids": [
         "41919876229",
         "41920874061",
         "41928905703",
-        "41928911219"
+        "41928911219",
+        "41944179889",
+        "41956697406"
       ],
-      "last_seen_event": "push",
-      "last_seen_revision": "ed9011ef908eb36490658556f4112cb7aba9de0b",
-      "last_seen_run_id": "41928911219",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41928911219",
-      "classified_at": "2026-11-05",
-      "classification_reason": "Separate Shadowrocket ad-block module/script asset, not a DIRECT/PROXY/REJECT ruleset input. The repository README documents the module/script as separate from the ruleset pipeline; the production input allowlist does not include this path.",
-      "classification_basis": "Verified current main path existence and README component boundaries; checked automation/production_inputs.json and the auto_sync workflow. The only user-owned config boundary remains modules/uu.conf."
+      "last_seen_event": "schedule",
+      "last_seen_revision": "f8b59b1635c2a2939e5e2b38e8bd51f8068bf2cb",
+      "last_seen_run_id": "41956697406",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41956697406"
     },
     {
       "path": "modules/adblock/backups/Clean_Pro.pre-rollback-20261105.js",
-      "status": "CLASSIFIED_NON_PRODUCTION",
+      "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-04T22:52:12.767958Z",
-      "last_seen_at": "2026-11-04T22:52:50.695063Z",
-      "seen_count": 2,
+      "last_seen_at": "2026-11-05T02:40:45.394954Z",
+      "seen_count": 4,
       "observed_run_ids": [
         "41928905703",
-        "41928911219"
+        "41928911219",
+        "41944179889",
+        "41956697406"
       ],
-      "last_seen_event": "push",
-      "last_seen_revision": "ed9011ef908eb36490658556f4112cb7aba9de0b",
-      "last_seen_run_id": "41928911219",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41928911219",
-      "classified_at": "2026-11-05",
-      "classification_reason": "Separate Shadowrocket ad-block module/script asset, not a DIRECT/PROXY/REJECT ruleset input. The repository README documents the module/script as separate from the ruleset pipeline; the production input allowlist does not include this path.",
-      "classification_basis": "Verified current main path existence and README component boundaries; checked automation/production_inputs.json and the auto_sync workflow. The only user-owned config boundary remains modules/uu.conf."
+      "last_seen_event": "schedule",
+      "last_seen_revision": "f8b59b1635c2a2939e5e2b38e8bd51f8068bf2cb",
+      "last_seen_run_id": "41956697406",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41956697406"
     },
     {
       "path": "modules/adblock/dev/Clean_Pro.js",
-      "status": "CLASSIFIED_NON_PRODUCTION",
+      "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
-      "last_seen_at": "2026-11-04T22:52:50.695063Z",
-      "seen_count": 4,
+      "last_seen_at": "2026-11-05T02:40:45.394954Z",
+      "seen_count": 6,
       "observed_run_ids": [
         "41919876229",
         "41920874061",
         "41928905703",
-        "41928911219"
+        "41928911219",
+        "41944179889",
+        "41956697406"
       ],
-      "last_seen_event": "push",
-      "last_seen_revision": "ed9011ef908eb36490658556f4112cb7aba9de0b",
-      "last_seen_run_id": "41928911219",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41928911219",
-      "classified_at": "2026-11-05",
-      "classification_reason": "Separate Shadowrocket ad-block module/script asset, not a DIRECT/PROXY/REJECT ruleset input. The repository README documents the module/script as separate from the ruleset pipeline; the production input allowlist does not include this path.",
-      "classification_basis": "Verified current main path existence and README component boundaries; checked automation/production_inputs.json and the auto_sync workflow. The only user-owned config boundary remains modules/uu.conf."
+      "last_seen_event": "schedule",
+      "last_seen_revision": "f8b59b1635c2a2939e5e2b38e8bd51f8068bf2cb",
+      "last_seen_run_id": "41956697406",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41956697406"
     },
     {
       "path": "modules/adblock/scripts/AdBlock_Original.sgmodule",
-      "status": "CLASSIFIED_HISTORICAL_NON_PRODUCTION",
+      "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
       "last_seen_at": "2026-11-04T21:58:12.213156Z",
       "seen_count": 2,
@@ -271,34 +268,30 @@
       "last_seen_event": "push",
       "last_seen_revision": "69199dc63603fea9a86e297bbb95b5e966a7238d",
       "last_seen_run_id": "41920874061",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41920874061",
-      "classified_at": "2026-11-05",
-      "classification_reason": "Historical ad-block development/support path absent from current main. It is not consumed by the ruleset production workflow and is not a DIRECT/PROXY/REJECT input.",
-      "classification_basis": "Verified current main path existence and README component boundaries; checked automation/production_inputs.json and the auto_sync workflow. The only user-owned config boundary remains modules/uu.conf."
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41920874061"
     },
     {
       "path": "modules/adblock/scripts/Clean_Pro.js",
-      "status": "CLASSIFIED_NON_PRODUCTION",
+      "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
-      "last_seen_at": "2026-11-04T22:52:50.695063Z",
-      "seen_count": 4,
+      "last_seen_at": "2026-11-05T02:40:45.394954Z",
+      "seen_count": 6,
       "observed_run_ids": [
         "41919876229",
         "41920874061",
         "41928905703",
-        "41928911219"
+        "41928911219",
+        "41944179889",
+        "41956697406"
       ],
-      "last_seen_event": "push",
-      "last_seen_revision": "ed9011ef908eb36490658556f4112cb7aba9de0b",
-      "last_seen_run_id": "41928911219",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41928911219",
-      "classified_at": "2026-11-05",
-      "classification_reason": "Separate Shadowrocket ad-block module/script asset, not a DIRECT/PROXY/REJECT ruleset input. The repository README documents the module/script as separate from the ruleset pipeline; the production input allowlist does not include this path.",
-      "classification_basis": "Verified current main path existence and README component boundaries; checked automation/production_inputs.json and the auto_sync workflow. The only user-owned config boundary remains modules/uu.conf."
+      "last_seen_event": "schedule",
+      "last_seen_revision": "f8b59b1635c2a2939e5e2b38e8bd51f8068bf2cb",
+      "last_seen_run_id": "41956697406",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41956697406"
     },
     {
       "path": "modules/adblock/scripts/Clean_Pro_Request.js",
-      "status": "CLASSIFIED_HISTORICAL_NON_PRODUCTION",
+      "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
       "last_seen_at": "2026-11-04T21:58:12.213156Z",
       "seen_count": 2,
@@ -309,34 +302,60 @@
       "last_seen_event": "push",
       "last_seen_revision": "69199dc63603fea9a86e297bbb95b5e966a7238d",
       "last_seen_run_id": "41920874061",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41920874061",
-      "classified_at": "2026-11-05",
-      "classification_reason": "Historical ad-block development/support path absent from current main. It is not consumed by the ruleset production workflow and is not a DIRECT/PROXY/REJECT input.",
-      "classification_basis": "Verified current main path existence and README component boundaries; checked automation/production_inputs.json and the auto_sync workflow. The only user-owned config boundary remains modules/uu.conf."
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41920874061"
+    },
+    {
+      "path": "modules/adblock/scripts/Social_Adblock.js",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-05T00:50:08.159871Z",
+      "last_seen_at": "2026-11-05T02:40:45.394954Z",
+      "seen_count": 2,
+      "observed_run_ids": [
+        "41944179889",
+        "41956697406"
+      ],
+      "last_seen_event": "schedule",
+      "last_seen_revision": "f8b59b1635c2a2939e5e2b38e8bd51f8068bf2cb",
+      "last_seen_run_id": "41956697406",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41956697406"
+    },
+    {
+      "path": "modules/adblock/scripts/youtube_initplayback_observer.js",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-05T00:50:08.159871Z",
+      "last_seen_at": "2026-11-05T02:40:45.394954Z",
+      "seen_count": 2,
+      "observed_run_ids": [
+        "41944179889",
+        "41956697406"
+      ],
+      "last_seen_event": "schedule",
+      "last_seen_revision": "f8b59b1635c2a2939e5e2b38e8bd51f8068bf2cb",
+      "last_seen_run_id": "41956697406",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41956697406"
     },
     {
       "path": "modules/adblock/scripts/youtube_protobuf_response_filter.js",
-      "status": "CLASSIFIED_HISTORICAL_NON_PRODUCTION",
+      "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
-      "last_seen_at": "2026-11-04T22:52:50.695063Z",
-      "seen_count": 4,
+      "last_seen_at": "2026-11-05T02:40:45.394954Z",
+      "seen_count": 6,
       "observed_run_ids": [
         "41919876229",
         "41920874061",
         "41928905703",
-        "41928911219"
+        "41928911219",
+        "41944179889",
+        "41956697406"
       ],
-      "last_seen_event": "push",
-      "last_seen_revision": "ed9011ef908eb36490658556f4112cb7aba9de0b",
-      "last_seen_run_id": "41928911219",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41928911219",
-      "classified_at": "2026-11-05",
-      "classification_reason": "Historical ad-block development/support path absent from current main. It is not consumed by the ruleset production workflow and is not a DIRECT/PROXY/REJECT input.",
-      "classification_basis": "Verified current main path existence and README component boundaries; checked automation/production_inputs.json and the auto_sync workflow. The only user-owned config boundary remains modules/uu.conf."
+      "last_seen_event": "schedule",
+      "last_seen_revision": "f8b59b1635c2a2939e5e2b38e8bd51f8068bf2cb",
+      "last_seen_run_id": "41956697406",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41956697406"
     },
     {
       "path": "modules/temp-test/Sr_Youtube_Clean.js",
-      "status": "CLASSIFIED_HISTORICAL_NON_PRODUCTION",
+      "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
       "last_seen_at": "2026-11-04T22:52:50.695063Z",
       "seen_count": 4,
@@ -349,10 +368,7 @@
       "last_seen_event": "push",
       "last_seen_revision": "ed9011ef908eb36490658556f4112cb7aba9de0b",
       "last_seen_run_id": "41928911219",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41928911219",
-      "classified_at": "2026-11-05",
-      "classification_reason": "Historical ad-block development/support path absent from current main. It is not consumed by the ruleset production workflow and is not a DIRECT/PROXY/REJECT input.",
-      "classification_basis": "Verified current main path existence and README component boundaries; checked automation/production_inputs.json and the auto_sync workflow. The only user-owned config boundary remains modules/uu.conf."
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41928911219"
     },
     {
       "path": "scripts/build_dashboard_snapshot.py",
@@ -447,5 +463,5 @@
       "classification_basis": "Reviewed as a recovery-evidence verifier only. It validates completed workflow/job/verification-step evidence and emits a verification result; it does not create or publish routing rules."
     }
   ],
-  "updated_at": "2026-11-05"
+  "updated_at": "2026-11-05T02:40:45.394954Z"
 }
