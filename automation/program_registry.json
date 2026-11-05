@@ -1083,7 +1083,8 @@
         "script_sync_ruleset_config_conflicts",
         "script_validate_config",
         "script_verify_baseline",
-        "script_verify_published_rulesets"
+        "script_verify_published_rulesets",
+        "script_capture_git_write_trace"
       ],
       "dispatches": [],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
@@ -1770,6 +1771,34 @@
       "dispatches": [],
       "permission_boundary": "Library only; no independent execution, credentials, network access, or authority to edit modules/uu.conf.",
       "health_check": "Covered by tests/test_fenced_file_writer.py and the full deterministic unit suite.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 60
+      }
+    },
+    {
+      "id": "script_capture_git_write_trace",
+      "path": "scripts/capture_git_write_trace.py",
+      "kind": "python_component",
+      "responsibility": "capture persistent repository-tree changes made by shell and Git child processes for the production runtime write trace",
+      "capabilities": [
+        "runtime_write_tracing"
+      ],
+      "invocation": "workflow_step",
+      "inputs": [
+        "Initial checkout commit SHA",
+        "Git committed, staged, unstaged and non-ignored untracked repository paths at end of job"
+      ],
+      "outputs": [
+        "Path-only JSONL records under RUNNER_TEMP",
+        "Before/after commit SHA and changed-path count"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Read-only Git tree inspection. Writes only the path-only trace under RUNNER_TEMP outside the repository; no repository file or GitHub API mutation authority.",
+      "health_check": "Covered by tests/test_capture_git_write_trace.py and the production workflow always-run capture steps.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],
