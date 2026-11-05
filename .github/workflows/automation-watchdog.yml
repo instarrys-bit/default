@@ -58,8 +58,11 @@ concurrency:
 
 jobs:
   health-check:
+    # Queue mutations are Git-blob-SHA CAS; production outputs are protected by
+    # live resource leases and fencing tokens. Keep supervision independent of
+    # the publisher mutex so it can renew and verify long-running tasks.
     concurrency:
-      group: shadowrocket-main-writer
+      group: shadowrocket-watchdog-control-plane
       cancel-in-progress: false
     env:
       GITHUB_ACTOR_ID: ${{ github.actor_id }}
@@ -735,15 +738,15 @@ jobs:
             -f sha="$marker_sha" -f branch=main >/dev/null
 
   task-queue-supervision:
+    concurrency:
+      group: shadowrocket-watchdog-control-plane
+      cancel-in-progress: false
     env:
       GITHUB_ACTOR_ID: ${{ github.actor_id }}
       GITHUB_MANUAL_AUDIT_REQUEST: ${{ inputs.request_deterministic_audit }}
       PYTHONDONTWRITEBYTECODE: "1"
     needs: [health-check, stale-run-watch, manifest-integrity]
     if: ${{ always() && needs.health-check.result == 'success' && ((github.event_name != 'schedule' && github.event_name != 'workflow_dispatch') || needs.stale-run-watch.result == 'success') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main') && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[assessment-canary]')) }}
-    concurrency:
-      group: shadowrocket-main-writer
-      cancel-in-progress: false
     permissions:
       actions: write
       contents: write

@@ -156,6 +156,34 @@ class WorkflowAdapterTests(unittest.TestCase):
         self.assertEqual(result["state"], "success")
         self.assertEqual(result["evidence"]["run_id"], 88)
 
+    def test_persisted_run_id_bypasses_eventually_consistent_run_list(self):
+        intent = self.prepare()
+        listed = {
+            "id": 88, "workflow_id": 1234, "event": "workflow_dispatch",
+            "head_branch": "main", "head_sha": "a" * 40,
+            "display_title": intent["correlation_title"],
+        }
+        self.client.runs = []
+        self.client.run_detail[88] = dict(
+            listed, status="completed", conclusion="success",
+            html_url="https://example.invalid/run/88",
+        )
+        result = inspect_correlated_run(self.client, intent, known_run_id=88)
+        self.assertEqual(result["state"], "success")
+        self.assertEqual(result["evidence"]["run_id"], 88)
+        self.assertEqual(self.client.runs, [])
+
+    def test_persisted_run_id_still_requires_exact_run_identity(self):
+        intent = self.prepare()
+        self.client.run_detail[88] = {
+            "id": 88, "workflow_id": 1234, "event": "workflow_dispatch",
+            "head_branch": "main", "head_sha": "a" * 40,
+            "display_title": "Automation task forged", "status": "completed",
+            "conclusion": "success",
+        }
+        with self.assertRaisesRegex(WorkflowAPIError, "identity"):
+            inspect_correlated_run(self.client, intent, known_run_id=88)
+
     def test_failed_run_is_not_success_and_identity_mismatch_fails_closed(self):
         intent = self.prepare()
         listed = {

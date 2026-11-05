@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "3797cdf160a54a3c69648b3788434c69eb488e32"
+      "git_blob_sha": "f6c4920e94c1d34e1a498ead0d9a23e344d8909a"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -50,7 +50,7 @@
     },
     "task_result_verifier": {
       "path": "scripts/task_result_verifier.py",
-      "git_blob_sha": "003590eb4385a680cc347f38776838c688027cdb"
+      "git_blob_sha": "cdaf637101df96e98f5c836f36cc9183aa3c9ea8"
     },
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
@@ -94,15 +94,27 @@
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "972e80039030c2951f3d1048042aef3a24018d50"
+      "git_blob_sha": "fde7638c9f6dfa701841d130ded8d232e0d43568"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "c4e1c4f140e7b192e2075dcdedd854a7800134a8"
+      "git_blob_sha": "b10766da39a37e1dd2e6db04ffd60407e744df63"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
       "git_blob_sha": "ab547080e3b5104745c7be7e9a4f58fd65b9048e"
+    },
+    "github_workflow_adapter": {
+      "path": "scripts/github_workflow_adapter.py",
+      "git_blob_sha": "ca831b12c874dadd52a07ee77f491e0d16f767e6"
+    },
+    "publish_freshness_guard": {
+      "path": "scripts/verify_publish_base.sh",
+      "git_blob_sha": "363cd90fd7a0b0597c30831bf0b06dd2f0ca6daf"
+    },
+    "production_input_manifest": {
+      "path": "automation/production_inputs.json",
+      "git_blob_sha": "8e0fd6425072a0a187d8b77c99df0478228d78b7"
     }
   },
   "compatibility": {

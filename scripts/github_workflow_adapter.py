@@ -278,15 +278,23 @@ def find_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict | No
     return run
 
 
-def inspect_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict:
-    """Independently inspect the exact run; never infer success from dispatch acceptance."""
-    listed = find_correlated_run(client, intent)
-    if listed is None:
-        return {"state": "pending", "reason": "correlated workflow run is not visible yet"}
-    run_id = listed.get("id")
-    if isinstance(run_id, bool) or not isinstance(run_id, int):
-        raise WorkflowAPIError("correlated workflow run has no valid run ID")
-    run = client.get_run(run_id)
+def inspect_correlated_run(client: GitHubWorkflowClient, intent: dict,
+                           known_run_id: int | None = None) -> dict:
+    """Inspect an exact run; use a persisted run ID to avoid list-endpoint lag."""
+    listed = None
+    if known_run_id is not None:
+        if isinstance(known_run_id, bool) or not isinstance(known_run_id, int) or known_run_id <= 0:
+            raise WorkflowAPIError("persisted correlated workflow run ID is invalid")
+        run_id = known_run_id
+        run = client.get_run(run_id)
+    else:
+        listed = find_correlated_run(client, intent)
+        if listed is None:
+            return {"state": "pending", "reason": "correlated workflow run is not visible yet"}
+        run_id = listed.get("id")
+        if isinstance(run_id, bool) or not isinstance(run_id, int):
+            raise WorkflowAPIError("correlated workflow run has no valid run ID")
+        run = client.get_run(run_id)
     required = {
         "workflow_id": intent["workflow_id"],
         "event": "workflow_dispatch",
@@ -295,7 +303,7 @@ def inspect_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict:
     }
     if any(run.get(key) != value for key, value in required.items()):
         raise WorkflowAPIError("workflow run identity does not match the persisted dispatch intent")
-    if run.get("head_sha") != listed.get("head_sha"):
+    if listed is not None and run.get("head_sha") != listed.get("head_sha"):
         raise WorkflowAPIError("workflow run identity commit SHA changed between list and detail reads")
     head_sha_relationship = validate_run_head_sha(client, intent, run.get("head_sha"))
     if run.get("status") != "completed":

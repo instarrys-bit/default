@@ -67,6 +67,9 @@
     "candidates/ss.conf.oiu-fusion-candidate",
     "candidates/ss.conf.oiu-merged",
     "data/**",
+    "modules/AdBlock.sgmodule",
+    "modules/adblock/**",
+    "modules/temp-test/Sr_Youtube_Clean.js",
     "reports/**",
     "rulesets/**",
     "scripts/audit_adapter_activation.py",
@@ -76,6 +79,7 @@
     "scripts/incident_state.py",
     "scripts/production_intent.py",
     "scripts/remote_task_queue_runtime.py",
+    "scripts/resource_lease_runtime.py",
     "scripts/task_queue.py",
     "scripts/task_queue_runtime.py",
     "scripts/task_result_verifier.py",
@@ -94,10 +98,7 @@
     "sources/source_assessments.json*",
     "sources/source_candidates.json*",
     "sources/source_snapshots/**",
-    "tests/**",
-    "modules/AdBlock.sgmodule",
-    "modules/adblock/**",
-    "modules/temp-test/Sr_Youtube_Clean.js"
+    "tests/**"
   ],
   "unknown_path_policy": "review_required",
   "monitoring_path_patterns": [
