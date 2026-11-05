@@ -14,13 +14,25 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         health = workflow.split("  health-check:", 1)[1].split("  assessment-canary:", 1)[0]
         queue = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
         self.assertIn("group: shadowrocket-watchdog-control-plane", health)
-        self.assertIn("group: shadowrocket-watchdog-control-plane", queue)
+        self.assertIn("group: shadowrocket-watchdog-task-supervision", queue)
+        self.assertNotIn("group: shadowrocket-watchdog-control-plane", queue)
         self.assertNotIn("group: shadowrocket-main-writer", health)
         self.assertNotIn("group: shadowrocket-main-writer", queue)
         self.assertIn("Git-blob-SHA CAS", health)
         self.assertIn("resource leases and fencing tokens", health)
         self.assertIn("cancel-in-progress: false", health)
         self.assertIn("cancel-in-progress: false", queue)
+    def test_queue_supervision_is_isolated_from_health_checks_and_irrelevant_workflow_runs(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        queue = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
+        self.assertIn("group: shadowrocket-watchdog-task-supervision", queue)
+        self.assertIn("github.event_name != 'workflow_run'", queue)
+        self.assertIn("github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)'", queue)
+        self.assertIn("github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)'", queue)
+        self.assertNotIn("group: shadowrocket-watchdog-control-plane", queue)
+        self.assertIn("cancel-in-progress: false", queue)
+        self.assertIn("needs: [health-check, stale-run-watch, manifest-integrity]", queue)
+
     def test_historical_dead_letter_resolution_is_not_scheduled(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertNotIn("Resolve superseded historical DEAD_LETTER tasks through queue CAS", workflow)
