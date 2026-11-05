@@ -45,7 +45,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
     def test_non_main_push_uses_main_merge_base_not_branch_before_sha(self):
         workflow = (ROOT / ".github" / "workflows" / "validate-config.yml").read_text(encoding="utf-8")
         recovery = workflow.split("name: Recover owner-approved config baseline in validation workspace", 1)[1].split("name: Verify owner-approved config baseline", 1)[0]
-        self.assertIn("github.event.pull_request.base.sha", recovery)
+        self.assertIn('if [ "$GITHUB_EVENT_NAME" = "pull_request" ]', recovery)
+        self.assertNotIn("github.event.pull_request.base.sha", recovery)
         self.assertIn('BASELINE_SOURCE_SHA="$(git merge-base origin/main "$GITHUB_SHA")"', recovery)
         self.assertNotIn("github.event.before", recovery)
         self.assertIn("BASELINE_SOURCE_REF", recovery)
