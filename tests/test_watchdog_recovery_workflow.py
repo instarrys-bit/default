@@ -31,6 +31,10 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("workflow_run:", workflow)
         self.assertIn('    - cron: "0 * * * *"', workflow)
         self.assertIn('      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"', workflow)
+        self.assertIn('      - "Shadowrocket Source Discovery (Watchdog)"', workflow)
+        assessment_step = workflow.split("Enqueue source assessment after successful discovery workflow", 1)[1].split("Resolve superseded historical DEAD_LETTER", 1)[0]
+        self.assertIn("github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)'", assessment_step)
+        self.assertNotIn("github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)'", assessment_step)
         self.assertIn('      - "Validate Shadowrocket config against user baseline"', workflow)
         self.assertIn('      - "Validate self-healing agent"', workflow)
         self.assertIn("types: [completed]", workflow)
