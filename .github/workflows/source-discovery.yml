@@ -136,10 +136,13 @@ jobs:
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import hashlib, json, os
+          import json, os, sys
           from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from json_document_store import read_document
+          from task_scheduler import read_only_resource_digests
           path = Path("sources/discovered_sources.json")
-          document = json.loads(path.read_text(encoding="utf-8"))
+          document = read_document(path, "candidates", {"candidates": []})
           expected = {
               "workflow_name": "Shadowrocket Source Discovery (Watchdog)",
               "workflow_run_id": os.environ["GITHUB_RUN_ID"],
@@ -147,8 +150,10 @@ jobs:
           }
           if document.get("producer") != expected:
               raise SystemExit("Discovery document producer identity does not match this workflow run.")
-          proof = {**expected, "artifact_path": "sources/discovered_sources.json",
-                   "artifact_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+          digest = read_only_resource_digests(Path("."), ["sources/discovered_sources.json"])["sources/discovered_sources.json"]
+          if not isinstance(digest, str) or len(digest) != 64:
+              raise SystemExit("Discovery logical-document digest is unavailable.")
+          proof = {**expected, "artifact_path": "sources/discovered_sources.json", "artifact_sha256": digest}
           Path(os.environ["RUNNER_TEMP"], "source-discovery-proof.json").write_text(
               json.dumps(proof, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
           PY
@@ -193,9 +198,7 @@ jobs:
           auth="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
           GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0="http.https://github.com/.extraheader" GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $auth" git push origin HEAD:main
           git fetch origin main
-          remote_digest="$(git show origin/main:sources/discovered_sources.json | sha256sum | cut -d' ' -f1)"
-          local_digest="$(sha256sum sources/discovered_sources.json | cut -d' ' -f1)"
-          test "$remote_digest" = "$local_digest"
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
 
       - name: Capture path-only filesystem and Git write trace
         if: always()
@@ -209,6 +212,7 @@ jobs:
           name: source-discovery-output
           path: |
             sources/discovered_sources.json*
+            sources/discovered_sources.json.parts-*/**
             reports/source-discovery.md
             ${{ runner.temp }}/source-discovery-proof.json
           if-no-files-found: error
