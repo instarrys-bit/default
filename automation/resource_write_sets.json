@@ -1620,7 +1620,7 @@
     },
     {
       "workflow_path": ".github/workflows/auto_sync.yml",
-      "step_name": "Revalidate live Watchdog lease and persist only the cursor checkpoint",
+      "step_name": "Publish only the cursor checkpoint under the same live fence",
       "mutation_kinds": [
         "git_add",
         "git_commit",
@@ -1629,8 +1629,8 @@
       "resources": [
         "sources/review_cursor.json"
       ],
-      "fence": "Revalidate live Watchdog task and resource lease before publishing the cursor-only commit.",
-      "boundary": "Main-branch checkpoint publication; cursor is isolated from ruleset content."
+      "fence": "The persist-review-cursor job installs AUTOMATION_WRITE_GUARD and the exact live resource lease environment before persist_review_cursor.py runs; the filesystem guard re-reads the durable queue before each write. The cursor-only Git publication revalidates the same workflow/task/resource proof before staging and immediately before push.",
+      "boundary": "Main-branch checkpoint publication is serialized by shadowrocket-main-writer; only sources/review_cursor.json may be staged, committed or pushed."
     },
     {
       "workflow_path": ".github/workflows/automation-watchdog.yml",
