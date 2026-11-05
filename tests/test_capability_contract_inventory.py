@@ -417,7 +417,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertFalse(nonwriter_ids & external_ids)
         self.assertEqual(writer_ids | nonwriter_ids | external_ids, python_ids)
         self.assertEqual(len(writer_ids), 36)
-        self.assertEqual(len(nonwriter_ids), 16)
+        self.assertEqual(len(nonwriter_ids), 17)
         self.assertEqual(external_ids, {"script_github_workflow_adapter"})
         self.assertIn("script_resource_lease_runtime", writer_ids)
         self.assertIn("script_json_document_store", writer_ids)
