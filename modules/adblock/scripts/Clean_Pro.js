@@ -306,7 +306,7 @@
   })();
 
   function hasPageAdMarker(buf) {
-    if (!buf || buf.length < 500) return false;
+    if (!buf || buf.length < PATTERN_PAGEAD.length) return false;
     const n = buf.length;
     const m = PATTERN_PAGEAD.length;
     let i = 0;
