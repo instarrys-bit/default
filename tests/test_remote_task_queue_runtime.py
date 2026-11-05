@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from remote_task_queue_runtime import (
-    claim_remote, complete_remote, enqueue_remote, recover_remote,
+    claim_remote, complete_remote, enqueue_remote, recover_remote, resolve_superseded_dead_letters,
 )
 
 
@@ -272,6 +272,53 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
         record = self.store.document["resource_leases"]["rulesets/manifest.json"]
         self.assertEqual(record["status"], "RELEASED")
         self.assertEqual(record["fencing_token"], task["resource_lease"]["resources"]["rulesets/manifest.json"]["fencing_token"])
+
+    def create_dead_letter_auto_sync(self, source_sha, idempotency_key):
+        created = enqueue_remote(self.payload(
+            idempotency_key=idempotency_key,
+            requester_program_id="workflow_automation_watchdog",
+            target_program_id="workflow_auto_sync",
+            capability="deterministic_audit",
+            input={"baseline_source_event": "push", "baseline_source_sha": source_sha},
+        ), self.store, self.registry, self.now)
+        task_id = created["task"]["task_id"]
+        claimed = claim_remote("watchdog-worker", self.store, self.registry,
+                               eligible_task_ids={task_id}, now=self.now)
+        return complete_remote(
+            task_id, "watchdog-worker", claimed["lease"]["token"],
+            success=False,
+            error={"type": "workflow_run_failed", "message": "old workflow failed",
+                   "evidence": {"status": "completed", "conclusion": "failure", "run_id": 456}},
+            store=self.store, registry=self.registry, now=self.now,
+        )
+
+    def test_superseded_dead_letter_is_cancelled_with_auditable_resolution(self):
+        old_sha, current_sha = "a" * 40, "b" * 40
+        task = self.create_dead_letter_auto_sync(old_sha, "production:old-main:1")
+        self.assertEqual(task["status"], "DEAD_LETTER")
+        resolved = resolve_superseded_dead_letters(self.store, self.registry, current_sha, self.now)
+        self.assertEqual([item["task_id"] for item in resolved], [task["task_id"]])
+        saved = self.store.document["tasks"][0]
+        self.assertEqual(saved["status"], "CANCELLED")
+        self.assertEqual(saved["state_history"][-2:], ["DEAD_LETTER", "CANCELLED"])
+        self.assertEqual(saved["resolution"]["disposition"], "superseded")
+        self.assertEqual(saved["resolution"]["superseded_by_main_sha"], current_sha)
+        self.assertEqual(saved["resolution"]["evidence"]["original_source_sha"], old_sha)
+        self.assertEqual(resolve_superseded_dead_letters(self.store, self.registry, current_sha, self.now), [])
+
+    def test_dead_letter_for_current_main_is_not_superseded(self):
+        current_sha = "c" * 40
+        self.create_dead_letter_auto_sync(current_sha, "production:current-main:1")
+        self.assertEqual(resolve_superseded_dead_letters(self.store, self.registry, current_sha, self.now), [])
+        self.assertEqual(self.store.document["tasks"][0]["status"], "DEAD_LETTER")
+
+    def test_unknown_dispatch_outcome_is_not_superseded(self):
+        old_sha = "d" * 40
+        task = self.create_dead_letter_auto_sync(old_sha, "production:unknown:1")
+        task["last_error"]["evidence"]["status"] = "unknown"
+        self.store.document["tasks"][0] = task
+        self.assertEqual(resolve_superseded_dead_letters(self.store, self.registry, "e" * 40, self.now), [])
+        self.assertEqual(self.store.document["tasks"][0]["status"], "DEAD_LETTER")
 
     def test_empty_claim_and_recovery_do_not_write(self):
         self.assertIsNone(self.claim("worker-a", self.now))
