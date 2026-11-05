@@ -174,7 +174,7 @@ button{font:inherit}
 <main class="shell">
 <header class="topbar compact-topbar">
  <div class="brand"><div class="brand-title">自动化运营控制台</div></div>
- <div class="top-meta"><span class="live-pill compact-clock" id="sync-status" role="status" aria-live="polite"><i class="live-dot" id="sync-dot"></i><time id="clock">正在读取数据快照…</time></span></div>
+ <div class="top-meta"><time class="live-pill compact-clock" id="clock" aria-label="当前时间"></time></div>
 </header>
 <section class="kpis" id="summary">
  <article class="kpi published"><div class="kpi-label">已发布规则</div><div class="kpi-value">—</div><div class="kpi-foot">当前规则集规模</div></article>
@@ -264,7 +264,7 @@ async function load(){try{
   '<div class="lifecycle-details"><div class="lifecycle-detail"><span>节点进度</span><b>'+progress.toFixed(1)+'%</b></div><div class="lifecycle-detail"><span>检查安排</span><b>'+lifecycleStatus+'</b></div><div class="lifecycle-detail"><span>最近检查</span><b>'+lastReview+'</b></div><div class="lifecycle-detail"><span>容量上限</span><b>'+n(d.lifecycle.max_published_rules)+'</b></div><div class="lifecycle-detail"><span>最近成功检查</span><b>'+fmtTime(d.lifecycle.last_successful_review_at)+'</b></div><div class="lifecycle-detail"><span>监控状态</span><b class="'+stateClass+'">'+state+'</b></div></div>';
 
  }catch(e){lastLoadError=new Date();tickClock();}}
-function tickClock(){const node=el("clock");if(!node)return;const dot=el("sync-dot");if(!snapshotGeneratedAt||Number.isNaN(snapshotGeneratedAt.getTime())){node.textContent=lastLoadError?"数据读取失败，等待重试":"正在读取数据快照…";if(dot)dot.style.background=lastLoadError?"var(--red)":"var(--amber)";return;}const age=Math.max(0,Date.now()-snapshotGeneratedAt.getTime());const stale=age>75*60*1000;const stamp=new Intl.DateTimeFormat("zh-CN",{timeZone:"Asia/Shanghai",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).format(snapshotGeneratedAt);const pulled=lastSuccessfulLoad?Math.max(0,Math.floor((Date.now()-lastSuccessfulLoad.getTime())/1000)):null;node.textContent=(lastLoadError?"读取异常 · ":"")+(stale?"快照可能滞后 · ":"数据已同步 · ")+"快照 "+stamp+(pulled!==null?" · "+(pulled<5?"刚刚":pulled+"秒前")+"读取":"");if(dot)dot.style.background=lastLoadError||stale?"var(--amber)":"var(--green)";}
+function tickClock(){const node=el("clock");if(!node)return;node.textContent=new Intl.DateTimeFormat("zh-CN",{timeZone:"Asia/Shanghai",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).format(new Date());}
 tickClock();setInterval(tickClock,1000);load();setInterval(load,30000);
 </script>
 </body>
