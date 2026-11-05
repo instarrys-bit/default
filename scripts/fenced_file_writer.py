@@ -63,8 +63,10 @@ def _repo_relative(path) -> str | None:
             # An external hardlink has an external pathname but shares the
             # repository file's inode; map it back to the canonical resource.
             alias = _external_hardlink_alias(candidate)
+            if alias in PROTECTED_PATHS:
+                raise PermissionError("owner-managed protected file is read-only")
             if alias is not None:
-                return alias
+                raise PermissionError("external hardlink alias to a repository resource is denied")
             return None
         raise PermissionError("repository write path escapes through a symlink")
     lexical_value = None
@@ -76,6 +78,11 @@ def _repo_relative(path) -> str | None:
     resolved_value = resolved_relative.as_posix()
     if lexical_value in PROTECTED_PATHS or resolved_value in PROTECTED_PATHS:
         raise PermissionError("owner-managed protected file is read-only")
+    try:
+        if resolved.is_file() and resolved.stat().st_nlink > 1:
+            raise PermissionError("hardlink aliases to repository resources are denied")
+    except OSError as exc:
+        raise PermissionError("repository hardlink state cannot be checked safely") from exc
     return resolved_value if resolved_value not in {"", "."} else None
 
 
