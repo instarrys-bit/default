@@ -160,6 +160,26 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         self.assertEqual(git(self.work, "rev-parse", "HEAD"), git(self.work, "rev-parse", "origin/main"))
         self.assertEqual((self.work / "shadowrocket" / "uu.conf").read_text(encoding="utf-8").strip(), "protected")
 
+    def test_publish_accepts_verified_queue_commit_mixed_with_monitoring_change(self):
+        self.add_queue_commit()
+        git(self.work, "fetch", "origin")
+        git(self.work, "checkout", "-B", "main", "origin/main")
+        dashboard = self.work / "dashboard" / "index.html"
+        dashboard.parent.mkdir(parents=True, exist_ok=True)
+        dashboard.write_text("updated dashboard\\n", encoding="utf-8")
+        snapshot = self.work / "scripts" / "build_dashboard_snapshot.py"
+        snapshot.write_text("updated snapshot\\n", encoding="utf-8")
+        git(self.work, "add", "dashboard/index.html", "scripts/build_dashboard_snapshot.py")
+        git(self.work, "commit", "-m", "Refresh dashboard")
+        git(self.work, "push", "origin", "HEAD:main")
+        git(self.work, "checkout", "--detach", self.base)
+
+        result = self.run_guard()
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("strictly verified queue-state commits and manifest-classified non-production paths", result.stdout)
+        self.assertEqual(git(self.work, "rev-parse", "HEAD"), git(self.work, "rev-parse", "origin/main"))
+        self.assertEqual((self.work / "shadowrocket" / "uu.conf").read_text(encoding="utf-8"), "protected\\n")
+
     def test_queue_only_commit_from_non_bot_author_is_rejected(self):
         self.add_queue_commit(author_email="test@example.invalid")
         result = self.run_guard()
