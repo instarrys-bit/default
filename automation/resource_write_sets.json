@@ -1783,10 +1783,11 @@
     "guard_path": "scripts/fenced_file_writer.py",
     "scope": "all repository-relative filesystem mutation events when AUTOMATION_WRITE_GUARD=1 and AUTOMATION_REQUIRE_RESOURCE_LEASE=1",
     "exclusions": [
-      "paths outside the repository checkout, including runner-local temporary files"
+      "paths outside the repository checkout that are not symlink or hardlink aliases to repository files, including runner-local temporary files"
     ],
     "protected_path": "modules/uu.conf is always denied regardless of lease state",
     "lease_resolution": "specific longest matching resource key; otherwise logical/production-pipeline is accepted only for the exact Watchdog-dispatched workflow_auto_sync task",
-    "limitation": "This guard change expands path coverage but does not prove every workflow enables the required environment flags, every resource path maps to a canonical narrow lease, or all cross-workflow writers share the same lock."
+    "limitation": "This guard change expands path coverage but does not prove every workflow enables the required environment flags, every resource path maps to a canonical narrow lease, or all cross-workflow writers share the same lock.",
+    "alias_handling": "Repository symlinks resolve to canonical target paths; pre-existing external hardlinks are mapped by device/inode to their repository resource before lease checks."
   }
 }
