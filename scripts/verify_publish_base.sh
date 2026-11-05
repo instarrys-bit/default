@@ -148,6 +148,205 @@ if [ "$mode" = "--check-only" ]; then
   exit 1
 fi
 
+
+# Publish-time equivalent of the API check. Inspect actual Git history so
+# queue changes are accepted only when each queue-touching commit is a
+# single-file, bot-authored durable queue update.
+is_verified_mixed_queue_and_non_input_history() {
+  local base="$1" head="$2" paths_json="$3"
+  local commits commit parent_line author_email subject changed_status
+  commits="$(git rev-list --reverse "$base..$head")" || return 1
+  [ -n "$commits" ] || return 1
+  [ "$(wc -l <<< "$commits" | tr -d ' ')" -le 20 ] || return 1
+  local queue_commit_seen=false
+  while IFS= read -r commit; do
+    [ -n "$commit" ] || continue
+    changed_status="$(git diff-tree --no-commit-id --name-status -r -m "$commit" | sort -u)"
+    if grep -Fq 
+  echo "Usage: $0 [--check-only]" >&2
+  exit 2
+fi
+
+git fetch origin main
+if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+  echo "The audited commit is not an ancestor of current main; refusing to publish across divergent history." >&2
+  exit 1
+fi
+
+changed_paths="$(git diff --name-only "$GITHUB_SHA" origin/main)"
+if [ -n "$changed_paths" ]; then
+  docs_only=true
+  while IFS= read -r changed_path; do
+    [ -n "$changed_path" ] || continue
+    case "$changed_path" in
+      docs/*)
+        ;;
+      *)
+        docs_only=false
+        ;;
+    esac
+  done <<< "$changed_paths"
+
+  if [ "$docs_only" = true ]; then
+    echo "Only docs/ files changed during audit; rebasing publication onto current main."
+    git reset --hard origin/main
+    exit 0
+  fi
+
+  if [ "$changed_paths" = "automation/task_queue.json" ]; then
+    mapfile -t queue_commits < <(git rev-list --reverse --first-parent "$GITHUB_SHA..origin/main")
+    if [ "${#queue_commits[@]}" -lt 1 ] || [ "${#queue_commits[@]}" -gt 20 ]; then
+      echo "Queue-only advancement is outside the bounded commit window; refusing to publish." >&2
+      exit 1
+    fi
+
+    expected_parent="$GITHUB_SHA"
+    expected_status="$(printf 'M\tautomation/task_queue.json')"
+    for commit in "${queue_commits[@]}"; do
+      read -r commit_sha parent_sha extra <<< "$(git rev-list --parents -n 1 "$commit")"
+      author_email="$(git show -s --format=%ae "$commit")"
+      subject="$(git show -s --format=%s "$commit")"
+      changed_status="$(git diff-tree --no-commit-id --name-status -r "$parent_sha" "$commit")"
+      if [ "$commit_sha" != "$commit" ] || [ -n "${extra:-}" ] ||
+         [ "$parent_sha" != "$expected_parent" ] ||
+         [ "$author_email" != "41898282+github-actions[bot]@users.noreply.github.com" ] ||
+         [ "$subject" != "Update durable automation task queue" ] ||
+         [ "$changed_status" != "$expected_status" ]; then
+        echo "Queue state advanced with an untrusted, mixed, or non-linear commit; refusing to publish stale audit output." >&2
+        exit 1
+      fi
+      expected_parent="$commit"
+    done
+
+    if [ "$expected_parent" != "$(git rev-parse origin/main)" ]; then
+      echo "Queue-only commit chain does not terminate at current main; refusing to publish." >&2
+      exit 1
+    fi
+    echo "Only strictly verified durable queue-state commits changed during audit; rebasing publication onto current main."
+    git reset --hard origin/main
+    exit 0
+  fi
+
+  changed_paths_json="$(printf '%s\n' "$changed_paths" | jq -Rsc 'split("\n") | map(select(length > 0))')"
+  if grep -Fxq "automation/task_queue.json" <<< "$changed_paths" &&
+     is_verified_mixed_queue_and_non_input_history "$GITHUB_SHA" "$(git rev-parse origin/main)" "$changed_paths_json"; then
+    echo "Only strictly verified queue-state commits and manifest-classified non-production paths changed during audit; rebasing publication onto current main."
+    git reset --hard origin/main
+    exit 0
+  fi
+  if is_non_input_path_set "$changed_paths_json"; then
+    echo "Only manifest-classified non-production paths changed during audit; rebasing publication onto current main."
+    git reset --hard origin/main
+    exit 0
+  fi
+
+  while IFS= read -r changed_path; do
+    [ -n "$changed_path" ] || continue
+    echo "Production input or unclassified repository path changed during audit: $changed_path" >&2
+  done <<< "$changed_paths"
+  echo "Refusing to publish stale audit output." >&2
+  exit 1
+fi
+
+echo "Audited commit is still current; no rebase required."
+\tautomation/task_queue.json' <<< "$changed_status"; then
+      queue_commit_seen=true
+      parent_line="$(git rev-list --parents -n 1 "$commit")"
+      [ "$(wc -w <<< "$parent_line" | tr -d ' ')" -eq 2 ] || return 1
+      author_email="$(git show -s --format=%ae "$commit")"
+      subject="$(git show -s --format=%s "$commit")"
+      [ "$author_email" = "41898282+github-actions[bot]@users.noreply.github.com" ] || return 1
+      [ "$subject" = "Update durable automation task queue" ] || return 1
+      [ "$changed_status" = 
+  echo "Usage: $0 [--check-only]" >&2
+  exit 2
+fi
+
+git fetch origin main
+if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+  echo "The audited commit is not an ancestor of current main; refusing to publish across divergent history." >&2
+  exit 1
+fi
+
+changed_paths="$(git diff --name-only "$GITHUB_SHA" origin/main)"
+if [ -n "$changed_paths" ]; then
+  docs_only=true
+  while IFS= read -r changed_path; do
+    [ -n "$changed_path" ] || continue
+    case "$changed_path" in
+      docs/*)
+        ;;
+      *)
+        docs_only=false
+        ;;
+    esac
+  done <<< "$changed_paths"
+
+  if [ "$docs_only" = true ]; then
+    echo "Only docs/ files changed during audit; rebasing publication onto current main."
+    git reset --hard origin/main
+    exit 0
+  fi
+
+  if [ "$changed_paths" = "automation/task_queue.json" ]; then
+    mapfile -t queue_commits < <(git rev-list --reverse --first-parent "$GITHUB_SHA..origin/main")
+    if [ "${#queue_commits[@]}" -lt 1 ] || [ "${#queue_commits[@]}" -gt 20 ]; then
+      echo "Queue-only advancement is outside the bounded commit window; refusing to publish." >&2
+      exit 1
+    fi
+
+    expected_parent="$GITHUB_SHA"
+    expected_status="$(printf 'M\tautomation/task_queue.json')"
+    for commit in "${queue_commits[@]}"; do
+      read -r commit_sha parent_sha extra <<< "$(git rev-list --parents -n 1 "$commit")"
+      author_email="$(git show -s --format=%ae "$commit")"
+      subject="$(git show -s --format=%s "$commit")"
+      changed_status="$(git diff-tree --no-commit-id --name-status -r "$parent_sha" "$commit")"
+      if [ "$commit_sha" != "$commit" ] || [ -n "${extra:-}" ] ||
+         [ "$parent_sha" != "$expected_parent" ] ||
+         [ "$author_email" != "41898282+github-actions[bot]@users.noreply.github.com" ] ||
+         [ "$subject" != "Update durable automation task queue" ] ||
+         [ "$changed_status" != "$expected_status" ]; then
+        echo "Queue state advanced with an untrusted, mixed, or non-linear commit; refusing to publish stale audit output." >&2
+        exit 1
+      fi
+      expected_parent="$commit"
+    done
+
+    if [ "$expected_parent" != "$(git rev-parse origin/main)" ]; then
+      echo "Queue-only commit chain does not terminate at current main; refusing to publish." >&2
+      exit 1
+    fi
+    echo "Only strictly verified durable queue-state commits changed during audit; rebasing publication onto current main."
+    git reset --hard origin/main
+    exit 0
+  fi
+
+  changed_paths_json="$(printf '%s\n' "$changed_paths" | jq -Rsc 'split("\n") | map(select(length > 0))')"
+  if is_non_input_path_set "$changed_paths_json"; then
+    echo "Only manifest-classified non-production paths changed during audit; rebasing publication onto current main."
+    git reset --hard origin/main
+    exit 0
+  fi
+
+  while IFS= read -r changed_path; do
+    [ -n "$changed_path" ] || continue
+    echo "Production input or unclassified repository path changed during audit: $changed_path" >&2
+  done <<< "$changed_paths"
+  echo "Refusing to publish stale audit output." >&2
+  exit 1
+fi
+
+echo "Audited commit is still current; no rebase required."
+M\tautomation/task_queue.json' ] || return 1
+    fi
+  done <<< "$commits"
+  [ "$queue_commit_seen" = true ] || return 1
+  local non_queue_paths
+  non_queue_paths="$(jq -c '[.[] | select(. != "automation/task_queue.json")]' <<< "$paths_json")"
+  is_non_input_path_set "$non_queue_paths"
+}
+
 if [ "$mode" != "publish" ]; then
   echo "Usage: $0 [--check-only]" >&2
   exit 2
