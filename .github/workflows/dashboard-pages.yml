@@ -30,7 +30,6 @@ on:
       - "Validate Shadowrocket config against user baseline"
       - "Shadowrocket self-healing agent"
     types: [completed]
-  workflow_dispatch:
   schedule:
     - cron: "17 * * * *"
 permissions:
