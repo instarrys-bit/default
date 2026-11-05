@@ -120,6 +120,15 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("sources/discovered_sources.json", auto_sync["resource_contract"]["resource_keys"])
         self.assertIn("reports/source-discovery.md", auto_sync["resource_contract"]["resource_keys"])
 
+    def test_auto_sync_accepts_verifying_phase_resource_lease_after_task_lease_release(self):
+        audit = AUTO_SYNC.read_text(encoding="utf-8")
+        gate = audit.split("Verify Watchdog-owned durable task dispatch", 1)[1].split("Verify live Watchdog resource lease", 1)[0]
+        self.assertIn('task.get("status") not in {"CLAIMED", "VERIFYING"}', gate)
+        self.assertIn('resource_lease.get("status") != "ACTIVE"', gate)
+        self.assertIn('task_lease_token = lease.get("token") if isinstance(lease, dict) else "resource-fence-only"', gate)
+        self.assertIn('workers.add(record.get("worker_id"))', gate)
+        self.assertIn('task lease owner differs from the active resource lease owner', gate)
+
     def test_successful_workflow_reports_degraded_source_discovery_health(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("Report degraded source discovery health", workflow)
