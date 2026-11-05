@@ -102,7 +102,7 @@
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
-      "git_blob_sha": "1af6ba17f2361211f3d310d2499446dc6032023b"
+      "git_blob_sha": "ab547080e3b5104745c7be7e9a4f58fd65b9048e"
     }
   },
   "compatibility": {
