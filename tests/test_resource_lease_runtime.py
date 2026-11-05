@@ -260,7 +260,7 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
                     record["task_lease_token"] = "stale-token"
                     self.assertTrue(assert_resource_lease_from_environment("reports/project-status.json"))
                     record["worker_id"] = "different-worker"
-                    with self.assertRaisesRegex(ValueError, "no matching active resource lease"):
+                    with self.assertRaisesRegex(ValueError, "resource lease fencing check failed: logical/production-pipeline"):
                         assert_resource_lease_from_environment("reports/project-status.json")
 
     def test_workflow_source_discovery_verifying_task_requires_exact_dedicated_dispatch(self):
