@@ -140,7 +140,8 @@ def active_production_fingerprints(queue: dict, current_fingerprint: str) -> lis
         fingerprint = payload.get("production_fingerprint") if isinstance(payload, dict) else None
         # A stale queued task has not acquired execution ownership. It must not
         # suppress a fresh task for current main; enqueue atomically supersedes it.
-        if status == "QUEUED" and fingerprint != current_fingerprint:
+        if (status == "QUEUED" and fingerprint != current_fingerprint
+                and not isinstance(task.get("dispatch_intent"), dict)):
             continue
         if not isinstance(fingerprint, str) or not re.fullmatch(r"[0-9a-f]{64}", fingerprint):
             active.add(UNFINGERPRINTED_ACTIVE_PRODUCTION)
