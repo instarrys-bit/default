@@ -63,6 +63,10 @@
     "shell_git_write_trace": {
       "path": "scripts/capture_git_write_trace.py",
       "git_blob_sha": "a88030039f797ca8b3c517fdb4be21d4c78aac09"
+    },
+    "task_scheduler": {
+      "path": "scripts/task_scheduler.py",
+      "git_blob_sha": "938ba2412ec2a369daa8638a33861c08c57dd78c"
     }
   },
   "compatibility": {
