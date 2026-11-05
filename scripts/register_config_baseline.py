@@ -98,23 +98,23 @@ def owner_approved_config_history(guard: dict) -> list[str]:
         cwd=ROOT, check=False, capture_output=True, text=True,
     )
     if ancestry.returncode != 0:
+        print(f"Baseline history recovery blocked: baseline commit {baseline_commit} is not an ancestor of target {after}.", file=sys.stderr)
         return []
-    history = subprocess.run(
         ["git", "log", "--format=%H", f"{baseline_commit}..{after}", "--", str(guard["path"])],
         cwd=ROOT, check=True, capture_output=True, text=True,
     )
     commits = [line.strip() for line in history.stdout.splitlines() if line.strip()]
     if not commits:
+        print(f"Baseline history recovery blocked: no {guard['path']} commits were found between {baseline_commit} and {after}.", file=sys.stderr)
         return []
-    # Git author text can be forged. Require GitHub's account association for every commit.
     for commit_sha in commits:
         author = subprocess.run(
             ["gh", "api", f"repos/{repo}/commits/{commit_sha}", "--jq", ".author.login // empty"],
             cwd=ROOT, check=True, capture_output=True, text=True,
         ).stdout.strip()
         if author != owner:
+            print(f"Baseline history recovery blocked: GitHub author for config commit {commit_sha} is {author or '<unassociated>'}, expected repository owner {owner}.", file=sys.stderr)
             return []
-    return commits
 
 
 def main() -> int:
