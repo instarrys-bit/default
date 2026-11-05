@@ -410,7 +410,23 @@ jobs:
               ] | index($path) == null)
             ))' <<< "$paths_json")"
 
-          active_fingerprints="$(jq -c '[.tasks[] | select(.status == "QUEUED" or .status == "CLAIMED" or .status == "VERIFYING") | .input.production_fingerprint // empty] | map(select(type == "string")) | unique' automation/task_queue.json)"
+          current_fingerprint="$(python3 - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from production_intent import load_manifest, compute_fingerprint
+          manifest = load_manifest(Path("automation/production_inputs.json"))
+          print(compute_fingerprint(Path("."), manifest))
+          PY
+          )"
+          active_fingerprints="$(CURRENT_PRODUCTION_FINGERPRINT="$current_fingerprint" python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          from production_intent import active_production_fingerprints
+          queue = json.loads(Path("automation/task_queue.json").read_text(encoding="utf-8"))
+          print(json.dumps(active_production_fingerprints(queue, os.environ["CURRENT_PRODUCTION_FINGERPRINT"])))
+          PY
+          )"
           successful_fingerprints="$(jq -c '[.tasks[] | select(.status == "SUCCEEDED" and .verification.status == "passed") | .input.production_fingerprint // empty] | map(select(type == "string")) | unique' automation/task_queue.json)"
 
           intent_json="$(python3 scripts/production_intent.py \
