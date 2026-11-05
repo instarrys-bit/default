@@ -98,10 +98,29 @@ class ConfigBaselineRegistrationTests(unittest.TestCase):
         "GITHUB_REPOSITORY_OWNER": "instarrys-bit",
         "GITHUB_REPOSITORY": "instarrys-bit/default",
         "GITHUB_REF": "refs/heads/main",
-        "GITHUB_BEFORE": "d" * 40,
         "GITHUB_SHA": "e" * 40,
     }, clear=True)
-    def test_scheduled_run_cannot_recover_config_history(self, mocked):
+    def test_scheduled_run_recovers_only_github_owner_verified_config_history(self, mocked):
+        mocked.side_effect = [
+            SimpleNamespace(returncode=0, stdout=""),
+            SimpleNamespace(returncode=0, stdout=("a" * 40) + "\n" + ("b" * 40) + "\n"),
+            SimpleNamespace(returncode=0, stdout="instarrys-bit\n"),
+            SimpleNamespace(returncode=0, stdout="instarrys-bit\n"),
+        ]
+        guard = {"path": "modules/uu.conf", "last_user_approved_baseline_update": {"commit_sha": "c" * 40}}
+        self.assertEqual(owner_approved_config_history(guard), ["a" * 40, "b" * 40])
+        self.assertEqual(mocked.call_count, 4)
+
+    @patch("register_config_baseline.subprocess.run")
+    @patch.dict(os.environ, {
+        "GITHUB_EVENT_NAME": "schedule",
+        "GITHUB_ACTOR": "instarrys-bit",
+        "GITHUB_REPOSITORY_OWNER": "instarrys-bit",
+        "GITHUB_REPOSITORY": "instarrys-bit/default",
+        "GITHUB_REF": "refs/heads/feature",
+        "GITHUB_SHA": "e" * 40,
+    }, clear=True)
+    def test_scheduled_run_on_non_main_ref_cannot_recover_config_history(self, mocked):
         guard = {"path": "modules/uu.conf", "last_user_approved_baseline_update": {"commit_sha": "c" * 40}}
         self.assertEqual(owner_approved_config_history(guard), [])
         mocked.assert_not_called()

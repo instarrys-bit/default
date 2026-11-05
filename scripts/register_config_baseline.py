@@ -74,17 +74,17 @@ def owner_approved_push_changed_config() -> bool:
 
 def owner_approved_config_history(guard: dict) -> list[str]:
     """Recover interrupted registration only from owner-authored config commits."""
-    event = os.environ.get("GITHUB_EVENT_NAME", "")
-    if event not in {"push", "workflow_dispatch"}:
+    event = os.environ.get("BASELINE_SOURCE_EVENT", os.environ.get("GITHUB_EVENT_NAME", ""))
+    if event not in {"push", "workflow_dispatch", "schedule"}:
         return []
     actor = os.environ.get("GITHUB_ACTOR", "")
     owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "")
-    ref = os.environ.get("GITHUB_REF", "")
+    ref = os.environ.get("BASELINE_SOURCE_REF", os.environ.get("GITHUB_REF", ""))
     if event == "push" and (not actor or actor != owner):
         return []
-    if event == "workflow_dispatch" and ref != "refs/heads/main":
+    if event in {"workflow_dispatch", "schedule"} and ref != "refs/heads/main":
         return []
-    after = os.environ.get("GITHUB_SHA", "")
+    after = os.environ.get("BASELINE_SOURCE_SHA", os.environ.get("GITHUB_SHA", ""))
     repo = os.environ.get("GITHUB_REPOSITORY", "")
     baseline_commit = str(guard.get("last_user_approved_baseline_update", {}).get("commit_sha", ""))
     if (
@@ -98,6 +98,7 @@ def owner_approved_config_history(guard: dict) -> list[str]:
         cwd=ROOT, check=False, capture_output=True, text=True,
     )
     if ancestry.returncode != 0:
+        print(f"Baseline history recovery blocked: baseline commit {baseline_commit} is not an ancestor of target {after}.", file=sys.stderr)
         return []
     history = subprocess.run(
         ["git", "log", "--format=%H", f"{baseline_commit}..{after}", "--", str(guard["path"])],
@@ -105,14 +106,15 @@ def owner_approved_config_history(guard: dict) -> list[str]:
     )
     commits = [line.strip() for line in history.stdout.splitlines() if line.strip()]
     if not commits:
+        print(f"Baseline history recovery blocked: no {guard['path']} commits were found between {baseline_commit} and {after}.", file=sys.stderr)
         return []
-    # Git author text can be forged. Require GitHub's account association for every commit.
     for commit_sha in commits:
         author = subprocess.run(
             ["gh", "api", f"repos/{repo}/commits/{commit_sha}", "--jq", ".author.login // empty"],
             cwd=ROOT, check=True, capture_output=True, text=True,
         ).stdout.strip()
         if author != owner:
+            print(f"Baseline history recovery blocked: GitHub author for config commit {commit_sha} is {author or '<unassociated>'}, expected repository owner {owner}.", file=sys.stderr)
             return []
     return commits
 
