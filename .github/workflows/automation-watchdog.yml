@@ -766,9 +766,11 @@ jobs:
           root = Path(os.environ["SOURCE_ARTIFACT_DIR"])
           proof_files = list(root.rglob("source-discovery-proof.json"))
           source_files = list(root.rglob("discovered_sources.json"))
-          if len(proof_files) != 1 or len(source_files) != 1:
-              raise SystemExit("The exact discovery run must contain one provenance proof and one discovery document.")
-          artifact_root = source_files[0].parent.parent
+          manifest_files = list(root.rglob("discovered_sources.json.manifest.json"))
+          if len(proof_files) != 1 or len(source_files) > 1 or len(manifest_files) > 1 or (not source_files and not manifest_files):
+              raise SystemExit("The exact discovery run must contain one provenance proof and one legacy or sharded discovery document.")
+          logical_file = source_files[0] if source_files else manifest_files[0]
+          artifact_root = logical_file.parent.parent
           proof = json.loads(proof_files[0].read_text(encoding="utf-8"))
           expected = {
               "workflow_name": os.environ["SOURCE_WORKFLOW_NAME"],
@@ -781,7 +783,7 @@ jobs:
           artifact_digest = read_only_resource_digests(artifact_root, [expected["artifact_path"]])[expected["artifact_path"]]
           if artifact_digest != proof.get("artifact_sha256"):
               raise SystemExit("Downloaded discovery artifact digest does not match its immutable proof.")
-          artifact_document = read_document(source_files[0], "candidates", {"candidates": []})
+          artifact_document = read_document(artifact_root / expected["artifact_path"], "candidates", {"candidates": []})
           if artifact_document.get("producer") != {
               "workflow_name": expected["workflow_name"],
               "workflow_run_id": expected["workflow_run_id"],
