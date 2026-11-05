@@ -431,6 +431,7 @@ class ProductionIntentTests(unittest.TestCase):
         old = "a" * 64
         queue = {"tasks": [
             {"target_program_id": "workflow_auto_sync", "status": "QUEUED", "input": {"production_fingerprint": old}},
+            {"target_program_id": "workflow_auto_sync", "status": "QUEUED", "input": {"production_fingerprint": old}, "dispatch_intent": {"correlation_id": "persisted"}},
             {"target_program_id": "workflow_auto_sync", "status": "QUEUED", "input": {"production_fingerprint": self.fp}},
             {"target_program_id": "workflow_auto_sync", "status": "CLAIMED", "input": {"production_fingerprint": old}},
             {"target_program_id": "workflow_auto_sync", "status": "VERIFYING", "input": {}},
