@@ -25,7 +25,7 @@
   "use strict";
 
   const CACHE_KEY = "SR_AIO_PRO_CACHE_V2";
-  const CACHE_VER = "2.1";
+  const CACHE_VER = "2.0";
 
   const DEFAULT_OPTS = {
     captionLang: "zh-Hans", // Set "off" to disable auto-translated captions
@@ -604,12 +604,21 @@
           else vr.skip(vwt);
         }
         if (eml) {
-          // EML names can be shared by organic and sponsored items.
-          // Do not persist an ad/non-ad verdict for the entire layout name.
-          if (INITIAL_BLACK_EML.includes(eml)) return true;
+          if (cache.whiteEml.includes(eml)) return false;
+          if (cache.blackEml.includes(eml)) return true;
           if (opts.blockShortsFeed && /shorts(?!_pivot_item)/.test(eml)) return true;
-          if (/ad_badge|promoted|sparkles|brand_promo|shopping_shelf/.test(eml)) return true;
-          if (videoInfoBytes && inspectVideoInfoForAd(videoInfoBytes)) return true;
+          if (/ad_badge|promoted|sparkles|brand_promo|shopping_shelf/.test(eml)) {
+            cache.blackEml.push(eml);
+            cache.dirty = true;
+            return true;
+          }
+          if (videoInfoBytes) {
+            const isAd = inspectVideoInfoForAd(videoInfoBytes);
+            if (isAd) cache.blackEml.push(eml);
+            else cache.whiteEml.push(eml);
+            cache.dirty = true;
+            return isAd;
+          }
         }
       } else {
         r.skip(wt);
@@ -626,9 +635,17 @@
         if (isElementRendererBlocked(r.bytes(), cache, opts)) return true;
       } else {
         const raw = r.skip(wt);
-        // Protobuf field numbers are reused in different message contexts.
-        // Inspect each item payload instead of caching a global verdict by field number.
-        if (hasPageAdMarker(raw)) return true;
+        if (cache.whiteNo.includes(fn)) continue;
+        if (cache.blackNo.includes(fn)) return true;
+        const isAd = hasPageAdMarker(raw);
+        if (isAd) {
+          cache.blackNo.push(fn);
+          cache.dirty = true;
+          return true;
+        } else {
+          cache.whiteNo.push(fn);
+          cache.dirty = true;
+        }
       }
     }
     return false;
@@ -1304,11 +1321,48 @@
     return null;
   }
 
-  function dispatch() {
-    if (typeof $response === "undefined" || !$response) {
-      $done({});
-      return;
+  // Local initplayback handling. The "oad" key is a historical candidate only;
+  // keep this narrow and fail open until current request logs confirm its effect.
+  function stripInitplaybackAdParam(rawUrl) {
+    if (typeof rawUrl !== "string" ||
+        !/^https:\/\/[\w-]+\.googlevideo\.com\/initplayback(?:\?|$)/i.test(rawUrl)) {
+      return null;
     }
+    const hashIndex = rawUrl.indexOf("#");
+    const fragment = hashIndex >= 0 ? rawUrl.slice(hashIndex) : "";
+    const withoutFragment = hashIndex >= 0 ? rawUrl.slice(0, hashIndex) : rawUrl;
+    const queryIndex = withoutFragment.indexOf("?");
+    if (queryIndex < 0) return null;
+
+    const base = withoutFragment.slice(0, queryIndex);
+    const parts = withoutFragment.slice(queryIndex + 1).split("&");
+    const kept = [];
+    let changed = false;
+    for (const part of parts) {
+      const equalsIndex = part.indexOf("=");
+      const key = equalsIndex >= 0 ? part.slice(0, equalsIndex) : part;
+      if (key === "oad") changed = true;
+      else kept.push(part);
+    }
+    if (!changed) return null;
+    return {
+      url: base + (kept.length ? "?" + kept.join("&") : "") + fragment,
+      changed: true
+    };
+  }
+
+  function dispatchRequest() {
+    const request = typeof $request !== "undefined" && $request ? $request : null;
+    if (!request || typeof request.url !== "string") return $done({});
+    try {
+      const patch = stripInitplaybackAdParam(request.url);
+      return patch && patch.changed ? $done({ url: patch.url }) : $done({});
+    } catch (_) {
+      return $done({});
+    }
+  }
+
+  function dispatchResponse() {
 
     const url = (typeof $request !== "undefined" && $request.url) || "";
     const headers = ($response && $response.headers) || {};
@@ -1390,6 +1444,13 @@
     $done({});
   }
 
+  function dispatch() {
+    if (typeof $response === "undefined" || !$response) {
+      return dispatchRequest();
+    }
+    return dispatchResponse();
+  }
+
   if (typeof module !== "undefined" && module.exports) {
     module.exports = {
       SafeWireReader,
@@ -1405,6 +1466,7 @@
       processXJsonString,
       processInstagramJsonString,
       processYouTubeJsonString,
+      hasInitplaybackCandidate,
       loadAdCache,
       DEFAULT_OPTS
     };
