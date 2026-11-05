@@ -844,6 +844,33 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
         }
 
 
+def enqueue_source_discovery_task(store, registry: dict, *, idempotency_key: str,
+                                   priority: int = 55, requested_head_sha: str = "") -> dict:
+    """Enqueue one Watchdog-owned discovery workflow for an exact main snapshot."""
+    if not isinstance(idempotency_key, str) or not re.fullmatch(r"source-discovery:[0-9a-f]{40}", idempotency_key):
+        raise ValueError("source discovery requires a main-SHA-scoped idempotency key")
+    if requested_head_sha != idempotency_key.split(":", 1)[1]:
+        raise ValueError("source discovery idempotency key must match the requested main SHA")
+    if not 0 <= priority <= 100:
+        raise ValueError("source discovery priority must be from 0 to 100")
+    result = enqueue_remote({
+        "idempotency_key": idempotency_key,
+        "trace_id": "source-discovery:" + requested_head_sha[:12],
+        "requester_program_id": "workflow_automation_watchdog",
+        "target_program_id": "workflow_source_discovery",
+        "capability": "source_discovery",
+        "priority": priority,
+        "input": {},
+    }, store, registry)
+    task = result["task"]
+    return {
+        "created": result["created"],
+        "task_id": task["task_id"],
+        "status": task["status"],
+        "idempotency_key": task["idempotency_key"],
+    }
+
+
 def enqueue_source_assessment_task(store, registry: dict, adapters: dict, *,
                                    idempotency_key: str, input_payload: dict,
                                    priority: int = 60, root: Path = ROOT) -> dict:
@@ -1031,11 +1058,11 @@ def main() -> int:
     parser.add_argument("--priority", type=int, default=80)
     parser.add_argument("--input-json", default="{}")
     parser.add_argument("--current-main-sha", help="Current main commit used to resolve superseded terminal tasks")
-    parser.add_argument("command", choices=["plan", "run-once", "enqueue-auto-sync", "enqueue-source-assessment", "resolve-superseded-dead-letters"])
+    parser.add_argument("command", choices=["plan", "run-once", "enqueue-auto-sync", "enqueue-source-discovery", "enqueue-source-assessment", "resolve-superseded-dead-letters"])
     args = parser.parse_args()
     try:
         token = sys.stdin.read().strip() if args.token_stdin else None
-        if args.command in {"run-once", "enqueue-auto-sync", "enqueue-source-assessment", "resolve-superseded-dead-letters"} and not token:
+        if args.command in {"run-once", "enqueue-auto-sync", "enqueue-source-discovery", "enqueue-source-assessment", "resolve-superseded-dead-letters"} and not token:
             raise ValueError(f"{args.command} requires a queue token supplied through --token-stdin")
         store = make_store(args.repository, args.branch, args.queue_path, token=token)
         registry = load_object(args.registry, "program registry")
@@ -1043,6 +1070,14 @@ def main() -> int:
         if args.command == "plan":
             plan = build_execution_plan(store.read().document, registry, adapters)
             print(json.dumps(plan, ensure_ascii=False))
+        elif args.command == "enqueue-source-discovery":
+            if not isinstance(args.idempotency_key, str) or not args.idempotency_key.startswith("source-discovery:"):
+                raise ValueError("enqueue-source-discovery requires --idempotency-key source-discovery:<main-sha>")
+            sha = args.idempotency_key.split(":", 1)[1]
+            print(json.dumps(enqueue_source_discovery_task(
+                store, registry, idempotency_key=args.idempotency_key,
+                priority=args.priority, requested_head_sha=sha,
+            ), ensure_ascii=False))
         elif args.command == "enqueue-source-assessment":
             if not isinstance(args.idempotency_key, str) or not args.idempotency_key:
                 raise ValueError("enqueue-source-assessment requires --idempotency-key")
