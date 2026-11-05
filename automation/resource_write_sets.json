@@ -1757,5 +1757,25 @@
       "fence": "GitHub Pages deployment action consumes the workflow's generated Pages artifact; no repository ref mutation.",
       "boundary": "External Pages publication, not a repository file writer."
     }
-  ]
+  ],
+  "workflow_native_scan": {
+    "status": "partial_workflow_shell_pattern_scan",
+    "scanner": "tests/test_workflow_native_write_inventory.py",
+    "workflow_count": 6,
+    "detected_mutation_families": [
+      "git add/commit/push/reset/checkout",
+      "GitHub Contents API PUT/DELETE",
+      "GitHub issue PATCH",
+      "GitHub Actions workflow_dispatch",
+      "GitHub Pages deploy action"
+    ],
+    "limitations": [
+      "dynamic command construction",
+      "shell functions and sourced scripts",
+      "unrecognized HTTP mutation methods or API clients",
+      "side effects hidden inside third-party GitHub Actions",
+      "workflow steps not exercised in the current CI run",
+      "dynamic repository paths and cross-workflow concurrency"
+    ]
+  }
 }
