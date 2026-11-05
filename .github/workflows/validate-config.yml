@@ -119,11 +119,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_REF: ${{ github.event_name == 'pull_request' && 'refs/heads/main' || github.ref }}
-          GITHUB_EVENT_NAME: ${{ github.event_name == 'pull_request' && 'schedule' || github.event_name }}
+          BASELINE_SOURCE_REF: ${{ github.event_name == 'pull_request' && 'refs/heads/main' || github.ref }}
+          BASELINE_SOURCE_EVENT: ${{ github.event_name == 'pull_request' && 'schedule' || github.event_name }}
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-          GITHUB_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.sha }}
+          BASELINE_SOURCE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.sha }}
         run: python scripts/register_config_baseline.py
       - name: Verify owner-approved config baseline
         if: ${{ (github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')) || github.event_name == 'pull_request' }}
