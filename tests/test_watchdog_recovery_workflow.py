@@ -17,14 +17,12 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("group: shadowrocket-main-writer", queue)
         self.assertIn("cancel-in-progress: false", health)
         self.assertIn("cancel-in-progress: false", queue)
-    def test_superseded_dead_letters_are_resolved_before_scheduler_run(self):
+    def test_historical_dead_letter_resolution_is_not_scheduled(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
-        job = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
-        resolve = job.index("Resolve superseded historical DEAD_LETTER tasks through queue CAS")
-        run_once = job.index("Recover leases, verify results, and run one bounded task")
-        self.assertLess(resolve, run_once)
-        self.assertIn('--current-main-sha "$current_main" resolve-superseded-dead-letters', job)
-        self.assertIn("unset GH_TOKEN", job)
+        self.assertNotIn("Resolve superseded historical DEAD_LETTER tasks through queue CAS", workflow)
+        self.assertNotIn("resolve-superseded-dead-letters", workflow)
+        queue_job = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
+        self.assertIn("Recover leases, verify results, and run one bounded task", queue_job)
 
     def test_watchdog_observes_completed_main_audit_runs(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
@@ -32,7 +30,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('    - cron: "0 * * * *"', workflow)
         self.assertIn('      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"', workflow)
         self.assertIn('      - "Shadowrocket Source Discovery (Watchdog)"', workflow)
-        assessment_step = workflow.split("Enqueue source assessment after successful discovery workflow", 1)[1].split("Resolve superseded historical DEAD_LETTER", 1)[0]
+        assessment_step = workflow.split("Enqueue source assessment after successful discovery workflow", 1)[1].split("Recover leases, verify results, and run one bounded task", 1)[0]
         self.assertIn("github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)'", assessment_step)
         self.assertNotIn("github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)'", assessment_step)
         self.assertIn('      - "Validate Shadowrocket config against user baseline"', workflow)
