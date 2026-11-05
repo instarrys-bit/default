@@ -204,8 +204,8 @@
       "path": "modules/AdBlock.sgmodule",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
-      "last_seen_at": "2026-11-05T07:44:38.360929Z",
-      "seen_count": 9,
+      "last_seen_at": "2026-11-05T10:12:49.330082Z",
+      "seen_count": 10,
       "observed_run_ids": [
         "41919876229",
         "41920874061",
@@ -215,19 +215,20 @@
         "41956697406",
         "41973591222",
         "41976261385",
-        "41989284135"
+        "41989284135",
+        "42008720604"
       ],
-      "last_seen_event": "schedule",
-      "last_seen_revision": "22a9ecba8d4e00cb48a3b79de23e6577a9bc5844",
-      "last_seen_run_id": "41989284135",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41989284135"
+      "last_seen_event": "push",
+      "last_seen_revision": "db81c3d3766f7b05f6b54e06ac8b1983199c9775",
+      "last_seen_run_id": "42008720604",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42008720604"
     },
     {
       "path": "modules/adblock/backups/Clean_Pro.pre-rollback-20261105.js",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-04T22:52:12.767958Z",
-      "last_seen_at": "2026-11-05T07:44:38.360929Z",
-      "seen_count": 7,
+      "last_seen_at": "2026-11-05T10:12:49.330082Z",
+      "seen_count": 8,
       "observed_run_ids": [
         "41928905703",
         "41928911219",
@@ -235,19 +236,20 @@
         "41956697406",
         "41973591222",
         "41976261385",
-        "41989284135"
+        "41989284135",
+        "42008720604"
       ],
-      "last_seen_event": "schedule",
-      "last_seen_revision": "22a9ecba8d4e00cb48a3b79de23e6577a9bc5844",
-      "last_seen_run_id": "41989284135",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41989284135"
+      "last_seen_event": "push",
+      "last_seen_revision": "db81c3d3766f7b05f6b54e06ac8b1983199c9775",
+      "last_seen_run_id": "42008720604",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42008720604"
     },
     {
       "path": "modules/adblock/dev/Clean_Pro.js",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
-      "last_seen_at": "2026-11-05T07:44:38.360929Z",
-      "seen_count": 9,
+      "last_seen_at": "2026-11-05T10:12:49.330082Z",
+      "seen_count": 10,
       "observed_run_ids": [
         "41919876229",
         "41920874061",
@@ -257,12 +259,13 @@
         "41956697406",
         "41973591222",
         "41976261385",
-        "41989284135"
+        "41989284135",
+        "42008720604"
       ],
-      "last_seen_event": "schedule",
-      "last_seen_revision": "22a9ecba8d4e00cb48a3b79de23e6577a9bc5844",
-      "last_seen_run_id": "41989284135",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41989284135"
+      "last_seen_event": "push",
+      "last_seen_revision": "db81c3d3766f7b05f6b54e06ac8b1983199c9775",
+      "last_seen_run_id": "42008720604",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42008720604"
     },
     {
       "path": "modules/adblock/scripts/AdBlock_Original.sgmodule",
@@ -283,8 +286,8 @@
       "path": "modules/adblock/scripts/Clean_Pro.js",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
-      "last_seen_at": "2026-11-05T07:44:38.360929Z",
-      "seen_count": 9,
+      "last_seen_at": "2026-11-05T10:12:49.330082Z",
+      "seen_count": 10,
       "observed_run_ids": [
         "41919876229",
         "41920874061",
@@ -294,12 +297,13 @@
         "41956697406",
         "41973591222",
         "41976261385",
-        "41989284135"
+        "41989284135",
+        "42008720604"
       ],
-      "last_seen_event": "schedule",
-      "last_seen_revision": "22a9ecba8d4e00cb48a3b79de23e6577a9bc5844",
-      "last_seen_run_id": "41989284135",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41989284135"
+      "last_seen_event": "push",
+      "last_seen_revision": "db81c3d3766f7b05f6b54e06ac8b1983199c9775",
+      "last_seen_run_id": "42008720604",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42008720604"
     },
     {
       "path": "modules/adblock/scripts/Clean_Pro_Request.js",
@@ -320,44 +324,46 @@
       "path": "modules/adblock/scripts/Social_Adblock.js",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-05T00:50:08.159871Z",
-      "last_seen_at": "2026-11-05T07:44:38.360929Z",
-      "seen_count": 5,
+      "last_seen_at": "2026-11-05T10:12:49.330082Z",
+      "seen_count": 6,
       "observed_run_ids": [
         "41944179889",
         "41956697406",
         "41973591222",
         "41976261385",
-        "41989284135"
+        "41989284135",
+        "42008720604"
       ],
-      "last_seen_event": "schedule",
-      "last_seen_revision": "22a9ecba8d4e00cb48a3b79de23e6577a9bc5844",
-      "last_seen_run_id": "41989284135",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41989284135"
+      "last_seen_event": "push",
+      "last_seen_revision": "db81c3d3766f7b05f6b54e06ac8b1983199c9775",
+      "last_seen_run_id": "42008720604",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42008720604"
     },
     {
       "path": "modules/adblock/scripts/youtube_initplayback_observer.js",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-05T00:50:08.159871Z",
-      "last_seen_at": "2026-11-05T07:44:38.360929Z",
-      "seen_count": 5,
+      "last_seen_at": "2026-11-05T10:12:49.330082Z",
+      "seen_count": 6,
       "observed_run_ids": [
         "41944179889",
         "41956697406",
         "41973591222",
         "41976261385",
-        "41989284135"
+        "41989284135",
+        "42008720604"
       ],
-      "last_seen_event": "schedule",
-      "last_seen_revision": "22a9ecba8d4e00cb48a3b79de23e6577a9bc5844",
-      "last_seen_run_id": "41989284135",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41989284135"
+      "last_seen_event": "push",
+      "last_seen_revision": "db81c3d3766f7b05f6b54e06ac8b1983199c9775",
+      "last_seen_run_id": "42008720604",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42008720604"
     },
     {
       "path": "modules/adblock/scripts/youtube_protobuf_response_filter.js",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
-      "last_seen_at": "2026-11-05T07:44:38.360929Z",
-      "seen_count": 9,
+      "last_seen_at": "2026-11-05T10:12:49.330082Z",
+      "seen_count": 10,
       "observed_run_ids": [
         "41919876229",
         "41920874061",
@@ -367,12 +373,13 @@
         "41956697406",
         "41973591222",
         "41976261385",
-        "41989284135"
+        "41989284135",
+        "42008720604"
       ],
-      "last_seen_event": "schedule",
-      "last_seen_revision": "22a9ecba8d4e00cb48a3b79de23e6577a9bc5844",
-      "last_seen_run_id": "41989284135",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41989284135"
+      "last_seen_event": "push",
+      "last_seen_revision": "db81c3d3766f7b05f6b54e06ac8b1983199c9775",
+      "last_seen_run_id": "42008720604",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42008720604"
     },
     {
       "path": "modules/temp-test/Sr_Youtube_Clean.js",
@@ -484,5 +491,5 @@
       "classification_basis": "Reviewed as a recovery-evidence verifier only. It validates completed workflow/job/verification-step evidence and emits a verification result; it does not create or publish routing rules."
     }
   ],
-  "updated_at": "2026-11-05T07:44:38.360929Z"
+  "updated_at": "2026-11-05T10:12:49.330082Z"
 }
