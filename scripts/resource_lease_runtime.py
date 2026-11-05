@@ -237,12 +237,13 @@ def _active_writer_task(queue, task_id, worker_id, task_lease_token, now):
         raise ValueError("resource write task does not exist")
     status=task.get("status")
     if status=="CLAIMED":
-        lease=task.get("lease")
-        if (not isinstance(lease,dict) or lease.get("owner")!=worker_id
-                or not secrets.compare_digest(str(lease.get("token","")),str(task_lease_token))):
-            raise ValueError("resource write task lease owner or token mismatch")
-        if utc(lease.get("expires_at"))<=now:
-            raise ValueError("resource write task lease has expired")
+        # The task lease controls scheduling; the resource lease is the
+        # mutation authority. A workflow may still hold a valid resource
+        # fencing epoch while the scheduler refreshes or transitions the
+        # task lease. Do not reject a writer solely because task.lease moved:
+        # _assert_live_writer_fence below verifies the exact task, worker,
+        # task token, lease ID, fencing token and expiry against the durable
+        # resource lease record at the mutation boundary.
         return task
     if status!="VERIFYING":
         raise ValueError("resource write requires an active CLAIMED or VERIFYING task")
