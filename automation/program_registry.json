@@ -1047,7 +1047,8 @@
       "invocation": "Watchdog durable task-queue dispatch only; direct workflow dispatch requires a valid persisted queue correlation",
       "inputs": [
         "GitHub event payload",
-        "repository state and declared workflow inputs"
+        "repository state and declared workflow inputs",
+        "optional request_observations_json task input; imported only as unclassified candidates in the temporary workspace"
       ],
       "outputs": [
         "workflow run result",

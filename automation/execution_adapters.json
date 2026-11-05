@@ -1259,6 +1259,11 @@
             "name": "production_reason",
             "type": "string",
             "required": false
+          },
+          {
+            "name": "request_observations_json",
+            "type": "string",
+            "required": false
           }
         ],
         "allowed_refs": [
