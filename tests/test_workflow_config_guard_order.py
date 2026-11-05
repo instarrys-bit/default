@@ -154,7 +154,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn('git merge-base --is-ancestor "$GITHUB_SHA" origin/main', guard)
         self.assertIn("docs/*)", guard)
         self.assertIn('git reset --hard origin/main', guard)
-        self.assertIn("Non-documentation input or repository state changed during audit", guard)
+        self.assertIn("Production input or unclassified repository path changed during audit", guard)
 
     def test_publisher_explicitly_protects_user_managed_config(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
