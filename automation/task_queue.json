@@ -14,11 +14,11 @@
     },
     "logical/production-pipeline": {
       "acquired_at": "2026-11-05T15:41:07Z",
-      "expires_at": "2026-11-05T15:46:07Z",
+      "expires_at": "2026-11-05T21:41:08Z",
       "fencing_token": 10,
       "lease_id": "644facf934d73c46f978ba6efa86ac04",
       "released_at": null,
-      "renewed_at": "2026-11-05T15:41:07Z",
+      "renewed_at": "2026-11-05T15:41:08Z",
       "status": "ACTIVE",
       "task_id": "task_e112ee6a62ee4a81930ce0a6",
       "task_lease_token": "db75e064fba1f3642c6e52879bab130d",
@@ -38,11 +38,11 @@
     },
     "reports/source-discovery.md": {
       "acquired_at": "2026-11-05T15:41:07Z",
-      "expires_at": "2026-11-05T15:46:07Z",
+      "expires_at": "2026-11-05T21:41:08Z",
       "fencing_token": 5,
       "lease_id": "644facf934d73c46f978ba6efa86ac04",
       "released_at": null,
-      "renewed_at": "2026-11-05T15:41:07Z",
+      "renewed_at": "2026-11-05T15:41:08Z",
       "status": "ACTIVE",
       "task_id": "task_e112ee6a62ee4a81930ce0a6",
       "task_lease_token": "db75e064fba1f3642c6e52879bab130d",
@@ -50,11 +50,11 @@
     },
     "sources/discovered_sources.json": {
       "acquired_at": "2026-11-05T15:41:07Z",
-      "expires_at": "2026-11-05T15:46:07Z",
+      "expires_at": "2026-11-05T21:41:08Z",
       "fencing_token": 5,
       "lease_id": "644facf934d73c46f978ba6efa86ac04",
       "released_at": null,
-      "renewed_at": "2026-11-05T15:41:07Z",
+      "renewed_at": "2026-11-05T15:41:08Z",
       "status": "ACTIVE",
       "task_id": "task_e112ee6a62ee4a81930ce0a6",
       "task_lease_token": "db75e064fba1f3642c6e52879bab130d",
@@ -62,11 +62,11 @@
     },
     "sources/review_cursor.json": {
       "acquired_at": "2026-11-05T15:41:07Z",
-      "expires_at": "2026-11-05T15:46:07Z",
+      "expires_at": "2026-11-05T21:41:08Z",
       "fencing_token": 7,
       "lease_id": "644facf934d73c46f978ba6efa86ac04",
       "released_at": null,
-      "renewed_at": "2026-11-05T15:41:07Z",
+      "renewed_at": "2026-11-05T15:41:08Z",
       "status": "ACTIVE",
       "task_id": "task_e112ee6a62ee4a81930ce0a6",
       "task_lease_token": "db75e064fba1f3642c6e52879bab130d",
@@ -85,7 +85,7 @@
       "worker_id": "assessment-canary-41746911914"
     }
   },
-  "revision": 116,
+  "revision": 117,
   "schema_version": 1,
   "tasks": [
     {
@@ -446,18 +446,14 @@
         "production_reason": "a registered production input changed; prior success for the same fingerprint does not prove current state is reconciled"
       },
       "last_error": null,
-      "lease": {
-        "expires_at": "2026-11-05T15:46:07Z",
-        "owner": "42057257705",
-        "token": "db75e064fba1f3642c6e52879bab130d"
-      },
+      "lease": null,
       "max_attempts": 2,
       "not_before": "2026-11-05T15:40:37Z",
       "priority": 100,
       "requester_program_id": "workflow_automation_watchdog",
       "resource_lease": {
         "acquired_at": "2026-11-05T15:41:07Z",
-        "expires_at": "2026-11-05T15:46:07Z",
+        "expires_at": "2026-11-05T21:41:08Z",
         "lease_seconds": 21600,
         "resources": {
           "logical/production-pipeline": {
@@ -479,15 +475,29 @@
         },
         "status": "ACTIVE"
       },
-      "result": null,
+      "result": {
+        "correlation_id": "task_e112ee6a62ee4a81930ce0a6-a1",
+        "correlation_title": "Automation task task_e112ee6a62ee4a81930ce0a6-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-05T15:41:08Z",
+        "ref": "main",
+        "requested_head_sha": "0fdbeb358348ffc07f241172b3631783b2fa8b04",
+        "submitted_at": "2026-11-05T15:41:11Z",
+        "task_id": "task_e112ee6a62ee4a81930ce0a6",
+        "workflow_id": 402712272,
+        "workflow_path": ".github/workflows/auto_sync.yml"
+      },
       "state_history": [
         "QUEUED",
-        "CLAIMED"
+        "CLAIMED",
+        "VERIFYING"
       ],
-      "status": "CLAIMED",
+      "status": "VERIFYING",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_e112ee6a62ee4a81930ce0a6",
-      "trace_id": "7ca89cfe0c064377b9f14815f7556077"
+      "trace_id": "7ca89cfe0c064377b9f14815f7556077",
+      "verification": null
     }
   ]
 }
