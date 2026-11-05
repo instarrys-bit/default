@@ -2,13 +2,13 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-2026.11.05.integration",
   "status": "baseline_inventory",
-  "source_registry_blob_sha": "c0e59fd1a81cbe3eb2f26e8d08601b74946ada29",
+  "source_registry_blob_sha": "5105f2c04affc964b5b6caf1de09561c5f8ab644",
   "summary": {
     "registered_programs": 61,
     "python_components": 54,
     "python_components_with_concrete_io_contract": 1,
     "python_components_with_declared_registry_dependencies": 4,
-    "independently_dispatchable_python_components": 1,
+    "independently_dispatchable_python_components": 0,
     "note": "Counts reflect registry declarations, not runtime call-graph completeness."
   },
   "policy": {
@@ -117,12 +117,12 @@
         "automation/task_queue.json task.assessment_checkpoint: per-URL result and fingerprint checkpoint (durable CAS state; removed after successful independent verification)"
       ],
       "current_invocation": "python_module_or_workflow_step",
-      "contract_status": "concrete_io_typed_predecessor_and_watchdog_event_dispatch_enabled",
-      "dispatch_status": "enabled",
+      "contract_status": "concrete_io_typed_predecessor_waiting_for_dedicated_discovery_workflow",
+      "dispatch_status": "disabled",
       "missing_contract_fields": [
         "complete_transitive_side_effect_verification"
       ],
-      "audit_note": "Task retries derive a fixed bounded URL batch from the immutable predecessor workflow run ID and artifact digest. Each completed URL result is persisted immediately in the durable task queue under live task/resource fencing; retries restore completed results and continue with the first incomplete URL. This does not complete the separate transitive writer/runtime tracing review.",
+      "audit_note": "Typed immutable predecessor contract and fenced output contract are retained, but independent dispatch remains disabled until the dedicated discovery-only producer workflow exists and the monolithic assessment step is removed without duplication.",
       "contract_sample_path": "automation/capability_contracts/assess_sources.json"
     },
     {
