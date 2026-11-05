@@ -196,6 +196,10 @@ class TaskQueueRuntimeTests(unittest.TestCase):
             "input": {},
         }, self.queue, self.registry, self.now)
         self.assertTrue(queued["created"])
+        registry = json.loads(self.registry.read_text(encoding="utf-8"))
+        auto_sync = next(p for p in registry["programs"] if p["id"] == "workflow_auto_sync")
+        auto_sync["orchestration"]["timeout_seconds"] = 21600
+        self.registry.write_text(json.dumps(registry), encoding="utf-8")
         claimed = claim_next("worker-long", self.queue, self.registry, self.now)
         self.assertEqual(claimed["task_id"], queued["task"]["task_id"])
         expires = datetime.fromisoformat(claimed["lease"]["expires_at"].replace("Z", "+00:00"))
