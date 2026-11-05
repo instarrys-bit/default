@@ -144,6 +144,9 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(inventory["summary"]["independently_dispatchable_python_components"], 1)
         workflow = Path(".github/workflows/automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn("Enqueue source assessment after successful discovery workflow", workflow)
+        self.assertIn("github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)'", workflow)
+        assessment_step = workflow.split("Enqueue source assessment after successful discovery workflow", 1)[1].split("Resolve superseded historical DEAD_LETTER", 1)[0]
+        self.assertNotIn("github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)'", assessment_step)
         self.assertIn('github.event.workflow_run.conclusion == \'success\'', workflow)
         self.assertIn("enqueue-source-assessment", workflow)
 
