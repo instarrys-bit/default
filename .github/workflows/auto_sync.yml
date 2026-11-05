@@ -856,9 +856,17 @@ jobs:
             echo "No Watchdog task proof was supplied; refusing durable cursor persistence."
             exit 1
           fi
+          if [[ "$AUTOMATION_TASK_ID_BASE" =~ ^(task_[0-9a-f]{24})-a([1-9][0-9]*)$ ]]; then
+            canonical_task_id="${BASH_REMATCH[1]}"
+            dispatch_attempt="${BASH_REMATCH[2]}"
+          else
+            echo "The supplied Watchdog correlation ID is malformed; refusing durable cursor persistence."
+            exit 1
+          fi
+          echo "Validating cursor persistence for $canonical_task_id attempt $dispatch_attempt."
           printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py \
             --repository "$GITHUB_REPOSITORY" --branch main --token-stdin \
-            assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE" --proof-json "$RESOURCE_LEASE_PROOF"
+            assert-workflow --task-id "$canonical_task_id" --proof-json "$RESOURCE_LEASE_PROOF"
           python3 scripts/persist_review_cursor.py \
             --cursor-artifact cursor-artifact/review_cursor.json \
             --destination sources/review_cursor.json
