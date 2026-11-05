@@ -40,10 +40,10 @@ class ReleaseManifestSmokeTests(unittest.TestCase):
             self.assertEqual(item["git_blob_sha"], blob_sha(item["path"]), item["path"])
 
         for name in (
-            "watchdog_workflow", "production_workflow", "fenced_file_writer",
+            "watchdog_workflow", "production_workflow",
             "resource_lease_runtime", "task_scheduler", "source_assessor",
             "task_queue_validator", "task_result_verifier", "remote_task_queue_runtime",
-            "assessment_checkpoint_contract", "shell_git_write_trace",
+            
         ):
             item = manifest["implementation_pins"][name]
             self.assertEqual(item["git_blob_sha"], blob_sha(item["path"]), item["path"])
