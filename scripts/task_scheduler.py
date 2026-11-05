@@ -860,7 +860,7 @@ def enqueue_source_assessment_task(store, registry: dict, adapters: dict, *,
         raise ValueError("predecessor proof must contain exactly the reviewed discovery provenance fields")
     if predecessor.get("program_id") != "script_discover_sources":
         raise ValueError("source assessment predecessor must be script_discover_sources")
-    if predecessor.get("workflow_name") != "Shadowrocket Deterministic Domain Audit (User Config Baseline)":
+    if predecessor.get("workflow_name") != "Shadowrocket Source Discovery (Watchdog)":
         raise ValueError("source assessment predecessor workflow is not the reviewed production workflow")
     if not isinstance(predecessor.get("workflow_run_id"), str) or not predecessor["workflow_run_id"].isdigit():
         raise ValueError("predecessor workflow_run_id must be a decimal string")
