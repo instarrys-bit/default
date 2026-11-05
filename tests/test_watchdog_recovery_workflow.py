@@ -82,12 +82,12 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         audit = AUTO_SYNC.read_text(encoding="utf-8")
         self.assertIn("A valid Watchdog task correlation is required", audit)
         self.assertIn('task.get("requester_program_id") != "workflow_automation_watchdog"', audit)
-        self.assertNotIn('task.get("status") not in {"CLAIMED", "VERIFYING"}', audit)
+        self.assertIn('task.get("status") not in {"CLAIMED", "VERIFYING"}', audit)
 
     def test_failed_run_cursor_normalizes_watchdog_correlation_to_canonical_task_id(self):
         audit = AUTO_SYNC.read_text(encoding="utf-8")
         cursor = audit.split("  persist-review-cursor:", 1)[1].split("  notify-failure:", 1)[0]
-        self.assertIn("canonical_task_id=\"${BASH_REMATCH[1]}\"", cursor)
+        self.assertIn('canonical_task_id="${AUTOMATION_TASK_CORRELATION%%-a*}"', cursor)
         self.assertIn("assert-workflow --task-id \"$canonical_task_id\"", cursor)
         self.assertNotIn("assert-workflow --task-id \"$AUTOMATION_TASK_ID_BASE\"", cursor)
     def test_independent_source_discovery_has_fenced_immutable_handoff_and_stays_dormant(self):
