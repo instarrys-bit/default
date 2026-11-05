@@ -84,6 +84,19 @@ class ProductionIntentTests(unittest.TestCase):
             self.assertTrue(entries[path]["classification_reason"])
             self.assertTrue(entries[path]["classification_basis"])
 
+    def test_repository_manifest_classifies_deleted_shadowrocket_config_as_documentation(self):
+        manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
+        result = classify_paths(["shadowrocket/ss.conf"], manifest)
+        self.assertEqual(result["status"], "NO_INPUT_CHANGE")
+        self.assertEqual(result["documentation_changes"], ["shadowrocket/ss.conf"])
+        self.assertEqual(result["unknown_changes"], [])
+        self.assertNotIn("shadowrocket/ss.conf", manifest["production_input_paths"])
+        ledger = json.loads((ROOT / "automation" / "unregistered_path_registry.json").read_text(encoding="utf-8"))
+        entry = next(item for item in ledger["entries"] if item["path"] == "shadowrocket/ss.conf")
+        self.assertEqual(entry["status"], "CLASSIFIED_DOCUMENTATION")
+        self.assertIn("modules/uu.conf", entry["classification_reason"])
+        self.assertTrue(entry["classification_basis"])
+
     def test_repository_manifest_classifies_governance_metadata_as_non_production(self):
         manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
         paths = [

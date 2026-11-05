@@ -114,7 +114,7 @@
     },
     "production_input_manifest": {
       "path": "automation/production_inputs.json",
-      "git_blob_sha": "8e0fd6425072a0a187d8b77c99df0478228d78b7"
+      "git_blob_sha": "6597aa11a057e5afa31102fe4de0ecceb6d58513"
     }
   },
   "compatibility": {

@@ -107,10 +107,11 @@
     "scripts/build_dashboard_snapshot.py"
   ],
   "documentation_path_patterns": [
+    "LICENSE*",
+    "NOTICE*",
+    "README*",
     "dashboard/README.md",
     "docs/**",
-    "README*",
-    "LICENSE*",
-    "NOTICE*"
+    "shadowrocket/ss.conf"
   ]
 }
