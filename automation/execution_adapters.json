@@ -1922,7 +1922,9 @@
       "adapter_type": "github_actions_workflow",
       "enabled": false,
       "interface_status": "workflow_dispatch_reviewed",
-      "allowed_callers": [],
+      "allowed_callers": [
+        "workflow_automation_watchdog"
+      ],
       "workflow": {
         "path": ".github/workflows/source-discovery.yml",
         "dispatchable": true,
