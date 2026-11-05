@@ -86,7 +86,7 @@
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "3d492cbab87ab3b17e3011c22413646eb46780df"
+      "git_blob_sha": "e2f85a846894fb985610be7c6cfbcd8ab901f8d7"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
