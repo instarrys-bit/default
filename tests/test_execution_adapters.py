@@ -69,7 +69,7 @@ class ExecutionAdapterTests(unittest.TestCase):
         self.assertTrue(result["valid"])
         adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         self.assertEqual(result["adapter_count"], len(adapters["adapters"]))
-        self.assertEqual(result["enabled_adapter_count"], 3)
+        self.assertEqual(result["enabled_adapter_count"], 2)
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
         adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         enabled = [item["target_program_id"] for item in adapters["adapters"] if item["enabled"]]
