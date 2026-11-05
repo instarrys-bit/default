@@ -73,6 +73,17 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("gh workflow run auto_sync.yml", workflow)
         self.assertIn('select(.head_branch == "main" and .head_sha == $sha and .id > $source', workflow)
 
+    def test_stale_audit_reconciliation_uses_bounded_runs_and_durable_queue_evidence(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        stale = workflow.split("      - name: Detect stale successful audit and recover", 1)[1].split('          last_success_sha=', 1)[0]
+        self.assertIn('runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100"', stale)
+        self.assertNotIn("gh api --paginate --slurp", stale)
+        self.assertIn("automation/task_queue.json", stale)
+        self.assertIn("last_error.evidence.run_id", stale)
+        self.assertIn("Stop stale audit before expensive deterministic review", stale)
+        self.assertIn("production:guard-reconciliation:$current_fingerprint:$failed_run_id", stale)
+        self.assertIn("while IFS=", stale)
+
     def test_run_history_checks_follow_all_api_pages(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertGreaterEqual(workflow.count("gh api --paginate --slurp"), 3)
@@ -271,7 +282,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
     def test_push_and_schedule_reconcile_only_audits_stopped_by_the_stale_base_guard(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn('if [ "$ORIGIN_EVENT" = "push" ] || [ "$ORIGIN_EVENT" = "schedule" ]; then', workflow)
-        self.assertIn('select(.name == "Stop stale audit before expensive deterministic review" and .conclusion == "failure")', workflow)
+        self.assertIn('.name == "Shadowrocket Deterministic Domain Audit (User Config Baseline)"', workflow)
         self.assertIn('and .status == "DEAD_LETTER"', workflow)
         self.assertIn('last_error.evidence.run_id', workflow)
         self.assertIn('production:guard-reconciliation:$current_fingerprint:$failed_run_id', workflow)
