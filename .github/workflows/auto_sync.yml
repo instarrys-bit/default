@@ -529,7 +529,6 @@ jobs:
               "AUTOMATION_QUEUE_BRANCH": "main",
               "AUTOMATION_QUEUE_PATH": "automation/task_queue.json",
               "AUTOMATION_QUEUE_TOKEN": os.environ["GH_TOKEN"],
-              "AUTOMATION_QUEUE_SNAPSHOT": str(Path("automation/task_queue.json").resolve()),
           }
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
               for key, value in values.items():
