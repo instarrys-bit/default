@@ -37,6 +37,7 @@ class PublishBaseIntegrationTests(unittest.TestCase):
             "production_input_paths": ["modules/uu.conf", "scripts/build_rulesets.py"],
             "non_production_path_patterns": [
                 "docs/**", "automation/**", "reports/**", "rulesets/**",
+                ".github/workflows/automation-watchdog.yml",
                 "sources/source_activation_log.json", "scripts/resource_lease_runtime.py"
             ],
             "monitoring_path_patterns": [],
