@@ -20,10 +20,17 @@ on:
       - "data/**"
       - "reports/lifecycle/**"
   workflow_run:
+    # Publish one fresh snapshot after each production-relevant workflow has
+    # finished. Building from latest main makes overlapping events coalesce
+    # safely: the snapshot always reads the newest committed source state.
     workflows:
       - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
       - "Shadowrocket automation watchdog"
-    types: [in_progress, completed]
+      - "Shadowrocket Source Discovery (Watchdog)"
+      - "Validate Shadowrocket config against user baseline"
+      - "Shadowrocket self-healing agent"
+    types: [completed]
+  workflow_dispatch:
   schedule:
     - cron: "17 * * * *"
 permissions:
