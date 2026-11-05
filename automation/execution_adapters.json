@@ -1891,6 +1891,31 @@
         "success_condition": "importable_library_and_unit_tests_pass",
         "independent_verification_required": true
       }
+    },
+    {
+      "target_program_id": "script_capture_git_write_trace",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/capture_git_write_trace.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 60,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_observer_no_dispatch"
+      },
+      "completion": {
+        "success_condition": "workflow_step_exit_code_zero_and_path_only_trace_artifact_uploaded",
+        "independent_verification_required": true
+      }
     }
   ]
 }
