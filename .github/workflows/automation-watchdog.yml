@@ -869,14 +869,14 @@ jobs:
 
   task-queue-supervision:
     concurrency:
-      group: shadowrocket-watchdog-control-plane
+      group: shadowrocket-watchdog-task-supervision
       cancel-in-progress: false
     env:
       GITHUB_ACTOR_ID: ${{ github.actor_id }}
       GITHUB_MANUAL_AUDIT_REQUEST: ${{ inputs.request_deterministic_audit }}
       PYTHONDONTWRITEBYTECODE: "1"
     needs: [health-check, stale-run-watch, manifest-integrity]
-    if: ${{ always() && needs.health-check.result == 'success' && ((github.event_name != 'schedule' && github.event_name != 'workflow_dispatch') || needs.stale-run-watch.result == 'success') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main') && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[assessment-canary]')) }}
+    if: ${{ always() && needs.health-check.result == 'success' && ((github.event_name != 'schedule' && github.event_name != 'workflow_dispatch') || needs.stale-run-watch.result == 'success') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' || github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)'))) && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[assessment-canary]')) }}
     permissions:
       actions: write
       contents: write

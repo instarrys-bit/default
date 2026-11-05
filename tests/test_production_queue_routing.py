@@ -21,7 +21,7 @@ class ProductionQueueRoutingTests(unittest.TestCase):
         self.assertIn("needs.stale-run-watch.result == 'success'", workflow)
         self.assertIn("needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped'", workflow)
         queue_job = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
-        self.assertIn("group: shadowrocket-watchdog-control-plane", queue_job)
+        self.assertIn("group: shadowrocket-watchdog-task-supervision", queue_job)
         self.assertNotIn("group: shadowrocket-main-writer", queue_job)
         self.assertIn("github.event_name != 'schedule'", workflow)
 
