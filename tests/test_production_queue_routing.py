@@ -65,7 +65,7 @@ class ProductionQueueRoutingTests(unittest.TestCase):
         self.assertIn("if durable_value != supplied:", workflow)
         self.assertNotIn("if supplied and task_input.get(field) != supplied:", workflow)
         self.assertIn('task.get("requester_program_id") != "workflow_automation_watchdog"', workflow)
-        self.assertNotIn('task.get("status") not in {"CLAIMED", "VERIFYING"}', workflow)
+        self.assertIn('task.get("status") not in {"CLAIMED", "VERIFYING"}', workflow)
         self.assertIn('task.get("requester_program_id") != "workflow_automation_watchdog"', workflow)
         self.assertIn('stream.write(f"AUTOMATION_TASK_ID_BASE={task_id}\\n")', workflow)
         self.assertIn('--task-id "$AUTOMATION_TASK_ID_BASE"', workflow)
