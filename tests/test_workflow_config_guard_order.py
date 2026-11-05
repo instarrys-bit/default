@@ -209,7 +209,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("Protect owner-controlled config baseline in non-main validation", validation)
         self.assertIn('git diff --quiet "$base_sha" "$head_sha" -- modules/uu.conf', validation)
         self.assertIn('for key in ("path", "approved_git_blob_sha", "last_user_approved_baseline_update")', validation)
-        self.assertIn('allowed_guard_keys = {"description", "content_immutable_to_automation", "content_protection", "baseline_metadata_policy"}', validation)
+        self.assertIn('allowed_guard_keys = {"immutable", "description", "content_immutable_to_automation", "content_protection", "baseline_metadata_policy"}', validation)
         self.assertIn("Non-main validation changed a managed-config guard field outside the semantic policy allowlist.", validation)
         self.assertNotIn('base.get("managed_config_guard") != head.get("managed_config_guard")', validation)
         self.assertIn("github.ref", validation)
