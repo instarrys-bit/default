@@ -86,7 +86,7 @@ jobs:
           workspace="$RUNNER_TEMP/production-workspace"
           mkdir -p "$workspace"
           cp -a "$GITHUB_WORKSPACE/." "$workspace/"
-          printf 'cd "%s"\\n' "$workspace" > "$RUNNER_TEMP/production-workspace.bashenv"
+          echo "cd \"$workspace\"" > "$RUNNER_TEMP/production-workspace.bashenv"
           echo "BASH_ENV=$RUNNER_TEMP/production-workspace.bashenv" >> "$GITHUB_ENV"
       - name: Verify Watchdog-owned durable task dispatch
         env:
