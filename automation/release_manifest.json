@@ -3,7 +3,7 @@
   "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
   "release_status": "baseline_snapshot",
   "created_on": "2026-11-05",
-  "purpose": "Integrated reliability candidate: live resource lease fencing, descriptor-aware protected writes, current production fingerprint validation, stale queued-task supersession, Watchdog reconciliation, and path-only persistent write tracing.",
+  "purpose": "Integrated reliability candidate: live resource lease fencing, descriptor-aware protected writes, current production fingerprint validation, stale queued-task supersession, idempotent stale-guard audit reconciliation, Watchdog supervision, and path-only persistent write tracing.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "f6c4920e94c1d34e1a498ead0d9a23e344d8909a"
+      "git_blob_sha": "22f71020a1a031a91401b94b0fd83fc393e7d0ea"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",

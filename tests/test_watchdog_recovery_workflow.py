@@ -268,6 +268,20 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('production_decision:"RECOVERY_REQUIRED"', workflow)
         self.assertNotIn('idempotency-key "auto-sync-manifest:', workflow)
 
+    def test_push_and_schedule_reconcile_only_audits_stopped_by_the_stale_base_guard(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        self.assertIn('if [ "$ORIGIN_EVENT" = "push" ] || [ "$ORIGIN_EVENT" = "schedule" ]; then', workflow)
+        self.assertIn('select(.name == "Stop stale audit before expensive deterministic review" and .conclusion == "failure")', workflow)
+        self.assertIn('and .status == "DEAD_LETTER"', workflow)
+        self.assertIn('last_error.evidence.run_id', workflow)
+        self.assertIn('production:guard-reconciliation:$current_fingerprint:$failed_run_id', workflow)
+        self.assertIn('production_decision:"RECOVERY_REQUIRED"', workflow)
+        self.assertIn("historical task $failed_task_id remains unchanged", workflow)
+        self.assertIn("PENDING_CLASSIFICATION", workflow)
+        self.assertIn('control.get("schema_version") == 1', workflow)
+        self.assertIn('.target_program_id == "workflow_auto_sync"', workflow)
+        self.assertIn('.[:20][]', workflow)
+
     def test_different_active_fingerprint_waits_instead_of_queuing_parallel_production(self):
         intent = (ROOT / "scripts" / "production_intent.py").read_text(encoding="utf-8")
         self.assertIn("WAIT_FOR_ACTIVE", intent)
