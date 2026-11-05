@@ -420,8 +420,9 @@ jobs:
           PY
           )"
           active_fingerprints="$(CURRENT_PRODUCTION_FINGERPRINT="$current_fingerprint" python3 - <<'PY'
-          import json, os
+          import json, os, sys
           from pathlib import Path
+          sys.path.insert(0, "scripts")
           from production_intent import active_production_fingerprints
           queue = json.loads(Path("automation/task_queue.json").read_text(encoding="utf-8"))
           print(json.dumps(active_production_fingerprints(queue, os.environ["CURRENT_PRODUCTION_FINGERPRINT"])))
