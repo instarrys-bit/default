@@ -223,6 +223,32 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertFalse(result["should_produce"])
 
 
+    def test_repository_manifest_classifies_adblock_assets_as_non_production(self):
+        manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
+        paths = [
+            "modules/AdBlock.sgmodule",
+            "modules/adblock/dev/Clean_Pro.js",
+            "modules/adblock/scripts/Clean_Pro.js",
+            "modules/adblock/backups/Clean_Pro.pre-rollback-20261105.js",
+            "modules/adblock/scripts/AdBlock_Original.sgmodule",
+            "modules/adblock/scripts/Clean_Pro_Request.js",
+            "modules/adblock/scripts/youtube_protobuf_response_filter.js",
+            "modules/temp-test/Sr_Youtube_Clean.js",
+        ]
+        result = classify_paths(paths, manifest)
+        self.assertEqual(result["status"], "NO_INPUT_CHANGE")
+        self.assertCountEqual(result["non_production_changes"], paths)
+        self.assertEqual(result["unknown_changes"], [])
+        self.assertIn("modules/uu.conf", manifest["production_input_paths"])
+        ledger = json.loads((ROOT / "automation" / "unregistered_path_registry.json").read_text(encoding="utf-8"))
+        entries = {item["path"]: item for item in ledger["entries"]}
+        for path in paths:
+            with self.subTest(path=path):
+                self.assertNotEqual(entries[path]["status"], "PENDING_CLASSIFICATION")
+                self.assertTrue(entries[path]["classification_reason"])
+                self.assertTrue(entries[path]["classification_basis"])
+
+
 
     def test_owner_baseline_bookkeeping_does_not_change_fingerprint(self):
         policy_path = self.root / "sources" / "policy.json"
