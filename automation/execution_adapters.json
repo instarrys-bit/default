@@ -1289,12 +1289,14 @@
         "mode": "exclusive",
         "resource_keys": [
           "logical/production-pipeline",
-          "sources/review_cursor.json"
+          "sources/review_cursor.json",
+          "sources/discovered_sources.json",
+          "reports/source-discovery.md"
         ],
         "lease_seconds": 21600,
         "fencing_required": true,
         "enforcement_boundary": "live task-queue proof checked by the audit gate and immediately before publish push",
-        "coverage": "Exclusive logical/production-pipeline lease plus the shared sources/review_cursor.json lease; audit cursor writes and failed-run checkpoint persistence use the same Watchdog-issued fencing proof."
+        "coverage": "Exclusive logical/production-pipeline lease plus the shared sources/review_cursor.json lease; audit cursor writes and failed-run checkpoint persistence use the same Watchdog-issued fencing proof. The monolithic fallback shares the exact sources/discovered_sources.json and reports/source-discovery.md locks with the dormant independent discovery workflow, preventing concurrent writers during the transition."
       }
     },
     {
