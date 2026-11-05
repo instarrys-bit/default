@@ -260,6 +260,37 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
                     with self.assertRaisesRegex(ValueError, "no matching active resource lease"):
                         assert_resource_lease_from_environment("reports/project-status.json")
 
+    def test_workflow_source_discovery_verifying_task_requires_exact_dedicated_dispatch(self):
+        acquired = acquire_resource_leases(
+            "task_a", "worker_a", "task-token-a",
+            ["sources/discovered_sources.json", "reports/source-discovery.md"],
+            self.store, now=self.now,
+        )
+        task = self.store.document["tasks"][0]
+        task["status"] = "VERIFYING"
+        task["lease"] = None
+        task["target_program_id"] = "workflow_source_discovery"
+        task["requester_program_id"] = "workflow_automation_watchdog"
+        task["attempts"] = 1
+        task["dispatch_intent"] = {
+            "task_id": "task_a", "dispatch_attempt": 1,
+            "correlation_id": "task_a-a1",
+            "workflow_path": ".github/workflows/source-discovery.yml", "ref": "main",
+        }
+        task["resource_lease"] = {
+            "status": "ACTIVE", "resources": acquired["resources"],
+            "lease_seconds": 1800, "expires_at": acquired["expires_at"],
+        }
+        result = resource_lease_runtime.assert_workflow_resource_lease(
+            self.store.document, "task_a", acquired["resources"], now=self.now,
+        )
+        self.assertTrue(result["valid"])
+        task["dispatch_intent"]["workflow_path"] = ".github/workflows/auto_sync.yml"
+        with self.assertRaisesRegex(ValueError, "durable dispatch intent does not authorize"):
+            resource_lease_runtime.assert_workflow_resource_lease(
+                self.store.document, "task_a", acquired["resources"], now=self.now,
+            )
+
     def test_workflow_auto_sync_verifying_task_fences_every_repo_write_under_pipeline_lock(self):
         acquired = acquire_resource_leases(
             "task_a", "worker_a", "task-token-a",
