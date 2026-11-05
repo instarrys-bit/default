@@ -166,14 +166,20 @@ class FencedFileWriterTests(unittest.TestCase):
                     fenced_file_writer.authorize_write_path(alias)
                     check.assert_called_once_with("rulesets/direct.list")
 
-    def test_external_hardlink_to_shared_ruleset_keeps_canonical_lease_key(self):
+    def test_external_hardlink_to_shared_ruleset_is_denied(self):
         with tempfile.TemporaryDirectory() as directory:
             alias = Path(directory) / "ruleset-hardlink"
             os.link(ROOT / "rulesets" / "direct.list", alias)
             with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "1"}, clear=False):
-                with patch("resource_lease_runtime.assert_resource_lease_from_environment") as check:
+                with self.assertRaisesRegex(PermissionError, "hardlink alias"):
                     fenced_file_writer.authorize_write_path(alias)
-                    check.assert_called_once_with("rulesets/direct.list")
+
+    def test_internal_hardlink_to_protected_config_is_denied(self):
+        with tempfile.TemporaryDirectory(dir=ROOT / "modules") as directory:
+            alias = Path(directory) / "uu-conf-alias"
+            os.link(ROOT / "modules" / "uu.conf", alias)
+            with self.assertRaises(PermissionError):
+                fenced_file_writer.authorize_write_path(alias)
 
     def test_repository_symlink_cannot_escape_to_external_directory(self):
         with tempfile.TemporaryDirectory() as external, tempfile.TemporaryDirectory(dir=ROOT) as inside:
