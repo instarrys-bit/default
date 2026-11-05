@@ -79,7 +79,7 @@
           },
           "workflow_name": {
             "type": "string",
-            "const": "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
+            "const": "Shadowrocket Source Discovery (Watchdog)"
           },
           "workflow_run_id": {
             "type": "string"
@@ -206,7 +206,7 @@
   },
   "dependency_edges": {
     "required_predecessor": "script_discover_sources",
-    "edge_semantics": "The Watchdog workflow_run gate enqueues only after a successful main-branch run of the exact discovery-producing production workflow and binds run ID, head SHA and current discovered_sources artifact digest.",
+    "edge_semantics": "The Watchdog workflow_run gate enqueues only after a successful main-branch run of the exact Shadowrocket Source Discovery (Watchdog) workflow and binds run ID, head SHA and current discovered_sources artifact digest.",
     "registry_dependency_declared": true,
     "note": "The Watchdog event gate supplies successful-run provenance; the scheduler validates producer identity, run metadata and the complete current legacy/sharded artifact digest before claim, and the assessor rechecks the predecessor digest before and after execution.",
     "registry_dependency_program_id": "script_discover_sources",
@@ -237,7 +237,7 @@
   "dependency_contract": {
     "predecessor_program_id": "script_discover_sources",
     "artifact_path": "sources/discovered_sources.json",
-    "producer_workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
+    "producer_workflow_name": "Shadowrocket Source Discovery (Watchdog)",
     "edge_type": "intended_successful_workflow_run_with_immutable_artifact_digest",
     "enforcement": "Watchdog enqueues only from the successful production workflow_run event on main; scheduler verifies the immutable predecessor identity and artifact digest."
   },
