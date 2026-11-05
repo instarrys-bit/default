@@ -122,18 +122,46 @@ jobs:
           if task is None:
               raise SystemExit("The correlated durable task does not exist in the checked-out queue snapshot.")
           lease = task.get("lease")
+          resource_lease = task.get("resource_lease")
           proof_text = os.environ.get("RESOURCE_LEASE_PROOF", "")
           try:
               proof = json.loads(proof_text)
           except json.JSONDecodeError as exc:
               raise SystemExit("The Watchdog resource lease proof is not valid JSON.") from exc
-          if (not isinstance(lease, dict) or not lease.get("owner") or not lease.get("token")
-                  or not isinstance(proof, dict) or not proof):
-              raise SystemExit("The Watchdog task lease or resource proof is missing.")
+          declared = resource_lease.get("resources") if isinstance(resource_lease, dict) else None
+          queue_leases = queue.get("resource_leases")
+          if (task.get("status") not in {"CLAIMED", "VERIFYING"}
+                  or not isinstance(resource_lease, dict) or resource_lease.get("status") != "ACTIVE"
+                  or not isinstance(declared, dict) or proof != declared
+                  or not isinstance(queue_leases, dict) or not isinstance(proof, dict) or not proof):
+              raise SystemExit("The Watchdog resource lease proof is missing, inactive or inconsistent.")
+          workers = set()
+          from datetime import datetime, timezone
+          now = datetime.now(timezone.utc)
+          for key, item in proof.items():
+              record = queue_leases.get(key)
+              if (not isinstance(record, dict) or record.get("status") != "ACTIVE"
+                      or record.get("task_id") != task_id
+                      or record.get("lease_id") != item.get("lease_id")
+                      or record.get("fencing_token") != item.get("fencing_token")):
+                  raise SystemExit("The Watchdog resource lease is stale or fenced: " + key)
+              expiry = datetime.fromisoformat(record["expires_at"].replace("Z", "+00:00"))
+              if expiry <= now:
+                  raise SystemExit("The Watchdog resource lease has expired: " + key)
+              workers.add(record.get("worker_id"))
+          if len(workers) != 1 or not next(iter(workers)):
+              raise SystemExit("The Watchdog resource leases do not share one active worker owner.")
+          worker_id = next(iter(workers))
+          if isinstance(lease, dict) and lease.get("owner") != worker_id:
+              raise SystemExit("The task lease owner differs from the active resource lease owner.")
+          if task.get("status") == "CLAIMED" and (
+                  not isinstance(lease, dict) or not lease.get("owner") or not lease.get("token")):
+              raise SystemExit("A CLAIMED task must retain its scheduler task lease.")
+          task_lease_token = lease.get("token") if isinstance(lease, dict) else "resource-fence-only"
           env_values = {
               "AUTOMATION_TASK_ID": task_id,
-              "AUTOMATION_WORKER_ID": lease["owner"],
-              "AUTOMATION_TASK_LEASE_TOKEN": lease["token"],
+              "AUTOMATION_WORKER_ID": worker_id,
+              "AUTOMATION_TASK_LEASE_TOKEN": task_lease_token,
               "AUTOMATION_QUEUE_REPOSITORY": os.environ["GITHUB_REPOSITORY"],
               "AUTOMATION_QUEUE_BRANCH": "main",
               "AUTOMATION_QUEUE_PATH": "automation/task_queue.json",
