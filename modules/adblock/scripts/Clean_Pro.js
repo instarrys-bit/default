@@ -25,7 +25,7 @@
   "use strict";
 
   const CACHE_KEY = "SR_AIO_PRO_CACHE_V2";
-  const CACHE_VER = "2.0";
+  const CACHE_VER = "2.1";
 
   const DEFAULT_OPTS = {
     captionLang: "zh-Hans", // Set "off" to disable auto-translated captions
@@ -604,21 +604,12 @@
           else vr.skip(vwt);
         }
         if (eml) {
-          if (cache.whiteEml.includes(eml)) return false;
-          if (cache.blackEml.includes(eml)) return true;
+          // EML names can be shared by organic and sponsored items.
+          // Do not persist an ad/non-ad verdict for the entire layout name.
+          if (INITIAL_BLACK_EML.includes(eml)) return true;
           if (opts.blockShortsFeed && /shorts(?!_pivot_item)/.test(eml)) return true;
-          if (/ad_badge|promoted|sparkles|brand_promo|shopping_shelf/.test(eml)) {
-            cache.blackEml.push(eml);
-            cache.dirty = true;
-            return true;
-          }
-          if (videoInfoBytes) {
-            const isAd = inspectVideoInfoForAd(videoInfoBytes);
-            if (isAd) cache.blackEml.push(eml);
-            else cache.whiteEml.push(eml);
-            cache.dirty = true;
-            return isAd;
-          }
+          if (/ad_badge|promoted|sparkles|brand_promo|shopping_shelf/.test(eml)) return true;
+          if (videoInfoBytes && inspectVideoInfoForAd(videoInfoBytes)) return true;
         }
       } else {
         r.skip(wt);
@@ -635,17 +626,9 @@
         if (isElementRendererBlocked(r.bytes(), cache, opts)) return true;
       } else {
         const raw = r.skip(wt);
-        if (cache.whiteNo.includes(fn)) continue;
-        if (cache.blackNo.includes(fn)) return true;
-        const isAd = hasPageAdMarker(raw);
-        if (isAd) {
-          cache.blackNo.push(fn);
-          cache.dirty = true;
-          return true;
-        } else {
-          cache.whiteNo.push(fn);
-          cache.dirty = true;
-        }
+        // Protobuf field numbers are reused in different message contexts.
+        // Inspect each item payload instead of caching a global verdict by field number.
+        if (hasPageAdMarker(raw)) return true;
       }
     }
     return false;
