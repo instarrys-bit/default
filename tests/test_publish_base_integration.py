@@ -111,10 +111,10 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         bin_dir.mkdir(exist_ok=True)
         gh = bin_dir / "gh"
         gh.write_text(
-            "#!/usr/bin/env python3\\n"
-            "import json, os, sys\\n"
-            "sha = sys.argv[-1].rsplit('/', 1)[-1]\\n"
-            "print(json.dumps(json.loads(os.environ['MOCK_GH_COMMITS'])[sha]))\\n",
+            "#!/usr/bin/env python3\n"
+            "import json, os, sys\n"
+            "sha = sys.argv[-1].rsplit('/', 1)[-1]\n"
+            "print(json.dumps(json.loads(os.environ['MOCK_GH_COMMITS'])[sha]))\n",
             encoding="utf-8",
         )
         gh.chmod(0o755)
@@ -166,9 +166,9 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         git(self.work, "checkout", "-B", "main", "origin/main")
         dashboard = self.work / "dashboard" / "index.html"
         dashboard.parent.mkdir(parents=True, exist_ok=True)
-        dashboard.write_text("updated dashboard\\n", encoding="utf-8")
+        dashboard.write_text("updated dashboard\n", encoding="utf-8")
         snapshot = self.work / "scripts" / "build_dashboard_snapshot.py"
-        snapshot.write_text("updated snapshot\\n", encoding="utf-8")
+        snapshot.write_text("updated snapshot\n", encoding="utf-8")
         git(self.work, "add", "dashboard/index.html", "scripts/build_dashboard_snapshot.py")
         git(self.work, "commit", "-m", "Refresh dashboard")
         git(self.work, "push", "origin", "HEAD:main")
@@ -178,7 +178,7 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("strictly verified queue-state commits and manifest-classified non-production paths", result.stdout)
         self.assertEqual(git(self.work, "rev-parse", "HEAD"), git(self.work, "rev-parse", "origin/main"))
-        self.assertEqual((self.work / "shadowrocket" / "uu.conf").read_text(encoding="utf-8"), "protected\\n")
+        self.assertEqual((self.work / "shadowrocket" / "uu.conf").read_text(encoding="utf-8"), "protected\n")
 
     def test_queue_only_commit_from_non_bot_author_is_rejected(self):
         self.add_queue_commit(author_email="test@example.invalid")
