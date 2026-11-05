@@ -866,10 +866,10 @@ jobs:
             echo "Independent source discovery remains dormant until adapter, orchestration and caller gates are all enabled."
             exit 0
           fi
-          main_sha="$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)"
+          discovery_day="$(date -u +%F)"
           queue_token="$GITHUB_TOKEN"
           unset GITHUB_TOKEN
-          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin --idempotency-key "source-discovery:$main_sha" --priority 55 enqueue-source-discovery
+          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin --idempotency-key "source-discovery:$discovery_day" --priority 55 enqueue-source-discovery
           unset queue_token
 
       - name: Recover leases, verify results, and run one bounded task
