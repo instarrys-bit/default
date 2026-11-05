@@ -135,7 +135,7 @@
       "Verify config-baseline immutability before and after execution.",
       "Run isolated canary tests with all new adapters disabled by default."
     ],
-    "completion_status": "blocked_pending_HOLD_authorization_transitive_writer_evidence_and_runtime_acceptance"
+    "completion_status": "blocked_pending_contract_and_runtime_enforcement"
   },
   "python_adapter_policy": {
     "schema_version": 1,
