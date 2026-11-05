@@ -156,5 +156,12 @@ class ProgramRegistryTests(unittest.TestCase):
             validate_registry(root, registry)
 
 
+    def test_accepts_six_hour_orchestration_timeout(self):
+        root, registry = self.make_repo()
+        payload = json.loads(registry.read_text(encoding="utf-8"))
+        payload["programs"][1]["orchestration"]["timeout_seconds"] = 21600
+        registry.write_text(json.dumps(payload), encoding="utf-8")
+        self.assertEqual(validate_registry(root, registry)["program_count"], 2)
+
 if __name__ == "__main__":
     unittest.main()

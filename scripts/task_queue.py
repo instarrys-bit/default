@@ -132,8 +132,8 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
             if max_attempts > orchestration.get("max_attempts", -1):
                 raise ValueError(f"{task_id} attempts exceed the registered retry budget")
         timeout = orchestration.get("timeout_seconds")
-        if isinstance(timeout, bool) or not isinstance(timeout, int) or not 1 <= timeout <= 3600:
-            raise ValueError(f"{task_id} target has no valid registered timeout")
+        if isinstance(timeout, bool) or not isinstance(timeout, int) or not 1 <= timeout <= 21600:
+            raise ValueError(f"{task_id} target has no valid registered timeout (1..21600 seconds)")
         if not isinstance(task["input"], dict):
             raise ValueError(f"{task_id}.input must be an object")
         checkpoint = task.get("assessment_checkpoint")

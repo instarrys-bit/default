@@ -215,5 +215,22 @@ class TaskQueueTests(unittest.TestCase):
             self.validate(root, queue, registry)
 
 
+    def test_accepts_six_hour_registered_task_timeout(self):
+        root, queue, registry = self.make_store()
+        data = json.loads(registry.read_text(encoding="utf-8"))
+        data["programs"][1]["orchestration"]["timeout_seconds"] = 21600
+        registry.write_text(json.dumps(data), encoding="utf-8")
+        self.write_task(queue, self.task())
+        self.assertEqual(self.validate(root, queue, registry)["task_count"], 1)
+
+    def test_rejects_task_timeout_above_six_hours(self):
+        root, queue, registry = self.make_store()
+        data = json.loads(registry.read_text(encoding="utf-8"))
+        data["programs"][1]["orchestration"]["timeout_seconds"] = 21601
+        registry.write_text(json.dumps(data), encoding="utf-8")
+        self.write_task(queue, self.task())
+        with self.assertRaisesRegex(ValueError, "valid registered timeout"):
+            self.validate(root, queue, registry)
+
 if __name__ == "__main__":
     unittest.main()

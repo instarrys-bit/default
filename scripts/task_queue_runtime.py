@@ -69,7 +69,7 @@ def authorize(task,by_id):
     if task.get("capability") not in program.get("capabilities",[]): raise ValueError("target does not declare requested capability")
     maximum=policy.get("max_attempts"); timeout=policy.get("timeout_seconds")
     if isinstance(maximum,bool) or not isinstance(maximum,int) or not 1<=maximum<=5: raise ValueError("enabled target must set max_attempts from 1 to 5")
-    if isinstance(timeout,bool) or not isinstance(timeout,int) or not 1<=timeout<=3600: raise ValueError("target timeout must be from 1 to 3600 seconds")
+    if isinstance(timeout,bool) or not isinstance(timeout,int) or not 1<=timeout<=21600: raise ValueError("target timeout must be from 1 to 21600 seconds")
     return policy
 
 
