@@ -125,7 +125,7 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
                 "max_urls": 20, "max_file_bytes": 1_000_000, "max_total_bytes": 10_000_000,
                 "predecessor": {
                     "program_id": "script_discover_sources",
-                    "workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
+                    "workflow_name": "Shadowrocket Source Discovery (Watchdog)",
                     "workflow_run_id": "41770000000",
                     "workflow_head_sha": "a" * 40,
                     "artifact_path": "sources/discovered_sources.json",
