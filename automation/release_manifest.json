@@ -74,7 +74,7 @@
     },
     "resource_lease_runtime": {
       "path": "scripts/resource_lease_runtime.py",
-      "git_blob_sha": "61b023da80721b9cafc654fc7a380d17aa17c3c5"
+      "git_blob_sha": "ded2faa6fd5f2779987621d21163ba8b652d596f"
     },
     "source_discovery_workflow": {
       "path": ".github/workflows/source-discovery.yml",
