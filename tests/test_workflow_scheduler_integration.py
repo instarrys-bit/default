@@ -313,6 +313,30 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
         self.assertEqual(saved["verification"]["status"], "passed")
         self.assertEqual(saved["result"]["run_evidence"]["run_id"], 991)
 
+    def test_completed_run_is_verified_by_persisted_id_when_run_list_lags(self):
+        task = self.enqueue()
+        with patch.object(task_scheduler, "GitHubWorkflowClient", return_value=self.client):
+            task_scheduler.run_scheduler_once(
+                self.store, self.registry, self.adapters,
+                worker_id="workflow-test", max_tasks=1, root=self.root, now=self.now,
+            )
+        self.client.add_run(task["task_id"], status="in_progress")
+        pending = verify_pending_remote(
+            self.store, self.registry, self.adapters, self.now, workflow_client=self.client,
+        )
+        self.assertEqual(pending["verified"], [])
+        self.assertEqual(self.store.document["tasks"][0]["result"]["run_evidence"]["run_id"], 991)
+        self.client.run_details[991]["status"] = "completed"
+        self.client.run_details[991]["conclusion"] = "success"
+        self.client.runs = []  # Simulate the list endpoint lagging the completed-run event.
+        verified = verify_pending_remote(
+            self.store, self.registry, self.adapters, self.now, workflow_client=self.client,
+        )
+        saved = self.store.document["tasks"][0]
+        self.assertEqual(verified["verified"], [task["task_id"]])
+        self.assertEqual(saved["status"], "SUCCEEDED")
+        self.assertEqual(saved["result"]["run_evidence"]["conclusion"], "success")
+
     def test_unknown_dispatch_outcome_is_reconciled_without_redispatch(self):
         task = self.enqueue()
         def uncertain(*args, **kwargs):
