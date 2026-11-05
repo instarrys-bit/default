@@ -85,7 +85,7 @@
       "worker_id": "assessment-canary-41746911914"
     }
   },
-  "revision": 122,
+  "revision": 123,
   "schema_version": 1,
   "tasks": [
     {
@@ -514,6 +514,17 @@
       "attempts": 1,
       "capability": "deterministic_audit",
       "created_at": "2026-11-05T16:29:20Z",
+      "dispatch_intent": {
+        "correlation_id": "task_8880b8f9a7ec496abd50c2a9-a1",
+        "correlation_title": "Automation task task_8880b8f9a7ec496abd50c2a9-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-05T16:29:39Z",
+        "ref": "main",
+        "requested_head_sha": "dde1baf22945b5c5fc5722b0887b8fc488abc84a",
+        "task_id": "task_8880b8f9a7ec496abd50c2a9",
+        "workflow_id": 402712272,
+        "workflow_path": ".github/workflows/auto_sync.yml"
+      },
       "execution_backend": "github_contents",
       "idempotency_key": "production:input:a8e9eed934a5cf3f456fa0af24c1527a380c80a14d48c38f0f68669ade271172:a55edd7ee7830d10f860b88b28950ada38c70013",
       "input": {
