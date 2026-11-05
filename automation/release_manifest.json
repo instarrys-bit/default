@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "2461a12425e233a3e55d84ac667b6db773225b69"
+      "git_blob_sha": "c097f9c87ea9fa5a6289fbd3b3d36de09cb04370"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -90,7 +90,7 @@
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "b10766da39a37e1dd2e6db04ffd60407e744df63"
+      "git_blob_sha": "9954a44e6cf2fe289c401323ff2b0c000a1b13df"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -102,7 +102,7 @@
     },
     "publish_freshness_guard": {
       "path": "scripts/verify_publish_base.sh",
-      "git_blob_sha": "363cd90fd7a0b0597c30831bf0b06dd2f0ca6daf"
+      "git_blob_sha": "60e5c4261a9607728f55c5911e85a1594588511d"
     },
     "production_input_manifest": {
       "path": "automation/production_inputs.json",
