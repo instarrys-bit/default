@@ -154,7 +154,16 @@ jobs:
           if not isinstance(digest, str) or len(digest) != 64:
               raise SystemExit("Discovery logical-document digest is unavailable.")
           proof = {**expected, "artifact_path": "sources/discovered_sources.json", "artifact_sha256": digest}
-          Path(os.environ["RUNNER_TEMP"], "source-discovery-proof.json").write_text(
+          artifact_root = Path(os.environ["RUNNER_TEMP"], "source-discovery-artifact")
+          (artifact_root / "sources").mkdir(parents=True, exist_ok=True)
+          import shutil
+          for item in Path("sources").glob("discovered_sources.json*"):
+              if item.is_dir():
+                  shutil.copytree(item, artifact_root / "sources" / item.name, dirs_exist_ok=True)
+              else:
+                  shutil.copy2(item, artifact_root / "sources" / item.name)
+          shutil.copy2(Path("reports/source-discovery.md"), artifact_root / "reports-source-discovery.md")
+          (artifact_root / "source-discovery-proof.json").write_text(
               json.dumps(proof, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
           PY
 
@@ -210,10 +219,6 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: source-discovery-output
-          path: |
-            sources/discovered_sources.json*
-            sources/discovered_sources.json.parts-*/**
-            reports/source-discovery.md
-            ${{ runner.temp }}/source-discovery-proof.json
+          path: ${{ runner.temp }}/source-discovery-artifact/
           if-no-files-found: error
           retention-days: 14
