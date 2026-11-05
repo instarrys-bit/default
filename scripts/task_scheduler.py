@@ -845,17 +845,20 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
 
 
 def enqueue_source_discovery_task(store, registry: dict, *, idempotency_key: str,
-                                   priority: int = 55, requested_head_sha: str = "") -> dict:
-    """Enqueue one Watchdog-owned discovery workflow for an exact main snapshot."""
-    if not isinstance(idempotency_key, str) or not re.fullmatch(r"source-discovery:[0-9a-f]{40}", idempotency_key):
-        raise ValueError("source discovery requires a main-SHA-scoped idempotency key")
-    if requested_head_sha != idempotency_key.split(":", 1)[1]:
-        raise ValueError("source discovery idempotency key must match the requested main SHA")
-    if not 0 <= priority <= 100:
+                                   priority: int = 55) -> dict:
+    """Enqueue at most one Watchdog discovery workflow per UTC day."""
+    match = re.fullmatch(r"source-discovery:(\\d{4}-\\d{2}-\\d{2})", idempotency_key or "")
+    if not match:
+        raise ValueError("source discovery requires a UTC-day idempotency key: source-discovery:YYYY-MM-DD")
+    try:
+        datetime.strptime(match.group(1), "%Y-%m-%d")
+    except ValueError as exc:
+        raise ValueError("source discovery idempotency key contains an invalid UTC date") from exc
+    if isinstance(priority, bool) or not isinstance(priority, int) or not 0 <= priority <= 100:
         raise ValueError("source discovery priority must be from 0 to 100")
     result = enqueue_remote({
         "idempotency_key": idempotency_key,
-        "trace_id": "source-discovery:" + requested_head_sha[:12],
+        "trace_id": idempotency_key,
         "requester_program_id": "workflow_automation_watchdog",
         "target_program_id": "workflow_source_discovery",
         "capability": "source_discovery",
@@ -1071,12 +1074,9 @@ def main() -> int:
             plan = build_execution_plan(store.read().document, registry, adapters)
             print(json.dumps(plan, ensure_ascii=False))
         elif args.command == "enqueue-source-discovery":
-            if not isinstance(args.idempotency_key, str) or not args.idempotency_key.startswith("source-discovery:"):
-                raise ValueError("enqueue-source-discovery requires --idempotency-key source-discovery:<main-sha>")
-            sha = args.idempotency_key.split(":", 1)[1]
             print(json.dumps(enqueue_source_discovery_task(
                 store, registry, idempotency_key=args.idempotency_key,
-                priority=args.priority, requested_head_sha=sha,
+                priority=args.priority,
             ), ensure_ascii=False))
         elif args.command == "enqueue-source-assessment":
             if not isinstance(args.idempotency_key, str) or not args.idempotency_key:
