@@ -110,8 +110,18 @@ jobs:
           from pathlib import Path
           base = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
           head = json.loads(Path(sys.argv[2]).read_text(encoding="utf-8"))
-          if base.get("managed_config_guard") != head.get("managed_config_guard"):
-              raise SystemExit("Non-main validation cannot change the owner-approved config baseline metadata.")
+          base_guard = base.get("managed_config_guard")
+          head_guard = head.get("managed_config_guard")
+          if not isinstance(base_guard, dict) or not isinstance(head_guard, dict):
+              raise SystemExit("The managed config guard must remain a JSON object.")
+          for key in ("path", "approved_git_blob_sha", "last_user_approved_baseline_update"):
+              if base_guard.get(key) != head_guard.get(key):
+                  raise SystemExit("Non-main validation cannot change the owner-approved config identity or baseline registration.")
+          allowed_guard_keys = {"description", "content_immutable_to_automation", "content_protection", "baseline_metadata_policy"}
+          changed_keys = set(base_guard) ^ set(head_guard)
+          changed_keys.update(key for key in set(base_guard) & set(head_guard) if base_guard[key] != head_guard[key])
+          if changed_keys - allowed_guard_keys:
+              raise SystemExit("Non-main validation changed a managed-config guard field outside the semantic policy allowlist.")
           PY
           echo "The non-main change leaves uu.conf and its approved-baseline metadata unchanged; continuing read-only structural checks."
       - name: Recover owner-approved config baseline in validation workspace
