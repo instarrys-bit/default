@@ -64,7 +64,6 @@ jobs:
     timeout-minutes: 300
     env:
       PYTHONPATH: scripts
-      AUTOMATION_WRITE_GUARD: "1"
       SOURCE_DISCOVERY_MODE: ${{ vars.SOURCE_DISCOVERY_MODE || 'monolithic_fallback' }}
     permissions:
       contents: read
@@ -76,18 +75,19 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Capture initial repository baseline for shell and Git write tracing
-        run: |
-          set -euo pipefail
-          echo "AUTOMATION_WRITE_TRACE_BASELINE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
-
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
-      - name: Enable path-only runtime write trace
-        run: echo "AUTOMATION_WRITE_TRACE_PATH=$RUNNER_TEMP/automation-write-trace-audit.jsonl" >> "$GITHUB_ENV"
 
+      - name: Isolate production writes in a temporary workspace
+        run: |
+          set -euo pipefail
+          workspace="$RUNNER_TEMP/production-workspace"
+          mkdir -p "$workspace"
+          cp -a "$GITHUB_WORKSPACE/." "$workspace/"
+          printf 'cd "%s"\\n' "$workspace" > "$RUNNER_TEMP/production-workspace.bashenv"
+          echo "BASH_ENV=$RUNNER_TEMP/production-workspace.bashenv" >> "$GITHUB_ENV"
       - name: Verify Watchdog-owned durable task dispatch
         env:
           GH_TOKEN: ${{ github.token }}
@@ -291,7 +291,6 @@ jobs:
 
       - name: Compile and run deterministic review tests
         env:
-          AUTOMATION_WRITE_GUARD: "0"
         run: |
           python3 -m compileall -q scripts tests
           python3 -m unittest discover -s tests -v
@@ -307,63 +306,6 @@ jobs:
         run: |
           python3 scripts/assess_sources.py
           python3 scripts/append_step_summary.py --input reports/source-assessment.md
-
-      - name: Preserve complete source assessment report
-        if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: source-assessment-report
-          path: |
-            reports/source-assessment.md
-            sources/source_assessments.json
-          if-no-files-found: ignore
-          retention-days: 7
-
-      - name: Restore prior high-volume automation state
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-          CURRENT_RUN_ID: ${{ github.run_id }}
-        run: |
-          set -euo pipefail
-          mkdir -p /tmp/prior-audit-state
-          pointer="reports/automation/state_store.json"
-          if [ -s "$pointer" ]; then
-            run_id="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("last_state_run_id", ""))' "$pointer")"
-            if [ -z "$run_id" ]; then
-              echo "State pointer exists but has no run ID; refusing to reset automation state."
-              exit 1
-            fi
-            run_ids="$run_id"
-          else
-            run_ids="$(gh api "repos/$REPO/actions/runs?per_page=100" --jq '.workflow_runs[] | select(.path == ".github/workflows/auto_sync.yml" and .head_branch == "main") | .id')"
-          fi
-          restored=0
-          for run_id in $run_ids; do
-            [ "$run_id" = "$CURRENT_RUN_ID" ] && continue
-            artifact_id="$(gh api "repos/$REPO/actions/runs/$run_id/artifacts" --jq '[.artifacts[] | select(.name == "deterministic-audit-output" and .expired == false)] | first | .id // empty' 2>/dev/null || true)"
-            if [ -z "$artifact_id" ]; then
-              if [ -s "$pointer" ]; then
-                echo "The state artifact for recorded run $run_id is missing or expired; refusing destructive reinitialization."
-                exit 1
-              fi
-              continue
-            fi
-            gh run download "$run_id" --name deterministic-audit-output --dir /tmp/prior-audit-state
-            archive="/tmp/prior-audit-state/audit-output.tar.gz"
-            test -s "$archive"
-            python3 scripts/restore_automation_state.py --archive "$archive" --root .
-            echo "Restored high-volume state from audit run $run_id (artifact $artifact_id)."
-            restored=1
-            break
-          done
-          if [ "$restored" -eq 0 ]; then
-            if [ -s "$pointer" ]; then
-              echo "Recorded automation state could not be restored; refusing to continue."
-              exit 1
-            fi
-            echo "No prior state artifact found; using repository bootstrap state."
-          fi
 
       - name: Remove published and queued rules that conflict with uu.conf
         env:
@@ -481,9 +423,6 @@ jobs:
           import os
           import sys
           from datetime import datetime, timezone
-          sys.path.insert(0, "scripts")
-          from fenced_file_writer import install_write_guard
-          install_write_guard()
           from production_intent import load_manifest, compute_fingerprint, compute_output_fingerprint
           from pathlib import Path
           Path("reports/automation").mkdir(parents=True, exist_ok=True)
@@ -525,94 +464,11 @@ jobs:
               stream.write("\n")
           PY
 
-      - name: Record durable automation state pointer
-        env:
-          GITHUB_RUN_ID: ${{ github.run_id }}
-          GITHUB_SHA: ${{ github.sha }}
-        run: |
-          python3 - <<'PY'
-          import json, os, sys
-          sys.path.insert(0, "scripts")
-          from fenced_file_writer import install_write_guard
-          install_write_guard()
-          from pathlib import Path
-          from datetime import datetime, timezone
-          Path("reports/automation").mkdir(parents=True, exist_ok=True)
-          record = {
-              "schema_version": 1,
-              "last_state_run_id": os.environ["GITHUB_RUN_ID"],
-              "source_commit": os.environ["GITHUB_SHA"],
-              "recorded_at_utc": datetime.now(timezone.utc).isoformat(),
-              "artifact_name": "deterministic-audit-output",
-              "artifact_retention_days": 90,
-              "storage_mode": "github_actions_artifact",
-              "missing_artifact_policy": "fail_closed"
-          }
-          with open("reports/automation/state_store.json", "w", encoding="utf-8") as stream:
-              json.dump(record, stream, ensure_ascii=False, indent=2)
-              stream.write("\n")
-          PY
-
-      - name: Package allowlisted audit outputs
+      - name: Package ruleset outputs only
         run: |
           set -euo pipefail
-          shopt -s nullglob
-          state_files=(
-            sources/domain_reviews.json*
-            sources/rule_provenance.json*
-            sources/discovered_sources.json*
-            sources/source_assessments.json*
-            sources/source_candidates.json*
-            data/domain_candidates.json*
-            data/candidates.json*
-          )
-          base_files=(
-            sources/review_cursor.json
-            sources/domain_sources.json
-            sources/source_activation_log.json
-            reports/lifecycle
-            reports/project-status.md
-            reports/project-status.json
-            reports/automation/heartbeat.json
-            reports/automation/state_store.json
-            reports/external-domain-audit.md
-            reports/config-drift-audit.md
-            reports/config-drift-audit.json
-            reports/ruleset-reference-audit.md
-            reports/ruleset-reference-audit.json
-            reports/ruleset-config-conflict-sync.md
-            reports/ruleset-config-conflict-sync.json
-            reports/ruleset-config-overlap-audit.md
-            reports/ruleset-config-overlap-audit.json
-            reports/source-lineage-audit.json
-            reports/source-discovery.md
-            reports/source-assessment.md
-            reports/source-candidate-matrix.md
-            reports/source-activation.md
-            reports/policy-source-overlap.md
-            sources/policy_source_overlap.json
-            data/domain_candidates.json
-            data/source_pending.json
-            data/primary_snapshot.txt
-            data/secondary_snapshot.txt
-            data/source_snapshots
-            rulesets
-          )
-          declare -A archive_seen=()
-          archive_inputs=()
-          for path in "${base_files[@]}" "${state_files[@]}"; do
-            [[ -e "$path" ]] || continue
-            if [[ -L "$path" ]]; then
-              echo "Refusing symlink in automation state: $path" >&2
-              exit 1
-            fi
-            if [[ -z "${archive_seen[$path]+present}" ]]; then
-              archive_seen["$path"]=1
-              archive_inputs+=("$path")
-            fi
-          done
-          test "${#archive_inputs[@]}" -gt 0
-          tar -czf "$RUNNER_TEMP/audit-output.tar.gz" -- "${archive_inputs[@]}"
+          test -d rulesets
+          tar -czf "$RUNNER_TEMP/audit-output.tar.gz" -- rulesets
 
       - name: Upload allowlisted audit outputs
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -621,27 +477,12 @@ jobs:
           path: ${{ runner.temp }}/audit-output.tar.gz
           if-no-files-found: error
           retention-days: 90
-      - name: Capture persistent repository changes from shell and Git (audit)
-        if: always()
-        run: |
-          set -euo pipefail
-          python3 scripts/capture_git_write_trace.py --baseline-sha "$AUTOMATION_WRITE_TRACE_BASELINE_SHA"
-      - name: Upload runtime filesystem write trace (audit)
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: automation-runtime-write-trace-audit
-          path: ${{ runner.temp }}/automation-write-trace-audit.jsonl
-          if-no-files-found: ignore
-          retention-days: 14
-
   publish:
     needs: audit
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
       PYTHONPATH: scripts
-      AUTOMATION_WRITE_GUARD: "1"
       AUTOMATION_REQUIRE_RESOURCE_LEASE: "1"
     permissions:
       contents: write
@@ -652,13 +493,6 @@ jobs:
           ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: true
-
-      - name: Capture initial repository baseline for shell and Git write tracing
-        run: |
-          set -euo pipefail
-          echo "AUTOMATION_WRITE_TRACE_BASELINE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
-      - name: Enable path-only runtime write trace
-        run: echo "AUTOMATION_WRITE_TRACE_PATH=$RUNNER_TEMP/automation-write-trace-publish.jsonl" >> "$GITHUB_ENV"
 
       - name: Revalidate Watchdog task and export canonical lease context
         env:
@@ -752,64 +586,17 @@ jobs:
             exit 1
           }
 
-          # Optional audit outputs are staged only when present in this run.
-          # Missing optional files must not abort an otherwise valid publication.
-          publish_paths=(
-            sources/policy.json
-            automation/release_manifest.json
-            automation/production_workflow_map.json
-            automation/resource_write_sets.json
-            sources/domain_sources.json
-            sources/source_activation_log.json
-            reports/lifecycle
-            reports/project-status.md
-            reports/project-status.json
-            reports/automation/heartbeat.json
-            reports/automation/state_store.json
-            reports/external-domain-audit.md
-            reports/config-drift-audit.md
-            reports/config-drift-audit.json
-            reports/ruleset-reference-audit.md
-            reports/ruleset-reference-audit.json
-            reports/ruleset-config-overlap-audit.md
-            reports/ruleset-config-overlap-audit.json
-            reports/ruleset-config-conflict-sync.md
-            reports/ruleset-config-conflict-sync.json
-            reports/source-lineage-audit.json
-            reports/source-discovery.md
-            reports/source-assessment.md
-            reports/source-candidate-matrix.md
-            reports/source-activation.md
-            reports/policy-source-overlap.md
-            sources/policy_source_overlap.json
-            sources/discovered_sources.json
-            sources/source_assessments.json
-            sources/source_candidates.json
-            rulesets/
-          )
-          for path in "${publish_paths[@]}"; do
-            if [[ -e "$path" ]]; then
-              git add -- "$path"
-            else
-              echo "Optional publish path absent; skipping: $path"
-            fi
-          done
-
-          # Sharded persistent source indexes are staged as complete manifest+parts sets.
-          shopt -s nullglob
-          for pattern in \
-            "sources/discovered_sources.json.manifest.json" "sources/discovered_sources.json.parts-"* \
-            "sources/source_assessments.json.manifest.json" "sources/source_assessments.json.parts-"* \
-            "sources/source_candidates.json.manifest.json" "sources/source_candidates.json.parts-"*; do
-            if [[ -e "$pattern" ]]; then git add -- "$pattern"; fi
-          done
-
-          # When a legacy monolith has been replaced by a manifest, stage its deletion.
-          for base in sources/discovered_sources.json sources/source_assessments.json sources/source_candidates.json; do
-            if [[ ! -e "$base" ]] && git ls-files --error-unmatch "$base" >/dev/null 2>&1; then
-              git add -u -- "$base"
-            fi
-          done
+          # The only production artifact permitted to persist in the repository.
+          git add -A -- rulesets/
+          staged_paths="$(git diff --cached --name-only)"
+          if [ -n "$staged_paths" ]; then
+            while IFS= read -r path; do
+              case "$path" in
+                rulesets/*) ;;
+                *) echo "Unexpected production publication path: $path"; exit 1 ;;
+              esac
+            done <<< "$staged_paths"
+          fi
 
           # Explicitly fail if the protected config somehow entered the staged commit.
           git diff --cached --quiet "$GITHUB_SHA" -- modules/uu.conf || {
@@ -838,255 +625,3 @@ jobs:
           git fetch origin main
           python3 scripts/verify_published_rulesets.py --ref origin/main | tee /tmp/publish-verification.json
           python3 scripts/append_step_summary.py --input /tmp/publish-verification.json
-      - name: Capture persistent repository changes from shell and Git (publish)
-        if: always()
-        run: |
-          set -euo pipefail
-          python3 scripts/capture_git_write_trace.py --baseline-sha "$AUTOMATION_WRITE_TRACE_BASELINE_SHA"
-      - name: Upload runtime filesystem write trace (publish)
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: automation-runtime-write-trace-publish
-          path: ${{ runner.temp }}/automation-write-trace-publish.jsonl
-          if-no-files-found: ignore
-          retention-days: 14
-
-  persist-review-cursor:
-    name: Persist failed-run cursor under Watchdog resource lease
-    needs: audit
-    if: ${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled') }}
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-    permissions:
-      actions: read
-      contents: write
-    env:
-      AUTOMATION_WRITE_GUARD: "1"
-      PYTHONPATH: scripts
-    steps:
-      - name: Checkout current main for a single-path checkpoint update
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          ref: main
-          fetch-depth: 0
-          persist-credentials: true
-      - name: Download failed-run cursor checkpoint
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
-        with:
-          name: review-cursor-checkpoint
-          path: cursor-artifact
-        continue-on-error: true
-      - name: Revalidate exact Watchdog task and install live resource fence
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          AUTOMATION_TASK_CORRELATION: ${{ inputs.automation_task_id }}
-          RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          import json, os, re
-          from datetime import datetime, timezone
-          from pathlib import Path
-          correlation = os.environ.get("AUTOMATION_TASK_CORRELATION", "")
-          match = re.fullmatch(r"(task_[0-9a-f]{24})-a([1-9][0-9]*)", correlation)
-          if not match:
-              raise SystemExit("A valid Watchdog task correlation is required for cursor persistence.")
-          task_id, attempt_text = match.groups()
-          attempt = int(attempt_text)
-          queue = json.loads(Path("automation/task_queue.json").read_text(encoding="utf-8"))
-          task = next((x for x in queue.get("tasks", []) if isinstance(x, dict) and x.get("task_id") == task_id), None)
-          if not isinstance(task, dict):
-              raise SystemExit("The canonical Watchdog task is absent from the durable queue.")
-          intent = task.get("dispatch_intent")
-          if (task.get("target_program_id") != "workflow_auto_sync"
-                  or task.get("requester_program_id") != "workflow_automation_watchdog"
-                  or task.get("attempts") != attempt
-                  or task.get("status") not in {"CLAIMED", "VERIFYING"}
-                  or not isinstance(intent, dict)
-                  or intent.get("task_id") != task_id
-                  or intent.get("dispatch_attempt") != attempt
-                  or intent.get("correlation_id") != correlation
-                  or intent.get("workflow_path") != ".github/workflows/auto_sync.yml"
-                  or intent.get("ref") != "main"):
-              raise SystemExit("The durable queue does not authorize this exact failed-run cursor writer.")
-          try:
-              proof = json.loads(os.environ["RESOURCE_LEASE_PROOF"])
-          except json.JSONDecodeError as exc:
-              raise SystemExit("The resource lease proof is invalid JSON.") from exc
-          resource_lease = task.get("resource_lease")
-          declared = resource_lease.get("resources") if isinstance(resource_lease, dict) else None
-          queue_leases = queue.get("resource_leases")
-          if (not isinstance(resource_lease, dict) or resource_lease.get("status") != "ACTIVE"
-                  or not isinstance(declared, dict) or proof != declared
-                  or not isinstance(queue_leases, dict) or "sources/review_cursor.json" not in proof):
-              raise SystemExit("The review cursor resource lease is missing, inactive or inconsistent.")
-          workers = set()
-          now = datetime.now(timezone.utc)
-          for key, item in proof.items():
-              record = queue_leases.get(key)
-              if (not isinstance(record, dict) or record.get("status") != "ACTIVE"
-                      or record.get("task_id") != task_id
-                      or record.get("lease_id") != item.get("lease_id")
-                      or record.get("fencing_token") != item.get("fencing_token")):
-                  raise SystemExit("A cursor writer resource lease is stale or fenced: " + key)
-              if datetime.fromisoformat(record["expires_at"].replace("Z", "+00:00")) <= now:
-                  raise SystemExit("A cursor writer resource lease has expired: " + key)
-              workers.add(record.get("worker_id"))
-          if len(workers) != 1 or not next(iter(workers)):
-              raise SystemExit("Cursor writer resources do not share one active worker owner.")
-          lease = task.get("lease")
-          if task.get("status") == "CLAIMED" and (not isinstance(lease, dict) or not lease.get("token")):
-              raise SystemExit("A CLAIMED task must retain its scheduler task lease.")
-          env_values = {
-              "AUTOMATION_TASK_ID": task_id,
-              "AUTOMATION_TASK_ID_BASE": task_id,
-              "AUTOMATION_WORKER_ID": next(iter(workers)),
-              "AUTOMATION_TASK_LEASE_TOKEN": lease.get("token") if isinstance(lease, dict) else "resource-fence-only",
-              "AUTOMATION_QUEUE_REPOSITORY": os.environ["GITHUB_REPOSITORY"],
-              "AUTOMATION_QUEUE_BRANCH": "main",
-              "AUTOMATION_QUEUE_PATH": "automation/task_queue.json",
-              "AUTOMATION_QUEUE_TOKEN": os.environ["GH_TOKEN"],
-              "AUTOMATION_QUEUE_SNAPSHOT": str(Path("automation/task_queue.json").resolve()),
-              "AUTOMATION_REQUIRE_RESOURCE_LEASE": "1",
-          }
-          delimiter = "__CURSOR_RESOURCE_PROOF__"
-          if delimiter in os.environ["RESOURCE_LEASE_PROOF"]:
-              raise SystemExit("Invalid cursor resource proof delimiter.")
-          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
-              for key, value in env_values.items():
-                  stream.write(f"{key}={value}\n")
-              stream.write(f"AUTOMATION_RESOURCE_LEASE_PROOF<<{delimiter}\n{os.environ['RESOURCE_LEASE_PROOF']}\n{delimiter}\n")
-          PY
-          canonical_task_id="${AUTOMATION_TASK_CORRELATION%%-a*}"
-          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$canonical_task_id" --proof-json "$RESOURCE_LEASE_PROOF"
-
-      - name: Persist only the cursor through the live filesystem fence
-        run: |
-          set -euo pipefail
-          python3 scripts/persist_review_cursor.py --cursor-artifact cursor-artifact/review_cursor.json --destination sources/review_cursor.json
-
-      - name: Publish only the cursor checkpoint under the same live fence
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
-        run: |
-          set -euo pipefail
-          if git diff --quiet -- sources/review_cursor.json; then
-            echo "No checkpoint change to publish."
-            exit 0
-          fi
-          changed="$(git status --short)"
-          if [ "$(git diff --name-only)" != "sources/review_cursor.json" ]; then
-            echo "Unexpected unstaged path in cursor recovery: $changed"
-            exit 1
-          fi
-          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE" --proof-json "$RESOURCE_LEASE_PROOF"
-          git add -- sources/review_cursor.json
-          if [ "$(git diff --cached --name-only)" != "sources/review_cursor.json" ]; then
-            echo "Cursor recovery staged an unexpected path."
-            exit 1
-          fi
-          git diff --cached --check
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Persist failed deterministic review cursor"
-          git fetch origin main
-          git rebase origin/main
-          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE" --proof-json "$RESOURCE_LEASE_PROOF"
-          git push origin HEAD:main
-
-  notify-failure:
-    if: ${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled' || needs.publish.result == 'failure' || needs.publish.result == 'cancelled') }}
-    needs: [audit, publish]
-    runs-on: ubuntu-24.04
-    permissions:
-      issues: write
-    steps:
-      - name: Open or update automation incident
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          COMMIT_SHA: ${{ github.sha }}
-          RUN_ID: ${{ github.run_id }}
-          AUDIT_RESULT: ${{ needs.audit.result }}
-          PUBLISH_RESULT: ${{ needs.publish.result }}
-        run: |
-          title="Shadowrocket automation incident (run $RUN_ID)"
-          body="The deterministic pipeline ended with audit=$AUDIT_RESULT and publish=$PUBLISH_RESULT.\n\nRun: $RUN_URL\nCommit: $COMMIT_SHA\n\n<!-- shadowrocket-automation:workflow=auto_sync;run_id=$RUN_ID -->\n\nPlease inspect the run and logs. This issue is maintained automatically."
-          existing="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title | jq --arg title "$title" -r '.[] | select(.title == $title) | .number' | head -n 1)"
-          if [ -n "$existing" ] && [ "$existing" != "null" ]; then
-            gh issue comment "$existing" --repo "$REPO" --body "$body"
-          else
-            gh issue create --repo "$REPO" --title "$title" --body "$body"
-          fi
-
-
-  notify-watchdog-completion:
-    name: Notify Watchdog of production completion
-    if: ${{ always() && (needs.audit.result == 'success' || needs.audit.result == 'failure' || needs.audit.result == 'cancelled') }}
-    needs: [audit, publish]
-    runs-on: ubuntu-24.04
-    timeout-minutes: 3
-    permissions:
-      contents: write
-    steps:
-      - name: Send completion observation to Watchdog
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-          TASK_ID: ${{ inputs.automation_task_id }}
-          RUN_ID: ${{ github.run_id }}
-          RUN_ATTEMPT: ${{ github.run_attempt }}
-          HEAD_SHA: ${{ github.sha }}
-          AUDIT_RESULT: ${{ needs.audit.result }}
-          PUBLISH_RESULT: ${{ needs.publish.result }}
-        run: |
-          set -euo pipefail
-          conclusion=success
-          if [ "$AUDIT_RESULT" != "success" ] || [ "$PUBLISH_RESULT" != "success" ]; then
-            conclusion=failure
-          fi
-          payload="$(jq -n \
-            --arg task_id "$TASK_ID" \
-            --arg run_id "$RUN_ID" \
-            --arg run_attempt "$RUN_ATTEMPT" \
-            --arg head_sha "$HEAD_SHA" \
-            --arg conclusion "$conclusion" \
-            --arg audit_result "$AUDIT_RESULT" \
-            --arg publish_result "$PUBLISH_RESULT" \
-            '{event_type:"automation-production-completed",client_payload:{task_id:$task_id,run_id:$run_id,run_attempt:$run_attempt,head_sha:$head_sha,conclusion:$conclusion,audit_result:$audit_result,publish_result:$publish_result}}')"
-          printf '%s' "$payload" | gh api "repos/$REPO/dispatches" \
-            --method POST \
-            -H "Accept: application/vnd.github+json" \
-            --input -
-
-  resolve-failure:
-    needs: [audit, publish]
-    if: ${{ needs.audit.result == 'success' && needs.publish.result == 'success' }}
-    runs-on: ubuntu-24.04
-    timeout-minutes: 3
-    permissions:
-      issues: write
-    steps:
-      - name: Close recovered automation incidents
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          RUN_ID: ${{ github.run_id }}
-        run: |
-          set -euo pipefail
-          issues="$(gh issue list --repo "$REPO" --state open --search '"Shadowrocket automation" in:title' --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select((.title | startswith("Shadowrocket automation failure (run ")) or (.title | startswith("Shadowrocket automation incident (run "))) | select(.body | contains("shadowrocket-automation:workflow=auto_sync;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=auto_sync;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
-          if [ -z "$issues" ]; then
-            echo "No earlier, explicitly linked auto_sync incident to resolve."
-            exit 0
-          fi
-          while IFS= read -r issue; do
-            [ -n "$issue" ] || continue
-            gh issue comment "$issue" --repo "$REPO" --body "A later full deterministic audit and publish succeeded. Recovery run: $RUN_URL"
-            gh issue close "$issue" --repo "$REPO"
-          done <<< "$issues"
