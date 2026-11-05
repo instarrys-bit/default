@@ -30,6 +30,22 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         (self.work / "docs").mkdir()
         (self.work / "shadowrocket").mkdir()
         (self.work / "automation").mkdir()
+        (self.work / "automation").mkdir(parents=True, exist_ok=True)
+        (self.work / "scripts").mkdir(parents=True, exist_ok=True)
+        (self.work / "automation" / "production_inputs.json").write_text(json.dumps({
+            "schema_version": 1,
+            "production_input_paths": ["modules/uu.conf", "scripts/build_rulesets.py"],
+            "non_production_path_patterns": [
+                "docs/**", "automation/**", "reports/**", "rulesets/**",
+                "sources/source_activation_log.json", "scripts/resource_lease_runtime.py"
+            ],
+            "monitoring_path_patterns": [],
+            "documentation_path_patterns": []
+        }), encoding="utf-8")
+        (self.work / "scripts" / "production_intent.py").write_text(
+            (ROOT / "scripts" / "production_intent.py").read_text(encoding="utf-8"),
+            encoding="utf-8"
+        )
         (self.work / "automation" / "task_queue.json").write_text(json.dumps({"revision": 0}) + chr(10), encoding="utf-8")
         (self.work / "docs" / "guide.md").write_text("initial\n", encoding="utf-8")
         (self.work / "shadowrocket" / "uu.conf").write_text("protected\n", encoding="utf-8")
@@ -127,7 +143,7 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         self.add_queue_commit(extra_path="scripts/changed.py")
         result = self.run_guard()
         self.assertNotEqual(result.returncode, 0, result.stdout)
-        self.assertIn("Non-documentation", result.stdout)
+        self.assertIn("Production input or unclassified", result.stdout)
         self.assertEqual(git(self.work, "rev-parse", "HEAD"), self.base)
 
     def test_api_check_accepts_strict_queue_only_compare(self):
@@ -140,11 +156,25 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0, result.stdout)
         self.assertIn("A declared production input changed", result.stdout)
 
+    def test_manifest_classified_management_and_lease_changes_rebase(self):
+        self.add_remote_commit(
+            "scripts/resource_lease_runtime.py", "lease policy update\n",
+            "extend task lease runtime"
+        )
+        result = self.run_guard()
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("manifest-classified non-production paths", result.stdout)
+        self.assertEqual(git(self.work, "rev-parse", "HEAD"), git(self.work, "rev-parse", "origin/main"))
+        self.assertEqual(
+            (self.work / "shadowrocket" / "uu.conf").read_text(encoding="utf-8"),
+            "protected\n",
+        )
+
     def test_non_documentation_change_is_rejected_without_rebase(self):
         self.add_remote_commit("scripts/build_config.py", "changed\n", "script update")
         result = self.run_guard()
         self.assertNotEqual(result.returncode, 0, result.stdout)
-        self.assertIn("Non-documentation", result.stdout)
+        self.assertIn("Production input or unclassified", result.stdout)
         self.assertEqual(git(self.work, "rev-parse", "HEAD"), self.base)
 
     def test_divergent_history_is_rejected(self):
