@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-baseline-2026.11.05.integration1",
+  "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
   "release_status": "baseline_snapshot",
   "created_on": "2026-11-05",
-  "purpose": "Integrated reliability candidate: Watchdog resource fencing, guarded DEAD_LETTER supersession, and path-only shell/Git persistent write tracing.",
+  "purpose": "Integrated reliability candidate: live resource lease fencing, descriptor-aware protected writes, current production fingerprint validation, stale queued-task supersession, Watchdog reconciliation, and path-only persistent write tracing.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "0d2c06a75ebf8abccf8fcab809bbaad243f00f3f"
+      "git_blob_sha": "fb47467640d02ba4f117d280598aadff956716b9"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -58,7 +58,7 @@
     },
     "remote_task_queue_runtime": {
       "path": "scripts/remote_task_queue_runtime.py",
-      "git_blob_sha": "0b69479be2331e8d3b563871a464f01d356f8f1c"
+      "git_blob_sha": "f04aa1247f297530f8e2b5a529fdc83f98da3eae"
     },
     "shell_git_write_trace": {
       "path": "scripts/capture_git_write_trace.py",
@@ -66,7 +66,7 @@
     },
     "task_scheduler": {
       "path": "scripts/task_scheduler.py",
-      "git_blob_sha": "dc6b4678b1518632019ef63978bd73ae982ef1c7"
+      "git_blob_sha": "5223018df97d767a1e6eaf442b5ff7e3e6c9c470"
     },
     "fenced_file_writer": {
       "path": "scripts/fenced_file_writer.py",
@@ -99,6 +99,10 @@
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
       "git_blob_sha": "c4e1c4f140e7b192e2075dcdedd854a7800134a8"
+    },
+    "production_intent": {
+      "path": "scripts/production_intent.py",
+      "git_blob_sha": "1af6ba17f2361211f3d310d2499446dc6032023b"
     }
   },
   "compatibility": {
