@@ -73,7 +73,7 @@ class ExecutionAdapterTests(unittest.TestCase):
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
         adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         enabled = [item["target_program_id"] for item in adapters["adapters"] if item["enabled"]]
-        self.assertEqual(enabled, ["script_assess_sources", "workflow_auto_sync", "workflow_self_healing_tests"])
+        self.assertEqual(enabled, ["workflow_auto_sync", "workflow_self_healing_tests"])
         program = next(item for item in registry["programs"] if item["id"] == "workflow_self_healing_tests")
         adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "workflow_self_healing_tests")
         self.assertEqual(program["orchestration"]["allowed_callers"], ["workflow_automation_watchdog"])
