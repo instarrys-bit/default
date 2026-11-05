@@ -135,22 +135,20 @@
   },
   "managed_config_guard": {
     "path": "modules/uu.conf",
-    "approved_git_blob_sha": "ce4176b564478c1f83f01b7c9559ddcf39453413",
+    "approved_git_blob_sha": "c6cbc9ffb4be524b37f09e26333f4388ad18b167",
     "description": "Authoritative owner-managed Shadowrocket config. Automation may read, identify, hash, diff, and register baseline metadata only after owner verification; it must never rewrite file contents, user-authored rules, or existing functionality.",
     "last_user_approved_baseline_update": {
-      "previous_blob_sha": "3b9a39cfae94803937addd4949042e9dc0ceaed2",
-      "new_blob_sha": "ce4176b564478c1f83f01b7c9559ddcf39453413",
-      "reason": "Synchronize the registered sole user-managed baseline with the current modules/uu.conf Git blob; automation does not modify the config.",
+      "previous_blob_sha": "ce4176b564478c1f83f01b7c9559ddcf39453413",
+      "new_blob_sha": "c6cbc9ffb4be524b37f09e26333f4388ad18b167",
+      "reason": "Register the current owner-authored modules/uu.conf blob after the owner's explicit authorization to update the baseline SHA; config bytes were not modified by automation.",
       "approval_mode": "owner_authorized_baseline_registration",
       "config_change_commits": [
-        "87f06bd48a924e481f3fdca6ef9c37f935a834d8",
-        "0264816a40fc17895b49abc3f921cfddebe3f3d6",
-        "d2822a61379320e2096e50768ff0021cb6b617ab",
-        "975ae8e71b0648a8cd8edfff8c3fa2a3d6b036a5"
+        "4ec38a6b6da06f09db25b403db41105a3dcb6df0",
+        "a2d85419af9da2aeb7238274449c38d69418b4bd"
       ],
       "actor": "instarrys-bit",
-      "commit_sha": "87f06bd48a924e481f3fdca6ef9c37f935a834d8",
-      "registered_at": "2026-11-05T00:00:00Z"
+      "commit_sha": "a2d85419af9da2aeb7238274449c38d69418b4bd",
+      "registered_at": "2026-11-05T17:20:00Z"
     },
     "content_immutable_to_automation": true,
     "content_protection": {
