@@ -49,6 +49,10 @@ on:
         description: 'Auditable reason for this production task'
         required: false
         type: string
+      request_observations_json:
+        description: 'Optional validated hostname array forwarded by Watchdog as unclassified candidates'
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -303,6 +307,8 @@ jobs:
           python3 scripts/append_step_summary.py --input reports/ruleset-config-conflict-sync.md
 
       - name: Import observed request hostnames as unclassified candidates
+        env:
+          REQUEST_OBSERVATIONS_JSON: ${{ inputs.request_observations_json }}
         run: python3 scripts/import_request_observations.py
 
       - name: Audit public source lineage and shared upstreams
