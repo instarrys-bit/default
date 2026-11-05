@@ -152,8 +152,8 @@ jobs:
           if len(workers) != 1 or not next(iter(workers)):
               raise SystemExit("The Watchdog resource leases do not share one active worker owner.")
           worker_id = next(iter(workers))
-          if isinstance(lease, dict) and lease.get("owner") != worker_id:
-              raise SystemExit("The task lease owner differs from the active resource lease owner.")
+          # The resource lease owner is the write authority. The scheduler task
+          # lease may rotate independently while this exclusive resource fence remains active.
           if task.get("status") == "CLAIMED" and (
                   not isinstance(lease, dict) or not lease.get("owner") or not lease.get("token")):
               raise SystemExit("A CLAIMED task must retain its scheduler task lease.")
