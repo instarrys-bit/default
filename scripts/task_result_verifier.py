@@ -226,7 +226,8 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
                     }
                     continue
                 try:
-                    prior_evidence = task.get("result", {}).get("run_evidence", {})
+                    prior_result = task.get("result")
+                    prior_evidence = prior_result.get("run_evidence", {}) if isinstance(prior_result, dict) else {}
                     known_run_id = prior_evidence.get("run_id") if isinstance(prior_evidence, dict) else None
                     workflow_observations[task["task_id"]] = inspect_correlated_run(
                         workflow_client, intent, known_run_id=known_run_id
