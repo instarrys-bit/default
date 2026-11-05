@@ -21,6 +21,7 @@ on:
   workflow_run:
     workflows:
       - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
+      - "Shadowrocket Source Discovery (Watchdog)"
       - "Validate Shadowrocket config against user baseline"
       - "Validate self-healing agent"
     types: [completed]
@@ -258,7 +259,7 @@ jobs:
           printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$idempotency_key" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
 
       - name: Report degraded source discovery health
-        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success' }}
+        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)' && github.event.workflow_run.conclusion == 'success' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
