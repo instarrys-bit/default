@@ -853,8 +853,7 @@
       "program_id": "script_production_intent",
       "source": "scripts/production_intent.py",
       "writes": [
-        "<caller-supplied --register-ledger path; current Watchdog path automation/unregistered_path_registry.json>",
-        "sources/request_domain_observations.json"
+        "<caller-supplied --register-ledger path; current Watchdog path automation/unregistered_path_registry.json>"
       ],
       "document_store": [],
       "dynamic_children": [],
@@ -1585,21 +1584,6 @@
       ],
       "fence": "Main-branch guarded workflow and manifest-only allowlist; publication follows validation.",
       "boundary": "Main-branch metadata-only commit; does not change DIRECT/PROXY/REJECT lists."
-    },
-    {
-      "workflow_path": ".github/workflows/request-intake.yml",
-      "step_name": "Commit observation ledger with bounded Git-ref CAS",
-      "mutation_kinds": [
-        "git_reset",
-        "git_add",
-        "git_commit",
-        "git_push"
-      ],
-      "resources": [
-        "sources/request_domain_observations.json"
-      ],
-      "fence": "Fetch/rebase/push retry with run-scoped execution; distinct-run serialization and no-lost-update behavior remain unproven.",
-      "boundary": "Main-branch observation ledger publication; bounded retry fails closed on conflict."
     },
     {
       "workflow_path": ".github/workflows/request-intake.yml",

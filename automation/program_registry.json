@@ -1075,7 +1075,6 @@
         "script_lifecycle_audit",
         "script_lifecycle_gate",
         "script_refresh_ruleset_manifest",
-        "script_register_config_baseline",
         "script_resource_lease_runtime",
         "script_restore_automation_state",
         "script_sync_ruleset_config_conflicts",

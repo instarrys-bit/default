@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "cc9d7dc163b2131f2b8c591ef73ae3c9202ed071",
-  "registry_blob_sha": "47a51e96359005ed8f33c2ea6c08cfcf0d97d6c9",
+  "workflow_blob_sha": "9b8a71d99ec942b7599c2375b065712264800e28",
+  "registry_blob_sha": "07b7d774af4d86bd2ab2d8c1a76bc09f93999dd1",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 6,
@@ -57,16 +57,6 @@
           "name": "Verify live Watchdog resource lease before production audit",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
-          "order": 7,
-          "name": "Register repository-owner-approved uu.conf changes (never edit the config)",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_register_config_baseline"
-          ],
           "validation_program_ids": [],
           "unresolved_script_paths": []
         },
@@ -396,7 +386,7 @@
         },
         {
           "order": 40,
-          "name": "Package allowlisted audit outputs",
+          "name": "Package ruleset outputs only",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
           "validation_program_ids": [],
@@ -404,7 +394,7 @@
         },
         {
           "order": 41,
-          "name": "Upload allowlisted audit outputs",
+          "name": "Upload ruleset-only artifact",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
           "validation_program_ids": [],
