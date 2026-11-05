@@ -202,7 +202,7 @@
     },
     {
       "path": "modules/AdBlock.sgmodule",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "NON_PRODUCTION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
       "last_seen_at": "2026-11-05T11:13:29.360523Z",
       "seen_count": 12,
@@ -223,11 +223,14 @@
       "last_seen_event": "push",
       "last_seen_revision": "a2d85419af9da2aeb7238274449c38d69418b4bd",
       "last_seen_run_id": "42017129292",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42017129292"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42017129292",
+      "classified_at": "2026-11-05T11:15:00Z",
+      "classification_reason": "Shadowrocket module/script implementation, backup, development or test artifact; not a DIRECT/PROXY/REJECT ruleset input and not consumed as a production routing source.",
+      "classification_basis": "Confirmed against automation/production_inputs.json non_production_path_patterns and the repository's module/script layout. These files remain repository artifacts subject to write fencing, but they do not alter the production routing result. No DNS, MITM, routing, or ad-block implementation content is changed."
     },
     {
       "path": "modules/adblock/backups/Clean_Pro.pre-rollback-20261105.js",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "NON_PRODUCTION",
       "first_seen_at": "2026-11-04T22:52:12.767958Z",
       "last_seen_at": "2026-11-05T11:13:29.360523Z",
       "seen_count": 10,
@@ -246,11 +249,14 @@
       "last_seen_event": "push",
       "last_seen_revision": "a2d85419af9da2aeb7238274449c38d69418b4bd",
       "last_seen_run_id": "42017129292",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42017129292"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42017129292",
+      "classified_at": "2026-11-05T11:15:00Z",
+      "classification_reason": "Shadowrocket module/script implementation, backup, development or test artifact; not a DIRECT/PROXY/REJECT ruleset input and not consumed as a production routing source.",
+      "classification_basis": "Confirmed against automation/production_inputs.json non_production_path_patterns and the repository's module/script layout. These files remain repository artifacts subject to write fencing, but they do not alter the production routing result. No DNS, MITM, routing, or ad-block implementation content is changed."
     },
     {
       "path": "modules/adblock/dev/Clean_Pro.js",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "NON_PRODUCTION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
       "last_seen_at": "2026-11-05T11:13:29.360523Z",
       "seen_count": 12,
@@ -271,11 +277,14 @@
       "last_seen_event": "push",
       "last_seen_revision": "a2d85419af9da2aeb7238274449c38d69418b4bd",
       "last_seen_run_id": "42017129292",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42017129292"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42017129292",
+      "classified_at": "2026-11-05T11:15:00Z",
+      "classification_reason": "Shadowrocket module/script implementation, backup, development or test artifact; not a DIRECT/PROXY/REJECT ruleset input and not consumed as a production routing source.",
+      "classification_basis": "Confirmed against automation/production_inputs.json non_production_path_patterns and the repository's module/script layout. These files remain repository artifacts subject to write fencing, but they do not alter the production routing result. No DNS, MITM, routing, or ad-block implementation content is changed."
     },
     {
       "path": "modules/adblock/scripts/AdBlock_Original.sgmodule",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "NON_PRODUCTION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
       "last_seen_at": "2026-11-04T21:58:12.213156Z",
       "seen_count": 2,
@@ -286,11 +295,14 @@
       "last_seen_event": "push",
       "last_seen_revision": "69199dc63603fea9a86e297bbb95b5e966a7238d",
       "last_seen_run_id": "41920874061",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41920874061"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41920874061",
+      "classified_at": "2026-11-05T11:15:00Z",
+      "classification_reason": "Shadowrocket module/script implementation, backup, development or test artifact; not a DIRECT/PROXY/REJECT ruleset input and not consumed as a production routing source.",
+      "classification_basis": "Confirmed against automation/production_inputs.json non_production_path_patterns and the repository's module/script layout. These files remain repository artifacts subject to write fencing, but they do not alter the production routing result. No DNS, MITM, routing, or ad-block implementation content is changed."
     },
     {
       "path": "modules/adblock/scripts/Clean_Pro.js",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "NON_PRODUCTION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
       "last_seen_at": "2026-11-05T11:13:29.360523Z",
       "seen_count": 12,
@@ -311,11 +323,14 @@
       "last_seen_event": "push",
       "last_seen_revision": "a2d85419af9da2aeb7238274449c38d69418b4bd",
       "last_seen_run_id": "42017129292",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42017129292"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42017129292",
+      "classified_at": "2026-11-05T11:15:00Z",
+      "classification_reason": "Shadowrocket module/script implementation, backup, development or test artifact; not a DIRECT/PROXY/REJECT ruleset input and not consumed as a production routing source.",
+      "classification_basis": "Confirmed against automation/production_inputs.json non_production_path_patterns and the repository's module/script layout. These files remain repository artifacts subject to write fencing, but they do not alter the production routing result. No DNS, MITM, routing, or ad-block implementation content is changed."
     },
     {
       "path": "modules/adblock/scripts/Clean_Pro_Request.js",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "NON_PRODUCTION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
       "last_seen_at": "2026-11-04T21:58:12.213156Z",
       "seen_count": 2,
@@ -326,11 +341,14 @@
       "last_seen_event": "push",
       "last_seen_revision": "69199dc63603fea9a86e297bbb95b5e966a7238d",
       "last_seen_run_id": "41920874061",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41920874061"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41920874061",
+      "classified_at": "2026-11-05T11:15:00Z",
+      "classification_reason": "Shadowrocket module/script implementation, backup, development or test artifact; not a DIRECT/PROXY/REJECT ruleset input and not consumed as a production routing source.",
+      "classification_basis": "Confirmed against automation/production_inputs.json non_production_path_patterns and the repository's module/script layout. These files remain repository artifacts subject to write fencing, but they do not alter the production routing result. No DNS, MITM, routing, or ad-block implementation content is changed."
     },
     {
       "path": "modules/adblock/scripts/Social_Adblock.js",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "NON_PRODUCTION",
       "first_seen_at": "2026-11-05T00:50:08.159871Z",
       "last_seen_at": "2026-11-05T11:13:29.360523Z",
       "seen_count": 8,
@@ -347,11 +365,14 @@
       "last_seen_event": "push",
       "last_seen_revision": "a2d85419af9da2aeb7238274449c38d69418b4bd",
       "last_seen_run_id": "42017129292",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42017129292"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42017129292",
+      "classified_at": "2026-11-05T11:15:00Z",
+      "classification_reason": "Shadowrocket module/script implementation, backup, development or test artifact; not a DIRECT/PROXY/REJECT ruleset input and not consumed as a production routing source.",
+      "classification_basis": "Confirmed against automation/production_inputs.json non_production_path_patterns and the repository's module/script layout. These files remain repository artifacts subject to write fencing, but they do not alter the production routing result. No DNS, MITM, routing, or ad-block implementation content is changed."
     },
     {
       "path": "modules/adblock/scripts/youtube_initplayback_observer.js",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "NON_PRODUCTION",
       "first_seen_at": "2026-11-05T00:50:08.159871Z",
       "last_seen_at": "2026-11-05T11:13:29.360523Z",
       "seen_count": 8,
@@ -368,11 +389,14 @@
       "last_seen_event": "push",
       "last_seen_revision": "a2d85419af9da2aeb7238274449c38d69418b4bd",
       "last_seen_run_id": "42017129292",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42017129292"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42017129292",
+      "classified_at": "2026-11-05T11:15:00Z",
+      "classification_reason": "Shadowrocket module/script implementation, backup, development or test artifact; not a DIRECT/PROXY/REJECT ruleset input and not consumed as a production routing source.",
+      "classification_basis": "Confirmed against automation/production_inputs.json non_production_path_patterns and the repository's module/script layout. These files remain repository artifacts subject to write fencing, but they do not alter the production routing result. No DNS, MITM, routing, or ad-block implementation content is changed."
     },
     {
       "path": "modules/adblock/scripts/youtube_protobuf_response_filter.js",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "NON_PRODUCTION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
       "last_seen_at": "2026-11-05T11:13:29.360523Z",
       "seen_count": 12,
@@ -393,11 +417,14 @@
       "last_seen_event": "push",
       "last_seen_revision": "a2d85419af9da2aeb7238274449c38d69418b4bd",
       "last_seen_run_id": "42017129292",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42017129292"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42017129292",
+      "classified_at": "2026-11-05T11:15:00Z",
+      "classification_reason": "Shadowrocket module/script implementation, backup, development or test artifact; not a DIRECT/PROXY/REJECT ruleset input and not consumed as a production routing source.",
+      "classification_basis": "Confirmed against automation/production_inputs.json non_production_path_patterns and the repository's module/script layout. These files remain repository artifacts subject to write fencing, but they do not alter the production routing result. No DNS, MITM, routing, or ad-block implementation content is changed."
     },
     {
       "path": "modules/temp-test/Sr_Youtube_Clean.js",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "NON_PRODUCTION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
       "last_seen_at": "2026-11-04T22:52:50.695063Z",
       "seen_count": 4,
@@ -410,7 +437,10 @@
       "last_seen_event": "push",
       "last_seen_revision": "ed9011ef908eb36490658556f4112cb7aba9de0b",
       "last_seen_run_id": "41928911219",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41928911219"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41928911219",
+      "classified_at": "2026-11-05T11:15:00Z",
+      "classification_reason": "Shadowrocket module/script implementation, backup, development or test artifact; not a DIRECT/PROXY/REJECT ruleset input and not consumed as a production routing source.",
+      "classification_basis": "Confirmed against automation/production_inputs.json non_production_path_patterns and the repository's module/script layout. These files remain repository artifacts subject to write fencing, but they do not alter the production routing result. No DNS, MITM, routing, or ad-block implementation content is changed."
     },
     {
       "path": "scripts/build_dashboard_snapshot.py",
