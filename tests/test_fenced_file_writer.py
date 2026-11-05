@@ -28,11 +28,17 @@ class FencedFileWriterTests(unittest.TestCase):
                 fenced_file_writer.authorize_write_path(target)
                 check.assert_called_once_with("rulesets/review_cursor.json")
 
-    def test_resource_lease_guard_covers_only_modules_scripts_and_rulesets(self):
+    def test_resource_lease_guard_covers_every_repository_relative_path(self):
         protected_targets = (
             ROOT / "modules" / "adblock" / "scripts" / "Clean_Pro.js",
             ROOT / "scripts" / "build_rulesets.py",
             ROOT / "rulesets" / "direct.list",
+            ROOT / "reports" / "audit.md",
+            ROOT / "docs" / "operations.md",
+            ROOT / "automation" / "task_queue.json",
+            ROOT / "sources" / "discovered_sources.json",
+            ROOT / "data" / "domain_candidates.json",
+            ROOT / "README.md",
         )
         with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "1"}, clear=False):
             with patch("resource_lease_runtime.assert_resource_lease_from_environment") as check:
@@ -44,20 +50,14 @@ class FencedFileWriterTests(unittest.TestCase):
                         "modules/adblock/scripts/Clean_Pro.js",
                         "scripts/build_rulesets.py",
                         "rulesets/direct.list",
+                        "reports/audit.md",
+                        "docs/operations.md",
+                        "automation/task_queue.json",
+                        "sources/discovered_sources.json",
+                        "data/domain_candidates.json",
+                        "README.md",
                     ],
                 )
-
-    def test_reports_docs_and_automation_state_are_outside_resource_lease_guard(self):
-        unprotected_targets = (
-            ROOT / "reports" / "audit.md",
-            ROOT / "docs" / "operations.md",
-            ROOT / "automation" / "task_queue.json",
-        )
-        with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "1"}, clear=False):
-            with patch("resource_lease_runtime.assert_resource_lease_from_environment") as check:
-                for target in unprotected_targets:
-                    fenced_file_writer.authorize_write_path(target)
-                check.assert_not_called()
 
     def test_non_repository_temporary_files_are_not_subject_to_repository_lease(self):
         with tempfile.TemporaryDirectory() as directory:
