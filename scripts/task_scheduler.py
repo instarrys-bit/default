@@ -95,6 +95,24 @@ def validate_argv_template(template: object) -> None:
         raise ValueError("argv_template must include {task_input_file} exactly once")
 
 
+def assert_current_production_input(task: dict, root: Path = ROOT) -> str:
+    payload = task.get("input") if isinstance(task, dict) else None
+    if not isinstance(payload, dict):
+        raise ValueError("production task input must be an object")
+    decision = payload.get("production_decision")
+    if decision not in {"INPUT_CHANGED", "SCHEDULE_DUE", "RECOVERY_REQUIRED", "USER_AUTHORIZED_MANUAL_AUDIT"}:
+        raise ValueError("production task has no recognized production decision")
+    expected = payload.get("production_fingerprint")
+    if not isinstance(expected, str) or not re.fullmatch(r"[0-9a-f]{64}", expected):
+        raise ValueError("production task is missing a valid SHA-256 input fingerprint")
+    from production_intent import load_manifest, compute_fingerprint
+    manifest = load_manifest(Path(root) / "automation" / "production_inputs.json")
+    actual = compute_fingerprint(Path(root), manifest)
+    if expected != actual:
+        raise ValueError("queued production task input fingerprint is stale; Watchdog must supersede and enqueue the current main snapshot")
+    return actual
+
+
 def build_execution_plan(queue: dict, registry: dict, adapters: dict,
                          root: Path = ROOT, now: datetime | None = None) -> dict:
     now = now or now_utc()
