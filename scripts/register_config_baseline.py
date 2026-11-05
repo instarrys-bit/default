@@ -100,6 +100,7 @@ def owner_approved_config_history(guard: dict) -> list[str]:
     if ancestry.returncode != 0:
         print(f"Baseline history recovery blocked: baseline commit {baseline_commit} is not an ancestor of target {after}.", file=sys.stderr)
         return []
+    history = subprocess.run(
         ["git", "log", "--format=%H", f"{baseline_commit}..{after}", "--", str(guard["path"])],
         cwd=ROOT, check=True, capture_output=True, text=True,
     )
@@ -115,6 +116,7 @@ def owner_approved_config_history(guard: dict) -> list[str]:
         if author != owner:
             print(f"Baseline history recovery blocked: GitHub author for config commit {commit_sha} is {author or '<unassociated>'}, expected repository owner {owner}.", file=sys.stderr)
             return []
+    return commits
 
 
 def main() -> int:
