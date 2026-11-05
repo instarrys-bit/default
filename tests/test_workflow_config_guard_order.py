@@ -366,5 +366,11 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn('sys.path.insert(0, "scripts")', block)
         self.assertIn("from production_intent import active_production_fingerprints", block)
 
+    def test_publish_step_keeps_canonical_task_id_from_revalidation(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        publish = workflow.split("  publish:", 1)[1]
+        step = publish.split("Verify base commit and safely publish allowlisted outputs", 1)[1].split("      - name: ", 1)[0]
+        self.assertNotIn("AUTOMATION_TASK_ID:", step)
+
 if __name__ == "__main__":
     unittest.main()
