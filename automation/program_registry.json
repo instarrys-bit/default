@@ -1824,7 +1824,9 @@
         "source-discovery-output artifact with SHA-256 provenance proof"
       ],
       "depends_on": [
-        "script_discover_sources"
+        "script_capture_git_write_trace",
+        "script_discover_sources",
+        "script_resource_lease_runtime"
       ],
       "dispatches": [],
       "permission_boundary": "Workflow adapter is disabled pending HOLD/authorization. When enabled, job permissions are limited to contents write and actions read; every repository mutation is guarded by the exact Watchdog task resource lease. No source activation.",
