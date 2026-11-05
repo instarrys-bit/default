@@ -6,7 +6,7 @@
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 6,
-    "step_count": 59,
+    "step_count": 61,
     "independent_python_dispatch_enabled": false,
     "independent_workflow_count": 1
   },
@@ -590,11 +590,25 @@
         },
         {
           "order": 3,
-          "name": "Revalidate live Watchdog lease and persist only the cursor checkpoint",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_persist_review_cursor"
-          ],
+          "name": "Revalidate exact Watchdog task and install live resource fence",
+          "execution_kind": "workflow_native",
+          "invoked_program_ids": [],
+          "validation_program_ids": [],
+          "unresolved_script_paths": []
+        },
+        {
+          "order": 4,
+          "name": "Persist only the cursor through the live filesystem fence",
+          "execution_kind": "workflow_native",
+          "invoked_program_ids": [],
+          "validation_program_ids": [],
+          "unresolved_script_paths": []
+        },
+        {
+          "order": 5,
+          "name": "Publish only the cursor checkpoint under the same live fence",
+          "execution_kind": "workflow_native",
+          "invoked_program_ids": [],
           "validation_program_ids": [],
           "unresolved_script_paths": []
         }
