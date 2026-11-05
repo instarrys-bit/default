@@ -23,7 +23,7 @@ from datetime import datetime
 from pathlib import Path
 
 from remote_task_queue_runtime import (
-    claim_remote, complete_remote, enqueue_remote, make_store, recover_remote,
+    claim_remote, complete_remote, enqueue_remote, make_store, recover_remote, resolve_superseded_dead_letters,
     validate_candidate, validate_envelope,
 )
 from task_queue_runtime import (
@@ -1030,11 +1030,12 @@ def main() -> int:
     parser.add_argument("--idempotency-key")
     parser.add_argument("--priority", type=int, default=80)
     parser.add_argument("--input-json", default="{}")
-    parser.add_argument("command", choices=["plan", "run-once", "enqueue-auto-sync", "enqueue-source-assessment"])
+    parser.add_argument("--current-main-sha", help="Current main commit used to resolve superseded terminal tasks")
+    parser.add_argument("command", choices=["plan", "run-once", "enqueue-auto-sync", "enqueue-source-assessment", "resolve-superseded-dead-letters"])
     args = parser.parse_args()
     try:
         token = sys.stdin.read().strip() if args.token_stdin else None
-        if args.command in {"run-once", "enqueue-auto-sync", "enqueue-source-assessment"} and not token:
+        if args.command in {"run-once", "enqueue-auto-sync", "enqueue-source-assessment", "resolve-superseded-dead-letters"} and not token:
             raise ValueError(f"{args.command} requires a queue token supplied through --token-stdin")
         store = make_store(args.repository, args.branch, args.queue_path, token=token)
         registry = load_object(args.registry, "program registry")
@@ -1055,6 +1056,13 @@ def main() -> int:
                 store, registry, adapters, idempotency_key=args.idempotency_key,
                 priority=args.priority, input_payload=input_payload,
             ), ensure_ascii=False))
+        elif args.command == "resolve-superseded-dead-letters":
+            if not args.current_main_sha:
+                raise ValueError("resolve-superseded-dead-letters requires --current-main-sha")
+            resolved = resolve_superseded_dead_letters(
+                store, registry, current_main_sha=args.current_main_sha,
+            )
+            print(json.dumps({"resolved_count": len(resolved), "tasks": resolved}, ensure_ascii=False))
         elif args.command == "enqueue-auto-sync":
             if not isinstance(args.idempotency_key, str) or not args.idempotency_key:
                 raise ValueError("enqueue-auto-sync requires --idempotency-key")
