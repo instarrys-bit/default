@@ -60,21 +60,14 @@ def call_is_mutation(node):
 def imported_local_modules(tree):
     found = set()
     for node in ast.walk(tree):
+        candidates = []
         if isinstance(node, ast.Import):
-            for alias in node.names:
-                if alias.name.startswith("scripts."):
-                    found.add(alias.name.rsplit(".", 1)[-1])
-                elif alias.name in {"json_document_store", "fenced_file_writer", "task_queue_runtime",
-                                    "remote_task_queue_runtime", "resource_lease_runtime",
-                                    "github_queue_store", "github_workflow_adapter"}:
-                    found.add(alias.name)
+            candidates.extend(alias.name for alias in node.names)
         elif isinstance(node, ast.ImportFrom) and node.module:
-            module = node.module
-            if module.startswith("scripts."):
-                found.add(module.rsplit(".", 1)[-1])
-            elif module in {"json_document_store", "fenced_file_writer", "task_queue_runtime",
-                            "remote_task_queue_runtime", "resource_lease_runtime",
-                            "github_queue_store", "github_workflow_adapter"}:
+            candidates.append(node.module)
+        for candidate in candidates:
+            module = candidate.rsplit(".", 1)[-1]
+            if candidate.startswith("scripts.") or (ROOT / "scripts" / (module + ".py")).is_file():
                 found.add(module)
     return found
 
@@ -128,18 +121,22 @@ class TransitiveWriteSiteInventoryTests(unittest.TestCase):
                     self.fail("unclassified direct mutation site in " + program_id)
         self.assertGreater(total_sites, 20)
 
-    def test_imported_mutation_helpers_are_registered_and_classified(self):
+    def test_every_scripts_python_file_is_registered(self):
+        registered = {item["path"] for item in self.programs.values()}
+        discovered = {path.relative_to(ROOT).as_posix() for path in (ROOT / "scripts").glob("*.py")}
+        self.assertEqual(discovered, registered)
+
+    def test_imported_local_helpers_are_registered_and_mutators_classified(self):
         module_to_program = {
             Path(item["path"]).stem: program_id
             for program_id, item in self.programs.items()
         }
         for program_id, tree in self.trees.items():
             for module in imported_local_modules(tree):
-                helper_id = module_to_program.get(module)
-                if helper_id is None:
-                    continue
-                if self.mutations.get(helper_id):
-                    with self.subTest(caller=program_id, helper=helper_id):
+                with self.subTest(caller=program_id, helper=module):
+                    self.assertIn(module, module_to_program, "imported local script helper must be registered")
+                    helper_id = module_to_program[module]
+                    if self.mutations.get(helper_id):
                         self.assertTrue(
                             helper_id in self.writers or helper_id in self.nonwriters or helper_id in self.control,
                             "transitively imported mutating helper must have an explicit classification",
