@@ -1699,7 +1699,8 @@
       "step_name": "Apply allowlisted repair and run tests",
       "mutation_kinds": [
         "git_checkout",
-        "git_add"
+        "git_add",
+        "git_commit"
       ],
       "resources": [
         "self-heal/run-<run_id> working tree"
