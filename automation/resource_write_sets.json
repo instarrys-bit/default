@@ -1355,26 +1355,12 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
-    "release_manifest_blob_sha": "24eb76ce6162da27fdc608105d372356c923eab3",
-    "program_registry_blob_sha": "47a51e96359005ed8f33c2ea6c08cfcf0d97d6c9",
-    "execution_adapters_blob_sha": "82012007de750c605d5ef27a355ece7321cdc51a",
+    "release_manifest_blob_sha": "0be803741d3ff750b75492bc685f64c0faf879b1",
+    "program_registry_blob_sha": "be1d66b1b3eea7ee5dfcc32123fc3d231655345f",
+    "execution_adapters_blob_sha": "eac403442c8e303bf772146196fef5b909ec3da3",
     "added_after_release_baseline": true,
-    "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 54 Python components are now partitioned into 36 direct/helper writer entries and 17 reviewed non-writers, alongside one external GitHub Actions dispatch side-effect adapter.",
-    "reviewed_at": "2026-11-05",
-    "central_write_guard_test": "tests/test_temporary-workspace isolation.py::test_every_registered_python_component_installs_the_guard",
-    "runtime_trace_evidence": {
-      "trace_script": "temporary write-trace helper",
-      "workflow_jobs": [
-        "audit",
-        "publish"
-      ],
-      "artifacts": [
-        "automation-runtime-write-trace-audit",
-        "automation-runtime-write-trace-publish"
-      ],
-      "data_policy": "repository paths and run metadata only; no file contents or credentials",
-      "limitation": "captures persistent repository-tree deltas only; does not observe transient write-and-revert activity, Git metadata changes, external filesystem/API side effects or unexecuted paths"
-    }
+    "note": "Static write-set inventory is reconciled to the current program registry and execution adapters. Production execution uses an isolated RUNNER_TEMP workspace; only rulesets/** is included in the production artifact and repository publication. Watchdog task-queue state remains a separate control-plane writer.",
+    "reviewed_at": "2026-11-05"
   },
   "scheduler_lock_contract": {
     "logical_resource_key": "logical/production-pipeline",
