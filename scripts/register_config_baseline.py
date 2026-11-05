@@ -74,17 +74,17 @@ def owner_approved_push_changed_config() -> bool:
 
 def owner_approved_config_history(guard: dict) -> list[str]:
     """Recover interrupted registration only from owner-authored config commits."""
-    event = os.environ.get("GITHUB_EVENT_NAME", "")
+    event = os.environ.get("BASELINE_SOURCE_EVENT", os.environ.get("GITHUB_EVENT_NAME", ""))
     if event not in {"push", "workflow_dispatch", "schedule"}:
         return []
     actor = os.environ.get("GITHUB_ACTOR", "")
     owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "")
-    ref = os.environ.get("GITHUB_REF", "")
+    ref = os.environ.get("BASELINE_SOURCE_REF", os.environ.get("GITHUB_REF", ""))
     if event == "push" and (not actor or actor != owner):
         return []
     if event in {"workflow_dispatch", "schedule"} and ref != "refs/heads/main":
         return []
-    after = os.environ.get("GITHUB_SHA", "")
+    after = os.environ.get("BASELINE_SOURCE_SHA", os.environ.get("GITHUB_SHA", ""))
     repo = os.environ.get("GITHUB_REPOSITORY", "")
     baseline_commit = str(guard.get("last_user_approved_baseline_update", {}).get("commit_sha", ""))
     print(f"Baseline recovery context: event={event!r}, ref={ref!r}, owner={owner!r}, actor={actor!r}, after={after!r}, baseline_commit={baseline_commit!r}, repo={repo!r}", file=sys.stderr)
