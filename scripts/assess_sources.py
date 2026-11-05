@@ -388,8 +388,10 @@ def load_task_options(path: Path | None) -> dict:
     required_predecessor_fields = {"program_id", "workflow_name", "workflow_run_id", "workflow_head_sha", "artifact_path", "artifact_sha256"}
     if not isinstance(predecessor, dict) or set(predecessor) != required_predecessor_fields:
         raise ValueError("assessment predecessor proof is malformed")
-    if predecessor.get("program_id") != "script_discover_sources" or predecessor.get("artifact_path") != "sources/discovered_sources.json":
-        raise ValueError("assessment predecessor identity or artifact path is invalid")
+    if (predecessor.get("program_id") != "script_discover_sources"
+            or predecessor.get("workflow_name") != "Shadowrocket Source Discovery (Watchdog)"
+            or predecessor.get("artifact_path") != "sources/discovered_sources.json"):
+        raise ValueError("assessment predecessor must identify the dedicated discovery workflow and allowlisted artifact")
     bounds = {"max_urls": (1, 20), "max_file_bytes": (1, 1_000_000), "max_total_bytes": (1, 10_000_000)}
     for key, (minimum, maximum) in bounds.items():
         item = value[key]
