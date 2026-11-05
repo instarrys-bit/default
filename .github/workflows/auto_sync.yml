@@ -461,7 +461,7 @@ jobs:
           test -d rulesets
           tar -czf "$RUNNER_TEMP/audit-output.tar.gz" -- rulesets
 
-      - name: Upload allowlisted audit outputs
+      - name: Upload ruleset-only artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: deterministic-audit-output
@@ -555,7 +555,7 @@ jobs:
           name: deterministic-audit-output
           path: ${{ runner.temp }}/audit-artifact
 
-      - name: Verify base commit and safely publish allowlisted outputs
+      - name: Verify base commit and publish rulesets only
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
