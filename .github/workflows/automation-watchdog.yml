@@ -40,6 +40,9 @@ on:
       - "modules/uu.conf"
       - "automation/program_registry.json"
       - "automation/execution_adapters.json"
+      - "automation/unregistered_path_registry.json"
+      - "automation/production_inputs.json"
+      - "automation/production_control.json"
 
 permissions:
   actions: write
