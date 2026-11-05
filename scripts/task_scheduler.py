@@ -128,6 +128,7 @@ def supersede_stale_queued_production_tasks(store, registry: dict, root: Path = 
     ]
     if not candidates:
         return []
+    from production_intent import load_manifest, compute_fingerprint
     manifest = load_manifest(Path(root) / "automation" / "production_inputs.json")
     current = compute_fingerprint(Path(root), manifest)
     def mutate(queue: dict):
