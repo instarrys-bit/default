@@ -1503,7 +1503,7 @@
   "workflow_native_write_sites": [
     {
       "workflow_path": ".github/workflows/auto_sync.yml",
-      "step_name": "Verify base commit and safely publish allowlisted outputs",
+      "step_name": "Verify base commit and publish rulesets only",
       "mutation_kinds": [
         "git_add",
         "git_commit",
@@ -1512,8 +1512,8 @@
       "resources": [
         "rulesets/**"
       ],
-      "fence": "Watchdog task authorization, exact base-commit validation, rulesets-only artifact restore and staged-path validation.",
-      "boundary": "Only rulesets/** may be committed by production publication."
+      "fence": "Exact Watchdog task authorization, current base-commit verification, validated rulesets-only artifact restore and staged-path validation.",
+      "boundary": "Only rulesets/** may be staged and pushed by the production publisher; modules/uu.conf and all other paths are rejected."
     },
     {
       "workflow_path": ".github/workflows/automation-watchdog.yml",
@@ -1555,15 +1555,15 @@
     },
     {
       "workflow_path": ".github/workflows/request-intake.yml",
-      "step_name": "Request ruleset audit through Watchdog queue",
+      "step_name": "Enqueue through the Watchdog control plane",
       "mutation_kinds": [
         "workflow_dispatch"
       ],
       "resources": [
-        "automation/task_queue.json"
+        "automation/task_queue.json via Watchdog scheduler"
       ],
-      "fence": "Delegates to Watchdog scheduler; durable task queue update uses Contents Blob-SHA CAS and task identity.",
-      "boundary": "Control-plane request only; does not directly publish rulesets."
+      "fence": "Validated hostnames are passed as a workflow_dispatch task input; the Watchdog scheduler performs the only durable queue mutation.",
+      "boundary": "The intake workflow has contents:read and actions:write only and does not commit or push repository files."
     },
     {
       "workflow_path": ".github/workflows/self-healing-agent.yml",
@@ -1628,19 +1628,6 @@
       ],
       "fence": "GitHub Pages deployment action consumes the workflow's generated Pages artifact; no repository ref mutation.",
       "boundary": "External Pages publication, not a repository file writer."
-    },
-    {
-      "workflow_path": ".github/workflows/automation-watchdog.yml",
-      "step_name": "Enqueue source assessment after successful discovery workflow",
-      "mutation_kinds": [
-        "git_reset",
-        "github_contents_put"
-      ],
-      "resources": [
-        "automation/task_queue.json"
-      ],
-      "fence": "task_scheduler.py persists through the GitHub Contents SHA-CAS queue store; candidate queue validation runs before and after mutation, and source-assessment:<workflow_run_id> is the idempotency key. The step is gated by exact successful main-branch producer evidence and by both Assessment adapter/orchestration caller gates.",
-      "boundary": "Durable control-plane task enqueue only. It does not run Assessment in this step or publish routing rules; Assessment remains disabled until the independent DAG is explicitly authorized."
     }
   ],
   "workflow_native_scan": {
