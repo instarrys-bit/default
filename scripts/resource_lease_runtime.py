@@ -250,12 +250,17 @@ def _active_writer_task(queue, task_id, worker_id, task_lease_token, now):
 
     intent=task.get("dispatch_intent")
     attempt=task.get("attempts")
-    if (task.get("target_program_id")!="workflow_auto_sync"
+    expected_workflows = {
+        "workflow_auto_sync": ".github/workflows/auto_sync.yml",
+        "workflow_source_discovery": ".github/workflows/source-discovery.yml",
+    }
+    expected_path = expected_workflows.get(task.get("target_program_id"))
+    if (expected_path is None
             or task.get("requester_program_id")!="workflow_automation_watchdog"
             or not isinstance(intent,dict) or intent.get("task_id")!=task_id
             or intent.get("dispatch_attempt")!=attempt
             or intent.get("correlation_id")!=f"{task_id}-a{attempt}"
-            or intent.get("workflow_path")!=".github/workflows/auto_sync.yml"
+            or intent.get("workflow_path")!=expected_path
             or intent.get("ref")!="main"):
         raise ValueError("VERIFYING resource writes require the exact Watchdog production dispatch")
 
@@ -388,12 +393,17 @@ def assert_workflow_resource_lease(queue, task_id, proof, *, now=None):
     # verifier may advance the task while this workflow still holds its writer
     # lease. Authorization rests on the immutable dispatch intent and the live,
     # fenced resource lease below, not on a transient task status label.
-    if task.get("target_program_id")!="workflow_auto_sync" or task.get("requester_program_id")!="workflow_automation_watchdog":
-        raise ValueError("resource proof is not bound to the Watchdog production workflow")
+    expected_workflows = {
+        "workflow_auto_sync": ".github/workflows/auto_sync.yml",
+        "workflow_source_discovery": ".github/workflows/source-discovery.yml",
+    }
+    expected_path = expected_workflows.get(task.get("target_program_id"))
+    if expected_path is None or task.get("requester_program_id")!="workflow_automation_watchdog":
+        raise ValueError("resource proof is not bound to an allowlisted Watchdog workflow")
     intent=task.get("dispatch_intent")
     attempt=task.get("attempts")
     if (not isinstance(intent,dict) or intent.get("task_id")!=task_id
-            or intent.get("workflow_path")!=".github/workflows/auto_sync.yml"
+            or intent.get("workflow_path")!=expected_path
             or intent.get("ref")!="main" or intent.get("dispatch_attempt")!=attempt
             or intent.get("correlation_id")!=f"{task_id}-a{attempt}"):
         raise ValueError("durable dispatch intent does not authorize this workflow")
