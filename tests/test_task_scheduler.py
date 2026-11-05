@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from remote_task_queue_runtime import claim_remote, enqueue_remote
 from task_queue_runtime import now_utc, stamp, manual_authorization_record, validate_manual_authorization
-from task_scheduler import run_scheduler_once, build_execution_plan, enqueue_source_assessment_task, enqueue_auto_sync_task, assert_current_production_input, generated_python_cache_paths, publishable_resource_path
+from task_scheduler import run_scheduler_once, build_execution_plan, enqueue_source_assessment_task, enqueue_auto_sync_task, assert_current_production_input, supersede_stale_queued_production_tasks, generated_python_cache_paths, publishable_resource_path
 
 
 class MemoryStore:
@@ -541,6 +541,29 @@ class TaskSchedulerTests(unittest.TestCase):
         self.assertFalse(replay["created"])
         self.assertEqual(first["task_id"], replay["task_id"])
         self.assertEqual(store.document["tasks"][0]["status"], "QUEUED")
+
+    def test_scheduler_cancels_stale_queued_task_even_when_no_replacement_is_enqueued(self):
+        manifest = {
+            "schema_version": 1,
+            "production_input_paths": ["modules/uu.conf"],
+            "non_production_path_patterns": [],
+        }
+        (self.root / "automation" / "production_inputs.json").write_text(json.dumps(manifest), encoding="utf-8")
+        registry = {"programs": [
+            {"id": "workflow_automation_watchdog", "capabilities": ["top_level_supervision"]},
+            {"id": "workflow_auto_sync", "capabilities": ["deterministic_audit"],
+             "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
+                               "max_attempts": 2, "timeout_seconds": 300}},
+        ]}
+        store = MemoryStore()
+        stale = enqueue_auto_sync_task(
+            store, registry, idempotency_key="production:input:" + "d" * 64 + ":old",
+            input_payload={"production_fingerprint": "d" * 64, "production_decision": "INPUT_CHANGED", "production_reason": "old input"},
+        )
+        superseded = supersede_stale_queued_production_tasks(store, registry, self.root)
+        self.assertEqual(superseded, [stale["task_id"]])
+        self.assertEqual(store.document["tasks"][0]["status"], "CANCELLED")
+        self.assertEqual(store.document["tasks"][0]["last_error"]["type"], "stale_production_input_superseded")
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
