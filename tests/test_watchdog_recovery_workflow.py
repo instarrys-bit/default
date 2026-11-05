@@ -85,6 +85,14 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("gh workflow run auto_sync.yml", workflow)
         self.assertIn('select(.head_branch == "main" and .head_sha == $sha and .id > $source', workflow)
 
+    def test_recovery_verifies_audit_workflow_by_path_and_registered_workflow_id(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        stale = workflow.split("      - name: Detect stale successful audit and recover", 1)[1].split('          last_success_sha=', 1)[0]
+        self.assertIn('.path == ".github/workflows/auto_sync.yml"', stale)
+        self.assertIn(".workflow_id == $workflow_id", stale)
+        self.assertIn("dispatch_intent.workflow_id", stale)
+        self.assertNotIn('.name == "Shadowrocket Deterministic Domain Audit (User Config Baseline)"', stale)
+
     def test_stale_audit_reconciliation_uses_bounded_runs_and_durable_queue_evidence(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         stale = workflow.split("      - name: Detect stale successful audit and recover", 1)[1].split('          last_success_sha=', 1)[0]
@@ -294,7 +302,9 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
     def test_push_and_schedule_reconcile_only_audits_stopped_by_the_stale_base_guard(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn('if [ "$ORIGIN_EVENT" = "push" ] || [ "$ORIGIN_EVENT" = "schedule" ]; then', workflow)
-        self.assertIn('.name == "Shadowrocket Deterministic Domain Audit (User Config Baseline)"', workflow)
+        self.assertIn('.path == ".github/workflows/auto_sync.yml"', workflow)
+        self.assertIn(".workflow_id == $workflow_id", workflow)
+        self.assertIn("dispatch_intent.workflow_id", workflow)
         self.assertIn('and .status == "DEAD_LETTER"', workflow)
         self.assertIn('last_error.evidence.run_id', workflow)
         self.assertIn('production:guard-reconciliation:$current_fingerprint:$failed_run_id', workflow)

@@ -391,10 +391,15 @@ jobs:
               if [ -z "$failed_task_id" ] || [ -z "$failed_run_id" ]; then
                 continue
               fi
+              task_workflow_id="$(jq -r --arg task "$failed_task_id" '[.tasks[] | select(.task_id == $task)] | last | .dispatch_intent.workflow_id // empty' automation/task_queue.json)"
+              if [[ ! "$task_workflow_id" =~ ^[0-9]+$ ]]; then
+                continue
+              fi
               failed_run_json="$(gh api "repos/$REPO/actions/runs/$failed_run_id" 2>/dev/null || true)"
-              if [ -z "$failed_run_json" ] || ! jq -e '
+              if [ -z "$failed_run_json" ] || ! jq -e --argjson workflow_id "$task_workflow_id" '
                 .head_branch == "main"
-                and .name == "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
+                and .path == ".github/workflows/auto_sync.yml"
+                and .workflow_id == $workflow_id
                 and .conclusion == "failure"
                 and .event == "workflow_dispatch"
               ' <<< "$failed_run_json" >/dev/null; then
