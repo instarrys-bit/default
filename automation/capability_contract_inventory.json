@@ -4,7 +4,7 @@
   "status": "baseline_inventory",
   "source_registry_blob_sha": "5105f2c04affc964b5b6caf1de09561c5f8ab644",
   "summary": {
-    "registered_programs": 61,
+    "registered_programs": 62,
     "python_components": 54,
     "python_components_with_concrete_io_contract": 1,
     "python_components_with_declared_registry_dependencies": 4,
@@ -1735,6 +1735,36 @@
         "Git metadata changes outside repository tree"
       ],
       "audit_note": "Observer complements Python audit-hook events; it records persistent repository-tree deltas only and does not prove transient, external, or unexecuted side effects."
+    }
+  ],
+  "workflow_capabilities": [
+    {
+      "id": "workflow_source_discovery",
+      "path": ".github/workflows/source-discovery.yml",
+      "declared_capabilities": [
+        "source_discovery"
+      ],
+      "registry_dependencies": [
+        "script_discover_sources"
+      ],
+      "current_invocation": "Watchdog durable workflow-dispatch task; adapter and program orchestration remain disabled",
+      "current_registry_inputs": [
+        "automation_task_id correlation",
+        "resource_lease_proof",
+        "main branch source snapshot"
+      ],
+      "current_registry_outputs": [
+        "sources/discovered_sources.json with workflow/run/head provenance",
+        "reports/source-discovery.md",
+        "source-discovery-output immutable artifact with logical-document SHA-256 proof"
+      ],
+      "contract_status": "workflow_and_typed_artifact_handoff_implemented_dormant",
+      "dispatch_status": "disabled",
+      "resource_keys": [
+        "sources/discovered_sources.json",
+        "reports/source-discovery.md"
+      ],
+      "verifier": "automation-watchdog workflow_run handler verifies exact run identity, uploaded artifact digest, producer metadata and equality with current main before enqueueing Assessment"
     }
   ]
 }
