@@ -374,6 +374,115 @@ jobs:
             exit 0
           fi
 
+          # A prior audit may have stopped at the stale-base guard before review.
+          # Once current main classifies that exact advancement as safe, enqueue a
+          # fresh task; never rewrite or resurrect the historical DEAD_LETTER task.
+          if [ "$ORIGIN_EVENT" = "push" ] || [ "$ORIGIN_EVENT" = "schedule" ]; then
+            current_fingerprint="$(python3 - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from production_intent import load_manifest, compute_fingerprint
+          manifest = load_manifest(Path("automation/production_inputs.json"))
+          print(compute_fingerprint(Path("."), manifest))
+          PY
+          )"
+            for failed_run_id in $(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .name == "Shadowrocket Deterministic Domain Audit (User Config Baseline)" and .conclusion == "failure")] | sort_by(.id) | reverse | .[].id' <<< "$runs"); do
+              failed_jobs="$(gh api "repos/$REPO/actions/runs/$failed_run_id/jobs?per_page=100" 2>/dev/null || true)"
+              if [ -z "$failed_jobs" ] || ! jq -e '[.jobs[]?.steps[]? | select(.name == "Stop stale audit before expensive deterministic review" and .conclusion == "failure")] | length == 1' <<< "$failed_jobs" >/dev/null; then
+                continue
+              fi
+
+              failed_title="$(gh api "repos/$REPO/actions/runs/$failed_run_id" --jq .display_title)"
+              failed_task_id="$(python3 - "$failed_title" <<'PY'
+          import re, sys
+          match = re.fullmatch(r"Automation task (task_[0-9a-f]{24})-a[1-9][0-9]*", sys.argv[1])
+          print(match.group(1) if match else "")
+          PY
+          )"
+              if [ -z "$failed_task_id" ]; then
+                continue
+              fi
+
+              task_input="$(jq -c --arg task "$failed_task_id" --argjson run "$failed_run_id" '
+                [.tasks[] | select(
+                  .task_id == $task
+                  and .target_program_id == "workflow_auto_sync"
+                  and .status == "DEAD_LETTER"
+                  and .verification.status == "failed"
+                  and (.last_error.evidence.run_id == $run or .result.run_evidence.run_id == $run)
+                )] | last | .input // empty
+              ' automation/task_queue.json)"
+              if [ -z "$task_input" ] || [ "$task_input" = "null" ]; then
+                continue
+              fi
+              if [ "$(jq -r '.production_fingerprint // empty' <<< "$task_input")" != "$current_fingerprint" ]; then
+                continue
+              fi
+
+              failed_sha="$(gh api "repos/$REPO/actions/runs/$failed_run_id" --jq .head_sha)"
+              if [ -z "$failed_sha" ] || [ "$failed_sha" = "$current_sha" ]; then
+                continue
+              fi
+              compare_json="$(gh api "repos/$REPO/compare/$failed_sha...$current_sha" 2>/dev/null || true)"
+              if [ -z "$compare_json" ] || ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null; then
+                continue
+              fi
+              compare_file="$RUNNER_TEMP/guard-reconciliation-compare.json"
+              printf '%s' "$compare_json" > "$compare_file"
+              if ! GITHUB_SHA="$failed_sha" COMPARE_JSON_FILE="$compare_file" bash scripts/verify_publish_base.sh --check-only; then
+                continue
+              fi
+
+              if jq -e --arg fingerprint "$current_fingerprint" '
+                [.tasks[] | select(
+                  .input.production_fingerprint == $fingerprint
+                  and (.status == "QUEUED" or .status == "CLAIMED" or .status == "VERIFYING"
+                       or (.status == "SUCCEEDED" and .verification.status == "passed"))
+                )] | length > 0
+              ' automation/task_queue.json >/dev/null; then
+                echo "A current task already covers this production fingerprint; stale-guard reconciliation is not duplicated."
+                echo "block_manifest=true" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+
+              recovery_dispatch_mode="$(jq -r '.dispatch_mode // "hold"' automation/production_control.json)"
+              if [ "$recovery_dispatch_mode" != "enabled" ]; then
+                echo "HOLD: stale-guard reconciliation is classified but automatic dispatch is disabled."
+                echo "block_manifest=true" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+              pending_paths="$(jq '[.entries[] | select(.status == "PENDING_CLASSIFICATION")] | length' automation/unregistered_path_registry.json)"
+              if [ "$pending_paths" -gt 0 ]; then
+                echo "Stale-guard reconciliation is held because $pending_paths unclassified paths remain in the Watchdog inbox."
+                echo "block_manifest=true" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+
+              source_event="$(jq -r '.baseline_source_event // "workflow_dispatch"' <<< "$task_input")"
+              source_actor="$(jq -r '.baseline_source_actor // empty' <<< "$task_input")"
+              source_before="$(jq -r '.baseline_source_before // empty' <<< "$task_input")"
+              source_baseline_sha="$(jq -r '.baseline_source_sha // empty' <<< "$task_input")"
+              if [ -z "$source_baseline_sha" ]; then
+                source_baseline_sha="$failed_sha"
+              fi
+              recovery_reason="previous audit stopped at the stale-base guard; current main now passes the strict publish-base classification with an unchanged production fingerprint"
+              recovery_input="$(jq -cn \
+                --arg fingerprint "$current_fingerprint" \
+                --arg reason "$recovery_reason" \
+                --arg event "$source_event" \
+                --arg actor "$source_actor" \
+                --arg before "$source_before" \
+                --arg sha "$source_baseline_sha" \
+                '{production_fingerprint:$fingerprint,production_decision:"RECOVERY_REQUIRED",production_reason:$reason,baseline_source_event:$event,baseline_source_actor:$actor,baseline_source_before:$before,baseline_source_sha:$sha}')"
+              recovery_key="production:guard-reconciliation:$current_fingerprint:$failed_run_id"
+              echo "Enqueueing a new, idempotent audit task for stale-guard failure $failed_run_id; historical task $failed_task_id remains unchanged."
+              printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$recovery_key" --priority 100 --input-json "$recovery_input" enqueue-auto-sync
+              echo "block_manifest=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            done
+          fi
+
           last_success_sha="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .head_sha // empty' <<< "$runs")"
 
           last_success_fingerprint=""
