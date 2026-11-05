@@ -85,7 +85,7 @@
       "worker_id": "assessment-canary-41746911914"
     }
   },
-  "revision": 106,
+  "revision": 107,
   "schema_version": 1,
   "tasks": [
     {
@@ -370,6 +370,11 @@
         "prepared_at": "2026-11-05T15:06:40Z",
         "ref": "main",
         "requested_head_sha": "9ea343c5a3bc4060ff94a73bb425c20af014eaab",
+        "run_evidence": {
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42051623008",
+          "run_id": 42051623008,
+          "status": "pending"
+        },
         "submitted_at": "2026-11-05T15:06:43Z",
         "task_id": "task_20aa746d7ae54ff0ab61077b",
         "workflow_id": 402712272,
