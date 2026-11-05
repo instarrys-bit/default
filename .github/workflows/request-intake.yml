@@ -1,5 +1,5 @@
 name: GitHub-only observed-domain intake
-run-name: Automation task ${{ inputs.automation_task_id || 'manual' }}
+run-name: Observed-domain intake
 
 on:
   workflow_dispatch:
@@ -8,19 +8,13 @@ on:
         description: "Paste hostnames separated by spaces, commas, semicolons or newlines. Hostnames only; no URLs."
         required: true
         type: string
-      automation_task_id:
-        description: 'Internal task correlation ID; leave blank for manual runs'
-        required: false
-        type: string
 
 permissions:
-  contents: write
+  contents: read
   actions: write
 
-# Serialize this repository writer with production publication, Watchdog state
-# mutations and self-healing repairs. Git-ref CAS remains a second safety layer.
 concurrency:
-  group: shadowrocket-main-writer
+  group: shadowrocket-request-intake
   cancel-in-progress: false
 
 jobs:
@@ -28,88 +22,38 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          persist-credentials: true
-
-      - name: Validate and persist submitted hostnames
+      - name: Validate hostnames without repository writes
         env:
-          DOMAINS: ${{ inputs.domains }}
+          DOMAINS: \${{ inputs.domains }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
           import json, os, re
           from pathlib import Path
-
           raw = os.environ.get("DOMAINS", "")
-          submitted = [value.strip().lower().rstrip(".") for value in re.split(r"[\s,;]+", raw) if value.strip()]
-          if not submitted:
+          domains = sorted(set(value.strip().lower().rstrip(".") for value in re.split(r"[\s,;]+", raw) if value.strip()))
+          if not domains:
               raise SystemExit("No hostnames supplied.")
-          if len(submitted) > 500:
+          if len(domains) > 500:
               raise SystemExit("Maximum 500 hostnames per intake run.")
-
           pattern = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
-          invalid = sorted({value for value in submitted if not pattern.fullmatch(value)})
+          invalid = [value for value in domains if not pattern.fullmatch(value)]
           if invalid:
               raise SystemExit("Invalid hostname(s): " + ", ".join(invalid[:30]))
+          payload = json.dumps(domains, ensure_ascii=False, separators=(",", ":"))
+          if len(payload) > 60000:
+              raise SystemExit("The validated batch exceeds the safe workflow-dispatch input size.")
+          Path(os.environ["RUNNER_TEMP"], "request-domains.json").write_text(payload, encoding="utf-8")
+          print(f"Validated {len(domains)} unique hostnames; forwarding them as unclassified candidates.")
+          PY
 
-          destination = Path(os.environ["RUNNER_TEMP"]) / "request-domains.json"
-          destination.write_text(json.dumps(submitted, ensure_ascii=False) + "\n", encoding="utf-8")
-          print(f"Validated {len(submitted)} hostname observations; merge will replay against the latest main on each CAS attempt.")
-
-      - name: Commit observation ledger with bounded Git-ref CAS
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          published=false
-
-          # Keep the submitted batch in RUNNER_TEMP. Each attempt starts from the
-          # latest main and deterministically reapplies the same run-scoped batch.
-          # This avoids JSON rebase conflicts and makes a lost push response safe.
-          for attempt in 1 2 3; do
-            git fetch origin main
-            git reset --hard origin/main
-            python3 scripts/production_intent.py \\
-              --event workflow_dispatch \\
-              --merge-observations \\
-              --observations-input "$RUNNER_TEMP/request-domains.json" \\
-              --intake-run-id "$GITHUB_RUN_ID"
-            git add -- sources/request_domain_observations.json
-
-            if git diff --cached --quiet; then
-              echo "This intake run is already present in the latest observation ledger."
-              published=true
-              break
-            fi
-
-            git commit -m "Import observed domains through GitHub Actions"
-            if git push origin HEAD:main; then
-              echo "Observation ledger committed to main."
-              published=true
-              break
-            fi
-
-            if [ "$attempt" -eq 3 ]; then
-              echo "Could not publish the observation ledger after three Git-ref CAS attempts." >&2
-              exit 1
-            fi
-            echo "Main advanced during intake publication; rebuilding the merge from latest main (attempt $attempt)."
-            sleep "$attempt"
-          done
-
-          if [ "$published" != "true" ]; then
-            echo "Observation ledger was not published; failing closed." >&2
-            exit 1
-          fi
-
-      - name: Request ruleset audit through Watchdog queue
+      - name: Enqueue through the Watchdog control plane
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: \${{ github.token }}
+          REPO: \${{ github.repository }}
         run: |
           set -euo pipefail
-          # GITHUB_TOKEN is permitted to trigger workflow_dispatch. The Watchdog
-          # creates the durable auto-sync task; intake never dispatches production
-          # publication directly.
-          gh workflow run automation-watchdog.yml --ref main --repo "$GITHUB_REPOSITORY"
+          observations="$(cat "$RUNNER_TEMP/request-domains.json")"
+          gh workflow run automation-watchdog.yml --repo "$REPO" --ref main \
+            --field request_deterministic_audit=true \
+            --field request_observations_json="$observations"
