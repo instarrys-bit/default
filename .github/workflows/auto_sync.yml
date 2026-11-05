@@ -207,7 +207,7 @@ jobs:
                   or task_input.get("production_fingerprint") != production_fingerprint
                   or task_input.get("production_decision") != production_decision
                   or task_input.get("production_reason") != production_reason
-                  or production_decision not in {"INPUT_CHANGED", "SCHEDULE_DUE", "RECOVERY_REQUIRED"}
+                  or production_decision not in {"INPUT_CHANGED", "SCHEDULE_DUE", "RECOVERY_REQUIRED", "USER_AUTHORIZED_MANUAL_AUDIT"}
                   or not production_reason
               ):
                   raise SystemExit("The dispatched production intent does not match the durable task input.")
