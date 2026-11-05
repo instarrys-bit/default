@@ -289,7 +289,7 @@
         "artifact_path": "sources/discovered_sources.json",
         "producer_workflow_name": "Shadowrocket Source Discovery (Watchdog)",
         "edge_type": "intended_successful_workflow_run_with_immutable_artifact_digest",
-        "enforcement": "Watchdog workflow_run event gate accepts only a successful main-branch run of the exact discovery-producing production workflow, binds the numeric run ID and head SHA, hashes the current discovered_sources artifact, and enqueues an idempotent source-assessment task through the durable scheduler queue."
+        "enforcement": "Watchdog downloads the artifact from the exact successful main-branch Shadowrocket Source Discovery (Watchdog) workflow_run, validates the producer run ID/head SHA and complete logical-document digest, confirms equality with current main, then enqueues an idempotent task. The scheduler independently rechecks the current digest before claim."
       }
     },
     {
