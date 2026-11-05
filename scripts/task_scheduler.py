@@ -148,6 +148,8 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
             if not_before > now:
                 continue
             target_id = task["target_program_id"]
+            if target_id == "workflow_auto_sync":
+                assert_current_production_input(task, root)
             target = by_id.get(target_id)
             adapter = by_target.get(target_id)
             if target is None:
