@@ -4,8 +4,8 @@
   "status": "partial_static_audit",
   "purpose": "Identify known overlapping write resources before independent capability scheduling. This inventory is deliberately fail-closed and is not an execution authorization.",
   "evidence_scope": {
-    "registry_blob_sha": "ab5f92f25e97d62b9fd35d4097109f9fad892c6b",
-    "adapters_blob_sha": "97d18a09763f851362e0bd5400dad856ae1f448b",
+    "registry_blob_sha": "c0e59fd1a81cbe3eb2f26e8d08601b74946ada29",
+    "adapters_blob_sha": "e79146d3601f73692e897769880336f7e7beea30",
     "inspected_sources": [
       ".github/workflows/auto_sync.yml",
       ".github/workflows/automation-watchdog.yml",
@@ -70,9 +70,10 @@
       "tests/test_restore_automation_state.py",
       "tests/test_task_queue.py",
       "tests/test_task_queue_runtime.py",
-      "tests/test_workflow_config_guard_order.py"
+      "tests/test_workflow_config_guard_order.py",
+      "scripts/capture_git_write_trace.py"
     ],
-    "limitation": "All 53 registered Python components are statically classified. Production audit and publish jobs now upload path-only runtime write traces from the Python filesystem audit hook. Source assessment uses a deterministic producer-scoped retry batch. Shell/git child processes, runtime imports not exercised, caller-selected external paths and true cross-run GitHub API behavior are not exhaustively traced or exercised.",
+    "limitation": "All 54 registered Python components are statically classified. Production audit and publish jobs now upload path-only runtime write traces from the Python filesystem audit hook. Source assessment uses a deterministic producer-scoped retry batch. Persistent shell/Git repository-tree deltas are now captured; transient write-and-revert activity, Git metadata changes, runtime imports not exercised, caller-selected external paths and true cross-run GitHub API behavior are not exhaustively traced or exercised.",
     "reviewed_at": "2026-11-04",
     "runtime_trace": {
       "enabled": true,
@@ -91,7 +92,11 @@
         "lease_required"
       ],
       "data_policy": "repository-relative paths and run metadata only; no file contents, tokens or lease fencing secrets",
-      "limitation": "Python audit-hook filesystem events only; shell/git child processes, external services and unexecuted code paths are not captured."
+      "limitation": "Python audit-hook filesystem events plus persistent repository-tree deltas from shell/Git child processes; transient writes, Git metadata, external services and unexecuted code paths are not captured.",
+      "trace_scripts": [
+        "scripts/fenced_file_writer.py",
+        "scripts/capture_git_write_trace.py"
+      ]
     }
   },
   "protected_resources": {
