@@ -7,9 +7,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PATH_MUTATORS = {
     "write_text", "write_bytes", "unlink", "mkdir", "makedirs", "rmdir",
-    "remove", "replace", "rename", "touch", "copy", "copy2", "copyfile",
-    "copytree", "move", "rmtree", "write_document", "atomic_write",
+    "touch", "write_document", "atomic_write",
 }
+OS_MUTATORS = {"open", "write", "remove", "unlink", "replace", "rename", "mkdir", "makedirs", "rmdir", "symlink", "link"}
+SHUTIL_MUTATORS = {"copy", "copy2", "copyfile", "copytree", "move", "rmtree"}
+PATH_REPLACERS = {"path", "temporary", "destination", "target", "staging", "final_directory", "manifest_path", "output_path", "report_path"}
 WRITE_MODES = {"w", "a", "x", "r+", "w+", "a+", "x+"}
 HTTP_MUTATION_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
 
@@ -28,6 +30,15 @@ def call_is_mutation(node):
     leaf = name.rsplit(".", 1)[-1]
     if leaf in PATH_MUTATORS:
         return True
+    if name.startswith("os.") and leaf in OS_MUTATORS:
+        if leaf == "open":
+            return len(node.args) > 1
+        return True
+    if name.startswith("shutil.") and leaf in SHUTIL_MUTATORS:
+        return True
+    if leaf in {"replace", "rename"} and isinstance(node.func, ast.Attribute):
+        receiver = dotted_name(node.func.value).rsplit(".", 1)[-1]
+        return receiver in PATH_REPLACERS
     if leaf in {"open"}:
         mode = None
         if len(node.args) > 1 and isinstance(node.args[1], ast.Constant):
