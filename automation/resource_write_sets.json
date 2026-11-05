@@ -1418,7 +1418,7 @@
     "Atomic multi-resource lease acquisition and compatibility of per-resource locks across all independent/cross-workflow writers remain unproven.",
     "Static entrypoint inventory does not prove absence of unregistered dynamic writes, subprocess writes, external API mutations or filesystem writes hidden behind imported helpers.",
     "All remaining registered Python components must be checked for indirect writes through imported helpers, subprocesses and dynamically selected outputs; report-only writers and active source-registry writers must remain distinct.",
-    "The 53 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and one external workflow-dispatch side-effect adapter. Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths.",
+    "The 54 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and one external workflow-dispatch side-effect adapter. Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths.",
     "Persistent repository-tree tracing complements Python audit hooks but does not prove transient write-and-revert activity, Git metadata changes, external side effects or unexecuted call paths."
   ],
   "review_context": {
@@ -1427,7 +1427,7 @@
     "program_registry_blob_sha": "c0e59fd1a81cbe3eb2f26e8d08601b74946ada29",
     "execution_adapters_blob_sha": "e79146d3601f73692e897769880336f7e7beea30",
     "added_after_release_baseline": true,
-    "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 53 Python components are now partitioned into 36 direct/helper writer entries, 16 reviewed non-writers and one external GitHub Actions dispatch side-effect adapter.",
+    "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 54 Python components are now partitioned into 36 direct/helper writer entries and 17 reviewed non-writers, alongside one external GitHub Actions dispatch side-effect adapter.",
     "reviewed_at": "2026-11-05",
     "central_write_guard_test": "tests/test_fenced_file_writer.py::test_every_registered_python_component_installs_the_guard",
     "runtime_trace_evidence": {
