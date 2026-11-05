@@ -214,6 +214,50 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
             with self.subTest(value=value), self.assertRaises(ValueError):
                 normalize_keys([value])
 
+    def test_claimed_writer_uses_live_resource_fence_not_mutable_task_lease(self):
+        acquired = acquire_resource_leases(
+            "task_a", "worker_a", "task-token-a",
+            ["logical/production-pipeline"], self.store, now=self.now,
+        )
+        task = self.store.document["tasks"][0]
+        task["resource_lease"] = {
+            "status": "ACTIVE", "resources": acquired["resources"],
+            "lease_seconds": 300, "expires_at": acquired["expires_at"],
+        }
+        # Simulate scheduler task-lease rotation while the old resource fence
+        # remains active for the exact worker and fencing epoch.
+        task["lease"] = {"owner": "scheduler-refresh", "token": "rotated-task-token",
+                         "expires_at": (self.now + timedelta(minutes=10)).isoformat().replace("+00:00", "Z")}
+
+        class LiveStore:
+            def __init__(self, document):
+                self.document = copy.deepcopy(document)
+            def read(self):
+                return type("Snapshot", (), {"document": copy.deepcopy(self.document)})()
+
+        live = LiveStore(self.store.document)
+        with tempfile.TemporaryDirectory() as directory:
+            snapshot = Path(directory) / "queue.json"
+            snapshot.write_text(json.dumps(self.store.document), encoding="utf-8")
+            env = {
+                "AUTOMATION_QUEUE_SNAPSHOT": str(snapshot),
+                "AUTOMATION_QUEUE_REPOSITORY": "owner/repo",
+                "AUTOMATION_QUEUE_TOKEN": "read-token",
+                "AUTOMATION_QUEUE_BRANCH": "main",
+                "AUTOMATION_QUEUE_PATH": "automation/task_queue.json",
+                "AUTOMATION_TASK_ID": "task_a",
+                "AUTOMATION_WORKER_ID": "worker_a",
+                "AUTOMATION_TASK_LEASE_TOKEN": "task-token-a",
+                "AUTOMATION_RESOURCE_LEASE_PROOF": json.dumps(acquired["resources"]),
+            }
+            with patch.dict("os.environ", env, clear=False):
+                with patch.object(resource_lease_runtime, "GitHubContentsQueueStore", return_value=live):
+                    self.assertTrue(assert_resource_lease_from_environment("reports/project-status.json"))
+                    record = live.document["resource_leases"]["logical/production-pipeline"]
+                    record["task_lease_token"] = "stale-token"
+                    with self.assertRaisesRegex(ValueError, "no matching active resource lease"):
+                        assert_resource_lease_from_environment("reports/project-status.json")
+
     def test_workflow_auto_sync_verifying_task_fences_every_repo_write_under_pipeline_lock(self):
         acquired = acquire_resource_leases(
             "task_a", "worker_a", "task-token-a",
