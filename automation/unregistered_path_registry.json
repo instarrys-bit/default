@@ -555,7 +555,21 @@
       "last_seen_run_id": "41776163056",
       "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41776163056",
       "classification_basis": "Reviewed as a recovery-evidence verifier only. It validates completed workflow/job/verification-step evidence and emits a verification result; it does not create or publish routing rules."
+    },
+    {
+      "path": "shadowrocket/ss.conf",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-05T19:04:52.584353Z",
+      "last_seen_at": "2026-11-05T19:04:52.584353Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "42090354137"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "ec6c8b938b3bfc54c7e4678aebd8bc133458890c",
+      "last_seen_run_id": "42090354137",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42090354137"
     }
   ],
-  "updated_at": "2026-11-05T13:01:43Z"
+  "updated_at": "2026-11-05T19:04:52.584353Z"
 }
