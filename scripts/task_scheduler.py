@@ -113,6 +113,49 @@ def assert_current_production_input(task: dict, root: Path = ROOT) -> str:
     return actual
 
 
+def supersede_stale_queued_production_tasks(store, registry: dict, root: Path = ROOT) -> list[str]:
+    """Cancel only unclaimed queued production work whose fingerprint no longer matches main."""
+    snapshot = store.read().document
+    candidates = [
+        task for task in snapshot.get("tasks", [])
+        if isinstance(task, dict)
+        and task.get("target_program_id") == "workflow_auto_sync"
+        and task.get("status") == "QUEUED"
+        and task.get("lease") is None
+        and task.get("dispatch_intent") is None
+        and isinstance(task.get("input"), dict)
+        and task["input"].get("production_decision") in {"INPUT_CHANGED", "SCHEDULE_DUE", "RECOVERY_REQUIRED", "USER_AUTHORIZED_MANUAL_AUDIT"}
+    ]
+    if not candidates:
+        return []
+    manifest = load_manifest(Path(root) / "automation" / "production_inputs.json")
+    current = compute_fingerprint(Path(root), manifest)
+    def mutate(queue: dict):
+        changed = []
+        for task in queue.get("tasks", []):
+            payload = task.get("input") if isinstance(task, dict) else None
+            if (task.get("target_program_id") != "workflow_auto_sync"
+                    or task.get("status") != "QUEUED"
+                    or task.get("lease") is not None
+                    or task.get("dispatch_intent") is not None
+                    or not isinstance(payload, dict)
+                    or payload.get("production_decision") not in {"INPUT_CHANGED", "SCHEDULE_DUE", "RECOVERY_REQUIRED", "USER_AUTHORIZED_MANUAL_AUDIT"}
+                    or payload.get("production_fingerprint") == current):
+                continue
+            task["status"] = "CANCELLED"
+            task["state_history"].append("CANCELLED")
+            task["last_error"] = {
+                "type": "stale_production_input_superseded",
+                "message": "Queued production task was cancelled before claim because its input fingerprint no longer matches current main.",
+                "current_production_fingerprint": current,
+            }
+            changed.append(task["task_id"])
+        if changed:
+            queue["revision"] += 1
+            validate_candidate(queue, registry)
+        return queue, changed
+    return store.mutate(mutate)
+
 def build_execution_plan(queue: dict, registry: dict, adapters: dict,
                          root: Path = ROOT, now: datetime | None = None) -> dict:
     now = now or now_utc()
@@ -1027,6 +1070,7 @@ def run_scheduler_once(store, registry: dict, adapters: dict, *,
         }
     recovered = recover_remote(store, registry, initial_now)
     initial_verification = verify_pending_remote(store, registry, adapters, initial_now)
+    superseded_stale_tasks = supersede_stale_queued_production_tasks(store, registry, root)
     processed = []
     blocked_seen = {}
 
@@ -1062,6 +1106,7 @@ def run_scheduler_once(store, registry: dict, adapters: dict, *,
         "blocked": [{"task_id": key, "reason": value} for key, value in sorted(blocked_seen.items())],
         "initial_verification": initial_verification,
         "recovered_count": len(recovered),
+        "superseded_stale_production_task_ids": superseded_stale_tasks,
         "queue_revision": final_snapshot["revision"],
     }
 
