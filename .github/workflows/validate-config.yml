@@ -90,14 +90,23 @@ jobs:
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
-          base_sha="$PUSH_BEFORE"
           head_sha="$CURRENT_SHA"
           if [ "$EVENT_NAME" = "pull_request" ]; then
             base_sha="$PR_BASE_SHA"
             head_sha="$PR_HEAD_SHA"
-          fi
-          if [ -z "$base_sha" ] || [[ "$base_sha" =~ ^0+$ ]]; then
+            if [ -z "$base_sha" ] || [ -z "$head_sha" ]; then
+              echo "Pull-request validation requires explicit base and head SHAs." >&2
+              exit 1
+            fi
+          elif [ "$EVENT_NAME" = "push" ]; then
+            # A feature-branch push's github.event.before is the previous
+            # commit on that same branch, not the owner-approved main baseline.
+            # Compare the branch tip with its merge-base against current main.
+            git fetch --no-tags origin main
             base_sha="$(git merge-base origin/main "$head_sha")"
+          else
+            echo "Unsupported non-main validation event: $EVENT_NAME" >&2
+            exit 1
           fi
           if ! git diff --quiet "$base_sha" "$head_sha" -- modules/uu.conf; then
             echo "Non-main validation cannot approve or change modules/uu.conf." >&2
