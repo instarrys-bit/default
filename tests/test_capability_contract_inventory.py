@@ -129,26 +129,27 @@ class CapabilityContractInventoryTests(unittest.TestCase):
             git_blob_sha(adapters_path),
         )
 
-    def test_assessment_is_enabled_only_for_watchdog_success_event_dispatch(self):
+    def test_assessment_adapter_remains_disabled_until_dedicated_discovery_workflow_exists(self):
         registry = load_json("automation/program_registry.json")
         adapters = load_json("automation/execution_adapters.json")
         inventory = load_json("automation/capability_contract_inventory.json")
         program = next(item for item in registry["programs"] if item["id"] == "script_assess_sources")
         adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "script_assess_sources")
         entry = next(item for item in inventory["programs"] if item["id"] == "script_assess_sources")
-        self.assertTrue(program["orchestration"]["enabled"])
-        self.assertEqual(program["orchestration"]["allowed_callers"], ["workflow_automation_watchdog"])
-        self.assertTrue(adapter["enabled"])
-        self.assertEqual(adapter["allowed_callers"], ["workflow_automation_watchdog"])
-        self.assertEqual(entry["dispatch_status"], "enabled")
-        self.assertEqual(inventory["summary"]["independently_dispatchable_python_components"], 1)
+        self.assertFalse(program["orchestration"]["enabled"])
+        self.assertEqual(program["orchestration"]["allowed_callers"], [])
+        self.assertFalse(adapter["enabled"])
+        self.assertEqual(adapter["allowed_callers"], [])
+        self.assertEqual(entry["dispatch_status"], "disabled")
+        self.assertEqual(inventory["summary"]["independently_dispatchable_python_components"], 0)
         workflow = Path(".github/workflows/automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn("Enqueue source assessment after successful discovery workflow", workflow)
-        self.assertIn("github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)'", workflow)
         assessment_step = workflow.split("Enqueue source assessment after successful discovery workflow", 1)[1].split("Resolve superseded historical DEAD_LETTER", 1)[0]
-        self.assertNotIn("github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)'", assessment_step)
-        self.assertIn('github.event.workflow_run.conclusion == \'success\'', workflow)
-        self.assertIn("enqueue-source-assessment", workflow)
+        self.assertIn("Shadowrocket Source Discovery (Watchdog)", assessment_step)
+        self.assertNotIn("Shadowrocket Deterministic Domain Audit (User Config Baseline)", assessment_step)
+        audit = Path(".github/workflows/auto_sync.yml").read_text(encoding="utf-8")
+        self.assertEqual(audit.count("python3 scripts/discover_sources.py"), 1)
+        self.assertEqual(audit.count("python3 scripts/assess_sources.py"), 1)
 
     def test_assessment_adapter_has_scheduler_enforced_typed_predecessor(self):
         adapters = load_json("automation/execution_adapters.json")
