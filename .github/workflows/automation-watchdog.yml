@@ -805,11 +805,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          SOURCE_DISCOVERY_MODE: ${{ vars.SOURCE_DISCOVERY_MODE || 'monolithic_fallback' }}
           SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
           SOURCE_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
           SOURCE_WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
         run: |
           set -euo pipefail
+          if [ "$SOURCE_DISCOVERY_MODE" != "independent" ]; then
+            echo "Independent source DAG is not selected; monolithic auto_sync remains authoritative."
+            exit 0
+          fi
+          assessment_adapter="$(jq -r '[.adapters[] | select(.target_program_id == "script_assess_sources")][0].enabled // false' automation/execution_adapters.json)"
+          assessment_program="$(jq -r '[.programs[] | select(.id == "script_assess_sources")][0].orchestration.enabled // false' automation/program_registry.json)"
+          assessment_adapter_caller="$(jq -r '[.adapters[] | select(.target_program_id == "script_assess_sources")][0].allowed_callers | index("workflow_automation_watchdog") != null' automation/execution_adapters.json)"
+          assessment_program_caller="$(jq -r '[.programs[] | select(.id == "script_assess_sources")][0].orchestration.allowed_callers | index("workflow_automation_watchdog") != null' automation/program_registry.json)"
+          if [ "$assessment_adapter" != "true" ] || [ "$assessment_program" != "true" ] || [ "$assessment_adapter_caller" != "true" ] || [ "$assessment_program_caller" != "true" ]; then
+            echo "Assessment adapter/program authorization is not fully enabled; refusing partial DAG activation."
+            exit 0
+          fi
           auth="$(printf 'x-access-token:%s' "$GITHUB_TOKEN" | base64 -w0)"
           GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0="http.https://github.com/.extraheader" GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $auth" git fetch --no-tags origin main
           git reset --hard origin/main
@@ -836,14 +849,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          SOURCE_DISCOVERY_MODE: ${{ vars.SOURCE_DISCOVERY_MODE || 'monolithic_fallback' }}
         run: |
           set -euo pipefail
+          test "$SOURCE_DISCOVERY_MODE" = "independent" || exit 0
           test "$(jq -r '.dispatch_mode' automation/production_control.json)" = "enabled" || exit 0
           adapter_enabled="$(jq -r '[.adapters[] | select(.target_program_id == "workflow_source_discovery")][0].enabled // false' automation/execution_adapters.json)"
           program_enabled="$(jq -r '[.programs[] | select(.id == "workflow_source_discovery")][0].orchestration.enabled // false' automation/program_registry.json)"
           adapter_caller_allowed="$(jq -r '[.adapters[] | select(.target_program_id == "workflow_source_discovery")][0].allowed_callers | index("workflow_automation_watchdog") != null' automation/execution_adapters.json)"
           program_caller_allowed="$(jq -r '[.programs[] | select(.id == "workflow_source_discovery")][0].orchestration.allowed_callers | index("workflow_automation_watchdog") != null' automation/program_registry.json)"
-          if [ "$adapter_enabled" != "true" ] || [ "$program_enabled" != "true" ] || [ "$adapter_caller_allowed" != "true" ] || [ "$program_caller_allowed" != "true" ]; then
+          assessment_adapter_enabled="$(jq -r '[.adapters[] | select(.target_program_id == "script_assess_sources")][0].enabled // false' automation/execution_adapters.json)"
+          assessment_program_enabled="$(jq -r '[.programs[] | select(.id == "script_assess_sources")][0].orchestration.enabled // false' automation/program_registry.json)"
+          assessment_adapter_caller="$(jq -r '[.adapters[] | select(.target_program_id == "script_assess_sources")][0].allowed_callers | index("workflow_automation_watchdog") != null' automation/execution_adapters.json)"
+          assessment_program_caller="$(jq -r '[.programs[] | select(.id == "script_assess_sources")][0].orchestration.allowed_callers | index("workflow_automation_watchdog") != null' automation/program_registry.json)"
+          if [ "$adapter_enabled" != "true" ] || [ "$program_enabled" != "true" ] || [ "$adapter_caller_allowed" != "true" ] || [ "$program_caller_allowed" != "true" ] || [ "$assessment_adapter_enabled" != "true" ] || [ "$assessment_program_enabled" != "true" ] || [ "$assessment_adapter_caller" != "true" ] || [ "$assessment_program_caller" != "true" ]; then
             echo "Independent source discovery remains dormant until adapter, orchestration and caller gates are all enabled."
             exit 0
           fi
