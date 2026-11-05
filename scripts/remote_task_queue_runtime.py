@@ -134,7 +134,8 @@ def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
                         "superseded_by_idempotency_key": idem,
                     }
         if authorization:
-            ledger = queue.setdefault("manual_authorizations", {})            if not isinstance(ledger, dict):
+            ledger = queue.setdefault("manual_authorizations", {})
+            if not isinstance(ledger, dict):
                 raise ValueError("manual authorization consumption ledger must be an object")
             if authorization["run_id"] in ledger:
                 raise ValueError("manual authorization has already been consumed by another task")
