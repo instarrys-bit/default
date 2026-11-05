@@ -4,8 +4,8 @@
   "program_id": "script_assess_sources",
   "implementation_path": "scripts/assess_sources.py",
   "implementation_blob_sha": "5b8e0f0fd3d31312990b889a761b1a1ceab16ffb",
-  "review_status": "watchdog_successful_workflow_run_enqueue_installed",
-  "dispatch_status": "enabled",
+  "review_status": "reviewed_waiting_for_dedicated_discovery_workflow",
+  "dispatch_status": "disabled",
   "entrypoint": {
     "command": [
       "python3",
@@ -224,7 +224,7 @@
     "Complete transitive writer inventory and runtime tracing beyond the named source-assessment paths.",
     "Run a regular Watchdog-dispatched task and verify queue completion, artifacts, publication and protected-config invariance.",
     "Complete transitive writer inventory and runtime tracing beyond the declared source-assessment resources remains outstanding.",
-    "Complete transitive writer inventory and runtime tracing beyond the named source-assessment paths."
+    "Dedicated discovery-only producer workflow is not yet present; independent assessment dispatch remains disabled to prevent duplicate assessment after monolithic auto_sync runs."
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
