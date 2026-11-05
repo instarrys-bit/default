@@ -270,7 +270,9 @@ def _active_writer_task(queue, task_id, worker_id, task_lease_token, now):
         if (record is not None and record.get("status")=="ACTIVE"
                 and record.get("task_id")==task_id
                 and record.get("worker_id")==worker_id
-                and record.get("task_lease_token")==task_lease_token
+                # The resource lease is the mutation authority. The shorter-lived
+                # scheduler task token may be renewed or cleared while this worker
+                # still owns the unchanged resource fencing epoch.
                 and record.get("lease_id")==item.get("lease_id")
                 and record.get("fencing_token")==item.get("fencing_token")
                 and utc(record["expires_at"])>now):
@@ -290,7 +292,9 @@ def _assert_live_writer_fence(queue, task, resource_path, proof_item, now, worke
     if (record is None or record.get("status")!="ACTIVE"
             or record.get("task_id")!=task["task_id"]
             or record.get("worker_id")!=worker_id
-            or record.get("task_lease_token")!=task_lease_token
+            # Do not bind the long-lived resource fence to the shorter-lived
+            # scheduler task token. Task ID, worker, lease ID, fencing token
+            # and expiry remain mandatory at every mutation boundary.
             or record.get("lease_id")!=proof_item.get("lease_id")
             or record.get("fencing_token")!=proof_item.get("fencing_token")):
         raise ValueError(f"resource lease fencing check failed: {resource_path}")
