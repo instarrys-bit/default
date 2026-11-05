@@ -733,11 +733,7 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
             resources = resource_lease.get("resources")
             if not isinstance(resources, dict) or set(resources) != set(resource_contract.get("resource_keys", [])):
                 raise ValueError("Python task resource lease does not match its reviewed resource contract")
-            snapshot_path = Path(directory) / "task-queue-lease-snapshot.json"
-            snapshot_path.write_text(json.dumps(store.read().document, ensure_ascii=False), encoding="utf-8")
-            snapshot_path.chmod(0o400)
             child_env.update({
-                "AUTOMATION_QUEUE_SNAPSHOT": str(snapshot_path),
                 "AUTOMATION_TASK_ID": task["task_id"],
                 "AUTOMATION_WORKER_ID": task["lease"]["owner"],
                 "AUTOMATION_TASK_LEASE_TOKEN": task["lease"]["token"],
@@ -746,8 +742,6 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
                 "AUTOMATION_QUEUE_BRANCH": store.branch,
                 "AUTOMATION_QUEUE_PATH": store.path,
                 "AUTOMATION_QUEUE_TOKEN": store.token,
-                "AUTOMATION_TASK_PROCESS": "1",
-                "AUTOMATION_REQUIRE_RESOURCE_LEASE": "1",
             })
         try:
             with without_parent_secrets():
