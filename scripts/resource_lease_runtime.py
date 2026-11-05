@@ -161,7 +161,7 @@ def acquire_resource_leases(task_id, worker_id, task_lease_token, resource_keys,
     if not isinstance(task_id, str) or not task_id or not isinstance(worker_id, str) or not worker_id.strip() or not isinstance(task_lease_token, str) or not task_lease_token:
         raise ValueError("task_id, worker_id and task_lease_token are required")
     if isinstance(lease_seconds, bool) or not isinstance(lease_seconds, int) or not 1 <= lease_seconds <= 21600:
-        raise ValueError("lease_seconds must be 1..3600")
+        raise ValueError("lease_seconds must be 1..21600")
     keys=normalize_keys(resource_keys); now=now or datetime.now(timezone.utc); new_id=secrets.token_hex(16)
     def mutate(queue):
         validate_envelope(queue)

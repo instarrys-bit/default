@@ -105,8 +105,8 @@ def validate_registry(root: Path = ROOT, registry_path: Path | None = None) -> d
         if isinstance(max_attempts, bool) or not isinstance(max_attempts, int) or not 0 <= max_attempts <= 5:
             raise ValueError(f"{program_id}.orchestration.max_attempts must be an integer from 0 to 5")
         timeout = orchestration.get("timeout_seconds")
-        if isinstance(timeout, bool) or not isinstance(timeout, int) or not 1 <= timeout <= 3600:
-            raise ValueError(f"{program_id}.orchestration.timeout_seconds must be an integer from 1 to 3600")
+        if isinstance(timeout, bool) or not isinstance(timeout, int) or not 1 <= timeout <= 21600:
+            raise ValueError(f"{program_id}.orchestration.timeout_seconds must be an integer from 1 to 21600")
         if not orchestration["enabled"] and callers:
             raise ValueError(f"{program_id} cannot allow callers while orchestration is disabled")
         by_id[program_id] = item
