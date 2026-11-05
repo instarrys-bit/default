@@ -1,13 +1,14 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "2c03e2a40acbf5c4741fd44d4df5dc71c385f323",
-  "registry_blob_sha": "5105f2c04affc964b5b6caf1de09561c5f8ab644",
+  "workflow_blob_sha": "a5cd1a0719bc383f89094d72443a2c8077275fef",
+  "registry_blob_sha": "46eb82cdc96d6e13ed96755ff78664cc00a16537",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 6,
     "step_count": 59,
-    "independent_python_dispatch_enabled": true
+    "independent_python_dispatch_enabled": true,
+    "independent_workflow_count": 1
   },
   "job_graph": [
     {
@@ -671,7 +672,8 @@
     "Workflow-native shell, artifact, GitHub API and GitHub issue actions remain orchestration capabilities and need explicit contracts before decomposition.",
     "Source assessment is dispatched by automation-watchdog only after the exact production discovery workflow completes successfully on main; it is not an independent direct-dispatch path.",
     "The failed-run cursor recovery job inherits the workflow-level shadowrocket-main-writer lock; it deliberately does not request the same concurrency group a second time.",
-    "Production audit and publish jobs emit path-only runtime filesystem write trace artifacts; the trace is evidence for exercised Python writes, not a complete trace of shell/git subprocesses or unexecuted paths."
+    "Production audit and publish jobs emit path-only runtime filesystem write trace artifacts; the trace is evidence for exercised Python writes, not a complete trace of shell/git subprocesses or unexecuted paths.",
+    "A dedicated Watchdog source-discovery workflow and immutable run-bound artifact handoff are implemented on the integration branch. Its adapter/orchestration and Assessment adapter remain disabled; the monolithic auto_sync discovery/assessment fallback is retained to prevent a gap or duplicate execution."
   ],
   "decomposition_constraints": [
     "Preserve the audit -> publish dependency and the existing single-writer concurrency boundary.",
@@ -683,11 +685,66 @@
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration1",
     "release_manifest_blob_sha": "a3f4c15b6c13bdfb698b58562908b64b75689265",
-    "program_registry_blob_sha": "5105f2c04affc964b5b6caf1de09561c5f8ab644",
-    "execution_adapters_blob_sha": "d40ed3c60452eeaa6e21888152394f0a68fd57c4",
+    "program_registry_blob_sha": "46eb82cdc96d6e13ed96755ff78664cc00a16537",
+    "execution_adapters_blob_sha": "8d6d5c0285f0ed816797a0a69317f77a24072388",
     "added_after_release_baseline": true,
     "note": "Refreshed against the exact current main workflow, registry, release manifest and adapter blobs. This remains static inventory evidence, not execution authorization.",
     "reviewed_at": "2026-11-05",
-    "registry_blob_sha": "5105f2c04affc964b5b6caf1de09561c5f8ab644"
-  }
+    "registry_blob_sha": "46eb82cdc96d6e13ed96755ff78664cc00a16537"
+  },
+  "independent_dags": [
+    {
+      "id": "source_discovery_to_assessment",
+      "status": "implemented_dormant_until_HOLD_authorization_and_cutover",
+      "producer": {
+        "program_id": "workflow_source_discovery",
+        "workflow_path": ".github/workflows/source-discovery.yml",
+        "workflow_name": "Shadowrocket Source Discovery (Watchdog)",
+        "branch": "main",
+        "writes": [
+          "sources/discovered_sources.json",
+          "reports/source-discovery.md"
+        ],
+        "resource_keys": [
+          "sources/discovered_sources.json",
+          "reports/source-discovery.md"
+        ]
+      },
+      "handoff": {
+        "event": "workflow_run.completed",
+        "required_conclusion": "success",
+        "required_head_branch": "main",
+        "artifact_name": "source-discovery-output",
+        "artifact_path": "sources/discovered_sources.json",
+        "proof_fields": [
+          "workflow_name",
+          "workflow_run_id",
+          "workflow_head_sha",
+          "artifact_path",
+          "artifact_sha256"
+        ],
+        "verification": [
+          "exact producer run identity",
+          "downloaded artifact logical-document digest",
+          "producer metadata inside document",
+          "digest equality with current main"
+        ]
+      },
+      "consumer": {
+        "program_id": "script_assess_sources",
+        "enqueue_command": "task_scheduler.py enqueue-source-assessment",
+        "idempotency_key": "source-assessment:<workflow_run_id>",
+        "required_predecessor_digest": true
+      },
+      "duplicate_protection": {
+        "rule": "auto_sync direct discovery and assessment steps remain the fallback while the independent workflow and assessment adapters are disabled; remove the monolithic steps only after the independent edge is authorized and accepted"
+      },
+      "activation": {
+        "producer_adapter_enabled": false,
+        "producer_program_orchestration_enabled": false,
+        "assessment_adapter_enabled": false,
+        "production_dispatch_performed": false
+      }
+    }
+  ]
 }
