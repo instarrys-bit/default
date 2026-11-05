@@ -157,6 +157,24 @@ class FencedFileWriterTests(unittest.TestCase):
             with self.assertRaisesRegex(PermissionError, "owner-managed protected file"):
                 fenced_file_writer.authorize_write_path(alias)
 
+    def test_external_symlink_to_shared_ruleset_keeps_canonical_lease_key(self):
+        with tempfile.TemporaryDirectory() as directory:
+            alias = Path(directory) / "ruleset-link"
+            alias.symlink_to(ROOT / "rulesets" / "direct.list")
+            with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "1"}, clear=False):
+                with patch("resource_lease_runtime.assert_resource_lease_from_environment") as check:
+                    fenced_file_writer.authorize_write_path(alias)
+                    check.assert_called_once_with("rulesets/direct.list")
+
+    def test_external_hardlink_to_shared_ruleset_keeps_canonical_lease_key(self):
+        with tempfile.TemporaryDirectory() as directory:
+            alias = Path(directory) / "ruleset-hardlink"
+            os.link(ROOT / "rulesets" / "direct.list", alias)
+            with patch.dict(os.environ, {"AUTOMATION_REQUIRE_RESOURCE_LEASE": "1"}, clear=False):
+                with patch("resource_lease_runtime.assert_resource_lease_from_environment") as check:
+                    fenced_file_writer.authorize_write_path(alias)
+                    check.assert_called_once_with("rulesets/direct.list")
+
     def test_repository_symlink_cannot_escape_to_external_directory(self):
         with tempfile.TemporaryDirectory() as external, tempfile.TemporaryDirectory(dir=ROOT) as inside:
             link = Path(inside) / "escape"
