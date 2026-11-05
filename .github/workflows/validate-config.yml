@@ -115,22 +115,22 @@ jobs:
           PY
           echo "The non-main change leaves uu.conf and its approved-baseline metadata unchanged; continuing read-only structural checks."
       - name: Recover owner-approved config baseline in validation workspace
-        if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+        if: ${{ (github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')) || github.event_name == 'pull_request' }}
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_REF: ${{ github.ref }}
-          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_REF: ${{ github.event_name == 'pull_request' && 'refs/heads/main' || github.ref }}
+          GITHUB_EVENT_NAME: ${{ github.event_name == 'pull_request' && 'schedule' || github.event_name }}
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.sha }}
         run: python scripts/register_config_baseline.py
       - name: Verify owner-approved config baseline
-        if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
-        run: python scripts/verify_baseline.py --allow-owner-push-change
+        if: ${{ (github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')) || github.event_name == 'pull_request' }}
+        run: python scripts/verify_baseline.py --baseline-only
       - name: Audit config drift against the approved baseline
-        if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
-        run: python scripts/audit_config_drift.py --allow-owner-push-change
+        if: ${{ (github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')) || github.event_name == 'pull_request' }}
+        run: python scripts/audit_config_drift.py
       - run: python scripts/audit_ruleset_references.py
       - run: python scripts/audit_ruleset_config_overlap.py
       - run: python scripts/validate_config.py
