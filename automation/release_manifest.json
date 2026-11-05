@@ -8,12 +8,12 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "c0e59fd1a81cbe3eb2f26e8d08601b74946ada29"
+      "git_blob_sha": "5105f2c04affc964b5b6caf1de09561c5f8ab644"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "e79146d3601f73692e897769880336f7e7beea30"
+      "git_blob_sha": "d40ed3c60452eeaa6e21888152394f0a68fd57c4"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "5342a156d389a02320f026edd94fa79c9f1a9e9b"
+      "git_blob_sha": "6dad4d321f6fb8689e956ab2cf135d598f73b198"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -42,7 +42,7 @@
     },
     "source_assessor": {
       "path": "scripts/assess_sources.py",
-      "git_blob_sha": "5b8e0f0fd3d31312990b889a761b1a1ceab16ffb"
+      "git_blob_sha": "5baf1cca8062b1f3b4e30298200efcc7683e122d"
     },
     "task_queue_validator": {
       "path": "scripts/task_queue.py",
@@ -54,7 +54,7 @@
     },
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
-      "git_blob_sha": "8279a833c480f476687c25ba34349fcc439bd78d"
+      "git_blob_sha": "11038995a0e8717d56bc002825403a3205326ad3"
     },
     "remote_task_queue_runtime": {
       "path": "scripts/remote_task_queue_runtime.py",
@@ -107,24 +107,6 @@
   "python_adapter_policy": {
     "schema_version": 1,
     "default_decision": "deny",
-    "allowed_adapters": [
-      {
-        "target_program_id": "script_assess_sources",
-        "capability": "source_assessment",
-        "release_id": "shadowrocket-automation-baseline-2026.11.05.integration1",
-        "adapter_entry_sha256": "60379726ac7dbfd6348a9f0a8685432d3b9632b56765aa198a5ba45862c7b53b",
-        "registry_entry_sha256": "152b8d43034e40cbda5cf7a3cce55bb062a757f3bbe9949ca2e5e5696dc1e3ad",
-        "source_path": "scripts/assess_sources.py",
-        "source_git_blob_sha": "5b8e0f0fd3d31312990b889a761b1a1ceab16ffb",
-        "allowed_callers": [
-          "workflow_automation_watchdog"
-        ],
-        "input_contract_sha256": "b599edb647c6ef9be050ccfa8ec5eb85e3685e4960d1f2a73ba173bc4da9aac9",
-        "output_contract_sha256": "62ac443cad6163ad97228edb26976548922245c5da991db5d835a5425b12b284",
-        "dependency_contract_sha256": "f1a1b391d716b049be291e73c6906ff85ba8bd5baa610a1731a6d86dcf0e8aac",
-        "resource_contract_sha256": "6f08867bb628413419b48ba66fe681593432548f1d48883513305aeb8a11b666",
-        "verifier_contract_sha256": "601c151692490aa9f8eb5b669c223e7c5be7eddfd8e16daf21b785097a7e662d"
-      }
-    ]
+    "allowed_adapters": []
   }
 }
