@@ -808,6 +808,9 @@ jobs:
           SOURCE_WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
         run: |
           set -euo pipefail
+          auth="$(printf 'x-access-token:%s' "$GITHUB_TOKEN" | base64 -w0)"
+          GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0="http.https://github.com/.extraheader" GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $auth" git fetch --no-tags origin main
+          git reset --hard origin/main
           test "$(jq -r '.dispatch_mode' automation/production_control.json)" = "enabled"
           current_main="$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)"
           if [ "$current_main" != "$(git rev-parse HEAD)" ]; then
