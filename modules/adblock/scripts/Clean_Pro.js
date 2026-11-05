@@ -306,7 +306,7 @@
   })();
 
   function hasPageAdMarker(buf) {
-    if (!buf || buf.length < PATTERN_PAGEAD.length) return false;
+    if (!buf || buf.length < 500) return false;
     const n = buf.length;
     const m = PATTERN_PAGEAD.length;
     let i = 0;
@@ -611,7 +611,7 @@
           if (cache.whiteEml.includes(eml)) return false;
           if (cache.blackEml.includes(eml)) return true;
           if (opts.blockShortsFeed && /shorts(?!_pivot_item)/.test(eml)) return true;
-          if (WATCH_FEED_AD_EML_RE.test(eml)) {
+          if (/ad_badge|promoted|sparkles|brand_promo|shopping_shelf/.test(eml)) {
             cache.blackEml.push(eml);
             cache.dirty = true;
             return true;
@@ -655,9 +655,6 @@
     return false;
   }
 
-  // Watch feed ads are filtered from browse/next/get_watch payloads below,
-  // using explicit sponsored renderers/EML markers and the pagead marker.
-  const WATCH_FEED_AD_EML_RE = /ad_badge|promoted|sparkles|brand_promo|shopping_shelf/i;
 
   const FEED_CONTAINERS = new Set([
     1, 4, 5, 7, 8, 9, 10,
