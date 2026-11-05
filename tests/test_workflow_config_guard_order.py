@@ -358,5 +358,13 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("Could not merge the unregistered-path ledger after three Blob-SHA CAS attempts.", block)
         self.assertIn('if [ "$registry_published" != "true" ]; then', block)
 
+    def test_watchdog_sets_scripts_path_before_importing_active_fingerprint_helper(self):
+        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
+        marker = 'active_fingerprints="$(CURRENT_PRODUCTION_FINGERPRINT='
+        self.assertIn(marker, watchdog)
+        block = watchdog.split(marker, 1)[1].split("PY\\n", 1)[0]
+        self.assertIn('sys.path.insert(0, "scripts")', block)
+        self.assertIn("from production_intent import active_production_fingerprints", block)
+
 if __name__ == "__main__":
     unittest.main()
