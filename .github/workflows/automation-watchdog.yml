@@ -12,6 +12,10 @@ on:
         required: false
         default: false
         type: boolean
+      request_observations_json:
+        description: 'Optional validated hostname array forwarded as unclassified candidates'
+        required: false
+        type: string
       automation_task_id:
         description: 'Internal task correlation ID; leave blank for manual runs'
         required: false
@@ -67,6 +71,7 @@ jobs:
     env:
       GITHUB_ACTOR_ID: ${{ github.actor_id }}
       GITHUB_MANUAL_AUDIT_REQUEST: ${{ inputs.request_deterministic_audit }}
+      GITHUB_MANUAL_REQUEST_OBSERVATIONS_JSON: ${{ inputs.request_observations_json }}
     outputs:
       block_manifest: ${{ steps.stale-recovery.outputs.block_manifest }}
     runs-on: ubuntu-24.04
@@ -367,6 +372,9 @@ jobs:
             fi
             manual_key="production:manual-authorized:$manual_fingerprint:$GITHUB_RUN_ID"
             manual_input="$(jq -cn --arg fingerprint "$manual_fingerprint" --arg sha "$current_sha" --arg run "$GITHUB_RUN_ID" --arg attempt "$GITHUB_RUN_ATTEMPT" --arg actor "$GITHUB_ACTOR" --arg actor_id "$GITHUB_ACTOR_ID" --arg repo "$GITHUB_REPOSITORY" --arg workflow_ref "$GITHUB_WORKFLOW_REF" --arg ref "$GITHUB_REF" --arg manual_request "$GITHUB_MANUAL_AUDIT_REQUEST" --arg target "workflow_auto_sync" --arg idem "$manual_key" '{production_fingerprint:$fingerprint,production_decision:"USER_AUTHORIZED_MANUAL_AUDIT",production_reason:"Explicit one-shot user authorization submitted through the Watchdog manual control.",baseline_source_event:"workflow_dispatch",baseline_source_sha:$sha,authorization_run_id:$run,authorization_run_attempt:$attempt,authorization_actor:$actor,authorization_actor_id:$actor_id,authorization_repository:$repo,authorization_workflow_ref:$workflow_ref,authorization_event:"workflow_dispatch",authorization_ref:$ref,authorization_head_sha:$sha,authorization_requested:($manual_request=="true"),authorization_target_program_id:$target,authorization_idempotency_key:$idem}')"
+            if [ -n "$GITHUB_MANUAL_REQUEST_OBSERVATIONS_JSON" ]; then
+              manual_input="$(jq --arg observations "$GITHUB_MANUAL_REQUEST_OBSERVATIONS_JSON" '. + {request_observations_json:$observations}' <<< "$manual_input")"
+            fi
             echo "Enqueueing one explicitly authorized deterministic audit for current main $current_sha ($manual_fingerprint)."
             printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$manual_key" --priority 100 --input-json "$manual_input" enqueue-auto-sync
             echo "One authorized deterministic audit was persisted to the durable queue." >> "$GITHUB_STEP_SUMMARY"
