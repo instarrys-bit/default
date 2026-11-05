@@ -229,6 +229,8 @@ class ProductionIntentTests(unittest.TestCase):
             "modules/AdBlock.sgmodule",
             "modules/adblock/dev/Clean_Pro.js",
             "modules/adblock/scripts/Clean_Pro.js",
+            "modules/adblock/scripts/Social_Adblock.js",
+            "modules/adblock/scripts/youtube_initplayback_observer.js",
             "modules/adblock/backups/Clean_Pro.pre-rollback-20261105.js",
             "modules/adblock/scripts/AdBlock_Original.sgmodule",
             "modules/adblock/scripts/Clean_Pro_Request.js",
