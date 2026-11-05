@@ -24,7 +24,7 @@ class AdapterActivationAuditTests(unittest.TestCase):
         self.assertTrue(report["watchdog_caller_permissions_ready"])
         self.assertEqual(
             [row["program_id"] for row in report["adapters"] if row["enabled"]],
-            ["script_assess_sources", "workflow_auto_sync", "workflow_self_healing_tests"],
+            ["workflow_auto_sync", "workflow_self_healing_tests"],
         )
 
     def test_identifies_only_low_privilege_dispatchable_workflow_as_canary(self):
