@@ -6,10 +6,10 @@
  *   1. Bounded Protobuf Tag & Varint Codec (lossless on massive field numbers like 465160965)
  *   2. Zero-Copy Subarray Passthrough (ultra-low memory footprint for iOS 15MB NE limit)
  *   3. Onesie Encryption Downgrade (/config & /log_event key stripping)
- *   4. Video Player Ad Removal (adPlacements, adSlots, pagead conversion ping)
+ *   4. Player response enhancement (playability, tracking, captions)
  *   5. Native Picture-in-Picture (PiP) & Background Playback Unlock
  *   6. Auto-Translated Caption Track & Language List Injection
- *   7. Feed / Search / Next / Shorts Ad & Promoted EML Stripping
+ *   7. Shorts-feed filtering
  *   8. Navigation Bar Cleanup & Premium Background Setting Injection
  *
  * [Mode B - Fast-Path JSON & HTML Engine] -> X (Twitter), Instagram, Google Search, YouTube Web JSON
@@ -18,14 +18,11 @@
  *   3. X (Twitter): GraphQL & REST promoted tweets, trends, who-to-follow, upsells, & empty module pruning
  *   4. Instagram: GraphQL (xdt_*) & REST timeline, Reels, Stories, and Explore sponsored post stripping
  *   5. Google Search Web: Case-insensitive CSS injection + shopping/sponsored container hiding
- *   6. YouTube Web JSON Fallback: In-place mutation stripping adPlacements/adSlots/sparkles
+ *   6. YouTube Web JSON Fallback: Home-feed Shorts shelf filtering
  */
 
 (() => {
   "use strict";
-
-  const CACHE_KEY = "SR_AIO_PRO_CACHE_V2";
-  const CACHE_VER = "2.0";
 
   const DEFAULT_OPTS = {
     captionLang: "zh-Hans", // Set "off" to disable auto-translated captions
@@ -42,17 +39,6 @@
   const WT_SGROUP = 3;
   const WT_EGROUP = 4;
   const WT_32 = 5;
-
-  // Binary signature for "pagead" -> [112, 97, 103, 101, 97, 100]
-  const PATTERN_PAGEAD = new Uint8Array([112, 97, 103, 101, 97, 100]);
-
-  const INITIAL_BLACK_EML = [
-    "inline_injection_entrypoint_layout.eml",
-    "full_width_square_image_layout.eml",
-    "landscape_image_wide_button_layout.eml",
-    "text_image_button_group_layout.eml",
-    "statement_banner.eml"
-  ];
 
   const TRANSLATION_LANGS = {
     "zh-Hans": "中文（简体）",
@@ -297,36 +283,6 @@
     }
   }
 
-  const pageadSkip = (() => {
-    const table = new Int32Array(256).fill(PATTERN_PAGEAD.length + 1);
-    for (let i = 0; i < PATTERN_PAGEAD.length; i++) {
-      table[PATTERN_PAGEAD[i]] = PATTERN_PAGEAD.length - i;
-    }
-    return table;
-  })();
-
-  function hasPageAdMarker(buf) {
-    if (!buf || buf.length < PATTERN_PAGEAD.length) return false;
-    const n = buf.length;
-    const m = PATTERN_PAGEAD.length;
-    let i = 0;
-    while (i <= n - m) {
-      if (
-        buf[i] === 112 &&
-        buf[i + 1] === 97 &&
-        buf[i + 2] === 103 &&
-        buf[i + 3] === 101 &&
-        buf[i + 4] === 97 &&
-        buf[i + 5] === 100
-      ) {
-        return true;
-      }
-      const next = buf[i + m];
-      i += next !== undefined ? pageadSkip[next] : m + 1;
-    }
-    return false;
-  }
-
   function buildLabelBytes(text) {
     const run = new SafeWireWriter().tag(1, WT_LEN).string(text).finish();
     return new SafeWireWriter().tag(1, WT_LEN).bytes(run).finish();
@@ -516,10 +472,6 @@
     return w.finish();
   }
 
-  // Watch While image/banner ads are carried in the player-ad protobuf fields.
-  // Keep this list explicit so player-response coverage is auditable.
-  const WATCH_WHILE_AD_PROTO_FIELDS = new Set([7, 68]);
-
   function processPlayer(bytes, opts) {
     const r = new SafeWireReader(bytes);
     const w = new SafeWireWriter();
@@ -527,10 +479,6 @@
 
     while (!r.eof()) {
       const [fn, wt] = r.tag();
-      if (WATCH_WHILE_AD_PROTO_FIELDS.has(fn)) {
-        r.skip(wt);
-        continue;
-      }
       if (fn === 2 && wt === WT_LEN) {
         hasPlayability = true;
         w.tag(2, WT_LEN).bytes(patchPlayabilityStatus(r.bytes()));
@@ -553,109 +501,6 @@
     return { bytes: w.finish(), modified: true };
   }
 
-  function getEmlName(renderInfoBytes) {
-    const r = new SafeWireReader(renderInfoBytes);
-    while (!r.eof()) {
-      const [fn, wt] = r.tag();
-      if (fn === 183314536 && wt === WT_LEN) {
-        const lr = new SafeWireReader(r.bytes());
-        while (!lr.eof()) {
-          const [lfn, lwt] = lr.tag();
-          if (lfn === 1 && lwt === WT_LEN) {
-            return lr.string().split("|")[0] || "";
-          }
-          lr.skip(lwt);
-        }
-      } else {
-        r.skip(wt);
-      }
-    }
-    return "";
-  }
-
-  function inspectVideoInfoForAd(videoInfoBytes) {
-    const r = new SafeWireReader(videoInfoBytes);
-    while (!r.eof()) {
-      const [fn, wt] = r.tag();
-      if (fn === 168777401 && wt === WT_LEN) {
-        const cr = new SafeWireReader(r.bytes());
-        while (!cr.eof()) {
-          const [cfn, cwt] = cr.tag();
-          if (cfn === 5 && cwt === WT_LEN) {
-            return hasPageAdMarker(cr.bytes());
-          }
-          cr.skip(cwt);
-        }
-      } else {
-        r.skip(wt);
-      }
-    }
-    return false;
-  }
-
-  function isElementRendererBlocked(elementBytes, cache, opts) {
-    const r = new SafeWireReader(elementBytes);
-    while (!r.eof()) {
-      const [fn, wt] = r.tag();
-      if (fn === 172660663 && wt === WT_LEN) {
-        const vr = new SafeWireReader(r.bytes());
-        let videoInfoBytes = null;
-        let eml = "";
-        while (!vr.eof()) {
-          const [vfn, vwt] = vr.tag();
-          if (vfn === 1 && vwt === WT_LEN) videoInfoBytes = vr.bytes();
-          else if (vfn === 2 && vwt === WT_LEN) eml = getEmlName(vr.bytes());
-          else vr.skip(vwt);
-        }
-        if (eml) {
-          if (cache.whiteEml.includes(eml)) return false;
-          if (cache.blackEml.includes(eml)) return true;
-          if (opts.blockShortsFeed && /shorts(?!_pivot_item)/.test(eml)) return true;
-          if (/ad_badge|promoted|sparkles|brand_promo|shopping_shelf/.test(eml)) {
-            cache.blackEml.push(eml);
-            cache.dirty = true;
-            return true;
-          }
-          if (videoInfoBytes) {
-            const isAd = inspectVideoInfoForAd(videoInfoBytes);
-            if (isAd) cache.blackEml.push(eml);
-            else cache.whiteEml.push(eml);
-            cache.dirty = true;
-            return isAd;
-          }
-        }
-      } else {
-        r.skip(wt);
-      }
-    }
-    return false;
-  }
-
-  function isRichItemBlocked(itemBytes, cache, opts) {
-    const r = new SafeWireReader(itemBytes);
-    while (!r.eof()) {
-      const [fn, wt] = r.tag();
-      if (fn === 153515154 && wt === WT_LEN) {
-        if (isElementRendererBlocked(r.bytes(), cache, opts)) return true;
-      } else {
-        const raw = r.skip(wt);
-        if (cache.whiteNo.includes(fn)) continue;
-        if (cache.blackNo.includes(fn)) return true;
-        const isAd = hasPageAdMarker(raw);
-        if (isAd) {
-          cache.blackNo.push(fn);
-          cache.dirty = true;
-          return true;
-        } else {
-          cache.whiteNo.push(fn);
-          cache.dirty = true;
-        }
-      }
-    }
-    return false;
-  }
-
-
   const FEED_CONTAINERS = new Set([
     1, 4, 5, 7, 8, 9, 10,
     49399797,
@@ -667,40 +512,18 @@
     58174010
   ]);
 
+  // Preserve the existing Shorts-feed option without performing ad detection.
   function filterFeedPayload(bytes, cache, opts, parentFieldNo = 0) {
     const r = new SafeWireReader(bytes);
     const w = new SafeWireWriter();
     let modified = false;
-
     while (!r.eof()) {
       const [fn, wt] = r.tag();
-
       if (opts.blockShortsFeed && fn === 51431404 && wt === WT_LEN) {
         r.skip(wt);
         modified = true;
         continue;
       }
-
-      if ((parentFieldNo === 50195462 || parentFieldNo === 51431404) && fn === 1 && wt === WT_LEN) {
-        const itemBytes = r.bytes();
-        if (isRichItemBlocked(itemBytes, cache, opts)) {
-          modified = true;
-          continue;
-        }
-        w.tag(fn, wt).bytes(itemBytes);
-        continue;
-      }
-
-      if (fn === 153515154 && wt === WT_LEN) {
-        const elBytes = r.bytes();
-        if (isElementRendererBlocked(elBytes, cache, opts)) {
-          modified = true;
-          continue;
-        }
-        w.tag(fn, wt).bytes(elBytes);
-        continue;
-      }
-
       if (wt === WT_LEN && FEED_CONTAINERS.has(fn)) {
         const subBytes = r.bytes();
         try {
@@ -712,10 +535,8 @@
         }
         continue;
       }
-
       w.tag(fn, wt).raw(r.skip(wt));
     }
-
     return { bytes: modified ? w.finish() : bytes, modified };
   }
 
@@ -916,7 +737,7 @@
     return { bytes: w.finish(), modified: true };
   }
 
-  function processWatch(bytes, cache, opts) {
+  function processWatch(bytes, opts) {
     const r = new SafeWireReader(bytes);
     const w = new SafeWireWriter();
     let modified = false;
@@ -935,10 +756,6 @@
             const pRes = processPlayer(cr.bytes(), opts);
             cw.tag(2, WT_LEN).bytes(pRes.bytes);
             cMod = true;
-          } else if (cfn === 3 && cwt === WT_LEN) {
-            const nRes = filterFeedPayload(cr.bytes(), cache, opts, 0);
-            cw.tag(3, WT_LEN).bytes(nRes.bytes);
-            if (nRes.modified) cMod = true;
           } else {
             cw.tag(cfn, cwt).raw(cr.skip(cwt));
           }
@@ -1144,23 +961,6 @@
   /**
    * 2D. YouTube Web JSON Fallback (In-Place Mutation with Dirty Tracking)
    */
-  const YT_JSON_AD_KEYS = new Set([
-    "adPlacements",
-    "adSlots",
-    "playerAds",
-    "adBreakParams",
-    "adBreakHeartbeatParams",
-    "mastheadAdRenderer",
-    "promotedSparklesWebRenderer",
-    "promotedSparklesTextSearchRenderer",
-    "compactPromotedVideoRenderer",
-    "promotedVideoRenderer",
-    "searchPyvRenderer",
-    "adSlotRenderer",
-    "inFeedAdLayoutRenderer",
-    "statementBannerRenderer"
-  ]);
-
   function processYouTubeJsonString(rawText, filterHomeShorts = false) {
     const obj = JSON.parse(rawText);
     let dirty = false;
@@ -1186,22 +986,11 @@
       return false;
     }
 
-    function isYtJsonAdElement(el) {
-      if (!el || typeof el !== "object") return false;
-      for (const k of Object.keys(el)) {
-        if (YT_JSON_AD_KEYS.has(k)) return true;
-      }
-      return false;
-    }
-
     function walkYtInPlace(node, isRoot = false) {
       if (!node || typeof node !== "object") return;
       if (Array.isArray(node)) {
         for (let i = node.length - 1; i >= 0; i--) {
-          if (isYtJsonAdElement(node[i])) {
-            node.splice(i, 1);
-            dirty = true;
-          } else if (filterHomeShorts && isShortsShelf(node[i])) {
+          if (filterHomeShorts && isShortsShelf(node[i])) {
             node.splice(i, 1);
             dirty = true;
           } else {
@@ -1211,10 +1000,7 @@
         return;
       }
       for (const k of Object.keys(node)) {
-        if (YT_JSON_AD_KEYS.has(k)) {
-          delete node[k];
-          dirty = true;
-        } else if (filterHomeShorts && isShortsShelf({ [k]: node[k] })) {
+        if (filterHomeShorts && isShortsShelf({ [k]: node[k] })) {
           delete node[k];
           dirty = true;
         } else if (node[k] && typeof node[k] === "object") {
@@ -1260,53 +1046,6 @@
       }
     }
     return opts;
-  }
-
-  function loadAdCache() {
-    try {
-      if (typeof $persistentStore !== "undefined") {
-        const raw = $persistentStore.read(CACHE_KEY);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (
-            parsed &&
-            parsed.version === CACHE_VER &&
-            Array.isArray(parsed.whiteNo) &&
-            Array.isArray(parsed.blackNo) &&
-            Array.isArray(parsed.whiteEml) &&
-            Array.isArray(parsed.blackEml)
-          ) {
-            return { ...parsed, dirty: false };
-          }
-        }
-      }
-    } catch (_) {}
-    return {
-      version: CACHE_VER,
-      whiteNo: [],
-      blackNo: [],
-      whiteEml: [],
-      blackEml: [...INITIAL_BLACK_EML],
-      dirty: false
-    };
-  }
-
-  function saveAdCache(cache) {
-    if (!cache || !cache.dirty) return;
-    try {
-      if (typeof $persistentStore !== "undefined") {
-        $persistentStore.write(
-          JSON.stringify({
-            version: CACHE_VER,
-            whiteNo: cache.whiteNo.slice(-200),
-            blackNo: cache.blackNo.slice(-200),
-            whiteEml: cache.whiteEml.slice(-200),
-            blackEml: cache.blackEml.slice(-200)
-          }),
-          CACHE_KEY
-        );
-      }
-    } catch (_) {}
   }
 
   function getBinaryBody(resp) {
@@ -1423,13 +1162,10 @@
       if (!bin || bin.length === 0) return $done({});
 
       const opts = parseRuntimeOptions();
-      const cache = loadAdCache();
       let res = { bytes: bin, modified: false };
 
       if (url.includes("/player")) {
         res = processPlayer(bin, opts);
-      } else if (url.includes("/browse") || url.includes("/next") || url.includes("/search")) {
-        res = filterFeedPayload(bin, cache, opts, 0);
       } else if (url.includes("/reel_watch_sequence")) {
         res = processShorts(bin);
       } else if (url.includes("/guide")) {
@@ -1437,12 +1173,11 @@
       } else if (url.includes("/get_setting")) {
         res = processSetting(bin);
       } else if (url.includes("/get_watch")) {
-        res = processWatch(bin, cache, opts);
+        res = processWatch(bin, opts);
       } else if (url.includes("/config") || url.includes("/log_event")) {
         res = processConfigPayload(bin);
       }
 
-      if (cache.dirty) saveAdCache(cache);
       return res.modified && res.bytes ? $done({ body: res.bytes }) : $done({});
     }
 
@@ -1472,7 +1207,6 @@
       processInstagramJsonString,
       processYouTubeJsonString,
       hasInitplaybackCandidate,
-      loadAdCache,
       DEFAULT_OPTS
     };
   } else {
