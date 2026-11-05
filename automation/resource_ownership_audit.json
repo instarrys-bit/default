@@ -4,8 +4,8 @@
   "status": "partial_static_audit",
   "purpose": "Identify known overlapping write resources before independent capability scheduling. This inventory is deliberately fail-closed and is not an execution authorization.",
   "evidence_scope": {
-    "registry_blob_sha": "5105f2c04affc964b5b6caf1de09561c5f8ab644",
-    "adapters_blob_sha": "d40ed3c60452eeaa6e21888152394f0a68fd57c4",
+    "registry_blob_sha": "46eb82cdc96d6e13ed96755ff78664cc00a16537",
+    "adapters_blob_sha": "82217c4725baa13572dc665fbee9cab4fb755841",
     "inspected_sources": [
       ".github/workflows/auto_sync.yml",
       ".github/workflows/automation-watchdog.yml",
@@ -71,7 +71,8 @@
       "tests/test_task_queue.py",
       "tests/test_task_queue_runtime.py",
       "tests/test_workflow_config_guard_order.py",
-      "scripts/capture_git_write_trace.py"
+      "scripts/capture_git_write_trace.py",
+      ".github/workflows/source-discovery.yml"
     ],
     "limitation": "All 54 registered Python components are statically classified. Production audit and publish jobs now upload path-only runtime write traces from the Python filesystem audit hook. Source assessment uses a deterministic producer-scoped retry batch. Persistent shell/Git repository-tree deltas are now captured; transient write-and-revert activity, Git metadata changes, runtime imports not exercised, caller-selected external paths and true cross-run GitHub API behavior are not exhaustively traced or exercised.",
     "reviewed_at": "2026-11-04",
@@ -426,12 +427,13 @@
       "known_writers": [
         "script_discover_sources",
         "script_restore_automation_state",
-        "workflow_auto_sync"
+        "workflow_auto_sync",
+        "workflow_source_discovery"
       ],
-      "lock_key": "resource:sources/discovered_sources.json",
+      "lock_key": "sources/discovered_sources.json + reports/source-discovery.md (exclusive per-resource leases shared with workflow_auto_sync)",
       "required_mode": "exclusive",
       "status": "direct_write_paths_confirmed_dynamic_document_store_children",
-      "note": "discovered_sources.json is written through json_document_store with an explicit logical-document lease assertion covering the base file, adjacent manifest, content-addressed shards, staging and old-shard cleanup. reports/source-discovery.md has a separate explicit live lease assertion. GITHUB_STEP_SUMMARY is a per-run ephemeral output and is intentionally excluded from shared repository resource ownership. Allowlisted publish-mode restore is an additional writer and is serialized by the same auto_sync logical production-pipeline fence."
+      "note": "discovered_sources.json is written through json_document_store with an explicit logical-document lease assertion covering the base file, adjacent manifest, content-addressed shards, staging and old-shard cleanup. reports/source-discovery.md has a separate explicit live lease assertion. GITHUB_STEP_SUMMARY is a per-run ephemeral output and is intentionally excluded from shared repository resource ownership. Allowlisted publish-mode restore is an additional writer and is serialized by the same auto_sync logical production-pipeline fence. The dedicated workflow_source_discovery writer now uses the same two exclusive resource keys as workflow_auto_sync and validates the exact Watchdog dispatch identity before writes. Its adapter remains disabled pending HOLD/authorization; the monolithic fallback remains active to avoid duplicate or missing assessment."
     },
     {
       "id": "watchdog_unregistered_path_registry",
