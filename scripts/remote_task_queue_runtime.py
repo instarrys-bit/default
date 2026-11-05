@@ -30,6 +30,8 @@ from resource_lease_runtime import (
 )
 
 
+AUTO_PRODUCTION_DECISIONS = {"INPUT_CHANGED", "SCHEDULE_DUE", "RECOVERY_REQUIRED"}
+
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "automation" / "program_registry.json"
 
@@ -107,9 +109,32 @@ def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
                     validate_manual_authorization_consumption(queue, old, authorization)
                 validate_candidate(queue, registry)
                 return queue, {"created": False, "task": old}
+        incoming_decision = payload.get("production_decision")
+        incoming_fingerprint = payload.get("production_fingerprint")
+        if (task.get("target_program_id") == "workflow_auto_sync"
+                and incoming_decision in AUTO_PRODUCTION_DECISIONS
+                and isinstance(incoming_fingerprint, str)
+                and re.fullmatch(r"[0-9a-f]{64}", incoming_fingerprint)):
+            for old in queue["tasks"]:
+                old_input = old.get("input") if isinstance(old.get("input"), dict) else {}
+                old_decision = old_input.get("production_decision")
+                old_fingerprint = old_input.get("production_fingerprint")
+                if (old.get("target_program_id") == "workflow_auto_sync"
+                        and old.get("status") == "QUEUED"
+                        and old.get("lease") is None
+                        and old.get("dispatch_intent") is None
+                        and old_decision in AUTO_PRODUCTION_DECISIONS
+                        and old_fingerprint != incoming_fingerprint):
+                    old["status"] = "CANCELLED"
+                    old["state_history"].append("CANCELLED")
+                    old["last_error"] = {
+                        "type": "stale_production_input_superseded",
+                        "message": "Queued production task was superseded before claim because current main has a different production input fingerprint.",
+                        "superseded_by_fingerprint": incoming_fingerprint,
+                        "superseded_by_idempotency_key": idem,
+                    }
         if authorization:
-            ledger = queue.setdefault("manual_authorizations", {})
-            if not isinstance(ledger, dict):
+            ledger = queue.setdefault("manual_authorizations", {})            if not isinstance(ledger, dict):
                 raise ValueError("manual authorization consumption ledger must be an object")
             if authorization["run_id"] in ledger:
                 raise ValueError("manual authorization has already been consumed by another task")
