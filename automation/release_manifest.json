@@ -70,7 +70,7 @@
     },
     "fenced_file_writer": {
       "path": "scripts/fenced_file_writer.py",
-      "git_blob_sha": "e022e5627b3780e46f48759cd8c32b745563bcf9"
+      "git_blob_sha": "fenced-blob-sha-placeholder"
     },
     "resource_lease_runtime": {
       "path": "scripts/resource_lease_runtime.py",
