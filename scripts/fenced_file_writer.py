@@ -160,8 +160,19 @@ def _audit_hook(event: str, args: tuple) -> None:
         if isinstance(flags, int):
             writing = writing or bool(flags & (os.O_WRONLY | os.O_RDWR | os.O_CREAT | os.O_TRUNC | os.O_APPEND))
         if writing:
-            authorize_write_path(args[0])
-            _record_write_trace(args[0], "open")
+            path = args[0]
+            if isinstance(path, int):
+                # os.fdopen() emits an "open" audit event with a descriptor,
+                # not a pathname. Resolve the descriptor to its actual target
+                # so the same protected-path and live-lease checks still apply.
+                try:
+                    path = os.readlink(f"/proc/self/fd/{path}")
+                except (OSError, AttributeError) as exc:
+                    raise PermissionError(
+                        "cannot verify the target of a descriptor-based file open"
+                    ) from exc
+            authorize_write_path(path)
+            _record_write_trace(path, "open")
         return
     if event in {"os.remove", "os.rmdir", "os.mkdir", "os.chmod", "os.chown", "os.truncate", "os.utime"} and args:
         path = args[0]
