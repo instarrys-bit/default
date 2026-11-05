@@ -388,7 +388,9 @@ jobs:
           PY
           )"
             while IFS=$'\t' read -r failed_task_id failed_run_id; do
-              [ -n "$failed_task_id" ] && [ -n "$failed_run_id" ] || continue
+              if [ -z "$failed_task_id" ] || [ -z "$failed_run_id" ]; then
+                continue
+              fi
               failed_run_json="$(gh api "repos/$REPO/actions/runs/$failed_run_id" 2>/dev/null || true)"
               if [ -z "$failed_run_json" ] || ! jq -e '
                 .head_branch == "main"
