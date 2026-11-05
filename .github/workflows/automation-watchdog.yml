@@ -908,6 +908,25 @@ jobs:
           unset queue_token
           cat /tmp/task-scheduler-report.json >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Reconcile once after stale production task release
+        if: ${{ success() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if ! jq -e '(.superseded_stale_production_task_ids // []) | length > 0' /tmp/task-scheduler-report.json >/dev/null; then
+            echo "No stale production task was superseded; no follow-up reconciliation is needed."
+            exit 0
+          fi
+          # The first health-check may have returned WAIT_FOR_ACTIVE before this
+          # job released a stale task. Trigger exactly one new Watchdog evaluation
+          # so current production inputs are reclassified against the fresh queue.
+          # This dispatches only the control-plane Watchdog, never auto_sync directly.
+          echo "A stale production task was released; requesting one fresh Watchdog reconciliation."
+          gh workflow run automation-watchdog.yml --repo "$REPO" --ref main -f request_deterministic_audit=false
+          echo "A follow-up Watchdog run was requested; production work still requires normal intent, queue, lease and fencing gates." >> "$GITHUB_STEP_SUMMARY"
+
   stale-run-watch:
     permissions:
       actions: write

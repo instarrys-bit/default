@@ -79,6 +79,17 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("runs?per_page=20", workflow)
         self.assertNotIn("runs?per_page=30", workflow)
 
+    def test_stale_task_release_requests_one_control_plane_reconciliation(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        queue_job = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
+        reconcile = queue_job.split("Reconcile once after stale production task release", 1)[1]
+        self.assertIn("superseded_stale_production_task_ids", reconcile)
+        self.assertIn("gh workflow run automation-watchdog.yml", reconcile)
+        self.assertIn("--ref main", reconcile)
+        self.assertIn("request_deterministic_audit=false", reconcile)
+        self.assertIn("never auto_sync directly", reconcile)
+        self.assertNotIn("gh workflow run auto_sync.yml", reconcile)
+
     def test_workflow_dispatch_recovery_does_not_recursively_retry(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("Workflow-dispatch run has no durable queue task correlation; refusing automatic recovery.", workflow)
