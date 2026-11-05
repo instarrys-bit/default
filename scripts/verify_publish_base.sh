@@ -14,18 +14,27 @@ is_docs_only_compare() {
   ' >/dev/null 2>&1
 }
 
-# Only explicitly known generated outputs/state may be ignored by the
-# production-input freshness check. Unknown paths fail closed and require review.
-is_known_non_input_path() {
-  case "$1" in
-    docs/*|rulesets/*|reports/*|tests/*|\
-    .github/workflows/automation-watchdog.yml|scripts/verify_publish_base.sh|\
-    automation/program_registry.json|automation/execution_adapters.json|\
-    automation/heartbeat.json|automation/state_store.json|\
-    sources/source_activation_log.json|sources/policy_source_overlap.json)
-      return 0 ;;
-    *) return 1 ;;
-  esac
+# The production input manifest is the single source of truth for path
+# classification. Queue state remains special: it is accepted only through the
+# strict bot-authored linear-CAS check below, never through this generic path.
+is_non_input_path_set() {
+  local paths_json="$1"
+  python3 - "$paths_json" <<'PY'
+import json
+import sys
+from pathlib import Path
+sys.path.insert(0, "scripts")
+from production_intent import classify_paths, load_manifest
+paths = json.loads(sys.argv[1])
+if not isinstance(paths, list) or any(not isinstance(path, str) for path in paths):
+    raise SystemExit(2)
+if "automation/task_queue.json" in paths:
+    raise SystemExit(1)
+classification = classify_paths(paths, load_manifest(Path("automation/production_inputs.json")))
+if classification["status"] != "NO_INPUT_CHANGE":
+    print(json.dumps(classification, sort_keys=True), file=sys.stderr)
+    raise SystemExit(1)
+PY
 }
 
 is_non_input_only_compare() {
@@ -34,13 +43,9 @@ is_non_input_only_compare() {
     and (.files | type == "array")
     and (.files | length > 0)
   ' <<< "$compare_json" >/dev/null 2>&1 || return 1
-  while IFS= read -r path; do
-    [ -n "$path" ] || continue
-    if ! is_known_non_input_path "$path"; then
-      return 1
-    fi
-  done < <(jq -r '.files[].filename' <<< "$compare_json")
-  return 0
+  local paths_json
+  paths_json="$(jq -c '[.files[].filename]' <<< "$compare_json")"
+  is_non_input_path_set "$paths_json"
 }
 is_queue_only_compare() {
   jq -e --arg base "$GITHUB_SHA" '
@@ -166,9 +171,16 @@ if [ -n "$changed_paths" ]; then
     exit 0
   fi
 
+  changed_paths_json="$(printf '%s\n' "$changed_paths" | jq -Rsc 'split("\n") | map(select(length > 0))')"
+  if is_non_input_path_set "$changed_paths_json"; then
+    echo "Only manifest-classified non-production paths changed during audit; rebasing publication onto current main."
+    git reset --hard origin/main
+    exit 0
+  fi
+
   while IFS= read -r changed_path; do
     [ -n "$changed_path" ] || continue
-    echo "Non-documentation input or repository state changed during audit: $changed_path" >&2
+    echo "Production input or unclassified repository path changed during audit: $changed_path" >&2
   done <<< "$changed_paths"
   echo "Refusing to publish stale audit output." >&2
   exit 1
