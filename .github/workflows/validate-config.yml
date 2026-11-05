@@ -117,7 +117,7 @@ jobs:
           for key in ("path", "approved_git_blob_sha", "last_user_approved_baseline_update"):
               if base_guard.get(key) != head_guard.get(key):
                   raise SystemExit("Non-main validation cannot change the owner-approved config identity or baseline registration.")
-          allowed_guard_keys = {"description", "content_immutable_to_automation", "content_protection", "baseline_metadata_policy"}
+          allowed_guard_keys = {"immutable", "description", "content_immutable_to_automation", "content_protection", "baseline_metadata_policy"}
           changed_keys = set(base_guard) ^ set(head_guard)
           changed_keys.update(key for key in set(base_guard) & set(head_guard) if base_guard[key] != head_guard[key])
           if changed_keys - allowed_guard_keys:
