@@ -387,7 +387,7 @@ jobs:
           print(compute_fingerprint(Path("."), manifest))
           PY
           )"
-            for failed_run_id in $(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .name == "Shadowrocket Deterministic Domain Audit (User Config Baseline)" and .conclusion == "failure")] | sort_by(.id) | reverse | .[].id' <<< "$runs"); do
+            for failed_run_id in $(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .name == "Shadowrocket Deterministic Domain Audit (User Config Baseline)" and .conclusion == "failure")] | sort_by(.id) | reverse | .[:20][]' <<< "$runs"); do
               failed_jobs="$(gh api "repos/$REPO/actions/runs/$failed_run_id/jobs?per_page=100" 2>/dev/null || true)"
               if [ -z "$failed_jobs" ] || ! jq -e '[.jobs[]?.steps[]? | select(.name == "Stop stale audit before expensive deterministic review" and .conclusion == "failure")] | length == 1' <<< "$failed_jobs" >/dev/null; then
                 continue
@@ -436,7 +436,8 @@ jobs:
 
               if jq -e --arg fingerprint "$current_fingerprint" '
                 [.tasks[] | select(
-                  .input.production_fingerprint == $fingerprint
+                  .target_program_id == "workflow_auto_sync"
+                  and .input.production_fingerprint == $fingerprint
                   and (.status == "QUEUED" or .status == "CLAIMED" or .status == "VERIFYING"
                        or (.status == "SUCCEEDED" and .verification.status == "passed"))
                 )] | length > 0
@@ -446,7 +447,17 @@ jobs:
                 exit 0
               fi
 
-              recovery_dispatch_mode="$(jq -r '.dispatch_mode // "hold"' automation/production_control.json)"
+              recovery_dispatch_mode="$(python3 - <<'PY'
+          import json
+          from pathlib import Path
+          try:
+              control = json.loads(Path("automation/production_control.json").read_text(encoding="utf-8"))
+          except (OSError, json.JSONDecodeError):
+              control = {}
+          mode = control.get("dispatch_mode") if isinstance(control, dict) and type(control.get("schema_version")) is int and control.get("schema_version") == 1 else "hold"
+          print(mode if mode in {"enabled", "hold"} else "hold")
+          PY
+          )"
               if [ "$recovery_dispatch_mode" != "enabled" ]; then
                 echo "HOLD: stale-guard reconciliation is classified but automatic dispatch is disabled."
                 echo "block_manifest=true" >> "$GITHUB_OUTPUT"
