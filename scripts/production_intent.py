@@ -120,6 +120,35 @@ def compute_fingerprint(root: Path, manifest: dict) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
+UNFINGERPRINTED_ACTIVE_PRODUCTION = "__unfingerprinted_active_production_task__"
+
+
+def active_production_fingerprints(queue: dict, current_fingerprint: str) -> list[str]:
+    """Return active production fingerprints without letting stale queued work block replacement."""
+    if not isinstance(queue, dict) or not isinstance(queue.get("tasks"), list):
+        raise ValueError("task queue must contain a tasks array")
+    if not isinstance(current_fingerprint, str) or not re.fullmatch(r"[0-9a-f]{64}", current_fingerprint):
+        raise ValueError("current production fingerprint must be a SHA-256 hex digest")
+    active = set()
+    for task in queue["tasks"]:
+        if not isinstance(task, dict) or task.get("target_program_id") != "workflow_auto_sync":
+            continue
+        status = task.get("status")
+        if status not in {"QUEUED", "CLAIMED", "VERIFYING"}:
+            continue
+        payload = task.get("input")
+        fingerprint = payload.get("production_fingerprint") if isinstance(payload, dict) else None
+        # A stale queued task has not acquired execution ownership. It must not
+        # suppress a fresh task for current main; enqueue atomically supersedes it.
+        if (status == "QUEUED" and fingerprint != current_fingerprint
+                and not isinstance(task.get("dispatch_intent"), dict)):
+            continue
+        if not isinstance(fingerprint, str) or not re.fullmatch(r"[0-9a-f]{64}", fingerprint):
+            active.add(UNFINGERPRINTED_ACTIVE_PRODUCTION)
+        else:
+            active.add(fingerprint)
+    return sorted(active)
+
 def compute_output_fingerprint(root: Path) -> str:
     """Fingerprint the three published policy outputs independently of input state."""
     entries = {}
