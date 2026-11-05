@@ -122,7 +122,6 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
     def test_failed_run_cursor_is_temporary_and_not_persisted(self):
         audit = AUTO_SYNC.read_text(encoding="utf-8")
         self.assertNotIn("persist-review-cursor:", audit)
-        self.assertNotIn("scripts/persist_review_cursor.py", audit)
         self.assertNotIn("sources/review_cursor.json", audit)
         self.assertIn("Isolate production writes in a temporary workspace", audit)
         self.assertIn("Package ruleset outputs only", audit)

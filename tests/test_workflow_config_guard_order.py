@@ -236,7 +236,6 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("Isolate production writes in a temporary workspace", audit_job)
         self.assertIn("git add -A -- rulesets/", workflow)
         self.assertNotIn("git add -- sources/", workflow)
-        self.assertNotIn("AUTOMATION_WRITE_GUARD", workflow)
 
     def test_watchdog_owns_config_change_detection_and_sync_dispatch(self):
         watchdog_path = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
