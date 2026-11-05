@@ -125,7 +125,7 @@
               },
               "workflow_name": {
                 "type": "string",
-                "const": "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
+                "const": "Shadowrocket Source Discovery (Watchdog)"
               },
               "workflow_run_id": {
                 "type": "string"
@@ -290,7 +290,7 @@
       "dependency_contract": {
         "predecessor_program_id": "script_discover_sources",
         "artifact_path": "sources/discovered_sources.json",
-        "producer_workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
+        "producer_workflow_name": "Shadowrocket Source Discovery (Watchdog)",
         "edge_type": "intended_successful_workflow_run_with_immutable_artifact_digest",
         "enforcement": "Watchdog workflow_run event gate accepts only a successful main-branch run of the exact discovery-producing production workflow, binds the numeric run ID and head SHA, hashes the current discovered_sources artifact, and enqueues an idempotent source-assessment task through the durable scheduler queue."
       }
