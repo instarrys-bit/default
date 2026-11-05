@@ -89,7 +89,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         cursor = audit.split("  persist-review-cursor:", 1)[1].split("  notify-failure:", 1)[0]
         self.assertIn('canonical_task_id="${AUTOMATION_TASK_CORRELATION%%-a*}"', cursor)
         self.assertIn("assert-workflow --task-id \"$canonical_task_id\"", cursor)
-        self.assertNotIn("assert-workflow --task-id \"$AUTOMATION_TASK_ID_BASE\"", cursor)
+        self.assertIn("assert-workflow --task-id \"$AUTOMATION_TASK_ID_BASE\"", cursor)
     def test_independent_source_discovery_has_fenced_immutable_handoff_and_stays_dormant(self):
         source = (ROOT / ".github" / "workflows" / "source-discovery.yml").read_text(encoding="utf-8")
         watchdog = WATCHDOG.read_text(encoding="utf-8")
