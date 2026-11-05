@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "62bdb048f451a4b2c7495b69e406721c04c65660",
+  "workflow_blob_sha": "fe73eaf8f4371f66bfd6b6084dc3317dcb6db045",
   "registry_blob_sha": "be1d66b1b3eea7ee5dfcc32123fc3d231655345f",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
-    "job_count": 6,
-    "step_count": 61,
+    "job_count": 5,
+    "step_count": 45,
     "independent_python_dispatch_enabled": false,
     "independent_workflow_count": 1
   },
