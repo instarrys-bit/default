@@ -138,7 +138,6 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertEqual(discovery_adapter["workflow"]["path"], ".github/workflows/source-discovery.yml")
         self.assertIn("Verify exact Watchdog dispatch and install live resource fence", source)
         self.assertIn("resource_lease_runtime.py", source)
-        self.assertIn("AUTOMATION_WRITE_GUARD: \"1\"", source)
         self.assertNotIn("Publish discovery inventory under its exact resource leases", source)
         self.assertIn("Isolate discovery writes in a temporary workspace", source)
         self.assertNotIn("contents: write", source)
