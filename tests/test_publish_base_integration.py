@@ -203,6 +203,23 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("No declared production inputs changed", result.stdout)
 
+    def test_manifest_classified_control_plane_changes_do_not_invalidate_audit(self):
+        compare = {
+            "status": "ahead",
+            "files": [
+                {"filename": "automation/production_workflow_map.json", "status": "modified"},
+                {"filename": "automation/release_manifest.json", "status": "modified"},
+                {"filename": "automation/resource_write_sets.json", "status": "modified"},
+                {"filename": "automation/capability_contract_inventory.json", "status": "modified"},
+                {"filename": "automation/resource_ownership_audit.json", "status": "modified"},
+                {"filename": "scripts/resource_lease_runtime.py", "status": "modified"},
+                {"filename": ".github/workflows/automation-watchdog.yml", "status": "modified"},
+            ],
+        }
+        result = self.run_check_only(compare)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("No declared production inputs changed", result.stdout)
+
     def test_declared_production_input_change_requires_new_audit(self):
         compare = {
             "status": "ahead",
