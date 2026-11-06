@@ -7,7 +7,7 @@
 | Repository | Parser candidate | Policy candidate | Domain entries | Drift | Evidence |
 |---|---|---|---:|---|---|
 | ZingyAwesome/easylists-for-pihole | domain-only | — | 40561 | baseline_initialized | none |
-| ZingyAwesome/easylists-for-pihole | domain-only | — | 5709 | baseline_initialized | none |
+| ZingyAwesome/easylists-for-pihole | domain-only | — | 5715 | baseline_initialized | none |
 | ZingyAwesome/easylists-for-pihole | domain-only | — | 22 | baseline_initialized | none |
 | ZingyAwesome/easylists-for-pihole | domain-only | — | 23 | baseline_initialized | none |
 | ZingyAwesome/easylists-for-pihole | domain-only | — | 5297 | baseline_initialized | none |
@@ -5011,7 +5011,7 @@
 
 - New source files: 4733
 - Changed source files: 251
-- Added domain entries: 5101398
+- Added domain entries: 5101404
 - Removed domain entries: 0
 - Policy changes: 0
 
@@ -5029,8 +5029,8 @@
 ### ZingyAwesome/easylists-for-pihole
 
 - URL: https://raw.githubusercontent.com/ZingyAwesome/easylists-for-pihole/master/language/chinese.txt
-- SHA-256: 87da4ada085bb92b16531d4e52894a8233747c38847d7c1a63d4b05082422948
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 5709; duplicate lines: 0
+- SHA-256: 2692755a0d52ed6050af53d3e7e724031164db4d597a250b7cb9f6557d9530a6
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 5715; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}
 - Policy evidence: none; candidate: none
