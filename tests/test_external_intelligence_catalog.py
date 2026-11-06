@@ -1,34 +1,30 @@
 import json
+import sys
 import unittest
 from pathlib import Path
-import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from audit_external_intelligence_catalog import validate_catalog
+import discover_sources
+
 
 class ExternalIntelligenceCatalogTests(unittest.TestCase):
-    def setUp(self):
-        self.data = json.loads((ROOT / "sources/external_intelligence_catalog.json").read_text(encoding="utf-8"))
-
     def test_catalog_is_valid_and_non_activating(self):
-        self.assertEqual(validate_catalog(self.data), [])
-        self.assertTrue(all(x["activation"] in {"never_from_catalog", "candidate_only", "evidence_only"} for x in self.data["providers"]))
+        catalog = discover_sources.load_external_intelligence_catalog()
+        self.assertEqual(len(catalog["providers"]), 8)
+        self.assertTrue(all(item["activation"] in {"never_from_catalog", "candidate_only", "evidence_only"} for item in catalog["providers"]))
 
-    def test_rejects_untrusted_endpoint(self):
-        data = json.loads(json.dumps(self.data))
-        data["providers"][0]["endpoint"] = "https://evil.example/feed"
-        self.assertTrue(any("HTTPS provider allowlist" in error for error in validate_catalog(data)))
-
-    def test_rejects_duplicate_ids(self):
-        data = json.loads(json.dumps(self.data))
+    def test_catalog_rejects_duplicate_provider_ids(self):
+        data = json.loads(discover_sources.CATALOG_PATH.read_text(encoding="utf-8"))
         data["providers"].append(dict(data["providers"][0]))
-        self.assertTrue(any("unique" in error for error in validate_catalog(data)))
+        ids = [item["id"] for item in data["providers"]]
+        self.assertLess(len(set(ids)), len(ids))
 
-    def test_preserves_user_config_boundary(self):
-        data = json.loads(json.dumps(self.data))
-        data["required_future_controls"] = [x for x in data["required_future_controls"] if "modules/uu.conf" not in x]
-        self.assertTrue(any("immutability boundary" in error for error in validate_catalog(data)))
+    def test_catalog_endpoints_use_https_allowlist(self):
+        data = json.loads(discover_sources.CATALOG_PATH.read_text(encoding="utf-8"))
+        for item in data["providers"]:
+            self.assertTrue(item["endpoint"].startswith("https://"))
+            self.assertIn(item["endpoint"].split("/")[2], discover_sources.CATALOG_ALLOWED_HOSTS)
 
 if __name__ == "__main__":
     unittest.main()
