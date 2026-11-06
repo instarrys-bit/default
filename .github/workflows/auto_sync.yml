@@ -418,6 +418,8 @@ jobs:
 
       - name: Build standalone DIRECT, PROXY and REJECT rule sets
         run: python3 scripts/build_rulesets.py
+      - name: Summarize REJECT secondary screening
+        run: python3 scripts/append_step_summary.py --input reports/reject-secondary-review.md
 
       - name: Evaluate lifecycle milestones and monthly capacity review
         run: python3 scripts/lifecycle_gate.py
@@ -589,6 +591,7 @@ jobs:
             reports/source-assessment.md
             reports/source-candidate-matrix.md
             reports/source-activation.md
+            reports/reject-secondary-review.md
             reports/policy-source-overlap.md
             sources/policy_source_overlap.json
             data/domain_candidates.json
