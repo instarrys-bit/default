@@ -20,7 +20,7 @@
       "automation/execution_adapters.json"
     ],
     "reviewed_at": "2026-11-06",
-    "validation_status": "Static source edits are present on the review branch. GitHub Actions and full test-suite results are not yet verified.",
+    "validation_status": "Static cleanup is on the review branch. GitHub Actions and full test-suite results remain pending.",
     "limitations": "This is a static ownership review. It does not claim that Actions has passed, that all dynamic Python writes were runtime-observed, or that the production device behavior was tested."
   },
   "protected_resources": {
@@ -40,7 +40,8 @@
       "auto_sync copies the checkout into RUNNER_TEMP and runs production commands from that isolated copy",
       "the audit artifact packages rulesets/** only",
       "restore_automation_state.py rejects every archive member outside rulesets/** before restoring",
-      "the publish job stages rulesets/** only and rejects every staged path outside rulesets/**"
+      "the publish job stages rulesets/** only and rejects every staged path outside rulesets/**",
+      "No filesystem write guard or per-write audit hook is installed; the boundary is enforced by runner workspace isolation, rulesets-only artifact validation, and explicit publisher path allowlisting."
     ],
     "excluded_from_repository_publication": [
       "sources/**",

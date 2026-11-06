@@ -574,17 +574,17 @@
       "program_id": "script_deterministic_review",
       "source": "scripts/deterministic_review.py",
       "writes": [
-        "sources/domain_reviews.json (JSON document or manifest/shard/staging children)",
-        "sources/review_cursor.json",
-        "sources/review_cursor.json.tmp"
+        "$RUNNER_TEMP/production-workspace/sources/domain_reviews.json (JSON document or manifest/shard/staging children)",
+        "$RUNNER_TEMP/production-workspace/sources/review_cursor.json",
+        "$RUNNER_TEMP/production-workspace/sources/review_cursor.json.tmp"
       ],
       "document_store": [
         "sources/domain_reviews.json"
       ],
       "dynamic_children": [
-        "sources/domain_reviews.json.manifest.json",
-        "sources/domain_reviews.json.parts-<digest>/part-*.jsonl",
-        "sources/domain_reviews.json.parts.tmp-*"
+        "$RUNNER_TEMP/production-workspace/sources/domain_reviews.json.manifest.json",
+        "$RUNNER_TEMP/production-workspace/sources/domain_reviews.json.parts-<digest>/part-*.jsonl",
+        "$RUNNER_TEMP/production-workspace/sources/domain_reviews.json.parts.tmp-*"
       ],
       "read_resources": [
         "modules/uu.conf",
@@ -601,8 +601,8 @@
       "side_effects": [
         "Resumable deterministic review; updates the review cursor and ledger in bounded checkpoints."
       ],
-      "evidence": "main() checkpoints sources/domain_reviews.json through write_document with lease_required defaulting to false and writes sources/review_cursor.json through atomic_json using a sibling .tmp file and replace.",
-      "write_boundary_fencing": "Runtime writes are confined to the isolated RUNNER_TEMP workspace and are not published to repository paths.",
+      "evidence": "main() checkpoints the review ledger and cursor inside the isolated RUNNER_TEMP production workspace. Neither path is included in the rulesets-only artifact or repository publication.",
+      "write_boundary_fencing": "Run-scoped temporary workspace only; the publisher restores and stages rulesets/** exclusively.",
       "lease_keys": [
         "logical/production-pipeline"
       ],
@@ -1200,8 +1200,8 @@
       ],
       "lock_key": "logical/production-pipeline",
       "mode": "exclusive",
-      "enforcement": "durable task queue lease with monotonically increasing fencing token; publish gate re-reads live queue before git push",
-      "note": "Shared coarse mutex serializes workflow_auto_sync with the independently scheduled source assessor; each JSON/report output also has its own logical resource lease. The allowlisted publish restore is invoked by workflow_auto_sync and is implemented by script_restore_automation_state under this same mutex."
+      "enforcement": "GitHub Actions main-writer concurrency serializes production workflow runs. Production file writes occur in an isolated RUNNER_TEMP workspace; the publisher restores and stages rulesets/** only.",
+      "note": "This is a workflow-level serialization boundary, not a per-file filesystem guard. Task-queue and Watchdog control-plane updates remain separate."
     },
     {
       "resource": "owner-approved config baseline metadata",
@@ -1217,7 +1217,7 @@
       ],
       "lock_key": "logical/production-pipeline",
       "mode": "exclusive",
-      "enforcement": "The production registration step runs only after Watchdog task and live resource lease verification. The central write guard checks the live fencing token before each local file mutation; the publish step re-reads and asserts the same lease immediately before the non-force main push. Validation-workflow copies are runner-local and have contents:read only.",
+      "enforcement": "The production registration step runs only after Watchdog task and live resource lease verification. The isolated temporary workspace and rulesets-only publisher checks the live fencing token before each local file mutation; the publish step re-reads and asserts the same lease immediately before the non-force main push. Validation-workflow copies are runner-local and have contents:read only.",
       "note": "These files hold the approval record and derived pins for the exact owner-authored modules/uu.conf blob. Historical state restoration is not permitted to replace sources/policy.json or the release-pin metadata."
     },
     {
@@ -1323,23 +1323,8 @@
       ],
       "lock_key": "resource:sources/rule_provenance.json",
       "mode": "exclusive",
-      "enforcement": "Current production writes are serialized by the auto_sync logical/production-pipeline lease and central write guard. build_rule_provenance uses write_document with lease_required default false; restore uses explicit allowlisted archive paths.",
+      "enforcement": "Current production writes are serialized by the auto_sync logical/production-pipeline lease and isolated temporary workspace and rulesets-only publisher. build_rule_provenance uses write_document with lease_required default false; restore uses explicit allowlisted archive paths.",
       "note": "Lease must cover base file, manifest, shard set, staging, atomic switch and cleanup."
-    },
-    {
-      "resource": "sources/review_cursor.json",
-      "paths": [
-        "sources/review_cursor.json"
-      ],
-      "writers": [
-        "script_deterministic_review",
-        "script_restore_automation_state",
-        "workflow_auto_sync"
-      ],
-      "lock_key": "logical/production-pipeline + sources/review_cursor.json",
-      "mode": "exclusive",
-      "enforcement": "The Watchdog-dispatched production task holds both logical/production-pipeline and sources/review_cursor.json fencing leases. The failed-run recovery job revalidates the exact live task proof before mutation and shares the shadowrocket-main-writer concurrency group.",
-      "note": "The failed/cancelled audit cursor is validated and persisted only to the canonical checkpoint path. No other repository path is staged by the recovery job."
     }
   ],
   "not_yet_proven": [
@@ -1359,7 +1344,7 @@
     "program_registry_blob_sha": "be1d66b1b3eea7ee5dfcc32123fc3d231655345f",
     "execution_adapters_blob_sha": "eac403442c8e303bf772146196fef5b909ec3da3",
     "added_after_release_baseline": true,
-    "note": "Static write-set inventory is reconciled to the current program registry and execution adapters. Production execution uses an isolated RUNNER_TEMP workspace; only rulesets/** is included in the production artifact and repository publication. Watchdog task-queue state remains a separate control-plane writer.",
+    "note": "No filesystem write guard is installed. Production runs in RUNNER_TEMP and publishes rulesets/** only. Workflow concurrency serializes the main publisher; Watchdog queue CAS protects separate control-plane state.",
     "reviewed_at": "2026-11-05"
   },
   "scheduler_lock_contract": {

@@ -113,7 +113,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
 
     def test_publisher_stages_rulesets_and_nothing_else(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        publish = workflow.split("      - name: Verify base commit and safely publish allowlisted outputs", 1)[1]
+        publish = workflow.split("      - name: Verify base commit and publish rulesets only", 1)[1]
         self.assertIn("git add -A -- rulesets/", publish)
         self.assertIn('case "$path" in', publish)
         self.assertIn("rulesets/*)", publish)

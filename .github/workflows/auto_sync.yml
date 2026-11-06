@@ -340,15 +340,6 @@ jobs:
       - name: "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services"
         run: python3 scripts/deterministic_review.py
 
-      - name: Preserve resumable review cursor checkpoint
-        if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: review-cursor-checkpoint
-          path: sources/review_cursor.json
-          if-no-files-found: ignore
-          retention-days: 90
-
       - name: Build standalone DIRECT, PROXY and REJECT rule sets
         run: python3 scripts/build_rulesets.py
 
