@@ -461,16 +461,20 @@
       "id": "script_discover_sources",
       "path": "scripts/discover_sources.py",
       "kind": "python_component",
-      "responsibility": "discover candidate public source repositories without activating them",
+      "responsibility": "discover public rule-source repositories and collect bounded, typed external intelligence observations without policy activation",
       "capabilities": [
-        "source_discovery"
+        "source_discovery",
+        "external_intelligence_acquisition",
+        "typed_evidence_provenance"
       ],
       "invocation": "python_module_or_workflow_step",
       "inputs": [
-        "CLI arguments and/or imported Python inputs as defined by the implementation"
+        "CLI arguments and/or imported Python inputs as defined by the implementation",
+        "validated external provider catalog; bounded public feeds; optional explicit CT domain and RIPEstat resource query inputs"
       ],
       "outputs": [
-        "Return values and/or repository artifacts as defined by the implementation"
+        "Return values and/or repository artifacts as defined by the implementation",
+        "sources/discovered_sources.json external_intelligence section with typed observations, provider status, retrieval timestamps and SHA-256 provenance; no routing policy inference"
       ],
       "depends_on": [],
       "dispatches": [],
