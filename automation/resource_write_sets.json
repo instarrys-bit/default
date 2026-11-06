@@ -1454,7 +1454,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
-    "release_manifest_blob_sha": "373472d2dfd7618440b1c6e9d4816c787d295b59",
+    "release_manifest_blob_sha": "fa41e5f833c8e780e422016b76c8ffbb102e40be",
     "program_registry_blob_sha": "98aeec935bd79db0ed4f9135604473ac79b30997",
     "execution_adapters_blob_sha": "e68fc9c681743a008818ca85adfc2d78bae8c223",
     "added_after_release_baseline": true,
@@ -1737,23 +1737,6 @@
       ],
       "fence": "task_scheduler.py persists through the GitHub Contents SHA-CAS queue store; candidate queue validation runs before and after mutation, and source-assessment:<workflow_run_id> is the idempotency key. The step is gated by exact successful main-branch producer evidence and by both Assessment adapter/orchestration caller gates.",
       "boundary": "Durable control-plane task enqueue only. It does not run Assessment in this step or publish routing rules; Assessment remains disabled until the independent DAG is explicitly authorized."
-    },
-    {
-      "workflow_path": ".github/workflows/automation-watchdog.yml",
-      "step_name": "Reconcile only owner-approved baseline metadata",
-      "mutation_kinds": [
-        "git_add",
-        "git_commit",
-        "git_push"
-      ],
-      "resources": [
-        "sources/policy.json",
-        "automation/release_manifest.json",
-        "automation/production_workflow_map.json",
-        "automation/resource_write_sets.json"
-      ],
-      "fence": "Runs before health-check under the shared Watchdog control-plane concurrency group. register_config_baseline.py accepts only repository-owner-authored uu.conf changes on the exact triggering main snapshot (or owner-verified intervening history on scheduled reconciliation); the step enforces an exact four-file metadata staging allowlist and verifies modules/uu.conf is unchanged before non-force push.",
-      "boundary": "Watchdog-only owner-baseline metadata registration. No configuration content or rule-set output is writable in this step; production scheduling waits for successful completion."
     }
   ],
   "workflow_native_scan": {
