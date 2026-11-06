@@ -14,11 +14,11 @@
     },
     "logical/production-pipeline": {
       "acquired_at": "2026-11-06T07:19:10Z",
-      "expires_at": "2026-11-06T13:19:10Z",
+      "expires_at": "2026-11-06T13:19:12Z",
       "fencing_token": 22,
       "lease_id": "9fd6715926c7187af9920e78ca74ddd8",
       "released_at": null,
-      "renewed_at": "2026-11-06T07:19:10Z",
+      "renewed_at": "2026-11-06T07:19:12Z",
       "status": "ACTIVE",
       "task_id": "task_85dd5821ad564d9c8fccea47",
       "task_lease_token": "ec6e3d4226e61250fe4ab83d9bd8acd1",
@@ -38,11 +38,11 @@
     },
     "reports/source-discovery.md": {
       "acquired_at": "2026-11-06T07:19:10Z",
-      "expires_at": "2026-11-06T13:19:10Z",
+      "expires_at": "2026-11-06T13:19:12Z",
       "fencing_token": 17,
       "lease_id": "9fd6715926c7187af9920e78ca74ddd8",
       "released_at": null,
-      "renewed_at": "2026-11-06T07:19:10Z",
+      "renewed_at": "2026-11-06T07:19:12Z",
       "status": "ACTIVE",
       "task_id": "task_85dd5821ad564d9c8fccea47",
       "task_lease_token": "ec6e3d4226e61250fe4ab83d9bd8acd1",
@@ -50,11 +50,11 @@
     },
     "sources/discovered_sources.json": {
       "acquired_at": "2026-11-06T07:19:10Z",
-      "expires_at": "2026-11-06T13:19:10Z",
+      "expires_at": "2026-11-06T13:19:12Z",
       "fencing_token": 17,
       "lease_id": "9fd6715926c7187af9920e78ca74ddd8",
       "released_at": null,
-      "renewed_at": "2026-11-06T07:19:10Z",
+      "renewed_at": "2026-11-06T07:19:12Z",
       "status": "ACTIVE",
       "task_id": "task_85dd5821ad564d9c8fccea47",
       "task_lease_token": "ec6e3d4226e61250fe4ab83d9bd8acd1",
@@ -62,11 +62,11 @@
     },
     "sources/review_cursor.json": {
       "acquired_at": "2026-11-06T07:19:10Z",
-      "expires_at": "2026-11-06T13:19:10Z",
+      "expires_at": "2026-11-06T13:19:12Z",
       "fencing_token": 19,
       "lease_id": "9fd6715926c7187af9920e78ca74ddd8",
       "released_at": null,
-      "renewed_at": "2026-11-06T07:19:10Z",
+      "renewed_at": "2026-11-06T07:19:12Z",
       "status": "ACTIVE",
       "task_id": "task_85dd5821ad564d9c8fccea47",
       "task_lease_token": "ec6e3d4226e61250fe4ab83d9bd8acd1",
@@ -85,7 +85,7 @@
       "worker_id": "assessment-canary-41746911914"
     }
   },
-  "revision": 201,
+  "revision": 202,
   "schema_version": 1,
   "tasks": [
     {
@@ -1333,18 +1333,14 @@
         "production_reason": "a registered production input changed; prior success for the same fingerprint does not prove current state is reconciled"
       },
       "last_error": null,
-      "lease": {
-        "expires_at": "2026-11-06T13:19:10Z",
-        "owner": "42179999564",
-        "token": "ec6e3d4226e61250fe4ab83d9bd8acd1"
-      },
+      "lease": null,
       "max_attempts": 2,
       "not_before": "2026-11-06T07:18:52Z",
       "priority": 100,
       "requester_program_id": "workflow_automation_watchdog",
       "resource_lease": {
         "acquired_at": "2026-11-06T07:19:10Z",
-        "expires_at": "2026-11-06T13:19:10Z",
+        "expires_at": "2026-11-06T13:19:12Z",
         "lease_seconds": 21600,
         "resources": {
           "logical/production-pipeline": {
@@ -1366,15 +1362,29 @@
         },
         "status": "ACTIVE"
       },
-      "result": null,
+      "result": {
+        "correlation_id": "task_85dd5821ad564d9c8fccea47-a1",
+        "correlation_title": "Automation task task_85dd5821ad564d9c8fccea47-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-06T07:19:12Z",
+        "ref": "main",
+        "requested_head_sha": "f735f12333b023d46d5abc5103817f7b4119d6b5",
+        "submitted_at": "2026-11-06T07:19:15Z",
+        "task_id": "task_85dd5821ad564d9c8fccea47",
+        "workflow_id": 402712272,
+        "workflow_path": ".github/workflows/auto_sync.yml"
+      },
       "state_history": [
         "QUEUED",
-        "CLAIMED"
+        "CLAIMED",
+        "VERIFYING"
       ],
-      "status": "CLAIMED",
+      "status": "VERIFYING",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_85dd5821ad564d9c8fccea47",
-      "trace_id": "1f72728407ba4f0fa509044e5d751b36"
+      "trace_id": "1f72728407ba4f0fa509044e5d751b36",
+      "verification": null
     }
   ]
 }
