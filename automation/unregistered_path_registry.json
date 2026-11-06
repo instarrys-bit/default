@@ -198,15 +198,16 @@
       "path": "candidates/oiu-conf-merge-additions.patch",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-06T14:42:07.213556Z",
-      "last_seen_at": "2026-11-06T14:42:07.213556Z",
-      "seen_count": 1,
+      "last_seen_at": "2026-11-06T15:10:20.648407Z",
+      "seen_count": 2,
       "observed_run_ids": [
-        "42236212990"
+        "42236212990",
+        "42240481960"
       ],
       "last_seen_event": "push",
-      "last_seen_revision": "4b3d2fc56ae67b93d081ff8e6f167a3805045ae0",
-      "last_seen_run_id": "42236212990",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42236212990"
+      "last_seen_revision": "79ef011de6fac34ac5f42f90193b512ef1f4c4f0",
+      "last_seen_run_id": "42240481960",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42240481960"
     },
     {
       "path": "candidates/ss.conf.oiu-fusion-candidate",
@@ -520,29 +521,31 @@
       "path": "scripts/capture_git_write_trace.py",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-06T14:42:07.213556Z",
-      "last_seen_at": "2026-11-06T14:42:07.213556Z",
-      "seen_count": 1,
+      "last_seen_at": "2026-11-06T15:10:20.648407Z",
+      "seen_count": 2,
       "observed_run_ids": [
-        "42236212990"
+        "42236212990",
+        "42240481960"
       ],
       "last_seen_event": "push",
-      "last_seen_revision": "4b3d2fc56ae67b93d081ff8e6f167a3805045ae0",
-      "last_seen_run_id": "42236212990",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42236212990"
+      "last_seen_revision": "79ef011de6fac34ac5f42f90193b512ef1f4c4f0",
+      "last_seen_run_id": "42240481960",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42240481960"
     },
     {
       "path": "scripts/fenced_file_writer.py",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-06T14:42:07.213556Z",
-      "last_seen_at": "2026-11-06T14:42:07.213556Z",
-      "seen_count": 1,
+      "last_seen_at": "2026-11-06T15:10:20.648407Z",
+      "seen_count": 2,
       "observed_run_ids": [
-        "42236212990"
+        "42236212990",
+        "42240481960"
       ],
       "last_seen_event": "push",
-      "last_seen_revision": "4b3d2fc56ae67b93d081ff8e6f167a3805045ae0",
-      "last_seen_run_id": "42236212990",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42236212990"
+      "last_seen_revision": "79ef011de6fac34ac5f42f90193b512ef1f4c4f0",
+      "last_seen_run_id": "42240481960",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42240481960"
     },
     {
       "path": "scripts/resource_lease_runtime.py",
@@ -667,5 +670,5 @@
       "classification_basis": "scripts/discover_sources.py loads and validates this catalog, then uses its provider IDs, endpoints, data types and activation boundaries to drive bounded external collection. Changes can alter source observations and later ruleset evidence, so this exact path is a production input. The catalog does not itself assign DIRECT/PROXY/REJECT policy or authorize publication."
     }
   ],
-  "updated_at": "2026-11-06T14:42:07.213556Z"
+  "updated_at": "2026-11-06T15:10:20.648407Z"
 }
