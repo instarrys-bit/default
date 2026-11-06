@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "purpose": "Non-activating inventory of public intelligence providers for staged multi-source acquisition.",
+  "policy": "Catalog entries are discovery leads only. No provider is fetched, trusted, admitted, or mapped to DIRECT/PROXY/REJECT by this catalog. Every future adapter must implement provider-specific parsing, licensing, provenance, privacy, budgets, and independent verification.",
+  "providers": [
+    {
+      "id": "adguard-filters",
+      "category": "open_source_rules",
+      "provider": "AdGuard",
+      "endpoint": "https://github.com/AdguardTeam/AdGuardFilters",
+      "data_types": [
+        "adblock",
+        "domain"
+      ],
+      "integration_status": "github_discovery_supported",
+      "activation": "never_from_catalog"
+    },
+    {
+      "id": "urlhaus",
+      "category": "threat_intelligence",
+      "provider": "abuse.ch",
+      "endpoint": "https://urlhaus.abuse.ch/downloads/",
+      "data_types": [
+        "malware_url",
+        "host_observation"
+      ],
+      "integration_status": "adapter_required",
+      "activation": "candidate_only"
+    },
+    {
+      "id": "openphish",
+      "category": "threat_intelligence",
+      "provider": "OpenPhish",
+      "endpoint": "https://openphish.com/feed.txt",
+      "data_types": [
+        "phishing_url",
+        "host_observation"
+      ],
+      "integration_status": "adapter_required",
+      "activation": "candidate_only"
+    },
+    {
+      "id": "cert-transparency",
+      "category": "dns_domain_intelligence",
+      "provider": "Certificate Transparency via crt.sh",
+      "endpoint": "https://crt.sh/",
+      "data_types": [
+        "certificate_names",
+        "domain_observation"
+      ],
+      "integration_status": "query_adapter_required",
+      "activation": "candidate_only"
+    },
+    {
+      "id": "ripestat",
+      "category": "network_infrastructure",
+      "provider": "RIPE NCC",
+      "endpoint": "https://stat.ripe.net/data/",
+      "data_types": [
+        "asn",
+        "ip_prefix",
+        "network_owner"
+      ],
+      "integration_status": "api_adapter_required",
+      "activation": "evidence_only"
+    },
+    {
+      "id": "iana-root-zone",
+      "category": "official_registry",
+      "provider": "IANA",
+      "endpoint": "https://www.iana.org/domains/root/db",
+      "data_types": [
+        "tld_registry"
+      ],
+      "integration_status": "adapter_required",
+      "activation": "evidence_only"
+    },
+    {
+      "id": "gitlab-projects",
+      "category": "open_source_rules",
+      "provider": "GitLab",
+      "endpoint": "https://gitlab.com/api/v4/projects",
+      "data_types": [
+        "repository_metadata",
+        "rule_list_candidates"
+      ],
+      "integration_status": "discovery_adapter_required",
+      "activation": "never_from_catalog"
+    },
+    {
+      "id": "codeberg-repositories",
+      "category": "open_source_rules",
+      "provider": "Codeberg",
+      "endpoint": "https://codeberg.org/api/v1/repos/search",
+      "data_types": [
+        "repository_metadata",
+        "rule_list_candidates"
+      ],
+      "integration_status": "discovery_adapter_required",
+      "activation": "never_from_catalog"
+    }
+  ],
+  "required_future_controls": [
+    "provider-specific HTTPS host allowlists and redirect validation",
+    "bounded response sizes, timeouts, pagination, retries and per-provider budgets",
+    "license and terms review before persistent ingestion",
+    "publisher identity, source timestamp, retrieval timestamp and SHA-256 provenance",
+    "upstream lineage and independence-group analysis",
+    "separate domain, URL, DNS, certificate, ASN and IP data models",
+    "no direct policy inference from geography, ASN, certificate, or threat-feed membership alone",
+    "candidate-only quarantine until deterministic policy evidence and independent verification pass",
+    "no writes to modules/uu.conf or user configuration; production output remains limited to authorized rule sets"
+  ]
+}
