@@ -7,7 +7,7 @@ sys.path.insert(0,str(ROOT/"scripts"))
 from deterministic_review import DOMAIN_RE, evidence_gate, inspect, validate_evidence, review_context_fingerprint, candidate_review_fingerprint, publisher_ancestry_pairs
 from domain_rule_engine import RuleIndex, DomainRule, inspect_suffix_scope
 from deterministic_review import CONFIG as REVIEW_CONFIG
-from build_rulesets import CONFIG as RULESET_CONFIG, reject_secondary_decision
+from build_rulesets import CONFIG as RULESET_CONFIG, reject_secondary_decision, reject_queue_entry_authorized
 from select_domain_rules import CONFIG as SELECTOR_CONFIG
 from audit_external_domains import CONFIG as EXTERNAL_AUDIT_CONFIG
 from collect_domains import bootstrap_source_domains, check_source_delta, parse_adblock, parse_domain_list, parse_source
@@ -815,3 +815,24 @@ class RejectSecondaryReviewTests(unittest.TestCase):
         )
         self.assertFalse(result["eligible"])
         self.assertIn("insufficient_current_sources", result["reasons"])
+
+
+class RejectQueueAuthorizationTests(unittest.TestCase):
+    def test_previous_publication_remains_authorized(self):
+        self.assertTrue(reject_queue_entry_authorized(
+            "DOMAIN,ads.example", {"DOMAIN,ads.example"}, set(), set()
+        ))
+
+    def test_manual_approval_alone_cannot_bypass_current_secondary_review(self):
+        self.assertFalse(reject_queue_entry_authorized(
+            "DOMAIN,ads.example", set(), {"DOMAIN,ads.example"}, set()
+        ))
+
+    def test_current_secondary_pass_and_exact_manual_approval_are_both_required(self):
+        line = "DOMAIN,ads.example"
+        self.assertTrue(reject_queue_entry_authorized(
+            line, set(), {line}, {line}
+        ))
+        self.assertFalse(reject_queue_entry_authorized(
+            line, set(), set(), {line}
+        ))
