@@ -292,20 +292,20 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(ownership["status"], "partial_static_audit")
 
 
-    def test_durable_task_queue_writers_are_classified_as_sha_cas_control_plane(self):
+    def test_durable_task_queue_writers_are_classified_as_issue_snapshot_control_plane(self):
         writes = load_json("automation/resource_write_sets.json")
         entries = {item["program_id"]: item for item in writes["confirmed_write_sets"]}
         remote = entries["script_remote_task_queue_runtime"]
         store = entries["script_github_queue_store"]
-        self.assertEqual(remote["writes"], ["automation/task_queue.json"])
-        self.assertEqual(store["writes"], ["automation/task_queue.json"])
-        self.assertEqual(remote["control_plane_consistency"], "sha_cas")
-        self.assertIn("blind writes are prohibited", remote["write_boundary_fencing"])
+        self.assertEqual(remote["writes"], ["GitHub Issue #315 comment snapshots (external durable queue state)"])
+        self.assertEqual(store["writes"], ["GitHub Issue #315 comment snapshots (external durable queue state)"])
+        self.assertEqual(remote["control_plane_consistency"], "append_only_issue_snapshot_chain")
+        self.assertIn("No GitHub Contents API", remote["write_boundary_fencing"])
         group = next(
             item for item in writes["confirmed_shared_write_groups"]
             if item["resource"] == "durable task queue control-plane state"
         )
-        self.assertEqual(group["mode"], "compare_and_swap")
+        self.assertEqual(group["mode"], "append_only_revision_chain")
         self.assertIn("workflow_automation_watchdog", group["writers"])
         self.assertIn("script_resource_lease_runtime", group["writers"])
 

@@ -109,7 +109,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         stale = workflow.split("      - name: Detect stale successful audit and recover", 1)[1].split('          last_success_sha=', 1)[0]
         self.assertIn('runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100"', stale)
         self.assertNotIn("gh api --paginate --slurp", stale)
-        self.assertIn("automation/task_queue.json", stale)
+        self.assertIn("AUTOMATION_QUEUE_SNAPSHOT", stale)
         self.assertIn("last_error.evidence.run_id", stale)
         self.assertIn("Stop stale audit before expensive deterministic review", stale)
         self.assertIn("production:guard-reconciliation:$current_fingerprint:$failed_run_id", stale)
@@ -223,8 +223,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         job_end = workflow.index("  stale-run-watch:", job_start)
         queue_job = workflow[job_start:job_end]
         self.assertIn("      actions: write", queue_job)
-        self.assertIn("      contents: write", queue_job)
-        self.assertNotIn("      issues: write", queue_job)
+        self.assertIn("      contents: read", queue_job)
+        self.assertIn("      issues: write", queue_job)
         self.assertIn("persist-credentials: false", queue_job)
         self.assertIn("GITHUB_TOKEN: ${{ github.token }}", workflow)
         self.assertIn('queue_token="$GITHUB_TOKEN"', workflow)

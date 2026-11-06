@@ -52,7 +52,7 @@
     },
     "environment": {
       "github_token_required": true,
-      "other_environment_inputs": "Read-only GitHub Contents API credential supplied by the parent scheduler to re-read live task/resource lease state before each write; no GitHub API write capability is used by the assessor."
+      "other_environment_inputs": "GitHub Issues API credential for append-only queue snapshots supplied by the parent scheduler to re-read live task/resource lease state before each write; no GitHub API write capability is used by the assessor."
     },
     "task_input": {
       "required": [
@@ -96,7 +96,7 @@
           }
         }
       },
-      "note": "The scheduler validates the predecessor proof. workflow_run_id plus artifact_sha256 deterministically selects the same bounded URL batch on every retry. Each completed URL result, including its domain fingerprints and SHA-256 digest, is persisted immediately in the claimed task's assessment_checkpoint using the durable task queue's Contents-Blob-SHA CAS under the live task/resource fencing proof; a retry restores completed results and fetches only incomplete or failed URLs. Legacy manual execution continues to use the persisted rotation cursor."
+      "note": "The scheduler validates the predecessor proof. workflow_run_id plus artifact_sha256 deterministically selects the same bounded URL batch on every retry. Each completed URL result, including its domain fingerprints and SHA-256 digest, is persisted immediately in the claimed task's assessment_checkpoint using the durable task queue's append-only Issue snapshot chain under the live task/resource fencing proof; a retry restores completed results and fetches only incomplete or failed URLs. Legacy manual execution continues to use the persisted rotation cursor."
     }
   },
   "outputs": {
@@ -202,7 +202,7 @@
     ],
     "independent_verifier": "scripts/verify_assess_sources_artifacts.py independently checks runtime/persistent counts, fingerprints exclusion, report presence and non-activation; scheduler then publishes only the two persistent resources.",
     "remote_fetches_may_repeat": true,
-    "repository_writes": "Each successful URL result is persisted to the task's progress_checkpoint in automation/task_queue.json using atomic Blob-SHA CAS and the active task/resource fencing proof. Final persistent history and report are committed to main after independent verification; runtime fingerprints remain uncommitted."
+    "repository_writes": "Each successful URL result is persisted to the task's progress_checkpoint in GitHub Issue #315 durable queue snapshots (repository bootstrap is read-only) using atomic Issue snapshot chain and the active task/resource fencing proof. Final persistent history and report are committed to main after independent verification; runtime fingerprints remain uncommitted."
   },
   "dependency_edges": {
     "required_predecessor": "script_discover_sources",
@@ -215,7 +215,7 @@
     "scheduler_enforcement": "The Watchdog downloads the artifact using the workflow_run ID, verifies the proof's workflow name, numeric run ID, full producer commit SHA, allowlisted artifact path and complete logical-document digest, then confirms that the current main document has the same digest and producer metadata. enqueue_source_assessment_task checks the digest again, and scheduler.build_execution_plan rejects changed or missing predecessor content before claim."
   },
   "permission_boundary": {
-    "filesystem": "Write only the three declared logical output resources and their document-store temporary/manifest/shard children. The durable per-URL checkpoint is task.assessment_checkpoint in automation/task_queue.json, updated by bounded Contents-Blob-SHA CAS under the active task lease and all declared resource fencing tokens. Publish only persistent assessment history and report; runtime fingerprint data remains runner-local.",
+    "filesystem": "Write only the three declared logical output resources and their document-store temporary/manifest/shard children. The durable per-URL checkpoint is task.assessment_checkpoint in GitHub Issue #315 durable queue snapshots (repository bootstrap is read-only), updated by bounded append-only Issue snapshot chain under the active task lease and all declared resource fencing tokens. Publish only persistent assessment history and report; runtime fingerprint data remains runner-local.",
     "network": "HTTPS raw.githubusercontent.com only, repository-bound URL and same-host redirect checks.",
     "github_api": "Read and CAS-update the durable task queue using the scheduler-supplied token. Per-URL checkpoint mutations are restricted to the currently claimed task and require matching worker/task lease plus live resource fencing tokens; the scheduler separately publishes only allowlisted persistent artifacts via a non-force Git push. The assessor performs no other GitHub API writes.",
     "protected_config": "modules/uu.conf is immutable and outside this capability's write set."
@@ -246,7 +246,7 @@
     "total_attempts_including_initial": true,
     "identity": "workflow_run_id + artifact_sha256",
     "batch_selection": "deterministic stable offset",
-    "resume": "durable per-URL result checkpoint in automation/task_queue.json, atomically updated with queue Blob-SHA CAS under active task/resource fencing",
+    "resume": "durable per-URL result checkpoint in GitHub Issue #315 durable queue snapshots (repository bootstrap is read-only), atomically updated with queue Issue snapshot chain under active task/resource fencing",
     "remote_fetches_may_repeat": "only for URLs not yet checkpointed or whose previous fetch failed before a result was persisted",
     "repository_writes": "per-URL durable queue checkpoint; final verified history/report outputs under live fenced leases"
   }

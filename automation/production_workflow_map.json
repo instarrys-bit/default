@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "3a1332c5cd1872d85a3e37234d16df28ce8cdc16",
+  "workflow_blob_sha": "e5d5a95726a67604d42086208e29f035db60a597",
   "registry_blob_sha": "fcb929288e3252b8376edb40c379a39ea65c0e33",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
@@ -292,7 +292,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
-    "release_manifest_blob_sha": "1a3bbff8dd2c5ebe0f5e5791467023cf2ff23614",
+    "release_manifest_blob_sha": "ebc2492e4c56c58f6795cc729e9b942f0dc83258",
     "program_registry_blob_sha": "fcb929288e3252b8376edb40c379a39ea65c0e33",
     "execution_adapters_blob_sha": "e68fc9c681743a008818ca85adfc2d78bae8c223",
     "added_after_release_baseline": true,
