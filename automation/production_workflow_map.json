@@ -6,7 +6,7 @@
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 2,
-    "step_count": 42,
+    "step_count": 41,
     "independent_python_dispatch_enabled": false,
     "independent_workflow_count": 1
   },
@@ -237,14 +237,6 @@
         },
         {
           "order": 21,
-          "name": "Preserve resumable review cursor checkpoint",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
-          "order": 22,
           "name": "Build standalone DIRECT, PROXY and REJECT rule sets",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -254,7 +246,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 23,
+          "order": 22,
           "name": "Evaluate lifecycle milestones and monthly capacity review",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -264,7 +256,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 24,
+          "order": 23,
           "name": "Run conservative lifecycle audit and selectable restoration",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -275,7 +267,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 25,
+          "order": 24,
           "name": "Reconcile final uu.conf scope coverage after all rule mutations",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -286,7 +278,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 26,
+          "order": 25,
           "name": "Reconcile final RULE-SET manifest counts",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -296,7 +288,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 27,
+          "order": 26,
           "name": "Build append-only rule-level provenance ledger",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -306,7 +298,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 28,
+          "order": 27,
           "name": "Validate Shadowrocket config structure",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -316,7 +308,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 29,
+          "order": 28,
           "name": "Audit RULE-SET references against generated outputs (read-only)",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -327,7 +319,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 30,
+          "order": 29,
           "name": "Audit candidate scope coverage against user config (read-only)",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -338,7 +330,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 31,
+          "order": 30,
           "name": "Audit managed config drift (read-only)",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -349,7 +341,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 32,
+          "order": 31,
           "name": "Run read-only full-source regression audit",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -360,7 +352,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 33,
+          "order": 32,
           "name": "Build consolidated project status",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -371,7 +363,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 34,
+          "order": 33,
           "name": "Write successful audit heartbeat",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -379,7 +371,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 35,
+          "order": 34,
           "name": "Package ruleset outputs only",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -387,7 +379,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 36,
+          "order": 35,
           "name": "Upload ruleset-only artifact",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -471,9 +463,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
-    "release_manifest_blob_sha": "38e26016cbc463c6fc10d4df5a3c92236ee9aa42",
+    "release_manifest_blob_sha": "6bc26f77dbadf41af31a3e2f0381b07090f721d9",
     "program_registry_blob_sha": "29206fcd571df50fce968fcc48d6612dc7dd01ec",
-    "execution_adapters_blob_sha": "887ab8574f3326f5b113fa148dd6c75b25fdc3cd",
+    "execution_adapters_blob_sha": "8d28671f336d73805ca287d63ec706aca86eac0c",
     "added_after_release_baseline": true,
     "note": "Refreshed against the integration branch's current workflow, registry, release manifest and adapter blobs. Independent Python dispatch remains disabled; the source-discovery workflow is implemented but dormant. Static inventory evidence is not execution authorization.",
     "reviewed_at": "2026-11-06",

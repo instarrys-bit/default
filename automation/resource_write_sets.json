@@ -1333,9 +1333,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
-    "release_manifest_blob_sha": "38e26016cbc463c6fc10d4df5a3c92236ee9aa42",
+    "release_manifest_blob_sha": "6bc26f77dbadf41af31a3e2f0381b07090f721d9",
     "program_registry_blob_sha": "29206fcd571df50fce968fcc48d6612dc7dd01ec",
-    "execution_adapters_blob_sha": "887ab8574f3326f5b113fa148dd6c75b25fdc3cd",
+    "execution_adapters_blob_sha": "8d28671f336d73805ca287d63ec706aca86eac0c",
     "added_after_release_baseline": true,
     "note": "No filesystem write guard is installed. Production runs in RUNNER_TEMP and publishes rulesets/** only. Workflow concurrency serializes the main publisher; Watchdog queue CAS protects separate control-plane state.",
     "reviewed_at": "2026-11-06"

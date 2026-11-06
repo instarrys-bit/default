@@ -144,7 +144,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("contents: write", source)
         self.assertIn("Upload immutable discovery artifact and provenance proof", source)
         self.assertIn("source-discovery-output", source)
-        self.assertNotIn("Shadowrocket Source Discovery (Watchdog)", watchdog)
+        self.assertIn('      - "Shadowrocket Source Discovery (Watchdog)"', watchdog)
         self.assertNotIn("Enqueue source assessment after successful discovery workflow", watchdog)
         self.assertIn("enqueue-source-discovery", watchdog)
         self.assertIn("Independent source discovery remains dormant", watchdog)
