@@ -117,6 +117,12 @@ class ExternalIntelligenceCatalogTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "redirect escaped"):
             handler.redirect_request(request, None, 302, "Found", {}, "https://attacker.example/feed")
 
+    def test_external_fetch_rejects_hosts_not_in_provider_allowlist(self):
+        with self.assertRaisesRegex(ValueError, "outside its provider HTTPS boundary"):
+            discover_sources.fetch_external_payload("https://attacker.example/feed", "attacker.example")
+        with self.assertRaisesRegex(ValueError, "not allowlisted"):
+            discover_sources.ProviderRedirectHandler("attacker.example")
+
 
 if __name__ == "__main__":
     unittest.main()
