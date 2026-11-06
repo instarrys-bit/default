@@ -1,6 +1,0 @@
-{
-  "status": "restored",
-  "restored_commit": "e67003d9ce43ac6828e922b6f04c5d0f074726c0",
-  "release_manifest_blob_sha": "efb77e7fa846769c34bcc9051a7cf8a369ee5318",
-  "note": "Placeholder inventory was restored from 0de2e952 with updated release_manifest pin. This meta marks completion."
-}
