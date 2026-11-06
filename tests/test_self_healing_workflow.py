@@ -10,13 +10,19 @@ WATCHDOG = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
 
 
 class SelfHealingWorkflowTests(unittest.TestCase):
-    def test_repository_mutating_workflows_share_the_main_writer_concurrency_group(self):
+    def test_repository_mutators_share_writer_lock_and_intake_is_read_only(self):
         healing = WORKFLOW.read_text(encoding="utf-8")
-        intake = REQUEST_INTAKE.read_text(encoding="utf-8")
         audit = AUTO_SYNC.read_text(encoding="utf-8")
-        for workflow in (healing, intake, audit):
+        intake = REQUEST_INTAKE.read_text(encoding="utf-8")
+        for workflow in (healing, audit):
             self.assertIn("group: shadowrocket-main-writer", workflow)
             self.assertIn("cancel-in-progress: false", workflow)
+        self.assertIn("group: shadowrocket-request-intake", intake)
+        self.assertIn("contents: read", intake)
+        self.assertNotIn("contents: write", intake)
+        self.assertNotIn("git add", intake)
+        self.assertNotIn("git commit", intake)
+        self.assertNotIn("git push", intake)
     def test_repair_is_bounded_and_does_not_auto_merge(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("fix_stale_audit_concurrency_contract", workflow)
@@ -77,30 +83,23 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("GH_TOKEN", repair_step)
         self.assertIn("persist-credentials: false", workflow)
 
-    def test_failed_run_cursor_recovery_persists_only_under_live_watchdog_lease(self):
+    def test_failed_run_has_no_persistent_review_cursor_recovery_writer(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
-        cursor_job = workflow.split("  persist-review-cursor:", 1)[1].split("  notify-failure:", 1)[0]
-        self.assertIn("contents: write", cursor_job)
-        self.assertIn("persist-credentials: true", cursor_job)
-        self.assertIn('destination sources/review_cursor.json', cursor_job)
-        self.assertIn("assert-workflow", cursor_job)
-        self.assertIn("RESOURCE_LEASE_PROOF", cursor_job)
-        workflow_concurrency = workflow.split("jobs:", 1)[0]
-        self.assertIn("group: shadowrocket-main-writer", workflow_concurrency)
-        self.assertNotIn("concurrency:", cursor_job)
-        self.assertIn("git add -- sources/review_cursor.json", cursor_job)
-        self.assertIn("git push origin HEAD:main", cursor_job)
-        self.assertNotIn("modules/uu.conf", cursor_job)
-        self.assertNotIn("register_config_baseline.py", cursor_job)
-
-    def test_missing_or_completed_review_cursor_is_a_successful_noop(self):
+        self.assertNotIn("persist-review-cursor:", workflow)
+        self.assertNotIn("scripts/persist_review_cursor.py", workflow)
+        self.assertNotIn("git add -- sources/review_cursor.json", workflow)
+        self.assertNotIn("review-cursor-checkpoint", workflow)
+        self.assertIn("Isolate production writes in a temporary workspace", workflow)
+        self.assertIn("Package ruleset outputs only", workflow)
+        self.assertIn("git add -A -- rulesets/", workflow)
+    def test_review_cursor_is_run_scoped_and_never_uploaded_or_committed(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
-        self.assertIn("python3 scripts/persist_review_cursor.py", workflow)
-        helper = (ROOT / "scripts" / "persist_review_cursor.py").read_text(encoding="utf-8")
-        self.assertIn('return "missing"', helper)
-        self.assertIn('destination.unlink(missing_ok=True)', helper)
-        self.assertIn('return "complete"', helper)
-
+        self.assertTrue((ROOT / "scripts" / "review_cursor.py").exists())
+        self.assertFalse((ROOT / "scripts" / "persist_review_cursor.py").exists())
+        self.assertNotIn("review-cursor-checkpoint", workflow)
+        self.assertNotIn("Preserve resumable review cursor checkpoint", workflow)
+        self.assertNotIn("git add -- sources/review_cursor.json", workflow)
+        self.assertIn('workspace="$RUNNER_TEMP/production-workspace"', workflow)
     def test_user_owned_config_is_never_added_to_repair_commit(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("expected_staged_path=\".github/workflows/auto_sync.yml\"", workflow)
