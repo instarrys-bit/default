@@ -90,6 +90,13 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn('marker="<!-- shadowrocket-automation:workflow=$workflow_key;run_id=$RUN_ID -->"', healing)
         self.assertIn('--event-id "failure-run-$RUN_ID"', healing)
         self.assertIn('marker="<!-- shadowrocket-automation:agent_failure;workflow=$workflow_key;source_run_id=$SOURCE_RUN_ID -->"', healing)
+    def test_config_drift_audit_is_scoped_to_config_affecting_changes(self):
+        workflow = (ROOT / ".github" / "workflows" / "validate-config.yml").read_text(encoding="utf-8")
+        self.assertIn("id: config-scope", workflow)
+        self.assertIn("modules/uu.conf sources/policy.json scripts/audit_config_drift.py", workflow)
+        self.assertIn("steps.config-scope.outputs.changed == 'true'", workflow)
+        self.assertIn("Recover owner-approved config baseline in validation workspace", workflow)
+        self.assertIn("Verify owner-approved config baseline", workflow)
     def test_production_intermediates_run_only_in_temporary_workspace(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("Isolate production writes in a temporary workspace", workflow)
