@@ -9,6 +9,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: restore-inventory
+  cancel-in-progress: false
+
 jobs:
   restore:
     runs-on: ubuntu-latest
@@ -17,6 +21,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Detect and restore corrupted inventory
         run: |
@@ -65,4 +70,29 @@ jobs:
             exit 0
           fi
           git commit -m "Restore production_workflow_map and resource_write_sets; align release_manifest pin"
-          git push origin HEAD:main
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase origin/main || {
+              git rebase --abort || true
+              git show HEAD:automation/production_workflow_map.json > automation/production_workflow_map.json || true
+              git show HEAD:automation/resource_write_sets.json > automation/resource_write_sets.json || true
+              # Re-apply restored content after rebase abort
+              GOOD_SHA=0de2e952d6b4f07062eeb8dcaa8fd6237bf3a762
+              NEW=efb77e7fa846769c34bcc9051a7cf8a369ee5318
+              OLD=24eb76ce6162da27fdc608105d372356c923eab3
+              git show "$GOOD_SHA:automation/production_workflow_map.json" > automation/production_workflow_map.json
+              git show "$GOOD_SHA:automation/resource_write_sets.json" > automation/resource_write_sets.json
+              python3 -c "from pathlib import Path; OLD='$OLD'; NEW='$NEW';
+[Path(r).write_text(Path(r).read_text().replace(OLD, NEW)) for r in ['automation/production_workflow_map.json','automation/resource_write_sets.json']]"
+              git add automation/production_workflow_map.json automation/resource_write_sets.json
+              git commit -m "Restore production_workflow_map and resource_write_sets; align release_manifest pin" || true
+            }
+            if git push origin HEAD:main; then
+              echo "Push succeeded on attempt $attempt"
+              exit 0
+            fi
+            echo "Push attempt $attempt failed; retrying"
+            sleep 3
+          done
+          echo "Failed to push after retries" >&2
+          exit 1
