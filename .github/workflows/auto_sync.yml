@@ -94,7 +94,7 @@ jobs:
           BASELINE_SOURCE_SHA: ${{ inputs.baseline_source_sha }}
         run: |
           set -euo pipefail
-          python3 scripts/verify_watchdog_dispatch.py
+          python3 automation/helpers/verify_watchdog_dispatch.py
 
       - name: Verify live Watchdog resource lease before production audit
         env:
@@ -125,7 +125,7 @@ jobs:
       - name: Capture and verify the exact production input fingerprint
         env:
           PRODUCTION_FINGERPRINT: ${{ inputs.production_fingerprint }}
-        run: python3 scripts/capture_production_fingerprint.py
+        run: python3 automation/helpers/capture_production_fingerprint.py
 
       - name: Stop stale audit before discovery and source downloads
         env:
@@ -282,13 +282,13 @@ jobs:
           GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_SHA: ${{ github.sha }}
-        run: python3 scripts/write_audit_heartbeat.py
+        run: python3 automation/helpers/write_audit_heartbeat.py
 
       - name: Record durable automation state pointer
         env:
           GITHUB_RUN_ID: ${{ github.run_id }}
           GITHUB_SHA: ${{ github.sha }}
-        run: python3 scripts/record_state_pointer.py
+        run: python3 automation/helpers/record_state_pointer.py
 
       - name: Package allowlisted audit outputs
         run: bash scripts/package_audit_outputs.sh
@@ -323,7 +323,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           AUTOMATION_TASK_ID: ${{ inputs.automation_task_id }}
           RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
-        run: python3 scripts/revalidate_publish_lease.py
+        run: python3 automation/helpers/revalidate_publish_lease.py
 
       - name: Verify live Watchdog resource lease before artifact restoration
         env:
@@ -385,7 +385,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           AUTOMATION_TASK_CORRELATION: ${{ inputs.automation_task_id }}
           RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
-        run: python3 scripts/revalidate_cursor_lease.py
+        run: python3 automation/helpers/revalidate_cursor_lease.py
       - name: Persist only the cursor through the live filesystem fence
         run: python3 scripts/persist_review_cursor.py --cursor-artifact cursor-artifact/review_cursor.json --destination sources/review_cursor.json
       - name: Publish only the cursor checkpoint under the same live fence
