@@ -16,8 +16,6 @@ on:
         description: 'Internal task correlation ID; leave blank for manual runs'
         required: false
         type: string
-  repository_dispatch:
-    types: [automation-production-completed]
   workflow_run:
     workflows:
       - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
