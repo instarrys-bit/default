@@ -1,1 +1,430 @@
-PLACEHOLDER
+# Request observations enter only as unclassified candidates; trusted source evidence controls policy.
+name: Shadowrocket Deterministic Domain Audit (User Config Baseline)
+run-name: Automation task ${{ inputs.automation_task_id || 'manual' }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      restore_ids:
+        description: 'Comma-separated lifecycle deletion IDs to restore (optional)'
+        required: false
+        type: string
+      restore_conflict_ids:
+        description: 'Comma-separated config-conflict archive IDs to restore after rechecking uu.conf (optional)'
+        required: false
+        type: string
+      automation_task_id:
+        description: 'Required Watchdog-owned durable task correlation ID'
+        required: true
+        type: string
+      resource_lease_proof:
+        description: 'Watchdog-issued exclusive production resource lease IDs and fencing tokens'
+        required: true
+        type: string
+      baseline_source_event:
+        description: 'Original event type preserved by the Watchdog queue'
+        required: false
+        type: string
+      baseline_source_actor:
+        description: 'Original actor preserved by the Watchdog queue'
+        required: false
+        type: string
+      baseline_source_before:
+        description: 'Original push before SHA for config baseline registration'
+        required: false
+        type: string
+      baseline_source_sha:
+        description: 'Original push SHA for config baseline registration'
+        required: false
+        type: string
+      production_fingerprint:
+        description: 'Watchdog-computed production input fingerprint'
+        required: false
+        type: string
+      production_decision:
+        description: 'Watchdog production intent decision'
+        required: false
+        type: string
+      production_reason:
+        description: 'Auditable reason for this production task'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shadowrocket-main-writer
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    env:
+      PYTHONPATH: scripts
+      SOURCE_DISCOVERY_MODE: ${{ vars.SOURCE_DISCOVERY_MODE || 'monolithic_fallback' }}
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.11"
+
+      - name: Verify Watchdog-owned durable task dispatch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
+          AUTOMATION_TASK_ID: ${{ inputs.automation_task_id }}
+          PRODUCTION_FINGERPRINT: ${{ inputs.production_fingerprint }}
+          PRODUCTION_DECISION: ${{ inputs.production_decision }}
+          PRODUCTION_REASON: ${{ inputs.production_reason }}
+          BASELINE_SOURCE_EVENT: ${{ inputs.baseline_source_event }}
+          BASELINE_SOURCE_ACTOR: ${{ inputs.baseline_source_actor }}
+          BASELINE_SOURCE_BEFORE: ${{ inputs.baseline_source_before }}
+          BASELINE_SOURCE_SHA: ${{ inputs.baseline_source_sha }}
+        run: |
+          set -euo pipefail
+          python3 scripts/verify_watchdog_dispatch.py
+
+      - name: Verify live Watchdog resource lease before production audit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
+        run: |
+          set -euo pipefail
+          test -n "${AUTOMATION_TASK_ID_BASE:-}"
+          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE" --proof-json "$RESOURCE_LEASE_PROOF"
+
+      - name: Register repository-owner-approved uu.conf changes (never edit the config)
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REF: ${{ github.ref }}
+          GITHUB_EVENT_NAME: ${{ inputs.baseline_source_event || github.event_name }}
+          GITHUB_ACTOR: ${{ inputs.baseline_source_actor || github.actor }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          GITHUB_BEFORE: ${{ inputs.baseline_source_before || github.event.before }}
+          GITHUB_SHA: ${{ inputs.baseline_source_sha || github.sha }}
+        run: python3 scripts/register_config_baseline.py
+
+      - name: Verify registered user config baseline
+        run: python3 scripts/verify_baseline.py --baseline-only
+
+      - name: Capture and verify the exact production input fingerprint
+        env:
+          PRODUCTION_FINGERPRINT: ${{ inputs.production_fingerprint }}
+        run: python3 scripts/capture_production_fingerprint.py
+
+      - name: Stop stale audit before discovery and source downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_SHA: ${{ github.sha }}
+        run: bash scripts/verify_publish_base.sh --check-only
+
+      - name: Compile and run deterministic review tests
+        run: |
+          python3 -m compileall -q scripts tests
+          python3 -m unittest discover -s tests -v
+
+      - name: Discover candidate source repositories (non-activating)
+        if: ${{ env.SOURCE_DISCOVERY_MODE != 'independent' }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 scripts/discover_sources.py
+
+      - name: Assess discovered rule-list syntax and policy claims
+        if: ${{ env.SOURCE_DISCOVERY_MODE != 'independent' }}
+        run: |
+          python3 scripts/assess_sources.py
+          python3 scripts/append_step_summary.py --input reports/source-assessment.md
+
+      - name: Preserve complete source assessment report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: source-assessment-report
+          path: |
+            reports/source-assessment.md
+            sources/source_assessments.json
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Restore prior high-volume automation state
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          CURRENT_RUN_ID: ${{ github.run_id }}
+        run: bash scripts/restore_prior_audit_state.sh
+
+      - name: Remove published and queued rules that conflict with uu.conf
+        env:
+          RULESET_CONFIG_RESTORE_IDS: ${{ github.event.inputs.restore_conflict_ids || '' }}
+          RULESET_CONFIG_REPORT_AGGREGATION: "1"
+        run: |
+          python3 scripts/sync_ruleset_config_conflicts.py
+          python3 scripts/append_step_summary.py --input reports/ruleset-config-conflict-sync.md
+
+      - name: Import observed request hostnames as unclassified candidates
+        run: python3 scripts/import_request_observations.py
+
+      - name: Audit public source lineage and shared upstreams
+        run: python3 scripts/audit_source_lineage.py
+
+      - name: Audit domain-level policy-source overlap and contradictions
+        run: |
+          python3 scripts/audit_policy_source_overlap.py
+          python3 scripts/append_step_summary.py --input reports/policy-source-overlap.md
+
+      - name: Build automated source candidate and lineage matrix
+        run: |
+          python3 scripts/build_source_candidates.py
+          python3 scripts/append_step_summary.py --input reports/source-candidate-matrix.md
+
+      - name: Admit stable policy-evidenced sources without AI review
+        run: |
+          python3 scripts/auto_activate_sources.py
+          python3 scripts/append_step_summary.py --input reports/source-activation.md
+
+      - name: Collect and cross-check all enabled domain sources
+        run: python3 scripts/collect_domains.py
+
+      - name: Stop stale audit before expensive deterministic review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: bash scripts/verify_publish_base.sh --check-only
+
+      - name: "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services"
+        run: python3 scripts/deterministic_review.py
+
+      - name: Preserve resumable review cursor checkpoint
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: review-cursor-checkpoint
+          path: sources/review_cursor.json
+          if-no-files-found: ignore
+          retention-days: 90
+
+      - name: Build standalone DIRECT, PROXY and REJECT rule sets
+        run: python3 scripts/build_rulesets.py
+
+      - name: Summarize REJECT secondary screening
+        run: python3 scripts/append_step_summary.py --input reports/reject-secondary-review.md
+
+      - name: Evaluate lifecycle milestones and monthly capacity review
+        run: python3 scripts/lifecycle_gate.py
+
+      - name: Run conservative lifecycle audit and selectable restoration
+        env:
+          LIFECYCLE_RESTORE_IDS: ${{ github.event.inputs.restore_ids || '' }}
+        run: |
+          python3 scripts/lifecycle_audit.py
+          if [ -f reports/lifecycle/latest.md ]; then python3 scripts/append_step_summary.py --input reports/lifecycle/latest.md; fi
+
+      - name: Reconcile final uu.conf scope coverage after all rule mutations
+        env:
+          RULESET_CONFIG_REPORT_AGGREGATION: "1"
+        run: |
+          python3 scripts/sync_ruleset_config_conflicts.py
+          python3 scripts/append_step_summary.py --input reports/ruleset-config-conflict-sync.md
+
+      - name: Reconcile final RULE-SET manifest counts
+        run: python3 scripts/refresh_ruleset_manifest.py
+
+      - name: Build append-only rule-level provenance ledger
+        run: python3 scripts/build_rule_provenance.py
+
+      - name: Validate Shadowrocket config structure
+        run: python3 scripts/validate_config.py
+
+      - name: Audit RULE-SET references against generated outputs (read-only)
+        run: |
+          python3 scripts/audit_ruleset_references.py
+          python3 scripts/append_step_summary.py --input reports/ruleset-reference-audit.md
+
+      - name: Audit candidate scope coverage against user config (read-only)
+        run: |
+          python3 scripts/audit_ruleset_config_overlap.py
+          python3 scripts/append_step_summary.py --input reports/ruleset-config-overlap-audit.md
+
+      - name: Audit managed config drift (read-only)
+        run: |
+          python3 scripts/audit_config_drift.py
+          python3 scripts/append_step_summary.py --input reports/config-drift-audit.md
+
+      - name: Run read-only full-source regression audit
+        run: |
+          python3 scripts/audit_external_domains.py
+          python3 scripts/append_step_summary.py --input reports/external-domain-audit.md
+
+      - name: Build consolidated project status
+        run: |
+          python3 scripts/build_project_status.py
+          python3 scripts/append_step_summary.py --input reports/project-status.md
+
+      - name: Write successful audit heartbeat
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: python3 scripts/write_audit_heartbeat.py
+
+      - name: Record durable automation state pointer
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: python3 scripts/record_state_pointer.py
+
+      - name: Package allowlisted audit outputs
+        run: bash scripts/package_audit_outputs.sh
+
+      - name: Upload allowlisted audit outputs
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: deterministic-audit-output
+          path: ${{ runner.temp }}/audit-output.tar.gz
+          if-no-files-found: error
+          retention-days: 90
+
+  publish:
+    needs: audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      PYTHONPATH: scripts
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout exact audited commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Revalidate Watchdog task and export canonical lease context
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          AUTOMATION_TASK_ID: ${{ inputs.automation_task_id }}
+          RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
+        run: python3 scripts/revalidate_publish_lease.py
+
+      - name: Verify live Watchdog resource lease before artifact restoration
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
+        run: |
+          set -euo pipefail
+          test -n "${AUTOMATION_TASK_ID_BASE:-}"
+          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE" --proof-json "$RESOURCE_LEASE_PROOF"
+
+      - name: Download audited outputs
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: deterministic-audit-output
+          path: ${{ runner.temp }}/audit-artifact
+
+      - name: Verify base commit and safely publish allowlisted outputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
+        run: bash scripts/publish_audit_outputs.sh
+
+      - name: Independently verify committed remote rulesets
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          python3 scripts/verify_published_rulesets.py --ref origin/main | tee /tmp/publish-verification.json
+          python3 scripts/append_step_summary.py --input /tmp/publish-verification.json
+
+  persist-review-cursor:
+    name: Persist failed-run cursor under Watchdog resource lease
+    needs: audit
+    if: ${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: write
+    env:
+      PYTHONPATH: scripts
+    steps:
+      - name: Checkout current main for a single-path checkpoint update
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Download failed-run cursor checkpoint
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: review-cursor-checkpoint
+          path: cursor-artifact
+        continue-on-error: true
+      - name: Revalidate exact Watchdog task and install live resource fence
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          AUTOMATION_TASK_CORRELATION: ${{ inputs.automation_task_id }}
+          RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
+        run: python3 scripts/revalidate_cursor_lease.py
+      - name: Persist only the cursor through the live filesystem fence
+        run: python3 scripts/persist_review_cursor.py --cursor-artifact cursor-artifact/review_cursor.json --destination sources/review_cursor.json
+      - name: Publish only the cursor checkpoint under the same live fence
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
+        run: bash scripts/publish_cursor_checkpoint.sh
+
+  notify-failure:
+    if: ${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled' || needs.publish.result == 'failure' || needs.publish.result == 'cancelled') }}
+    needs: [audit, publish]
+    runs-on: ubuntu-24.04
+    permissions:
+      issues: write
+    steps:
+      - name: Open or update automation incident
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          COMMIT_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+          AUDIT_RESULT: ${{ needs.audit.result }}
+          PUBLISH_RESULT: ${{ needs.publish.result }}
+        run: bash scripts/notify_automation_incident.sh
+
+  resolve-failure:
+    needs: [audit, publish]
+    if: ${{ needs.audit.result == 'success' && needs.publish.result == 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      issues: write
+    steps:
+      - name: Close recovered automation incidents
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          RUN_ID: ${{ github.run_id }}
+        run: bash scripts/resolve_automation_incidents.sh
