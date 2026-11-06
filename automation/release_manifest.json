@@ -59,10 +59,6 @@
       "path": "scripts/remote_task_queue_runtime.py",
       "git_blob_sha": "f04aa1247f297530f8e2b5a529fdc83f98da3eae"
     },
-    "shell_git_write_trace": {
-      "path": "scripts/capture_git_write_trace.py",
-      "git_blob_sha": "ba3ad0a31b7bcff1acd05543a63f17d71f506b98"
-    },
     "task_scheduler": {
       "path": "scripts/task_scheduler.py",
       "git_blob_sha": "5223018df97d767a1e6eaf442b5ff7e3e6c9c470"
