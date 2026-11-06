@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "purpose": "Non-activating inventory of public intelligence providers for staged multi-source acquisition.",
-  "policy": "Catalog entries remain non-activating. The registered discovery program fetches a bounded subset of provider data into a typed evidence section with source hashes and retrieval timestamps. Observations are never mapped directly to DIRECT/PROXY/REJECT; CT and RIPEstat require explicit query inputs. Provider failure is isolated per adapter.",
+  "policy": "The registered discovery program fetches bounded public repository metadata, IANA registry data and optional query-scoped CT/RIPEstat evidence. URLhaus requires its provider-issued Auth-Key and OpenPhish community feed is disabled pending terms review; neither is fetched or copied into the public repository. All observations remain typed evidence only and never map directly to routing policy.",
   "providers": [
     {
       "id": "adguard-filters",
@@ -24,7 +24,7 @@
         "malware_url",
         "host_observation"
       ],
-      "integration_status": "bounded_runtime_adapter",
+      "integration_status": "credential_required_auth_key",
       "activation": "candidate_only"
     },
     {
@@ -36,7 +36,7 @@
         "phishing_url",
         "host_observation"
       ],
-      "integration_status": "bounded_runtime_adapter",
+      "integration_status": "disabled_pending_terms_review",
       "activation": "candidate_only"
     },
     {
