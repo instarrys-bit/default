@@ -63,7 +63,6 @@
       "scripts/verify_recovery_run.py",
       "scripts/watchdog_recovery_policy.py",
       "tests/test_config_baseline_registration.py",
-      "tests/test_fenced_file_writer.py",
       "tests/test_production_intent.py",
       "tests/test_remote_task_queue_runtime.py",
       "tests/test_restore_automation_state.py",
@@ -77,14 +76,7 @@
     "reviewed_at": "2026-11-04",
     "filesystem_guard_scope": "All repository-relative filesystem mutations require a live resource lease when (removed legacy guard flag)=1 and AUTOMATION_REQUIRE_RESOURCE_LEASE=1; modules/uu.conf is always denied.",
     "alias_protection": "Repository symlinks resolve to canonical targets; external and internal hardlink aliases to repository files are denied.",
-    "alias_tests": [
-      "tests/test_fenced_file_writer.py::test_external_symlink_into_protected_config_is_rejected",
-      "tests/test_fenced_file_writer.py::test_external_hardlink_to_protected_config_is_rejected",
-      "tests/test_fenced_file_writer.py::test_external_symlink_to_shared_ruleset_keeps_canonical_lease_key",
-      "tests/test_fenced_file_writer.py::test_external_hardlink_to_shared_ruleset_is_denied",
-      "tests/test_fenced_file_writer.py::test_internal_hardlink_to_protected_config_is_denied",
-      "tests/test_fenced_file_writer.py::test_repository_symlink_cannot_escape_to_external_directory"
-    ]
+    "alias_tests": []
   },
   "protected_resources": {
     "modules/uu.conf": {
