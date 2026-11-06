@@ -22,6 +22,26 @@ from json_document_store import read_document, write_document
 from resource_lease_runtime import assert_resource_lease_from_environment
 
 ROOT = Path(__file__).resolve().parents[1]
+
+CATALOG_PATH = ROOT / "sources/external_intelligence_catalog.json"
+CATALOG_ALLOWED_HOSTS = {"github.com", "urlhaus.abuse.ch", "openphish.com", "crt.sh", "stat.ripe.net", "www.iana.org", "gitlab.com", "codeberg.org"}
+
+def load_external_intelligence_catalog() -> dict:
+    data = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+    if data.get("schema_version") != 1 or not isinstance(data.get("providers"), list):
+        raise ValueError("invalid external intelligence catalog schema")
+    seen = set()
+    for item in data["providers"]:
+        provider_id = item.get("id") if isinstance(item, dict) else None
+        parsed = urllib.parse.urlparse(str(item.get("endpoint", ""))) if isinstance(item, dict) else None
+        if not isinstance(provider_id, str) or not provider_id or provider_id in seen:
+            raise ValueError("external intelligence provider IDs must be non-empty and unique")
+        seen.add(provider_id)
+        if parsed.scheme != "https" or parsed.hostname not in CATALOG_ALLOWED_HOSTS or parsed.username or parsed.password or parsed.port not in (None, 443):
+            raise ValueError("external intelligence provider endpoint is outside the HTTPS allowlist: " + provider_id)
+        if item.get("activation") not in {"never_from_catalog", "candidate_only", "evidence_only"}:
+            raise ValueError("invalid external intelligence activation boundary: " + provider_id)
+    return data
 OUTPUT = ROOT / "sources/discovered_sources.json"
 REPORT = ROOT / "reports/source-discovery.md"
 MAX_README_BYTES = 1_500_000
@@ -609,8 +629,10 @@ def main() -> int:
     persist_discovery_outputs(merged)
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:
+        catalog = load_external_intelligence_catalog()
         with Path(summary).open("a", encoding="utf-8") as stream:
             stream.write(f"## Source discovery\n\nRepositories seen: **{len(discovered)}**. Tree scans this run: **{len(tree_scan_batch)}**. Tree-scan backlog: **{merged['tree_scan_backlog_count']}**. Truncated trees: **{len(tree_truncated)}**. Candidates retained: **{merged['candidate_count']}**. Failed queries: **{len(discovery_errors)}**. No source was activated.\n")
+            stream.write(f"\n## Multi-source intelligence inventory\n\nProvider leads catalogued: **{len(catalog['providers'])}**. Production adapters ready: **0**. Catalog entries are non-activating; external provider ingestion remains disabled until dedicated adapters pass their acceptance gates.\n")
     print(json.dumps({"repositories_seen": len(discovered), "candidates_retained": merged["candidate_count"], "activated": 0}, sort_keys=True))
     return 0
 
