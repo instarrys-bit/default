@@ -224,7 +224,7 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
         self.assertEqual(cancelled["state_history"][-1], "CANCELLED")
         self.assertEqual(cancelled["last_error"]["evidence"]["conclusion"], "cancelled")
 
-
+    def test_expired_lease_is_recovered(self):
         enqueue_remote(self.payload(), self.store, self.registry, self.now)
         task = self.claim("worker-a", self.now)
         recovered = recover_remote(self.store, self.registry, self.now + timedelta(seconds=121))
