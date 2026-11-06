@@ -16,8 +16,12 @@ on:
         description: 'Internal task correlation ID; leave blank for manual runs'
         required: false
         type: string
-  # Listen for completed runs broadly; job-level path gates scope actual work.
   workflow_run:
+    workflows:
+      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
+      - "Shadowrocket Source Discovery (Watchdog)"
+      - "Validate Shadowrocket config against user baseline"
+      - "Validate self-healing agent"
     types: [completed]
   push:
     branches: [main]

@@ -1,6 +1,6 @@
 # Request observations enter only as unclassified candidates; trusted source evidence controls policy.
 name: Shadowrocket Deterministic Domain Audit (User Config Baseline)
-run-name: Automation task ${{ inputs.automation_task_id || 'manual' }}
+run-name: Shadowrocket Deterministic Domain Audit (User Config Baseline)
 
 on:
   workflow_dispatch:
