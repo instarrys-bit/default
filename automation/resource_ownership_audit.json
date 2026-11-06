@@ -4,7 +4,7 @@
   "status": "partial_static_audit",
   "purpose": "Identify known overlapping write resources before independent capability scheduling. This inventory is deliberately fail-closed and is not an execution authorization.",
   "evidence_scope": {
-    "registry_blob_sha": "60bcebc38a2a7e3d6279d44f7ce7a53928859452",
+    "registry_blob_sha": "afac96860d57a4c6cc4b1f7d45823c2fcc88520d",
     "adapters_blob_sha": "e68fc9c681743a008818ca85adfc2d78bae8c223",
     "inspected_sources": [
       ".github/workflows/auto_sync.yml",
