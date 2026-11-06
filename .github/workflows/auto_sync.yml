@@ -55,6 +55,7 @@ permissions:
 
 concurrency:
   group: shadowrocket-main-writer
+  # Keep the active audit; stale-commit guards stop obsolete runs safely.
   cancel-in-progress: false
 
 jobs:
@@ -69,13 +70,13 @@ jobs:
       actions: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
           persist-credentials: false
 
       - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
 
@@ -94,7 +95,136 @@ jobs:
           BASELINE_SOURCE_SHA: ${{ inputs.baseline_source_sha }}
         run: |
           set -euo pipefail
-          python3 automation/helpers/verify_watchdog_dispatch.py
+          python3 - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          correlation = os.environ.get("AUTOMATION_TASK_ID", "")
+          match = re.fullmatch(r"(task_[0-9a-f]{24})-a([1-9][0-9]*)", correlation)
+          if not match:
+              raise SystemExit("A valid Watchdog task correlation is required; direct/manual audit dispatch is not authorized.")
+
+          task_id, attempt_text = match.groups()
+          attempt = int(attempt_text)
+          # The workflow input is a correlation ID (task_id + attempt). The
+          # resource lease verifier must receive the canonical queue task ID.
+          queue = json.loads(Path("automation/task_queue.json").read_text(encoding="utf-8"))
+          task = next((item for item in queue.get("tasks", []) if item.get("task_id") == task_id), None)
+          if task is None:
+              raise SystemExit("The correlated durable task does not exist in the checked-out queue snapshot.")
+          lease = task.get("lease")
+          resource_lease = task.get("resource_lease")
+          proof_text = os.environ.get("RESOURCE_LEASE_PROOF", "")
+          try:
+              proof = json.loads(proof_text)
+          except json.JSONDecodeError as exc:
+              raise SystemExit("The Watchdog resource lease proof is not valid JSON.") from exc
+          declared = resource_lease.get("resources") if isinstance(resource_lease, dict) else None
+          queue_leases = queue.get("resource_leases")
+          if (task.get("status") not in {"CLAIMED", "VERIFYING"}
+                  or not isinstance(resource_lease, dict) or resource_lease.get("status") != "ACTIVE"
+                  or not isinstance(declared, dict) or proof != declared
+                  or not isinstance(queue_leases, dict) or not isinstance(proof, dict) or not proof):
+              raise SystemExit("The Watchdog resource lease proof is missing, inactive or inconsistent.")
+          workers = set()
+          from datetime import datetime, timezone
+          now = datetime.now(timezone.utc)
+          for key, item in proof.items():
+              record = queue_leases.get(key)
+              if (not isinstance(record, dict) or record.get("status") != "ACTIVE"
+                      or record.get("task_id") != task_id
+                      or record.get("lease_id") != item.get("lease_id")
+                      or record.get("fencing_token") != item.get("fencing_token")):
+                  raise SystemExit("The Watchdog resource lease is stale or fenced: " + key)
+              expiry = datetime.fromisoformat(record["expires_at"].replace("Z", "+00:00"))
+              if expiry <= now:
+                  raise SystemExit("The Watchdog resource lease has expired: " + key)
+              workers.add(record.get("worker_id"))
+          if len(workers) != 1 or not next(iter(workers)):
+              raise SystemExit("The Watchdog resource leases do not share one active worker owner.")
+          worker_id = next(iter(workers))
+          # The resource lease owner is the write authority. The scheduler task
+          # lease may rotate independently while this exclusive resource fence remains active.
+          if task.get("status") == "CLAIMED" and (
+                  not isinstance(lease, dict) or not lease.get("owner") or not lease.get("token")):
+              raise SystemExit("A CLAIMED task must retain its scheduler task lease.")
+          task_lease_token = lease.get("token") if isinstance(lease, dict) else "resource-fence-only"
+          env_values = {
+              "AUTOMATION_TASK_ID": task_id,
+              "AUTOMATION_WORKER_ID": worker_id,
+              "AUTOMATION_TASK_LEASE_TOKEN": task_lease_token,
+              "AUTOMATION_QUEUE_REPOSITORY": os.environ["GITHUB_REPOSITORY"],
+              "AUTOMATION_QUEUE_BRANCH": "main",
+              "AUTOMATION_QUEUE_PATH": "automation/task_queue.json",
+              "AUTOMATION_QUEUE_TOKEN": os.environ["GH_TOKEN"],
+              "AUTOMATION_QUEUE_SNAPSHOT": str(Path("automation/task_queue.json").resolve()),
+          }
+          delimiter = "__WATCHDOG_RESOURCE_PROOF__"
+          if delimiter in proof_text:
+              raise SystemExit("The resource proof contains an invalid environment delimiter.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
+              stream.write(f"AUTOMATION_TASK_ID_BASE={task_id}\n")
+              for key, value in env_values.items():
+                  stream.write(f"{key}={value}\n")
+              stream.write(f"AUTOMATION_RESOURCE_LEASE_PROOF<<{delimiter}\n{proof_text}\n{delimiter}\n")
+
+          intent = task.get("dispatch_intent")
+          if (
+              task.get("target_program_id") != "workflow_auto_sync"
+              or task.get("requester_program_id") != "workflow_automation_watchdog"
+              or task.get("attempts") != attempt
+              or not isinstance(intent, dict)
+              or intent.get("task_id") != task_id
+              or intent.get("correlation_id") != correlation
+              or intent.get("dispatch_attempt") != attempt
+              or intent.get("workflow_path") != ".github/workflows/auto_sync.yml"
+              or intent.get("ref") != "main"
+          ):
+              raise SystemExit("The queue record does not authorize this exact Watchdog production audit dispatch.")
+
+          production_fingerprint = os.environ.get("PRODUCTION_FINGERPRINT", "")
+          production_decision = os.environ.get("PRODUCTION_DECISION", "")
+          production_reason = os.environ.get("PRODUCTION_REASON", "")
+          if production_fingerprint:
+              task_input = task.get("input")
+              if (
+                  not isinstance(task_input, dict)
+                  or task_input.get("production_fingerprint") != production_fingerprint
+                  or task_input.get("production_decision") != production_decision
+                  or task_input.get("production_reason") != production_reason
+                  or production_decision not in {"INPUT_CHANGED", "SCHEDULE_DUE", "RECOVERY_REQUIRED"}
+                  or not production_reason
+              ):
+                  raise SystemExit("The dispatched production intent does not match the durable task input.")
+          task_input = task.get("input")
+          if not isinstance(task_input, dict):
+              raise SystemExit("The durable task input is missing or invalid.")
+          for field, env_name in (
+              ("baseline_source_event", "BASELINE_SOURCE_EVENT"),
+              ("baseline_source_actor", "BASELINE_SOURCE_ACTOR"),
+              ("baseline_source_before", "BASELINE_SOURCE_BEFORE"),
+              ("baseline_source_sha", "BASELINE_SOURCE_SHA"),
+          ):
+              supplied = os.environ.get(env_name, "")
+              durable_value = task_input.get(field, "")
+              if durable_value != supplied:
+                  raise SystemExit(f"Dispatched {field} does not match the durable Watchdog task input.")
+          baseline_sha = os.environ.get("BASELINE_SOURCE_SHA", "")
+          if baseline_sha and not re.fullmatch(r"[0-9a-f]{40}", baseline_sha):
+              raise SystemExit("The dispatched baseline source SHA is not a full Git commit SHA.")
+          if task.get("status") == "VERIFYING":
+              result = task.get("result")
+              if (
+                  not isinstance(result, dict)
+                  or result.get("correlation_id") != correlation
+                  or result.get("dispatch_state") != "submitted"
+              ):
+                  raise SystemExit("The VERIFYING task has no matching persisted dispatch submission.")
+
+          print(f"Authorized Watchdog production audit task {task_id}, attempt {attempt}.")
+          PY
 
       - name: Verify live Watchdog resource lease before production audit
         env:
@@ -118,21 +248,37 @@ jobs:
           GITHUB_BEFORE: ${{ inputs.baseline_source_before || github.event.before }}
           GITHUB_SHA: ${{ inputs.baseline_source_sha || github.sha }}
         run: python3 scripts/register_config_baseline.py
-
       - name: Verify registered user config baseline
         run: python3 scripts/verify_baseline.py --baseline-only
-
       - name: Capture and verify the exact production input fingerprint
         env:
           PRODUCTION_FINGERPRINT: ${{ inputs.production_fingerprint }}
-        run: python3 automation/helpers/capture_production_fingerprint.py
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from production_intent import load_manifest, compute_fingerprint
+          manifest = load_manifest(Path("automation/production_inputs.json"))
+          actual = compute_fingerprint(Path("."), manifest)
+          expected = os.environ.get("PRODUCTION_FINGERPRINT", "")
+          if expected and expected != actual:
+              raise SystemExit("The dispatched production fingerprint does not match the checked-out input snapshot.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
+              stream.write(f"PRODUCTION_INPUT_FINGERPRINT={actual}\n")
+          print(f"Captured production input fingerprint {actual}.")
+          PY
 
       - name: Stop stale audit before discovery and source downloads
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           RUN_SHA: ${{ github.sha }}
-        run: bash scripts/verify_publish_base.sh --check-only
+        run: |
+          set -euo pipefail
+          bash scripts/verify_publish_base.sh --check-only
 
       - name: Compile and run deterministic review tests
         run: |
@@ -153,7 +299,7 @@ jobs:
 
       - name: Preserve complete source assessment report
         if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: source-assessment-report
           path: |
@@ -167,7 +313,46 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           CURRENT_RUN_ID: ${{ github.run_id }}
-        run: bash scripts/restore_prior_audit_state.sh
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/prior-audit-state
+          pointer="reports/automation/state_store.json"
+          if [ -s "$pointer" ]; then
+            run_id="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("last_state_run_id", ""))' "$pointer")"
+            if [ -z "$run_id" ]; then
+              echo "State pointer exists but has no run ID; refusing to reset automation state."
+              exit 1
+            fi
+            run_ids="$run_id"
+          else
+            run_ids="$(gh api "repos/$REPO/actions/runs?per_page=100" --jq '.workflow_runs[] | select(.path == ".github/workflows/auto_sync.yml" and .head_branch == "main") | .id')"
+          fi
+          restored=0
+          for run_id in $run_ids; do
+            [ "$run_id" = "$CURRENT_RUN_ID" ] && continue
+            artifact_id="$(gh api "repos/$REPO/actions/runs/$run_id/artifacts" --jq '[.artifacts[] | select(.name == "deterministic-audit-output" and .expired == false)] | first | .id // empty' 2>/dev/null || true)"
+            if [ -z "$artifact_id" ]; then
+              if [ -s "$pointer" ]; then
+                echo "The state artifact for recorded run $run_id is missing or expired; refusing destructive reinitialization."
+                exit 1
+              fi
+              continue
+            fi
+            gh run download "$run_id" --name deterministic-audit-output --dir /tmp/prior-audit-state
+            archive="/tmp/prior-audit-state/audit-output.tar.gz"
+            test -s "$archive"
+            python3 scripts/restore_automation_state.py --archive "$archive" --root .
+            echo "Restored high-volume state from audit run $run_id (artifact $artifact_id)."
+            restored=1
+            break
+          done
+          if [ "$restored" -eq 0 ]; then
+            if [ -s "$pointer" ]; then
+              echo "Recorded automation state could not be restored; refusing to continue."
+              exit 1
+            fi
+            echo "No prior state artifact found; using repository bootstrap state."
+          fi
 
       - name: Remove published and queued rules that conflict with uu.conf
         env:
@@ -205,14 +390,15 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-        run: bash scripts/verify_publish_base.sh --check-only
-
+        run: |
+          set -euo pipefail
+          bash scripts/verify_publish_base.sh --check-only
       - name: "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services"
         run: python3 scripts/deterministic_review.py
 
       - name: Preserve resumable review cursor checkpoint
         if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: review-cursor-checkpoint
           path: sources/review_cursor.json
@@ -221,7 +407,6 @@ jobs:
 
       - name: Build standalone DIRECT, PROXY and REJECT rule sets
         run: python3 scripts/build_rulesets.py
-
       - name: Summarize REJECT secondary screening
         run: python3 scripts/append_step_summary.py --input reports/reject-secondary-review.md
 
@@ -241,7 +426,6 @@ jobs:
         run: |
           python3 scripts/sync_ruleset_config_conflicts.py
           python3 scripts/append_step_summary.py --input reports/ruleset-config-conflict-sync.md
-
       - name: Reconcile final RULE-SET manifest counts
         run: python3 scripts/refresh_ruleset_manifest.py
 
@@ -282,19 +466,144 @@ jobs:
           GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_SHA: ${{ github.sha }}
-        run: python3 automation/helpers/write_audit_heartbeat.py
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+          from datetime import datetime, timezone
+          sys.path.insert(0, "scripts")
+          from production_intent import load_manifest, compute_fingerprint, compute_output_fingerprint
+          from pathlib import Path
+          Path("reports/automation").mkdir(parents=True, exist_ok=True)
+          manifest = load_manifest(Path("automation/production_inputs.json"))
+          input_fingerprint = os.environ["PRODUCTION_INPUT_FINGERPRINT"]
+          post_run_input_fingerprint = compute_fingerprint(Path("."), manifest)
+          output_fingerprint = compute_output_fingerprint(Path("."))
+          record = {
+              "schema_version": 3,
+              "input_fingerprint": input_fingerprint,
+              "post_run_input_fingerprint": post_run_input_fingerprint,
+              "output_fingerprint": output_fingerprint,
+              "input_manifest_schema_version": manifest["schema_version"],
+              "status": "audit_passed",
+              "workflow": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
+              "run_id": os.environ["GITHUB_RUN_ID"],
+              "run_attempt": int(os.environ["GITHUB_RUN_ATTEMPT"]),
+              "event": os.environ["GITHUB_EVENT_NAME"],
+              "source_commit": os.environ["GITHUB_SHA"],
+              "production_decision": os.environ.get("PRODUCTION_DECISION", ""),
+              "production_reason": os.environ.get("PRODUCTION_REASON", ""),
+              "recorded_at_utc": datetime.now(timezone.utc).isoformat(),
+              "checks": {
+                  "deterministic_tests": "passed",
+                  "user_config_baseline": "passed",
+                  "config_conflict_sync": "passed",
+                  "lifecycle_audit": "passed",
+                  "three_policy_rule_sets": "passed",
+                  "config_validation": "passed",
+                  "source_and_rule_audits": "passed"
+              },
+              "protected_config": {
+                  "path": "modules/uu.conf",
+                  "modified_by_automation": False
+              }
+          }
+          with open("reports/automation/heartbeat.json", "w", encoding="utf-8") as stream:
+              json.dump(record, stream, ensure_ascii=False, indent=2)
+              stream.write("\n")
+          PY
 
       - name: Record durable automation state pointer
         env:
           GITHUB_RUN_ID: ${{ github.run_id }}
           GITHUB_SHA: ${{ github.sha }}
-        run: python3 automation/helpers/record_state_pointer.py
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          sys.path.insert(0, "scripts")
+          from pathlib import Path
+          from datetime import datetime, timezone
+          Path("reports/automation").mkdir(parents=True, exist_ok=True)
+          record = {
+              "schema_version": 1,
+              "last_state_run_id": os.environ["GITHUB_RUN_ID"],
+              "source_commit": os.environ["GITHUB_SHA"],
+              "recorded_at_utc": datetime.now(timezone.utc).isoformat(),
+              "artifact_name": "deterministic-audit-output",
+              "artifact_retention_days": 90,
+              "storage_mode": "github_actions_artifact",
+              "missing_artifact_policy": "fail_closed"
+          }
+          with open("reports/automation/state_store.json", "w", encoding="utf-8") as stream:
+              json.dump(record, stream, ensure_ascii=False, indent=2)
+              stream.write("\n")
+          PY
 
       - name: Package allowlisted audit outputs
-        run: bash scripts/package_audit_outputs.sh
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          state_files=(
+            sources/domain_reviews.json*
+            sources/rule_provenance.json*
+            sources/discovered_sources.json*
+            sources/source_assessments.json*
+            sources/source_candidates.json*
+            data/domain_candidates.json*
+            data/candidates.json*
+          )
+          base_files=(
+            sources/review_cursor.json
+            sources/domain_sources.json
+            sources/source_activation_log.json
+            reports/lifecycle
+            reports/project-status.md
+            reports/project-status.json
+            reports/automation/heartbeat.json
+            reports/automation/state_store.json
+            reports/external-domain-audit.md
+            reports/config-drift-audit.md
+            reports/config-drift-audit.json
+            reports/ruleset-reference-audit.md
+            reports/ruleset-reference-audit.json
+            reports/ruleset-config-conflict-sync.md
+            reports/ruleset-config-conflict-sync.json
+            reports/ruleset-config-overlap-audit.md
+            reports/ruleset-config-overlap-audit.json
+            reports/source-lineage-audit.json
+            reports/source-discovery.md
+            reports/source-assessment.md
+            reports/source-candidate-matrix.md
+            reports/source-activation.md
+            reports/reject-secondary-review.md
+            reports/policy-source-overlap.md
+            sources/policy_source_overlap.json
+            data/domain_candidates.json
+            data/source_pending.json
+            data/primary_snapshot.txt
+            data/secondary_snapshot.txt
+            data/source_snapshots
+            rulesets
+          )
+          declare -A archive_seen=()
+          archive_inputs=()
+          for path in "${base_files[@]}" "${state_files[@]}"; do
+            [[ -e "$path" ]] || continue
+            if [[ -L "$path" ]]; then
+              echo "Refusing symlink in automation state: $path" >&2
+              exit 1
+            fi
+            if [[ -z "${archive_seen[$path]+present}" ]]; then
+              archive_seen["$path"]=1
+              archive_inputs+=("$path")
+            fi
+          done
+          test "${#archive_inputs[@]}" -gt 0
+          tar -czf "$RUNNER_TEMP/audit-output.tar.gz" -- "${archive_inputs[@]}"
 
       - name: Upload allowlisted audit outputs
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: deterministic-audit-output
           path: ${{ runner.temp }}/audit-output.tar.gz
@@ -311,7 +620,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout exact audited commit
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0
@@ -323,7 +632,55 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           AUTOMATION_TASK_ID: ${{ inputs.automation_task_id }}
           RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
-        run: python3 automation/helpers/revalidate_publish_lease.py
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          correlation = os.environ.get("AUTOMATION_TASK_ID", "")
+          match = re.fullmatch(r"(task_[0-9a-f]{24})-a([1-9][0-9]*)", correlation)
+          if not match:
+              raise SystemExit("Publish requires a canonical Watchdog task correlation.")
+          task_id, attempt_text = match.groups()
+          attempt = int(attempt_text)
+          queue = json.loads(Path("automation/task_queue.json").read_text(encoding="utf-8"))
+          task = next((x for x in queue.get("tasks", []) if isinstance(x, dict) and x.get("task_id") == task_id), None)
+          proof_text = os.environ.get("RESOURCE_LEASE_PROOF", "")
+          try:
+              proof = json.loads(proof_text)
+          except json.JSONDecodeError as exc:
+              raise SystemExit("Publish resource lease proof is invalid JSON.") from exc
+          lease = task.get("lease") if isinstance(task, dict) else None
+          intent = task.get("dispatch_intent") if isinstance(task, dict) else None
+          if (not isinstance(task, dict) or task.get("target_program_id") != "workflow_auto_sync"
+                  or task.get("requester_program_id") != "workflow_automation_watchdog"
+                  or task.get("attempts") != attempt or not isinstance(intent, dict)
+                  or intent.get("task_id") != task_id or intent.get("dispatch_attempt") != attempt
+                  or intent.get("correlation_id") != correlation
+                  or intent.get("workflow_path") != ".github/workflows/auto_sync.yml"
+                  or intent.get("ref") != "main"
+                  or not isinstance(lease, dict) or not lease.get("owner") or not lease.get("token")
+                  or not isinstance(proof, dict) or not proof):
+              raise SystemExit("The current queue record does not authorize this exact publish attempt.")
+          values = {
+              "AUTOMATION_TASK_ID_BASE": task_id,
+              "AUTOMATION_TASK_ID": task_id,
+              "AUTOMATION_WORKER_ID": lease["owner"],
+              "AUTOMATION_TASK_LEASE_TOKEN": lease["token"],
+              "AUTOMATION_QUEUE_REPOSITORY": os.environ["GITHUB_REPOSITORY"],
+              "AUTOMATION_QUEUE_BRANCH": "main",
+              "AUTOMATION_QUEUE_PATH": "automation/task_queue.json",
+              "AUTOMATION_QUEUE_TOKEN": os.environ["GH_TOKEN"],
+              "AUTOMATION_QUEUE_SNAPSHOT": str(Path("automation/task_queue.json").resolve()),
+          }
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
+              for key, value in values.items():
+                  stream.write(f"{key}={value}\n")
+              delimiter = "__PUBLISH_RESOURCE_PROOF__"
+              if delimiter in proof_text:
+                  raise SystemExit("Invalid publish proof delimiter.")
+              stream.write(f"AUTOMATION_RESOURCE_LEASE_PROOF<<{delimiter}\n{proof_text}\n{delimiter}\n")
+          PY
 
       - name: Verify live Watchdog resource lease before artifact restoration
         env:
@@ -336,7 +693,7 @@ jobs:
           printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE" --proof-json "$RESOURCE_LEASE_PROOF"
 
       - name: Download audited outputs
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: deterministic-audit-output
           path: ${{ runner.temp }}/audit-artifact
@@ -346,7 +703,100 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
-        run: bash scripts/publish_audit_outputs.sh
+        run: |
+          set -euo pipefail
+          bash scripts/verify_publish_base.sh
+
+          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE" --proof-json "$RESOURCE_LEASE_PROOF"
+          archive="$RUNNER_TEMP/audit-artifact/audit-output.tar.gz"
+          test -s "$archive"
+          python3 scripts/restore_automation_state.py --publish-outputs --archive "$archive" --root .
+
+          # The user-managed config is immutable: audit artifacts may never alter it.
+          git diff --quiet "$GITHUB_SHA" -- modules/uu.conf || {
+            echo "Protected config modules/uu.conf changed during audit packaging; refusing to publish."
+            exit 1
+          }
+
+          # Optional audit outputs are staged only when present in this run.
+          # Missing optional files must not abort an otherwise valid publication.
+          publish_paths=(
+            sources/policy.json
+            automation/release_manifest.json
+            automation/production_workflow_map.json
+            automation/resource_write_sets.json
+            sources/domain_sources.json
+            sources/source_activation_log.json
+            reports/lifecycle
+            reports/project-status.md
+            reports/project-status.json
+            reports/automation/heartbeat.json
+            reports/automation/state_store.json
+            reports/external-domain-audit.md
+            reports/config-drift-audit.md
+            reports/config-drift-audit.json
+            reports/ruleset-reference-audit.md
+            reports/ruleset-reference-audit.json
+            reports/ruleset-config-overlap-audit.md
+            reports/ruleset-config-overlap-audit.json
+            reports/ruleset-config-conflict-sync.md
+            reports/ruleset-config-conflict-sync.json
+            reports/source-lineage-audit.json
+            reports/source-discovery.md
+            reports/source-assessment.md
+            reports/source-candidate-matrix.md
+            reports/source-activation.md
+            reports/policy-source-overlap.md
+            sources/policy_source_overlap.json
+            sources/discovered_sources.json
+            sources/source_assessments.json
+            sources/source_candidates.json
+            rulesets/
+          )
+          for path in "${publish_paths[@]}"; do
+            if [[ -e "$path" ]]; then
+              git add -- "$path"
+            else
+              echo "Optional publish path absent; skipping: $path"
+            fi
+          done
+
+          # Sharded persistent source indexes are staged as complete manifest+parts sets.
+          shopt -s nullglob
+          for pattern in \
+            "sources/discovered_sources.json.manifest.json" "sources/discovered_sources.json.parts-"* \
+            "sources/source_assessments.json.manifest.json" "sources/source_assessments.json.parts-"* \
+            "sources/source_candidates.json.manifest.json" "sources/source_candidates.json.parts-"*; do
+            if [[ -e "$pattern" ]]; then git add -- "$pattern"; fi
+          done
+
+          # When a legacy monolith has been replaced by a manifest, stage its deletion.
+          for base in sources/discovered_sources.json sources/source_assessments.json sources/source_candidates.json; do
+            if [[ ! -e "$base" ]] && git ls-files --error-unmatch "$base" >/dev/null 2>&1; then
+              git add -u -- "$base"
+            fi
+          done
+
+          # Explicitly fail if the protected config somehow entered the staged commit.
+          git diff --cached --quiet "$GITHUB_SHA" -- modules/uu.conf || {
+            echo "Protected config modules/uu.conf is staged; refusing to commit."
+            exit 1
+          }
+
+          # Even a no-change run must finish under its original fencing epoch.
+          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE" --proof-json "$RESOURCE_LEASE_PROOF"
+
+          if git diff --cached --quiet; then
+            echo "No audit output changes."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Run deterministic Shadowrocket domain audit"
+          # Re-read the live queue and verify the exact fencing epoch immediately before the main-branch write.
+          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE" --proof-json "$RESOURCE_LEASE_PROOF"
+          git push origin HEAD:main
 
       - name: Independently verify committed remote rulesets
         run: |
@@ -368,13 +818,13 @@ jobs:
       PYTHONPATH: scripts
     steps:
       - name: Checkout current main for a single-path checkpoint update
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: main
           fetch-depth: 0
           persist-credentials: true
       - name: Download failed-run cursor checkpoint
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: review-cursor-checkpoint
           path: cursor-artifact
@@ -385,15 +835,119 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           AUTOMATION_TASK_CORRELATION: ${{ inputs.automation_task_id }}
           RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
-        run: python3 automation/helpers/revalidate_cursor_lease.py
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, re
+          from datetime import datetime, timezone
+          from pathlib import Path
+          correlation = os.environ.get("AUTOMATION_TASK_CORRELATION", "")
+          match = re.fullmatch(r"(task_[0-9a-f]{24})-a([1-9][0-9]*)", correlation)
+          if not match:
+              raise SystemExit("A valid Watchdog task correlation is required for cursor persistence.")
+          task_id, attempt_text = match.groups()
+          attempt = int(attempt_text)
+          queue = json.loads(Path("automation/task_queue.json").read_text(encoding="utf-8"))
+          task = next((x for x in queue.get("tasks", []) if isinstance(x, dict) and x.get("task_id") == task_id), None)
+          if not isinstance(task, dict):
+              raise SystemExit("The canonical Watchdog task is absent from the durable queue.")
+          intent = task.get("dispatch_intent")
+          if (task.get("target_program_id") != "workflow_auto_sync"
+                  or task.get("requester_program_id") != "workflow_automation_watchdog"
+                  or task.get("attempts") != attempt
+                  or task.get("status") not in {"CLAIMED", "VERIFYING"}
+                  or not isinstance(intent, dict)
+                  or intent.get("task_id") != task_id
+                  or intent.get("dispatch_attempt") != attempt
+                  or intent.get("correlation_id") != correlation
+                  or intent.get("workflow_path") != ".github/workflows/auto_sync.yml"
+                  or intent.get("ref") != "main"):
+              raise SystemExit("The durable queue does not authorize this exact failed-run cursor writer.")
+          try:
+              proof = json.loads(os.environ["RESOURCE_LEASE_PROOF"])
+          except json.JSONDecodeError as exc:
+              raise SystemExit("The resource lease proof is invalid JSON.") from exc
+          resource_lease = task.get("resource_lease")
+          declared = resource_lease.get("resources") if isinstance(resource_lease, dict) else None
+          queue_leases = queue.get("resource_leases")
+          if (not isinstance(resource_lease, dict) or resource_lease.get("status") != "ACTIVE"
+                  or not isinstance(declared, dict) or proof != declared
+                  or not isinstance(queue_leases, dict) or "sources/review_cursor.json" not in proof):
+              raise SystemExit("The review cursor resource lease is missing, inactive or inconsistent.")
+          workers = set()
+          now = datetime.now(timezone.utc)
+          for key, item in proof.items():
+              record = queue_leases.get(key)
+              if (not isinstance(record, dict) or record.get("status") != "ACTIVE"
+                      or record.get("task_id") != task_id
+                      or record.get("lease_id") != item.get("lease_id")
+                      or record.get("fencing_token") != item.get("fencing_token")):
+                  raise SystemExit("A cursor writer resource lease is stale or fenced: " + key)
+              if datetime.fromisoformat(record["expires_at"].replace("Z", "+00:00")) <= now:
+                  raise SystemExit("A cursor writer resource lease has expired: " + key)
+              workers.add(record.get("worker_id"))
+          if len(workers) != 1 or not next(iter(workers)):
+              raise SystemExit("Cursor writer resources do not share one active worker owner.")
+          lease = task.get("lease")
+          if task.get("status") == "CLAIMED" and (not isinstance(lease, dict) or not lease.get("token")):
+              raise SystemExit("A CLAIMED task must retain its scheduler task lease.")
+          env_values = {
+              "AUTOMATION_TASK_ID": task_id,
+              "AUTOMATION_TASK_ID_BASE": task_id,
+              "AUTOMATION_WORKER_ID": next(iter(workers)),
+              "AUTOMATION_TASK_LEASE_TOKEN": lease.get("token") if isinstance(lease, dict) else "resource-fence-only",
+              "AUTOMATION_QUEUE_REPOSITORY": os.environ["GITHUB_REPOSITORY"],
+              "AUTOMATION_QUEUE_BRANCH": "main",
+              "AUTOMATION_QUEUE_PATH": "automation/task_queue.json",
+              "AUTOMATION_QUEUE_TOKEN": os.environ["GH_TOKEN"],
+              "AUTOMATION_QUEUE_SNAPSHOT": str(Path("automation/task_queue.json").resolve()),
+          }
+          delimiter = "__CURSOR_RESOURCE_PROOF__"
+          if delimiter in os.environ["RESOURCE_LEASE_PROOF"]:
+              raise SystemExit("Invalid cursor resource proof delimiter.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
+              for key, value in env_values.items():
+                  stream.write(f"{key}={value}\n")
+              stream.write(f"AUTOMATION_RESOURCE_LEASE_PROOF<<{delimiter}\n{os.environ['RESOURCE_LEASE_PROOF']}\n{delimiter}\n")
+          PY
+          canonical_task_id="${AUTOMATION_TASK_CORRELATION%%-a*}"
+          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$canonical_task_id" --proof-json "$RESOURCE_LEASE_PROOF"
+
       - name: Persist only the cursor through the live filesystem fence
-        run: python3 scripts/persist_review_cursor.py --cursor-artifact cursor-artifact/review_cursor.json --destination sources/review_cursor.json
+        run: |
+          set -euo pipefail
+          python3 scripts/persist_review_cursor.py --cursor-artifact cursor-artifact/review_cursor.json --destination sources/review_cursor.json
+
       - name: Publish only the cursor checkpoint under the same live fence
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
-        run: bash scripts/publish_cursor_checkpoint.sh
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- sources/review_cursor.json; then
+            echo "No checkpoint change to publish."
+            exit 0
+          fi
+          changed="$(git status --short)"
+          if [ "$(git diff --name-only)" != "sources/review_cursor.json" ]; then
+            echo "Unexpected unstaged path in cursor recovery: $changed"
+            exit 1
+          fi
+          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE" --proof-json "$RESOURCE_LEASE_PROOF"
+          git add -- sources/review_cursor.json
+          if [ "$(git diff --cached --name-only)" != "sources/review_cursor.json" ]; then
+            echo "Cursor recovery staged an unexpected path."
+            exit 1
+          fi
+          git diff --cached --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Persist failed deterministic review cursor"
+          git fetch origin main
+          git rebase origin/main
+          printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE" --proof-json "$RESOURCE_LEASE_PROOF"
+          git push origin HEAD:main
 
   notify-failure:
     if: ${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled' || needs.publish.result == 'failure' || needs.publish.result == 'cancelled') }}
@@ -411,7 +965,16 @@ jobs:
           RUN_ID: ${{ github.run_id }}
           AUDIT_RESULT: ${{ needs.audit.result }}
           PUBLISH_RESULT: ${{ needs.publish.result }}
-        run: bash scripts/notify_automation_incident.sh
+        run: |
+          title="Shadowrocket automation incident (run $RUN_ID)"
+          body="The deterministic pipeline ended with audit=$AUDIT_RESULT and publish=$PUBLISH_RESULT.\n\nRun: $RUN_URL\nCommit: $COMMIT_SHA\n\n<!-- shadowrocket-automation:workflow=auto_sync;run_id=$RUN_ID -->\n\nPlease inspect the run and logs. This issue is maintained automatically."
+          existing="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title | jq --arg title "$title" -r '.[] | select(.title == $title) | .number' | head -n 1)"
+          if [ -n "$existing" ] && [ "$existing" != "null" ]; then
+            gh issue comment "$existing" --repo "$REPO" --body "$body"
+          else
+            gh issue create --repo "$REPO" --title "$title" --body "$body"
+          fi
+
 
   resolve-failure:
     needs: [audit, publish]
@@ -427,4 +990,15 @@ jobs:
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           RUN_ID: ${{ github.run_id }}
-        run: bash scripts/resolve_automation_incidents.sh
+        run: |
+          set -euo pipefail
+          issues="$(gh issue list --repo "$REPO" --state open --search '"Shadowrocket automation" in:title' --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select((.title | startswith("Shadowrocket automation failure (run ")) or (.title | startswith("Shadowrocket automation incident (run "))) | select(.body | contains("shadowrocket-automation:workflow=auto_sync;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=auto_sync;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
+          if [ -z "$issues" ]; then
+            echo "No earlier, explicitly linked auto_sync incident to resolve."
+            exit 0
+          fi
+          while IFS= read -r issue; do
+            [ -n "$issue" ] || continue
+            gh issue comment "$issue" --repo "$REPO" --body "A later full deterministic audit and publish succeeded. Recovery run: $RUN_URL"
+            gh issue close "$issue" --repo "$REPO"
+          done <<< "$issues"

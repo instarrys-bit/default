@@ -2,9 +2,9 @@
   "schema_version": 2,
   "mode": "read_only_user_config_baseline",
   "baseline_path": "modules/uu.conf",
-  "baseline_sha256": "42a4b154bc28b89f482de2166fe6dabb7e8293497c451ac119957b417adfc7c2",
-  "baseline_git_blob_sha": "fa0500e8ebd9a31ba23ad003c8a29300d1f307cb",
-  "registered_baseline_git_blob_sha": "fa0500e8ebd9a31ba23ad003c8a29300d1f307cb",
+  "baseline_sha256": "6657263851d6075e94788ac7ac2ef61d9d9c881c1e8a047a4fb4826d3d04b1c8",
+  "baseline_git_blob_sha": "9b364e635f89dad86cc438c5d22f4fd678b090c2",
+  "registered_baseline_git_blob_sha": "9b364e635f89dad86cc438c5d22f4fd678b090c2",
   "baseline_matches_registered_blob": true,
   "section_names": [
     "General",
@@ -14,7 +14,7 @@
     "MITM"
   ],
   "section_count": 5,
-  "rule_line_count": 2066,
+  "rule_line_count": 2061,
   "url_rewrite_line_count": 10,
   "dns_snapshot": {
     "dns-server": [

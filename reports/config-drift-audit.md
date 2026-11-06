@@ -2,10 +2,10 @@
 
 - Mode: read-only; user-managed config is authoritative
 - Baseline file: `modules/uu.conf`
-- Baseline Git blob SHA: `fa0500e8ebd9a31ba23ad003c8a29300d1f307cb`
+- Baseline Git blob SHA: `9b364e635f89dad86cc438c5d22f4fd678b090c2`
 - Registered baseline SHA matches: **True**
 - Sections: **5**
-- Rule lines: **2066**
+- Rule lines: **2061**
 - URL Rewrite lines: **10**
 - MITM section present: **True**
 - MITM enabled: **True**
