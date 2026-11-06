@@ -1,10 +1,10 @@
 # External domain source scope audit
 
-- Audit time: 2026-11-03T18:25:14.781250+00:00
+- Audit time: 2026-11-06T07:06:19.073773+00:00
 - Source: https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list
 - Git blob SHA-1: `ec23c2d1280ea4a59717816716b8ccb569dac624`
 - Candidate entries: 56516
-- Explicit DIRECT/PROXY DOMAIN / DOMAIN-SUFFIX config rules: 1217
+- Explicit DIRECT/PROXY DOMAIN / DOMAIN-SUFFIX config rules: 1282
 - Conditional composite rules (not evaluated for precedence): 0
 - Malformed or unsupported simple domain rules held aside: 0
 - Fully covered candidate scopes: 18884
@@ -46,6 +46,6 @@ Candidates with a narrower or partial config overlap: 1
 - A child exact or child-suffix exception does not fully cover a broader source suffix candidate.
 - Mixed-policy coverage is reported without selecting a winner.
 - Conditional rules are counted but not evaluated here; the deterministic reviewer applies its separate conservative REVIEW hold.
-- No external policy is inferred, and no candidate is imported into ss.conf.
+- No external policy is inferred, and no candidate is imported into uu.conf.
 - No existing rule, DNS setting, node, rule order, or subscription is modified.
 - The source hash is recorded each run; additions and removals are compared against the rolling snapshot by the collector. Format or size anomalies fail closed.

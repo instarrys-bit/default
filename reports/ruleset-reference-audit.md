@@ -1,6 +1,6 @@
 # RULE-SET reference audit
 
-- Config authority: shadowrocket/ss.conf
+- Config authority: modules/uu.conf
 - RULE-SET references: 3
 - Result: PASS
 - External RULE-SET order: REJECT -> PROXY -> DIRECT
@@ -8,14 +8,14 @@
 
 ## References
 
-- line 1930: reject.list -> REJECT
-- line 1931: proxy.list -> PROXY
-- line 1932: direct.list -> DIRECT
+- line 2029: reject.list -> REJECT
+- line 2030: proxy.list -> PROXY
+- line 2031: direct.list -> DIRECT
 
 ## Generated file counts
 
 - direct.list: 147 lines; policy DIRECT
-- proxy.list: 3259 lines; policy PROXY
+- proxy.list: 3261 lines; policy PROXY
 - reject.list: 6 lines; policy REJECT
 
 ## Cross-file duplicates

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-03T18:18:39.727708+00:00",
+  "audited_at": "2026-11-06T06:56:58.402230+00:00",
   "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
   "source_count": 13,
   "audited_source_count": 11,
@@ -42676,7 +42676,7 @@
     {
       "repository": "RusdiEneri/blacklist-hosts",
       "readme_url": "https://raw.githubusercontent.com/RusdiEneri/blacklist-hosts/main/README.md",
-      "readme_sha256": "e2753393bf2e0d8616d1d15b560bcc4d04538e7d0de417203af8e5af667ff836",
+      "readme_sha256": "54e85082d631f42939c2d76decb1de8aaee3ffc259b86419c7867d1285f3db1d",
       "discovery_readme_sha256": null,
       "readme_changed_since_discovery": false,
       "referenced_repositories": [],
@@ -51300,7 +51300,7 @@
       "lineage_status": "unverified",
       "evidence_url": "https://github.com/nthack/Shadowrocket-ADBlock-Rules-Easy/blob/master/README.md",
       "fetched_url": "https://raw.githubusercontent.com/nthack/Shadowrocket-ADBlock-Rules-Easy/master/README.md",
-      "evidence_sha256": "d25c605ccbadd720f62ad4c68c952dd3762119a34477b3767daffd8ffb012839",
+      "evidence_sha256": "48322ead4dc9a6eacefde138e4996a71a665b23a762dc48c320867f27d26e201",
       "evidence_bytes": 4302,
       "declared_upstream_count": 0,
       "discovered_upstream_count": 1,

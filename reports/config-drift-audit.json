@@ -1,10 +1,10 @@
 {
   "schema_version": 2,
   "mode": "read_only_user_config_baseline",
-  "baseline_path": "shadowrocket/ss.conf",
-  "baseline_sha256": "a154d2810fbed217245802c3ff99800119e5138fc29b80fa4181efd938074ed6",
-  "baseline_git_blob_sha": "daa84802764de63c24da1e727ed233bab2e9151f",
-  "registered_baseline_git_blob_sha": "daa84802764de63c24da1e727ed233bab2e9151f",
+  "baseline_path": "modules/uu.conf",
+  "baseline_sha256": "5807a76c18de91ad0f0a60f57a9a1aab0bb9e688d152d428719de30d8d8ba749",
+  "baseline_git_blob_sha": "3fd91b257dbd7a66bab2d0d7f5692cd03def2002",
+  "registered_baseline_git_blob_sha": "3fd91b257dbd7a66bab2d0d7f5692cd03def2002",
   "baseline_matches_registered_blob": true,
   "section_names": [
     "General",
@@ -14,14 +14,14 @@
     "MITM"
   ],
   "section_count": 5,
-  "rule_line_count": 1961,
+  "rule_line_count": 2052,
   "url_rewrite_line_count": 10,
   "dns_snapshot": {
     "dns-server": [
       "https://dns.quad9.net/dns-query#proxy&no-h3, https://dns.google/dns-query#proxy&no-h3"
     ],
     "fallback-dns-server": [
-      "https://cloudflare-dns.com/dns-query#no-h3"
+      "https://cloudflare-dns.com/dns-query#proxy&no-h3"
     ],
     "direct-dns-server": [
       "https://doh.pub/dns-query#no-h3, https://dns.alidns.com/dns-query#no-h3"
@@ -42,9 +42,9 @@
   "dns_invariants_match": true,
   "dns_drift": {},
   "mitm_section_present": true,
-  "mitm_enabled": false,
+  "mitm_enabled": true,
   "limitations": [
-    "The current shadowrocket/ss.conf is the sole policy and configuration reference for this audit.",
+    "The current modules/uu.conf is the sole policy and configuration reference for this audit.",
     "The automation reads this file and does not modify it.",
     "DNS values and MITM state are reported as observed facts, not rewritten or inferred.",
     "Static checks cannot verify runtime behavior inside the Shadowrocket app."

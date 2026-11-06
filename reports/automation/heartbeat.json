@@ -1,18 +1,18 @@
 {
   "schema_version": 3,
-  "input_fingerprint": "c12d2230f4a6279401cc4ec1142c4d631195c7685e44caaf1806cfcd964eb905",
-  "post_run_input_fingerprint": "68416626dd2ad240818e00dfcc7a65dde0ddce3a2601af3fccb83e2b06f23857",
-  "output_fingerprint": "a4c496ad930c7d7d33f13cc34d2f543c0225faaf9a29fd228c53cf46aab25c9f",
+  "input_fingerprint": "50902a874e45e905cca2e507696c85e8f0bc8fde6a2006617c6bf3c8340b36bb",
+  "post_run_input_fingerprint": "50902a874e45e905cca2e507696c85e8f0bc8fde6a2006617c6bf3c8340b36bb",
+  "output_fingerprint": "aaa13bc3023597879b386f025638bf75d797677080bda68dd493c75681fcaf96",
   "input_manifest_schema_version": 1,
   "status": "audit_passed",
   "workflow": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
-  "run_id": "41689927662",
+  "run_id": "42176126495",
   "run_attempt": 1,
   "event": "workflow_dispatch",
-  "source_commit": "09457fd03856c6264b9d47eac993252f86c3d609",
+  "source_commit": "3f0296a027e97472f604cbbaaa5edc9a7c9eb818",
   "production_decision": "",
   "production_reason": "",
-  "recorded_at_utc": "2026-11-03T18:25:32.426598+00:00",
+  "recorded_at_utc": "2026-11-06T07:06:37.927427+00:00",
   "checks": {
     "deterministic_tests": "passed",
     "user_config_baseline": "passed",
@@ -23,7 +23,7 @@
     "source_and_rule_audits": "passed"
   },
   "protected_config": {
-    "path": "shadowrocket/ss.conf",
+    "path": "modules/uu.conf",
     "modified_by_automation": false
   }
 }

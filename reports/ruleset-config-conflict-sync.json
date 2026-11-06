@@ -1,43 +1,26 @@
 {
   "schema_version": 1,
-  "completed_at": "2026-11-03T18:24:15.032369+00:00",
-  "config_path": "shadowrocket/ss.conf",
+  "completed_at": "2026-11-06T07:05:10.529628+00:00",
+  "config_path": "modules/uu.conf",
   "config_read_only": true,
-  "config_blob_sha": "daa84802764de63c24da1e727ed233bab2e9151f",
-  "config_sha256": "a154d2810fbed217245802c3ff99800119e5138fc29b80fa4181efd938074ed6",
+  "config_blob_sha": "3fd91b257dbd7a66bab2d0d7f5692cd03def2002",
+  "config_sha256": "5807a76c18de91ad0f0a60f57a9a1aab0bb9e688d152d428719de30d8d8ba749",
   "ruleset_reference_count": 3,
-  "config_rule_line_count": 1675,
+  "config_rule_line_count": 1754,
   "published_before": {
-    "DIRECT": 143,
-    "PROXY": 3222,
-    "REJECT": 6
-  },
-  "published_after": {
     "DIRECT": 147,
     "PROXY": 3259,
     "REJECT": 6
   },
-  "published_removed_count": 1,
+  "published_after": {
+    "DIRECT": 147,
+    "PROXY": 3261,
+    "REJECT": 6
+  },
+  "published_removed_count": 0,
   "published_added_count": 0,
-  "removed": [
-    {
-      "id": "cfg-1ccb4c7a21c90063d78a",
-      "policy": "DIRECT",
-      "rule": "DOMAIN-SUFFIX,allawntech.com",
-      "domain": "allawntech.com",
-      "scope": "suffix_candidate",
-      "origin": "published_ruleset",
-      "removed_at": "2026-11-03T18:18:03.431942+00:00",
-      "config_blob_sha": "daa84802764de63c24da1e727ed233bab2e9151f",
-      "config_sha256": "a154d2810fbed217245802c3ff99800119e5138fc29b80fa4181efd938074ed6",
-      "config_rule_line": null,
-      "config_rule": "L160: DOMAIN-SUFFIX,allawntech.com,REJECT [REJECT]",
-      "effective_config_policy": null,
-      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
-      "restored_at": null
-    }
-  ],
-  "removed_count": 1,
+  "removed": [],
+  "removed_count": 0,
   "pending_queue_removed_count": 0,
   "suppressed_active_archive": [],
   "retained_for_review": [],
@@ -944,38 +927,38 @@
       "status": "active_config_overlap"
     }
   ],
-  "policy": "Candidates fully covered by an explicit DOMAIN or DOMAIN-SUFFIX rule with DIRECT, PROXY, or REJECT policy in ss.conf, or fully covered by skip-proxy, are removed from published and queued external rules. The ss.conf policy wins regardless of whether it matches the external policy. Narrower exact or child-suffix exceptions do not remove broader parent suffix candidates. Rule order and precedence are not evaluated. Historical archive entries are rechecked against current full-scope coverage and superseded when coverage no longer exists; the normal builder then reconsiders eligible records using current evidence and publication gates. Keyword, regex, conditional, and partial overlaps are not automatically resolved.",
+  "policy": "Candidates fully covered by an explicit DOMAIN or DOMAIN-SUFFIX rule with DIRECT, PROXY, or REJECT policy in uu.conf, or fully covered by skip-proxy, are removed from published and queued external rules. The uu.conf policy wins regardless of whether it matches the external policy. Narrower exact or child-suffix exceptions do not remove broader parent suffix candidates. Rule order and precedence are not evaluated. Historical archive entries are rechecked against current full-scope coverage and superseded when coverage no longer exists; the normal builder then reconsiders eligible records using current evidence and publication gates. Keyword, regex, conditional, and partial overlaps are not automatically resolved.",
   "errors": [],
-  "workflow_run_id": "41689927662",
+  "workflow_run_id": "42176126495",
   "sync_passes": [
     {
-      "completed_at": "2026-11-03T18:18:03.431942+00:00",
+      "completed_at": "2026-11-06T06:56:20.761784+00:00",
       "published_before": {
-        "DIRECT": 143,
-        "PROXY": 3222,
+        "DIRECT": 147,
+        "PROXY": 3259,
         "REJECT": 6
       },
       "published_after": {
-        "DIRECT": 142,
-        "PROXY": 3222,
+        "DIRECT": 147,
+        "PROXY": 3259,
         "REJECT": 6
       },
-      "published_removed_count": 1,
+      "published_removed_count": 0,
       "pending_queue_removed_count": 0,
       "retained_for_review_count": 0,
       "restored_count": 0,
       "restore_refused_count": 0
     },
     {
-      "completed_at": "2026-11-03T18:24:15.032369+00:00",
+      "completed_at": "2026-11-06T07:05:10.529628+00:00",
       "published_before": {
         "DIRECT": 147,
-        "PROXY": 3259,
+        "PROXY": 3261,
         "REJECT": 6
       },
       "published_after": {
         "DIRECT": 147,
-        "PROXY": 3259,
+        "PROXY": 3261,
         "REJECT": 6
       },
       "published_removed_count": 0,
