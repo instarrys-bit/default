@@ -463,34 +463,6 @@
       "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
     },
     {
-      "path": "scripts/capture_git_write_trace.py",
-      "status": "CLASSIFIED_MONITORING",
-      "first_seen_at": "2026-11-05T13:01:25.893664Z",
-      "last_seen_at": "2026-11-05T13:01:25.893664Z",
-      "seen_count": 1,
-      "observed_run_ids": [
-        "42031975537"
-      ],
-      "last_seen_event": "push",
-      "last_seen_revision": "b7035bb11da26f258b824c72c255811d46d9df7f",
-      "last_seen_run_id": "42031975537",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42031975537",
-      "classification_reason": "Path-only observer that records persistent repository-tree changes from shell and Git operations into a runner-temporary trace artifact; it does not write production rulesets or user configuration.",
-      "classification_basis": "Verified the implementation's output is a runner-temporary JSONL trace containing repository-relative paths and run metadata only, and that the workflow uploads the trace as an audit artifact. No DIRECT, PROXY, REJECT or modules/uu.conf content is produced or modified."
-    },
-    {
-      "path": "scripts/fenced_file_writer.py",
-      "status": "CLASSIFIED_CONTROL_PLANE",
-      "first_seen_at": "2026-11-04T03:15:02.736672Z",
-      "last_seen_at": "2026-11-04T04:56:47.404975Z",
-      "seen_count": 8,
-      "last_seen_event": "push",
-      "last_seen_revision": "b9a701dd6752693c167b030a5cbd13d617e52da0",
-      "last_seen_run_id": "41776163056",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41776163056",
-      "classification_basis": "Reviewed as a safety/control-plane enforcement module. It rejects writes to the owner-managed modules/uu.conf and applies resource-lease checks; it does not supply DIRECT/PROXY/REJECT policy inputs."
-    },
-    {
       "path": "scripts/resource_lease_runtime.py",
       "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-03T19:06:35.005041Z",
@@ -573,5 +545,5 @@
       "classification_basis": "Verified deletion commit e845187d and current main tree: shadowrocket/ss.conf is absent; automation/production_inputs.json names modules/uu.conf as the active protected config and does not include this legacy path among production inputs. This classification does not restore, edit, or approve any config content."
     }
   ],
-  "updated_at": "2026-11-05T19:04:52.584353Z"
+  "updated_at": "2026-11-06T00:00:00Z"
 }
