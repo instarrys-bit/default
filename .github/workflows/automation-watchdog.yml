@@ -59,7 +59,7 @@ jobs:
     name: Reconcile owner-approved uu.conf baseline metadata
     if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
     concurrency:
-      group: shadowrocket-watchdog-control-plane
+      group: shadowrocket-watchdog-control-plane-${{ github.run_id }}
       cancel-in-progress: false
     runs-on: ubuntu-24.04
     timeout-minutes: 5
@@ -124,7 +124,7 @@ jobs:
     # live resource leases and fencing tokens. Keep supervision independent of
     # the publisher mutex so it can renew and verify long-running tasks.
     concurrency:
-      group: shadowrocket-watchdog-control-plane
+      group: shadowrocket-watchdog-control-plane-${{ github.run_id }}
       cancel-in-progress: false
     env:
       GITHUB_ACTOR_ID: ${{ github.actor_id }}
