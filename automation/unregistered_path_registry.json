@@ -85,6 +85,20 @@
       "classification_basis": "Verified absent from the current main tree and no active references remain. This metadata belonged to the retired restore-inventory path and does not supply routing policy or production evidence. The existing resource write boundary remains unchanged."
     },
     {
+      "path": "automation/architecture.json",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-06T17:30:50.104659Z",
+      "last_seen_at": "2026-11-06T17:30:50.104659Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "42262218995"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "1cad1aeaffd479ffeb86d96bb22063d0e41fad54",
+      "last_seen_run_id": "42262218995",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42262218995"
+    },
+    {
       "path": "automation/assessment_canary_request.json",
       "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-04T00:19:07.637195Z",
@@ -470,6 +484,34 @@
       "classification_basis": "Confirmed against automation/production_inputs.json non_production_path_patterns and the repository's module/script layout. These files remain repository artifacts subject to write fencing, but they do not alter the production routing result. No DNS, MITM, routing, or ad-block implementation content is changed."
     },
     {
+      "path": "modules/maasea/youtube_request_local.js",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-06T17:30:50.104659Z",
+      "last_seen_at": "2026-11-06T17:30:50.104659Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "42262218995"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "1cad1aeaffd479ffeb86d96bb22063d0e41fad54",
+      "last_seen_run_id": "42262218995",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42262218995"
+    },
+    {
+      "path": "modules/maasea/youtube_response.js",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-06T17:30:50.104659Z",
+      "last_seen_at": "2026-11-06T17:30:50.104659Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "42262218995"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "1cad1aeaffd479ffeb86d96bb22063d0e41fad54",
+      "last_seen_run_id": "42262218995",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42262218995"
+    },
+    {
       "path": "modules/temp-test/Sr_Youtube_Clean.js",
       "status": "NON_PRODUCTION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
@@ -625,5 +667,5 @@
       "classification_basis": "scripts/discover_sources.py loads and validates this catalog, then uses its provider IDs, endpoints, data types and activation boundaries to drive bounded external collection. Changes can alter source observations and later ruleset evidence, so this exact path is a production input. The catalog does not itself assign DIRECT/PROXY/REJECT policy or authorize publication."
     }
   ],
-  "updated_at": "2026-11-06T15:25:49.705818Z"
+  "updated_at": "2026-11-06T17:30:50.104659Z"
 }
