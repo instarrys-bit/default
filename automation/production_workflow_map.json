@@ -4,7 +4,12 @@
   "workflow_blob_sha": "27d066700b8cb4b504cb51526a6aee3195c5db97",
   "registry_blob_sha": "47a51e96359005ed8f33c2ea6c08cfcf0d97d6c9",
   "status": "static_step_mapping_not_execution_authorization",
-  "summary": "The production audit and publish pipeline is reconciled by the Watchdog only after the producer workflow reaches its completed state; queue verification is driven by workflow_run.completed.",
+  "summary": {
+    "job_count": 5,
+    "step_count": 60,
+    "independent_python_dispatch_enabled": false,
+    "independent_workflow_count": 1
+  },
   "job_graph": [
     {
       "id": "audit",
