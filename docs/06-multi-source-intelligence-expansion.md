@@ -2,56 +2,50 @@
 
 ## Purpose
 
-Extend the production automation's information-acquisition horizon beyond its current GitHub-centric rule-repository discovery. This is a staged integration, not an immediate trust grant to every provider.
+Extend production information acquisition beyond GitHub rule-repository discovery while keeping evidence collection separate from routing-policy decisions.
 
-## Existing pipeline
+## Existing pipeline and write boundary
 
-The current production path performs GitHub repository discovery, raw GitHub rule-list assessment, source-lineage and overlap audits, deterministic admission, collection, domain review, and rule-set generation. The existing assessor and collector intentionally restrict downloads to HTTPS `raw.githubusercontent.com`. That boundary must not be weakened by adding arbitrary URLs.
+The existing registered program `scripts/discover_sources.py` remains the entry point. It already runs in the production source-discovery step under the existing Watchdog/resource-lease controls. This change adds no workflow, credential, write path, or permission. It extends the existing discovery inventory document only; it does not add new repository paths to the write set.
 
-## Stage 1: provider inventory (this change)
+The rule assessor and domain collector retain their HTTPS `raw.githubusercontent.com` restrictions. Those restrictions are not weakened.
 
-`sources/external_intelligence_catalog.json` records public provider leads across:
-- open-source rule repositories;
-- malware and phishing intelligence;
-- DNS and certificate-derived domain observations;
-- ASN, IP-prefix, and network-owner intelligence;
-- official internet registry data;
-- additional source-hosting platforms (GitLab and Codeberg).
+## Runtime adapters now implemented
 
-The existing registered program `scripts/discover_sources.py` validates this inventory before running its existing GitHub discovery and reports a compact status in the existing Actions job summary. Catalog validation performs no provider network requests, downloads, activation, policy classification, or additional repository writes. The current assessor and collector allowlists remain unchanged.
+The existing discovery program collects bounded, typed observations from:
+- URLhaus recent malware URL feed;
+- OpenPhish feed;
+- GitLab project search;
+- Codeberg repository search;
+- IANA root-zone registry.
 
-## Stage 2: provider-specific adapters (required before ingestion)
+It also implements query-driven adapters for:
+- Certificate Transparency via crt.sh, requiring explicit `EXTERNAL_INTEL_CT_DOMAINS`;
+- RIPEstat network information, requiring explicit `EXTERNAL_INTEL_RIPE_RESOURCES`.
 
-Implement separate, bounded adapters for:
-- GitLab and Codeberg repository discovery;
-- URLhaus and OpenPhish URL/host feeds;
-- Certificate Transparency queries;
-- RIPEstat ASN/IP evidence;
-- IANA registry metadata.
+AdGuard remains covered by the existing GitHub discovery path.
 
-Each adapter must validate HTTPS hosts and redirects, enforce response and pagination budgets, respect provider terms/licensing, record publisher and retrieval provenance, and emit typed observations. URL observations, domain observations, certificate names, DNS records, ASN data, and IP prefixes must remain distinct types.
+Every observation records provider identity, data type, value, source URL, source payload SHA-256, per-record SHA-256, retrieval time, optional source timestamp, and the catalog activation boundary. Redirects are constrained to the same HTTPS provider host. Each response is capped at 2 MB; the aggregate run budget is 10 MB, with per-provider and total observation caps.
 
-## Stage 3: candidate normalization and evidence review
+## Evidence types and policy separation
 
-Normalize observations into a quarantined candidate layer. Threat feeds can nominate a domain for review but must not automatically dictate REJECT. ASN, IP geography, certificate issuance, or CDN ownership must not automatically dictate DIRECT or PROXY. Require explicit policy evidence, source independence checks, lineage review, duplicate/conflict analysis, and deterministic validation.
+URLhaus URLs, OpenPhish URLs, repository metadata, certificate names, RIPEstat network data, and IANA TLD entries remain distinct typed observations. The adapters do not assign routing actions. Threat-feed membership alone does not authorize REJECT; ASN, IP prefix, TLD, or certificate evidence does not authorize DIRECT or PROXY.
 
-## Stage 4: production integration
+Provider failures are isolated and reported per provider. CT and RIPEstat are explicitly reported as awaiting query input when no targets are supplied.
 
-Only after adapter-specific tests and independent verification should typed observations be connected to existing candidate review and rule-set generation. New sources must establish a baseline before bulk candidate creation. Source outages or parser failures must be isolated and must not cause a mass rule change.
+## Next integration stage
+
+The new observations are retained in the existing discovery inventory as evidence only. They are not yet consumed by `assess_sources.py` or the deterministic domain-review engine. Before that integration, implement:
+1. provider-specific license/terms review and publisher identity verification;
+2. normalization into quarantined domain candidates with exact item-level provenance;
+3. lineage, duplicate, conflict, and independent-source checks;
+4. deterministic review fixtures and canary runs proving no out-of-scope writes;
+5. explicit acceptance gates before any new observation can influence the three rulesets.
 
 ## Immutable boundaries
 
-- `modules/uu.conf` and user configuration remain read-only.
-- No DNS, MITM, or other user configuration changes.
-- Production automation's write authority remains restricted to the authorized rule-set outputs. Catalog validation reports only to the ephemeral Actions step summary.
-- No source is activated merely because it appears in the catalog.
-- Existing queue history and audit evidence are preserved.
-
-## Acceptance gates
-
-1. Catalog schema and host allowlist tests pass.
-2. Workflow summary reports provider inventory and explicitly states that production adapters are not yet enabled.
-3. Each provider adapter has fixtures, size/time limits, redirect tests, license review, provenance tests, and independent verification.
-4. Candidate integration passes duplicate, lineage, conflict, and policy-evidence tests.
-5. Canary run proves that no files outside the authorized rule-set write set change.
-6. Only then can the relevant provider adapters be enabled.
+- `modules/uu.conf` and all user-managed configuration remain unchanged.
+- No DNS or MITM changes.
+- No changes to the assessor/collector host allowlists.
+- No new workflow permissions, repository write paths, or automated source activation.
+- Only the existing production writer and its current resource fencing can publish existing allowlisted outputs.
