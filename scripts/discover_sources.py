@@ -158,7 +158,9 @@ def parse_ct_payload(payload: bytes, provider: dict, source_url: str) -> list[di
         if not isinstance(item, dict):
             continue
         for name in str(item.get("name_value") or "").splitlines():
-            value = name.strip().lower().lstrip("*.")
+            value = name.strip().lower()
+            if value.startswith("*."):
+                value = value[2:]
             if DOMAIN_PATTERN.fullmatch(value):
                 output.append(_external_observation(provider, "certificate_name", value, source_url, digest, source_timestamp=item.get("not_before"), metadata={"issuer_name": str(item.get("issuer_name") or "")[:300]}))
                 if len(output) >= EXTERNAL_INTEL_MAX_RECORDS_PER_PROVIDER:
