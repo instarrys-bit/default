@@ -43,7 +43,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
     def test_watchdog_observes_completed_main_audit_runs(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("workflow_run:", workflow)
-        self.assertIn('run-name: Shadowrocket Deterministic Domain Audit (User Config Baseline)', AUTO_SYNC.read_text(encoding="utf-8"))
+        self.assertIn("run-name: Automation task ${{ inputs.automation_task_id || 'manual' }}", AUTO_SYNC.read_text(encoding="utf-8"))
         self.assertIn('    - cron: "0 * * * *"', workflow)
         trigger = workflow.split("  workflow_run:", 1)[1].split("  push:", 1)[0]
         self.assertIn("types: [completed]", trigger)
