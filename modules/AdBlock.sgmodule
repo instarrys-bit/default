@@ -60,4 +60,4 @@ Clean_Pro = type=http-response,pattern=^https:\/\/(youtubei\.googleapis\.com\/yo
 
 [MITM]
 # 仅保留当前原模块已列出的 MITM 主机；不扩大证书拦截范围。
-hostname = %APPEND% -redirector*.googlevideo.com, *.googlevideo.com, youtubei.googleapis.com, www.youtube.com, m.youtube.com, www.google.com, api.x.com, x.com, m.google.com, ogs.google.com, www.instagram.com
+hostname = %APPEND% -redirector*.googlevideo.com, *.googlevideo.com, youtubei.googleapis.com, www.youtube.com, s.youtube.com, m.youtube.com, www.google.com, api.x.com, x.com, m.google.com, ogs.google.com, www.instagram.com
