@@ -121,7 +121,7 @@
     {
       "id": "durable_task_queue_control_plane",
       "paths": [
-        "automation/task_queue.json"
+        "GitHub Issue #315 comments (external durable state)"
       ],
       "writers": [
         "script_github_queue_store",
@@ -130,9 +130,9 @@
         "script_task_scheduler",
         "workflow_automation_watchdog"
       ],
-      "lease_key": "git-blob-sha-cas:automation/task_queue.json",
-      "status": "sha_cas_control_plane_reviewed",
-      "note": "The durable queue is control-plane state, not a production resource lease. GitHubContentsQueueStore requires the exact current Blob SHA for every update and retries only explicit SHA conflicts; the complete candidate queue is independently validated before and after mutation. Manual authorization is consumed once per Watchdog run ID and stored atomically with the exact task ID, target, idempotency key, fingerprint, and trusted run scope. Local task_queue_runtime is runner-local flock/atomic replace only, not a cross-runner shared writer. script_resource_lease_runtime also mutates the queue's lease records through the same SHA-CAS store; it is a control-plane lease writer, not a direct production-resource writer."
+      "lease_key": "github-issue-comment-chain:315",
+      "status": "append_only_issue_snapshot_chain_reviewed",
+      "note": "The durable queue is control-plane state stored as append-only, compressed GitHub Issue #315 comments. Each snapshot is SHA-256 chained to the prior revision; concurrent duplicate revisions resolve deterministically by earliest canonical comment ID. The repository automation/task_queue.json file is read-only bootstrap state. Local task_queue_runtime is runner-local only."
     },
     {
       "id": "lifecycle_gate_state",

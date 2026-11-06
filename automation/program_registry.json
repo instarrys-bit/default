@@ -1332,7 +1332,7 @@
       "id": "script_github_queue_store",
       "path": "scripts/github_queue_store.py",
       "kind": "python_component",
-      "responsibility": "provide SHA-guarded GitHub Contents API persistence for the cross-runner task queue",
+      "responsibility": "provide append-only GitHub Issue comment snapshot persistence for the cross-runner task queue; repository bootstrap JSON is read-only",
       "capabilities": [
         "github_queue_storage"
       ],

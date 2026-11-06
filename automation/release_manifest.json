@@ -8,7 +8,7 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "afac96860d57a4c6cc4b1f7d45823c2fcc88520d"
+      "git_blob_sha": "fcb929288e3252b8376edb40c379a39ea65c0e33"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -24,11 +24,11 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "532f3e34a08ba51b8055f2f8eb6200bae7e9bf3f"
+      "git_blob_sha": "75acbb783c627015f7f368ba59425801fb37c871"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "4dcaf69c22fc0342bce30d48315d962900b4c2b6"
+      "git_blob_sha": "c654bc2bec97f12afcf92e8b043e8ca09156b23f"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -58,7 +58,7 @@
     },
     "remote_task_queue_runtime": {
       "path": "scripts/remote_task_queue_runtime.py",
-      "git_blob_sha": "6a0a30b1ee69c0210204f7ec549a39a054f7442e"
+      "git_blob_sha": "4ad0158046be8099050c0b081066a1cec0ebc1a0"
     },
     "task_scheduler": {
       "path": "scripts/task_scheduler.py",
@@ -70,7 +70,7 @@
     },
     "source_discovery_workflow": {
       "path": ".github/workflows/source-discovery.yml",
-      "git_blob_sha": "7e5b252950ce362052fc0984642ab52430a0147b"
+      "git_blob_sha": "92c5196379ee036d1866bd62607f8da415e4a398"
     },
     "source_discovery_implementation": {
       "path": "scripts/discover_sources.py",
@@ -78,7 +78,7 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "98aeec935bd79db0ed4f9135604473ac79b30997"
+      "git_blob_sha": "fcb929288e3252b8376edb40c379a39ea65c0e33"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -90,7 +90,7 @@
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "c10bf7cc301aa79879bedf3e0602f5d16ca7c4e0"
+      "git_blob_sha": "d7d0811ae8121220d5257b2fba3ca43abce8b432"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -107,6 +107,10 @@
     "production_input_manifest": {
       "path": "automation/production_inputs.json",
       "git_blob_sha": "f3b40dd69e906a3b28a9f35e6fb999584f8aac77"
+    },
+    "task_queue_store": {
+      "path": "scripts/github_queue_store.py",
+      "git_blob_sha": "6f5d60709ad0d5dc3886484a57ea24e8fde6e873"
     }
   },
   "compatibility": {

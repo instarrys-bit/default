@@ -68,6 +68,7 @@ jobs:
     permissions:
       contents: read
       actions: read
+      issues: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -618,6 +619,7 @@ jobs:
       PYTHONPATH: scripts
     permissions:
       contents: write
+      issues: write
     steps:
       - name: Checkout exact audited commit
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
