@@ -53,6 +53,11 @@ def load_reject_approvals(path=REJECT_APPROVALS):
 def reject_rule_authorized(line, previously_published, manual_approvals):
     return line in previously_published or line in manual_approvals
 
+def reject_queue_entry_authorized(line, previously_published, manual_approvals, secondary_passed):
+    """Do not let a stale pending queue bypass the current REJECT second-stage gate."""
+    return line in previously_published or (line in manual_approvals and line in secondary_passed)
+
+
 def reject_secondary_decision(evidence, scoring, minimum, threshold, correlated_pairs, required_sources=()):
     """Apply the stricter REJECT-only gate before a candidate reaches human approval."""
     config = scoring.get("reject_secondary_review", {})
@@ -216,6 +221,7 @@ def main():
     reject_manual_hold_count=0
     reject_manual_approval_outside_shortlist_count=0
     reject_review_queue_items=[]
+    reject_secondary_passed_lines=set()
     reviews=data.get("reviews",[])
     if len({str(item.get("domain","")).lower() for item in reviews})!=len(reviews):
         raise ValueError("duplicate domain key in deterministic ledger")
@@ -344,6 +350,7 @@ def main():
                     reject_manual_approval_outside_shortlist_count+=1
                 continue
             reject_secondary_eligible_count+=1
+            reject_secondary_passed_lines.add(archived_line)
             if archived_line not in manual_reject_approvals:
                 reject_manual_hold_count+=1
                 reject_review_queue_items.append({
@@ -414,7 +421,9 @@ def main():
         key=(str(queued.get("policy","")).upper(),str(queued.get("scope","exact_candidate")),str(queued.get("domain","")).lower())
         if key[0] in POLICIES and key[1] in {"exact_candidate","suffix_candidate"} and key[2]:
             queued_line=("DOMAIN-SUFFIX," if key[1]=="suffix_candidate" else "DOMAIN,")+key[2]
-            if key[0]=="REJECT" and not reject_rule_authorized(queued_line,previously_published_reject,manual_reject_approvals):
+            if key[0]=="REJECT" and not reject_queue_entry_authorized(
+                queued_line,previously_published_reject,manual_reject_approvals,reject_secondary_passed_lines
+            ):
                 continue
             if (key[0],queued_line) not in archived_deleted:
                 queue_map[key]=queued
