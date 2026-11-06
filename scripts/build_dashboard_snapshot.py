@@ -55,6 +55,28 @@ def watchdog_schedule(workflow_text, now=None):
     return {"cron": expressions, "next_scheduled_trigger_at": min(candidates).isoformat(), "schedule_state": "known"}
 
 
+def build_dead_letter_metrics(tasks):
+    """Separate historical workflow cancellations from actual exhausted failures."""
+    failures = cancelled = unclassified = 0
+    for task in tasks:
+        if not isinstance(task, dict) or str(task.get("status", "")).upper() != "DEAD_LETTER":
+            continue
+        error = task.get("last_error")
+        evidence = error.get("evidence") if isinstance(error, dict) else None
+        conclusion = evidence.get("conclusion") if isinstance(evidence, dict) else None
+        if conclusion == "cancelled":
+            cancelled += 1
+        elif conclusion in {"failure", "timed_out", "startup_failure"}:
+            failures += 1
+        else:
+            unclassified += 1
+    return {
+        "dead_letter_failures": failures,
+        "dead_letter_cancelled": cancelled,
+        "dead_letter_unclassified": unclassified,
+    }
+
+
 def build_candidate_review_metrics(candidates, review_records, cursor=None, ledger_updated_at=None):
     candidate_domains = {
         str(item.get("domain", "")).lower().rstrip(".")
@@ -114,6 +136,7 @@ def main():
     for task in production_tasks:
         status = str(task.get("status", "UNKNOWN")).upper()
         prod_status[status] = prod_status.get(status, 0) + 1
+    dead_letter_metrics = build_dead_letter_metrics(production_tasks)
     
     successful = [t for t in production_tasks
                   if str(t.get("status", "")).upper() == "SUCCEEDED"
@@ -195,6 +218,10 @@ def main():
             "succeeded": prod_status.get("SUCCEEDED", 0),
             "active": sum(prod_status.get(s, 0) for s in ("QUEUED", "CLAIMED", "VERIFYING")),
             "dead_letter": prod_status.get("DEAD_LETTER", 0),
+            "dead_letter_failures": dead_letter_metrics["dead_letter_failures"],
+            "dead_letter_cancelled": dead_letter_metrics["dead_letter_cancelled"],
+            "dead_letter_unclassified": dead_letter_metrics["dead_letter_unclassified"],
+            "cancelled_total": prod_status.get("CANCELLED", 0) + dead_letter_metrics["dead_letter_cancelled"],
             "last_success_verified_at": last_verified,
             "next_task_eligible_at": None,
             "task_eligibility_state": "conditional_unknown",
