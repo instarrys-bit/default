@@ -92,12 +92,12 @@ jobs:
           SOURCE_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
           SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
           SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
-          SOURCE_WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
+          SOURCE_WORKFLOW_PATH: ${{ github.event.workflow_run.path }}
         run: |
           set -euo pipefail
           # Only the production ruleset audit is recovered here. Config-validator
           # and self-healing failures have their own diagnosis paths.
-          if [ "$SOURCE_WORKFLOW_NAME" != "Shadowrocket Deterministic Domain Audit (User Config Baseline)" ]; then
+          if [ "$SOURCE_WORKFLOW_PATH" != ".github/workflows/auto_sync.yml" ]; then
             echo "This recovery path only handles the deterministic ruleset audit."
             exit 0
           fi
@@ -263,7 +263,7 @@ jobs:
           printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$idempotency_key" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
 
       - name: Report degraded source discovery health
-        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success' }}
+        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.path == '.github/workflows/auto_sync.yml' && github.event.workflow_run.conclusion == 'success' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
@@ -879,7 +879,7 @@ jobs:
       GITHUB_MANUAL_AUDIT_REQUEST: ${{ inputs.request_deterministic_audit }}
       PYTHONDONTWRITEBYTECODE: "1"
     needs: [health-check, stale-run-watch, manifest-integrity]
-    if: ${{ always() && needs.health-check.result == 'success' && ((github.event_name != 'schedule' && github.event_name != 'workflow_dispatch') || needs.stale-run-watch.result == 'success') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' || github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)'))) && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[assessment-canary]')) }}
+    if: ${{ always() && needs.health-check.result == 'success' && ((github.event_name != 'schedule' && github.event_name != 'workflow_dispatch') || needs.stale-run-watch.result == 'success') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/source-discovery.yml'))) && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[assessment-canary]')) }}
     permissions:
       actions: write
       contents: write
@@ -896,7 +896,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Download artifact from the exact discovery workflow run
-        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
+        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.path == '.github/workflows/source-discovery.yml' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: source-discovery-output
@@ -905,11 +905,11 @@ jobs:
           path: ${{ runner.temp }}/source-discovery-output
 
       - name: Verify immutable discovery artifact against producer run and current main
-        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
+        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.path == '.github/workflows/source-discovery.yml' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
         env:
           SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
           SOURCE_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
-          SOURCE_WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
+          SOURCE_WORKFLOW_NAME: Shadowrocket Source Discovery (Watchdog)
           SOURCE_ARTIFACT_DIR: ${{ runner.temp }}/source-discovery-output
         run: |
           set -euo pipefail
@@ -957,14 +957,14 @@ jobs:
           PY
 
       - name: Enqueue source assessment after successful discovery workflow
-        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
+        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.path == '.github/workflows/source-discovery.yml' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           SOURCE_DISCOVERY_MODE: ${{ vars.SOURCE_DISCOVERY_MODE || 'monolithic_fallback' }}
           SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
           SOURCE_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
-          SOURCE_WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
+          SOURCE_WORKFLOW_NAME: Shadowrocket Source Discovery (Watchdog)
         run: |
           set -euo pipefail
           if [ "$SOURCE_DISCOVERY_MODE" != "independent" ]; then
@@ -1001,7 +1001,7 @@ jobs:
           unset queue_token
 
       - name: Enqueue independent source discovery only after its authorization gate opens
-        if: ${{ !(github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)') }}
+        if: ${{ !(github.event_name == 'workflow_run' && github.event.workflow_run.path == '.github/workflows/source-discovery.yml') }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
