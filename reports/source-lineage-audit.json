@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-06T12:41:37.776247+00:00",
+  "audited_at": "2026-11-06T15:56:03.855672+00:00",
   "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
   "source_count": 13,
   "audited_source_count": 11,
@@ -42069,7 +42069,7 @@
     {
       "repository": "Magisk-Modules-Alt-Repo/StevenBlock",
       "readme_url": "https://raw.githubusercontent.com/Magisk-Modules-Alt-Repo/StevenBlock/main/README.md",
-      "readme_sha256": "fd043e444722cd24f2e93f1d53750a01855fe9dcab44e3f54d6896b5b5edb08a",
+      "readme_sha256": "f620a1dbf498a99a76bcdda1b7b89ecaefe70e7291d9140476d13f5eb714deb4",
       "discovery_readme_sha256": null,
       "readme_changed_since_discovery": false,
       "referenced_repositories": [
@@ -47912,7 +47912,7 @@
     {
       "repository": "mikropsoft/StevenBlock",
       "readme_url": "https://raw.githubusercontent.com/mikropsoft/StevenBlock/main/README.md",
-      "readme_sha256": "7ed63e8c4593184385da96efc00c7d2b654d240e01dcbea27865c9574984028d",
+      "readme_sha256": "9860bb583d87cb23f07b2b9b7ac67059665915eb105e8e1ab76eb89999ed6cf4",
       "discovery_readme_sha256": null,
       "readme_changed_since_discovery": false,
       "referenced_repositories": [
@@ -51300,7 +51300,7 @@
       "lineage_status": "unverified",
       "evidence_url": "https://github.com/nthack/Shadowrocket-ADBlock-Rules-Easy/blob/master/README.md",
       "fetched_url": "https://raw.githubusercontent.com/nthack/Shadowrocket-ADBlock-Rules-Easy/master/README.md",
-      "evidence_sha256": "48322ead4dc9a6eacefde138e4996a71a665b23a762dc48c320867f27d26e201",
+      "evidence_sha256": "95af1d8ddc3bb145c5963784e6e0d36a80dcc46a2d96e41b291f6b9cbca939f9",
       "evidence_bytes": 4302,
       "declared_upstream_count": 0,
       "discovered_upstream_count": 1,

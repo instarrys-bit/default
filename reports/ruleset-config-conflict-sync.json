@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "completed_at": "2026-11-06T12:53:13.250739+00:00",
+  "completed_at": "2026-11-06T16:03:26.635432+00:00",
   "config_path": "modules/uu.conf",
   "config_read_only": true,
-  "config_blob_sha": "3fd91b257dbd7a66bab2d0d7f5692cd03def2002",
-  "config_sha256": "5807a76c18de91ad0f0a60f57a9a1aab0bb9e688d152d428719de30d8d8ba749",
+  "config_blob_sha": "9b364e635f89dad86cc438c5d22f4fd678b090c2",
+  "config_sha256": "6657263851d6075e94788ac7ac2ef61d9d9c881c1e8a047a4fb4826d3d04b1c8",
   "ruleset_reference_count": 3,
-  "config_rule_line_count": 1754,
+  "config_rule_line_count": 1762,
   "published_before": {
     "DIRECT": 147,
     "PROXY": 3261,
@@ -929,10 +929,10 @@
   ],
   "policy": "Candidates fully covered by an explicit DOMAIN or DOMAIN-SUFFIX rule with DIRECT, PROXY, or REJECT policy in uu.conf, or fully covered by skip-proxy, are removed from published and queued external rules. The uu.conf policy wins regardless of whether it matches the external policy. Narrower exact or child-suffix exceptions do not remove broader parent suffix candidates. Rule order and precedence are not evaluated. Historical archive entries are rechecked against current full-scope coverage and superseded when coverage no longer exists; the normal builder then reconsiders eligible records using current evidence and publication gates. Keyword, regex, conditional, and partial overlaps are not automatically resolved.",
   "errors": [],
-  "workflow_run_id": "42216788339",
+  "workflow_run_id": "42243792540",
   "sync_passes": [
     {
-      "completed_at": "2026-11-06T12:40:51.587621+00:00",
+      "completed_at": "2026-11-06T15:55:10.729711+00:00",
       "published_before": {
         "DIRECT": 147,
         "PROXY": 3261,
@@ -950,7 +950,7 @@
       "restore_refused_count": 0
     },
     {
-      "completed_at": "2026-11-06T12:53:13.250739+00:00",
+      "completed_at": "2026-11-06T16:03:26.635432+00:00",
       "published_before": {
         "DIRECT": 147,
         "PROXY": 3261,

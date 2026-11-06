@@ -257,8 +257,8 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 798,
-      "removed_entries": 1762,
+      "new_entries": 0,
+      "removed_entries": 0,
       "baseline_initialized": false,
       "bootstrap_enqueued": false
     },
@@ -353,7 +353,7 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L248: DOMAIN-SUFFIX,omappapi.com,REJECT [REJECT]",
+      "config_rule": "L257: DOMAIN-SUFFIX,omappapi.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -363,7 +363,7 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L269: DOMAIN-SUFFIX,adjust.com,REJECT [REJECT]",
+      "config_rule": "L278: DOMAIN-SUFFIX,adjust.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -373,7 +373,7 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L315: DOMAIN-SUFFIX,appsflyer.com,REJECT [REJECT]",
+      "config_rule": "L324: DOMAIN-SUFFIX,appsflyer.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -383,7 +383,7 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L317: DOMAIN-SUFFIX,dig.bdurl.net,REJECT [REJECT]",
+      "config_rule": "L326: DOMAIN-SUFFIX,dig.bdurl.net,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -393,7 +393,7 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L324: DOMAIN-SUFFIX,newrelic.com,REJECT [REJECT]",
+      "config_rule": "L333: DOMAIN-SUFFIX,newrelic.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -403,7 +403,7 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L279: DOMAIN-SUFFIX,kochava.com,REJECT [REJECT]",
+      "config_rule": "L288: DOMAIN-SUFFIX,kochava.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -413,7 +413,7 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L277: DOMAIN-SUFFIX,gemius.pl,REJECT [REJECT]",
+      "config_rule": "L286: DOMAIN-SUFFIX,gemius.pl,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -423,7 +423,7 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L248: DOMAIN-SUFFIX,omappapi.com,REJECT [REJECT]",
+      "config_rule": "L257: DOMAIN-SUFFIX,omappapi.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -433,7 +433,7 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L254: DOMAIN-SUFFIX,taboola.com,REJECT [REJECT]",
+      "config_rule": "L263: DOMAIN-SUFFIX,taboola.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -443,7 +443,7 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L292: DOMAIN-SUFFIX,segment.io,REJECT [REJECT]",
+      "config_rule": "L301: DOMAIN-SUFFIX,segment.io,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -453,7 +453,7 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L315: DOMAIN-SUFFIX,appsflyer.com,REJECT [REJECT]",
+      "config_rule": "L324: DOMAIN-SUFFIX,appsflyer.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -463,7 +463,7 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L143: DOMAIN,track.tenjin.com,REJECT [REJECT]",
+      "config_rule": "L152: DOMAIN,track.tenjin.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -473,7 +473,7 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L187: DOMAIN,track.tenjin.io,REJECT [REJECT]",
+      "config_rule": "L196: DOMAIN,track.tenjin.io,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -483,7 +483,7 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L254: DOMAIN-SUFFIX,taboola.com,REJECT [REJECT]",
+      "config_rule": "L263: DOMAIN-SUFFIX,taboola.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -493,7 +493,7 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L345: DOMAIN-SUFFIX,yoyi.tv,REJECT [REJECT]",
+      "config_rule": "L354: DOMAIN-SUFFIX,yoyi.tv,REJECT [REJECT]",
       "effective_config_policy": null
     }
   ],
