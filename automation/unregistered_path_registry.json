@@ -622,7 +622,21 @@
       "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42090354137",
       "classification_reason": "Deleted historical routing-config path; the current owner-managed routing configuration is modules/uu.conf. This path is absent from main and is not a production input.",
       "classification_basis": "Verified deletion commit e845187d and current main tree: shadowrocket/ss.conf is absent; automation/production_inputs.json names modules/uu.conf as the active protected config and does not include this legacy path among production inputs. This classification does not restore, edit, or approve any config content."
+    },
+    {
+      "path": "sources/external_intelligence_catalog.json",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-06T09:23:58.576503Z",
+      "last_seen_at": "2026-11-06T09:23:58.576503Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "42194707692"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "53d1e84d0fd8366ad946ea0e6a92be77963d52ec",
+      "last_seen_run_id": "42194707692",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42194707692"
     }
   ],
-  "updated_at": "2026-11-06T06:37:31.937825Z"
+  "updated_at": "2026-11-06T09:23:58.576503Z"
 }
