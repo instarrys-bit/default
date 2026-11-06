@@ -299,8 +299,10 @@
         {
           "order": 27,
           "name": "Summarize REJECT secondary screening",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
+          "execution_kind": "python_capability_invocation",
+          "invoked_program_ids": [
+            "script_append_step_summary"
+          ],
           "validation_program_ids": [],
           "unresolved_script_paths": []
         },
