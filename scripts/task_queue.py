@@ -194,8 +194,8 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
             raise ValueError(f"{task_id}.state_history must end with the current status")
         allowed_transitions = {
             "QUEUED": {"CLAIMED", "CANCELLED", "VERIFYING"},
-            "CLAIMED": {"VERIFYING", "SUCCEEDED", "FAILED", "QUEUED", "DEAD_LETTER"},
-            "VERIFYING": {"SUCCEEDED", "FAILED", "QUEUED", "DEAD_LETTER"},
+            "CLAIMED": {"VERIFYING", "SUCCEEDED", "FAILED", "QUEUED", "CANCELLED", "DEAD_LETTER"},
+            "VERIFYING": {"SUCCEEDED", "FAILED", "QUEUED", "CANCELLED", "DEAD_LETTER"},
             "FAILED": {"QUEUED", "DEAD_LETTER", "CANCELLED"},
             "SUCCEEDED": set(),
             "CANCELLED": set(),
