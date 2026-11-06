@@ -1621,18 +1621,6 @@
     },
     {
       "workflow_path": ".github/workflows/automation-watchdog.yml",
-      "step_name": "Detect stale successful audit and recover",
-      "mutation_kinds": [
-        "github_contents_put"
-      ],
-      "resources": [
-        "automation/unregistered_path_registry.json"
-      ],
-      "fence": "GitHub Contents Blob-SHA conditional update with bounded reread/merge/retry; observed_run_ids makes replay idempotent.",
-      "boundary": "Control-plane registry CAS; retry exhaustion fails closed."
-    },
-    {
-      "workflow_path": ".github/workflows/automation-watchdog.yml",
       "step_name": "Remove the one-shot canary request after successful verification",
       "mutation_kinds": [
         "github_contents_delete"
