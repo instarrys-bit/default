@@ -17,82 +17,97 @@ jobs:
   restore:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Detect and restore corrupted inventory
+      - name: Restore corrupted inventory and push
+        env:
+          GOOD_SHA: 0de2e952d6b4f07062eeb8dcaa8fd6237bf3a762
+          NEW_PIN: efb77e7fa846769c34bcc9051a7cf8a369ee5318
+          OLD_PIN: 24eb76ce6162da27fdc608105d372356c923eab3
         run: |
           set -euo pipefail
-          GOOD_SHA=0de2e952d6b4f07062eeb8dcaa8fd6237bf3a762
-          NEW=efb77e7fa846769c34bcc9051a7cf8a369ee5318
-          OLD=24eb76ce6162da27fdc608105d372356c923eab3
 
-          restore=0
-          for f in automation/production_workflow_map.json automation/resource_write_sets.json; do
-            if ! python3 -c "import json,sys; d=json.load(open(sys.argv[1])); assert d.get('review_context',{}).get('release_manifest_blob_sha')==sys.argv[2]; assert ('job_graph' in d) or ('confirmed_write_sets' in d)" "$f" "$NEW" 2>/dev/null; then
-              restore=1
-              echo "needs restore: $f"
-            fi
-          done
+          needs_restore() {
+            python3 - "$1" "$NEW_PIN" <<'PY'
+          import json, sys
+          path, expected = sys.argv[1], sys.argv[2]
+          try:
+              data = json.load(open(path, encoding="utf-8"))
+          except Exception:
+              raise SystemExit(1)
+          pin = data.get("review_context", {}).get("release_manifest_blob_sha")
+          if pin != expected:
+              raise SystemExit(1)
+          if "job_graph" not in data and "confirmed_write_sets" not in data:
+              raise SystemExit(1)
+          PY
+          }
 
-          if [ "$restore" -eq 0 ]; then
-            echo "Inventory healthy; nothing to do"
+          if needs_restore automation/production_workflow_map.json \
+            && needs_restore automation/resource_write_sets.json; then
+            echo "Inventory healthy"
             exit 0
           fi
 
-          echo "Restoring from $GOOD_SHA"
-          git show "$GOOD_SHA:automation/production_workflow_map.json" > automation/production_workflow_map.json
-          git show "$GOOD_SHA:automation/resource_write_sets.json" > automation/resource_write_sets.json
-          python3 -c "
-          from pathlib import Path
-          OLD='$OLD'
-          NEW='$NEW'
-          for rel in ['automation/production_workflow_map.json','automation/resource_write_sets.json']:
-              p=Path(rel)
-              t=p.read_text()
-              if OLD not in t:
-                  raise SystemExit(rel+': old pin missing')
-              p.write_text(t.replace(OLD, NEW))
-              print('pinned', rel)
-          "
+          echo "Restoring inventory from ${GOOD_SHA}"
+          git show "${GOOD_SHA}:automation/production_workflow_map.json" > automation/production_workflow_map.json
+          git show "${GOOD_SHA}:automation/resource_write_sets.json" > automation/resource_write_sets.json
 
-      - name: Commit restore if needed
-        run: |
-          set -euo pipefail
+          python3 - "$OLD_PIN" "$NEW_PIN" <<'PY'
+          import sys
+          from pathlib import Path
+          old, new = sys.argv[1], sys.argv[2]
+          for rel in [
+              "automation/production_workflow_map.json",
+              "automation/resource_write_sets.json",
+          ]:
+              path = Path(rel)
+              text = path.read_text(encoding="utf-8")
+              if old not in text:
+                  raise SystemExit(f"{rel}: old pin missing")
+              path.write_text(text.replace(old, new), encoding="utf-8")
+              print("pinned", rel)
+          PY
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add automation/production_workflow_map.json automation/resource_write_sets.json
           if git diff --cached --quiet; then
-            echo "No changes"
+            echo "No changes after restore"
             exit 0
           fi
           git commit -m "Restore production_workflow_map and resource_write_sets; align release_manifest pin"
+
           for attempt in 1 2 3 4 5; do
             git fetch origin main
-            git rebase origin/main || {
+            if git rebase origin/main; then
+              if git push origin HEAD:main; then
+                echo "Pushed on attempt ${attempt}"
+                exit 0
+              fi
+            else
               git rebase --abort || true
-              git show HEAD:automation/production_workflow_map.json > automation/production_workflow_map.json || true
-              git show HEAD:automation/resource_write_sets.json > automation/resource_write_sets.json || true
-              # Re-apply restored content after rebase abort
-              GOOD_SHA=0de2e952d6b4f07062eeb8dcaa8fd6237bf3a762
-              NEW=efb77e7fa846769c34bcc9051a7cf8a369ee5318
-              OLD=24eb76ce6162da27fdc608105d372356c923eab3
-              git show "$GOOD_SHA:automation/production_workflow_map.json" > automation/production_workflow_map.json
-              git show "$GOOD_SHA:automation/resource_write_sets.json" > automation/resource_write_sets.json
-              python3 -c "from pathlib import Path; OLD='$OLD'; NEW='$NEW';
-[Path(r).write_text(Path(r).read_text().replace(OLD, NEW)) for r in ['automation/production_workflow_map.json','automation/resource_write_sets.json']]"
+              git reset --hard origin/main
+              git show "${GOOD_SHA}:automation/production_workflow_map.json" > automation/production_workflow_map.json
+              git show "${GOOD_SHA}:automation/resource_write_sets.json" > automation/resource_write_sets.json
+              python3 - "$OLD_PIN" "$NEW_PIN" <<'PY'
+          import sys
+          from pathlib import Path
+          old, new = sys.argv[1], sys.argv[2]
+          for rel in [
+              "automation/production_workflow_map.json",
+              "automation/resource_write_sets.json",
+          ]:
+              path = Path(rel)
+              text = path.read_text(encoding="utf-8")
+              path.write_text(text.replace(old, new), encoding="utf-8")
+          PY
               git add automation/production_workflow_map.json automation/resource_write_sets.json
               git commit -m "Restore production_workflow_map and resource_write_sets; align release_manifest pin" || true
-            }
-            if git push origin HEAD:main; then
-              echo "Push succeeded on attempt $attempt"
-              exit 0
             fi
-            echo "Push attempt $attempt failed; retrying"
-            sleep 3
+            echo "Attempt ${attempt} failed; retrying"
+            sleep 2
           done
-          echo "Failed to push after retries" >&2
           exit 1
