@@ -71,7 +71,7 @@
       "tests/test_workflow_config_guard_order.py",
       ".github/workflows/source-discovery.yml"
     ],
-    "limitation": "Legacy filesystem write guard and path-only write tracing are removed. The audit job uses read-only repository permissions; publication is limited to explicit ruleset staging paths, followed by independent remote verification. Resource leases remain for task ownership and concurrency coordination.",
+    "limitation": "No repository-local filesystem write interception or path-only write tracing is installed. The audit job uses read-only repository permissions; publication is limited to explicit ruleset staging paths, followed by independent remote verification. Resource leases remain for task ownership and concurrency coordination.",
     "reviewed_at": "2026-11-04"
   },
   "protected_resources": {
@@ -116,7 +116,7 @@
       "lock_key": "resource:data/domain_candidates.json + logical/production-pipeline",
       "required_mode": "exclusive",
       "status": "known_shared_writers_central_pipeline_fence_only",
-      "note": "Two active auto_sync steps write the same logical JSON document. Both write_document calls omit lease_required=True, so current safety relies on the shared Watchdog production-pipeline mutex and central per-filesystem-mutation fencing hook. Restore can replace the same logical document from allowlisted artifacts. Cross-workflow compatible per-document lease proof remains missing."
+      "note": "Two active auto_sync steps write the same logical JSON document. Both write_document calls omit lease_required=True, so current serialization relies on the shared Watchdog production-pipeline mutex. This is workflow-level coordination, not per-mutation filesystem interception. Restore can replace the same logical document from allowlisted artifacts. Cross-workflow compatible per-document lease proof remains missing."
     },
     {
       "id": "durable_task_queue_control_plane",

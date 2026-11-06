@@ -3,7 +3,7 @@
   "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
   "release_status": "baseline_snapshot",
   "created_on": "2026-11-05",
-  "purpose": "Integrated reliability candidate: live resource lease fencing, descriptor-aware protected writes, current production fingerprint validation, stale queued-task supersession, idempotent stale-guard audit reconciliation, Watchdog supervision, and path-only persistent write tracing.",
+  "purpose": "Integrated reliability baseline: Watchdog task ownership and resource-lease coordination, production-input fingerprint validation, stale queued-task recovery, and explicit ruleset publication allowlisting with independent remote verification.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
@@ -28,7 +28,7 @@
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "997c041ea7356c0c925a700e839b191e5cd4783f"
+      "git_blob_sha": "4dcaf69c22fc0342bce30d48315d962900b4c2b6"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -129,7 +129,6 @@
     "Resource ownership audit is still a partial static review; restore_automation_state is an additional serialized writer for source assessment history/report artifacts.",
     "Review cursor checkpoint persistence is protected by the production workflow's top-level main-writer concurrency group and the live Watchdog fencing lease; complete transitive writer tracing remains outstanding.",
     "Historical terminal tasks are resolved only when completed failure evidence proves their source SHA is superseded; unknown outcomes, current-main failures, active leases and unrelated task types remain untouched.",
-    "Path-only runtime traces now include Python filesystem audit events and persistent repository-tree deltas made by shell/Git child processes; transient write-and-revert activity, Git metadata changes, external filesystem/API effects, and unexecuted paths remain unobserved.",
     "Durable per-URL assessment checkpoints are implemented in the task queue; live multi-run interruption/resume integration evidence is still pending.",
     "Independent source discovery workflow and immutable run-bound artifact handoff are implemented on the integration branch but remain dormant until HOLD/authorization and monolithic cutover; no production dispatch has occurred."
   ],
