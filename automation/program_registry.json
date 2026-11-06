@@ -1149,9 +1149,7 @@
         "workflow run result",
         "reports, artifacts, and repository changes explicitly allowed by workflow jobs"
       ],
-      "depends_on": [
-        "script_production_intent"
-      ],
+      "depends_on": [],
       "dispatches": [
         "workflow_automation_watchdog"
       ],

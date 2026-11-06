@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "inventory_id": "resource-write-sets-2026.11.06.temp-workspace-rulesets-only",
-  "status": "reviewed_temporary_workspace_rulesets_only",
+  "status": "partial_static_entrypoint_review",
   "policy": {
     "lock_identity": "canonical logical resource path, not program ID",
     "dynamic_document_store_children": "must be covered by the logical document lease",
@@ -1329,7 +1329,7 @@
   ],
   "not_yet_proven": [
     "Complete transitive write sets for every registered Python component; the inventory now records 34 direct writer entrypoints found in this pass but is not a machine-verified filesystem trace.",
-    "Dynamic path selection and caller-controlled output paths require runtime enforcement tests, especially diagnosis, incident-state, review-cursor and repair utilities.",
+    "Dynamic path selection and caller-controlled output paths require runtime enforcement tests, especially diagnosis, incident-state and repair utilities.",
     "Shared JSON document writers for data/domain_candidates.json and sources/rule_provenance.json need compatible per-document leases, including all manifest/shard/staging/cleanup mutations and restore paths.",
     "All lifecycle, archive, ruleset list, manifest and report writers must be enumerated against actual workflow call sites; auto_sync's central write fence does not prove independent non-auto_sync writers.",
     "Atomic multi-resource lease acquisition and compatibility of per-resource locks across all independent/cross-workflow writers remain unproven.",
