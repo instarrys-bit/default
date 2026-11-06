@@ -1,6 +1,7 @@
 import json
 import sys
 import unittest
+import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -88,7 +89,7 @@ class ExternalIntelligenceCatalogTests(unittest.TestCase):
     def test_ct_and_ripe_parsers_keep_distinct_observation_types(self):
         providers = self.catalog_copy()["providers"]
         ct = discover_sources.parse_ct_payload(
-            b'[{"name_value":"*.example.com\nwww.example.net","not_before":"2026-11-01"}]',
+            b'[{"name_value":"*.example.com\\nwww.example.net","not_before":"2026-11-01"}]',
             providers[3], "https://crt.sh/?q=example.com&output=json"
         )
         ripe = discover_sources.parse_ripestat_payload(
@@ -98,6 +99,23 @@ class ExternalIntelligenceCatalogTests(unittest.TestCase):
         self.assertEqual({x["value"] for x in ct}, {"example.com", "www.example.net"})
         self.assertEqual(ct[0]["data_type"], "certificate_name")
         self.assertEqual(ripe[0]["data_type"], "network_infrastructure")
+
+    def test_repository_search_parser_accepts_only_provider_host(self):
+        provider = self.catalog_copy()["providers"][6]
+        payload = b'[{"path_with_namespace":"group/rules","web_url":"https://gitlab.com/group/rules","star_count":12}]'
+        records = discover_sources.parse_repository_search_payload(payload, provider, provider["endpoint"], "gitlab.com")
+        self.assertEqual(records[0]["data_type"], "repository_metadata")
+        self.assertEqual(records[0]["value"], "group/rules")
+        self.assertEqual(discover_sources.parse_repository_search_payload(
+            b'[{"path_with_namespace":"group/rules","web_url":"https://evil.example/group/rules"}]',
+            provider, provider["endpoint"], "gitlab.com"
+        ), [])
+
+    def test_provider_redirect_handler_blocks_cross_host_redirect(self):
+        handler = discover_sources.ProviderRedirectHandler("openphish.com")
+        request = urllib.request.Request("https://openphish.com/feed.txt")
+        with self.assertRaisesRegex(ValueError, "redirect escaped"):
+            handler.redirect_request(request, None, 302, "Found", {}, "https://attacker.example/feed")
 
 
 if __name__ == "__main__":
