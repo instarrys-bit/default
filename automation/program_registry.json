@@ -1136,7 +1136,7 @@
       "id": "workflow_request_intake",
       "path": ".github/workflows/request-intake.yml",
       "kind": "github_actions_workflow",
-      "responsibility": "accept and validate manually submitted hostname observations, then request deterministic audit",
+      "responsibility": "validate manually submitted hostnames and forward them to the Watchdog control plane without repository writes",
       "capabilities": [
         "manual_observation_intake"
       ],
@@ -1146,8 +1146,8 @@
         "repository state and declared workflow inputs"
       ],
       "outputs": [
-        "workflow run result",
-        "reports, artifacts, and repository changes explicitly allowed by workflow jobs"
+        "validated hostname batch forwarded as unclassified Watchdog task input",
+        "workflow run result"
       ],
       "depends_on": [],
       "dispatches": [

@@ -1368,7 +1368,8 @@
         "inputs": [
           {
             "name": "domains",
-            "required": false
+            "type": "string",
+            "required": true
           },
           {
             "name": "automation_task_id",
