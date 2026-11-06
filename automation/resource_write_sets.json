@@ -78,20 +78,20 @@
       "program_id": "script_assess_sources",
       "source": "scripts/assess_sources.py",
       "writes": [
-        "sources/source_assessments.json",
-        "data/source_assessments_runtime.json",
-        "reports/source-assessment.md"
+        "$RUNNER_TEMP/production-workspace/sources/source_assessments.json",
+        "$RUNNER_TEMP/production-workspace/data/source_assessments_runtime.json",
+        "$RUNNER_TEMP/production-workspace/reports/source-assessment.md"
       ],
       "document_store": [
-        "sources/source_assessments.json",
-        "data/source_assessments_runtime.json"
+        "$RUNNER_TEMP/production-workspace/sources/source_assessments.json",
+        "$RUNNER_TEMP/production-workspace/data/source_assessments_runtime.json"
       ],
       "dynamic_children": [
-        "sources/source_assessments.json.manifest.json",
-        "sources/source_assessments.json.parts-<digest>/part-*.jsonl",
-        "data/source_assessments_runtime.json.manifest.json",
-        "data/source_assessments_runtime.json.parts-<digest>/part-*.jsonl",
-        "corresponding .parts.tmp-* staging directories"
+        "$RUNNER_TEMP/production-workspace/sources/source_assessments.json.manifest.json",
+        "$RUNNER_TEMP/production-workspace/sources/source_assessments.json.parts-<digest>/part-*.jsonl",
+        "$RUNNER_TEMP/production-workspace/data/source_assessments_runtime.json.manifest.json",
+        "$RUNNER_TEMP/production-workspace/data/source_assessments_runtime.json.parts-<digest>/part-*.jsonl",
+        "$RUNNER_TEMP/production-workspace/corresponding .parts.tmp-* staging directories"
       ],
       "read_resources": [
         "sources/discovered_sources.json",
@@ -102,31 +102,29 @@
       ],
       "evidence": "main() reads discovery and prior assessment documents, then calls write_document for runtime and persistent outputs and writes REPORT.",
       "lease_keys": [
-        "logical/production-pipeline",
-        "sources/source_assessments.json",
-        "data/source_assessments_runtime.json",
-        "reports/source-assessment.md"
+        "logical/production-pipeline"
       ],
-      "lease_enforcement": "No per-write filesystem lease assertion. All assessment outputs are written only inside the isolated RUNNER_TEMP workspace. The independent assessment adapter remains disabled; its durable task checkpoints, when used, retain queue CAS and task identity validation.",
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [
-        "data/source_assessments_runtime.json"
+        "data/source_assessments_runtime.json",
+        "$RUNNER_TEMP/production-workspace/sources/source_assessments.json",
+        "$RUNNER_TEMP/production-workspace/data/source_assessments_runtime.json",
+        "$RUNNER_TEMP/production-workspace/reports/source-assessment.md"
       ],
       "lease_seconds": 480,
       "publication": "After artifact verification, scheduler commits only persistent history/report and document-store manifest/shards using a non-force push after rebase; runtime fingerprint data is never committed.",
-      "write_boundary_fencing": "Run-scoped temporary workspace; no filesystem write guard or per-file lease hook.",
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output.",
       "additional_serialized_writers": [
-        "script_restore_automation_state",
         "workflow_auto_sync"
-      ],
-      "additional_writer_boundary": "auto_sync publish job restores allowlisted assessment history and report artifacts from an audited archive under the same live logical/production-pipeline lease; the temporary-workspace isolation audit hook validates that lease before each restore filesystem mutation."
+      ]
     },
     {
       "program_id": "script_audit_config_drift",
       "source": "scripts/audit_config_drift.py",
       "writes": [
-        "reports/config-drift-audit.json",
-        "reports/config-drift-audit.md"
+        "$RUNNER_TEMP/production-workspace/reports/config-drift-audit.json",
+        "$RUNNER_TEMP/production-workspace/reports/config-drift-audit.md"
       ],
       "document_store": [],
       "dynamic_children": [],
@@ -139,24 +137,21 @@
       ],
       "evidence": "main() writes REPORT_JSON and REPORT_MD after comparing the current config against the owner-approved policy baseline.",
       "lease_keys": [
-        "logical/production-pipeline",
-        "reports/config-drift-audit.json",
-        "reports/config-drift-audit.md"
+        "logical/production-pipeline"
       ],
-      "lease_enforcement": "Current auto_sync invocation uses the central live production-pipeline fence; restore_automation_state may restore both report artifacts under the same fence.",
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher.",
       "publish_resources": [],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Runtime writes are confined to the isolated RUNNER_TEMP workspace and are not published to repository paths.",
-      "additional_serialized_writers": [
-        "script_restore_automation_state"
+      "ephemeral_unpublished_resources": [
+        "$RUNNER_TEMP/production-workspace/reports/config-drift-audit.json",
+        "$RUNNER_TEMP/production-workspace/reports/config-drift-audit.md"
       ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output."
     },
     {
       "program_id": "script_audit_external_domains",
       "source": "scripts/audit_external_domains.py",
       "writes": [
-        "reports/external-domain-audit.md"
+        "$RUNNER_TEMP/production-workspace/reports/external-domain-audit.md"
       ],
       "document_store": [],
       "dynamic_children": [],
@@ -169,24 +164,21 @@
       ],
       "evidence": "main() renders the audit and writes reports/external-domain-audit.md.",
       "lease_keys": [
-        "logical/production-pipeline",
-        "reports/external-domain-audit.md"
+        "logical/production-pipeline"
       ],
-      "lease_enforcement": "Current auto_sync invocation uses the central live production-pipeline fence; restore_automation_state may restore the same report from its allowlisted publish archive.",
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher.",
       "publish_resources": [],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Runtime writes are confined to the isolated RUNNER_TEMP workspace and are not published to repository paths.",
-      "additional_serialized_writers": [
-        "script_restore_automation_state"
+      "ephemeral_unpublished_resources": [
+        "$RUNNER_TEMP/production-workspace/reports/external-domain-audit.md"
       ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output."
     },
     {
       "program_id": "script_audit_policy_source_overlap",
       "source": "scripts/audit_policy_source_overlap.py",
       "writes": [
-        "sources/policy_source_overlap.json",
-        "reports/policy-source-overlap.md"
+        "$RUNNER_TEMP/production-workspace/sources/policy_source_overlap.json",
+        "$RUNNER_TEMP/production-workspace/reports/policy-source-overlap.md"
       ],
       "document_store": [],
       "dynamic_children": [],
@@ -198,25 +190,22 @@
       ],
       "evidence": "main() reads source assessments and writes sources/policy_source_overlap.json plus reports/policy-source-overlap.md.",
       "lease_keys": [
-        "logical/production-pipeline",
-        "sources/policy_source_overlap.json",
-        "reports/policy-source-overlap.md"
+        "logical/production-pipeline"
       ],
-      "lease_enforcement": "Current auto_sync invocation uses the central live production-pipeline fence; restore_automation_state may restore both outputs from the publish archive under the same fence.",
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher.",
       "publish_resources": [],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Runtime writes are confined to the isolated RUNNER_TEMP workspace and are not published to repository paths.",
-      "additional_serialized_writers": [
-        "script_restore_automation_state"
+      "ephemeral_unpublished_resources": [
+        "$RUNNER_TEMP/production-workspace/sources/policy_source_overlap.json",
+        "$RUNNER_TEMP/production-workspace/reports/policy-source-overlap.md"
       ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output."
     },
     {
       "program_id": "script_audit_ruleset_config_overlap",
       "source": "scripts/audit_ruleset_config_overlap.py",
       "writes": [
-        "reports/ruleset-config-overlap-audit.json",
-        "reports/ruleset-config-overlap-audit.md"
+        "$RUNNER_TEMP/production-workspace/reports/ruleset-config-overlap-audit.json",
+        "$RUNNER_TEMP/production-workspace/reports/ruleset-config-overlap-audit.md"
       ],
       "document_store": [],
       "dynamic_children": [],
@@ -229,25 +218,22 @@
       ],
       "evidence": "main() writes REPORT_JSON and REPORT_MD after evaluating the review ledger against config scopes.",
       "lease_keys": [
-        "logical/production-pipeline",
-        "reports/ruleset-config-overlap-audit.json",
-        "reports/ruleset-config-overlap-audit.md"
+        "logical/production-pipeline"
       ],
-      "lease_enforcement": "Current auto_sync invocation uses the central live production-pipeline fence; restore_automation_state may restore both report artifacts under the same fence.",
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher.",
       "publish_resources": [],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Runtime writes are confined to the isolated RUNNER_TEMP workspace and are not published to repository paths.",
-      "additional_serialized_writers": [
-        "script_restore_automation_state"
+      "ephemeral_unpublished_resources": [
+        "$RUNNER_TEMP/production-workspace/reports/ruleset-config-overlap-audit.json",
+        "$RUNNER_TEMP/production-workspace/reports/ruleset-config-overlap-audit.md"
       ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output."
     },
     {
       "program_id": "script_audit_ruleset_references",
       "source": "scripts/audit_ruleset_references.py",
       "writes": [
-        "reports/ruleset-reference-audit.json",
-        "reports/ruleset-reference-audit.md"
+        "$RUNNER_TEMP/production-workspace/reports/ruleset-reference-audit.json",
+        "$RUNNER_TEMP/production-workspace/reports/ruleset-reference-audit.md"
       ],
       "document_store": [],
       "dynamic_children": [],
@@ -263,24 +249,21 @@
       ],
       "evidence": "main() writes REPORT_JSON and REPORT_MD after inspecting config and manifest.",
       "lease_keys": [
-        "logical/production-pipeline",
-        "reports/ruleset-reference-audit.json",
-        "reports/ruleset-reference-audit.md"
+        "logical/production-pipeline"
       ],
-      "lease_enforcement": "Current auto_sync invocation uses the central live production-pipeline fence; restore_automation_state may restore both report artifacts under the same fence.",
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher.",
       "publish_resources": [],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Runtime writes are confined to the isolated RUNNER_TEMP workspace and are not published to repository paths.",
-      "additional_serialized_writers": [
-        "script_restore_automation_state"
+      "ephemeral_unpublished_resources": [
+        "$RUNNER_TEMP/production-workspace/reports/ruleset-reference-audit.json",
+        "$RUNNER_TEMP/production-workspace/reports/ruleset-reference-audit.md"
       ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output."
     },
     {
       "program_id": "script_audit_source_lineage",
       "source": "scripts/audit_source_lineage.py",
       "writes": [
-        "reports/source-lineage-audit.json"
+        "$RUNNER_TEMP/production-workspace/reports/source-lineage-audit.json"
       ],
       "document_store": [],
       "dynamic_children": [],
@@ -293,25 +276,22 @@
       ],
       "evidence": "main() reads the active source registry and discovery document, then writes reports/source-lineage-audit.json.",
       "lease_keys": [
-        "logical/production-pipeline",
-        "reports/source-lineage-audit.json"
+        "logical/production-pipeline"
       ],
-      "lease_enforcement": "Current auto_sync invocation uses the central live production-pipeline fence; publish restoration may restore the same report path under the same fence.",
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher.",
       "publish_resources": [],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Runtime writes are confined to the isolated RUNNER_TEMP workspace and are not published to repository paths.",
-      "additional_serialized_writers": [
-        "script_restore_automation_state"
+      "ephemeral_unpublished_resources": [
+        "$RUNNER_TEMP/production-workspace/reports/source-lineage-audit.json"
       ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output."
     },
     {
       "program_id": "script_auto_activate_sources",
       "source": "scripts/auto_activate_sources.py",
       "writes": [
-        "sources/domain_sources.json",
-        "sources/source_activation_log.json",
-        "reports/source-activation.md"
+        "$RUNNER_TEMP/production-workspace/sources/domain_sources.json",
+        "$RUNNER_TEMP/production-workspace/sources/source_activation_log.json",
+        "$RUNNER_TEMP/production-workspace/reports/source-activation.md"
       ],
       "document_store": [],
       "dynamic_children": [],
@@ -326,15 +306,16 @@
       ],
       "evidence": "main() reads domain_sources.json and source_candidates.json, calls activate(), then directly rewrites sources/domain_sources.json and sources/source_activation_log.json and writes reports/source-activation.md.",
       "lease_keys": [
-        "logical/production-pipeline",
-        "sources/domain_sources.json",
-        "sources/source_activation_log.json",
-        "reports/source-activation.md"
+        "logical/production-pipeline"
       ],
-      "lease_enforcement": "Current auto_sync invocation is protected by the Watchdog logical production-pipeline live lease and central temporary-workspace isolation mutation hook. restore_automation_state is another allowlisted writer for the same registry/log/report paths. This script has no explicit per-resource lease assertion.",
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher.",
       "publish_resources": [],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Runtime writes are confined to the isolated RUNNER_TEMP workspace and are not published to repository paths."
+      "ephemeral_unpublished_resources": [
+        "$RUNNER_TEMP/production-workspace/sources/domain_sources.json",
+        "$RUNNER_TEMP/production-workspace/sources/source_activation_log.json",
+        "$RUNNER_TEMP/production-workspace/reports/source-activation.md"
+      ],
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output."
     },
     {
       "program_id": "script_build_dashboard_snapshot",
@@ -368,8 +349,8 @@
       "program_id": "script_build_project_status",
       "source": "scripts/build_project_status.py",
       "writes": [
-        "reports/project-status.json",
-        "reports/project-status.md"
+        "$RUNNER_TEMP/production-workspace/reports/project-status.json",
+        "$RUNNER_TEMP/production-workspace/reports/project-status.md"
       ],
       "document_store": [],
       "dynamic_children": [],
@@ -397,29 +378,30 @@
         "Read-only aggregation of production state; writes two dashboard/status report artifacts."
       ],
       "evidence": "build_status() creates reports/ and directly writes project-status.json and project-status.md with Path.write_text.",
-      "write_boundary_fencing": "Runtime writes are confined to the isolated RUNNER_TEMP workspace and are not published to repository paths.",
-      "additional_serialized_writers": [
-        "script_restore_automation_state"
-      ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output.",
       "lease_keys": [
         "logical/production-pipeline"
       ],
-      "publish_resources": []
+      "publish_resources": [],
+      "ephemeral_unpublished_resources": [
+        "$RUNNER_TEMP/production-workspace/reports/project-status.json",
+        "$RUNNER_TEMP/production-workspace/reports/project-status.md"
+      ],
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher."
     },
     {
       "program_id": "script_build_rule_provenance",
       "source": "scripts/build_rule_provenance.py",
       "writes": [
-        "sources/rule_provenance.json"
+        "$RUNNER_TEMP/production-workspace/sources/rule_provenance.json"
       ],
       "document_store": [
-        "sources/rule_provenance.json"
+        "$RUNNER_TEMP/production-workspace/sources/rule_provenance.json"
       ],
       "dynamic_children": [
-        "sources/rule_provenance.json.manifest.json",
-        "sources/rule_provenance.json.parts-<digest>/part-*.jsonl",
-        "sources/rule_provenance.json.parts.tmp-*"
+        "$RUNNER_TEMP/production-workspace/sources/rule_provenance.json.manifest.json",
+        "$RUNNER_TEMP/production-workspace/sources/rule_provenance.json.parts-<digest>/part-*.jsonl",
+        "$RUNNER_TEMP/production-workspace/sources/rule_provenance.json.parts.tmp-*"
       ],
       "read_resources": [
         "sources/domain_reviews.json",
@@ -437,17 +419,14 @@
       ],
       "evidence": "main() reads review, source, candidate, published, pending and archive inputs, then calls write_document(OUTPUT, result, 'rules') with lease_required defaulting to false.",
       "lease_keys": [
-        "logical/production-pipeline",
-        "sources/rule_provenance.json"
+        "logical/production-pipeline"
       ],
-      "lease_enforcement": "Current auto_sync invocation is centrally fenced by the Watchdog logical production-pipeline lease. The helper call does not request its own explicit logical-document lease; restore_automation_state is another writer for the same path.",
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher.",
       "publish_resources": [],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Runtime writes are confined to the isolated RUNNER_TEMP workspace and are not published to repository paths.",
-      "additional_serialized_writers": [
-        "script_restore_automation_state"
+      "ephemeral_unpublished_resources": [
+        "$RUNNER_TEMP/production-workspace/sources/rule_provenance.json"
       ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output."
     },
     {
       "program_id": "script_build_rulesets",
@@ -479,11 +458,7 @@
         "REJECT additions remain gated by existing publication/manual-approval checks."
       ],
       "evidence": "main() reads the above policy and state inputs, writes pending_queue.json, all three policy lists and rulesets/manifest.json.",
-      "write_boundary_fencing": "Executes only inside the isolated RUNNER_TEMP production workspace; the publisher is the only repository writer and accepts rulesets/** only.",
-      "additional_serialized_writers": [
-        "script_restore_automation_state"
-      ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output.",
       "lease_keys": [
         "logical/production-pipeline"
       ],
@@ -493,22 +468,26 @@
         "rulesets/reject.list",
         "rulesets/pending_queue.json",
         "rulesets/manifest.json"
-      ]
+      ],
+      "document_store": [],
+      "dynamic_children": [],
+      "ephemeral_unpublished_resources": [],
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher."
     },
     {
       "program_id": "script_build_source_candidates",
       "source": "scripts/build_source_candidates.py",
       "writes": [
-        "sources/source_candidates.json",
-        "reports/source-candidate-matrix.md"
+        "$RUNNER_TEMP/production-workspace/sources/source_candidates.json",
+        "$RUNNER_TEMP/production-workspace/reports/source-candidate-matrix.md"
       ],
       "document_store": [
-        "sources/source_candidates.json"
+        "$RUNNER_TEMP/production-workspace/sources/source_candidates.json"
       ],
       "dynamic_children": [
-        "sources/source_candidates.json.manifest.json",
-        "sources/source_candidates.json.parts-<digest>/part-*.jsonl",
-        "sources/source_candidates.json.parts.tmp-*"
+        "$RUNNER_TEMP/production-workspace/sources/source_candidates.json.manifest.json",
+        "$RUNNER_TEMP/production-workspace/sources/source_candidates.json.parts-<digest>/part-*.jsonl",
+        "$RUNNER_TEMP/production-workspace/sources/source_candidates.json.parts.tmp-*"
       ],
       "read_resources": [
         "data/source_assessments_runtime.json (preferred when present)",
@@ -519,37 +498,38 @@
         "Builds non-activating source candidate matrix; no active source registry write."
       ],
       "evidence": "main() selects runtime or persistent assessment input, reads lineage, then calls write_document(OUTPUT, result, 'candidates') and writes REPORT.",
-      "write_boundary_fencing": "Runtime writes are confined to the isolated RUNNER_TEMP workspace and are not published to repository paths.",
-      "additional_serialized_writers": [
-        "script_restore_automation_state"
-      ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output.",
       "lease_keys": [
         "logical/production-pipeline"
       ],
-      "publish_resources": []
+      "publish_resources": [],
+      "ephemeral_unpublished_resources": [
+        "$RUNNER_TEMP/production-workspace/sources/source_candidates.json",
+        "$RUNNER_TEMP/production-workspace/reports/source-candidate-matrix.md"
+      ],
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher."
     },
     {
       "program_id": "script_collect_domains",
       "source": "scripts/collect_domains.py",
       "writes": [
-        "data/source_snapshots/<source_id>.txt (one file for each current non-stale source)",
-        "data/domain_candidates.json (JSON document or manifest/shard/staging children)",
-        "data/source_pending.json",
-        "data/candidates.json (JSON document or manifest/shard/staging children)"
+        "$RUNNER_TEMP/production-workspace/data/source_snapshots/<source_id>.txt (one file for each current non-stale source)",
+        "$RUNNER_TEMP/production-workspace/data/domain_candidates.json (JSON document or manifest/shard/staging children)",
+        "$RUNNER_TEMP/production-workspace/data/source_pending.json",
+        "$RUNNER_TEMP/production-workspace/data/candidates.json (JSON document or manifest/shard/staging children)"
       ],
       "document_store": [
-        "data/domain_candidates.json",
-        "data/candidates.json"
+        "$RUNNER_TEMP/production-workspace/data/domain_candidates.json",
+        "$RUNNER_TEMP/production-workspace/data/candidates.json"
       ],
       "dynamic_children": [
-        "data/domain_candidates.json.manifest.json",
-        "data/domain_candidates.json.parts-<digest>/part-*.jsonl",
-        "data/domain_candidates.json.parts.tmp-*",
-        "data/candidates.json.manifest.json",
-        "data/candidates.json.parts-<digest>/part-*.jsonl",
-        "data/candidates.json.parts.tmp-*",
-        "data/source_snapshots/<source_id>.txt"
+        "$RUNNER_TEMP/production-workspace/data/domain_candidates.json.manifest.json",
+        "$RUNNER_TEMP/production-workspace/data/domain_candidates.json.parts-<digest>/part-*.jsonl",
+        "$RUNNER_TEMP/production-workspace/data/domain_candidates.json.parts.tmp-*",
+        "$RUNNER_TEMP/production-workspace/data/candidates.json.manifest.json",
+        "$RUNNER_TEMP/production-workspace/data/candidates.json.parts-<digest>/part-*.jsonl",
+        "$RUNNER_TEMP/production-workspace/data/candidates.json.parts.tmp-*",
+        "$RUNNER_TEMP/production-workspace/data/source_snapshots/<source_id>.txt"
       ],
       "read_resources": [
         "sources/domain_sources.json",
@@ -563,11 +543,18 @@
         "Bounded HTTPS reads from registered raw.githubusercontent.com source URLs; writes source snapshots and candidate buffers; no activation."
       ],
       "evidence": "main() writes every current source snapshot with Path.write_text, writes data/domain_candidates.json and data/candidates.json through write_document with its default lease_required=false, and directly replaces data/source_pending.json.",
-      "write_boundary_fencing": "Runtime writes are confined to the isolated RUNNER_TEMP workspace and are not published to repository paths.",
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output.",
       "lease_keys": [
         "logical/production-pipeline"
       ],
-      "publish_resources": []
+      "publish_resources": [],
+      "ephemeral_unpublished_resources": [
+        "$RUNNER_TEMP/production-workspace/data/source_snapshots/<source_id>.txt (one file for each current non-stale source)",
+        "$RUNNER_TEMP/production-workspace/data/domain_candidates.json (JSON document or manifest/shard/staging children)",
+        "$RUNNER_TEMP/production-workspace/data/source_pending.json",
+        "$RUNNER_TEMP/production-workspace/data/candidates.json (JSON document or manifest/shard/staging children)"
+      ],
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher."
     },
     {
       "program_id": "script_deterministic_review",
@@ -578,7 +565,7 @@
         "$RUNNER_TEMP/production-workspace/sources/review_cursor.json.tmp"
       ],
       "document_store": [
-        "sources/domain_reviews.json"
+        "$RUNNER_TEMP/production-workspace/sources/domain_reviews.json"
       ],
       "dynamic_children": [
         "$RUNNER_TEMP/production-workspace/sources/domain_reviews.json.manifest.json",
@@ -601,11 +588,17 @@
         "Resumable deterministic review; updates the review cursor and ledger in bounded checkpoints."
       ],
       "evidence": "main() checkpoints the review ledger and cursor inside the isolated RUNNER_TEMP production workspace. Neither path is included in the rulesets-only artifact or repository publication.",
-      "write_boundary_fencing": "Run-scoped temporary workspace only; the publisher restores and stages rulesets/** exclusively.",
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output.",
       "lease_keys": [
         "logical/production-pipeline"
       ],
-      "publish_resources": []
+      "publish_resources": [],
+      "ephemeral_unpublished_resources": [
+        "$RUNNER_TEMP/production-workspace/$RUNNER_TEMP/production-workspace/sources/domain_reviews.json (JSON document or manifest/shard/staging children)",
+        "$RUNNER_TEMP/production-workspace/$RUNNER_TEMP/production-workspace/sources/review_cursor.json",
+        "$RUNNER_TEMP/production-workspace/$RUNNER_TEMP/production-workspace/sources/review_cursor.json.tmp"
+      ],
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher."
     },
     {
       "program_id": "script_diagnose_workflow_failure",
@@ -634,16 +627,16 @@
       "program_id": "script_discover_sources",
       "source": "scripts/discover_sources.py",
       "writes": [
-        "sources/discovered_sources.json",
-        "reports/source-discovery.md"
+        "$RUNNER_TEMP/production-workspace/sources/discovered_sources.json",
+        "$RUNNER_TEMP/production-workspace/reports/source-discovery.md"
       ],
       "document_store": [
-        "sources/discovered_sources.json"
+        "$RUNNER_TEMP/production-workspace/sources/discovered_sources.json"
       ],
       "dynamic_children": [
-        "sources/discovered_sources.json.manifest.json",
-        "sources/discovered_sources.json.parts-<digest>/part-*.jsonl",
-        "sources/discovered_sources.json.parts.tmp-*"
+        "$RUNNER_TEMP/production-workspace/sources/discovered_sources.json.manifest.json",
+        "$RUNNER_TEMP/production-workspace/sources/discovered_sources.json.parts-<digest>/part-*.jsonl",
+        "$RUNNER_TEMP/production-workspace/sources/discovered_sources.json.parts.tmp-*"
       ],
       "read_resources": [
         "sources/discovered_sources.json"
@@ -652,20 +645,17 @@
         "Bounded GitHub repository search and repository-tree/README reads; no source activation."
       ],
       "evidence": "main() reads the prior discovery inventory, writes the merged logical document through json_document_store, writes reports/source-discovery.md, and optionally writes the per-run GITHUB_STEP_SUMMARY.",
-      "write_boundary_fencing": "Run-scoped temporary workspace; no filesystem write guard or per-file lease hook.",
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output.",
       "ephemeral_outputs": [
         "GITHUB_STEP_SUMMARY (runner-local; warning path overwrites and success path appends)"
       ],
-      "additional_serialized_writers": [
-        "script_restore_automation_state"
-      ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
-      "lease_keys": [
-        "sources/discovered_sources.json",
-        "reports/source-discovery.md"
-      ],
+      "lease_keys": [],
       "publish_resources": [],
-      "lease_enforcement": "No per-write filesystem lease assertion. Discovery inventory and report are run-scoped in RUNNER_TEMP; workflow has contents:read and emits an immutable artifact only."
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher.",
+      "ephemeral_unpublished_resources": [
+        "$RUNNER_TEMP/production-workspace/sources/discovered_sources.json",
+        "$RUNNER_TEMP/production-workspace/reports/source-discovery.md"
+      ]
     },
     {
       "program_id": "script_github_queue_store",
@@ -691,15 +681,15 @@
       "program_id": "script_import_request_observations",
       "source": "scripts/import_request_observations.py",
       "writes": [
-        "data/domain_candidates.json"
+        "$RUNNER_TEMP/production-workspace/data/domain_candidates.json"
       ],
       "document_store": [
-        "data/domain_candidates.json"
+        "$RUNNER_TEMP/production-workspace/data/domain_candidates.json"
       ],
       "dynamic_children": [
-        "data/domain_candidates.json.manifest.json",
-        "data/domain_candidates.json.parts-<digest>/part-*.jsonl",
-        "data/domain_candidates.json.parts.tmp-*"
+        "$RUNNER_TEMP/production-workspace/data/domain_candidates.json.manifest.json",
+        "$RUNNER_TEMP/production-workspace/data/domain_candidates.json.parts-<digest>/part-*.jsonl",
+        "$RUNNER_TEMP/production-workspace/data/domain_candidates.json.parts.tmp-*"
       ],
       "read_resources": [
         "request_observations_json task input",
@@ -710,13 +700,14 @@
       ],
       "evidence": "main() reads the REQUEST_OBSERVATIONS_JSON task input, validates the hostname array, and writes only the unclassified data/domain_candidates.json logical document inside the isolated temporary workspace.",
       "lease_keys": [
-        "logical/production-pipeline",
-        "data/domain_candidates.json"
+        "logical/production-pipeline"
       ],
-      "lease_enforcement": "Current auto_sync invocation is centrally fenced by the Watchdog logical production-pipeline lease. write_document itself is not called with lease_required=True; independent invocation and per-document lease proof are not established.",
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher.",
       "publish_resources": [],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Runtime writes are confined to the isolated RUNNER_TEMP workspace and are not published to repository paths."
+      "ephemeral_unpublished_resources": [
+        "$RUNNER_TEMP/production-workspace/data/domain_candidates.json"
+      ],
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output."
     },
     {
       "program_id": "script_incident_state",
@@ -790,19 +781,15 @@
         "rulesets/deletion_archive.json",
         "rulesets/pending_queue.json",
         "rulesets/manifest.json",
-        "reports/lifecycle/latest.json",
-        "reports/lifecycle/latest.md"
+        "$RUNNER_TEMP/production-workspace/reports/lifecycle/latest.json",
+        "$RUNNER_TEMP/production-workspace/reports/lifecycle/latest.md"
       ],
       "side_effects": [
         "External DNS-over-HTTPS queries to configured resolvers.",
         "May delete eligible published rules and update lifecycle/archive state; may restore explicitly selected IDs."
       ],
       "evidence": "main() writes policy lists, observations, archive, queue, manifest and lifecycle reports.",
-      "write_boundary_fencing": "Executes only inside the isolated RUNNER_TEMP production workspace; the publisher is the only repository writer and accepts rulesets/** only.",
-      "additional_serialized_writers": [
-        "script_restore_automation_state"
-      ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output.",
       "lease_keys": [
         "logical/production-pipeline"
       ],
@@ -814,7 +801,14 @@
         "rulesets/deletion_archive.json",
         "rulesets/pending_queue.json",
         "rulesets/manifest.json"
-      ]
+      ],
+      "document_store": [],
+      "dynamic_children": [],
+      "ephemeral_unpublished_resources": [
+        "$RUNNER_TEMP/production-workspace/reports/lifecycle/latest.json",
+        "$RUNNER_TEMP/production-workspace/reports/lifecycle/latest.md"
+      ],
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher."
     },
     {
       "program_id": "script_lifecycle_gate",
@@ -835,19 +829,14 @@
       ],
       "evidence": "update_lifecycle_state() and complete_lifecycle_review() both write rulesets/lifecycle_state.json directly; main() invokes update_lifecycle_state().",
       "lease_keys": [
-        "logical/production-pipeline",
-        "rulesets/lifecycle_state.json"
+        "logical/production-pipeline"
       ],
-      "lease_enforcement": "The production auto_sync invocation has the central temporary-workspace isolation active and a live logical/production-pipeline fencing proof. No independent per-resource lease assertion exists in this script; non-auto_sync entry points remain unproven.",
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher.",
       "publish_resources": [
         "rulesets/lifecycle_state.json"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Executes only inside the isolated RUNNER_TEMP production workspace; the publisher is the only repository writer and accepts rulesets/** only.",
-      "additional_serialized_writers": [
-        "script_restore_automation_state"
-      ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output."
     },
     {
       "program_id": "script_production_intent",
@@ -891,17 +880,17 @@
         "scripts/build_rulesets.py"
       ],
       "evidence": "refresh() reads all three list files and build_rulesets.py, then replaces rulesets/manifest.json.",
-      "write_boundary_fencing": "Executes only inside the isolated RUNNER_TEMP production workspace; the publisher is the only repository writer and accepts rulesets/** only.",
-      "additional_serialized_writers": [
-        "script_restore_automation_state"
-      ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output.",
       "lease_keys": [
         "logical/production-pipeline"
       ],
       "publish_resources": [
         "rulesets/manifest.json"
-      ]
+      ],
+      "document_store": [],
+      "dynamic_children": [],
+      "ephemeral_unpublished_resources": [],
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher."
     },
     {
       "program_id": "script_register_config_baseline",
@@ -1053,19 +1042,15 @@
         "rulesets/reject.list",
         "rulesets/config_conflict_archive.json",
         "rulesets/pending_queue.json",
-        "reports/ruleset-config-conflict-sync.json",
-        "reports/ruleset-config-conflict-sync.md"
+        "$RUNNER_TEMP/production-workspace/reports/ruleset-config-conflict-sync.json",
+        "$RUNNER_TEMP/production-workspace/reports/ruleset-config-conflict-sync.md"
       ],
       "side_effects": [
         "Reads modules/uu.conf and never writes it.",
         "Can restore selected archive IDs into rule outputs/queue after rechecking current config."
       ],
       "evidence": "sync() writes changed policy lists, archive, queue and two reports.",
-      "write_boundary_fencing": "Executes only inside the isolated RUNNER_TEMP production workspace; the publisher is the only repository writer and accepts rulesets/** only.",
-      "additional_serialized_writers": [
-        "script_restore_automation_state"
-      ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
+      "write_boundary_fencing": "Run-scoped temporary workspace for intermediate files; rulesets/** is the only repository-persistent production output.",
       "lease_keys": [
         "logical/production-pipeline"
       ],
@@ -1075,7 +1060,14 @@
         "rulesets/reject.list",
         "rulesets/config_conflict_archive.json",
         "rulesets/pending_queue.json"
-      ]
+      ],
+      "document_store": [],
+      "dynamic_children": [],
+      "ephemeral_unpublished_resources": [
+        "$RUNNER_TEMP/production-workspace/reports/ruleset-config-conflict-sync.json",
+        "$RUNNER_TEMP/production-workspace/reports/ruleset-config-conflict-sync.md"
+      ],
+      "lease_enforcement": "No per-write filesystem lease checks. Production workflow serialization is task/workflow level; non-ruleset files are confined to RUNNER_TEMP and excluded from the artifact and publisher."
     },
     {
       "program_id": "script_task_queue_runtime",
@@ -1200,8 +1192,9 @@
       ],
       "lock_key": "logical/production-pipeline",
       "mode": "exclusive",
-      "enforcement": "GitHub Actions main-writer concurrency serializes production workflow runs. Production file writes occur in an isolated RUNNER_TEMP workspace; the publisher restores and stages rulesets/** only.",
-      "note": "This is a workflow-level serialization boundary, not a per-file filesystem guard. Task-queue and Watchdog control-plane updates remain separate."
+      "enforcement": "Exclusive task-level scheduler lease plus shadowrocket-main-writer workflow concurrency; no per-file filesystem guard or lease assertion.",
+      "note": "This is a workflow-level serialization boundary, not a per-file filesystem guard. Task-queue and Watchdog control-plane updates remain separate.",
+      "scope": "workflow_run"
     },
     {
       "resource": "owner-approved config baseline metadata",
@@ -1354,7 +1347,7 @@
     "fencing_required": true,
     "lease_seconds": 21600,
     "purpose": "Serialize scheduler-mediated production audits and hold the lock through asynchronous workflow verification; the live fencing proof is checked at audit start and immediately before publishing to main.",
-    "coverage_boundary": "Scheduler-mediated production workflow and independently scheduled source assessor share logical/production-pipeline. Assessor also fences each logical output and every JSON document-store mutation. Other future independent Python writers must declare compatible contracts before enablement.",
+    "coverage_boundary": "Only the task-level logical/production-pipeline lease and GitHub Actions main-writer concurrency serialize production runs. There are no per-file lease assertions or filesystem write hooks. Intermediate paths resolve inside RUNNER_TEMP; only rulesets/** is published.",
     "current_enforcement_pr": "#168 merged"
   },
   "reviewed_non_writers": [
