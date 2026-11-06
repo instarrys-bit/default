@@ -1368,8 +1368,12 @@
         "inputs": [
           {
             "name": "domains",
+            "required": false
+          },
+          {
+            "name": "automation_task_id",
             "type": "string",
-            "required": true
+            "required": false
           }
         ],
         "allowed_refs": [
