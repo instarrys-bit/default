@@ -1173,7 +1173,7 @@
       "id": "workflow_self_healing_agent",
       "path": ".github/workflows/self-healing-agent.yml",
       "kind": "github_actions_workflow",
-      "responsibility": "diagnose supported workflow failures, propose allowlisted repairs, and manage incidents",
+      "responsibility": "diagnose supported workflow failures and report incidents; never repair or mutate repository files",
       "capabilities": [
         "failure_governance"
       ],
@@ -1183,20 +1183,15 @@
         "repository state and declared workflow inputs"
       ],
       "outputs": [
-        "workflow run result",
-        "reports, artifacts, and repository changes explicitly allowed by workflow jobs"
+        "workflow run diagnosis and incident reports through GitHub Issues; no repository changes"
       ],
       "depends_on": [
-        "script_apply_safe_repair",
         "script_diagnose_workflow_failure",
         "script_incident_state",
-        "script_refresh_ruleset_manifest",
         "script_verify_recovery_run"
       ],
-      "dispatches": [
-        "workflow_self_healing_tests"
-      ],
-      "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
+      "dispatches": [],
+      "permission_boundary": "Read-only repository access; may create/update GitHub Issues for incident reporting only. No repository contents, pull-request, branch, commit, or ruleset writes.",
       "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
       "orchestration": {
         "enabled": false,

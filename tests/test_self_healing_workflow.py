@@ -32,7 +32,10 @@ class SelfHealingWorkflowTests(unittest.TestCase):
     def test_self_healing_has_no_repository_write_or_pr_token(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         diagnose = workflow.split("  diagnose-and-repair:", 1)[1].split("  report-agent-failure:", 1)[0]
-        self.assertNotIn("GH_TOKEN", diagnose.split("Keep self-healing read-only", 1)[-1])
+        repair_step = diagnose.split("      - name: Keep self-healing read-only", 1)[1].split("      - name: Open incident when no safe repair applies", 1)[0]
+        self.assertNotIn("GH_TOKEN", repair_step)
+        self.assertNotIn("contents: write", repair_step)
+        self.assertNotIn("pull-requests: write", repair_step)
         self.assertIn("persist-credentials: false", workflow)
         self.assertNotIn("gh pr create", workflow)
 
