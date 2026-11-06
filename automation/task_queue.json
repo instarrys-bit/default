@@ -14,12 +14,12 @@
     },
     "logical/production-pipeline": {
       "acquired_at": "2026-11-06T06:35:14Z",
-      "expires_at": "2026-11-06T12:35:15Z",
+      "expires_at": "2026-11-06T06:36:21Z",
       "fencing_token": 20,
       "lease_id": "18769f729d0ce9419b501eccf91c99aa",
-      "released_at": null,
+      "released_at": "2026-11-06T06:36:21Z",
       "renewed_at": "2026-11-06T06:35:15Z",
-      "status": "ACTIVE",
+      "status": "RELEASED",
       "task_id": "task_eaff21370f6c4682afa7d5d1",
       "task_lease_token": "bb2c08c7beac65db9141cb473dd0f6f0",
       "worker_id": "42175268461"
@@ -38,36 +38,36 @@
     },
     "reports/source-discovery.md": {
       "acquired_at": "2026-11-06T06:35:14Z",
-      "expires_at": "2026-11-06T12:35:15Z",
+      "expires_at": "2026-11-06T06:36:21Z",
       "fencing_token": 15,
       "lease_id": "18769f729d0ce9419b501eccf91c99aa",
-      "released_at": null,
+      "released_at": "2026-11-06T06:36:21Z",
       "renewed_at": "2026-11-06T06:35:15Z",
-      "status": "ACTIVE",
+      "status": "RELEASED",
       "task_id": "task_eaff21370f6c4682afa7d5d1",
       "task_lease_token": "bb2c08c7beac65db9141cb473dd0f6f0",
       "worker_id": "42175268461"
     },
     "sources/discovered_sources.json": {
       "acquired_at": "2026-11-06T06:35:14Z",
-      "expires_at": "2026-11-06T12:35:15Z",
+      "expires_at": "2026-11-06T06:36:21Z",
       "fencing_token": 15,
       "lease_id": "18769f729d0ce9419b501eccf91c99aa",
-      "released_at": null,
+      "released_at": "2026-11-06T06:36:21Z",
       "renewed_at": "2026-11-06T06:35:15Z",
-      "status": "ACTIVE",
+      "status": "RELEASED",
       "task_id": "task_eaff21370f6c4682afa7d5d1",
       "task_lease_token": "bb2c08c7beac65db9141cb473dd0f6f0",
       "worker_id": "42175268461"
     },
     "sources/review_cursor.json": {
       "acquired_at": "2026-11-06T06:35:14Z",
-      "expires_at": "2026-11-06T12:35:15Z",
+      "expires_at": "2026-11-06T06:36:21Z",
       "fencing_token": 17,
       "lease_id": "18769f729d0ce9419b501eccf91c99aa",
-      "released_at": null,
+      "released_at": "2026-11-06T06:36:21Z",
       "renewed_at": "2026-11-06T06:35:15Z",
-      "status": "ACTIVE",
+      "status": "RELEASED",
       "task_id": "task_eaff21370f6c4682afa7d5d1",
       "task_lease_token": "bb2c08c7beac65db9141cb473dd0f6f0",
       "worker_id": "42175268461"
@@ -85,7 +85,7 @@
       "worker_id": "assessment-canary-41746911914"
     }
   },
-  "revision": 190,
+  "revision": 191,
   "schema_version": 1,
   "tasks": [
     {
@@ -1123,7 +1123,19 @@
         "production_fingerprint": "50902a874e45e905cca2e507696c85e8f0bc8fde6a2006617c6bf3c8340b36bb",
         "production_reason": "a registered production input changed; prior success for the same fingerprint does not prove current state is reconciled"
       },
-      "last_error": null,
+      "last_error": {
+        "evidence": {
+          "conclusion": "cancelled",
+          "head_sha": "504c414b1e6027df2eec6441030a272361b6f7fa",
+          "head_sha_relationship": "queue_intent_commit_only",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42175384437",
+          "requested_head_sha": "008ed01dc053bbc3e27ada830ecd9586f2bc073a",
+          "run_id": 42175384437,
+          "status": "completed"
+        },
+        "message": "workflow completed with conclusion 'cancelled'",
+        "type": "workflow_run_failed"
+      },
       "lease": null,
       "max_attempts": 2,
       "not_before": "2026-11-06T06:34:16Z",
@@ -1133,6 +1145,7 @@
         "acquired_at": "2026-11-06T06:35:14Z",
         "expires_at": "2026-11-06T12:35:15Z",
         "lease_seconds": 21600,
+        "released_at": "2026-11-06T06:36:21Z",
         "resources": {
           "logical/production-pipeline": {
             "fencing_token": 20,
@@ -1151,7 +1164,7 @@
             "lease_id": "18769f729d0ce9419b501eccf91c99aa"
           }
         },
-        "status": "ACTIVE"
+        "status": "RELEASED"
       },
       "result": {
         "correlation_id": "task_eaff21370f6c4682afa7d5d1-a2",
@@ -1161,6 +1174,15 @@
         "prepared_at": "2026-11-06T06:35:16Z",
         "ref": "main",
         "requested_head_sha": "008ed01dc053bbc3e27ada830ecd9586f2bc073a",
+        "run_evidence": {
+          "conclusion": "cancelled",
+          "head_sha": "504c414b1e6027df2eec6441030a272361b6f7fa",
+          "head_sha_relationship": "queue_intent_commit_only",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42175384437",
+          "requested_head_sha": "008ed01dc053bbc3e27ada830ecd9586f2bc073a",
+          "run_id": 42175384437,
+          "status": "completed"
+        },
         "submitted_at": "2026-11-06T06:35:18Z",
         "task_id": "task_eaff21370f6c4682afa7d5d1",
         "workflow_id": 402712272,
@@ -1173,13 +1195,20 @@
         "FAILED",
         "QUEUED",
         "CLAIMED",
-        "VERIFYING"
+        "VERIFYING",
+        "FAILED",
+        "DEAD_LETTER"
       ],
-      "status": "VERIFYING",
+      "status": "DEAD_LETTER",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_eaff21370f6c4682afa7d5d1",
       "trace_id": "e3f35e8fae5145b58baeaf7376ff613e",
-      "verification": null
+      "verification": {
+        "contract_sha256": "2ea47e4b72a16a24ce703a5eac4822d2b0ca6939a4357147ea83419376b51750",
+        "status": "failed",
+        "verified_at": "2026-11-06T06:36:21Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
     }
   ]
 }
