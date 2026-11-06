@@ -120,7 +120,7 @@ class ExecutionAdapterTests(unittest.TestCase):
         root, ap, rp, doc = self.make_repo()
         doc["adapters"][1]["workflow"]["caller_permissions_required"] = ["actions:write"]
         ap.write_text(json.dumps(doc), encoding="utf-8")
-        with self.assertRaisesRegex(ValueError, "actions:write and contents:write"):
+        with self.assertRaisesRegex(ValueError, "actions:write and issues:write"):
             validate_execution_adapters(root, ap, rp)
 
     def test_rejects_invalid_resource_lease_contract(self):
