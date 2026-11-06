@@ -1454,8 +1454,8 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
-    "release_manifest_blob_sha": "3f1f246f38e0690910748c8bd812c9a86483b421",
-    "program_registry_blob_sha": "595d5c1d2327251342b9d205f5aadee58e2393ff",
+    "release_manifest_blob_sha": "373472d2dfd7618440b1c6e9d4816c787d295b59",
+    "program_registry_blob_sha": "98aeec935bd79db0ed4f9135604473ac79b30997",
     "execution_adapters_blob_sha": "e68fc9c681743a008818ca85adfc2d78bae8c223",
     "added_after_release_baseline": true,
     "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 52 Python components are partitioned into 36 direct/helper writer entries and 15 reviewed non-writers, alongside one external GitHub Actions dispatch side-effect adapter.",
@@ -1671,34 +1671,6 @@
       ],
       "fence": "Delegates to Watchdog scheduler; durable task queue update uses Contents Blob-SHA CAS and task identity.",
       "boundary": "Control-plane request only; does not directly publish rulesets."
-    },
-    {
-      "workflow_path": ".github/workflows/self-healing-agent.yml",
-      "step_name": "Apply allowlisted repair and run tests",
-      "mutation_kinds": [
-        "git_checkout",
-        "git_add",
-        "git_commit"
-      ],
-      "resources": [
-        "self-heal/run-<run_id> working tree"
-      ],
-      "fence": "Hard-coded repair IDs and staged-path allowlist; isolated run-specific branch.",
-      "boundary": "Runner-local working tree and PR branch preparation only."
-    },
-    {
-      "workflow_path": ".github/workflows/self-healing-agent.yml",
-      "step_name": "Publish repair pull request",
-      "mutation_kinds": [
-        "git_push",
-        "workflow_dispatch"
-      ],
-      "resources": [
-        "self-heal/run-<run_id> branch",
-        "self-healing-tests workflow run"
-      ],
-      "fence": "Run-specific branch; PR publication is review-gated; tests are dispatched against the repair branch.",
-      "boundary": "PR branch and CI workflow side effects; main is not directly pushed."
     },
     {
       "workflow_path": ".github/workflows/self-healing-agent.yml",

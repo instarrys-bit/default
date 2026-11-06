@@ -17,65 +17,27 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         for workflow in (healing, intake, audit):
             self.assertIn("group: shadowrocket-main-writer", workflow)
             self.assertIn("cancel-in-progress: false", workflow)
-    def test_repair_is_bounded_and_does_not_auto_merge(self):
+    def test_self_healing_is_diagnostic_only_and_never_writes_repository_code(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn("fix_stale_audit_concurrency_contract", workflow)
-        self.assertIn("git add -- .github/workflows/auto_sync.yml", workflow)
-        self.assertIn("git add -- tests/test_workflow_config_guard_order.py", workflow)
-        self.assertIn("fix_stale_audit_concurrency_contract", (ROOT / "scripts" / "apply_safe_repair.py").read_text(encoding="utf-8"))
-        self.assertIn("refresh_ruleset_manifest)", workflow)
-        self.assertIn("Unknown repair id at PR publication", workflow)
-        self.assertIn("gh pr create", workflow)
-        self.assertIn("id: publish-repair", workflow)
-        self.assertIn("always() && steps.supersession.outputs.stale != 'true'", workflow)
-        self.assertIn("steps.publish-repair.outcome == 'failure'", workflow)
-        self.assertIn("steps.diagnosis.outputs.classification == 'WORKFLOW_TIMEOUT'", workflow)
-        self.assertIn("github.event.workflow_run.conclusion == 'startup_failure'", workflow)
-        self.assertIn("gh workflow run self-healing-tests.yml --ref \"$BRANCH\"", workflow)
-        self.assertNotIn("gh pr merge", workflow)
-        self.assertIn("No speculative code changes were made.", workflow)
+        diagnose = workflow.split("  diagnose-and-repair:", 1)[1].split("  report-agent-failure:", 1)[0]
+        self.assertIn("Automatic repository code repair is disabled", diagnose)
+        self.assertNotIn("contents: write", diagnose)
+        self.assertNotIn("pull-requests: write", diagnose)
+        self.assertNotIn("git add", diagnose)
+        self.assertNotIn("git commit", diagnose)
+        self.assertNotIn("git push", diagnose)
+        self.assertNotIn("gh pr create", diagnose)
+        self.assertIn("gh issue create", diagnose)
 
-    def test_self_healing_agent_failures_are_reported_and_recovered_per_workflow(self):
+    def test_self_healing_has_no_repository_write_or_pr_token(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn("  report-agent-failure:", workflow)
-        self.assertIn("needs.diagnose-and-repair.result == 'failure'", workflow)
-        self.assertIn("shadowrocket-automation:agent_failure;workflow=deterministic_audit", workflow)
-        self.assertIn("shadowrocket-automation:agent_failure;workflow=config_validator", workflow)
-        self.assertIn("The deterministic audit and publish have recovered", workflow)
-        self.assertIn("The config-baseline validator has recovered", workflow)
-        self.assertIn("This self-healing-agent incident remains open pending verified agent recovery.", workflow)
-        validator_resolver = workflow.split("  resolve-validator-incidents:", 1)[1].split("  resolve-audit-incidents:", 1)[0]
-        validator_agent_block = validator_resolver.split('agent_issues=', 1)[1].split('done <<< "$agent_issues"', 1)[0]
-        audit_resolver = workflow.split("  resolve-audit-incidents:", 1)[1]
-        audit_agent_block = audit_resolver.split('agent_issues=', 1)[1].split('done <<< "$agent_issues"', 1)[0]
-        self.assertNotIn('gh issue close "$issue"', validator_agent_block)
-        self.assertNotIn('gh issue close "$issue"', audit_agent_block)
-
-    def test_stale_watchdog_threshold_exceeds_main_job_timeout(self):
-        watchdog = WATCHDOG.read_text(encoding="utf-8")
-        auto_sync = AUTO_SYNC.read_text(encoding="utf-8")
-        self.assertIn("timeout-minutes: 300", auto_sync)
-        self.assertIn("> 21600", watchdog)
-        self.assertIn("fromdateiso8601", watchdog)
-
-    def test_manifest_reconciliation_runs_after_final_config_scope_coverage(self):
-        workflow = AUTO_SYNC.read_text(encoding="utf-8")
-        self.assertLess(
-            workflow.index("Reconcile final uu.conf scope coverage after all rule mutations"),
-            workflow.index("Reconcile final RULE-SET manifest counts"),
-        )
-        self.assertLess(
-            workflow.index("Reconcile final RULE-SET manifest counts"),
-            workflow.index("Build append-only rule-level provenance ledger"),
-        )
-
-    def test_write_token_is_not_exposed_to_repair_tests(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        repair_step = workflow.split("      - name: Apply allowlisted repair and run tests", 1)[1].split(
-            "      - name: Publish repair pull request", 1
-        )[0]
+        diagnose = workflow.split("  diagnose-and-repair:", 1)[1].split("  report-agent-failure:", 1)[0]
+        repair_step = diagnose.split("      - name: Keep self-healing read-only", 1)[1].split("      - name: Open incident when no safe repair applies", 1)[0]
         self.assertNotIn("GH_TOKEN", repair_step)
+        self.assertNotIn("contents: write", repair_step)
+        self.assertNotIn("pull-requests: write", repair_step)
         self.assertIn("persist-credentials: false", workflow)
+        self.assertNotIn("gh pr create", workflow)
 
     def test_failed_run_cursor_is_retained_without_repository_writes(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
@@ -97,13 +59,13 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("git add -- sources/review_cursor.json", workflow)
         self.assertNotIn("git push origin HEAD:main", cursor_job)
 
-    def test_user_owned_config_is_never_added_to_repair_commit(self):
+    def test_self_healing_cannot_write_repository_files(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn("expected_staged_path=\".github/workflows/auto_sync.yml\"", workflow)
-        self.assertIn("expected_staged_path=\"tests/test_workflow_config_guard_order.py\"", workflow)
-        self.assertIn('staged_paths="$(git diff --cached --name-only)"', workflow)
-        self.assertNotIn("git add -A", workflow)
-        self.assertNotIn("git add modules/uu.conf", workflow)
+        diagnose = workflow.split("  diagnose-and-repair:", 1)[1].split("  report-agent-failure:", 1)[0]
+        self.assertNotIn("git add", diagnose)
+        self.assertNotIn("git commit", diagnose)
+        self.assertNotIn("git push", diagnose)
+        self.assertNotIn("modules/uu.conf", diagnose)
 
 
     def test_config_validator_failures_are_monitored_and_incidents_are_resolved_on_recovery(self):
@@ -174,7 +136,8 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn("permissions:" + chr(10) + "  contents: read", top_level)
         self.assertNotIn("contents: write", top_level)
         diagnose = workflow.split("  diagnose-and-repair:", 1)[1].split("  resolve-validator-incidents:", 1)[0]
-        self.assertIn("contents: write", diagnose)
+        self.assertIn("contents: read", diagnose)
+        self.assertNotIn("contents: write", diagnose)
         resolver = workflow.split("  resolve-validator-incidents:", 1)[1].split("  resolve-audit-incidents:", 1)[0]
         self.assertIn("issues: write", resolver)
         self.assertNotIn("contents: write", resolver)
