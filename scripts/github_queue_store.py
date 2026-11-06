@@ -65,7 +65,7 @@ class GitHubContentsQueueStore:
     ) -> None:
         if not repository or "/" not in repository:
             raise ValueError("repository must be owner/name")
-        if not path or path.startswith("/") or ".." in path.split("/"):
+        if not path or ".." in path.split("/") or (not Path(path).is_absolute() and path.startswith("/")):
             raise ValueError("path must be a safe repository-relative path")
         if not branch:
             raise ValueError("branch is required")

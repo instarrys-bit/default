@@ -1450,9 +1450,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
-    "release_manifest_blob_sha": "29391bd3691c3ca1cef3e6fb7d60d15a8950d619",
+    "release_manifest_blob_sha": "3713029fb7171467889577d1f5ac598ff9601964",
     "program_registry_blob_sha": "02b739d373d87bf2df5a0ac107beafc56e4cdd48",
-    "execution_adapters_blob_sha": "e68fc9c681743a008818ca85adfc2d78bae8c223",
+    "execution_adapters_blob_sha": "7b93d8b8625f8973826de8034e29476f7ab0f4af",
     "added_after_release_baseline": true,
     "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 52 Python components are partitioned into 36 direct/helper writer entries and 15 reviewed non-writers, alongside one external GitHub Actions dispatch side-effect adapter.",
     "reviewed_at": "2026-11-05"
@@ -1617,18 +1617,6 @@
     },
     {
       "workflow_path": ".github/workflows/automation-watchdog.yml",
-      "step_name": "Remove the one-shot canary request after successful verification",
-      "mutation_kinds": [
-        "github_contents_delete"
-      ],
-      "resources": [
-        "automation/assessment_canary_request.json"
-      ],
-      "fence": "Conditional GitHub Contents delete using the current blob SHA after verified canary completion.",
-      "boundary": "One-shot control-plane request deletion; no production ruleset write."
-    },
-    {
-      "workflow_path": ".github/workflows/automation-watchdog.yml",
       "step_name": "Publish manifest-only metadata repair",
       "mutation_kinds": [
         "git_add",
@@ -1705,23 +1693,6 @@
       "boundary": "External Pages publication, not a repository file writer."
     },
     {
-      "workflow_path": ".github/workflows/source-discovery.yml",
-      "step_name": "Publish discovery inventory under its exact resource leases",
-      "mutation_kinds": [
-        "git_add",
-        "git_commit",
-        "git_push"
-      ],
-      "resources": [
-        "sources/discovered_sources.json",
-        "sources/discovered_sources.json.manifest.json",
-        "sources/discovered_sources.json.parts-<digest>/part-*.jsonl",
-        "reports/source-discovery.md"
-      ],
-      "fence": "Live GitHub Contents queue proof validates exact Watchdog workflow_source_discovery dispatch identity and active per-resource lease IDs/fencing tokens immediately before commit and immediately before main push.",
-      "boundary": "Only the discovered-source logical document family and discovery report may be staged; modules/uu.conf is checked unchanged before publication and after rebase. Adapter remains disabled pending HOLD/authorization."
-    },
-    {
       "workflow_path": ".github/workflows/automation-watchdog.yml",
       "step_name": "Enqueue source assessment after successful discovery workflow",
       "mutation_kinds": [
@@ -1740,7 +1711,6 @@
     "workflow_count": 7,
     "detected_mutation_families": [
       "git add/commit/push/reset/checkout",
-      "GitHub Contents API PUT/DELETE",
       "GitHub issue PATCH",
       "GitHub Actions workflow_dispatch",
       "GitHub Pages deploy action"

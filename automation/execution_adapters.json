@@ -1266,7 +1266,7 @@
         ],
         "caller_permissions_required": [
           "actions:write",
-          "contents:write"
+          "issues:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1326,7 +1326,7 @@
         ],
         "caller_permissions_required": [
           "actions:write",
-          "contents:write"
+          "issues:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1373,7 +1373,7 @@
         ],
         "caller_permissions_required": [
           "actions:write",
-          "contents:write"
+          "issues:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1409,7 +1409,7 @@
         ],
         "caller_permissions_required": [
           "actions:write",
-          "contents:write"
+          "issues:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1453,7 +1453,7 @@
         ],
         "caller_permissions_required": [
           "actions:write",
-          "contents:write"
+          "issues:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1489,7 +1489,7 @@
         ],
         "caller_permissions_required": [
           "actions:write",
-          "contents:write"
+          "issues:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1775,7 +1775,7 @@
         ],
         "caller_permissions_required": [
           "actions:write",
-          "contents:write"
+          "issues:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1893,7 +1893,7 @@
         ],
         "caller_permissions_required": [
           "actions:write",
-          "contents:write"
+          "issues:write"
         ]
       },
       "timeout_seconds": 30,

@@ -14,7 +14,7 @@ REGISTRY = ROOT / "automation" / "program_registry.json"
 ADAPTERS = ROOT / "automation" / "execution_adapters.json"
 WATCHDOG_ID = "workflow_automation_watchdog"
 WATCHDOG_JOB = "task-queue-supervision"
-REQUIRED_CALLER_SCOPES = {"actions": "write", "contents": "write"}
+REQUIRED_CALLER_SCOPES = {"actions": "write", "issues": "write"}
 
 
 def load_json(path: Path, label: str) -> dict:
@@ -173,9 +173,9 @@ def audit_activation_readiness(root: Path = ROOT,
                 side_effects.append("possible_protected_config_write")
             row["side_effects"] = sorted(set(side_effects))
             if not caller_permissions_ready:
-                reasons.append("Watchdog queue job lacks required actions:write and contents:write caller scopes")
+                reasons.append("Watchdog queue job lacks required actions:write and issues:write caller scopes")
             required = workflow.get("caller_permissions_required", [])
-            if not all(scope in required for scope in ("actions:write", "contents:write")):
+            if not all(scope in required for scope in ("actions:write", "issues:write")):
                 reasons.append("workflow adapter does not declare both required caller permission scopes")
             if "possible_protected_config_write" in side_effects:
                 reasons.append("workflow may write protected modules/uu.conf")

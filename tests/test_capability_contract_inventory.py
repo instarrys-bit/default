@@ -306,6 +306,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
             if item["resource"] == "durable task queue control-plane state"
         )
         self.assertEqual(group["mode"], "append_only_revision_chain")
+        self.assertEqual(group["status"], "append_only_issue_snapshot_chain_reviewed")
         self.assertIn("workflow_automation_watchdog", group["writers"])
         self.assertIn("script_resource_lease_runtime", group["writers"])
 

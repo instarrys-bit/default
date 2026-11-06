@@ -143,10 +143,10 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("contents: write", resolver)
         watcher = WATCHDOG.read_text(encoding="utf-8").split("  stale-run-watch:", 1)[1]
         self.assertIn("actions: write", watcher)
-        self.assertIn("contents: write", watcher)
+        self.assertIn("contents: read", watcher)
         self.assertNotIn("pull-requests: write", watcher)
         health_check = WATCHDOG.read_text(encoding="utf-8").split("  health-check:", 1)[1].split("  task-queue-supervision:", 1)[0]
-        self.assertIn("contents: write", health_check)
+        self.assertIn("contents: read", health_check)
 
 
 

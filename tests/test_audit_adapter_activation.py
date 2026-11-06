@@ -47,11 +47,12 @@ class AdapterActivationAuditTests(unittest.TestCase):
             "  task-queue-supervision:\n"
             "    permissions:\n"
             "      actions: write\n"
-            "      contents: write\n"
+            "      contents: read\n"
+            "      issues: write\n"
         )
         self.assertEqual(
             job_permissions(content, "task-queue-supervision"),
-            {"actions": "write", "contents": "write"},
+            {"actions": "write", "contents": "read", "issues": "write"},
         )
         self.assertEqual(
             job_permissions(content, "health"),
