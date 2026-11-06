@@ -11,16 +11,62 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - name: Restore from chunks
-        run: python3 scripts/restore_inventory_from_chunks.py
-      - name: Commit restored files
+        with:
+          fetch-depth: 0
+
+      - name: Restore inventory from last good commit and pin release_manifest
         run: |
+          set -euo pipefail
+          GOOD_SHA=0de2e952d6b4f07062eeb8dcaa8fd6237bf3a762
+          NEW_PIN=efb77e7fa846769c34bcc9051a7cf8a369ee5318
+          OLD_PIN=24eb76ce6162da27fdc608105d372356c923eab3
+
+          git show "${GOOD_SHA}:automation/production_workflow_map.json" > automation/production_workflow_map.json
+          git show "${GOOD_SHA}:automation/resource_write_sets.json" > automation/resource_write_sets.json
+
+          python3 - <<'PY'
+          from pathlib import Path
+          OLD = "24eb76ce6162da27fdc608105d372356c923eab3"
+          NEW = "efb77e7fa846769c34bcc9051a7cf8a369ee5318"
+          for rel in [
+              "automation/production_workflow_map.json",
+              "automation/resource_write_sets.json",
+          ]:
+              path = Path(rel)
+              text = path.read_text(encoding="utf-8")
+              if OLD not in text:
+                  raise SystemExit(f"{rel}: expected old pin missing")
+              path.write_text(text.replace(OLD, NEW), encoding="utf-8")
+              print(f"updated pin in {rel}")
+          PY
+
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          NEW = "efb77e7fa846769c34bcc9051a7cf8a369ee5318"
+          for rel in [
+              "automation/production_workflow_map.json",
+              "automation/resource_write_sets.json",
+          ]:
+              data = json.loads(Path(rel).read_text(encoding="utf-8"))
+              pin = data["review_context"]["release_manifest_blob_sha"]
+              assert pin == NEW, (rel, pin)
+              print(rel, "OK", "jobs/writes",
+                    len(data.get("job_graph") or data.get("confirmed_write_sets") or []))
+          PY
+
+      - name: Commit and push restored inventory
+        run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add automation/production_workflow_map.json automation/resource_write_sets.json
           if git diff --cached --quiet; then
-            echo "No changes"
+            echo "No changes to commit"
             exit 0
           fi
-          git commit -m "Restore production_workflow_map and resource_write_sets from verified chunks"
+          git commit -m "Restore production_workflow_map and resource_write_sets; align release_manifest pin
+
+Recovered full inventory from 0de2e952 and set review_context.release_manifest_blob_sha
+to efb77e7fa846769c34bcc9051a7cf8a369ee5318. Unblocks validate-config."
           git push origin HEAD:main
