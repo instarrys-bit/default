@@ -8,7 +8,7 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "be1d66b1b3eea7ee5dfcc32123fc3d231655345f"
+      "git_blob_sha": "29206fcd571df50fce968fcc48d6612dc7dd01ec"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -42,7 +42,7 @@
     },
     "source_assessor": {
       "path": "scripts/assess_sources.py",
-      "git_blob_sha": "e83176283ee528886349a1ff5a0dc036d01eb0f9"
+      "git_blob_sha": "ee976188d2443bf9d255e75ef76e6e18c51c81dd"
     },
     "task_queue_validator": {
       "path": "scripts/task_queue.py",
@@ -66,15 +66,15 @@
     },
     "resource_lease_runtime": {
       "path": "scripts/resource_lease_runtime.py",
-      "git_blob_sha": "1114fb5e85a6fe1401908c1239d062dba8aaeab2"
+      "git_blob_sha": "8a772d9d6306f1b607f20a6f4361de9915bde463"
     },
     "source_discovery_workflow": {
       "path": ".github/workflows/source-discovery.yml",
-      "git_blob_sha": "731ccd7bb590ae2b445f7520b7b53654c623ceac"
+      "git_blob_sha": "8f3207a3f730a5f68166d39f52171c7c8d0ccc7d"
     },
     "source_discovery_implementation": {
       "path": "scripts/discover_sources.py",
-      "git_blob_sha": "1d091077f2a8f57d788ce72fe9fc3ce5a924bcd2"
+      "git_blob_sha": "8234b4b0f574c4a129a5be65a4706488b324a962"
     },
     "program_registry": {
       "path": "automation/program_registry.json",
