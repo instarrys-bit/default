@@ -5,12 +5,12 @@ on:
   workflow_dispatch:
     inputs:
       domains:
+        description: "Paste hostnames separated by spaces, commas, semicolons or newlines. Hostnames only; no URLs."
+        required: true
+        type: string
       automation_task_id:
         description: 'Internal task correlation ID; leave blank for manual runs'
         required: false
-        type: string
-        description: "Paste hostnames separated by spaces, commas, semicolons or newlines. Hostnames only; no URLs."
-        required: true
         type: string
 
 permissions:
