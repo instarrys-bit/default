@@ -356,5 +356,11 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn('last_success="$(jq -r', workflow)
 
 
+    def test_watchdog_excludes_deleted_non_production_paths_from_unknown_path_registration(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        self.assertIn('.files[] | . as $file', workflow)
+        self.assertIn('$file.status != "removed"', workflow)
+        self.assertIn('$manifest[0].production_input_paths | index($file.filename)', workflow)
+
 if __name__ == "__main__":
     unittest.main()

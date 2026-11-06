@@ -523,7 +523,7 @@ jobs:
             if [ -z "$compare_json" ] || ! jq -e '.status == "ahead" and (.files | type == "array")' <<< "$compare_json" >/dev/null; then
               paths_json='["__compare_unavailable__"]'
             else
-              paths_json="$(jq -c '[.files[].filename]' <<< "$compare_json")"
+              paths_json="$(jq -c --slurpfile manifest automation/production_inputs.json '[.files[] | . as $file | select($file.status != "removed" or (($manifest[0].production_input_paths | index($file.filename)) != null)) | $file.filename]' <<< "$compare_json")"
             fi
           fi
 
