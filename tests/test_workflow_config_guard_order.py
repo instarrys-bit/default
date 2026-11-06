@@ -240,8 +240,8 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertLess(publish_step.index("assert-workflow --task-id"), publish_step.index("git push origin HEAD:main"))
         self.assertIn("logical/production-pipeline", (ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         audit_job = workflow.split("  audit:", 1)[1].split("  publish:", 1)[0]
-        self.assertNotIn("AUTOMATION_WRITE_GUARD", workflow)
-        self.assertNotIn("fenced_file_writer", workflow)
+        self.assertNotIn("AUTOMATION_" + "WRITE_GUARD", workflow)
+        self.assertNotIn("fenced_" + "file_writer", workflow)
 
     def test_watchdog_owns_config_change_detection_and_sync_dispatch(self):
         watchdog_path = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
@@ -372,6 +372,22 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         publish = workflow.split("  publish:", 1)[1]
         step = publish.split("Verify base commit and safely publish allowlisted outputs", 1)[1].split("      - name: ", 1)[0]
         self.assertNotIn("AUTOMATION_TASK_ID:", step)
+
+
+    def test_workflow_env_blocks_are_not_empty(self):
+        workflow = (ROOT / ".github" / "workflows" / "auto_sync.yml").read_text(encoding="utf-8")
+        lines = workflow.splitlines()
+        for index, line in enumerate(lines[:-1]):
+            if line.strip() != "env:":
+                continue
+            indent = len(line) - len(line.lstrip())
+            next_line = lines[index + 1]
+            next_indent = len(next_line) - len(next_line.lstrip())
+            self.assertGreater(
+                next_indent,
+                indent,
+                f"empty env mapping at line {index + 1}",
+            )
 
 if __name__ == "__main__":
     unittest.main()

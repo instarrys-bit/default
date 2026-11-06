@@ -519,38 +519,6 @@
       "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
     },
     {
-      "path": "scripts/capture_git_write_trace.py",
-      "status": "PENDING_CLASSIFICATION",
-      "first_seen_at": "2026-11-06T14:42:07.213556Z",
-      "last_seen_at": "2026-11-06T15:12:00.204626Z",
-      "seen_count": 3,
-      "observed_run_ids": [
-        "42236212990",
-        "42240481960",
-        "42240736676"
-      ],
-      "last_seen_event": "push",
-      "last_seen_revision": "49da944fc996195e7664594685cc4b25424c73fa",
-      "last_seen_run_id": "42240736676",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42240736676"
-    },
-    {
-      "path": "scripts/fenced_file_writer.py",
-      "status": "PENDING_CLASSIFICATION",
-      "first_seen_at": "2026-11-06T14:42:07.213556Z",
-      "last_seen_at": "2026-11-06T15:12:00.204626Z",
-      "seen_count": 3,
-      "observed_run_ids": [
-        "42236212990",
-        "42240481960",
-        "42240736676"
-      ],
-      "last_seen_event": "push",
-      "last_seen_revision": "49da944fc996195e7664594685cc4b25424c73fa",
-      "last_seen_run_id": "42240736676",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42240736676"
-    },
-    {
       "path": "scripts/resource_lease_runtime.py",
       "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-03T19:06:35.005041Z",

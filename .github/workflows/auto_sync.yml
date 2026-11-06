@@ -281,7 +281,6 @@ jobs:
           bash scripts/verify_publish_base.sh --check-only
 
       - name: Compile and run deterministic review tests
-        env:
         run: |
           python3 -m compileall -q scripts tests
           python3 -m unittest discover -s tests -v
