@@ -261,34 +261,24 @@ class CapabilityContractInventoryTests(unittest.TestCase):
 
 
 
-    def test_owner_config_baseline_metadata_writer_is_inventoried_and_fenced(self):
+    def test_owner_config_baseline_metadata_is_validation_workspace_only(self):
         writes = load_json("automation/resource_write_sets.json")
-        entry = next(
-            item for item in writes["confirmed_write_sets"]
-            if item["program_id"] == "script_register_config_baseline"
-        )
-        self.assertEqual(
-            set(entry["writes"]),
-            {
-                "sources/policy.json",
-                "automation/release_manifest.json",
-                "automation/production_workflow_map.json",
-                "automation/resource_write_sets.json",
-            },
-        )
-        self.assertIn("logical/production-pipeline", entry["lease_keys"])
+        entry = next(item for item in writes["confirmed_write_sets"] if item["program_id"] == "script_register_config_baseline")
+        self.assertEqual(set(entry["writes"]), {
+            "$RUNNER_TEMP/validation-workspace/sources/policy.json",
+            "$RUNNER_TEMP/validation-workspace/automation/release_manifest.json",
+            "$RUNNER_TEMP/validation-workspace/automation/production_workflow_map.json",
+            "$RUNNER_TEMP/validation-workspace/automation/resource_write_sets.json",
+        })
+        self.assertEqual(entry["lease_keys"], [])
         self.assertIn("modules/uu.conf is read-only", entry["write_boundary_fencing"])
-
+        self.assertEqual(entry["publish_resources"], [])
         ownership = load_json("automation/resource_ownership_audit.json")
-        group = next(
-            item for item in ownership["resource_groups"]
-            if item["id"] == "owner_config_baseline_metadata"
-        )
-        self.assertEqual(group["lease_key"], "logical/production-pipeline")
-        self.assertIn("script_register_config_baseline", group["writers"])
+        group = next(item for item in ownership["resource_groups"] if item["id"] == "owner_config_baseline_metadata")
+        self.assertEqual(group["lease_key"], "workflow-local validation workspace")
+        self.assertEqual(group["status"], "run_scoped_validation_workspace_only")
+        self.assertEqual(group["writers"], ["script_register_config_baseline"])
         self.assertEqual(ownership["status"], "partial_static_audit")
-
-
     def test_durable_task_queue_writers_are_classified_as_sha_cas_control_plane(self):
         writes = load_json("automation/resource_write_sets.json")
         entries = {item["program_id"]: item for item in writes["confirmed_write_sets"]}

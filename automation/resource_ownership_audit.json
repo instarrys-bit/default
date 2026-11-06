@@ -181,18 +181,18 @@
     {
       "id": "owner_config_baseline_metadata",
       "paths": [
-        "sources/policy.json",
-        "automation/release_manifest.json",
-        "automation/production_workflow_map.json",
-        "automation/resource_write_sets.json"
+        "$RUNNER_TEMP/validation-workspace/sources/policy.json",
+        "$RUNNER_TEMP/validation-workspace/automation/release_manifest.json",
+        "$RUNNER_TEMP/validation-workspace/automation/production_workflow_map.json",
+        "$RUNNER_TEMP/validation-workspace/automation/resource_write_sets.json"
       ],
       "writers": [
-        "script_register_config_baseline",
-        "workflow_auto_sync"
+        "script_register_config_baseline"
       ],
-      "lease_key": "logical/production-pipeline",
-      "status": "live_fenced_production_writer_reviewed",
-      "note": "The owner baseline registrar writes only approval/pin metadata after verifying the exact owner-authored modules/uu.conf change. In auto_sync, these writes are guarded by the live Watchdog task/resource lease and the publisher reasserts the same fencing epoch before push. validate-config writes only its ephemeral workspace with contents:read. Historical artifact restore is explicitly excluded from these resources. This covers the registered production path; broader cross-workflow ownership audit remains partial."
+      "lease_key": "workflow-local validation workspace",
+      "status": "run_scoped_validation_workspace_only",
+      "note": "The validator recovers owner-approved modules/uu.conf identity into its local workspace only. The workflow has contents:read and cannot publish these metadata changes; modules/uu.conf itself is read-only.",
+      "required_mode": "run_scoped"
     },
     {
       "id": "policy_source_overlap_audit",
