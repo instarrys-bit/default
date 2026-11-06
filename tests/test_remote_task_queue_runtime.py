@@ -209,7 +209,22 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
                                  registry=self.registry, now=later)
         self.assertEqual(final["status"], "DEAD_LETTER")
 
-    def test_expired_lease_is_recovered(self):
+    def test_cancelled_workflow_run_is_terminal_cancelled_not_dead_letter(self):
+        enqueue_remote(self.payload(), self.store, self.registry, self.now)
+        task = self.claim("worker-a", self.now)
+        cancelled = complete_remote(
+            task["task_id"], "worker-a", task["lease"]["token"],
+            success=False,
+            error={"type": "workflow_run_failed",
+                   "message": "workflow completed with conclusion 'cancelled'",
+                   "evidence": {"status": "completed", "conclusion": "cancelled", "run_id": 789}},
+            store=self.store, registry=self.registry, now=self.now,
+        )
+        self.assertEqual(cancelled["status"], "CANCELLED")
+        self.assertEqual(cancelled["state_history"][-1], "CANCELLED")
+        self.assertEqual(cancelled["last_error"]["evidence"]["conclusion"], "cancelled")
+
+
         enqueue_remote(self.payload(), self.store, self.registry, self.now)
         task = self.claim("worker-a", self.now)
         recovered = recover_remote(self.store, self.registry, self.now + timedelta(seconds=121))
