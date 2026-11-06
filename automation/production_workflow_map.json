@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "e9b9f1173aca3365beca16160f39b5e5dacbb0b0",
-  "registry_blob_sha": "7141bc70e3c7ed098532fbbfe19940ff8e479ad7",
+  "workflow_blob_sha": "997c041ea7356c0c925a700e839b191e5cd4783f",
+  "registry_blob_sha": "60bcebc38a2a7e3d6279d44f7ce7a53928859452",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 5,
-    "step_count": 61,
+    "step_count": 53,
     "independent_python_dispatch_enabled": false,
     "independent_workflow_count": 1
   },
@@ -21,457 +21,164 @@
       },
       "steps": [
         {
-          "order": 1,
           "name": "Checkout repository",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 1
         },
         {
-          "order": 2,
-          "name": "Capture initial repository baseline for shell and Git write tracing",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
-          "order": 3,
           "name": "Set up Python",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 2
         },
         {
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": [],
-          "order": 4,
-          "name": "Enable path-only runtime write trace"
-        },
-        {
-          "order": 5,
           "name": "Verify Watchdog-owned durable task dispatch",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 3
         },
         {
-          "order": 6,
           "name": "Verify live Watchdog resource lease before production audit",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 4
         },
         {
-          "order": 7,
           "name": "Register repository-owner-approved uu.conf changes (never edit the config)",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_register_config_baseline"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 5
         },
         {
-          "order": 8,
           "name": "Verify registered user config baseline",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_verify_baseline"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 6
         },
         {
-          "order": 9,
           "name": "Capture and verify the exact production input fingerprint",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 7
         },
         {
-          "order": 10,
           "name": "Stop stale audit before discovery and source downloads",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 8
         },
         {
-          "order": 11,
           "name": "Compile and run deterministic review tests",
-          "execution_kind": "test_or_compile",
-          "invoked_program_ids": [],
-          "validation_program_ids": [
-            "script_production_intent",
-            "script_restore_automation_state",
-            "script_register_config_baseline",
-            "script_sync_ruleset_config_conflicts",
-            "script_collect_domains",
-            "script_deterministic_review",
-            "script_domain_rule_engine",
-            "script_source_registry",
-            "script_build_rulesets",
-            "script_validate_config",
-            "script_verify_baseline",
-            "script_audit_source_lineage",
-            "script_discover_sources",
-            "script_assess_sources",
-            "script_build_source_candidates",
-            "script_audit_policy_source_overlap",
-            "script_audit_external_domains",
-            "script_audit_config_drift",
-            "script_audit_ruleset_references",
-            "script_audit_ruleset_config_overlap",
-            "script_import_request_observations",
-            "script_lifecycle_gate",
-            "script_lifecycle_audit",
-            "script_auto_activate_sources",
-            "script_build_project_status",
-            "script_build_rule_provenance",
-            "script_refresh_ruleset_manifest",
-            "script_diagnose_workflow_failure",
-            "script_append_step_summary",
-            "script_apply_safe_repair",
-            "script_review_cursor",
-            "script_persist_review_cursor",
-            "script_json_document_store",
-            "script_verify_published_rulesets"
-          ],
-          "unresolved_script_paths": []
+          "order": 9
         },
         {
-          "order": 12,
           "name": "Discover candidate source repositories (non-activating)",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_discover_sources"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 10
         },
         {
-          "order": 13,
           "name": "Assess discovered rule-list syntax and policy claims",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_assess_sources",
-            "script_append_step_summary"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 11
         },
         {
-          "order": 14,
           "name": "Preserve complete source assessment report",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 12
         },
         {
-          "order": 15,
           "name": "Restore prior high-volume automation state",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_restore_automation_state"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 13
         },
         {
-          "order": 16,
           "name": "Remove published and queued rules that conflict with uu.conf",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_sync_ruleset_config_conflicts",
-            "script_append_step_summary"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 14
         },
         {
-          "order": 17,
           "name": "Import observed request hostnames as unclassified candidates",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_import_request_observations"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 15
         },
         {
-          "order": 18,
           "name": "Audit public source lineage and shared upstreams",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_audit_source_lineage"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 16
         },
         {
-          "order": 19,
           "name": "Audit domain-level policy-source overlap and contradictions",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_audit_policy_source_overlap",
-            "script_append_step_summary"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 17
         },
         {
-          "order": 20,
           "name": "Build automated source candidate and lineage matrix",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_build_source_candidates",
-            "script_append_step_summary"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 18
         },
         {
-          "order": 21,
           "name": "Admit stable policy-evidenced sources without AI review",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_auto_activate_sources",
-            "script_append_step_summary"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 19
         },
         {
-          "order": 22,
           "name": "Collect and cross-check all enabled domain sources",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_collect_domains"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 20
         },
         {
-          "order": 23,
           "name": "Stop stale audit before expensive deterministic review",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 21
         },
         {
-          "order": 24,
           "name": "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_deterministic_review"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 22
         },
         {
-          "order": 25,
           "name": "Preserve resumable review cursor checkpoint",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 23
         },
         {
-          "order": 26,
           "name": "Build standalone DIRECT, PROXY and REJECT rule sets",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_build_rulesets"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 24
         },
         {
-          "order": 27,
           "name": "Summarize REJECT secondary screening",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_append_step_summary"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 25
         },
         {
-          "order": 28,
           "name": "Evaluate lifecycle milestones and monthly capacity review",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_lifecycle_gate"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 26
         },
         {
-          "order": 29,
           "name": "Run conservative lifecycle audit and selectable restoration",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_lifecycle_audit",
-            "script_append_step_summary"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 27
         },
         {
-          "order": 30,
           "name": "Reconcile final uu.conf scope coverage after all rule mutations",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_sync_ruleset_config_conflicts",
-            "script_append_step_summary"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 28
         },
         {
-          "order": 31,
           "name": "Reconcile final RULE-SET manifest counts",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_refresh_ruleset_manifest"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 29
         },
         {
-          "order": 32,
           "name": "Build append-only rule-level provenance ledger",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_build_rule_provenance"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 30
         },
         {
-          "order": 33,
           "name": "Validate Shadowrocket config structure",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_validate_config"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 31
         },
         {
-          "order": 34,
           "name": "Audit RULE-SET references against generated outputs (read-only)",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_audit_ruleset_references",
-            "script_append_step_summary"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 32
         },
         {
-          "order": 35,
           "name": "Audit candidate scope coverage against user config (read-only)",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_audit_ruleset_config_overlap",
-            "script_append_step_summary"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 33
         },
         {
-          "order": 36,
           "name": "Audit managed config drift (read-only)",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_audit_config_drift",
-            "script_append_step_summary"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 34
         },
         {
-          "order": 37,
           "name": "Run read-only full-source regression audit",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_audit_external_domains",
-            "script_append_step_summary"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 35
         },
         {
-          "order": 38,
           "name": "Build consolidated project status",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_build_project_status",
-            "script_append_step_summary"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 36
         },
         {
-          "order": 39,
           "name": "Write successful audit heartbeat",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 37
         },
         {
-          "order": 40,
           "name": "Record durable automation state pointer",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 38
         },
         {
-          "order": 41,
           "name": "Package allowlisted audit outputs",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 39
         },
         {
-          "order": 42,
           "name": "Upload allowlisted audit outputs",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
-          "order": 43,
-          "name": "Capture persistent repository changes from shell and Git (audit)",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_capture_git_write_trace"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": [],
-          "order": 44,
-          "name": "Upload runtime filesystem write trace (audit)"
+          "order": 40
         }
       ]
     },
@@ -486,89 +193,28 @@
       },
       "steps": [
         {
-          "order": 1,
           "name": "Checkout exact audited commit",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 1
         },
         {
-          "order": 2,
-          "name": "Capture initial repository baseline for shell and Git write tracing",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": [],
-          "order": 3,
-          "name": "Enable path-only runtime write trace"
-        },
-        {
-          "order": 4,
           "name": "Revalidate Watchdog task and export canonical lease context",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 2
         },
         {
-          "order": 5,
           "name": "Verify live Watchdog resource lease before artifact restoration",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 3
         },
         {
-          "order": 6,
           "name": "Download audited outputs",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 4
         },
         {
-          "order": 7,
           "name": "Verify base commit and safely publish allowlisted outputs",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 5
         },
         {
-          "order": 8,
           "name": "Independently verify committed remote rulesets",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_verify_published_rulesets",
-            "script_append_step_summary"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
-          "order": 9,
-          "name": "Capture persistent repository changes from shell and Git (publish)",
-          "execution_kind": "python_capability_invocation",
-          "invoked_program_ids": [
-            "script_capture_git_write_trace"
-          ],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
-        },
-        {
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": [],
-          "order": 10,
-          "name": "Upload runtime filesystem write trace (publish)"
+          "order": 6
         }
       ]
     },
@@ -583,44 +229,24 @@
       },
       "steps": [
         {
-          "order": 1,
           "name": "Checkout current main for a single-path checkpoint update",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 1
         },
         {
-          "order": 2,
           "name": "Download failed-run cursor checkpoint",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 2
         },
         {
-          "order": 3,
           "name": "Revalidate exact Watchdog task and install live resource fence",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 3
         },
         {
-          "order": 4,
           "name": "Persist only the cursor through the live filesystem fence",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 4
         },
         {
-          "order": 5,
           "name": "Publish only the cursor checkpoint under the same live fence",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 5
         }
       ]
     },
@@ -636,12 +262,8 @@
       },
       "steps": [
         {
-          "order": 1,
           "name": "Open or update automation incident",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 1
         }
       ]
     },
@@ -657,12 +279,8 @@
       },
       "steps": [
         {
-          "order": 1,
           "name": "Close recovered automation incidents",
-          "execution_kind": "workflow_native",
-          "invoked_program_ids": [],
-          "validation_program_ids": [],
-          "unresolved_script_paths": []
+          "order": 1
         }
       ]
     }
@@ -675,7 +293,6 @@
     "Workflow-native shell, artifact, GitHub API and GitHub issue actions remain orchestration capabilities and need explicit contracts before decomposition.",
     "Source assessment is dispatched by automation-watchdog only after the exact production discovery workflow completes successfully on main; it is not an independent direct-dispatch path.",
     "The failed-run cursor recovery job inherits the workflow-level shadowrocket-main-writer lock; it deliberately does not request the same concurrency group a second time.",
-    "Production audit and publish jobs emit path-only runtime filesystem write trace artifacts; the trace is evidence for exercised Python writes, not a complete trace of shell/git subprocesses or unexecuted paths.",
     "A dedicated Watchdog source-discovery workflow and immutable run-bound artifact handoff are implemented on the integration branch. Its adapter/orchestration and Assessment adapter remain disabled; the monolithic auto_sync discovery/assessment fallback is retained to prevent a gap or duplicate execution."
   ],
   "decomposition_constraints": [
@@ -687,13 +304,13 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
-    "release_manifest_blob_sha": "407d34a8ac16ec975e73b5c2222848bb965f814e",
-    "program_registry_blob_sha": "7141bc70e3c7ed098532fbbfe19940ff8e479ad7",
-    "execution_adapters_blob_sha": "82012007de750c605d5ef27a355ece7321cdc51a",
+    "release_manifest_blob_sha": "a21c4eb881824c89e4fd65074125c1532fcbdcee",
+    "program_registry_blob_sha": "60bcebc38a2a7e3d6279d44f7ce7a53928859452",
+    "execution_adapters_blob_sha": "e68fc9c681743a008818ca85adfc2d78bae8c223",
     "added_after_release_baseline": true,
     "note": "Refreshed against the integration branch's current workflow, registry, release manifest and adapter blobs. Independent Python dispatch remains disabled; the source-discovery workflow is implemented but dormant. Static inventory evidence is not execution authorization.",
     "reviewed_at": "2026-11-05",
-    "registry_blob_sha": "7141bc70e3c7ed098532fbbfe19940ff8e479ad7"
+    "registry_blob_sha": "60bcebc38a2a7e3d6279d44f7ce7a53928859452"
   },
   "independent_dags": [
     {
