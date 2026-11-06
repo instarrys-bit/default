@@ -125,7 +125,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
                      "sources/rule_provenance.json", "data/domain_candidates.json",
                      "data/candidates.json", "data/source_pending.json", "data/source_snapshots/"):
             self.assertNotIn(path, allowlist)
-        self.assertIn("reports/automation/state_store.json", allowlist)
+        self.assertEqual([x.strip() for x in allowlist.splitlines() if x.strip()], ["rulesets/"])
         self.assertIn('if [[ -e "$path" ]]', publish)
         self.assertIn('git add -- "$path"', publish)
 
@@ -287,13 +287,9 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         archive = workflow.split("          base_files=(", 1)[1].split("          )", 1)[0]
         self.assertNotIn("sources/policy.json", archive)
         publish = workflow.split("          publish_paths=(", 1)[1].split("          )", 1)[0]
-        for path in (
-            "sources/policy.json",
-            "automation/release_manifest.json",
-            "automation/production_workflow_map.json",
-            "automation/resource_write_sets.json",
-        ):
-            self.assertIn(path, publish)
+        self.assertEqual([x.strip() for x in publish.splitlines() if x.strip()], ["rulesets/"])
+        for path in ("sources/policy.json", "automation/release_manifest.json", "automation/production_workflow_map.json", "automation/resource_write_sets.json"):
+            self.assertNotIn(path, publish)
         restore = (ROOT / "scripts" / "restore_automation_state.py").read_text(encoding="utf-8")
         self.assertNotIn('"sources/policy.json"', restore.split("PUBLISH_FILES = {", 1)[1].split("}", 1)[0])
         registrar = (ROOT / "scripts" / "register_config_baseline.py").read_text(encoding="utf-8")

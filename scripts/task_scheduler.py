@@ -221,6 +221,8 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
                         or any(path not in resource_keys or path=="modules/uu.conf" for path in write_resources)
                         or any(path not in write_resources for path in publish_resources)):
                     raise ValueError("write_resources and publish_resources must be unique nested subsets of exclusive non-config resource keys")
+                if any(not isinstance(path,str) or not (path == "rulesets" or path.startswith("rulesets/")) for path in write_resources + publish_resources):
+                    raise ValueError("automation repository write authority is restricted to rulesets/**")
                 if not isinstance(adapter.get("completion",{}).get("artifact_verifier"),dict):
                     raise ValueError("publishing task artifacts requires an independent artifact verifier")
                 output_contract=adapter.get("output_contract")
@@ -609,6 +611,8 @@ def publish_task_artifacts(task: dict, adapter: dict, store, protected_digest: s
     if (any(path not in keys or path=="modules/uu.conf" for path in write_resources)
             or any(path not in write_resources for path in resources)):
         raise ValueError("publish_resources must be a subset of exclusive non-config write_resources")
+    if any(not isinstance(path,str) or not (path == "rulesets" or path.startswith("rulesets/")) for path in write_resources + resources):
+        raise ValueError("automation repository write authority is restricted to rulesets/**")
     if any(not isinstance(path,str) or path.startswith("/") or chr(92) in path
            or any(part in {"",".",".."} for part in path.split("/")) for path in resources):
         raise ValueError("publish_resources contains an unsafe repository path")

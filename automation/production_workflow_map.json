@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "4dcaf69c22fc0342bce30d48315d962900b4c2b6",
-  "registry_blob_sha": "afac96860d57a4c6cc4b1f7d45823c2fcc88520d",
+  "workflow_blob_sha": "3a1332c5cd1872d85a3e37234d16df28ce8cdc16",
+  "registry_blob_sha": "595d5c1d2327251342b9d205f5aadee58e2393ff",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 5,
-    "step_count": 53,
+    "step_count": 50,
     "independent_python_dispatch_enabled": false,
     "independent_workflow_count": 1
   },
@@ -225,28 +225,16 @@
       ],
       "condition": "${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled') }}",
       "permissions": {
-        "contents": "write"
+        "actions": "write"
       },
       "steps": [
         {
-          "name": "Checkout current main for a single-path checkpoint update",
+          "name": "Download failed-run cursor checkpoint",
           "order": 1
         },
         {
-          "name": "Download failed-run cursor checkpoint",
+          "name": "Preserve cursor without writing repository files",
           "order": 2
-        },
-        {
-          "name": "Revalidate exact Watchdog task and install live resource fence",
-          "order": 3
-        },
-        {
-          "name": "Persist only the cursor through the live filesystem fence",
-          "order": 4
-        },
-        {
-          "name": "Publish only the cursor checkpoint under the same live fence",
-          "order": 5
         }
       ]
     },
@@ -288,11 +276,11 @@
   "architecture_findings": [
     "The audit job is a single sequential production chain; its Python steps are not independently dispatchable merely because they have registry entries.",
     "The publish job is a separate privileged boundary with contents:write and must remain a gated workflow-level operation.",
-    "Failure cursor persistence is a separate recovery job; it writes the canonical checkpoint only after live Watchdog lease revalidation. Incident creation and incident resolution remain separate recovery jobs. Production completion is reconciled from workflow_run.completed after all producer jobs finish.",
+    "Failure cursor recovery is retained as a run-scoped immutable Actions artifact; it does not write repository files.",
     "The compile/test step references many scripts for validation only; those references must not be interpreted as execution edges.",
     "Workflow-native shell, artifact, GitHub API and GitHub issue actions remain orchestration capabilities and need explicit contracts before decomposition.",
     "Source assessment is dispatched by automation-watchdog only after the exact production discovery workflow completes successfully on main; it is not an independent direct-dispatch path.",
-    "The failed-run cursor recovery job inherits the workflow-level shadowrocket-main-writer lock; it deliberately does not request the same concurrency group a second time.",
+    "The failed-run cursor recovery job inherits the workflow-level shadowrocket-main-writer lock; it does not write repository files.",
     "A dedicated Watchdog source-discovery workflow and immutable run-bound artifact handoff are implemented on the integration branch. Its adapter/orchestration and Assessment adapter remain disabled; the monolithic auto_sync discovery/assessment fallback is retained to prevent a gap or duplicate execution."
   ],
   "decomposition_constraints": [
@@ -305,12 +293,12 @@
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
     "release_manifest_blob_sha": "3f1f246f38e0690910748c8bd812c9a86483b421",
-    "program_registry_blob_sha": "afac96860d57a4c6cc4b1f7d45823c2fcc88520d",
+    "program_registry_blob_sha": "595d5c1d2327251342b9d205f5aadee58e2393ff",
     "execution_adapters_blob_sha": "e68fc9c681743a008818ca85adfc2d78bae8c223",
     "added_after_release_baseline": true,
     "note": "Refreshed against the integration branch's current workflow, registry, release manifest and adapter blobs. Independent Python dispatch remains disabled; the source-discovery workflow is implemented but dormant. Static inventory evidence is not execution authorization.",
     "reviewed_at": "2026-11-05",
-    "registry_blob_sha": "afac96860d57a4c6cc4b1f7d45823c2fcc88520d"
+    "registry_blob_sha": "595d5c1d2327251342b9d205f5aadee58e2393ff"
   },
   "independent_dags": [
     {

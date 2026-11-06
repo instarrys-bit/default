@@ -77,29 +77,25 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("GH_TOKEN", repair_step)
         self.assertIn("persist-credentials: false", workflow)
 
-    def test_failed_run_cursor_recovery_persists_only_under_live_watchdog_lease(self):
+    def test_failed_run_cursor_is_retained_without_repository_writes(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
         cursor_job = workflow.split("  persist-review-cursor:", 1)[1].split("  notify-failure:", 1)[0]
-        self.assertIn("contents: write", cursor_job)
-        self.assertIn("persist-credentials: true", cursor_job)
-        self.assertIn('destination sources/review_cursor.json', cursor_job)
-        self.assertIn("assert-workflow", cursor_job)
-        self.assertIn("RESOURCE_LEASE_PROOF", cursor_job)
-        workflow_concurrency = workflow.split("jobs:", 1)[0]
-        self.assertIn("group: shadowrocket-main-writer", workflow_concurrency)
-        self.assertNotIn("concurrency:", cursor_job)
-        self.assertIn("git add -- sources/review_cursor.json", cursor_job)
-        self.assertIn("git push origin HEAD:main", cursor_job)
-        self.assertNotIn("modules/uu.conf", cursor_job)
-        self.assertNotIn("register_config_baseline.py", cursor_job)
+        self.assertIn("actions: write", cursor_job)
+        self.assertIn("actions/upload-artifact", cursor_job)
+        self.assertIn("failed-review-cursor-recovery", cursor_job)
+        self.assertNotIn("contents: write", cursor_job)
+        self.assertNotIn("git add", cursor_job)
+        self.assertNotIn("git push", cursor_job)
+        self.assertNotIn("sources/review_cursor.json", cursor_job.split("Preserve cursor without writing repository files", 1)[-1].split("retention-days", 1)[-1])
 
-    def test_missing_or_completed_review_cursor_is_a_successful_noop(self):
+    def test_failed_cursor_checkpoint_is_not_persisted_to_repository(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
-        self.assertIn("python3 scripts/persist_review_cursor.py", workflow)
-        helper = (ROOT / "scripts" / "persist_review_cursor.py").read_text(encoding="utf-8")
-        self.assertIn('return "missing"', helper)
-        self.assertIn('destination.unlink(missing_ok=True)', helper)
-        self.assertIn('return "complete"', helper)
+        cursor_job = workflow.split("  persist-review-cursor:", 1)[1].split("  notify-failure:", 1)[0]
+        self.assertIn("actions/download-artifact", cursor_job)
+        self.assertIn("actions/upload-artifact", cursor_job)
+        self.assertNotIn("python3 scripts/persist_review_cursor.py", workflow)
+        self.assertNotIn("git add -- sources/review_cursor.json", workflow)
+        self.assertNotIn("git push origin HEAD:main", cursor_job)
 
     def test_user_owned_config_is_never_added_to_repair_commit(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
