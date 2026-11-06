@@ -17,8 +17,14 @@ class ExternalIntelligenceCatalogTests(unittest.TestCase):
     def test_catalog_rejects_duplicate_provider_ids(self):
         data = json.loads(discover_sources.CATALOG_PATH.read_text(encoding="utf-8"))
         data["providers"].append(dict(data["providers"][0]))
-        ids = [item["id"] for item in data["providers"]]
-        self.assertLess(len(set(ids)), len(ids))
+        with self.assertRaisesRegex(ValueError, "unique"):
+            discover_sources.validate_external_intelligence_catalog(data)
+
+    def test_catalog_rejects_unapproved_endpoint(self):
+        data = json.loads(discover_sources.CATALOG_PATH.read_text(encoding="utf-8"))
+        data["providers"][0]["endpoint"] = "https://untrusted.example/feed"
+        with self.assertRaisesRegex(ValueError, "allowlist"):
+            discover_sources.validate_external_intelligence_catalog(data)
 
     def test_catalog_endpoints_use_https_allowlist(self):
         data = json.loads(discover_sources.CATALOG_PATH.read_text(encoding="utf-8"))
