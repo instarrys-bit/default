@@ -13,16 +13,16 @@
       "worker_id": "assessment-canary-41746911914"
     },
     "logical/production-pipeline": {
-      "acquired_at": "2026-11-05T22:35:25Z",
-      "expires_at": "2026-11-05T23:16:48Z",
-      "fencing_token": 16,
-      "lease_id": "ca82e29a7b31e85225f91b516a28175b",
-      "released_at": "2026-11-05T23:16:48Z",
-      "renewed_at": "2026-11-05T22:35:27Z",
-      "status": "RELEASED",
+      "acquired_at": "2026-11-06T02:43:50Z",
+      "expires_at": "2026-11-06T08:43:50Z",
+      "fencing_token": 17,
+      "lease_id": "541c7379f3cd211fe016f60c0aa3bb47",
+      "released_at": null,
+      "renewed_at": "2026-11-06T02:43:50Z",
+      "status": "ACTIVE",
       "task_id": "task_684d27950ac645d3aff09bf7",
-      "task_lease_token": "30f726989dc707c5e8e07c02ce73431d",
-      "worker_id": "42122644406"
+      "task_lease_token": "94e97f9c112ee3f8ed6746ae1f95c42d",
+      "worker_id": "42152053685"
     },
     "reports/source-assessment.md": {
       "acquired_at": "2026-11-04T00:28:16Z",
@@ -37,40 +37,40 @@
       "worker_id": "assessment-canary-41746911914"
     },
     "reports/source-discovery.md": {
-      "acquired_at": "2026-11-05T22:35:25Z",
-      "expires_at": "2026-11-05T23:16:48Z",
-      "fencing_token": 11,
-      "lease_id": "ca82e29a7b31e85225f91b516a28175b",
-      "released_at": "2026-11-05T23:16:48Z",
-      "renewed_at": "2026-11-05T22:35:27Z",
-      "status": "RELEASED",
+      "acquired_at": "2026-11-06T02:43:50Z",
+      "expires_at": "2026-11-06T08:43:50Z",
+      "fencing_token": 12,
+      "lease_id": "541c7379f3cd211fe016f60c0aa3bb47",
+      "released_at": null,
+      "renewed_at": "2026-11-06T02:43:50Z",
+      "status": "ACTIVE",
       "task_id": "task_684d27950ac645d3aff09bf7",
-      "task_lease_token": "30f726989dc707c5e8e07c02ce73431d",
-      "worker_id": "42122644406"
+      "task_lease_token": "94e97f9c112ee3f8ed6746ae1f95c42d",
+      "worker_id": "42152053685"
     },
     "sources/discovered_sources.json": {
-      "acquired_at": "2026-11-05T22:35:25Z",
-      "expires_at": "2026-11-05T23:16:48Z",
-      "fencing_token": 11,
-      "lease_id": "ca82e29a7b31e85225f91b516a28175b",
-      "released_at": "2026-11-05T23:16:48Z",
-      "renewed_at": "2026-11-05T22:35:27Z",
-      "status": "RELEASED",
+      "acquired_at": "2026-11-06T02:43:50Z",
+      "expires_at": "2026-11-06T08:43:50Z",
+      "fencing_token": 12,
+      "lease_id": "541c7379f3cd211fe016f60c0aa3bb47",
+      "released_at": null,
+      "renewed_at": "2026-11-06T02:43:50Z",
+      "status": "ACTIVE",
       "task_id": "task_684d27950ac645d3aff09bf7",
-      "task_lease_token": "30f726989dc707c5e8e07c02ce73431d",
-      "worker_id": "42122644406"
+      "task_lease_token": "94e97f9c112ee3f8ed6746ae1f95c42d",
+      "worker_id": "42152053685"
     },
     "sources/review_cursor.json": {
-      "acquired_at": "2026-11-05T22:35:25Z",
-      "expires_at": "2026-11-05T23:16:48Z",
-      "fencing_token": 13,
-      "lease_id": "ca82e29a7b31e85225f91b516a28175b",
-      "released_at": "2026-11-05T23:16:48Z",
-      "renewed_at": "2026-11-05T22:35:27Z",
-      "status": "RELEASED",
+      "acquired_at": "2026-11-06T02:43:50Z",
+      "expires_at": "2026-11-06T08:43:50Z",
+      "fencing_token": 14,
+      "lease_id": "541c7379f3cd211fe016f60c0aa3bb47",
+      "released_at": null,
+      "renewed_at": "2026-11-06T02:43:50Z",
+      "status": "ACTIVE",
       "task_id": "task_684d27950ac645d3aff09bf7",
-      "task_lease_token": "30f726989dc707c5e8e07c02ce73431d",
-      "worker_id": "42122644406"
+      "task_lease_token": "94e97f9c112ee3f8ed6746ae1f95c42d",
+      "worker_id": "42152053685"
     },
     "sources/source_assessments.json": {
       "acquired_at": "2026-11-04T00:28:16Z",
@@ -85,7 +85,7 @@
       "worker_id": "assessment-canary-41746911914"
     }
   },
-  "revision": 169,
+  "revision": 170,
   "schema_version": 1,
   "tasks": [
     {
@@ -897,7 +897,7 @@
       }
     },
     {
-      "attempts": 1,
+      "attempts": 2,
       "capability": "deterministic_audit",
       "created_at": "2026-11-05T22:34:51Z",
       "execution_backend": "github_contents",
@@ -924,35 +924,38 @@
         "message": "workflow completed with conclusion 'failure'",
         "type": "workflow_run_failed"
       },
-      "lease": null,
+      "lease": {
+        "expires_at": "2026-11-06T08:43:50Z",
+        "owner": "42152053685",
+        "token": "94e97f9c112ee3f8ed6746ae1f95c42d"
+      },
       "max_attempts": 2,
       "not_before": "2026-11-05T23:17:18Z",
       "priority": 100,
       "requester_program_id": "workflow_automation_watchdog",
       "resource_lease": {
-        "acquired_at": "2026-11-05T22:35:25Z",
-        "expires_at": "2026-11-06T04:35:27Z",
+        "acquired_at": "2026-11-06T02:43:50Z",
+        "expires_at": "2026-11-06T08:43:50Z",
         "lease_seconds": 21600,
-        "released_at": "2026-11-05T23:16:48Z",
         "resources": {
           "logical/production-pipeline": {
-            "fencing_token": 16,
-            "lease_id": "ca82e29a7b31e85225f91b516a28175b"
+            "fencing_token": 17,
+            "lease_id": "541c7379f3cd211fe016f60c0aa3bb47"
           },
           "reports/source-discovery.md": {
-            "fencing_token": 11,
-            "lease_id": "ca82e29a7b31e85225f91b516a28175b"
+            "fencing_token": 12,
+            "lease_id": "541c7379f3cd211fe016f60c0aa3bb47"
           },
           "sources/discovered_sources.json": {
-            "fencing_token": 11,
-            "lease_id": "ca82e29a7b31e85225f91b516a28175b"
+            "fencing_token": 12,
+            "lease_id": "541c7379f3cd211fe016f60c0aa3bb47"
           },
           "sources/review_cursor.json": {
-            "fencing_token": 13,
-            "lease_id": "ca82e29a7b31e85225f91b516a28175b"
+            "fencing_token": 14,
+            "lease_id": "541c7379f3cd211fe016f60c0aa3bb47"
           }
         },
-        "status": "RELEASED"
+        "status": "ACTIVE"
       },
       "result": {
         "correlation_id": "task_684d27950ac645d3aff09bf7-a1",
@@ -981,9 +984,10 @@
         "CLAIMED",
         "VERIFYING",
         "FAILED",
-        "QUEUED"
+        "QUEUED",
+        "CLAIMED"
       ],
-      "status": "QUEUED",
+      "status": "CLAIMED",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_684d27950ac645d3aff09bf7",
       "trace_id": "439685e1496243728c23817cceba3d76",
