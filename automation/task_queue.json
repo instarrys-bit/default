@@ -85,7 +85,7 @@
       "worker_id": "assessment-canary-41746911914"
     }
   },
-  "revision": 168,
+  "revision": 169,
   "schema_version": 1,
   "tasks": [
     {
@@ -993,6 +993,32 @@
         "verified_at": "2026-11-05T23:16:48Z",
         "verifier_program_id": "script_task_result_verifier"
       }
+    },
+    {
+      "attempts": 0,
+      "capability": "deterministic_audit",
+      "created_at": "2026-11-06T02:43:33Z",
+      "execution_backend": "github_contents",
+      "idempotency_key": "production:integrity:39b9773442a87d9e4383419ee61755a30500e24caed8dc5e4bdc2c1f5e9021e0",
+      "input": {
+        "production_decision": "RECOVERY_REQUIRED",
+        "production_fingerprint": "39b9773442a87d9e4383419ee61755a30500e24caed8dc5e4bdc2c1f5e9021e0",
+        "production_reason": "bounded reconciliation after published manifest integrity mismatch"
+      },
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 2,
+      "not_before": "2026-11-06T02:43:33Z",
+      "priority": 100,
+      "requester_program_id": "workflow_automation_watchdog",
+      "result": null,
+      "state_history": [
+        "QUEUED"
+      ],
+      "status": "QUEUED",
+      "target_program_id": "workflow_auto_sync",
+      "task_id": "task_7b0c4676a18348c8a206c203",
+      "trace_id": "f8165825c6cc419fb62b2f754fed1e5d"
     }
   ]
 }
