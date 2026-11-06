@@ -382,7 +382,7 @@ def main():
         "eligible_count":reject_secondary_eligible_count,
         "pending_manual_approval_count":len(reject_review_queue_items),
         "items":reject_review_queue_items
-    },ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+    },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     report_dir=ROOT/"reports"
     report_dir.mkdir(parents=True,exist_ok=True)
     report_lines=[
@@ -406,7 +406,7 @@ def main():
             f"| {item['rule']} | {item['current_source_count']} | {item['independent_publisher_count']} | "
             f"{item['confidence']:.2f} | {', '.join(item['source_ids'])} |"
         )
-    (report_dir/"reject-secondary-review.md").write_text("\\n".join(report_lines)+"\\n",encoding="utf-8")
+    (report_dir/"reject-secondary-review.md").write_text("\\n".join(report_lines)+"\n",encoding="utf-8")
     queue_path=OUT/"pending_queue.json"
     prior_queue=json.loads(queue_path.read_text(encoding="utf-8")) if queue_path.exists() else {"schema_version":1,"items":[]}
     queue_map={}
