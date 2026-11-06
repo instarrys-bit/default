@@ -1455,7 +1455,7 @@
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
     "release_manifest_blob_sha": "af59e3a23fb787c0c32f88c9ec9ab15c48e4449e",
-    "program_registry_blob_sha": "60bcebc38a2a7e3d6279d44f7ce7a53928859452",
+    "program_registry_blob_sha": "afac96860d57a4c6cc4b1f7d45823c2fcc88520d",
     "execution_adapters_blob_sha": "e68fc9c681743a008818ca85adfc2d78bae8c223",
     "added_after_release_baseline": true,
     "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 52 Python components are partitioned into 36 direct/helper writer entries and 15 reviewed non-writers, alongside one external GitHub Actions dispatch side-effect adapter.",
@@ -1792,6 +1792,23 @@
       ],
       "fence": "task_scheduler.py persists through the GitHub Contents SHA-CAS queue store; candidate queue validation runs before and after mutation, and source-assessment:<workflow_run_id> is the idempotency key. The step is gated by exact successful main-branch producer evidence and by both Assessment adapter/orchestration caller gates.",
       "boundary": "Durable control-plane task enqueue only. It does not run Assessment in this step or publish routing rules; Assessment remains disabled until the independent DAG is explicitly authorized."
+    },
+    {
+      "workflow_path": ".github/workflows/automation-watchdog.yml",
+      "step_name": "Reconcile only owner-approved baseline metadata",
+      "mutation_kinds": [
+        "git_add",
+        "git_commit",
+        "git_push"
+      ],
+      "resources": [
+        "sources/policy.json",
+        "automation/release_manifest.json",
+        "automation/production_workflow_map.json",
+        "automation/resource_write_sets.json"
+      ],
+      "fence": "Runs before health-check under the shared Watchdog control-plane concurrency group. register_config_baseline.py accepts only repository-owner-authored uu.conf changes on the exact triggering main snapshot (or owner-verified intervening history on scheduled reconciliation); the step enforces an exact four-file metadata staging allowlist and verifies modules/uu.conf is unchanged before non-force push.",
+      "boundary": "Watchdog-only owner-baseline metadata registration. No configuration content or rule-set output is writable in this step; production scheduling waits for successful completion."
     }
   ],
   "workflow_native_scan": {
