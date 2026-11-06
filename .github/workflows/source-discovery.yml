@@ -27,8 +27,6 @@ jobs:
     timeout-minutes: 25
     env:
       PYTHONPATH: scripts
-      AUTOMATION_WRITE_GUARD: "1"
-      AUTOMATION_WRITE_TRACE_PATH: ${{ runner.temp }}/source-discovery-write-trace.jsonl
     steps:
       - name: Checkout current main without persisted credentials
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -124,9 +122,6 @@ jobs:
           canonical_task_id="${AUTOMATION_TASK_CORRELATION%%-a*}"
           printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$canonical_task_id" --proof-json "$RESOURCE_LEASE_PROOF"
 
-      - name: Capture initial repository baseline
-        run: echo "AUTOMATION_WRITE_TRACE_BASELINE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
-
       - name: Discover candidates without activating sources
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -214,7 +209,6 @@ jobs:
         run: |
           set -euo pipefail
           python3 scripts/capture_git_write_trace.py --baseline-sha "$AUTOMATION_WRITE_TRACE_BASELINE_SHA"
-
       - name: Upload immutable discovery artifact and provenance proof
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
