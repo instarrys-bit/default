@@ -526,11 +526,13 @@
         "CLI arguments and/or imported Python inputs as defined by the implementation"
       ],
       "outputs": [
-        "Return values and/or repository artifacts as defined by the implementation"
+        "data/domain_candidates.json unclassified candidate buffer; no policy action is assigned"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "script_production_intent"
+      ],
       "dispatches": [],
-      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "permission_boundary": "Reads the read-only repository seed and append-only GitHub Issue #317 observation comments using caller-provided GitHub token; writes only the runner-local candidate buffer.",
       "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
       "orchestration": {
         "enabled": false,
@@ -1153,8 +1155,8 @@
         "repository state and declared workflow inputs"
       ],
       "outputs": [
-        "workflow run result",
-        "reports, artifacts, and repository changes explicitly allowed by workflow jobs"
+        "validated hostname batch appended to GitHub Issue #317",
+        "Watchdog deterministic audit request; no repository file changes"
       ],
       "depends_on": [
         "script_production_intent"
@@ -1162,7 +1164,7 @@
       "dispatches": [
         "workflow_automation_watchdog"
       ],
-      "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
+      "permission_boundary": "Job-scoped permissions are contents:read, actions:write, issues:write. The workflow appends validated observations to GitHub Issue #317 and dispatches the Watchdog; it never commits or modifies repository files.",
       "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
       "orchestration": {
         "enabled": false,
@@ -1566,7 +1568,7 @@
       "id": "script_production_intent",
       "path": "scripts/production_intent.py",
       "kind": "python_component",
-      "responsibility": "compute a deterministic production-input fingerprint and classify whether a production audit is required",
+      "responsibility": "compute production fingerprints using repository inputs plus append-only external Issue #317 request observations, and classify whether a production audit is required",
       "capabilities": [
         "production_intent_classification",
         "production_input_fingerprinting"
@@ -1576,7 +1578,8 @@
         "automation/production_inputs.json",
         "repository changed-path set",
         "last successful audit fingerprint and timestamp",
-        "active and successful task fingerprints"
+        "active and successful task fingerprints",
+        "append-only hostname observation batches from GitHub Issue #317"
       ],
       "outputs": [
         "deterministic production-demand decision",
@@ -1585,7 +1588,7 @@
       ],
       "depends_on": [],
       "dispatches": [],
-      "permission_boundary": "Read-only deterministic classification and hashing. No network access, queue writes, ruleset writes, or modification of modules/uu.conf.",
+      "permission_boundary": "Read-only deterministic classification and hashing; may read Issue #317 comments using caller-provided token. No repository Contents writes, queue writes, ruleset writes, or modification of modules/uu.conf.",
       "health_check": "Dedicated deterministic unit tests plus Watchdog workflow integration tests.",
       "orchestration": {
         "enabled": false,

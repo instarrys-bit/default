@@ -8,7 +8,7 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "02b739d373d87bf2df5a0ac107beafc56e4cdd48"
+      "git_blob_sha": "8470e26c445c24059452619cd821f0f424f74a5e"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -28,7 +28,7 @@
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "e5d5a95726a67604d42086208e29f035db60a597"
+      "git_blob_sha": "1adfd295cecbba762f25ba681f7f05680af2a4f2"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -78,7 +78,7 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "02b739d373d87bf2df5a0ac107beafc56e4cdd48"
+      "git_blob_sha": "8470e26c445c24059452619cd821f0f424f74a5e"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -86,15 +86,15 @@
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "4ca87cf6b19d744354e8893eb963f503c6112ae2"
+      "git_blob_sha": "34dbff2e684902874ffab20d998788d0eb38e12d"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "235c5085c919cc520d733424f3e3007ede0d4eec"
+      "git_blob_sha": "07c9490fd885b099a5a62476dac8ebac3a18ab77"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
-      "git_blob_sha": "7d66c0af21d7759d0503f1c8332557fd28c2bb8d"
+      "git_blob_sha": "d46264f22336f7ed6ca9e80792ff937760b7995b"
     },
     "github_workflow_adapter": {
       "path": "scripts/github_workflow_adapter.py",
@@ -111,6 +111,14 @@
     "task_queue_store": {
       "path": "scripts/github_queue_store.py",
       "git_blob_sha": "897682af68c225d60aed74987a8c8ce7a6a95750"
+    },
+    "request_intake_workflow": {
+      "path": ".github/workflows/request-intake.yml",
+      "git_blob_sha": "7e24c9a18a044eddbcd8d5e7e01777a71d060694"
+    },
+    "import_request_observations": {
+      "path": "scripts/import_request_observations.py",
+      "git_blob_sha": "44bf4312d22ebbcec22d34240891faea29b69c1b"
     }
   },
   "compatibility": {

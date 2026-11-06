@@ -712,13 +712,13 @@
         "data/domain_candidates.json.parts.tmp-*"
       ],
       "read_resources": [
-        "sources/request_domain_observations.json",
+        "read-only repository seed plus GitHub Issue #317 comments",
         "data/domain_candidates.json"
       ],
       "side_effects": [
-        "Merges observed hostnames into the unclassified candidate buffer; assigns no DIRECT/PROXY/REJECT policy."
+        "Merges the seed and Issue #317 observation batches into the runner-local unclassified candidate buffer; assigns no DIRECT/PROXY/REJECT policy."
       ],
-      "evidence": "main() reads sources/request_domain_observations.json, merges the existing data/domain_candidates.json logical document, then calls write_document(BUFFER, buffer, 'candidates') with lease_required defaulting to false.",
+      "evidence": "main() reads the read-only seed, loads append-only Issue #317 comments through production_intent.load_request_observation_ledger(), then writes only the local data/domain_candidates.json logical document.",
       "lease_keys": [
         "logical/production-pipeline",
         "data/domain_candidates.json"
@@ -885,8 +885,8 @@
       "program_id": "script_production_intent",
       "source": "scripts/production_intent.py",
       "writes": [
-        "<caller-supplied --register-ledger path; current Watchdog path automation/unregistered_path_registry.json>",
-        "sources/request_domain_observations.json"
+        "runner-local Watchdog inbox staging",
+        "runner-local merged request-observation view"
       ],
       "document_store": [],
       "dynamic_children": [],
@@ -896,28 +896,20 @@
         "repository changed-path list",
         "automation/task_queue.json",
         "<caller-supplied --observations-input JSON array>",
-        "sources/request_domain_observations.json"
+        "read-only repository seed plus GitHub Issue #317 comments"
       ],
       "side_effects": [
-        "Computes production fingerprint/decision without writing by default; registration mode merges unclassified paths into the Watchdog inbox. The Watchdog then publishes the file via GitHub Contents API.",
-        "Bounded CAS retry re-reads the latest ledger and re-applies the same run registration; observed_run_ids prevents duplicate seen_count increments for interleaved retries.",
-        "The --merge-observations mode deterministically merges a validated hostname batch into sources/request_domain_observations.json and records observed_run_ids to make same-run replay idempotent."
+        "Computes the production fingerprint using the read-only seed plus append-only Issue #317 observation batches; optional registration/merge CLI modes write only runner-local staging copies."
       ],
       "evidence": "--register-ledger mode writes the supplied Watchdog inbox path; automation-watchdog.yml re-reads the latest Blob SHA on each of up to three attempts and conditionally PUTs the merged ledger. --merge-observations mode reads a runner-temp submitted batch and the latest sources/request_domain_observations.json, then writes the merged ledger; request-intake.yml fetches origin/main and resets its isolated runner workspace to that exact latest commit before each merge/commit/non-force push attempt.",
-      "lease_keys": [
-        "git-blob-sha-cas:automation/unregistered_path_registry.json",
-        "git-ref-cas:sources/request_domain_observations.json"
-      ],
+      "lease_keys": [],
       "lease_enforcement": "Watchdog registry publication uses up to three conditional Contents Blob-SHA CAS attempts with fresh read/merge and observed_run_ids idempotency. Request-intake publication uses up to three Git-ref CAS attempts: fetch latest main, reset only the isolated runner workspace to origin/main, reapply the immutable submitted batch with run-ID idempotency, commit and non-force push. A rejected push causes a fresh replay, not a conflicting JSON rebase. Both paths fail closed on exhausted retries. Cross-run GitHub runner integration is not performed here; the bare-repository two-run simulation is tested.",
-      "publish_resources": [
-        "automation/unregistered_path_registry.json",
-        "sources/request_domain_observations.json"
-      ],
+      "publish_resources": [],
       "ephemeral_unpublished_resources": [
-        "runner-local registration staging copy",
-        "$RUNNER_TEMP/request-domains.json"
+        "automation/unregistered_path_registry.json (runner-local only)",
+        "sources/request_domain_observations.json (runner-local merged view)"
       ],
-      "write_boundary_fencing": "These are separate control-plane ledgers, not DIRECT/PROXY/REJECT rule outputs. Watchdog uses Blob-SHA CAS; request intake uses non-force Git ref CAS and run-scoped idempotent replay. Neither path writes modules/uu.conf or directly dispatches production publication."
+      "write_boundary_fencing": "The Watchdog and auto_sync workflows read Issue #317 comments using caller-provided tokens. The local merged observation view is never committed; repository publication remains restricted to rulesets/**."
     },
     {
       "program_id": "script_refresh_ruleset_manifest",
@@ -1020,9 +1012,7 @@
         "resource:<canonical logical resource path>"
       ],
       "lease_enforcement": "Durable queue changes use GitHubContentsQueueStore Blob-SHA compare-and-swap and queue validation; resource fencing tokens are checked against the exact active task and lease proof.",
-      "publish_resources": [
-        "automation/task_queue.json"
-      ],
+      "publish_resources": [],
       "ephemeral_unpublished_resources": [],
       "control_plane_consistency": "append_only_issue_snapshot_chain",
       "write_boundary_fencing": "No GitHub Contents API or repository-file write is used for durable queue state. Every mutation validates the full candidate queue, appends revision N+1 with the prior digest, reads back canonical state, and retries after losing a same-revision race."
@@ -1451,7 +1441,7 @@
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
     "release_manifest_blob_sha": "8401894f81ba3ae74157ecdbf4f2927e5c2f6932",
-    "program_registry_blob_sha": "02b739d373d87bf2df5a0ac107beafc56e4cdd48",
+    "program_registry_blob_sha": "8470e26c445c24059452619cd821f0f424f74a5e",
     "execution_adapters_blob_sha": "7b93d8b8625f8973826de8034e29476f7ab0f4af",
     "added_after_release_baseline": true,
     "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 52 Python components are partitioned into 36 direct/helper writer entries and 15 reviewed non-writers, alongside one external GitHub Actions dispatch side-effect adapter.",
@@ -1631,21 +1621,6 @@
     },
     {
       "workflow_path": ".github/workflows/request-intake.yml",
-      "step_name": "Commit observation ledger with bounded Git-ref CAS",
-      "mutation_kinds": [
-        "git_reset",
-        "git_add",
-        "git_commit",
-        "git_push"
-      ],
-      "resources": [
-        "sources/request_domain_observations.json"
-      ],
-      "fence": "Fetch/rebase/push retry with run-scoped execution; distinct-run serialization and no-lost-update behavior remain unproven.",
-      "boundary": "Main-branch observation ledger publication; bounded retry fails closed on conflict."
-    },
-    {
-      "workflow_path": ".github/workflows/request-intake.yml",
       "step_name": "Request ruleset audit through Watchdog queue",
       "mutation_kinds": [
         "workflow_dispatch"
@@ -1653,8 +1628,8 @@
       "resources": [
         "GitHub Issue #315 durable queue comments (external state)"
       ],
-      "fence": "Delegates to Watchdog scheduler; durable task queue update appends a revision-linked snapshot to Issue #315 comments.",
-      "boundary": "Control-plane request only; no repository queue-file write or direct ruleset publication."
+      "fence": "Dispatches the Watchdog with explicit deterministic-audit authorization; the Watchdog enqueues through append-only Issue #315 queue snapshots.",
+      "boundary": "Control-plane request only; no repository file write or direct ruleset publication."
     },
     {
       "workflow_path": ".github/workflows/self-healing-agent.yml",
@@ -1703,6 +1678,18 @@
       ],
       "fence": "task_scheduler.py appends a compressed, SHA-256 chained queue snapshot to Issue #315; revision conflicts trigger re-read/reapply and canonical comment-ID resolution. Candidate queue validation runs before and after mutation.",
       "boundary": "External control-plane state only; no repository file is written by queue persistence."
+    },
+    {
+      "workflow_path": ".github/workflows/request-intake.yml",
+      "step_name": "Append observation batch to external intake Issue",
+      "mutation_kinds": [
+        "github_issue_comment_post"
+      ],
+      "resources": [
+        "GitHub Issue #317 comments (external request-observation ledger)"
+      ],
+      "fence": "Hostnames are normalized and validated (maximum 500 per run) before a JSON batch is appended. Each batch carries the unique GitHub run ID; downstream merge is idempotent by run ID.",
+      "boundary": "External control-plane metadata only. The workflow has contents:read and does not create branches, commits, or modify repository files."
     }
   ],
   "workflow_native_scan": {
@@ -1713,7 +1700,8 @@
       "git add/commit/push/reset/checkout",
       "GitHub issue PATCH",
       "GitHub Actions workflow_dispatch",
-      "GitHub Pages deploy action"
+      "GitHub Pages deploy action",
+      "GitHub Issue comments POST"
     ],
     "limitations": [
       "dynamic command construction",

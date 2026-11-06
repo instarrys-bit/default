@@ -3,12 +3,14 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from io import BytesIO
+from unittest.mock import patch
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from production_intent import classify_paths, compute_fingerprint, compute_output_fingerprint, decide, load_manifest, register_unclassified_paths, merge_request_observations, active_production_fingerprints, UNFINGERPRINTED_ACTIVE_PRODUCTION
+from production_intent import classify_paths, compute_fingerprint, compute_output_fingerprint, decide, load_manifest, register_unclassified_paths, merge_request_observations, load_request_observation_ledger, active_production_fingerprints, UNFINGERPRINTED_ACTIVE_PRODUCTION
 
 
 class ProductionIntentTests(unittest.TestCase):
@@ -33,6 +35,63 @@ class ProductionIntentTests(unittest.TestCase):
         (self.root / "rulesets").mkdir()
         for name, body in (("direct.list", "DIRECT\\n"), ("proxy.list", "PROXY\\n"), ("reject.list", "REJECT\\n")):
             (self.root / "rulesets" / name).write_text(body, encoding="utf-8")
+
+    def test_external_issue_observation_batches_are_merged_idempotently(self):
+        comment = {
+            "id": 901,
+            "created_at": "2026-11-07T01:00:00Z",
+            "body": "<!-- shadowrocket-domain-observation:v1 -->\n" + json.dumps({
+                "schema_version": 1,
+                "run_id": "intake-901",
+                "observed_at": "2026-11-07T01:00:00Z",
+                "domains": ["new.example", "new.example", "other.example"],
+            }),
+        }
+
+        class Response(BytesIO):
+            def __enter__(self):
+                return self
+            def __exit__(self, *_):
+                return False
+
+        with patch("production_intent.urlopen", return_value=Response(json.dumps([comment]).encode("utf-8"))):
+            ledger = load_request_observation_ledger(
+                self.root,
+                {"schema_version": 1, "observations": []},
+                repository="owner/repo",
+                token="test-token",
+            )
+        rows = {row["domain"]: row for row in ledger["observations"]}
+        self.assertEqual(rows["new.example"]["observations"], 2)
+        self.assertEqual(rows["new.example"]["observed_run_ids"], ["intake-901"])
+        self.assertEqual(rows["other.example"]["observations"], 1)
+
+    def test_external_issue_observation_batches_change_production_fingerprint(self):
+        (self.root / "sources" / "request_domain_observations.json").write_text(
+            json.dumps({"schema_version": 1, "observations": []}), encoding="utf-8"
+        )
+        self.manifest["production_input_paths"].append("sources/request_domain_observations.json")
+        comment = {
+            "id": 902,
+            "created_at": "2026-11-07T01:00:00Z",
+            "body": "<!-- shadowrocket-domain-observation:v1 -->\n" + json.dumps({
+                "schema_version": 1,
+                "run_id": "intake-902",
+                "domains": ["fingerprint.example"],
+            }),
+        }
+
+        class Response(BytesIO):
+            def __enter__(self):
+                return self
+            def __exit__(self, *_):
+                return False
+
+        baseline = compute_fingerprint(self.root, self.manifest)
+        with patch("production_intent.urlopen", return_value=Response(json.dumps([comment]).encode("utf-8"))):
+            with patch.dict("os.environ", {"GITHUB_REPOSITORY": "owner/repo", "GITHUB_TOKEN": "test-token"}):
+                observed = compute_fingerprint(self.root, self.manifest)
+        self.assertNotEqual(baseline, observed)
 
     def test_input_change_is_classified_as_production_input(self):
         result = classify_paths(["sources/policy.json"], self.manifest)

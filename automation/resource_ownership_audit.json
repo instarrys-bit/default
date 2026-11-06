@@ -4,7 +4,7 @@
   "status": "partial_static_audit",
   "purpose": "Identify known overlapping write resources before independent capability scheduling. This inventory is deliberately fail-closed and is not an execution authorization.",
   "evidence_scope": {
-    "registry_blob_sha": "02b739d373d87bf2df5a0ac107beafc56e4cdd48",
+    "registry_blob_sha": "8470e26c445c24059452619cd821f0f424f74a5e",
     "adapters_blob_sha": "7b93d8b8625f8973826de8034e29476f7ab0f4af",
     "inspected_sources": [
       ".github/workflows/auto_sync.yml",
@@ -225,16 +225,15 @@
     {
       "id": "request_intake_observations",
       "paths": [
-        "sources/request_domain_observations.json"
+        "GitHub Issue #317 comments (external request-observation ledger)"
       ],
       "known_writers": [
-        "script_production_intent",
         "workflow_request_intake"
       ],
-      "lock_key": "git-ref-cas:sources/request_domain_observations.json",
-      "required_mode": "optimistic_git_ref_compare_and_swap",
-      "status": "git_ref_cas_replay_bare_repo_integration_tested_github_runner_unverified",
-      "note": "request-intake now keeps the submitted batch in RUNNER_TEMP and retries by fetching latest main, resetting only the isolated runner workspace, reapplying the same run-ID idempotent merge, and non-force pushing. The merge records observed_run_ids to prevent duplicate counts on a rerun after a lost push response. A bare-Git two-run integration test covers same-domain and different-domain overlap without lost observations. A real GitHub Actions concurrent-run test and retry-exhaustion observation remain outstanding."
+      "lock_key": "append-only-issue-comment-log:317",
+      "required_mode": "append_only_issue_comment_batches",
+      "status": "external_issue_ledger_read_by_production_fingerprint_and_candidate_importer",
+      "note": "The request-intake workflow validates up to 500 hostnames and appends a run-ID-idempotent JSON batch to GitHub Issue #317 comments. production_intent.py includes these batches in the production fingerprint, and import_request_observations.py merges them into the runner-local unclassified candidate buffer. No automation writes sources/request_domain_observations.json; that repository file is a read-only seed."
     },
     {
       "id": "review_cursor_checkpoint",

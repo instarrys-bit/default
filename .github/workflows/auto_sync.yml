@@ -263,6 +263,8 @@ jobs:
       - name: Capture and verify the exact production input fingerprint
         env:
           PRODUCTION_FINGERPRINT: ${{ inputs.production_fingerprint }}
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -373,6 +375,9 @@ jobs:
           python3 scripts/append_step_summary.py --input reports/ruleset-config-conflict-sync.md
 
       - name: Import observed request hostnames as unclassified candidates
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: python3 scripts/import_request_observations.py
 
       - name: Audit public source lineage and shared upstreams
@@ -472,6 +477,8 @@ jobs:
 
       - name: Write successful audit heartbeat
         env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_RUN_ID: ${{ github.run_id }}
           GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
