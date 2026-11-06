@@ -297,6 +297,23 @@ class ProductionIntentTests(unittest.TestCase):
 
 
 
+    def test_all_non_config_modules_are_non_production_even_when_unregistered(self):
+        manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
+        paths = [
+            "modules/maasea/youtube_request_local.js",
+            "modules/maasea/youtube_response.js",
+            "modules/new-independent-module/entry.js",
+            "modules/adblock/scripts/new-filter.js",
+        ]
+        result = classify_paths(paths, manifest)
+        self.assertEqual(result["status"], "NO_INPUT_CHANGE")
+        self.assertCountEqual(result["non_production_changes"], paths)
+        self.assertEqual(result["unknown_changes"], [])
+        config = classify_paths(["modules/uu.conf"], manifest)
+        self.assertEqual(config["status"], "INPUT_CHANGED")
+        self.assertEqual(config["production_input_changes"], ["modules/uu.conf"])
+
+
     def test_owner_baseline_bookkeeping_does_not_change_fingerprint(self):
         policy_path = self.root / "sources" / "policy.json"
         policy_path.write_text(json.dumps({
