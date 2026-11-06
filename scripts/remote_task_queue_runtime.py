@@ -274,15 +274,27 @@ def complete_remote(task_id: str, worker_id: str, lease_token: str, *,
             extend_resource_leases_for_verification(queue, task, now)
         else:
             release_resource_leases_in_queue(queue, task, now)
+            evidence = error.get("evidence") if isinstance(error, dict) else None
+            workflow_cancelled = (
+                isinstance(evidence, dict) and evidence.get("conclusion") == "cancelled"
+            )
             task["last_error"] = error
-            task["state_history"].append("FAILED")
-            if task["attempts"] < task["max_attempts"]:
-                task["status"] = "QUEUED"
-                task["state_history"].append("QUEUED")
-                task["not_before"] = stamp(now + timedelta(seconds=min(900, 30 * (2 ** max(0, task["attempts"] - 1)))))
+            if workflow_cancelled:
+                # A cancelled Actions run is not a deterministic production failure.
+                # Preserve its evidence, release the resource fence, and record the
+                # correct terminal lifecycle state instead of exhausting retries into
+                # DEAD_LETTER and inflating the dashboard's failure count.
+                task["status"] = "CANCELLED"
+                task["state_history"].append("CANCELLED")
             else:
-                task["status"] = "DEAD_LETTER"
-                task["state_history"].append("DEAD_LETTER")
+                task["state_history"].append("FAILED")
+                if task["attempts"] < task["max_attempts"]:
+                    task["status"] = "QUEUED"
+                    task["state_history"].append("QUEUED")
+                    task["not_before"] = stamp(now + timedelta(seconds=min(900, 30 * (2 ** max(0, task["attempts"] - 1)))))
+                else:
+                    task["status"] = "DEAD_LETTER"
+                    task["state_history"].append("DEAD_LETTER")
         queue["revision"] += 1
         validate_candidate(queue, registry)
         return queue, task
