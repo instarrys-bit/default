@@ -348,19 +348,25 @@
   }
 
   function patchPlayabilityStatus(bytes) {
-    const r = new SafeWireReader(bytes);
-    const w = new SafeWireWriter();
+    const scan = new SafeWireReader(bytes);
     let hasPip = false;
     let hasBackground = false;
+    while (!scan.eof()) {
+      const [fn, wt] = scan.tag();
+      if (fn === 21 && wt === WT_LEN) hasPip = true;
+      if (fn === 11 && wt === WT_LEN) hasBackground = true;
+      scan.skip(wt);
+    }
+    if (hasPip && hasBackground) return bytes;
+
+    const r = new SafeWireReader(bytes);
+    const w = new SafeWireWriter();
     while (!r.eof()) {
       const [fn, wt] = r.tag();
       const raw = r.skip(wt);
-      if (fn === 21 && wt === WT_LEN) hasPip = true;
-      if (fn === 11 && wt === WT_LEN) hasBackground = true;
       if ((fn === 21 && wt === WT_LEN) || (fn === 11 && wt === WT_LEN)) continue;
       w.tag(fn, wt).raw(raw);
     }
-    if (hasPip && hasBackground) return bytes;
     w.tag(21, WT_LEN).bytes(buildPipRenderBytes());
     w.tag(11, WT_LEN).bytes(buildBgRenderBytes());
     return w.finish();
@@ -526,42 +532,59 @@
   const WATCH_WHILE_AD_PROTO_FIELDS = new Set([7, 68]);
 
   function processPlayer(bytes, opts) {
-    const r = new SafeWireReader(bytes);
-    const w = new SafeWireWriter();
+    // First pass is read-only. Most player responses need no changes, so avoid
+    // allocating a writer or rebuilding the response unless a target is found.
+    const scan = new SafeWireReader(bytes);
     let modified = false;
-
-    while (!r.eof()) {
-      const [fn, wt] = r.tag();
+    while (!scan.eof()) {
+      const [fn, wt] = scan.tag();
       if (WATCH_WHILE_AD_PROTO_FIELDS.has(fn)) {
-        r.skip(wt);
+        scan.skip(wt);
         modified = true;
         continue;
       }
       if (fn === 2 && wt === WT_LEN) {
-        const statusBytes = r.bytes();
-        const patchedBytes = patchPlayabilityStatus(statusBytes);
-        if (patchedBytes !== statusBytes) modified = true;
-        w.tag(fn, wt).bytes(patchedBytes);
+        const statusBytes = scan.bytes();
+        if (patchPlayabilityStatus(statusBytes) !== statusBytes) modified = true;
         continue;
       }
       if (fn === 9 && wt === WT_LEN) {
-        const trackingBytes = r.bytes();
-        const patchedBytes = patchPlaybackTracking(trackingBytes);
-        if (patchedBytes !== trackingBytes) modified = true;
-        w.tag(fn, wt).bytes(patchedBytes);
+        const trackingBytes = scan.bytes();
+        if (patchPlaybackTracking(trackingBytes) !== trackingBytes) modified = true;
         continue;
       }
       if (fn === 10 && wt === WT_LEN && opts.captionLang !== "off") {
-        const captionBytes = r.bytes();
-        const patchedBytes = patchCaptions(captionBytes, opts.captionLang);
-        if (patchedBytes !== captionBytes) modified = true;
-        w.tag(fn, wt).bytes(patchedBytes);
+        const captionBytes = scan.bytes();
+        if (patchCaptions(captionBytes, opts.captionLang) !== captionBytes) modified = true;
+        continue;
+      }
+      scan.skip(wt);
+    }
+    if (!modified) return { bytes, modified: false };
+
+    const r = new SafeWireReader(bytes);
+    const w = new SafeWireWriter();
+    while (!r.eof()) {
+      const [fn, wt] = r.tag();
+      if (WATCH_WHILE_AD_PROTO_FIELDS.has(fn)) {
+        r.skip(wt);
+        continue;
+      }
+      if (fn === 2 && wt === WT_LEN) {
+        w.tag(fn, wt).bytes(patchPlayabilityStatus(r.bytes()));
+        continue;
+      }
+      if (fn === 9 && wt === WT_LEN) {
+        w.tag(fn, wt).bytes(patchPlaybackTracking(r.bytes()));
+        continue;
+      }
+      if (fn === 10 && wt === WT_LEN && opts.captionLang !== "off") {
+        w.tag(fn, wt).bytes(patchCaptions(r.bytes(), opts.captionLang));
         continue;
       }
       w.tag(fn, wt).raw(r.skip(wt));
     }
-
-    return { bytes: modified ? w.finish() : bytes, modified };
+    return { bytes: w.finish(), modified: true };
   }
 
   function getEmlName(renderInfoBytes) {
