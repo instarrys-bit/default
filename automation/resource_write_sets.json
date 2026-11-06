@@ -1250,8 +1250,8 @@
       ],
       "lock_key": "resource:rulesets/lifecycle_state.json",
       "mode": "exclusive",
-      "enforcement": "The current production call is under the Watchdog logical/production-pipeline fence and central filesystem mutation hook; no independent writer path was found in the reviewed workflow call sites.",
-      "note": "Lifecycle gate updates scheduling state; keep this separate from the lifecycle audit's published lists, pending queue, archives and manifest."
+      "enforcement": "Task-level logical/production-pipeline lease and shadowrocket-main-writer concurrency serialize the production run. No per-file filesystem mutation hook is installed.",
+      "note": "Lifecycle gate state is a ruleset-side control file and is included only through the rulesets/** publisher allowlist."
     },
     {
       "resource": "rulesets/manifest.json",

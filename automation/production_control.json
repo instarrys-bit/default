@@ -1,12 +1,16 @@
 {
   "schema_version": 1,
   "dispatch_mode": "enabled",
-  "updated_at": "2026-11-05T00:00:00Z",
-  "reason": "Owner-authorized automatic production dispatch resumed after baseline and resource-lease fixes.",
+  "updated_at": "2026-11-06T05:14:00Z",
+  "reason": "Production intermediates and reports stay in the Actions temporary workspace; the publisher persists only rulesets/**. Watchdog queue state remains a separate CAS-protected control plane.",
   "policy": {
     "automatic_watchdog_dispatch": true,
     "explicit_manual_watchdog_authorization": true,
     "unknown_or_invalid_mode": "hold",
-    "protected_config": "modules/uu.conf remains read-only"
+    "protected_config": "modules/uu.conf remains read-only",
+    "production_repository_write_scope": [
+      "rulesets/**"
+    ],
+    "production_intermediate_workspace": "$RUNNER_TEMP"
   }
 }
