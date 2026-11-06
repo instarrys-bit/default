@@ -13,7 +13,7 @@
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "887ab8574f3326f5b113fa148dd6c75b25fdc3cd"
+      "git_blob_sha": "8d28671f336d73805ca287d63ec706aca86eac0c"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "c097f9c87ea9fa5a6289fbd3b3d36de09cb04370"
+      "git_blob_sha": "8bba53978875e17c6831cdd66f540e8475e13f98"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -54,7 +54,7 @@
     },
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
-      "git_blob_sha": "a15fd09e56e4e3d7d59894c4121bd9738e74378a"
+      "git_blob_sha": "448ebb1dc7838e07f44165016ef6477a613a317e"
     },
     "remote_task_queue_runtime": {
       "path": "scripts/remote_task_queue_runtime.py",
@@ -74,7 +74,7 @@
     },
     "source_discovery_implementation": {
       "path": "scripts/discover_sources.py",
-      "git_blob_sha": "8234b4b0f574c4a129a5be65a4706488b324a962"
+      "git_blob_sha": "7101eeca366ed3d16a09d024f7bb2ecc4626ed39"
     },
     "program_registry": {
       "path": "automation/program_registry.json",
@@ -82,7 +82,7 @@
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "887ab8574f3326f5b113fa148dd6c75b25fdc3cd"
+      "git_blob_sha": "8d28671f336d73805ca287d63ec706aca86eac0c"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
