@@ -33,7 +33,6 @@ on:
       - "tests/test_release_manifest.py"
       - "tests/test_capability_contract_inventory.py"
       - "scripts/restore_automation_state.py"
-      - "scripts/fenced_file_writer.py"
       - "scripts/resource_lease_runtime.py"
       - "scripts/task_scheduler.py"
       - "scripts/assess_sources.py"
