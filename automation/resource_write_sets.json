@@ -692,8 +692,8 @@
         "GitHub Issue #315 queue snapshots; automation/task_queue.json is read-only bootstrap"
       ],
       "side_effects": [],
-      "evidence": "Queue mutations append compressed snapshots to GitHub Issue #315 comments. Each snapshot carries a SHA-256 digest and previous-revision digest; canonical comment ordering resolves concurrent same-revision appends.",
-      "write_boundary_fencing": "No GitHub Contents API or repository-file write is used for durable queue state. Every mutation validates the full candidate queue, appends revision N+1 with the prior digest, reads back canonical state, and retries after losing a same-revision race.",
+      "evidence": "Queue mutations append compressed snapshots to GitHub Issue #315 comments with SHA-256 previous-revision chaining and deterministic canonical comment ordering.",
+      "write_boundary_fencing": "No GitHub Contents API or repository-file write is used for durable queue state; candidate queues are validated before and after each append, with bounded re-read/reapply after conflicts.",
       "lease_keys": [],
       "control_plane_consistency": "append_only_issue_snapshot_chain"
     },
@@ -984,8 +984,8 @@
         "automation/program_registry.json"
       ],
       "side_effects": [],
-      "evidence": "Queue mutations append compressed snapshots to GitHub Issue #315 comments. Each snapshot carries a SHA-256 digest and previous-revision digest; canonical comment ordering resolves concurrent same-revision appends.",
-      "write_boundary_fencing": "No GitHub Contents API or repository-file write is used for durable queue state. Every mutation validates the full candidate queue, appends revision N+1 with the prior digest, reads back canonical state, and retries after losing a same-revision race.",
+      "evidence": "Queue mutations append compressed snapshots to GitHub Issue #315 comments with SHA-256 previous-revision chaining and deterministic canonical comment ordering.",
+      "write_boundary_fencing": "No GitHub Contents API or repository-file write is used for durable queue state; candidate queues are validated before and after each append, with bounded re-read/reapply after conflicts.",
       "lease_keys": [],
       "control_plane_consistency": "append_only_issue_snapshot_chain"
     },
@@ -1006,7 +1006,7 @@
       "side_effects": [
         "Acquires, renews, asserts and releases durable resource leases by mutating the task queue through GitHubContentsQueueStore."
       ],
-      "evidence": "Queue mutations append compressed snapshots to GitHub Issue #315 comments. Each snapshot carries a SHA-256 digest and previous-revision digest; canonical comment ordering resolves concurrent same-revision appends.",
+      "evidence": "Queue mutations append compressed snapshots to GitHub Issue #315 comments with SHA-256 previous-revision chaining and deterministic canonical comment ordering.",
       "lease_keys": [
         "github-issue-comment-chain:315",
         "resource:<canonical logical resource path>"
@@ -1015,7 +1015,7 @@
       "publish_resources": [],
       "ephemeral_unpublished_resources": [],
       "control_plane_consistency": "append_only_issue_snapshot_chain",
-      "write_boundary_fencing": "No GitHub Contents API or repository-file write is used for durable queue state. Every mutation validates the full candidate queue, appends revision N+1 with the prior digest, reads back canonical state, and retries after losing a same-revision race."
+      "write_boundary_fencing": "No GitHub Contents API or repository-file write is used for durable queue state; candidate queues are validated before and after each append, with bounded re-read/reapply after conflicts."
     },
     {
       "program_id": "script_restore_automation_state",
@@ -1259,8 +1259,8 @@
       ],
       "lock_key": "github-issue-comment-chain:315",
       "mode": "append_only_revision_chain",
-      "enforcement": "Queue mutations append compressed, SHA-256 verified snapshots to Issue #315 comments. Each revision references the prior snapshot digest; if concurrent writers append the same revision, the earliest matching comment ID is canonical and losing writers re-read/reapply within a bounded retry budget. Candidate queues are independently validated before and after mutation.",
-      "note": "automation/task_queue.json remains a read-only bootstrap snapshot and is not updated by automation. The local task_queue_runtime remains runner-local only. Source assessor checkpoints and resource lease records are part of the same append-only external queue state."
+      "enforcement": "Queue mutations append compressed SHA-256 verified snapshots to Issue #315 comments; each revision references the prior digest and canonical earliest comment ID wins duplicate revisions. Losing writers re-read and reapply within a bounded retry budget.",
+      "note": "automation/task_queue.json remains read-only bootstrap; local task_queue_runtime remains runner-local. Source assessor checkpoints and resource leases share the external queue state."
     },
     {
       "resource": "logical/production-pipeline",
@@ -1440,8 +1440,8 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
-    "release_manifest_blob_sha": "8401894f81ba3ae74157ecdbf4f2927e5c2f6932",
-    "program_registry_blob_sha": "8470e26c445c24059452619cd821f0f424f74a5e",
+    "release_manifest_blob_sha": "1c0a3719785399fbd83bbb5df9ed6e64d119de59",
+    "program_registry_blob_sha": "c4871f015961830718346a1d3dea18e0283c036e",
     "execution_adapters_blob_sha": "7b93d8b8625f8973826de8034e29476f7ab0f4af",
     "added_after_release_baseline": true,
     "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 52 Python components are partitioned into 36 direct/helper writer entries and 15 reviewed non-writers, alongside one external GitHub Actions dispatch side-effect adapter.",
@@ -1628,7 +1628,7 @@
       "resources": [
         "GitHub Issue #315 durable queue comments (external state)"
       ],
-      "fence": "Dispatches the Watchdog with explicit deterministic-audit authorization; the Watchdog enqueues through append-only Issue #315 queue snapshots.",
+      "fence": "Dispatches the Watchdog with explicit deterministic-audit authorization; Watchdog enqueues through append-only Issue #315 snapshots.",
       "boundary": "Control-plane request only; no repository file write or direct ruleset publication."
     },
     {
@@ -1676,8 +1676,20 @@
       "resources": [
         "GitHub Issue #315 durable queue comments (external state)"
       ],
-      "fence": "task_scheduler.py appends a compressed, SHA-256 chained queue snapshot to Issue #315; revision conflicts trigger re-read/reapply and canonical comment-ID resolution. Candidate queue validation runs before and after mutation.",
+      "fence": "task_scheduler.py appends compressed SHA-256 chained queue snapshots to Issue #315 with bounded conflict retry.",
       "boundary": "External control-plane state only; no repository file is written by queue persistence."
+    },
+    {
+      "workflow_path": ".github/workflows/request-intake.yml",
+      "step_name": "Append observation batch to external intake Issue",
+      "mutation_kinds": [
+        "github_issue_comment_post"
+      ],
+      "resources": [
+        "GitHub Issue #317 comments (external request-observation ledger)"
+      ],
+      "fence": "Hostnames are normalized and validated (maximum 500 per run) before a JSON batch is appended. Each batch carries the unique GitHub run ID; downstream merge is idempotent by run ID.",
+      "boundary": "External control-plane metadata only. The workflow has contents:read and does not create branches, commits, or modify repository files."
     },
     {
       "workflow_path": ".github/workflows/request-intake.yml",

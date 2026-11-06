@@ -1158,9 +1158,7 @@
         "validated hostname batch appended to GitHub Issue #317",
         "Watchdog deterministic audit request; no repository file changes"
       ],
-      "depends_on": [
-        "script_production_intent"
-      ],
+      "depends_on": [],
       "dispatches": [
         "workflow_automation_watchdog"
       ],
