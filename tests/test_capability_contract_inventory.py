@@ -327,7 +327,6 @@ class CapabilityContractInventoryTests(unittest.TestCase):
             "script_apply_safe_repair",
             "script_diagnose_workflow_failure",
             "script_incident_state",
-            "script_persist_review_cursor",
             "script_production_intent",
             "script_task_scheduler",
             "script_build_dashboard_snapshot",
@@ -350,7 +349,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(entries["script_apply_safe_repair"]["publish_resources"], [])
         self.assertTrue(entries["script_diagnose_workflow_failure"]["ephemeral_unpublished_resources"])
         self.assertTrue(entries["script_incident_state"]["ephemeral_unpublished_resources"])
-        self.assertEqual(entries["script_persist_review_cursor"]["ephemeral_unpublished_resources"], [])
+        self.assertNotIn("script_persist_review_cursor", entries)
         self.assertEqual(entries["script_build_dashboard_snapshot"]["writes"], ["dashboard/data.json"])
         self.assertEqual(entries["script_append_step_summary"]["writes"], ["$GITHUB_STEP_SUMMARY"])
         self.assertTrue(all("modules/uu.conf" not in item["writes"] for item in entries.values()))
@@ -369,8 +368,8 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(groups["domain_candidate_buffer"]["status"], "known_shared_writers_central_pipeline_fence_only")
         self.assertEqual(groups["rule_provenance_ledger"]["status"], "known_shared_writers_central_pipeline_fence_only")
         self.assertEqual(groups["watchdog_unregistered_path_registry"]["status"], "bounded_cas_retry_implemented_concurrent_integration_unproven")
-        self.assertEqual(groups["request_intake_observations"]["status"], "git_ref_cas_replay_bare_repo_integration_tested_github_runner_unverified")
-        self.assertIn("script_production_intent", groups["request_intake_observations"]["known_writers"])
+        self.assertEqual(groups["request_intake_observations"]["status"], "watchdog_task_input_forwarding_no_repository_writer")
+        self.assertNotIn("script_production_intent", groups["request_intake_observations"]["known_writers"])
         self.assertEqual(groups["active_source_registry_and_activation"]["status"], "production_registry_writer_central_pipeline_fence_only")
         self.assertEqual(groups["policy_source_overlap_audit"]["status"], "audit_output_central_pipeline_fence_only")
         doc_store = groups["shared_json_document_store"]
@@ -384,14 +383,15 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(audit["status"], "partial_static_audit")
 
         intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
-        self.assertIn("group: shadowrocket-main-writer", intake)
-        self.assertIn("cancel-in-progress: false", intake)
-        self.assertIn("git fetch origin main", intake)
-        self.assertIn("git reset --hard origin/main", intake)
-        self.assertIn("--merge-observations", intake)
-        self.assertIn("--intake-run-id \"$GITHUB_RUN_ID\"", intake)
-        self.assertNotIn("git rebase origin/main", intake)
-        self.assertIn("for attempt in 1 2 3; do", intake)
+        self.assertIn("group: shadowrocket-request-intake", intake)
+        self.assertIn("contents: read", intake)
+        self.assertNotIn("contents: write", intake)
+        self.assertNotIn("git fetch", intake)
+        self.assertNotIn("git reset", intake)
+        self.assertIn("Enqueue through the Watchdog control plane", intake)
+        self.assertIn("request_observations_json", intake)
+        self.assertNotIn("git rebase", intake)
+        self.assertNotIn("git push", intake)
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn("automation/unregistered_path_registry.json", watchdog)
         self.assertIn("-f sha=\"$registry_sha\"", watchdog)
@@ -401,8 +401,8 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         entries = {item["program_id"]: item for item in writes["confirmed_write_sets"]}
         self.assertIn("<caller-supplied --out path>", entries["script_incident_state"]["writes"])
         self.assertIn("/tmp/incident-state-body.md", entries["script_incident_state"]["ephemeral_unpublished_resources"])
-        self.assertEqual(entries["script_persist_review_cursor"]["writes"], ["sources/review_cursor.json"])
-        self.assertEqual(entries["script_persist_review_cursor"]["publish_resources"], ["sources/review_cursor.json"])
+        self.assertNotIn("script_persist_review_cursor", entries)
+        self.assertNotIn("script_persist_review_cursor", entries)
         self.assertIn("task-input.json", entries["script_task_scheduler"]["ephemeral_unpublished_resources"])
         self.assertEqual(entries["script_task_scheduler"]["publish_resources"], [])
 
@@ -418,8 +418,8 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertFalse(writer_ids & external_ids)
         self.assertFalse(nonwriter_ids & external_ids)
         self.assertEqual(writer_ids | nonwriter_ids | external_ids, python_ids)
-        self.assertEqual(len(writer_ids), 36)
-        self.assertEqual(len(nonwriter_ids), 17)
+        self.assertEqual(len(writer_ids), 35)
+        self.assertEqual(len(nonwriter_ids), 15)
         self.assertEqual(external_ids, {"script_github_workflow_adapter"})
         self.assertIn("script_resource_lease_runtime", writer_ids)
         self.assertIn("script_json_document_store", writer_ids)

@@ -48,8 +48,10 @@ class AppendStepSummaryTests(unittest.TestCase):
     def test_workflow_uses_bounded_summary_and_preserves_full_source_report(self):
         workflow = (ROOT / ".github" / "workflows" / "auto_sync.yml").read_text(encoding="utf-8")
         self.assertIn("scripts/append_step_summary.py --input reports/source-assessment.md", workflow)
-        self.assertIn("name: source-assessment-report", workflow)
-        self.assertIn("if: ${{ always() }}", workflow)
+        self.assertNotIn("name: source-assessment-report", workflow)
+        self.assertIn("name: deterministic-audit-output", workflow)
+        self.assertIn("name: Upload ruleset-only artifact", workflow)
+        self.assertIn("scripts/append_step_summary.py --input reports/source-assessment.md", workflow)
         self.assertNotIn('cat reports/source-assessment.md >> "$GITHUB_STEP_SUMMARY"', workflow)
 
     def test_existing_summary_at_limit_does_not_grow(self):

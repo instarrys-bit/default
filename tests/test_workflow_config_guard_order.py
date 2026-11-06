@@ -104,7 +104,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
     def test_production_artifact_contains_only_rulesets(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         package = workflow.split("      - name: Package ruleset outputs only", 1)[1].split(
-            "      - name: Upload allowlisted audit outputs", 1
+            "      - name: Upload ruleset-only artifact", 1
         )[0]
         self.assertIn('tar -czf "$RUNNER_TEMP/audit-output.tar.gz" -- rulesets', package)
         self.assertNotIn("reports/", package)
@@ -227,7 +227,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertGreaterEqual(workflow.count("assert-workflow --task-id"), 2)
         self.assertIn('assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE"', workflow)
         self.assertNotIn('assert-workflow --task-id "$AUTOMATION_TASK_ID"', workflow)
-        publish_start = workflow.index("      - name: Verify base commit and safely publish allowlisted outputs")
+        publish_start = workflow.index("      - name: Verify base commit and publish rulesets only")
         publish_end = workflow.index("      - name: Independently verify committed remote rulesets", publish_start)
         publish_step = workflow[publish_start:publish_end]
         self.assertLess(publish_step.index("assert-workflow --task-id"), publish_step.index("git push origin HEAD:main"))
@@ -279,7 +279,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         tests = workflow.index("Compile and run deterministic review tests")
         self.assertLess(fingerprint, tests)
         package = workflow.split("      - name: Package ruleset outputs only", 1)[1].split(
-            "      - name: Upload allowlisted audit outputs", 1
+            "      - name: Upload ruleset-only artifact", 1
         )[0]
         self.assertIn("rulesets", package)
         self.assertNotIn("sources/policy.json", package)
@@ -357,7 +357,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
     def test_publish_step_keeps_canonical_task_id_from_revalidation(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         publish = workflow.split("  publish:", 1)[1]
-        step = publish.split("Verify base commit and safely publish allowlisted outputs", 1)[1].split("      - name: ", 1)[0]
+        step = publish.split("Verify base commit and publish rulesets only", 1)[1].split("      - name: ", 1)[0]
         self.assertNotIn("AUTOMATION_TASK_ID:", step)
 
 if __name__ == "__main__":

@@ -1320,6 +1320,11 @@
             "required": false
           },
           {
+            "name": "request_observations_json",
+            "type": "string",
+            "required": false
+          },
+          {
             "name": "automation_task_id",
             "type": "string",
             "required": false

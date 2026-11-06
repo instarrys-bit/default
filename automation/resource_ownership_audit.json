@@ -262,13 +262,13 @@
         "sources/request_domain_observations.json"
       ],
       "known_writers": [
-        "script_production_intent",
         "workflow_request_intake"
       ],
       "lock_key": "git-ref-cas:sources/request_domain_observations.json",
       "required_mode": "optimistic_git_ref_compare_and_swap",
-      "status": "git_ref_cas_replay_bare_repo_integration_tested_github_runner_unverified",
-      "note": "request-intake now keeps the submitted batch in RUNNER_TEMP and retries by fetching latest main, resetting only the isolated runner workspace, reapplying the same run-ID idempotent merge, and non-force pushing. The merge records observed_run_ids to prevent duplicate counts on a rerun after a lost push response. A bare-Git two-run integration test covers same-domain and different-domain overlap without lost observations. A real GitHub Actions concurrent-run test and retry-exhaustion observation remain outstanding."
+      "status": "watchdog_task_input_forwarding_no_repository_writer",
+      "note": "request-intake now keeps the submitted batch in RUNNER_TEMP and retries by fetching latest main, resetting only the isolated runner workspace, reapplying the same run-ID idempotent merge, and non-force pushing. The merge records observed_run_ids to prevent duplicate counts on a rerun after a lost push response. A bare-Git two-run integration test covers same-domain and different-domain overlap without lost observations. A real GitHub Actions concurrent-run test and retry-exhaustion observation remain outstanding.",
+      "notes": "Request intake validates hostnames in RUNNER_TEMP and forwards the immutable batch as a Watchdog task input. It has contents:read only and performs no repository ledger writes."
     },
     {
       "id": "review_cursor_checkpoint",
