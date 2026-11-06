@@ -14,12 +14,12 @@
     },
     "logical/production-pipeline": {
       "acquired_at": "2026-11-06T14:35:55Z",
-      "expires_at": "2026-11-06T20:35:56Z",
+      "expires_at": "2026-11-06T14:42:24Z",
       "fencing_token": 27,
       "lease_id": "d35df760fde5bba55024d3755033bb2d",
-      "released_at": null,
+      "released_at": "2026-11-06T14:42:24Z",
       "renewed_at": "2026-11-06T14:35:56Z",
-      "status": "ACTIVE",
+      "status": "RELEASED",
       "task_id": "task_1a066da6ab964d7bb40e966b",
       "task_lease_token": "6b98c52ef5822a852c92d55f0c814b74",
       "worker_id": "42235258492"
@@ -38,36 +38,36 @@
     },
     "reports/source-discovery.md": {
       "acquired_at": "2026-11-06T14:35:55Z",
-      "expires_at": "2026-11-06T20:35:56Z",
+      "expires_at": "2026-11-06T14:42:24Z",
       "fencing_token": 22,
       "lease_id": "d35df760fde5bba55024d3755033bb2d",
-      "released_at": null,
+      "released_at": "2026-11-06T14:42:24Z",
       "renewed_at": "2026-11-06T14:35:56Z",
-      "status": "ACTIVE",
+      "status": "RELEASED",
       "task_id": "task_1a066da6ab964d7bb40e966b",
       "task_lease_token": "6b98c52ef5822a852c92d55f0c814b74",
       "worker_id": "42235258492"
     },
     "sources/discovered_sources.json": {
       "acquired_at": "2026-11-06T14:35:55Z",
-      "expires_at": "2026-11-06T20:35:56Z",
+      "expires_at": "2026-11-06T14:42:24Z",
       "fencing_token": 22,
       "lease_id": "d35df760fde5bba55024d3755033bb2d",
-      "released_at": null,
+      "released_at": "2026-11-06T14:42:24Z",
       "renewed_at": "2026-11-06T14:35:56Z",
-      "status": "ACTIVE",
+      "status": "RELEASED",
       "task_id": "task_1a066da6ab964d7bb40e966b",
       "task_lease_token": "6b98c52ef5822a852c92d55f0c814b74",
       "worker_id": "42235258492"
     },
     "sources/review_cursor.json": {
       "acquired_at": "2026-11-06T14:35:55Z",
-      "expires_at": "2026-11-06T20:35:56Z",
+      "expires_at": "2026-11-06T14:42:24Z",
       "fencing_token": 24,
       "lease_id": "d35df760fde5bba55024d3755033bb2d",
-      "released_at": null,
+      "released_at": "2026-11-06T14:42:24Z",
       "renewed_at": "2026-11-06T14:35:56Z",
-      "status": "ACTIVE",
+      "status": "RELEASED",
       "task_id": "task_1a066da6ab964d7bb40e966b",
       "task_lease_token": "6b98c52ef5822a852c92d55f0c814b74",
       "worker_id": "42235258492"
@@ -85,7 +85,7 @@
       "worker_id": "assessment-canary-41746911914"
     }
   },
-  "revision": 234,
+  "revision": 235,
   "schema_version": 1,
   "tasks": [
     {
@@ -1688,17 +1688,6 @@
       "attempts": 1,
       "capability": "deterministic_audit",
       "created_at": "2026-11-06T14:35:37Z",
-      "dispatch_intent": {
-        "correlation_id": "task_1a066da6ab964d7bb40e966b-a1",
-        "correlation_title": "Automation task task_1a066da6ab964d7bb40e966b-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-06T14:35:57Z",
-        "ref": "main",
-        "requested_head_sha": "cf2e494b94b1b0fb7231d8b13673e42b4fd7f6b8",
-        "task_id": "task_1a066da6ab964d7bb40e966b",
-        "workflow_id": 402712272,
-        "workflow_path": ".github/workflows/auto_sync.yml"
-      },
       "execution_backend": "github_contents",
       "idempotency_key": "production:input:ddff409df5ee6605bd65b357ba08d31bf4032441f6fea35c9a803c3fc4ee966a:8048494fd69d0344cc7f2df2199e3f5b09eb36b0",
       "input": {
@@ -1710,16 +1699,29 @@
         "production_fingerprint": "ddff409df5ee6605bd65b357ba08d31bf4032441f6fea35c9a803c3fc4ee966a",
         "production_reason": "a registered production input changed; prior success for the same fingerprint does not prove current state is reconciled"
       },
-      "last_error": null,
+      "last_error": {
+        "evidence": {
+          "conclusion": "cancelled",
+          "head_sha": "5e865d7f00b2690f59be090908391e17fc6fd867",
+          "head_sha_relationship": "queue_intent_commit_only",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42235362166",
+          "requested_head_sha": "cf2e494b94b1b0fb7231d8b13673e42b4fd7f6b8",
+          "run_id": 42235362166,
+          "status": "completed"
+        },
+        "message": "workflow completed with conclusion 'cancelled'",
+        "type": "workflow_run_failed"
+      },
       "lease": null,
       "max_attempts": 2,
-      "not_before": "2026-11-06T14:35:37Z",
+      "not_before": "2026-11-06T14:42:54Z",
       "priority": 100,
       "requester_program_id": "workflow_automation_watchdog",
       "resource_lease": {
         "acquired_at": "2026-11-06T14:35:55Z",
         "expires_at": "2026-11-06T20:35:56Z",
         "lease_seconds": 21600,
+        "released_at": "2026-11-06T14:42:24Z",
         "resources": {
           "logical/production-pipeline": {
             "fencing_token": 27,
@@ -1738,7 +1740,7 @@
             "lease_id": "d35df760fde5bba55024d3755033bb2d"
           }
         },
-        "status": "ACTIVE"
+        "status": "RELEASED"
       },
       "result": {
         "correlation_id": "task_1a066da6ab964d7bb40e966b-a1",
@@ -1749,9 +1751,13 @@
         "ref": "main",
         "requested_head_sha": "cf2e494b94b1b0fb7231d8b13673e42b4fd7f6b8",
         "run_evidence": {
+          "conclusion": "cancelled",
+          "head_sha": "5e865d7f00b2690f59be090908391e17fc6fd867",
+          "head_sha_relationship": "queue_intent_commit_only",
           "html_url": "https://github.com/instarrys-bit/default/actions/runs/42235362166",
+          "requested_head_sha": "cf2e494b94b1b0fb7231d8b13673e42b4fd7f6b8",
           "run_id": 42235362166,
-          "status": "pending"
+          "status": "completed"
         },
         "submitted_at": "2026-11-06T14:36:00Z",
         "task_id": "task_1a066da6ab964d7bb40e966b",
@@ -1761,13 +1767,20 @@
       "state_history": [
         "QUEUED",
         "CLAIMED",
-        "VERIFYING"
+        "VERIFYING",
+        "FAILED",
+        "QUEUED"
       ],
-      "status": "VERIFYING",
+      "status": "QUEUED",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_1a066da6ab964d7bb40e966b",
       "trace_id": "1b0e0efbb7e4401a85bcad74c2983fa5",
-      "verification": null
+      "verification": {
+        "contract_sha256": "2ea47e4b72a16a24ce703a5eac4822d2b0ca6939a4357147ea83419376b51750",
+        "status": "failed",
+        "verified_at": "2026-11-06T14:42:24Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
     }
   ]
 }
