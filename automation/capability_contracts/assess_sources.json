@@ -3,7 +3,7 @@
   "contract_id": "capability-script-assess-sources-v1",
   "program_id": "script_assess_sources",
   "implementation_path": "scripts/assess_sources.py",
-  "implementation_blob_sha": "5baf1cca8062b1f3b4e30298200efcc7683e122d",
+  "implementation_blob_sha": "ee976188d2443bf9d255e75ef76e6e18c51c81dd",
   "review_status": "reviewed_waiting_for_HOLD_authorization_and_monolithic_cutover",
   "dispatch_status": "disabled",
   "entrypoint": {
@@ -21,7 +21,7 @@
       "{task_input_file}"
     ],
     "task_scheduler_compatible": true,
-    "reason": "Watchdog-gated scheduler dispatch is enabled; bounded retries reuse the same producer-run-scoped URL batch and never activate sources."
+    "reason": "Independent Watchdog dispatch remains disabled; the script is currently available only through the monolithic production workflow in an isolated temporary workspace."
   },
   "inputs": {
     "repository_snapshot": [
