@@ -13,16 +13,16 @@
       "worker_id": "assessment-canary-41746911914"
     },
     "logical/production-pipeline": {
-      "acquired_at": "2026-11-06T13:07:17Z",
-      "expires_at": "2026-11-06T13:24:42Z",
-      "fencing_token": 26,
-      "lease_id": "5b28989550be679c18c28fcf28a52e19",
-      "released_at": "2026-11-06T13:24:42Z",
-      "renewed_at": "2026-11-06T13:07:19Z",
-      "status": "RELEASED",
-      "task_id": "task_81a0314a6624425787caf52a",
-      "task_lease_token": "7eebb8173be36be388a107a9c4528c4a",
-      "worker_id": "42222849814"
+      "acquired_at": "2026-11-06T14:35:55Z",
+      "expires_at": "2026-11-06T20:35:55Z",
+      "fencing_token": 27,
+      "lease_id": "d35df760fde5bba55024d3755033bb2d",
+      "released_at": null,
+      "renewed_at": "2026-11-06T14:35:55Z",
+      "status": "ACTIVE",
+      "task_id": "task_1a066da6ab964d7bb40e966b",
+      "task_lease_token": "6b98c52ef5822a852c92d55f0c814b74",
+      "worker_id": "42235258492"
     },
     "reports/source-assessment.md": {
       "acquired_at": "2026-11-04T00:28:16Z",
@@ -37,40 +37,40 @@
       "worker_id": "assessment-canary-41746911914"
     },
     "reports/source-discovery.md": {
-      "acquired_at": "2026-11-06T13:07:17Z",
-      "expires_at": "2026-11-06T13:24:42Z",
-      "fencing_token": 21,
-      "lease_id": "5b28989550be679c18c28fcf28a52e19",
-      "released_at": "2026-11-06T13:24:42Z",
-      "renewed_at": "2026-11-06T13:07:19Z",
-      "status": "RELEASED",
-      "task_id": "task_81a0314a6624425787caf52a",
-      "task_lease_token": "7eebb8173be36be388a107a9c4528c4a",
-      "worker_id": "42222849814"
+      "acquired_at": "2026-11-06T14:35:55Z",
+      "expires_at": "2026-11-06T20:35:55Z",
+      "fencing_token": 22,
+      "lease_id": "d35df760fde5bba55024d3755033bb2d",
+      "released_at": null,
+      "renewed_at": "2026-11-06T14:35:55Z",
+      "status": "ACTIVE",
+      "task_id": "task_1a066da6ab964d7bb40e966b",
+      "task_lease_token": "6b98c52ef5822a852c92d55f0c814b74",
+      "worker_id": "42235258492"
     },
     "sources/discovered_sources.json": {
-      "acquired_at": "2026-11-06T13:07:17Z",
-      "expires_at": "2026-11-06T13:24:42Z",
-      "fencing_token": 21,
-      "lease_id": "5b28989550be679c18c28fcf28a52e19",
-      "released_at": "2026-11-06T13:24:42Z",
-      "renewed_at": "2026-11-06T13:07:19Z",
-      "status": "RELEASED",
-      "task_id": "task_81a0314a6624425787caf52a",
-      "task_lease_token": "7eebb8173be36be388a107a9c4528c4a",
-      "worker_id": "42222849814"
+      "acquired_at": "2026-11-06T14:35:55Z",
+      "expires_at": "2026-11-06T20:35:55Z",
+      "fencing_token": 22,
+      "lease_id": "d35df760fde5bba55024d3755033bb2d",
+      "released_at": null,
+      "renewed_at": "2026-11-06T14:35:55Z",
+      "status": "ACTIVE",
+      "task_id": "task_1a066da6ab964d7bb40e966b",
+      "task_lease_token": "6b98c52ef5822a852c92d55f0c814b74",
+      "worker_id": "42235258492"
     },
     "sources/review_cursor.json": {
-      "acquired_at": "2026-11-06T13:07:17Z",
-      "expires_at": "2026-11-06T13:24:42Z",
-      "fencing_token": 23,
-      "lease_id": "5b28989550be679c18c28fcf28a52e19",
-      "released_at": "2026-11-06T13:24:42Z",
-      "renewed_at": "2026-11-06T13:07:19Z",
-      "status": "RELEASED",
-      "task_id": "task_81a0314a6624425787caf52a",
-      "task_lease_token": "7eebb8173be36be388a107a9c4528c4a",
-      "worker_id": "42222849814"
+      "acquired_at": "2026-11-06T14:35:55Z",
+      "expires_at": "2026-11-06T20:35:55Z",
+      "fencing_token": 24,
+      "lease_id": "d35df760fde5bba55024d3755033bb2d",
+      "released_at": null,
+      "renewed_at": "2026-11-06T14:35:55Z",
+      "status": "ACTIVE",
+      "task_id": "task_1a066da6ab964d7bb40e966b",
+      "task_lease_token": "6b98c52ef5822a852c92d55f0c814b74",
+      "worker_id": "42235258492"
     },
     "sources/source_assessments.json": {
       "acquired_at": "2026-11-04T00:28:16Z",
@@ -85,7 +85,7 @@
       "worker_id": "assessment-canary-41746911914"
     }
   },
-  "revision": 230,
+  "revision": 231,
   "schema_version": 1,
   "tasks": [
     {
@@ -1685,7 +1685,7 @@
       }
     },
     {
-      "attempts": 0,
+      "attempts": 1,
       "capability": "deterministic_audit",
       "created_at": "2026-11-06T14:35:37Z",
       "execution_backend": "github_contents",
@@ -1700,16 +1700,45 @@
         "production_reason": "a registered production input changed; prior success for the same fingerprint does not prove current state is reconciled"
       },
       "last_error": null,
-      "lease": null,
+      "lease": {
+        "expires_at": "2026-11-06T20:35:55Z",
+        "owner": "42235258492",
+        "token": "6b98c52ef5822a852c92d55f0c814b74"
+      },
       "max_attempts": 2,
       "not_before": "2026-11-06T14:35:37Z",
       "priority": 100,
       "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-06T14:35:55Z",
+        "expires_at": "2026-11-06T20:35:55Z",
+        "lease_seconds": 21600,
+        "resources": {
+          "logical/production-pipeline": {
+            "fencing_token": 27,
+            "lease_id": "d35df760fde5bba55024d3755033bb2d"
+          },
+          "reports/source-discovery.md": {
+            "fencing_token": 22,
+            "lease_id": "d35df760fde5bba55024d3755033bb2d"
+          },
+          "sources/discovered_sources.json": {
+            "fencing_token": 22,
+            "lease_id": "d35df760fde5bba55024d3755033bb2d"
+          },
+          "sources/review_cursor.json": {
+            "fencing_token": 24,
+            "lease_id": "d35df760fde5bba55024d3755033bb2d"
+          }
+        },
+        "status": "ACTIVE"
+      },
       "result": null,
       "state_history": [
-        "QUEUED"
+        "QUEUED",
+        "CLAIMED"
       ],
-      "status": "QUEUED",
+      "status": "CLAIMED",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_1a066da6ab964d7bb40e966b",
       "trace_id": "1b0e0efbb7e4401a85bcad74c2983fa5"
