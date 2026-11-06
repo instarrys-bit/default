@@ -18,17 +18,17 @@
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
       "schema_version": 2,
-      "git_blob_sha": "b92d23fa80689aeb7188642a28b81adb0d157bb0"
+      "git_blob_sha": "f6efca75b8b969913e65501a95c9a555c86944eb"
     }
   },
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "02103b467fc74ae9f89393a9302927c0fec539b0"
+      "git_blob_sha": "e90683bfffc2ff0bf1e541cbd65d5e08c0e63a88"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "cc9d7dc163b2131f2b8c591ef73ae3c9202ed071"
+      "git_blob_sha": "27d066700b8cb4b504cb51526a6aee3195c5db97"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
