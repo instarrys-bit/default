@@ -1077,7 +1077,6 @@
         "script_import_request_observations",
         "script_lifecycle_audit",
         "script_lifecycle_gate",
-        "script_persist_review_cursor",
         "script_refresh_ruleset_manifest",
         "script_register_config_baseline",
         "script_resource_lease_runtime",
