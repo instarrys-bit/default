@@ -109,7 +109,6 @@ jobs:
               "AUTOMATION_QUEUE_PATH": "automation/task_queue.json",
               "AUTOMATION_QUEUE_TOKEN": os.environ["GH_TOKEN"],
               "AUTOMATION_QUEUE_SNAPSHOT": str(Path("automation/task_queue.json").resolve()),
-              "AUTOMATION_REQUIRE_RESOURCE_LEASE": "1",
           }
           delimiter = "__SOURCE_DISCOVERY_RESOURCE_PROOF__"
           if delimiter in os.environ["RESOURCE_LEASE_PROOF"]:
