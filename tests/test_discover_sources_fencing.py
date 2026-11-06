@@ -19,7 +19,7 @@ class DiscoverSourcesFencingTests(unittest.TestCase):
             output = root / "sources" / "discovered_sources.json"
             report = root / "reports" / "source-discovery.md"
             data = {"candidate_count": 0, "candidates": []}
-            with patch.object(discover_sources, "OUTPUT", output), \\
+            with patch.object(discover_sources, "OUTPUT", output), \
                  patch.object(discover_sources, "REPORT", report):
                 discover_sources.persist_discovery_outputs(data)
             self.assertTrue(output.is_file())

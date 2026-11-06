@@ -144,7 +144,9 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(inventory["summary"]["independently_dispatchable_python_components"], 0)
         workflow = Path(".github/workflows/automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertNotIn("Enqueue source assessment after successful discovery workflow", workflow)
-        self.assertNotIn("Shadowrocket Source Discovery (Watchdog)", workflow)
+        self.assertIn("Independent source discovery remains dormant until adapter, orchestration and caller gates are all enabled.", workflow)
+        self.assertNotIn("Enqueue source assessment after successful discovery workflow", workflow)
+        self.assertIn("enqueue-source-discovery", workflow)
         discovery = next(item for item in registry["programs"] if item["id"] == "workflow_source_discovery")
         self.assertIn("artifact", " ".join(discovery.get("outputs", [])).lower())
 
