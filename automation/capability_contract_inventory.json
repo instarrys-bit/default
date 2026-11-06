@@ -123,7 +123,8 @@
         "complete_transitive_side_effect_verification"
       ],
       "audit_note": "Typed immutable predecessor contract and fenced output contract are retained, but independent dispatch remains disabled until the dedicated discovery-only producer workflow exists and the monolithic assessment step is removed without duplication.",
-      "contract_sample_path": "automation/capability_contracts/assess_sources.json"
+      "contract_sample_path": "automation/capability_contracts/assess_sources.json",
+      "contract_sample_blob_sha": "448ebb1dc7838e07f44165016ef6477a613a317e"
     },
     {
       "id": "script_audit_adapter_activation",
