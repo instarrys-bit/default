@@ -40,24 +40,22 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         queue_job = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
         self.assertIn("Recover leases, verify results, and run one bounded task", queue_job)
 
-    def test_watchdog_observes_completed_main_audit_runs(self):
+    def test_watchdog_observes_completed_main_audit_and_discovery_runs(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("workflow_run:", workflow)
         self.assertIn('    - cron: "0 * * * *"', workflow)
         self.assertIn('      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"', workflow)
         self.assertIn('      - "Shadowrocket Source Discovery (Watchdog)"', workflow)
-        assessment_step = workflow.split("Enqueue source assessment after successful discovery workflow", 1)[1].split("Recover leases, verify results, and run one bounded task", 1)[0]
-        self.assertIn("github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)'", assessment_step)
-        self.assertNotIn("github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)'", assessment_step)
         self.assertIn('      - "Validate Shadowrocket config against user baseline"', workflow)
         self.assertIn('      - "Validate self-healing agent"', workflow)
         self.assertIn("types: [completed]", workflow)
         self.assertIn("github.event.workflow_run.head_branch == 'main'", workflow)
-        self.assertIn('last_success_sha="$(jq -r', workflow)
-        self.assertIn('repos/$REPO/compare/$last_success_sha...$current_sha', workflow)
+        self.assertIn("Enqueue independent source discovery only after its authorization gate opens", workflow)
+        self.assertIn("github.event.workflow_run.name == 'Shadowrocket Source Discovery (Watchdog)'", workflow)
+        self.assertNotIn("Enqueue source assessment after successful discovery workflow", workflow)
+        self.assertIn("Recover leases, verify results, and run one bounded task", workflow)
         self.assertIn("Normal input-change and scheduled-refresh decisions are centralized", workflow)
         self.assertIn("bash scripts/verify_publish_base.sh --check-only", workflow)
-
     def test_non_main_push_uses_main_merge_base_not_branch_before_sha(self):
         workflow = (ROOT / ".github" / "workflows" / "validate-config.yml").read_text(encoding="utf-8")
         recovery = workflow.split("name: Recover owner-approved config baseline in validation workspace", 1)[1].split("name: Verify owner-approved config baseline", 1)[0]

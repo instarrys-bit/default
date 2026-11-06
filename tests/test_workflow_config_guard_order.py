@@ -81,17 +81,15 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
                     in_incident_command = False
 
     def test_automation_incidents_are_bound_to_exact_workflow_runs(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn("Shadowrocket automation incident (run $RUN_ID)", workflow)
-        self.assertIn("workflow=auto_sync;run_id=$RUN_ID", workflow)
-        self.assertIn("capture(\"shadowrocket-automation:workflow=auto_sync;run_id=", workflow)
-        resolver = workflow.split("  resolve-failure:", 1)[1]
-        self.assertIn("Shadowrocket automation failure (run ", resolver)
-        self.assertIn("Shadowrocket automation incident (run ", resolver)
-        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
-        self.assertIn("Close recovered manifest integrity incidents", watchdog)
-        self.assertIn("steps.verify.outcome == 'success'", watchdog)
-
+        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
+        healing = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")
+        self.assertIn("SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}", watchdog)
+        self.assertIn("SOURCE_WORKFLOW_NAME: ${{ github.event.workflow_run.name }}", watchdog)
+        self.assertIn('if [ "$SOURCE_WORKFLOW_NAME" != "Shadowrocket Deterministic Domain Audit (User Config Baseline)" ]; then', watchdog)
+        self.assertIn('idempotency_key="production:recovery:$recovery_fingerprint:$SOURCE_RUN_ID"', watchdog)
+        self.assertIn('marker="<!-- shadowrocket-automation:workflow=$workflow_key;run_id=$RUN_ID -->"', healing)
+        self.assertIn('--event-id "failure-run-$RUN_ID"', healing)
+        self.assertIn('marker="<!-- shadowrocket-automation:agent_failure;workflow=$workflow_key;source_run_id=$SOURCE_RUN_ID -->"', healing)
     def test_production_intermediates_run_only_in_temporary_workspace(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("Isolate production writes in a temporary workspace", workflow)

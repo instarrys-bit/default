@@ -920,7 +920,7 @@
       "lease_keys": [
         "logical/production-pipeline"
       ],
-      "lease_enforcement": "In the production auto_sync invocation, the central temporary-workspace isolation is active and requires the live Watchdog task/resource lease before each repository mutation. The validate-config workflow has contents:read and only mutates its ephemeral validation workspace; it cannot publish repository changes.",
+      "lease_enforcement": "Owner-approved metadata registration checks the exact config SHA and owner-authored Git history. No per-write filesystem guard is installed; modules/uu.conf is read-only.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [],
       "write_boundary_fencing": "Owner-approved baseline metadata updates only; modules/uu.conf is read-only and must never be rewritten."
