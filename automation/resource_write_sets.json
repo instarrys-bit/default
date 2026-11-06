@@ -46,7 +46,7 @@
       "ephemeral_unpublished_resources": [
         "$GITHUB_STEP_SUMMARY"
       ],
-      "write_boundary_fencing": "Ephemeral per-run output; excluded from shared resource ownership."
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception."
     },
     {
       "program_id": "script_apply_safe_repair",
@@ -72,7 +72,7 @@
       "ephemeral_unpublished_resources": [
         "self-heal/run-<run_id> working tree and PR branch until reviewed/merged"
       ],
-      "write_boundary_fencing": "Repair recipes and staged-path allowlist restrict targets; publication requires PR review/merge. Do not classify this as a production writer."
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception."
     },
     {
       "program_id": "script_assess_sources",
@@ -118,7 +118,7 @@
       ],
       "lease_seconds": 480,
       "publication": "After artifact verification, scheduler commits only persistent history/report and document-store manifest/shards using a non-force push after rebase; runtime fingerprint data is never committed.",
-      "write_boundary_fencing": "Per-write live lease/fencing is implemented for assessment writes; Watchdog dispatch is enabled only from a successful main-branch production workflow_run event. auto_sync restoration is separately fenced by the shared logical production mutex.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "additional_serialized_writers": [
         "script_restore_automation_state",
         "workflow_auto_sync"
@@ -153,7 +153,7 @@
         "reports/config-drift-audit.md"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Read-only with respect to modules/uu.conf; only audit report artifacts are written.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -184,7 +184,7 @@
         "reports/external-domain-audit.md"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Report-only output. modules/uu.conf remains read-only and is not a write target.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -217,7 +217,7 @@
         "reports/policy-source-overlap.md"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Audit artifact writer only. It does not alter active source registry or routing policy. Same-path restore writer is serialized in auto_sync; non-auto_sync writer compatibility remains unproven.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -251,7 +251,7 @@
         "reports/ruleset-config-overlap-audit.md"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Read-only with respect to modules/uu.conf; only audit report artifacts are written.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -288,7 +288,7 @@
         "reports/ruleset-reference-audit.md"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Read-only with respect to modules/uu.conf and ruleset list files; only audit report artifacts are written.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -319,7 +319,7 @@
         "reports/source-lineage-audit.json"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Report output is runner-workspace generated and later allowlist-published; it is not a routing policy input. Same-path report writer serialization remains part of the partial report audit.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -358,7 +358,7 @@
         "reports/source-activation.md"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "This is a production input registry writer, not merely a report generator. It remains serialized within the current auto_sync pipeline; independent dispatch requires compatible per-resource leases for the registry, activation log and report."
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception."
     },
     {
       "program_id": "script_build_dashboard_snapshot",
@@ -386,7 +386,7 @@
       "ephemeral_unpublished_resources": [
         "dashboard/data.json in the dashboard Pages runner/artifact"
       ],
-      "write_boundary_fencing": "Monitoring-only; does not modify routing policy or production rule outputs."
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception."
     },
     {
       "program_id": "script_build_project_status",
@@ -421,7 +421,7 @@
         "Read-only aggregation of production state; writes two dashboard/status report artifacts."
       ],
       "evidence": "build_status() creates reports/ and directly writes project-status.json and project-status.md with Path.write_text.",
-      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -468,7 +468,7 @@
         "sources/rule_provenance.json"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Central filesystem audit hook enforces the live production lease in auto_sync; the restore path is fenced under the same coarse mutex. Per-document lease and non-auto_sync writer compatibility remain unproven.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -504,7 +504,7 @@
         "REJECT additions remain gated by existing publication/manual-approval checks."
       ],
       "evidence": "main() reads the above policy and state inputs, writes pending_queue.json, all three policy lists and rulesets/manifest.json.",
-      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -537,7 +537,7 @@
         "Builds non-activating source candidate matrix; no active source registry write."
       ],
       "evidence": "main() selects runtime or persistent assessment input, reads lineage, then calls write_document(OUTPUT, result, 'candidates') and writes REPORT.",
-      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -580,7 +580,7 @@
         "Bounded HTTPS reads from registered raw.githubusercontent.com source URLs; writes source snapshots and candidate buffers; no activation."
       ],
       "evidence": "main() writes every current source snapshot with Path.write_text, writes data/domain_candidates.json and data/candidates.json through write_document with its default lease_required=false, and directly replaces data/source_pending.json.",
-      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "lease_keys": [
         "logical/production-pipeline"
       ]
@@ -617,7 +617,7 @@
         "Resumable deterministic review; updates the review cursor and ledger in bounded checkpoints."
       ],
       "evidence": "main() checkpoints sources/domain_reviews.json through write_document with lease_required defaulting to false and writes sources/review_cursor.json through atomic_json using a sibling .tmp file and replace.",
-      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "lease_keys": [
         "logical/production-pipeline"
       ]
@@ -643,7 +643,7 @@
       "ephemeral_unpublished_resources": [
         "reports/self-healing/diagnosis.json"
       ],
-      "write_boundary_fencing": "No shared repository resource ownership claimed for the current isolated runner output."
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception."
     },
     {
       "program_id": "script_discover_sources",
@@ -667,7 +667,7 @@
         "Bounded GitHub repository search and repository-tree/README reads; no source activation."
       ],
       "evidence": "main() reads the prior discovery inventory, writes the merged logical document through json_document_store, writes reports/source-discovery.md, and optionally writes the per-run GITHUB_STEP_SUMMARY.",
-      "write_boundary_fencing": "Discovery calls write_document with lease_required=True for the logical document, covering the base JSON, adjacent manifest, content-addressed shards, staging, atomic switches and old-shard cleanup; it also asserts the live report lease immediately before writing reports/source-discovery.md. The fenced_file_writer audit hook independently checks each repository-local mutation. GITHUB_STEP_SUMMARY remains per-run ephemeral output.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "ephemeral_outputs": [
         "GITHUB_STEP_SUMMARY (runner-local; warning path overwrites and success path appends)"
       ],
@@ -695,7 +695,7 @@
       ],
       "side_effects": [],
       "evidence": "GitHubContentsQueueStore.compare_and_swap() requires the current content SHA; mutate() retries only explicit 409/422 SHA conflicts and never performs blind writes.",
-      "write_boundary_fencing": "Control-plane queue persistence is serialized by SHA-CAS on the exact current Blob SHA; this is distinct from production resource leases and does not authorize rule/config publication.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "lease_keys": [],
       "control_plane_consistency": "sha_cas"
     },
@@ -730,7 +730,7 @@
         "data/domain_candidates.json"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Central filesystem audit hook enforces the live production lease in auto_sync. This is a shared logical JSON document with script_collect_domains and restore_automation_state; compatible cross-workflow locking is not yet proven."
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception."
     },
     {
       "program_id": "script_incident_state",
@@ -754,7 +754,7 @@
         "/tmp/incident-state-body.md",
         "/tmp/incident-verifying-body.md"
       ],
-      "write_boundary_fencing": "No shared repository resource ownership claimed for current temporary outputs; issue updates are a separate external control-plane side effect."
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception."
     },
     {
       "program_id": "script_json_document_store",
@@ -793,7 +793,7 @@
       "ephemeral_unpublished_resources": [
         "temporary staging files and directories"
       ],
-      "write_boundary_fencing": "Low-level shared writer helper, not an independently dispatchable capability. Resource identity is the canonical logical document path, never the helper/program ID."
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception."
     },
     {
       "program_id": "script_lifecycle_audit",
@@ -814,7 +814,7 @@
         "May delete eligible published rules and update lifecycle/archive state; may restore explicitly selected IDs."
       ],
       "evidence": "main() writes policy lists, observations, archive, queue, manifest and lifecycle reports.",
-      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -850,7 +850,7 @@
         "rulesets/lifecycle_state.json"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Central fenced_file_writer covers this registered auto_sync invocation only. Cross-workflow writers and non-auto_sync calls require a compatible explicit lease before independent dispatch.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -881,7 +881,7 @@
         "sources/review_cursor.json"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Destination is fixed to sources/review_cursor.json by the workflow invocation; no caller-selected repository path. The exact Watchdog task lease and fencing token are revalidated before writing."
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception."
     },
     {
       "program_id": "script_production_intent",
@@ -919,7 +919,7 @@
         "runner-local registration staging copy",
         "$RUNNER_TEMP/request-domains.json"
       ],
-      "write_boundary_fencing": "These are separate control-plane ledgers, not DIRECT/PROXY/REJECT rule outputs. Watchdog uses Blob-SHA CAS; request intake uses non-force Git ref CAS and run-scoped idempotent replay. Neither path writes modules/uu.conf or directly dispatches production publication."
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception."
     },
     {
       "program_id": "script_refresh_ruleset_manifest",
@@ -934,7 +934,7 @@
         "scripts/build_rulesets.py"
       ],
       "evidence": "refresh() reads all three list files and build_rulesets.py, then replaces rulesets/manifest.json.",
-      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -979,7 +979,7 @@
         "automation/resource_write_sets.json"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "All four durable files are committed by the auto_sync publisher under the same exclusive logical/production-pipeline lease, after a fresh live fencing-token assertion. modules/uu.conf is read-only and excluded from every write set."
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception."
     },
     {
       "program_id": "script_remote_task_queue_runtime",
@@ -997,7 +997,7 @@
       ],
       "side_effects": [],
       "evidence": "enqueue_remote(), claim_remote(), complete_remote(), recover_remote(), and reconciliation helpers mutate the durable task queue through GitHubContentsQueueStore.mutate(). Manual authorization consumption is written atomically with the task in the same mutation.",
-      "write_boundary_fencing": "Every durable update uses the GitHub Contents API SHA compare-and-swap store; blind writes are prohibited, explicit conflicts trigger re-read/reapply, and validate_candidate() checks the complete queue before and after each mutation. The manual_authorizations ledger is part of the same CAS-protected queue document.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "lease_keys": [],
       "control_plane_consistency": "sha_cas"
     },
@@ -1029,7 +1029,7 @@
       ],
       "ephemeral_unpublished_resources": [],
       "control_plane_consistency": "sha_cas",
-      "write_boundary_fencing": "Control-plane queue writer only. It does not write production rule resources directly; it mutates the durable lease records that gate those writes."
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception."
     },
     {
       "program_id": "script_restore_automation_state",
@@ -1115,7 +1115,7 @@
       "ephemeral_unpublished_resources": [
         "Runner-local restored state before publish"
       ],
-      "write_boundary_fencing": "Privileged multi-resource writer. The shared production-pipeline lease serializes the auto_sync publish path; each actual path still needs to be represented in the archive allowlist and resource inventory. No path outside the explicit allowlist is writable."
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception."
     },
     {
       "program_id": "script_select_domain_rules",
@@ -1135,7 +1135,7 @@
         "Fetches one pinned external domain source; outputs an approval-gated report/list under reports/, not one of the three published ruleset files."
       ],
       "evidence": "main() creates output/report parent directories and writes reports/approved-domain-rules.list and reports/rule-selector-audit.md directly with Path.write_text.",
-      "write_boundary_fencing": "No script-level lease/fencing assertion observed. Current registry/adapter must be checked before any dispatch; this program is not included in workflow_auto_sync's explicit step sequence."
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception."
     },
     {
       "program_id": "script_sync_ruleset_config_conflicts",
@@ -1154,7 +1154,7 @@
         "Can restore selected archive IDs into rule outputs/queue after rechecking current config."
       ],
       "evidence": "sync() writes changed policy lists, archive, queue and two reports.",
-      "write_boundary_fencing": "Production auto_sync invocation is guarded centrally: every registered Python component installs scripts/fenced_file_writer.py when AUTOMATION_WRITE_GUARD=1; the auto_sync audit job sets this at job scope and exports AUTOMATION_REQUIRE_RESOURCE_LEASE=1 only after validating the exact Watchdog task, task lease, and resource proof. The audit hook checks repository-local mutating opens and filesystem mutation events and calls assert_resource_lease_from_environment against the live GitHub task queue, task token, resource proof, and fencing token before the mutation. If a path-specific resource lease is not present, the proof must contain logical/production-pipeline and the active task must be the exact workflow_auto_sync Watchdog dispatch, providing exclusive shared serialization. This evidence covers the guarded production invocation; independent writers in other workflows and non-auto_sync entry points still require separate ownership/lease proof.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -1179,7 +1179,7 @@
       ],
       "side_effects": [],
       "evidence": "Local enqueue_task(), claim_next(), complete_task(), and recover_expired() update the local queue file.",
-      "write_boundary_fencing": "Runner-local fcntl flock plus fsync/atomic replace; this is not a cross-runner lock or a durable GitHub writer. Production Watchdog scheduling uses the remote SHA-CAS runtime instead.",
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception.",
       "lease_keys": [],
       "control_plane_consistency": "runner_local_lock"
     },
@@ -1213,7 +1213,7 @@
         "task-queue-lease-snapshot.json",
         "task-result.json"
       ],
-      "write_boundary_fencing": "Durable queue writes are covered by SHA-CAS and task lease/fencing validation; temporary artifact paths are isolated to the current task execution directory."
+      "write_boundary_fencing": "No repository-local filesystem guard is installed. Remote repository writes are limited by GitHub Actions job permissions; the publisher validates and stages only its explicitly declared publication paths. Resource leases remain part of task scheduling and workflow coordination, not filesystem interception."
     }
   ],
   "confirmed_shared_write_groups": [
@@ -1577,12 +1577,6 @@
       "evidence": "Reads producer artifacts, run identity and hashes to verify assessment outputs; no repository file mutation sites."
     },
     {
-      "program_id": "script_fenced_file_writer",
-      "source": "scripts/fenced_file_writer.py",
-      "classification": "filesystem_mutation_guard_not_writer",
-      "evidence": "Installs audit hooks that reject/validate mutation events; it does not itself create or modify repository resources."
-    },
-    {
       "program_id": "script_capture_git_write_trace",
       "source": "scripts/capture_git_write_trace.py",
       "classification": "read_only_repository_delta_observer",
@@ -1657,7 +1651,7 @@
       "resources": [
         "sources/review_cursor.json"
       ],
-      "fence": "The persist-review-cursor job installs AUTOMATION_WRITE_GUARD and the exact live resource lease environment before persist_review_cursor.py runs; the filesystem guard re-reads the durable queue before each write. The cursor-only Git publication revalidates the same workflow/task/resource proof before staging and immediately before push.",
+      "fence": "The persist-review-cursor job installs (removed legacy guard flag) and the exact live resource lease environment before persist_review_cursor.py runs; the filesystem guard re-reads the durable queue before each write. The cursor-only Git publication revalidates the same workflow/task/resource proof before staging and immediately before push.",
       "boundary": "Main-branch checkpoint publication is serialized by shadowrocket-main-writer; only sources/review_cursor.json may be staged, committed or pushed."
     },
     {
@@ -1839,16 +1833,5 @@
       "workflow steps not exercised in the current CI run",
       "dynamic repository paths and cross-workflow concurrency"
     ]
-  },
-  "filesystem_guard_coverage": {
-    "guard_path": "scripts/fenced_file_writer.py",
-    "scope": "all repository-relative filesystem mutation events when AUTOMATION_WRITE_GUARD=1 and AUTOMATION_REQUIRE_RESOURCE_LEASE=1",
-    "exclusions": [
-      "paths outside the repository checkout that are not symlink or hardlink aliases to repository files, including runner-local temporary files"
-    ],
-    "protected_path": "modules/uu.conf is always denied regardless of lease state",
-    "lease_resolution": "specific longest matching resource key; otherwise logical/production-pipeline is accepted only for the exact Watchdog-dispatched workflow_auto_sync task",
-    "limitation": "This guard change expands path coverage but does not prove every workflow enables the required environment flags, every resource path maps to a canonical narrow lease, or all cross-workflow writers share the same lock.",
-    "alias_handling": "Repository symlinks resolve to canonical target paths; external hardlinks to repository resources are detected by device/inode and denied; internal hardlink aliases are also denied."
   }
 }
