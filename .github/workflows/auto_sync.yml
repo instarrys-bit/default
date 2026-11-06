@@ -160,7 +160,6 @@ jobs:
               "AUTOMATION_QUEUE_PATH": "automation/task_queue.json",
               "AUTOMATION_QUEUE_TOKEN": os.environ["GH_TOKEN"],
               "AUTOMATION_QUEUE_SNAPSHOT": str(Path("automation/task_queue.json").resolve()),
-              "AUTOMATION_REQUIRE_RESOURCE_LEASE": "1",
           }
           delimiter = "__WATCHDOG_RESOURCE_PROOF__"
           if delimiter in proof_text:
@@ -903,7 +902,6 @@ jobs:
               "AUTOMATION_QUEUE_PATH": "automation/task_queue.json",
               "AUTOMATION_QUEUE_TOKEN": os.environ["GH_TOKEN"],
               "AUTOMATION_QUEUE_SNAPSHOT": str(Path("automation/task_queue.json").resolve()),
-              "AUTOMATION_REQUIRE_RESOURCE_LEASE": "1",
           }
           delimiter = "__CURSOR_RESOURCE_PROOF__"
           if delimiter in os.environ["RESOURCE_LEASE_PROOF"]:
