@@ -90,9 +90,16 @@ jobs:
           echo "$result"
           registered="$(printf '%s' "$result" | jq -r '.registered // false')"
           if [ "$registered" = "true" ]; then
+            body_file="$RUNNER_TEMP/baseline-issue.md"
+            {
+              printf '%s\n\n' 'The read-only baseline audit verified an owner-approved config change. No repository files were written by automation. Review this evidence and update baseline metadata manually if appropriate:'
+              printf '%s\n' '~~~json'
+              printf '%s\n' "$result"
+              printf '%s\n' '~~~'
+            } > "$body_file"
             gh issue create --repo "$GITHUB_REPOSITORY" \
               --title "Owner-approved uu.conf baseline metadata requires manual reconciliation" \
-              --body "The read-only baseline audit verified an owner-approved config change. No repository files were written by automation. Review this evidence and update baseline metadata manually if appropriate:\n\n```json\n$result\n```"
+              --body-file "$body_file"
           fi
           git diff --quiet "$GITHUB_SHA" -- modules/uu.conf
           echo "Baseline audit completed; no repository write was performed."
