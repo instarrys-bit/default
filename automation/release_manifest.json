@@ -82,7 +82,7 @@
     },
     "source_discovery_implementation": {
       "path": "scripts/discover_sources.py",
-      "git_blob_sha": "d759f57e31fa2c73df44d5c1a97f9011e204a07b"
+      "git_blob_sha": "7591069b2ccafffb77799c4f775462d25039e56a"
     },
     "program_registry": {
       "path": "automation/program_registry.json",
