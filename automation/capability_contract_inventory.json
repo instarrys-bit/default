@@ -1685,31 +1685,6 @@
         "independent_verifier"
       ],
       "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
-    },
-    {
-      "id": "script_capture_git_write_trace",
-      "path": "scripts/capture_git_write_trace.py",
-      "declared_capabilities": [
-        "runtime_write_tracing"
-      ],
-      "registry_dependencies": [],
-      "current_registry_inputs": [
-        "Initial checkout commit SHA",
-        "Git committed, staged, unstaged and non-ignored untracked repository paths"
-      ],
-      "current_registry_outputs": [
-        "Path-only JSONL records under RUNNER_TEMP",
-        "Before/after commit SHA and changed-path count"
-      ],
-      "current_invocation": "workflow_step",
-      "contract_status": "concrete_io_path_only_repository_delta_capture",
-      "dispatch_status": "disabled",
-      "missing_contract_fields": [
-        "transient write-and-revert activity",
-        "external filesystem and API side effects",
-        "Git metadata changes outside repository tree"
-      ],
-      "audit_note": "Observer complements Python audit-hook events; it records persistent repository-tree deltas only and does not prove transient, external, or unexecuted side effects."
     }
   ],
   "workflow_capabilities": [
@@ -1720,7 +1695,6 @@
         "source_discovery"
       ],
       "registry_dependencies": [
-        "script_capture_git_write_trace",
         "script_discover_sources",
         "script_resource_lease_runtime"
       ],
