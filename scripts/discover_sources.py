@@ -467,6 +467,7 @@ def persist_discovery_outputs(merged: dict) -> None:
 
 
 def main() -> int:
+    catalog = load_external_intelligence_catalog()
     token = os.environ.get("GITHUB_TOKEN", "")
     existing = read_document(OUTPUT, "candidates", {"candidates": []})
     existing_by_repo = {str(x.get("repository", "")): x for x in existing.get("candidates", []) if x.get("repository")}
@@ -629,7 +630,6 @@ def main() -> int:
     persist_discovery_outputs(merged)
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:
-        catalog = load_external_intelligence_catalog()
         with Path(summary).open("a", encoding="utf-8") as stream:
             stream.write(f"## Source discovery\n\nRepositories seen: **{len(discovered)}**. Tree scans this run: **{len(tree_scan_batch)}**. Tree-scan backlog: **{merged['tree_scan_backlog_count']}**. Truncated trees: **{len(tree_truncated)}**. Candidates retained: **{merged['candidate_count']}**. Failed queries: **{len(discovery_errors)}**. No source was activated.\n")
             stream.write(f"\n## Multi-source intelligence inventory\n\nProvider leads catalogued: **{len(catalog['providers'])}**. Production adapters ready: **0**. Catalog entries are non-activating; external provider ingestion remains disabled until dedicated adapters pass their acceptance gates.\n")
