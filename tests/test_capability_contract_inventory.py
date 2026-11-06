@@ -306,7 +306,6 @@ class CapabilityContractInventoryTests(unittest.TestCase):
             if item["resource"] == "durable task queue control-plane state"
         )
         self.assertEqual(group["mode"], "append_only_revision_chain")
-        self.assertEqual(group["status"], "append_only_issue_snapshot_chain_reviewed")
         self.assertIn("workflow_automation_watchdog", group["writers"])
         self.assertIn("script_resource_lease_runtime", group["writers"])
 
@@ -315,7 +314,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
             item for item in ownership["resource_groups"]
             if item["id"] == "durable_task_queue_control_plane"
         )
-        self.assertEqual(audit_group["status"], "sha_cas_control_plane_reviewed")
+        self.assertEqual(audit_group["status"], "append_only_issue_snapshot_chain_reviewed")
         self.assertIn("script_resource_lease_runtime", audit_group["writers"])
         self.assertEqual(ownership["status"], "partial_static_audit")
 

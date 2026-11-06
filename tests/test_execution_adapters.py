@@ -53,7 +53,7 @@ class ExecutionAdapterTests(unittest.TestCase):
                  "workflow": {"path": ".github/workflows/run.yml", "dispatchable": True,
                  "inputs": [{"name": "item", "type": "string", "required": True},
                             {"name": "automation_task_id", "type": "string", "required": False}],
-                 "allowed_refs": ["main"], "caller_permissions_required": ["actions:write", "contents:write"]},
+                 "allowed_refs": ["main"], "caller_permissions_required": ["actions:write", "issues:write"]},
                  "timeout_seconds": 300, "retry": {"max_attempts": 0},
                  "completion": {"independent_verification_required": True}},
             ],

@@ -5,7 +5,7 @@
   "purpose": "Identify known overlapping write resources before independent capability scheduling. This inventory is deliberately fail-closed and is not an execution authorization.",
   "evidence_scope": {
     "registry_blob_sha": "02b739d373d87bf2df5a0ac107beafc56e4cdd48",
-    "adapters_blob_sha": "e68fc9c681743a008818ca85adfc2d78bae8c223",
+    "adapters_blob_sha": "7b93d8b8625f8973826de8034e29476f7ab0f4af",
     "inspected_sources": [
       ".github/workflows/auto_sync.yml",
       ".github/workflows/automation-watchdog.yml",

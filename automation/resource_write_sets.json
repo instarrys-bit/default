@@ -1450,7 +1450,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
-    "release_manifest_blob_sha": "3713029fb7171467889577d1f5ac598ff9601964",
+    "release_manifest_blob_sha": "8401894f81ba3ae74157ecdbf4f2927e5c2f6932",
     "program_registry_blob_sha": "02b739d373d87bf2df5a0ac107beafc56e4cdd48",
     "execution_adapters_blob_sha": "7b93d8b8625f8973826de8034e29476f7ab0f4af",
     "added_after_release_baseline": true,

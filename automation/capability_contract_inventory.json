@@ -375,7 +375,9 @@
       "declared_capabilities": [
         "read_only_metrics_aggregation"
       ],
-      "registry_dependencies": [],
+      "registry_dependencies": [
+        "script_remote_task_queue_runtime"
+      ],
       "current_registry_inputs": [
         "rulesets/manifest.json",
         "automation/task_queue.json",
