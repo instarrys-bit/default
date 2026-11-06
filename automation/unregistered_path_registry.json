@@ -88,15 +88,16 @@
       "path": "automation/architecture.json",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-06T17:30:50.104659Z",
-      "last_seen_at": "2026-11-06T17:30:50.104659Z",
-      "seen_count": 1,
+      "last_seen_at": "2026-11-06T17:31:29.578908Z",
+      "seen_count": 2,
       "observed_run_ids": [
-        "42262218995"
+        "42262218995",
+        "42262325849"
       ],
       "last_seen_event": "push",
-      "last_seen_revision": "1cad1aeaffd479ffeb86d96bb22063d0e41fad54",
-      "last_seen_run_id": "42262218995",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42262218995"
+      "last_seen_revision": "ac1caa9b7feb2be4840939c65105a03fdd44c2e5",
+      "last_seen_run_id": "42262325849",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42262325849"
     },
     {
       "path": "automation/assessment_canary_request.json",
@@ -487,29 +488,31 @@
       "path": "modules/maasea/youtube_request_local.js",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-06T17:30:50.104659Z",
-      "last_seen_at": "2026-11-06T17:30:50.104659Z",
-      "seen_count": 1,
+      "last_seen_at": "2026-11-06T17:31:29.578908Z",
+      "seen_count": 2,
       "observed_run_ids": [
-        "42262218995"
+        "42262218995",
+        "42262325849"
       ],
       "last_seen_event": "push",
-      "last_seen_revision": "1cad1aeaffd479ffeb86d96bb22063d0e41fad54",
-      "last_seen_run_id": "42262218995",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42262218995"
+      "last_seen_revision": "ac1caa9b7feb2be4840939c65105a03fdd44c2e5",
+      "last_seen_run_id": "42262325849",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42262325849"
     },
     {
       "path": "modules/maasea/youtube_response.js",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-06T17:30:50.104659Z",
-      "last_seen_at": "2026-11-06T17:30:50.104659Z",
-      "seen_count": 1,
+      "last_seen_at": "2026-11-06T17:31:29.578908Z",
+      "seen_count": 2,
       "observed_run_ids": [
-        "42262218995"
+        "42262218995",
+        "42262325849"
       ],
       "last_seen_event": "push",
-      "last_seen_revision": "1cad1aeaffd479ffeb86d96bb22063d0e41fad54",
-      "last_seen_run_id": "42262218995",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42262218995"
+      "last_seen_revision": "ac1caa9b7feb2be4840939c65105a03fdd44c2e5",
+      "last_seen_run_id": "42262325849",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42262325849"
     },
     {
       "path": "modules/temp-test/Sr_Youtube_Clean.js",
@@ -667,5 +670,5 @@
       "classification_basis": "scripts/discover_sources.py loads and validates this catalog, then uses its provider IDs, endpoints, data types and activation boundaries to drive bounded external collection. Changes can alter source observations and later ruleset evidence, so this exact path is a production input. The catalog does not itself assign DIRECT/PROXY/REJECT policy or authorize publication."
     }
   ],
-  "updated_at": "2026-11-06T17:30:50.104659Z"
+  "updated_at": "2026-11-06T17:31:29.578908Z"
 }
