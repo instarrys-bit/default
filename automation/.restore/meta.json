@@ -1,0 +1,14 @@
+{
+  "wm": {
+    "chunks": 7,
+    "bytes": 28156,
+    "sha256": "b8dc77cfe3e6a7b0527008a3e5a329f4ef8f33f66891d143b6e2dca62a2745e2",
+    "dest": "automation/production_workflow_map.json"
+  },
+  "ws": {
+    "chunks": 24,
+    "bytes": 106499,
+    "sha256": "039783302df245da76a303aee7c0cf44143d4eb9dc399f784e13e77fcb1bf523",
+    "dest": "automation/resource_write_sets.json"
+  }
+}
