@@ -123,7 +123,7 @@
         "script_restore_automation_state",
         "workflow_auto_sync"
       ],
-      "additional_writer_boundary": "auto_sync publish job restores allowlisted assessment history and report artifacts from an audited archive under the same live logical/production-pipeline lease; the fenced_file_writer audit hook validates that lease before each restore filesystem mutation."
+      "additional_writer_boundary": "auto_sync publish job restores allowlisted assessment history and report artifacts from an audited archive under the same live logical/production-pipeline lease; no filesystem write guard is installed."
     },
     {
       "program_id": "script_audit_config_drift",
@@ -351,7 +351,7 @@
         "sources/source_activation_log.json",
         "reports/source-activation.md"
       ],
-      "lease_enforcement": "Current auto_sync invocation is protected by the Watchdog logical production-pipeline live lease and central fenced_file_writer mutation hook. restore_automation_state is another allowlisted writer for the same registry/log/report paths. This script has no explicit per-resource lease assertion.",
+      "lease_enforcement": "Current auto_sync invocation is protected by the Watchdog logical production-pipeline live lease and removed filesystem mutation hook. restore_automation_state is another allowlisted writer for the same registry/log/report paths. This script has no explicit per-resource lease assertion.",
       "publish_resources": [
         "sources/domain_sources.json",
         "sources/source_activation_log.json",
@@ -786,7 +786,7 @@
       "lease_keys": [
         "resource:<canonical logical document path>"
       ],
-      "lease_enforcement": "write_document accepts lease_required but defaults to false; callers must hold one compatible lease across base, manifest, shards, staging, switch and cleanup. The auto_sync central fenced_file_writer checks each repository-local mutation under the live logical/production-pipeline proof; independent callers need explicit per-document lease proof.",
+      "lease_enforcement": "write_document accepts lease_required but defaults to false; callers must hold one compatible lease across base, manifest, shards, staging, switch and cleanup. The auto_sync no repository-local filesystem guard is installed.",
       "publish_resources": [
         "caller-selected logical JSON document and all authoritative child paths"
       ],
@@ -845,7 +845,7 @@
         "logical/production-pipeline",
         "rulesets/lifecycle_state.json"
       ],
-      "lease_enforcement": "The production auto_sync invocation has the central fenced_file_writer active and a live logical/production-pipeline fencing proof. No independent per-resource lease assertion exists in this script; non-auto_sync entry points remain unproven.",
+      "lease_enforcement": "The production auto_sync invocation has the no repository-local filesystem guard is installed. No independent per-resource lease assertion exists in this script; non-auto_sync entry points remain unproven.",
       "publish_resources": [
         "rulesets/lifecycle_state.json"
       ],
@@ -971,7 +971,7 @@
       "lease_keys": [
         "logical/production-pipeline"
       ],
-      "lease_enforcement": "In the production auto_sync invocation, the central fenced_file_writer is active and requires the live Watchdog task/resource lease before each repository mutation. The validate-config workflow has contents:read and only mutates its ephemeral validation workspace; it cannot publish repository changes.",
+      "lease_enforcement": "In the production auto_sync invocation, the no repository-local filesystem guard is installed. The validate-config workflow has contents:read and only mutates its ephemeral validation workspace; it cannot publish repository changes.",
       "publish_resources": [
         "sources/policy.json",
         "automation/release_manifest.json",
@@ -1460,7 +1460,6 @@
     "added_after_release_baseline": true,
     "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 54 Python components are now partitioned into 36 direct/helper writer entries and 17 reviewed non-writers, alongside one external GitHub Actions dispatch side-effect adapter.",
     "reviewed_at": "2026-11-05",
-    "central_write_guard_test": "tests/test_fenced_file_writer.py::test_every_registered_python_component_installs_the_guard",
     "runtime_trace_evidence": {
       "trace_script": "scripts/capture_git_write_trace.py",
       "workflow_jobs": [
