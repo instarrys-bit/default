@@ -1459,20 +1459,7 @@
     "execution_adapters_blob_sha": "82012007de750c605d5ef27a355ece7321cdc51a",
     "added_after_release_baseline": true,
     "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 54 Python components are now partitioned into 36 direct/helper writer entries and 17 reviewed non-writers, alongside one external GitHub Actions dispatch side-effect adapter.",
-    "reviewed_at": "2026-11-05",
-    "runtime_trace_evidence": {
-      "trace_script": "scripts/capture_git_write_trace.py",
-      "workflow_jobs": [
-        "audit",
-        "publish"
-      ],
-      "artifacts": [
-        "automation-runtime-write-trace-audit",
-        "automation-runtime-write-trace-publish"
-      ],
-      "data_policy": "repository paths and run metadata only; no file contents or credentials",
-      "limitation": "captures persistent repository-tree deltas only; does not observe transient write-and-revert activity, Git metadata changes, external filesystem/API side effects or unexecuted paths"
-    }
+    "reviewed_at": "2026-11-05"
   },
   "scheduler_lock_contract": {
     "logical_resource_key": "logical/production-pipeline",
@@ -1574,12 +1561,6 @@
       "source": "scripts/verify_assess_sources_artifacts.py",
       "classification": "read_only_artifact_verifier",
       "evidence": "Reads producer artifacts, run identity and hashes to verify assessment outputs; no repository file mutation sites."
-    },
-    {
-      "program_id": "script_capture_git_write_trace",
-      "source": "scripts/capture_git_write_trace.py",
-      "classification": "read_only_repository_delta_observer",
-      "evidence": "Reads committed, staged, unstaged and non-ignored untracked Git path deltas; writes only path-only JSONL trace records under RUNNER_TEMP outside the repository."
     }
   ],
   "control_plane_side_effects": [
