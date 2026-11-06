@@ -8,7 +8,7 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "7141bc70e3c7ed098532fbbfe19940ff8e479ad7"
+      "git_blob_sha": "afac96860d57a4c6cc4b1f7d45823c2fcc88520d"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -78,7 +78,7 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "60bcebc38a2a7e3d6279d44f7ce7a53928859452"
+      "git_blob_sha": "afac96860d57a4c6cc4b1f7d45823c2fcc88520d"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
