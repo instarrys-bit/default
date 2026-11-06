@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-06T07:47:37.945195+00:00",
+  "audited_at": "2026-11-06T12:41:37.776247+00:00",
   "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
   "source_count": 13,
   "audited_source_count": 11,
@@ -46773,7 +46773,7 @@
     {
       "repository": "hoobnn/fly-rule",
       "readme_url": "https://raw.githubusercontent.com/hoobnn/fly-rule/main/README.md",
-      "readme_sha256": "9e41e321b20aa92218c5afc96676bde412fa03123cc39a265d3661d9cfe7cd55",
+      "readme_sha256": "49714a5a4c9b1fa93c392b32290c48d9b928425311053bac538f8c44e2fe367e",
       "discovery_readme_sha256": null,
       "readme_changed_since_discovery": false,
       "referenced_repositories": [

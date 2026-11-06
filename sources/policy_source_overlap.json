@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "feed_count": 196,
-  "total_bytes_read": 149664635,
+  "total_bytes_read": 149582121,
   "max_file_bytes": 30000000,
   "max_total_bytes": 500000000,
   "publisher_counts": {
@@ -6321,10 +6321,10 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 270,
-      "right_count": 681280,
-      "overlap_count": 47,
-      "jaccard": 6.9e-05,
-      "smaller_set_overlap": 0.174074,
+      "right_count": 677824,
+      "overlap_count": 48,
+      "jaccard": 7.1e-05,
+      "smaller_set_overlap": 0.177778,
       "shared_domain_sample": [
         "7eer.net",
         "ad.doubleclick.net",
@@ -6338,6 +6338,7 @@
         "cj.dotomi.com",
         "click.linksynergy.com",
         "clickserve.dartsearch.net",
+        "d2gatte9o95jao.cloudfront.net",
         "doubleclick.net",
         "dpbolvw.net",
         "driftt.com",
@@ -6428,7 +6429,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 270,
-      "right_count": 235834,
+      "right_count": 235832,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -6982,9 +6983,9 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 580,
-      "right_count": 681280,
+      "right_count": 677824,
       "overlap_count": 231,
-      "jaccard": 0.000339,
+      "jaccard": 0.000341,
       "smaller_set_overlap": 0.398276,
       "shared_domain_sample": [
         "111cn.net",
@@ -7182,7 +7183,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 580,
-      "right_count": 235834,
+      "right_count": 235832,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -7828,10 +7829,10 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 155422,
-      "right_count": 681280,
-      "overlap_count": 17403,
-      "jaccard": 0.021241,
-      "smaller_set_overlap": 0.111973,
+      "right_count": 677824,
+      "overlap_count": 17414,
+      "jaccard": 0.021345,
+      "smaller_set_overlap": 0.112043,
       "shared_domain_sample": [
         "000lkub.rcomhost.com",
         "000ll4q.rcomhost.com",
@@ -8037,7 +8038,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 155422,
-      "right_count": 235834,
+      "right_count": 235832,
       "overlap_count": 10,
       "jaccard": 2.6e-05,
       "smaller_set_overlap": 6.4e-05,
@@ -8619,10 +8620,10 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 53127,
-      "right_count": 681280,
-      "overlap_count": 50684,
-      "jaccard": 0.074129,
-      "smaller_set_overlap": 0.954016,
+      "right_count": 677824,
+      "overlap_count": 50599,
+      "jaccard": 0.074372,
+      "smaller_set_overlap": 0.952416,
       "shared_domain_sample": [
         "000491b06a.com",
         "0017c6c37c.com",
@@ -8827,7 +8828,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 53127,
-      "right_count": 235834,
+      "right_count": 235832,
       "overlap_count": 11,
       "jaccard": 3.8e-05,
       "smaller_set_overlap": 0.000207,
@@ -9327,9 +9328,9 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 45081,
-      "right_count": 681280,
+      "right_count": 677824,
       "overlap_count": 15546,
-      "jaccard": 0.021871,
+      "jaccard": 0.021978,
       "smaller_set_overlap": 0.344846,
       "shared_domain_sample": [
         "0019x.com",
@@ -9535,7 +9536,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 45081,
-      "right_count": 235834,
+      "right_count": 235832,
       "overlap_count": 9,
       "jaccard": 3.2e-05,
       "smaller_set_overlap": 0.0002,
@@ -9922,9 +9923,9 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 969,
-      "right_count": 681280,
+      "right_count": 677824,
       "overlap_count": 732,
-      "jaccard": 0.001074,
+      "jaccard": 0.00108,
       "smaller_set_overlap": 0.755418,
       "shared_domain_sample": [
         "1500020991.vodplayer.wxamedia.com",
@@ -10104,7 +10105,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 969,
-      "right_count": 235834,
+      "right_count": 235832,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -10432,10 +10433,10 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 17028,
-      "right_count": 681280,
-      "overlap_count": 3186,
-      "jaccard": 0.004583,
-      "smaller_set_overlap": 0.187104,
+      "right_count": 677824,
+      "overlap_count": 3189,
+      "jaccard": 0.004611,
+      "smaller_set_overlap": 0.18728,
       "shared_domain_sample": [
         "003store.com",
         "022aifang.com",
@@ -10637,7 +10638,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 17028,
-      "right_count": 235834,
+      "right_count": 235832,
       "overlap_count": 4,
       "jaccard": 1.6e-05,
       "smaller_set_overlap": 0.000235,
@@ -10916,10 +10917,10 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 267,
-      "right_count": 681280,
-      "overlap_count": 46,
-      "jaccard": 6.7e-05,
-      "smaller_set_overlap": 0.172285,
+      "right_count": 677824,
+      "overlap_count": 47,
+      "jaccard": 6.9e-05,
+      "smaller_set_overlap": 0.17603,
       "shared_domain_sample": [
         "7eer.net",
         "ad.doubleclick.net",
@@ -10933,6 +10934,7 @@
         "cj.dotomi.com",
         "click.linksynergy.com",
         "clickserve.dartsearch.net",
+        "d2gatte9o95jao.cloudfront.net",
         "doubleclick.net",
         "dpbolvw.net",
         "driftt.com",
@@ -11022,7 +11024,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 267,
-      "right_count": 235834,
+      "right_count": 235832,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -11200,7 +11202,7 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 0,
-      "right_count": 681280,
+      "right_count": 677824,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -11252,7 +11254,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 0,
-      "right_count": 235834,
+      "right_count": 235832,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -11343,7 +11345,7 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 115,
-      "right_count": 681280,
+      "right_count": 677824,
       "overlap_count": 6,
       "jaccard": 9e-06,
       "smaller_set_overlap": 0.052174,
@@ -11404,7 +11406,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 115,
-      "right_count": 235834,
+      "right_count": 235832,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -11494,10 +11496,10 @@
         "hagezi/dns-blocklists"
       ],
       "left_count": 16125,
-      "right_count": 681280,
-      "overlap_count": 2609,
-      "jaccard": 0.003755,
-      "smaller_set_overlap": 0.161798,
+      "right_count": 677824,
+      "overlap_count": 2612,
+      "jaccard": 0.003778,
+      "smaller_set_overlap": 0.161984,
       "shared_domain_sample": [
         "003store.com",
         "022aifang.com",
@@ -11699,7 +11701,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 16125,
-      "right_count": 235834,
+      "right_count": 235832,
       "overlap_count": 2,
       "jaccard": 8e-06,
       "smaller_set_overlap": 0.000124,
@@ -11932,10 +11934,10 @@
         "hagezi/dns-blocklists",
         "marco-acorte/antispam-it"
       ],
-      "left_count": 681280,
+      "left_count": 677824,
       "right_count": 346345,
       "overlap_count": 56,
-      "jaccard": 5.4e-05,
+      "jaccard": 5.5e-05,
       "smaller_set_overlap": 0.000162,
       "shared_domain_sample": [
         "across.it",
@@ -11996,11 +11998,11 @@
         "hagezi/dns-blocklists",
         "nthack/Shadowrocket-ADBlock-Rules-Easy"
       ],
-      "left_count": 681280,
+      "left_count": 677824,
       "right_count": 16125,
-      "overlap_count": 2609,
-      "jaccard": 0.003755,
-      "smaller_set_overlap": 0.161798,
+      "overlap_count": 2612,
+      "jaccard": 0.003778,
+      "smaller_set_overlap": 0.161984,
       "shared_domain_sample": [
         "003store.com",
         "022aifang.com",
@@ -12060,11 +12062,11 @@
         "hagezi/dns-blocklists",
         "pengelana/blocklist"
       ],
-      "left_count": 681280,
+      "left_count": 677824,
       "right_count": 249406,
-      "overlap_count": 167626,
-      "jaccard": 0.219676,
-      "smaller_set_overlap": 0.672101,
+      "overlap_count": 167342,
+      "jaccard": 0.220219,
+      "smaller_set_overlap": 0.670962,
       "shared_domain_sample": [
         "0--4.com",
         "0--d.com",
@@ -12124,11 +12126,11 @@
         "hagezi/dns-blocklists",
         "phishdestroy/destroylist"
       ],
-      "left_count": 681280,
-      "right_count": 235834,
-      "overlap_count": 9832,
-      "jaccard": 0.010837,
-      "smaller_set_overlap": 0.04169,
+      "left_count": 677824,
+      "right_count": 235832,
+      "overlap_count": 9806,
+      "jaccard": 0.010849,
+      "smaller_set_overlap": 0.04158,
       "shared_domain_sample": [
         "01.apswatchclub.shop",
         "0465kk.com",
@@ -12147,8 +12149,6 @@
         "11vet.com",
         "11wealth.com",
         "1217.cc",
-        "121z3.ralind.at",
-        "135461223.site",
         "140aba.senes.at",
         "140bae.senes.at",
         "1479182-coinbase.com",
@@ -12170,7 +12170,6 @@
         "1win.pro",
         "1xbetindonesia.bet",
         "1xslotc.top",
-        "1xslotswin-cl.com",
         "2026f1storeplvip.shop",
         "2026jysk.com",
         "2026jysk.live",
@@ -12179,7 +12178,10 @@
         "2026rituals.com",
         "2026rituals.shop",
         "2026sheaps.com",
-        "2026strausseu.shop"
+        "2026strausseu.shop",
+        "2026summerclearance.com",
+        "2026ukaldihot.shop",
+        "2026workclothes.shop"
       ]
     },
     {
@@ -12188,7 +12190,7 @@
         "hagezi/dns-blocklists",
         "sefinek/Sefinek-Blocklist-Collection"
       ],
-      "left_count": 681280,
+      "left_count": 677824,
       "right_count": 81,
       "overlap_count": 2,
       "jaccard": 3e-06,
@@ -12204,11 +12206,11 @@
         "hagezi/dns-blocklists",
         "sve1r/Rules-For-Quantumult-X"
       ],
-      "left_count": 681280,
+      "left_count": 677824,
       "right_count": 106541,
-      "overlap_count": 41421,
-      "jaccard": 0.055494,
-      "smaller_set_overlap": 0.38878,
+      "overlap_count": 41438,
+      "jaccard": 0.055777,
+      "smaller_set_overlap": 0.388939,
       "shared_domain_sample": [
         "0.myikas.com",
         "0019x.com",
@@ -12268,11 +12270,11 @@
         "hagezi/dns-blocklists",
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
-      "left_count": 681280,
+      "left_count": 677824,
       "right_count": 53119,
-      "overlap_count": 50678,
-      "jaccard": 0.074121,
-      "smaller_set_overlap": 0.954047,
+      "overlap_count": 50648,
+      "jaccard": 0.07445,
+      "smaller_set_overlap": 0.953482,
       "shared_domain_sample": [
         "000491b06a.com",
         "0017c6c37c.com",
@@ -12281,6 +12283,7 @@
         "00427011ae.com",
         "005ad66f1d.com",
         "00609c257b.com",
+        "007bq3y7e5.com",
         "009f45b51c.com",
         "00a39e6dfd.com",
         "00a4722597.com",
@@ -12322,8 +12325,7 @@
         "0517fd5e92.com",
         "051ss3usg.com",
         "054ii.com",
-        "058d79990c.com",
-        "059f25bd5b.com"
+        "058d79990c.com"
       ]
     },
     {
@@ -12332,11 +12334,11 @@
         "hagezi/dns-blocklists",
         "zangadoprojets/pi-hole-blocklist"
       ],
-      "left_count": 681280,
+      "left_count": 677824,
       "right_count": 57637,
-      "overlap_count": 176,
-      "jaccard": 0.000238,
-      "smaller_set_overlap": 0.003054,
+      "overlap_count": 179,
+      "jaccard": 0.000243,
+      "smaller_set_overlap": 0.003106,
       "shared_domain_sample": [
         "ads.facebook.com",
         "an.facebook.com",
@@ -12396,11 +12398,11 @@
         "hagezi/dns-blocklists",
         "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
       ],
-      "left_count": 681280,
+      "left_count": 677824,
       "right_count": 49793,
-      "overlap_count": 47775,
-      "jaccard": 0.069918,
-      "smaller_set_overlap": 0.959472,
+      "overlap_count": 47691,
+      "jaccard": 0.070141,
+      "smaller_set_overlap": 0.957785,
       "shared_domain_sample": [
         "000491b06a.com",
         "0017c6c37c.com",
@@ -12491,7 +12493,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 346345,
-      "right_count": 235834,
+      "right_count": 235832,
       "overlap_count": 0,
       "jaccard": 0.0,
       "smaller_set_overlap": 0.0,
@@ -12638,7 +12640,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 16125,
-      "right_count": 235834,
+      "right_count": 235832,
       "overlap_count": 2,
       "jaccard": 8e-06,
       "smaller_set_overlap": 0.000124,
@@ -12872,7 +12874,7 @@
         "phishdestroy/destroylist"
       ],
       "left_count": 249406,
-      "right_count": 235834,
+      "right_count": 235832,
       "overlap_count": 11865,
       "jaccard": 0.025065,
       "smaller_set_overlap": 0.050311,
@@ -13155,7 +13157,7 @@
         "phishdestroy/destroylist",
         "sefinek/Sefinek-Blocklist-Collection"
       ],
-      "left_count": 235834,
+      "left_count": 235832,
       "right_count": 81,
       "overlap_count": 1,
       "jaccard": 4e-06,
@@ -13170,7 +13172,7 @@
         "phishdestroy/destroylist",
         "sve1r/Rules-For-Quantumult-X"
       ],
-      "left_count": 235834,
+      "left_count": 235832,
       "right_count": 106541,
       "overlap_count": 13,
       "jaccard": 3.8e-05,
@@ -13197,7 +13199,7 @@
         "phishdestroy/destroylist",
         "tumblemelon/Shadowrocket-ADBlock-Rules-Forever"
       ],
-      "left_count": 235834,
+      "left_count": 235832,
       "right_count": 53119,
       "overlap_count": 11,
       "jaccard": 3.8e-05,
@@ -13222,7 +13224,7 @@
         "phishdestroy/destroylist",
         "zangadoprojets/pi-hole-blocklist"
       ],
-      "left_count": 235834,
+      "left_count": 235832,
       "right_count": 57637,
       "overlap_count": 0,
       "jaccard": 0.0,
@@ -13235,7 +13237,7 @@
         "phishdestroy/destroylist",
         "zhouzhouprogram/Shadowrocket-ADBlock-Rules"
       ],
-      "left_count": 235834,
+      "left_count": 235832,
       "right_count": 49793,
       "overlap_count": 10,
       "jaccard": 3.5e-05,
@@ -13548,7 +13550,7 @@
       "shared_domain_sample": []
     }
   ],
-  "cross_policy_conflict_domain_count": 3497,
+  "cross_policy_conflict_domain_count": 3495,
   "cross_policy_conflict_sample": [
     {
       "domain": "000webhost.com",

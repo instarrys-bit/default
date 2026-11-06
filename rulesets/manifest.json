@@ -179,8 +179,8 @@
     },
     {
       "id": "hagezi-domains-pro",
-      "sha256": "96cc6271c6d58313d88f69642f7987abf4c01094e286d4b2aa42f0c0ea8cf336",
-      "entries": 223594,
+      "sha256": "fad274bc604ebae6120ad106cecf926719fbbcd92a8ae103105fd41b85ba2766",
+      "entries": 222630,
       "classification": "REJECT",
       "role": "independent_adblock_corroboration",
       "lineage_status": "partial",
@@ -257,8 +257,8 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 27954,
-      "removed_entries": 16138,
+      "new_entries": 798,
+      "removed_entries": 1762,
       "baseline_initialized": false,
       "bootstrap_enqueued": false
     },
@@ -344,8 +344,159 @@
   "published_rule_total": 3414,
   "max_published_rules": 30000,
   "queued_rule_total": 0,
-  "baseline_conflict_hold_count": 0,
-  "baseline_conflict_hold_sample": [],
+  "baseline_conflict_hold_count": 15,
+  "baseline_conflict_hold_sample": [
+    {
+      "domain": "a.omappapi.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L248: DOMAIN-SUFFIX,omappapi.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "adjust.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L269: DOMAIN-SUFFIX,adjust.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "appsflyer.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L315: DOMAIN-SUFFIX,appsflyer.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "dig.bdurl.net",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L317: DOMAIN-SUFFIX,dig.bdurl.net,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "js-agent.newrelic.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L324: DOMAIN-SUFFIX,newrelic.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "kochava.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L279: DOMAIN-SUFFIX,kochava.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "ls.hit.gemius.pl",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L277: DOMAIN-SUFFIX,gemius.pl,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "omappapi.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L248: DOMAIN-SUFFIX,omappapi.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "pips.taboola.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L254: DOMAIN-SUFFIX,taboola.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "segment.io",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L292: DOMAIN-SUFFIX,segment.io,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "t.appsflyer.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L315: DOMAIN-SUFFIX,appsflyer.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "track.tenjin.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L143: DOMAIN,track.tenjin.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "track.tenjin.io",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L187: DOMAIN,track.tenjin.io,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "trc.taboola.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L254: DOMAIN-SUFFIX,taboola.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "yoyi.tv",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L345: DOMAIN-SUFFIX,yoyi.tv,REJECT [REJECT]",
+      "effective_config_policy": null
+    }
+  ],
   "pending_queue": "rulesets/pending_queue.json",
   "rule_lifecycle": {
     "DIRECT": {
@@ -387,13 +538,41 @@
   "held_total": 163233,
   "reject_manual_approval_required": true,
   "reject_manual_approval_count": 0,
-  "reject_manual_hold_count": 56571,
+  "reject_manual_hold_count": 686,
+  "reject_secondary_review": {
+    "candidate_count": 128090,
+    "first_stage_held_by_status": {
+      "CONFLICT": 36354,
+      "POLICY_CONFLICT": 646,
+      "REVIEW": 81372,
+      "RISK_HOLD": 9
+    },
+    "eligible_for_manual_approval_count": 686,
+    "pending_manual_approval_count": 686,
+    "manual_approval_outside_shortlist_count": 0,
+    "held_reason_counts": {
+      "first_stage_conflict": 36354,
+      "first_stage_policy_conflict": 646,
+      "first_stage_review": 81372,
+      "first_stage_risk_hold": 9,
+      "insufficient_current_sources": 9002,
+      "missing_specialist_adblock_source": 57
+    },
+    "minimum_current_sources": 3,
+    "minimum_independent_publishers": 2,
+    "required_any_sources": [
+      "hagezi-domains-pro",
+      "sr-adblock-domain-lite"
+    ],
+    "manual_approval_required": true,
+    "queue_path": "rulesets/reject_review_queue.json"
+  },
   "status_count": {
     "ALREADY_COVERED": 9544,
-    "APPROVED": 59943,
-    "CONFLICT": 36953,
+    "APPROVED": 13075,
+    "CONFLICT": 36961,
     "POLICY_CONFLICT": 714,
-    "REVIEW": 59434,
+    "REVIEW": 106294,
     "RISK_HOLD": 16
   },
   "deterministic_review_progress": {
@@ -402,10 +581,10 @@
     "held_total": 163233,
     "status_count": {
       "ALREADY_COVERED": 9544,
-      "APPROVED": 59943,
-      "CONFLICT": 36953,
+      "APPROVED": 13075,
+      "CONFLICT": 36961,
       "POLICY_CONFLICT": 714,
-      "REVIEW": 59434,
+      "REVIEW": 106294,
       "RISK_HOLD": 16
     }
   },

@@ -3,7 +3,7 @@
 This report compares normalized domain sets across discovered publisher feeds. It is informational only: overlap does not prove common ancestry, and low overlap does not prove independence.
 
 - Feeds fetched: **196**
-- Cross-policy conflict domains: **3497**
+- Cross-policy conflict domains: **3495**
 
 | Policy | Publisher A | Publisher B | A domains | B domains | Shared | Smaller-set overlap | Jaccard |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -131,11 +131,11 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | GoodnessJSON/PiHole-Whitelist | badmojr/1Hosts | 270 | 0 | 0 | 0.0% | 0.0% |
 | REJECT | GoodnessJSON/PiHole-Whitelist | furkan-bayrak/lg-tv-blocklist | 270 | 115 | 0 | 0.0% | 0.0% |
 | REJECT | GoodnessJSON/PiHole-Whitelist | h2y/Shadowrocket-ADBlock-Rules | 270 | 16125 | 3 | 1.1% | 0.0% |
-| REJECT | GoodnessJSON/PiHole-Whitelist | hagezi/dns-blocklists | 270 | 681280 | 47 | 17.4% | 0.0% |
+| REJECT | GoodnessJSON/PiHole-Whitelist | hagezi/dns-blocklists | 270 | 677824 | 48 | 17.8% | 0.0% |
 | REJECT | GoodnessJSON/PiHole-Whitelist | marco-acorte/antispam-it | 270 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | GoodnessJSON/PiHole-Whitelist | nthack/Shadowrocket-ADBlock-Rules-Easy | 270 | 16125 | 3 | 1.1% | 0.0% |
 | REJECT | GoodnessJSON/PiHole-Whitelist | pengelana/blocklist | 270 | 249406 | 2 | 0.7% | 0.0% |
-| REJECT | GoodnessJSON/PiHole-Whitelist | phishdestroy/destroylist | 270 | 235834 | 0 | 0.0% | 0.0% |
+| REJECT | GoodnessJSON/PiHole-Whitelist | phishdestroy/destroylist | 270 | 235832 | 0 | 0.0% | 0.0% |
 | REJECT | GoodnessJSON/PiHole-Whitelist | sefinek/Sefinek-Blocklist-Collection | 270 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | GoodnessJSON/PiHole-Whitelist | sve1r/Rules-For-Quantumult-X | 270 | 106541 | 35 | 13.0% | 0.0% |
 | REJECT | GoodnessJSON/PiHole-Whitelist | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 270 | 53119 | 21 | 7.8% | 0.0% |
@@ -150,11 +150,11 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | Hackl0us/SS-Rule-Snippet | badmojr/1Hosts | 580 | 0 | 0 | 0.0% | 0.0% |
 | REJECT | Hackl0us/SS-Rule-Snippet | furkan-bayrak/lg-tv-blocklist | 580 | 115 | 0 | 0.0% | 0.0% |
 | REJECT | Hackl0us/SS-Rule-Snippet | h2y/Shadowrocket-ADBlock-Rules | 580 | 16125 | 137 | 23.6% | 0.8% |
-| REJECT | Hackl0us/SS-Rule-Snippet | hagezi/dns-blocklists | 580 | 681280 | 231 | 39.8% | 0.0% |
+| REJECT | Hackl0us/SS-Rule-Snippet | hagezi/dns-blocklists | 580 | 677824 | 231 | 39.8% | 0.0% |
 | REJECT | Hackl0us/SS-Rule-Snippet | marco-acorte/antispam-it | 580 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | Hackl0us/SS-Rule-Snippet | nthack/Shadowrocket-ADBlock-Rules-Easy | 580 | 16125 | 137 | 23.6% | 0.8% |
 | REJECT | Hackl0us/SS-Rule-Snippet | pengelana/blocklist | 580 | 249406 | 45 | 7.8% | 0.0% |
-| REJECT | Hackl0us/SS-Rule-Snippet | phishdestroy/destroylist | 580 | 235834 | 0 | 0.0% | 0.0% |
+| REJECT | Hackl0us/SS-Rule-Snippet | phishdestroy/destroylist | 580 | 235832 | 0 | 0.0% | 0.0% |
 | REJECT | Hackl0us/SS-Rule-Snippet | sefinek/Sefinek-Blocklist-Collection | 580 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | Hackl0us/SS-Rule-Snippet | sve1r/Rules-For-Quantumult-X | 580 | 106541 | 511 | 88.1% | 0.5% |
 | REJECT | Hackl0us/SS-Rule-Snippet | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 580 | 53119 | 136 | 23.4% | 0.3% |
@@ -168,11 +168,11 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | Isaaker/Spotify-AdsList | badmojr/1Hosts | 155422 | 0 | 0 | 0.0% | 0.0% |
 | REJECT | Isaaker/Spotify-AdsList | furkan-bayrak/lg-tv-blocklist | 155422 | 115 | 4 | 3.5% | 0.0% |
 | REJECT | Isaaker/Spotify-AdsList | h2y/Shadowrocket-ADBlock-Rules | 155422 | 16125 | 2553 | 15.8% | 1.5% |
-| REJECT | Isaaker/Spotify-AdsList | hagezi/dns-blocklists | 155422 | 681280 | 17403 | 11.2% | 2.1% |
+| REJECT | Isaaker/Spotify-AdsList | hagezi/dns-blocklists | 155422 | 677824 | 17414 | 11.2% | 2.1% |
 | REJECT | Isaaker/Spotify-AdsList | marco-acorte/antispam-it | 155422 | 346345 | 3 | 0.0% | 0.0% |
 | REJECT | Isaaker/Spotify-AdsList | nthack/Shadowrocket-ADBlock-Rules-Easy | 155422 | 16125 | 2553 | 15.8% | 1.5% |
 | REJECT | Isaaker/Spotify-AdsList | pengelana/blocklist | 155422 | 249406 | 4021 | 2.6% | 1.0% |
-| REJECT | Isaaker/Spotify-AdsList | phishdestroy/destroylist | 155422 | 235834 | 10 | 0.0% | 0.0% |
+| REJECT | Isaaker/Spotify-AdsList | phishdestroy/destroylist | 155422 | 235832 | 10 | 0.0% | 0.0% |
 | REJECT | Isaaker/Spotify-AdsList | sefinek/Sefinek-Blocklist-Collection | 155422 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | Isaaker/Spotify-AdsList | sve1r/Rules-For-Quantumult-X | 155422 | 106541 | 9595 | 9.0% | 3.8% |
 | REJECT | Isaaker/Spotify-AdsList | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 155422 | 53119 | 4110 | 7.7% | 2.0% |
@@ -185,11 +185,11 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | badmojr/1Hosts | 53127 | 0 | 0 | 0.0% | 0.0% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | furkan-bayrak/lg-tv-blocklist | 53127 | 115 | 3 | 2.6% | 0.0% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | h2y/Shadowrocket-ADBlock-Rules | 53127 | 16125 | 2250 | 14.0% | 3.4% |
-| REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | hagezi/dns-blocklists | 53127 | 681280 | 50684 | 95.4% | 7.4% |
+| REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | hagezi/dns-blocklists | 53127 | 677824 | 50599 | 95.2% | 7.4% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | marco-acorte/antispam-it | 53127 | 346345 | 2 | 0.0% | 0.0% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | nthack/Shadowrocket-ADBlock-Rules-Easy | 53127 | 16125 | 2250 | 14.0% | 3.4% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | pengelana/blocklist | 53127 | 249406 | 41267 | 77.7% | 15.8% |
-| REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | phishdestroy/destroylist | 53127 | 235834 | 11 | 0.0% | 0.0% |
+| REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | phishdestroy/destroylist | 53127 | 235832 | 11 | 0.0% | 0.0% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | sefinek/Sefinek-Blocklist-Collection | 53127 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | sve1r/Rules-For-Quantumult-X | 53127 | 106541 | 21928 | 41.3% | 15.9% |
 | REJECT | Johnshall/Shadowrocket-ADBlock-Rules-Forever | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 53127 | 53119 | 53059 | 99.9% | 99.8% |
@@ -201,11 +201,11 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | badmojr/1Hosts | 45081 | 0 | 0 | 0.0% | 0.0% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | furkan-bayrak/lg-tv-blocklist | 45081 | 115 | 3 | 2.6% | 0.0% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | h2y/Shadowrocket-ADBlock-Rules | 45081 | 16125 | 2718 | 16.9% | 4.6% |
-| REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | hagezi/dns-blocklists | 45081 | 681280 | 15546 | 34.5% | 2.2% |
+| REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | hagezi/dns-blocklists | 45081 | 677824 | 15546 | 34.5% | 2.2% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | marco-acorte/antispam-it | 45081 | 346345 | 2 | 0.0% | 0.0% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | nthack/Shadowrocket-ADBlock-Rules-Easy | 45081 | 16125 | 2718 | 16.9% | 4.6% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | pengelana/blocklist | 45081 | 249406 | 10850 | 24.1% | 3.8% |
-| REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | phishdestroy/destroylist | 45081 | 235834 | 9 | 0.0% | 0.0% |
+| REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | phishdestroy/destroylist | 45081 | 235832 | 9 | 0.0% | 0.0% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | sefinek/Sefinek-Blocklist-Collection | 45081 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | sve1r/Rules-For-Quantumult-X | 45081 | 106541 | 22702 | 50.4% | 17.6% |
 | REJECT | NZNL31/Shadowrocket-Ad-DNS-Leak-Rules | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 45081 | 53119 | 13729 | 30.5% | 16.3% |
@@ -216,11 +216,11 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | badmojr/1Hosts | 969 | 0 | 0 | 0.0% | 0.0% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | furkan-bayrak/lg-tv-blocklist | 969 | 115 | 0 | 0.0% | 0.0% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | h2y/Shadowrocket-ADBlock-Rules | 969 | 16125 | 27 | 2.8% | 0.2% |
-| REJECT | TG-Twilight/AWAvenue-Ads-Rule | hagezi/dns-blocklists | 969 | 681280 | 732 | 75.5% | 0.1% |
+| REJECT | TG-Twilight/AWAvenue-Ads-Rule | hagezi/dns-blocklists | 969 | 677824 | 732 | 75.5% | 0.1% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | marco-acorte/antispam-it | 969 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | nthack/Shadowrocket-ADBlock-Rules-Easy | 969 | 16125 | 27 | 2.8% | 0.2% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | pengelana/blocklist | 969 | 249406 | 57 | 5.9% | 0.0% |
-| REJECT | TG-Twilight/AWAvenue-Ads-Rule | phishdestroy/destroylist | 969 | 235834 | 0 | 0.0% | 0.0% |
+| REJECT | TG-Twilight/AWAvenue-Ads-Rule | phishdestroy/destroylist | 969 | 235832 | 0 | 0.0% | 0.0% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | sefinek/Sefinek-Blocklist-Collection | 969 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | sve1r/Rules-For-Quantumult-X | 969 | 106541 | 705 | 72.8% | 0.7% |
 | REJECT | TG-Twilight/AWAvenue-Ads-Rule | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 969 | 53119 | 63 | 6.5% | 0.1% |
@@ -230,11 +230,11 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | badmojr/1Hosts | 17028 | 0 | 0 | 0.0% | 0.0% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | furkan-bayrak/lg-tv-blocklist | 17028 | 115 | 0 | 0.0% | 0.0% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | h2y/Shadowrocket-ADBlock-Rules | 17028 | 16125 | 16125 | 100.0% | 94.7% |
-| REJECT | YanbingJiang/Shadowrocket_diy_rules | hagezi/dns-blocklists | 17028 | 681280 | 3186 | 18.7% | 0.5% |
+| REJECT | YanbingJiang/Shadowrocket_diy_rules | hagezi/dns-blocklists | 17028 | 677824 | 3189 | 18.7% | 0.5% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | marco-acorte/antispam-it | 17028 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | nthack/Shadowrocket-ADBlock-Rules-Easy | 17028 | 16125 | 16125 | 100.0% | 94.7% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | pengelana/blocklist | 17028 | 249406 | 1490 | 8.8% | 0.6% |
-| REJECT | YanbingJiang/Shadowrocket_diy_rules | phishdestroy/destroylist | 17028 | 235834 | 4 | 0.0% | 0.0% |
+| REJECT | YanbingJiang/Shadowrocket_diy_rules | phishdestroy/destroylist | 17028 | 235832 | 4 | 0.0% | 0.0% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | sefinek/Sefinek-Blocklist-Collection | 17028 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | sve1r/Rules-For-Quantumult-X | 17028 | 106541 | 4189 | 24.6% | 3.5% |
 | REJECT | YanbingJiang/Shadowrocket_diy_rules | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 17028 | 53119 | 2446 | 14.4% | 3.6% |
@@ -243,11 +243,11 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | anudeepND/whitelist | badmojr/1Hosts | 267 | 0 | 0 | 0.0% | 0.0% |
 | REJECT | anudeepND/whitelist | furkan-bayrak/lg-tv-blocklist | 267 | 115 | 0 | 0.0% | 0.0% |
 | REJECT | anudeepND/whitelist | h2y/Shadowrocket-ADBlock-Rules | 267 | 16125 | 3 | 1.1% | 0.0% |
-| REJECT | anudeepND/whitelist | hagezi/dns-blocklists | 267 | 681280 | 46 | 17.2% | 0.0% |
+| REJECT | anudeepND/whitelist | hagezi/dns-blocklists | 267 | 677824 | 47 | 17.6% | 0.0% |
 | REJECT | anudeepND/whitelist | marco-acorte/antispam-it | 267 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | anudeepND/whitelist | nthack/Shadowrocket-ADBlock-Rules-Easy | 267 | 16125 | 3 | 1.1% | 0.0% |
 | REJECT | anudeepND/whitelist | pengelana/blocklist | 267 | 249406 | 2 | 0.7% | 0.0% |
-| REJECT | anudeepND/whitelist | phishdestroy/destroylist | 267 | 235834 | 0 | 0.0% | 0.0% |
+| REJECT | anudeepND/whitelist | phishdestroy/destroylist | 267 | 235832 | 0 | 0.0% | 0.0% |
 | REJECT | anudeepND/whitelist | sefinek/Sefinek-Blocklist-Collection | 267 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | anudeepND/whitelist | sve1r/Rules-For-Quantumult-X | 267 | 106541 | 35 | 13.1% | 0.0% |
 | REJECT | anudeepND/whitelist | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 267 | 53119 | 21 | 7.9% | 0.0% |
@@ -255,72 +255,72 @@ This report compares normalized domain sets across discovered publisher feeds. I
 | REJECT | anudeepND/whitelist | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 267 | 49793 | 12 | 4.5% | 0.0% |
 | REJECT | badmojr/1Hosts | furkan-bayrak/lg-tv-blocklist | 0 | 115 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | h2y/Shadowrocket-ADBlock-Rules | 0 | 16125 | 0 | 0.0% | 0.0% |
-| REJECT | badmojr/1Hosts | hagezi/dns-blocklists | 0 | 681280 | 0 | 0.0% | 0.0% |
+| REJECT | badmojr/1Hosts | hagezi/dns-blocklists | 0 | 677824 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | marco-acorte/antispam-it | 0 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | nthack/Shadowrocket-ADBlock-Rules-Easy | 0 | 16125 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | pengelana/blocklist | 0 | 249406 | 0 | 0.0% | 0.0% |
-| REJECT | badmojr/1Hosts | phishdestroy/destroylist | 0 | 235834 | 0 | 0.0% | 0.0% |
+| REJECT | badmojr/1Hosts | phishdestroy/destroylist | 0 | 235832 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | sefinek/Sefinek-Blocklist-Collection | 0 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | sve1r/Rules-For-Quantumult-X | 0 | 106541 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 0 | 53119 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | zangadoprojets/pi-hole-blocklist | 0 | 57637 | 0 | 0.0% | 0.0% |
 | REJECT | badmojr/1Hosts | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 0 | 49793 | 0 | 0.0% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | h2y/Shadowrocket-ADBlock-Rules | 115 | 16125 | 0 | 0.0% | 0.0% |
-| REJECT | furkan-bayrak/lg-tv-blocklist | hagezi/dns-blocklists | 115 | 681280 | 6 | 5.2% | 0.0% |
+| REJECT | furkan-bayrak/lg-tv-blocklist | hagezi/dns-blocklists | 115 | 677824 | 6 | 5.2% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | marco-acorte/antispam-it | 115 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | nthack/Shadowrocket-ADBlock-Rules-Easy | 115 | 16125 | 0 | 0.0% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | pengelana/blocklist | 115 | 249406 | 1 | 0.9% | 0.0% |
-| REJECT | furkan-bayrak/lg-tv-blocklist | phishdestroy/destroylist | 115 | 235834 | 0 | 0.0% | 0.0% |
+| REJECT | furkan-bayrak/lg-tv-blocklist | phishdestroy/destroylist | 115 | 235832 | 0 | 0.0% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | sefinek/Sefinek-Blocklist-Collection | 115 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | sve1r/Rules-For-Quantumult-X | 115 | 106541 | 3 | 2.6% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 115 | 53119 | 3 | 2.6% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | zangadoprojets/pi-hole-blocklist | 115 | 57637 | 0 | 0.0% | 0.0% |
 | REJECT | furkan-bayrak/lg-tv-blocklist | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 115 | 49793 | 3 | 2.6% | 0.0% |
-| REJECT | h2y/Shadowrocket-ADBlock-Rules | hagezi/dns-blocklists | 16125 | 681280 | 2609 | 16.2% | 0.4% |
+| REJECT | h2y/Shadowrocket-ADBlock-Rules | hagezi/dns-blocklists | 16125 | 677824 | 2612 | 16.2% | 0.4% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | marco-acorte/antispam-it | 16125 | 346345 | 0 | 0.0% | 0.0% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | nthack/Shadowrocket-ADBlock-Rules-Easy | 16125 | 16125 | 16125 | 100.0% | 100.0% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | pengelana/blocklist | 16125 | 249406 | 1285 | 8.0% | 0.5% |
-| REJECT | h2y/Shadowrocket-ADBlock-Rules | phishdestroy/destroylist | 16125 | 235834 | 2 | 0.0% | 0.0% |
+| REJECT | h2y/Shadowrocket-ADBlock-Rules | phishdestroy/destroylist | 16125 | 235832 | 2 | 0.0% | 0.0% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | sefinek/Sefinek-Blocklist-Collection | 16125 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | sve1r/Rules-For-Quantumult-X | 16125 | 106541 | 3575 | 22.2% | 3.0% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 16125 | 53119 | 2249 | 13.9% | 3.4% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | zangadoprojets/pi-hole-blocklist | 16125 | 57637 | 0 | 0.0% | 0.0% |
 | REJECT | h2y/Shadowrocket-ADBlock-Rules | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 16125 | 49793 | 2230 | 13.8% | 3.5% |
-| REJECT | hagezi/dns-blocklists | marco-acorte/antispam-it | 681280 | 346345 | 56 | 0.0% | 0.0% |
-| REJECT | hagezi/dns-blocklists | nthack/Shadowrocket-ADBlock-Rules-Easy | 681280 | 16125 | 2609 | 16.2% | 0.4% |
-| REJECT | hagezi/dns-blocklists | pengelana/blocklist | 681280 | 249406 | 167626 | 67.2% | 22.0% |
-| REJECT | hagezi/dns-blocklists | phishdestroy/destroylist | 681280 | 235834 | 9832 | 4.2% | 1.1% |
-| REJECT | hagezi/dns-blocklists | sefinek/Sefinek-Blocklist-Collection | 681280 | 81 | 2 | 2.5% | 0.0% |
-| REJECT | hagezi/dns-blocklists | sve1r/Rules-For-Quantumult-X | 681280 | 106541 | 41421 | 38.9% | 5.5% |
-| REJECT | hagezi/dns-blocklists | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 681280 | 53119 | 50678 | 95.4% | 7.4% |
-| REJECT | hagezi/dns-blocklists | zangadoprojets/pi-hole-blocklist | 681280 | 57637 | 176 | 0.3% | 0.0% |
-| REJECT | hagezi/dns-blocklists | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 681280 | 49793 | 47775 | 95.9% | 7.0% |
+| REJECT | hagezi/dns-blocklists | marco-acorte/antispam-it | 677824 | 346345 | 56 | 0.0% | 0.0% |
+| REJECT | hagezi/dns-blocklists | nthack/Shadowrocket-ADBlock-Rules-Easy | 677824 | 16125 | 2612 | 16.2% | 0.4% |
+| REJECT | hagezi/dns-blocklists | pengelana/blocklist | 677824 | 249406 | 167342 | 67.1% | 22.0% |
+| REJECT | hagezi/dns-blocklists | phishdestroy/destroylist | 677824 | 235832 | 9806 | 4.2% | 1.1% |
+| REJECT | hagezi/dns-blocklists | sefinek/Sefinek-Blocklist-Collection | 677824 | 81 | 2 | 2.5% | 0.0% |
+| REJECT | hagezi/dns-blocklists | sve1r/Rules-For-Quantumult-X | 677824 | 106541 | 41438 | 38.9% | 5.6% |
+| REJECT | hagezi/dns-blocklists | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 677824 | 53119 | 50648 | 95.3% | 7.4% |
+| REJECT | hagezi/dns-blocklists | zangadoprojets/pi-hole-blocklist | 677824 | 57637 | 179 | 0.3% | 0.0% |
+| REJECT | hagezi/dns-blocklists | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 677824 | 49793 | 47691 | 95.8% | 7.0% |
 | REJECT | marco-acorte/antispam-it | nthack/Shadowrocket-ADBlock-Rules-Easy | 346345 | 16125 | 0 | 0.0% | 0.0% |
 | REJECT | marco-acorte/antispam-it | pengelana/blocklist | 346345 | 249406 | 3 | 0.0% | 0.0% |
-| REJECT | marco-acorte/antispam-it | phishdestroy/destroylist | 346345 | 235834 | 0 | 0.0% | 0.0% |
+| REJECT | marco-acorte/antispam-it | phishdestroy/destroylist | 346345 | 235832 | 0 | 0.0% | 0.0% |
 | REJECT | marco-acorte/antispam-it | sefinek/Sefinek-Blocklist-Collection | 346345 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | marco-acorte/antispam-it | sve1r/Rules-For-Quantumult-X | 346345 | 106541 | 1 | 0.0% | 0.0% |
 | REJECT | marco-acorte/antispam-it | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 346345 | 53119 | 2 | 0.0% | 0.0% |
 | REJECT | marco-acorte/antispam-it | zangadoprojets/pi-hole-blocklist | 346345 | 57637 | 0 | 0.0% | 0.0% |
 | REJECT | marco-acorte/antispam-it | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 346345 | 49793 | 0 | 0.0% | 0.0% |
 | REJECT | nthack/Shadowrocket-ADBlock-Rules-Easy | pengelana/blocklist | 16125 | 249406 | 1285 | 8.0% | 0.5% |
-| REJECT | nthack/Shadowrocket-ADBlock-Rules-Easy | phishdestroy/destroylist | 16125 | 235834 | 2 | 0.0% | 0.0% |
+| REJECT | nthack/Shadowrocket-ADBlock-Rules-Easy | phishdestroy/destroylist | 16125 | 235832 | 2 | 0.0% | 0.0% |
 | REJECT | nthack/Shadowrocket-ADBlock-Rules-Easy | sefinek/Sefinek-Blocklist-Collection | 16125 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | nthack/Shadowrocket-ADBlock-Rules-Easy | sve1r/Rules-For-Quantumult-X | 16125 | 106541 | 3575 | 22.2% | 3.0% |
 | REJECT | nthack/Shadowrocket-ADBlock-Rules-Easy | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 16125 | 53119 | 2249 | 13.9% | 3.4% |
 | REJECT | nthack/Shadowrocket-ADBlock-Rules-Easy | zangadoprojets/pi-hole-blocklist | 16125 | 57637 | 0 | 0.0% | 0.0% |
 | REJECT | nthack/Shadowrocket-ADBlock-Rules-Easy | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 16125 | 49793 | 2230 | 13.8% | 3.5% |
-| REJECT | pengelana/blocklist | phishdestroy/destroylist | 249406 | 235834 | 11865 | 5.0% | 2.5% |
+| REJECT | pengelana/blocklist | phishdestroy/destroylist | 249406 | 235832 | 11865 | 5.0% | 2.5% |
 | REJECT | pengelana/blocklist | sefinek/Sefinek-Blocklist-Collection | 249406 | 81 | 0 | 0.0% | 0.0% |
 | REJECT | pengelana/blocklist | sve1r/Rules-For-Quantumult-X | 249406 | 106541 | 20403 | 19.2% | 6.1% |
 | REJECT | pengelana/blocklist | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 249406 | 53119 | 41268 | 77.7% | 15.8% |
 | REJECT | pengelana/blocklist | zangadoprojets/pi-hole-blocklist | 249406 | 57637 | 1 | 0.0% | 0.0% |
 | REJECT | pengelana/blocklist | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 249406 | 49793 | 40743 | 81.8% | 15.8% |
-| REJECT | phishdestroy/destroylist | sefinek/Sefinek-Blocklist-Collection | 235834 | 81 | 1 | 1.2% | 0.0% |
-| REJECT | phishdestroy/destroylist | sve1r/Rules-For-Quantumult-X | 235834 | 106541 | 13 | 0.0% | 0.0% |
-| REJECT | phishdestroy/destroylist | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 235834 | 53119 | 11 | 0.0% | 0.0% |
-| REJECT | phishdestroy/destroylist | zangadoprojets/pi-hole-blocklist | 235834 | 57637 | 0 | 0.0% | 0.0% |
-| REJECT | phishdestroy/destroylist | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 235834 | 49793 | 10 | 0.0% | 0.0% |
+| REJECT | phishdestroy/destroylist | sefinek/Sefinek-Blocklist-Collection | 235832 | 81 | 1 | 1.2% | 0.0% |
+| REJECT | phishdestroy/destroylist | sve1r/Rules-For-Quantumult-X | 235832 | 106541 | 13 | 0.0% | 0.0% |
+| REJECT | phishdestroy/destroylist | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 235832 | 53119 | 11 | 0.0% | 0.0% |
+| REJECT | phishdestroy/destroylist | zangadoprojets/pi-hole-blocklist | 235832 | 57637 | 0 | 0.0% | 0.0% |
+| REJECT | phishdestroy/destroylist | zhouzhouprogram/Shadowrocket-ADBlock-Rules | 235832 | 49793 | 10 | 0.0% | 0.0% |
 | REJECT | sefinek/Sefinek-Blocklist-Collection | sve1r/Rules-For-Quantumult-X | 81 | 106541 | 0 | 0.0% | 0.0% |
 | REJECT | sefinek/Sefinek-Blocklist-Collection | tumblemelon/Shadowrocket-ADBlock-Rules-Forever | 81 | 53119 | 0 | 0.0% | 0.0% |
 | REJECT | sefinek/Sefinek-Blocklist-Collection | zangadoprojets/pi-hole-blocklist | 81 | 57637 | 0 | 0.0% | 0.0% |
@@ -334,7 +334,7 @@ This report compares normalized domain sets across discovered publisher feeds. I
 
 ## Cross-policy contradictions
 
-Detected domains appearing under more than one policy: **3497**
+Detected domains appearing under more than one policy: **3495**
 
 - `000webhost.com`: PROXY, REJECT
 - `01122200.com`: PROXY, REJECT

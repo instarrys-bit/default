@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "completed_at": "2026-11-06T07:58:36.646915+00:00",
+  "completed_at": "2026-11-06T12:53:13.250739+00:00",
   "config_path": "modules/uu.conf",
   "config_read_only": true,
   "config_blob_sha": "3fd91b257dbd7a66bab2d0d7f5692cd03def2002",
@@ -929,10 +929,10 @@
   ],
   "policy": "Candidates fully covered by an explicit DOMAIN or DOMAIN-SUFFIX rule with DIRECT, PROXY, or REJECT policy in uu.conf, or fully covered by skip-proxy, are removed from published and queued external rules. The uu.conf policy wins regardless of whether it matches the external policy. Narrower exact or child-suffix exceptions do not remove broader parent suffix candidates. Rule order and precedence are not evaluated. Historical archive entries are rechecked against current full-scope coverage and superseded when coverage no longer exists; the normal builder then reconsiders eligible records using current evidence and publication gates. Keyword, regex, conditional, and partial overlaps are not automatically resolved.",
   "errors": [],
-  "workflow_run_id": "42180739206",
+  "workflow_run_id": "42216788339",
   "sync_passes": [
     {
-      "completed_at": "2026-11-06T07:46:46.529733+00:00",
+      "completed_at": "2026-11-06T12:40:51.587621+00:00",
       "published_before": {
         "DIRECT": 147,
         "PROXY": 3261,
@@ -950,7 +950,7 @@
       "restore_refused_count": 0
     },
     {
-      "completed_at": "2026-11-06T07:58:36.646915+00:00",
+      "completed_at": "2026-11-06T12:53:13.250739+00:00",
       "published_before": {
         "DIRECT": 147,
         "PROXY": 3261,
