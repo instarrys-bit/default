@@ -1,49 +1,20 @@
-# Shadowrocket Ruleset Automation
+# Shadowrocket Automation Core
 
-A lightweight, deterministic project that collects, filters, and publishes three Shadowrocket rule sets: **DIRECT**, **PROXY**, and **REJECT**.
+This repository contains four maintained components:
 
-## Rule Set Pipeline
+1. **Unattended automation** — GitHub Actions, Watchdog, source collection, deterministic review, human-approval gates, task scheduling, audit, validation, recovery, and tests.
+2. **User configuration** — `modules/uu.conf`. This is user-owned and must remain unchanged by automation.
+3. **Modules and mapped scripts** — `modules/AdBlock.sgmodule` and its mapped script at `modules/adblock/scripts/Clean_Pro.js`.
+4. **Published rule sets** — `rulesets/direct.list`, `rulesets/proxy.list`, `rulesets/reject.list`, and `rulesets/manifest.json`.
 
-1. **Collect** — discover approved sources and gather domain candidates.
-2. **Filter** — normalize candidates, compare evidence, resolve conflicts, and apply policy checks.
-3. **Publish** — build, validate, and publish the three rule sets.
+## Subscription
 
-Published rule sets:
-
-- [DIRECT](rulesets/direct.list)
-- [PROXY](rulesets/proxy.list)
-- [REJECT](rulesets/reject.list)
-
-Manifest: [rulesets/manifest.json](rulesets/manifest.json).
-
-## Shadowrocket Components
-
-| Component | File | Description |
-|---|---|---|
-| Configuration | [modules/uu.conf](modules/uu.conf) | The main Shadowrocket configuration. It references and uses the published DIRECT, PROXY, and REJECT rule sets. |
-| Module | [modules/AdBlock.sgmodule](modules/AdBlock.sgmodule) | The Shadowrocket ad-blocking module. It defines request rules and maps the cleaning script below. |
-| Script | [modules/adblock/scripts/Clean_Pro.js](modules/adblock/scripts/Clean_Pro.js) | The script loaded by the module to process supported application and web responses. |
-
-The configuration consumes the published rule sets. The module loads its associated script. These are separate functions: the rule-set automation publishes rule data and does not rewrite the configuration, module, or script.
-
-Configuration subscription URL:
-
+Configuration:
 `https://raw.githubusercontent.com/instarrys-bit/default/main/modules/uu.conf`
 
-## Automation and Documentation
+Module:
+`https://raw.githubusercontent.com/instarrys-bit/default/main/modules/AdBlock.sgmodule`
 
-GitHub Actions workflows and Python scripts manage source discovery, collection, deterministic review, rule building, validation, and publication.
+Rule sets are built and validated by the automation system. The automation must not modify the user-owned configuration, module, or mapped script. Production rule publication is limited to the authorized rule-set paths.
 
-- [Documentation](docs/README.md)
-- [Project status](reports/project-status.md)
-- [Latest lifecycle report](reports/lifecycle/latest.md)
-- [Configuration conflict report](reports/ruleset-config-conflict-sync.md)
-
-## Safety Boundaries
-
-- Exactly three published policies: DIRECT, PROXY, and REJECT.
-- Rule review is deterministic and has no AI/LLM classification dependency.
-- The combined publication limit is 30,000 unique rules; qualified overflow remains queued.
-- New REJECT rules require human approval.
-- The main configuration is user-owned. Automation may audit it but must never modify it.
-- Static validation does not replace testing in Shadowrocket on the target device.
+Operational source catalogs, review state, reports, and dashboard artifacts are retained only where required by the unattended automation workflows.
