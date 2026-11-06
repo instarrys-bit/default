@@ -135,17 +135,17 @@
   },
   "managed_config_guard": {
     "path": "modules/uu.conf",
-    "approved_git_blob_sha": "fb59b49305b1e3c0deb91b5801d7eea9f4a6b3eb",
+    "approved_git_blob_sha": "2d734989c79939a44689524f367e2f48793a34cc",
     "description": "Authoritative owner-managed Shadowrocket config. Automation may read, identify, hash, diff, and register baseline metadata only after owner verification; it must never rewrite file contents, user-authored rules, or existing functionality.",
     "last_user_approved_baseline_update": {
-      "previous_blob_sha": "301349f5136add40ca217a3d16c73a481351dc09",
-      "new_blob_sha": "fb59b49305b1e3c0deb91b5801d7eea9f4a6b3eb",
+      "previous_blob_sha": "fb59b49305b1e3c0deb91b5801d7eea9f4a6b3eb",
+      "new_blob_sha": "2d734989c79939a44689524f367e2f48793a34cc",
       "reason": "Register the exact config version from an owner-authored push.",
       "approval_mode": "owner_push_changed_config",
       "config_change_commits": [],
       "actor": "instarrys-bit",
-      "commit_sha": "bb8f003b57e9ca38340bdeaed3f3ff773427e5b6",
-      "registered_at": "2026-11-06T19:50:28.361322+00:00"
+      "commit_sha": "76827f27054216fe4ea27cf3788acb0e7cc7794c",
+      "registered_at": "2026-11-06T20:15:39.221517+00:00"
     },
     "content_immutable_to_automation": true,
     "content_protection": {
