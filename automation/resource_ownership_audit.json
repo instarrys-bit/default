@@ -69,7 +69,6 @@
       "tests/test_task_queue.py",
       "tests/test_task_queue_runtime.py",
       "tests/test_workflow_config_guard_order.py",
-      "scripts/capture_git_write_trace.py",
       ".github/workflows/source-discovery.yml"
     ],
     "limitation": "All 54 registered Python components are statically classified. Production audit and publish jobs now upload path-only runtime write traces from the Python filesystem audit hook. Source assessment uses a deterministic producer-scoped retry batch. Persistent shell/Git repository-tree deltas are now captured; transient write-and-revert activity, Git metadata changes, runtime imports not exercised, caller-selected external paths and true cross-run GitHub API behavior are not exhaustively traced or exercised.",
