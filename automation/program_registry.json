@@ -1227,7 +1227,6 @@
         "script_apply_safe_repair",
         "script_assess_sources",
         "script_diagnose_workflow_failure",
-        "script_fenced_file_writer",
         "script_incident_state",
         "script_production_intent",
         "script_refresh_ruleset_manifest",
