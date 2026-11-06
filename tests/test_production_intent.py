@@ -97,6 +97,38 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertIn("modules/uu.conf", entry["classification_reason"])
         self.assertTrue(entry["classification_basis"])
 
+    def test_repository_manifest_classifies_external_intelligence_catalog_as_production_input(self):
+        manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
+        path = "sources/external_intelligence_catalog.json"
+        self.assertIn(path, manifest["production_input_paths"])
+        result = classify_paths([path], manifest)
+        self.assertEqual(result["status"], "INPUT_CHANGED")
+        self.assertEqual(result["production_input_changes"], [path])
+        self.assertEqual(result["unknown_changes"], [])
+        ledger = json.loads((ROOT / "automation" / "unregistered_path_registry.json").read_text(encoding="utf-8"))
+        entry = next(item for item in ledger["entries"] if item["path"] == path)
+        self.assertEqual(entry["status"], "CLASSIFIED_PRODUCTION_INPUT")
+        self.assertTrue(entry["classification_reason"])
+        self.assertTrue(entry["classification_basis"])
+
+    def test_repository_manifest_classifies_retired_restore_inventory_paths_as_non_production(self):
+        manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
+        paths = [
+            ".github/workflows/restore-inventory.yml",
+            "automation/.restore/meta.json",
+            "scripts/restore_inventory_from_chunks.py",
+        ]
+        result = classify_paths(paths, manifest)
+        self.assertEqual(result["status"], "NO_INPUT_CHANGE")
+        self.assertCountEqual(result["non_production_changes"], paths)
+        self.assertEqual(result["unknown_changes"], [])
+        ledger = json.loads((ROOT / "automation" / "unregistered_path_registry.json").read_text(encoding="utf-8"))
+        entries = {item["path"]: item for item in ledger["entries"]}
+        for path in paths:
+            self.assertEqual(entries[path]["status"], "NON_PRODUCTION")
+            self.assertTrue(entries[path]["classification_reason"])
+            self.assertTrue(entries[path]["classification_basis"])
+
     def test_repository_manifest_classifies_governance_metadata_as_non_production(self):
         manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
         paths = [
