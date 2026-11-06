@@ -1370,11 +1370,6 @@
             "name": "domains",
             "type": "string",
             "required": true
-          },
-          {
-            "name": "automation_task_id",
-            "type": "string",
-            "required": false
           }
         ],
         "allowed_refs": [
