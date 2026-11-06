@@ -162,7 +162,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(adapter["allowed_callers"], [])
         self.assertEqual(adapter["dependency_contract"]["producer_workflow_name"], "Shadowrocket Source Discovery (Watchdog)")
 
-    def test_assessment_restore_writer_is_registered_under_shared_mutex(self):
+    def test_assessment_outputs_are_run_scoped_without_repository_restore_writer(self):
         audit = load_json("automation/resource_ownership_audit.json")
         writes = load_json("automation/resource_write_sets.json")
         registry = load_json("automation/program_registry.json")
@@ -171,15 +171,15 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         entry = next(item for item in writes["confirmed_write_sets"] if item["program_id"] == "script_assess_sources")
         self.assertEqual(audit["evidence_scope"]["registry_blob_sha"], git_blob_sha("automation/program_registry.json"))
         self.assertEqual(audit["evidence_scope"]["adapters_blob_sha"], git_blob_sha("automation/execution_adapters.json"))
-        self.assertIn("script_restore_automation_state", group["known_writers"])
+        self.assertNotIn("script_restore_automation_state", group["known_writers"])
         self.assertIn("workflow_auto_sync", group["known_writers"])
-        self.assertIn("script_restore_automation_state", entry["additional_serialized_writers"])
-        self.assertIn("logical/production-pipeline", entry["lease_keys"])
+        self.assertNotIn("script_restore_automation_state", entry.get("additional_serialized_writers", []))
+        self.assertTrue(all(path.startswith("$RUNNER_TEMP/") for path in entry["writes"]))
+        self.assertEqual(entry["publish_resources"], [])
         restore = next(item for item in registry["programs"] if item["id"] == "script_restore_automation_state")
         self.assertFalse(restore["orchestration"]["enabled"])
         self.assertFalse(next(item for item in adapters["adapters"] if item["target_program_id"] == "script_restore_automation_state")["enabled"])
-
-    def test_discovery_step_summary_is_not_a_shared_repository_resource(self):
+    def test_discovery_outputs_are_run_scoped_and_summary_is_ephemeral(self):
         audit = load_json("automation/resource_ownership_audit.json")
         writes = load_json("automation/resource_write_sets.json")
         group = next(item for item in audit["resource_groups"] if item["id"] == "source_discovery_artifacts")
@@ -187,20 +187,18 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertNotIn("GITHUB_STEP_SUMMARY", group["paths"])
         self.assertNotIn("GITHUB_STEP_SUMMARY", entry["writes"])
         self.assertTrue(any(item.startswith("GITHUB_STEP_SUMMARY") for item in entry["ephemeral_outputs"]))
-        self.assertIn("reports/source-discovery.md", entry["writes"])
-        self.assertIn("lease_required=True", entry["write_boundary_fencing"])
-        self.assertIn("reports/source-discovery.md", entry["write_boundary_fencing"])
-
+        self.assertTrue(all(path.startswith("$RUNNER_TEMP/") for path in entry["writes"]))
+        self.assertNotIn("lease_required=True", entry["write_boundary_fencing"])
+        self.assertNotIn("script_restore_automation_state", group["known_writers"])
     def test_dashboard_report_writer_is_registered_in_shared_report_ownership(self):
         audit = load_json("automation/resource_ownership_audit.json")
         writes = load_json("automation/resource_write_sets.json")
         group = next(item for item in audit["resource_groups"] if item["id"] == "reports_and_audit_outputs")
         entry = next(item for item in writes["confirmed_write_sets"] if item["program_id"] == "script_build_project_status")
         self.assertIn("script_build_project_status", group["known_writers"])
-        self.assertIn("reports/project-status.json", entry["writes"])
-        self.assertIn("reports/project-status.md", entry["writes"])
+        self.assertIn("$RUNNER_TEMP/production-workspace/reports/project-status.json", entry["writes"])
+        self.assertIn("$RUNNER_TEMP/production-workspace/reports/project-status.md", entry["writes"])
         self.assertIn("scripts/build_project_status.py", audit["evidence_scope"]["inspected_sources"])
-
     def test_assessment_contract_dependency_matches_registry(self):
         registry = load_json("automation/program_registry.json")
         inventory = load_json("automation/capability_contract_inventory.json")
@@ -322,31 +320,18 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         writes = load_json("automation/resource_write_sets.json")
         entries = {item["program_id"]: item for item in writes["confirmed_write_sets"]}
         required = {
-            "script_lifecycle_gate",
-            "script_import_request_observations",
-            "script_build_rule_provenance",
-            "script_restore_automation_state",
-            "script_apply_safe_repair",
-            "script_diagnose_workflow_failure",
-            "script_incident_state",
-            "script_production_intent",
-            "script_task_scheduler",
-            "script_build_dashboard_snapshot",
-            "script_append_step_summary",
-            "script_auto_activate_sources",
-            "script_audit_source_lineage",
-            "script_audit_policy_source_overlap",
-            "script_audit_external_domains",
-            "script_audit_config_drift",
-            "script_audit_ruleset_references",
-            "script_audit_ruleset_config_overlap",
-            "script_json_document_store",
-            "script_resource_lease_runtime",
+            "script_lifecycle_gate", "script_import_request_observations", "script_build_rule_provenance",
+            "script_restore_automation_state", "script_apply_safe_repair", "script_diagnose_workflow_failure",
+            "script_incident_state", "script_production_intent", "script_task_scheduler",
+            "script_build_dashboard_snapshot", "script_append_step_summary", "script_auto_activate_sources",
+            "script_audit_source_lineage", "script_audit_policy_source_overlap", "script_audit_external_domains",
+            "script_audit_config_drift", "script_audit_ruleset_references", "script_audit_ruleset_config_overlap",
+            "script_json_document_store", "script_resource_lease_runtime",
         }
         self.assertTrue(required.issubset(entries))
         self.assertEqual(entries["script_lifecycle_gate"]["writes"], ["rulesets/lifecycle_state.json"])
-        self.assertIn("data/domain_candidates.json", entries["script_import_request_observations"]["writes"])
-        self.assertIn("sources/rule_provenance.json", entries["script_build_rule_provenance"]["writes"])
+        self.assertIn("$RUNNER_TEMP/production-workspace/data/domain_candidates.json", entries["script_import_request_observations"]["writes"])
+        self.assertIn("$RUNNER_TEMP/production-workspace/sources/rule_provenance.json", entries["script_build_rule_provenance"]["writes"])
         self.assertIn("logical/production-pipeline", entries["script_restore_automation_state"]["lease_keys"])
         self.assertEqual(entries["script_apply_safe_repair"]["publish_resources"], [])
         self.assertTrue(entries["script_diagnose_workflow_failure"]["ephemeral_unpublished_resources"])
@@ -355,35 +340,33 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(entries["script_build_dashboard_snapshot"]["writes"], ["dashboard/data.json"])
         self.assertEqual(entries["script_append_step_summary"]["writes"], ["$GITHUB_STEP_SUMMARY"])
         self.assertTrue(all("modules/uu.conf" not in item["writes"] for item in entries.values()))
-        self.assertIn("sources/domain_sources.json", entries["script_auto_activate_sources"]["writes"])
-        self.assertIn("sources/source_activation_log.json", entries["script_auto_activate_sources"]["writes"])
-        self.assertIn("sources/policy_source_overlap.json", entries["script_audit_policy_source_overlap"]["writes"])
-        self.assertIn("reports/source-lineage-audit.json", entries["script_audit_source_lineage"]["writes"])
+        self.assertIn("$RUNNER_TEMP/production-workspace/sources/domain_sources.json", entries["script_auto_activate_sources"]["writes"])
+        self.assertIn("$RUNNER_TEMP/production-workspace/sources/source_activation_log.json", entries["script_auto_activate_sources"]["writes"])
+        self.assertIn("$RUNNER_TEMP/production-workspace/sources/policy_source_overlap.json", entries["script_audit_policy_source_overlap"]["writes"])
+        self.assertIn("$RUNNER_TEMP/production-workspace/reports/source-lineage-audit.json", entries["script_audit_source_lineage"]["writes"])
         self.assertEqual(writes["status"], "partial_static_entrypoint_review")
-
-    def test_shared_document_and_workflow_cas_gaps_are_explicit(self):
+    def test_shared_documents_are_run_scoped_and_control_plane_uses_cas(self):
         writes = load_json("automation/resource_write_sets.json")
         audit = load_json("automation/resource_ownership_audit.json")
         groups = {item["id"]: item for item in audit["resource_groups"]}
-        self.assertIn("data/domain_candidates.json logical document", {item["resource"] for item in writes["confirmed_shared_write_groups"]})
-        self.assertIn("sources/rule_provenance.json logical document", {item["resource"] for item in writes["confirmed_shared_write_groups"]})
-        self.assertEqual(groups["domain_candidate_buffer"]["status"], "known_shared_writers_central_pipeline_fence_only")
-        self.assertEqual(groups["rule_provenance_ledger"]["status"], "known_shared_writers_central_pipeline_fence_only")
+        resources = {item["resource"] for item in writes["confirmed_shared_write_groups"]}
+        self.assertIn("data/domain_candidates.json logical document", resources)
+        self.assertIn("sources/rule_provenance.json logical document", resources)
+        self.assertEqual(groups["domain_candidate_buffer"]["status"], "run_scoped_temp_workspace_no_repository_writer")
+        self.assertEqual(groups["rule_provenance_ledger"]["status"], "run_scoped_temp_workspace_no_repository_writer")
         self.assertEqual(groups["watchdog_unregistered_path_registry"]["status"], "bounded_cas_retry_implemented_concurrent_integration_unproven")
         self.assertEqual(groups["request_intake_observations"]["status"], "watchdog_task_input_forwarding_no_repository_writer")
         self.assertNotIn("script_production_intent", groups["request_intake_observations"]["known_writers"])
-        self.assertEqual(groups["active_source_registry_and_activation"]["status"], "production_registry_writer_central_pipeline_fence_only")
-        self.assertEqual(groups["policy_source_overlap_audit"]["status"], "audit_output_central_pipeline_fence_only")
-        doc_store = groups["shared_json_document_store"]
-        self.assertIn("script_json_document_store", doc_store["known_writers"])
+        self.assertEqual(groups["active_source_registry_and_activation"]["status"], "run_scoped_temp_workspace_no_repository_writer")
+        self.assertEqual(groups["policy_source_overlap_audit"]["status"], "run_scoped_temp_workspace_no_repository_writer")
+        self.assertIn("script_json_document_store", groups["shared_json_document_store"]["known_writers"])
         self.assertIn("script_resource_lease_runtime", groups["durable_task_queue_control_plane"]["writers"])
         self.assertIn("script_auto_activate_sources", groups["active_source_registry_and_activation"]["known_writers"])
-        self.assertIn("script_restore_automation_state", groups["source_candidate_artifacts"]["known_writers"])
-        self.assertIn("script_restore_automation_state", groups["source_discovery_artifacts"]["known_writers"])
+        self.assertNotIn("script_restore_automation_state", groups["source_candidate_artifacts"]["known_writers"])
+        self.assertNotIn("script_restore_automation_state", groups["source_discovery_artifacts"]["known_writers"])
         self.assertIn("script_restore_automation_state", groups["published_ruleset_artifacts"]["known_writers"])
         self.assertIn("script_restore_automation_state", groups["ruleset_manifest"]["known_writers"])
         self.assertEqual(audit["status"], "partial_static_audit")
-
         intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
         self.assertIn("group: shadowrocket-request-intake", intake)
         self.assertIn("contents: read", intake)
@@ -397,7 +380,6 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn("automation/unregistered_path_registry.json", watchdog)
         self.assertIn("-f sha=\"$registry_sha\"", watchdog)
-
     def test_dynamic_ephemeral_writers_are_not_misclassified_as_shared_repo_writers(self):
         writes = load_json("automation/resource_write_sets.json")
         entries = {item["program_id"]: item for item in writes["confirmed_write_sets"]}
