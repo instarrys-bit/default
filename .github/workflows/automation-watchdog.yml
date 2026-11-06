@@ -16,12 +16,8 @@ on:
         description: 'Internal task correlation ID; leave blank for manual runs'
         required: false
         type: string
+  # Listen for completed runs broadly; job-level path gates scope actual work.
   workflow_run:
-    workflows:
-      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
-      - "Shadowrocket Source Discovery (Watchdog)"
-      - "Validate Shadowrocket config against user baseline"
-      - "Validate self-healing agent"
     types: [completed]
   push:
     branches: [main]
@@ -56,6 +52,7 @@ concurrency:
 
 jobs:
   health-check:
+    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/source-discovery.yml' || github.event.workflow_run.path == '.github/workflows/validate-config.yml' || github.event.workflow_run.path == '.github/workflows/self-healing-agent.yml')) }}
     # Queue mutations are Git-blob-SHA CAS; production outputs are protected by
     # live resource leases and fencing tokens. Keep supervision independent of
     # the publisher mutex so it can renew and verify long-running tasks.

@@ -44,8 +44,17 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("workflow_run:", workflow)
         self.assertIn('    - cron: "0 * * * *"', workflow)
-        self.assertIn('      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"', workflow)
-        self.assertIn('      - "Shadowrocket Source Discovery (Watchdog)"', workflow)
+        trigger = workflow.split("  workflow_run:", 1)[1].split("  push:", 1)[0]
+        self.assertIn("types: [completed]", trigger)
+        self.assertNotIn("workflows:", trigger)
+        health = workflow.split("  health-check:", 1)[1].split("  assessment-canary:", 1)[0]
+        for path in (
+            ".github/workflows/auto_sync.yml",
+            ".github/workflows/source-discovery.yml",
+            ".github/workflows/validate-config.yml",
+            ".github/workflows/self-healing-agent.yml",
+        ):
+            self.assertIn(path, health)
         assessment_step = workflow.split("Enqueue source assessment after successful discovery workflow", 1)[1].split("Recover leases, verify results, and run one bounded task", 1)[0]
         self.assertIn("github.event.workflow_run.path == '.github/workflows/source-discovery.yml'", assessment_step)
         self.assertNotIn("github.event.workflow_run.path == '.github/workflows/auto_sync.yml'", assessment_step)
