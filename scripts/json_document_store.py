@@ -229,7 +229,7 @@ def write_document(path: Path, payload: dict, collection_key: str) -> dict:
         manifest_bytes = (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
         if len(manifest_bytes) > MAX_FILE_BYTES:
             raise ValueError("shard manifest exceeds the 50 MB single-file limit")
-        _atomic_write(manifest_file, manifest_bytes, lease_required=lease_required)
+        _atomic_write(manifest_file, manifest_bytes)
         # The manifest is authoritative only after its atomic replacement.
         if path.exists():
             path.unlink()

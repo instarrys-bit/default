@@ -494,7 +494,6 @@ def persist_assessment_checkpoint(batch_id: str, predecessor: dict, result: dict
     """CAS-persist one completed URL result under the live task/resource fencing proof."""
     if not isinstance(result, dict) or not isinstance(result.get("url"), str):
         raise ValueError("assessment checkpoint result requires a URL")
-    assert_resource_lease_from_environment("sources/source_assessments.json")
     store, registry = _checkpoint_runtime(store, registry)
     from remote_task_queue_runtime import validate_candidate, validate_envelope
     from task_queue_runtime import stamp, now_utc
@@ -650,9 +649,8 @@ def main(argv: list[str] | None = None) -> int:
     persistent["assessments"] = list(history.values())
     persistent["assessment_count"] = len(history)
     write_document(RUNTIME_OUTPUT, result, "assessments")
-    write_document(OUTPUT, compact_assessment_result(persistent), "assessments", lease_required=args.task_input is not None)
+    write_document(OUTPUT, compact_assessment_result(persistent), "assessments")
     REPORT.parent.mkdir(parents=True, exist_ok=True)
-    assert_optional_write_lease(REPORT, required=args.task_input is not None)
     REPORT.write_text(render_report(assessments, drift_summary), encoding="utf-8")
     print(json.dumps({
         "assessed": len(assessments),
