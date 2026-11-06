@@ -2,7 +2,7 @@
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
   "workflow_blob_sha": "27d066700b8cb4b504cb51526a6aee3195c5db97",
-  "registry_blob_sha": "47a51e96359005ed8f33c2ea6c08cfcf0d97d6c9",
+  "registry_blob_sha": "7141bc70e3c7ed098532fbbfe19940ff8e479ad7",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 5,
@@ -677,13 +677,13 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
-    "release_manifest_blob_sha": "efb77e7fa846769c34bcc9051a7cf8a369ee5318",
-    "program_registry_blob_sha": "47a51e96359005ed8f33c2ea6c08cfcf0d97d6c9",
+    "release_manifest_blob_sha": "407d34a8ac16ec975e73b5c2222848bb965f814e",
+    "program_registry_blob_sha": "7141bc70e3c7ed098532fbbfe19940ff8e479ad7",
     "execution_adapters_blob_sha": "82012007de750c605d5ef27a355ece7321cdc51a",
     "added_after_release_baseline": true,
     "note": "Refreshed against the integration branch's current workflow, registry, release manifest and adapter blobs. Independent Python dispatch remains disabled; the source-discovery workflow is implemented but dormant. Static inventory evidence is not execution authorization.",
     "reviewed_at": "2026-11-05",
-    "registry_blob_sha": "47a51e96359005ed8f33c2ea6c08cfcf0d97d6c9"
+    "registry_blob_sha": "7141bc70e3c7ed098532fbbfe19940ff8e479ad7"
   },
   "independent_dags": [
     {

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-2026.11.05.integration",
   "status": "baseline_inventory",
-  "source_registry_blob_sha": "47a51e96359005ed8f33c2ea6c08cfcf0d97d6c9",
+  "source_registry_blob_sha": "7141bc70e3c7ed098532fbbfe19940ff8e479ad7",
   "summary": {
     "registered_programs": 62,
     "python_components": 54,
@@ -618,14 +618,20 @@
       "id": "script_discover_sources",
       "path": "scripts/discover_sources.py",
       "declared_capabilities": [
-        "source_discovery"
+        "source_discovery",
+        "external_intelligence_acquisition",
+        "typed_evidence_provenance"
       ],
       "registry_dependencies": [],
       "current_registry_inputs": [
-        "CLI arguments and/or imported Python inputs as defined by the implementation"
+        "validated external provider catalog",
+        "bounded public GitLab, Codeberg and IANA provider endpoints",
+        "optional explicit CT domain and RIPEstat resource query inputs"
       ],
       "current_registry_outputs": [
-        "Return values and/or repository artifacts as defined by the implementation"
+        "sources/discovered_sources.json candidates and typed external_intelligence evidence section",
+        "provider status, retrieval timestamps, source payload SHA-256 and per-record SHA-256",
+        "no routing policy inference or source activation"
       ],
       "current_invocation": "python_module_or_workflow_step",
       "contract_status": "incomplete",
@@ -642,7 +648,7 @@
         "success_predicate",
         "independent_verifier"
       ],
-      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+      "audit_note": "The existing discovery entry point now gathers bounded, typed provider evidence in addition to repository leads. It does not classify or activate sources; URLhaus and OpenPhish remain gated by provider access requirements. Registry metadata only; this record does not grant independent dispatch."
     },
     {
       "id": "script_domain_rule_engine",

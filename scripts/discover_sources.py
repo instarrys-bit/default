@@ -6,7 +6,9 @@ if __import__("os").environ.get("AUTOMATION_WRITE_GUARD") == "1":
     from fenced_file_writer import install_write_guard as _install_write_guard
     _install_write_guard()
 
+import csv
 import hashlib
+import io
 import json
 import os
 import re
@@ -45,6 +47,196 @@ def validate_external_intelligence_catalog(data: dict) -> dict:
 def load_external_intelligence_catalog() -> dict:
     data = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
     return validate_external_intelligence_catalog(data)
+
+EXTERNAL_INTEL_MAX_BYTES_PER_PROVIDER = 2_000_000
+EXTERNAL_INTEL_MAX_TOTAL_BYTES = 10_000_000
+EXTERNAL_INTEL_MAX_RECORDS_PER_PROVIDER = 100
+EXTERNAL_INTEL_MAX_TOTAL_RECORDS = 500
+EXTERNAL_INTEL_TIMEOUT_SECONDS = 15
+DOMAIN_PATTERN = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$", re.I)
+
+class ProviderRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def __init__(self, allowed_host: str):
+        super().__init__()
+        if allowed_host not in CATALOG_ALLOWED_HOSTS:
+            raise ValueError("external intelligence redirect host is not allowlisted")
+        self.allowed_host = allowed_host
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        target = urllib.parse.urlparse(newurl)
+        if target.scheme != "https" or target.hostname != self.allowed_host or target.username or target.password or target.port not in (None, 443):
+            raise ValueError("external intelligence redirect escaped provider HTTPS boundary")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+def fetch_external_payload(url: str, allowed_host: str) -> bytes:
+    parsed = urllib.parse.urlparse(url)
+    if allowed_host not in CATALOG_ALLOWED_HOSTS or parsed.scheme != "https" or parsed.hostname != allowed_host or parsed.username or parsed.password or parsed.port not in (None, 443):
+        raise ValueError("external intelligence URL is outside its provider HTTPS boundary")
+    request = urllib.request.Request(url, headers={"User-Agent": "Shadowrocket-External-Intelligence/1.0", "Accept": "application/json,text/plain,text/csv,text/html"})
+    opener = urllib.request.build_opener(ProviderRedirectHandler(allowed_host))
+    with opener.open(request, timeout=EXTERNAL_INTEL_TIMEOUT_SECONDS) as response:
+        final = urllib.parse.urlparse(response.geturl())
+        if response.status != 200 or final.scheme != "https" or final.hostname != allowed_host or final.port not in (None, 443):
+            raise ValueError("external intelligence response escaped provider boundary")
+        payload = response.read(EXTERNAL_INTEL_MAX_BYTES_PER_PROVIDER + 1)
+    if len(payload) > EXTERNAL_INTEL_MAX_BYTES_PER_PROVIDER:
+        raise ValueError("external intelligence provider response exceeded size budget")
+    return payload
+
+def _external_observation(provider: dict, data_type: str, value: str, source_url: str, source_sha256: str, source_timestamp: str | None = None, metadata: dict | None = None) -> dict:
+    record = {
+        "provider_id": provider["id"], "publisher": provider["provider"], "data_type": data_type,
+        "value": value, "source_url": source_url, "source_sha256": source_sha256,
+        "source_timestamp": source_timestamp, "retrieved_at": datetime.now(timezone.utc).isoformat(),
+        "activation": provider["activation"], "metadata": metadata or {},
+    }
+    canonical = json.dumps(record, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    record["record_sha256"] = hashlib.sha256(canonical).hexdigest()
+    return record
+
+def parse_openphish_payload(payload: bytes, provider: dict, source_url: str) -> list[dict]:
+    digest, output = hashlib.sha256(payload).hexdigest(), []
+    for line in payload.decode("utf-8-sig", errors="replace").splitlines():
+        value = line.strip()
+        parsed = urllib.parse.urlparse(value)
+        if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
+            continue
+        host = parsed.hostname.lower().rstrip(".")
+        if not DOMAIN_PATTERN.fullmatch(host):
+            continue
+        output.append(_external_observation(provider, "phishing_url", value[:2048], source_url, digest, metadata={"host": host}))
+        if len(output) >= EXTERNAL_INTEL_MAX_RECORDS_PER_PROVIDER:
+            break
+    return output
+
+def parse_urlhaus_payload(payload: bytes, provider: dict, source_url: str) -> list[dict]:
+    digest, output = hashlib.sha256(payload).hexdigest(), []
+    reader = csv.reader(io.StringIO(payload.decode("utf-8-sig", errors="replace")))
+    for row in reader:
+        if not row or row[0].lstrip().startswith("#") or len(row) < 3:
+            continue
+        value = row[2].strip()
+        parsed = urllib.parse.urlparse(value)
+        if parsed.scheme not in {"http", "https"} or not parsed.hostname or parsed.username or parsed.password:
+            continue
+        host = parsed.hostname.lower().rstrip(".")
+        if not DOMAIN_PATTERN.fullmatch(host):
+            continue
+        timestamp = row[1].strip() if len(row) > 1 else None
+        output.append(_external_observation(provider, "malware_url", value[:2048], source_url, digest, source_timestamp=timestamp, metadata={"host": host, "threat": row[4] if len(row) > 4 else None, "url_status": row[3] if len(row) > 3 else None}))
+        if len(output) >= EXTERNAL_INTEL_MAX_RECORDS_PER_PROVIDER:
+            break
+    return output
+
+def parse_repository_search_payload(payload: bytes, provider: dict, source_url: str, provider_key: str) -> list[dict]:
+    decoded = json.loads(payload.decode("utf-8"))
+    items = decoded.get("data", []) if isinstance(decoded, dict) and isinstance(decoded.get("data"), list) else decoded
+    if not isinstance(items, list):
+        raise ValueError("repository provider returned an unexpected response shape")
+    digest, output = hashlib.sha256(payload).hexdigest(), []
+    for item in items[:EXTERNAL_INTEL_MAX_RECORDS_PER_PROVIDER]:
+        if not isinstance(item, dict):
+            continue
+        full_name = str(item.get("path_with_namespace") or item.get("full_name") or "")
+        web_url = str(item.get("web_url") or item.get("html_url") or "")
+        parsed = urllib.parse.urlparse(web_url)
+        if not full_name or parsed.scheme != "https" or parsed.hostname != provider_key:
+            continue
+        output.append(_external_observation(provider, "repository_metadata", full_name, source_url, digest, source_timestamp=item.get("last_activity_at") or item.get("updated_at"), metadata={"repository_url": web_url, "description": str(item.get("description") or "")[:500], "stars": int(item.get("star_count") or item.get("stars_count") or 0)}))
+    return output
+
+def parse_iana_payload(payload: bytes, provider: dict, source_url: str) -> list[dict]:
+    text = payload.decode("utf-8", errors="replace")
+    digest = hashlib.sha256(payload).hexdigest()
+    tlds = sorted({value.lower() for value in re.findall(r'/domains/root/db/([a-z0-9-]+)\.html', text, re.I)})
+    return [_external_observation(provider, "tld_registry", tld, source_url, digest) for tld in tlds[:EXTERNAL_INTEL_MAX_RECORDS_PER_PROVIDER]]
+
+def parse_ct_payload(payload: bytes, provider: dict, source_url: str) -> list[dict]:
+    decoded = json.loads(payload.decode("utf-8"))
+    if not isinstance(decoded, list):
+        raise ValueError("certificate transparency response is not a JSON list")
+    digest, output = hashlib.sha256(payload).hexdigest(), []
+    for item in decoded[:EXTERNAL_INTEL_MAX_RECORDS_PER_PROVIDER]:
+        if not isinstance(item, dict):
+            continue
+        for name in str(item.get("name_value") or "").splitlines():
+            value = name.strip().lower()
+            if value.startswith("*."):
+                value = value[2:]
+            if DOMAIN_PATTERN.fullmatch(value):
+                output.append(_external_observation(provider, "certificate_name", value, source_url, digest, source_timestamp=item.get("not_before"), metadata={"issuer_name": str(item.get("issuer_name") or "")[:300]}))
+                if len(output) >= EXTERNAL_INTEL_MAX_RECORDS_PER_PROVIDER:
+                    return output
+    return output
+
+def parse_ripestat_payload(payload: bytes, provider: dict, source_url: str) -> list[dict]:
+    decoded = json.loads(payload.decode("utf-8"))
+    data = decoded.get("data", {}) if isinstance(decoded, dict) else {}
+    if not isinstance(data, dict):
+        raise ValueError("RIPEstat response has no data object")
+    value = str(data.get("prefix") or data.get("resource") or "")
+    if not value:
+        return []
+    digest = hashlib.sha256(payload).hexdigest()
+    return [_external_observation(provider, "network_infrastructure", value, source_url, digest, metadata={"name": str(data.get("name") or "")[:300], "type": str(data.get("type") or "")[:80]})]
+
+def collect_external_intelligence(catalog: dict) -> dict:
+    """Read bounded public feeds into typed, non-policy observations."""
+    providers = {item["id"]: item for item in catalog["providers"]}
+    observations, statuses = [], []
+    total_bytes = 0
+
+    def collect(provider_id: str, url: str, host: str, parser) -> None:
+        nonlocal total_bytes
+        provider = providers[provider_id]
+        if len(observations) >= EXTERNAL_INTEL_MAX_TOTAL_RECORDS or total_bytes >= EXTERNAL_INTEL_MAX_TOTAL_BYTES:
+            statuses.append({"provider_id": provider_id, "status": "skipped_budget", "records": 0})
+            return
+        try:
+            payload = fetch_external_payload(url, host)
+            if total_bytes + len(payload) > EXTERNAL_INTEL_MAX_TOTAL_BYTES:
+                statuses.append({"provider_id": provider_id, "status": "skipped_total_byte_budget", "records": 0})
+                return
+            total_bytes += len(payload)
+            records = parser(payload, provider, url)
+            room = max(0, EXTERNAL_INTEL_MAX_TOTAL_RECORDS - len(observations))
+            observations.extend(records[:room])
+            statuses.append({"provider_id": provider_id, "status": "collected", "records": min(len(records), room), "bytes": len(payload), "sha256": hashlib.sha256(payload).hexdigest()})
+        except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError, csv.Error) as exc:
+            statuses.append({"provider_id": provider_id, "status": "error", "records": 0, "error": str(exc)[:240]})
+
+    statuses.append({"provider_id": "urlhaus", "status": "awaiting_auth_key", "records": 0})
+    statuses.append({"provider_id": "openphish", "status": "blocked_pending_terms_review", "records": 0})
+    statuses.append({"provider_id": "adguard-filters", "status": "covered_by_existing_github_discovery", "records": 0})
+    gitlab_url = providers["gitlab-projects"]["endpoint"] + "?" + urllib.parse.urlencode({"search": "shadowrocket rules", "simple": "true", "per_page": 20, "order_by": "last_activity_at", "sort": "desc"})
+    collect("gitlab-projects", gitlab_url, "gitlab.com", lambda p, provider, url: parse_repository_search_payload(p, provider, url, "gitlab.com"))
+    codeberg_url = providers["codeberg-repositories"]["endpoint"] + "?" + urllib.parse.urlencode({"q": "shadowrocket rules", "limit": 20})
+    collect("codeberg-repositories", codeberg_url, "codeberg.org", lambda p, provider, url: parse_repository_search_payload(p, provider, url, "codeberg.org"))
+    collect("iana-root-zone", providers["iana-root-zone"]["endpoint"], "www.iana.org", parse_iana_payload)
+
+    ct_domains = [x.strip().lower() for x in os.environ.get("EXTERNAL_INTEL_CT_DOMAINS", "").split(",") if x.strip()]
+    ct_domains = [x for x in ct_domains[:10] if DOMAIN_PATTERN.fullmatch(x)]
+    if ct_domains:
+        for domain in ct_domains:
+            url = "https://crt.sh/?" + urllib.parse.urlencode({"q": domain, "output": "json"})
+            collect("cert-transparency", url, "crt.sh", parse_ct_payload)
+    else:
+        statuses.append({"provider_id": "cert-transparency", "status": "awaiting_query_input", "records": 0})
+
+    ripe_resources = [x.strip() for x in os.environ.get("EXTERNAL_INTEL_RIPE_RESOURCES", "").split(",") if x.strip()][:10]
+    valid_resources = [x for x in ripe_resources if re.fullmatch(r"(?:AS[0-9]{1,10}|[0-9a-fA-F:.]+/[0-9]{1,3}|[0-9a-fA-F:.]+)", x)]
+    for resource in valid_resources:
+        url = "https://stat.ripe.net/data/network-info/data.json?" + urllib.parse.urlencode({"resource": resource})
+        collect("ripestat", url, "stat.ripe.net", parse_ripestat_payload)
+    if not valid_resources:
+        statuses.append({"provider_id": "ripestat", "status": "awaiting_query_input", "records": 0})
+
+    return {"schema_version": 1, "collected_at": datetime.now(timezone.utc).isoformat(),
+            "observations": observations, "provider_status": statuses, "total_records": len(observations),
+            "total_bytes": total_bytes, "policy_effect": "none",
+            "activation_policy": "Evidence only. No observation maps directly to DIRECT, PROXY or REJECT."}
+
+
 OUTPUT = ROOT / "sources/discovered_sources.json"
 REPORT = ROOT / "reports/source-discovery.md"
 MAX_README_BYTES = 1_500_000
@@ -610,6 +802,7 @@ def main() -> int:
         merged["tree_repositories_scanned"] = len(tree_scan_batch)
         merged["tree_scan_backlog_count"] = sum(1 for item in merged["candidates"] if not item.get("tree_scanned_at") or item.get("tree_scan_status") in {"error", "truncated"})
         merged["tree_scan_complete_count"] = sum(1 for item in merged["candidates"] if item.get("tree_scan_status") == "complete")
+        merged["external_intelligence"] = collect_external_intelligence(catalog)
     except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError) as exc:
         message = "Source discovery degraded; previous discovery inventory retained. " + str(exc)
         print("WARNING: " + message, file=sys.stderr)
@@ -635,7 +828,10 @@ def main() -> int:
     if summary:
         with Path(summary).open("a", encoding="utf-8") as stream:
             stream.write(f"## Source discovery\n\nRepositories seen: **{len(discovered)}**. Tree scans this run: **{len(tree_scan_batch)}**. Tree-scan backlog: **{merged['tree_scan_backlog_count']}**. Truncated trees: **{len(tree_truncated)}**. Candidates retained: **{merged['candidate_count']}**. Failed queries: **{len(discovery_errors)}**. No source was activated.\n")
-            stream.write(f"\n## Multi-source intelligence inventory\n\nProvider leads catalogued: **{len(catalog['providers'])}**. Production adapters ready: **0**. Catalog entries are non-activating; external provider ingestion remains disabled until dedicated adapters pass their acceptance gates.\n")
+            intel = merged.get("external_intelligence", {})
+            stream.write(f"\n## Multi-source intelligence collection\n\nProvider leads catalogued: **{len(catalog['providers'])}**. Typed observations collected: **{intel.get('total_records', 0)}** across **{sum(1 for x in intel.get('provider_status', []) if x.get('status') == 'collected')}** provider adapters. Bytes read: **{intel.get('total_bytes', 0)}**. Policy effect: **none**. CT and RIPEstat require explicit query inputs.\n")
+            for item in intel.get("provider_status", []):
+                stream.write(f"- `{item['provider_id']}`: {item['status']} ({item.get('records', 0)} records)\n")
     print(json.dumps({"repositories_seen": len(discovered), "candidates_retained": merged["candidate_count"], "activated": 0}, sort_keys=True))
     return 0
 
