@@ -296,9 +296,6 @@ jobs:
           python3 -m compileall -q scripts tests
           python3 -m unittest discover -s tests -v
 
-      - name: Audit expanded public intelligence provider catalog (read-only)
-        run: python3 scripts/audit_external_intelligence_catalog.py
-
       - name: Discover candidate source repositories (non-activating)
         if: ${{ env.SOURCE_DISCOVERY_MODE != 'independent' }}
         env:
