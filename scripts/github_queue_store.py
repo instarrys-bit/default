@@ -245,9 +245,16 @@ class GitHubContentsQueueStore:
             raise GitHubAPIError("no durable queue snapshot exists and the read-only bootstrap queue is unavailable") from None
         if not isinstance(document, dict) or isinstance(document.get("revision"), bool) or not isinstance(document.get("revision"), int):
             raise GitHubAPIError("read-only bootstrap queue has an invalid envelope")
-        self._append(document, None)
-        snapshot = self._canonical_snapshot(self._all_comments())
-        if snapshot is None:
+        # Read-only consumers can inspect the seed without needing Issues write access.
+        return QueueSnapshot(document=document, content_sha="")
+
+    def _ensure_bootstrap(self) -> QueueSnapshot:
+        snapshot = self.read()
+        if snapshot.content_sha:
+            return snapshot
+        self._append(snapshot.document, None)
+        snapshot = self.read()
+        if not snapshot.content_sha:
             raise GitHubAPIError("queue bootstrap comment was not visible after creation")
         return snapshot
 
@@ -257,6 +264,8 @@ class GitHubContentsQueueStore:
         if not expected_sha:
             raise ValueError("expected_sha is required; blind writes are prohibited")
         current = self.read()
+        if not current.content_sha:
+            raise ConcurrentUpdate("queue snapshot chain is not initialized; use mutate() to bootstrap")
         if current.content_sha != expected_sha:
             raise ConcurrentUpdate("queue revision changed; re-read before retrying")
         expected_revision = current.document["revision"] + 1
@@ -281,7 +290,7 @@ class GitHubContentsQueueStore:
         if isinstance(max_conflicts, bool) or not isinstance(max_conflicts, int) or max_conflicts < 0:
             raise ValueError("max_conflicts must be a non-negative integer")
         for attempt in range(max_conflicts + 1):
-            snapshot = self.read()
+            snapshot = self._ensure_bootstrap()
             candidate, result = mutator(copy.deepcopy(snapshot.document))
             if not isinstance(candidate, dict):
                 raise ValueError("mutator must return a queue document object")

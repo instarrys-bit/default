@@ -64,20 +64,19 @@ class GitHubIssueQueueStoreTests(unittest.TestCase):
             return FakeResponse({"id": self.next_id - 1})
         raise AssertionError(f"unexpected method: {request.method}")
 
-    def test_read_bootstraps_issue_from_read_only_file(self):
+    def test_read_only_consumer_does_not_bootstrap_or_write(self):
         with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
             snapshot = self.store.read()
         self.assertEqual(snapshot.document, self.document)
-        self.assertEqual(snapshot.content_sha, f"4:{hashlib.sha256(self.store._canonical_bytes(self.document)).hexdigest()}")
-        self.assertEqual(len(self.comments), 1)
-        self.assertIn("/repos/owner/repo/issues/315/comments", self.calls[0].full_url)
+        self.assertEqual(snapshot.content_sha, "")
+        self.assertEqual(len(self.comments), 0)
+        self.assertEqual(len(self.calls), 1)
         self.assertEqual(self.calls[0].method, "GET")
-        self.assertEqual(self.calls[1].method, "POST")
 
     def test_compare_and_swap_appends_compressed_snapshot(self):
         candidate = {"schema_version": 1, "revision": 5, "tasks": [{"task_id": "next"}]}
         with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
-            current = self.store.read()
+            current = self.store._ensure_bootstrap()
             new_sha = self.store.compare_and_swap(candidate, current.content_sha)
             latest = self.store.read()
         self.assertEqual(latest.document, candidate)
@@ -93,7 +92,7 @@ class GitHubIssueQueueStoreTests(unittest.TestCase):
 
     def test_compare_and_swap_requires_next_revision(self):
         with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
-            current = self.store.read()
+            current = self.store._ensure_bootstrap()
             with self.assertRaisesRegex(ValueError, "advance by exactly one"):
                 self.store.compare_and_swap({**self.document, "revision": 8}, current.content_sha)
 

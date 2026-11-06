@@ -110,7 +110,7 @@
     },
     "task_queue_store": {
       "path": "scripts/github_queue_store.py",
-      "git_blob_sha": "897682af68c225d60aed74987a8c8ce7a6a95750"
+      "git_blob_sha": "29ebc707503b802df09800db561f854bede83d4a"
     },
     "request_intake_workflow": {
       "path": ".github/workflows/request-intake.yml",
