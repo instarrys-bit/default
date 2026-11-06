@@ -6,7 +6,7 @@ Extend the production automation's information-acquisition horizon beyond its cu
 
 ## Existing pipeline
 
-The current production path already performs GitHub repository discovery, raw GitHub rule-list assessment, source-lineage and overlap audits, deterministic admission, collection, domain review, and rule-set generation. The existing assessor and collector intentionally restrict downloads to HTTPS `raw.githubusercontent.com`. That boundary must not be weakened by adding arbitrary URLs.
+The current production path performs GitHub repository discovery, raw GitHub rule-list assessment, source-lineage and overlap audits, deterministic admission, collection, domain review, and rule-set generation. The existing assessor and collector intentionally restrict downloads to HTTPS `raw.githubusercontent.com`. That boundary must not be weakened by adding arbitrary URLs.
 
 ## Stage 1: provider inventory (this change)
 
@@ -18,7 +18,7 @@ The current production path already performs GitHub repository discovery, raw Gi
 - official internet registry data;
 - additional source-hosting platforms (GitLab and Codeberg).
 
-`scripts/audit_external_intelligence_catalog.py` validates the inventory and appends a compact status to the Actions job summary. It performs no network requests, downloads, activation, policy classification, or repository writes. This makes the expanded source scope visible in the existing production workflow without changing rule production behavior.
+The existing registered program `scripts/discover_sources.py` validates this inventory before running its existing GitHub discovery and reports a compact status in the existing Actions job summary. Catalog validation performs no provider network requests, downloads, activation, policy classification, or additional repository writes. The current assessor and collector allowlists remain unchanged.
 
 ## Stage 2: provider-specific adapters (required before ingestion)
 
@@ -43,7 +43,7 @@ Only after adapter-specific tests and independent verification should typed obse
 
 - `modules/uu.conf` and user configuration remain read-only.
 - No DNS, MITM, or other user configuration changes.
-- Production automation's write authority remains restricted to the authorized rule-set outputs. The catalog audit is read-only and reports only to the ephemeral Actions step summary.
+- Production automation's write authority remains restricted to the authorized rule-set outputs. Catalog validation reports only to the ephemeral Actions step summary.
 - No source is activated merely because it appears in the catalog.
 - Existing queue history and audit evidence are preserved.
 
