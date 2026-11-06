@@ -470,6 +470,34 @@
       "classification_basis": "Confirmed against automation/production_inputs.json non_production_path_patterns and the repository's module/script layout. These files remain repository artifacts subject to write fencing, but they do not alter the production routing result. No DNS, MITM, routing, or ad-block implementation content is changed."
     },
     {
+      "path": "modules/maasea/youtube_request_local.js",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-06T20:39:12.937749Z",
+      "last_seen_at": "2026-11-06T20:39:12.937749Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "42290090251"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "03c1078ebc876451a4b59d0003d5ef6a09cbddf9",
+      "last_seen_run_id": "42290090251",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42290090251"
+    },
+    {
+      "path": "modules/maasea/youtube_response.js",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-06T20:39:12.937749Z",
+      "last_seen_at": "2026-11-06T20:39:12.937749Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "42290090251"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "03c1078ebc876451a4b59d0003d5ef6a09cbddf9",
+      "last_seen_run_id": "42290090251",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42290090251"
+    },
+    {
       "path": "modules/temp-test/Sr_Youtube_Clean.js",
       "status": "NON_PRODUCTION",
       "first_seen_at": "2026-11-04T21:51:30.606119Z",
@@ -625,5 +653,5 @@
       "classification_basis": "scripts/discover_sources.py loads and validates this catalog, then uses its provider IDs, endpoints, data types and activation boundaries to drive bounded external collection. Changes can alter source observations and later ruleset evidence, so this exact path is a production input. The catalog does not itself assign DIRECT/PROXY/REJECT policy or authorize publication."
     }
   ],
-  "updated_at": "2026-11-06T15:25:49.705818Z"
+  "updated_at": "2026-11-06T20:39:12.937749Z"
 }
