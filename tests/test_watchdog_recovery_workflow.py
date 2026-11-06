@@ -130,12 +130,16 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('task.get("requester_program_id") != "workflow_automation_watchdog"', audit)
         self.assertIn('task.get("status") not in {"CLAIMED", "VERIFYING"}', audit)
 
-    def test_failed_run_cursor_normalizes_watchdog_correlation_to_canonical_task_id(self):
+    def test_failed_run_cursor_recovery_is_artifact_only(self):
         audit = AUTO_SYNC.read_text(encoding="utf-8")
         cursor = audit.split("  persist-review-cursor:", 1)[1].split("  notify-failure:", 1)[0]
-        self.assertIn('canonical_task_id="${AUTOMATION_TASK_CORRELATION%%-a*}"', cursor)
-        self.assertIn("assert-workflow --task-id \"$canonical_task_id\"", cursor)
-        self.assertIn("assert-workflow --task-id \"$AUTOMATION_TASK_ID_BASE\"", cursor)
+        self.assertIn("actions/download-artifact", cursor)
+        self.assertIn("actions/upload-artifact", cursor)
+        self.assertIn("failed-review-cursor-recovery", cursor)
+        self.assertNotIn("contents: write", cursor)
+        self.assertNotIn("assert-workflow", cursor)
+        self.assertNotIn("git push", cursor)
+
     def test_independent_source_discovery_has_fenced_immutable_handoff_and_stays_dormant(self):
         source = (ROOT / ".github" / "workflows" / "source-discovery.yml").read_text(encoding="utf-8")
         watchdog = WATCHDOG.read_text(encoding="utf-8")

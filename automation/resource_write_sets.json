@@ -1455,7 +1455,7 @@
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
     "release_manifest_blob_sha": "3f1f246f38e0690910748c8bd812c9a86483b421",
-    "program_registry_blob_sha": "afac96860d57a4c6cc4b1f7d45823c2fcc88520d",
+    "program_registry_blob_sha": "595d5c1d2327251342b9d205f5aadee58e2393ff",
     "execution_adapters_blob_sha": "e68fc9c681743a008818ca85adfc2d78bae8c223",
     "added_after_release_baseline": true,
     "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 52 Python components are partitioned into 36 direct/helper writer entries and 15 reviewed non-writers, alongside one external GitHub Actions dispatch side-effect adapter.",
@@ -1614,25 +1614,10 @@
         "rulesets/reject.list",
         "rulesets/manifest.json",
         "rulesets/pending_queue.json",
-        "rulesets/archive.json",
-        "reports/"
+        "rulesets/archive.json"
       ],
-      "fence": "Watchdog workflow_auto_sync task lease plus logical/production-pipeline resource lease; publish allowlist and protected-config digest checks before non-force push.",
-      "boundary": "Main-branch production publication; independently verify resulting commit and artifact digests."
-    },
-    {
-      "workflow_path": ".github/workflows/auto_sync.yml",
-      "step_name": "Publish only the cursor checkpoint under the same live fence",
-      "mutation_kinds": [
-        "git_add",
-        "git_commit",
-        "git_push"
-      ],
-      "resources": [
-        "sources/review_cursor.json"
-      ],
-      "fence": "The persist-review-cursor job validates the exact Watchdog task and live resource lease before persist_review_cursor.py runs. Cursor-only Git publication revalidates the same workflow/task/resource proof before staging and immediately before push. No repository-local filesystem mutation interceptor is present.",
-      "boundary": "Main-branch checkpoint publication is serialized by shadowrocket-main-writer; only sources/review_cursor.json may be staged, committed or pushed."
+      "fence": "Watchdog task lease plus logical production lease; rulesets-only staging allowlist and final staged-path fence.",
+      "boundary": "Main-branch publication is restricted to rulesets/** and independently verified."
     },
     {
       "workflow_path": ".github/workflows/automation-watchdog.yml",
