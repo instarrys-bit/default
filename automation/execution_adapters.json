@@ -1765,7 +1765,6 @@
       }
     },
     {
-      "target_program_id": "script_fenced_file_writer",
       "target_kind": "python_component",
       "adapter_type": "python_cli",
       "enabled": false,
