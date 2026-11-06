@@ -195,23 +195,6 @@
       "classification_basis": "Reviewed the current file contents and its callers. This path controls orchestration, capability contracts, release/resource governance, or task verification; it does not supply DIRECT/PROXY/REJECT policy inputs. Explicitly excluded from production-demand classification, while production_input_paths remains authoritative for actual policy inputs."
     },
     {
-      "path": "candidates/oiu-conf-merge-additions.patch",
-      "status": "PENDING_CLASSIFICATION",
-      "first_seen_at": "2026-11-06T14:42:07.213556Z",
-      "last_seen_at": "2026-11-06T15:25:49.705818Z",
-      "seen_count": 4,
-      "observed_run_ids": [
-        "42236212990",
-        "42240481960",
-        "42240736676",
-        "42242917618"
-      ],
-      "last_seen_event": "push",
-      "last_seen_revision": "007a8cfbb760b4261aaa0fd36d1ed53e89ee3453",
-      "last_seen_run_id": "42242917618",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42242917618"
-    },
-    {
       "path": "candidates/ss.conf.oiu-fusion-candidate",
       "status": "CLASSIFIED_DOCUMENTATION",
       "first_seen_at": "2026-11-04T20:05:17.100115Z",
@@ -518,34 +501,6 @@
       "classified_at": "2026-11-04T18:00:00+08:00",
       "classification_reason": "Reads production records and task state to generate the dashboard snapshot; writes only dashboard/data.json and does not alter production outputs.",
       "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
-    },
-    {
-      "path": "scripts/capture_git_write_trace.py",
-      "status": "PENDING_CLASSIFICATION",
-      "first_seen_at": "2026-11-06T15:25:49.705818Z",
-      "last_seen_at": "2026-11-06T15:25:49.705818Z",
-      "seen_count": 1,
-      "observed_run_ids": [
-        "42242917618"
-      ],
-      "last_seen_event": "push",
-      "last_seen_revision": "007a8cfbb760b4261aaa0fd36d1ed53e89ee3453",
-      "last_seen_run_id": "42242917618",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42242917618"
-    },
-    {
-      "path": "scripts/fenced_file_writer.py",
-      "status": "PENDING_CLASSIFICATION",
-      "first_seen_at": "2026-11-06T15:25:49.705818Z",
-      "last_seen_at": "2026-11-06T15:25:49.705818Z",
-      "seen_count": 1,
-      "observed_run_ids": [
-        "42242917618"
-      ],
-      "last_seen_event": "push",
-      "last_seen_revision": "007a8cfbb760b4261aaa0fd36d1ed53e89ee3453",
-      "last_seen_run_id": "42242917618",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42242917618"
     },
     {
       "path": "scripts/resource_lease_runtime.py",
