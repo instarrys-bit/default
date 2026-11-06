@@ -404,6 +404,14 @@
       "PROXY": [],
       "REJECT": []
     },
-    "minimum_independent_publishers": 2
+    "minimum_independent_publishers": 2,
+    "reject_secondary_review": {
+      "minimum_current_sources": 3,
+      "minimum_independent_publishers": 2,
+      "required_any_sources": [
+        "sr-adblock-domain-lite",
+        "hagezi-domains-pro"
+      ]
+    }
   }
 }
