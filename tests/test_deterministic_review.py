@@ -737,10 +737,6 @@ class HighOverlapIndependenceTests(unittest.TestCase):
         self.assertFalse(result["policy_summary"]["DIRECT"]["activation_ready"])
 
 
-if __name__=="__main__":
-    unittest.main(verbosity=2)
-
-
 class UserConfigBaselineTests(unittest.TestCase):
     def test_domain_review_and_rule_builder_use_user_managed_config(self):
         expected = ROOT / "modules" / "uu.conf"
@@ -836,3 +832,7 @@ class RejectQueueAuthorizationTests(unittest.TestCase):
         self.assertFalse(reject_queue_entry_authorized(
             line, set(), set(), {line}
         ))
+
+
+if __name__=="__main__":
+    unittest.main(verbosity=2)
