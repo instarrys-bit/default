@@ -26,8 +26,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CATALOG_PATH = ROOT / "sources/external_intelligence_catalog.json"
 CATALOG_ALLOWED_HOSTS = {"github.com", "urlhaus.abuse.ch", "openphish.com", "crt.sh", "stat.ripe.net", "www.iana.org", "gitlab.com", "codeberg.org"}
 
-def load_external_intelligence_catalog() -> dict:
-    data = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+def validate_external_intelligence_catalog(data: dict) -> dict:
     if data.get("schema_version") != 1 or not isinstance(data.get("providers"), list):
         raise ValueError("invalid external intelligence catalog schema")
     seen = set()
@@ -42,6 +41,10 @@ def load_external_intelligence_catalog() -> dict:
         if item.get("activation") not in {"never_from_catalog", "candidate_only", "evidence_only"}:
             raise ValueError("invalid external intelligence activation boundary: " + provider_id)
     return data
+
+def load_external_intelligence_catalog() -> dict:
+    data = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+    return validate_external_intelligence_catalog(data)
 OUTPUT = ROOT / "sources/discovered_sources.json"
 REPORT = ROOT / "reports/source-discovery.md"
 MAX_README_BYTES = 1_500_000
