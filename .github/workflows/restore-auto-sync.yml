@@ -12,21 +12,31 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Restore auto_sync from good commit and label stages
+      - name: Restore auto_sync from last good commit and label stages
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          GOOD=4dcaf69c22fc0342bce30d48315d962900b4c2b6
+          # Commit before PLACEHOLDER corruption still had the full workflow
+          GOOD=1cad1aeaffd479ffeb86d96bb22063d0e41fad54
           git show "$GOOD:.github/workflows/auto_sync.yml" > .github/workflows/auto_sync.yml
+          test -s .github/workflows/auto_sync.yml
+          wc -c .github/workflows/auto_sync.yml
           python3 - <<'PY'
           from pathlib import Path
           text = Path(".github/workflows/auto_sync.yml").read_text()
-          old_run = "run-name: Automation task ${{ inputs.automation_task_id || 'manual' }}"
-          new_run = "run-name: Pipeline ${{ inputs.automation_task_id || 'manual' }} · collect→select→review→publish"
-          if old_run not in text:
-              raise SystemExit("run-name pattern missing")
-          text = text.replace(old_run, new_run, 1)
+          if text.strip() == "PLACEHOLDER" or len(text) < 10000:
+              raise SystemExit("restored content looks wrong")
+          # Avoid ${{ in this file so Actions does not expand expressions inside the script
+          marker = "run-name: Automation task "
+          if marker not in text:
+              raise SystemExit("run-name marker missing")
+          # Keep original expression; only prefix the human-readable pipeline tag after the correlation
+          text = text.replace(
+              "run-name: Automation task ${"{{"}} inputs.automation_task_id || 'manual' ${"}}"}",
+              "run-name: Pipeline ${"{{"}} inputs.automation_task_id || 'manual' ${"}}"} · collect→select→review→publish",
+              1,
+          )
           text = text.replace(
               "jobs:\n  audit:\n    runs-on: ubuntu-24.04",
               "jobs:\n  audit:\n    name: \"3–5 · 采集 → 筛选 → 审查\"\n    runs-on: ubuntu-24.04",
@@ -37,7 +47,27 @@ jobs:
           if old_pub not in text:
               raise SystemExit("publish pattern missing")
           text = text.replace(old_pub, new_pub, 1)
-          banner = '''      - name: Architecture stages (canonical)\n        run: |\n          set -euo pipefail\n          {\n            echo "## Production architecture (6 stages)"\n            echo ""\n            echo "| # | Stage | Role |"\n            echo "|---|-------|------|"\n            echo "| 1 | 全自动启动开关 | production_control.json |"\n            echo "| 2 | 看门狗 Watchdog | sole scheduler |"\n            echo "| 3 | 采集 | discover + assess |"\n            echo "| 4 | 筛选 | candidates + admission |"\n            echo "| 5 | 审查 | deterministic review + policy |"\n            echo "| 6 | 发布 | sole write boundary |"\n            echo ""\n            echo "This job executes stages **3–5** sequentially under one Watchdog resource lease."\n            echo "Stage **6** is the following publish job. Stages **1–2** are outside this workflow."\n          } >> "$GITHUB_STEP_SUMMARY"\n\n'''
+          banner = (
+              "      - name: Architecture stages (canonical)\n"
+              "        run: |\n"
+              "          set -euo pipefail\n"
+              "          {\n"
+              "            echo \"## Production architecture (6 stages)\"\n"
+              "            echo \"\"\n"
+              "            echo \"| # | Stage | Role |\"\n"
+              "            echo \"|---|-------|------|\"\n"
+              "            echo \"| 1 | 全自动启动开关 | production_control.json |\"\n"
+              "            echo \"| 2 | 看门狗 Watchdog | sole scheduler |\"\n"
+              "            echo \"| 3 | 采集 | discover + assess |\"\n"
+              "            echo \"| 4 | 筛选 | candidates + admission |\"\n"
+              "            echo \"| 5 | 审查 | deterministic review + policy |\"\n"
+              "            echo \"| 6 | 发布 | sole write boundary |\"\n"
+              "            echo \"\"\n"
+              "            echo \"This job executes stages **3–5** sequentially under one Watchdog resource lease.\"\n"
+              "            echo \"Stage **6** is the following publish job. Stages **1–2** are outside this workflow.\"\n"
+              "          } >> \"$GITHUB_STEP_SUMMARY\"\n"
+              "\n"
+          )
           needle = "      - name: Verify Watchdog-owned durable task dispatch\n"
           if needle not in text:
               raise SystemExit("needle missing")
@@ -45,12 +75,11 @@ jobs:
           Path(".github/workflows/auto_sync.yml").write_text(text)
           print("restored+labeled", len(text))
           PY
-          # remove this restore workflow from the commit set after restore
           rm -f .github/workflows/restore-auto-sync.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .github/workflows/auto_sync.yml
-          git add -u .github/workflows/restore-auto-sync.yml
+          git add -u .github/workflows/restore-auto-sync.yml || true
           git status
           git commit -m "Restore auto_sync.yml and surface architecture stages 3–6"
           git push origin HEAD:main
