@@ -1674,34 +1674,6 @@
     },
     {
       "workflow_path": ".github/workflows/self-healing-agent.yml",
-      "step_name": "Apply allowlisted repair and run tests",
-      "mutation_kinds": [
-        "git_checkout",
-        "git_add",
-        "git_commit"
-      ],
-      "resources": [
-        "self-heal/run-<run_id> working tree"
-      ],
-      "fence": "Hard-coded repair IDs and staged-path allowlist; isolated run-specific branch.",
-      "boundary": "Runner-local working tree and PR branch preparation only."
-    },
-    {
-      "workflow_path": ".github/workflows/self-healing-agent.yml",
-      "step_name": "Publish repair pull request",
-      "mutation_kinds": [
-        "git_push",
-        "workflow_dispatch"
-      ],
-      "resources": [
-        "self-heal/run-<run_id> branch",
-        "self-healing-tests workflow run"
-      ],
-      "fence": "Run-specific branch; PR publication is review-gated; tests are dispatched against the repair branch.",
-      "boundary": "PR branch and CI workflow side effects; main is not directly pushed."
-    },
-    {
-      "workflow_path": ".github/workflows/self-healing-agent.yml",
       "step_name": "Close recovered validator incidents",
       "mutation_kinds": [
         "github_issue_patch"
