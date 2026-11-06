@@ -611,11 +611,6 @@ jobs:
           path: ${{ runner.temp }}/audit-output.tar.gz
           if-no-files-found: error
           retention-days: 90
-      - name: Capture persistent repository changes from shell and Git (audit)
-        if: always()
-        run: |
-          set -euo pipefail
-          python3 scripts/capture_git_write_trace.py --baseline-sha "$AUTOMATION_WRITE_TRACE_BASELINE_SHA"
 
   publish:
     needs: audit
@@ -811,11 +806,6 @@ jobs:
           git fetch origin main
           python3 scripts/verify_published_rulesets.py --ref origin/main | tee /tmp/publish-verification.json
           python3 scripts/append_step_summary.py --input /tmp/publish-verification.json
-      - name: Capture persistent repository changes from shell and Git (publish)
-        if: always()
-        run: |
-          set -euo pipefail
-          python3 scripts/capture_git_write_trace.py --baseline-sha "$AUTOMATION_WRITE_TRACE_BASELINE_SHA"
 
   persist-review-cursor:
     name: Persist failed-run cursor under Watchdog resource lease
