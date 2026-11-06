@@ -49,7 +49,7 @@ jobs:
           printf 'cd "%s"\n' "$workspace" > "$RUNNER_TEMP/source-discovery-workspace.bashenv"
           echo "BASH_ENV=$RUNNER_TEMP/source-discovery-workspace.bashenv" >> "$GITHUB_ENV"
 
-      - name: Verify exact Watchdog dispatch and install live resource fence
+      - name: Verify exact Watchdog dispatch and active task lease
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -108,25 +108,7 @@ jobs:
           if len(workers) != 1 or not next(iter(workers)):
               raise SystemExit("Discovery resources do not share one durable worker owner.")
           worker_id = next(iter(workers))
-          env_values = {
-              "AUTOMATION_TASK_ID": task_id,
-              "AUTOMATION_TASK_ID_BASE": task_id,
-              "AUTOMATION_WORKER_ID": worker_id,
-              "AUTOMATION_TASK_LEASE_TOKEN": "resource-fence-only",
-              "AUTOMATION_QUEUE_REPOSITORY": os.environ["GITHUB_REPOSITORY"],
-              "AUTOMATION_QUEUE_BRANCH": "main",
-              "AUTOMATION_QUEUE_PATH": "automation/task_queue.json",
-              "AUTOMATION_QUEUE_TOKEN": os.environ["GH_TOKEN"],
-              "AUTOMATION_QUEUE_SNAPSHOT": str(Path("automation/task_queue.json").resolve()),
-              "AUTOMATION_REQUIRE_RESOURCE_LEASE": "1",
-          }
-          delimiter = "__SOURCE_DISCOVERY_RESOURCE_PROOF__"
-          if delimiter in os.environ["RESOURCE_LEASE_PROOF"]:
-              raise SystemExit("Invalid resource proof delimiter.")
-          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
-              for key, value in env_values.items():
-                  stream.write(f"{key}={value}\n")
-              stream.write(f"AUTOMATION_RESOURCE_LEASE_PROOF<<{delimiter}\n{os.environ['RESOURCE_LEASE_PROOF']}\n{delimiter}\n")
+          # No child-process filesystem guard environment is installed.
           PY
           canonical_task_id="${AUTOMATION_TASK_CORRELATION%%-a*}"
           printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$canonical_task_id" --proof-json "$RESOURCE_LEASE_PROOF"
