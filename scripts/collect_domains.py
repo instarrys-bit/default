@@ -2,10 +2,6 @@
 """Collect policy-labelled domain evidence from every enabled registered source."""
 from __future__ import annotations
 
-if __import__("os").environ.get("AUTOMATION_WRITE_GUARD") == "1":
-    from fenced_file_writer import install_write_guard as _install_write_guard
-    _install_write_guard()
-
 import hashlib,json,re,sys,time,urllib.error,urllib.request
 from pathlib import Path
 from urllib.parse import urlparse

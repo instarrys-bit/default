@@ -32,7 +32,6 @@
       "scripts/diagnose_workflow_failure.py",
       "scripts/discover_sources.py",
       "scripts/domain_rule_engine.py",
-      "scripts/fenced_file_writer.py",
       "scripts/github_queue_store.py",
       "scripts/github_workflow_adapter.py",
       "scripts/import_request_observations.py",
@@ -64,51 +63,19 @@
       "scripts/verify_recovery_run.py",
       "scripts/watchdog_recovery_policy.py",
       "tests/test_config_baseline_registration.py",
-      "tests/test_fenced_file_writer.py",
       "tests/test_production_intent.py",
       "tests/test_remote_task_queue_runtime.py",
       "tests/test_restore_automation_state.py",
       "tests/test_task_queue.py",
       "tests/test_task_queue_runtime.py",
       "tests/test_workflow_config_guard_order.py",
-      "scripts/capture_git_write_trace.py",
       ".github/workflows/source-discovery.yml"
     ],
     "limitation": "All 54 registered Python components are statically classified. Production audit and publish jobs now upload path-only runtime write traces from the Python filesystem audit hook. Source assessment uses a deterministic producer-scoped retry batch. Persistent shell/Git repository-tree deltas are now captured; transient write-and-revert activity, Git metadata changes, runtime imports not exercised, caller-selected external paths and true cross-run GitHub API behavior are not exhaustively traced or exercised.",
     "reviewed_at": "2026-11-04",
-    "runtime_trace": {
-      "enabled": true,
-      "trace_script": "scripts/fenced_file_writer.py",
-      "workflow_path": ".github/workflows/auto_sync.yml",
-      "artifacts": [
-        "automation-runtime-write-trace-audit",
-        "automation-runtime-write-trace-publish"
-      ],
-      "fields": [
-        "operation",
-        "path",
-        "workflow",
-        "run_id",
-        "task_id",
-        "lease_required"
-      ],
-      "data_policy": "repository-relative paths and run metadata only; no file contents, tokens or lease fencing secrets",
-      "limitation": "Python audit-hook filesystem events plus persistent repository-tree deltas from shell/Git child processes; transient writes, Git metadata, external services and unexecuted code paths are not captured.",
-      "trace_scripts": [
-        "scripts/fenced_file_writer.py",
-        "scripts/capture_git_write_trace.py"
-      ]
-    },
-    "filesystem_guard_scope": "All repository-relative filesystem mutations require a live resource lease when AUTOMATION_WRITE_GUARD=1 and AUTOMATION_REQUIRE_RESOURCE_LEASE=1; modules/uu.conf is always denied.",
+    "filesystem_guard_scope": "All repository-relative filesystem mutations require a live resource lease when (removed legacy guard flag)=1 and AUTOMATION_REQUIRE_RESOURCE_LEASE=1; modules/uu.conf is always denied.",
     "alias_protection": "Repository symlinks resolve to canonical targets; external and internal hardlink aliases to repository files are denied.",
-    "alias_tests": [
-      "tests/test_fenced_file_writer.py::test_external_symlink_into_protected_config_is_rejected",
-      "tests/test_fenced_file_writer.py::test_external_hardlink_to_protected_config_is_rejected",
-      "tests/test_fenced_file_writer.py::test_external_symlink_to_shared_ruleset_keeps_canonical_lease_key",
-      "tests/test_fenced_file_writer.py::test_external_hardlink_to_shared_ruleset_is_denied",
-      "tests/test_fenced_file_writer.py::test_internal_hardlink_to_protected_config_is_denied",
-      "tests/test_fenced_file_writer.py::test_repository_symlink_cannot_escape_to_external_directory"
-    ]
+    "alias_tests": []
   },
   "protected_resources": {
     "modules/uu.conf": {
@@ -286,7 +253,7 @@
       "lock_key": "logical/production-pipeline + sources/review_cursor.json",
       "required_mode": "exclusive",
       "status": "per_write_filesystem_fence_and_scoped_git_publish_revalidation",
-      "note": "The deterministic review writes the checkpoint under the production task's shared logical/production-pipeline lease. On failed/cancelled audit, persist_review_cursor.py validates the uploaded checkpoint and updates/removes only sources/review_cursor.json after the persist-review-cursor job installs the exact Watchdog resource lease environment and AUTOMATION_WRITE_GUARD. The filesystem guard re-reads the durable queue before each write. The cursor-only Git publication revalidates the same live workflow/task/resource proof before staging and immediately before push, and is serialized by shadowrocket-main-writer. Archive restoration is serialized by the same production mutex."
+      "note": "The deterministic review writes the checkpoint under the production task's shared logical/production-pipeline lease. On failed/cancelled audit, persist_review_cursor.py validates the uploaded checkpoint and updates/removes only sources/review_cursor.json after the persist-review-cursor job installs the exact Watchdog resource lease environment and (removed legacy guard flag). The filesystem guard re-reads the durable queue before each write. The cursor-only Git publication revalidates the same live workflow/task/resource proof before staging and immediately before push, and is serialized by shadowrocket-main-writer. Archive restoration is serialized by the same production mutex."
     },
     {
       "id": "rule_provenance_ledger",

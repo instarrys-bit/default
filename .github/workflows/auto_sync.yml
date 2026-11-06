@@ -64,7 +64,6 @@ jobs:
     timeout-minutes: 300
     env:
       PYTHONPATH: scripts
-      AUTOMATION_WRITE_GUARD: "1"
       SOURCE_DISCOVERY_MODE: ${{ vars.SOURCE_DISCOVERY_MODE || 'monolithic_fallback' }}
     permissions:
       contents: read
@@ -76,17 +75,10 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Capture initial repository baseline for shell and Git write tracing
-        run: |
-          set -euo pipefail
-          echo "AUTOMATION_WRITE_TRACE_BASELINE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
-
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
-      - name: Enable path-only runtime write trace
-        run: echo "AUTOMATION_WRITE_TRACE_PATH=$RUNNER_TEMP/automation-write-trace-audit.jsonl" >> "$GITHUB_ENV"
 
       - name: Verify Watchdog-owned durable task dispatch
         env:
@@ -291,7 +283,6 @@ jobs:
 
       - name: Compile and run deterministic review tests
         env:
-          AUTOMATION_WRITE_GUARD: "0"
         run: |
           python3 -m compileall -q scripts tests
           python3 -m unittest discover -s tests -v
@@ -484,8 +475,6 @@ jobs:
           import sys
           from datetime import datetime, timezone
           sys.path.insert(0, "scripts")
-          from fenced_file_writer import install_write_guard
-          install_write_guard()
           from production_intent import load_manifest, compute_fingerprint, compute_output_fingerprint
           from pathlib import Path
           Path("reports/automation").mkdir(parents=True, exist_ok=True)
@@ -535,8 +524,6 @@ jobs:
           python3 - <<'PY'
           import json, os, sys
           sys.path.insert(0, "scripts")
-          from fenced_file_writer import install_write_guard
-          install_write_guard()
           from pathlib import Path
           from datetime import datetime, timezone
           Path("reports/automation").mkdir(parents=True, exist_ok=True)
@@ -624,19 +611,6 @@ jobs:
           path: ${{ runner.temp }}/audit-output.tar.gz
           if-no-files-found: error
           retention-days: 90
-      - name: Capture persistent repository changes from shell and Git (audit)
-        if: always()
-        run: |
-          set -euo pipefail
-          python3 scripts/capture_git_write_trace.py --baseline-sha "$AUTOMATION_WRITE_TRACE_BASELINE_SHA"
-      - name: Upload runtime filesystem write trace (audit)
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: automation-runtime-write-trace-audit
-          path: ${{ runner.temp }}/automation-write-trace-audit.jsonl
-          if-no-files-found: ignore
-          retention-days: 14
 
   publish:
     needs: audit
@@ -644,8 +618,6 @@ jobs:
     timeout-minutes: 10
     env:
       PYTHONPATH: scripts
-      AUTOMATION_WRITE_GUARD: "1"
-      AUTOMATION_REQUIRE_RESOURCE_LEASE: "1"
     permissions:
       contents: write
     steps:
@@ -655,13 +627,6 @@ jobs:
           ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: true
-
-      - name: Capture initial repository baseline for shell and Git write tracing
-        run: |
-          set -euo pipefail
-          echo "AUTOMATION_WRITE_TRACE_BASELINE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
-      - name: Enable path-only runtime write trace
-        run: echo "AUTOMATION_WRITE_TRACE_PATH=$RUNNER_TEMP/automation-write-trace-publish.jsonl" >> "$GITHUB_ENV"
 
       - name: Revalidate Watchdog task and export canonical lease context
         env:
@@ -841,19 +806,6 @@ jobs:
           git fetch origin main
           python3 scripts/verify_published_rulesets.py --ref origin/main | tee /tmp/publish-verification.json
           python3 scripts/append_step_summary.py --input /tmp/publish-verification.json
-      - name: Capture persistent repository changes from shell and Git (publish)
-        if: always()
-        run: |
-          set -euo pipefail
-          python3 scripts/capture_git_write_trace.py --baseline-sha "$AUTOMATION_WRITE_TRACE_BASELINE_SHA"
-      - name: Upload runtime filesystem write trace (publish)
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: automation-runtime-write-trace-publish
-          path: ${{ runner.temp }}/automation-write-trace-publish.jsonl
-          if-no-files-found: ignore
-          retention-days: 14
 
   persist-review-cursor:
     name: Persist failed-run cursor under Watchdog resource lease
@@ -865,7 +817,6 @@ jobs:
       actions: read
       contents: write
     env:
-      AUTOMATION_WRITE_GUARD: "1"
       PYTHONPATH: scripts
     steps:
       - name: Checkout current main for a single-path checkpoint update

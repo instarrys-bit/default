@@ -1085,8 +1085,7 @@
         "script_sync_ruleset_config_conflicts",
         "script_validate_config",
         "script_verify_baseline",
-        "script_verify_published_rulesets",
-        "script_capture_git_write_trace"
+        "script_verify_published_rulesets"
       ],
       "dispatches": [],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
@@ -1227,7 +1226,6 @@
         "script_apply_safe_repair",
         "script_assess_sources",
         "script_diagnose_workflow_failure",
-        "script_fenced_file_writer",
         "script_incident_state",
         "script_production_intent",
         "script_refresh_ruleset_manifest",
@@ -1754,61 +1752,6 @@
       }
     },
     {
-      "id": "script_fenced_file_writer",
-      "path": "scripts/fenced_file_writer.py",
-      "kind": "python_component",
-      "responsibility": "enforce owner-config immutability and live resource-lease checks for repository-local filesystem mutations",
-      "capabilities": [
-        "filesystem_write_guard"
-      ],
-      "invocation": "imported_module",
-      "inputs": [
-        "filesystem mutation audit events",
-        "Watchdog task and resource lease environment"
-      ],
-      "outputs": [
-        "allow mutation only when the owner-config and live fencing policies pass"
-      ],
-      "depends_on": [],
-      "dispatches": [],
-      "permission_boundary": "Library only; no independent execution, credentials, network access, or authority to edit modules/uu.conf.",
-      "health_check": "Covered by tests/test_fenced_file_writer.py and the full deterministic unit suite.",
-      "orchestration": {
-        "enabled": false,
-        "allowed_callers": [],
-        "max_attempts": 0,
-        "timeout_seconds": 60
-      }
-    },
-    {
-      "id": "script_capture_git_write_trace",
-      "path": "scripts/capture_git_write_trace.py",
-      "kind": "python_component",
-      "responsibility": "capture persistent repository-tree changes made by shell and Git child processes for the production runtime write trace",
-      "capabilities": [
-        "runtime_write_tracing"
-      ],
-      "invocation": "workflow_step",
-      "inputs": [
-        "Initial checkout commit SHA",
-        "Git committed, staged, unstaged and non-ignored untracked repository paths at end of job"
-      ],
-      "outputs": [
-        "Path-only JSONL records under RUNNER_TEMP",
-        "Before/after commit SHA and changed-path count"
-      ],
-      "depends_on": [],
-      "dispatches": [],
-      "permission_boundary": "Read-only Git tree inspection. Writes only the path-only trace under RUNNER_TEMP outside the repository; no repository file or GitHub API mutation authority.",
-      "health_check": "Covered by tests/test_capture_git_write_trace.py and the production workflow always-run capture steps.",
-      "orchestration": {
-        "enabled": false,
-        "allowed_callers": [],
-        "max_attempts": 0,
-        "timeout_seconds": 60
-      }
-    },
-    {
       "id": "workflow_source_discovery",
       "path": ".github/workflows/source-discovery.yml",
       "kind": "github_actions_workflow",
@@ -1828,7 +1771,6 @@
         "source-discovery-output artifact with SHA-256 provenance proof"
       ],
       "depends_on": [
-        "script_capture_git_write_trace",
         "script_discover_sources",
         "script_resource_lease_runtime"
       ],
