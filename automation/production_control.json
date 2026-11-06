@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "dispatch_mode": "enabled",
-  "updated_at": "2026-11-05T00:00:00Z",
-  "reason": "Owner-authorized automatic production dispatch resumed after baseline and resource-lease fixes.",
+  "updated_at": "2026-11-06T16:40:00Z",
+  "reason": "Watchdog reconciliation checkpoint: owner-approved uu.conf baseline and all release/registry/write-inventory pins are synchronized; evaluate the current-main production fingerprint and dispatch only if unsatisfied.",
   "policy": {
     "automatic_watchdog_dispatch": true,
     "explicit_manual_watchdog_authorization": true,
