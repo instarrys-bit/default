@@ -58,6 +58,8 @@ DOMAIN_PATTERN = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9
 class ProviderRedirectHandler(urllib.request.HTTPRedirectHandler):
     def __init__(self, allowed_host: str):
         super().__init__()
+        if allowed_host not in CATALOG_ALLOWED_HOSTS:
+            raise ValueError("external intelligence redirect host is not allowlisted")
         self.allowed_host = allowed_host
 
     def redirect_request(self, req, fp, code, msg, headers, newurl):
@@ -68,7 +70,7 @@ class ProviderRedirectHandler(urllib.request.HTTPRedirectHandler):
 
 def fetch_external_payload(url: str, allowed_host: str) -> bytes:
     parsed = urllib.parse.urlparse(url)
-    if parsed.scheme != "https" or parsed.hostname != allowed_host or parsed.username or parsed.password or parsed.port not in (None, 443):
+    if allowed_host not in CATALOG_ALLOWED_HOSTS or parsed.scheme != "https" or parsed.hostname != allowed_host or parsed.username or parsed.password or parsed.port not in (None, 443):
         raise ValueError("external intelligence URL is outside its provider HTTPS boundary")
     request = urllib.request.Request(url, headers={"User-Agent": "Shadowrocket-External-Intelligence/1.0", "Accept": "application/json,text/plain,text/csv,text/html"})
     opener = urllib.request.build_opener(ProviderRedirectHandler(allowed_host))
