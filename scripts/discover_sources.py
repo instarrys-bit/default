@@ -55,15 +55,27 @@ EXTERNAL_INTEL_MAX_TOTAL_RECORDS = 500
 EXTERNAL_INTEL_TIMEOUT_SECONDS = 15
 DOMAIN_PATTERN = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$", re.I)
 
+class ProviderRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def __init__(self, allowed_host: str):
+        super().__init__()
+        self.allowed_host = allowed_host
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        target = urllib.parse.urlparse(newurl)
+        if target.scheme != "https" or target.hostname != self.allowed_host or target.username or target.password or target.port not in (None, 443):
+            raise ValueError("external intelligence redirect escaped provider HTTPS boundary")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
 def fetch_external_payload(url: str, allowed_host: str) -> bytes:
     parsed = urllib.parse.urlparse(url)
     if parsed.scheme != "https" or parsed.hostname != allowed_host or parsed.username or parsed.password or parsed.port not in (None, 443):
         raise ValueError("external intelligence URL is outside its provider HTTPS boundary")
     request = urllib.request.Request(url, headers={"User-Agent": "Shadowrocket-External-Intelligence/1.0", "Accept": "application/json,text/plain,text/csv,text/html"})
-    with urllib.request.urlopen(request, timeout=EXTERNAL_INTEL_TIMEOUT_SECONDS) as response:
+    opener = urllib.request.build_opener(ProviderRedirectHandler(allowed_host))
+    with opener.open(request, timeout=EXTERNAL_INTEL_TIMEOUT_SECONDS) as response:
         final = urllib.parse.urlparse(response.geturl())
         if response.status != 200 or final.scheme != "https" or final.hostname != allowed_host or final.port not in (None, 443):
-            raise ValueError("external intelligence redirect or response escaped provider boundary")
+            raise ValueError("external intelligence response escaped provider boundary")
         payload = response.read(EXTERNAL_INTEL_MAX_BYTES_PER_PROVIDER + 1)
     if len(payload) > EXTERNAL_INTEL_MAX_BYTES_PER_PROVIDER:
         raise ValueError("external intelligence provider response exceeded size budget")
