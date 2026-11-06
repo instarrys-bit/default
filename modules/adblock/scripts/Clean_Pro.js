@@ -350,12 +350,17 @@
   function patchPlayabilityStatus(bytes) {
     const r = new SafeWireReader(bytes);
     const w = new SafeWireWriter();
+    let hasPip = false;
+    let hasBackground = false;
     while (!r.eof()) {
       const [fn, wt] = r.tag();
       const raw = r.skip(wt);
-      if (fn === 21 || fn === 11) continue;
+      if (fn === 21 && wt === WT_LEN) hasPip = true;
+      if (fn === 11 && wt === WT_LEN) hasBackground = true;
+      if ((fn === 21 && wt === WT_LEN) || (fn === 11 && wt === WT_LEN)) continue;
       w.tag(fn, wt).raw(raw);
     }
+    if (hasPip && hasBackground) return bytes;
     w.tag(21, WT_LEN).bytes(buildPipRenderBytes());
     w.tag(11, WT_LEN).bytes(buildBgRenderBytes());
     return w.finish();
@@ -523,34 +528,40 @@
   function processPlayer(bytes, opts) {
     const r = new SafeWireReader(bytes);
     const w = new SafeWireWriter();
-    let hasPlayability = false;
+    let modified = false;
 
     while (!r.eof()) {
       const [fn, wt] = r.tag();
       if (WATCH_WHILE_AD_PROTO_FIELDS.has(fn)) {
         r.skip(wt);
+        modified = true;
         continue;
       }
       if (fn === 2 && wt === WT_LEN) {
-        hasPlayability = true;
-        w.tag(2, WT_LEN).bytes(patchPlayabilityStatus(r.bytes()));
+        const statusBytes = r.bytes();
+        const patchedBytes = patchPlayabilityStatus(statusBytes);
+        if (patchedBytes !== statusBytes) modified = true;
+        w.tag(fn, wt).bytes(patchedBytes);
         continue;
       }
       if (fn === 9 && wt === WT_LEN) {
-        w.tag(9, WT_LEN).bytes(patchPlaybackTracking(r.bytes()));
+        const trackingBytes = r.bytes();
+        const patchedBytes = patchPlaybackTracking(trackingBytes);
+        if (patchedBytes !== trackingBytes) modified = true;
+        w.tag(fn, wt).bytes(patchedBytes);
         continue;
       }
       if (fn === 10 && wt === WT_LEN && opts.captionLang !== "off") {
-        w.tag(10, WT_LEN).bytes(patchCaptions(r.bytes(), opts.captionLang));
+        const captionBytes = r.bytes();
+        const patchedBytes = patchCaptions(captionBytes, opts.captionLang);
+        if (patchedBytes !== captionBytes) modified = true;
+        w.tag(fn, wt).bytes(patchedBytes);
         continue;
       }
       w.tag(fn, wt).raw(r.skip(wt));
     }
 
-    if (!hasPlayability) {
-      w.tag(2, WT_LEN).bytes(patchPlayabilityStatus(new Uint8Array(0)));
-    }
-    return { bytes: w.finish(), modified: true };
+    return { bytes: modified ? w.finish() : bytes, modified };
   }
 
   function getEmlName(renderInfoBytes) {
@@ -935,9 +946,10 @@
         while (!cr.eof()) {
           const [cfn, cwt] = cr.tag();
           if (cfn === 2 && cwt === WT_LEN) {
-            const pRes = processPlayer(cr.bytes(), opts);
-            cw.tag(2, WT_LEN).bytes(pRes.bytes);
-            cMod = true;
+            const playerBytes = cr.bytes();
+            const pRes = processPlayer(playerBytes, opts);
+            cw.tag(2, WT_LEN).bytes(pRes.modified ? pRes.bytes : playerBytes);
+            if (pRes.modified) cMod = true;
           } else if (cfn === 3 && cwt === WT_LEN) {
             const nRes = filterFeedPayload(cr.bytes(), cache, opts, 0);
             cw.tag(3, WT_LEN).bytes(nRes.bytes);
@@ -1165,6 +1177,16 @@
   ]);
 
   function processYouTubeJsonString(rawText, filterHomeShorts = false) {
+    if (!filterHomeShorts) {
+      let hasCandidate = false;
+      for (const marker of YT_JSON_AD_KEYS) {
+        if (rawText.includes(marker)) {
+          hasCandidate = true;
+          break;
+        }
+      }
+      if (!hasCandidate) return { body: rawText, modified: false };
+    }
     const obj = JSON.parse(rawText);
     let dirty = false;
 
