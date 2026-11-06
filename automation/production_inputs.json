@@ -6,6 +6,7 @@
     ".github/workflows/auto_sync.yml",
     "modules/uu.conf",
     "sources/domain_sources.json",
+    "sources/external_intelligence_catalog.json",
     "sources/legacy_managed_rules.json",
     "sources/policy.json",
     "sources/policy_approvals.json",
@@ -98,7 +99,10 @@
     "sources/source_assessments.json*",
     "sources/source_candidates.json*",
     "sources/source_snapshots/**",
-    "tests/**"
+    "tests/**",
+    ".github/workflows/restore-inventory.yml",
+    "automation/.restore/meta.json",
+    "scripts/restore_inventory_from_chunks.py"
   ],
   "unknown_path_policy": "review_required",
   "monitoring_path_patterns": [
