@@ -437,6 +437,7 @@ def readme_snapshot(repo_data: dict, previous: dict | None = None) -> tuple[str,
 def persist_discovery_outputs(merged: dict) -> None:
     """Persist the discovery inventory and report under their exact live leases."""
     write_document(OUTPUT, merged, "candidates")
+    REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text(render_report(merged), encoding="utf-8")
 
 

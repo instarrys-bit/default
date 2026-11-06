@@ -27,6 +27,7 @@ on:
       - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
       - "Validate Shadowrocket config against user baseline"
       - "Validate self-healing agent"
+      - "Shadowrocket Source Discovery (Watchdog)"
     types: [completed]
   push:
     branches: [main]

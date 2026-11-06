@@ -923,7 +923,7 @@
       "lease_enforcement": "In the production auto_sync invocation, the central temporary-workspace isolation is active and requires the live Watchdog task/resource lease before each repository mutation. The validate-config workflow has contents:read and only mutates its ephemeral validation workspace; it cannot publish repository changes.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Runtime writes are confined to the isolated RUNNER_TEMP workspace and are not published to repository paths."
+      "write_boundary_fencing": "Owner-approved baseline metadata updates only; modules/uu.conf is read-only and must never be rewritten."
     },
     {
       "program_id": "script_remote_task_queue_runtime",
@@ -941,7 +941,7 @@
       ],
       "side_effects": [],
       "evidence": "enqueue_remote(), claim_remote(), complete_remote(), recover_remote(), and reconciliation helpers mutate the durable task queue through GitHubContentsQueueStore.mutate(). Manual authorization consumption is written atomically with the task in the same mutation.",
-      "write_boundary_fencing": "Control-plane task queue state is updated separately through the scheduler GitHub Contents SHA-CAS API; this is not a production artifact writer.",
+      "write_boundary_fencing": "Durable queue updates use GitHub Contents SHA compare-and-swap; blind writes are prohibited.",
       "lease_keys": [],
       "control_plane_consistency": "sha_cas",
       "publish_resources": []
@@ -1458,7 +1458,7 @@
   "direct_mutation_scan": {
     "status": "partial_python_direct_callsite_scan",
     "scanner": "tests/test_transitive_write_site_inventory.py",
-    "registered_component_count": 54,
+    "registered_component_count": 51,
     "mutation_api_families": [
       "Path/open write modes",
       "Path write_text/write_bytes/unlink/mkdir/replace/rename/touch",
