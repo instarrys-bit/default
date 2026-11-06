@@ -35,13 +35,9 @@ def _atomic_write(path: Path, data: bytes) -> None:
         os.replace(temporary, path)
     except Exception:
         try:
-        except Exception:
-            pass  # Preserve the temporary file rather than mutate without a valid fence.
-        else:
-            try:
-                os.unlink(temporary)
-            except FileNotFoundError:
-                pass
+            os.unlink(temporary)
+        except FileNotFoundError:
+            pass
         raise
 
 
@@ -239,9 +235,5 @@ def write_document(path: Path, payload: dict, collection_key: str) -> dict:
         return {"storage": "jsonl-shards-v1", "records": len(records), "bytes": total_shard_bytes, "shards": len(shard_entries)}
     except Exception:
         if staging.exists():
-            try:
-            except Exception:
-                pass
-            else:
-                shutil.rmtree(staging, ignore_errors=True)
+            shutil.rmtree(staging, ignore_errors=True)
         raise
