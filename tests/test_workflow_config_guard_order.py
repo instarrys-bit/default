@@ -378,13 +378,14 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         workflow = (ROOT / ".github" / "workflows" / "auto_sync.yml").read_text(encoding="utf-8")
         lines = workflow.splitlines()
         for index, line in enumerate(lines[:-1]):
-            match = re.match(r"^(?P<indent>\\s*)env:\\s*$", line)
-            if not match:
+            if line.strip() != "env:":
                 continue
+            indent = len(line) - len(line.lstrip())
             next_line = lines[index + 1]
+            next_indent = len(next_line) - len(next_line.lstrip())
             self.assertGreater(
-                len(next_line) - len(next_line.lstrip()),
-                len(match.group("indent")),
+                next_indent,
+                indent,
                 f"empty env mapping at line {index + 1}",
             )
 
