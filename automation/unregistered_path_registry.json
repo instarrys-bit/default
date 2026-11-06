@@ -20,17 +20,18 @@
       "path": ".github/workflows/restore-inventory.yml",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-06T06:33:28.843318Z",
-      "last_seen_at": "2026-11-06T06:34:33.707349Z",
-      "seen_count": 3,
+      "last_seen_at": "2026-11-06T06:37:31.937825Z",
+      "seen_count": 4,
       "observed_run_ids": [
         "42175155604",
         "42175160004",
-        "42175268461"
+        "42175268461",
+        "42175590722"
       ],
       "last_seen_event": "push",
-      "last_seen_revision": "259834f3a3300f7e191168bae1e6d4776e158e34",
-      "last_seen_run_id": "42175268461",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42175268461"
+      "last_seen_revision": "ab0be84543e2162d84cb782893957f92815ff420",
+      "last_seen_run_id": "42175590722",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42175590722"
     },
     {
       "path": ".github/workflows/source-discovery.yml",
@@ -64,17 +65,18 @@
       "path": "automation/.restore/meta.json",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-06T06:33:28.843318Z",
-      "last_seen_at": "2026-11-06T06:34:33.707349Z",
-      "seen_count": 3,
+      "last_seen_at": "2026-11-06T06:37:31.937825Z",
+      "seen_count": 4,
       "observed_run_ids": [
         "42175155604",
         "42175160004",
-        "42175268461"
+        "42175268461",
+        "42175590722"
       ],
       "last_seen_event": "push",
-      "last_seen_revision": "259834f3a3300f7e191168bae1e6d4776e158e34",
-      "last_seen_run_id": "42175268461",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42175268461"
+      "last_seen_revision": "ab0be84543e2162d84cb782893957f92815ff420",
+      "last_seen_run_id": "42175590722",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42175590722"
     },
     {
       "path": "automation/assessment_canary_request.json",
@@ -540,17 +542,18 @@
       "path": "scripts/restore_inventory_from_chunks.py",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-06T06:33:28.843318Z",
-      "last_seen_at": "2026-11-06T06:34:33.707349Z",
-      "seen_count": 3,
+      "last_seen_at": "2026-11-06T06:37:31.937825Z",
+      "seen_count": 4,
       "observed_run_ids": [
         "42175155604",
         "42175160004",
-        "42175268461"
+        "42175268461",
+        "42175590722"
       ],
       "last_seen_event": "push",
-      "last_seen_revision": "259834f3a3300f7e191168bae1e6d4776e158e34",
-      "last_seen_run_id": "42175268461",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42175268461"
+      "last_seen_revision": "ab0be84543e2162d84cb782893957f92815ff420",
+      "last_seen_run_id": "42175590722",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42175590722"
     },
     {
       "path": "scripts/select_domain_rules.py",
@@ -621,5 +624,5 @@
       "classification_basis": "Verified deletion commit e845187d and current main tree: shadowrocket/ss.conf is absent; automation/production_inputs.json names modules/uu.conf as the active protected config and does not include this legacy path among production inputs. This classification does not restore, edit, or approve any config content."
     }
   ],
-  "updated_at": "2026-11-06T06:34:33.707349Z"
+  "updated_at": "2026-11-06T06:37:31.937825Z"
 }
