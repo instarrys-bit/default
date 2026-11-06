@@ -83,32 +83,34 @@
       "path": "automation/.restore/auto_sync.yml.zlib.b64",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-06T17:55:47.023869Z",
-      "last_seen_at": "2026-11-06T18:23:56.607239Z",
-      "seen_count": 2,
+      "last_seen_at": "2026-11-06T18:25:39.034765Z",
+      "seen_count": 3,
       "observed_run_ids": [
         "42266016731",
-        "42270254650"
+        "42270254650",
+        "42270526897"
       ],
       "last_seen_event": "push",
-      "last_seen_revision": "d3c258b1e272cf3c2a143d4f10023025552c09ab",
-      "last_seen_run_id": "42270254650",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42270254650"
+      "last_seen_revision": "45d4c1c9b5f506b992c2cf355d80dbbd207908bb",
+      "last_seen_run_id": "42270526897",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42270526897"
     },
     {
       "path": "automation/.restore/auto_sync_chunk_0.txt",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-06T17:41:58.785360Z",
-      "last_seen_at": "2026-11-06T18:23:56.607239Z",
-      "seen_count": 3,
+      "last_seen_at": "2026-11-06T18:25:39.034765Z",
+      "seen_count": 4,
       "observed_run_ids": [
         "42263925102",
         "42266016731",
-        "42270254650"
+        "42270254650",
+        "42270526897"
       ],
       "last_seen_event": "push",
-      "last_seen_revision": "d3c258b1e272cf3c2a143d4f10023025552c09ab",
-      "last_seen_run_id": "42270254650",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42270254650"
+      "last_seen_revision": "45d4c1c9b5f506b992c2cf355d80dbbd207908bb",
+      "last_seen_run_id": "42270526897",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42270526897"
     },
     {
       "path": "automation/.restore/meta.json",
@@ -537,8 +539,8 @@
       "path": "modules/maasea/youtube_request_local.js",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-06T17:30:50.104659Z",
-      "last_seen_at": "2026-11-06T18:23:56.607239Z",
-      "seen_count": 7,
+      "last_seen_at": "2026-11-06T18:25:39.034765Z",
+      "seen_count": 8,
       "observed_run_ids": [
         "42262218995",
         "42262325849",
@@ -546,19 +548,20 @@
         "42262699612",
         "42263925102",
         "42266016731",
-        "42270254650"
+        "42270254650",
+        "42270526897"
       ],
       "last_seen_event": "push",
-      "last_seen_revision": "d3c258b1e272cf3c2a143d4f10023025552c09ab",
-      "last_seen_run_id": "42270254650",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42270254650"
+      "last_seen_revision": "45d4c1c9b5f506b992c2cf355d80dbbd207908bb",
+      "last_seen_run_id": "42270526897",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42270526897"
     },
     {
       "path": "modules/maasea/youtube_response.js",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-06T17:30:50.104659Z",
-      "last_seen_at": "2026-11-06T18:23:56.607239Z",
-      "seen_count": 7,
+      "last_seen_at": "2026-11-06T18:25:39.034765Z",
+      "seen_count": 8,
       "observed_run_ids": [
         "42262218995",
         "42262325849",
@@ -566,12 +569,13 @@
         "42262699612",
         "42263925102",
         "42266016731",
-        "42270254650"
+        "42270254650",
+        "42270526897"
       ],
       "last_seen_event": "push",
-      "last_seen_revision": "d3c258b1e272cf3c2a143d4f10023025552c09ab",
-      "last_seen_run_id": "42270254650",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42270254650"
+      "last_seen_revision": "45d4c1c9b5f506b992c2cf355d80dbbd207908bb",
+      "last_seen_run_id": "42270526897",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42270526897"
     },
     {
       "path": "modules/temp-test/Sr_Youtube_Clean.js",
@@ -605,6 +609,34 @@
       "classified_at": "2026-11-04T18:00:00+08:00",
       "classification_reason": "Reads production records and task state to generate the dashboard snapshot; writes only dashboard/data.json and does not alter production outputs.",
       "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
+    },
+    {
+      "path": "scripts/capture_production_fingerprint.py",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-06T18:25:39.034765Z",
+      "last_seen_at": "2026-11-06T18:25:39.034765Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "42270526897"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "45d4c1c9b5f506b992c2cf355d80dbbd207908bb",
+      "last_seen_run_id": "42270526897",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42270526897"
+    },
+    {
+      "path": "scripts/record_state_pointer.py",
+      "status": "PENDING_CLASSIFICATION",
+      "first_seen_at": "2026-11-06T18:25:39.034765Z",
+      "last_seen_at": "2026-11-06T18:25:39.034765Z",
+      "seen_count": 1,
+      "observed_run_ids": [
+        "42270526897"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "45d4c1c9b5f506b992c2cf355d80dbbd207908bb",
+      "last_seen_run_id": "42270526897",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42270526897"
     },
     {
       "path": "scripts/resource_lease_runtime.py",
@@ -729,5 +761,5 @@
       "classification_basis": "scripts/discover_sources.py loads and validates this catalog, then uses its provider IDs, endpoints, data types and activation boundaries to drive bounded external collection. Changes can alter source observations and later ruleset evidence, so this exact path is a production input. The catalog does not itself assign DIRECT/PROXY/REJECT policy or authorize publication."
     }
   ],
-  "updated_at": "2026-11-06T18:23:56.607239Z"
+  "updated_at": "2026-11-06T18:25:39.034765Z"
 }
