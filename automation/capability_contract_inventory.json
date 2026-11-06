@@ -681,37 +681,6 @@
       "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
     },
     {
-      "id": "script_fenced_file_writer",
-      "path": "scripts/fenced_file_writer.py",
-      "declared_capabilities": [
-        "filesystem_write_guard"
-      ],
-      "registry_dependencies": [],
-      "current_registry_inputs": [
-        "filesystem mutation audit events",
-        "Watchdog task and resource lease environment"
-      ],
-      "current_registry_outputs": [
-        "allow mutation only when the owner-config and live fencing policies pass"
-      ],
-      "current_invocation": "imported_module",
-      "contract_status": "incomplete",
-      "dispatch_status": "disabled",
-      "missing_contract_fields": [
-        "input_schema",
-        "output_schema",
-        "read_resources",
-        "write_resources",
-        "transitive_side_effects",
-        "dependency_edges",
-        "idempotency_key",
-        "resource_lease_keys",
-        "success_predicate",
-        "independent_verifier"
-      ],
-      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
-    },
-    {
       "id": "script_github_queue_store",
       "path": "scripts/github_queue_store.py",
       "declared_capabilities": [
