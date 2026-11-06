@@ -1,9 +1,11 @@
-import base64
+import gzip
+import hashlib
 import json
 import sys
+import tempfile
 import unittest
-from io import BytesIO
 from pathlib import Path
+from io import BytesIO
 from urllib.error import HTTPError
 from unittest.mock import patch
 
@@ -31,119 +33,122 @@ class FakeResponse:
         return self.raw
 
 
-class GitHubQueueStoreTests(unittest.TestCase):
+class GitHubIssueQueueStoreTests(unittest.TestCase):
     def setUp(self):
-        self.document = {"schema_version": 1, "revision": 0, "tasks": []}
-        self.sha = "blob-v1"
+        self.temp = tempfile.TemporaryDirectory()
+        self.bootstrap = Path(self.temp.name) / "task_queue.json"
+        self.document = {"schema_version": 1, "revision": 4, "tasks": []}
+        self.bootstrap.write_text(json.dumps(self.document), encoding="utf-8")
+        self.comments = []
+        self.next_id = 1
         self.calls = []
         self.store = GitHubContentsQueueStore(
-            "owner/repo", token="test-token", api_url="https://api.example.test"
+            "owner/repo",
+            str(self.bootstrap),
+            token="test-token",
+            api_url="https://api.example.test",
+            issue_number=315,
         )
 
-    def fake_urlopen(self, request, timeout=15):
+    def tearDown(self):
+        self.temp.cleanup()
+
+    def fake_urlopen(self, request, timeout=20):
         self.calls.append(request)
         if request.method == "GET":
-            encoded = base64.b64encode(json.dumps(self.document).encode()).decode()
-            return FakeResponse({"sha": self.sha, "content": encoded})
-        payload = json.loads(request.data)
-        self.assertEqual(payload["sha"], self.sha)
-        self.document = json.loads(base64.b64decode(payload["content"]).decode())
-        self.sha = "blob-v2"
-        return FakeResponse({"content": {"sha": self.sha}})
+            return FakeResponse(self.comments)
+        if request.method == "POST":
+            body = json.loads(request.data)["body"]
+            self.comments.append({"id": self.next_id, "body": body})
+            self.next_id += 1
+            return FakeResponse({"id": self.next_id - 1})
+        raise AssertionError(f"unexpected method: {request.method}")
 
-    def test_read_returns_document_and_blob_sha(self):
+    def test_read_only_consumer_does_not_bootstrap_or_write(self):
         with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
             snapshot = self.store.read()
         self.assertEqual(snapshot.document, self.document)
-        self.assertEqual(snapshot.content_sha, "blob-v1")
-        self.assertIn("/repos/owner/repo/contents/automation/task_queue.json", self.calls[0].full_url)
+        self.assertEqual(snapshot.content_sha, "")
+        self.assertEqual(len(self.comments), 0)
+        self.assertEqual(len(self.calls), 1)
+        self.assertEqual(self.calls[0].method, "GET")
 
-    def test_compare_and_swap_requires_expected_sha_and_updates(self):
+    def test_compare_and_swap_appends_compressed_snapshot(self):
+        candidate = {"schema_version": 1, "revision": 5, "tasks": [{"task_id": "next"}]}
         with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
-            new_sha = self.store.compare_and_swap(
-                {"schema_version": 1, "revision": 1, "tasks": []}, "blob-v1"
-            )
-        self.assertEqual(new_sha, "blob-v2")
-        self.assertEqual(self.document["revision"], 1)
-        payload = json.loads(self.calls[0].data)
-        self.assertEqual(payload["sha"], "blob-v1")
-        self.assertEqual(payload["branch"], "main")
+            current = self.store._ensure_bootstrap()
+            new_sha = self.store.compare_and_swap(candidate, current.content_sha)
+            latest = self.store.read()
+        self.assertEqual(latest.document, candidate)
+        self.assertEqual(new_sha, latest.content_sha)
+        payload = json.loads(self.comments[-1]["body"].split("\n", 1)[1])
+        self.assertEqual(payload["encoding"], "gzip+base64")
+        self.assertEqual(gzip.decompress(__import__("base64").b64decode(payload["data"])), self.store._canonical_bytes(candidate))
+        self.assertEqual(payload["previous_sha256"], hashlib.sha256(self.store._canonical_bytes(self.document)).hexdigest())
 
     def test_blind_write_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "blind writes"):
             self.store.compare_and_swap(self.document, "")
 
-    def test_mutate_reloads_and_reapplies_after_sha_conflict(self):
-        sequence = {"gets": 0, "puts": 0}
+    def test_compare_and_swap_requires_next_revision(self):
+        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+            current = self.store._ensure_bootstrap()
+            with self.assertRaisesRegex(ValueError, "advance by exactly one"):
+                self.store.compare_and_swap({**self.document, "revision": 8}, current.content_sha)
 
-        def conflict_then_write(request, timeout=15):
+    def test_mutate_reloads_after_same_revision_race(self):
+        race = {"injected": False}
+
+        def concurrent_urlopen(request, timeout=20):
             if request.method == "GET":
-                sequence["gets"] += 1
-                current = {"schema_version": 1, "revision": sequence["gets"] - 1, "tasks": []}
-                sha = f"blob-v{sequence['gets']}"
-                if sequence["gets"] == 1:
-                    self.document = current
-                    self.sha = sha
-                else:
-                    self.document = {"schema_version": 1, "revision": 7, "tasks": [{"task_id": "other"}]}
-                    self.sha = "blob-v2"
-                    current = self.document
-                    sha = self.sha
-                encoded = base64.b64encode(json.dumps(current).encode()).decode()
-                return FakeResponse({"sha": sha, "content": encoded})
-            sequence["puts"] += 1
-            if sequence["puts"] == 1:
-                raise HTTPError(request.full_url, 409, "Conflict", {}, BytesIO(b"stale sha"))
-            body = json.loads(request.data)
-            self.assertEqual(body["sha"], "blob-v2")
-            saved = json.loads(base64.b64decode(body["content"]).decode())
-            self.assertEqual(saved["revision"], 8)
-            self.assertEqual(saved["tasks"][0]["task_id"], "other")
-            self.assertEqual(saved["tasks"][1]["task_id"], "new")
-            return FakeResponse({"content": {"sha": "blob-v3"}})
+                return FakeResponse(self.comments)
+            body = json.loads(request.data)["body"]
+            if not race["injected"] and '"revision":5' in body:
+                race["injected"] = True
+                external = {"schema_version": 1, "revision": 5, "tasks": [{"task_id": "other"}]}
+                previous = hashlib.sha256(self.store._canonical_bytes(self.document)).hexdigest()
+                self.comments.append({"id": self.next_id, "body": self.store._encode_comment(external, previous)})
+                self.next_id += 1
+            self.comments.append({"id": self.next_id, "body": body})
+            self.next_id += 1
+            return FakeResponse({"id": self.next_id - 1})
 
-        def add_task(queue):
+        def add_new(queue):
             queue["revision"] += 1
             queue["tasks"].append({"task_id": "new"})
             return queue, "added"
 
-        with patch("github_queue_store.urlopen", side_effect=conflict_then_write):
-            result = self.store.mutate(add_task, max_conflicts=2)
+        with patch("github_queue_store.urlopen", side_effect=concurrent_urlopen):
+            result = self.store.mutate(add_new, max_conflicts=2)
+            latest = self.store.read()
         self.assertEqual(result, "added")
-        self.assertEqual(sequence, {"gets": 2, "puts": 2})
-
-    def test_conflict_budget_exhaustion_fails_closed(self):
-        def always_conflict(request, timeout=15):
-            if request.method == "GET":
-                encoded = base64.b64encode(json.dumps(self.document).encode()).decode()
-                return FakeResponse({"sha": self.sha, "content": encoded})
-            raise HTTPError(request.full_url, 409, "Conflict", {}, BytesIO(b"stale sha"))
-
-        with patch("github_queue_store.urlopen", side_effect=always_conflict):
-            with self.assertRaises(ConcurrentUpdate):
-                self.store.mutate(
-                    lambda q: ({**q, "revision": q["revision"] + 1}, None),
-                    max_conflicts=1,
-                )
+        self.assertEqual(latest.document["revision"], 6)
+        self.assertEqual(latest.document["tasks"], [{"task_id": "other"}, {"task_id": "new"}])
 
     def test_non_conflict_api_error_does_not_retry(self):
-        def forbidden(request, timeout=15):
+        def forbidden(request, timeout=20):
             raise HTTPError(request.full_url, 403, "Forbidden", {}, BytesIO(b"denied"))
 
         with patch("github_queue_store.urlopen", side_effect=forbidden):
             with self.assertRaisesRegex(GitHubAPIError, "HTTP 403"):
                 self.store.read()
 
+    def test_malformed_snapshot_fails_closed(self):
+        self.comments.append({"id": 1, "body": "<!-- shadowrocket-automation-queue:v1 -->\nnot-json"})
+        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+            with self.assertRaisesRegex(GitHubAPIError, "invalid durable queue snapshot"):
+                self.store.read()
+
     def test_mutator_must_return_document(self):
         with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
             with self.assertRaisesRegex(ValueError, "queue document object"):
-                self.store.mutate(lambda q: ([], None))
+                self.store.mutate(lambda queue: ([], None))
 
-    def test_unchanged_mutation_does_not_commit(self):
+    def test_unchanged_mutation_does_not_append(self):
         with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
-            result = self.store.mutate(lambda q: (q, "unchanged"))
+            result = self.store.mutate(lambda queue: (queue, "unchanged"))
         self.assertEqual(result, "unchanged")
-        self.assertEqual(len(self.calls), 1)
+        self.assertEqual(len(self.comments), 1)
 
 
 if __name__ == "__main__":

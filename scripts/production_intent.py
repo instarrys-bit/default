@@ -7,8 +7,12 @@ import argparse
 import fnmatch
 import hashlib
 import json
+import os
 import re
 import sys
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
@@ -113,13 +117,84 @@ def compute_fingerprint(root: Path, manifest: dict) -> str:
         if not path.is_file():
             entries[relative] = "MISSING"
             continue
-        digest = hashlib.sha256(_fingerprint_input_bytes(relative, path.read_bytes())).hexdigest()
+        data = path.read_bytes()
+        if relative == "sources/request_domain_observations.json":
+            seed = json.loads(data.decode("utf-8"))
+            ledger = load_request_observation_ledger(root, seed)
+            data = json.dumps(ledger, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+        digest = hashlib.sha256(_fingerprint_input_bytes(relative, data)).hexdigest()
         entries[relative] = digest
     payload = json.dumps(
         {"manifest_schema_version": manifest["schema_version"], "inputs": entries},
         sort_keys=True, separators=(",", ":"), ensure_ascii=False,
     ).encode("utf-8")
     return hashlib.sha256(payload).hexdigest()
+
+
+REQUEST_OBSERVATION_ISSUE_NUMBER = 317
+REQUEST_OBSERVATION_MARKER = "<!-- shadowrocket-domain-observation:v1 -->"
+
+
+def load_request_observation_ledger(root: Path, base_payload: dict | None = None,
+                                    repository: str | None = None, token: str | None = None) -> dict:
+    """Merge the read-only repository seed with append-only Issue #317 intake batches."""
+    if base_payload is None:
+        path = root / "sources/request_domain_observations.json"
+        if path.is_file():
+            base_payload = json.loads(path.read_text(encoding="utf-8"))
+        else:
+            base_payload = {"schema_version": 1, "observations": []}
+    if base_payload.get("schema_version") != 1 or not isinstance(base_payload.get("observations"), list):
+        raise ValueError("unsupported request observation seed schema")
+    repository = repository or os.environ.get("GITHUB_REPOSITORY", "")
+    token = token or os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN", "")
+    if not repository or not token:
+        return base_payload
+    if "/" not in repository:
+        raise ValueError("GITHUB_REPOSITORY must be owner/name to read external request observations")
+    endpoint = f"https://api.github.com/repos/{repository}/issues/{REQUEST_OBSERVATION_ISSUE_NUMBER}/comments"
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "Authorization": "Bearer " + token,
+        "X-GitHub-Api-Version": "2022-11-28",
+        "User-Agent": "shadowrocket-request-observation-reader",
+    }
+    merged = base_payload
+    page = 1
+    while True:
+        url = endpoint + "?" + urlencode({"per_page": 100, "page": page})
+        request = Request(url, headers=headers)
+        try:
+            with urlopen(request, timeout=15) as response:
+                comments = json.load(response)
+        except (HTTPError, URLError, TimeoutError, OSError, json.JSONDecodeError) as exc:
+            raise ValueError(f"cannot read external request observation ledger: {type(exc).__name__}") from None
+        if not isinstance(comments, list):
+            raise ValueError("external request observation comments must be an array")
+        for comment in comments:
+            if not isinstance(comment, dict):
+                continue
+            body = comment.get("body")
+            if not isinstance(body, str) or not body.startswith(REQUEST_OBSERVATION_MARKER + "\n"):
+                continue
+            try:
+                batch = json.loads(body.split("\n", 1)[1])
+            except json.JSONDecodeError as exc:
+                raise ValueError("external request observation comment contains invalid JSON") from exc
+            if (not isinstance(batch, dict) or batch.get("schema_version") != 1
+                    or not isinstance(batch.get("run_id"), str) or not batch["run_id"]
+                    or not isinstance(batch.get("domains"), list)):
+                raise ValueError("external request observation batch has an invalid schema")
+            merged = merge_request_observations(
+                batch["domains"], merged, batch["run_id"],
+                now=batch.get("observed_at") or comment.get("created_at"),
+            )
+        if len(comments) < 100:
+            break
+        page += 1
+        if page > 100:
+            raise ValueError("external request observation history exceeds the pagination safety limit")
+    return merged
 
 
 UNFINGERPRINTED_ACTIVE_PRODUCTION = "__unfingerprinted_active_production_task__"

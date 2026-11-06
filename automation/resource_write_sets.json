@@ -684,20 +684,18 @@
       "program_id": "script_github_queue_store",
       "source": "scripts/github_queue_store.py",
       "writes": [
-        "automation/task_queue.json"
+        "GitHub Issue #315 comment snapshots (external durable queue state)"
       ],
-      "document_store": [
-        "automation/task_queue.json"
-      ],
+      "document_store": [],
       "dynamic_children": [],
       "read_resources": [
-        "automation/task_queue.json"
+        "GitHub Issue #315 queue snapshots; automation/task_queue.json is read-only bootstrap"
       ],
       "side_effects": [],
-      "evidence": "GitHubContentsQueueStore.compare_and_swap() requires the current content SHA; mutate() retries only explicit 409/422 SHA conflicts and never performs blind writes.",
-      "write_boundary_fencing": "Control-plane queue persistence is serialized by SHA-CAS on the exact current Blob SHA; this is distinct from production resource leases and does not authorize rule/config publication.",
+      "evidence": "Queue mutations append compressed snapshots to GitHub Issue #315 comments with SHA-256 previous-revision chaining and deterministic canonical comment ordering.",
+      "write_boundary_fencing": "No GitHub Contents API or repository-file write is used for durable queue state; candidate queues are validated before and after each append, with bounded re-read/reapply after conflicts.",
       "lease_keys": [],
-      "control_plane_consistency": "sha_cas"
+      "control_plane_consistency": "append_only_issue_snapshot_chain"
     },
     {
       "program_id": "script_import_request_observations",
@@ -714,13 +712,13 @@
         "data/domain_candidates.json.parts.tmp-*"
       ],
       "read_resources": [
-        "sources/request_domain_observations.json",
+        "read-only repository seed plus GitHub Issue #317 comments",
         "data/domain_candidates.json"
       ],
       "side_effects": [
-        "Merges observed hostnames into the unclassified candidate buffer; assigns no DIRECT/PROXY/REJECT policy."
+        "Merges the seed and Issue #317 observation batches into the runner-local unclassified candidate buffer; assigns no DIRECT/PROXY/REJECT policy."
       ],
-      "evidence": "main() reads sources/request_domain_observations.json, merges the existing data/domain_candidates.json logical document, then calls write_document(BUFFER, buffer, 'candidates') with lease_required defaulting to false.",
+      "evidence": "main() reads the read-only seed, loads append-only Issue #317 comments through production_intent.load_request_observation_ledger(), then writes only the local data/domain_candidates.json logical document.",
       "lease_keys": [
         "logical/production-pipeline",
         "data/domain_candidates.json"
@@ -887,8 +885,8 @@
       "program_id": "script_production_intent",
       "source": "scripts/production_intent.py",
       "writes": [
-        "<caller-supplied --register-ledger path; current Watchdog path automation/unregistered_path_registry.json>",
-        "sources/request_domain_observations.json"
+        "runner-local Watchdog inbox staging",
+        "runner-local merged request-observation view"
       ],
       "document_store": [],
       "dynamic_children": [],
@@ -898,28 +896,20 @@
         "repository changed-path list",
         "automation/task_queue.json",
         "<caller-supplied --observations-input JSON array>",
-        "sources/request_domain_observations.json"
+        "read-only repository seed plus GitHub Issue #317 comments"
       ],
       "side_effects": [
-        "Computes production fingerprint/decision without writing by default; registration mode merges unclassified paths into the Watchdog inbox. The Watchdog then publishes the file via GitHub Contents API.",
-        "Bounded CAS retry re-reads the latest ledger and re-applies the same run registration; observed_run_ids prevents duplicate seen_count increments for interleaved retries.",
-        "The --merge-observations mode deterministically merges a validated hostname batch into sources/request_domain_observations.json and records observed_run_ids to make same-run replay idempotent."
+        "Computes the production fingerprint using the read-only seed plus append-only Issue #317 observation batches; optional registration/merge CLI modes write only runner-local staging copies."
       ],
       "evidence": "--register-ledger mode writes the supplied Watchdog inbox path; automation-watchdog.yml re-reads the latest Blob SHA on each of up to three attempts and conditionally PUTs the merged ledger. --merge-observations mode reads a runner-temp submitted batch and the latest sources/request_domain_observations.json, then writes the merged ledger; request-intake.yml fetches origin/main and resets its isolated runner workspace to that exact latest commit before each merge/commit/non-force push attempt.",
-      "lease_keys": [
-        "git-blob-sha-cas:automation/unregistered_path_registry.json",
-        "git-ref-cas:sources/request_domain_observations.json"
-      ],
+      "lease_keys": [],
       "lease_enforcement": "Watchdog registry publication uses up to three conditional Contents Blob-SHA CAS attempts with fresh read/merge and observed_run_ids idempotency. Request-intake publication uses up to three Git-ref CAS attempts: fetch latest main, reset only the isolated runner workspace to origin/main, reapply the immutable submitted batch with run-ID idempotency, commit and non-force push. A rejected push causes a fresh replay, not a conflicting JSON rebase. Both paths fail closed on exhausted retries. Cross-run GitHub runner integration is not performed here; the bare-repository two-run simulation is tested.",
-      "publish_resources": [
-        "automation/unregistered_path_registry.json",
-        "sources/request_domain_observations.json"
-      ],
+      "publish_resources": [],
       "ephemeral_unpublished_resources": [
-        "runner-local registration staging copy",
-        "$RUNNER_TEMP/request-domains.json"
+        "automation/unregistered_path_registry.json (runner-local only)",
+        "sources/request_domain_observations.json (runner-local merged view)"
       ],
-      "write_boundary_fencing": "These are separate control-plane ledgers, not DIRECT/PROXY/REJECT rule outputs. Watchdog uses Blob-SHA CAS; request intake uses non-force Git ref CAS and run-scoped idempotent replay. Neither path writes modules/uu.conf or directly dispatches production publication."
+      "write_boundary_fencing": "The Watchdog and auto_sync workflows read Issue #317 comments using caller-provided tokens. The local merged observation view is never committed; repository publication remains restricted to rulesets/**."
     },
     {
       "program_id": "script_refresh_ruleset_manifest",
@@ -985,32 +975,30 @@
       "program_id": "script_remote_task_queue_runtime",
       "source": "scripts/remote_task_queue_runtime.py",
       "writes": [
-        "automation/task_queue.json"
+        "GitHub Issue #315 comment snapshots (external durable queue state)"
       ],
-      "document_store": [
-        "automation/task_queue.json"
-      ],
+      "document_store": [],
       "dynamic_children": [],
       "read_resources": [
-        "automation/task_queue.json",
+        "GitHub Issue #315 queue snapshots; automation/task_queue.json is read-only bootstrap",
         "automation/program_registry.json"
       ],
       "side_effects": [],
-      "evidence": "enqueue_remote(), claim_remote(), complete_remote(), recover_remote(), and reconciliation helpers mutate the durable task queue through GitHubContentsQueueStore.mutate(). Manual authorization consumption is written atomically with the task in the same mutation.",
-      "write_boundary_fencing": "Every durable update uses the GitHub Contents API SHA compare-and-swap store; blind writes are prohibited, explicit conflicts trigger re-read/reapply, and validate_candidate() checks the complete queue before and after each mutation. The manual_authorizations ledger is part of the same CAS-protected queue document.",
+      "evidence": "Queue mutations append compressed snapshots to GitHub Issue #315 comments with SHA-256 previous-revision chaining and deterministic canonical comment ordering.",
+      "write_boundary_fencing": "No GitHub Contents API or repository-file write is used for durable queue state; candidate queues are validated before and after each append, with bounded re-read/reapply after conflicts.",
       "lease_keys": [],
-      "control_plane_consistency": "sha_cas"
+      "control_plane_consistency": "append_only_issue_snapshot_chain"
     },
     {
       "program_id": "script_resource_lease_runtime",
       "source": "scripts/resource_lease_runtime.py",
       "writes": [
-        "automation/task_queue.json"
+        "GitHub Issue #315 comment snapshots (external durable queue state)"
       ],
       "document_store": [],
       "dynamic_children": [],
       "read_resources": [
-        "automation/task_queue.json",
+        "GitHub Issue #315 queue snapshots; automation/task_queue.json is read-only bootstrap",
         "automation/program_registry.json",
         "automation/execution_adapters.json",
         "automation/production_control.json"
@@ -1018,18 +1006,16 @@
       "side_effects": [
         "Acquires, renews, asserts and releases durable resource leases by mutating the task queue through GitHubContentsQueueStore."
       ],
-      "evidence": "CLI commands construct GitHubContentsQueueStore and invoke queue mutators for lease acquisition/renewal/release; the store performs Contents API writes using the current Blob SHA.",
+      "evidence": "Queue mutations append compressed snapshots to GitHub Issue #315 comments with SHA-256 previous-revision chaining and deterministic canonical comment ordering.",
       "lease_keys": [
-        "git-blob-sha-cas:automation/task_queue.json",
+        "github-issue-comment-chain:315",
         "resource:<canonical logical resource path>"
       ],
       "lease_enforcement": "Durable queue changes use GitHubContentsQueueStore Blob-SHA compare-and-swap and queue validation; resource fencing tokens are checked against the exact active task and lease proof.",
-      "publish_resources": [
-        "automation/task_queue.json"
-      ],
+      "publish_resources": [],
       "ephemeral_unpublished_resources": [],
-      "control_plane_consistency": "sha_cas",
-      "write_boundary_fencing": "Control-plane queue writer only. It does not write production rule resources directly; it mutates the durable lease records that gate those writes."
+      "control_plane_consistency": "append_only_issue_snapshot_chain",
+      "write_boundary_fencing": "No GitHub Contents API or repository-file write is used for durable queue state; candidate queues are validated before and after each append, with bounded re-read/reapply after conflicts."
     },
     {
       "program_id": "script_restore_automation_state",
@@ -1194,17 +1180,17 @@
       "document_store": [],
       "dynamic_children": [],
       "read_resources": [
-        "automation/task_queue.json",
+        "GitHub Issue #315 queue snapshots; automation/task_queue.json is read-only bootstrap",
         "automation/program_registry.json",
         "automation/execution_adapters.json",
         "automation/production_control.json"
       ],
       "side_effects": [
-        "Durable queue mutations are delegated to remote_task_queue_runtime/GitHubContentsQueueStore; these direct files are per-task temporary artifacts in isolated runner directories."
+        "Durable queue mutations append Issue #315 snapshots; direct temporary files remain isolated to the current task execution directory."
       ],
-      "evidence": "run_scheduler_once() writes task-input.json, task-queue-lease-snapshot.json and task-result.json under task/verifier temporary directories; durable queue transitions use remote queue store APIs.",
+      "evidence": "run_scheduler_once() writes task-input.json, task-queue-lease-snapshot.json and task-result.json under isolated task/verifier temporary directories; durable queue transitions append snapshots through the GitHub Issue store.",
       "lease_keys": [
-        "git-blob-sha-cas:automation/task_queue.json"
+        "github-issue-comment-chain:315"
       ],
       "lease_enforcement": "Queue persistence uses the remote GitHub Contents SHA-CAS store; temporary files are runner-local. This inventory entry does not treat local task_queue_runtime flock as a cross-runner lock.",
       "publish_resources": [],
@@ -1213,7 +1199,7 @@
         "task-queue-lease-snapshot.json",
         "task-result.json"
       ],
-      "write_boundary_fencing": "Durable queue writes are covered by SHA-CAS and task lease/fencing validation; temporary artifact paths are isolated to the current task execution directory."
+      "write_boundary_fencing": "Durable queue state is external Issue comment history, not a repository file; task and resource lease/fencing validation remains mandatory. Temporary paths are runner-local."
     }
   ],
   "confirmed_shared_write_groups": [
@@ -1261,7 +1247,7 @@
     {
       "resource": "durable task queue control-plane state",
       "paths": [
-        "automation/task_queue.json"
+        "GitHub Issue #315 comments (external state)"
       ],
       "writers": [
         "script_github_queue_store",
@@ -1271,10 +1257,10 @@
         "workflow_automation_watchdog",
         "script_assess_sources"
       ],
-      "lock_key": "git-blob-sha-cas:automation/task_queue.json",
-      "mode": "compare_and_swap",
-      "enforcement": "GitHubContentsQueueStore reads the current queue Blob SHA and requires that exact SHA for every Contents API update. On explicit conflict it re-reads and re-applies the deterministic mutator within a bounded retry budget. The candidate queue is independently validated before and after each mutation. Manual authorization consumption is appended atomically with the task and keyed by Watchdog run ID.",
-      "note": "This is control-plane queue state, not a production resource lease. The local task_queue_runtime uses only runner-local flock/atomic replace and is not treated as a shared cross-runner writer. Source assessor progress checkpoints are updated through the same queue Contents-Blob-SHA CAS; each mutation revalidates the claimed task lease and all live resource fencing tokens before recording a completed URL result."
+      "lock_key": "github-issue-comment-chain:315",
+      "mode": "append_only_revision_chain",
+      "enforcement": "Queue mutations append compressed SHA-256 verified snapshots to Issue #315 comments; each revision references the prior digest and canonical earliest comment ID wins duplicate revisions. Losing writers re-read and reapply within a bounded retry budget.",
+      "note": "automation/task_queue.json remains read-only bootstrap; local task_queue_runtime remains runner-local. Source assessor checkpoints and resource leases share the external queue state."
     },
     {
       "resource": "logical/production-pipeline",
@@ -1454,9 +1440,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
-    "release_manifest_blob_sha": "fa41e5f833c8e780e422016b76c8ffbb102e40be",
-    "program_registry_blob_sha": "98aeec935bd79db0ed4f9135604473ac79b30997",
-    "execution_adapters_blob_sha": "e68fc9c681743a008818ca85adfc2d78bae8c223",
+    "release_manifest_blob_sha": "8979351bbfe8a619badf83a7f775bdf4f5e4393e",
+    "program_registry_blob_sha": "c4871f015961830718346a1d3dea18e0283c036e",
+    "execution_adapters_blob_sha": "7b93d8b8625f8973826de8034e29476f7ab0f4af",
     "added_after_release_baseline": true,
     "note": "Expanded static evidence against the 60-component registry to 34 direct Python writer entrypoints. Added source activation, source lineage, policy-source overlap, external-domain, config-drift and RULE-SET audit outputs. Watchdog registry uses bounded Blob-SHA CAS replay; request intake uses run-ID idempotent Git-ref CAS replay with a bare-Git two-run integration test. Cross-run GitHub integration and complete transitive filesystem tracing remain blocking. The privileged restore writer is now explicitly included in each overlapping ruleset, lifecycle, source-candidate, source-discovery, provenance, source-assessment and report ownership group. The 52 Python components are partitioned into 36 direct/helper writer entries and 15 reviewed non-writers, alongside one external GitHub Actions dispatch side-effect adapter.",
     "reviewed_at": "2026-11-05"
@@ -1621,18 +1607,6 @@
     },
     {
       "workflow_path": ".github/workflows/automation-watchdog.yml",
-      "step_name": "Remove the one-shot canary request after successful verification",
-      "mutation_kinds": [
-        "github_contents_delete"
-      ],
-      "resources": [
-        "automation/assessment_canary_request.json"
-      ],
-      "fence": "Conditional GitHub Contents delete using the current blob SHA after verified canary completion.",
-      "boundary": "One-shot control-plane request deletion; no production ruleset write."
-    },
-    {
-      "workflow_path": ".github/workflows/automation-watchdog.yml",
       "step_name": "Publish manifest-only metadata repair",
       "mutation_kinds": [
         "git_add",
@@ -1647,30 +1621,15 @@
     },
     {
       "workflow_path": ".github/workflows/request-intake.yml",
-      "step_name": "Commit observation ledger with bounded Git-ref CAS",
-      "mutation_kinds": [
-        "git_reset",
-        "git_add",
-        "git_commit",
-        "git_push"
-      ],
-      "resources": [
-        "sources/request_domain_observations.json"
-      ],
-      "fence": "Fetch/rebase/push retry with run-scoped execution; distinct-run serialization and no-lost-update behavior remain unproven.",
-      "boundary": "Main-branch observation ledger publication; bounded retry fails closed on conflict."
-    },
-    {
-      "workflow_path": ".github/workflows/request-intake.yml",
       "step_name": "Request ruleset audit through Watchdog queue",
       "mutation_kinds": [
         "workflow_dispatch"
       ],
       "resources": [
-        "automation/task_queue.json"
+        "GitHub Issue #315 durable queue comments (external state)"
       ],
-      "fence": "Delegates to Watchdog scheduler; durable task queue update uses Contents Blob-SHA CAS and task identity.",
-      "boundary": "Control-plane request only; does not directly publish rulesets."
+      "fence": "Dispatches the Watchdog with explicit deterministic-audit authorization; Watchdog enqueues through append-only Issue #315 snapshots.",
+      "boundary": "Control-plane request only; no repository file write or direct ruleset publication."
     },
     {
       "workflow_path": ".github/workflows/self-healing-agent.yml",
@@ -1709,34 +1668,40 @@
       "boundary": "External Pages publication, not a repository file writer."
     },
     {
-      "workflow_path": ".github/workflows/source-discovery.yml",
-      "step_name": "Publish discovery inventory under its exact resource leases",
-      "mutation_kinds": [
-        "git_add",
-        "git_commit",
-        "git_push"
-      ],
-      "resources": [
-        "sources/discovered_sources.json",
-        "sources/discovered_sources.json.manifest.json",
-        "sources/discovered_sources.json.parts-<digest>/part-*.jsonl",
-        "reports/source-discovery.md"
-      ],
-      "fence": "Live GitHub Contents queue proof validates exact Watchdog workflow_source_discovery dispatch identity and active per-resource lease IDs/fencing tokens immediately before commit and immediately before main push.",
-      "boundary": "Only the discovered-source logical document family and discovery report may be staged; modules/uu.conf is checked unchanged before publication and after rebase. Adapter remains disabled pending HOLD/authorization."
-    },
-    {
       "workflow_path": ".github/workflows/automation-watchdog.yml",
       "step_name": "Enqueue source assessment after successful discovery workflow",
       "mutation_kinds": [
-        "git_reset",
-        "github_contents_put"
+        "git_reset"
       ],
       "resources": [
-        "automation/task_queue.json"
+        "GitHub Issue #315 durable queue comments (external state)"
       ],
-      "fence": "task_scheduler.py persists through the GitHub Contents SHA-CAS queue store; candidate queue validation runs before and after mutation, and source-assessment:<workflow_run_id> is the idempotency key. The step is gated by exact successful main-branch producer evidence and by both Assessment adapter/orchestration caller gates.",
-      "boundary": "Durable control-plane task enqueue only. It does not run Assessment in this step or publish routing rules; Assessment remains disabled until the independent DAG is explicitly authorized."
+      "fence": "task_scheduler.py appends compressed SHA-256 chained queue snapshots to Issue #315 with bounded conflict retry.",
+      "boundary": "External control-plane state only; no repository file is written by queue persistence."
+    },
+    {
+      "workflow_path": ".github/workflows/request-intake.yml",
+      "step_name": "Append observation batch to external intake Issue",
+      "mutation_kinds": [
+        "github_issue_comment_post"
+      ],
+      "resources": [
+        "GitHub Issue #317 comments (external request-observation ledger)"
+      ],
+      "fence": "Hostnames are normalized and validated (maximum 500 per run) before a JSON batch is appended. Each batch carries the unique GitHub run ID; downstream merge is idempotent by run ID.",
+      "boundary": "External control-plane metadata only. The workflow has contents:read and does not create branches, commits, or modify repository files."
+    },
+    {
+      "workflow_path": ".github/workflows/request-intake.yml",
+      "step_name": "Append observation batch to external intake Issue",
+      "mutation_kinds": [
+        "github_issue_comment_post"
+      ],
+      "resources": [
+        "GitHub Issue #317 comments (external request-observation ledger)"
+      ],
+      "fence": "Hostnames are normalized and validated (maximum 500 per run) before a JSON batch is appended. Each batch carries the unique GitHub run ID; downstream merge is idempotent by run ID.",
+      "boundary": "External control-plane metadata only. The workflow has contents:read and does not create branches, commits, or modify repository files."
     }
   ],
   "workflow_native_scan": {
@@ -1745,10 +1710,10 @@
     "workflow_count": 7,
     "detected_mutation_families": [
       "git add/commit/push/reset/checkout",
-      "GitHub Contents API PUT/DELETE",
       "GitHub issue PATCH",
       "GitHub Actions workflow_dispatch",
-      "GitHub Pages deploy action"
+      "GitHub Pages deploy action",
+      "GitHub Issue comments POST"
     ],
     "limitations": [
       "dynamic command construction",

@@ -121,7 +121,7 @@ jobs:
     timeout-minutes: 5
     permissions:
       actions: write
-      contents: write
+      contents: read
       issues: write
     steps:
       - name: Checkout watchdog policy code
@@ -133,6 +133,15 @@ jobs:
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
+
+      - name: Export durable queue snapshot from Issue state
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue.json"
+          echo "AUTOMATION_QUEUE_SNAPSHOT=$RUNNER_TEMP/task_queue.json" >> "$GITHUB_ENV"
       - name: Recover failed or superseded production audit
         if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' }}
         env:
@@ -169,7 +178,7 @@ jobs:
               echo "Workflow-dispatch run has no durable queue task correlation; refusing automatic recovery."
               exit 0
             fi
-            queue_content="$(gh api "repos/$REPO/contents/automation/task_queue.json" --jq .content)"
+            queue_content="$(base64 -w0 "$AUTOMATION_QUEUE_SNAPSHOT")"
             audit_input_json="$(QUEUE_CONTENT="$queue_content" python3 - "$source_task_id" <<'PY'
           import base64, json, os, sys
           queue = json.loads(base64.b64decode(os.environ["QUEUE_CONTENT"]).decode("utf-8"))
@@ -394,7 +403,7 @@ jobs:
               echo "block_manifest=true" >> "$GITHUB_OUTPUT"
               exit 0
             fi
-            active_tasks="$(jq '[.tasks[] | select(.status == "QUEUED" or .status == "CLAIMED" or .status == "VERIFYING")] | length' automation/task_queue.json)"
+            active_tasks="$(jq '[.tasks[] | select(.status == "QUEUED" or .status == "CLAIMED" or .status == "VERIFYING")] | length' "$AUTOMATION_QUEUE_SNAPSHOT")"
             if [ "$active_tasks" -gt 0 ]; then
               echo "Manual audit blocked: $active_tasks durable queue task(s) are already active."
               echo "block_manifest=true" >> "$GITHUB_OUTPUT"
@@ -439,7 +448,7 @@ jobs:
               if [ -z "$failed_task_id" ] || [ -z "$failed_run_id" ]; then
                 continue
               fi
-              task_workflow_id="$(jq -r --arg task "$failed_task_id" '[.tasks[] | select(.task_id == $task)] | last | .dispatch_intent.workflow_id // empty' automation/task_queue.json)"
+              task_workflow_id="$(jq -r --arg task "$failed_task_id" '[.tasks[] | select(.task_id == $task)] | last | .dispatch_intent.workflow_id // empty' "$AUTOMATION_QUEUE_SNAPSHOT")"
               if [[ ! "$task_workflow_id" =~ ^[0-9]+$ ]]; then
                 continue
               fi
@@ -463,7 +472,7 @@ jobs:
                   and .last_error.type == "workflow_run_failed"
                   and .last_error.evidence.run_id == $run
                 )] | last | .input // empty
-              ' automation/task_queue.json)"
+              ' "$AUTOMATION_QUEUE_SNAPSHOT")"
               if [ -z "$task_input" ] || [ "$task_input" = "null" ] || [ "$(jq -r '.production_fingerprint // empty' <<< "$task_input")" != "$current_fingerprint" ]; then
                 continue
               fi
@@ -493,7 +502,7 @@ jobs:
                   and (.status == "QUEUED" or .status == "CLAIMED" or .status == "VERIFYING"
                        or (.status == "SUCCEEDED" and .verification.status == "passed"))
                 )] | length > 0
-              ' automation/task_queue.json >/dev/null; then
+              ' "$AUTOMATION_QUEUE_SNAPSHOT" >/dev/null; then
                 echo "A current task already covers this production fingerprint; stale-guard reconciliation is not duplicated."
                 echo "block_manifest=true" >> "$GITHUB_OUTPUT"
                 exit 0
@@ -554,7 +563,7 @@ jobs:
               )]
               | sort_by(.created_at) | reverse | .[:20][]
               | [.task_id, (.last_error.evidence.run_id | tostring)] | @tsv
-            ' automation/task_queue.json)
+            ' "$AUTOMATION_QUEUE_SNAPSHOT")
           fi
 
           last_success_sha="$(jq -r '[.workflow_runs[] | select(.head_branch == "main" and .conclusion == "success")] | sort_by(.created_at) | last | .head_sha // empty' <<< "$runs")"
@@ -610,11 +619,11 @@ jobs:
           from pathlib import Path
           sys.path.insert(0, "scripts")
           from production_intent import active_production_fingerprints
-          queue = json.loads(Path("automation/task_queue.json").read_text(encoding="utf-8"))
+          queue = json.loads(Path(os.environ["AUTOMATION_QUEUE_SNAPSHOT"]).read_text(encoding="utf-8"))
           print(json.dumps(active_production_fingerprints(queue, os.environ["CURRENT_PRODUCTION_FINGERPRINT"])))
           PY
           )"
-          successful_fingerprints="$(jq -c '[.tasks[] | select(.status == "SUCCEEDED" and .verification.status == "passed") | .input.production_fingerprint // empty] | map(select(type == "string")) | unique' automation/task_queue.json)"
+          successful_fingerprints="$(jq -c '[.tasks[] | select(.status == "SUCCEEDED" and .verification.status == "passed") | .input.production_fingerprint // empty] | map(select(type == "string")) | unique' "$AUTOMATION_QUEUE_SNAPSHOT")"
 
           intent_json="$(python3 scripts/production_intent.py \
             --event "$ORIGIN_EVENT" \
@@ -682,7 +691,8 @@ jobs:
       cancel-in-progress: false
     permissions:
       actions: read
-      contents: write
+      contents: read
+      issues: write
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     env:
@@ -859,16 +869,6 @@ jobs:
               "domain_sources_unchanged": True,
           }, ensure_ascii=False))
           PY
-      - name: Remove the one-shot canary request after successful verification
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-        run: |
-          set -euo pipefail
-          marker_sha="$(gh api "repos/$REPO/contents/automation/assessment_canary_request.json" --jq .sha)"
-          gh api --method DELETE "repos/$REPO/contents/automation/assessment_canary_request.json" \
-            -f message="Complete one-shot source assessment canary" \
-            -f sha="$marker_sha" -f branch=main >/dev/null
 
   task-queue-supervision:
     concurrency:
@@ -882,7 +882,8 @@ jobs:
     if: ${{ always() && needs.health-check.result == 'success' && ((github.event_name != 'schedule' && github.event_name != 'workflow_dispatch') || needs.stale-run-watch.result == 'success') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/source-discovery.yml'))) && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[assessment-canary]')) }}
     permissions:
       actions: write
-      contents: write
+      contents: read
+      issues: write
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:
@@ -946,12 +947,8 @@ jobs:
               "workflow_head_sha": expected["workflow_head_sha"],
           }:
               raise SystemExit("Discovery document producer metadata is inconsistent.")
-          main_digest = read_only_resource_digests(Path("."), [expected["artifact_path"]])[expected["artifact_path"]]
-          if main_digest != artifact_digest:
-              raise SystemExit("The committed main discovery document no longer matches this producer artifact.")
-          main_document = read_document(Path(expected["artifact_path"]), "candidates", {"candidates": []})
-          if main_document.get("producer") != artifact_document.get("producer"):
-              raise SystemExit("The current main discovery document belongs to a different producer run.")
+          # Discovery output is runner-local and artifact-only. Producer identity
+          # and content digest above are the provenance boundary; no sources/ commit is required.
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
               stream.write(f"SOURCE_ARTIFACT_SHA256={artifact_digest}\n")
           PY
@@ -1044,7 +1041,7 @@ jobs:
   stale-run-watch:
     permissions:
       actions: write
-      contents: write
+      contents: read
       issues: write
     if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-24.04

@@ -4,8 +4,8 @@
   "status": "partial_static_audit",
   "purpose": "Identify known overlapping write resources before independent capability scheduling. This inventory is deliberately fail-closed and is not an execution authorization.",
   "evidence_scope": {
-    "registry_blob_sha": "98aeec935bd79db0ed4f9135604473ac79b30997",
-    "adapters_blob_sha": "e68fc9c681743a008818ca85adfc2d78bae8c223",
+    "registry_blob_sha": "c4871f015961830718346a1d3dea18e0283c036e",
+    "adapters_blob_sha": "7b93d8b8625f8973826de8034e29476f7ab0f4af",
     "inspected_sources": [
       ".github/workflows/auto_sync.yml",
       ".github/workflows/automation-watchdog.yml",
@@ -121,7 +121,7 @@
     {
       "id": "durable_task_queue_control_plane",
       "paths": [
-        "automation/task_queue.json"
+        "GitHub Issue #315 comments (external durable state)"
       ],
       "writers": [
         "script_github_queue_store",
@@ -130,9 +130,9 @@
         "script_task_scheduler",
         "workflow_automation_watchdog"
       ],
-      "lease_key": "git-blob-sha-cas:automation/task_queue.json",
-      "status": "sha_cas_control_plane_reviewed",
-      "note": "The durable queue is control-plane state, not a production resource lease. GitHubContentsQueueStore requires the exact current Blob SHA for every update and retries only explicit SHA conflicts; the complete candidate queue is independently validated before and after mutation. Manual authorization is consumed once per Watchdog run ID and stored atomically with the exact task ID, target, idempotency key, fingerprint, and trusted run scope. Local task_queue_runtime is runner-local flock/atomic replace only, not a cross-runner shared writer. script_resource_lease_runtime also mutates the queue's lease records through the same SHA-CAS store; it is a control-plane lease writer, not a direct production-resource writer."
+      "lease_key": "github-issue-comment-chain:315",
+      "status": "append_only_issue_snapshot_chain_reviewed",
+      "note": "The durable queue is control-plane state stored as append-only, compressed GitHub Issue #315 comments. Each snapshot is SHA-256 chained to the prior revision; concurrent duplicate revisions resolve deterministically by earliest canonical comment ID. The repository automation/task_queue.json file is read-only bootstrap state. Local task_queue_runtime is runner-local only."
     },
     {
       "id": "lifecycle_gate_state",
@@ -225,16 +225,15 @@
     {
       "id": "request_intake_observations",
       "paths": [
-        "sources/request_domain_observations.json"
+        "GitHub Issue #317 comments (external request-observation ledger)"
       ],
       "known_writers": [
-        "script_production_intent",
         "workflow_request_intake"
       ],
-      "lock_key": "git-ref-cas:sources/request_domain_observations.json",
-      "required_mode": "optimistic_git_ref_compare_and_swap",
-      "status": "git_ref_cas_replay_bare_repo_integration_tested_github_runner_unverified",
-      "note": "request-intake now keeps the submitted batch in RUNNER_TEMP and retries by fetching latest main, resetting only the isolated runner workspace, reapplying the same run-ID idempotent merge, and non-force pushing. The merge records observed_run_ids to prevent duplicate counts on a rerun after a lost push response. A bare-Git two-run integration test covers same-domain and different-domain overlap without lost observations. A real GitHub Actions concurrent-run test and retry-exhaustion observation remain outstanding."
+      "lock_key": "append-only-issue-comment-log:317",
+      "required_mode": "append_only_issue_comment_batches",
+      "status": "external_issue_ledger_read_by_production_fingerprint_and_candidate_importer",
+      "note": "The request-intake workflow validates up to 500 hostnames and appends a run-ID-idempotent JSON batch to GitHub Issue #317 comments. production_intent.py includes these batches in the production fingerprint, and import_request_observations.py merges them into the runner-local unclassified candidate buffer. No automation writes sources/request_domain_observations.json; that repository file is a read-only seed."
     },
     {
       "id": "review_cursor_checkpoint",

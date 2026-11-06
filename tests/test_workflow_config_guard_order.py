@@ -38,27 +38,27 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn("group: shadowrocket-main-writer", auto_sync)
-        # Intake shares the repository-wide writer lock; Git-ref CAS remains a second safeguard.
-        self.assertIn("group: shadowrocket-main-writer", intake)
-        self.assertIn("cancel-in-progress: false", intake)
-        self.assertIn("for attempt in 1 2 3; do", intake)
-        self.assertIn("git reset --hard origin/main", intake)
-        self.assertIn("--merge-observations", intake)
-        self.assertNotIn("git rebase origin/main", intake)
+        # Intake appends validated observations to Issue #317 and never writes repository files.
+        self.assertIn("group: shadowrocket-domain-intake", intake)
+        self.assertIn("contents: read", intake)
+        self.assertIn("issues: write", intake)
+        self.assertIn("issues/317/comments", intake)
+        self.assertNotIn("git add", intake)
+        self.assertNotIn("git commit", intake)
+        self.assertNotIn("git push", intake)
         manifest_writer = watchdog.split("  manifest-integrity:", 1)[1]
         self.assertIn("group: shadowrocket-main-writer", manifest_writer)
         self.assertNotIn("github-only-domain-intake", intake)
 
     def test_request_intake_replays_same_run_batch_against_latest_main_without_force_push(self):
         intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
-        self.assertIn("for attempt in 1 2 3; do", intake)
-        self.assertIn("git fetch origin main", intake)
-        self.assertIn("git reset --hard origin/main", intake)
-        self.assertIn("--merge-observations", intake)
-        self.assertIn('--intake-run-id "$GITHUB_RUN_ID"', intake)
-        self.assertIn("git push origin HEAD:main", intake)
-        self.assertNotIn("git rebase origin/main", intake)
-        self.assertNotIn("git push --force", intake)
+        self.assertIn("Append observation batch to external intake Issue", intake)
+        self.assertIn("shadowrocket-domain-observation:v1", intake)
+        self.assertIn("issues/317/comments", intake)
+        self.assertIn("request_deterministic_audit=true", intake)
+        self.assertNotIn("git add", intake)
+        self.assertNotIn("git commit", intake)
+        self.assertNotIn("git push", intake)
 
     def test_self_healing_never_cancels_non_main_runs_or_cross_closes_incidents(self):
         healing = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")

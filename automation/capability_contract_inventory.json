@@ -2,7 +2,7 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-2026.11.05.integration",
   "status": "baseline_inventory",
-  "source_registry_blob_sha": "98aeec935bd79db0ed4f9135604473ac79b30997",
+  "source_registry_blob_sha": "c4871f015961830718346a1d3dea18e0283c036e",
   "summary": {
     "registered_programs": 60,
     "python_components": 52,
@@ -375,7 +375,9 @@
       "declared_capabilities": [
         "read_only_metrics_aggregation"
       ],
-      "registry_dependencies": [],
+      "registry_dependencies": [
+        "script_remote_task_queue_runtime"
+      ],
       "current_registry_inputs": [
         "rulesets/manifest.json",
         "automation/task_queue.json",
@@ -758,7 +760,9 @@
       "declared_capabilities": [
         "manual_observation_intake"
       ],
-      "registry_dependencies": [],
+      "registry_dependencies": [
+        "script_production_intent"
+      ],
       "current_registry_inputs": [
         "CLI arguments and/or imported Python inputs as defined by the implementation"
       ],

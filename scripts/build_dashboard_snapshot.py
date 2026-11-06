@@ -7,6 +7,7 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from json_document_store import read_document, iter_document_records
+from remote_task_queue_runtime import make_store
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "dashboard" / "data.json"
@@ -105,7 +106,13 @@ def build_candidate_review_metrics(candidates, review_records, cursor=None, ledg
 
 def main():
     manifest = read_json("rulesets/manifest.json")
-    queue_doc = read_json("automation/task_queue.json")
+    repository = os.environ.get("GITHUB_REPOSITORY", "")
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN", "")
+    if repository and token:
+        queue_doc = make_store(repository=repository, token=token).read().document
+    else:
+        # Local development only: the repository snapshot is a read-only bootstrap.
+        queue_doc = read_json("automation/task_queue.json")
     production_control = read_json("automation/production_control.json")
     pending = read_json("rulesets/pending_queue.json")
     lifecycle = read_json("rulesets/lifecycle_state.json")

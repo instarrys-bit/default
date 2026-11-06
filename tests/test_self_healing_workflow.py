@@ -14,9 +14,13 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         healing = WORKFLOW.read_text(encoding="utf-8")
         intake = REQUEST_INTAKE.read_text(encoding="utf-8")
         audit = AUTO_SYNC.read_text(encoding="utf-8")
-        for workflow in (healing, intake, audit):
+        for workflow in (healing, audit):
             self.assertIn("group: shadowrocket-main-writer", workflow)
             self.assertIn("cancel-in-progress: false", workflow)
+        self.assertIn("group: shadowrocket-domain-intake", intake)
+        self.assertIn("contents: read", intake)
+        self.assertIn("issues: write", intake)
+        self.assertNotIn("git push", intake)
     def test_self_healing_is_diagnostic_only_and_never_writes_repository_code(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         diagnose = workflow.split("  diagnose-and-repair:", 1)[1].split("  report-agent-failure:", 1)[0]
@@ -143,10 +147,10 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("contents: write", resolver)
         watcher = WATCHDOG.read_text(encoding="utf-8").split("  stale-run-watch:", 1)[1]
         self.assertIn("actions: write", watcher)
-        self.assertIn("contents: write", watcher)
+        self.assertIn("contents: read", watcher)
         self.assertNotIn("pull-requests: write", watcher)
         health_check = WATCHDOG.read_text(encoding="utf-8").split("  health-check:", 1)[1].split("  task-queue-supervision:", 1)[0]
-        self.assertIn("contents: write", health_check)
+        self.assertIn("contents: read", health_check)
 
 
 

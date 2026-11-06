@@ -449,6 +449,8 @@ def main() -> int:
     complete.add_argument("--error-json", type=Path)
     recover = subs.add_parser("recover-expired")
     subs.add_parser("validate")
+    snapshot = subs.add_parser("snapshot")
+    snapshot.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     try:
         store = make_store(args.repository, args.branch, args.queue_path)
@@ -470,12 +472,20 @@ def main() -> int:
         elif args.command == "recover-expired":
             recovered = recover_remote(store, registry)
             output = {"recovered_count": len(recovered), "tasks": recovered}
+        elif args.command == "snapshot":
+            snapshot = store.read()
+            validate_envelope(snapshot.document)
+            validate_candidate(snapshot.document, registry)
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_text(json.dumps(snapshot.document, ensure_ascii=False) + "\n", encoding="utf-8")
+            output = {"valid": True, "revision": snapshot.document["revision"],
+                      "task_count": len(snapshot.document["tasks"]), "snapshot_path": str(args.output)}
         else:
             snapshot = store.read()
             validate_envelope(snapshot.document)
             validate_candidate(snapshot.document, registry)
             output = {"valid": True, "revision": snapshot.document["revision"],
-                      "task_count": len(snapshot.document["tasks"]), "blob_sha": snapshot.content_sha}
+                      "task_count": len(snapshot.document["tasks"]), "content_sha": snapshot.content_sha}
         print(json.dumps(output, ensure_ascii=False))
         return 0
     except (ValueError, OSError, json.JSONDecodeError, QueueStoreError) as exc:

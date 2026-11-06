@@ -23,6 +23,7 @@ PATTERNS = {
     "github_contents_put": re.compile(r"\bgh\s+api\b.*--method\s+PUT", re.I),
     "github_contents_delete": re.compile(r"\bgh\s+api\b.*--method\s+DELETE", re.I),
     "github_issue_patch": re.compile(r"\bgh\s+api\b.*--method\s+PATCH", re.I),
+    "github_issue_comment_post": re.compile(r"\bgh\s+api\b.*--method\s+POST", re.I),
     "workflow_dispatch": re.compile(r"\bgh\s+workflow\s+run\b"),
 }
 

@@ -292,20 +292,20 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(ownership["status"], "partial_static_audit")
 
 
-    def test_durable_task_queue_writers_are_classified_as_sha_cas_control_plane(self):
+    def test_durable_task_queue_writers_are_classified_as_issue_snapshot_control_plane(self):
         writes = load_json("automation/resource_write_sets.json")
         entries = {item["program_id"]: item for item in writes["confirmed_write_sets"]}
         remote = entries["script_remote_task_queue_runtime"]
         store = entries["script_github_queue_store"]
-        self.assertEqual(remote["writes"], ["automation/task_queue.json"])
-        self.assertEqual(store["writes"], ["automation/task_queue.json"])
-        self.assertEqual(remote["control_plane_consistency"], "sha_cas")
-        self.assertIn("blind writes are prohibited", remote["write_boundary_fencing"])
+        self.assertEqual(remote["writes"], ["GitHub Issue #315 comment snapshots (external durable queue state)"])
+        self.assertEqual(store["writes"], ["GitHub Issue #315 comment snapshots (external durable queue state)"])
+        self.assertEqual(remote["control_plane_consistency"], "append_only_issue_snapshot_chain")
+        self.assertIn("No GitHub Contents API", remote["write_boundary_fencing"])
         group = next(
             item for item in writes["confirmed_shared_write_groups"]
             if item["resource"] == "durable task queue control-plane state"
         )
-        self.assertEqual(group["mode"], "compare_and_swap")
+        self.assertEqual(group["mode"], "append_only_revision_chain")
         self.assertIn("workflow_automation_watchdog", group["writers"])
         self.assertIn("script_resource_lease_runtime", group["writers"])
 
@@ -314,7 +314,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
             item for item in ownership["resource_groups"]
             if item["id"] == "durable_task_queue_control_plane"
         )
-        self.assertEqual(audit_group["status"], "sha_cas_control_plane_reviewed")
+        self.assertEqual(audit_group["status"], "append_only_issue_snapshot_chain_reviewed")
         self.assertIn("script_resource_lease_runtime", audit_group["writers"])
         self.assertEqual(ownership["status"], "partial_static_audit")
 
@@ -372,8 +372,8 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(groups["domain_candidate_buffer"]["status"], "known_shared_writers_central_pipeline_fence_only")
         self.assertEqual(groups["rule_provenance_ledger"]["status"], "known_shared_writers_central_pipeline_fence_only")
         self.assertEqual(groups["watchdog_unregistered_path_registry"]["status"], "bounded_cas_retry_implemented_concurrent_integration_unproven")
-        self.assertEqual(groups["request_intake_observations"]["status"], "git_ref_cas_replay_bare_repo_integration_tested_github_runner_unverified")
-        self.assertIn("script_production_intent", groups["request_intake_observations"]["known_writers"])
+        self.assertEqual(groups["request_intake_observations"]["status"], "external_issue_ledger_read_by_production_fingerprint_and_candidate_importer")
+        self.assertIn("workflow_request_intake", groups["request_intake_observations"]["known_writers"])
         self.assertEqual(groups["active_source_registry_and_activation"]["status"], "production_registry_writer_central_pipeline_fence_only")
         self.assertEqual(groups["policy_source_overlap_audit"]["status"], "audit_output_central_pipeline_fence_only")
         doc_store = groups["shared_json_document_store"]
@@ -387,14 +387,11 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(audit["status"], "partial_static_audit")
 
         intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
-        self.assertIn("group: shadowrocket-main-writer", intake)
-        self.assertIn("cancel-in-progress: false", intake)
-        self.assertIn("git fetch origin main", intake)
-        self.assertIn("git reset --hard origin/main", intake)
-        self.assertIn("--merge-observations", intake)
-        self.assertIn("--intake-run-id \"$GITHUB_RUN_ID\"", intake)
-        self.assertNotIn("git rebase origin/main", intake)
-        self.assertIn("for attempt in 1 2 3; do", intake)
+        self.assertIn("group: shadowrocket-domain-intake", intake)
+        self.assertIn("contents: read", intake)
+        self.assertIn("issues: write", intake)
+        self.assertIn("issues/317/comments", intake)
+        self.assertNotIn("git push", intake)
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn("Production input classification requires review", watchdog)
         self.assertNotIn('gh api --method PUT "repos/$REPO/contents/automation/unregistered_path_registry.json"', watchdog)
