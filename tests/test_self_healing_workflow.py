@@ -29,13 +29,12 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("gh pr create", diagnose)
         self.assertIn("gh issue create", diagnose)
 
-    def test_write_token_is_not_exposed_to_repair_tests(self):
+    def test_self_healing_has_no_repository_write_or_pr_token(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        repair_step = workflow.split("      - name: Apply allowlisted repair and run tests", 1)[1].split(
-            "      - name: Publish repair pull request", 1
-        )[0]
-        self.assertNotIn("GH_TOKEN", repair_step)
+        diagnose = workflow.split("  diagnose-and-repair:", 1)[1].split("  report-agent-failure:", 1)[0]
+        self.assertNotIn("GH_TOKEN", diagnose.split("Keep self-healing read-only", 1)[-1])
         self.assertIn("persist-credentials: false", workflow)
+        self.assertNotIn("gh pr create", workflow)
 
     def test_failed_run_cursor_is_retained_without_repository_writes(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
@@ -57,13 +56,13 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("git add -- sources/review_cursor.json", workflow)
         self.assertNotIn("git push origin HEAD:main", cursor_job)
 
-    def test_user_owned_config_is_never_added_to_repair_commit(self):
+    def test_self_healing_cannot_write_repository_files(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn("expected_staged_path=\".github/workflows/auto_sync.yml\"", workflow)
-        self.assertIn("expected_staged_path=\"tests/test_workflow_config_guard_order.py\"", workflow)
-        self.assertIn('staged_paths="$(git diff --cached --name-only)"', workflow)
-        self.assertNotIn("git add -A", workflow)
-        self.assertNotIn("git add modules/uu.conf", workflow)
+        diagnose = workflow.split("  diagnose-and-repair:", 1)[1].split("  report-agent-failure:", 1)[0]
+        self.assertNotIn("git add", diagnose)
+        self.assertNotIn("git commit", diagnose)
+        self.assertNotIn("git push", diagnose)
+        self.assertNotIn("modules/uu.conf", diagnose)
 
 
     def test_config_validator_failures_are_monitored_and_incidents_are_resolved_on_recovery(self):
