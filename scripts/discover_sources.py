@@ -201,8 +201,9 @@ def collect_external_intelligence(catalog: dict) -> dict:
         except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError, csv.Error) as exc:
             statuses.append({"provider_id": provider_id, "status": "error", "records": 0, "error": str(exc)[:240]})
 
-    collect("urlhaus", "https://urlhaus.abuse.ch/downloads/csv_recent/", "urlhaus.abuse.ch", parse_urlhaus_payload)
-    collect("openphish", providers["openphish"]["endpoint"], "openphish.com", parse_openphish_payload)
+    statuses.append({"provider_id": "urlhaus", "status": "awaiting_auth_key", "records": 0})
+    statuses.append({"provider_id": "openphish", "status": "blocked_pending_terms_review", "records": 0})
+    statuses.append({"provider_id": "adguard-filters", "status": "covered_by_existing_github_discovery", "records": 0})
     gitlab_url = providers["gitlab-projects"]["endpoint"] + "?" + urllib.parse.urlencode({"search": "shadowrocket rules", "simple": "true", "per_page": 20, "order_by": "last_activity_at", "sort": "desc"})
     collect("gitlab-projects", gitlab_url, "gitlab.com", lambda p, provider, url: parse_repository_search_payload(p, provider, url, "gitlab.com"))
     codeberg_url = providers["codeberg-repositories"]["endpoint"] + "?" + urllib.parse.urlencode({"q": "shadowrocket rules", "limit": 20})
