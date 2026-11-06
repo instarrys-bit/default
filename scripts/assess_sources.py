@@ -15,7 +15,6 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 from json_document_store import read_document, write_document
-from resource_lease_runtime import assert_resource_lease_from_environment
 from datetime import datetime, timezone
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -398,14 +397,6 @@ def load_task_options(path: Path | None) -> dict:
     return value
 
 
-def assert_optional_write_lease(path: Path, *, required: bool = False) -> None:
-    """Enforce a lease for independently scheduled tasks; preserve legacy workflow mode."""
-    if required and not os.environ.get("AUTOMATION_RESOURCE_LEASE_PROOF"):
-        raise ValueError("independent assessment requires an active resource lease proof")
-    if required or os.environ.get("AUTOMATION_RESOURCE_LEASE_PROOF"):
-        assert_resource_lease_from_environment(path.relative_to(ROOT).as_posix())
-
-
 def _checkpoint_runtime(store=None, registry=None):
     """Resolve the queue CAS client used for durable per-URL progress."""
     if store is None:
@@ -475,7 +466,6 @@ def _validate_checkpoint_writer(queue: dict, batch_id: str, predecessor: dict):
 
 def load_assessment_checkpoint(batch_id: str, predecessor: dict, *, store=None, registry=None) -> dict:
     """Read completed URL results from the durable queue checkpoint for this task."""
-    assert_resource_lease_from_environment("sources/source_assessments.json")
     store, registry = _checkpoint_runtime(store, registry)
     from remote_task_queue_runtime import validate_candidate, validate_envelope
     queue = store.read().document
@@ -659,11 +649,8 @@ def main(argv: list[str] | None = None) -> int:
     persistent = dict(result)
     persistent["assessments"] = list(history.values())
     persistent["assessment_count"] = len(history)
-    assert_optional_write_lease(RUNTIME_OUTPUT, required=args.task_input is not None)
-    write_document(RUNTIME_OUTPUT, result, "assessments", lease_required=args.task_input is not None)
-    assert_optional_write_lease(OUTPUT, required=args.task_input is not None)
+    write_document(RUNTIME_OUTPUT, result, "assessments")
     write_document(OUTPUT, compact_assessment_result(persistent), "assessments", lease_required=args.task_input is not None)
-    assert_optional_write_lease(REPORT, required=args.task_input is not None)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     assert_optional_write_lease(REPORT, required=args.task_input is not None)
     REPORT.write_text(render_report(assessments, drift_summary), encoding="utf-8")

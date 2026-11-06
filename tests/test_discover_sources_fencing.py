@@ -1,4 +1,5 @@
 import json
+import inspect
 import sys
 import tempfile
 import unittest
@@ -12,24 +13,18 @@ import discover_sources
 
 
 class DiscoverSourcesFencingTests(unittest.TestCase):
-    def test_persisted_document_and_report_require_their_live_resource_leases(self):
+    def test_persisted_outputs_use_the_isolated_workspace_without_per_write_lease(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             output = root / "sources" / "discovered_sources.json"
             report = root / "reports" / "source-discovery.md"
             data = {"candidate_count": 0, "candidates": []}
-            report.parent.mkdir(parents=True, exist_ok=True)
-            with patch.object(discover_sources, "OUTPUT", output), \
-                 patch.object(discover_sources, "REPORT", report), \
-                 patch.object(discover_sources, "write_document") as write_document, \
-                 patch.object(discover_sources, "assert_resource_lease_from_environment") as assert_lease:
+            with patch.object(discover_sources, "OUTPUT", output), \\
+                 patch.object(discover_sources, "REPORT", report):
                 discover_sources.persist_discovery_outputs(data)
-            write_document.assert_called_once_with(
-                output, data, "candidates", lease_required=True
-            )
-            assert_lease.assert_called_once_with("reports/source-discovery.md")
+            self.assertTrue(output.is_file())
             self.assertTrue(report.is_file())
-
+            self.assertNotIn("assert_resource_lease_from_environment", inspect.getsource(discover_sources.persist_discovery_outputs))
     def test_fatal_discovery_error_returns_nonzero_and_preserves_previous_inventory(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

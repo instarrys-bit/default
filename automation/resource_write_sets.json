@@ -98,8 +98,7 @@
         "sources/source_assessments.json"
       ],
       "side_effects": [
-        "HTTPS reads restricted to raw.githubusercontent.com with repository binding and same-host redirect validation.",
-        "Task retries derive the same bounded URL batch from the immutable producer run ID and discovery artifact digest; remote reads may repeat, while final history/report writes replace the same logical documents under live fenced leases."
+        "HTTPS reads restricted to raw.githubusercontent.com with repository binding and same-host redirect validation."
       ],
       "evidence": "main() reads discovery and prior assessment documents, then calls write_document for runtime and persistent outputs and writes REPORT.",
       "lease_keys": [
@@ -108,14 +107,14 @@
         "data/source_assessments_runtime.json",
         "reports/source-assessment.md"
       ],
-      "lease_enforcement": "Live GitHub queue read and fencing-token assertion immediately before each JSON base/manifest/shard/staging/cleanup mutation and before Markdown report write.",
+      "lease_enforcement": "No per-write filesystem lease assertion. All assessment outputs are written only inside the isolated RUNNER_TEMP workspace. The independent assessment adapter remains disabled; its durable task checkpoints, when used, retain queue CAS and task identity validation.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [
         "data/source_assessments_runtime.json"
       ],
       "lease_seconds": 480,
       "publication": "After artifact verification, scheduler commits only persistent history/report and document-store manifest/shards using a non-force push after rebase; runtime fingerprint data is never committed.",
-      "write_boundary_fencing": "Runtime writes are confined to the isolated RUNNER_TEMP workspace and are not published to repository paths.",
+      "write_boundary_fencing": "Run-scoped temporary workspace; no filesystem write guard or per-file lease hook.",
       "additional_serialized_writers": [
         "script_restore_automation_state",
         "workflow_auto_sync"
@@ -653,7 +652,7 @@
         "Bounded GitHub repository search and repository-tree/README reads; no source activation."
       ],
       "evidence": "main() reads the prior discovery inventory, writes the merged logical document through json_document_store, writes reports/source-discovery.md, and optionally writes the per-run GITHUB_STEP_SUMMARY.",
-      "write_boundary_fencing": "Runtime writes are confined to the isolated RUNNER_TEMP workspace and are not published to repository paths.",
+      "write_boundary_fencing": "Run-scoped temporary workspace; no filesystem write guard or per-file lease hook.",
       "ephemeral_outputs": [
         "GITHUB_STEP_SUMMARY (runner-local; warning path overwrites and success path appends)"
       ],
@@ -665,7 +664,8 @@
         "sources/discovered_sources.json",
         "reports/source-discovery.md"
       ],
-      "publish_resources": []
+      "publish_resources": [],
+      "lease_enforcement": "No per-write filesystem lease assertion. Discovery inventory and report are run-scoped in RUNNER_TEMP; workflow has contents:read and emits an immutable artifact only."
     },
     {
       "program_id": "script_github_queue_store",

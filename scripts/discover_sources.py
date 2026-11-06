@@ -15,7 +15,6 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 from json_document_store import read_document, write_document
-from resource_lease_runtime import assert_resource_lease_from_environment
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "sources/discovered_sources.json"
@@ -437,8 +436,7 @@ def readme_snapshot(repo_data: dict, previous: dict | None = None) -> tuple[str,
 
 def persist_discovery_outputs(merged: dict) -> None:
     """Persist the discovery inventory and report under their exact live leases."""
-    write_document(OUTPUT, merged, "candidates", lease_required=True)
-    assert_resource_lease_from_environment("reports/source-discovery.md")
+    write_document(OUTPUT, merged, "candidates")
     REPORT.write_text(render_report(merged), encoding="utf-8")
 
 

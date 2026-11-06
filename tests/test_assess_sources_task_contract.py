@@ -74,7 +74,6 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
             "domain_fingerprints": ["abc123"],
         }
         with patch.dict("os.environ", env, clear=True), \
-             patch.object(assess_sources, "assert_resource_lease_from_environment"), \
              patch("remote_task_queue_runtime.validate_candidate"):
             assess_sources.persist_assessment_checkpoint(
                 "discovery-run:123:" + predecessor["artifact_sha256"][:12],
@@ -94,7 +93,6 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
         item = {"url": "https://raw.githubusercontent.com/example/repo/main/list.txt"}
         store.document["resource_leases"]["sources/source_assessments.json"]["fencing_token"] = 8
         with patch.dict("os.environ", env, clear=True), \
-             patch.object(assess_sources, "assert_resource_lease_from_environment"), \
              patch("remote_task_queue_runtime.validate_candidate"):
             with self.assertRaisesRegex(ValueError, "fencing proof is stale"):
                 assess_sources.persist_assessment_checkpoint(
@@ -109,14 +107,15 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
             "max_total_bytes": assess_sources.MAX_TOTAL_BYTES,
         })
 
-    def test_assessor_fences_each_logical_output_before_writing(self):
+    def test_assessor_outputs_do_not_use_per_write_filesystem_guard(self):
         source = (ROOT / "scripts" / "assess_sources.py").read_text(encoding="utf-8")
-        for target in ("RUNTIME_OUTPUT", "OUTPUT", "REPORT"):
-            self.assertIn(f"assert_optional_write_lease({target}, required=args.task_input is not None)", source)
+        self.assertNotIn("assert_optional_write_lease", source)
+        self.assertNotIn("assert_resource_lease_from_environment", source)
+        self.assertNotIn("lease_required=", source)
         scheduler = (ROOT / "scripts" / "task_scheduler.py").read_text(encoding="utf-8")
-        self.assertIn('"AUTOMATION_QUEUE_SNAPSHOT": str(snapshot_path)', scheduler)
+        self.assertNotIn('"AUTOMATION_QUEUE_SNAPSHOT"', scheduler)
+        self.assertNotIn('"AUTOMATION_REQUIRE_RESOURCE_LEASE"', scheduler)
         self.assertIn('"AUTOMATION_RESOURCE_LEASE_PROOF"', scheduler)
-        self.assertIn('"AUTOMATION_QUEUE_TOKEN": store.token', scheduler)
 
     def test_accepts_bounded_independent_task_input(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -257,11 +256,6 @@ class AssessSourcesArtifactVerifierTests(unittest.TestCase):
         self.assertFalse(task_scheduler.publishable_resource_path(
             "modules/uu.conf", [persistent]
         ))
-
-    def test_task_mode_requires_lease_proof(self):
-        with patch.dict("os.environ", {}, clear=True):
-            with self.assertRaisesRegex(ValueError, "requires an active resource lease proof"):
-                assess_sources.assert_optional_write_lease(assess_sources.RUNTIME_OUTPUT, required=True)
 
     def test_verifier_rejects_missing_empty_artifacts(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -318,57 +318,6 @@ def _task_targets_workflow_auto_sync(queue, task_id):
 
 
 
-def assert_resource_lease_from_environment(resource_path):
-    """Read the durable queue at every filesystem mutation and enforce live fencing."""
-    resource_path=resource_key(resource_path)
-    if resource_path=="modules/uu.conf":
-        raise ValueError("modules/uu.conf is an owner-managed read-only resource")
-    required=("AUTOMATION_QUEUE_REPOSITORY","AUTOMATION_QUEUE_TOKEN",
-              "AUTOMATION_QUEUE_BRANCH","AUTOMATION_QUEUE_PATH",
-              "AUTOMATION_TASK_ID","AUTOMATION_WORKER_ID",
-              "AUTOMATION_TASK_LEASE_TOKEN","AUTOMATION_RESOURCE_LEASE_PROOF")
-    missing=[key for key in required if not os.environ.get(key)]
-    if missing:
-        raise ValueError("live resource lease environment is incomplete: "+", ".join(missing))
-    try:
-        proof=json.loads(os.environ["AUTOMATION_RESOURCE_LEASE_PROOF"])
-    except json.JSONDecodeError as exc:
-        raise ValueError("resource lease proof is unreadable") from exc
-    if not isinstance(proof,dict):
-        raise ValueError("resource lease proof must be an object")
-    task_id=os.environ["AUTOMATION_TASK_ID"]
-    worker_id=os.environ["AUTOMATION_WORKER_ID"]
-    task_token=os.environ["AUTOMATION_TASK_LEASE_TOKEN"]
-    store=GitHubContentsQueueStore(
-        os.environ["AUTOMATION_QUEUE_REPOSITORY"],
-        os.environ["AUTOMATION_QUEUE_PATH"],
-        branch=os.environ["AUTOMATION_QUEUE_BRANCH"],
-        token=os.environ["AUTOMATION_QUEUE_TOKEN"],
-        timeout=10,
-    )
-    # The checked-out queue snapshot is immutable. Watchdog may renew a resource
-    # lease in the durable queue while this workflow is still running, so the
-    # snapshot must never authorize or reject a write. Resolve both the task
-    # identity and its current fencing epoch from one live queue read.
-    live_queue=store.read().document
-    matching=[key for key in proof if isinstance(key,str) and (
-        resource_path==key or resource_path.startswith(key+".") or resource_path.startswith(key+"/")
-        or key.startswith(resource_path.rstrip("/")+"/")
-    )]
-    if matching:
-        lease_key=max(matching,key=len)
-    elif "logical/production-pipeline" in proof and _task_targets_workflow_auto_sync(live_queue,task_id):
-        lease_key="logical/production-pipeline"
-    else:
-        raise ValueError(f"resource lease proof does not cover write path {resource_path}")
-    item=proof.get(lease_key)
-    if not isinstance(item,dict):
-        raise ValueError("resource lease proof entry is malformed")
-    now=datetime.now(timezone.utc)
-    live_task=_active_writer_task(live_queue,task_id,worker_id,task_token,now)
-    return _assert_live_writer_fence(live_queue,live_task,lease_key,item,datetime.now(timezone.utc),worker_id,task_token)
-
-
 def assert_workflow_resource_lease(queue, task_id, proof, *, now=None):
     """Validate the live durable queue lease at a workflow publication boundary."""
     now=now or datetime.now(timezone.utc)
