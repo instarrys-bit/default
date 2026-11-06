@@ -519,18 +519,6 @@
       "classification_basis": "Verified the implementation's output is a runner-temporary JSONL trace containing repository-relative paths and run metadata only, and that the workflow uploads the trace as an audit artifact. No DIRECT, PROXY, REJECT or modules/uu.conf content is produced or modified."
     },
     {
-      "path": "scripts/fenced_file_writer.py",
-      "status": "CLASSIFIED_CONTROL_PLANE",
-      "first_seen_at": "2026-11-04T03:15:02.736672Z",
-      "last_seen_at": "2026-11-04T04:56:47.404975Z",
-      "seen_count": 8,
-      "last_seen_event": "push",
-      "last_seen_revision": "b9a701dd6752693c167b030a5cbd13d617e52da0",
-      "last_seen_run_id": "41776163056",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41776163056",
-      "classification_basis": "Reviewed as a safety/control-plane enforcement module. It rejects writes to the owner-managed modules/uu.conf and applies resource-lease checks; it does not supply DIRECT/PROXY/REJECT policy inputs."
-    },
-    {
       "path": "scripts/resource_lease_runtime.py",
       "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-03T19:06:35.005041Z",
