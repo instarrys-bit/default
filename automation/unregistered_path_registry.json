@@ -503,22 +503,6 @@
       "classification_basis": "Audited current source and workflow behavior; monitoring/documentation path, not a DIRECT/PROXY/REJECT production input."
     },
     {
-      "path": "scripts/capture_git_write_trace.py",
-      "status": "CLASSIFIED_MONITORING",
-      "first_seen_at": "2026-11-05T13:01:25.893664Z",
-      "last_seen_at": "2026-11-05T13:01:25.893664Z",
-      "seen_count": 1,
-      "observed_run_ids": [
-        "42031975537"
-      ],
-      "last_seen_event": "push",
-      "last_seen_revision": "b7035bb11da26f258b824c72c255811d46d9df7f",
-      "last_seen_run_id": "42031975537",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42031975537",
-      "classification_reason": "Path-only observer that records persistent repository-tree changes from shell and Git operations into a runner-temporary trace artifact; it does not write production rulesets or user configuration.",
-      "classification_basis": "Verified the implementation's output is a runner-temporary JSONL trace containing repository-relative paths and run metadata only, and that the workflow uploads the trace as an audit artifact. No DIRECT, PROXY, REJECT or modules/uu.conf content is produced or modified."
-    },
-    {
       "path": "scripts/resource_lease_runtime.py",
       "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-03T19:06:35.005041Z",
