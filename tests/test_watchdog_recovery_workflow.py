@@ -244,15 +244,18 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn('"automation/task_queue.json"', workflow.split("permissions:", 1)[0])
         self.assertNotIn('"rulesets/**"', workflow.split("permissions:", 1)[0])
         self.assertNotIn('"sources/**"', workflow.split("permissions:", 1)[0])
-    def test_completion_dispatch_cannot_create_production_demand(self):
+    def test_production_completion_reconciles_only_after_workflow_run_completes(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         step = workflow.split("      - name: Detect stale successful audit and recover", 1)[1].split("  task-queue-supervision:", 1)[0]
         self.assertIn("github.event_name == 'push'", step)
         self.assertIn("github.event_name == 'schedule'", step)
         self.assertIn("github.event_name == 'workflow_dispatch'", step)
-        self.assertNotIn("github.event_name == 'repository_dispatch'", step)
-        self.assertIn("repository_dispatch:", workflow)
-        self.assertIn("automation-production-completed", workflow)
+        self.assertNotIn("repository_dispatch:", workflow)
+        self.assertNotIn("automation-production-completed", workflow)
+        self.assertIn("workflow_run:", workflow)
+        audit = AUTO_SYNC.read_text(encoding="utf-8")
+        self.assertNotIn("notify-watchdog-completion:", audit)
+        self.assertNotIn("automation-production-completed", audit)
 
     def test_production_demand_is_fingerprint_based_and_single_sourced(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
