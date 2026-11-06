@@ -396,8 +396,8 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertNotIn("git rebase origin/main", intake)
         self.assertIn("for attempt in 1 2 3; do", intake)
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
-        self.assertIn("automation/unregistered_path_registry.json", watchdog)
-        self.assertIn("-f sha=\"$registry_sha\"", watchdog)
+        self.assertIn("Production input classification requires review", watchdog)
+        self.assertNotIn('gh api --method PUT "repos/$REPO/contents/automation/unregistered_path_registry.json"', watchdog)
 
     def test_dynamic_ephemeral_writers_are_not_misclassified_as_shared_repo_writers(self):
         writes = load_json("automation/resource_write_sets.json")

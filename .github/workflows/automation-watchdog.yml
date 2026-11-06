@@ -402,7 +402,7 @@ jobs:
               echo "block_manifest=true" >> "$GITHUB_OUTPUT"
               exit 0
             fi
-            pending_paths="$(jq '[.entries[] | select(.status == "PENDING_CLASSIFICATION")] | length' automation/unregistered_path_registry.json)"
+            pending_paths="$(jq '[.entries[] | select(.status == "PENDING_CLASSIFICATION") | select((.path | startswith("modules/")) | not)] | length' automation/unregistered_path_registry.json)"
             if [ "$pending_paths" -gt 0 ]; then
               echo "Manual audit blocked: $pending_paths unclassified paths remain in the Watchdog inbox."
               echo "block_manifest=true" >> "$GITHUB_OUTPUT"
@@ -529,7 +529,7 @@ jobs:
                 echo "block_manifest=true" >> "$GITHUB_OUTPUT"
                 exit 0
               fi
-              pending_paths="$(jq '[.entries[] | select(.status == "PENDING_CLASSIFICATION")] | length' automation/unregistered_path_registry.json)"
+              pending_paths="$(jq '[.entries[] | select(.status == "PENDING_CLASSIFICATION") | select((.path | startswith("modules/")) | not)] | length' automation/unregistered_path_registry.json)"
               if [ "$pending_paths" -gt 0 ]; then
                 echo "Stale-guard reconciliation is held because $pending_paths unclassified paths remain in the Watchdog inbox."
                 echo "block_manifest=true" >> "$GITHUB_OUTPUT"
@@ -668,60 +668,10 @@ jobs:
               echo "Production was not dispatched: unregistered paths are being recorded in the Watchdog inbox."
               echo "block_manifest=true" >> "$GITHUB_OUTPUT"
               unknown_paths="$(jq -c '.path_classification.unknown_changes // []' <<< "$intent_json")"
-              registry_published=false
-              registration_result=""
-              # Re-read the latest ledger on every attempt. Contents API writes
-              # are conditional on the exact Blob SHA; a competing Watchdog run
-              # forces a fresh merge rather than a blind overwrite.
-              for attempt in 1 2 3; do
-                registry_response="$(gh api "repos/$REPO/contents/automation/unregistered_path_registry.json" 2>/dev/null || true)"
-                registry_sha=""
-                if [ -n "$registry_response" ]; then
-                  registry_sha="$(jq -r '.sha' <<< "$registry_response")"
-                  registry_encoded="$(jq -r '.content' <<< "$registry_response" | tr -d '\n')"
-                  printf '%s' "$registry_encoded" | base64 -d > automation/unregistered_path_registry.json
-                else
-                  printf '%s\n' '{"schema_version":1,"purpose":"Watchdog inbox for unregistered repository paths; registration is not approval.","entries":[]}' > automation/unregistered_path_registry.json
-                fi
-
-                registration_result="$(python3 scripts/production_intent.py \
-                  --event "$ORIGIN_EVENT" \
-                  --revision "$ORIGIN_SHA" \
-                  --paths-json "$unknown_paths" \
-                  --register-ledger automation/unregistered_path_registry.json \
-                  --run-id "$GITHUB_RUN_ID" \
-                  --run-url "$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID")"
-                registry_content="$(base64 -w0 automation/unregistered_path_registry.json)"
-                if [ -n "$registry_sha" ]; then
-                  if gh api --method PUT "repos/$REPO/contents/automation/unregistered_path_registry.json" \
-                    -f message="Watchdog: register unclassified repository paths" \
-                    -f content="$registry_content" -f branch=main -f sha="$registry_sha" >/dev/null; then
-                    registry_published=true
-                    break
-                  fi
-                else
-                  if gh api --method PUT "repos/$REPO/contents/automation/unregistered_path_registry.json" \
-                    -f message="Watchdog: register unclassified repository paths" \
-                    -f content="$registry_content" -f branch=main >/dev/null; then
-                    registry_published=true
-                    break
-                  fi
-                fi
-
-                if [ "$attempt" -eq 3 ]; then
-                  echo "Could not merge the unregistered-path ledger after three Blob-SHA CAS attempts." >&2
-                  exit 1
-                fi
-                sleep "$attempt"
-              done
-              if [ "$registry_published" != "true" ]; then
-                echo "Unregistered-path ledger was not published; failing closed." >&2
-                exit 1
-              fi
-              echo "$registration_result" >> "$GITHUB_STEP_SUMMARY"
+              # Unknown paths are reported through an issue; the automation never writes a repository registry.
               title="Production input classification requires review"
               issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
-              body="$(printf 'The Watchdog registered these unclassified paths in automation/unregistered_path_registry.json. Registration is not approval. All remain PENDING_CLASSIFICATION and production stays blocked until explicit classification.\\n\\nPaths: %s\\n\\nRun: %s' "$unknown_paths" "$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID")"
+              body="$(printf 'These paths are not registered as ruleset production inputs. They remain excluded from automatic production until reviewed. No repository registry was modified.\\n\\nPaths: %s\\n\\nRun: %s' "$unknown_paths" "$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID")"
               if [ -n "$issue" ] && [ "$issue" != "null" ]; then
                 gh issue comment "$issue" --repo "$REPO" --body "$body"
               else

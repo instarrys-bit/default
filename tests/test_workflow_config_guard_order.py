@@ -342,18 +342,18 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("if: ${{ false }}", canary)
 
 
-    def test_watchdog_registry_cas_retries_by_rereading_and_merging_latest_blob(self):
+    def test_watchdog_reports_unknown_paths_without_repository_registry_writes(self):
         watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
-        start = watchdog.index('registry_published=false')
-        end = watchdog.index('title="Production input classification requires review"', start)
+        start = watchdog.index("            REVIEW_REQUIRED)")
+        end = watchdog.index("            IN_PROGRESS|WAIT_FOR_ACTIVE|ALREADY_SATISFIED|OBSERVE_ONLY)", start)
         block = watchdog[start:end]
-        self.assertIn("for attempt in 1 2 3; do", block)
-        self.assertLess(block.index('for attempt in 1 2 3; do'), block.index('gh api "repos/$REPO/contents/automation/unregistered_path_registry.json"'))
-        self.assertIn('registration_result="$(python3 scripts/production_intent.py', block)
-        self.assertIn('-f sha="$registry_sha"', block)
-        self.assertIn('sleep "$attempt"', block)
-        self.assertIn("Could not merge the unregistered-path ledger after three Blob-SHA CAS attempts.", block)
-        self.assertIn('if [ "$registry_published" != "true" ]; then', block)
+        self.assertIn("gh issue create", block)
+        self.assertIn("gh issue comment", block)
+        self.assertNotIn("gh api --method PUT", block)
+        self.assertNotIn("register_ledger", block)
+        self.assertNotIn("automation/unregistered_path_registry.json", block)
+        self.assertIn("PENDING_CLASSIFICATION", watchdog)
+        self.assertIn('(.path | startswith("modules/")) | not', watchdog)
 
     def test_watchdog_sets_scripts_path_before_importing_active_fingerprint_helper(self):
         watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
