@@ -627,17 +627,18 @@
       "path": "sources/external_intelligence_catalog.json",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-06T09:23:58.576503Z",
-      "last_seen_at": "2026-11-06T09:43:09.543994Z",
-      "seen_count": 2,
+      "last_seen_at": "2026-11-06T11:40:24.423782Z",
+      "seen_count": 3,
       "observed_run_ids": [
         "42194707692",
-        "42197094798"
+        "42197094798",
+        "42211934757"
       ],
-      "last_seen_event": "push",
-      "last_seen_revision": "8285983cce4734055ada4c3d738c95d1c2873601",
-      "last_seen_run_id": "42197094798",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42197094798"
+      "last_seen_event": "workflow_dispatch",
+      "last_seen_revision": "12a3f4d637ad230af5aa4275abdb1b06ac6d958a",
+      "last_seen_run_id": "42211934757",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42211934757"
     }
   ],
-  "updated_at": "2026-11-06T09:43:09.543994Z"
+  "updated_at": "2026-11-06T11:40:24.423782Z"
 }
