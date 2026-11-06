@@ -56,5 +56,49 @@ class ExternalIntelligenceCatalogTests(unittest.TestCase):
             self.assertIn(item["endpoint"].split("/")[2], discover_sources.CATALOG_ALLOWED_HOSTS)
 
 
+    def test_openphish_parser_emits_typed_non_policy_observations(self):
+        provider = self.catalog_copy()["providers"][2]
+        records = discover_sources.parse_openphish_payload(
+            b"https://login-example.test/signin\nnot-a-url\n", provider, provider["endpoint"]
+        )
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0]["data_type"], "phishing_url")
+        self.assertEqual(records[0]["metadata"]["host"], "login-example.test")
+        self.assertNotIn("policy", records[0])
+        self.assertEqual(len(records[0]["record_sha256"]), 64)
+
+    def test_urlhaus_parser_skips_comments_and_preserves_typed_url_evidence(self):
+        provider = self.catalog_copy()["providers"][1]
+        payload = b"# comment\n1,2026-11-06 10:00:00,https://bad.example/payload,online,malware_download\n"
+        records = discover_sources.parse_urlhaus_payload(payload, provider, "https://urlhaus.abuse.ch/downloads/csv_recent/")
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0]["data_type"], "malware_url")
+        self.assertEqual(records[0]["source_timestamp"], "2026-11-06 10:00:00")
+        self.assertEqual(records[0]["metadata"]["host"], "bad.example")
+
+    def test_iana_parser_emits_registry_type_not_routing_policy(self):
+        provider = self.catalog_copy()["providers"][5]
+        records = discover_sources.parse_iana_payload(
+            b'<a href="/domains/root/db/com.html">COM</a><a href="/domains/root/db/net.html">NET</a>',
+            provider, provider["endpoint"]
+        )
+        self.assertEqual([x["value"] for x in records], ["com", "net"])
+        self.assertTrue(all(x["data_type"] == "tld_registry" and "policy" not in x for x in records))
+
+    def test_ct_and_ripe_parsers_keep_distinct_observation_types(self):
+        providers = self.catalog_copy()["providers"]
+        ct = discover_sources.parse_ct_payload(
+            b'[{"name_value":"*.example.com\nwww.example.net","not_before":"2026-11-01"}]',
+            providers[3], "https://crt.sh/?q=example.com&output=json"
+        )
+        ripe = discover_sources.parse_ripestat_payload(
+            b'{"data":{"prefix":"192.0.2.0/24","name":"Example Net","type":"prefix"}}',
+            providers[4], "https://stat.ripe.net/data/network-info/data.json?resource=192.0.2.0/24"
+        )
+        self.assertEqual({x["value"] for x in ct}, {"example.com", "www.example.net"})
+        self.assertEqual(ct[0]["data_type"], "certificate_name")
+        self.assertEqual(ripe[0]["data_type"], "network_infrastructure")
+
+
 if __name__ == "__main__":
     unittest.main()
