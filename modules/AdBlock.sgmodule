@@ -31,8 +31,8 @@ DOMAIN-SUFFIX,app-analytics-services.com,REJECT
 # === 3. YouTube 音视频流广告参数处理 ===
 ^https?:\/\/[\w-]+\.googlevideo\.com\/(?!(dclk_video_ads|videoplayback\?|initplayback(?:\?|/))).+&oad _ reject-200
 (^https?:\/\/[\w-]+\.googlevideo\.com\/(?!dclk_video_ads|initplayback(?:\?|/)).+?)&ctier=L(&.+?),ctier,(.+) $1$2$3 302
-^https?:\/\/(www|s|m)\.youtube\.com\/(pagead|ptracking|get_midroll_info) _ reject-200
-^https?:\/\/(www|s|m)\.youtube\.com\/api\/stats\/(ads|atr|qoe\?.*(adformat|adcontext)=) _ reject-200
+^https?:\/\/(www|m)\.youtube\.com\/(pagead|ptracking|get_midroll_info) _ reject-200
+^https?:\/\/(www|m)\.youtube\.com\/api\/stats\/(ads|atr|qoe\?.*(adformat|adcontext)=) _ reject-200
 ^https?:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/(ad_break|att\/get|player\/ad_break) _ reject-dict
 
 # === 4. Google 搜索广告链接 ===
@@ -55,9 +55,9 @@ DOMAIN-SUFFIX,app-analytics-services.com,REJECT
 
 
 [Script]
-Clean_Pro = type=http-response,pattern=^https:\/\/(youtubei\.googleapis\.com\/youtubei\/v1\/(browse|next|player|search|reel\/reel_watch_sequence|guide|account\/get_setting|get_watch|log_event|config)(\?.*)?|api\.x\.com\/(graphql\/.+|1\.1\/.+|2\/timeline\/.+)|x\.com\/i\/api\/graphql\/.+|www\.instagram\.com\/(api\/v1\/(feed|discover|clips|stories)\/.+|graphql\/query.*)|www\.google\.com\/search\?.*|m\.google\.com\/search\?.*)$,requires-body=true,max-size=-1,binary-body-mode=1,timeout=10,script-path=https://raw.githubusercontent.com/instarrys-bit/default/main/modules/adblock/scripts/Clean_Pro.js?v=2.5,argument="{\"captionLang\":\"off\",\"blockUpload\":true,\"blockImmersive\":true,\"blockShortsTab\":false,\"blockShortsFeed\":true}"
+Clean_Pro = type=http-response,pattern=^https:\/\/(youtubei\.googleapis\.com\/youtubei\/v1\/(browse|next|player|search|reel\/reel_watch_sequence|guide|get_watch)(\?.*)?|api\.x\.com\/(graphql\/.+|1\.1\/.+|2\/timeline\/.+)|x\.com\/i\/api\/graphql\/.+|www\.instagram\.com\/(api\/v1\/(feed|discover|clips|stories)\/.+|graphql\/query.*)|www\.google\.com\/search\?.*|m\.google\.com\/search\?.*)$,requires-body=true,max-size=-1,binary-body-mode=1,timeout=10,script-path=https://raw.githubusercontent.com/instarrys-bit/default/main/modules/adblock/scripts/Clean_Pro.js?v=2.5,argument="{\"captionLang\":\"off\",\"blockUpload\":true,\"blockImmersive\":true,\"blockShortsTab\":false,\"blockShortsFeed\":true}"
 
 
 [MITM]
 # 仅保留当前原模块已列出的 MITM 主机；不扩大证书拦截范围。
-hostname = %APPEND% -redirector*.googlevideo.com, *.googlevideo.com, youtubei.googleapis.com, www.youtube.com, s.youtube.com, m.youtube.com, www.google.com, api.x.com, x.com, m.google.com, ogs.google.com, www.instagram.com
+hostname = %APPEND% -redirector*.googlevideo.com, *.googlevideo.com, youtubei.googleapis.com, www.youtube.com, m.youtube.com, www.google.com, api.x.com, x.com, m.google.com, ogs.google.com, www.instagram.com
