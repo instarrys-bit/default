@@ -20,15 +20,16 @@
       "path": ".github/workflows/restore-auto-sync.yml",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-06T17:32:29.873275Z",
-      "last_seen_at": "2026-11-06T17:32:29.873275Z",
-      "seen_count": 1,
+      "last_seen_at": "2026-11-06T17:33:52.981387Z",
+      "seen_count": 2,
       "observed_run_ids": [
-        "42262484628"
+        "42262484628",
+        "42262699612"
       ],
       "last_seen_event": "push",
-      "last_seen_revision": "251a4ea3be9f55a90fdadc2ba7f1ed312a4aef67",
-      "last_seen_run_id": "42262484628",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42262484628"
+      "last_seen_revision": "fc04a5be747435d7891070251a0dd933f0fb03f9",
+      "last_seen_run_id": "42262699612",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42262699612"
     },
     {
       "path": ".github/workflows/restore-inventory.yml",
@@ -102,17 +103,18 @@
       "path": "automation/architecture.json",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-06T17:30:50.104659Z",
-      "last_seen_at": "2026-11-06T17:32:29.873275Z",
-      "seen_count": 3,
+      "last_seen_at": "2026-11-06T17:33:52.981387Z",
+      "seen_count": 4,
       "observed_run_ids": [
         "42262218995",
         "42262325849",
-        "42262484628"
+        "42262484628",
+        "42262699612"
       ],
       "last_seen_event": "push",
-      "last_seen_revision": "251a4ea3be9f55a90fdadc2ba7f1ed312a4aef67",
-      "last_seen_run_id": "42262484628",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42262484628"
+      "last_seen_revision": "fc04a5be747435d7891070251a0dd933f0fb03f9",
+      "last_seen_run_id": "42262699612",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42262699612"
     },
     {
       "path": "automation/assessment_canary_request.json",
@@ -503,33 +505,35 @@
       "path": "modules/maasea/youtube_request_local.js",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-06T17:30:50.104659Z",
-      "last_seen_at": "2026-11-06T17:32:29.873275Z",
-      "seen_count": 3,
+      "last_seen_at": "2026-11-06T17:33:52.981387Z",
+      "seen_count": 4,
       "observed_run_ids": [
         "42262218995",
         "42262325849",
-        "42262484628"
+        "42262484628",
+        "42262699612"
       ],
       "last_seen_event": "push",
-      "last_seen_revision": "251a4ea3be9f55a90fdadc2ba7f1ed312a4aef67",
-      "last_seen_run_id": "42262484628",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42262484628"
+      "last_seen_revision": "fc04a5be747435d7891070251a0dd933f0fb03f9",
+      "last_seen_run_id": "42262699612",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42262699612"
     },
     {
       "path": "modules/maasea/youtube_response.js",
       "status": "PENDING_CLASSIFICATION",
       "first_seen_at": "2026-11-06T17:30:50.104659Z",
-      "last_seen_at": "2026-11-06T17:32:29.873275Z",
-      "seen_count": 3,
+      "last_seen_at": "2026-11-06T17:33:52.981387Z",
+      "seen_count": 4,
       "observed_run_ids": [
         "42262218995",
         "42262325849",
-        "42262484628"
+        "42262484628",
+        "42262699612"
       ],
       "last_seen_event": "push",
-      "last_seen_revision": "251a4ea3be9f55a90fdadc2ba7f1ed312a4aef67",
-      "last_seen_run_id": "42262484628",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42262484628"
+      "last_seen_revision": "fc04a5be747435d7891070251a0dd933f0fb03f9",
+      "last_seen_run_id": "42262699612",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42262699612"
     },
     {
       "path": "modules/temp-test/Sr_Youtube_Clean.js",
@@ -687,5 +691,5 @@
       "classification_basis": "scripts/discover_sources.py loads and validates this catalog, then uses its provider IDs, endpoints, data types and activation boundaries to drive bounded external collection. Changes can alter source observations and later ruleset evidence, so this exact path is a production input. The catalog does not itself assign DIRECT/PROXY/REJECT policy or authorize publication."
     }
   ],
-  "updated_at": "2026-11-06T17:32:29.873275Z"
+  "updated_at": "2026-11-06T17:33:52.981387Z"
 }
