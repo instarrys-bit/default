@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "27d066700b8cb4b504cb51526a6aee3195c5db97",
+  "workflow_blob_sha": "e9b9f1173aca3365beca16160f39b5e5dacbb0b0",
   "registry_blob_sha": "7141bc70e3c7ed098532fbbfe19940ff8e479ad7",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 5,
-    "step_count": 60,
+    "step_count": 61,
     "independent_python_dispatch_enabled": false,
     "independent_workflow_count": 1
   },
@@ -298,6 +298,16 @@
         },
         {
           "order": 27,
+          "name": "Summarize REJECT secondary screening",
+          "execution_kind": "python_capability_invocation",
+          "invoked_program_ids": [
+            "script_append_step_summary"
+          ],
+          "validation_program_ids": [],
+          "unresolved_script_paths": []
+        },
+        {
+          "order": 28,
           "name": "Evaluate lifecycle milestones and monthly capacity review",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -307,7 +317,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 28,
+          "order": 29,
           "name": "Run conservative lifecycle audit and selectable restoration",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -318,7 +328,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 29,
+          "order": 30,
           "name": "Reconcile final uu.conf scope coverage after all rule mutations",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -329,7 +339,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 30,
+          "order": 31,
           "name": "Reconcile final RULE-SET manifest counts",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -339,7 +349,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 31,
+          "order": 32,
           "name": "Build append-only rule-level provenance ledger",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -349,7 +359,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 32,
+          "order": 33,
           "name": "Validate Shadowrocket config structure",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -359,7 +369,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 33,
+          "order": 34,
           "name": "Audit RULE-SET references against generated outputs (read-only)",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -370,7 +380,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 34,
+          "order": 35,
           "name": "Audit candidate scope coverage against user config (read-only)",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -381,7 +391,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 35,
+          "order": 36,
           "name": "Audit managed config drift (read-only)",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -392,7 +402,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 36,
+          "order": 37,
           "name": "Run read-only full-source regression audit",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -403,7 +413,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 37,
+          "order": 38,
           "name": "Build consolidated project status",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -414,7 +424,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 38,
+          "order": 39,
           "name": "Write successful audit heartbeat",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -422,7 +432,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 39,
+          "order": 40,
           "name": "Record durable automation state pointer",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -430,7 +440,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 40,
+          "order": 41,
           "name": "Package allowlisted audit outputs",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -438,7 +448,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 41,
+          "order": 42,
           "name": "Upload allowlisted audit outputs",
           "execution_kind": "workflow_native",
           "invoked_program_ids": [],
@@ -446,7 +456,7 @@
           "unresolved_script_paths": []
         },
         {
-          "order": 42,
+          "order": 43,
           "name": "Capture persistent repository changes from shell and Git (audit)",
           "execution_kind": "python_capability_invocation",
           "invoked_program_ids": [
@@ -460,7 +470,7 @@
           "invoked_program_ids": [],
           "validation_program_ids": [],
           "unresolved_script_paths": [],
-          "order": 43,
+          "order": 44,
           "name": "Upload runtime filesystem write trace (audit)"
         }
       ]

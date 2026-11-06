@@ -119,25 +119,67 @@ def evidence_gate(evidence, source_weights, minimum, threshold, required_sources
     qualified=(len(source_ids)>=minimum and len(publishers)>=minimum and len(groups)>=minimum and required.issubset(source_ids) and confidence>=threshold)
     return confidence,source_ids,publishers,groups,qualified
 
+def normalize_repository_reference(value):
+    """Normalize GitHub repository references for directional ancestry checks."""
+    value = str(value or "").strip().lower()
+    value = value.split("#", 1)[0].split("?", 1)[0]
+    for prefix in ("https://github.com/", "http://github.com/", "github.com/"):
+        if value.startswith(prefix):
+            value = value[len(prefix):]
+            break
+    if value.endswith(".git"):
+        value = value[:-4]
+    return value.strip("/")
+
+
+def publisher_ancestry_pairs(sources):
+    """Treat publishers as correlated when one explicitly lists the other as upstream."""
+    rows = []
+    for source in sources:
+        publisher = str(source.get("publisher", "")).strip()
+        normalized_publisher = normalize_repository_reference(publisher)
+        upstreams = {
+            normalize_repository_reference(item)
+            for item in (source.get("upstream_repositories") or [])
+            if normalize_repository_reference(item)
+        }
+        if publisher and normalized_publisher:
+            rows.append((publisher, normalized_publisher, upstreams))
+    pairs = set()
+    for index, (left, normalized_left, left_upstreams) in enumerate(rows):
+        for right, normalized_right, right_upstreams in rows[index + 1:]:
+            if normalized_left == normalized_right:
+                continue
+            if normalized_left in right_upstreams or normalized_right in left_upstreams:
+                pairs.add(tuple(sorted((left, right))))
+    return pairs
+
+
 def load_correlated_publishers():
-    """Read same-policy high/near-duplicate relationships from the source candidate matrix."""
-    matrix=read_document(SOURCE_MATRIX,"candidates",{"candidates":[]})
-    pairs=set()
-    for item in matrix.get("same_policy_domain_overlap",[]):
-        if item.get("relation") not in {"high_overlap","near_duplicate"}: continue
-        repos=item.get("repositories",[])
-        if len(repos)==2 and repos[0]!=repos[1]: pairs.add(tuple(sorted((str(repos[0]),str(repos[1])))))
-    # Shared upstream references are correlation warnings, not proof of common data ancestry.
-    if LINEAGE_REPORT.exists() and POLICY.exists():
-        lineage=json.loads(LINEAGE_REPORT.read_text(encoding="utf-8"))
-        registry=json.loads(POLICY.read_text(encoding="utf-8"))
-        publisher_by_id={str(item.get("id")):str(item.get("publisher")) for item in registry.get("sources",[])}
-        for item in lineage.get("shared_upstream_pairs",[]):
-            source_ids=item.get("sources",[])
-            if len(source_ids)!=2: continue
-            left=publisher_by_id.get(str(source_ids[0]))
-            right=publisher_by_id.get(str(source_ids[1]))
-            if left and right and left!=right: pairs.add(tuple(sorted((left,right))))
+    """Combine observed overlap, shared upstreams, and direct publisher ancestry."""
+    matrix = read_document(SOURCE_MATRIX, "candidates", {"candidates": []})
+    pairs = set()
+    for item in matrix.get("same_policy_domain_overlap", []):
+        if item.get("relation") not in {"high_overlap", "near_duplicate"}:
+            continue
+        repos = item.get("repositories", [])
+        if len(repos) == 2 and repos[0] != repos[1]:
+            pairs.add(tuple(sorted((str(repos[0]), str(repos[1])))))
+    if POLICY.exists():
+        registry = json.loads(POLICY.read_text(encoding="utf-8"))
+        source_rows = registry.get("sources", [])
+        pairs.update(publisher_ancestry_pairs(source_rows))
+        if LINEAGE_REPORT.exists():
+            lineage = json.loads(LINEAGE_REPORT.read_text(encoding="utf-8"))
+            publisher_by_id = {str(item.get("id")): str(item.get("publisher")) for item in source_rows}
+            for item in lineage.get("shared_upstream_pairs", []):
+                source_ids = item.get("sources", [])
+                if len(source_ids) != 2:
+                    continue
+                left = publisher_by_id.get(str(source_ids[0]))
+                right = publisher_by_id.get(str(source_ids[1]))
+                if left and right and left != right:
+                    pairs.add(tuple(sorted((left, right))))
     return pairs
 
 def atomic_json(path,payload):

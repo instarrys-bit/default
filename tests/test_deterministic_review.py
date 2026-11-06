@@ -4,10 +4,10 @@ import unittest
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
-from deterministic_review import DOMAIN_RE, evidence_gate, inspect, validate_evidence, review_context_fingerprint, candidate_review_fingerprint
+from deterministic_review import DOMAIN_RE, evidence_gate, inspect, validate_evidence, review_context_fingerprint, candidate_review_fingerprint, publisher_ancestry_pairs
 from domain_rule_engine import RuleIndex, DomainRule, inspect_suffix_scope
 from deterministic_review import CONFIG as REVIEW_CONFIG
-from build_rulesets import CONFIG as RULESET_CONFIG
+from build_rulesets import CONFIG as RULESET_CONFIG, reject_secondary_decision, reject_queue_entry_authorized
 from select_domain_rules import CONFIG as SELECTOR_CONFIG
 from audit_external_domains import CONFIG as EXTERNAL_AUDIT_CONFIG
 from collect_domains import bootstrap_source_domains, check_source_delta, parse_adblock, parse_domain_list, parse_source
@@ -737,10 +737,6 @@ class HighOverlapIndependenceTests(unittest.TestCase):
         self.assertFalse(result["policy_summary"]["DIRECT"]["activation_ready"])
 
 
-if __name__=="__main__":
-    unittest.main(verbosity=2)
-
-
 class UserConfigBaselineTests(unittest.TestCase):
     def test_domain_review_and_rule_builder_use_user_managed_config(self):
         expected = ROOT / "modules" / "uu.conf"
@@ -748,3 +744,95 @@ class UserConfigBaselineTests(unittest.TestCase):
         self.assertEqual(RULESET_CONFIG, expected)
         self.assertEqual(SELECTOR_CONFIG, expected)
         self.assertEqual(EXTERNAL_AUDIT_CONFIG, expected)
+
+
+class PublisherAncestryCorrelationTests(unittest.TestCase):
+    def test_publisher_listed_as_another_sources_upstream_is_correlated(self):
+        sources = [
+            {"publisher": "Johnshall/Shadowrocket-ADBlock-Rules-Forever", "upstream_repositories": []},
+            {"publisher": "ithtelab/sr-adblock", "upstream_repositories": ["https://github.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever.git"]},
+        ]
+        self.assertEqual(
+            publisher_ancestry_pairs(sources),
+            {("Johnshall/Shadowrocket-ADBlock-Rules-Forever", "ithtelab/sr-adblock")},
+        )
+
+    def test_unrelated_publishers_are_not_correlated_by_directional_ancestry(self):
+        sources = [
+            {"publisher": "publisher-a/rules", "upstream_repositories": ["shared/upstream"]},
+            {"publisher": "publisher-b/rules", "upstream_repositories": ["different/upstream"]},
+        ]
+        self.assertEqual(publisher_ancestry_pairs(sources), set())
+
+    def test_reverse_directional_ancestry_is_detected(self):
+        sources = [
+            {"publisher": "publisher-a/rules", "upstream_repositories": ["publisher-b/rules"]},
+            {"publisher": "publisher-b/rules", "upstream_repositories": []},
+        ]
+        self.assertEqual(publisher_ancestry_pairs(sources), {("publisher-a/rules", "publisher-b/rules")})
+
+
+class RejectSecondaryReviewTests(unittest.TestCase):
+    def setUp(self):
+        self.scoring = {
+            "source_weights": {"a": 0.4, "b": 0.4, "c": 0.4},
+            "reject_secondary_review": {
+                "minimum_current_sources": 3,
+                "minimum_independent_publishers": 2,
+                "required_any_sources": ["c"],
+            },
+        }
+        self.evidence = [
+            {"source_id":"a","publisher":"publisher-a","independence_group":"group-a","lineage_status":"verified","currently_listed":True},
+            {"source_id":"b","publisher":"publisher-b","independence_group":"group-b","lineage_status":"verified","currently_listed":True},
+            {"source_id":"c","publisher":"publisher-c","independence_group":"group-c","lineage_status":"verified","currently_listed":True},
+        ]
+
+    def test_three_sources_with_two_independent_groups_and_specialist_pass(self):
+        result = reject_secondary_decision(
+            self.evidence, self.scoring, 2, 0.8,
+            {("publisher-a", "publisher-b")},
+        )
+        self.assertTrue(result["eligible"])
+        self.assertEqual(result["current_source_count"], 3)
+        self.assertEqual(result["independent_publisher_count"], 2)
+
+    def test_correlated_chain_fails_independent_publisher_requirement(self):
+        result = reject_secondary_decision(
+            self.evidence, self.scoring, 2, 0.8,
+            {("publisher-a", "publisher-b"), ("publisher-b", "publisher-c")},
+        )
+        self.assertFalse(result["eligible"])
+        self.assertIn("insufficient_independent_publishers", result["reasons"])
+
+    def test_two_independent_sources_do_not_reach_reject_shortlist(self):
+        result = reject_secondary_decision(
+            self.evidence[:2], self.scoring, 2, 0.8, set(),
+        )
+        self.assertFalse(result["eligible"])
+        self.assertIn("insufficient_current_sources", result["reasons"])
+
+
+class RejectQueueAuthorizationTests(unittest.TestCase):
+    def test_previous_publication_remains_authorized(self):
+        self.assertTrue(reject_queue_entry_authorized(
+            "DOMAIN,ads.example", {"DOMAIN,ads.example"}, set(), set()
+        ))
+
+    def test_manual_approval_alone_cannot_bypass_current_secondary_review(self):
+        self.assertFalse(reject_queue_entry_authorized(
+            "DOMAIN,ads.example", set(), {"DOMAIN,ads.example"}, set()
+        ))
+
+    def test_current_secondary_pass_and_exact_manual_approval_are_both_required(self):
+        line = "DOMAIN,ads.example"
+        self.assertTrue(reject_queue_entry_authorized(
+            line, set(), {line}, {line}
+        ))
+        self.assertFalse(reject_queue_entry_authorized(
+            line, set(), set(), {line}
+        ))
+
+
+if __name__=="__main__":
+    unittest.main(verbosity=2)
