@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "purpose": "Non-activating inventory of public intelligence providers for staged multi-source acquisition.",
-  "policy": "Catalog entries are discovery leads only. No provider is fetched, trusted, admitted, or mapped to DIRECT/PROXY/REJECT by this catalog. Every future adapter must implement provider-specific parsing, licensing, provenance, privacy, budgets, and independent verification.",
+  "policy": "Catalog entries remain non-activating. The registered discovery program fetches a bounded subset of provider data into a typed evidence section with source hashes and retrieval timestamps. Observations are never mapped directly to DIRECT/PROXY/REJECT; CT and RIPEstat require explicit query inputs. Provider failure is isolated per adapter.",
   "providers": [
     {
       "id": "adguard-filters",
@@ -24,7 +24,7 @@
         "malware_url",
         "host_observation"
       ],
-      "integration_status": "adapter_required",
+      "integration_status": "bounded_runtime_adapter",
       "activation": "candidate_only"
     },
     {
@@ -36,7 +36,7 @@
         "phishing_url",
         "host_observation"
       ],
-      "integration_status": "adapter_required",
+      "integration_status": "bounded_runtime_adapter",
       "activation": "candidate_only"
     },
     {
@@ -48,7 +48,7 @@
         "certificate_names",
         "domain_observation"
       ],
-      "integration_status": "query_adapter_required",
+      "integration_status": "query_driven_runtime_adapter",
       "activation": "candidate_only"
     },
     {
@@ -61,7 +61,7 @@
         "ip_prefix",
         "network_owner"
       ],
-      "integration_status": "api_adapter_required",
+      "integration_status": "query_driven_runtime_adapter",
       "activation": "evidence_only"
     },
     {
@@ -72,7 +72,7 @@
       "data_types": [
         "tld_registry"
       ],
-      "integration_status": "adapter_required",
+      "integration_status": "bounded_runtime_adapter",
       "activation": "evidence_only"
     },
     {
@@ -84,7 +84,7 @@
         "repository_metadata",
         "rule_list_candidates"
       ],
-      "integration_status": "discovery_adapter_required",
+      "integration_status": "bounded_runtime_adapter",
       "activation": "never_from_catalog"
     },
     {
@@ -96,7 +96,7 @@
         "repository_metadata",
         "rule_list_candidates"
       ],
-      "integration_status": "discovery_adapter_required",
+      "integration_status": "bounded_runtime_adapter",
       "activation": "never_from_catalog"
     }
   ],
