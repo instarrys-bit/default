@@ -55,7 +55,13 @@ def classify_paths(paths: Iterable[str], manifest: dict) -> dict:
         path = raw.strip().removeprefix("./")
         if not path:
             continue
-        if path in inputs:
+        # Modules are an independent Shadowrocket deployment surface. The owner-
+        # maintained uu.conf remains the sole module-path production input because
+        # generated rulesets are checked against its routing policy; every other
+        # module/script change must never create or block ruleset production.
+        if path.startswith("modules/") and path != "modules/uu.conf":
+            non_input_paths.append(path)
+        elif path in inputs:
             input_paths.append(path)
         elif any(fnmatch.fnmatchcase(path, pattern) for pattern in documentation_patterns):
             documentation_paths.append(path)
