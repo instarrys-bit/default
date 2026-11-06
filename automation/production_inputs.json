@@ -43,8 +43,7 @@
     "scripts/review_cursor.py",
     "scripts/persist_review_cursor.py",
     "scripts/json_document_store.py",
-    "scripts/verify_published_rulesets.py",
-    "scripts/fenced_file_writer.py"
+    "scripts/verify_published_rulesets.py"
   ],
   "non_production_path_patterns": [
     ".github/workflows/automation-watchdog.yml",
