@@ -1754,33 +1754,6 @@
       }
     },
     {
-      "id": "script_fenced_file_writer",
-      "path": "scripts/fenced_file_writer.py",
-      "kind": "python_component",
-      "responsibility": "enforce owner-config immutability and live resource-lease checks for repository-local filesystem mutations",
-      "capabilities": [
-        "filesystem_write_guard"
-      ],
-      "invocation": "imported_module",
-      "inputs": [
-        "filesystem mutation audit events",
-        "Watchdog task and resource lease environment"
-      ],
-      "outputs": [
-        "allow mutation only when the owner-config and live fencing policies pass"
-      ],
-      "depends_on": [],
-      "dispatches": [],
-      "permission_boundary": "Library only; no independent execution, credentials, network access, or authority to edit modules/uu.conf.",
-      "health_check": "Covered by tests/test_fenced_file_writer.py and the full deterministic unit suite.",
-      "orchestration": {
-        "enabled": false,
-        "allowed_callers": [],
-        "max_attempts": 0,
-        "timeout_seconds": 60
-      }
-    },
-    {
       "id": "script_capture_git_write_trace",
       "path": "scripts/capture_git_write_trace.py",
       "kind": "python_component",
