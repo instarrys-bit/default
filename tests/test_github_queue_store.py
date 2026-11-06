@@ -5,6 +5,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from io import BytesIO
 from urllib.error import HTTPError
 from unittest.mock import patch
 
@@ -127,7 +128,7 @@ class GitHubIssueQueueStoreTests(unittest.TestCase):
 
     def test_non_conflict_api_error_does_not_retry(self):
         def forbidden(request, timeout=20):
-            raise HTTPError(request.full_url, 403, "Forbidden", {}, None)
+            raise HTTPError(request.full_url, 403, "Forbidden", {}, BytesIO(b"denied"))
 
         with patch("github_queue_store.urlopen", side_effect=forbidden):
             with self.assertRaisesRegex(GitHubAPIError, "HTTP 403"):
