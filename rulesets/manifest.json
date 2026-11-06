@@ -92,8 +92,8 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 2,
-      "removed_entries": 1,
+      "new_entries": 0,
+      "removed_entries": 0,
       "baseline_initialized": false,
       "bootstrap_enqueued": false
     },
@@ -108,7 +108,7 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 700,
+      "new_entries": 0,
       "removed_entries": 0,
       "baseline_initialized": false,
       "bootstrap_enqueued": false
@@ -124,8 +124,8 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 1,
-      "removed_entries": 1,
+      "new_entries": 0,
+      "removed_entries": 0,
       "baseline_initialized": false,
       "bootstrap_enqueued": false
     },
@@ -140,7 +140,7 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 1,
+      "new_entries": 0,
       "removed_entries": 0,
       "baseline_initialized": false,
       "bootstrap_enqueued": false
@@ -179,8 +179,8 @@
     },
     {
       "id": "hagezi-domains-pro",
-      "sha256": "bd6f660e813fe482a2dbaa3bf1cf9c57f51f9228a0b724d4b0fad231c9d99b80",
-      "entries": 211778,
+      "sha256": "96cc6271c6d58313d88f69642f7987abf4c01094e286d4b2aa42f0c0ea8cf336",
+      "entries": 223594,
       "classification": "REJECT",
       "role": "independent_adblock_corroboration",
       "lineage_status": "partial",
@@ -254,11 +254,11 @@
         "yous/youslist",
         "zakird/crux-top-lists"
       ],
-      "status": "STALE_QUARANTINED",
-      "error": "hagezi-domains-pro source drift exceeds automatic safety limit: 27954 added + 16138 removed = 44092; limit 21177",
-      "pending_confirmations": 1,
-      "new_entries": 0,
-      "removed_entries": 0,
+      "status": "CURRENT",
+      "error": null,
+      "pending_confirmations": 0,
+      "new_entries": 27954,
+      "removed_entries": 16138,
       "baseline_initialized": false,
       "bootstrap_enqueued": false
     },
@@ -305,7 +305,7 @@
     }
   ],
   "source_count": 13,
-  "policy_conflict_total": 464,
+  "policy_conflict_total": 714,
   "lineage_verified_sources": 0,
   "lineage_unverified_sources": 11,
   "lineage_partial_sources": 2,
@@ -344,19 +344,8 @@
   "published_rule_total": 3414,
   "max_published_rules": 30000,
   "queued_rule_total": 0,
-  "baseline_conflict_hold_count": 1,
-  "baseline_conflict_hold_sample": [
-    {
-      "domain": "tellapart.com",
-      "policy": "PROXY",
-      "scope": "suffix_candidate",
-      "status": "CONFLICT",
-      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
-      "config_line": null,
-      "config_rule": "L335: DOMAIN-SUFFIX,tellapart.com,REJECT [REJECT]",
-      "effective_config_policy": null
-    }
-  ],
+  "baseline_conflict_hold_count": 0,
+  "baseline_conflict_hold_sample": [],
   "pending_queue": "rulesets/pending_queue.json",
   "rule_lifecycle": {
     "DIRECT": {
@@ -371,16 +360,13 @@
       "baseline_initialized": false
     },
     "PROXY": {
-      "previous_count": 3259,
+      "previous_count": 3261,
       "current_count": 3261,
-      "added_count": 2,
+      "added_count": 0,
       "removed_count": 0,
-      "previous_sha256": "c65be8a8c922445caa8d6f30c6e1f81446c1ac9d0ba3dd441729af98cb16d1d1",
+      "previous_sha256": "c12a79c9942ce4b550013cd85cc27a014ffa3b6eaba8f08f6192670ecdaf21a9",
       "current_sha256": "c12a79c9942ce4b550013cd85cc27a014ffa3b6eaba8f08f6192670ecdaf21a9",
-      "added_sample": [
-        "DOMAIN-SUFFIX,bilibili.tv",
-        "DOMAIN-SUFFIX,neoforged.net"
-      ],
+      "added_sample": [],
       "removed_sample": [],
       "baseline_initialized": false
     },
@@ -397,29 +383,29 @@
     }
   },
   "reviewed_total": 166604,
-  "approved_total": 3413,
-  "held_total": 163191,
+  "approved_total": 3371,
+  "held_total": 163233,
   "reject_manual_approval_required": true,
   "reject_manual_approval_count": 0,
-  "reject_manual_hold_count": 33028,
+  "reject_manual_hold_count": 56571,
   "status_count": {
-    "ALREADY_COVERED": 9584,
-    "APPROVED": 36443,
-    "CONFLICT": 36963,
-    "POLICY_CONFLICT": 464,
-    "REVIEW": 83134,
+    "ALREADY_COVERED": 9544,
+    "APPROVED": 59943,
+    "CONFLICT": 36953,
+    "POLICY_CONFLICT": 714,
+    "REVIEW": 59434,
     "RISK_HOLD": 16
   },
   "deterministic_review_progress": {
     "candidate_total": 166604,
-    "approved_total": 3413,
-    "held_total": 163191,
+    "approved_total": 3371,
+    "held_total": 163233,
     "status_count": {
-      "ALREADY_COVERED": 9584,
-      "APPROVED": 36443,
-      "CONFLICT": 36963,
-      "POLICY_CONFLICT": 464,
-      "REVIEW": 83134,
+      "ALREADY_COVERED": 9544,
+      "APPROVED": 59943,
+      "CONFLICT": 36953,
+      "POLICY_CONFLICT": 714,
+      "REVIEW": 59434,
       "RISK_HOLD": 16
     }
   },

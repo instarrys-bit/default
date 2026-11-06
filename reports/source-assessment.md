@@ -6,6 +6,7 @@
 
 | Repository | Parser candidate | Policy candidate | Domain entries | Drift | Evidence |
 |---|---|---|---:|---|---|
+| ZingyAwesome/easylists-for-pihole | domain-only | — | 40561 | baseline_initialized | none |
 | ZingyAwesome/easylists-for-pihole | domain-only | — | 5709 | baseline_initialized | none |
 | ZingyAwesome/easylists-for-pihole | domain-only | — | 22 | baseline_initialized | none |
 | ZingyAwesome/easylists-for-pihole | domain-only | — | 23 | baseline_initialized | none |
@@ -5005,17 +5006,25 @@
 | bgpeer/rules | unsupported_or_too_small | — | 0 | baseline_initialized | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | baseline_initialized | none |
 | bgpeer/rules | unsupported_or_too_small | — | 0 | baseline_initialized | none |
-| bgpeer/rules | unsupported_or_too_small | — | 0 | baseline_initialized | none |
 
 ## Source update drift
 
 - New source files: 4733
 - Changed source files: 251
-- Added domain entries: 5060781
+- Added domain entries: 5101342
 - Removed domain entries: 0
 - Policy changes: 0
 
 ## Assessment details
+
+### ZingyAwesome/easylists-for-pihole
+
+- URL: https://raw.githubusercontent.com/ZingyAwesome/easylists-for-pihole/master/easyprivacy.txt
+- SHA-256: 74b9ae2b836532709b911a7fec91703693dd78607ed3bf96fa9d07e6fce8a407
+- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 40561; duplicate lines: 0
+- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
+- Explicit action counts: {}
+- Policy evidence: none; candidate: none
 
 ### ZingyAwesome/easylists-for-pihole
 
@@ -50003,15 +50012,6 @@
 
 - URL: https://raw.githubusercontent.com/bgpeer/rules/main/QX/geosite/ctrip.list
 - SHA-256: cc920d0c60ff90b42523cfc4ebf4f4dac9a79fc95cb778404131153f79b2cb61
-- Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
-- Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
-- Explicit action counts: {}
-- Policy evidence: none; candidate: none
-
-### bgpeer/rules
-
-- URL: https://raw.githubusercontent.com/bgpeer/rules/main/QX/geosite/ctyun.list
-- SHA-256: 50f1dcf0004b705fa772208e0728da1aca4e19063c24ecd1032ec383a71a44fa
 - Exact DOMAIN: 0; DOMAIN-SUFFIX: 0; Adblock: 0; domain-only: 0; duplicate lines: 0
 - Ignored non-domain rules: DOMAIN-KEYWORD 0; IP/CIDR/ASN 0
 - Explicit action counts: {}

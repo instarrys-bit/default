@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-06T06:56:58.402230+00:00",
+  "audited_at": "2026-11-06T07:47:37.945195+00:00",
   "method": "public-provenance-document repository-link inventory; not item-level domain attribution",
   "source_count": 13,
   "audited_source_count": 11,
@@ -42676,7 +42676,7 @@
     {
       "repository": "RusdiEneri/blacklist-hosts",
       "readme_url": "https://raw.githubusercontent.com/RusdiEneri/blacklist-hosts/main/README.md",
-      "readme_sha256": "54e85082d631f42939c2d76decb1de8aaee3ffc259b86419c7867d1285f3db1d",
+      "readme_sha256": "d9896e566793ce1bb762635e5a215764fb86eb8ac8d5bd6ed047aaf8718fb62b",
       "discovery_readme_sha256": null,
       "readme_changed_since_discovery": false,
       "referenced_repositories": [],

@@ -2,15 +2,15 @@
 
 - Authority: read-only modules/uu.conf
 - Explicit config rule lines: 1754
-- Ledger candidates: 166140
+- Ledger candidates: 165890
 - Result: PASS
 
 ## Status counts
 
-- ALREADY_COVERED: 12290
-- CONFLICT: 36639
-- MIXED_POLICY_COVERAGE: 132
-- NOT_COVERED_BY_CONFIG_SCOPE: 117079
+- ALREADY_COVERED: 12251
+- CONFLICT: 36632
+- MIXED_POLICY_COVERAGE: 129
+- NOT_COVERED_BY_CONFIG_SCOPE: 116878
 
 ## Findings
 
@@ -320,7 +320,6 @@
 - 22lmsi1t5.de (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
 - 22media.world (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L858: DOMAIN-SUFFIX,world,PROXY [PROXY]
 - 233.mbvnclktwo.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
-- 2345.cc (DIRECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L761: DOMAIN-SUFFIX,cc,PROXY [PROXY]
 - 23e56badabd13.shop (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L824: DOMAIN-SUFFIX,shop,PROXY [PROXY]
 - 23hssicm9.de (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
 - 23tesla.org (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
@@ -423,7 +422,6 @@
 - 3.cjcp.cn (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1407: DOMAIN-SUFFIX,cn,DIRECT [DIRECT]
 - 3.html-load.cc (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L761: DOMAIN-SUFFIX,cc,PROXY [PROXY]
 - 300.cn (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1407: DOMAIN-SUFFIX,cn,DIRECT [DIRECT]
-- 3004ss.vip (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L791: DOMAIN-SUFFIX,vip,PROXY [PROXY]
 - 301redirect.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - 302kslgdl.de (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
 - 303ag0nc7.de (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
@@ -487,7 +485,6 @@
 - 38ds89f8.de (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
 - 395.dynamicdns.biz (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L760: DOMAIN-SUFFIX,biz,PROXY [PROXY]
 - 39e6p9p7.de (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
-- 3bmmavpm.life (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L814: DOMAIN-SUFFIX,life,PROXY [PROXY]
 - 3dpop.co.kr (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L752: DOMAIN-SUFFIX,kr,PROXY [PROXY]
 - 3dpop.kr (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L752: DOMAIN-SUFFIX,kr,PROXY [PROXY]
 - 3dss.hitrustpay.com.tw (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L757: DOMAIN-SUFFIX,tw,PROXY [PROXY]
@@ -552,7 +549,6 @@
 - 500d.me (DIRECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L753: DOMAIN-SUFFIX,me,PROXY [PROXY]
 - 500px.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - 5097kk.cc (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L761: DOMAIN-SUFFIX,cc,PROXY [PROXY]
-- 50bang.org (DIRECT): MIXED_POLICY_COVERAGE — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L363: DOMAIN-SUFFIX,50bang.org,REJECT [REJECT]; L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - 51.ca (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L746: DOMAIN-SUFFIX,ca,PROXY [PROXY]
 - 51.la (REJECT): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L364: DOMAIN-SUFFIX,51.la,REJECT [REJECT]
 - 5112rjcpq1nh4n.rest (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L823: DOMAIN-SUFFIX,rest,PROXY [PROXY]
@@ -2114,7 +2110,6 @@
 - adsehera.ximalaya.com (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1447: DOMAIN-SUFFIX,ximalaya.com,DIRECT [DIRECT]
 - adsend.de (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
 - adsender.us (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L759: DOMAIN-SUFFIX,us,PROXY [PROXY]
-- adsense.google.cn (PROXY): MIXED_POLICY_COVERAGE — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1407: DOMAIN-SUFFIX,cn,DIRECT [DIRECT]; L720: DOMAIN-SUFFIX,google.cn,PROXY [PROXY]
 - adsense.google.com (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L874: DOMAIN-SUFFIX,google.com,PROXY [PROXY]
 - adserv2.suumo.jp (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L751: DOMAIN-SUFFIX,jp,PROXY [PROXY]
 - adserve.gkeurope.de (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
@@ -4478,7 +4473,6 @@
 - auth.be.sec.miui.com (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1429: DOMAIN-SUFFIX,miui.com,DIRECT [DIRECT]
 - auth.tlauncher.org (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - auth.wo.cn (DIRECT): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1407: DOMAIN-SUFFIX,cn,DIRECT [DIRECT]
-- auth.wosms.cn (DIRECT): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1407: DOMAIN-SUFFIX,cn,DIRECT [DIRECT]
 - auth0.openai.com (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L860: DOMAIN-SUFFIX,openai.com,PROXY [PROXY]
 - authbe.sec.intl.miui.com (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1429: DOMAIN-SUFFIX,miui.com,DIRECT [DIRECT]
 - authorization-cdn-press-enter.info (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L813: DOMAIN-SUFFIX,info,PROXY [PROXY]
@@ -5021,7 +5015,6 @@
 - bbblfzeujckae.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
 - bbbpromos.org (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - bbbvysurvjwpp.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
-- bbc.co (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L762: DOMAIN-SUFFIX,co,PROXY [PROXY]
 - bbc.co.uk (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1054: DOMAIN-SUFFIX,bbc.co.uk,PROXY [PROXY]; L758: DOMAIN-SUFFIX,uk,PROXY [PROXY]
 - bbc.com (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1208: DOMAIN-SUFFIX,bbc.com,PROXY [PROXY]
 - bbc.in (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L749: DOMAIN-SUFFIX,in,PROXY [PROXY]
@@ -5859,10 +5852,8 @@
 - blogspot.jp (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L751: DOMAIN-SUFFIX,jp,PROXY [PROXY]
 - blogspot.kr (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L752: DOMAIN-SUFFIX,kr,PROXY [PROXY]
 - blogspot.nl (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L754: DOMAIN-SUFFIX,nl,PROXY [PROXY]
-- blogspot.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - blogspot.ru (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L755: DOMAIN-SUFFIX,ru,PROXY [PROXY]
 - blogspot.se (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L756: DOMAIN-SUFFIX,se,PROXY [PROXY]
-- blogspot.tw (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L757: DOMAIN-SUFFIX,tw,PROXY [PROXY]
 - blogtd.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - blogtoplist.se (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L756: DOMAIN-SUFFIX,se,PROXY [PROXY]
 - blogtotal.de (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
@@ -7586,7 +7577,6 @@
 - chasing.sbs (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L788: DOMAIN-SUFFIX,sbs,PROXY [PROXY]
 - chasmedabature.shop (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L824: DOMAIN-SUFFIX,shop,PROXY [PROXY]
 - chasteswapped.shop (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L824: DOMAIN-SUFFIX,shop,PROXY [PROXY]
-- chat-gpt.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - chat.amazon.co.jp (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L751: DOMAIN-SUFFIX,jp,PROXY [PROXY]
 - chat.lmsys.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - chat.lwd-temp.top (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L790: DOMAIN-SUFFIX,top,PROXY [PROXY]
@@ -7600,7 +7590,6 @@
 - chater.biz (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L760: DOMAIN-SUFFIX,biz,PROXY [PROXY]
 - chatgpt-robot.ru (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L755: DOMAIN-SUFFIX,ru,PROXY [PROXY]
 - chatgpt.com (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L862: DOMAIN-SUFFIX,chatgpt.com,PROXY [PROXY]
-- chatgpt.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - chatgpt.site (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - chatgpt4online.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - chatgptweb.ru (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L755: DOMAIN-SUFFIX,ru,PROXY [PROXY]
@@ -10193,7 +10182,6 @@
 - dhbccdfhbk.live (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L816: DOMAIN-SUFFIX,live,PROXY [PROXY]
 - dhcanelzoyomw.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
 - dhcipvpnugvuc.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
-- dhcp.biz (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L760: DOMAIN-SUFFIX,biz,PROXY [PROXY]
 - dhcqlbteygqeg.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - dhdebdmvzljbk.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - dhedddbuoauaj.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
@@ -11148,7 +11136,6 @@
 - dwaptftvhkjtc.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - dwbdnntjpytmt.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - dwbhepiqyzihi.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
-- dweb.link (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L815: DOMAIN-SUFFIX,link,PROXY [PROXY]
 - dwebcamp.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - dwelle.de (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
 - dwfdxnwjakfjm.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
@@ -11346,7 +11333,6 @@
 - eastturkistangovernmentinexile.us (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L759: DOMAIN-SUFFIX,us,PROXY [PROXY]
 - easy-dating.org (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - easy.au.ru (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L755: DOMAIN-SUFFIX,ru,PROXY [PROXY]
-- easyca.ca (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L746: DOMAIN-SUFFIX,ca,PROXY [PROXY]
 - easydns.info (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L813: DOMAIN-SUFFIX,info,PROXY [PROXY]
 - easyflirt-partners.biz (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L760: DOMAIN-SUFFIX,biz,PROXY [PROXY]
 - easyhash.de (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
@@ -12021,7 +12007,6 @@
 - eoejzyqfdmidn.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
 - eofqgwtzojvks.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
 - eogaeandrang.shop (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L824: DOMAIN-SUFFIX,shop,PROXY [PROXY]
-- eogli.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - eoglimegdapoh.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - eogsffxwzbjdz.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
 - eohhehznagsqn.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
@@ -12593,7 +12578,6 @@
 - expepp.de (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
 - experianmatch.info (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L813: DOMAIN-SUFFIX,info,PROXY [PROXY]
 - experiencedthought.pro (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L782: DOMAIN-SUFFIX,pro,PROXY [PROXY]
-- experiments.apple.com (DIRECT): MIXED_POLICY_COVERAGE — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L45: DOMAIN,experiments.apple.com,PROXY [PROXY]; L1400: DOMAIN-SUFFIX,apple.com,DIRECT [DIRECT]
 - exphyqtiehvre.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
 - explorer.taobot.org (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - export.newscube.de (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
@@ -13624,7 +13608,6 @@
 - foqsgwlrbwzdj.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
 - for-1.rest (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L823: DOMAIN-SUFFIX,rest,PROXY [PROXY]
 - for-sav-ogr-403-cf.sbs (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L788: DOMAIN-SUFFIX,sbs,PROXY [PROXY]
-- for-some.biz (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L760: DOMAIN-SUFFIX,biz,PROXY [PROXY]
 - for.changeip.biz (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L760: DOMAIN-SUFFIX,biz,PROXY [PROXY]
 - forayedfratry.shop (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L824: DOMAIN-SUFFIX,shop,PROXY [PROXY]
 - forbbitypic.shop (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L824: DOMAIN-SUFFIX,shop,PROXY [PROXY]
@@ -13950,7 +13933,6 @@
 - froemanprerich.shop (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L824: DOMAIN-SUFFIX,shop,PROXY [PROXY]
 - froeyatters.shop (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L824: DOMAIN-SUFFIX,shop,PROXY [PROXY]
 - frohddwovyjno.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
-- from-me.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - fromjapan.co.jp (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L751: DOMAIN-SUFFIX,jp,PROXY [PROXY]
 - fromsjobs.rest (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L823: DOMAIN-SUFFIX,rest,PROXY [PROXY]
 - frontcrash.pro (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L782: DOMAIN-SUFFIX,pro,PROXY [PROXY]
@@ -14073,7 +14055,6 @@
 - fubuki-umami.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
 - fuck2020.pro (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L782: DOMAIN-SUFFIX,pro,PROXY [PROXY]
 - fuckbook.91av.us (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L759: DOMAIN-SUFFIX,us,PROXY [PROXY]
-- fuckbook.xxx (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L795: DOMAIN-SUFFIX,xxx,PROXY [PROXY]
 - fuckedgay.xxx (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L795: DOMAIN-SUFFIX,xxx,PROXY [PROXY]
 - fuckedtube.xxx (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L795: DOMAIN-SUFFIX,xxx,PROXY [PROXY]
 - fuckgfw.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
@@ -17053,7 +17034,6 @@
 - httpdns-api.aliyuncs.com (DIRECT): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1290: DOMAIN-SUFFIX,aliyuncs.com,DIRECT [DIRECT]
 - httpdns-browser.platform.dbankcloud.cn (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1407: DOMAIN-SUFFIX,cn,DIRECT [DIRECT]
 - httpdns-euex-push.heytapmobile.com (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1417: DOMAIN-SUFFIX,heytapmobile.com,DIRECT [DIRECT]
-- httpdns-sc.aliyuncs.com (DIRECT): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1290: DOMAIN-SUFFIX,aliyuncs.com,DIRECT [DIRECT]
 - httpdns-sdk.n.netease.com (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1430: DOMAIN-SUFFIX,netease.com,DIRECT [DIRECT]
 - httpdns.baidubce.com (REJECT): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L160: DOMAIN,httpdns.baidubce.com,REJECT [REJECT]
 - httpdns.bilivideo.com (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1584: DOMAIN-SUFFIX,bilivideo.com,DIRECT [DIRECT]
@@ -18286,7 +18266,6 @@
 - internationalyogaregistry.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - internet.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - internetarchive.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
-- internetdefenseleague.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - internetfreedom.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - interq.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - interreklame.de (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
@@ -18549,11 +18528,9 @@
 - irzebpsbojrbp.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
 - is-a-celticsfan.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - is-a-furry.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
-- is-a-knight.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - is-a-linux-user.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - is-a-patsfan.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - is-log.furunavi.jp (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L751: DOMAIN-SUFFIX,jp,PROXY [PROXY]
-- is-very-good.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - is-very-sweet.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - is.snssdk.com (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1496: DOMAIN-SUFFIX,snssdk.com,DIRECT [DIRECT]
 - is1-ssl.mzstatic.com (DIRECT): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L47: DOMAIN,is1-ssl.mzstatic.com,DIRECT [DIRECT]
@@ -19451,7 +19428,6 @@
 - jmhxjywrpeegd.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - jmio.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - jmkladoihjrsa.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
-- jmlk.co (DIRECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L762: DOMAIN-SUFFIX,co,PROXY [PROXY]
 - jmlpyewggdacz.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
 - jmmdhfawpaefv.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - jmnlsiquhikir.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
@@ -21270,7 +21246,6 @@
 - lb.propertyfind.cc (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L761: DOMAIN-SUFFIX,cc,PROXY [PROXY]
 - lbaegdiunhilf.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - lbank.info (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L813: DOMAIN-SUFFIX,info,PROXY [PROXY]
-- lbank.site (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - lbbjokeqbzwqk.top (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L790: DOMAIN-SUFFIX,top,PROXY [PROXY]
 - lbbkrsxzhoumc.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
 - lbbuydqzwsyek.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
@@ -21535,7 +21510,6 @@
 - lfhugfivahoqe.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
 - lfioxxcerbvrl.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
 - lfk.mybluehost.me (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L753: DOMAIN-SUFFIX,me,PROXY [PROXY]
-- lflinkup.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - lfnjpftnkatgg.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
 - lfokfyodzylck.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - lfp.mybluehost.me (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L753: DOMAIN-SUFFIX,me,PROXY [PROXY]
@@ -25332,7 +25306,6 @@
 - news-bnubiko.cc (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L761: DOMAIN-SUFFIX,cc,PROXY [PROXY]
 - news-cdn.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - news-edge.apple.com (PROXY): MIXED_POLICY_COVERAGE — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1400: DOMAIN-SUFFIX,apple.com,DIRECT [DIRECT]; L730: DOMAIN-SUFFIX,news-edge.apple.com,PROXY [PROXY]
-- news-events.apple.com (PROXY): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1400: DOMAIN-SUFFIX,apple.com,DIRECT [DIRECT]
 - news-headlines.co (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L762: DOMAIN-SUFFIX,co,PROXY [PROXY]
 - news-img.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - news-ryhyguva.cc (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L761: DOMAIN-SUFFIX,cc,PROXY [PROXY]
@@ -26093,7 +26066,6 @@
 - ntdtv.com.tw (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L757: DOMAIN-SUFFIX,tw,PROXY [PROXY]
 - ntdtv.jp (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L751: DOMAIN-SUFFIX,jp,PROXY [PROXY]
 - ntdtv.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
-- ntdtv.ru (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L755: DOMAIN-SUFFIX,ru,PROXY [PROXY]
 - ntepadkozezji.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
 - ntfkfspmntojh.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - ntfmwhxmdauua.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
@@ -26176,7 +26148,6 @@
 - nus.mybluehost.me (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L753: DOMAIN-SUFFIX,me,PROXY [PROXY]
 - nusmkkrrxsjgj.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - nusxvpootryrz.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
-- nut.cc (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L761: DOMAIN-SUFFIX,cc,PROXY [PROXY]
 - nutbhgjsvldis.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - nutralove.co (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L762: DOMAIN-SUFFIX,co,PROXY [PROXY]
 - nutsvpn.site (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
@@ -29471,7 +29442,6 @@
 - onhbfuowc.in (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L749: DOMAIN-SUFFIX,in,PROXY [PROXY]
 - oni.mybluehost.me (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L753: DOMAIN-SUFFIX,me,PROXY [PROXY]
 - oniamcurrentl.org (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
-- onion.city (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L804: DOMAIN-SUFFIX,city,PROXY [PROXY]
 - oniqjeyyebgmv.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
 - oniryidjetapo.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
 - onivo.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
@@ -30940,7 +30910,6 @@
 - piraattilahti.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - piratebay.icu (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L769: DOMAIN-SUFFIX,icu,PROXY [PROXY]
 - piratebay.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
-- piratebayproxy.co (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L762: DOMAIN-SUFFIX,co,PROXY [PROXY]
 - pirogenblowers.shop (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L824: DOMAIN-SUFFIX,shop,PROXY [PROXY]
 - pis-tel-pcdn.youku.com (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1449: DOMAIN-SUFFIX,youku.com,DIRECT [DIRECT]
 - pisokyrzkwgmk.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
@@ -31633,7 +31602,6 @@
 - preview-kmkonline.akamaized.net (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1045: DOMAIN-SUFFIX,akamaized.net,PROXY [PROXY]
 - preview.page.link (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L815: DOMAIN-SUFFIX,link,PROXY [PROXY]
 - preview.pardot.com (REJECT): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L287: DOMAIN-SUFFIX,pardot.com,REJECT [REJECT]
-- prfct.co (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L762: DOMAIN-SUFFIX,co,PROXY [PROXY]
 - prfkmbwvryamw.store (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L853: DOMAIN-SUFFIX,store,PROXY [PROXY]
 - prfrms.shop (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L824: DOMAIN-SUFFIX,shop,PROXY [PROXY]
 - prftrndivoqqt.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
@@ -35769,7 +35737,6 @@
 - shinystat.it (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L750: DOMAIN-SUFFIX,it,PROXY [PROXY]
 - shinywoman.pro (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L782: DOMAIN-SUFFIX,pro,PROXY [PROXY]
 - shipment30.top (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L790: DOMAIN-SUFFIX,top,PROXY [PROXY]
-- shise.me (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L753: DOMAIN-SUFFIX,me,PROXY [PROXY]
 - shiseido.demdex.net (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1068: DOMAIN-SUFFIX,demdex.net,PROXY [PROXY]
 - shitaotv.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - shitblimp.gasm.ninja (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L846: DOMAIN-SUFFIX,ninja,PROXY [PROXY]
@@ -37331,7 +37298,6 @@
 - ssl-proxy.my-addr.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - ssl.o.medscape.org (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - ssl.webpack.de (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
-- ssl443.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - ssleivqevmyow.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
 - sslkn.me (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L753: DOMAIN-SUFFIX,me,PROXY [PROXY]
 - sslproxies.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
@@ -37606,7 +37572,6 @@
 - static.wlct-one.de (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
 - static.ws.apsis.one (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L779: DOMAIN-SUFFIX,one,PROXY [PROXY]
 - static2-advtools.rcsobjects.it (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L750: DOMAIN-SUFFIX,it,PROXY [PROXY]
-- staticfile.org (DIRECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - statics1.tceru134gsur.ru (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L755: DOMAIN-SUFFIX,ru,PROXY [PROXY]
 - stationpack.de (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
 - statis.mobile.youku.com (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1449: DOMAIN-SUFFIX,youku.com,DIRECT [DIRECT]
@@ -38795,11 +38760,9 @@
 - telemetry.v.dropbox.com (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1072: DOMAIN-SUFFIX,dropbox.com,PROXY [PROXY]
 - telemetry.zoom.us (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L759: DOMAIN-SUFFIX,us,PROXY [PROXY]; L893: DOMAIN-SUFFIX,zoom.us,PROXY [PROXY]
 - telesipl.shop (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L824: DOMAIN-SUFFIX,shop,PROXY [PROXY]
-- telete.in (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L749: DOMAIN-SUFFIX,in,PROXY [PROXY]
 - televisa.demdex.net (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1068: DOMAIN-SUFFIX,demdex.net,PROXY [PROXY]
 - teliad.de (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
 - tella-app.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
-- tellapart.com (PROXY): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L335: DOMAIN-SUFFIX,tellapart.com,REJECT [REJECT]
 - tellihandlesexwr.org (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - telstra.demdex.net (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1068: DOMAIN-SUFFIX,demdex.net,PROXY [PROXY]
 - teltdnnvbbmxq.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
@@ -39010,8 +38973,6 @@
 - thenewsmen.co.in (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L749: DOMAIN-SUFFIX,in,PROXY [PROXY]
 - theorem12.top (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L790: DOMAIN-SUFFIX,top,PROXY [PROXY]
 - thepiratebay.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]; L1116: DOMAIN-SUFFIX,thepiratebay.org,PROXY [PROXY]
-- thepiratebay0.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
-- thepiratebay10.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - theporn.cc (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L761: DOMAIN-SUFFIX,cc,PROXY [PROXY]
 - theporn.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
 - theporndude.vip (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L791: DOMAIN-SUFFIX,vip,PROXY [PROXY]
@@ -40024,7 +39985,6 @@
 - triboomedia.it (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L750: DOMAIN-SUFFIX,it,PROXY [PROXY]
 - tribunemedia.demdex.net (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1068: DOMAIN-SUFFIX,demdex.net,PROXY [PROXY]
 - tributetoliberty.ca (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L746: DOMAIN-SUFFIX,ca,PROXY [PROXY]
-- trickip.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - trickybalance.pro (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L782: DOMAIN-SUFFIX,pro,PROXY [PROXY]
 - tricycle.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - tridentenvironmental.co.uk (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L758: DOMAIN-SUFFIX,uk,PROXY [PROXY]
@@ -41069,7 +41029,6 @@
 - umssvcwqpokjt.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
 - umtnpbqxhwuqr.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
 - umto.cnn.com (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L941: DOMAIN-SUFFIX,cnn.com,PROXY [PROXY]
-- umtrack.com (DIRECT): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1509: DOMAIN-SUFFIX,umtrack.com,DIRECT [DIRECT]
 - umuc.demdex.net (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1068: DOMAIN-SUFFIX,demdex.net,PROXY [PROXY]
 - umuraaajkrkxl.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
 - umwzmbhdifptd.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
@@ -41084,7 +41043,6 @@
 - un1.lawyernet.cn (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1407: DOMAIN-SUFFIX,cn,DIRECT [DIRECT]
 - unagi-eu-south-2.amazon.com (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L891: DOMAIN-SUFFIX,amazon.com,PROXY [PROXY]
 - unagi-fe.amazon.com (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L891: DOMAIN-SUFFIX,amazon.com,PROXY [PROXY]
-- unagi.amazon.co.jp (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L751: DOMAIN-SUFFIX,jp,PROXY [PROXY]
 - unagi.amazon.co.uk (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L758: DOMAIN-SUFFIX,uk,PROXY [PROXY]
 - unagi.amazon.com (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L891: DOMAIN-SUFFIX,amazon.com,PROXY [PROXY]
 - unagi.amazon.fr (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L748: DOMAIN-SUFFIX,fr,PROXY [PROXY]
@@ -41147,7 +41105,6 @@
 - unhappygools.shop (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L824: DOMAIN-SUFFIX,shop,PROXY [PROXY]
 - unhastyshote.shop (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L824: DOMAIN-SUFFIX,shop,PROXY [PROXY]
 - unheardvoice.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
-- uni.cc (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L761: DOMAIN-SUFFIX,cc,PROXY [PROXY]
 - unibet.demdex.net (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1068: DOMAIN-SUFFIX,demdex.net,PROXY [PROXY]
 - unicompayment.com (DIRECT): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1441: DOMAIN-SUFFIX,unicompayment.com,DIRECT [DIRECT]
 - unicontext.ru (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L755: DOMAIN-SUFFIX,ru,PROXY [PROXY]
@@ -41308,7 +41265,6 @@
 - upjvixrxinncr.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
 - upkmxceubeyuz.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
 - upkqznujuodgb.online (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L847: DOMAIN-SUFFIX,online,PROXY [PROXY]
-- upload4earn.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - upload4u.info (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L813: DOMAIN-SUFFIX,info,PROXY [PROXY]
 - uploaded.net (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1021: DOMAIN-SUFFIX,uploaded.net,PROXY [PROXY]
 - uploadto.us (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L759: DOMAIN-SUFFIX,us,PROXY [PROXY]
@@ -46167,7 +46123,6 @@
 - xdcs-collector.ximalaya.com (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1447: DOMAIN-SUFFIX,ximalaya.com,DIRECT [DIRECT]
 - xdcxjbptkyzol.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
 - xddofaytuemne.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
-- xdelta.org (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
 - xdgaiy.gay (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L766: DOMAIN-SUFFIX,gay,PROXY [PROXY]
 - xdhdubnhaymal.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - xdhjbmysilynq.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
@@ -47113,7 +47068,6 @@
 - yahol.fr (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L748: DOMAIN-SUFFIX,fr,PROXY [PROXY]
 - yahoo.cn (PROXY): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1407: DOMAIN-SUFFIX,cn,DIRECT [DIRECT]
 - yahoo.com (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1039: DOMAIN-SUFFIX,yahoo.com,PROXY [PROXY]
-- yahoo.com.cn (PROXY): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1407: DOMAIN-SUFFIX,cn,DIRECT [DIRECT]
 - yahoo.com.tw (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L757: DOMAIN-SUFFIX,tw,PROXY [PROXY]
 - yahoo.in (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L749: DOMAIN-SUFFIX,in,PROXY [PROXY]
 - yahoo1.beareyes.com.cn (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1407: DOMAIN-SUFFIX,cn,DIRECT [DIRECT]
@@ -47887,7 +47841,6 @@
 - yunalwv.biz (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L760: DOMAIN-SUFFIX,biz,PROXY [PROXY]
 - yundfdbkftgts.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - yunjiasu-cdn.net (DIRECT): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1711: DOMAIN-SUFFIX,yunjiasu-cdn.net,DIRECT [DIRECT]
-- yunos.com (DIRECT): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L1302: DOMAIN-SUFFIX,yunos.com,DIRECT [DIRECT]
 - yuntu.pro (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L782: DOMAIN-SUFFIX,pro,PROXY [PROXY]
 - yunxiapp.me (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L753: DOMAIN-SUFFIX,me,PROXY [PROXY]
 - yuobseeeyrkyl.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
@@ -48091,7 +48044,6 @@
 - zamadxoxvdur.in (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L749: DOMAIN-SUFFIX,in,PROXY [PROXY]
 - zamdfpnikouof.space (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L852: DOMAIN-SUFFIX,space,PROXY [PROXY]
 - zamioculcas2.org (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L745: DOMAIN-SUFFIX,org,PROXY [PROXY]
-- zampdsp.com (DIRECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L346: DOMAIN-SUFFIX,zampdsp.com,REJECT [REJECT]
 - zanalytics.vip (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L791: DOMAIN-SUFFIX,vip,PROXY [PROXY]
 - zanox-affiliate.de (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L747: DOMAIN-SUFFIX,de,PROXY [PROXY]
 - zanyestablishment.pro (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L782: DOMAIN-SUFFIX,pro,PROXY [PROXY]
@@ -48550,7 +48502,6 @@
 - zlgame.top (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L790: DOMAIN-SUFFIX,top,PROXY [PROXY]
 - zlgfuyslcpekc.site (REJECT): CONFLICT — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L826: DOMAIN-SUFFIX,site,PROXY [PROXY]
 - zlib-articles.se (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L756: DOMAIN-SUFFIX,se,PROXY [PROXY]
-- zlibrary-africa.se (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L756: DOMAIN-SUFFIX,se,PROXY [PROXY]
 - zlibrary-asia.se (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L756: DOMAIN-SUFFIX,se,PROXY [PROXY]
 - zlibrary-bei.se (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L756: DOMAIN-SUFFIX,se,PROXY [PROXY]
 - zlibrary-bg.se (PROXY): ALREADY_COVERED — One or more explicit config domain scopes fully cover this candidate; rule order is not evaluated; covering scopes: L756: DOMAIN-SUFFIX,se,PROXY [PROXY]
@@ -49082,61 +49033,182 @@
 
 ## Warnings
 
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: 2cnt.net (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: 51.la (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: 99click.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: a.omappapi.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: a14738960062.cdn.optimizely.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: a16488430484.cdn.optimizely.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: a17957420003.cdn.optimizely.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: a21018620252.cdn.optimizely.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: a275532918.cdn.optimizely.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: aax.amazon-adsystem.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: abrtp1-cdn.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: abrtp1.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: ac.mmstat.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: adcolony.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: adjust.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: ae.mmstat.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: airpr.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: allawntech.com (CONFLICT)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-ab03.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-ab04.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-ab06.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-ab10.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-ab11.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-ab23.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-ab24.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-ab26.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-ab28.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-ab30.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-ab31.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-abc.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-lon03.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-lon05.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-lon08.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-sj01.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-sj02.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-sj05.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-sj06.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-sj07.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-sj11.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-sj14.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-sj15.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-sj16.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-sj21.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-sj24.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-sj25.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-sjh.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-sji.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-sjn.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-sjo.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-sjqe.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app-sn01.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: app.marketo.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: appboy.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: appier.net (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: applifier.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: applovin.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: appsflyer.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: bayescom.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: cdn-pci.optimizely.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: cdn.tanx.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: cdn3.optimizely.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: clickzs.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: client.optimizely.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: cms.tanx.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: conn-service-cn-07.allawntech.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: conn-service-cn-08.allawntech.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: conn-service-gl-01.allawntech.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: connexity.net (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: df.tanx.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: dig.bdurl.net (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: dz.mmstat.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: ef-dongfeng.tanx.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: effirst.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: epsilon.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: eu-lon06.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: exp-metrics.optimizely.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: gj.mmstat.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: gm.mmstat.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: hd.mmstat.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: hdns.ksyun.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: hotjar.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: httpdns.baidubce.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: httpdns.c.cdnhwc2.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: httpdns.huaweicloud.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: httpdns.push.oppomobile.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: httpdns.volcengineapi.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: hyprmx.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: ifs.tanx.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: inmobicdn.net (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: inner-active.mobi (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: js-agent.newrelic.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: kgb-ifs.tanx.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: kochava.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: leadfeeder.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: live-ifs.tanx.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: log-auth.zztfly.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: log.byteoversea.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: log.optimizely.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: logx.optimizely.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: lonrtp1-cdn.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: lonrtp1.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: ls.hit.gemius.pl (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: madserving.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: manager.smartlook.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: marketo.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: mintegral.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: mintegral.net (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: moat.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: moatads.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: mopub.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: odp.optimizely.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: omappapi.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: oneid.mmstat.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: opehs.tanx.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: openx.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: openx.net (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: optimix.asia (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: p.tanx.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: pips.taboola.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: pubmatic.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: qualaroo.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: quantcount.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: quantserve.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: rec.smartlook.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: res.mmstat.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: responsys.net (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: rtp-static.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: ru.mmstat.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: rum.optimizely.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: s-gm.mmstat.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: sdk-config.tanx.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: segment.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: segment.io (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: sg.mmstat.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: sjrtp-cdn.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: sjrtp1.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: sjrtp2-cdn.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: sjrtp2.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: sjrtp3-cdn.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: sjrtp3.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: sjrtp4-cdn.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: sjrtp4.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: sjrtp5-cdn.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: sjrtp5.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: sjrtp6-cdn.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: sjrtp6.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: sjrtp7-cdn.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: sjrtp7.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: sjrtp8-cdn.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: sjrtp8.marketo.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: smartadserver.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: smartlook.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: snrtp-cdn.marketo.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: snrtp1.marketo.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: supersonic.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: t.appsflyer.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: taboola.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: talkingdata.net (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: tapi.optimizely.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: tapjoy.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: tapjoyads.com (ALREADY_COVERED)
-- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: tellapart.com (CONFLICT)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: track.hubspot.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: track.tenjin.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: track.tenjin.io (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: trafficjunky.net (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: trc.taboola.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: unimhk.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: upc.zztfly.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: usermgmt-api.optimizely.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: vungle.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: web-sdk.smartlook.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: wgo.mmstat.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: ws.mmstat.com (ALREADY_COVERED)
 - APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: yoyi.tv (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: yt.mmstat.com (ALREADY_COVERED)
+- APPROVED candidate is already covered by user-config scope; no rule precedence was inferred: yt1.mmstat.com (ALREADY_COVERED)
 
 ## Limitations
 
