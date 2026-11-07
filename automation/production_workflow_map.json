@@ -315,7 +315,7 @@
     "program_registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
     "execution_adapters_blob_sha": "dc058e31c9959bda6ffed7a25c38207c9ab0dc50",
     "added_after_release_baseline": true,
-    "note": "The independent source DAG is enabled under the scoped release allowlist. Remaining global audit applies to unrelated non-dispatchable capabilities; production repository publication remains rulesets/** only.",
+    "note": "The independent source DAG is enabled under the scoped release allowlist. The production deliverables are exactly DIRECT, PROXY and REJECT; queue/checkpoint state and immutable runner-local artifacts are separate control-plane/runtime resources. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07",
     "registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
     "source_dag_scope": "workflow_source_discovery plus script_assess_sources; exact Watchdog caller, immutable artifact digest, non-activation, no repository writes from either stage"
@@ -371,8 +371,13 @@
         "producer_program_orchestration_enabled": true,
         "assessment_adapter_enabled": true,
         "production_dispatch_performed": false,
-        "repository_write_authority": "rulesets/** only",
-        "assessment_repository_write_resources": []
+        "repository_write_authority": "rulesets/** repository publication path fence; control-plane and runner-local resources are inventoried separately",
+        "assessment_repository_write_resources": [],
+        "production_deliverables": [
+          "rulesets/direct.list",
+          "rulesets/proxy.list",
+          "rulesets/reject.list"
+        ]
       }
     }
   ],
