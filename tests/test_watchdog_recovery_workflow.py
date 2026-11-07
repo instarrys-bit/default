@@ -150,7 +150,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
     def test_discovery_reconciliation_accepts_normal_run_state_progression_and_hashes_uploaded_files(self):
         watchdog = WATCHDOG.read_text(encoding="utf-8")
         resolver = watchdog.split("Resolve completed Discovery run from durable task correlation", 1)[1].split("Download artifact from the exact discovery workflow run", 1)[0]
-        self.assertIn("Persisted Discovery run identity or SHA relationship verification failed.", resolver)
+        self.assertIn("Persisted Discovery run evidence conflicts with the verified run identity.", resolver)
         self.assertNotIn('evidence.get("status") != run.get("status")', resolver)
         self.assertNotIn('evidence.get("conclusion") != run.get("conclusion")', resolver)
         self.assertIn("Run status/conclusion are mutable lifecycle fields", resolver)
