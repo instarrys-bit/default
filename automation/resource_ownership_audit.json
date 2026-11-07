@@ -76,6 +76,17 @@
     "reviewed_at": "2026-11-04",
     "isolated_ephemeral_outputs": [
       {
+        "program_id": "script_assess_sources",
+        "root": "AUTOMATION_ARTIFACT_ROOT under RUNNER_TEMP",
+        "paths": [
+          "sources/source_assessments.json",
+          "data/source_assessments_runtime.json",
+          "reports/source-assessment.md"
+        ],
+        "repository_publication": false,
+        "verification": "independent verifier + immutable Actions artifact"
+      },
+      {
         "program_id": "script_discover_sources",
         "root": "AUTOMATION_ARTIFACT_ROOT under RUNNER_TEMP",
         "paths": [
@@ -86,15 +97,14 @@
         "verification": "producer identity + complete logical-document SHA-256 + immutable Actions artifact"
       },
       {
-        "program_id": "script_assess_sources",
-        "root": "AUTOMATION_ARTIFACT_ROOT under RUNNER_TEMP",
+        "program_id": "script_task_queue_runtime",
+        "root": "RUNNER_TEMP or OS temporary directory",
         "paths": [
-          "sources/source_assessments.json",
-          "data/source_assessments_runtime.json",
-          "reports/source-assessment.md"
+          "shadowrocket-local-task-queue.json",
+          "shadowrocket-local-task-queue.json.lock"
         ],
         "repository_publication": false,
-        "verification": "independent verifier + immutable Actions artifact"
+        "verification": "default path outside repository; queue_lock and atomic_write resolve paths and reject repository-local, symlink-to-repository and hard-linked paths; adapter and orchestration disabled"
       }
     ]
   },
