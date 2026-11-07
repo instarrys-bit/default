@@ -1667,8 +1667,8 @@
       "resources": [
         "GitHub Issue #317 comments (external request-observation ledger)"
       ],
-      "fence": "Hostnames are normalized and validated (maximum 500 per run) before a JSON batch is appended. Each batch carries the unique GitHub run ID; downstream merge is idempotent by run ID.",
-      "boundary": "External control-plane metadata only. The workflow has contents:read and does not create branches, commits, or modify repository files."
+      "fence": "Fixed workflow concurrency group shadowrocket-domain-intake with cancel-in-progress:false serializes every intake run; each batch is append-only, tagged with a unique run ID, and downstream merge is idempotent by run ID.",
+      "boundary": "External Issue #317 control-plane metadata only. contents:read; no repository file writes or direct ruleset publication."
     },
     {
       "workflow_path": ".github/workflows/request-intake.yml",
@@ -1679,8 +1679,8 @@
       "resources": [
         "GitHub Issue #317 comments (external request-observation ledger)"
       ],
-      "fence": "Hostnames are normalized and validated (maximum 500 per run) before a JSON batch is appended. Each batch carries the unique GitHub run ID; downstream merge is idempotent by run ID.",
-      "boundary": "External control-plane metadata only. The workflow has contents:read and does not create branches, commits, or modify repository files."
+      "fence": "Fixed workflow concurrency group shadowrocket-domain-intake with cancel-in-progress:false serializes every intake run; each batch is append-only, tagged with a unique run ID, and downstream merge is idempotent by run ID.",
+      "boundary": "External Issue #317 control-plane metadata only. contents:read; no repository file writes or direct ruleset publication."
     }
   ],
   "workflow_native_scan": {
