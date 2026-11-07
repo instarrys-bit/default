@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "f02e575a504495d595050c069abb053ca41c324b",
-  "registry_blob_sha": "c4871f015961830718346a1d3dea18e0283c036e",
+  "workflow_blob_sha": "8f1c5b86dc17be81ed2b7ec1f44d0ac6d3105370",
+  "registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 5,
@@ -284,14 +284,11 @@
     }
   ],
   "architecture_findings": [
-    "The audit job is a single sequential production chain; its Python steps are not independently dispatchable merely because they have registry entries.",
-    "The publish job is a separate privileged boundary with contents:write and must remain a gated workflow-level operation.",
-    "Failure cursor recovery is retained as a run-scoped immutable Actions artifact; it does not write repository files.",
-    "The compile/test step references many scripts for validation only; those references must not be interpreted as execution edges.",
-    "Workflow-native shell, artifact, GitHub API and GitHub issue actions remain orchestration capabilities and need explicit contracts before decomposition.",
-    "Source assessment is dispatched by automation-watchdog only after the exact production discovery workflow completes successfully on main; it is not an independent direct-dispatch path.",
-    "The failed-run cursor recovery job inherits the workflow-level shadowrocket-main-writer lock; it does not write repository files.",
-    "A dedicated Watchdog source-discovery workflow and immutable run-bound artifact handoff are implemented on the integration branch. Its adapter/orchestration and Assessment adapter remain disabled; the monolithic auto_sync discovery/assessment fallback is retained to prevent a gap or duplicate execution."
+    "Source discovery and assessment are independently dispatched by Watchdog and exchange a typed immutable artifact with exact run/head provenance.",
+    "Both source capabilities write only to isolated RUNNER_TEMP artifact roots; the main-branch source documents are read-only baselines.",
+    "Assessment's only shared mutation is the per-URL task checkpoint in GitHub Issue #315, guarded by task lease and logical resource fences.",
+    "The production publish workflow stages and commits rulesets/** only; modules/uu.conf and all non-ruleset repository paths remain outside the publish allowlist.",
+    "Other non-dispatchable Python capabilities retain default-deny status until their own complete transitive side-effect and resource contracts are reviewed."
   ],
   "decomposition_constraints": [
     "Preserve the audit -> publish dependency and the existing single-writer concurrency boundary.",
@@ -302,30 +299,30 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
-    "release_manifest_blob_sha": "08c684b64a033cc8f2532fd6ecbcfee7f0a36cc6",
-    "program_registry_blob_sha": "c4871f015961830718346a1d3dea18e0283c036e",
-    "execution_adapters_blob_sha": "7b93d8b8625f8973826de8034e29476f7ab0f4af",
+    "release_manifest_blob_sha": "3eb9b559fce5df56e0e6fcb1df5cde21a55475c3",
+    "program_registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
+    "execution_adapters_blob_sha": "79dfe3d3a3322c7eec4ae0178e85c53ada75efe4",
     "added_after_release_baseline": true,
     "note": "Refreshed against the integration branch's current workflow, registry, release manifest and adapter blobs. Independent Python dispatch remains disabled; the source-discovery workflow is implemented but dormant. Static inventory evidence is not execution authorization.",
     "reviewed_at": "2026-11-05",
-    "registry_blob_sha": "595d5c1d2327251342b9d205f5aadee58e2393ff"
+    "registry_blob_sha": "595d5c1d2327251342b9d205f5aadee58e2393ff",
+    "source_dag_scope": "script_assess_sources only; all other Python adapters remain default-deny"
   },
   "independent_dags": [
     {
       "id": "source_discovery_to_assessment",
-      "status": "implemented_dormant_until_HOLD_authorization_and_cutover",
+      "status": "implemented_enabled_pending_post_merge_canary",
       "producer": {
         "program_id": "workflow_source_discovery",
         "workflow_path": ".github/workflows/source-discovery.yml",
         "workflow_name": "Shadowrocket Source Discovery (Watchdog)",
         "branch": "main",
         "writes": [
-          "sources/discovered_sources.json",
-          "reports/source-discovery.md"
+          "RUNNER_TEMP/source-discovery-workspace/sources/discovered_sources.json",
+          "RUNNER_TEMP/source-discovery-workspace/reports/source-discovery.md"
         ],
         "resource_keys": [
-          "sources/discovered_sources.json",
-          "reports/source-discovery.md"
+          "logical/source-discovery-run"
         ]
       },
       "handoff": {
@@ -342,10 +339,10 @@
           "artifact_sha256"
         ],
         "verification": [
-          "exact producer run identity",
-          "downloaded artifact logical-document digest",
-          "producer metadata inside document",
-          "digest equality with current main"
+          "exact producer workflow run identity, branch and head SHA",
+          "downloaded immutable artifact logical-document digest equals producer proof",
+          "producer metadata inside document matches exact run ID and head SHA",
+          "the verified external artifact root is used for enqueue, plan, claim, child execution and post-execution read-only digest checks"
         ]
       },
       "consumer": {
@@ -355,13 +352,15 @@
         "required_predecessor_digest": true
       },
       "duplicate_protection": {
-        "rule": "auto_sync direct discovery and assessment steps remain the fallback while the independent workflow and assessment adapters are disabled; remove the monolithic steps only after the independent edge is authorized and accepted"
+        "rule": "When SOURCE_DISCOVERY_MODE=independent, auto_sync's monolithic discovery and assessment steps are skipped; the Watchdog-owned independent producer and its exact workflow_run consumer are the sole discovery/assessment path. The monolithic steps remain only as explicit fallback when mode is monolithic_fallback."
       },
       "activation": {
-        "producer_adapter_enabled": false,
-        "producer_program_orchestration_enabled": false,
-        "assessment_adapter_enabled": false,
-        "production_dispatch_performed": false
+        "producer_adapter_enabled": true,
+        "producer_program_orchestration_enabled": true,
+        "assessment_adapter_enabled": true,
+        "production_dispatch_performed": false,
+        "repository_write_authority": "rulesets/** only",
+        "assessment_repository_write_resources": []
       }
     }
   ]
