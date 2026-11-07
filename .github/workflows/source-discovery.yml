@@ -137,7 +137,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$AUTOMATION_ARTIFACT_ROOT/sources" "$AUTOMATION_ARTIFACT_ROOT/reports"
-          cp sources/discovered_sources.json* "$AUTOMATION_ARTIFACT_ROOT/sources/" 2>/dev/null || true
+          cp -a sources/discovered_sources.json* "$AUTOMATION_ARTIFACT_ROOT/sources/" 2>/dev/null || true
           if [ -f reports/source-discovery.md ]; then cp reports/source-discovery.md "$AUTOMATION_ARTIFACT_ROOT/reports/"; fi
 
       - name: Discover candidates without activating sources
@@ -167,7 +167,7 @@ jobs:
           }
           if document.get("producer") != expected:
               raise SystemExit("Discovery document producer identity does not match this workflow run.")
-          digest = read_only_resource_digests(Path("."), ["sources/discovered_sources.json"])["sources/discovered_sources.json"]
+          digest = read_only_resource_digests(workspace, ["sources/discovered_sources.json"])["sources/discovered_sources.json"]
           if not isinstance(digest, str) or len(digest) != 64:
               raise SystemExit("Discovery logical-document digest is unavailable.")
           proof = {**expected, "artifact_path": "sources/discovered_sources.json", "artifact_sha256": digest}
