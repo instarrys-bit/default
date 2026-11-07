@@ -11,6 +11,7 @@ WORKFLOWS = [
     ".github/workflows/dashboard-pages.yml",
     ".github/workflows/request-intake.yml",
     ".github/workflows/self-healing-agent.yml",
+    ".github/workflows/self-healing-tests.yml",
     ".github/workflows/validate-config.yml",
     ".github/workflows/source-discovery.yml",
 ]
@@ -57,6 +58,11 @@ class WorkflowNativeWriteInventoryTests(unittest.TestCase):
             if any(kind in PATTERNS for kind in site["mutation_kinds"])
         }
         self.assertEqual(declared_shell_sites, discovered)
+
+    def test_scan_covers_every_registered_workflow_file(self):
+        inventory = json.loads((ROOT / "automation/resource_write_sets.json").read_text(encoding="utf-8"))
+        self.assertEqual(inventory["workflow_native_scan"]["workflow_count"], len(WORKFLOWS))
+        self.assertTrue(all(site["workflow_path"] in WORKFLOWS for site in self.sites))
 
     def test_each_workflow_native_side_effect_has_resource_and_boundary_evidence(self):
         for site in self.sites:
