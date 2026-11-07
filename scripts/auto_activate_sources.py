@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
@@ -12,14 +14,16 @@ from urllib.request import Request, urlopen
 from collect_domains import parse_source
 from source_registry import validate_registry
 from json_document_store import read_document
-from resource_lease_runtime import assert_resource_lease_for_repository_path
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "sources/domain_sources.json"
 MATRIX = ROOT / "sources/source_candidates.json"
 LOG = ROOT / "sources/source_activation_log.json"
 DISCOVERED = ROOT / "sources/discovered_sources.json"
-REPORT = ROOT / "reports/source-activation.md"
+ARTIFACT_ROOT = Path(os.environ.get("AUTOMATION_ARTIFACT_ROOT") or Path(os.environ.get("RUNNER_TEMP", tempfile.gettempdir())) / "source-activation").resolve()
+REGISTRY_OUTPUT = ARTIFACT_ROOT / "sources/domain_sources.json"
+LOG_OUTPUT = ARTIFACT_ROOT / "sources/source_activation_log.json"
+REPORT = ARTIFACT_ROOT / "reports/source-activation.md"
 POLICIES = {"DIRECT", "PROXY", "REJECT"}
 FORMATS = {"domain-only", "adblock-domain-rules", "shadowrocket-domain-rules", "quantumult-domain-rules"}
 STRONG_EVIDENCE = {"explicit_third_field", "README_RULE-SET_reference", "README_policy_reference"}
@@ -166,16 +170,16 @@ def main() -> None:
     registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
     matrix = read_document(MATRIX, "candidates", {"candidates": []})
     registry, activated, decisions = activate(registry, matrix)
-    assert_resource_lease_for_repository_path(ROOT, "sources/domain_sources.json")
-    REGISTRY.write_text(json.dumps(registry, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    ARTIFACT_ROOT.mkdir(parents=True, exist_ok=True)
+    REGISTRY_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    REGISTRY_OUTPUT.write_text(json.dumps(registry, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     prior = json.loads(LOG.read_text(encoding="utf-8")) if LOG.exists() else {"schema_version": 1, "activations": []}
     known = {x.get("id") for x in prior.get("activations", [])}
     prior["activations"].extend(x for x in activated if x["id"] not in known)
     prior["last_evaluated_at"] = datetime.now(timezone.utc).isoformat()
     prior["last_decisions"] = decisions
-    assert_resource_lease_for_repository_path(ROOT, "sources/source_activation_log.json")
-    LOG.parent.mkdir(parents=True, exist_ok=True)
-    LOG.write_text(json.dumps(prior, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    LOG_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    LOG_OUTPUT.write_text(json.dumps(prior, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     lines = [
         "# Deterministic source admission",
         "",
