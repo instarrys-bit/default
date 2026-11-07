@@ -118,7 +118,7 @@
       "contract_status": "reviewed_active_scoped_source_dag",
       "dispatch_status": "enabled",
       "missing_contract_fields": [],
-      "audit_note": "The non-activating assessor is enabled only for workflow_automation_watchdog under the exact release allowlist. It reads the verified immutable Discovery artifact, writes outputs only beneath RUNNER_TEMP, and mutates only its bounded fenced Issue #315 checkpoint.",
+      "audit_note": "The non-activating assessor is enabled only for workflow_automation_watchdog under the exact release allowlist. It reads the verified immutable Discovery artifact, writes outputs only beneath RUNNER_TEMP, and mutates only its bounded fenced Issue #315 checkpoint. Watchdog handoff deduplicates by exact predecessor workflow_run_id and a canonical source-assessment:<workflow_run_id> key.",
       "contract_sample_path": "automation/capability_contracts/assess_sources.json"
     },
     {
