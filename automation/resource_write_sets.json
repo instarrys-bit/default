@@ -1104,10 +1104,16 @@
         "pinned external ad-domain source URL"
       ],
       "side_effects": [
-        "Fetches one pinned external domain source; outputs an approval-gated report/list under reports/, not one of the three published ruleset files."
+        "Fetches one pinned external domain source; outputs an approval-gated report/list under reports/, not one of the three published ruleset files.",
+        "No source activation and no ruleset publication; the two report outputs are not in rulesets/** and cannot be published by production automation."
       ],
       "evidence": "main() creates output/report parent directories and writes reports/approved-domain-rules.list and reports/rule-selector-audit.md directly with Path.write_text.",
-      "write_boundary_fencing": "No script-level lease/fencing assertion observed. Current registry/adapter must be checked before any dispatch; this program is not included in workflow_auto_sync's explicit step sequence."
+      "write_boundary_fencing": "Exact per-output resource lease and live fencing proof are required before every report filesystem mutation. The script remains non-dispatchable until its full input/output interface is reviewed.",
+      "lease_keys": [
+        "reports/approved-domain-rules.list",
+        "reports/rule-selector-audit.md"
+      ],
+      "lease_enforcement": "The script asserts the live lease for reports/approved-domain-rules.list before parent creation and write, and separately asserts reports/rule-selector-audit.md immediately before parent creation and write. Adapter remains disabled and interface unreviewed; no production dispatch edge exists."
     },
     {
       "program_id": "script_sync_ruleset_config_conflicts",
