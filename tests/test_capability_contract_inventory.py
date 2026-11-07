@@ -174,7 +174,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         entry = next(item for item in writes["confirmed_write_sets"] if item["program_id"] == "script_assess_sources")
         self.assertEqual(audit["evidence_scope"]["registry_blob_sha"], git_blob_sha("automation/program_registry.json"))
         self.assertEqual(audit["evidence_scope"]["adapters_blob_sha"], git_blob_sha("automation/execution_adapters.json"))
-        self.assertEqual(group["status"], "runner_local_artifacts_no_repository_publication")
+        self.assertEqual(group["status"], "monolithic_exact_path_leases_and_independent_runner_local")
         self.assertEqual(group["known_writers"], ["script_assess_sources"])
         self.assertEqual(entry["additional_serialized_writers"], [])
         self.assertEqual(entry["publish_resources"], [])
@@ -295,7 +295,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         store = entries["script_github_queue_store"]
         self.assertEqual(remote["side_effects"], ["GitHub Issue #315 comment snapshots (external durable queue state)"])
         self.assertEqual(store["side_effects"], ["GitHub Issue #315 comment snapshots (external durable queue state)"])
-        self.assertEqual(remote["control_plane_consistency"], "append_only_issue_snapshot_chain")
+        self.assertEqual(remote["classification"], "external_issue_315_append_only_queue_snapshot_store")
         self.assertIn("No GitHub Contents API", remote["write_boundary_fencing"])
         group = next(
             item for item in writes["confirmed_shared_write_groups"]
