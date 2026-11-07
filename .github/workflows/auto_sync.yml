@@ -64,7 +64,7 @@ jobs:
     timeout-minutes: 300
     env:
       PYTHONPATH: scripts
-      SOURCE_DISCOVERY_MODE: ${{ vars.SOURCE_DISCOVERY_MODE || 'monolithic_fallback' }}
+      SOURCE_DISCOVERY_MODE: ${{ vars.SOURCE_DISCOVERY_MODE || 'independent' }}
     permissions:
       contents: read
       actions: read
@@ -310,7 +310,7 @@ jobs:
           python3 scripts/append_step_summary.py --input reports/source-assessment.md
 
       - name: Preserve complete source assessment report
-        if: ${{ always() }}
+        if: ${{ always() && env.SOURCE_DISCOVERY_MODE != 'independent' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: source-assessment-report
