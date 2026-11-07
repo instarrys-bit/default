@@ -3,9 +3,9 @@
   "contract_id": "capability-script-assess-sources-v1",
   "program_id": "script_assess_sources",
   "implementation_path": "scripts/assess_sources.py",
-  "implementation_blob_sha": "6633b56eb251e5f9b0dcebc06bbb5ed84dfb9e35",
-  "review_status": "reviewed_waiting_for_HOLD_authorization_and_monolithic_cutover",
-  "dispatch_status": "disabled",
+  "implementation_blob_sha": "c825d64b9da2462bbca5e8932aab92729ae3088c",
+  "review_status": "reviewed_runner_local_artifact_only_pending_PR_CI",
+  "dispatch_status": "enabled_in_candidate_branch",
   "entrypoint": {
     "command": [
       "python3",
@@ -27,16 +27,16 @@
     "repository_snapshot": [
       {
         "path": "sources/discovered_sources.json",
-        "mode": "read",
+        "mode": "verified_external_runner_artifact_read",
         "format": "JSON document or json_document_store sharded document",
         "collection_key": "candidates"
       },
       {
         "path": "sources/source_assessments.json",
-        "mode": "read",
+        "mode": "read_only_baseline",
         "format": "JSON document or json_document_store sharded document",
         "collection_key": "assessments",
-        "purpose": "previous assessment history and rotation cursor"
+        "purpose": "read-only historical baseline for drift comparison"
       }
     ],
     "remote_inputs": {
@@ -117,25 +117,23 @@
     "repository_artifacts": [
       {
         "path": "sources/source_assessments.json",
-        "mode": "write_and_publish",
-        "purpose": "persistent assessment history and cursor"
+        "mode": "runner_local_immutable_artifact",
+        "purpose": "assessment history snapshot; never committed to repository"
       },
       {
         "path": "data/source_assessments_runtime.json",
-        "mode": "runner_local_ephemeral",
-        "purpose": "current batch result and ephemeral fingerprints; never committed"
+        "mode": "runner_local_immutable_artifact",
+        "purpose": "current batch result and ephemeral fingerprints"
       },
       {
         "path": "reports/source-assessment.md",
-        "mode": "write_and_publish",
+        "mode": "runner_local_immutable_artifact",
         "purpose": "human-readable assessment report"
       }
     ],
     "document_store_side_effects": [
-      "For each write_document logical document, JSON storage may atomically replace the base file.",
-      "For sharded documents it may create <logical-name>.manifest.json and <logical-name>.parts-<content-digest>/part-*.jsonl.",
-      "After the new manifest becomes authoritative it may delete older <logical-name>.parts-* directories.",
-      "Temporary staging directories and temporary files may be created and removed."
+      "Document-store base JSON, manifests, content-addressed shards and temporary staging are written only beneath the isolated RUNNER_TEMP artifact root.",
+      "No document-store output is committed, pushed, or written into the repository checkout."
     ],
     "protected_paths": {
       "modules/uu.conf": "not read or written by this entrypoint",
@@ -159,31 +157,22 @@
       "sources/discovered_sources.json",
       "sources/source_assessments.json"
     ],
-    "exclusive_write_resources": [
-      "sources/source_assessments.json",
-      "data/source_assessments_runtime.json",
-      "reports/source-assessment.md"
-    ],
+    "exclusive_write_resources": [],
     "lease_keys": [
       "logical/production-pipeline",
-      "sources/source_assessments.json",
-      "data/source_assessments_runtime.json",
-      "reports/source-assessment.md"
+      "logical/source-assessment-checkpoints"
     ],
     "dynamic_children_share_parent_lease": true,
-    "lock_scope_note": "Live queue is re-read before every write boundary. The three logical output leases cover base JSON, adjacent manifests, content-addressed shards, staging, atomic manifest switch and old-shard cleanup. Shared logical/production-pipeline key serializes against workflow_auto_sync. The discovered_sources predecessor is required and its full legacy or sharded content digest is checked before and after execution. Only persistent history and report are committed; runtime fingerprints remain runner-local.",
+    "lock_scope_note": "The only shared mutation is the bounded per-URL assessment_checkpoint in GitHub Issue #315, updated through append-only snapshot CAS under the active task lease and both logical resource fences. The three assessment documents are isolated runner-local artifacts; no repository filesystem write or Contents API publication occurs. The exact discovered_sources predecessor digest is read from the verified external artifact root before and after execution.",
     "required_predecessor_artifacts": [
       "sources/discovered_sources.json"
     ],
     "lease_seconds": 480,
-    "publish_resources": [
-      "sources/source_assessments.json",
-      "reports/source-assessment.md"
-    ]
+    "publish_resources": []
   },
   "execution_semantics": {
     "network_access": true,
-    "side_effect_class": "bounded_network_read_and_repository_artifact_write",
+    "side_effect_class": "bounded_network_read_and_durable_task_queue_checkpoint",
     "deterministic": false,
     "idempotent": false,
     "idempotency_key": "task_id + predecessor workflow_run_id + predecessor artifact_sha256 + URL; completed URL results are immutable within the task checkpoint.",
@@ -191,18 +180,16 @@
     "timeout_seconds": 240,
     "timeout_note": "Task input caps each run at 20 URLs, 1 MB per URL and 10 MB aggregate. Each successful URL is checkpointed immediately by a fenced queue CAS; task/resource lease is 480 seconds to cover assessment, independent verification and fenced artifact publication.",
     "success_predicate": [
-      "Process exits with code 0.",
-      "stdout is exactly one parseable JSON object with all required fields.",
+      "Process exits with code 0 and stdout satisfies the reviewed output schema.",
       "activated equals 0.",
-      "persistent and runtime assessment documents pass schema and shard-integrity verification.",
-      "report exists and is non-empty.",
-      "Protected config digest is unchanged.",
+      "Runner-local assessment history, runtime document and report pass schema and shard-integrity verification.",
+      "Protected config and all declared read-only repository baselines remain unchanged.",
       "Independent artifact verifier returns valid=true.",
-      "Persistent history and report are committed to main, or an independently verified no-op is recorded; runtime fingerprints remain uncommitted."
+      "Per-URL progress is stored in the durable task queue with live task and logical resource fencing; no repository artifact publication occurs."
     ],
-    "independent_verifier": "scripts/verify_assess_sources_artifacts.py independently checks runtime/persistent counts, fingerprints exclusion, report presence and non-activation; scheduler then publishes only the two persistent resources.",
+    "independent_verifier": "scripts/verify_assess_sources_artifacts.py independently checks runner-local runtime/history/report consistency, fingerprints exclusion and non-activation.",
     "remote_fetches_may_repeat": true,
-    "repository_writes": "Each successful URL result is persisted to the task's progress_checkpoint in GitHub Issue #315 durable queue snapshots (repository bootstrap is read-only) using atomic Issue snapshot chain and the active task/resource fencing proof. Final persistent history and report are committed to main after independent verification; runtime fingerprints remain uncommitted."
+    "repository_writes": "No repository file writes, commits, or GitHub Contents API writes. Per-URL progress is stored only in GitHub Issue #315 durable queue snapshots through append-only CAS under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences."
   },
   "dependency_edges": {
     "required_predecessor": "script_discover_sources",
@@ -215,16 +202,14 @@
     "scheduler_enforcement": "The Watchdog downloads the artifact using the workflow_run ID, verifies the proof's workflow name, numeric run ID, full producer commit SHA, allowlisted artifact path and complete logical-document digest, then confirms that the current main document has the same digest and producer metadata. enqueue_source_assessment_task checks the digest again, and scheduler.build_execution_plan rejects changed or missing predecessor content before claim."
   },
   "permission_boundary": {
-    "filesystem": "Write only the three declared logical output resources and their document-store temporary/manifest/shard children. The durable per-URL checkpoint is task.assessment_checkpoint in GitHub Issue #315 durable queue snapshots (repository bootstrap is read-only), updated by bounded append-only Issue snapshot chain under the active task lease and all declared resource fencing tokens. Publish only persistent assessment history and report; runtime fingerprint data remains runner-local.",
+    "filesystem": "Read the verified discovery artifact from its isolated RUNNER_TEMP root and read-only baseline files from main. Write only assessment JSON documents and report under AUTOMATION_ARTIFACT_ROOT inside RUNNER_TEMP. No repository checkout paths are mutated or published; modules/uu.conf and sources/domain_sources.json remain read-only.",
     "network": "HTTPS raw.githubusercontent.com only, repository-bound URL and same-host redirect checks.",
-    "github_api": "Read and CAS-update the durable task queue using the scheduler-supplied token. Per-URL checkpoint mutations are restricted to the currently claimed task and require matching worker/task lease plus live resource fencing tokens; the scheduler separately publishes only allowlisted persistent artifacts via a non-force Git push. The assessor performs no other GitHub API writes.",
+    "github_api": "The assessor may only read and CAS-update the current task's bounded checkpoint in the durable Issue #315 queue using the scheduler-supplied token. It performs no Contents API writes, Git commits, or pushes.",
     "protected_config": "modules/uu.conf is immutable and outside this capability's write set."
   },
   "blockers": [
-    "The independent source-discovery workflow and immutable run-bound artifact handoff are implemented, but the producer adapter and program orchestration remain disabled pending HOLD/authorization.",
-    "The Assessment adapter remains disabled; the monolithic auto_sync discovery and assessment steps are intentionally retained until the independent edge is authorized and accepted, preventing a processing gap or duplicate assessment.",
-    "Complete transitive writer inventory, dynamic path resolution and cross-workflow concurrency/fencing evidence under #193 remain outstanding.",
-    "A regular Watchdog-dispatched discovery-to-assessment run and independent artifact/publication verification have not been performed; no production dispatch was authorized."
+    "Full transitive writer inventory and cross-workflow runtime trace reconciliation under issue #193 remain a global acceptance gate.",
+    "End-to-end Watchdog-dispatched discovery-to-assessment execution and immutable artifact upload must pass after this PR merges."
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
