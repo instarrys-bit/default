@@ -29,7 +29,28 @@ def discovery_task_requires_handoff(task: dict, tasks: list) -> bool:
     if not isinstance(run_id, str) or not run_id.isdigit():
         # Missing run evidence must remain visible to the exact-run resolver.
         return True
-    return classify_assessment_handoff(tasks, run_id).get("state") != "already_assessed"
+    if classify_assessment_handoff(tasks, run_id).get("state") == "already_assessed":
+        return False
+
+    # A newer Discovery run with a verified Assessment supersedes this older
+    # unassessed snapshot. This prevents a failed historical artifact from
+    # blocking the next unattended discovery cycle forever.
+    created_at = str(task.get("created_at") or "")
+    for newer in tasks:
+        if (not isinstance(newer, dict)
+                or newer.get("target_program_id") != "workflow_source_discovery"
+                or newer.get("status") != "SUCCEEDED"
+                or str(newer.get("created_at") or "") <= created_at):
+            continue
+        newer_result = newer.get("result")
+        newer_evidence = newer_result.get("run_evidence") if isinstance(newer_result, dict) else None
+        newer_run_id = newer_evidence.get("run_id") if isinstance(newer_evidence, dict) else None
+        if isinstance(newer_run_id, int) and not isinstance(newer_run_id, bool):
+            newer_run_id = str(newer_run_id)
+        if (isinstance(newer_run_id, str) and newer_run_id.isdigit()
+                and classify_assessment_handoff(tasks, newer_run_id).get("state") == "already_assessed"):
+            return False
+    return True
 
 
 def classify_assessment_handoff(tasks: list, workflow_run_id: str) -> dict:

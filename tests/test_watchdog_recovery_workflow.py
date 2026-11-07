@@ -147,6 +147,23 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("assert-workflow", cursor)
         self.assertNotIn("git push", cursor)
 
+    def test_discovery_reconciliation_accepts_normal_run_state_progression_and_hashes_uploaded_files(self):
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
+        resolver = watchdog.split("Resolve completed Discovery run from durable task correlation", 1)[1].split("Download artifact from the exact discovery workflow run", 1)[0]
+        self.assertIn("Persisted Discovery run identity or SHA relationship verification failed.", resolver)
+        self.assertNotIn('evidence.get("status") != run.get("status")', resolver)
+        self.assertNotIn('evidence.get("conclusion") != run.get("conclusion")', resolver)
+        self.assertIn("Run status/conclusion are mutable lifecycle fields", resolver)
+
+        source = (ROOT / ".github" / "workflows" / "source-discovery.yml").read_text(encoding="utf-8")
+        proof = source.split("Verify producer identity and prepare immutable artifact proof", 1)[1].split("Confirm discovery outputs remain runner-local", 1)[0]
+        self.assertLess(proof.index("shutil.copy2(item"), proof.index("read_only_resource_digests(artifact_root"))
+        self.assertIn('read_document(artifact_root / "sources/discovered_sources.json"', proof)
+        self.assertIn('"artifact_sha256": digest', proof)
+        self.assertIn("steps.verify-discovery-artifact.outputs.valid == 'false'", watchdog)
+        self.assertIn("steps.verify-discovery-artifact.outputs.valid == 'true'", watchdog)
+        self.assertIn("git rev-parse HEAD:.github/workflows/source-discovery.yml", watchdog)
+
     def test_independent_source_discovery_and_assessment_are_enabled_with_runner_local_handoff(self):
         source = (ROOT / ".github" / "workflows" / "source-discovery.yml").read_text(encoding="utf-8")
         watchdog = WATCHDOG.read_text(encoding="utf-8")
@@ -207,7 +224,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("steps.resolve-discovery-run.outputs.head_sha", watchdog)
         self.assertIn("exact successful Discovery run must have exactly one unexpired source-discovery-output artifact", watchdog)
         self.assertIn("run-id: ${{ steps.resolve-discovery-run.outputs.run_id }}", watchdog)
-        self.assertIn("Downloaded discovery artifact digest does not match its immutable proof.", watchdog)
+        self.assertIn("Downloaded discovery artifact digest does not match its immutable proof; Assessment is blocked", watchdog)
         self.assertNotIn("The committed main discovery document no longer matches this producer artifact.", watchdog)
         self.assertIn("no sources/ commit is required", watchdog)
         self.assertIn("enqueue-source-discovery", watchdog)

@@ -52,7 +52,9 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
         )
         self.assertFalse(any("apple" in query.lower() for query in discovery.QUERIES))
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
-        self.assertIn('discovery_revision="$(git rev-parse HEAD:scripts/discover_sources.py | cut -c1-12)"', watchdog)
+        self.assertIn('git rev-parse HEAD:scripts/discover_sources.py', watchdog)
+        self.assertIn('git rev-parse HEAD:.github/workflows/source-discovery.yml', watchdog)
+        self.assertIn('sha256sum | cut -c1-12', watchdog)
         self.assertIn('base_key="source-discovery:$discovery_day:$discovery_revision"', watchdog)
 
 

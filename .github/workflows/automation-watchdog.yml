@@ -1086,9 +1086,11 @@ jobs:
                   relationship = validate_run_head_sha(workflow_client, intent, run.get("head_sha"))
                   if (evidence.get("head_sha") != run.get("head_sha")
                           or evidence.get("head_sha_relationship") != relationship
-                          or evidence.get("status") != run.get("status")
-                          or evidence.get("conclusion") != run.get("conclusion")):
-                      raise SystemExit("Persisted Discovery run evidence changed or failed SHA relationship verification.")
+                          ):
+                      raise SystemExit("Persisted Discovery run identity or SHA relationship verification failed.")
+                  # Run status/conclusion are mutable lifecycle fields. The exact run
+                  # identity and current GitHub API state are authoritative; a normal
+                  # queued -> in_progress -> completed transition is not evidence drift.
                   if run.get("status") != "completed" or run.get("conclusion") != "success":
                       continue
                   artifact_url = f"https://api.github.com/repos/{repo}/actions/runs/{run_id}/artifacts?per_page=100"
@@ -1198,6 +1200,7 @@ jobs:
           path: ${{ runner.temp }}/source-discovery-output
 
       - name: Verify immutable discovery artifact against producer run and current main
+        id: verify-discovery-artifact
         if: ${{ steps.resolve-discovery-run.outputs.run_id != '' }}
         env:
           SOURCE_RUN_ID: ${{ steps.resolve-discovery-run.outputs.run_id }}
@@ -1231,7 +1234,13 @@ jobs:
               raise SystemExit("Discovery artifact provenance does not match the completed producer run.")
           artifact_digest = read_only_resource_digests(artifact_root, [expected["artifact_path"]])[expected["artifact_path"]]
           if artifact_digest != proof.get("artifact_sha256"):
-              raise SystemExit("Downloaded discovery artifact digest does not match its immutable proof.")
+              message = "Downloaded discovery artifact digest does not match its immutable proof; Assessment is blocked and a fresh Discovery run is required."
+              print(message)
+              with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+                  output.write("valid=false\n")
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+                  summary.write("### Discovery artifact verification failed\n\n" + message + "\n")
+              raise SystemExit(0)
           artifact_document = read_document(artifact_root / expected["artifact_path"], "candidates", {"candidates": []})
           if artifact_document.get("producer") != {
               "workflow_name": expected["workflow_name"],
@@ -1244,10 +1253,12 @@ jobs:
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
               stream.write(f"SOURCE_ARTIFACT_SHA256={artifact_digest}\n")
               stream.write(f"AUTOMATION_PREDECESSOR_ARTIFACT_ROOT={root}\n")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write("valid=true\n")
           PY
 
       - name: Enqueue source assessment after successful discovery workflow
-        if: ${{ steps.resolve-discovery-run.outputs.run_id != '' && steps.resolve-discovery-run.outputs.handoff_state == 'ready' }}
+        if: ${{ steps.resolve-discovery-run.outputs.run_id != '' && steps.resolve-discovery-run.outputs.handoff_state == 'ready' && steps.verify-discovery-artifact.outputs.valid == 'true' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -1291,7 +1302,7 @@ jobs:
           unset queue_token
 
       - name: Enqueue independent source discovery only after its authorization gate opens
-        if: ${{ steps.resolve-discovery-run.outputs.run_id == '' && steps.resolve-discovery-run.outputs.handoff_state == '' }}
+        if: ${{ (steps.resolve-discovery-run.outputs.run_id == '' && steps.resolve-discovery-run.outputs.handoff_state == '') || steps.verify-discovery-artifact.outputs.valid == 'false' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -1316,7 +1327,7 @@ jobs:
           discovery_day="$(date -u +%F)"
           # A changed discovery implementation must get a fresh daily task key;
           # otherwise an earlier successful run would suppress the expanded scan.
-          discovery_revision="$(git rev-parse HEAD:scripts/discover_sources.py | cut -c1-12)"
+          discovery_revision="$(printf '%s\n%s\n' "$(git rev-parse HEAD:scripts/discover_sources.py)" "$(git rev-parse HEAD:.github/workflows/source-discovery.yml)" | sha256sum | cut -c1-12)"
           base_key="source-discovery:$discovery_day:$discovery_revision"
           base_status="$(jq -r --arg key "$base_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
           recovery_key="$(jq -r --arg prefix "$base_key:recovery:" '[.tasks[]? | select((.idempotency_key // "") | startswith($prefix))] | last | .idempotency_key // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
