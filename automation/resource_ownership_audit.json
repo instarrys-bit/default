@@ -72,7 +72,7 @@
       "tests/test_task_queue_runtime.py",
       "tests/test_workflow_config_guard_order.py"
     ],
-    "limitation": "Static and direct mutation inventories remain partial for transitive dynamic paths, runtime traces and cross-workflow concurrency; the manual selector's two report writes are now explicitly fenced but it remains non-dispatchable.",
+    "limitation": "The source DAG's monolithic checkout outputs are local workflow workspace files protected by exact resource leases; independent mode uses RUNNER_TEMP. Neither mode publishes source documents to the repository. The global audit remains partial for other dynamic paths, runtime traces and cross-workflow lease compatibility.",
     "reviewed_at": "2026-11-04",
     "isolated_ephemeral_outputs": [
       {
@@ -396,6 +396,9 @@
     {
       "id": "source_assessment_artifacts",
       "paths": [
+        "sources/source_assessments.json (monolithic checkout workspace only)",
+        "data/source_assessments_runtime.json (monolithic checkout workspace only)",
+        "reports/source-assessment.md (monolithic checkout workspace only)",
         "RUNNER_TEMP/source-assessment-output/sources/source_assessments.json",
         "RUNNER_TEMP/source-assessment-output/data/source_assessments_runtime.json",
         "RUNNER_TEMP/source-assessment-output/reports/source-assessment.md"
@@ -403,10 +406,10 @@
       "known_writers": [
         "script_assess_sources"
       ],
-      "lock_key": "per-run RUNNER_TEMP isolation; shared checkpoint uses logical/production-pipeline + logical/source-assessment-checkpoints",
+      "lock_key": "logical/production-pipeline + exact assessment output resource keys in monolithic mode; per-run RUNNER_TEMP isolation in independent mode",
       "required_mode": "isolated_per_run_artifact_workspace",
-      "status": "runner_local_artifacts_no_repository_publication",
-      "note": "All assessment documents are written under AUTOMATION_ARTIFACT_ROOT in RUNNER_TEMP and uploaded as an immutable Actions artifact. The main-branch sources/source_assessments.json is a read-only baseline. The only shared mutation is the current task's bounded assessment_checkpoint in GitHub Issue #315, protected by append-only snapshot CAS, task lease and both logical resource fences."
+      "status": "monolithic_exact_path_leases_and_independent_runner_local",
+      "note": "Monolithic checkout workspace outputs are fenced by exact source-assessment path leases and are never committed to the repository; independent outputs are per-run RUNNER_TEMP artifacts. Only the task assessment_checkpoint is shared across independent executions via Issue #315 CAS. The production publisher stages rulesets/** only."
     },
     {
       "id": "source_candidate_artifacts",
@@ -427,6 +430,8 @@
     {
       "id": "source_discovery_artifacts",
       "paths": [
+        "sources/discovered_sources.json (monolithic checkout workspace only)",
+        "reports/source-discovery.md (monolithic checkout workspace only)",
         "RUNNER_TEMP/source-discovery-workspace/sources/discovered_sources.json",
         "RUNNER_TEMP/source-discovery-workspace/reports/source-discovery.md"
       ],
@@ -434,10 +439,10 @@
         "script_discover_sources",
         "workflow_source_discovery"
       ],
-      "lock_key": "per-run RUNNER_TEMP isolation + logical/source-discovery-run task lease",
+      "lock_key": "sources/discovered_sources.json + reports/source-discovery.md exact leases in monolithic mode; per-run RUNNER_TEMP isolation in independent mode",
       "required_mode": "isolated_per_run_artifact_workspace",
-      "status": "runner_local_artifacts_no_repository_publication",
-      "note": "The current main discovery document is copied read-only into the isolated RUNNER_TEMP workspace as a merge baseline. discover_sources.py writes only beneath AUTOMATION_ARTIFACT_ROOT; the workflow verifies producer identity and full logical-document digest, then uploads an immutable artifact. No repository file is modified or published."
+      "status": "monolithic_exact_path_leases_and_independent_runner_local",
+      "note": "Monolithic mode requires exact live leases for the discovery document and report. Independent mode writes only to per-run RUNNER_TEMP and uploads immutable artifacts. No discovery files are committed to the repository; production publication remains rulesets/** only."
     },
     {
       "id": "watchdog_unregistered_path_registry",
