@@ -69,7 +69,7 @@ class WorkflowNativeWriteInventoryTests(unittest.TestCase):
         auto_sync = (ROOT / ".github/workflows/auto_sync.yml").read_text(encoding="utf-8")
         self.assertRegex(
             watchdog,
-            r"(?ms)^  manifest-integrity:\\n(?:(?!^  [A-Za-z0-9_-]+:).)*?^    concurrency:\\n      group: shadowrocket-main-writer\\n      cancel-in-progress: false",
+            r"(?ms)^  manifest-integrity:\n(?:(?!^  [A-Za-z0-9_-]+:).)*?^    concurrency:\n      group: shadowrocket-main-writer\n      cancel-in-progress: false",
         )
         self.assertRegex(auto_sync, r"(?m)^  group: shadowrocket-main-writer$")
         self.assertRegex(auto_sync, r"(?m)^  cancel-in-progress: false$")
