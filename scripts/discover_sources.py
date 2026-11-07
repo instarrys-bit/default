@@ -332,6 +332,13 @@ QUERIES = [
     "GitHub network filtering rule sets",
     "GitHub DNS blocklists repositories",
     "GitHub proxy bypass domain lists",
+    "Surge domain-set direct proxy reject rules",
+    "China DNS accelerated domain list",
+    "Chinese adblock domain rules AdRules",
+    "Shadowrocket Surge Loon multi-platform domain rule sets",
+    "MetaCubeX meta-rules-dat geosite domains",
+    "v2fly domain-list-community geosite categories",
+    "community direct proxy reject domain lists with documented policy",
 ]
 LIST_EXTENSIONS = (".list", ".txt", ".conf")
 SEED_SOURCE_URLS = {
@@ -370,6 +377,21 @@ SEED_SOURCE_URLS = {
     "Clash-FX/cn-apps-direct-domains": [
         "https://raw.githubusercontent.com/Clash-FX/cn-apps-direct-domains/main/apps-direct-domains.list",
     ],
+    # Additional candidate-only seeds. Their upstream overlap is retained for
+    # lineage analysis; none is registered or activated by Discovery.
+    "Loyalsoldier/surge-rules": [
+        "https://raw.githubusercontent.com/Loyalsoldier/surge-rules/release/direct.txt",
+        "https://raw.githubusercontent.com/Loyalsoldier/surge-rules/release/proxy.txt",
+        "https://raw.githubusercontent.com/Loyalsoldier/surge-rules/release/reject.txt",
+    ],
+    "felixonmars/dnsmasq-china-list": [
+        "https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master/accelerated-domains.china.conf",
+    ],
+    "Cats-Team/AdRules": [],
+    "QuixoticHeart/rule-set": [],
+    "big-xiaolongxia/china-rules": [],
+    "MetaCubeX/meta-rules-dat": [],
+    "v2fly/domain-list-community": [],
 }
 SENSITIVE_PATH_RE = re.compile(r"(?:porn|adult|nsfw|xxx|sex[-_]?content)", re.I)
 RELEVANCE_RE = re.compile(r"(?:shadowrocket|domain|geosite|rules?|blocklist|adblock|dns|proxy|direct|china|gfw|clash|sing[-_]?box|v2ray|surge|loon|quantumult|hosts)", re.I)
