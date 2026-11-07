@@ -1425,12 +1425,12 @@
     "Persistent repository-tree tracing complements Python audit hooks but does not prove transient write-and-revert activity, Git metadata changes, external side effects or unexecuted call paths."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-independent-source-dag-2026.11.07.1",
+    "release_id": "shadowrocket-automation-source-dag-dormant-2026.11.07.1",
     "release_manifest_blob_sha": "e938aafc149bbf700603ccba40f7f70ced5dd030",
-    "program_registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
-    "execution_adapters_blob_sha": "79dfe3d3a3322c7eec4ae0178e85c53ada75efe4",
+    "program_registry_blob_sha": "8ccc7809c98a90c2abfa11f4a0520ca33092e588",
+    "execution_adapters_blob_sha": "c8a6a2e996f989646f436ed855447875313737e3",
     "added_after_release_baseline": true,
-    "note": "Updated source discovery and assessment outputs are isolated per-run artifacts; the durable queue checkpoint is the only shared mutation. Global transitive writer audit remains partial for non-dispatchable capabilities.",
+    "note": "Source DAG remains dormant; independent outputs are runner-local. The global transitive writer audit remains partial and the monolithic fallback remains authoritative.",
     "reviewed_at": "2026-11-05"
   },
   "scheduler_lock_contract": {
