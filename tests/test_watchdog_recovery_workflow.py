@@ -38,7 +38,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("Resolve superseded historical DEAD_LETTER tasks through queue CAS", workflow)
         self.assertNotIn("resolve-superseded-dead-letters", workflow)
         queue_job = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
-        self.assertIn("Recover leases, verify results, and run one bounded task", queue_job)
+        self.assertIn("Recover leases, verify results, and dispatch up to two independent tasks", queue_job)
 
     def test_watchdog_observes_completed_main_audit_runs(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
@@ -58,7 +58,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
             ".github/workflows/self-healing-agent.yml",
         ):
             self.assertIn(path, health)
-        assessment_step = workflow.split("Enqueue source assessment after successful discovery workflow", 1)[1].split("Recover leases, verify results, and run one bounded task", 1)[0]
+        assessment_step = workflow.split("Enqueue source assessment after successful discovery workflow", 1)[1].split("Recover leases, verify results, and dispatch up to two independent tasks", 1)[0]
         self.assertIn("steps.resolve-discovery-run.outputs.run_id", assessment_step)
         self.assertIn("steps.resolve-discovery-run.outputs.head_sha", assessment_step)
         resolver = workflow.split("Resolve completed Discovery run from durable task correlation", 1)[1].split("Download artifact from the exact discovery workflow run", 1)[0]
@@ -469,7 +469,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         resolver = workflow.split("Resolve completed Discovery run from durable task correlation", 1)[1].split("Download artifact from the exact discovery workflow run", 1)[0]
         enqueue_assessment = workflow.split("Enqueue source assessment after successful discovery workflow", 1)[1].split("Enqueue independent source discovery only after its authorization gate opens", 1)[0]
-        enqueue_discovery = workflow.split("Enqueue independent source discovery only after its authorization gate opens", 1)[1].split("Recover leases, verify results, and run one bounded task", 1)[0]
+        enqueue_discovery = workflow.split("Enqueue independent source discovery only after its authorization gate opens", 1)[1].split("Recover leases, verify results, and dispatch up to two independent tasks", 1)[0]
         self.assertIn("classify_assessment_handoff(tasks, run_id)", resolver)
         self.assertIn("duplicate_assessment_task_ids", resolver)
         self.assertIn("awaiting_discovery_run", resolver)
