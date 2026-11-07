@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Register uu.conf changes only when the repository owner pushed them to the protected branch."""
+"""Create a runner-local review proposal for owner-approved uu.conf baseline changes."""
 from __future__ import annotations
 
 
