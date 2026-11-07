@@ -1000,6 +1000,8 @@ jobs:
               break
 
           if resolved is None and pending:
+              import sys
+              sys.path.insert(0, "scripts")
               from github_workflow_adapter import GitHubWorkflowClient, expected_correlation_titles, validate_run_head_sha
               workflow_client = GitHubWorkflowClient(repo, token)
               event_run_id = os.environ.get("EVENT_SOURCE_RUN_ID", "").strip()
@@ -1046,6 +1048,8 @@ jobs:
                   break
 
           if resolved is None and pending:
+              import sys
+              sys.path.insert(0, "scripts")
               from github_workflow_adapter import GitHubWorkflowClient, expected_correlation_titles, validate_run_head_sha
               workflow_client = GitHubWorkflowClient(repo, token)
               workflow_id = (pending[0][0].get("dispatch_intent") or {}).get("workflow_id")
