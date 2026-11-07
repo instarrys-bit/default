@@ -106,7 +106,7 @@
     },
     "production_input_manifest": {
       "path": "automation/production_inputs.json",
-      "git_blob_sha": "f3b40dd69e906a3b28a9f35e6fb999584f8aac77"
+      "git_blob_sha": "5a6c81450f4d05fdbc79c8ac8d076b7f19934c8b"
     },
     "task_queue_store": {
       "path": "scripts/github_queue_store.py",
