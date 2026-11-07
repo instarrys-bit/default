@@ -182,7 +182,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("requested_head_sha", watchdog)
         self.assertIn("correlation_id", watchdog)
         self.assertIn("workflow_dispatch", watchdog)
-        self.assertIn("source-assessment:" + ' + ' + 'run_id', watchdog)
+        self.assertIn('"source-assessment:" + run_id', watchdog)
         self.assertIn("steps.resolve-discovery-run.outputs.run_id", watchdog)
         self.assertIn("steps.resolve-discovery-run.outputs.head_sha", watchdog)
         self.assertIn("exact successful Discovery run must have exactly one unexpired source-discovery-output artifact", watchdog)
