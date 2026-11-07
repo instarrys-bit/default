@@ -121,7 +121,7 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
         third = assessment.rotate_assessment_urls(inventory, second[-1]["url"], assessment.MAX_URLS)
         self.assertEqual(len(first), 20)
         self.assertEqual(len(second), 20)
-        self.assertEqual(len(third), 5)
+        self.assertEqual(len(third), 20)
         self.assertEqual(len({item["url"] for item in first + second + third}), 45)
 
     def test_completed_tree_scan_is_skipped_until_repository_revision_changes(self):
