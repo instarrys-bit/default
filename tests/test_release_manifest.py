@@ -19,8 +19,8 @@ class ReleaseManifestSmokeTests(unittest.TestCase):
     def test_repository_manifest_passes(self):
         result = validate_release_manifest(ROOT)
         self.assertTrue(result["valid"])
-        self.assertEqual(result["verified_git_blob_pins"], 6)
-        self.assertEqual(result["independent_python_dispatch"], "blocked")
+        self.assertEqual(result["verified_git_blob_pins"], 7)
+        self.assertEqual(result["independent_python_dispatch"], "scoped_source_dag_enabled")
 
 
     def test_release_pins_are_immutable_baseline_references(self):
