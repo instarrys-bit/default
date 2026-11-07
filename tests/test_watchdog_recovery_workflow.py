@@ -214,7 +214,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("correlation_id", watchdog)
         self.assertIn("workflow_dispatch", watchdog)
         self.assertIn("classify_assessment_handoff(tasks, run_id)", watchdog)
-        self.assertIn('--idempotency-key "source-assessment:$SOURCE_RUN_ID"', watchdog)
+        self.assertIn('--idempotency-key "source-assessment:$SOURCE_RUN_ID:parser-v2"', watchdog)
         self.assertIn('task.get("target_program_id") == "script_assess_sources"', watchdog)
         self.assertIn('task.get("status") == "QUEUED"', watchdog)
         self.assertIn('workflow_client.list_runs(workflow_id, "main", page)', watchdog)
