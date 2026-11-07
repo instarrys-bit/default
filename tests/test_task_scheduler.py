@@ -613,5 +613,25 @@ class TaskSchedulerTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unsafe path"):
             validate_repository_write_scope(["../modules/uu.conf"], ["../modules/uu.conf"], ["../modules/uu.conf"])
 
+    def test_queued_retry_is_ineligible_until_backoff_expires(self):
+        task = self.enqueue()["task"]
+        task["attempts"] = 1
+        task["last_error"] = {"type": "workflow_run_failed", "message": "first attempt failed"}
+        task["state_history"] = ["QUEUED", "CLAIMED", "FAILED", "QUEUED"]
+        task["not_before"] = stamp(self.now + timedelta(seconds=30))
+
+        before_backoff = build_execution_plan(
+            self.store.document, self.registry, self.adapters, self.root,
+            self.now + timedelta(seconds=29),
+        )
+        after_backoff = build_execution_plan(
+            self.store.document, self.registry, self.adapters, self.root,
+            self.now + timedelta(seconds=31),
+        )
+
+        self.assertNotIn(task["task_id"], before_backoff["eligible_task_ids"])
+        self.assertIn(task["task_id"], after_backoff["eligible_task_ids"])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
