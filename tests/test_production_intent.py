@@ -578,7 +578,7 @@ class ProductionIntentTests(unittest.TestCase):
                 "input": {"production_fingerprint": old},
                 "resource_lease": {
                     "status": "ACTIVE",
-                    "expires_at": "2026-11-07T04:00:00Z",
+                    "expires_at": "2026-11-02T04:00:00Z",
                     "released_at": None,
                 },
             },
@@ -597,7 +597,7 @@ class ProductionIntentTests(unittest.TestCase):
                 "input": {"production_fingerprint": old},
                 "resource_lease": {
                     "status": "ACTIVE",
-                    "expires_at": "2026-11-07T06:00:00Z",
+                    "expires_at": "2026-11-04T06:00:00Z",
                     "released_at": None,
                 },
             },
@@ -616,8 +616,8 @@ class ProductionIntentTests(unittest.TestCase):
                 "input": {"production_fingerprint": old},
                 "resource_lease": {
                     "status": "RELEASED",
-                    "expires_at": "2026-11-07T06:00:00Z",
-                    "released_at": "2026-11-07T05:00:00Z",
+                    "expires_at": "2026-11-04T06:00:00Z",
+                    "released_at": "2026-11-03T01:00:00Z",
                 },
             },
         ]}
