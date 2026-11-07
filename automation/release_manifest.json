@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-source-dag-dormant-2026.11.07.1",
+  "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
   "release_status": "baseline_snapshot",
   "created_on": "2026-11-07",
-  "purpose": "Dormant independent source DAG implementation. No Python adapter activation or production dispatch until issues #192 and #193 acceptance criteria are met.",
+  "purpose": "Scoped independent Source Discovery → non-activating Source Assessment DAG. Only the Watchdog caller may enqueue the assessor; its output documents remain runner-local immutable artifacts and the sole shared mutation is the fenced Issue #315 checkpoint.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "8ccc7809c98a90c2abfa11f4a0520ca33092e588"
+      "git_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "6d358799ec5015f242cdf3ab4e54d55dec5b5790"
+      "git_blob_sha": "7bd4ab144a1eab08e9b9786078847aef6e953a8a"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -24,11 +24,11 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "36fcd0e4d6c70ec7879ec70279f090126b311540"
+      "git_blob_sha": "d2e97c27898dfb6ede9ab54bfd7c2388d0bfa297"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "143a7ea5cb74e1c3302ebac8a3fbc41884241d00"
+      "git_blob_sha": "5189c635d5cab41b11272bf2f1a4f2c5c5bf893f"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -54,7 +54,7 @@
     },
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
-      "git_blob_sha": "0e0764fef4327549320c2dc5145085699036c07e"
+      "git_blob_sha": "0a4c5fb241ca66a4e4f6a12f1fb392686fe15bb1"
     },
     "remote_task_queue_runtime": {
       "path": "scripts/remote_task_queue_runtime.py",
@@ -70,7 +70,7 @@
     },
     "source_discovery_workflow": {
       "path": ".github/workflows/source-discovery.yml",
-      "git_blob_sha": "5e4a526291c0217356473b4a0ff41afbdaf3e742"
+      "git_blob_sha": "4ddc2561478f1a3b565ac9792a08a9f6d5724ad6"
     },
     "source_discovery_implementation": {
       "path": "scripts/discover_sources.py",
@@ -78,19 +78,19 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "8ccc7809c98a90c2abfa11f4a0520ca33092e588"
+      "git_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "6d358799ec5015f242cdf3ab4e54d55dec5b5790"
+      "git_blob_sha": "7bd4ab144a1eab08e9b9786078847aef6e953a8a"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "e916e09b3a6c02d0edbf77b49532c2f8c7b58d96"
+      "git_blob_sha": "4ce55923c9c54b755d1e98550e1ef4672762a8ab"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "53d2e593c0f680b8200b6c48c7257ab290ff58ae"
+      "git_blob_sha": "90486f8fae3456fdc244a9694db351e77beccc11"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -159,6 +159,10 @@
     "automation_state_restore": {
       "path": "scripts/restore_automation_state.py",
       "git_blob_sha": "8b33e2056892159338bf3fd07f7886f4d1c1d689"
+    },
+    "production_control": {
+      "path": "automation/production_control.json",
+      "git_blob_sha": "dd4b129987bdad61413adc26e4d63474004119e8"
     }
   },
   "compatibility": {
@@ -176,28 +180,43 @@
     "python_adapter_default_deny": true
   },
   "known_gaps": [
-    "The global transitive writer audit for unrelated, non-dispatchable Python components and workflow-native writers remains partial; those adapters remain default-deny.",
-    "The deterministic review-engine source revision is not yet pinned to a verified commit.",
-    "A post-merge Watchdog-dispatched discovery-to-assessment run and remote immutable artifact verification have not yet been performed.",
-    "Durable per-URL checkpoint interruption/resume is unit-tested; live multi-run interruption/resume evidence remains pending.",
-    "Issue #193 remains open: transitive writer coverage, runtime write traces, dynamic resource path mapping and cross-workflow lease serialization are incomplete.",
-    "Issue #192 remains open: no live non-production immutable artifact handoff canary has been accepted.",
-    "Production control is currently enabled in automation/production_control.json; Watchdog may enqueue production work only when its fingerprint, authorization, durable-task and live-lease gates pass. Independent source adapters remain disabled.",
-    "Post-merge Watchdog-dispatched production and immutable source-artifact handoff evidence has not yet been recorded for the merged source-DAG candidate."
+    "A post-merge Watchdog-dispatched Discovery → Assessment run and immutable artifact verification are still required as live end-to-end evidence.",
+    "Durable per-URL interruption/resume is unit-tested; live multi-run interruption/resume evidence remains pending.",
+    "The global transitive writer inventory for unrelated non-dispatchable capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
+    "The deterministic review-engine source revision is not yet pinned to a verified commit."
   ],
   "next_migration_gate": {
     "required_before_independent_python_dispatch": [
-      "Complete transitive write-set evidence for any additional Python adapter before it is allowlisted.",
-      "Keep every additional repository publication path inside rulesets/** and verify it independently.",
-      "Resolve all dynamic path aliases and shared logical resource leases for any newly enabled writer.",
-      "Run isolated canary tests with new adapters disabled by default before adding them to the allowlist."
+      "Any additional Python capability requires its own exact release allowlist, typed I/O contracts and independent verifier.",
+      "Any future repository writer must declare exclusive resource leases and remain within rulesets/** for production publication.",
+      "Global dynamic path, third-party Action and cross-workflow runtime evidence remains required before enabling unrelated capabilities."
     ],
-    "completion_status": "blocked_pending_contract_and_runtime_enforcement",
-    "approved_programs": []
+    "completion_status": "approved_scoped_source_dag",
+    "approved_programs": [
+      "script_assess_sources"
+    ]
   },
   "python_adapter_policy": {
     "schema_version": 1,
     "default_decision": "deny",
-    "allowed_adapters": []
+    "allowed_adapters": [
+      {
+        "target_program_id": "script_assess_sources",
+        "capability": "source_assessment",
+        "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
+        "adapter_entry_sha256": "1a8eb3b567629f08c4850b6217bbd51a02a56ef47b0f179088d3c73ad8b079f3",
+        "registry_entry_sha256": "9f448f101ba172d74d0b0669a7c761f74d3d06b98609779e825f6bbab7c22288",
+        "source_path": "scripts/assess_sources.py",
+        "source_git_blob_sha": "c825d64b9da2462bbca5e8932aab92729ae3088c",
+        "allowed_callers": [
+          "workflow_automation_watchdog"
+        ],
+        "input_contract_sha256": "3f089ec52a26ba8a7e70d158dcc2e64438743f88cdc03ae0f75cf967291392c2",
+        "output_contract_sha256": "ff475c522d1d58633246112adea18ef7d921ac89944f4a1dc7178cb5aad78aba",
+        "dependency_contract_sha256": "9701a5ebc55ea76c2f7795af9efcb7d4679fc32f09d16bc00583d6bfe0bda6cf",
+        "resource_contract_sha256": "dfacfff8673199bf44ad4f56ed375cb214cb788267ace1f24268acf5833869ed",
+        "verifier_contract_sha256": "601c151692490aa9f8eb5b669c223e7c5be7eddfd8e16daf21b785097a7e662d"
+      }
+    ]
   }
 }
