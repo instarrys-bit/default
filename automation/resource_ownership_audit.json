@@ -158,6 +158,21 @@
       "note": "The durable queue is control-plane state stored as append-only, compressed GitHub Issue #315 comments. Each snapshot is SHA-256 chained to the prior revision; concurrent duplicate revisions resolve deterministically by earliest canonical comment ID. The repository automation/task_queue.json file is read-only bootstrap state. Local task_queue_runtime is runner-local only."
     },
     {
+      "id": "independent_source_assessment_queue_checkpoint",
+      "paths": [
+        "GitHub Issue #315 task.assessment_checkpoint"
+      ],
+      "writers": [
+        "script_assess_sources",
+        "script_remote_task_queue_runtime",
+        "workflow_automation_watchdog"
+      ],
+      "lock_key": "github-issue-comment-chain:315 + logical/production-pipeline + logical/source-assessment-checkpoints",
+      "required_mode": "append_only_issue_snapshot_CAS_with_live_task_and_resource_fences",
+      "status": "bounded_task_checkpoint_fenced",
+      "note": "Per-URL results are stored only in the currently claimed task's assessment_checkpoint. Each mutation uses the append-only Issue #315 snapshot CAS and validates task identity, active task lease, exact predecessor run/digest and both logical resource fencing tokens. No repository assessment document is written or published."
+    },
+    {
       "id": "lifecycle_gate_state",
       "paths": [
         "rulesets/lifecycle_state.json"
@@ -364,6 +379,21 @@
       "note": "The storage helper uses atomic replacement, JSONL shards, manifest switching, and old-shard cleanup. Locking by program ID is insufficient; lock the canonical document path and include manifest/shards in the same lease. The low-level helper is itself registered as a dynamic writer; callers must declare the canonical document and lease across all helper-managed child mutations."
     },
     {
+      "id": "source_assessment_artifacts",
+      "paths": [
+        "RUNNER_TEMP/source-assessment-output/sources/source_assessments.json",
+        "RUNNER_TEMP/source-assessment-output/data/source_assessments_runtime.json",
+        "RUNNER_TEMP/source-assessment-output/reports/source-assessment.md"
+      ],
+      "known_writers": [
+        "script_assess_sources"
+      ],
+      "lock_key": "per-run RUNNER_TEMP isolation; shared checkpoint uses logical/production-pipeline + logical/source-assessment-checkpoints",
+      "required_mode": "isolated_per_run_artifact_workspace",
+      "status": "runner_local_artifacts_no_repository_publication",
+      "note": "All assessment documents are written under AUTOMATION_ARTIFACT_ROOT in RUNNER_TEMP and uploaded as an immutable Actions artifact. The main-branch sources/source_assessments.json is a read-only baseline. The only shared mutation is the current task's bounded assessment_checkpoint in GitHub Issue #315, protected by append-only snapshot CAS, task lease and both logical resource fences."
+    },
+    {
       "id": "source_candidate_artifacts",
       "paths": [
         "sources/source_candidates.json",
@@ -380,6 +410,21 @@
       "note": "Candidate matrix reads runtime or persistent assessments plus source lineage, then writes a logical JSON document through json_document_store and a Markdown report. Allowlisted publish-mode restore is an additional writer and is serialized by the same auto_sync logical production-pipeline fence."
     },
     {
+      "id": "source_discovery_artifacts",
+      "paths": [
+        "RUNNER_TEMP/source-discovery-workspace/sources/discovered_sources.json",
+        "RUNNER_TEMP/source-discovery-workspace/reports/source-discovery.md"
+      ],
+      "known_writers": [
+        "script_discover_sources",
+        "workflow_source_discovery"
+      ],
+      "lock_key": "per-run RUNNER_TEMP isolation + logical/source-discovery-run task lease",
+      "required_mode": "isolated_per_run_artifact_workspace",
+      "status": "runner_local_artifacts_no_repository_publication",
+      "note": "The current main discovery document is copied read-only into the isolated RUNNER_TEMP workspace as a merge baseline. discover_sources.py writes only beneath AUTOMATION_ARTIFACT_ROOT; the workflow verifies producer identity and full logical-document digest, then uploads an immutable artifact. No repository file is modified or published."
+    },
+    {
       "id": "watchdog_unregistered_path_registry",
       "paths": [
         "automation/unregistered_path_registry.json"
@@ -392,21 +437,6 @@
       "required_mode": "compare_and_swap",
       "status": "bounded_cas_retry_implemented_concurrent_integration_unproven",
       "note": "Watchdog now re-reads the current Blob SHA and re-merges the same run-scoped paths on each of up to three conditional Contents API PUT attempts. observed_run_ids makes retries idempotent when another run updates the path between attempts. Conflicts after the third attempt fail closed. Distinct runs remain concurrent; parallel-run integration/no-lost-update proof is outstanding."
-    },
-    {
-      "id": "independent_source_assessment_queue_checkpoint",
-      "paths": [
-        "GitHub Issue #315 task.assessment_checkpoint"
-      ],
-      "writers": [
-        "script_assess_sources",
-        "script_remote_task_queue_runtime",
-        "workflow_automation_watchdog"
-      ],
-      "lock_key": "github-issue-comment-chain:315 + logical/production-pipeline + logical/source-assessment-checkpoints",
-      "required_mode": "append_only_issue_snapshot_CAS_with_live_task_and_resource_fences",
-      "status": "bounded_task_checkpoint_fenced",
-      "note": "Per-URL results are stored only in the currently claimed task's assessment_checkpoint. Each mutation uses the append-only Issue #315 snapshot CAS and validates task identity, active task lease, exact predecessor run/digest and both logical resource fencing tokens. No repository assessment document is written or published."
     }
   ],
   "scheduling_gates": {
