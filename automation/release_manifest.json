@@ -28,7 +28,7 @@
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "5189c635d5cab41b11272bf2f1a4f2c5c5bf893f"
+      "git_blob_sha": "2a5b77adaa2acbced166c8a8fe82466e611dead5"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
