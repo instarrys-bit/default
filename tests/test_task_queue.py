@@ -128,6 +128,81 @@ class TaskQueueTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "not allowed"):
             self.validate(root, queue, registry)
 
+
+    def handoff_reconciliation_tasks(self):
+        root, queue, registry = self.make_store()
+        data = json.loads(registry.read_text(encoding="utf-8"))
+        data["programs"].extend([
+            {"id": "workflow_source_discovery", "capabilities": ["source_discovery"],
+             "orchestration": {"enabled": True, "allowed_callers": ["script_requester"],
+                               "max_attempts": 2, "timeout_seconds": 3600}},
+            {"id": "script_assess_sources", "capabilities": ["source_assessment"],
+             "orchestration": {"enabled": True, "allowed_callers": ["script_requester"],
+                               "max_attempts": 2, "timeout_seconds": 240}},
+        ])
+        registry.write_text(json.dumps(data), encoding="utf-8")
+        run_id, head_sha, artifact_sha = "123456789", "a" * 40, "b" * 64
+        verification = {
+            "verifier_program_id": "script_target", "status": "passed",
+            "verified_at": "2026-11-07T12:10:00Z", "contract_sha256": "c" * 64,
+        }
+        artifact_verification = {
+            "valid": True, "activation_count": 0,
+            "artifact_name": "source-assessment-output", "artifact_sha256": "d" * 64,
+        }
+        assessment = self.task(
+            task_id="task_1123456789abcdef01234567",
+            idempotency_key="source-assessment:123456789:parser-v2",
+            target_program_id="script_assess_sources", capability="source_assessment",
+            status="SUCCEEDED", attempts=1, state_history=["QUEUED", "CLAIMED", "SUCCEEDED"],
+            input={"predecessor": {
+                "program_id": "script_discover_sources",
+                "workflow_name": "Shadowrocket Source Discovery (Watchdog)",
+                "workflow_run_id": run_id, "workflow_head_sha": head_sha,
+                "artifact_path": "sources/discovered_sources.json", "artifact_sha256": artifact_sha,
+            }},
+            result={"artifact_verification": artifact_verification},
+            verification=verification,
+        )
+        reconciliation = {
+            "schema_version": 1, "status": "already_assessed",
+            "discovery_run_id": run_id, "discovery_head_sha": head_sha,
+            "discovery_artifact_path": "sources/discovered_sources.json",
+            "discovery_artifact_sha256": artifact_sha,
+            "canonical_assessment_task_id": assessment["task_id"],
+            "assessment_task_ids": [assessment["task_id"]],
+            "duplicate_assessment_task_ids": [],
+            "assessment_verification": verification,
+            "assessment_artifact_verification": artifact_verification,
+            "recorded_at": "2026-11-07T12:15:00Z",
+        }
+        discovery = self.task(
+            task_id="task_0123456789abcdef01234567",
+            idempotency_key="source-discovery:2026-11-07",
+            target_program_id="workflow_source_discovery", capability="source_discovery",
+            status="SUCCEEDED", attempts=1, state_history=["QUEUED", "CLAIMED", "SUCCEEDED"],
+            result={"run_evidence": {
+                "run_id": int(run_id), "head_sha": head_sha,
+                "status": "completed", "conclusion": "success",
+            }},
+            verification=verification,
+            handoff_reconciliation=reconciliation,
+        )
+        self.write_task(queue, discovery, assessment)
+        return root, queue, registry, discovery, assessment
+
+    def test_valid_terminal_handoff_reconciliation_is_accepted(self):
+        root, queue, registry, discovery, assessment = self.handoff_reconciliation_tasks()
+        self.assertEqual(self.validate(root, queue, registry)["task_count"], 2)
+
+    def test_terminal_handoff_reconciliation_rejects_mismatched_assessment_predecessor(self):
+        root, queue, registry, discovery, assessment = self.handoff_reconciliation_tasks()
+        assessment["input"]["predecessor"]["workflow_head_sha"] = "e" * 40
+        self.write_task(queue, discovery, assessment)
+        with self.assertRaisesRegex(ValueError, "exact predecessor proof"):
+            self.validate(root, queue, registry)
+
+
     def test_rejects_duplicate_idempotency_key(self):
         root, queue, registry = self.make_store()
         self.write_task(queue, self.task(), self.task(task_id="task_1123456789abcdef01234567"))
