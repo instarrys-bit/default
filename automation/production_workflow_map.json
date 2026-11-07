@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "6a9d0ab4ee0e35fce954f1851c2ece75225d94e5",
+  "workflow_blob_sha": "143a7ea5cb74e1c3302ebac8a3fbc41884241d00",
   "registry_blob_sha": "8ccc7809c98a90c2abfa11f4a0520ca33092e588",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
@@ -299,9 +299,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-dormant-2026.11.07.1",
-    "release_manifest_blob_sha": "b59833f9a73fcb5a85832677b5a86af86f8dc7fb",
+    "release_manifest_blob_sha": "e2b5ec6c70c435bd01583afc31e8f16566b856e5",
     "program_registry_blob_sha": "8ccc7809c98a90c2abfa11f4a0520ca33092e588",
-    "execution_adapters_blob_sha": "c2abca9c662f0bb5d3d4199b2bdf1c03aecb65c1",
+    "execution_adapters_blob_sha": "6d358799ec5015f242cdf3ab4e54d55dec5b5790",
     "added_after_release_baseline": true,
     "note": "Updated against the scoped source DAG candidate: runner-local immutable artifacts, external predecessor digest binding, and no repository publication from source assessment. Remaining global audit applies to other non-dispatchable capabilities.",
     "reviewed_at": "2026-11-05",
