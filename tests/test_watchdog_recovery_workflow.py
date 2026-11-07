@@ -58,8 +58,14 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         ):
             self.assertIn(path, health)
         assessment_step = workflow.split("Enqueue source assessment after successful discovery workflow", 1)[1].split("Recover leases, verify results, and run one bounded task", 1)[0]
-        self.assertIn("github.event.workflow_run.path == '.github/workflows/source-discovery.yml'", assessment_step)
-        self.assertNotIn("github.event.workflow_run.path == '.github/workflows/auto_sync.yml'", assessment_step)
+        self.assertIn("steps.resolve-discovery-run.outputs.run_id", assessment_step)
+        self.assertIn("steps.resolve-discovery-run.outputs.head_sha", assessment_step)
+        resolver = workflow.split("Resolve completed Discovery run from durable task correlation", 1)[1].split("Download artifact from the exact discovery workflow run", 1)[0]
+        self.assertIn("source-discovery.yml", resolver)
+        self.assertIn("workflow_dispatch", resolver)
+        self.assertIn("source-discovery-output", resolver)
+        self.assertIn("head_sha", resolver)
+        self.assertIn("artifact", resolver)
         self.assertIn('      - "Validate Shadowrocket config against user baseline"', workflow)
         self.assertIn('      - "Validate self-healing agent"', workflow)
         self.assertIn("types: [completed]", workflow)
