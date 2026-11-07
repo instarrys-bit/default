@@ -52,12 +52,59 @@ class AssessmentQueueTests(unittest.TestCase):
     def test_candidate_urls_are_deduplicated_and_seeded_first(self):
         assessor = load_assessor()
         candidates = [
-            {"repository": "o/r", "stars": 10, "seeded_source_urls": ["seed"], "rule_list_urls": ["z", "seed", "z"]},
-            {"repository": "o/s", "stars": 20, "rule_list_urls": ["a"]},
+            {"repository": "o/r", "stars": 10, "seeded_source_urls": ["https://raw.githubusercontent.com/o/r/main/seed.list"], "rule_list_urls": ["https://raw.githubusercontent.com/o/r/main/z.list", "https://raw.githubusercontent.com/o/r/main/seed.list", "https://raw.githubusercontent.com/o/r/main/z.list"]},
+            {"repository": "o/s", "stars": 20, "rule_list_urls": ["https://raw.githubusercontent.com/o/s/main/a.list"]},
         ]
         flattened = assessor.flatten_candidate_urls(candidates)
-        self.assertEqual([x["url"] for x in flattened], ["seed", "z", "a"])
+        self.assertEqual([x["url"] for x in flattened], [
+            "https://raw.githubusercontent.com/o/r/main/seed.list",
+            "https://raw.githubusercontent.com/o/s/main/a.list",
+            "https://raw.githubusercontent.com/o/r/main/z.list",
+        ])
         self.assertEqual(len({x["url"] for x in flattened}), 3)
+
+    def test_candidate_urls_round_robin_repositories_and_filter_metadata(self):
+        assessor = load_assessor()
+        candidates = [
+            {"repository": "a/r", "stars": 1, "rule_list_urls": [
+                "https://raw.githubusercontent.com/a/r/main/requirements.txt",
+                "https://raw.githubusercontent.com/a/r/main/clash-rules/one.txt",
+                "https://raw.githubusercontent.com/a/r/main/clash-rules/two.txt",
+            ]},
+            {"repository": "b/r", "stars": 2, "rule_list_urls": ["https://raw.githubusercontent.com/b/r/main/blocklist.txt"]},
+            {"repository": "c/r", "stars": 3, "rule_list_urls": ["https://raw.githubusercontent.com/c/r/main/rules.list"]},
+        ]
+        flattened = assessor.flatten_candidate_urls(candidates)
+        self.assertEqual({item["repository"] for item in flattened[:3]}, {"a/r", "b/r", "c/r"})
+        self.assertNotIn("requirements.txt", " ".join(item["url"] for item in flattened))
+        self.assertEqual(flattened[3]["repository"], "a/r")
+
+    def test_task_batch_uses_cursor_skips_assessed_urls_and_rechecks_stale_parser_results(self):
+        assessor = load_assessor()
+        items = [
+            {"repository": "a/r", "url": "a1"}, {"repository": "b/r", "url": "b1"},
+            {"repository": "c/r", "url": "c1"}, {"repository": "a/r", "url": "a2"},
+            {"repository": "b/r", "url": "b2"}, {"repository": "c/r", "url": "c2"},
+        ]
+        predecessor = {"workflow_run_id": "41870001234", "artifact_sha256": "a" * 64}
+        previous = {
+            "a1": {"parser_candidate": "domain-only", "parser_version": 2},
+            "b1": {"parser_candidate": "unsupported_or_too_small", "parser_version": 1},
+        }
+        batch = assessor.rotate_assessment_urls_for_task(items, predecessor, 3, cursor_url="a1", previous_by_url=previous)
+        self.assertEqual([item["url"] for item in batch], ["b1", "c1", "a2"])
+        self.assertEqual(len({item["repository"] for item in batch}), 3)
+
+    def test_clash_yaml_payload_is_parsed_as_domain_rules(self):
+        assessor = load_assessor()
+        rows = [f"  - {chr(39)}DOMAIN-SUFFIX,example{i}.com{chr(39)}" for i in range(25)]
+        payload = ("payload:\\n" + "\\n".join(rows)).encode("utf-8")
+        result = assessor.assess_payload(payload, "https://raw.githubusercontent.com/o/r/main/clash-rules/domains.txt", [])
+        self.assertEqual(result["parser_candidate"], "clash-domain-rules")
+        self.assertEqual(result["clash_yaml_rule_lines"], 25)
+        self.assertEqual(result["suffix_domain_count"], 25)
+        self.assertEqual(result["parser_version"], 2)
+        self.assertFalse(result["activation_eligible"])
 
     def test_parser_cache_requires_matching_content_hash_and_policy_claims(self):
         assessor = load_assessor()
@@ -65,8 +112,10 @@ class AssessmentQueueTests(unittest.TestCase):
             "sha256": "a" * 64,
             "readme_policy_claims": ["DIRECT"],
             "parser_candidate": "domain-only",
+            "parser_version": 2,
         }
         self.assertTrue(assessor.assessment_cache_hit(previous, "a" * 64, ["DIRECT"]))
+        self.assertFalse(assessor.assessment_cache_hit(dict(previous, parser_version=1), "a" * 64, ["DIRECT"]))
         self.assertFalse(assessor.assessment_cache_hit(previous, "b" * 64, ["DIRECT"]))
         self.assertFalse(assessor.assessment_cache_hit(previous, "a" * 64, ["PROXY"]))
         self.assertFalse(assessor.assessment_cache_hit({"error": "offline"}, "a" * 64, ["DIRECT"]))
