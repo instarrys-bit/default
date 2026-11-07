@@ -167,14 +167,6 @@
     "source_handoff_policy": {
       "path": "scripts/source_handoff_policy.py",
       "git_blob_sha": "5764ff880804d5e1047b0e7cf7c0fa3c8708b663"
-    },
-    "resource_write_sets": {
-      "path": "automation/resource_write_sets.json",
-      "git_blob_sha": "189c3fa6e679120eae7549dea24b77509a70036d"
-    },
-    "production_workflow_map": {
-      "path": "automation/production_workflow_map.json",
-      "git_blob_sha": "5adbdd08a99b23b8189ec3f4dd28b613e5314a05"
     }
   },
   "compatibility": {
