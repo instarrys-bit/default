@@ -1306,10 +1306,12 @@ jobs:
               if isinstance(task, dict) and isinstance(task.get("task_id"), str)
           }
           expected = False
+          processed_task_ids = set()
           for item in report.get("processed", []):
               if not isinstance(item, dict) or not isinstance(item.get("task_id"), str):
                   continue
               task_id = item["task_id"]
+              processed_task_ids.add(task_id)
               task = tasks_by_id.get(task_id, {})
               if task.get("target_program_id") != "script_assess_sources":
                   continue
