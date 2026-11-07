@@ -127,10 +127,6 @@
     "release_manifest_validator": {
       "path": "scripts/validate_release_manifest.py",
       "git_blob_sha": "95e733af003ac1ea19d98d32b1f7df27cc3f5240"
-    },
-    "production_workflow_map": {
-      "path": "automation/production_workflow_map.json",
-      "git_blob_sha": "3f01707b6a0da920a7c31c31904aa464e051e41f"
     }
   },
   "compatibility": {
