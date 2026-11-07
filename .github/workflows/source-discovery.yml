@@ -173,6 +173,7 @@ jobs:
               else:
                   shutil.copy2(item, artifact_root / "sources" / item.name)
           shutil.copy2(workspace / "reports/source-discovery.md", artifact_root / "reports-source-discovery.md")
+          # Artifact proof revision 2: bind the digest to the copied upload tree.
           # Hash the exact files that will be uploaded, not the pre-copy workspace.
           artifact_document = read_document(artifact_root / "sources/discovered_sources.json", "candidates", {"candidates": []})
           if artifact_document.get("producer") != expected:
