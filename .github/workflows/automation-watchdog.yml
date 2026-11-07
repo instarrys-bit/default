@@ -1503,7 +1503,7 @@ jobs:
               expected = True
           value = "true" if expected else "false"
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
-              output.write(f"assessment_output_expected={value}\\n")
+              output.write(f"assessment_output_expected={value}\n")
           print(json.dumps({
               "processed_task_ids": sorted(processed_task_ids),
               "assessment_output_expected": expected,
