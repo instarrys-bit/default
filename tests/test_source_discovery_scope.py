@@ -34,6 +34,22 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
         self.assertIn("hagezi dns-blocklists", discovery.QUERIES)
         self.assertIn("国内域名规则", discovery.QUERIES)
         self.assertIn("开源分流规则", discovery.QUERIES)
+        self.assertIn("Surge domain-set direct proxy reject rules", discovery.QUERIES)
+        self.assertIn("China DNS accelerated domain list", discovery.QUERIES)
+        self.assertIn("Chinese adblock domain rules AdRules", discovery.QUERIES)
+        self.assertIn("Loyalsoldier/surge-rules", discovery.SEED_SOURCE_URLS)
+        self.assertIn("felixonmars/dnsmasq-china-list", discovery.SEED_SOURCE_URLS)
+        self.assertIn("Cats-Team/AdRules", discovery.SEED_SOURCE_URLS)
+        self.assertIn("QuixoticHeart/rule-set", discovery.SEED_SOURCE_URLS)
+        self.assertIn("MetaCubeX/meta-rules-dat", discovery.SEED_SOURCE_URLS)
+        self.assertEqual(
+            discovery.SEED_SOURCE_URLS["Loyalsoldier/surge-rules"],
+            [
+                "https://raw.githubusercontent.com/Loyalsoldier/surge-rules/release/direct.txt",
+                "https://raw.githubusercontent.com/Loyalsoldier/surge-rules/release/proxy.txt",
+                "https://raw.githubusercontent.com/Loyalsoldier/surge-rules/release/reject.txt",
+            ],
+        )
         self.assertFalse(any("apple" in query.lower() for query in discovery.QUERIES))
 
 
