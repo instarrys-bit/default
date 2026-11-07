@@ -159,10 +159,10 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(adapter["dependency_contract"]["artifact_path"], "sources/discovered_sources.json")
         self.assertIn("predecessor", adapter["input_contract"]["required"])
         self.assertIn("scheduler.build_execution_plan", contract["dependency_edges"]["scheduler_enforcement"])
-        self.assertTrue(adapter["enabled"])
-        self.assertEqual(adapter["allowed_callers"], ["workflow_automation_watchdog"])
-        self.assertEqual(adapter["write_resources"], [])
-        self.assertEqual(adapter["publish_resources"], [])
+        self.assertFalse(adapter["enabled"])
+        self.assertEqual(adapter["allowed_callers"], [])
+        self.assertEqual(adapter["write_resources"], ["sources/source_assessments.json", "data/source_assessments_runtime.json", "reports/source-assessment.md"])
+        self.assertEqual(adapter["publish_resources"], ["sources/source_assessments.json", "reports/source-assessment.md"])
         self.assertEqual(adapter["dependency_contract"]["producer_workflow_name"], "Shadowrocket Source Discovery (Watchdog)")
 
     def test_assessment_restore_writer_is_registered_under_shared_mutex(self):
