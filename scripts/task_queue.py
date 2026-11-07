@@ -356,6 +356,68 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
             if not isinstance(record, dict) or record.get("task_id") != task.get("task_id"):
                 raise ValueError("manually authorized task lacks its durable one-shot consumption record")
 
+    task_by_id = {item["task_id"]: item for item in tasks}
+    for task in tasks:
+        reconciliation = task.get("handoff_reconciliation")
+        if reconciliation is None:
+            continue
+        task_id = task["task_id"]
+        if task.get("target_program_id") != "workflow_source_discovery" or task.get("status") != "SUCCEEDED":
+            raise ValueError(f"{task_id}.handoff_reconciliation is only valid on a SUCCEEDED Discovery task")
+        if not isinstance(reconciliation, dict) or reconciliation.get("schema_version") != 1 or reconciliation.get("status") != "already_assessed":
+            raise ValueError(f"{task_id}.handoff_reconciliation envelope is invalid")
+        run_id = reconciliation.get("discovery_run_id")
+        head_sha = reconciliation.get("discovery_head_sha")
+        artifact_path = reconciliation.get("discovery_artifact_path")
+        artifact_sha = reconciliation.get("discovery_artifact_sha256")
+        if (not isinstance(run_id, str) or not run_id.isdigit()
+                or not isinstance(head_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", head_sha)
+                or artifact_path != "sources/discovered_sources.json"
+                or not isinstance(artifact_sha, str) or not re.fullmatch(r"[0-9a-f]{64}", artifact_sha)):
+            raise ValueError(f"{task_id}.handoff_reconciliation Discovery proof is invalid")
+        evidence = (task.get("result") or {}).get("run_evidence")
+        if (not isinstance(evidence, dict) or str(evidence.get("run_id")) != run_id
+                or evidence.get("head_sha") != head_sha or evidence.get("status") != "completed"
+                or evidence.get("conclusion") != "success"):
+            raise ValueError(f"{task_id}.handoff_reconciliation does not match its persisted Discovery run evidence")
+        canonical_id = reconciliation.get("canonical_assessment_task_id")
+        assessment_ids = reconciliation.get("assessment_task_ids")
+        duplicate_ids = reconciliation.get("duplicate_assessment_task_ids")
+        if (not isinstance(canonical_id, str) or not TASK_ID_RE.fullmatch(canonical_id)
+                or not isinstance(assessment_ids, list) or not assessment_ids
+                or len(set(assessment_ids)) != len(assessment_ids)
+                or not isinstance(duplicate_ids, list) or len(set(duplicate_ids)) != len(duplicate_ids)
+                or canonical_id not in assessment_ids
+                or any(not isinstance(value, str) or not TASK_ID_RE.fullmatch(value) for value in assessment_ids + duplicate_ids)
+                or not set(duplicate_ids).issubset(set(assessment_ids))
+                or canonical_id in duplicate_ids
+                or set(duplicate_ids) != set(assessment_ids) - {canonical_id}):
+            raise ValueError(f"{task_id}.handoff_reconciliation Assessment task IDs are invalid")
+        canonical = task_by_id.get(canonical_id)
+        if not isinstance(canonical, dict) or canonical.get("target_program_id") != "script_assess_sources" or canonical.get("status") != "SUCCEEDED":
+            raise ValueError(f"{task_id}.handoff_reconciliation canonical Assessment task is not SUCCEEDED")
+        for assessment_id in assessment_ids:
+            assessment = task_by_id.get(assessment_id)
+            predecessor = (assessment.get("input") or {}).get("predecessor") if isinstance(assessment, dict) else None
+            if (not isinstance(assessment, dict) or assessment.get("target_program_id") != "script_assess_sources"
+                    or assessment.get("status") in {"QUEUED", "CLAIMED", "VERIFYING"}
+                    or not isinstance(predecessor, dict)
+                    or predecessor.get("workflow_run_id") != run_id
+                    or predecessor.get("workflow_head_sha") != head_sha
+                    or predecessor.get("artifact_path") != artifact_path
+                    or predecessor.get("artifact_sha256") != artifact_sha):
+                raise ValueError(f"{task_id}.handoff_reconciliation contains an Assessment task without exact predecessor proof")
+        verification = canonical.get("verification")
+        result = canonical.get("result")
+        artifact = result.get("artifact_verification") if isinstance(result, dict) else None
+        if (not isinstance(verification, dict) or verification.get("status") != "passed"
+                or not isinstance(artifact, dict) or artifact.get("valid") is not True
+                or artifact.get("activation_count") != 0
+                or reconciliation.get("assessment_verification") != verification
+                or reconciliation.get("assessment_artifact_verification") != artifact):
+            raise ValueError(f"{task_id}.handoff_reconciliation lacks the canonical independent verification proof")
+        parse_utc(reconciliation.get("recorded_at"), f"{task_id}.handoff_reconciliation.recorded_at")
+
     resource_leases = queue.get("resource_leases", {})
     if not isinstance(resource_leases, dict):
         raise ValueError("resource_leases must be an object")
