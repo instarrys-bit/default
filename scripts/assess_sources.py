@@ -668,6 +668,74 @@ def persist_assessment_checkpoint(batch_id: str, predecessor: dict, result: dict
     store.mutate(mutate)
 
 
+def assessment_progress_from_queue(queue: dict, current_task_id: str | None = None) -> tuple[str | None, dict]:
+    """Restore prior per-URL checkpoints without writing repository state."""
+    if not isinstance(queue, dict) or not isinstance(queue.get("tasks"), list):
+        raise ValueError("assessment progress queue snapshot is malformed")
+    checkpoints = []
+    for task in queue["tasks"]:
+        if not isinstance(task, dict) or task.get("task_id") == current_task_id:
+            continue
+        if task.get("target_program_id") != "script_assess_sources":
+            continue
+        checkpoint = task.get("assessment_checkpoint")
+        predecessor = (task.get("input") or {}).get("predecessor")
+        if not isinstance(checkpoint, dict) or not isinstance(predecessor, dict):
+            continue
+        run_id = predecessor.get("workflow_run_id")
+        artifact_sha = predecessor.get("artifact_sha256")
+        if not isinstance(run_id, str) or not run_id.isdigit():
+            continue
+        if not isinstance(artifact_sha, str) or not re.fullmatch(r"[0-9a-f]{64}", artifact_sha):
+            continue
+        expected_batch = "discovery-run:" + run_id + ":" + artifact_sha[:12]
+        if checkpoint.get("schema_version") != 1 or checkpoint.get("batch_id") != expected_batch:
+            continue
+        if checkpoint.get("predecessor_artifact_sha256") != artifact_sha:
+            continue
+        completed = checkpoint.get("completed")
+        if not isinstance(completed, dict):
+            raise ValueError("prior assessment checkpoint completed map is malformed")
+        restored = {}
+        for url, record in completed.items():
+            if not isinstance(url, str) or not isinstance(record, dict) or not isinstance(record.get("result"), dict):
+                raise ValueError("prior assessment checkpoint contains a malformed URL result")
+            result = record["result"]
+            encoded = json.dumps(result, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+            if result.get("url") != url or record.get("result_sha256") != hashlib.sha256(encoded).hexdigest():
+                raise ValueError("prior assessment checkpoint result digest mismatch")
+            restored[url] = dict(result)
+        updated_at = checkpoint.get("updated_at")
+        try:
+            stamp = datetime.fromisoformat(str(updated_at).replace("Z", "+00:00"))
+        except ValueError as exc:
+            raise ValueError("prior assessment checkpoint updated_at is invalid") from exc
+        if stamp.tzinfo is None:
+            raise ValueError("prior assessment checkpoint updated_at must include a timezone")
+        cursor = checkpoint.get("last_successful_url")
+        if restored and cursor not in restored:
+            raise ValueError("prior assessment checkpoint cursor is not a completed URL")
+        checkpoints.append((stamp, cursor, restored))
+    checkpoints.sort(key=lambda item: item[0])
+    all_results = {}
+    latest_cursor = None
+    for _, cursor, restored in checkpoints:
+        all_results.update(restored)
+        if cursor:
+            latest_cursor = cursor
+    return latest_cursor, all_results
+
+
+def load_prior_assessment_progress() -> tuple[str | None, dict]:
+    """Read prior task checkpoints under the active checkpoint resource lease."""
+    assert_resource_lease_from_environment("logical/source-assessment-checkpoints")
+    store, registry = _checkpoint_runtime()
+    from remote_task_queue_runtime import validate_candidate, validate_envelope
+    queue = store.read().document
+    validate_envelope(queue)
+    validate_candidate(queue, registry)
+    return assessment_progress_from_queue(queue, os.environ.get("AUTOMATION_TASK_ID", ""))
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--task-input", type=Path)
@@ -689,9 +757,11 @@ def main(argv: list[str] | None = None) -> int:
     candidate_urls = flatten_candidate_urls(discovery.get("candidates", []))
     predecessor = options.get("predecessor") if args.task_input is not None else None
     if predecessor is not None:
+        prior_cursor, prior_results = load_prior_assessment_progress()
+        previous_by_url.update(prior_results)
         batch = rotate_assessment_urls_for_task(
             candidate_urls, predecessor, max_urls,
-            cursor_url=previous_cursor, previous_by_url=previous_by_url,
+            cursor_url=prior_cursor or previous_cursor, previous_by_url=previous_by_url,
         )
         batch_id = "discovery-run:" + predecessor["workflow_run_id"] + ":" + predecessor["artifact_sha256"][:12]
     else:
