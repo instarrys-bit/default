@@ -178,7 +178,8 @@
         "data/source_snapshots/<source_id>.txt"
       ],
       "known_writers": [
-        "script_collect_domains"
+        "script_collect_domains",
+        "workflow_auto_sync"
       ],
       "lock_key": "logical/production-pipeline + data/source_snapshots",
       "required_mode": "exclusive_exact_directory_and_child_path_lease",
