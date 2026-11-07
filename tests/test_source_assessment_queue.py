@@ -80,6 +80,14 @@ class AssessmentQueueTests(unittest.TestCase):
         self.assertEqual({item["repository"] for item in flattened[:3]}, {"a/r", "b/r", "c/r"})
         self.assertNotIn("requirements.txt", " ".join(item["url"] for item in flattened))
         self.assertEqual(flattened[3]["repository"], "a/r")
+        self.assertIsNone(assessor.candidate_url_priority(
+            "https://raw.githubusercontent.com/phishdestroy/namesilo-evidence/main/data/new/1996/02/1996-02-20.txt",
+            False, "phishdestroy/namesilo-evidence",
+        ))
+        self.assertIsNone(assessor.candidate_url_priority(
+            "https://raw.githubusercontent.com/org/normal-repo/main/data/1996-02-20.txt",
+            False, "org/normal-repo",
+        ))
 
     def test_task_batch_uses_cursor_skips_assessed_urls_and_rechecks_stale_parser_results(self):
         assessor = load_assessor()

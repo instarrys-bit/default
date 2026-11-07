@@ -36,10 +36,11 @@ SUPPORTED_RULE_LIST_SUFFIXES = {".txt", ".list", ".conf", ".yaml", ".yml", ".dat
 RULE_LIST_PATH_RE = re.compile(r"(?:adblock|blocklist|allowlist|denylist|domain|host|rules?|ruleset|clash|surge|shadowrocket|geosite|geoip|filter|dns)", re.I)
 NON_RULE_LIST_PATH_RE = re.compile(
     r"(?:^|/)(?:requirements(?:[-_][^/]*)?[.]txt|package[.]json|go[.]mod|go[.]sum|cargo[.]toml|pom[.]xml|gemfile(?:[.]lock)?|readme(?:[.][^/]*)?|license(?:[.][^/]*)?|changelog(?:[.][^/]*)?|contributing(?:[.][^/]*)?|makefile|title[.]txt|short_description[.]txt|full_description[.]txt)$"
-    r"|/(?:fastlane/metadata|docs?|examples?|tests?|test|translations?)/"
+    r"|/(?:fastlane/metadata|docs?|examples?|tests?|test|translations?|evidence|datasets?|archive|historical|history|backup)/"
     r"|(?:说明|description)[.]txt$",
     re.I,
 )
+NON_RULE_REPO_RE = re.compile(r"(?:evidence|dataset|archive|backup)", re.I)
 DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
 DOMAIN_RULE_RE = re.compile(r"^(DOMAIN|DOMAIN-SUFFIX),([^,\s]+)(?:,([^,\s]+))?$", re.I)
 QX_DOMAIN_RULE_RE = re.compile(r"^(HOST|HOST-SUFFIX),([^,\s]+),([^,\s]+)$", re.I)
@@ -335,15 +336,17 @@ def render_report(assessments: list[dict], drift_summary: dict | None = None) ->
     ])
     return "\n".join(rows)
 
-def candidate_url_priority(url: str, seeded: bool) -> tuple | None:
+def candidate_url_priority(url: str, seeded: bool, repository: str = "") -> tuple | None:
     parsed = urllib.parse.urlparse(url)
     if parsed.scheme != "https" or parsed.hostname != "raw.githubusercontent.com":
         return None
     path = urllib.parse.unquote(parsed.path).lower()
-    if SENSITIVE_PATH_RE.search(path) or NON_RULE_LIST_PATH_RE.search(path):
+    if NON_RULE_REPO_RE.search(repository) or SENSITIVE_PATH_RE.search(path) or NON_RULE_LIST_PATH_RE.search(path):
         return None
     suffix = Path(path).suffix
-    rule_path = bool(RULE_LIST_PATH_RE.search(path))
+    rule_path = bool(RULE_LIST_PATH_RE.search(repository + " " + path))
+    if suffix in {".txt", ".json"} and not rule_path:
+        return None
     if suffix not in SUPPORTED_RULE_LIST_SUFFIXES and not rule_path:
         return None
     return (not seeded, not rule_path, suffix not in SUPPORTED_RULE_LIST_SUFFIXES, path, url)
@@ -367,7 +370,7 @@ def flatten_candidate_urls(candidates: list[dict]) -> list[dict]:
         for url in candidate.get("rule_list_urls", []):
             if not isinstance(url, str) or url in seen:
                 continue
-            priority = candidate_url_priority(url, url in seeded)
+            priority = candidate_url_priority(url, url in seeded, repository)
             if priority is None:
                 continue
             seen.add(url)
