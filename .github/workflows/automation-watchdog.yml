@@ -1036,7 +1036,10 @@ jobs:
                   raise SystemExit(f"Production run {run_id} persisted SHA conflicts with GitHub; refusing cancellation.")
               if run.get("status") == "completed":
                   if run.get("conclusion") == "success":
-                      raise SystemExit(f"Production run {run_id} completed before the Assessment gate opened; inspect its outputs before proceeding.")
+                      message = f"Production run {run_id} completed before the Assessment gate opened. Its artifact is pre-assessment evidence, not an approved final publication; a fresh gated audit is required after Assessment."
+                      print(message)
+                      with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+                          summary.write("### Pre-assessment production artifact\n\n" + message + "\n")
                   continue
               if run.get("status") not in {"queued", "in_progress"}:
                   raise SystemExit(f"Production run {run_id} has unexpected status {run.get('status')!r}; refusing unsafe recovery.")
