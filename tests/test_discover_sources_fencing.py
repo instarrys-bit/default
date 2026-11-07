@@ -37,7 +37,7 @@ class DiscoverSourcesFencingTests(unittest.TestCase):
             report = runner / "reports" / "source-discovery.md"
             output.parent.mkdir(parents=True)
             report.parent.mkdir(parents=True)
-            data = {"candidates": []}
+            data = {"candidate_count": 0, "candidates": []}
             with patch.dict("os.environ", {"RUNNER_TEMP": directory}, clear=True), \
                  patch.object(discover_sources, "INDEPENDENT_ARTIFACT_MODE", True), \
                  patch.object(discover_sources, "ARTIFACT_ROOT", runner), \
