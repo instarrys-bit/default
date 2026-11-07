@@ -382,16 +382,19 @@ def sync(root: Path = ROOT, restore_ids: list[str] | None = None, now: str | Non
         lines = sorted(rule_lines[policy])
         new_text = "\n".join(lines) + ("\n" if lines else "")
         if path.read_text(encoding="utf-8") != new_text:
-            assert_resource_lease_for_repository_path(ROOT, path.relative_to(ROOT).as_posix())
+            if root.resolve() == ROOT.resolve():
+                assert_resource_lease_for_repository_path(ROOT, path.relative_to(ROOT).as_posix())
             path.write_text(new_text, encoding="utf-8")
 
     if archive_changed:
         archive["updated_at"] = timestamp
-        assert_resource_lease_for_repository_path(ROOT, "rulesets/config_conflict_archive.json")
+        if root.resolve() == ROOT.resolve():
+            assert_resource_lease_for_repository_path(ROOT, "rulesets/config_conflict_archive.json")
         archive_path.write_text(json.dumps(archive, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     if queue_changed:
         queue["updated_at"] = timestamp
-        assert_resource_lease_for_repository_path(ROOT, queue_path.relative_to(ROOT).as_posix())
+        if root.resolve() == ROOT.resolve():
+            assert_resource_lease_for_repository_path(ROOT, queue_path.relative_to(ROOT).as_posix())
         queue_path.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     restoration_options = [
