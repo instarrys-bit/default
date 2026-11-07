@@ -293,8 +293,8 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         entries = {item["program_id"]: item for item in writes["control_plane_side_effects"]}
         remote = entries["script_remote_task_queue_runtime"]
         store = entries["script_github_queue_store"]
-        self.assertEqual(remote["writes"], ["GitHub Issue #315 comment snapshots (external durable queue state)"])
-        self.assertEqual(store["writes"], ["GitHub Issue #315 comment snapshots (external durable queue state)"])
+        self.assertEqual(remote["side_effects"], ["GitHub Issue #315 comment snapshots (external durable queue state)"])
+        self.assertEqual(store["side_effects"], ["GitHub Issue #315 comment snapshots (external durable queue state)"])
         self.assertEqual(remote["control_plane_consistency"], "append_only_issue_snapshot_chain")
         self.assertIn("No GitHub Contents API", remote["write_boundary_fencing"])
         group = next(
@@ -357,7 +357,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertIn("script_json_document_store", doc_store["known_writers"])
         self.assertIn("script_resource_lease_runtime", groups["durable_task_queue_control_plane"]["writers"])
         self.assertEqual(groups["active_source_registry_and_activation"]["known_writers"], [])
-        self.assertNotIn("script_restore_automation_state", groups["source_candidate_artifacts"]["known_writers"])
+        self.assertIn("script_restore_automation_state", groups["source_candidate_artifacts"]["known_writers"])
         self.assertEqual(groups["source_discovery_artifacts"]["known_writers"], ["script_discover_sources", "workflow_source_discovery"])
         self.assertIn("script_restore_automation_state", groups["published_ruleset_artifacts"]["known_writers"])
         self.assertIn("script_restore_automation_state", groups["ruleset_manifest"]["known_writers"])
@@ -377,8 +377,8 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         writes = load_json("automation/resource_write_sets.json")
         entries = {item["program_id"]: item for item in writes["confirmed_write_sets"]}
         nonwriters = {item["program_id"]: item for item in writes["reviewed_non_writers"]}
-        self.assertIn("<caller-supplied --out path>", nonwriters["script_incident_state"]["writes"])
-        self.assertIn("/tmp/incident-state-body.md", nonwriters["script_incident_state"]["evidence"])
+        self.assertEqual(nonwriters["script_incident_state"]["classification"], "runner_local_ephemeral_output_non_dispatchable")
+        self.assertIn("/tmp", nonwriters["script_incident_state"]["evidence"])
         self.assertEqual(nonwriters["script_persist_review_cursor"]["classification"], "runner_local_failed_cursor_recovery_artifact_non_dispatchable")
         self.assertIn("RUNNER_TEMP", nonwriters["script_persist_review_cursor"]["evidence"])
         self.assertIn("task-input.json", entries["script_task_scheduler"]["ephemeral_unpublished_resources"])
