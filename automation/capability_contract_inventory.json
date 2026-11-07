@@ -2,13 +2,13 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-2026.11.05.integration",
   "status": "baseline_inventory",
-  "source_registry_blob_sha": "c4871f015961830718346a1d3dea18e0283c036e",
+  "source_registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
   "summary": {
     "registered_programs": 60,
     "python_components": 52,
     "python_components_with_concrete_io_contract": 1,
     "python_components_with_declared_registry_dependencies": 4,
-    "independently_dispatchable_python_components": 0,
+    "independently_dispatchable_python_components": 1,
     "note": "Counts reflect registry declarations, not runtime call-graph completeness."
   },
   "policy": {
@@ -105,24 +105,20 @@
         "script_discover_sources"
       ],
       "current_registry_inputs": [
-        "sources/discovered_sources.json candidate collection",
-        "sources/source_assessments.json prior history and cursor",
-        "validated task input: max_urls (1-20), max_file_bytes (1-1000000), max_total_bytes (1-10000000)"
+        "Verified runner-local sources/discovered_sources.json artifact from the exact successful discovery run",
+        "Read-only sources/source_assessments.json baseline history",
+        "validated bounded task input: max_urls (1-20), max_file_bytes (1-1000000), max_total_bytes (1-10000000)"
       ],
       "current_registry_outputs": [
-        "stdout JSON: assessed, bytes_read, parser_candidates, policy_candidates, activated=0, artifact_verification, artifact_publication",
-        "sources/source_assessments.json persistent history (published)",
-        "data/source_assessments_runtime.json current batch and ephemeral fingerprints (runner-local, never committed)",
-        "reports/source-assessment.md human-readable report (published)",
-        "automation/task_queue.json task.assessment_checkpoint: per-URL result and fingerprint checkpoint (durable CAS state; removed after successful independent verification)"
+        "stdout JSON: assessed, bytes_read, parser_candidates, policy_candidates, activated=0, artifact_verification",
+        "runner-local source_assessment history/runtime/report uploaded as immutable Actions artifact; no repository publication",
+        "GitHub Issue #315 task.assessment_checkpoint: per-URL result and fingerprint checkpoint (durable CAS state)"
       ],
       "current_invocation": "python_module_or_workflow_step",
-      "contract_status": "concrete_io_typed_predecessor_waiting_for_dedicated_discovery_workflow",
-      "dispatch_status": "disabled",
-      "missing_contract_fields": [
-        "complete_transitive_side_effect_verification"
-      ],
-      "audit_note": "Typed immutable predecessor contract and fenced output contract are retained, but independent dispatch remains disabled until the dedicated discovery-only producer workflow exists and the monolithic assessment step is removed without duplication.",
+      "contract_status": "runner_local_artifact_only_with_fenced_queue_checkpoint",
+      "dispatch_status": "enabled",
+      "missing_contract_fields": [],
+      "audit_note": "Independent task mode consumes the exact verified producer artifact from RUNNER_TEMP, writes all documents to a per-run RUNNER_TEMP artifact root, and performs no repository file or Contents API writes. Per-URL progress is the only shared mutation and is fenced by the task lease, logical/source-assessment-checkpoints and logical/production-pipeline. The global audit for unrelated non-dispatchable writers remains partial.",
       "contract_sample_path": "automation/capability_contracts/assess_sources.json"
     },
     {
@@ -1702,24 +1698,22 @@
         "script_discover_sources",
         "script_resource_lease_runtime"
       ],
-      "current_invocation": "Watchdog durable workflow-dispatch task; adapter and program orchestration remain disabled",
+      "current_invocation": "Watchdog durable workflow-dispatch task; adapter and program orchestration enabled",
       "current_registry_inputs": [
         "automation_task_id correlation",
         "resource_lease_proof",
         "main branch source snapshot"
       ],
       "current_registry_outputs": [
-        "sources/discovered_sources.json with workflow/run/head provenance",
-        "reports/source-discovery.md",
-        "source-discovery-output immutable artifact with logical-document SHA-256 proof"
+        "runner-local sources/discovered_sources.json and report under RUNNER_TEMP",
+        "source-discovery-output immutable artifact with exact workflow/run/head provenance and complete logical-document SHA-256 proof"
       ],
-      "contract_status": "workflow_and_typed_artifact_handoff_implemented_dormant",
-      "dispatch_status": "disabled",
+      "contract_status": "runner_local_artifact_only_verified_predecessor_handoff",
+      "dispatch_status": "enabled",
       "resource_keys": [
-        "sources/discovered_sources.json",
-        "reports/source-discovery.md"
+        "logical/source-discovery-run"
       ],
-      "verifier": "automation-watchdog workflow_run handler verifies exact run identity, uploaded artifact digest, producer metadata and equality with current main before enqueueing Assessment"
+      "verifier": "automation-watchdog workflow_run handler verifies exact run identity, uploaded artifact digest and producer metadata, then enqueues Assessment exactly once using the artifact root for subsequent claim and execution digest checks."
     }
   ]
 }
