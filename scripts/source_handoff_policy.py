@@ -5,6 +5,33 @@ from __future__ import annotations
 ACTIVE_ASSESSMENT_STATUSES = {"QUEUED", "CLAIMED", "VERIFYING"}
 
 
+def discovery_task_requires_handoff(task: dict, tasks: list) -> bool:
+    """Return whether a Discovery task still blocks the next scheduled cycle.
+
+    A terminal SUCCEEDED Discovery task is reconciled only until its exact
+    predecessor run has one independently verified, non-activating Assessment.
+    Once that proof exists, retaining the historical task must not block the
+    next daily Discovery idempotency key forever.
+    """
+    if not isinstance(task, dict) or task.get("target_program_id") != "workflow_source_discovery":
+        return False
+    status = task.get("status")
+    if status not in {"VERIFYING", "COMPLETED", "SUCCEEDED"}:
+        return False
+    if status != "SUCCEEDED":
+        return True
+
+    result = task.get("result")
+    evidence = result.get("run_evidence") if isinstance(result, dict) else None
+    run_id = evidence.get("run_id") if isinstance(evidence, dict) else None
+    if isinstance(run_id, int) and not isinstance(run_id, bool):
+        run_id = str(run_id)
+    if not isinstance(run_id, str) or not run_id.isdigit():
+        # Missing run evidence must remain visible to the exact-run resolver.
+        return True
+    return classify_assessment_handoff(tasks, run_id).get("state") != "already_assessed"
+
+
 def classify_assessment_handoff(tasks: list, workflow_run_id: str) -> dict:
     """Classify all Assessment tasks tied to one immutable Discovery run.
 
