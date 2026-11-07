@@ -908,6 +908,21 @@
       "completion": {
         "success_condition": "process_exit_code_zero_and_output_contract_validated",
         "independent_verification_required": true
+      },
+      "write_resources": [
+        "reports/approved-domain-rules.list",
+        "reports/rule-selector-audit.md"
+      ],
+      "publish_resources": [],
+      "resource_contract": {
+        "mode": "exclusive",
+        "resource_keys": [
+          "reports/approved-domain-rules.list",
+          "reports/rule-selector-audit.md"
+        ],
+        "lease_seconds": 300,
+        "fencing_required": true,
+        "coverage": "The disabled manual selector asserts the exact live resource lease immediately before creating/writing each report output. It is not in the production workflow and remains non-dispatchable until its input/output interface is separately reviewed."
       }
     },
     {
