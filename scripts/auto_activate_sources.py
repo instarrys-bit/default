@@ -12,6 +12,7 @@ from urllib.request import Request, urlopen
 from collect_domains import parse_source
 from source_registry import validate_registry
 from json_document_store import read_document
+from resource_lease_runtime import assert_resource_lease_for_repository_path
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "sources/domain_sources.json"
@@ -165,12 +166,14 @@ def main() -> None:
     registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
     matrix = read_document(MATRIX, "candidates", {"candidates": []})
     registry, activated, decisions = activate(registry, matrix)
+    assert_resource_lease_for_repository_path(ROOT, "sources/domain_sources.json")
     REGISTRY.write_text(json.dumps(registry, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     prior = json.loads(LOG.read_text(encoding="utf-8")) if LOG.exists() else {"schema_version": 1, "activations": []}
     known = {x.get("id") for x in prior.get("activations", [])}
     prior["activations"].extend(x for x in activated if x["id"] not in known)
     prior["last_evaluated_at"] = datetime.now(timezone.utc).isoformat()
     prior["last_decisions"] = decisions
+    assert_resource_lease_for_repository_path(ROOT, "sources/source_activation_log.json")
     LOG.parent.mkdir(parents=True, exist_ok=True)
     LOG.write_text(json.dumps(prior, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     lines = [
