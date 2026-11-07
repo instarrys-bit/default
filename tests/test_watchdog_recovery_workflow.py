@@ -236,7 +236,6 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('base_status="$(jq -r', watchdog)
         self.assertIn('"$base_key:recovery:1"', watchdog)
         self.assertIn('[ "$base_status" = "DEAD_LETTER" ]', watchdog)
-        self.assertIn('[ "$base_status" = "FAILED" ]', watchdog)
         self.assertIn('if [ -n "$recovery_key" ]; then', watchdog)
 
     def test_auto_sync_accepts_verifying_phase_resource_lease_after_task_lease_release(self):

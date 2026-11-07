@@ -1186,7 +1186,7 @@ jobs:
           recovery_key="$(jq -r --arg prefix "$base_key:recovery:" '[.tasks[]? | select((.idempotency_key // "") | startswith($prefix))] | last | .idempotency_key // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
           if [ -n "$recovery_key" ]; then
             idempotency_key="$recovery_key"
-          elif [ "$base_status" = "DEAD_LETTER" ] || [ "$base_status" = "FAILED" ]; then
+          elif [ "$base_status" = "DEAD_LETTER" ]; then
             idempotency_key="$base_key:recovery:1"
           else
             idempotency_key="$base_key"

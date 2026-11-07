@@ -72,7 +72,8 @@ def make_store(repository: str | None = None, branch: str | None = None,
 
 
 def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
-                   registry: dict, now: datetime | None = None) -> dict:
+                   registry: dict, now: datetime | None = None,
+                   precondition=None) -> dict:
     if not isinstance(task, dict):
         raise ValueError("task payload must be an object")
     now = now or now_utc()
@@ -105,6 +106,10 @@ def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
                     validate_manual_authorization_consumption(queue, old, authorization)
                 validate_candidate(queue, registry)
                 return queue, {"created": False, "task": old}
+        if precondition is not None:
+            if not callable(precondition):
+                raise ValueError("enqueue precondition must be callable")
+            precondition(queue)
         incoming_decision = payload.get("production_decision")
         incoming_fingerprint = payload.get("production_fingerprint")
         if (task.get("target_program_id") == "workflow_auto_sync"

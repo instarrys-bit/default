@@ -926,16 +926,33 @@ def execute_claimed_task(task: dict, adapter: dict, store, registry: dict,
 
 def enqueue_source_discovery_task(store, registry: dict, *, idempotency_key: str,
                                    priority: int = 55) -> dict:
-    """Enqueue at most one Watchdog discovery workflow per UTC day."""
-    match = re.fullmatch(r"source-discovery:(\d{4}-\d{2}-\d{2})", idempotency_key or "")
+    """Enqueue one daily Discovery task plus at most one recovery after a dead-letter."""
+    match = re.fullmatch(r"source-discovery:(\d{4}-\d{2}-\d{2})(?::recovery:(1))?", idempotency_key or "")
     if not match:
-        raise ValueError("source discovery requires a UTC-day idempotency key: source-discovery:YYYY-MM-DD")
+        raise ValueError("source discovery requires a UTC-day key or one recovery key: source-discovery:YYYY-MM-DD[:recovery:1]")
     try:
         datetime.strptime(match.group(1), "%Y-%m-%d")
     except ValueError as exc:
         raise ValueError("source discovery idempotency key contains an invalid UTC date") from exc
     if isinstance(priority, bool) or not isinstance(priority, int) or not 0 <= priority <= 100:
         raise ValueError("source discovery priority must be from 0 to 100")
+    precondition = None
+    if match.group(2):
+        base_key = f"source-discovery:{match.group(1)}"
+        def require_dead_lettered_daily_task(queue):
+            base_task = next((item for item in queue.get("tasks", [])
+                              if item.get("idempotency_key") == base_key), None)
+            if base_task is None or base_task.get("status") != "DEAD_LETTER":
+                raise ValueError("source discovery recovery requires a dead-lettered daily Discovery task")
+            other_recoveries = [
+                item for item in queue.get("tasks", [])
+                if isinstance(item.get("idempotency_key"), str)
+                and item.get("idempotency_key", "").startswith(base_key + ":recovery:")
+                and item.get("idempotency_key") != idempotency_key
+            ]
+            if other_recoveries:
+                raise ValueError("only one source discovery recovery attempt is allowed per UTC day")
+        precondition = require_dead_lettered_daily_task
     result = enqueue_remote({
         "idempotency_key": idempotency_key,
         "trace_id": idempotency_key,
@@ -944,7 +961,7 @@ def enqueue_source_discovery_task(store, registry: dict, *, idempotency_key: str
         "capability": "source_discovery",
         "priority": priority,
         "input": {},
-    }, store, registry)
+    }, store, registry, precondition=precondition)
     task = result["task"]
     return {
         "created": result["created"],
