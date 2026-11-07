@@ -1,4 +1,6 @@
+import hashlib
 import importlib.util
+import json
 import unittest
 from pathlib import Path
 
@@ -101,6 +103,44 @@ class AssessmentQueueTests(unittest.TestCase):
             "https://raw.githubusercontent.com/a/r/main/clash-rules/a2.txt",
         ])
         self.assertEqual(len({item["repository"] for item in batch}), 3)
+
+    def test_assessment_progress_restores_verified_prior_checkpoint_cursor(self):
+        assessor = load_assessor()
+        url = "https://raw.githubusercontent.com/o/r/main/rules.list"
+        result = {"url": url, "parser_candidate": "clash-domain-rules", "parser_version": 2, "sha256": "a" * 64}
+        encoded = json.dumps(result, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+        result_sha = hashlib.sha256(encoded).hexdigest()
+        artifact_sha = "b" * 64
+        queue = {"tasks": [{
+            "task_id": "prior-task", "target_program_id": "script_assess_sources",
+            "input": {"predecessor": {"workflow_run_id": "123456789", "artifact_sha256": artifact_sha}},
+            "assessment_checkpoint": {
+                "schema_version": 1, "batch_id": "discovery-run:123456789:" + artifact_sha[:12],
+                "predecessor_artifact_sha256": artifact_sha,
+                "completed": {url: {"result": result, "result_sha256": result_sha}},
+                "last_successful_url": url, "updated_at": "2026-11-07T12:48:00Z",
+            },
+        }]}
+        cursor, restored = assessor.assessment_progress_from_queue(queue, current_task_id="current-task")
+        self.assertEqual(cursor, url)
+        self.assertEqual(restored[url], result)
+
+    def test_assessment_progress_rejects_checkpoint_digest_mismatch(self):
+        assessor = load_assessor()
+        url = "https://raw.githubusercontent.com/o/r/main/rules.list"
+        artifact_sha = "b" * 64
+        queue = {"tasks": [{
+            "task_id": "prior-task", "target_program_id": "script_assess_sources",
+            "input": {"predecessor": {"workflow_run_id": "123456789", "artifact_sha256": artifact_sha}},
+            "assessment_checkpoint": {
+                "schema_version": 1, "batch_id": "discovery-run:123456789:" + artifact_sha[:12],
+                "predecessor_artifact_sha256": artifact_sha,
+                "completed": {url: {"result": {"url": url}, "result_sha256": "0" * 64}},
+                "last_successful_url": url, "updated_at": "2026-11-07T12:48:00Z",
+            },
+        }]}
+        with self.assertRaisesRegex(ValueError, "digest mismatch"):
+            assessor.assessment_progress_from_queue(queue, current_task_id="current-task")
 
     def test_clash_yaml_payload_is_parsed_as_domain_rules(self):
         assessor = load_assessor()
