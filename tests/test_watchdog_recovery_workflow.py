@@ -147,6 +147,13 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("assert-workflow", cursor)
         self.assertNotIn("git push", cursor)
 
+    def test_assessment_artifact_upload_output_uses_real_newlines(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        run_queue = workflow.split("name: Recover leases, verify results, and dispatch up to two independent tasks", 1)[1].split("name: Upload verified source assessment outputs as immutable artifact", 1)[0]
+        self.assertIn('output.write(f"assessment_output_expected={value}\\n")', run_queue)
+        self.assertNotIn('output.write(f"assessment_output_expected={value}\\\\n")', run_queue)
+        self.assertIn("steps.run-queue.outputs.assessment_output_expected == 'true'", workflow)
+        self.assertIn("Upload verified source assessment outputs as immutable artifact", workflow)
     def test_active_production_audit_is_cancelled_until_independent_assessment_passes(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("Cancel active production audits while independent Assessment gate is closed", workflow)
