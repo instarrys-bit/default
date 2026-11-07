@@ -153,7 +153,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         cancel = workflow.split("Cancel active production audits while independent Assessment gate is closed", 1)[1].split("Resolve completed Discovery run from durable task correlation", 1)[0]
         self.assertIn("classify_assessment_handoff(tasks, run_id)", cancel)
         self.assertIn("validate_run_head_sha(client, intent, run.get(\"head_sha\"))", cancel)
-        self.assertIn('"/actions/runs/{run_id}/cancel"', cancel)
+        self.assertIn("/actions/runs/{run_id}/cancel", cancel)
         self.assertIn('task.get("target_program_id") != "workflow_auto_sync"', cancel)
         self.assertIn("Production run", cancel)
         scheduler = (ROOT / "scripts" / "task_scheduler.py").read_text(encoding="utf-8")
