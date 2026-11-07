@@ -110,11 +110,19 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
             urls, truncated = discovery.discover_tree_urls("owner", "repo", "main", "token")
         self.assertEqual(urls, ["https://raw.githubusercontent.com/owner/repo/main/rules/direct.list"])
         self.assertTrue(truncated)
-    def test_assessment_read_and_review_capacity_is_high(self):
+    def test_assessment_batches_are_bounded_and_rotation_covers_inventory(self):
         assessment = load_script("assess_sources")
-        self.assertGreaterEqual(assessment.MAX_URLS, 5_000)
-        self.assertGreaterEqual(assessment.MAX_TOTAL_BYTES, 250_000_000)
-        self.assertGreaterEqual(assessment.MAX_BYTES, 5_000_000)
+        self.assertEqual(assessment.MAX_URLS, 20)
+        self.assertEqual(assessment.MAX_TOTAL_BYTES, 10_000_000)
+        self.assertEqual(assessment.MAX_BYTES, 1_000_000)
+        inventory = [{"url": f"https://raw.githubusercontent.com/owner/repo/main/{i}.list"} for i in range(45)]
+        first = assessment.rotate_assessment_urls(inventory, None, assessment.MAX_URLS)
+        second = assessment.rotate_assessment_urls(inventory, first[-1]["url"], assessment.MAX_URLS)
+        third = assessment.rotate_assessment_urls(inventory, second[-1]["url"], assessment.MAX_URLS)
+        self.assertEqual(len(first), 20)
+        self.assertEqual(len(second), 20)
+        self.assertEqual(len(third), 5)
+        self.assertEqual(len({item["url"] for item in first + second + third}), 45)
 
     def test_completed_tree_scan_is_skipped_until_repository_revision_changes(self):
         discovery = load_script("discover_sources")
