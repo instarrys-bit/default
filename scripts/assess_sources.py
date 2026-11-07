@@ -31,6 +31,15 @@ MAX_BYTES = 1_000_000
 # Keep the monolithic fallback bounded; repeated runs rotate through the full source inventory.
 MAX_TOTAL_BYTES = 10_000_000
 MAX_URLS = 20
+PARSER_VERSION = 2
+SUPPORTED_RULE_LIST_SUFFIXES = {".txt", ".list", ".conf", ".yaml", ".yml", ".dat", ".rules", ".hosts", ".adblock", ".filter", ".domains", ".json", ".ipset"}
+RULE_LIST_PATH_RE = re.compile(r"(?:adblock|blocklist|allowlist|denylist|domain|host|rules?|ruleset|clash|surge|shadowrocket|geosite|geoip|filter|dns)", re.I)
+NON_RULE_LIST_PATH_RE = re.compile(
+    r"(?:^|/)(?:requirements(?:[-_][^/]*)?[.]txt|package[.]json|go[.]mod|go[.]sum|cargo[.]toml|pom[.]xml|gemfile(?:[.]lock)?|readme(?:[.][^/]*)?|license(?:[.][^/]*)?|changelog(?:[.][^/]*)?|contributing(?:[.][^/]*)?|makefile|title[.]txt|short_description[.]txt|full_description[.]txt)$"
+    r"|/(?:fastlane/metadata|docs?|examples?|tests?|test|translations?)/"
+    r"|(?:说明|description)[.]txt$",
+    re.I,
+)
 DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
 DOMAIN_RULE_RE = re.compile(r"^(DOMAIN|DOMAIN-SUFFIX),([^,\s]+)(?:,([^,\s]+))?$", re.I)
 QX_DOMAIN_RULE_RE = re.compile(r"^(HOST|HOST-SUFFIX),([^,\s]+),([^,\s]+)$", re.I)
@@ -76,8 +85,18 @@ def readme_policy_claim(readme: str, url: str) -> list[str]:
 
 def assess_payload(payload: bytes, url: str, policy_claims: list[str]) -> dict:
     lines = payload.decode("utf-8-sig", errors="replace").splitlines()
-    substantive = [line.split("#", 1)[0].strip() for line in lines]
-    substantive = [line for line in substantive if line and not line.startswith(("!", "#", "["))]
+    substantive = []
+    for raw_line in lines:
+        line = raw_line.split("#", 1)[0].strip()
+        if not line or line.startswith(("!", "#", "[")) or line.lower() == "payload:":
+            continue
+        is_yaml_item = line.startswith("-")
+        if is_yaml_item:
+            line = line[1:].strip()
+            if len(line) >= 2 and line[0] == line[-1] and line[0] in {"'", '"'}:
+                line = line[1:-1].strip()
+        if line:
+            substantive.append((line, is_yaml_item))
     exact = set()
     suffix = set()
     actions = {}
@@ -86,11 +105,12 @@ def assess_payload(payload: bytes, url: str, policy_claims: list[str]) -> dict:
     domain_rule_lines = 0
     action_line_count = 0
     qx_domain_rule_lines = 0
+    clash_yaml_rule_lines = 0
     duplicate_domain_lines = 0
     adblock = set()
     domain_only = set()
     leading_dot_domain_count = 0
-    for line in substantive:
+    for line, is_yaml_item in substantive:
         match = DOMAIN_RULE_RE.fullmatch(line)
         if match:
             kind, domain, action = match.groups()
@@ -102,6 +122,8 @@ def assess_payload(payload: bytes, url: str, policy_claims: list[str]) -> dict:
                 duplicate_domain_lines += 1
             target.add(domain)
             domain_rule_lines += 1
+            if is_yaml_item:
+                clash_yaml_rule_lines += 1
             if action:
                 action = action.upper()
                 if action in {"DIRECT", "PROXY", "REJECT"}:
@@ -185,6 +207,8 @@ def assess_payload(payload: bytes, url: str, policy_claims: list[str]) -> dict:
         parser = "adblock-domain-rules"
     elif qx_domain_rule_lines >= 20:
         parser = "quantumult-domain-rules"
+    elif clash_yaml_rule_lines >= 20:
+        parser = "clash-domain-rules"
     elif domain_rule_count >= 20:
         parser = "shadowrocket-domain-rules"
     elif len(domain_only) >= 20 and len(domain_only) >= len(substantive) * 0.8:
@@ -197,6 +221,8 @@ def assess_payload(payload: bytes, url: str, policy_claims: list[str]) -> dict:
         "bytes": len(payload),
         "substantive_lines": len(substantive),
         "parser_candidate": parser,
+        "parser_version": PARSER_VERSION,
+        "clash_yaml_rule_lines": clash_yaml_rule_lines,
         "exact_domain_count": len(exact),
         "suffix_domain_count": len(suffix),
         "adblock_domain_count": len(adblock),
@@ -309,21 +335,60 @@ def render_report(assessments: list[dict], drift_summary: dict | None = None) ->
     ])
     return "\n".join(rows)
 
+def candidate_url_priority(url: str, seeded: bool) -> tuple | None:
+    parsed = urllib.parse.urlparse(url)
+    if parsed.scheme != "https" or parsed.hostname != "raw.githubusercontent.com":
+        return None
+    path = urllib.parse.unquote(parsed.path).lower()
+    if SENSITIVE_PATH_RE.search(path) or NON_RULE_LIST_PATH_RE.search(path):
+        return None
+    suffix = Path(path).suffix
+    rule_path = bool(RULE_LIST_PATH_RE.search(path))
+    if suffix not in SUPPORTED_RULE_LIST_SUFFIXES and not rule_path:
+        return None
+    return (not seeded, not rule_path, suffix not in SUPPORTED_RULE_LIST_SUFFIXES, path, url)
+
+
 def flatten_candidate_urls(candidates: list[dict]) -> list[dict]:
-    flattened = []
+    """Interleave candidate files across repositories so one repo cannot monopolize a batch."""
+    groups = []
     seen = set()
-    for candidate in sorted(candidates, key=lambda item: (not bool(item.get('seeded_source_urls')), -int(item.get('stars', 0)), str(item.get('repository', '')))):
-        repository = str(candidate.get('repository', ''))
-        if not repository or '/' not in repository:
+    ordered = sorted(candidates, key=lambda item: (
+        not bool(item.get("seeded_source_urls")),
+        -int(item.get("stars", 0) or 0),
+        str(item.get("repository", "")),
+    ))
+    for candidate in ordered:
+        repository = str(candidate.get("repository", ""))
+        if not repository or "/" not in repository:
             continue
-        seeded = set(candidate.get('seeded_source_urls', []))
-        for url in sorted(candidate.get('rule_list_urls', []), key=lambda value: (value not in seeded, value)):
-            if url in seen or SENSITIVE_PATH_RE.search(urllib.parse.urlparse(url).path):
+        seeded = set(candidate.get("seeded_source_urls", []))
+        urls = []
+        for url in candidate.get("rule_list_urls", []):
+            if not isinstance(url, str) or url in seen:
+                continue
+            priority = candidate_url_priority(url, url in seeded)
+            if priority is None:
                 continue
             seen.add(url)
-            flattened.append({'repository': repository, 'url': url, 'seeded': url in seeded, 'stars': int(candidate.get('stars', 0)), 'archived': bool(candidate.get('archived', False)), 'policy_claims': candidate.get('readme_policy_claims', {}).get(url, [])})
+            urls.append((priority, url))
+        urls.sort(key=lambda item: item[0])
+        group = [{
+            "repository": repository,
+            "url": url,
+            "seeded": url in seeded,
+            "stars": int(candidate.get("stars", 0) or 0),
+            "archived": bool(candidate.get("archived", False)),
+            "policy_claims": candidate.get("readme_policy_claims", {}).get(url, []),
+        } for _, url in urls]
+        if group:
+            groups.append(group)
+    flattened = []
+    for depth in range(max((len(group) for group in groups), default=0)):
+        for group in groups:
+            if depth < len(group):
+                flattened.append(group[depth])
     return flattened
-
 
 def rotate_assessment_urls(items: list[dict], cursor_url: str | None, limit: int = MAX_URLS) -> list[dict]:
     if not items:
@@ -337,8 +402,41 @@ def rotate_assessment_urls(items: list[dict], cursor_url: str | None, limit: int
     return (items[start:] + items[:start])[:max(0, int(limit))]
 
 
-def rotate_assessment_urls_for_task(items: list[dict], predecessor: dict, limit: int = MAX_URLS) -> list[dict]:
-    """Choose a stable batch for a producer run so queue retries cannot advance the cursor."""
+def _select_diverse_items(items: list[dict], limit: int) -> list[dict]:
+    groups = {}
+    for item in items:
+        repository = str(item.get("repository") or urllib.parse.urlparse(item.get("url", "")).netloc)
+        groups.setdefault(repository, []).append(item)
+    selected = []
+    depth = 0
+    while len(selected) < max(0, int(limit)):
+        progressed = False
+        for group in groups.values():
+            if depth < len(group):
+                selected.append(group[depth])
+                progressed = True
+                if len(selected) >= max(0, int(limit)):
+                    break
+        if not progressed:
+            break
+        depth += 1
+    return selected
+
+
+def _needs_parser_reassessment(previous: dict, item: dict) -> bool:
+    if previous.get("parser_version") == PARSER_VERSION:
+        return False
+    if previous.get("parser_candidate") != "unsupported_or_too_small":
+        return False
+    path = urllib.parse.unquote(urllib.parse.urlparse(str(item.get("url", ""))).path).lower()
+    return bool(RULE_LIST_PATH_RE.search(path))
+
+
+def rotate_assessment_urls_for_task(
+    items: list[dict], predecessor: dict, limit: int = MAX_URLS,
+    *, cursor_url: str | None = None, previous_by_url: dict | None = None,
+) -> list[dict]:
+    """Choose a stable, cursor-aware, repository-diverse batch for a producer run."""
     if not items:
         return []
     if not isinstance(predecessor, dict):
@@ -349,9 +447,24 @@ def rotate_assessment_urls_for_task(items: list[dict], predecessor: dict, limit:
         raise ValueError("task predecessor workflow_run_id must be numeric")
     if not isinstance(artifact_sha, str) or not re.fullmatch(r"[0-9a-f]{64}", artifact_sha):
         raise ValueError("task predecessor artifact digest must be a full SHA-256")
+    limit = max(0, int(limit))
+    if not limit:
+        return []
     seed = hashlib.sha256((run_id + ":" + artifact_sha).encode("ascii")).digest()
-    start = int.from_bytes(seed[:8], "big") % len(items)
-    return (items[start:] + items[:start])[:max(0, int(limit))]
+    cursor_index = next((i for i, item in enumerate(items) if item.get("url") == cursor_url), None) if cursor_url else None
+    start = (cursor_index + 1) % len(items) if cursor_index is not None else int.from_bytes(seed[:8], "big") % len(items)
+    rotated = items[start:] + items[:start]
+    previous = previous_by_url or {}
+    stale = [item for item in rotated if item.get("url") in previous and _needs_parser_reassessment(previous[item["url"]], item)]
+    fresh = [item for item in rotated if item.get("url") not in previous]
+    selected = _select_diverse_items(stale, min(limit, max(1, limit // 4))) if stale else []
+    selected_urls = {item.get("url") for item in selected}
+    selected.extend(_select_diverse_items([item for item in fresh if item.get("url") not in selected_urls], limit - len(selected)))
+    if len(selected) < limit:
+        selected_urls = {item.get("url") for item in selected}
+        remaining = [item for item in rotated if item.get("url") not in selected_urls]
+        selected.extend(_select_diverse_items(remaining, limit - len(selected)))
+    return selected
 
 def compact_assessment_result(result: dict) -> dict:
     """Persist metadata only; keep per-domain fingerprints ephemeral for same-run analysis."""
@@ -365,9 +478,10 @@ def compact_assessment_result(result: dict) -> dict:
 
 
 def assessment_cache_hit(previous: dict | None, content_sha256: str, policy_claims: list[str]) -> bool:
-    """Reuse parser output only when exact source bytes and README policy claims are unchanged."""
+    """Reuse parser output only when source bytes, policy claims, and parser version match."""
     return bool(
         previous
+        and previous.get("parser_version") == PARSER_VERSION
         and previous.get("sha256") == content_sha256
         and sorted(previous.get("readme_policy_claims", [])) == sorted(policy_claims)
         and not previous.get("error")
@@ -575,7 +689,10 @@ def main(argv: list[str] | None = None) -> int:
     candidate_urls = flatten_candidate_urls(discovery.get("candidates", []))
     predecessor = options.get("predecessor") if args.task_input is not None else None
     if predecessor is not None:
-        batch = rotate_assessment_urls_for_task(candidate_urls, predecessor, max_urls)
+        batch = rotate_assessment_urls_for_task(
+            candidate_urls, predecessor, max_urls,
+            cursor_url=previous_cursor, previous_by_url=previous_by_url,
+        )
         batch_id = "discovery-run:" + predecessor["workflow_run_id"] + ":" + predecessor["artifact_sha256"][:12]
     else:
         batch = rotate_assessment_urls(candidate_urls, previous_cursor, max_urls)
