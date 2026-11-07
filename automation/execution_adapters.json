@@ -67,11 +67,9 @@
       "target_program_id": "script_assess_sources",
       "target_kind": "python_component",
       "adapter_type": "python_cli",
-      "enabled": true,
+      "enabled": false,
       "interface_status": "reviewed",
-      "allowed_callers": [
-        "workflow_automation_watchdog"
-      ],
+      "allowed_callers": [],
       "entrypoint": {
         "path": "scripts/assess_sources.py",
         "executable": "python3",
@@ -252,8 +250,15 @@
       "required_read_only_resources": [
         "sources/discovered_sources.json"
       ],
-      "publish_resources": [],
-      "write_resources": [],
+      "publish_resources": [
+        "sources/source_assessments.json",
+        "reports/source-assessment.md"
+      ],
+      "write_resources": [
+        "sources/source_assessments.json",
+        "data/source_assessments_runtime.json",
+        "reports/source-assessment.md"
+      ],
       "dependency_contract": {
         "predecessor_program_id": "script_discover_sources",
         "artifact_path": "sources/discovered_sources.json",
@@ -1840,11 +1845,9 @@
       "target_program_id": "workflow_source_discovery",
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
-      "enabled": true,
+      "enabled": false,
       "interface_status": "workflow_dispatch_reviewed",
-      "allowed_callers": [
-        "workflow_automation_watchdog"
-      ],
+      "allowed_callers": [],
       "workflow": {
         "path": ".github/workflows/source-discovery.yml",
         "dispatchable": true,
