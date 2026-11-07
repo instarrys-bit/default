@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audit_id": "resource-ownership-audit-2026.11.07.source-dag1",
+  "audit_id": "resource-ownership-audit-2026.11.07.source-dag2",
   "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
@@ -50,6 +50,7 @@
       "scripts/restore_automation_state.py",
       "scripts/review_cursor.py",
       "scripts/select_domain_rules.py",
+      "scripts/source_handoff_policy.py",
       "scripts/source_registry.py",
       "scripts/sync_ruleset_config_conflicts.py",
       "scripts/task_queue.py",
@@ -69,8 +70,11 @@
       "tests/test_production_intent.py",
       "tests/test_remote_task_queue_runtime.py",
       "tests/test_restore_automation_state.py",
+      "tests/test_source_handoff_policy.py",
       "tests/test_task_queue.py",
       "tests/test_task_queue_runtime.py",
+      "tests/test_task_scheduler.py",
+      "tests/test_watchdog_recovery_workflow.py",
       "tests/test_workflow_config_guard_order.py"
     ],
     "limitation": "The active Source Discovery → Assessment DAG is scoped to runner-local immutable artifacts and a fenced Issue #315 checkpoint. The production repository publisher remains restricted to rulesets/**. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
@@ -545,6 +549,6 @@
       "Global dynamic path, third-party Action and cross-workflow runtime evidence remains required before enabling unrelated capabilities."
     ]
   },
-  "limitation": "The active Source Discovery → Assessment DAG is scoped to runner-local immutable artifacts and a fenced Issue #315 checkpoint. The production repository publisher remains restricted to rulesets/**. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
+  "limitation": "The active Source Discovery → Assessment DAG is scoped to runner-local immutable artifacts and a fenced Issue #315 checkpoint. Per-capability repository writes are validated against explicit exclusive resource_contract.resource_keys; protected modules/** and JavaScript remain unwritable. The production repository publisher stages only the three ruleset deliverables under rulesets/**; this is not a system-wide automation write limit. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
   "reviewed_at": "2026-11-07"
 }
