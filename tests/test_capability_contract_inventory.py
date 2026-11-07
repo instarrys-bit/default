@@ -271,34 +271,26 @@ class CapabilityContractInventoryTests(unittest.TestCase):
     def test_owner_config_baseline_metadata_writer_is_inventoried_and_fenced(self):
         writes = load_json("automation/resource_write_sets.json")
         entry = next(
-            item for item in writes["confirmed_write_sets"]
+            item for item in writes["reviewed_non_writers"]
             if item["program_id"] == "script_register_config_baseline"
         )
-        self.assertEqual(
-            set(entry["writes"]),
-            {
-                "sources/policy.json",
-                "automation/release_manifest.json",
-                "automation/production_workflow_map.json",
-                "automation/resource_write_sets.json",
-            },
-        )
-        self.assertIn("logical/production-pipeline", entry["lease_keys"])
-        self.assertIn("modules/uu.conf is read-only", entry["write_boundary_fencing"])
+        self.assertEqual(entry["classification"], "runner_local_config_baseline_review_proposal_non_dispatchable")
+        self.assertIn("RUNNER_TEMP/config-baseline-proposal.json", entry["evidence"])
+        self.assertIn("never writes", entry["evidence"])
 
         ownership = load_json("automation/resource_ownership_audit.json")
         group = next(
             item for item in ownership["resource_groups"]
             if item["id"] == "owner_config_baseline_metadata"
         )
-        self.assertEqual(group["lease_key"], "logical/production-pipeline")
-        self.assertIn("script_register_config_baseline", group["writers"])
+        self.assertEqual(group["status"], "no_repository_metadata_writer")
+        self.assertEqual(group["known_writers"], [])
         self.assertEqual(ownership["status"], "partial_static_audit")
 
 
     def test_durable_task_queue_writers_are_classified_as_issue_snapshot_control_plane(self):
         writes = load_json("automation/resource_write_sets.json")
-        entries = {item["program_id"]: item for item in writes["confirmed_write_sets"]}
+        entries = {item["program_id"]: item for item in writes["control_plane_side_effects"]}
         remote = entries["script_remote_task_queue_runtime"]
         store = entries["script_github_queue_store"]
         self.assertEqual(remote["writes"], ["GitHub Issue #315 comment snapshots (external durable queue state)"])
@@ -326,45 +318,26 @@ class CapabilityContractInventoryTests(unittest.TestCase):
     def test_newly_identified_direct_writers_are_registered_with_scoped_outputs(self):
         writes = load_json("automation/resource_write_sets.json")
         entries = {item["program_id"]: item for item in writes["confirmed_write_sets"]}
-        required = {
-            "script_lifecycle_gate",
-            "script_import_request_observations",
-            "script_build_rule_provenance",
-            "script_restore_automation_state",
-            "script_apply_safe_repair",
-            "script_diagnose_workflow_failure",
-            "script_incident_state",
-            "script_persist_review_cursor",
-            "script_production_intent",
-            "script_task_scheduler",
-            "script_build_dashboard_snapshot",
-            "script_append_step_summary",
-            "script_auto_activate_sources",
-            "script_audit_source_lineage",
-            "script_audit_policy_source_overlap",
-            "script_audit_external_domains",
-            "script_audit_config_drift",
-            "script_audit_ruleset_references",
-            "script_audit_ruleset_config_overlap",
-            "script_json_document_store",
-            "script_resource_lease_runtime",
+        nonwriters = {item["program_id"]: item for item in writes["reviewed_non_writers"]}
+        required_writers = {
+            "script_lifecycle_gate", "script_import_request_observations",
+            "script_build_rule_provenance", "script_restore_automation_state",
+            "script_apply_safe_repair", "script_task_scheduler",
+            "script_audit_source_lineage", "script_audit_policy_source_overlap",
+            "script_audit_external_domains", "script_audit_config_drift",
+            "script_audit_ruleset_references", "script_audit_ruleset_config_overlap",
+            "script_json_document_store", "script_resource_lease_runtime",
         }
-        self.assertTrue(required.issubset(entries))
+        self.assertTrue(required_writers.issubset(entries))
         self.assertEqual(entries["script_lifecycle_gate"]["writes"], ["rulesets/lifecycle_state.json"])
         self.assertIn("data/domain_candidates.json", entries["script_import_request_observations"]["writes"])
         self.assertIn("sources/rule_provenance.json", entries["script_build_rule_provenance"]["writes"])
-        self.assertIn("logical/production-pipeline", entries["script_restore_automation_state"]["lease_keys"])
+        self.assertEqual(entries["script_restore_automation_state"]["publish_resources"], ["rulesets/**"])
         self.assertEqual(entries["script_apply_safe_repair"]["publish_resources"], [])
-        self.assertTrue(entries["script_diagnose_workflow_failure"]["ephemeral_unpublished_resources"])
-        self.assertTrue(entries["script_incident_state"]["ephemeral_unpublished_resources"])
-        self.assertEqual(entries["script_persist_review_cursor"]["ephemeral_unpublished_resources"], [])
-        self.assertEqual(entries["script_build_dashboard_snapshot"]["writes"], ["dashboard/data.json"])
-        self.assertEqual(entries["script_append_step_summary"]["writes"], ["$GITHUB_STEP_SUMMARY"])
+        self.assertEqual(entries["script_json_document_store"]["publish_resources"], [])
+        self.assertEqual(entries["script_audit_policy_source_overlap"]["publish_resources"], [])
+        self.assertEqual(n in nonwriters for n in ("script_auto_activate_sources", "script_persist_review_cursor", "script_incident_state")), True
         self.assertTrue(all("modules/uu.conf" not in item["writes"] for item in entries.values()))
-        self.assertIn("sources/domain_sources.json", entries["script_auto_activate_sources"]["writes"])
-        self.assertIn("sources/source_activation_log.json", entries["script_auto_activate_sources"]["writes"])
-        self.assertIn("sources/policy_source_overlap.json", entries["script_audit_policy_source_overlap"]["writes"])
-        self.assertIn("reports/source-lineage-audit.json", entries["script_audit_source_lineage"]["writes"])
         self.assertEqual(writes["status"], "partial_static_entrypoint_review")
 
     def test_shared_document_and_workflow_cas_gaps_are_explicit(self):
@@ -373,18 +346,18 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         groups = {item["id"]: item for item in audit["resource_groups"]}
         self.assertIn("data/domain_candidates.json logical document", {item["resource"] for item in writes["confirmed_shared_write_groups"]})
         self.assertIn("sources/rule_provenance.json logical document", {item["resource"] for item in writes["confirmed_shared_write_groups"]})
-        self.assertEqual(groups["domain_candidate_buffer"]["status"], "known_shared_writers_central_pipeline_fence_only")
-        self.assertEqual(groups["rule_provenance_ledger"]["status"], "known_shared_writers_central_pipeline_fence_only")
+        self.assertEqual(groups["domain_candidate_buffer"]["status"], "fenced_at_each_document_store_mutation")
+        self.assertEqual(groups["rule_provenance_ledger"]["status"], "fenced_at_each_document_store_mutation")
         self.assertEqual(groups["watchdog_unregistered_path_registry"]["status"], "bounded_cas_retry_implemented_concurrent_integration_unproven")
         self.assertEqual(groups["request_intake_observations"]["status"], "external_issue_ledger_read_by_production_fingerprint_and_candidate_importer")
         self.assertIn("workflow_request_intake", groups["request_intake_observations"]["known_writers"])
-        self.assertEqual(groups["active_source_registry_and_activation"]["status"], "production_registry_writer_central_pipeline_fence_only")
-        self.assertEqual(groups["policy_source_overlap_audit"]["status"], "audit_output_central_pipeline_fence_only")
+        self.assertEqual(groups["active_source_registry_and_activation"]["status"], "no_repository_writer_source_activation_artifact_only")
+        self.assertEqual(groups["policy_source_overlap_audit"]["status"], "artifact_only_no_repository_publication")
         doc_store = groups["shared_json_document_store"]
         self.assertIn("script_json_document_store", doc_store["known_writers"])
         self.assertIn("script_resource_lease_runtime", groups["durable_task_queue_control_plane"]["writers"])
-        self.assertIn("script_auto_activate_sources", groups["active_source_registry_and_activation"]["known_writers"])
-        self.assertIn("script_restore_automation_state", groups["source_candidate_artifacts"]["known_writers"])
+        self.assertEqual(groups["active_source_registry_and_activation"]["known_writers"], [])
+        self.assertNotIn("script_restore_automation_state", groups["source_candidate_artifacts"]["known_writers"])
         self.assertEqual(groups["source_discovery_artifacts"]["known_writers"], ["script_discover_sources", "workflow_source_discovery"])
         self.assertIn("script_restore_automation_state", groups["published_ruleset_artifacts"]["known_writers"])
         self.assertIn("script_restore_automation_state", groups["ruleset_manifest"]["known_writers"])
@@ -422,9 +395,9 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertFalse(writer_ids & external_ids)
         self.assertFalse(nonwriter_ids & external_ids)
         self.assertEqual(writer_ids | nonwriter_ids | external_ids, python_ids)
-        self.assertEqual(len(writer_ids), 36)
-        self.assertEqual(len(nonwriter_ids), 15)
-        self.assertEqual(external_ids, {"script_github_workflow_adapter"})
+        self.assertEqual(len(writer_ids), 25)
+        self.assertEqual(len(nonwriter_ids), 24)
+        self.assertEqual(external_ids, {"script_github_workflow_adapter", "script_github_queue_store", "script_remote_task_queue_runtime"})
         self.assertIn("script_resource_lease_runtime", writer_ids)
         self.assertIn("script_json_document_store", writer_ids)
 
