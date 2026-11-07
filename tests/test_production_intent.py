@@ -569,6 +569,63 @@ class ProductionIntentTests(unittest.TestCase):
         ]}
         self.assertEqual(active_production_fingerprints(queue, self.fp), [])
 
+    def test_expired_claimed_production_lease_does_not_block_replacement(self):
+        old = "a" * 64
+        queue = {"tasks": [
+            {
+                "target_program_id": "workflow_auto_sync",
+                "status": "CLAIMED",
+                "input": {"production_fingerprint": old},
+                "resource_lease": {
+                    "status": "ACTIVE",
+                    "expires_at": "2026-11-07T04:00:00Z",
+                    "released_at": None,
+                },
+            },
+        ]}
+        self.assertEqual(
+            active_production_fingerprints(queue, self.fp, now=self.now),
+            [],
+        )
+
+    def test_live_claimed_production_lease_still_blocks_replacement(self):
+        old = "a" * 64
+        queue = {"tasks": [
+            {
+                "target_program_id": "workflow_auto_sync",
+                "status": "CLAIMED",
+                "input": {"production_fingerprint": old},
+                "resource_lease": {
+                    "status": "ACTIVE",
+                    "expires_at": "2026-11-07T06:00:00Z",
+                    "released_at": None,
+                },
+            },
+        ]}
+        self.assertEqual(
+            active_production_fingerprints(queue, self.fp, now=self.now),
+            [old],
+        )
+
+    def test_released_claimed_production_lease_does_not_block_replacement(self):
+        old = "a" * 64
+        queue = {"tasks": [
+            {
+                "target_program_id": "workflow_auto_sync",
+                "status": "VERIFYING",
+                "input": {"production_fingerprint": old},
+                "resource_lease": {
+                    "status": "RELEASED",
+                    "expires_at": "2026-11-07T06:00:00Z",
+                    "released_at": "2026-11-07T05:00:00Z",
+                },
+            },
+        ]}
+        self.assertEqual(
+            active_production_fingerprints(queue, self.fp, now=self.now),
+            [],
+        )
+
     def test_active_fingerprint_reader_rejects_invalid_queue_or_current_digest(self):
         with self.assertRaisesRegex(ValueError, "tasks array"):
             active_production_fingerprints({}, self.fp)
