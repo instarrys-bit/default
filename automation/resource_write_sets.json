@@ -456,13 +456,19 @@
         "REJECT additions remain gated by existing publication/manual-approval checks."
       ],
       "evidence": "main() reads the above policy and state inputs, writes pending_queue.json, all three policy lists and rulesets/manifest.json.",
-      "write_boundary_fencing": "The production audit job is read-only (contents:read). The publisher revalidates the exact Watchdog task and live resource lease, stages only the explicit ruleset publication allowlist, and is followed by independent remote ruleset verification. Repository-local filesystem mutations are not intercepted by a filesystem hook. Independent writers require separate ownership and lease proof.",
+      "write_boundary_fencing": "The script explicitly asserts the exact rulesets resource lease immediately before every published-file mutation; the Watchdog-issued logical/production-pipeline lease serializes the complete auto_sync pipeline. No global filesystem guard is installed.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
       "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
       "lease_keys": [
-        "logical/production-pipeline"
+        "logical/production-pipeline",
+        "rulesets/reject_review_queue.json",
+        "rulesets/pending_queue.json",
+        "rulesets/direct.list",
+        "rulesets/proxy.list",
+        "rulesets/reject.list",
+        "rulesets/manifest.json"
       ]
     },
     {
@@ -704,13 +710,20 @@
         "May delete eligible published rules and update lifecycle/archive state; may restore explicitly selected IDs."
       ],
       "evidence": "main() writes policy lists, observations, archive, queue, manifest and lifecycle reports.",
-      "write_boundary_fencing": "The production audit job is read-only (contents:read). The publisher revalidates the exact Watchdog task and live resource lease, stages only the explicit ruleset publication allowlist, and is followed by independent remote ruleset verification. Repository-local filesystem mutations are not intercepted by a filesystem hook. Independent writers require separate ownership and lease proof.",
+      "write_boundary_fencing": "The script explicitly asserts the exact rulesets resource lease immediately before every published-file mutation; the Watchdog-issued logical/production-pipeline lease serializes the complete auto_sync pipeline. No global filesystem guard is installed.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
       "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
       "lease_keys": [
-        "logical/production-pipeline"
+        "logical/production-pipeline",
+        "rulesets/direct.list",
+        "rulesets/proxy.list",
+        "rulesets/reject.list",
+        "rulesets/lifecycle_observations.json",
+        "rulesets/deletion_archive.json",
+        "rulesets/pending_queue.json",
+        "rulesets/manifest.json"
       ]
     },
     {
@@ -740,7 +753,7 @@
         "rulesets/lifecycle_state.json"
       ],
       "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Repository-local filesystem mutations are not intercepted by a filesystem hook. This component runs through the publisher's explicit allowlist after live resource-lease revalidation; cross-workflow writers require separate ownership and lease proof.",
+      "write_boundary_fencing": "The script explicitly asserts the exact rulesets resource lease immediately before every published-file mutation; the Watchdog-issued logical/production-pipeline lease serializes the complete auto_sync pipeline. No global filesystem guard is installed.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -786,13 +799,14 @@
         "scripts/build_rulesets.py"
       ],
       "evidence": "refresh() reads all three list files and build_rulesets.py, then replaces rulesets/manifest.json.",
-      "write_boundary_fencing": "The production audit job is read-only (contents:read). The publisher revalidates the exact Watchdog task and live resource lease, stages only the explicit ruleset publication allowlist, and is followed by independent remote ruleset verification. Repository-local filesystem mutations are not intercepted by a filesystem hook. Independent writers require separate ownership and lease proof.",
+      "write_boundary_fencing": "The script explicitly asserts the exact rulesets resource lease immediately before every published-file mutation; the Watchdog-issued logical/production-pipeline lease serializes the complete auto_sync pipeline. No global filesystem guard is installed.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
       "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
       "lease_keys": [
-        "logical/production-pipeline"
+        "logical/production-pipeline",
+        "rulesets/manifest.json"
       ]
     },
     {
@@ -945,7 +959,9 @@
         "rulesets/pending_queue.json",
         "rulesets/lifecycle_state.json",
         "rulesets/config_conflict_archive.json",
-        "rulesets/reject_review_queue.json"
+        "rulesets/reject_review_queue.json",
+        "rulesets/lifecycle_observations.json",
+        "rulesets/deletion_archive.json"
       ],
       "lease_enforcement": "restore_state() is per-run isolated workspace only. restore_publish_outputs() calls assert_resource_lease_from_environment for each exact rulesets file before creating parent directories or writing; the workflow holds the live Watchdog task lease and logical/production-pipeline lease through publish.",
       "publish_resources": [
@@ -1044,13 +1060,19 @@
         "Can restore selected archive IDs into rule outputs/queue after rechecking current config."
       ],
       "evidence": "sync() writes changed policy lists, archive, queue and two reports.",
-      "write_boundary_fencing": "The production audit job is read-only (contents:read). The publisher revalidates the exact Watchdog task and live resource lease, stages only the explicit ruleset publication allowlist, and is followed by independent remote ruleset verification. Repository-local filesystem mutations are not intercepted by a filesystem hook. Independent writers require separate ownership and lease proof.",
+      "write_boundary_fencing": "The script explicitly asserts the exact rulesets resource lease immediately before every published-file mutation; the Watchdog-issued logical/production-pipeline lease serializes the complete auto_sync pipeline. No global filesystem guard is installed.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
       "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
       "lease_keys": [
-        "logical/production-pipeline"
+        "logical/production-pipeline",
+        "rulesets/direct.list",
+        "rulesets/proxy.list",
+        "rulesets/reject.list",
+        "rulesets/config_conflict_archive.json",
+        "rulesets/pending_queue.json",
+        "rulesets/reject_review_queue.json"
       ]
     },
     {
@@ -1588,7 +1610,9 @@
         "rulesets/pending_queue.json",
         "rulesets/lifecycle_state.json",
         "rulesets/config_conflict_archive.json",
-        "rulesets/reject_review_queue.json"
+        "rulesets/reject_review_queue.json",
+        "rulesets/lifecycle_observations.json",
+        "rulesets/deletion_archive.json"
       ],
       "fence": "Watchdog task lease plus logical/production-pipeline lease and exact resource leases for every rulesets/** file; restore_publish_outputs reasserts the exact file lease; rulesets-only staging allowlist and final staged-path fence.",
       "boundary": "Main-branch publication is restricted to rulesets/**; sources/**, data/**, reports/**, modules/** and JS scripts are never staged or published."
