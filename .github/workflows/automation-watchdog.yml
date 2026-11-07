@@ -945,7 +945,7 @@ jobs:
           assessment_tasks = [
               task for task in tasks
               if task.get("target_program_id") == "script_assess_sources"
-              and task.get("status") in {"QUEUED", "VERIFYING", "COMPLETED", "SUCCEEDED"}
+              and task.get("status") == "QUEUED"
               and isinstance((task.get("input") or {}).get("predecessor"), dict)
           ]
           print(json.dumps({
