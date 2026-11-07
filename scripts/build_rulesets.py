@@ -11,6 +11,7 @@ from domain_rule_engine import RuleIndex, load_domain_rules, inspect_suffix_scop
 from audit_ruleset_config_overlap import all_rule_lines, prepare_rules
 from sync_ruleset_config_conflicts import classify_rule
 from source_registry import validate_registry
+from resource_lease_runtime import assert_resource_lease_for_repository_path
 
 from json_document_store import read_document
 ROOT=Path(__file__).resolve().parents[1]
@@ -369,9 +370,11 @@ def main():
         new_approved[policy].add((scope,domain))
         approved+=1
 
+    assert_resource_lease_for_repository_path(ROOT, "rulesets/reject_review_queue.json")
     OUT.mkdir(parents=True,exist_ok=True)
     reject_review_queue_items.sort(key=lambda item:(item["domain"],item["scope"]))
     reject_queue_path=OUT/"reject_review_queue.json"
+    assert_resource_lease_for_repository_path(ROOT, "rulesets/reject_review_queue.json")
     reject_queue_path.write_text(json.dumps({
         "schema_version":1,
         "policy":"REJECT",
@@ -451,6 +454,7 @@ def main():
     for policy in POLICIES:
         for scope,domain in sorted(rule_sets[policy]):
             queue_map.pop((policy,scope,domain),None)
+    assert_resource_lease_for_repository_path(ROOT, "rulesets/pending_queue.json")
     queue_path.write_text(json.dumps({
         "schema_version":1,
         "max_published_rules":30000,
@@ -479,6 +483,7 @@ def main():
             "removed_sample":removed[:10],
             "baseline_initialized":not existed
         }
+        assert_resource_lease_for_repository_path(ROOT, "rulesets/" + output_path.name)
         output_path.write_text(current_text,encoding="utf-8")
     expected_outputs={policy.lower()+".list" for policy in POLICIES}
     actual_outputs={item.name for item in OUT.glob("*.list")}
@@ -548,6 +553,7 @@ def main():
             "Static checks do not replace Shadowrocket device testing."
         ]
     }
+    assert_resource_lease_for_repository_path(ROOT, "rulesets/manifest.json")
     (OUT/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(json.dumps(manifest,ensure_ascii=False,sort_keys=True))
 
