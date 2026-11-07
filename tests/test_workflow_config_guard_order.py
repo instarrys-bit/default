@@ -369,6 +369,21 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         step = publish.split("Verify base commit and safely publish allowlisted outputs", 1)[1].split("      - name: ", 1)[0]
         self.assertNotIn("AUTOMATION_TASK_ID:", step)
 
+    def test_publish_revalidation_accepts_verifying_task_with_live_resource_fence(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        revalidate = workflow.split("Revalidate Watchdog task and export canonical lease context", 1)[1].split(
+            "      - name: ", 1
+        )[0]
+        self.assertIn('task.get("status") not in {"CLAIMED", "VERIFYING"}', revalidate)
+        self.assertIn('task.get("status") == "CLAIMED"', revalidate)
+        self.assertIn('task_lease_token = task_lease.get("token")', revalidate)
+        self.assertIn('"resource-fence-only"', revalidate)
+        self.assertIn('resource_lease.get("status") != "ACTIVE"', revalidate)
+        self.assertIn('record.get("fencing_token") != item.get("fencing_token")', revalidate)
+        self.assertIn('record.get("task_id") != task_id', revalidate)
+        self.assertIn('expiry <= now', revalidate)
+        self.assertNotIn('or not isinstance(lease, dict)', revalidate)
+
 
     def test_workflow_env_blocks_are_not_empty(self):
         workflow = (ROOT / ".github" / "workflows" / "auto_sync.yml").read_text(encoding="utf-8")
