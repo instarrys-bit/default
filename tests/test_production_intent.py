@@ -156,6 +156,18 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertIn("modules/uu.conf", entry["classification_reason"])
         self.assertTrue(entry["classification_basis"])
 
+    def test_repository_manifest_classifies_source_handoff_helper_as_non_production(self):
+        manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
+        path = "scripts/source_handoff_policy.py"
+        self.assertIn(path, manifest["non_production_path_patterns"])
+        result = classify_paths([path], manifest)
+        self.assertEqual(result["status"], "NO_INPUT_CHANGE")
+        self.assertEqual(result["non_production_changes"], [path])
+        self.assertEqual(result["unknown_changes"], [])
+        ledger = json.loads((ROOT / "automation" / "unregistered_path_registry.json").read_text(encoding="utf-8"))
+        entry = next(item for item in ledger["entries"] if item["path"] == path)
+        self.assertEqual(entry["status"], "CLASSIFIED_CONTROL_PLANE")
+
     def test_repository_manifest_classifies_external_intelligence_catalog_as_production_input(self):
         manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
         path = "sources/external_intelligence_catalog.json"
