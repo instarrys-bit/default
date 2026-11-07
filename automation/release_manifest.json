@@ -13,18 +13,18 @@
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "7bd4ab144a1eab08e9b9786078847aef6e953a8a"
+      "git_blob_sha": "dc058e31c9959bda6ffed7a25c38207c9ab0dc50"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
       "schema_version": 2,
-      "git_blob_sha": "7f965db26b197f041ce1741556857876ecdcd876"
+      "git_blob_sha": "f49abbb0c0b55c601d37305e3ed33ec463e2b899"
     }
   },
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "fb08d44dbe856d748dc36c7db532ea1c5e4c60aa"
+      "git_blob_sha": "55eb1f7de70efbc72eaeae7b9425d4d2d7786f71"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -54,7 +54,7 @@
     },
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
-      "git_blob_sha": "c813fdb6a3d30a93ad67bdf9322dff0ca3871d99"
+      "git_blob_sha": "ea95978cff6c4f9dcdd3a9c8d059914b52f3da35"
     },
     "remote_task_queue_runtime": {
       "path": "scripts/remote_task_queue_runtime.py",
@@ -62,7 +62,7 @@
     },
     "task_scheduler": {
       "path": "scripts/task_scheduler.py",
-      "git_blob_sha": "0af538a45af04e942ca172af28c97089c8a2cdb4"
+      "git_blob_sha": "c9cdde05c6bfb783787fcf7e738d88633e5136dd"
     },
     "resource_lease_runtime": {
       "path": "scripts/resource_lease_runtime.py",
@@ -86,11 +86,11 @@
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "4ce55923c9c54b755d1e98550e1ef4672762a8ab"
+      "git_blob_sha": "4235197182323a17081dc5d288e9e2ff55b76bc2"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "2e3749f1ab3b1945362913829d1bf5ca634acd20"
+      "git_blob_sha": "dd673e93251224bbf43ae798123eb6be2362bbe7"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -163,6 +163,18 @@
     "production_control": {
       "path": "automation/production_control.json",
       "git_blob_sha": "dd4b129987bdad61413adc26e4d63474004119e8"
+    },
+    "source_handoff_policy": {
+      "path": "scripts/source_handoff_policy.py",
+      "git_blob_sha": "5764ff880804d5e1047b0e7cf7c0fa3c8708b663"
+    },
+    "resource_write_sets": {
+      "path": "automation/resource_write_sets.json",
+      "git_blob_sha": "189c3fa6e679120eae7549dea24b77509a70036d"
+    },
+    "production_workflow_map": {
+      "path": "automation/production_workflow_map.json",
+      "git_blob_sha": "5adbdd08a99b23b8189ec3f4dd28b613e5314a05"
     }
   },
   "compatibility": {
@@ -180,6 +192,7 @@
     "python_adapter_default_deny": true
   },
   "known_gaps": [
+    "Historical duplicate Assessment tasks exist for Discovery run 42373818238 (legacy and parser-v2 keys); the new resolver recognizes both by predecessor identity and suppresses future duplicate enqueue. A fresh post-merge Discovery → Assessment run is still required to prove the corrected one-to-one path.",
     "Live multi-run interruption/resume contention canary remains desirable for further hardening.",
     "The global transitive writer inventory for unrelated non-dispatchable capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
     "The deterministic review-engine source revision is not yet pinned to a verified commit."
