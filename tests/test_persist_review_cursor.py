@@ -1,8 +1,10 @@
 import json
+import os
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -24,14 +26,16 @@ class PersistReviewCursorTests(unittest.TestCase):
             root = Path(tmp); artifact = root / "artifact.json"
             destination = root / "repo/sources/review_cursor.json"
             artifact.write_text(json.dumps(self.cursor()), encoding="utf-8")
-            self.assertEqual(persist_cursor(artifact, destination), "in_progress")
+            with patch.dict(os.environ, {"RUNNER_TEMP": tmp}):
+                self.assertEqual(persist_cursor(artifact, destination), "in_progress")
             self.assertEqual(json.loads(destination.read_text())["next_index"], 2)
 
     def test_missing_artifact_is_successful_noop(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp); destination = root / "repo/sources/review_cursor.json"
             destination.parent.mkdir(parents=True); destination.write_text("previous")
-            self.assertEqual(persist_cursor(root / "missing.json", destination), "missing")
+            with patch.dict(os.environ, {"RUNNER_TEMP": tmp}):
+                self.assertEqual(persist_cursor(root / "missing.json", destination), "missing")
             self.assertEqual(destination.read_text(), "previous")
 
     def test_complete_cursor_removes_stale_checkpoint(self):
@@ -40,15 +44,17 @@ class PersistReviewCursorTests(unittest.TestCase):
             destination = root / "repo/sources/review_cursor.json"
             destination.parent.mkdir(parents=True); destination.write_text("stale")
             artifact.write_text(json.dumps(self.cursor(status="complete", next_index=5)))
-            self.assertEqual(persist_cursor(artifact, destination), "complete")
+            with patch.dict(os.environ, {"RUNNER_TEMP": tmp}):
+                self.assertEqual(persist_cursor(artifact, destination), "complete")
             self.assertFalse(destination.exists())
 
     def test_invalid_cursor_fails_closed(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp); artifact = root / "artifact.json"
             artifact.write_text(json.dumps(self.cursor(next_index=0)))
-            with self.assertRaisesRegex(ValueError, "checkpoint"):
-                persist_cursor(artifact, root / "repo/sources/review_cursor.json")
+            with patch.dict(os.environ, {"RUNNER_TEMP": tmp}):
+                with self.assertRaisesRegex(ValueError, "checkpoint"):
+                    persist_cursor(artifact, root / "repo/sources/review_cursor.json")
 
 
     def test_invalid_complete_cursor_does_not_remove_existing_checkpoint(self):
@@ -57,9 +63,16 @@ class PersistReviewCursorTests(unittest.TestCase):
             destination = root / "repo/sources/review_cursor.json"
             destination.parent.mkdir(parents=True); destination.write_text("keep")
             artifact.write_text(json.dumps(self.cursor(status="complete", next_index=4)))
-            with self.assertRaisesRegex(ValueError, "completed cursor"):
-                persist_cursor(artifact, destination)
+            with patch.dict(os.environ, {"RUNNER_TEMP": tmp}):
+                with self.assertRaisesRegex(ValueError, "completed cursor"):
+                    persist_cursor(artifact, destination)
             self.assertEqual(destination.read_text(), "keep")
+
+    def test_rejects_repository_cursor_destination(self):
+        with tempfile.TemporaryDirectory() as temp_root:
+            with patch.dict(os.environ, {"RUNNER_TEMP": temp_root}):
+                with self.assertRaisesRegex(ValueError, "under RUNNER_TEMP"):
+                    persist_cursor(Path(temp_root) / "missing.json", ROOT / "sources/review_cursor.json")
 
 if __name__ == "__main__":
     unittest.main()
