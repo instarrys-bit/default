@@ -1000,26 +1000,6 @@
       ]
     },
     {
-      "program_id": "script_task_queue_runtime",
-      "source": "scripts/task_queue_runtime.py",
-      "writes": [
-        "automation/task_queue.json"
-      ],
-      "document_store": [
-        "automation/task_queue.json"
-      ],
-      "dynamic_children": [],
-      "read_resources": [
-        "automation/task_queue.json",
-        "automation/program_registry.json"
-      ],
-      "side_effects": [],
-      "evidence": "Local enqueue_task(), claim_next(), complete_task(), and recover_expired() update the local queue file.",
-      "write_boundary_fencing": "Runner-local fcntl flock plus fsync/atomic replace; this is not a cross-runner lock or a durable GitHub writer. Production Watchdog scheduling uses the remote SHA-CAS runtime instead.",
-      "lease_keys": [],
-      "control_plane_consistency": "runner_local_lock"
-    },
-    {
       "program_id": "script_task_scheduler",
       "source": "scripts/task_scheduler.py",
       "writes": [
@@ -1369,6 +1349,12 @@
       "evidence": "Validates task envelopes and durable queue document structure; persistence is delegated to remote/local queue runtime and GitHubContentsQueueStore."
     },
     {
+      "program_id": "script_task_queue_runtime",
+      "source": "scripts/task_queue_runtime.py",
+      "classification": "legacy_local_ephemeral_queue_runtime_non_dispatchable",
+      "evidence": "This legacy local-only queue runtime has no workflow invocation and its adapter/orchestration remain disabled. Its default queue file is now under RUNNER_TEMP (or the OS temporary directory), and queue_lock rejects every repository-local path before directory creation or mutation. The local flock and atomic replace protect only the current runner's temporary queue. Production Watchdog scheduling uses the remote Issue #315 queue runtime instead."
+    },
+    {
       "program_id": "script_task_result_verifier",
       "source": "scripts/task_result_verifier.py",
       "classification": "in_memory_task_transition_verifier",
@@ -1483,7 +1469,7 @@
       "transient write-and-revert activity",
       "external filesystem/API effects not represented as literal Request methods",
       "unexecuted runtime branches and indirect dynamic imports",
-      "legacy local task_queue_runtime writes a caller-selected JSON path under a local flock; it has no cross-runner lease and remains non-dispatchable; Issue #193 runtime concurrency evidence is incomplete."
+      "The legacy local task_queue_runtime is explicitly non-dispatchable and restricted to runner/OS temporary storage; it is not a cross-runner queue."
     ]
   },
   "workflow_native_write_sites": [
