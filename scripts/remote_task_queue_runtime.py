@@ -71,6 +71,114 @@ def make_store(repository: str | None = None, branch: str | None = None,
     return GitHubContentsQueueStore(repository, path, branch=branch, token=token)
 
 
+
+def record_discovery_handoff_reconciliation(
+    store: GitHubContentsQueueStore,
+    registry: dict,
+    *,
+    task_id: str,
+    workflow_run_id: str,
+    workflow_head_sha: str,
+    artifact_sha256: str,
+    now: datetime | None = None,
+) -> dict:
+    """Persist a terminal, exact-proof Discovery -> Assessment handoff in the durable queue."""
+    if not isinstance(task_id, str) or not re.fullmatch(r"task_[0-9a-f]{24}", task_id):
+        raise ValueError("Discovery task_id is invalid")
+    if not isinstance(workflow_run_id, str) or not workflow_run_id.isdigit():
+        raise ValueError("workflow_run_id must be a decimal string")
+    if not isinstance(workflow_head_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", workflow_head_sha):
+        raise ValueError("workflow_head_sha must be a full Git commit SHA")
+    if not isinstance(artifact_sha256, str) or not re.fullmatch(r"[0-9a-f]{64}", artifact_sha256):
+        raise ValueError("artifact_sha256 must be a full SHA-256 digest")
+    now = now or now_utc()
+
+    def mutate(queue: dict):
+        validate_envelope(queue)
+        validate_candidate(queue, registry)
+        discovery = next((item for item in queue["tasks"] if item.get("task_id") == task_id), None)
+        if not isinstance(discovery, dict):
+            raise ValueError("Discovery task does not exist in the durable queue")
+        if discovery.get("target_program_id") != "workflow_source_discovery" or discovery.get("status") != "SUCCEEDED":
+            raise ValueError("handoff reconciliation requires a SUCCEEDED Discovery task")
+        evidence = (discovery.get("result") or {}).get("run_evidence")
+        if (not isinstance(evidence, dict)
+                or str(evidence.get("run_id")) != workflow_run_id
+                or evidence.get("head_sha") != workflow_head_sha
+                or evidence.get("status") != "completed"
+                or evidence.get("conclusion") != "success"):
+            raise ValueError("Discovery task does not contain the exact successful run/head proof")
+
+        exact_matches = []
+        for candidate in queue["tasks"]:
+            if candidate.get("target_program_id") != "script_assess_sources":
+                continue
+            predecessor = (candidate.get("input") or {}).get("predecessor")
+            if not isinstance(predecessor, dict):
+                continue
+            if (
+                predecessor.get("program_id") == "script_discover_sources"
+                and predecessor.get("workflow_name") == "Shadowrocket Source Discovery (Watchdog)"
+                and predecessor.get("workflow_run_id") == workflow_run_id
+                and predecessor.get("workflow_head_sha") == workflow_head_sha
+                and predecessor.get("artifact_path") == "sources/discovered_sources.json"
+                and predecessor.get("artifact_sha256") == artifact_sha256
+            ):
+                exact_matches.append(candidate)
+        exact_matches.sort(key=lambda item: (str(item.get("created_at", "")), str(item.get("task_id", ""))))
+        if not exact_matches:
+            raise ValueError("no Assessment task contains the exact Discovery run/head/artifact predecessor proof")
+        active = [item for item in exact_matches if item.get("status") in {"QUEUED", "CLAIMED", "VERIFYING"}]
+        if active:
+            raise ValueError("Assessment handoff is not terminal while exact predecessor tasks remain active")
+        verified = []
+        for item in exact_matches:
+            verification = item.get("verification")
+            result = item.get("result")
+            artifact = result.get("artifact_verification") if isinstance(result, dict) else None
+            if (
+                item.get("status") == "SUCCEEDED"
+                and isinstance(verification, dict)
+                and verification.get("status") == "passed"
+                and isinstance(artifact, dict)
+                and artifact.get("valid") is True
+                and artifact.get("activation_count") == 0
+            ):
+                verified.append(item)
+        if not verified:
+            raise ValueError("no exact Assessment task has passed independent verification and non-activation proof")
+        canonical = verified[0]
+        canonical_id = canonical["task_id"]
+        task_ids = [item["task_id"] for item in exact_matches]
+        record = {
+            "schema_version": 1,
+            "status": "already_assessed",
+            "discovery_run_id": workflow_run_id,
+            "discovery_head_sha": workflow_head_sha,
+            "discovery_artifact_path": "sources/discovered_sources.json",
+            "discovery_artifact_sha256": artifact_sha256,
+            "canonical_assessment_task_id": canonical_id,
+            "assessment_task_ids": task_ids,
+            "duplicate_assessment_task_ids": [value for value in task_ids if value != canonical_id],
+            "assessment_verification": json.loads(json.dumps(canonical["verification"], ensure_ascii=False)),
+            "assessment_artifact_verification": json.loads(json.dumps(
+                canonical["result"]["artifact_verification"], ensure_ascii=False
+            )),
+            "recorded_at": stamp(now),
+        }
+        existing = discovery.get("handoff_reconciliation")
+        if existing is not None:
+            stable = [key for key in record if key != "recorded_at"]
+            if not isinstance(existing, dict) or any(existing.get(key) != record[key] for key in stable):
+                raise ValueError("existing handoff reconciliation conflicts with the exact verified proof")
+            return queue, {"recorded": False, "reconciliation": existing}
+        discovery["handoff_reconciliation"] = record
+        discovery["updated_at"] = stamp(now)
+        validate_candidate(queue, registry)
+        return queue, {"recorded": True, "reconciliation": record}
+
+    return store.mutate(mutate)
+
 def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
                    registry: dict, now: datetime | None = None,
                    precondition=None) -> dict:
