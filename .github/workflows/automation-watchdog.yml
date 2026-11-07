@@ -1086,9 +1086,11 @@ jobs:
                   relationship = validate_run_head_sha(workflow_client, intent, run.get("head_sha"))
                   if (evidence.get("head_sha") != run.get("head_sha")
                           or evidence.get("head_sha_relationship") != relationship
-                          or evidence.get("status") != run.get("status")
-                          or evidence.get("conclusion") != run.get("conclusion")):
-                      raise SystemExit("Persisted Discovery run evidence changed or failed SHA relationship verification.")
+                          ):
+                      raise SystemExit("Persisted Discovery run identity or SHA relationship verification failed.")
+                  # Run status/conclusion are mutable lifecycle fields. The exact run
+                  # identity and current GitHub API state are authoritative; a normal
+                  # queued -> in_progress -> completed transition is not evidence drift.
                   if run.get("status") != "completed" or run.get("conclusion") != "success":
                       continue
                   artifact_url = f"https://api.github.com/repos/{repo}/actions/runs/{run_id}/artifacts?per_page=100"
