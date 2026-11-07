@@ -1031,7 +1031,7 @@ jobs:
                   run_id = str(run.get("id",""))
                   if not run_id.isdigit():
                       raise SystemExit("Matched Discovery workflow run has an invalid numeric run ID.")
-                  if "source-assessment:" + run_id in existing_keys:
+                  if "source-assessment:" + run_id + ":parser-v2" in existing_keys:
                       continue
                   artifact_url = f"https://api.github.com/repos/{repo}/actions/runs/{run_id}/artifacts?per_page=100"
                   artifact_req = urllib.request.Request(artifact_url, headers={"Accept":"application/vnd.github+json","Authorization":"Bearer "+token,"X-GitHub-Api-Version":"2022-11-28","User-Agent":"Shadowrocket-Watchdog-Discovery-Reconciler/1.0"})
@@ -1154,7 +1154,7 @@ jobs:
           task_input="$(jq -cn --argjson predecessor "$predecessor"             '{max_urls:20,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}')"
           queue_token="$GITHUB_TOKEN"
           unset GITHUB_TOKEN
-          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py             --repository "$GITHUB_REPOSITORY" --branch main --token-stdin             --idempotency-key "source-assessment:$SOURCE_RUN_ID"             --priority 60 --input-json "$task_input" enqueue-source-assessment
+          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py             --repository "$GITHUB_REPOSITORY" --branch main --token-stdin             --idempotency-key "source-assessment:$SOURCE_RUN_ID:parser-v2"             --priority 60 --input-json "$task_input" enqueue-source-assessment
           unset queue_token
 
       - name: Enqueue independent source discovery only after its authorization gate opens

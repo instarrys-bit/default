@@ -1008,7 +1008,7 @@ def enqueue_source_assessment_task(store, registry: dict, adapters: dict, *,
     errors = validate_json_schema(input_payload, adapter.get("input_contract"))
     if errors:
         raise ValueError("source assessment input contract failed: " + "; ".join(errors[:5]))
-    expected_key = f"source-assessment:{predecessor['workflow_run_id']}"
+    expected_key = f"source-assessment:{predecessor['workflow_run_id']}:parser-v2"
     if idempotency_key != expected_key:
         raise ValueError("source assessment idempotency key must be bound to its producer workflow run")
     result = enqueue_remote({
