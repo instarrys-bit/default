@@ -324,9 +324,19 @@ def assert_resource_lease_for_repository_path(root, relative_path):
     relative = Path(relative_path)
     if relative.is_absolute() or ".." in relative.parts:
         raise ValueError("resource path must be a safe repository-relative path")
-    target = (root_path / relative).resolve(strict=False)
+    lexical_target = root_path / relative
+    cursor = root_path
+    for part in relative.parts:
+        cursor = cursor / part
+        if cursor.is_symlink():
+            raise ValueError("resource path may not traverse symlinks")
+        if cursor.exists() and cursor.is_file() and cursor.stat().st_nlink > 1:
+            raise ValueError("resource path may not target a hard-linked file")
+    target = lexical_target.resolve(strict=False)
     if target != root_path and root_path not in target.parents:
         raise ValueError("resource path escapes the supplied workspace")
+    if target != lexical_target:
+        raise ValueError("resource path resolves through an alias")
     repository_root = Path(__file__).resolve().parents[1]
     if target == repository_root or target.is_relative_to(repository_root):
         assert_resource_lease_from_environment(relative.as_posix())
