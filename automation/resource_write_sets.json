@@ -1298,7 +1298,7 @@
     }
   ],
   "not_yet_proven": [
-    "Complete transitive write sets for every registered Python component; the inventory now records 27 shared repository writer entrypoints in this pass but is not a machine-verified filesystem trace.",
+    "Complete transitive write sets for every registered Python component; the inventory now records 25 shared repository writer entrypoints in this pass but is not a machine-verified filesystem trace.",
     "Dynamic path selection and caller-controlled output paths require runtime enforcement tests, especially diagnosis, incident-state, review-cursor and repair utilities.",
     "The Watchdog reads automation/unregistered_path_registry.json but does not write it; static call-site evidence shows no repository writer. Retain this as a read-only control-plane input and verify no indirect writer appears in the complete import graph.",
     "The request-intake workflow uses the fixed shared concurrency group shadowrocket-domain-intake (cancel-in-progress:false) plus Git-ref CAS for sources/request_domain_observations.json; same-domain and different-domain concurrent-run integration tests, retry exhaustion and live Actions evidence remain pending.",
@@ -1307,7 +1307,7 @@
     "Atomic multi-resource lease acquisition and compatibility of per-resource locks across all independent/cross-workflow writers remain unproven.",
     "Static entrypoint inventory does not prove absence of unregistered dynamic writes, subprocess writes, external API mutations or filesystem writes hidden behind imported helpers.",
     "All remaining registered Python components must be checked for indirect writes through imported helpers, subprocesses and dynamically selected outputs; runner-local report writers and runner-local source-activation proposal outputs must remain distinct.",
-    "The 52 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and one external workflow-dispatch side-effect adapter. Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths.",
+    "The 52 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and three external control-plane side-effect components (two Issue #315 queue stores and one GitHub workflow-dispatch adapter). Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths.",
     "Static Python mutation-site and workflow-native scans do not prove transient write-and-revert activity, Git metadata changes, external side effects or unexecuted call paths. No global filesystem guard or Python audit hook is installed."
   ],
   "review_context": {
