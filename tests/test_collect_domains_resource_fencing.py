@@ -24,7 +24,7 @@ class CollectDomainsResourceFenceTests(unittest.TestCase):
         write_sets = json.loads((ROOT / "automation/resource_write_sets.json").read_text(encoding="utf-8"))
         ownership = json.loads((ROOT / "automation/resource_ownership_audit.json").read_text(encoding="utf-8"))
         self.assertTrue(any(item["resource"] == "data/source_snapshots/<source_id>.txt" for item in write_sets["confirmed_shared_write_groups"]))
-        self.assertTrue(any(item["id"] == "source_snapshot_files" for item in ownership["resource_groups"]))
+        self.assertTrue(any(item["id"] == "source_snapshot_files" and "workflow_auto_sync" in item["known_writers"] for item in ownership["resource_groups"]))
 
 
 if __name__ == "__main__":
