@@ -5,7 +5,7 @@
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
     "registry_blob_sha": "8ccc7809c98a90c2abfa11f4a0520ca33092e588",
-    "adapters_blob_sha": "5b1f7d17b77f0f593c01bd4806a096a6be502053",
+    "adapters_blob_sha": "c2abca9c662f0bb5d3d4199b2bdf1c03aecb65c1",
     "inspected_sources": [
       ".github/workflows/auto_sync.yml",
       ".github/workflows/automation-watchdog.yml",
@@ -73,7 +73,7 @@
       "tests/test_task_queue_runtime.py",
       "tests/test_workflow_config_guard_order.py"
     ],
-    "limitation": "Static Python mutation-site inventory and workflow-native scan cover the registered writers and all eight workflows. Dynamic shell/action effects and real concurrent-run integration evidence remain open. Ruleset writers now use exact per-path live resource lease assertions; Watchdog manifest repair is serialized with auto_sync by the shared concurrency group. The global audit remains partial for non-ruleset shared JSON documents and request-intake CAS concurrency.",
+    "limitation": "Static Python mutation-site inventory and workflow-native scan cover the registered writers and all eight workflows. Ruleset output mutations now have exact per-file lease assertions; Watchdog manifest repair shares the main-writer concurrency group. The global audit remains partial for non-ruleset shared JSON documents, dynamic shell/action effects, and real concurrent-run integration evidence.",
     "reviewed_at": "2026-11-04",
     "isolated_ephemeral_outputs": [
       {
