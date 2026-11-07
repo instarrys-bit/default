@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
+from resource_lease_runtime import assert_resource_lease_for_repository_path
 
 ROOT = Path(__file__).resolve().parents[1]
 RULESETS = ROOT / "rulesets"
@@ -78,7 +79,9 @@ def update_lifecycle_state(root: Path = ROOT, now: str | None = None) -> dict:
         "updated_at": timestamp,
         "deletion_policy": "Only separately verified lifecycle-invalid decisions may remove rules. Evidence loss, source disappearance, lineage changes, conflicts or missing observations are not deletion evidence."
     }
+    assert_resource_lease_for_repository_path(root, "rulesets/lifecycle_state.json")
     directory.mkdir(parents=True, exist_ok=True)
+    assert_resource_lease_for_repository_path(root, "rulesets/lifecycle_state.json")
     state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return state
 
