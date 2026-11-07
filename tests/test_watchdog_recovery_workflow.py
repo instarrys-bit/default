@@ -140,7 +140,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("assert-workflow", cursor)
         self.assertNotIn("git push", cursor)
 
-    def test_independent_source_discovery_and_assessment_are_authorized_artifact_only_dag(self):
+    def test_independent_source_discovery_and_assessment_remain_dormant_until_acceptance(self):
         source = (ROOT / ".github" / "workflows" / "source-discovery.yml").read_text(encoding="utf-8")
         watchdog = WATCHDOG.read_text(encoding="utf-8")
         audit = AUTO_SYNC.read_text(encoding="utf-8")
@@ -148,8 +148,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
         discovery_adapter = next(x for x in adapters["adapters"] if x["target_program_id"] == "workflow_source_discovery")
         discovery_program = next(x for x in registry["programs"] if x["id"] == "workflow_source_discovery")
-        self.assertTrue(discovery_adapter["enabled"])
-        self.assertTrue(discovery_program["orchestration"]["enabled"])
+        self.assertFalse(discovery_adapter["enabled"])
+        self.assertFalse(discovery_program["orchestration"]["enabled"])
         self.assertEqual(discovery_adapter["workflow"]["path"], ".github/workflows/source-discovery.yml")
         self.assertIn("Verify exact Watchdog dispatch and install live resource fence", source)
         self.assertIn("resource_lease_runtime.py", source)
@@ -169,15 +169,14 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("no sources/ commit is required", watchdog)
         self.assertIn("enqueue-source-discovery", watchdog)
         self.assertIn("Independent source discovery remains dormant", watchdog)
-        self.assertIn("vars.SOURCE_DISCOVERY_MODE || 'independent'", watchdog)
+        self.assertIn("vars.SOURCE_DISCOVERY_MODE || 'monolithic_fallback'", watchdog)
         # The monolithic steps are retained only as an explicit fallback, not run in independent mode.
         self.assertIn("if: ${{ env.SOURCE_DISCOVERY_MODE != 'independent' }}", audit)
         self.assertIn("Discover candidate source repositories (non-activating)", audit)
         self.assertIn("Assess discovered rule-list syntax and policy claims", audit)
         assessor = next(x for x in adapters["adapters"] if x["target_program_id"] == "script_assess_sources")
-        self.assertTrue(assessor["enabled"])
-        self.assertEqual(assessor["write_resources"], [])
-        self.assertEqual(assessor["publish_resources"], [])
+        self.assertFalse(assessor["enabled"])
+        self.assertEqual(assessor["allowed_callers"], [])
         self.assertIn("Upload verified source assessment outputs as immutable artifact", watchdog)
         auto_sync = next(x for x in adapters["adapters"] if x["target_program_id"] == "workflow_auto_sync")
         self.assertIn("sources/discovered_sources.json", auto_sync["resource_contract"]["resource_keys"])
