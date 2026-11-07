@@ -182,7 +182,8 @@
     "Durable per-URL checkpoint interruption/resume is unit-tested; live multi-run interruption/resume evidence remains pending.",
     "Issue #193 remains open: transitive writer coverage, runtime write traces, dynamic resource path mapping and cross-workflow lease serialization are incomplete.",
     "Issue #192 remains open: no live non-production immutable artifact handoff canary has been accepted.",
-    "Production control remains HOLD; no unattended production task can run until the separate control-plane release decision."
+    "Production control is currently enabled in automation/production_control.json; Watchdog may enqueue production work only when its fingerprint, authorization, durable-task and live-lease gates pass. Independent source adapters remain disabled.",
+    "Post-merge Watchdog-dispatched production and immutable source-artifact handoff evidence has not yet been recorded for the merged source-DAG candidate."
   ],
   "next_migration_gate": {
     "required_before_independent_python_dispatch": [

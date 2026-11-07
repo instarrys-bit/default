@@ -292,7 +292,7 @@
     }
   ],
   "architecture_findings": [
-    "Source discovery and assessment are independently dispatched by Watchdog and exchange a typed immutable artifact with exact run/head provenance.",
+    "The independent Source Discovery → Source Assessment DAG is implemented but dormant: both adapters remain disabled, and Watchdog/auto_sync default to monolithic_fallback until live canary and resource-audit acceptance.",
     "Both source capabilities write only to isolated RUNNER_TEMP artifact roots; the main-branch source documents are read-only baselines.",
     "Assessment's only shared mutation is the per-URL task checkpoint in GitHub Issue #315, guarded by task lease and logical resource fences.",
     "The production publish workflow stages and commits rulesets/** only; modules/uu.conf and all non-ruleset repository paths remain outside the publish allowlist.",
@@ -307,7 +307,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-dormant-2026.11.07.1",
-    "release_manifest_blob_sha": "639bc69b83ed3963cb4c91c51b67d523b2b57356",
+    "release_manifest_blob_sha": "be5c1aca1d80d858e815d30c73da6178be533d71",
     "program_registry_blob_sha": "8ccc7809c98a90c2abfa11f4a0520ca33092e588",
     "execution_adapters_blob_sha": "6d358799ec5015f242cdf3ab4e54d55dec5b5790",
     "added_after_release_baseline": true,
