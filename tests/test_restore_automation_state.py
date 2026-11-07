@@ -1,4 +1,5 @@
 import io, sys, tarfile, tempfile, unittest
+from unittest.mock import patch
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -121,7 +122,7 @@ class RestoreAutomationStateTests(unittest.TestCase):
             self.assertFalse((repo/"modules/uu.conf").exists())
             self.assertFalse((repo/"sources/policy.json").exists())
 
-    def test_publish_restore_copies_reports_rulesets_and_shards(self):
+    def test_publish_restore_copies_only_rulesets_and_ignores_other_outputs(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp); archive=root/"audit.tar.gz"; repo=root/"repo"
             self.make_archive(archive, [
@@ -132,12 +133,15 @@ class RestoreAutomationStateTests(unittest.TestCase):
                 ("sources/source_assessments.json.parts-abcd/part-000000.jsonl", "{}\\n"),
                 ("sources/domain_reviews.json", "ignored"),
             ])
-            result=restore_publish_outputs(archive, repo)
-            self.assertEqual(result["restored_files"], 4)
-            self.assertFalse((repo/"sources/policy.json").exists())
+            with patch("restore_automation_state.assert_resource_lease_from_environment") as lease:
+                result=restore_publish_outputs(archive, repo)
+            self.assertEqual(result["restored_files"], 1)
             self.assertTrue((repo/"rulesets/direct.list").exists())
-            self.assertTrue((repo/"sources/source_assessments.json.parts-abcd/part-000000.jsonl").exists())
-            self.assertFalse((repo/"sources/domain_reviews.json").exists())
+            self.assertFalse((repo/"reports/project-status.md").exists())
+            self.assertFalse((repo/"sources/policy.json").exists())
+            self.assertFalse((repo/"sources/source_assessments.json.manifest.json").exists())
+            self.assertFalse((repo/"sources/source_assessments.json.parts-abcd/part-000000.jsonl").exists())
+            lease.assert_called_once_with("rulesets/direct.list")
 
     def test_publish_restore_removes_legacy_monolith_when_manifest_is_present(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -146,12 +150,15 @@ class RestoreAutomationStateTests(unittest.TestCase):
             (repo/"sources/discovered_sources.json").write_text("legacy", encoding="utf-8")
             self.make_archive(archive, [("sources/discovered_sources.json.manifest.json", "{}")])
             restore_publish_outputs(archive, repo)
-            self.assertFalse((repo/"sources/discovered_sources.json").exists())
-            self.assertTrue((repo/"sources/discovered_sources.json.manifest.json").exists())
+            self.assertTrue((repo/"sources/discovered_sources.json").exists())
+            self.assertFalse((repo/"sources/discovered_sources.json.manifest.json").exists())
 
 
 
-    def test_policy_input_is_not_restored_from_historical_audit_artifact(self):
+    def test_publish_allowlist_is_rulesets_only(self):
+        from restore_automation_state import PUBLISH_DIR_PREFIXES
+        self.assertEqual(PUBLISH_FILES, set())
+        self.assertEqual(PUBLISH_DIR_PREFIXES, ("rulesets/",))
         self.assertNotIn("sources/policy.json", PUBLISH_FILES)
 
 if __name__ == "__main__":
