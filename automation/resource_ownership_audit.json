@@ -73,7 +73,7 @@
       "tests/test_task_queue_runtime.py",
       "tests/test_workflow_config_guard_order.py"
     ],
-    "limitation": "The AST inventory classifies all registered Python mutation sites and imported local helpers; the workflow-native scanner now covers all eight repository workflows. Dynamic shell construction, action-internal effects, full runtime mutation traces and cross-workflow resource lease compatibility still require runtime evidence. Historical fenced_file_writer.py references are stale: the file is absent from main and this candidate; no global file guard is used or reintroduced.",
+    "limitation": "Static Python mutation-site inventory and workflow-native scan cover the registered writers and all eight workflows. Dynamic shell/action effects and real concurrent-run integration evidence remain open. Ruleset writers now use exact per-path live resource lease assertions; Watchdog manifest repair is serialized with auto_sync by the shared concurrency group. The global audit remains partial for non-ruleset shared JSON documents and request-intake CAS concurrency.",
     "reviewed_at": "2026-11-04",
     "isolated_ephemeral_outputs": [
       {
@@ -193,10 +193,10 @@
         "script_lifecycle_gate",
         "script_restore_automation_state"
       ],
-      "lock_key": "resource:rulesets/lifecycle_state.json",
-      "required_mode": "exclusive",
-      "status": "direct_writer_identified_fence_only",
-      "note": "lifecycle_gate.py writes milestone/monthly review state directly. The current auto_sync call is protected by the central production-pipeline fence; no separate per-resource lease assertion exists in the script. Allowlisted publish-mode restore is an additional writer and is serialized by the same auto_sync logical production-pipeline fence."
+      "lock_key": "logical/production-pipeline + rulesets/lifecycle_state.json",
+      "required_mode": "exclusive_exact_path_resource_lease",
+      "status": "fenced_at_each_writer_mutation",
+      "note": "lifecycle_gate.py now explicitly asserts the exact rulesets/lifecycle_state.json lease before every state write; lifecycle audit and restore paths share the same production lease."
     },
     {
       "id": "manual_domain_selector_reports",
@@ -248,7 +248,14 @@
       "paths": [
         "rulesets/direct.list",
         "rulesets/proxy.list",
-        "rulesets/reject.list"
+        "rulesets/reject.list",
+        "rulesets/pending_queue.json",
+        "rulesets/reject_review_queue.json",
+        "rulesets/config_conflict_archive.json",
+        "rulesets/lifecycle_observations.json",
+        "rulesets/deletion_archive.json",
+        "rulesets/lifecycle_state.json",
+        "rulesets/manifest.json"
       ],
       "known_writers": [
         "script_build_rulesets",
@@ -256,10 +263,10 @@
         "script_restore_automation_state",
         "script_sync_ruleset_config_conflicts"
       ],
-      "lock_key": "resource:rulesets/published-lists",
-      "required_mode": "exclusive",
-      "status": "overlap_confirmed",
-      "note": "All three entrypoints can affect published policy lists; serialize them until a single-writer ownership boundary is enforced."
+      "lock_key": "logical/production-pipeline + exact rulesets file leases",
+      "required_mode": "exclusive_exact_path_resource_leases",
+      "status": "fenced_at_each_writer_mutation",
+      "note": "All ruleset writers run under the Watchdog logical/production-pipeline lease and explicitly assert the exact output path lease before each published-file mutation. The archive restore path is rulesets-only and asserts each exact path. No global file guard is used."
     },
     {
       "id": "reports_and_audit_outputs",
@@ -333,6 +340,37 @@
       "note": "The provenance builder writes the logical document through json_document_store; publish restoration may restore the same path and shards. Current auto_sync execution shares the production-pipeline fence, but no independent per-document lease is requested by the builder."
     },
     {
+      "id": "ruleset_conflict_archives",
+      "paths": [
+        "rulesets/config_conflict_archive.json",
+        "rulesets/reject_review_queue.json"
+      ],
+      "known_writers": [
+        "script_build_rulesets",
+        "script_sync_ruleset_config_conflicts",
+        "script_restore_automation_state"
+      ],
+      "lock_key": "logical/production-pipeline + exact conflict archive/review queue path leases",
+      "required_mode": "exclusive_exact_path_resource_leases",
+      "status": "fenced_at_each_writer_mutation",
+      "note": "Builder, config-conflict synchronization and archive restoration assert exact output leases before mutation."
+    },
+    {
+      "id": "ruleset_lifecycle_history",
+      "paths": [
+        "rulesets/lifecycle_observations.json",
+        "rulesets/deletion_archive.json"
+      ],
+      "known_writers": [
+        "script_lifecycle_audit",
+        "script_restore_automation_state"
+      ],
+      "lock_key": "logical/production-pipeline + exact lifecycle observation/archive path leases",
+      "required_mode": "exclusive_exact_path_resource_leases",
+      "status": "fenced_at_each_writer_mutation",
+      "note": "lifecycle_audit.py asserts each exact path before write; restore_publish_outputs asserts the same exact path for archive restore."
+    },
+    {
       "id": "ruleset_manifest",
       "paths": [
         "rulesets/manifest.json"
@@ -342,12 +380,13 @@
         "script_lifecycle_audit",
         "script_refresh_ruleset_manifest",
         "script_restore_automation_state",
-        "script_sync_ruleset_config_conflicts"
+        "script_sync_ruleset_config_conflicts",
+        "workflow_automation_watchdog"
       ],
-      "lock_key": "resource:rulesets/manifest.json",
-      "required_mode": "exclusive",
-      "status": "overlap_confirmed",
-      "note": "Manifest reconciliation and production/lifecycle/conflict flows share this resource."
+      "lock_key": "logical/production-pipeline + rulesets/manifest.json + concurrency:shadowrocket-main-writer",
+      "required_mode": "exclusive_exact_path_lease_plus_cross_workflow_concurrency",
+      "status": "cross_workflow_serialized_and_fenced",
+      "note": "auto_sync refresh asserts the exact live manifest resource lease. Watchdog manifest-integrity job is serialized with auto_sync by the same job-level shadowrocket-main-writer concurrency group (cancel-in-progress:false)."
     },
     {
       "id": "ruleset_pending_and_archive_state",
