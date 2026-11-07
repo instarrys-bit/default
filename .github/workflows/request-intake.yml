@@ -1,5 +1,5 @@
 name: GitHub-only observed-domain intake
-run-name: Automation task \${{ inputs.automation_task_id || 'manual' }}
+run-name: Automation task ${{ inputs.automation_task_id || 'manual' }}
 
 on:
   workflow_dispatch:
@@ -37,7 +37,7 @@ jobs:
       - name: Validate and persist submitted hostnames
         id: validate
         env:
-          DOMAINS: \${{ inputs.domains }}
+          DOMAINS: ${{ inputs.domains }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -88,7 +88,7 @@ jobs:
       - name: Append observation batch to external intake Issue
         if: steps.validate.outputs.has_domains == 'true'
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           python3 - "$RUNNER_TEMP/request-domains.json" "$RUNNER_TEMP/intake-comment.md" <<'PY'
@@ -113,7 +113,7 @@ jobs:
       - name: Request ruleset audit through Watchdog queue
         if: steps.validate.outputs.has_domains == 'true'
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           # GITHUB_TOKEN is permitted to trigger workflow_dispatch. The Watchdog
