@@ -13,7 +13,7 @@
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "c8a6a2e996f989646f436ed855447875313737e3"
+      "git_blob_sha": "5b1f7d17b77f0f593c01bd4806a096a6be502053"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -82,7 +82,7 @@
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "c8a6a2e996f989646f436ed855447875313737e3"
+      "git_blob_sha": "5b1f7d17b77f0f593c01bd4806a096a6be502053"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
@@ -90,7 +90,7 @@
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "87adcd415e08e5a667f416570bcc7d053c27304d"
+      "git_blob_sha": "7eeb2ed75e495fc1414978a930e6139718506900"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -127,6 +127,14 @@
     "release_manifest_validator": {
       "path": "scripts/validate_release_manifest.py",
       "git_blob_sha": "95e733af003ac1ea19d98d32b1f7df27cc3f5240"
+    },
+    "manual_domain_selector": {
+      "path": "scripts/select_domain_rules.py",
+      "git_blob_sha": "ef05a300205d0e9996579f94fb0bce98a2472fbe"
+    },
+    "legacy_local_queue_runtime": {
+      "path": "scripts/task_queue_runtime.py",
+      "git_blob_sha": "5bd1a14463fbb0f558d60d73e2185290c1220099"
     }
   },
   "compatibility": {
