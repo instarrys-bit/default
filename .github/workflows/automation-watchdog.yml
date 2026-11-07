@@ -1302,7 +1302,7 @@ jobs:
           task_input="$(jq -cn --argjson predecessor "$predecessor"             '{max_urls:20,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}')"
           queue_token="$GITHUB_TOKEN"
           unset GITHUB_TOKEN
-          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py             --repository "$GITHUB_REPOSITORY" --branch main --token-stdin             --idempotency-key "source-assessment:$SOURCE_RUN_ID"             --priority 60 --input-json "$task_input" enqueue-source-assessment
+          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py             --repository "$GITHUB_REPOSITORY" --branch main --token-stdin             --idempotency-key "source-assessment:$SOURCE_RUN_ID:parser-v2"             --priority 60 --input-json "$task_input" enqueue-source-assessment
           unset queue_token
 
       - name: Enqueue independent source discovery only after its authorization gate opens

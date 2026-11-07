@@ -214,7 +214,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("correlation_id", watchdog)
         self.assertIn("workflow_dispatch", watchdog)
         self.assertIn("classify_assessment_handoff(tasks, run_id)", watchdog)
-        self.assertIn('--idempotency-key "source-assessment:$SOURCE_RUN_ID"', watchdog)
+        self.assertIn('--idempotency-key "source-assessment:$SOURCE_RUN_ID:parser-v2"', watchdog)
         self.assertIn('task.get("target_program_id") == "script_assess_sources"', watchdog)
         self.assertIn('task.get("status") == "QUEUED"', watchdog)
         self.assertIn('workflow_client.list_runs(workflow_id, "main", page)', watchdog)
@@ -482,7 +482,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("classify_assessment_handoff(tasks, run_id)", resolver)
         self.assertIn("handoff_state", resolver)
         self.assertNotIn("parser-v2", resolver)
-        self.assertIn('--idempotency-key "source-assessment:$SOURCE_RUN_ID"', workflow)
+        self.assertIn('--idempotency-key "source-assessment:$SOURCE_RUN_ID:parser-v2"', workflow)
 
 
     def test_existing_assessment_suppresses_duplicate_enqueue_and_replacement_discovery(self):
@@ -494,8 +494,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("duplicate_assessment_task_ids", resolver)
         self.assertIn("awaiting_discovery_run", resolver)
         self.assertIn("handoff_state == 'ready'", enqueue_assessment)
-        self.assertIn('source-assessment:$SOURCE_RUN_ID"', enqueue_assessment)
+        self.assertIn('source-assessment:$SOURCE_RUN_ID:parser-v2"', enqueue_assessment)
         self.assertIn("handoff_state == ''", enqueue_discovery)
-        self.assertNotIn("parser-v2", resolver + enqueue_assessment)
+        self.assertNotIn("parser-v2", resolver)
 if __name__ == "__main__":
     unittest.main()
