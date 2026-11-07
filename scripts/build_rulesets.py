@@ -139,6 +139,41 @@ def promote_queue_to_capacity(rule_sets, queue_map, previous_rule_count, maximum
         queue_map.pop(key, None)
     return promoted
 
+def build_publication_accounting(published_rule_keys, approved_review_rules, promoted_queue_keys, approved_total):
+    """Explain published-vs-approved counts without silently rewriting either total."""
+    published=set(published_rule_keys)
+    approved=set(approved_review_rules)
+    promoted=set(promoted_queue_keys)
+    if isinstance(approved_total,bool) or not isinstance(approved_total,int) or approved_total<0:
+        raise ValueError("approved_total must be a non-negative integer")
+    if len(approved)!=approved_total:
+        raise ValueError("approved review counter does not match unique approved rule identities")
+    approved_published=published & approved
+    approved_not_published=approved-published
+    published_without_approval=published-approved
+    promoted_published=published_without_approval & promoted
+    retained_without_approval=published_without_approval-promoted
+    promoted_not_published=promoted-published
+    def line(key):
+        policy,scope,domain=key
+        return policy+"|"+("DOMAIN-SUFFIX" if scope=="suffix_candidate" else "DOMAIN")+"|"+domain
+    return {
+        "published_rule_total":len(published),
+        "approved_review_total":approved_total,
+        "approved_review_published_total":len(approved_published),
+        "approved_review_not_published_total":len(approved_not_published),
+        "promoted_queue_total":len(promoted),
+        "promoted_queue_published_without_current_approval_total":len(promoted_published),
+        "promoted_queue_not_published_total":len(promoted_not_published),
+        "retained_published_without_current_approval_total":len(retained_without_approval),
+        "published_without_current_approval_total":len(published_without_approval),
+        "published_without_current_approval_sample":[line(x) for x in sorted(published_without_approval)[:50]],
+        "promoted_queue_not_published_sample":[line(x) for x in sorted(promoted_not_published)[:50]],
+        "published_count_delta_vs_approved_review_total":len(published)-approved_total,
+        "accounting_reconciled":len(published)==len(approved_published)+len(promoted_published)+len(retained_without_approval)
+    }
+
+
 def source_evidence_eligible_ids(source_inventory):
     """Return only current sources eligible to corroborate newly approved rules."""
     if not isinstance(source_inventory,list):
@@ -239,6 +274,7 @@ def main():
     seen=dict(published_domain_policies)
     status_counts={}
     held=approved=0
+    approved_review_rules=set()
     reject_candidate_count=0
     reject_first_stage_status_counts=Counter()
     reject_secondary_hold_reason_counts=Counter()
@@ -310,6 +346,7 @@ def main():
             held+=1
             continue
         if domain in published_domain_policies:
+            approved_review_rules.add((policy,scope,domain))
             approved+=1
             continue
         if item.get("lifecycle_hold") and not lifecycle_active:
@@ -318,6 +355,7 @@ def main():
                 raise ValueError("lifecycle-held rule is not present in the previous published artifact: "+domain)
             seen[domain]=policy
             rule_sets[policy].add((scope,domain))
+            approved_review_rules.add((policy,scope,domain))
             approved+=1
             continue
         if scope=="suffix_candidate":
@@ -396,6 +434,7 @@ def main():
                 continue
         seen[domain]=policy
         new_approved[policy].add((scope,domain))
+        approved_review_rules.add((policy,scope,domain))
         approved+=1
 
     assert_resource_lease_for_repository_path(ROOT, "rulesets/reject_review_queue.json")
@@ -517,6 +556,14 @@ def main():
     actual_outputs={item.name for item in OUT.glob("*.list")}
     if actual_outputs!=expected_outputs:
         raise ValueError("rule-set output directory contains unexpected or missing policy lists")
+    published_rule_keys={
+        (policy,scope,domain)
+        for policy in POLICIES
+        for scope,domain in rule_sets[policy]
+    }
+    publication_accounting=build_publication_accounting(
+        published_rule_keys,approved_review_rules,set(promoted),approved
+    )
     candidate_matrix_path=ROOT/"sources/source_candidates.json"
     candidate_matrix=read_document(candidate_matrix_path,"candidates",{"candidates":[]})
     manifest={
@@ -550,6 +597,8 @@ def main():
         "rule_lifecycle":rule_lifecycle,
         "reviewed_total":len(reviews),
         "approved_total":approved,
+        "promoted_queue_total":len(promoted),
+        "publication_accounting":publication_accounting,
         "held_total":held,
         "reject_manual_approval_required":True,
         "reject_manual_approval_count":len(manual_reject_approvals),

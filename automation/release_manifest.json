@@ -138,7 +138,7 @@
     },
     "ruleset_builder": {
       "path": "scripts/build_rulesets.py",
-      "git_blob_sha": "b49fcc17b9b687228aaf46e6cac41870efe25fa9"
+      "git_blob_sha": "e553ef7087c1b6cf3b04e2a468675ba875a51ab7"
     },
     "lifecycle_auditor": {
       "path": "scripts/lifecycle_audit.py",
