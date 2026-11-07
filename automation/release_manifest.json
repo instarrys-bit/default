@@ -13,7 +13,7 @@
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "5b1f7d17b77f0f593c01bd4806a096a6be502053"
+      "git_blob_sha": "c2abca9c662f0bb5d3d4199b2bdf1c03aecb65c1"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -66,7 +66,7 @@
     },
     "resource_lease_runtime": {
       "path": "scripts/resource_lease_runtime.py",
-      "git_blob_sha": "1114fb5e85a6fe1401908c1239d062dba8aaeab2"
+      "git_blob_sha": "ffb4a9d0b9f372b6393b9fb38a069d57e4445f10"
     },
     "source_discovery_workflow": {
       "path": ".github/workflows/source-discovery.yml",
@@ -82,7 +82,7 @@
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "5b1f7d17b77f0f593c01bd4806a096a6be502053"
+      "git_blob_sha": "c2abca9c662f0bb5d3d4199b2bdf1c03aecb65c1"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
@@ -90,7 +90,7 @@
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "4aa375e7f37deb78db3adc634631346dad05c022"
+      "git_blob_sha": "559c00f4e4adee35f0975148a9e845a3843b314c"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -135,6 +135,30 @@
     "legacy_local_queue_runtime": {
       "path": "scripts/task_queue_runtime.py",
       "git_blob_sha": "5bd1a14463fbb0f558d60d73e2185290c1220099"
+    },
+    "ruleset_builder": {
+      "path": "scripts/build_rulesets.py",
+      "git_blob_sha": "2eef48b6510267328278433b041f771e68d14a28"
+    },
+    "lifecycle_auditor": {
+      "path": "scripts/lifecycle_audit.py",
+      "git_blob_sha": "0465207518156b1ecb4786dd67590b3639d4c8b6"
+    },
+    "lifecycle_gate": {
+      "path": "scripts/lifecycle_gate.py",
+      "git_blob_sha": "c746d1c43e019f67f3668aa5a24582e7db4aa56a"
+    },
+    "config_conflict_sync": {
+      "path": "scripts/sync_ruleset_config_conflicts.py",
+      "git_blob_sha": "872824a91cbc0fcec4299bb1eb327a710c9c809a"
+    },
+    "ruleset_manifest_refresh": {
+      "path": "scripts/refresh_ruleset_manifest.py",
+      "git_blob_sha": "ad1fb09153a3073080a951e3507d04eb5ae37904"
+    },
+    "automation_state_restore": {
+      "path": "scripts/restore_automation_state.py",
+      "git_blob_sha": "8b33e2056892159338bf3fd07f7886f4d1c1d689"
     }
   },
   "compatibility": {
