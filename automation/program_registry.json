@@ -1122,6 +1122,7 @@
         "remote queue recovery and verification report"
       ],
       "depends_on": [
+        "script_discover_sources",
         "script_production_intent",
         "script_refresh_ruleset_manifest",
         "script_register_config_baseline",
