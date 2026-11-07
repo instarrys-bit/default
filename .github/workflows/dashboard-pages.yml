@@ -52,9 +52,6 @@ jobs:
           ref: main
       - name: Build sanitized dashboard data
         env:
-          GH_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-        env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: python3 scripts/build_dashboard_snapshot.py
