@@ -19,10 +19,14 @@ from resource_lease_runtime import assert_resource_lease_from_environment
 from datetime import datetime, timezone
 
 ROOT = Path(__file__).resolve().parents[1]
-INPUT = ROOT / "sources/discovered_sources.json"
-OUTPUT = ROOT / "sources/source_assessments.json"
-RUNTIME_OUTPUT = ROOT / "data/source_assessments_runtime.json"
-REPORT = ROOT / "reports/source-assessment.md"
+ARTIFACT_ROOT = Path(os.environ.get("AUTOMATION_ARTIFACT_ROOT", ROOT)).resolve()
+INDEPENDENT_ARTIFACT_MODE = os.environ.get("AUTOMATION_TASK_PROCESS") == "1" and bool(os.environ.get("AUTOMATION_ARTIFACT_ROOT"))
+PREDECESSOR_ROOT = Path(os.environ.get("AUTOMATION_PREDECESSOR_ARTIFACT_ROOT", ROOT)).resolve()
+INPUT = PREDECESSOR_ROOT / "sources/discovered_sources.json"
+BASELINE_OUTPUT = ROOT / "sources/source_assessments.json"
+OUTPUT = ARTIFACT_ROOT / "sources/source_assessments.json" if INDEPENDENT_ARTIFACT_MODE else BASELINE_OUTPUT
+RUNTIME_OUTPUT = ARTIFACT_ROOT / "data/source_assessments_runtime.json" if INDEPENDENT_ARTIFACT_MODE else ROOT / "data/source_assessments_runtime.json"
+REPORT = ARTIFACT_ROOT / "reports/source-assessment.md" if INDEPENDENT_ARTIFACT_MODE else ROOT / "reports/source-assessment.md"
 MAX_BYTES = 1_000_000
 # Keep the monolithic fallback bounded; repeated runs rotate through the full source inventory.
 MAX_TOTAL_BYTES = 10_000_000
@@ -399,11 +403,19 @@ def load_task_options(path: Path | None) -> dict:
 
 
 def assert_optional_write_lease(path: Path, *, required: bool = False) -> None:
-    """Enforce a lease for independently scheduled tasks; preserve legacy workflow mode."""
-    if required and not os.environ.get("AUTOMATION_RESOURCE_LEASE_PROOF"):
-        raise ValueError("independent assessment requires an active resource lease proof")
-    if required or os.environ.get("AUTOMATION_RESOURCE_LEASE_PROOF"):
-        assert_resource_lease_from_environment(path.relative_to(ROOT).as_posix())
+    """Repository writes require their exact lease; isolated task artifacts are runner-local."""
+    resolved = path.resolve()
+    if resolved.is_relative_to(ROOT.resolve()):
+        if required and not os.environ.get("AUTOMATION_RESOURCE_LEASE_PROOF"):
+            raise ValueError("independent assessment requires an active resource lease proof")
+        if required or os.environ.get("AUTOMATION_RESOURCE_LEASE_PROOF"):
+            assert_resource_lease_from_environment(resolved.relative_to(ROOT.resolve()).as_posix())
+        return
+    if not INDEPENDENT_ARTIFACT_MODE or not resolved.is_relative_to(ARTIFACT_ROOT):
+        raise ValueError("assessment output must remain inside the isolated runner-local artifact root")
+    runner_temp = Path(os.environ.get("RUNNER_TEMP", "/tmp")).resolve()
+    if not ARTIFACT_ROOT.is_relative_to(runner_temp) or ARTIFACT_ROOT == ROOT.resolve():
+        raise ValueError("assessment artifact root must be isolated under RUNNER_TEMP")
 
 
 def _checkpoint_runtime(store=None, registry=None):
@@ -547,11 +559,17 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--task-input", type=Path)
     args = parser.parse_args(argv)
     options = load_task_options(args.task_input)
+    if args.task_input is not None and os.environ.get("AUTOMATION_TASK_PROCESS") == "1":
+        if not INDEPENDENT_ARTIFACT_MODE or not os.environ.get("AUTOMATION_PREDECESSOR_ARTIFACT_ROOT"):
+            raise ValueError("independent assessment requires verified predecessor and isolated artifact roots")
+        assert_optional_write_lease(RUNTIME_OUTPUT, required=True)
+        assert_optional_write_lease(OUTPUT, required=True)
+        assert_optional_write_lease(REPORT, required=True)
     max_urls = options["max_urls"]
     max_file_bytes = options["max_file_bytes"]
     max_total_bytes = options["max_total_bytes"]
     discovery = read_document(INPUT, "candidates", {"candidates": []})
-    previous_data = read_document(OUTPUT, "assessments", {"assessments": []})
+    previous_data = read_document(BASELINE_OUTPUT, "assessments", {"assessments": []})
     previous_by_url = {x.get("url"): x for x in previous_data.get("assessments", []) if x.get("url")}
     previous_cursor = previous_data.get("next_cursor_url")
     candidate_urls = flatten_candidate_urls(discovery.get("candidates", []))
@@ -660,9 +678,9 @@ def main(argv: list[str] | None = None) -> int:
     persistent["assessments"] = list(history.values())
     persistent["assessment_count"] = len(history)
     assert_optional_write_lease(RUNTIME_OUTPUT, required=args.task_input is not None)
-    write_document(RUNTIME_OUTPUT, result, "assessments", lease_required=args.task_input is not None)
+    write_document(RUNTIME_OUTPUT, result, "assessments", lease_required=False)
     assert_optional_write_lease(OUTPUT, required=args.task_input is not None)
-    write_document(OUTPUT, compact_assessment_result(persistent), "assessments", lease_required=args.task_input is not None)
+    write_document(OUTPUT, compact_assessment_result(persistent), "assessments", lease_required=False)
     assert_optional_write_lease(REPORT, required=args.task_input is not None)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     assert_optional_write_lease(REPORT, required=args.task_input is not None)
