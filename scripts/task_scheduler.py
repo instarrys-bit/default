@@ -43,7 +43,7 @@ ADAPTERS = ROOT / "automation" / "execution_adapters.json"
 ALLOWED_ARGUMENT_FIELDS = {"task_input_file", "task_id", "idempotency_key", "trace_id"}
 SAFE_ENV_KEYS = {
     "PATH", "HOME", "LANG", "LC_ALL", "TZ", "TMPDIR", "TEMP", "TMP",
-    "SYSTEMROOT", "WINDIR", "PATHEXT",
+    "SYSTEMROOT", "WINDIR", "PATHEXT", "RUNNER_TEMP",
 }
 
 
