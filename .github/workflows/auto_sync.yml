@@ -663,6 +663,7 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           import json, os, re
+          from datetime import datetime, timezone
           from pathlib import Path
           correlation = os.environ.get("AUTOMATION_TASK_ID", "")
           match = re.fullmatch(r"(task_[0-9a-f]{24})-a([1-9][0-9]*)", correlation)
@@ -677,23 +678,48 @@ jobs:
               proof = json.loads(proof_text)
           except json.JSONDecodeError as exc:
               raise SystemExit("Publish resource lease proof is invalid JSON.") from exc
-          lease = task.get("lease") if isinstance(task, dict) else None
+          task_lease = task.get("lease") if isinstance(task, dict) else None
+          resource_lease = task.get("resource_lease") if isinstance(task, dict) else None
           intent = task.get("dispatch_intent") if isinstance(task, dict) else None
-          if (not isinstance(task, dict) or task.get("target_program_id") != "workflow_auto_sync"
+          declared = resource_lease.get("resources") if isinstance(resource_lease, dict) else None
+          queue_leases = queue.get("resource_leases")
+          if (not isinstance(task, dict) or task.get("status") not in {"CLAIMED", "VERIFYING"}
+                  or task.get("target_program_id") != "workflow_auto_sync"
                   or task.get("requester_program_id") != "workflow_automation_watchdog"
                   or task.get("attempts") != attempt or not isinstance(intent, dict)
                   or intent.get("task_id") != task_id or intent.get("dispatch_attempt") != attempt
                   or intent.get("correlation_id") != correlation
                   or intent.get("workflow_path") != ".github/workflows/auto_sync.yml"
                   or intent.get("ref") != "main"
-                  or not isinstance(lease, dict) or not lease.get("owner") or not lease.get("token")
-                  or not isinstance(proof, dict) or not proof):
+                  or not isinstance(resource_lease, dict) or resource_lease.get("status") != "ACTIVE"
+                  or not isinstance(declared, dict) or declared != proof
+                  or not isinstance(queue_leases, dict) or not isinstance(proof, dict) or not proof):
               raise SystemExit("The current queue record does not authorize this exact publish attempt.")
+          workers = set()
+          now = datetime.now(timezone.utc)
+          for key, item in proof.items():
+              record = queue_leases.get(key)
+              if (not isinstance(record, dict) or record.get("status") != "ACTIVE"
+                      or record.get("task_id") != task_id
+                      or record.get("lease_id") != item.get("lease_id")
+                      or record.get("fencing_token") != item.get("fencing_token")):
+                  raise SystemExit("The publish resource lease is stale or fenced: " + key)
+              expiry = datetime.fromisoformat(record["expires_at"].replace("Z", "+00:00"))
+              if expiry <= now:
+                  raise SystemExit("The publish resource lease has expired: " + key)
+              workers.add(record.get("worker_id"))
+          if len(workers) != 1 or not next(iter(workers)):
+              raise SystemExit("Publish resource leases do not share one active worker owner.")
+          worker_id = next(iter(workers))
+          if task.get("status") == "CLAIMED" and (
+                  not isinstance(task_lease, dict) or not task_lease.get("owner") or not task_lease.get("token")):
+              raise SystemExit("A CLAIMED task must retain its scheduler task lease.")
+          task_lease_token = task_lease.get("token") if isinstance(task_lease, dict) and task_lease.get("token") else "resource-fence-only"
           values = {
               "AUTOMATION_TASK_ID_BASE": task_id,
               "AUTOMATION_TASK_ID": task_id,
-              "AUTOMATION_WORKER_ID": lease["owner"],
-              "AUTOMATION_TASK_LEASE_TOKEN": lease["token"],
+              "AUTOMATION_WORKER_ID": worker_id,
+              "AUTOMATION_TASK_LEASE_TOKEN": task_lease_token,
               "AUTOMATION_QUEUE_REPOSITORY": os.environ["GITHUB_REPOSITORY"],
               "AUTOMATION_QUEUE_BRANCH": "main",
               "AUTOMATION_QUEUE_PATH": "automation/task_queue.json",
