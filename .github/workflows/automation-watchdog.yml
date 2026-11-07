@@ -938,6 +938,9 @@ jobs:
           handoff_state = ""
           pending = []
           for task in tasks:
+              reconciliation = task.get("handoff_reconciliation")
+              if isinstance(reconciliation, dict) and reconciliation.get("status") == "already_assessed":
+                  continue
               if task.get("target_program_id") != "workflow_source_discovery" or task.get("status") not in {"VERIFYING", "COMPLETED", "SUCCEEDED"}:
                   continue
               intent = task.get("dispatch_intent") or {}
@@ -1129,6 +1132,7 @@ jobs:
           handoff_state = handoff_state or "ready"
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
               output.write(f"run_id={run_id}\nhead_sha={head_sha}\ntask_id={task['task_id']}\nhandoff_state={handoff_state}\n")
+              output.write(f"canonical_assessment_task_id={handoff.get('canonical_task_id', '')}\n")
               output.write("assessment_task_ids=" + ",".join(handoff.get("task_ids", [])) + "\n")
               output.write("duplicate_assessment_task_ids=" + ",".join(handoff.get("duplicate_task_ids", [])) + "\n")
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
@@ -1193,6 +1197,32 @@ jobs:
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
               stream.write(f"SOURCE_ARTIFACT_SHA256={artifact_digest}\n")
               stream.write(f"AUTOMATION_PREDECESSOR_ARTIFACT_ROOT={root}\n")
+          PY
+
+      - name: Persist verified Assessment handoff terminal state
+        if: \${{ steps.resolve-discovery-run.outputs.run_id != '' && steps.resolve-discovery-run.outputs.handoff_state == 'already_assessed' }}
+        env:
+          GITHUB_TOKEN: \${{ github.token }}
+          GITHUB_REPOSITORY: \${{ github.repository }}
+          SOURCE_DISCOVERY_TASK_ID: \${{ steps.resolve-discovery-run.outputs.task_id }}
+          SOURCE_DISCOVERY_RUN_ID: \${{ steps.resolve-discovery-run.outputs.run_id }}
+          SOURCE_DISCOVERY_HEAD_SHA: \${{ steps.resolve-discovery-run.outputs.head_sha }}
+          SOURCE_DISCOVERY_ARTIFACT_SHA256: \${{ env.SOURCE_ARTIFACT_SHA256 }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, sys
+          sys.path.insert(0, "scripts")
+          from remote_task_queue_runtime import load_registry, make_store, record_discovery_handoff_reconciliation
+          result = record_discovery_handoff_reconciliation(
+              make_store(token=os.environ["GITHUB_TOKEN"]),
+              load_registry(),
+              task_id=os.environ["SOURCE_DISCOVERY_TASK_ID"],
+              workflow_run_id=os.environ["SOURCE_DISCOVERY_RUN_ID"],
+              workflow_head_sha=os.environ["SOURCE_DISCOVERY_HEAD_SHA"],
+              artifact_sha256=os.environ["SOURCE_DISCOVERY_ARTIFACT_SHA256"],
+          )
+          print(json.dumps(result, ensure_ascii=False, sort_keys=True))
           PY
 
       - name: Enqueue source assessment after successful discovery workflow
