@@ -951,6 +951,7 @@ jobs:
           # and content digest above are the provenance boundary; no sources/ commit is required.
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
               stream.write(f"SOURCE_ARTIFACT_SHA256={artifact_digest}\n")
+              stream.write(f"AUTOMATION_PREDECESSOR_ARTIFACT_ROOT={root}\\n")
           PY
 
       - name: Enqueue source assessment after successful discovery workflow
@@ -958,7 +959,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          SOURCE_DISCOVERY_MODE: ${{ vars.SOURCE_DISCOVERY_MODE || 'monolithic_fallback' }}
+          SOURCE_DISCOVERY_MODE: ${{ vars.SOURCE_DISCOVERY_MODE || 'independent' }}
           SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
           SOURCE_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
           SOURCE_WORKFLOW_NAME: Shadowrocket Source Discovery (Watchdog)
@@ -1002,7 +1003,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          SOURCE_DISCOVERY_MODE: ${{ vars.SOURCE_DISCOVERY_MODE || 'monolithic_fallback' }}
+          SOURCE_DISCOVERY_MODE: ${{ vars.SOURCE_DISCOVERY_MODE || 'independent' }}
         run: |
           set -euo pipefail
           test "$SOURCE_DISCOVERY_MODE" = "independent" || exit 0
@@ -1030,13 +1031,24 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF_NAME: main
+          AUTOMATION_ARTIFACT_ROOT: ${{ runner.temp }}/source-assessment-output
         run: |
           set -euo pipefail
+          rm -rf "$AUTOMATION_ARTIFACT_ROOT"
+          mkdir -p "$AUTOMATION_ARTIFACT_ROOT"
           queue_token="$GITHUB_TOKEN"
           unset GITHUB_TOKEN
           printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --token-stdin --repository "$GITHUB_REPOSITORY" --branch main --max-tasks 1 run-once | tee /tmp/task-scheduler-report.json
           unset queue_token
           cat /tmp/task-scheduler-report.json >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload verified source assessment outputs as immutable artifact
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: source-assessment-output
+          path: ${{ runner.temp }}/source-assessment-output/
+          if-no-files-found: ignore
+          retention-days: 30
 
   stale-run-watch:
     permissions:
