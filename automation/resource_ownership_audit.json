@@ -48,6 +48,7 @@
       "scripts/resource_lease_runtime.py",
       "scripts/restore_automation_state.py",
       "scripts/review_cursor.py",
+      "scripts/select_domain_rules.py",
       "scripts/source_registry.py",
       "scripts/sync_ruleset_config_conflicts.py",
       "scripts/task_queue.py",
@@ -71,7 +72,7 @@
       "tests/test_task_queue_runtime.py",
       "tests/test_workflow_config_guard_order.py"
     ],
-    "limitation": "The source discovery and assessment DAG writes outputs only beneath per-run RUNNER_TEMP and uploads immutable artifacts. Their only shared mutation is the task-bound GitHub Issue #315 append-only queue checkpoint CAS, fenced by logical/source-assessment-checkpoints and logical/production-pipeline. This narrows the DAG's shared write surface but does not complete transitive writer coverage, dynamic path tracing, or cross-workflow concurrency proof for the remaining production writers.",
+    "limitation": "Static and direct mutation inventories remain partial for transitive dynamic paths, runtime traces and cross-workflow concurrency; the manual selector's two report writes are now explicitly fenced but it remains non-dispatchable.",
     "reviewed_at": "2026-11-04",
     "isolated_ephemeral_outputs": [
       {
@@ -185,6 +186,20 @@
       "required_mode": "exclusive",
       "status": "direct_writer_identified_fence_only",
       "note": "lifecycle_gate.py writes milestone/monthly review state directly. The current auto_sync call is protected by the central production-pipeline fence; no separate per-resource lease assertion exists in the script. Allowlisted publish-mode restore is an additional writer and is serialized by the same auto_sync logical production-pipeline fence."
+    },
+    {
+      "id": "manual_domain_selector_reports",
+      "paths": [
+        "reports/approved-domain-rules.list",
+        "reports/rule-selector-audit.md"
+      ],
+      "known_writers": [
+        "script_select_domain_rules"
+      ],
+      "lock_key": "reports/approved-domain-rules.list + reports/rule-selector-audit.md",
+      "required_mode": "exclusive_live_resource_leases_asserted_at_each_mutation",
+      "status": "bounded_fenced_non_dispatchable",
+      "note": "The selector is disabled and has no production workflow edge. Its script now asserts both exact live resource leases immediately before the corresponding output directory/file mutations. It cannot publish these reports; publication remains rulesets/** only."
     },
     {
       "id": "owner_config_baseline_metadata",
