@@ -336,7 +336,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(entries["script_apply_safe_repair"]["publish_resources"], [])
         self.assertEqual(entries["script_json_document_store"]["publish_resources"], [])
         self.assertEqual(entries["script_audit_policy_source_overlap"]["publish_resources"], [])
-        self.assertEqual(n in nonwriters for n in ("script_auto_activate_sources", "script_persist_review_cursor", "script_incident_state")), True
+        self.assertTrue(all(n in nonwriters for n in ("script_auto_activate_sources", "script_persist_review_cursor", "script_incident_state")))
         self.assertTrue(all("modules/uu.conf" not in item["writes"] for item in entries.values()))
         self.assertEqual(writes["status"], "partial_static_entrypoint_review")
 
