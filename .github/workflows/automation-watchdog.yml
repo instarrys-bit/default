@@ -927,7 +927,7 @@ jobs:
           import json, os, sys, urllib.request
           from pathlib import Path
           sys.path.insert(0, "scripts")
-          from source_handoff_policy import classify_assessment_handoff
+          from source_handoff_policy import classify_assessment_handoff, discovery_task_requires_handoff
           if os.environ.get("SOURCE_DISCOVERY_MODE") != "independent":
               print("Independent source DAG is not selected; no Discovery reconciliation.")
               raise SystemExit(0)
@@ -938,7 +938,7 @@ jobs:
           handoff_state = ""
           pending = []
           for task in tasks:
-              if task.get("target_program_id") != "workflow_source_discovery" or task.get("status") not in {"VERIFYING", "COMPLETED", "SUCCEEDED"}:
+              if not discovery_task_requires_handoff(task, tasks):
                   continue
               intent = task.get("dispatch_intent") or {}
               correlation, requested_sha = intent.get("correlation_id"), intent.get("requested_head_sha")
