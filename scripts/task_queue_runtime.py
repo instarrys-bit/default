@@ -24,17 +24,31 @@ def read_json(path):
     return value
 
 @contextmanager
-def queue_lock(path):
-    path = Path(path).resolve()
-    if path.is_relative_to(ROOT.resolve()):
+def assert_ephemeral_path(path):
+    original = Path(path)
+    resolved = original.resolve()
+    if resolved.is_relative_to(ROOT.resolve()):
         raise ValueError("local task queue state must remain outside the repository workspace")
+    try:
+        if original.exists() and original.stat().st_nlink > 1:
+            raise ValueError("local task queue state cannot use hard-linked paths")
+    except OSError as exc:
+        raise ValueError(f"cannot verify local task queue path: {exc}") from exc
+    return resolved
+
+
+@contextmanager
+def queue_lock(path):
+    path = assert_ephemeral_path(path)
+    lock_path = assert_ephemeral_path(path.with_name(path.name + ".lock"))
     path.parent.mkdir(parents=True,exist_ok=True)
-    with path.with_name(path.name+".lock").open("a+") as lock:
+    with lock_path.open("a+") as lock:
         fcntl.flock(lock.fileno(),fcntl.LOCK_EX)
         try: yield
         finally: fcntl.flock(lock.fileno(),fcntl.LOCK_UN)
 
 def atomic_write(path,payload):
+    path = assert_ephemeral_path(path)
     path.parent.mkdir(parents=True,exist_ok=True)
     fd,name=tempfile.mkstemp(prefix=f".{path.name}.",suffix=".tmp",dir=path.parent)
     try:
