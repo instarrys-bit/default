@@ -245,8 +245,37 @@ def validate_release_manifest(root: Path = ROOT, manifest_path: Path | None = No
     release_id = doc.get("release_id")
     if not isinstance(release_id, str) or not re.fullmatch(r"[a-z0-9][a-z0-9._-]{5,100}", release_id):
         raise ValueError("release_id is missing or invalid")
-    if doc.get("release_status") != "baseline_snapshot":
-        raise ValueError("release_status must be baseline_snapshot")
+    release_status = doc.get("release_status")
+    if release_status not in {"baseline_snapshot", "active_with_live_handoff_evidence"}:
+        raise ValueError("release_status must be baseline_snapshot or active_with_live_handoff_evidence")
+    if release_status == "active_with_live_handoff_evidence":
+        evidence = doc.get("live_handoff_evidence")
+        if not isinstance(evidence, dict):
+            raise ValueError("active release requires live_handoff_evidence")
+        try:
+            recorded_at = dt.datetime.fromisoformat(str(evidence.get("recorded_at", "")).replace("Z", "+00:00"))
+        except ValueError as exc:
+            raise ValueError("live_handoff_evidence.recorded_at must be an ISO timestamp") from exc
+        if recorded_at.tzinfo is None:
+            raise ValueError("live_handoff_evidence.recorded_at must include a timezone")
+        if not isinstance(evidence.get("discovery_run_id"), str) or not evidence["discovery_run_id"].isdigit():
+            raise ValueError("live_handoff_evidence.discovery_run_id must be a numeric workflow run ID")
+        if not isinstance(evidence.get("discovery_head_sha"), str) or not SHA_RE.fullmatch(evidence["discovery_head_sha"]):
+            raise ValueError("live_handoff_evidence.discovery_head_sha must be a full Git SHA")
+        if not isinstance(evidence.get("discovery_artifact_sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", evidence["discovery_artifact_sha256"]):
+            raise ValueError("live_handoff_evidence.discovery_artifact_sha256 must be a SHA-256 digest")
+        if not isinstance(evidence.get("assessment_task_id"), str) or not re.fullmatch(r"task_[0-9a-f]{24}", evidence["assessment_task_id"]):
+            raise ValueError("live_handoff_evidence.assessment_task_id is invalid")
+        if evidence.get("assessment_status") != "SUCCEEDED":
+            raise ValueError("live_handoff_evidence.assessment_status must be SUCCEEDED")
+        if not isinstance(evidence.get("watchdog_run_id"), str) or not evidence["watchdog_run_id"].isdigit():
+            raise ValueError("live_handoff_evidence.watchdog_run_id must be a numeric workflow run ID")
+        if type(evidence.get("activation_count")) is not int or evidence["activation_count"] != 0:
+            raise ValueError("live_handoff_evidence.activation_count must be zero")
+        if type(evidence.get("assessed_this_run_count")) is not int or evidence["assessed_this_run_count"] < 0:
+            raise ValueError("live_handoff_evidence.assessed_this_run_count must be a non-negative integer")
+        if not isinstance(evidence.get("notes"), str) or not evidence["notes"].strip():
+            raise ValueError("live_handoff_evidence.notes must be non-empty")
     created = doc.get("created_on")
     try:
         dt.date.fromisoformat(created)

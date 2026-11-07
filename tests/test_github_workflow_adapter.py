@@ -145,6 +145,23 @@ class WorkflowAdapterTests(unittest.TestCase):
         with self.assertRaises(AmbiguousWorkflowRun):
             find_correlated_run(self.client, intent)
 
+    def test_find_and_inspect_accept_exact_legacy_source_discovery_title(self):
+        intent = self.prepare()
+        intent["workflow_path"] = ".github/workflows/source-discovery.yml"
+        correlation_id = intent["correlation_id"]
+        matching = {
+            "id": 889, "workflow_id": 1234, "event": "workflow_dispatch",
+            "head_branch": "main", "head_sha": "a" * 40,
+            "display_title": f"Source discovery {correlation_id}", "status": "completed",
+            "conclusion": "success",
+        }
+        self.client.runs = [matching]
+        self.client.run_detail[889] = dict(matching, html_url="https://example.invalid/run/889")
+        self.assertEqual(find_correlated_run(self.client, intent), matching)
+        result = inspect_correlated_run(self.client, intent)
+        self.assertEqual(result["state"], "success")
+        self.assertEqual(result["evidence"]["run_id"], 889)
+
     def test_find_correlated_run_paginates_past_newer_workflow_runs(self):
         intent = self.prepare()
         decoys = [
