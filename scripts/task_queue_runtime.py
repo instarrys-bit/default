@@ -23,7 +23,6 @@ def read_json(path):
     if not isinstance(value,dict): raise ValueError(f"{path} must contain a JSON object")
     return value
 
-@contextmanager
 def assert_ephemeral_path(path):
     original = Path(path)
     resolved = original.resolve()
