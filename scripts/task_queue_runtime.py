@@ -8,7 +8,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
-QUEUE=ROOT/"automation"/"task_queue.json"
+QUEUE=Path(os.environ.get("RUNNER_TEMP", tempfile.gettempdir())).resolve()/"shadowrocket-local-task-queue.json"
 REGISTRY=ROOT/"automation"/"program_registry.json"
 
 def now_utc():
@@ -25,6 +25,9 @@ def read_json(path):
 
 @contextmanager
 def queue_lock(path):
+    path = Path(path).resolve()
+    if path.is_relative_to(ROOT.resolve()):
+        raise ValueError("local task queue state must remain outside the repository workspace")
     path.parent.mkdir(parents=True,exist_ok=True)
     with path.with_name(path.name+".lock").open("a+") as lock:
         fcntl.flock(lock.fileno(),fcntl.LOCK_EX)
