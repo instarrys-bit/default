@@ -436,7 +436,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
     def test_independent_source_resource_leases_outlive_watchdog_reconciliation_window(self):
         import re
         workflow = WATCHDOG.read_text(encoding="utf-8")
-        match = re.search(r'cron:\\s*"\\*/([0-9]+) \\* \\* \\* \\*"', workflow)
+        match = re.search(r'cron:\s*"\*/([0-9]+) \* \* \* \*"', workflow)
         self.assertIsNotNone(match, "Watchdog reconciliation cron must be explicit")
         reconciliation_seconds = int(match.group(1)) * 60
         adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
