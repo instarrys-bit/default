@@ -475,6 +475,10 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("handoff_state == 'ready'", enqueue_assessment)
         self.assertIn('source-assessment:$SOURCE_RUN_ID"', enqueue_assessment)
         self.assertIn("handoff_state == ''", enqueue_discovery)
+        self.assertIn('reconciliation.get("status") == "already_assessed"', resolver)
+        self.assertIn("handoff_reconciliation", resolver)
+        self.assertIn("Persist verified Assessment handoff terminal state", workflow)
+        self.assertIn("record_discovery_handoff_reconciliation", workflow)
         self.assertNotIn("parser-v2", resolver + enqueue_assessment)
 if __name__ == "__main__":
     unittest.main()
