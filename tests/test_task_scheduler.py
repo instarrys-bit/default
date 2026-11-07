@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from remote_task_queue_runtime import claim_remote, enqueue_remote
 from task_queue_runtime import now_utc, stamp, manual_authorization_record, validate_manual_authorization
-from task_scheduler import run_scheduler_once, build_execution_plan, enqueue_source_assessment_task, enqueue_auto_sync_task, assert_current_production_input, supersede_stale_queued_production_tasks, generated_python_cache_paths, publishable_resource_path
+from task_scheduler import run_scheduler_once, build_execution_plan, enqueue_source_assessment_task, enqueue_source_discovery_task, enqueue_auto_sync_task, assert_current_production_input, supersede_stale_queued_production_tasks, generated_python_cache_paths, publishable_resource_path
 
 
 class MemoryStore:
@@ -33,6 +33,32 @@ class MemoryStore:
 
 
 class TaskSchedulerTests(unittest.TestCase):
+    def test_source_discovery_daily_enqueue_is_idempotent(self):
+        registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
+        first = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07")
+        second = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07")
+        self.assertTrue(first["created"])
+        self.assertFalse(second["created"])
+        self.assertEqual(first["task_id"], second["task_id"])
+
+    def test_source_discovery_recovery_requires_dead_letter_and_is_bounded(self):
+        registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
+        base = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07")
+        with self.assertRaisesRegex(ValueError, "requires a dead-lettered daily Discovery task"):
+            enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:recovery:1")
+        task = self.store.document["tasks"][0]
+        task["status"] = "DEAD_LETTER"
+        task["attempts"] = task["max_attempts"]
+        task["last_error"] = {"type": "workflow_run_failed", "message": "resource lease expired"}
+        task["state_history"] = ["QUEUED", "CLAIMED", "DEAD_LETTER"]
+        recovery = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:recovery:1")
+        duplicate = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:recovery:1")
+        self.assertTrue(recovery["created"])
+        self.assertFalse(duplicate["created"])
+        self.assertEqual(recovery["task_id"], duplicate["task_id"])
+        with self.assertRaisesRegex(ValueError, "one recovery key"):
+            enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:recovery:2")
+
     def test_generated_python_cache_paths_are_discarded_from_artifact_sets(self):
         paths = [
             "scripts/__pycache__/task_scheduler.cpython-311.pyc",
