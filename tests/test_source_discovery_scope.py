@@ -51,6 +51,9 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
             ],
         )
         self.assertFalse(any("apple" in query.lower() for query in discovery.QUERIES))
+        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        self.assertIn('discovery_revision="$(git rev-parse HEAD:scripts/discover_sources.py | cut -c1-12)"', watchdog)
+        self.assertIn('base_key="source-discovery:$discovery_day:$discovery_revision"', watchdog)
 
 
     def test_tree_scans_rotate_unscanned_and_failed_repositories_first(self):
