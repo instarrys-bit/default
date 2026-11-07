@@ -4,10 +4,16 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import tempfile
 from pathlib import Path
 
 
 def persist_cursor(artifact: Path, destination: Path) -> str:
+    temp_root = Path(os.environ.get("RUNNER_TEMP", tempfile.gettempdir())).resolve()
+    destination = destination.resolve()
+    if destination != temp_root and temp_root not in destination.parents:
+        raise ValueError("review cursor recovery output must remain under RUNNER_TEMP")
     if not artifact.is_file():
         print("No cursor artifact available; leaving any existing checkpoint unchanged.")
         return "missing"
