@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "3f5cfa9732d52f2aed16d0734118d4b5fa9c8a2b"
+      "git_blob_sha": "d4ff6fc497efc7492f12a2045bc849a8a3c7aa5c"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
