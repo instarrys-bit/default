@@ -311,9 +311,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "64ad9e946ab02513172e94db42c097298260ce0c",
+    "release_manifest_blob_sha": "00c8f51fa1a824d9bb39e3c1b61917497aadd02f",
     "program_registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
-    "execution_adapters_blob_sha": "7bd4ab144a1eab08e9b9786078847aef6e953a8a",
+    "execution_adapters_blob_sha": "dc058e31c9959bda6ffed7a25c38207c9ab0dc50",
     "added_after_release_baseline": true,
     "note": "The independent source DAG is enabled under the scoped release allowlist. Remaining global audit applies to unrelated non-dispatchable capabilities; production repository publication remains rulesets/** only.",
     "reviewed_at": "2026-11-07",
@@ -375,5 +375,10 @@
         "assessment_repository_write_resources": []
       }
     }
+  ],
+  "production_deliverables": [
+    "rulesets/direct.list",
+    "rulesets/proxy.list",
+    "rulesets/reject.list"
   ]
 }
