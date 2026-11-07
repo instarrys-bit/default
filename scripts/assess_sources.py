@@ -23,10 +23,10 @@ INPUT = ROOT / "sources/discovered_sources.json"
 OUTPUT = ROOT / "sources/source_assessments.json"
 RUNTIME_OUTPUT = ROOT / "data/source_assessments_runtime.json"
 REPORT = ROOT / "reports/source-assessment.md"
-MAX_BYTES = 5_000_000
-# Hard aggregate budget prevents URL-count expansion from becoming unbounded I/O.
-MAX_TOTAL_BYTES = 250_000_000
-MAX_URLS = 5_000
+MAX_BYTES = 1_000_000
+# Keep the monolithic fallback bounded; repeated runs rotate through the full source inventory.
+MAX_TOTAL_BYTES = 10_000_000
+MAX_URLS = 20
 DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
 DOMAIN_RULE_RE = re.compile(r"^(DOMAIN|DOMAIN-SUFFIX),([^,\s]+)(?:,([^,\s]+))?$", re.I)
 QX_DOMAIN_RULE_RE = re.compile(r"^(HOST|HOST-SUFFIX),([^,\s]+),([^,\s]+)$", re.I)
