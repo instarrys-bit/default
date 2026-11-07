@@ -355,6 +355,16 @@
           "downloaded immutable artifact logical-document digest equals producer proof",
           "producer metadata inside document matches exact run ID and head SHA",
           "the verified external artifact root is used for enqueue, plan, claim, child execution and post-execution read-only digest checks"
+        ],
+        "deduplication_helper": "scripts/source_handoff_policy.py",
+        "deduplication_states": [
+          "ready",
+          "already_assessed",
+          "assessment_pending",
+          "assessment_evidence_invalid",
+          "assessment_retry_required",
+          "awaiting_discovery_run",
+          "awaiting_assessment_predecessor"
         ]
       },
       "consumer": {
@@ -364,7 +374,7 @@
         "required_predecessor_digest": true
       },
       "duplicate_protection": {
-        "rule": "When SOURCE_DISCOVERY_MODE=independent, auto_sync's monolithic discovery and assessment steps are skipped; the Watchdog-owned independent producer and its exact workflow_run consumer are the sole discovery/assessment path. The monolithic steps remain only as explicit fallback when mode is monolithic_fallback."
+        "rule": "The Watchdog classifies existing Assessment tasks by exact predecessor.workflow_run_id, with legacy idempotency-key compatibility. A verified successful Assessment suppresses re-enqueue; a queued/claimed/verifying or retry-required Assessment suppresses replacement Discovery. Only a predecessor with no matching Assessment may enqueue once under the canonical source-assessment:<workflow_run_id> key. When SOURCE_DISCOVERY_MODE=independent, auto_sync monolithic discovery/assessment remain disabled."
       },
       "activation": {
         "producer_adapter_enabled": true,
@@ -385,5 +395,6 @@
     "rulesets/direct.list",
     "rulesets/proxy.list",
     "rulesets/reject.list"
-  ]
+  ],
+  "repository_write_policy": "Per-capability explicit exclusive resource_contract.resource_keys; control-plane state is separately inventoried. The production publisher stages only the three ruleset deliverables under rulesets/**; this is not a global automation write restriction."
 }
