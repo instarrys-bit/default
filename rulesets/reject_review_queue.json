@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "REJECT",
-  "updated_at": "2026-11-07T08:44:26.257989+00:00",
+  "updated_at": "2026-11-07T10:42:48.367390+00:00",
   "criteria": {
     "minimum_current_sources": 3,
     "minimum_independent_publishers": 2,

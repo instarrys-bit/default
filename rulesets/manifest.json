@@ -255,7 +255,7 @@
         "zakird/crux-top-lists"
       ],
       "status": "STALE_QUARANTINED",
-      "error": "hagezi-domains-pro source drift exceeds automatic safety limit: 16484 added + 13543 removed = 30027; limit 22263",
+      "error": "hagezi-domains-pro source drift exceeds automatic safety limit: 66870 added + 21009 removed = 87879; limit 22263",
       "pending_confirmations": 1,
       "new_entries": 0,
       "removed_entries": 0,
@@ -312,28 +312,28 @@
   "lineage_not_fully_verified_sources": 13,
   "source_candidate_summary": {
     "DIRECT": {
-      "candidate_publishers": 0,
-      "eligible_publishers": 0,
-      "independent_eligible_groups": 0,
-      "candidate_files": 0,
+      "candidate_publishers": 9,
+      "eligible_publishers": 6,
+      "independent_eligible_groups": 6,
+      "candidate_files": 14,
       "cross_policy_conflict_count": 0,
-      "activation_ready": false
+      "activation_ready": true
     },
     "PROXY": {
-      "candidate_publishers": 0,
-      "eligible_publishers": 0,
-      "independent_eligible_groups": 0,
-      "candidate_files": 0,
+      "candidate_publishers": 13,
+      "eligible_publishers": 12,
+      "independent_eligible_groups": 12,
+      "candidate_files": 26,
       "cross_policy_conflict_count": 0,
-      "activation_ready": false
+      "activation_ready": true
     },
     "REJECT": {
-      "candidate_publishers": 0,
-      "eligible_publishers": 0,
-      "independent_eligible_groups": 0,
-      "candidate_files": 0,
+      "candidate_publishers": 21,
+      "eligible_publishers": 14,
+      "independent_eligible_groups": 14,
+      "candidate_files": 156,
       "cross_policy_conflict_count": 0,
-      "activation_ready": false
+      "activation_ready": true
     }
   },
   "rule_count": {
