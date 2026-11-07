@@ -4,8 +4,8 @@
   "program_id": "script_assess_sources",
   "implementation_path": "scripts/assess_sources.py",
   "implementation_blob_sha": "c825d64b9da2462bbca5e8932aab92729ae3088c",
-  "review_status": "reviewed_runner_local_artifact_only_pending_PR_CI",
-  "dispatch_status": "enabled_in_candidate_branch",
+  "review_status": "reviewed_but_dispatch_blocked_pending_issue_193_and_post_merge_canary",
+  "dispatch_status": "disabled",
   "entrypoint": {
     "command": [
       "python3",
@@ -202,14 +202,16 @@
     "scheduler_enforcement": "The Watchdog downloads the artifact using the workflow_run ID, verifies the proof's workflow name, numeric run ID, full producer commit SHA, allowlisted artifact path and complete logical-document digest, then confirms that the current main document has the same digest and producer metadata. enqueue_source_assessment_task checks the digest again, and scheduler.build_execution_plan rejects changed or missing predecessor content before claim."
   },
   "permission_boundary": {
-    "filesystem": "Read the verified discovery artifact from its isolated RUNNER_TEMP root and read-only baseline files from main. Write only assessment JSON documents and report under AUTOMATION_ARTIFACT_ROOT inside RUNNER_TEMP. No repository checkout paths are mutated or published; modules/uu.conf and sources/domain_sources.json remain read-only.",
+    "filesystem": "The proposed independent mode is runner-local only, but remains dormant and non-dispatchable pending global resource audit. Production monolithic mode retains the existing resource lease boundary.",
     "network": "HTTPS raw.githubusercontent.com only, repository-bound URL and same-host redirect checks.",
     "github_api": "The assessor may only read and CAS-update the current task's bounded checkpoint in the durable Issue #315 queue using the scheduler-supplied token. It performs no Contents API writes, Git commits, or pushes.",
     "protected_config": "modules/uu.conf is immutable and outside this capability's write set."
   },
   "blockers": [
     "Full transitive writer inventory and cross-workflow runtime trace reconciliation under issue #193 remain a global acceptance gate.",
-    "End-to-end Watchdog-dispatched discovery-to-assessment execution and immutable artifact upload must pass after this PR merges."
+    "End-to-end Watchdog-dispatched discovery-to-assessment execution and immutable artifact upload must pass after this PR merges.",
+    "Issue #193 is a hard prerequisite: no independent Python adapter enablement until complete transitive writer, dynamic path, and cross-workflow fencing evidence passes.",
+    "Issue #192 remains open until a non-production end-to-end producer-artifact-consumer canary passes."
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
