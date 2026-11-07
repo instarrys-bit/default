@@ -73,7 +73,7 @@
       "tests/test_task_queue_runtime.py",
       "tests/test_workflow_config_guard_order.py"
     ],
-    "limitation": "Static Python mutation-site inventory and workflow-native scan cover the registered writers and all eight workflows. Ruleset output mutations now have exact per-file lease assertions; Watchdog manifest repair shares the main-writer concurrency group. The global audit remains partial for non-ruleset shared JSON documents, dynamic shell/action effects, and real concurrent-run integration evidence.",
+    "limitation": "The production repository publication boundary is rulesets/** only, enforced by workflow git-add allowlist, staged-path fence and restore_publish_outputs allowlist. Static Python and workflow inventories are updated; complete dynamic shell/action effects and real concurrent-run integration evidence remain open. Issue #193 is not closed; independent Python adapters remain fail-closed.",
     "reviewed_at": "2026-11-04",
     "isolated_ephemeral_outputs": [
       {
@@ -244,13 +244,11 @@
         "automation/production_workflow_map.json",
         "automation/resource_write_sets.json"
       ],
-      "writers": [
-        "script_register_config_baseline",
-        "workflow_auto_sync"
-      ],
-      "lease_key": "logical/production-pipeline",
-      "status": "live_fenced_production_writer_reviewed",
-      "note": "The owner baseline registrar writes only approval/pin metadata after verifying the exact owner-authored modules/uu.conf change. In auto_sync, these writes are guarded by the live Watchdog task/resource lease and the publisher reasserts the same fencing epoch before push. validate-config writes only its ephemeral workspace with contents:read. Historical artifact restore is explicitly excluded from these resources. This covers the registered production path; broader cross-workflow ownership audit remains partial."
+      "writers": [],
+      "lease_key": "read-only config baseline; runner-local proposal artifact only",
+      "status": "no_repository_metadata_writer",
+      "note": "register_config_baseline.py verifies owner-authored modules/uu.conf changes and emits a review proposal only under RUNNER_TEMP. auto_sync uploads the proposal as an immutable artifact before verify_baseline fails closed on an unregistered change. It never writes sources/policy.json, release_manifest.json, production_workflow_map.json or resource_write_sets.json. No production writer is registered.",
+      "known_writers": []
     },
     {
       "id": "policy_source_overlap_audit",
@@ -259,13 +257,12 @@
         "reports/policy-source-overlap.md"
       ],
       "known_writers": [
-        "script_audit_policy_source_overlap",
-        "script_restore_automation_state"
+        "script_audit_policy_source_overlap"
       ],
-      "lock_key": "logical/production-pipeline + sources/policy_source_overlap.json + reports/policy-source-overlap.md",
-      "required_mode": "exclusive",
-      "status": "audit_output_central_pipeline_fence_only",
-      "note": "Audit-only report and JSON output; publish restoration is another writer under the same auto_sync logical fence."
+      "lock_key": "per-run isolated workflow workspace",
+      "required_mode": "runner_local_ephemeral_output",
+      "status": "artifact_only_no_repository_publication",
+      "note": "The audit writes sources/policy_source_overlap.json and reports/policy-source-overlap.md only in the isolated runner workspace. Immutable Actions audit artifact preserves them; publish allowlist is rulesets/** only."
     },
     {
       "id": "published_ruleset_artifacts",
@@ -313,7 +310,7 @@
       "lock_key": "per-run isolated workflow workspace; no shared repository resource",
       "required_mode": "runner_local_ephemeral_output",
       "status": "runner_local_artifacts_no_repository_publication",
-      "note": "These reports are written only to the current workflow runner workspace and uploaded as run artifacts when required. restore_publish_outputs no longer restores reports; production commits are limited to rulesets/**. No cross-runner shared filesystem resource exists for these report paths."
+      "note": "All reports are written only to the current audit runner workspace and included in the immutable Actions audit artifact. restore_publish_outputs has a separate rulesets/** allowlist. Production commits are limited to rulesets/**."
     },
     {
       "id": "request_intake_observations",
