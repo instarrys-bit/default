@@ -448,7 +448,8 @@
       "The child re-reads live queue state and checks the exact active fencing token at every filesystem mutation boundary.",
       "The independent verifier accepts only matching runtime/persistent/report artifacts.",
       "A controlled post-merge scheduler canary passes without changing modules/uu.conf.",
-      "For the independent source DAG, confirm the verified discovery artifact root is used by enqueue, claim, execute and post-execution read-only digest checks; all assessment outputs stay under RUNNER_TEMP and no repository path is staged."
+      "Issue #193 acceptance: complete transitive writer inventory, dynamic path resolution, runtime mutation traces, canonical resource lease mapping, cross-workflow serialization proof, and independent output verification for every executable capability.",
+      "Issue #192 acceptance: live non-production discovery artifact → idempotent assessment consumer canary with no duplicate monolithic assessment; adapters remain disabled during audit."
     ]
   }
 }
