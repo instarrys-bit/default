@@ -42,6 +42,23 @@ class SourceHandoffPolicyTests(unittest.TestCase):
         assessment = assessment_task("task_assessed", "42373818238")
         self.assertFalse(discovery_task_requires_handoff(discovery, [discovery, assessment]))
 
+    def test_newer_verified_discovery_supersedes_older_unassessed_run(self):
+        older = discovery_task(run_id="42373818238")
+        older["created_at"] = "2026-11-07T12:00:00Z"
+        newer = discovery_task(run_id="42417075148")
+        newer["task_id"] = "task_discovery_newer"
+        newer["created_at"] = "2026-11-08T12:00:00Z"
+        assessment = assessment_task("task_newer_assessed", "42417075148")
+        self.assertFalse(discovery_task_requires_handoff(older, [older, newer, assessment]))
+
+    def test_newer_discovery_without_verified_assessment_does_not_supersede(self):
+        older = discovery_task(run_id="42373818238")
+        older["created_at"] = "2026-11-07T12:00:00Z"
+        newer = discovery_task(run_id="42417075148")
+        newer["task_id"] = "task_discovery_newer"
+        newer["created_at"] = "2026-11-08T12:00:00Z"
+        self.assertTrue(discovery_task_requires_handoff(older, [older, newer]))
+
     def test_succeeded_discovery_without_verified_assessment_still_needs_handoff(self):
         discovery = discovery_task()
         self.assertTrue(discovery_task_requires_handoff(discovery, [discovery]))
