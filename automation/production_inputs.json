@@ -49,9 +49,11 @@
   "non_production_path_patterns": [
     ".github/workflows/automation-watchdog.yml",
     ".github/workflows/request-intake.yml",
+    ".github/workflows/restore-inventory.yml",
     ".github/workflows/self-healing-agent.yml",
     ".github/workflows/self-healing-tests.yml",
     ".github/workflows/validate-config.yml",
+    "automation/.restore/meta.json",
     "automation/capability_contract_inventory.json",
     "automation/execution_adapters.json",
     "automation/heartbeat.json",
@@ -80,6 +82,8 @@
     "scripts/production_intent.py",
     "scripts/remote_task_queue_runtime.py",
     "scripts/resource_lease_runtime.py",
+    "scripts/restore_inventory_from_chunks.py",
+    "scripts/source_handoff_policy.py",
     "scripts/task_queue.py",
     "scripts/task_queue_runtime.py",
     "scripts/task_result_verifier.py",
@@ -98,10 +102,7 @@
     "sources/source_assessments.json*",
     "sources/source_candidates.json*",
     "sources/source_snapshots/**",
-    "tests/**",
-    ".github/workflows/restore-inventory.yml",
-    "automation/.restore/meta.json",
-    "scripts/restore_inventory_from_chunks.py"
+    "tests/**"
   ],
   "unknown_path_policy": "review_required",
   "monitoring_path_patterns": [
