@@ -318,6 +318,22 @@ def _task_targets_workflow_auto_sync(queue, task_id):
 
 
 
+def assert_resource_lease_for_repository_path(root, relative_path):
+    """Explicit per-writer lease assertion for mutations inside this repository only."""
+    root_path = Path(root).resolve()
+    relative = Path(relative_path)
+    if relative.is_absolute() or ".." in relative.parts:
+        raise ValueError("resource path must be a safe repository-relative path")
+    target = (root_path / relative).resolve(strict=False)
+    if target != root_path and root_path not in target.parents:
+        raise ValueError("resource path escapes the supplied workspace")
+    repository_root = Path(__file__).resolve().parents[1]
+    if target == repository_root or target.is_relative_to(repository_root):
+        assert_resource_lease_from_environment(relative.as_posix())
+        return True
+    return False
+
+
 def assert_resource_lease_from_environment(resource_path):
     """Read the durable queue at every filesystem mutation and enforce live fencing."""
     resource_path=resource_key(resource_path)
