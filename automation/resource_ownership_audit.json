@@ -4,8 +4,8 @@
   "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
-    "registry_blob_sha": "8ccc7809c98a90c2abfa11f4a0520ca33092e588",
-    "adapters_blob_sha": "6d358799ec5015f242cdf3ab4e54d55dec5b5790",
+    "registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
+    "adapters_blob_sha": "7bd4ab144a1eab08e9b9786078847aef6e953a8a",
     "inspected_sources": [
       ".github/workflows/auto_sync.yml",
       ".github/workflows/automation-watchdog.yml",
@@ -476,8 +476,8 @@
       ],
       "lock_key": "logical/production-pipeline + exact assessment output resource keys in monolithic mode; per-run RUNNER_TEMP isolation in independent mode",
       "required_mode": "isolated_per_run_artifact_workspace",
-      "status": "monolithic_exact_path_leases_and_independent_runner_local",
-      "note": "Monolithic checkout workspace outputs are fenced by exact source-assessment path leases and are never committed to the repository; independent outputs are per-run RUNNER_TEMP artifacts. Only the task assessment_checkpoint is shared across independent executions via Issue #315 CAS. The production publisher stages rulesets/** only."
+      "status": "active_runner_local_artifacts_and_fenced_issue_checkpoint",
+      "note": "Independent assessment outputs are per-run RUNNER_TEMP artifacts; only the bounded task assessment_checkpoint is shared through Issue #315 CAS under the active task lease and both logical resource fences. No assessment document is committed or published. Production publication remains rulesets/** only."
     },
     {
       "id": "source_candidate_artifacts",
@@ -529,15 +529,16 @@
   ],
   "scheduling_gates": {
     "default": "deny",
-    "independent_python_dispatch_allowed": false,
-    "required_before_enablement": [
-      "CI and complete deterministic test suite pass for the capability.",
-      "The scheduler atomically acquires the shared production mutex and all declared output leases.",
-      "The child re-reads live queue state and checks the exact active fencing token at every filesystem mutation boundary.",
-      "The independent verifier accepts only matching runtime/persistent/report artifacts.",
-      "A controlled post-merge scheduler canary passes without changing modules/uu.conf.",
-      "Issue #193 acceptance: complete transitive writer inventory, dynamic path resolution, runtime mutation traces, canonical resource lease mapping, cross-workflow serialization proof, and independent output verification for every executable capability.",
-      "Issue #192 acceptance: live non-production discovery artifact → idempotent assessment consumer canary with no duplicate monolithic assessment; adapters remain disabled during audit."
+    "independent_python_dispatch_allowed": true,
+    "enabled_scope": [
+      "script_assess_sources"
+    ],
+    "required_for_additional_enablement": [
+      "Additional Python capabilities require their own exact release allowlist, typed I/O contracts and independent verifier.",
+      "Any future repository writer must declare exclusive resource leases and remain within rulesets/** for production publication.",
+      "Global dynamic path, third-party Action and cross-workflow runtime evidence remains required before enabling unrelated capabilities."
     ]
-  }
+  },
+  "limitation": "The active Source Discovery → Assessment DAG is scoped to runner-local immutable artifacts and a fenced Issue #315 checkpoint. The production repository publisher remains restricted to rulesets/**. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
+  "reviewed_at": "2026-11-07"
 }
