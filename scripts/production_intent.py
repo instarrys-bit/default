@@ -200,12 +200,18 @@ def load_request_observation_ledger(root: Path, base_payload: dict | None = None
 UNFINGERPRINTED_ACTIVE_PRODUCTION = "__unfingerprinted_active_production_task__"
 
 
-def active_production_fingerprints(queue: dict, current_fingerprint: str) -> list[str]:
-    """Return active production fingerprints without letting stale queued work block replacement."""
+def active_production_fingerprints(
+    queue: dict, current_fingerprint: str, *, now: datetime | None = None
+) -> list[str]:
+    """Return only work that still owns a live production lease."""
     if not isinstance(queue, dict) or not isinstance(queue.get("tasks"), list):
         raise ValueError("task queue must contain a tasks array")
     if not isinstance(current_fingerprint, str) or not re.fullmatch(r"[0-9a-f]{64}", current_fingerprint):
         raise ValueError("current production fingerprint must be a SHA-256 hex digest")
+    now = now or datetime.now(timezone.utc)
+    if now.tzinfo is None:
+        raise ValueError("now must include a timezone")
+    now = now.astimezone(timezone.utc)
     active = set()
     for task in queue["tasks"]:
         if not isinstance(task, dict) or task.get("target_program_id") != "workflow_auto_sync":
@@ -220,6 +226,15 @@ def active_production_fingerprints(queue: dict, current_fingerprint: str) -> lis
         if (status == "QUEUED" and fingerprint != current_fingerprint
                 and not isinstance(task.get("dispatch_intent"), dict)):
             continue
+        # CLAIMED/VERIFYING work is active only while its resource lease is live.
+        # Once released or expired, fencing prevents that old worker from publishing.
+        resource_lease = task.get("resource_lease")
+        if status in {"CLAIMED", "VERIFYING"} and isinstance(resource_lease, dict):
+            if resource_lease.get("status") == "RELEASED" or resource_lease.get("released_at"):
+                continue
+            expires_at = parse_timestamp(resource_lease.get("expires_at"))
+            if expires_at is not None and expires_at <= now:
+                continue
         if not isinstance(fingerprint, str) or not re.fullmatch(r"[0-9a-f]{64}", fingerprint):
             active.add(UNFINGERPRINTED_ACTIVE_PRODUCTION)
         else:
