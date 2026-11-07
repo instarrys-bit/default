@@ -156,6 +156,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("/actions/runs/{run_id}/cancel", cancel)
         self.assertIn('task.get("target_program_id") != "workflow_auto_sync"', cancel)
         self.assertIn("Production run", cancel)
+        self.assertIn("pre-assessment evidence, not an approved final publication", cancel)
+        self.assertIn("fresh gated audit is required after Assessment", cancel)
         scheduler = (ROOT / "scripts" / "task_scheduler.py").read_text(encoding="utf-8")
         self.assertIn("production_source_assessment_gate(queue.get(\"tasks\", []), root)", scheduler)
         self.assertIn("verified non-activating Assessment", scheduler)
