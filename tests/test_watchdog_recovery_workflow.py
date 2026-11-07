@@ -147,6 +147,20 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("assert-workflow", cursor)
         self.assertNotIn("git push", cursor)
 
+    def test_discovery_reconciliation_accepts_normal_run_state_progression_and_hashes_uploaded_files(self):
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
+        resolver = watchdog.split("Resolve completed Discovery run from durable task correlation", 1)[1].split("Download artifact from the exact discovery workflow run", 1)[0]
+        self.assertIn("Persisted Discovery run identity or SHA relationship verification failed.", resolver)
+        self.assertNotIn('evidence.get("status") != run.get("status")', resolver)
+        self.assertNotIn('evidence.get("conclusion") != run.get("conclusion")', resolver)
+        self.assertIn("Run status/conclusion are mutable lifecycle fields", resolver)
+
+        source = (ROOT / ".github" / "workflows" / "source-discovery.yml").read_text(encoding="utf-8")
+        proof = source.split("Verify producer identity and prepare immutable artifact proof", 1)[1].split("Confirm discovery outputs remain runner-local", 1)[0]
+        self.assertLess(proof.index("shutil.copy2(item"), proof.index("read_only_resource_digests(artifact_root"))
+        self.assertIn('read_document(artifact_root / "sources/discovered_sources.json"', proof)
+        self.assertIn('"artifact_sha256": digest', proof)
+
     def test_independent_source_discovery_and_assessment_are_enabled_with_runner_local_handoff(self):
         source = (ROOT / ".github" / "workflows" / "source-discovery.yml").read_text(encoding="utf-8")
         watchdog = WATCHDOG.read_text(encoding="utf-8")
