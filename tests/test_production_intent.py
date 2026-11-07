@@ -632,5 +632,18 @@ class ProductionIntentTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "SHA-256"):
             active_production_fingerprints({"tasks": []}, "not-a-digest")
 
+
+    def test_repository_manifest_classifies_source_handoff_helper_as_non_production(self):
+        manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
+        path = "scripts/source_handoff_policy.py"
+        self.assertIn(path, manifest["non_production_path_patterns"])
+        result = classify_paths([path], manifest)
+        self.assertEqual(result["status"], "NO_INPUT_CHANGE")
+        self.assertEqual(result["non_production_changes"], [path])
+        self.assertEqual(result["unknown_changes"], [])
+        ledger = json.loads((ROOT / "automation" / "unregistered_path_registry.json").read_text(encoding="utf-8"))
+        entry = next(item for item in ledger["entries"] if item["path"] == path)
+        self.assertEqual(entry["status"], "CLASSIFIED_CONTROL_PLANE")
+
 if __name__ == "__main__":
     unittest.main()
