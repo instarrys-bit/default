@@ -250,15 +250,8 @@
       "required_read_only_resources": [
         "sources/discovered_sources.json"
       ],
-      "publish_resources": [
-        "sources/source_assessments.json",
-        "reports/source-assessment.md"
-      ],
-      "write_resources": [
-        "sources/source_assessments.json",
-        "data/source_assessments_runtime.json",
-        "reports/source-assessment.md"
-      ],
+      "publish_resources": [],
+      "write_resources": [],
       "dependency_contract": {
         "predecessor_program_id": "script_discover_sources",
         "artifact_path": "sources/discovered_sources.json",
