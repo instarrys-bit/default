@@ -316,7 +316,7 @@
     "execution_adapters_blob_sha": "7bd4ab144a1eab08e9b9786078847aef6e953a8a",
     "added_after_release_baseline": true,
     "note": "The independent source DAG is enabled under the scoped release allowlist. Remaining global audit applies to unrelated non-dispatchable capabilities; production repository publication remains rulesets/** only.",
-    "reviewed_at": "2026-11-05",
+    "reviewed_at": "2026-11-07",
     "registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
     "source_dag_scope": "workflow_source_discovery plus script_assess_sources; exact Watchdog caller, immutable artifact digest, non-activation, no repository writes from either stage"
   },
