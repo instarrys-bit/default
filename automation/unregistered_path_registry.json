@@ -471,7 +471,7 @@
     },
     {
       "path": "modules/maasea/youtube_request_local.js",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "NON_PRODUCTION",
       "first_seen_at": "2026-11-06T20:39:12.937749Z",
       "last_seen_at": "2026-11-06T20:39:12.937749Z",
       "seen_count": 1,
@@ -481,11 +481,14 @@
       "last_seen_event": "push",
       "last_seen_revision": "03c1078ebc876451a4b59d0003d5ef6a09cbddf9",
       "last_seen_run_id": "42290090251",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42290090251"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42290090251",
+      "classified_at": "2026-11-07T15:37:00Z",
+      "classification_reason": "Owner-managed Shadowrocket module/JavaScript implementation and legacy local YouTube helper; not a DIRECT/PROXY/REJECT ruleset input. Keep the files unchanged by production automation.",
+      "classification_basis": "Verified exact current paths and repository role. These paths are under modules/ and are not included in automation/production_inputs.json production_input_paths; they are covered by the user-managed module/JS protection boundary. Classification excludes them from ruleset production demand only and does not authorize modification or deletion."
     },
     {
       "path": "modules/maasea/youtube_response.js",
-      "status": "PENDING_CLASSIFICATION",
+      "status": "NON_PRODUCTION",
       "first_seen_at": "2026-11-06T20:39:12.937749Z",
       "last_seen_at": "2026-11-06T20:39:12.937749Z",
       "seen_count": 1,
@@ -495,7 +498,10 @@
       "last_seen_event": "push",
       "last_seen_revision": "03c1078ebc876451a4b59d0003d5ef6a09cbddf9",
       "last_seen_run_id": "42290090251",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42290090251"
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42290090251",
+      "classified_at": "2026-11-07T15:37:00Z",
+      "classification_reason": "Owner-managed Shadowrocket module/JavaScript implementation and legacy local YouTube helper; not a DIRECT/PROXY/REJECT ruleset input. Keep the files unchanged by production automation.",
+      "classification_basis": "Verified exact current paths and repository role. These paths are under modules/ and are not included in automation/production_inputs.json production_input_paths; they are covered by the user-managed module/JS protection boundary. Classification excludes them from ruleset production demand only and does not authorize modification or deletion."
     },
     {
       "path": "modules/temp-test/Sr_Youtube_Clean.js",
@@ -653,5 +659,5 @@
       "classification_basis": "scripts/discover_sources.py loads and validates this catalog, then uses its provider IDs, endpoints, data types and activation boundaries to drive bounded external collection. Changes can alter source observations and later ruleset evidence, so this exact path is a production input. The catalog does not itself assign DIRECT/PROXY/REJECT policy or authorize publication."
     }
   ],
-  "updated_at": "2026-11-06T20:39:12.937749Z"
+  "updated_at": "2026-11-07T15:37:00Z"
 }
