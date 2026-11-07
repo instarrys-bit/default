@@ -2,7 +2,7 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-2026.11.05.integration",
   "status": "baseline_inventory",
-  "source_registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
+  "source_registry_blob_sha": "8ccc7809c98a90c2abfa11f4a0520ca33092e588",
   "summary": {
     "registered_programs": 60,
     "python_components": 52,
@@ -1715,5 +1715,8 @@
       ],
       "verifier": "automation-watchdog workflow_run handler verifies exact run identity, uploaded artifact digest and producer metadata, then enqueues Assessment exactly once using the artifact root for subsequent claim and execution digest checks."
     }
-  ]
+  ],
+  "review_context": {
+    "release_id": "shadowrocket-automation-source-dag-dormant-2026.11.07.1"
+  }
 }
