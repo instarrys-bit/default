@@ -1270,7 +1270,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-dormant-2026.11.07.1",
-    "release_manifest_blob_sha": "0b9ea402b217a088386b6f7a295ac7db90fdd841",
+    "release_manifest_blob_sha": "083ba6727882414e6abc533959df9405ad8c599f",
     "program_registry_blob_sha": "8ccc7809c98a90c2abfa11f4a0520ca33092e588",
     "execution_adapters_blob_sha": "5b1f7d17b77f0f593c01bd4806a096a6be502053",
     "added_after_release_baseline": true,
