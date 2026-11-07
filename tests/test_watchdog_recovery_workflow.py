@@ -224,7 +224,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("steps.resolve-discovery-run.outputs.head_sha", watchdog)
         self.assertIn("exact successful Discovery run must have exactly one unexpired source-discovery-output artifact", watchdog)
         self.assertIn("run-id: ${{ steps.resolve-discovery-run.outputs.run_id }}", watchdog)
-        self.assertIn("Downloaded discovery artifact digest does not match its immutable proof.", watchdog)
+        self.assertIn("Downloaded discovery artifact digest does not match its immutable proof; Assessment is blocked", watchdog)
         self.assertNotIn("The committed main discovery document no longer matches this producer artifact.", watchdog)
         self.assertIn("no sources/ commit is required", watchdog)
         self.assertIn("enqueue-source-discovery", watchdog)
