@@ -8,27 +8,27 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d"
+      "git_blob_sha": "8ccc7809c98a90c2abfa11f4a0520ca33092e588"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "79dfe3d3a3322c7eec4ae0178e85c53ada75efe4"
+      "git_blob_sha": "939b3dc93eb9cc51d448dd114d1593d858255443"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
       "schema_version": 2,
-      "git_blob_sha": "b92d23fa80689aeb7188642a28b81adb0d157bb0"
+      "git_blob_sha": "7f965db26b197f041ce1741556857876ecdcd876"
     }
   },
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "d836ad7e2b46d0aaefdc741d2b6b56cf952876af"
+      "git_blob_sha": "36fcd0e4d6c70ec7879ec70279f090126b311540"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "8f1c5b86dc17be81ed2b7ec1f44d0ac6d3105370"
+      "git_blob_sha": "6a9d0ab4ee0e35fce954f1851c2ece75225d94e5"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -54,7 +54,7 @@
     },
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
-      "git_blob_sha": "8e3e2b20f0ef121757c36ec74bb7ce3e5f564e6f"
+      "git_blob_sha": "0e0764fef4327549320c2dc5145085699036c07e"
     },
     "remote_task_queue_runtime": {
       "path": "scripts/remote_task_queue_runtime.py",
@@ -94,7 +94,7 @@
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
-      "git_blob_sha": "d46264f22336f7ed6ca9e80792ff937760b7995b"
+      "git_blob_sha": "52de4a9be3b2c0c4c094cf1159786b44f9909f20"
     },
     "github_workflow_adapter": {
       "path": "scripts/github_workflow_adapter.py",
