@@ -198,7 +198,7 @@
     "registry_dependency_program_id": "script_discover_sources",
     "required_predecessor_artifact": "sources/discovered_sources.json",
     "input_snapshot_validation": "The scheduler hashes the complete legacy/sharded discovered_sources document under the verified external predecessor artifact root before claim and after assessment; it rejects missing or changed artifact content.",
-    "scheduler_enforcement": "Watchdog downloads the artifact using the exact workflow_run ID, verifies workflow name, numeric run ID, full producer commit SHA, allowlisted artifact path and complete logical-document digest, then sets AUTOMATION_PREDECESSOR_ARTIFACT_ROOT to the verified external artifact directory. enqueue_source_assessment_task, scheduler planning/claim and the assessor independently recheck that exact external artifact digest before and after execution."
+    "scheduler_enforcement": "The Watchdog downloads the artifact using the exact workflow_run ID, verifies workflow name, numeric run ID, full producer commit SHA, allowlisted artifact path and complete logical-document digest, then sets AUTOMATION_PREDECESSOR_ARTIFACT_ROOT to the verified external artifact directory. enqueue_source_assessment_task and scheduler.build_execution_plan independently recheck that exact external artifact digest before claim; the assessor rechecks it before and after execution."
   },
   "permission_boundary": {
     "filesystem": "Active independent mode writes assessment documents only beneath AUTOMATION_ARTIFACT_ROOT under RUNNER_TEMP. The only shared mutation is the bounded Issue #315 task checkpoint under the live task lease and both logical resource fences. No repository checkout file is modified.",
