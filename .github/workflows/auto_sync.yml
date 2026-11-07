@@ -258,6 +258,24 @@ jobs:
           GITHUB_BEFORE: ${{ inputs.baseline_source_before || github.event.before }}
           GITHUB_SHA: ${{ inputs.baseline_source_sha || github.sha }}
         run: python3 scripts/register_config_baseline.py
+      - name: Detect runner-local config baseline proposal
+        id: baseline_proposal
+        if: always()
+        shell: bash
+        run: |
+          if [ -s "$RUNNER_TEMP/config-baseline-proposal.json" ]; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Preserve config baseline proposal as immutable run artifact
+        if: steps.baseline_proposal.outputs.found == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: config-baseline-proposal-${{ github.run_id }}
+          path: ${{ runner.temp }}/config-baseline-proposal.json
+          if-no-files-found: error
+          retention-days: 30
       - name: Verify registered user config baseline
         run: python3 scripts/verify_baseline.py --baseline-only
       - name: Capture and verify the exact production input fingerprint
