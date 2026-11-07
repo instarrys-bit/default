@@ -73,8 +73,8 @@
       "tests/test_task_queue_runtime.py",
       "tests/test_workflow_config_guard_order.py"
     ],
-    "limitation": "The production repository publication boundary is rulesets/** only, enforced by workflow git-add allowlist, staged-path fence and restore_publish_outputs allowlist. Static Python and workflow inventories are updated; complete dynamic shell/action effects and real concurrent-run integration evidence remain open. Issue #193 is not closed; independent Python adapters remain fail-closed.",
-    "reviewed_at": "2026-11-04",
+    "limitation": "The active Source Discovery → Assessment DAG is scoped to runner-local immutable artifacts and a fenced Issue #315 checkpoint. The production repository publisher remains restricted to rulesets/**. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
+    "reviewed_at": "2026-11-07",
     "isolated_ephemeral_outputs": [
       {
         "program_id": "script_assess_sources",
