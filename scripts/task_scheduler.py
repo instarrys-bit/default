@@ -1043,6 +1043,61 @@ def production_dispatch_mode(root: Path = ROOT) -> str:
     return document["dispatch_mode"]
 
 
+def summarize_active_tasks(queue: dict) -> list[dict]:
+    """Return safe queue diagnostics for active work without exposing lease tokens."""
+    if not isinstance(queue, dict) or not isinstance(queue.get("tasks"), list):
+        raise ValueError("task queue must contain a tasks array")
+    summaries = []
+    for task in queue["tasks"]:
+        if not isinstance(task, dict) or task.get("status") not in {"QUEUED", "CLAIMED", "VERIFYING"}:
+            continue
+        payload = task.get("input") if isinstance(task.get("input"), dict) else {}
+        intent = task.get("dispatch_intent") if isinstance(task.get("dispatch_intent"), dict) else {}
+        lease = task.get("lease") if isinstance(task.get("lease"), dict) else {}
+        resource_lease = task.get("resource_lease") if isinstance(task.get("resource_lease"), dict) else {}
+        resource_rows = []
+        resources = resource_lease.get("resources") if isinstance(resource_lease.get("resources"), dict) else {}
+        for key, proof in sorted(resources.items()):
+            if not isinstance(proof, dict):
+                continue
+            resource_rows.append({
+                "resource": key,
+                "fencing_token": proof.get("fencing_token"),
+                "lease_id": proof.get("lease_id"),
+            })
+        evidence = task.get("result", {}).get("run_evidence", {}) if isinstance(task.get("result"), dict) else {}
+        summaries.append({
+            "task_id": task.get("task_id"),
+            "target_program_id": task.get("target_program_id"),
+            "status": task.get("status"),
+            "attempts": task.get("attempts"),
+            "max_attempts": task.get("max_attempts"),
+            "production_fingerprint": payload.get("production_fingerprint"),
+            "production_decision": payload.get("production_decision"),
+            "idempotency_key": task.get("idempotency_key"),
+            "dispatch_intent": {
+                "workflow_path": intent.get("workflow_path"),
+                "correlation_id": intent.get("correlation_id"),
+                "dispatch_attempt": intent.get("dispatch_attempt"),
+                "requested_head_sha": intent.get("requested_head_sha"),
+            } if intent else None,
+            "scheduler_lease": {
+                "owner": lease.get("owner"),
+                "expires_at": lease.get("expires_at"),
+            } if lease else None,
+            "resource_lease": {
+                "status": resource_lease.get("status"),
+                "expires_at": resource_lease.get("expires_at"),
+                "resources": resource_rows,
+            } if resource_lease else None,
+            "run_evidence": {
+                "run_id": evidence.get("run_id"),
+                "status": evidence.get("status"),
+            } if evidence else None,
+        })
+    return sorted(summaries, key=lambda item: (str(item.get("target_program_id")), str(item.get("task_id"))))
+
+
 def run_scheduler_once(store, registry: dict, adapters: dict, *,
                        worker_id: str, max_tasks: int = 1, task_id: str | None = None,
                        root: Path = ROOT, now: datetime | None = None) -> dict:
@@ -1099,6 +1154,17 @@ def run_scheduler_once(store, registry: dict, adapters: dict, *,
 
     final_snapshot = store.read().document
     validate_candidate(final_snapshot, registry)
+    active_tasks = summarize_active_tasks(final_snapshot)
+    active_fingerprints = sorted({
+        item["production_fingerprint"]
+        for item in active_tasks
+        if item.get("target_program_id") == "workflow_auto_sync"
+        and (
+            item.get("status") in {"CLAIMED", "VERIFYING"}
+            or (item.get("status") == "QUEUED" and isinstance(item.get("dispatch_intent"), dict))
+        )
+        and isinstance(item.get("production_fingerprint"), str)
+    })
     return {
         "processed_count": len(processed),
         "processed": processed,
@@ -1107,6 +1173,8 @@ def run_scheduler_once(store, registry: dict, adapters: dict, *,
         "recovered_count": len(recovered),
         "superseded_stale_production_task_ids": superseded_stale_tasks,
         "queue_revision": final_snapshot["revision"],
+        "active_task_summaries": active_tasks,
+        "active_production_fingerprints": active_fingerprints,
     }
 
 

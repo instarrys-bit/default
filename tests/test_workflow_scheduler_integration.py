@@ -272,6 +272,78 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
             "a" * 40,
         )
 
+    def test_active_task_summaries_are_safe_and_explain_production_fingerprint_blockers(self):
+        queue = {
+            "tasks": [
+                {
+                    "task_id": "task_" + "a" * 24,
+                    "target_program_id": "workflow_auto_sync",
+                    "status": "VERIFYING",
+                    "attempts": 1,
+                    "max_attempts": 3,
+                    "idempotency_key": "production:retry:example",
+                    "input": {
+                        "production_fingerprint": "b" * 64,
+                        "production_decision": "RECOVERY_REQUIRED",
+                    },
+                    "dispatch_intent": {
+                        "workflow_path": ".github/workflows/auto_sync.yml",
+                        "correlation_id": "task_" + "a" * 24 + "-a1",
+                        "dispatch_attempt": 1,
+                        "requested_head_sha": "c" * 40,
+                    },
+                    "lease": {
+                        "owner": "42340000000",
+                        "token": "do-not-expose-task-token",
+                        "expires_at": "2026-11-07T06:00:00Z",
+                    },
+                    "resource_lease": {
+                        "status": "ACTIVE",
+                        "token": "do-not-expose-resource-token",
+                        "expires_at": "2026-11-07T06:00:00Z",
+                        "resources": {
+                            "logical/production-pipeline": {
+                                "lease_id": "lease-example",
+                                "fencing_token": 31,
+                            },
+                        },
+                    },
+                    "result": {
+                        "run_evidence": {"run_id": 991, "status": "in_progress"},
+                    },
+                },
+                {
+                    "task_id": "task_" + "b" * 24,
+                    "target_program_id": "script_assess_sources",
+                    "status": "CLAIMED",
+                    "attempts": 1,
+                    "max_attempts": 2,
+                    "input": {},
+                    "lease": {"owner": "worker-2", "token": "hidden", "expires_at": "2026-11-07T06:00:00Z"},
+                },
+                {
+                    "task_id": "task_" + "c" * 24,
+                    "target_program_id": "workflow_auto_sync",
+                    "status": "SUCCEEDED",
+                    "input": {"production_fingerprint": "d" * 64},
+                },
+            ],
+        }
+        summaries = task_scheduler.summarize_active_tasks(queue)
+        self.assertEqual([item["task_id"] for item in summaries], [
+            "task_" + "b" * 24, "task_" + "a" * 24
+        ])
+        production = summaries[1]
+        self.assertEqual(production["status"], "VERIFYING")
+        self.assertEqual(production["production_fingerprint"], "b" * 64)
+        self.assertEqual(production["resource_lease"]["status"], "ACTIVE")
+        self.assertEqual(production["resource_lease"]["resources"][0]["fencing_token"], 31)
+        self.assertEqual(production["run_evidence"]["run_id"], 991)
+        serialized = json.dumps(summaries)
+        self.assertNotIn("do-not-expose-task-token", serialized)
+        self.assertNotIn("do-not-expose-resource-token", serialized)
+        self.assertNotIn('"token"', serialized)
+
     def test_scheduler_dispatches_once_and_leaves_task_verifying(self):
         task = self.enqueue()
         with patch.object(task_scheduler, "GitHubWorkflowClient", return_value=self.client):
@@ -285,6 +357,9 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
         self.assertEqual(saved["status"], "VERIFYING")
         self.assertEqual(saved["dispatch_intent"]["dispatch_attempt"], 1)
         self.assertEqual(saved["result"]["dispatch_state"], "submitted")
+        self.assertEqual(report["active_task_summaries"][0]["task_id"], task["task_id"])
+        self.assertEqual(report["active_task_summaries"][0]["status"], "VERIFYING")
+        self.assertIn("active_production_fingerprints", report)
         self.assertEqual(
             self.client.dispatches[0][2]["automation_task_id"],
             task["task_id"] + "-a1",
