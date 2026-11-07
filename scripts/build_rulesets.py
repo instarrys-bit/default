@@ -139,7 +139,7 @@ def promote_queue_to_capacity(rule_sets, queue_map, previous_rule_count, maximum
         queue_map.pop(key, None)
     return promoted
 
-def eligible_source_ids(source_inventory):
+def source_evidence_eligible_ids(source_inventory):
     """Return only current sources eligible to corroborate newly approved rules."""
     if not isinstance(source_inventory,list):
         raise ValueError("source inventory must be a list")
@@ -188,13 +188,8 @@ def main():
     # A retained baseline hash is not proof that a quarantined source is current.
     # Quarantined sources remain visible in the inventory but cannot corroborate
     # any newly approved rule until a fresh, validated snapshot clears quarantine.
-    quarantined_source_ids=set()
-    for source_record in current_sources:
-        source_status=source_record.get("status","CURRENT")
-        if source_status not in {"CURRENT","STALE_QUARANTINED"}:
-            raise ValueError("unknown source quality status: "+str(source_status))
-        if source_status=="STALE_QUARANTINED":
-            quarantined_source_ids.add(str(source_record["id"]))
+    eligible_source_ids=source_evidence_eligible_ids(current_sources)
+    quarantined_source_ids=enabled_source_ids-eligible_source_ids
     eligible_source_ids=enabled_source_ids-quarantined_source_ids
     protected=json.loads(PROTECTED.read_text(encoding="utf-8"))
     base=CONFIG.read_text(encoding="utf-8")
