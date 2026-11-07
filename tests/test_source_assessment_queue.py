@@ -82,23 +82,30 @@ class AssessmentQueueTests(unittest.TestCase):
     def test_task_batch_uses_cursor_skips_assessed_urls_and_rechecks_stale_parser_results(self):
         assessor = load_assessor()
         items = [
-            {"repository": "a/r", "url": "a1"}, {"repository": "b/r", "url": "b1"},
-            {"repository": "c/r", "url": "c1"}, {"repository": "a/r", "url": "a2"},
-            {"repository": "b/r", "url": "b2"}, {"repository": "c/r", "url": "c2"},
+            {"repository": "a/r", "url": "https://raw.githubusercontent.com/a/r/main/clash-rules/a1.txt"},
+            {"repository": "b/r", "url": "https://raw.githubusercontent.com/b/r/main/clash-rules/b1.txt"},
+            {"repository": "c/r", "url": "https://raw.githubusercontent.com/c/r/main/clash-rules/c1.txt"},
+            {"repository": "a/r", "url": "https://raw.githubusercontent.com/a/r/main/clash-rules/a2.txt"},
+            {"repository": "b/r", "url": "https://raw.githubusercontent.com/b/r/main/clash-rules/b2.txt"},
+            {"repository": "c/r", "url": "https://raw.githubusercontent.com/c/r/main/clash-rules/c2.txt"},
         ]
         predecessor = {"workflow_run_id": "41870001234", "artifact_sha256": "a" * 64}
         previous = {
-            "a1": {"parser_candidate": "domain-only", "parser_version": 2},
-            "b1": {"parser_candidate": "unsupported_or_too_small", "parser_version": 1},
+            "https://raw.githubusercontent.com/a/r/main/clash-rules/a1.txt": {"parser_candidate": "domain-only", "parser_version": 2},
+            "https://raw.githubusercontent.com/b/r/main/clash-rules/b1.txt": {"parser_candidate": "unsupported_or_too_small", "parser_version": 1},
         }
-        batch = assessor.rotate_assessment_urls_for_task(items, predecessor, 3, cursor_url="a1", previous_by_url=previous)
-        self.assertEqual([item["url"] for item in batch], ["b1", "c1", "a2"])
+        batch = assessor.rotate_assessment_urls_for_task(items, predecessor, 3, cursor_url="https://raw.githubusercontent.com/a/r/main/clash-rules/a1.txt", previous_by_url=previous)
+        self.assertEqual([item["url"] for item in batch], [
+            "https://raw.githubusercontent.com/b/r/main/clash-rules/b1.txt",
+            "https://raw.githubusercontent.com/c/r/main/clash-rules/c1.txt",
+            "https://raw.githubusercontent.com/a/r/main/clash-rules/a2.txt",
+        ])
         self.assertEqual(len({item["repository"] for item in batch}), 3)
 
     def test_clash_yaml_payload_is_parsed_as_domain_rules(self):
         assessor = load_assessor()
         rows = [f"  - {chr(39)}DOMAIN-SUFFIX,example{i}.com{chr(39)}" for i in range(25)]
-        payload = ("payload:\\n" + "\\n".join(rows)).encode("utf-8")
+        payload = ("payload:\n" + "\n".join(rows)).encode("utf-8")
         result = assessor.assess_payload(payload, "https://raw.githubusercontent.com/o/r/main/clash-rules/domains.txt", [])
         self.assertEqual(result["parser_candidate"], "clash-domain-rules")
         self.assertEqual(result["clash_yaml_rule_lines"], 25)
