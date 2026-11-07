@@ -503,7 +503,9 @@
         "data/secondary_snapshot.txt (legacy fallback)"
       ],
       "side_effects": [
-        "Bounded HTTPS reads from registered raw.githubusercontent.com source URLs; writes source snapshots and candidate buffers; no activation."
+        "Bounded HTTPS reads from registered raw.githubusercontent.com source URLs; writes source snapshots and candidate buffers; no activation.",
+        "Each dynamic data/source_snapshots/<source_id>.txt write is fenced by the exact parent directory resource key data/source_snapshots, after validating source_id and immediately before mutation.",
+        "Candidate buffer and source output documents use the shared JSON document store, which enforces live per-document leases on every repository-local mutation and rejects path aliases."
       ],
       "evidence": "main() writes every current source snapshot with Path.write_text, writes data/domain_candidates.json and data/candidates.json through write_document with its default lease_required=false, and directly replaces data/source_pending.json.",
       "write_boundary_fencing": "The auto_sync task holds logical/production-pipeline plus exact per-document leases. All outputs are checkout-workspace state and are never committed; production publication remains rulesets/** only.",
@@ -1298,6 +1300,20 @@
       "mode": "exclusive",
       "enforcement": "Every repository-local json_document_store mutation reasserts the live resource fence against the actual base/manifest/shard/staging/cleanup path; child paths map to the parent logical-document key, and symlink/hard-link aliases fail closed. The production-pipeline lease remains an additional coarse mutex.",
       "note": "The shared document helper now enforces the per-document fence on every repository mutation. Cross-workflow concurrent-writer and retry-exhaustion runtime evidence remains pending."
+    },
+    {
+      "resource": "data/source_snapshots/<source_id>.txt",
+      "paths": [
+        "data/source_snapshots/<source_id>.txt"
+      ],
+      "writers": [
+        "script_collect_domains",
+        "workflow_auto_sync"
+      ],
+      "lock_key": "logical/production-pipeline + data/source_snapshots",
+      "mode": "exclusive_exact_directory_and_child_path_lease",
+      "enforcement": "workflow_auto_sync acquires the canonical data/source_snapshots parent resource lease. collect_domains asserts the parent directory before mkdir and the validated source-specific child path immediately before each file write; the shared lease matcher maps the child to the parent key and rejects symlink/hard-link aliases.",
+      "note": "Source IDs are constrained before path construction. restore_automation_state writes only to the isolated audit workspace. Independent source Discovery writes only to RUNNER_TEMP."
     }
   ],
   "not_yet_proven": [
