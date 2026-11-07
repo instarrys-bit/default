@@ -88,6 +88,17 @@
         "verification": "independent verifier + immutable Actions artifact"
       },
       {
+        "program_id": "script_auto_activate_sources",
+        "root": "AUTOMATION_ARTIFACT_ROOT or RUNNER_TEMP/source-activation",
+        "paths": [
+          "sources/domain_sources.json",
+          "sources/source_activation_log.json",
+          "reports/source-activation.md"
+        ],
+        "repository_publication": false,
+        "verification": "Main registry and candidate matrix are read-only; all proposed outputs use ARTIFACT_ROOT/RUNNER_TEMP; adapter and orchestration disabled."
+      },
+      {
         "program_id": "script_discover_sources",
         "root": "AUTOMATION_ARTIFACT_ROOT under RUNNER_TEMP",
         "paths": [
@@ -125,15 +136,11 @@
         "sources/source_activation_log.json",
         "reports/source-activation.md"
       ],
-      "known_writers": [
-        "script_auto_activate_sources",
-        "script_restore_automation_state",
-        "workflow_auto_sync"
-      ],
-      "lock_key": "logical/production-pipeline + sources/domain_sources.json + sources/source_activation_log.json + reports/source-activation.md",
-      "required_mode": "exclusive",
-      "status": "production_registry_writer_central_pipeline_fence_only",
-      "note": "auto_activate_sources writes the active domain source registry and activation log, affecting future production inputs. Publish restore can write the same allowlisted files. Current auto_sync is protected by the central production-pipeline fence; the script has no explicit per-resource lease."
+      "known_writers": [],
+      "lock_key": "read-only main-branch source registry and activation baseline",
+      "required_mode": "read_only",
+      "status": "no_repository_writer_source_activation_artifact_only",
+      "note": "auto_activate_sources now reads the main source registry and emits proposed registry/log/report files only under AUTOMATION_ARTIFACT_ROOT or RUNNER_TEMP. Its adapter and orchestration are disabled. No production workflow writes sources/domain_sources.json or sources/source_activation_log.json."
     },
     {
       "id": "domain_candidate_buffer",
@@ -280,18 +287,16 @@
         "script_audit_ruleset_config_overlap",
         "script_audit_ruleset_references",
         "script_audit_source_lineage",
-        "script_auto_activate_sources",
         "script_build_project_status",
         "script_build_rulesets",
         "script_lifecycle_audit",
         "script_refresh_ruleset_manifest",
-        "script_restore_automation_state",
         "script_sync_ruleset_config_conflicts"
       ],
-      "lock_key": "resource:<canonical-report-path>",
-      "required_mode": "exclusive_per_output",
-      "status": "partial_static_audit",
-      "note": "Report inventory now includes source activation, lineage, policy-source overlap, external-domain, config-drift, RULE-SET reference, RULE-SET/config overlap, project-status, lifecycle and conflict-sync outputs. restore_automation_state is an additional publish-mode writer for allowlisted reports. Exact path-to-writer coverage and per-report lock assertions remain partial."
+      "lock_key": "per-run isolated workflow workspace; no shared repository resource",
+      "required_mode": "runner_local_ephemeral_output",
+      "status": "runner_local_artifacts_no_repository_publication",
+      "note": "These reports are written only to the current workflow runner workspace and uploaded as run artifacts when required. restore_publish_outputs no longer restores reports; production commits are limited to rulesets/**. No cross-runner shared filesystem resource exists for these report paths."
     },
     {
       "id": "request_intake_observations",
