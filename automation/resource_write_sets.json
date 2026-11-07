@@ -78,52 +78,43 @@
       "program_id": "script_assess_sources",
       "source": "scripts/assess_sources.py",
       "writes": [
-        "sources/source_assessments.json",
-        "data/source_assessments_runtime.json",
-        "reports/source-assessment.md"
+        "$AUTOMATION_ARTIFACT_ROOT/sources/source_assessments.json",
+        "$AUTOMATION_ARTIFACT_ROOT/data/source_assessments_runtime.json",
+        "$AUTOMATION_ARTIFACT_ROOT/reports/source-assessment.md"
       ],
       "document_store": [
-        "sources/source_assessments.json",
-        "data/source_assessments_runtime.json"
+        "$AUTOMATION_ARTIFACT_ROOT/sources/source_assessments.json",
+        "$AUTOMATION_ARTIFACT_ROOT/data/source_assessments_runtime.json"
       ],
       "dynamic_children": [
-        "sources/source_assessments.json.manifest.json",
-        "sources/source_assessments.json.parts-<digest>/part-*.jsonl",
-        "data/source_assessments_runtime.json.manifest.json",
-        "data/source_assessments_runtime.json.parts-<digest>/part-*.jsonl",
-        "corresponding .parts.tmp-* staging directories"
+        "runner-local content-addressed manifests/shards/staging under AUTOMATION_ARTIFACT_ROOT; no repository paths"
       ],
       "read_resources": [
-        "sources/discovered_sources.json",
-        "sources/source_assessments.json"
+        "verified external $AUTOMATION_PREDECESSOR_ARTIFACT_ROOT/sources/discovered_sources.json",
+        "sources/source_assessments.json (read-only main baseline)"
       ],
       "side_effects": [
         "HTTPS reads restricted to raw.githubusercontent.com with repository binding and same-host redirect validation.",
-        "Task retries derive the same bounded URL batch from the immutable producer run ID and discovery artifact digest; remote reads may repeat, while final history/report writes replace the same logical documents under live fenced leases."
+        "Per-URL results are CAS-appended to GitHub Issue #315 task.assessment_checkpoint under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences.",
+        "All assessment documents are isolated beneath RUNNER_TEMP and uploaded as immutable Actions artifacts; no repository checkout file is modified."
       ],
-      "evidence": "main() reads discovery and prior assessment documents, then calls write_document for runtime and persistent outputs and writes REPORT.",
+      "evidence": "Independent task mode resolves the discovery predecessor from AUTOMATION_PREDECESSOR_ARTIFACT_ROOT and writes runtime/history/report documents only beneath AUTOMATION_ARTIFACT_ROOT. write_document uses no repository resource lease because the workspace is per-run isolated. Shared progress is written only through the fenced Issue #315 queue CAS.",
       "lease_keys": [
         "logical/production-pipeline",
-        "sources/source_assessments.json",
-        "data/source_assessments_runtime.json",
-        "reports/source-assessment.md"
+        "logical/source-assessment-checkpoints"
       ],
-      "lease_enforcement": "Live GitHub queue read and fencing-token assertion immediately before each JSON base/manifest/shard/staging/cleanup mutation and before Markdown report write.",
-      "publish_resources": [
-        "sources/source_assessments.json",
-        "reports/source-assessment.md"
-      ],
+      "lease_enforcement": "Queue checkpoint CAS re-reads the durable queue and validates the exact task lease plus both live logical fencing tokens before each checkpoint mutation. Runner-local artifacts are isolated to the current RUNNER_TEMP directory.",
+      "publish_resources": [],
       "ephemeral_unpublished_resources": [
-        "data/source_assessments_runtime.json"
+        "$AUTOMATION_ARTIFACT_ROOT/sources/source_assessments.json",
+        "$AUTOMATION_ARTIFACT_ROOT/data/source_assessments_runtime.json",
+        "$AUTOMATION_ARTIFACT_ROOT/reports/source-assessment.md"
       ],
       "lease_seconds": 480,
-      "publication": "After artifact verification, scheduler commits only persistent history/report and document-store manifest/shards using a non-force push after rebase; runtime fingerprint data is never committed.",
-      "write_boundary_fencing": "Per-write live lease/fencing is implemented for assessment writes; Watchdog dispatch is enabled only from a successful main-branch production workflow_run event. auto_sync restoration is separately fenced by the shared logical production mutex.",
-      "additional_serialized_writers": [
-        "script_restore_automation_state",
-        "workflow_auto_sync"
-      ],
-      "additional_writer_boundary": "The auto_sync publisher restores allowlisted assessment history and report artifacts from an audited archive under the same live logical/production-pipeline lease. No repository-local filesystem mutation interceptor is present."
+      "publication": "No repository publication; the Watchdog uploads the independently verified runner-local output folder as an immutable Actions artifact.",
+      "write_boundary_fencing": "No shared repository filesystem writes. Per-run output isolation plus task-bound, live-fenced append-only queue CAS is the only shared mutation.",
+      "additional_serialized_writers": [],
+      "additional_writer_boundary": "No persistent source-assessment artifact writer remains; the main-branch source_assessments.json is a read-only baseline."
     },
     {
       "program_id": "script_audit_config_drift",
@@ -649,36 +640,31 @@
       "program_id": "script_discover_sources",
       "source": "scripts/discover_sources.py",
       "writes": [
-        "sources/discovered_sources.json",
-        "reports/source-discovery.md"
+        "$AUTOMATION_ARTIFACT_ROOT/sources/discovered_sources.json",
+        "$AUTOMATION_ARTIFACT_ROOT/reports/source-discovery.md"
       ],
       "document_store": [
-        "sources/discovered_sources.json"
+        "$AUTOMATION_ARTIFACT_ROOT/sources/discovered_sources.json"
       ],
       "dynamic_children": [
-        "sources/discovered_sources.json.manifest.json",
-        "sources/discovered_sources.json.parts-<digest>/part-*.jsonl",
-        "sources/discovered_sources.json.parts.tmp-*"
+        "runner-local manifest, content-addressed shards and staging under AUTOMATION_ARTIFACT_ROOT"
       ],
       "read_resources": [
-        "sources/discovered_sources.json"
+        "sources/external_intelligence_catalog.json",
+        "sources/discovered_sources.json (read-only baseline copied into runner-local workspace)"
       ],
       "side_effects": [
-        "Bounded GitHub repository search and repository-tree/README reads; no source activation."
+        "Bounded external discovery reads; no source activation.",
+        "Discovery inventory and report are written only under isolated RUNNER_TEMP and uploaded as an immutable Actions artifact; no repository file is modified."
       ],
-      "evidence": "main() reads the prior discovery inventory, writes the merged logical document through json_document_store, writes reports/source-discovery.md, and optionally writes the per-run GITHUB_STEP_SUMMARY.",
-      "write_boundary_fencing": "Discovery calls write_document with lease_required=True for the logical document, covering base JSON, adjacent manifest, content-addressed shards, staging, atomic switches and old-shard cleanup; it asserts the live report lease immediately before writing reports/source-discovery.md. The audit job is read-only; publication occurs separately through the explicit ruleset allowlist and independent remote verification. No repository-local filesystem mutation interceptor is present.",
+      "evidence": "Independent workflow seeds the current main discovery document into an isolated RUNNER_TEMP workspace, runs discover_sources.py with AUTOMATION_ARTIFACT_ROOT, verifies producer identity and complete logical-document digest, then uploads the workspace as an immutable artifact.",
+      "write_boundary_fencing": "The exact Watchdog durable task and active resource lease proof are verified before execution. File outputs are isolated per run under RUNNER_TEMP; no shared repository filesystem mutation or publication occurs.",
       "ephemeral_outputs": [
         "GITHUB_STEP_SUMMARY (runner-local; warning path overwrites and success path appends)"
       ],
-      "additional_serialized_writers": [
-        "script_restore_automation_state"
-      ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
-      "lease_keys": [
-        "sources/discovered_sources.json",
-        "reports/source-discovery.md"
-      ]
+      "additional_serialized_writers": [],
+      "additional_writer_boundary": "No persistent discovery artifact writer remains; the main-branch discovery document is a read-only baseline.",
+      "lease_keys": []
     },
     {
       "program_id": "script_github_queue_store",
