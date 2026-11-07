@@ -102,13 +102,12 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
                     predecessor, item, store=store, registry={},
                 )
 
-    def test_default_limits_preserve_existing_workflow_behavior(self):
+    def test_legacy_workflow_defaults_are_bounded_to_one_resumable_batch(self):
         self.assertEqual(assess_sources.load_task_options(None), {
-            "max_urls": assess_sources.MAX_URLS,
-            "max_file_bytes": assess_sources.MAX_BYTES,
-            "max_total_bytes": assess_sources.MAX_TOTAL_BYTES,
+            "max_urls": 20,
+            "max_file_bytes": 1_000_000,
+            "max_total_bytes": 10_000_000,
         })
-
     def test_assessor_fences_each_logical_output_before_writing(self):
         source = (ROOT / "scripts" / "assess_sources.py").read_text(encoding="utf-8")
         for target in ("RUNTIME_OUTPUT", "OUTPUT", "REPORT"):
