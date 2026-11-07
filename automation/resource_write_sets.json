@@ -306,41 +306,6 @@
       "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
     },
     {
-      "program_id": "script_auto_activate_sources",
-      "source": "scripts/auto_activate_sources.py",
-      "writes": [
-        "sources/domain_sources.json",
-        "sources/source_activation_log.json",
-        "reports/source-activation.md"
-      ],
-      "document_store": [],
-      "dynamic_children": [],
-      "read_resources": [
-        "sources/source_candidates.json",
-        "sources/domain_sources.json",
-        "sources/discovered_sources.json",
-        "sources/source_activation_log.json"
-      ],
-      "side_effects": [
-        "Activates stable, policy-evidenced source repositories in the active source registry; this changes future production input collection, but does not directly publish domain rules."
-      ],
-      "evidence": "main() reads domain_sources.json and source_candidates.json, calls activate(), then directly rewrites sources/domain_sources.json and sources/source_activation_log.json and writes reports/source-activation.md.",
-      "lease_keys": [
-        "logical/production-pipeline",
-        "sources/domain_sources.json",
-        "sources/source_activation_log.json",
-        "reports/source-activation.md"
-      ],
-      "lease_enforcement": "The production publisher requires a live Watchdog task/resource lease before git push. The config validation workflow has contents:read and only mutates its ephemeral validation workspace; it cannot publish repository changes.",
-      "publish_resources": [
-        "sources/domain_sources.json",
-        "sources/source_activation_log.json",
-        "reports/source-activation.md"
-      ],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "This is a production input registry writer, not merely a report generator. It remains serialized within the current auto_sync pipeline; independent dispatch requires compatible per-resource leases for the registry, activation log and report."
-    },
-    {
       "program_id": "script_build_project_status",
       "source": "scripts/build_project_status.py",
       "writes": [
@@ -1115,14 +1080,10 @@
         "sources/domain_sources.json",
         "sources/source_activation_log.json"
       ],
-      "writers": [
-        "script_auto_activate_sources",
-        "script_restore_automation_state",
-        "workflow_auto_sync"
-      ],
-      "lock_key": "logical/production-pipeline + sources/domain_sources.json + sources/source_activation_log.json",
-      "mode": "exclusive",
-      "enforcement": "Current auto_sync production writes and publish restoration are serialized by the Watchdog logical/production-pipeline lease. script_auto_activate_sources does not request explicit per-resource leases; this remains an unresolved writer boundary and the component stays non-dispatchable.",
+      "writers": [],
+      "lock_key": "read-only main-branch source registry baseline",
+      "mode": "read_only",
+      "enforcement": "No production writer remains. auto_activate_sources emits a proposed registry and activation log only as runner-local artifacts and remains non-dispatchable.",
       "note": "Source activation changes future production input collection. Treat as a production registry writer, not a report-only stage; independent dispatch remains blocked until compatible per-resource lease proof exists."
     },
     {
@@ -1420,6 +1381,12 @@
       "source": "scripts/audit_adapter_activation.py",
       "classification": "read_only_activation_audit",
       "evidence": "Reads registry, adapters and source files to report readiness; explicitly reports activation_performed=false and does not change adapter state."
+    },
+    {
+      "program_id": "script_auto_activate_sources",
+      "source": "scripts/auto_activate_sources.py",
+      "classification": "runner_local_source_activation_candidate_artifact_non_dispatchable",
+      "evidence": "The script reads sources/domain_sources.json and source_candidates.json as read-only inputs. Proposed registry, activation log and report outputs are written only under AUTOMATION_ARTIFACT_ROOT or RUNNER_TEMP. Its adapter and orchestration remain disabled; no source registry or activation log is committed to the repository."
     },
     {
       "program_id": "script_build_dashboard_snapshot",
