@@ -380,16 +380,14 @@
         "logical/production-pipeline",
         "sources/rule_provenance.json"
       ],
-      "lease_enforcement": "Current auto_sync invocation is centrally fenced by the Watchdog logical production-pipeline lease. The helper call does not request its own explicit logical-document lease; restore_automation_state is another writer for the same path.",
-      "publish_resources": [
+      "lease_enforcement": "write_document is called with lease_required=True, asserting the exact sources/rule_provenance.json resource lease before manifest/shard/staging/document mutations.",
+      "publish_resources": [],
+      "ephemeral_unpublished_resources": [
         "sources/rule_provenance.json"
       ],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "The Watchdog logical/production-pipeline lease serializes the auto_sync workflow; it does not intercept individual filesystem mutations. restore_automation_state runs within the same serialized publisher path. Per-document lease assertions and non-auto_sync writer compatibility remain unproven.",
-      "additional_serialized_writers": [
-        "script_restore_automation_state"
-      ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility."
+      "write_boundary_fencing": "The rule provenance ledger is run-local state restored from and archived with the audit artifact; exact document lease is asserted by write_document. No non-ruleset path is committed.",
+      "additional_serialized_writers": [],
+      "additional_writer_boundary": "restore_automation_state may restore this file into the isolated audit workspace, but it does not publish it to the repository."
     },
     {
       "program_id": "script_build_rulesets",
@@ -503,9 +501,20 @@
         "Bounded HTTPS reads from registered raw.githubusercontent.com source URLs; writes source snapshots and candidate buffers; no activation."
       ],
       "evidence": "main() writes every current source snapshot with Path.write_text, writes data/domain_candidates.json and data/candidates.json through write_document with its default lease_required=false, and directly replaces data/source_pending.json.",
-      "write_boundary_fencing": "The production audit job is read-only (contents:read). The publisher revalidates the exact Watchdog task and live resource lease, stages only the explicit ruleset publication allowlist, and is followed by independent remote ruleset verification. Repository-local filesystem mutations are not intercepted by a filesystem hook. Independent writers require separate ownership and lease proof.",
+      "write_boundary_fencing": "The auto_sync task holds logical/production-pipeline plus exact per-document leases. All outputs are checkout-workspace state and are never committed; production publication remains rulesets/** only.",
       "lease_keys": [
-        "logical/production-pipeline"
+        "logical/production-pipeline",
+        "data/domain_candidates.json",
+        "data/source_pending.json",
+        "data/candidates.json"
+      ],
+      "lease_enforcement": "write_document uses lease_required=True for both logical JSON documents; data/source_pending.json asserts its exact path lease before write; dynamic source snapshots assert logical/production-pipeline before each write and directory creation.",
+      "publish_resources": [],
+      "ephemeral_unpublished_resources": [
+        "data/source_snapshots/<source_id>.txt (one file for each current non-stale source)",
+        "data/domain_candidates.json (JSON document or manifest/shard/staging children)",
+        "data/source_pending.json",
+        "data/candidates.json (JSON document or manifest/shard/staging children)"
       ]
     },
     {
@@ -610,12 +619,12 @@
         "logical/production-pipeline",
         "data/domain_candidates.json"
       ],
-      "lease_enforcement": "Current auto_sync invocation is centrally fenced by the Watchdog logical production-pipeline lease. write_document itself is not called with lease_required=True; independent invocation and per-document lease proof are not established.",
-      "publish_resources": [
+      "lease_enforcement": "write_document is called with lease_required=True, asserting the exact data/domain_candidates.json resource lease before every manifest/shard/staging/document mutation.",
+      "publish_resources": [],
+      "ephemeral_unpublished_resources": [
         "data/domain_candidates.json"
       ],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "The Watchdog logical/production-pipeline lease serializes the auto_sync workflow; it does not intercept individual filesystem mutations. This shared logical JSON document also has script_collect_domains and restore_automation_state as writers; compatible cross-workflow per-document locking is not yet proven."
+      "write_boundary_fencing": "The candidate buffer is per-run checkout workspace state and is never committed. Exact data/domain_candidates.json lease and logical/production-pipeline serialize the two producer paths; only rulesets/** is published."
     },
     {
       "program_id": "script_json_document_store",
