@@ -666,7 +666,7 @@
       "side_effects": [
         "Shared storage helper used by multiple registered programs; performs atomic legacy-file replacement or sharded JSONL writes, manifest switch, and cleanup.",
         "Every repository-local mutation reasserts the live canonical resource lease on the actual base, manifest, shard, staging, and cleanup path; lease proof maps child paths to the parent logical-document key.",
-        "Repository symlink and hard-link aliases are rejected before mutation. Runner-local paths outside the repository remain isolated and do not require repository leases.",
+        "Repository symlink and hard-link aliases, including external paths resolving into the repository, are rejected before mutation. Runner-local paths outside the repository remain isolated and do not require repository leases.",
         "The legacy lease_required=False argument is compatibility-only and cannot bypass repository fencing."
       ],
       "evidence": "_atomic_write() creates a temporary file, writes and fsyncs it, then os.replace()s the target. write_document() may write a legacy file or create a staging directory, shard files, atomically replace the manifest, remove the old base file and delete superseded shard directories.",
