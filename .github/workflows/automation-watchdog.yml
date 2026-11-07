@@ -1109,6 +1109,8 @@ jobs:
                       and (a.get("workflow_run") or {}).get("head_sha") == run.get("head_sha")]
                   if len(exact) != 1:
                       raise SystemExit("The exact successful Discovery run must have exactly one unexpired source-discovery-output artifact.")
+                  handoff = classify_assessment_handoff(tasks, run_id)
+                  handoff_state = handoff["state"]
                   resolved = (task, run)
                   break
           if resolved is None:
