@@ -376,10 +376,11 @@ class CapabilityContractInventoryTests(unittest.TestCase):
     def test_dynamic_ephemeral_writers_are_not_misclassified_as_shared_repo_writers(self):
         writes = load_json("automation/resource_write_sets.json")
         entries = {item["program_id"]: item for item in writes["confirmed_write_sets"]}
-        self.assertIn("<caller-supplied --out path>", entries["script_incident_state"]["writes"])
-        self.assertIn("/tmp/incident-state-body.md", entries["script_incident_state"]["ephemeral_unpublished_resources"])
-        self.assertEqual(entries["script_persist_review_cursor"]["writes"], ["sources/review_cursor.json"])
-        self.assertEqual(entries["script_persist_review_cursor"]["publish_resources"], ["sources/review_cursor.json"])
+        nonwriters = {item["program_id"]: item for item in writes["reviewed_non_writers"]}
+        self.assertIn("<caller-supplied --out path>", nonwriters["script_incident_state"]["writes"])
+        self.assertIn("/tmp/incident-state-body.md", nonwriters["script_incident_state"]["evidence"])
+        self.assertEqual(nonwriters["script_persist_review_cursor"]["classification"], "runner_local_failed_cursor_recovery_artifact_non_dispatchable")
+        self.assertIn("RUNNER_TEMP", nonwriters["script_persist_review_cursor"]["evidence"])
         self.assertIn("task-input.json", entries["script_task_scheduler"]["ephemeral_unpublished_resources"])
         self.assertEqual(entries["script_task_scheduler"]["publish_resources"], [])
 
