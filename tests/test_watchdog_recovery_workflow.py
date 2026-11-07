@@ -160,6 +160,9 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertLess(proof.index("shutil.copy2(item"), proof.index("read_only_resource_digests(artifact_root"))
         self.assertIn('read_document(artifact_root / "sources/discovered_sources.json"', proof)
         self.assertIn('"artifact_sha256": digest', proof)
+        self.assertIn("steps.verify-discovery-artifact.outputs.valid == 'false'", watchdog)
+        self.assertIn("steps.verify-discovery-artifact.outputs.valid == 'true'", watchdog)
+        self.assertIn("git rev-parse HEAD:.github/workflows/source-discovery.yml", watchdog)
 
     def test_independent_source_discovery_and_assessment_are_enabled_with_runner_local_handoff(self):
         source = (ROOT / ".github" / "workflows" / "source-discovery.yml").read_text(encoding="utf-8")
