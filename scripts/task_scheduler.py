@@ -153,6 +153,39 @@ def supersede_stale_queued_production_tasks(store, registry: dict, root: Path = 
         return queue, changed
     return store.mutate(mutate)
 
+def production_source_assessment_gate(tasks: list, root: Path = ROOT) -> bool:
+    """Require a verified, non-activating Assessment for the newest Discovery in independent mode."""
+    control = load_object(Path(root) / "automation" / "production_control.json", "production control")
+    mode = control.get("source_discovery_mode")
+    if mode == "monolithic_fallback":
+        return True
+    if mode != "independent":
+        return False
+    if not isinstance(tasks, list):
+        return False
+    discovery_tasks = [
+        task for task in tasks
+        if isinstance(task, dict) and task.get("target_program_id") == "workflow_source_discovery"
+    ]
+    if not discovery_tasks:
+        return False
+    latest = max(
+        discovery_tasks,
+        key=lambda task: (str(task.get("created_at") or ""), str(task.get("task_id") or "")),
+    )
+    if latest.get("status") != "SUCCEEDED":
+        return False
+    result = latest.get("result")
+    evidence = result.get("run_evidence") if isinstance(result, dict) else None
+    run_id = evidence.get("run_id") if isinstance(evidence, dict) else None
+    if isinstance(run_id, int) and not isinstance(run_id, bool):
+        run_id = str(run_id)
+    if not isinstance(run_id, str) or not run_id.isdigit():
+        return False
+    from source_handoff_policy import classify_assessment_handoff
+    return classify_assessment_handoff(tasks, run_id).get("state") == "already_assessed"
+
+
 def build_execution_plan(queue: dict, registry: dict, adapters: dict,
                          root: Path = ROOT, now: datetime | None = None) -> dict:
     now = now or now_utc()
@@ -190,6 +223,10 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
             target_id = task["target_program_id"]
             if target_id == "workflow_auto_sync":
                 assert_current_production_input(task, root)
+                if not production_source_assessment_gate(queue.get("tasks", []), root):
+                    raise ValueError(
+                        "production audit is blocked until the latest independent Discovery has a verified non-activating Assessment"
+                    )
             target = by_id.get(target_id)
             adapter = by_target.get(target_id)
             if target is None:

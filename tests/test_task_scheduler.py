@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from remote_task_queue_runtime import claim_remote, enqueue_remote
 from task_queue_runtime import now_utc, stamp, manual_authorization_record, validate_manual_authorization
-from task_scheduler import run_scheduler_once, build_execution_plan, enqueue_source_assessment_task, enqueue_source_discovery_task, enqueue_auto_sync_task, assert_current_production_input, supersede_stale_queued_production_tasks, generated_python_cache_paths, publishable_resource_path, validate_repository_write_scope
+from task_scheduler import run_scheduler_once, build_execution_plan, enqueue_source_assessment_task, enqueue_source_discovery_task, enqueue_auto_sync_task, assert_current_production_input, production_source_assessment_gate, supersede_stale_queued_production_tasks, generated_python_cache_paths, publishable_resource_path, validate_repository_write_scope
 
 
 class MemoryStore:
@@ -33,6 +33,48 @@ class MemoryStore:
 
 
 class TaskSchedulerTests(unittest.TestCase):
+    def test_independent_production_gate_requires_latest_verified_non_activating_assessment(self):
+        control = self.root / "automation" / "production_control.json"
+        control.write_text(json.dumps({
+            "schema_version": 1, "dispatch_mode": "enabled", "source_discovery_mode": "independent"
+        }), encoding="utf-8")
+        older = {
+            "task_id": "task_" + "1" * 24, "target_program_id": "workflow_source_discovery",
+            "status": "SUCCEEDED", "created_at": "2026-11-07T12:00:00Z",
+            "result": {"run_evidence": {"run_id": 42373818238}},
+        }
+        older_assessment = {
+            "task_id": "task_" + "2" * 24, "target_program_id": "script_assess_sources",
+            "status": "SUCCEEDED",
+            "created_at": "2026-11-07T12:30:00Z",
+            "input": {"predecessor": {"workflow_run_id": "42373818238"}},
+            "verification": {"status": "passed"},
+            "result": {"artifact_verification": {"valid": True, "activation_count": 0}},
+        }
+        newer = {
+            "task_id": "task_" + "3" * 24, "target_program_id": "workflow_source_discovery",
+            "status": "VERIFYING", "created_at": "2026-11-08T12:00:00Z",
+            "result": {"run_evidence": {"run_id": 42417075148}},
+        }
+        self.assertFalse(production_source_assessment_gate([older, older_assessment, newer], self.root))
+        newer["status"] = "SUCCEEDED"
+        self.assertFalse(production_source_assessment_gate([older, older_assessment, newer], self.root))
+        latest_assessment = {
+            "task_id": "task_" + "4" * 24, "target_program_id": "script_assess_sources",
+            "status": "SUCCEEDED",
+            "created_at": "2026-11-08T12:30:00Z",
+            "input": {"predecessor": {"workflow_run_id": "42417075148"}},
+            "verification": {"status": "passed"},
+            "result": {"artifact_verification": {"valid": True, "activation_count": 0}},
+        }
+        self.assertTrue(production_source_assessment_gate(
+            [older, older_assessment, newer, latest_assessment], self.root
+        ))
+        latest_assessment["result"]["artifact_verification"]["activation_count"] = 1
+        self.assertFalse(production_source_assessment_gate(
+            [older, older_assessment, newer, latest_assessment], self.root
+        ))
+
     def test_source_discovery_daily_enqueue_is_idempotent(self):
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
         first = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:abcdef123456")
@@ -97,7 +139,7 @@ class TaskSchedulerTests(unittest.TestCase):
         (self.root / "modules" / "uu.conf").write_text("[General]\n", encoding="utf-8")
         (self.root / "automation").mkdir()
         (self.root / "automation" / "production_control.json").write_text(
-            json.dumps({"schema_version": 1, "dispatch_mode": "enabled"}),
+            json.dumps({"schema_version": 1, "dispatch_mode": "enabled", "source_discovery_mode": "monolithic_fallback"}),
             encoding="utf-8",
         )
         self.script = self.root / "scripts" / "target.py"
