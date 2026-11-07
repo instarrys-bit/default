@@ -37,7 +37,7 @@
     },
     "config_baseline": {
       "path": "modules/uu.conf",
-      "git_blob_sha": "f914b443b332d0f75e43752e84ef0bcd9b2e6a5f",
+      "git_blob_sha": "165dc3d4a84173b9fc7495a57e4aed6bd1d058e9",
       "access": "read_only"
     },
     "source_assessor": {
