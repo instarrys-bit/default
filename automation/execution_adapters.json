@@ -1887,13 +1887,12 @@
       "resource_contract": {
         "mode": "exclusive",
         "resource_keys": [
-          "sources/discovered_sources.json",
-          "reports/source-discovery.md"
+          "logical/source-discovery-run"
         ],
         "lease_seconds": 1800,
         "fencing_required": true,
-        "enforcement_boundary": "exact Watchdog dispatch identity and live per-resource fencing assertion before each filesystem mutation and immediately before main-branch publication",
-        "coverage": "The producer writes only into an isolated RUNNER_TEMP workspace. The discovered document base JSON, manifest, shards, staging and report are runner-local and uploaded as one immutable Actions artifact. No repository file is modified or published; the lease binds the exact Watchdog task and workflow run."
+        "enforcement_boundary": "Exact Watchdog dispatch identity and live logical/source-discovery-run fencing proof are asserted before writing to the isolated RUNNER_TEMP workspace; no repository publication is permitted.",
+        "coverage": "All discovery document, manifest, shard, staging and report writes are confined to the per-run RUNNER_TEMP workspace. The logical lease binds the task/worker and prevents duplicate discovery dispatch; immutable Actions artifact digest and producer identity are independently verified."
       }
     }
   ]
