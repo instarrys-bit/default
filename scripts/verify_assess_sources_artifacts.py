@@ -26,7 +26,7 @@ def verify(result_path: Path) -> dict:
         raise ValueError("assessor stdout result must be an object")
     for artifact in (RUNTIME, PERSISTENT):
         if not artifact.is_file() and not artifact.with_name(artifact.name + ".manifest.json").is_file():
-            raise ValueError(f"required assessment artifact is missing: {artifact.relative_to(ARTIFACT_ROOT)}")
+            raise ValueError(f"required assessment artifact is missing: {artifact.relative_to(ROOT)}")
     runtime=read_document(RUNTIME,"assessments",{"assessments":[]})
     persistent=read_document(PERSISTENT,"assessments",{"assessments":[]})
     assessments=runtime.get("assessments")
