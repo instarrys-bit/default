@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from remote_task_queue_runtime import (
     claim_remote, complete_remote, enqueue_remote, recover_remote, resolve_superseded_dead_letters,
+    record_discovery_handoff_reconciliation,
 )
 
 
@@ -366,6 +367,93 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
                     self.manual_payload("production:manual-authorized:fp:123:after-expiry"),
                     self.store, self.registry, self.now + timedelta(seconds=302),
                 )
+
+
+    def _handoff_tasks(self, *, predecessor_head_sha=None, predecessor_artifact_sha256=None, assessment_status="SUCCEEDED"):
+        run_id = "123456789"
+        head_sha = predecessor_head_sha or ("a" * 40)
+        artifact_sha = predecessor_artifact_sha256 or ("b" * 64)
+        discovery = {
+            "task_id": "task_0123456789abcdef01234567",
+            "target_program_id": "workflow_source_discovery",
+            "status": "SUCCEEDED",
+            "result": {"run_evidence": {
+                "run_id": int(run_id), "head_sha": head_sha,
+                "status": "completed", "conclusion": "success",
+            }},
+        }
+        assessment = {
+            "task_id": "task_1123456789abcdef01234567",
+            "target_program_id": "script_assess_sources",
+            "status": assessment_status,
+            "created_at": "2026-11-07T12:00:00Z",
+            "input": {"predecessor": {
+                "program_id": "script_discover_sources",
+                "workflow_name": "Shadowrocket Source Discovery (Watchdog)",
+                "workflow_run_id": run_id,
+                "workflow_head_sha": head_sha,
+                "artifact_path": "sources/discovered_sources.json",
+                "artifact_sha256": artifact_sha,
+            }},
+            "verification": {
+                "verifier_program_id": "script_target", "status": "passed",
+                "verified_at": "2026-11-07T12:10:00Z", "contract_sha256": "c" * 64,
+            },
+            "result": {"artifact_verification": {
+                "valid": True, "activation_count": 0,
+                "artifact_name": "source-assessment-output", "artifact_sha256": "d" * 64,
+            }},
+        }
+        self.store.document["tasks"] = [discovery, assessment]
+        return discovery, assessment, run_id, head_sha, artifact_sha
+
+    def test_record_discovery_handoff_reconciliation_persists_exact_proof_and_is_idempotent(self):
+        discovery, assessment, run_id, head_sha, artifact_sha = self._handoff_tasks()
+        with patch("remote_task_queue_runtime.validate_candidate"):
+            result = record_discovery_handoff_reconciliation(
+                self.store, self.registry, task_id=discovery["task_id"],
+                workflow_run_id=run_id, workflow_head_sha=head_sha,
+                artifact_sha256=artifact_sha, now=self.now,
+            )
+            writes = self.store.writes
+            replay = record_discovery_handoff_reconciliation(
+                self.store, self.registry, task_id=discovery["task_id"],
+                workflow_run_id=run_id, workflow_head_sha=head_sha,
+                artifact_sha256=artifact_sha, now=self.now + timedelta(minutes=1),
+            )
+        self.assertTrue(result["recorded"])
+        self.assertFalse(replay["recorded"])
+        self.assertEqual(self.store.writes, writes)
+        record = self.store.document["tasks"][0]["handoff_reconciliation"]
+        self.assertEqual(record["status"], "already_assessed")
+        self.assertEqual(record["discovery_run_id"], run_id)
+        self.assertEqual(record["discovery_head_sha"], head_sha)
+        self.assertEqual(record["discovery_artifact_sha256"], artifact_sha)
+        self.assertEqual(record["canonical_assessment_task_id"], assessment["task_id"])
+        self.assertEqual(record["assessment_task_ids"], [assessment["task_id"]])
+
+    def test_record_discovery_handoff_reconciliation_rejects_nonexact_predecessor(self):
+        discovery, assessment, run_id, head_sha, artifact_sha = self._handoff_tasks(
+            predecessor_head_sha="e" * 40,
+        )
+        with patch("remote_task_queue_runtime.validate_candidate"):
+            with self.assertRaisesRegex(ValueError, "no Assessment task contains the exact"):
+                record_discovery_handoff_reconciliation(
+                    self.store, self.registry, task_id=discovery["task_id"],
+                    workflow_run_id=run_id, workflow_head_sha=head_sha,
+                    artifact_sha256=artifact_sha, now=self.now,
+                )
+
+    def test_record_discovery_handoff_reconciliation_rejects_active_assessment(self):
+        discovery, assessment, run_id, head_sha, artifact_sha = self._handoff_tasks(assessment_status="CLAIMED")
+        with patch("remote_task_queue_runtime.validate_candidate"):
+            with self.assertRaisesRegex(ValueError, "remain active"):
+                record_discovery_handoff_reconciliation(
+                    self.store, self.registry, task_id=discovery["task_id"],
+                    workflow_run_id=run_id, workflow_head_sha=head_sha,
+                    artifact_sha256=artifact_sha, now=self.now,
+                )
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
