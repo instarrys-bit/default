@@ -195,7 +195,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("workflow_dispatch", watchdog)
         self.assertIn('"source-assessment:" + run_id', watchdog)
         self.assertIn('task.get("target_program_id") == "script_assess_sources"', watchdog)
-        self.assertIn('task.get("status") in {"QUEUED", "VERIFYING", "COMPLETED", "SUCCEEDED"}', watchdog)
+        self.assertIn('task.get("status") == "QUEUED"', watchdog)
         self.assertIn("page={page}", watchdog)
         self.assertIn("if page > 20:", watchdog)
         self.assertIn('"$base_key:recovery:1"', watchdog)
@@ -224,12 +224,12 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("sources/discovered_sources.json", auto_sync["resource_contract"]["resource_keys"])
         self.assertIn("reports/source-discovery.md", auto_sync["resource_contract"]["resource_keys"])
 
-    def test_source_reconciliation_scans_all_pages_and_recovers_completed_assessment_predecessors(self):
+    def test_source_reconciliation_scans_all_pages_and_recovers_queued_assessment_predecessors(self):
         watchdog = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("while page <= 20:", watchdog)
         self.assertIn("page += 1", watchdog)
         self.assertIn("Discovery workflow run history exceeds the bounded 2,000-run reconciliation window", watchdog)
-        self.assertIn('task.get("status") in {"QUEUED", "VERIFYING", "COMPLETED", "SUCCEEDED"}', watchdog)
+        self.assertIn('task.get("status") == "QUEUED"', watchdog)
 
     def test_source_discovery_retries_once_after_a_dead_lettered_daily_task(self):
         watchdog = WATCHDOG.read_text(encoding="utf-8")
