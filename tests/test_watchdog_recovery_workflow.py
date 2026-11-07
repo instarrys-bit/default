@@ -196,7 +196,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('"source-assessment:" + run_id', watchdog)
         self.assertIn('task.get("target_program_id") == "script_assess_sources"', watchdog)
         self.assertIn('task.get("status") == "QUEUED"', watchdog)
-        self.assertIn("page={page}", watchdog)
+        self.assertIn('workflow_client.list_runs(workflow_id, "main", page)', watchdog)
         self.assertIn("if page > 20:", watchdog)
         self.assertIn('"$base_key:recovery:1"', watchdog)
         self.assertIn('proof.get("workflow_run_id", "")', watchdog)
@@ -447,6 +447,17 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
                 self.assertGreaterEqual(lease_seconds, reconciliation_seconds * 4)
         contract = json.loads((ROOT / "automation" / "capability_contracts" / "assess_sources.json").read_text(encoding="utf-8"))
         self.assertEqual(contract["resource_contract"]["lease_seconds"], by_id["script_assess_sources"]["resource_contract"]["lease_seconds"])
+
+    def test_discovery_handoff_reuses_verified_run_evidence_and_accepts_queue_intent_commit_sha(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        resolver = workflow.split("Resolve completed Discovery run from durable task correlation", 1)[1].split("Download artifact from the exact discovery workflow run", 1)[0]
+        self.assertIn('evidence = (task.get("result") or {}).get("run_evidence")', resolver)
+        self.assertIn("validate_run_head_sha(workflow_client, intent, run.get(\"head_sha\"))", resolver)
+        self.assertIn("head_sha_relationship", resolver)
+        self.assertIn("expected_correlation_titles(intent)", resolver)
+        self.assertIn('sys.path.insert(0, "scripts")', resolver)
+        self.assertNotIn("run.get(\"head_sha\") == requested_sha", resolver)
+        self.assertIn('"source-assessment:" + run_id + ":parser-v2" in existing_keys', resolver)
 
 if __name__ == "__main__":
     unittest.main()
