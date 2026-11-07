@@ -184,6 +184,9 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
 
         self.assertIn("Download artifact from the exact discovery workflow run", watchdog)
         self.assertIn("Resolve completed Discovery run from durable task correlation", watchdog)
+        self.assertIn("Export durable queue snapshot for source reconciliation", watchdog)
+        self.assertIn('remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue.json"', watchdog)
+        self.assertLess(watchdog.index("Export durable queue snapshot for source reconciliation"), watchdog.index("Resolve completed Discovery run from durable task correlation"))
         self.assertIn("dispatch_intent", watchdog)
         self.assertIn("AUTOMATION_QUEUE_SNAPSHOT", watchdog)
         self.assertIn("RUNNER_TEMP", watchdog)
