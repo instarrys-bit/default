@@ -128,12 +128,12 @@
         "reports/config-drift-audit.md"
       ],
       "lease_enforcement": "Current auto_sync invocation uses the central live production-pipeline fence; restore_automation_state may restore both report artifacts under the same fence.",
-      "publish_resources": [
+      "publish_resources": [],
+      "ephemeral_unpublished_resources": [
         "reports/config-drift-audit.json",
         "reports/config-drift-audit.md"
       ],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Read-only with respect to modules/uu.conf; only audit report artifacts are written.",
+      "write_boundary_fencing": "Report-only output stays in the isolated audit runner workspace and is included only in the immutable Actions audit artifact. The production publisher stages rulesets/** exclusively; no report path is committed.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -160,11 +160,11 @@
         "reports/external-domain-audit.md"
       ],
       "lease_enforcement": "Current auto_sync invocation uses the central live production-pipeline fence; restore_automation_state may restore the same report from its allowlisted publish archive.",
-      "publish_resources": [
+      "publish_resources": [],
+      "ephemeral_unpublished_resources": [
         "reports/external-domain-audit.md"
       ],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Report-only output. modules/uu.conf remains read-only and is not a write target.",
+      "write_boundary_fencing": "Report-only output stays in the isolated audit runner workspace and is included only in the immutable Actions audit artifact. The production publisher stages rulesets/** exclusively; no report path is committed.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -192,12 +192,12 @@
         "reports/policy-source-overlap.md"
       ],
       "lease_enforcement": "Current auto_sync invocation uses the central live production-pipeline fence; restore_automation_state may restore both outputs from the publish archive under the same fence.",
-      "publish_resources": [
+      "publish_resources": [],
+      "ephemeral_unpublished_resources": [
         "sources/policy_source_overlap.json",
         "reports/policy-source-overlap.md"
       ],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Audit artifact writer only. It does not alter active source registry or routing policy. Same-path restore writer is serialized in auto_sync; non-auto_sync writer compatibility remains unproven.",
+      "write_boundary_fencing": "Report-only output stays in the isolated audit runner workspace and is included only in the immutable Actions audit artifact. The production publisher stages rulesets/** exclusively; no report path is committed.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -226,12 +226,12 @@
         "reports/ruleset-config-overlap-audit.md"
       ],
       "lease_enforcement": "Current auto_sync invocation uses the central live production-pipeline fence; restore_automation_state may restore both report artifacts under the same fence.",
-      "publish_resources": [
+      "publish_resources": [],
+      "ephemeral_unpublished_resources": [
         "reports/ruleset-config-overlap-audit.json",
         "reports/ruleset-config-overlap-audit.md"
       ],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Read-only with respect to modules/uu.conf; only audit report artifacts are written.",
+      "write_boundary_fencing": "Report-only output stays in the isolated audit runner workspace and is included only in the immutable Actions audit artifact. The production publisher stages rulesets/** exclusively; no report path is committed.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -263,12 +263,12 @@
         "reports/ruleset-reference-audit.md"
       ],
       "lease_enforcement": "Current auto_sync invocation uses the central live production-pipeline fence; restore_automation_state may restore both report artifacts under the same fence.",
-      "publish_resources": [
+      "publish_resources": [],
+      "ephemeral_unpublished_resources": [
         "reports/ruleset-reference-audit.json",
         "reports/ruleset-reference-audit.md"
       ],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Read-only with respect to modules/uu.conf and ruleset list files; only audit report artifacts are written.",
+      "write_boundary_fencing": "Report-only output stays in the isolated audit runner workspace and is included only in the immutable Actions audit artifact. The production publisher stages rulesets/** exclusively; no report path is committed.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -295,11 +295,11 @@
         "reports/source-lineage-audit.json"
       ],
       "lease_enforcement": "Current auto_sync invocation uses the central live production-pipeline fence; publish restoration may restore the same report path under the same fence.",
-      "publish_resources": [
+      "publish_resources": [],
+      "ephemeral_unpublished_resources": [
         "reports/source-lineage-audit.json"
       ],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "Report output is runner-workspace generated and later allowlist-published; it is not a routing policy input. Same-path report writer serialization remains part of the partial report audit.",
+      "write_boundary_fencing": "Report-only output stays in the isolated audit runner workspace and is included only in the immutable Actions audit artifact. The production publisher stages rulesets/** exclusively; no report path is committed.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
@@ -671,13 +671,15 @@
         "resource:<canonical logical document path>"
       ],
       "lease_enforcement": "write_document(lease_required=True) calls _assert_document_lease before parent creation, temporary file writes, atomic replacements, staging directory creation, shard writes, manifest switch, legacy unlink and superseded-shard cleanup. Callers must pass the exact canonical logical document lease; default-false remains for isolated temporary workspaces.",
-      "publish_resources": [
-        "caller-selected logical JSON document and all authoritative child paths"
-      ],
+      "publish_resources": [],
       "ephemeral_unpublished_resources": [
-        "temporary staging files and directories"
+        "<caller-supplied logical JSON document path>",
+        "<logical-name>.manifest.json",
+        "<logical-name>.parts-<digest>/part-*.jsonl",
+        "<logical-name>.parts.tmp-* staging paths",
+        "superseded <logical-name>.parts-* directories"
       ],
-      "write_boundary_fencing": "The helper is not independently dispatchable and installs no global filesystem guard. Each shared caller explicitly opts into lease_required=True; the exact canonical document path is the resource key across base file, manifest, shards, staging and cleanup."
+      "write_boundary_fencing": "Generic shared JSON document helper; all current callers write candidate/review/provenance state only into the isolated audit runner workspace and package it as immutable Actions artifacts. The helper itself has no repository publication authority; production commit allowlist is rulesets/**."
     },
     {
       "program_id": "script_lifecycle_audit",
@@ -938,7 +940,7 @@
         "reports/policy-source-overlap.md",
         "reports/lifecycle/**"
       ],
-      "write_boundary_fencing": "Repository publication is limited to the exact rulesets/** prefix; exact current resource keys are acquired by workflow_auto_sync and revalidated per file before restoration. No global filesystem guard is used."
+      "write_boundary_fencing": "restore_state writes only into isolated audit workspace; restore_publish_outputs has a separate rulesets/** allowlist and asserts exact live file leases before each write. No other path can be published."
     },
     {
       "program_id": "script_select_domain_rules",
@@ -1304,7 +1306,7 @@
     "Non-ruleset shared JSON documents (notably data/domain_candidates.json, sources/rule_provenance.json and dynamic source snapshots) still need complete concurrent-writer integration proof; source registry activation outputs are runner-local proposals only.",
     "Atomic multi-resource lease acquisition and compatibility of per-resource locks across all independent/cross-workflow writers remain unproven.",
     "Static entrypoint inventory does not prove absence of unregistered dynamic writes, subprocess writes, external API mutations or filesystem writes hidden behind imported helpers.",
-    "All remaining registered Python components must be checked for indirect writes through imported helpers, subprocesses and dynamically selected outputs; report-only writers and runner-local source-activation proposal outputs must remain distinct.",
+    "All remaining registered Python components must be checked for indirect writes through imported helpers, subprocesses and dynamically selected outputs; runner-local report writers and runner-local source-activation proposal outputs must remain distinct.",
     "The 52 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and one external workflow-dispatch side-effect adapter. Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths.",
     "Static Python mutation-site and workflow-native scans do not prove transient write-and-revert activity, Git metadata changes, external side effects or unexecuted call paths. No global filesystem guard or Python audit hook is installed."
   ],
