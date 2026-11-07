@@ -8,6 +8,7 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -115,6 +116,17 @@ def owner_approved_config_history(guard: dict) -> list[str]:
     return commits
 
 
+def write_baseline_proposal(proposal: dict) -> Path:
+    temp_root = Path(os.environ.get("RUNNER_TEMP", tempfile.gettempdir())).resolve()
+    configured = os.environ.get("CONFIG_BASELINE_PROPOSAL_PATH")
+    destination = Path(configured).resolve() if configured else temp_root / "config-baseline-proposal.json"
+    if destination != temp_root and temp_root not in destination.parents:
+        raise ValueError("config baseline proposal must remain under RUNNER_TEMP")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(json.dumps(proposal, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return destination
+
+
 def main() -> int:
     policy = json.loads(POLICY.read_text(encoding="utf-8"))
     guard = policy["managed_config_guard"]
@@ -154,18 +166,36 @@ def main() -> int:
         "registered_at": datetime.now(timezone.utc).isoformat(),
     }
     release_manifest_text, workflow_map_text, write_sets_text = build_release_pin_updates(ROOT, guard["path"], actual)
-    POLICY.write_text(json.dumps(policy, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    (ROOT / "automation" / "release_manifest.json").write_text(release_manifest_text, encoding="utf-8")
-    (ROOT / "automation" / "production_workflow_map.json").write_text(workflow_map_text, encoding="utf-8")
-    (ROOT / "automation" / "resource_write_sets.json").write_text(write_sets_text, encoding="utf-8")
-    print(json.dumps({
-        "registered": True,
+    proposal = {
+        "schema_version": 1,
+        "status": "requires_manual_repository_review",
         "path": guard["path"],
         "previous_blob_sha": previous,
         "new_blob_sha": actual,
         "actor": os.environ.get("GITHUB_ACTOR"),
         "approval_mode": approval_mode,
         "config_change_commits": recovered_commits,
+        "proposed_updates": {
+            "sources/policy.json": policy,
+            "automation/release_manifest.json": json.loads(release_manifest_text),
+            "automation/production_workflow_map.json": json.loads(workflow_map_text),
+            "automation/resource_write_sets.json": json.loads(write_sets_text),
+        },
+        "repository_files_modified": False,
+        "config_file_modified": False,
+    }
+    proposal_path = write_baseline_proposal(proposal)
+    print(json.dumps({
+        "registered": False,
+        "proposal_created": True,
+        "proposal_path": str(proposal_path),
+        "path": guard["path"],
+        "previous_blob_sha": previous,
+        "new_blob_sha": actual,
+        "actor": os.environ.get("GITHUB_ACTOR"),
+        "approval_mode": approval_mode,
+        "config_change_commits": recovered_commits,
+        "repository_files_modified": False,
         "config_file_modified": False,
     }, ensure_ascii=False, sort_keys=True))
     return 0
