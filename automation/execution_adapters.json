@@ -1276,6 +1276,7 @@
           "data/candidates.json",
           "data/domain_candidates.json",
           "data/source_pending.json",
+          "data/source_snapshots",
           "logical/production-pipeline",
           "reports/source-discovery.md",
           "rulesets/config_conflict_archive.json",
