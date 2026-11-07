@@ -457,6 +457,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("expected_correlation_titles(intent)", resolver)
         self.assertIn('sys.path.insert(0, "scripts")', resolver)
         self.assertNotIn("run.get(\"head_sha\") == requested_sha", resolver)
+        self.assertIn('"source-assessment:" + run_id + ":parser-v2" in existing_keys', resolver)
 
 if __name__ == "__main__":
     unittest.main()
