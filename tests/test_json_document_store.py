@@ -148,5 +148,15 @@ class JsonDocumentStoreTests(unittest.TestCase):
             self.assertEqual(original.read_text(encoding="utf-8"), "{}")
 
 
+    def test_runner_local_external_symlink_cannot_alias_repository_document(self):
+        with tempfile.TemporaryDirectory(dir=ROOT) as local, tempfile.TemporaryDirectory() as outside:
+            alias = Path(outside) / "repository-alias"
+            alias.symlink_to(local, target_is_directory=True)
+            path = alias / "ledger.json"
+            with self.assertRaisesRegex(ValueError, "external document path may not alias into the repository"):
+                store.write_document(path, {"reviews": []}, "reviews", lease_required=False)
+            self.assertFalse((Path(local) / "ledger.json").exists())
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
