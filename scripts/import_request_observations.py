@@ -43,7 +43,7 @@ def main() -> None:
         raise ValueError(f"candidate retention exceeds hard limit: {len(queue):,} > {MAX_CANDIDATE_RECORDS:,}")
     buffer["candidates"] = sorted(queue.values(), key=lambda x: x["domain"])
     BUFFER.parent.mkdir(parents=True, exist_ok=True)
-    write_document(BUFFER, buffer, "candidates")
+    write_document(BUFFER, buffer, "candidates", lease_required=True)
     print(f"Imported {added} new observed hostnames; no routing policy assigned.")
 
 if __name__ == "__main__":

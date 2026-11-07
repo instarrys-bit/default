@@ -9,6 +9,7 @@ from domain_rule_engine import RuleIndex,load_domain_rules,inspect_suffix_scope
 from source_registry import validate_registry
 from review_cursor import snapshot_digest,resume_index,checkpoint
 from json_document_store import read_document,write_document,iter_document_records
+from resource_lease_runtime import assert_resource_lease_for_repository_path
 from audit_ruleset_config_overlap import scope_covers_candidate
 ROOT=Path(__file__).resolve().parents[1]
 CONFIG=ROOT/"modules/uu.conf"
@@ -179,6 +180,7 @@ def load_correlated_publishers():
     return pairs
 
 def atomic_json(path,payload):
+    assert_resource_lease_for_repository_path(ROOT, path.relative_to(ROOT).as_posix())
     path.parent.mkdir(parents=True,exist_ok=True)
     temporary=path.with_suffix(path.suffix+".tmp")
     temporary.write_text(json.dumps(payload,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
@@ -464,7 +466,7 @@ def main():
         run_counts[status]=run_counts.get(status,0)+1
         if (candidate_index+1)%batch_size==0 or candidate_index+1==len(candidates):
             # Checkpoints need not be sorted; the final publication is sorted once.
-            write_document(OUTPUT,{"schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,"source_snapshot":collected.get("sources",[]),"run_counts":run_counts,"counts":partial_counts,"reviews":list(review_map.values())},"reviews")
+            write_document(OUTPUT,{"schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,"source_snapshot":collected.get("sources",[]),"run_counts":run_counts,"counts":partial_counts,"reviews":list(review_map.values())},"reviews",lease_required=True)
             atomic_json(CURSOR,{**checkpoint(snapshot_sha256,len(candidates),candidate_index+1,batch_size),"updated_at":now,"last_checkpoint_domain":domain})
     reviews=sorted(review_map.values(),key=lambda x:x["domain"])
     total_counts={}
@@ -473,7 +475,7 @@ def main():
         "schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,
         "source_snapshot":collected.get("sources",[]),"run_counts":run_counts,
         "counts":total_counts,"reviews":reviews
-    },"reviews")
+    },"reviews",lease_required=True)
     atomic_json(CURSOR,{**checkpoint(snapshot_sha256,len(candidates),len(candidates),batch_size,"complete"),"updated_at":now,"last_checkpoint_domain":candidates[-1].get("domain") if candidates else None})
     print("Deterministic review complete: "+json.dumps(run_counts,ensure_ascii=False,sort_keys=True))
     print("Review cursor: "+json.dumps({"status":"complete","candidate_count":len(candidates),"snapshot_sha256":snapshot_sha256,"correlated_publisher_pairs":len(correlated_pairs)},sort_keys=True))

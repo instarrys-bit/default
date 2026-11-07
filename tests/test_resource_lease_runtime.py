@@ -14,6 +14,7 @@ from resource_lease_runtime import (
     acquire_resource_leases, assert_resource_lease, release_resource_leases,
     normalize_keys, renew_resource_leases_in_queue, assert_workflow_resource_lease,
     assert_resource_lease_from_environment,
+    assert_resource_lease_for_repository_path,
 )
 
 
@@ -44,6 +45,40 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
         self.now = datetime.now(timezone.utc)
         expiry = (self.now + timedelta(minutes=10)).isoformat().replace("+00:00", "Z")
         self.store = MemoryStore(queue_with_task("task_a", "worker_a", "task-token-a", expiry))
+
+    def test_explicit_repository_path_helper_requires_live_lease_only_for_repo_writes(self):
+        with patch.object(resource_lease_runtime, "assert_resource_lease_from_environment") as assertion:
+            self.assertTrue(assert_resource_lease_for_repository_path(ROOT, "rulesets/direct.list"))
+            assertion.assert_called_once_with("rulesets/direct.list")
+            with tempfile.TemporaryDirectory() as directory:
+                self.assertFalse(assert_resource_lease_for_repository_path(Path(directory), "rulesets/direct.list"))
+            with self.assertRaisesRegex(ValueError, "safe repository-relative"):
+                assert_resource_lease_for_repository_path(ROOT, "../modules/uu.conf")
+
+    def test_repository_path_helper_rejects_symlink_aliases(self):
+        with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryDirectory() as outside:
+            root = Path(directory)
+            target = Path(outside) / "owner-config"
+            target.write_text("protected", encoding="utf-8")
+            link = root / "rulesets" / "direct.list"
+            link.parent.mkdir()
+            link.symlink_to(target)
+            with self.assertRaisesRegex(ValueError, "symlinks"):
+                assert_resource_lease_for_repository_path(root, "rulesets/direct.list")
+
+    def test_repository_path_helper_rejects_hardlink_aliases(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "source"
+            source.write_text("shared inode", encoding="utf-8")
+            alias = root / "rulesets" / "direct.list"
+            alias.parent.mkdir()
+            try:
+                alias.hardlink_to(source)
+            except OSError as exc:
+                self.skipTest(f"hard links are unavailable: {exc}")
+            with self.assertRaisesRegex(ValueError, "hard-linked"):
+                assert_resource_lease_for_repository_path(root, "rulesets/direct.list")
 
     def test_acquires_sorted_resources_and_fencing_asserts(self):
         result = acquire_resource_leases(

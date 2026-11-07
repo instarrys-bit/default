@@ -64,32 +64,31 @@
       "id": "script_assess_sources",
       "path": "scripts/assess_sources.py",
       "kind": "python_component",
-      "responsibility": "bounded, non-activating assessment of discovered raw GitHub rule-list sources with cursor rotation, byte budgets, policy evidence, and persistent/runtime reports",
+      "responsibility": "Bounded, non-activating assessment of discovered rule-list sources; progress is checkpointed through the durable task queue and all output documents remain runner-local immutable artifacts.",
       "capabilities": [
         "source_assessment"
       ],
       "invocation": "python_module_or_workflow_step",
       "inputs": [
-        "sources/discovered_sources.json candidate collection",
-        "sources/source_assessments.json prior history and cursor",
-        "validated task input: max_urls (1-20), max_file_bytes (1-1000000), max_total_bytes (1-10000000)"
+        "Verified runner-local sources/discovered_sources.json artifact from the exact successful discovery run",
+        "Read-only sources/source_assessments.json baseline history",
+        "validated bounded task input: max_urls (1-20), max_file_bytes (1-1000000), max_total_bytes (1-10000000)"
       ],
       "outputs": [
-        "stdout JSON: assessed, bytes_read, parser_candidates, policy_candidates, activated=0, artifact_verification, artifact_publication",
-        "sources/source_assessments.json persistent history (published)",
-        "data/source_assessments_runtime.json current batch and ephemeral fingerprints (runner-local, never committed)",
-        "reports/source-assessment.md human-readable report (published)"
+        "stdout JSON: assessed, bytes_read, parser_candidates, policy_candidates, activated=0",
+        "runner-local sources/source_assessments.json, data/source_assessments_runtime.json and reports/source-assessment.md uploaded as immutable Actions artifact",
+        "durable per-URL checkpoint in GitHub Issue #315 using CAS under task and logical resource leases"
       ],
       "depends_on": [
         "script_discover_sources"
       ],
       "dispatches": [],
-      "permission_boundary": "Read discovered_sources.json and prior source_assessments.json; write only sources/source_assessments.json, data/source_assessments_runtime.json and reports/source-assessment.md under exclusive live-fenced resource leases; publish only persistent history and report via a fenced GitHub commit; HTTPS reads only from repository-bound raw.githubusercontent.com; sources/domain_sources.json and modules/uu.conf are read-only.",
-      "health_check": "The scheduler validates the task input schema, resource fencing is checked before each artifact write, and verify_assess_sources_artifacts.py independently verifies runtime/history/report consistency.",
+      "permission_boundary": "Read only the exact verified discovery artifact and read-only baseline files. Write assessment documents only under the isolated RUNNER_TEMP artifact root; no repository file writes, commits, or GitHub Contents API writes. The sole shared mutation is the current task's bounded assessment_checkpoint in GitHub Issue #315, guarded by the active task lease, logical/source-assessment-checkpoints and logical/production-pipeline fences. No source activation; modules/uu.conf and sources/domain_sources.json remain read-only.",
+      "health_check": "Scheduler validates the exact discovery predecessor digest from the external runner-local artifact root, the assessor validates task/resource fencing before each queue checkpoint CAS, and verify_assess_sources_artifacts.py independently checks the runner-local output documents and non-activation.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],
-        "max_attempts": 0,
+        "max_attempts": 1,
         "timeout_seconds": 480
       }
     },
@@ -1755,7 +1754,7 @@
       "id": "workflow_source_discovery",
       "path": ".github/workflows/source-discovery.yml",
       "kind": "github_actions_workflow",
-      "responsibility": "independent, non-activating source discovery producer with immutable run-bound artifact handoff",
+      "responsibility": "Independent non-activating discovery producer; all discovered data and reports remain runner-local and are handed off through immutable run-bound Actions artifacts.",
       "capabilities": [
         "source_discovery"
       ],
@@ -1774,12 +1773,12 @@
         "script_resource_lease_runtime"
       ],
       "dispatches": [],
-      "permission_boundary": "Workflow adapter remains disabled pending HOLD/authorization. The workflow has contents:read, actions:read, and issues:write only for external queue state; discovery outputs remain runner-local and are uploaded as immutable artifacts. No source activation or repository file publication.",
-      "health_check": "Successful workflow completion, exact run/head provenance, and immutable uploaded artifact digest are required before Assessment enqueue; no committed main discovery document is required.",
+      "permission_boundary": "The workflow validates the exact Watchdog durable task and active resource lease proof, reads the main-branch source catalog/baseline, and writes only into isolated RUNNER_TEMP. It has contents:read, actions:read and issues:write only for external queue state; no repository file writes or publication. No source activation.",
+      "health_check": "Successful workflow completion, exact run/head provenance and immutable artifact digest are required before Assessment enqueue.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],
-        "max_attempts": 0,
+        "max_attempts": 1,
         "timeout_seconds": 1800
       }
     }

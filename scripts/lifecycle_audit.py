@@ -5,6 +5,7 @@ from __future__ import annotations
 import concurrent.futures, hashlib, json, os, re, urllib.parse, urllib.request
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
+from resource_lease_runtime import assert_resource_lease_for_repository_path
 
 ROOT=Path(__file__).resolve().parents[1]
 DIR=ROOT/"rulesets"
@@ -188,10 +189,14 @@ def main():
         obs.setdefault("items",{})[key]={"policy":policy,"rule":line,"domain":domain,"last_status":result["status"],"history":history,"checked_at":timestamp}
 
     for policy in POLICIES:
+        assert_resource_lease_for_repository_path(ROOT, "rulesets/" + policy + ".list")
         lines=sorted(rules[policy]); (DIR/(policy+".list")).write_text("\n".join(lines)+("\n" if lines else ""))
     obs["updated_at"]=timestamp; archive["updated_at"]=timestamp; queue["updated_at"]=timestamp
+    assert_resource_lease_for_repository_path(ROOT, "rulesets/lifecycle_observations.json")
     obs_path.write_text(json.dumps(obs,ensure_ascii=False,indent=2)+"\n")
+    assert_resource_lease_for_repository_path(ROOT, "rulesets/deletion_archive.json")
     archive_path.write_text(json.dumps(archive,ensure_ascii=False,indent=2)+"\n")
+    assert_resource_lease_for_repository_path(ROOT, "rulesets/pending_queue.json")
     queue_path.write_text(json.dumps(queue,ensure_ascii=False,indent=2)+"\n")
     manifest_path=DIR/"manifest.json"
     if manifest_path.exists():
@@ -209,6 +214,7 @@ def main():
         manifest["rule_lifecycle"]=lifecycle_delta
         manifest["lifecycle_audit_summary"]={"completed_at":timestamp,"deleted_count":len(deleted),"restored_count":len(restored),"unknown_retained_count":unknown,"protected_retained_count":protected_count,"suffix_retained_count":suffix_retained_count}
         manifest["lifecycle_last_audit_at"]=timestamp
+        assert_resource_lease_for_repository_path(ROOT, "rulesets/manifest.json")
         manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n")
     REPORT.mkdir(parents=True,exist_ok=True)
     options=[{"id":x["id"],"policy":x["policy"],"rule":x["rule"],"removed_at":x.get("removed_at")} for x in archive["items"] if not x.get("restored_at")]

@@ -8,6 +8,7 @@ from urllib.parse import urlparse
 from datetime import datetime,timezone
 from source_registry import validate_registry
 from json_document_store import read_document, write_document, manifest_path
+from resource_lease_runtime import assert_resource_lease_for_repository_path, assert_resource_lease_from_environment
 
 ROOT=Path(__file__).resolve().parents[1]
 SOURCES=ROOT/"sources/domain_sources.json"
@@ -386,13 +387,16 @@ def main():
         })
     if len(rows)>MAX_CANDIDATE_RECORDS:
         raise ValueError(f"candidate review input exceeds hard limit: {len(rows):,} > {MAX_CANDIDATE_RECORDS:,}")
+    assert_resource_lease_from_environment("logical/production-pipeline")
     SNAPSHOT_DIR.mkdir(parents=True,exist_ok=True)
     for sid,info in source_data.items():
         if info["stale"]:
             continue
         path=snapshot_path(sid)
+        assert_resource_lease_from_environment("logical/production-pipeline")
         path.write_text("\n".join(sorted(info["domains"]))+"\n",encoding="utf-8")
-    write_document(BUFFER,{"schema_version":2,"updated_at":now,"bootstrapped_sources":sorted(bootstrapped_sources),"candidates":list(queue.values())},"candidates")
+    write_document(BUFFER,{"schema_version":2,"updated_at":now,"bootstrapped_sources":sorted(bootstrapped_sources),"candidates":list(queue.values())},"candidates",lease_required=True)
+    assert_resource_lease_for_repository_path(ROOT, "data/source_pending.json")
     PENDING.parent.mkdir(parents=True,exist_ok=True)
     PENDING.write_text(json.dumps({"schema_version":1,"updated_at":now,"sources":pending_sources},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     OUTPUT.parent.mkdir(parents=True,exist_ok=True)
@@ -406,7 +410,7 @@ def main():
         "candidate_count":len(rows),
         "policy_conflict_count":sum(1 for row in rows if row["classification"]=="CONFLICT"),
         "candidates":rows
-    },"candidates")
+    },"candidates",lease_required=True)
     print("Multi-source collection complete: "+json.dumps({
         sid:{"entries":len(info["previous"]) if info["stale"] and info["previous"] is not None else len(info["domains"]),"added":len(deltas[sid]["added"]),"removed":len(deltas[sid]["removed"]),"status":"STALE_QUARANTINED" if info["stale"] else "CURRENT","baseline_initialized":deltas[sid]["bootstrap"]}
         for sid,info in sorted(source_data.items())

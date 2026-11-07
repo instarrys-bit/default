@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse, json, tarfile
 from pathlib import Path, PurePosixPath
+from resource_lease_runtime import assert_resource_lease_from_environment
 
 ALLOWED_FILES = {
     "data/domain_candidates.json", "data/domain_candidates.json.manifest.json",
@@ -30,26 +31,8 @@ REQUIRED_ANY_GROUPS = (
     {"data/candidates.json", "data/candidates.json.manifest.json"},
     {"sources/domain_reviews.json", "sources/domain_reviews.json.manifest.json"},
 )
-PUBLISH_FILES = {
-    "sources/domain_sources.json", "sources/source_activation_log.json",
-    "sources/policy_source_overlap.json", "sources/discovered_sources.json",
-    "sources/discovered_sources.json.manifest.json", "sources/source_assessments.json",
-    "sources/source_assessments.json.manifest.json", "sources/source_candidates.json",
-    "sources/source_candidates.json.manifest.json",
-    "reports/project-status.md", "reports/project-status.json",
-    "reports/automation/heartbeat.json", "reports/automation/state_store.json",
-    "reports/external-domain-audit.md", "reports/config-drift-audit.md", "reports/config-drift-audit.json",
-    "reports/ruleset-reference-audit.md", "reports/ruleset-reference-audit.json",
-    "reports/ruleset-config-overlap-audit.md", "reports/ruleset-config-overlap-audit.json",
-    "reports/ruleset-config-conflict-sync.md", "reports/ruleset-config-conflict-sync.json",
-    "reports/source-lineage-audit.json", "reports/source-discovery.md", "reports/source-assessment.md",
-    "reports/source-candidate-matrix.md", "reports/source-activation.md", "reports/policy-source-overlap.md",
-}
-PUBLISH_DIR_PREFIXES = (
-    "reports/lifecycle/", "rulesets/",
-    "sources/discovered_sources.json.parts-", "sources/source_assessments.json.parts-",
-    "sources/source_candidates.json.parts-",
-)
+PUBLISH_FILES = set()
+PUBLISH_DIR_PREFIXES = ("rulesets/",)
 
 
 def allowed(name: str) -> bool:
@@ -148,8 +131,8 @@ def restore_publish_outputs(archive: Path, root: Path) -> dict:
 
         for member, name, path, destination in selected:
             if member.isdir():
-                destination.mkdir(parents=True, exist_ok=True)
                 continue
+            assert_resource_lease_from_environment(name)
             source = tar.extractfile(member)
             if source is None:
                 raise ValueError(f"cannot read publish archive entry: {name}")

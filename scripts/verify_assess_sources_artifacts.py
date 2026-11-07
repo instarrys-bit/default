@@ -4,14 +4,16 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 from json_document_store import read_document
 
 ROOT=Path(__file__).resolve().parents[1]
-RUNTIME=ROOT/"data/source_assessments_runtime.json"
-PERSISTENT=ROOT/"sources/source_assessments.json"
-REPORT=ROOT/"reports/source-assessment.md"
+ARTIFACT_ROOT=Path(os.environ.get("AUTOMATION_ARTIFACT_ROOT", ROOT)).resolve()
+RUNTIME=ARTIFACT_ROOT/"data/source_assessments_runtime.json"
+PERSISTENT=ARTIFACT_ROOT/"sources/source_assessments.json"
+REPORT=ARTIFACT_ROOT/"reports/source-assessment.md"
 PARSER_TYPES={"domain-only","adblock-domain-rules","shadowrocket-domain-rules","quantumult-domain-rules"}
 
 
@@ -58,9 +60,10 @@ def verify(result_path: Path) -> dict:
     for item in assessments:
         if not isinstance(item,dict) or not isinstance(item.get("url"),str) or not isinstance(item.get("repository"),str):
             raise ValueError("runtime assessment entry is malformed")
+    artifact_root = RUNTIME.parents[1]
     return {"valid":True,"assessed":assessed,"historical_assessments":len(history),
             "report_bytes":REPORT.stat().st_size,"activation_count":0,
-            "verified_artifacts":[str(RUNTIME.relative_to(ROOT)),str(PERSISTENT.relative_to(ROOT)),str(REPORT.relative_to(ROOT))]}
+            "verified_artifacts":[str(RUNTIME.relative_to(artifact_root)),str(PERSISTENT.relative_to(artifact_root)),str(REPORT.relative_to(artifact_root))]}
 
 
 def main():

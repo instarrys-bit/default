@@ -152,8 +152,7 @@
           "parser_candidates",
           "policy_candidates",
           "activated",
-          "artifact_verification",
-          "artifact_publication"
+          "artifact_verification"
         ],
         "properties": {
           "assessed": {
@@ -216,36 +215,13 @@
                 }
               }
             }
-          },
-          "artifact_publication": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "published",
-              "commit_sha",
-              "paths"
-            ],
-            "properties": {
-              "published": {
-                "type": "boolean"
-              },
-              "commit_sha": {
-                "type": "string"
-              },
-              "paths": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            }
           }
         }
       },
       "timeout_seconds": 240,
       "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_dedicated_discovery_workflow_is_live"
+        "max_attempts": 1,
+        "policy": "one bounded retry with durable per-URL checkpoint resume; no repository artifact publication"
       },
       "completion": {
         "success_condition": "exit_zero_schema_valid_and_independent_artifact_verifier_valid",
@@ -260,30 +236,22 @@
         "mode": "exclusive",
         "resource_keys": [
           "logical/production-pipeline",
-          "sources/source_assessments.json",
-          "data/source_assessments_runtime.json",
-          "reports/source-assessment.md"
+          "logical/source-assessment-checkpoints"
         ],
         "lease_seconds": 480,
         "fencing_required": true,
-        "coverage": "Exclusive logical document locks cover legacy JSON, adjacent manifests, content-addressed shard directories, temporary staging and old-shard cleanup. After each URL result, the assessor atomically CAS-updates the current task's assessment_checkpoint in automation/task_queue.json; the update is fenced by the active task lease and both logical/production-pipeline and sources/source_assessments.json resource leases. Retries restore completed URL results and continue with the first incomplete URL."
+        "coverage": "Only the durable per-URL task assessment_checkpoint in GitHub Issue #315 is shared state. It is updated by append-only Issue snapshot CAS under the active task lease and these two logical resource fences. All assessment JSON and reports are runner-local outputs uploaded as an immutable Actions artifact; no repository file is written or published."
       },
       "read_only_resources": [
         "sources/discovered_sources.json",
+        "sources/source_assessments.json",
         "sources/domain_sources.json"
       ],
       "required_read_only_resources": [
         "sources/discovered_sources.json"
       ],
-      "publish_resources": [
-        "sources/source_assessments.json",
-        "reports/source-assessment.md"
-      ],
-      "write_resources": [
-        "sources/source_assessments.json",
-        "data/source_assessments_runtime.json",
-        "reports/source-assessment.md"
-      ],
+      "publish_resources": [],
+      "write_resources": [],
       "dependency_contract": {
         "predecessor_program_id": "script_discover_sources",
         "artifact_path": "sources/discovered_sources.json",
@@ -940,6 +908,21 @@
       "completion": {
         "success_condition": "process_exit_code_zero_and_output_contract_validated",
         "independent_verification_required": true
+      },
+      "write_resources": [
+        "reports/approved-domain-rules.list",
+        "reports/rule-selector-audit.md"
+      ],
+      "publish_resources": [],
+      "resource_contract": {
+        "mode": "exclusive",
+        "resource_keys": [
+          "reports/approved-domain-rules.list",
+          "reports/rule-selector-audit.md"
+        ],
+        "lease_seconds": 300,
+        "fencing_required": true,
+        "coverage": "The disabled manual selector asserts the exact live resource lease immediately before creating/writing each report output. It is not in the production workflow and remains non-dispatchable until its input/output interface is separately reviewed."
       }
     },
     {
@@ -1288,15 +1271,31 @@
       "resource_contract": {
         "mode": "exclusive",
         "resource_keys": [
+          "data/candidates.json",
+          "data/domain_candidates.json",
+          "data/source_pending.json",
           "logical/production-pipeline",
-          "sources/review_cursor.json",
+          "reports/source-discovery.md",
+          "rulesets/config_conflict_archive.json",
+          "rulesets/deletion_archive.json",
+          "rulesets/direct.list",
+          "rulesets/lifecycle_observations.json",
+          "rulesets/lifecycle_state.json",
+          "rulesets/manifest.json",
+          "rulesets/pending_queue.json",
+          "rulesets/proxy.list",
+          "rulesets/reject.list",
+          "rulesets/reject_review_queue.json",
           "sources/discovered_sources.json",
-          "reports/source-discovery.md"
+          "sources/domain_reviews.json",
+          "sources/review_cursor.json",
+          "sources/rule_provenance.json",
+          "sources/source_candidates.json"
         ],
         "lease_seconds": 21600,
         "fencing_required": true,
         "enforcement_boundary": "live task-queue proof checked by the audit gate and immediately before publish push",
-        "coverage": "Exclusive logical/production-pipeline lease plus the shared sources/review_cursor.json lease; audit cursor writes and failed-run checkpoint persistence use the same Watchdog-issued fencing proof. The monolithic fallback shares the exact sources/discovered_sources.json and reports/source-discovery.md locks with the dormant independent discovery workflow, preventing concurrent writers during the transition."
+        "coverage": "Exclusive logical/production-pipeline lease plus exact resource keys for the user review cursor, source-discovery checkout outputs, and every published ruleset file. The Watchdog manifest-integrity job serializes with auto_sync through the same shadowrocket-main-writer concurrency group."
       }
     },
     {
@@ -1915,13 +1914,12 @@
       "resource_contract": {
         "mode": "exclusive",
         "resource_keys": [
-          "sources/discovered_sources.json",
-          "reports/source-discovery.md"
+          "logical/source-discovery-run"
         ],
         "lease_seconds": 1800,
         "fencing_required": true,
-        "enforcement_boundary": "exact Watchdog dispatch identity and live per-resource fencing assertion before each filesystem mutation and immediately before main-branch publication",
-        "coverage": "Discovery document base JSON, manifest, content-addressed shards, staging and cleanup share one logical document lease; report uses its own exclusive lease."
+        "enforcement_boundary": "Exact Watchdog dispatch identity and live logical/source-discovery-run fencing proof are asserted before writing to the isolated RUNNER_TEMP workspace; no repository publication is permitted.",
+        "coverage": "All discovery document, manifest, shard, staging and report writes are confined to the per-run RUNNER_TEMP workspace. The logical lease binds the task/worker and prevents duplicate discovery dispatch; immutable Actions artifact digest and producer identity are independently verified."
       }
     }
   ]

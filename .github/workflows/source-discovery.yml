@@ -131,12 +131,24 @@ jobs:
           canonical_task_id="${AUTOMATION_TASK_CORRELATION%%-a*}"
           printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$canonical_task_id" --proof-json "$RESOURCE_LEASE_PROOF"
 
+      - name: Seed isolated discovery workspace from read-only main baseline
+        env:
+          AUTOMATION_ARTIFACT_ROOT: ${{ runner.temp }}/source-discovery-workspace
+        run: |
+          set -euo pipefail
+          mkdir -p "$AUTOMATION_ARTIFACT_ROOT/sources" "$AUTOMATION_ARTIFACT_ROOT/reports"
+          cp -a sources/discovered_sources.json* "$AUTOMATION_ARTIFACT_ROOT/sources/" 2>/dev/null || true
+          if [ -f reports/source-discovery.md ]; then cp reports/source-discovery.md "$AUTOMATION_ARTIFACT_ROOT/reports/"; fi
+
       - name: Discover candidates without activating sources
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          AUTOMATION_ARTIFACT_ROOT: ${{ runner.temp }}/source-discovery-workspace
         run: python3 scripts/discover_sources.py
 
       - name: Verify producer identity and prepare immutable artifact proof
+        env:
+          AUTOMATION_ARTIFACT_ROOT: ${{ runner.temp }}/source-discovery-workspace
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -145,7 +157,8 @@ jobs:
           sys.path.insert(0, "scripts")
           from json_document_store import read_document
           from task_scheduler import read_only_resource_digests
-          path = Path("sources/discovered_sources.json")
+          workspace = Path(os.environ["AUTOMATION_ARTIFACT_ROOT"])
+          path = workspace / "sources/discovered_sources.json"
           document = read_document(path, "candidates", {"candidates": []})
           expected = {
               "workflow_name": "Shadowrocket Source Discovery (Watchdog)",
@@ -154,19 +167,19 @@ jobs:
           }
           if document.get("producer") != expected:
               raise SystemExit("Discovery document producer identity does not match this workflow run.")
-          digest = read_only_resource_digests(Path("."), ["sources/discovered_sources.json"])["sources/discovered_sources.json"]
+          digest = read_only_resource_digests(workspace, ["sources/discovered_sources.json"])["sources/discovered_sources.json"]
           if not isinstance(digest, str) or len(digest) != 64:
               raise SystemExit("Discovery logical-document digest is unavailable.")
           proof = {**expected, "artifact_path": "sources/discovered_sources.json", "artifact_sha256": digest}
           artifact_root = Path(os.environ["RUNNER_TEMP"], "source-discovery-artifact")
           (artifact_root / "sources").mkdir(parents=True, exist_ok=True)
           import shutil
-          for item in Path("sources").glob("discovered_sources.json*"):
+          for item in (workspace / "sources").glob("discovered_sources.json*"):
               if item.is_dir():
                   shutil.copytree(item, artifact_root / "sources" / item.name, dirs_exist_ok=True)
               else:
                   shutil.copy2(item, artifact_root / "sources" / item.name)
-          shutil.copy2(Path("reports/source-discovery.md"), artifact_root / "reports-source-discovery.md")
+          shutil.copy2(workspace / "reports/source-discovery.md", artifact_root / "reports-source-discovery.md")
           (artifact_root / "source-discovery-proof.json").write_text(
               json.dumps(proof, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
           PY

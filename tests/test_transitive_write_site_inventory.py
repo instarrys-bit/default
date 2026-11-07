@@ -142,6 +142,49 @@ class TransitiveWriteSiteInventoryTests(unittest.TestCase):
                             "transitively imported mutating helper must have an explicit classification",
                         )
 
+    def test_manual_selector_report_mutations_require_exact_live_resource_leases(self):
+        source = (ROOT / "scripts" / "select_domain_rules.py").read_text(encoding="utf-8")
+        self.assertIn('assert_resource_lease_from_environment("reports/approved-domain-rules.list")', source)
+        self.assertIn('assert_resource_lease_from_environment("reports/rule-selector-audit.md")', source)
+        entry = self.writers["script_select_domain_rules"]
+        self.assertEqual(
+            entry["lease_keys"],
+            ["reports/approved-domain-rules.list", "reports/rule-selector-audit.md"],
+        )
+        adapters = json.loads((ROOT / "automation/execution_adapters.json").read_text(encoding="utf-8"))
+        adapter = next(x for x in adapters["adapters"] if x["target_program_id"] == "script_select_domain_rules")
+        self.assertFalse(adapter["enabled"])
+        self.assertEqual(adapter["allowed_callers"], [])
+        self.assertEqual(adapter["publish_resources"], [])
+
+    def test_every_shared_writer_has_canonical_leases_and_shared_peers_overlap(self):
+        adapters = json.loads((ROOT / "automation/execution_adapters.json").read_text(encoding="utf-8"))
+        adapter_by_id = {x["target_program_id"]: x for x in adapters["adapters"]}
+        for program_id, entry in self.writers.items():
+            with self.subTest(program_id=program_id):
+                keys = set(entry.get("lease_keys", []))
+                self.assertTrue(keys, "shared repository writer must declare exact or canonical resource leases")
+                for peer in entry.get("additional_serialized_writers", []):
+                    peer_entry = self.writers.get(peer)
+                    if peer_entry:
+                        peer_keys = set(peer_entry.get("lease_keys", []))
+                    else:
+                        peer_adapter = adapter_by_id.get(peer, {})
+                        peer_keys = set((peer_adapter.get("resource_contract") or {}).get("resource_keys", []))
+                    self.assertTrue(keys & peer_keys, f"{program_id} and {peer} must share at least one canonical fence")
+
+    def test_ruleset_mutation_scripts_assert_exact_resource_leases(self):
+        scripts = [
+            "build_rulesets.py", "lifecycle_audit.py", "lifecycle_gate.py",
+            "sync_ruleset_config_conflicts.py", "refresh_ruleset_manifest.py",
+        ]
+        for name in scripts:
+            source = (ROOT / "scripts" / name).read_text(encoding="utf-8")
+            with self.subTest(script=name):
+                self.assertIn("assert_resource_lease_for_repository_path", source)
+        restore = (ROOT / "scripts" / "restore_automation_state.py").read_text(encoding="utf-8")
+        self.assertIn("assert_resource_lease_from_environment(name)", restore)
+
     def test_scan_metadata_declares_partial_scope_and_limitations(self):
         scan = self.inventory["direct_mutation_scan"]
         self.assertEqual(scan["status"], "partial_python_direct_callsite_scan")

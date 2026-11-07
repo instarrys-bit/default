@@ -35,7 +35,7 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
         task_id = "task_" + "a" * 24
         proof = {
             "logical/production-pipeline": {"lease_id": "pipeline-lease", "fencing_token": 4},
-            "sources/source_assessments.json": {"lease_id": "history-lease", "fencing_token": 7},
+            "logical/source-assessment-checkpoints": {"lease_id": "history-lease", "fencing_token": 7},
         }
         task_token = "task-lease-token"
         predecessor = {"artifact_sha256": "b" * 64, "workflow_run_id": "123"}
@@ -92,7 +92,7 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
     def test_checkpoint_rejects_stale_fencing_token(self):
         store, env, predecessor = self.checkpoint_fixture()
         item = {"url": "https://raw.githubusercontent.com/example/repo/main/list.txt"}
-        store.document["resource_leases"]["sources/source_assessments.json"]["fencing_token"] = 8
+        store.document["resource_leases"]["logical/source-assessment-checkpoints"]["fencing_token"] = 8
         with patch.dict("os.environ", env, clear=True), \
              patch.object(assess_sources, "assert_resource_lease_from_environment"), \
              patch("remote_task_queue_runtime.validate_candidate"):
@@ -108,14 +108,41 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
             "max_file_bytes": 1_000_000,
             "max_total_bytes": 10_000_000,
         })
-    def test_assessor_fences_each_logical_output_before_writing(self):
+    def test_independent_assessment_writes_only_runner_local_artifacts(self):
         source = (ROOT / "scripts" / "assess_sources.py").read_text(encoding="utf-8")
-        for target in ("RUNTIME_OUTPUT", "OUTPUT", "REPORT"):
-            self.assertIn(f"assert_optional_write_lease({target}, required=args.task_input is not None)", source)
+        self.assertIn('AUTOMATION_ARTIFACT_ROOT', source)
+        self.assertIn('AUTOMATION_PREDECESSOR_ARTIFACT_ROOT', source)
+        self.assertIn('write_document(RUNTIME_OUTPUT, result, "assessments", lease_required=False)', source)
+        self.assertIn('write_document(OUTPUT, compact_assessment_result(persistent), "assessments", lease_required=False)', source)
         scheduler = (ROOT / "scripts" / "task_scheduler.py").read_text(encoding="utf-8")
         self.assertIn('"AUTOMATION_QUEUE_SNAPSHOT": str(snapshot_path)', scheduler)
         self.assertIn('"AUTOMATION_RESOURCE_LEASE_PROOF"', scheduler)
         self.assertIn('"AUTOMATION_QUEUE_TOKEN": store.token', scheduler)
+        adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
+        adapter = next(x for x in adapters["adapters"] if x["target_program_id"] == "script_assess_sources")
+        self.assertEqual(adapter["write_resources"], [])
+        self.assertEqual(adapter["publish_resources"], [])
+        self.assertEqual(adapter["resource_contract"]["resource_keys"],
+                         ["logical/production-pipeline", "logical/source-assessment-checkpoints"])
+
+    def test_verified_discovery_artifact_is_resolved_from_runner_temp(self):
+        with tempfile.TemporaryDirectory() as repository_dir, tempfile.TemporaryDirectory() as runner_dir:
+            repository = Path(repository_dir)
+            artifact_root = Path(runner_dir) / "source-discovery-output"
+            artifact = artifact_root / "sources" / "discovered_sources.json"
+            artifact.parent.mkdir(parents=True)
+            artifact.write_text('{"candidates":[]}\\n', encoding="utf-8")
+            with patch.dict("os.environ", {
+                "RUNNER_TEMP": runner_dir,
+                "AUTOMATION_PREDECESSOR_ARTIFACT_ROOT": str(artifact_root),
+            }, clear=True):
+                digest = task_scheduler.read_only_resource_digests(
+                    repository, ["sources/discovered_sources.json"]
+                )["sources/discovered_sources.json"]
+            self.assertIsNotNone(digest)
+            self.assertEqual(digest, task_scheduler.read_only_resource_digests(
+                artifact_root, ["sources/discovered_sources.json"]
+            )["sources/discovered_sources.json"])
 
     def test_accepts_bounded_independent_task_input(self):
         with tempfile.TemporaryDirectory() as directory:

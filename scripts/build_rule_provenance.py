@@ -187,7 +187,7 @@ def main():
         published_map(), pending_map(),
         archived_ids(DELETION_ARCHIVE), archived_ids(CONFLICT_ARCHIVE), now
     )
-    write_document(OUTPUT, result, "rules")
+    write_document(OUTPUT, result, "rules", lease_required=True)
     print(f"Rule provenance ledger: {result['rule_count']} rules; source snapshots: {len(result['source_snapshot_hashes'])}; output: {OUTPUT.relative_to(ROOT)}")
 
 if __name__ == "__main__":

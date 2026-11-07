@@ -5,8 +5,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 from pathlib import Path
+from resource_lease_runtime import assert_resource_lease_for_repository_path
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICIES = ("DIRECT", "PROXY", "REJECT")
@@ -43,6 +45,21 @@ def _read_rules(path: Path) -> tuple[list[str], str]:
         raise ValueError(f"{path.name} contains duplicate domain scopes")
     canonical = "\n".join(lines) + ("\n" if lines else "")
     return lines, hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def assert_manifest_write_boundary(root: Path) -> None:
+    repository_root = Path(__file__).resolve().parents[1]
+    target = (Path(root).resolve() / "rulesets/manifest.json").resolve(strict=False)
+    if not target.is_relative_to(repository_root):
+        return
+    if os.environ.get("AUTOMATION_RESOURCE_LEASE_PROOF"):
+        assert_resource_lease_for_repository_path(root, "rulesets/manifest.json")
+        return
+    if (os.environ.get("GITHUB_WORKFLOW") == "Shadowrocket automation watchdog"
+            and os.environ.get("GITHUB_JOB") == "manifest-integrity"):
+        # This read/repair job shares shadowrocket-main-writer concurrency with auto_sync.
+        return
+    raise ValueError("repository manifest writes require the live rulesets/manifest.json lease or the serialized Watchdog manifest-integrity job")
 
 
 def refresh(root: Path = ROOT) -> dict:

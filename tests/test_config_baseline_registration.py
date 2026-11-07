@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from types import SimpleNamespace
 from register_config_baseline import (
-    build_release_pin_updates, git_blob_sha, owner_approved_push_changed_config, owner_approved_config_history,
+    build_release_pin_updates, git_blob_sha, owner_approved_push_changed_config, owner_approved_config_history, write_baseline_proposal,
 )
 
 
@@ -23,7 +23,7 @@ class ConfigBaselineRegistrationTests(unittest.TestCase):
         "GITHUB_BEFORE": "a" * 40,
         "GITHUB_SHA": "b" * 40,
     }, clear=True)
-    def test_owner_push_changing_ss_conf_is_approved(self, mocked):
+    def test_owner_push_changing_uu_conf_is_approved(self, mocked):
         mocked.return_value.stdout = "modules/uu.conf\n"
         self.assertTrue(owner_approved_push_changed_config())
 
@@ -127,7 +127,7 @@ class ConfigBaselineRegistrationTests(unittest.TestCase):
 
 
 
-    def test_owner_approved_config_registration_updates_all_release_and_inventory_pins(self):
+    def test_owner_approved_config_proposal_contains_consistent_release_and_inventory_pins(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             (root / "automation").mkdir()
@@ -182,6 +182,36 @@ class ConfigBaselineRegistrationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "same read-only owner config path"):
                 build_release_pin_updates(root, "modules/uu.conf", "c" * 40)
 
+
+    def test_baseline_proposal_is_runner_local_and_does_not_touch_repository_files(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            repo = root / "repo"
+            runner = root / "runner-temp"
+            repo.mkdir()
+            runner.mkdir()
+            protected = repo / "sources" / "policy.json"
+            protected.parent.mkdir()
+            protected.write_text('{"approved": "old"}', encoding="utf-8")
+            before = protected.read_bytes()
+            proposal = {"status": "requires_manual_repository_review", "proposed_updates": {"sources/policy.json": {"approved": "new"}}}
+            with patch.dict(os.environ, {"RUNNER_TEMP": str(runner)}, clear=True):
+                destination = write_baseline_proposal(proposal)
+            self.assertEqual(destination.parent, runner)
+            self.assertTrue(destination.is_file())
+            self.assertEqual(json.loads(destination.read_text(encoding="utf-8")), proposal)
+            self.assertEqual(protected.read_bytes(), before)
+
+    def test_baseline_proposal_rejects_repository_destination(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            runner = root / "runner-temp"
+            repo = root / "repo"
+            runner.mkdir()
+            repo.mkdir()
+            with patch.dict(os.environ, {"RUNNER_TEMP": str(runner), "CONFIG_BASELINE_PROPOSAL_PATH": str(repo / "proposal.json")}, clear=True):
+                with self.assertRaisesRegex(ValueError, "under RUNNER_TEMP"):
+                    write_baseline_proposal({"status": "test"})
 
 if __name__ == "__main__":
     unittest.main()

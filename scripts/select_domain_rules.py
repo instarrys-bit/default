@@ -14,6 +14,7 @@ from urllib.parse import urlparse
 
 from domain_rule_engine import load_domain_rules
 from audit_ruleset_config_overlap import scope_covers_candidate
+from resource_lease_runtime import assert_resource_lease_from_environment
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "modules" / "uu.conf"
@@ -155,8 +156,8 @@ def main() -> None:
     generated.sort()
     review.sort()
     pending.sort()
+    assert_resource_lease_from_environment("reports/approved-domain-rules.list")
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    REPORT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text("\n".join(generated) + ("\n" if generated else ""), encoding="utf-8")
     report = [
         "# Domain rule selector scope audit", "",
@@ -189,6 +190,8 @@ def main() -> None:
         "- Existing uu.conf, DNS, nodes, rule order, and subscription are never modified.",
         f"- Generated rules file: `{OUTPUT.relative_to(ROOT)}` ({len(generated)} rules)", "",
     ]
+    assert_resource_lease_from_environment("reports/rule-selector-audit.md")
+    REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text("\n".join(report), encoding="utf-8")
     print("\n".join(report))
 

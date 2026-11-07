@@ -17,6 +17,8 @@ from task_queue_runtime import (
     enqueue_task,
     recover_expired,
     validate_manual_authorization,
+    queue_lock,
+    QUEUE,
 )
 
 
@@ -53,6 +55,27 @@ class TaskQueueRuntimeTests(unittest.TestCase):
         self.registry.write_text(json.dumps({"programs": programs}), encoding="utf-8")
         self.queue.write_text(json.dumps({"schema_version": 1, "revision": 0, "tasks": []}), encoding="utf-8")
         self.now = datetime(2026, 11, 3, 4, 0, tzinfo=timezone.utc)
+
+    def test_legacy_local_queue_is_confined_to_ephemeral_storage(self):
+        self.assertFalse(QUEUE.resolve().is_relative_to(ROOT.resolve()))
+        repository_queue = ROOT / "automation" / "task_queue.json"
+        with self.assertRaisesRegex(ValueError, "must remain outside the repository workspace"):
+            with queue_lock(repository_queue):
+                pass
+
+    def test_legacy_queue_rejects_symlink_and_hardlink_escapes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            symlink = root / "repo-symlink"
+            symlink.symlink_to(ROOT / "README.md")
+            with self.assertRaisesRegex(ValueError, "outside the repository workspace"):
+                with queue_lock(symlink):
+                    pass
+            hardlink = root / "repo-hardlink"
+            os.link(ROOT / "README.md", hardlink)
+            with self.assertRaisesRegex(ValueError, "hard-linked paths"):
+                with queue_lock(hardlink):
+                    pass
 
     def payload(self, **overrides):
         value = {

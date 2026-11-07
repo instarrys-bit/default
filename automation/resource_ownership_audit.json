@@ -1,17 +1,19 @@
 {
   "schema_version": 1,
-  "audit_id": "resource-ownership-audit-2026.11.04.3",
+  "audit_id": "resource-ownership-audit-2026.11.07.source-dag1",
   "status": "partial_static_audit",
-  "purpose": "Identify known overlapping write resources before independent capability scheduling. This inventory is deliberately fail-closed and is not an execution authorization.",
+  "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
-    "registry_blob_sha": "c4871f015961830718346a1d3dea18e0283c036e",
-    "adapters_blob_sha": "7b93d8b8625f8973826de8034e29476f7ab0f4af",
+    "registry_blob_sha": "8ccc7809c98a90c2abfa11f4a0520ca33092e588",
+    "adapters_blob_sha": "6d358799ec5015f242cdf3ab4e54d55dec5b5790",
     "inspected_sources": [
       ".github/workflows/auto_sync.yml",
       ".github/workflows/automation-watchdog.yml",
       ".github/workflows/dashboard-pages.yml",
       ".github/workflows/request-intake.yml",
       ".github/workflows/self-healing-agent.yml",
+      ".github/workflows/self-healing-tests.yml",
+      ".github/workflows/source-discovery.yml",
       ".github/workflows/validate-config.yml",
       "scripts/append_step_summary.py",
       "scripts/apply_safe_repair.py",
@@ -47,6 +49,7 @@
       "scripts/resource_lease_runtime.py",
       "scripts/restore_automation_state.py",
       "scripts/review_cursor.py",
+      "scripts/select_domain_rules.py",
       "scripts/source_registry.py",
       "scripts/sync_ruleset_config_conflicts.py",
       "scripts/task_queue.py",
@@ -68,11 +71,54 @@
       "tests/test_restore_automation_state.py",
       "tests/test_task_queue.py",
       "tests/test_task_queue_runtime.py",
-      "tests/test_workflow_config_guard_order.py",
-      ".github/workflows/source-discovery.yml"
+      "tests/test_workflow_config_guard_order.py"
     ],
-    "limitation": "No repository-local filesystem write interception or path-only write tracing is installed. The audit job uses read-only repository permissions; publication is limited to explicit ruleset staging paths, followed by independent remote verification. Resource leases remain for task ownership and concurrency coordination.",
-    "reviewed_at": "2026-11-04"
+    "limitation": "The production repository publication boundary is rulesets/** only, enforced by workflow git-add allowlist, staged-path fence and restore_publish_outputs allowlist. Static Python and workflow inventories are updated; complete dynamic shell/action effects and real concurrent-run integration evidence remain open. Issue #193 is not closed; independent Python adapters remain fail-closed.",
+    "reviewed_at": "2026-11-04",
+    "isolated_ephemeral_outputs": [
+      {
+        "program_id": "script_assess_sources",
+        "root": "AUTOMATION_ARTIFACT_ROOT under RUNNER_TEMP",
+        "paths": [
+          "sources/source_assessments.json",
+          "data/source_assessments_runtime.json",
+          "reports/source-assessment.md"
+        ],
+        "repository_publication": false,
+        "verification": "independent verifier + immutable Actions artifact"
+      },
+      {
+        "program_id": "script_auto_activate_sources",
+        "root": "AUTOMATION_ARTIFACT_ROOT or RUNNER_TEMP/source-activation",
+        "paths": [
+          "sources/domain_sources.json",
+          "sources/source_activation_log.json",
+          "reports/source-activation.md"
+        ],
+        "repository_publication": false,
+        "verification": "Main registry and candidate matrix are read-only; all proposed outputs use ARTIFACT_ROOT/RUNNER_TEMP; adapter and orchestration disabled."
+      },
+      {
+        "program_id": "script_discover_sources",
+        "root": "AUTOMATION_ARTIFACT_ROOT under RUNNER_TEMP",
+        "paths": [
+          "sources/discovered_sources.json",
+          "reports/source-discovery.md"
+        ],
+        "repository_publication": false,
+        "verification": "producer identity + complete logical-document SHA-256 + immutable Actions artifact"
+      },
+      {
+        "program_id": "script_task_queue_runtime",
+        "root": "RUNNER_TEMP or OS temporary directory",
+        "paths": [
+          "shadowrocket-local-task-queue.json",
+          "shadowrocket-local-task-queue.json.lock"
+        ],
+        "repository_publication": false,
+        "verification": "default path outside repository; queue_lock and atomic_write resolve paths and reject repository-local, symlink-to-repository and hard-linked paths; adapter and orchestration disabled"
+      }
+    ]
   },
   "protected_resources": {
     "modules/uu.conf": {
@@ -90,15 +136,11 @@
         "sources/source_activation_log.json",
         "reports/source-activation.md"
       ],
-      "known_writers": [
-        "script_auto_activate_sources",
-        "script_restore_automation_state",
-        "workflow_auto_sync"
-      ],
-      "lock_key": "logical/production-pipeline + sources/domain_sources.json + sources/source_activation_log.json + reports/source-activation.md",
-      "required_mode": "exclusive",
-      "status": "production_registry_writer_central_pipeline_fence_only",
-      "note": "auto_activate_sources writes the active domain source registry and activation log, affecting future production inputs. Publish restore can write the same allowlisted files. Current auto_sync is protected by the central production-pipeline fence; the script has no explicit per-resource lease."
+      "known_writers": [],
+      "lock_key": "read-only main-branch source registry and activation baseline",
+      "required_mode": "read_only",
+      "status": "no_repository_writer_source_activation_artifact_only",
+      "note": "auto_activate_sources now reads the main source registry and emits proposed registry/log/report files only under AUTOMATION_ARTIFACT_ROOT or RUNNER_TEMP. Its adapter and orchestration are disabled. No production workflow writes sources/domain_sources.json or sources/source_activation_log.json."
     },
     {
       "id": "domain_candidate_buffer",
@@ -113,10 +155,27 @@
         "script_import_request_observations",
         "script_restore_automation_state"
       ],
-      "lock_key": "resource:data/domain_candidates.json + logical/production-pipeline",
-      "required_mode": "exclusive",
-      "status": "known_shared_writers_central_pipeline_fence_only",
-      "note": "Two active auto_sync steps write the same logical JSON document. Both write_document calls omit lease_required=True, so current serialization relies on the shared Watchdog production-pipeline mutex. This is workflow-level coordination, not per-mutation filesystem interception. Restore can replace the same logical document from allowlisted artifacts. Cross-workflow compatible per-document lease proof remains missing."
+      "lock_key": "logical/production-pipeline + data/domain_candidates.json",
+      "required_mode": "exclusive_exact_document_lease",
+      "status": "fenced_at_each_document_store_mutation",
+      "note": "collect_domains and import_request_observations now call write_document(..., lease_required=True) for the shared data/domain_candidates.json document; collect_domains also fences data/candidates.json, data/source_pending.json and dynamic source snapshots. restore_automation_state restores only into the isolated workspace and never publishes these files."
+    },
+    {
+      "id": "domain_review_ledger",
+      "paths": [
+        "sources/domain_reviews.json",
+        "sources/domain_reviews.json.manifest.json",
+        "sources/domain_reviews.json.parts-<digest>/part-*.jsonl",
+        "sources/domain_reviews.json.parts.tmp-*"
+      ],
+      "known_writers": [
+        "script_deterministic_review",
+        "script_restore_automation_state"
+      ],
+      "lock_key": "logical/production-pipeline + sources/domain_reviews.json",
+      "required_mode": "exclusive_exact_document_lease",
+      "status": "fenced_at_each_document_store_mutation",
+      "note": "deterministic_review writes the logical review ledger through write_document(..., lease_required=True); restore_automation_state restores prior state only to the isolated audit workspace and does not publish it."
     },
     {
       "id": "durable_task_queue_control_plane",
@@ -135,6 +194,21 @@
       "note": "The durable queue is control-plane state stored as append-only, compressed GitHub Issue #315 comments. Each snapshot is SHA-256 chained to the prior revision; concurrent duplicate revisions resolve deterministically by earliest canonical comment ID. The repository automation/task_queue.json file is read-only bootstrap state. Local task_queue_runtime is runner-local only."
     },
     {
+      "id": "independent_source_assessment_queue_checkpoint",
+      "paths": [
+        "GitHub Issue #315 task.assessment_checkpoint"
+      ],
+      "writers": [
+        "script_assess_sources",
+        "script_remote_task_queue_runtime",
+        "workflow_automation_watchdog"
+      ],
+      "lock_key": "github-issue-comment-chain:315 + logical/production-pipeline + logical/source-assessment-checkpoints",
+      "required_mode": "append_only_issue_snapshot_CAS_with_live_task_and_resource_fences",
+      "status": "bounded_task_checkpoint_fenced",
+      "note": "Per-URL results are stored only in the currently claimed task's assessment_checkpoint. Each mutation uses the append-only Issue #315 snapshot CAS and validates task identity, active task lease, exact predecessor run/digest and both logical resource fencing tokens. No repository assessment document is written or published."
+    },
+    {
       "id": "lifecycle_gate_state",
       "paths": [
         "rulesets/lifecycle_state.json"
@@ -143,10 +217,24 @@
         "script_lifecycle_gate",
         "script_restore_automation_state"
       ],
-      "lock_key": "resource:rulesets/lifecycle_state.json",
-      "required_mode": "exclusive",
-      "status": "direct_writer_identified_fence_only",
-      "note": "lifecycle_gate.py writes milestone/monthly review state directly. The current auto_sync call is protected by the central production-pipeline fence; no separate per-resource lease assertion exists in the script. Allowlisted publish-mode restore is an additional writer and is serialized by the same auto_sync logical production-pipeline fence."
+      "lock_key": "logical/production-pipeline + rulesets/lifecycle_state.json",
+      "required_mode": "exclusive_exact_path_resource_lease",
+      "status": "fenced_at_each_writer_mutation",
+      "note": "lifecycle_gate.py now explicitly asserts the exact rulesets/lifecycle_state.json lease before every state write; lifecycle audit and restore paths share the same production lease."
+    },
+    {
+      "id": "manual_domain_selector_reports",
+      "paths": [
+        "reports/approved-domain-rules.list",
+        "reports/rule-selector-audit.md"
+      ],
+      "known_writers": [
+        "script_select_domain_rules"
+      ],
+      "lock_key": "reports/approved-domain-rules.list + reports/rule-selector-audit.md",
+      "required_mode": "exclusive_live_resource_leases_asserted_at_each_mutation",
+      "status": "bounded_fenced_non_dispatchable",
+      "note": "The selector is disabled and has no production workflow edge. Its script now asserts both exact live resource leases immediately before the corresponding output directory/file mutations. It cannot publish these reports; publication remains rulesets/** only."
     },
     {
       "id": "owner_config_baseline_metadata",
@@ -156,13 +244,11 @@
         "automation/production_workflow_map.json",
         "automation/resource_write_sets.json"
       ],
-      "writers": [
-        "script_register_config_baseline",
-        "workflow_auto_sync"
-      ],
-      "lease_key": "logical/production-pipeline",
-      "status": "live_fenced_production_writer_reviewed",
-      "note": "The owner baseline registrar writes only approval/pin metadata after verifying the exact owner-authored modules/uu.conf change. In auto_sync, these writes are guarded by the live Watchdog task/resource lease and the publisher reasserts the same fencing epoch before push. validate-config writes only its ephemeral workspace with contents:read. Historical artifact restore is explicitly excluded from these resources. This covers the registered production path; broader cross-workflow ownership audit remains partial."
+      "writers": [],
+      "lease_key": "read-only config baseline; runner-local proposal artifact only",
+      "status": "no_repository_metadata_writer",
+      "note": "register_config_baseline.py verifies owner-authored modules/uu.conf changes and emits a review proposal only under RUNNER_TEMP. auto_sync uploads the proposal as an immutable artifact before verify_baseline fails closed on an unregistered change. It never writes sources/policy.json, release_manifest.json, production_workflow_map.json or resource_write_sets.json. No production writer is registered.",
+      "known_writers": []
     },
     {
       "id": "policy_source_overlap_audit",
@@ -171,20 +257,26 @@
         "reports/policy-source-overlap.md"
       ],
       "known_writers": [
-        "script_audit_policy_source_overlap",
-        "script_restore_automation_state"
+        "script_audit_policy_source_overlap"
       ],
-      "lock_key": "logical/production-pipeline + sources/policy_source_overlap.json + reports/policy-source-overlap.md",
-      "required_mode": "exclusive",
-      "status": "audit_output_central_pipeline_fence_only",
-      "note": "Audit-only report and JSON output; publish restoration is another writer under the same auto_sync logical fence."
+      "lock_key": "per-run isolated workflow workspace",
+      "required_mode": "runner_local_ephemeral_output",
+      "status": "artifact_only_no_repository_publication",
+      "note": "The audit writes sources/policy_source_overlap.json and reports/policy-source-overlap.md only in the isolated runner workspace. Immutable Actions audit artifact preserves them; publish allowlist is rulesets/** only."
     },
     {
       "id": "published_ruleset_artifacts",
       "paths": [
         "rulesets/direct.list",
         "rulesets/proxy.list",
-        "rulesets/reject.list"
+        "rulesets/reject.list",
+        "rulesets/pending_queue.json",
+        "rulesets/reject_review_queue.json",
+        "rulesets/config_conflict_archive.json",
+        "rulesets/lifecycle_observations.json",
+        "rulesets/deletion_archive.json",
+        "rulesets/lifecycle_state.json",
+        "rulesets/manifest.json"
       ],
       "known_writers": [
         "script_build_rulesets",
@@ -192,10 +284,10 @@
         "script_restore_automation_state",
         "script_sync_ruleset_config_conflicts"
       ],
-      "lock_key": "resource:rulesets/published-lists",
-      "required_mode": "exclusive",
-      "status": "overlap_confirmed",
-      "note": "All three entrypoints can affect published policy lists; serialize them until a single-writer ownership boundary is enforced."
+      "lock_key": "logical/production-pipeline + exact rulesets file leases",
+      "required_mode": "exclusive_exact_path_resource_leases",
+      "status": "fenced_at_each_writer_mutation",
+      "note": "All ruleset writers run under the Watchdog logical/production-pipeline lease and explicitly assert the exact output path lease before each published-file mutation. The archive restore path is rulesets-only and asserts each exact path. No global file guard is used."
     },
     {
       "id": "reports_and_audit_outputs",
@@ -209,18 +301,16 @@
         "script_audit_ruleset_config_overlap",
         "script_audit_ruleset_references",
         "script_audit_source_lineage",
-        "script_auto_activate_sources",
         "script_build_project_status",
         "script_build_rulesets",
         "script_lifecycle_audit",
         "script_refresh_ruleset_manifest",
-        "script_restore_automation_state",
         "script_sync_ruleset_config_conflicts"
       ],
-      "lock_key": "resource:<canonical-report-path>",
-      "required_mode": "exclusive_per_output",
-      "status": "partial_static_audit",
-      "note": "Report inventory now includes source activation, lineage, policy-source overlap, external-domain, config-drift, RULE-SET reference, RULE-SET/config overlap, project-status, lifecycle and conflict-sync outputs. restore_automation_state is an additional publish-mode writer for allowlisted reports. Exact path-to-writer coverage and per-report lock assertions remain partial."
+      "lock_key": "per-run isolated workflow workspace; no shared repository resource",
+      "required_mode": "runner_local_ephemeral_output",
+      "status": "runner_local_artifacts_no_repository_publication",
+      "note": "All reports are written only to the current audit runner workspace and included in the immutable Actions audit artifact. restore_publish_outputs has a separate rulesets/** allowlist. Production commits are limited to rulesets/**."
     },
     {
       "id": "request_intake_observations",
@@ -230,10 +320,10 @@
       "known_writers": [
         "workflow_request_intake"
       ],
-      "lock_key": "append-only-issue-comment-log:317",
+      "lock_key": "shadowrocket-domain-intake workflow concurrency group + append-only Issue #317 comments",
       "required_mode": "append_only_issue_comment_batches",
       "status": "external_issue_ledger_read_by_production_fingerprint_and_candidate_importer",
-      "note": "The request-intake workflow validates up to 500 hostnames and appends a run-ID-idempotent JSON batch to GitHub Issue #317 comments. production_intent.py includes these batches in the production fingerprint, and import_request_observations.py merges them into the runner-local unclassified candidate buffer. No automation writes sources/request_domain_observations.json; that repository file is a read-only seed."
+      "note": "The request-intake workflow serializes all runs through the fixed shadowrocket-domain-intake concurrency group with cancel-in-progress:false, then appends run-ID-tagged Issue #317 batches. Downstream merge is idempotent by run ID."
     },
     {
       "id": "review_cursor_checkpoint",
@@ -242,14 +332,13 @@
       ],
       "known_writers": [
         "script_deterministic_review",
-        "script_persist_review_cursor",
         "script_restore_automation_state",
         "workflow_auto_sync"
       ],
       "lock_key": "logical/production-pipeline + sources/review_cursor.json",
       "required_mode": "exclusive",
-      "status": "per_write_filesystem_fence_and_scoped_git_publish_revalidation",
-      "note": "The deterministic review writes its checkpoint under the production task's shared logical/production-pipeline lease. On failed or cancelled audit, persist_review_cursor.py validates the uploaded checkpoint and updates or removes only sources/review_cursor.json after exact Watchdog task and live resource-lease validation. Cursor-only Git publication revalidates the task/resource proof before staging and pushing. No repository-local filesystem guard is installed."
+      "status": "runner_local_checkpoint_with_exact_document_lease_and_artifact_recovery",
+      "note": "deterministic_review asserts exact leases for sources/domain_reviews.json and sources/review_cursor.json at each write boundary. Failed/cancelled cursor recovery is retained only as immutable Actions artifacts; the dormant recovery utility is RUNNER_TEMP-only and rejects repository destinations. No cursor-only Git publication exists."
     },
     {
       "id": "rule_provenance_ledger",
@@ -263,10 +352,41 @@
         "script_build_rule_provenance",
         "script_restore_automation_state"
       ],
-      "lock_key": "resource:sources/rule_provenance.json + logical/production-pipeline",
-      "required_mode": "exclusive",
-      "status": "known_shared_writers_central_pipeline_fence_only",
-      "note": "The provenance builder writes the logical document through json_document_store; publish restoration may restore the same path and shards. Current auto_sync execution shares the production-pipeline fence, but no independent per-document lease is requested by the builder."
+      "lock_key": "logical/production-pipeline + sources/rule_provenance.json",
+      "required_mode": "exclusive_exact_document_lease",
+      "status": "fenced_at_each_document_store_mutation",
+      "note": "build_rule_provenance now calls write_document(..., lease_required=True), which reasserts the exact canonical document lease across legacy file, manifest, shard, staging and cleanup mutations. Restore is runner-local only; no non-ruleset repository publication."
+    },
+    {
+      "id": "ruleset_conflict_archives",
+      "paths": [
+        "rulesets/config_conflict_archive.json",
+        "rulesets/reject_review_queue.json"
+      ],
+      "known_writers": [
+        "script_build_rulesets",
+        "script_sync_ruleset_config_conflicts",
+        "script_restore_automation_state"
+      ],
+      "lock_key": "logical/production-pipeline + exact conflict archive/review queue path leases",
+      "required_mode": "exclusive_exact_path_resource_leases",
+      "status": "fenced_at_each_writer_mutation",
+      "note": "Builder, config-conflict synchronization and archive restoration assert exact output leases before mutation."
+    },
+    {
+      "id": "ruleset_lifecycle_history",
+      "paths": [
+        "rulesets/lifecycle_observations.json",
+        "rulesets/deletion_archive.json"
+      ],
+      "known_writers": [
+        "script_lifecycle_audit",
+        "script_restore_automation_state"
+      ],
+      "lock_key": "logical/production-pipeline + exact lifecycle observation/archive path leases",
+      "required_mode": "exclusive_exact_path_resource_leases",
+      "status": "fenced_at_each_writer_mutation",
+      "note": "lifecycle_audit.py asserts each exact path before write; restore_publish_outputs asserts the same exact path for archive restore."
     },
     {
       "id": "ruleset_manifest",
@@ -278,12 +398,13 @@
         "script_lifecycle_audit",
         "script_refresh_ruleset_manifest",
         "script_restore_automation_state",
-        "script_sync_ruleset_config_conflicts"
+        "script_sync_ruleset_config_conflicts",
+        "workflow_automation_watchdog"
       ],
-      "lock_key": "resource:rulesets/manifest.json",
-      "required_mode": "exclusive",
-      "status": "overlap_confirmed",
-      "note": "Manifest reconciliation and production/lifecycle/conflict flows share this resource."
+      "lock_key": "logical/production-pipeline + rulesets/manifest.json + concurrency:shadowrocket-main-writer",
+      "required_mode": "exclusive_exact_path_lease_plus_cross_workflow_concurrency",
+      "status": "cross_workflow_serialized_and_fenced",
+      "note": "auto_sync refresh asserts the exact live manifest resource lease. Watchdog manifest-integrity job is serialized with auto_sync by the same job-level shadowrocket-main-writer concurrency group (cancel-in-progress:false)."
     },
     {
       "id": "ruleset_pending_and_archive_state",
@@ -337,33 +458,26 @@
       ],
       "lock_key": "resource:<canonical-document-path>",
       "required_mode": "exclusive_per_document",
-      "status": "dynamic_path_requires_runtime_lock",
-      "note": "The storage helper uses atomic replacement, JSONL shards, manifest switching, and old-shard cleanup. Locking by program ID is insufficient; lock the canonical document path and include manifest/shards in the same lease. The low-level helper is itself registered as a dynamic writer; callers must declare the canonical document and lease across all helper-managed child mutations."
+      "status": "active_shared_callers_use_exact_per_document_leases",
+      "note": "The helper uses atomic replacement, JSONL shards, manifest switching and cleanup. It is not an independent capability and installs no global filesystem guard. Every active shared caller now explicitly sets lease_required=True and the exact canonical document path is asserted before each helper-managed mutation; independent source artifacts and restore outputs remain runner-local."
     },
     {
       "id": "source_assessment_artifacts",
       "paths": [
-        "sources/source_assessments.json",
-        "data/source_assessments_runtime.json",
-        "reports/source-assessment.md"
+        "sources/source_assessments.json (monolithic checkout workspace only)",
+        "data/source_assessments_runtime.json (monolithic checkout workspace only)",
+        "reports/source-assessment.md (monolithic checkout workspace only)",
+        "RUNNER_TEMP/source-assessment-output/sources/source_assessments.json",
+        "RUNNER_TEMP/source-assessment-output/data/source_assessments_runtime.json",
+        "RUNNER_TEMP/source-assessment-output/reports/source-assessment.md"
       ],
       "known_writers": [
-        "script_assess_sources",
-        "script_restore_automation_state",
-        "workflow_auto_sync"
+        "script_assess_sources"
       ],
-      "lock_key": "logical/production-pipeline + sources/source_assessments.json + data/source_assessments_runtime.json + reports/source-assessment.md",
-      "required_mode": "exclusive",
-      "status": "live_fenced_writers_reviewed_partial_transitive_audit",
-      "note": "Scheduler atomically acquires shared logical/production-pipeline mutex plus exclusive leases for all three outputs. Child re-reads live queue and checks exact fencing token before each JSON base/manifest/shard/staging/cleanup mutation and report write. After independent verification, scheduler publishes only persistent history and report using fetch/rebase/non-force push; runtime fingerprints stay runner-local. Sharded read-only discovery input is hashed before and after execution. The auto_sync publish job also restores allowlisted assessment history and report artifacts from the audited archive; restore_automation_state.py is fenced by the same live logical/production-pipeline lease, so it is serialized against independent assessment.",
-      "lease_seconds": 480,
-      "publish_resources": [
-        "sources/source_assessments.json",
-        "reports/source-assessment.md"
-      ],
-      "ephemeral_unpublished_resources": [
-        "data/source_assessments_runtime.json"
-      ]
+      "lock_key": "logical/production-pipeline + exact assessment output resource keys in monolithic mode; per-run RUNNER_TEMP isolation in independent mode",
+      "required_mode": "isolated_per_run_artifact_workspace",
+      "status": "monolithic_exact_path_leases_and_independent_runner_local",
+      "note": "Monolithic checkout workspace outputs are fenced by exact source-assessment path leases and are never committed to the repository; independent outputs are per-run RUNNER_TEMP artifacts. Only the task assessment_checkpoint is shared across independent executions via Issue #315 CAS. The production publisher stages rulesets/** only."
     },
     {
       "id": "source_candidate_artifacts",
@@ -376,27 +490,27 @@
         "script_restore_automation_state",
         "workflow_auto_sync"
       ],
-      "lock_key": "resource:sources/source_candidates.json+reports/source-candidate-matrix.md",
-      "required_mode": "exclusive",
-      "status": "direct_write_paths_confirmed_dynamic_document_store_children",
-      "note": "Candidate matrix reads runtime or persistent assessments plus source lineage, then writes a logical JSON document through json_document_store and a Markdown report. Allowlisted publish-mode restore is an additional writer and is serialized by the same auto_sync logical production-pipeline fence."
+      "lock_key": "logical/production-pipeline + sources/source_candidates.json",
+      "required_mode": "exclusive_exact_document_lease",
+      "status": "fenced_at_each_document_store_mutation",
+      "note": "build_source_candidates now calls write_document(..., lease_required=True) for the JSON matrix and keeps its Markdown report as a run-local artifact. Restore is workspace-only; no source candidate or report commit."
     },
     {
       "id": "source_discovery_artifacts",
       "paths": [
-        "sources/discovered_sources.json",
-        "reports/source-discovery.md"
+        "sources/discovered_sources.json (monolithic checkout workspace only)",
+        "reports/source-discovery.md (monolithic checkout workspace only)",
+        "RUNNER_TEMP/source-discovery-workspace/sources/discovered_sources.json",
+        "RUNNER_TEMP/source-discovery-workspace/reports/source-discovery.md"
       ],
       "known_writers": [
         "script_discover_sources",
-        "script_restore_automation_state",
-        "workflow_auto_sync",
         "workflow_source_discovery"
       ],
-      "lock_key": "sources/discovered_sources.json + reports/source-discovery.md (exclusive per-resource leases shared with workflow_auto_sync)",
-      "required_mode": "exclusive",
-      "status": "direct_write_paths_confirmed_dynamic_document_store_children",
-      "note": "discovered_sources.json is written through json_document_store with an explicit logical-document lease assertion covering the base file, adjacent manifest, content-addressed shards, staging and old-shard cleanup. reports/source-discovery.md has a separate explicit live lease assertion. GITHUB_STEP_SUMMARY is a per-run ephemeral output and is intentionally excluded from shared repository resource ownership. Allowlisted publish-mode restore is an additional writer and is serialized by the same auto_sync logical production-pipeline fence. The dedicated workflow_source_discovery writer now uses the same two exclusive resource keys as workflow_auto_sync and validates the exact Watchdog dispatch identity before writes. Its adapter remains disabled pending HOLD/authorization; the monolithic fallback remains active to avoid duplicate or missing assessment."
+      "lock_key": "sources/discovered_sources.json + reports/source-discovery.md exact leases in monolithic mode; per-run RUNNER_TEMP isolation in independent mode",
+      "required_mode": "isolated_per_run_artifact_workspace",
+      "status": "monolithic_exact_path_leases_and_independent_runner_local",
+      "note": "Monolithic mode requires exact live leases for the discovery document and report. Independent mode writes only to per-run RUNNER_TEMP and uploads immutable artifacts. No discovery files are committed to the repository; production publication remains rulesets/** only."
     },
     {
       "id": "watchdog_unregistered_path_registry",
@@ -421,7 +535,9 @@
       "The scheduler atomically acquires the shared production mutex and all declared output leases.",
       "The child re-reads live queue state and checks the exact active fencing token at every filesystem mutation boundary.",
       "The independent verifier accepts only matching runtime/persistent/report artifacts.",
-      "A controlled post-merge scheduler canary passes without changing modules/uu.conf."
+      "A controlled post-merge scheduler canary passes without changing modules/uu.conf.",
+      "Issue #193 acceptance: complete transitive writer inventory, dynamic path resolution, runtime mutation traces, canonical resource lease mapping, cross-workflow serialization proof, and independent output verification for every executable capability.",
+      "Issue #192 acceptance: live non-production discovery artifact → idempotent assessment consumer canary with no duplicate monolithic assessment; adapters remain disabled during audit."
     ]
   }
 }

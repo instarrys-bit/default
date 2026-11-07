@@ -140,7 +140,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("assert-workflow", cursor)
         self.assertNotIn("git push", cursor)
 
-    def test_independent_source_discovery_has_fenced_immutable_handoff_and_stays_dormant(self):
+    def test_independent_source_discovery_and_assessment_remain_dormant_until_acceptance(self):
         source = (ROOT / ".github" / "workflows" / "source-discovery.yml").read_text(encoding="utf-8")
         watchdog = WATCHDOG.read_text(encoding="utf-8")
         audit = AUTO_SYNC.read_text(encoding="utf-8")
@@ -156,6 +156,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("AUTOMATION_" + "WRITE_GUARD", source)
         self.assertNotIn("fenced_" + "file_writer", source)
         self.assertNotIn("Publish discovery inventory under its exact resource leases", source)
+        self.assertIn("Seed isolated discovery workspace from read-only main baseline", source)
+        self.assertIn("AUTOMATION_ARTIFACT_ROOT", source)
         self.assertIn("Confirm discovery outputs remain runner-local", source)
         self.assertNotIn("git push", source)
         self.assertIn("Upload immutable discovery artifact and provenance proof", source)
@@ -167,9 +169,15 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("no sources/ commit is required", watchdog)
         self.assertIn("enqueue-source-discovery", watchdog)
         self.assertIn("Independent source discovery remains dormant", watchdog)
-        # Keep the monolithic fallback until the independent adapter is authorized and live.
+        self.assertIn("vars.SOURCE_DISCOVERY_MODE || 'monolithic_fallback'", watchdog)
+        # The monolithic steps are retained only as an explicit fallback, not run in independent mode.
+        self.assertIn("if: ${{ env.SOURCE_DISCOVERY_MODE != 'independent' }}", audit)
         self.assertIn("Discover candidate source repositories (non-activating)", audit)
         self.assertIn("Assess discovered rule-list syntax and policy claims", audit)
+        assessor = next(x for x in adapters["adapters"] if x["target_program_id"] == "script_assess_sources")
+        self.assertFalse(assessor["enabled"])
+        self.assertEqual(assessor["allowed_callers"], [])
+        self.assertIn("Upload verified source assessment outputs as immutable artifact", watchdog)
         auto_sync = next(x for x in adapters["adapters"] if x["target_program_id"] == "workflow_auto_sync")
         self.assertIn("sources/discovered_sources.json", auto_sync["resource_contract"]["resource_keys"])
         self.assertIn("reports/source-discovery.md", auto_sync["resource_contract"]["resource_keys"])

@@ -20,6 +20,8 @@ from json_document_store import read_document, write_document
 from resource_lease_runtime import assert_resource_lease_from_environment
 
 ROOT = Path(__file__).resolve().parents[1]
+ARTIFACT_ROOT = Path(os.environ.get("AUTOMATION_ARTIFACT_ROOT", ROOT)).resolve()
+INDEPENDENT_ARTIFACT_MODE = bool(os.environ.get("AUTOMATION_ARTIFACT_ROOT"))
 
 CATALOG_PATH = ROOT / "sources/external_intelligence_catalog.json"
 CATALOG_ALLOWED_HOSTS = {"github.com", "urlhaus.abuse.ch", "openphish.com", "crt.sh", "stat.ripe.net", "www.iana.org", "gitlab.com", "codeberg.org"}
@@ -233,8 +235,8 @@ def collect_external_intelligence(catalog: dict) -> dict:
             "activation_policy": "Evidence only. No observation maps directly to DIRECT, PROXY or REJECT."}
 
 
-OUTPUT = ROOT / "sources/discovered_sources.json"
-REPORT = ROOT / "reports/source-discovery.md"
+OUTPUT = ARTIFACT_ROOT / "sources/discovered_sources.json" if INDEPENDENT_ARTIFACT_MODE else ROOT / "sources/discovered_sources.json"
+REPORT = ARTIFACT_ROOT / "reports/source-discovery.md" if INDEPENDENT_ARTIFACT_MODE else ROOT / "reports/source-discovery.md"
 MAX_README_BYTES = 1_500_000
 # Paginated repository search plus bounded repository-tree scans.
 MAX_REPOS_PER_QUERY = 100
@@ -652,9 +654,16 @@ def readme_snapshot(repo_data: dict, previous: dict | None = None) -> tuple[str,
 
 def persist_discovery_outputs(merged: dict) -> None:
     """Persist the discovery inventory and report under their exact live leases."""
-    write_document(OUTPUT, merged, "candidates", lease_required=True)
-    assert_resource_lease_from_environment("reports/source-discovery.md")
-    REPORT.write_text(render_report(merged), encoding="utf-8")
+    if INDEPENDENT_ARTIFACT_MODE:
+        runner_temp = Path(os.environ.get("RUNNER_TEMP", "/tmp")).resolve()
+        if not ARTIFACT_ROOT.is_relative_to(runner_temp) or ARTIFACT_ROOT == ROOT.resolve():
+            raise ValueError("independent discovery outputs must remain under the isolated RUNNER_TEMP workspace")
+        write_document(OUTPUT, merged, "candidates", lease_required=False)
+        REPORT.write_text(render_report(merged), encoding="utf-8")
+    else:
+        write_document(OUTPUT, merged, "candidates", lease_required=True)
+        assert_resource_lease_from_environment("reports/source-discovery.md")
+        REPORT.write_text(render_report(merged), encoding="utf-8")
 
 
 def main() -> int:
