@@ -106,8 +106,10 @@ class GitHubWorkflowClient:
             {"ref": ref, "inputs": inputs},
         )
 
-    def list_runs(self, workflow_id: int, ref: str) -> dict:
-        query = urlencode({"event": "workflow_dispatch", "branch": ref, "per_page": 100})
+    def list_runs(self, workflow_id: int, ref: str, page: int = 1) -> dict:
+        if isinstance(page, bool) or not isinstance(page, int) or page < 1:
+            raise ValueError("workflow run page must be a positive integer")
+        query = urlencode({"event": "workflow_dispatch", "branch": ref, "per_page": 100, "page": page})
         return self.request("GET", f"actions/workflows/{workflow_id}/runs?{query}")
 
     def get_run(self, run_id: int) -> dict:
@@ -250,16 +252,22 @@ def validate_run_head_sha(client: GitHubWorkflowClient, intent: dict, actual_sha
 
 def find_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict | None:
     """Find exactly one run by workflow ID, ref, SHA, event, and unique run-name."""
-    payload = client.list_runs(intent["workflow_id"], intent["ref"])
-    runs = payload.get("workflow_runs")
-    if not isinstance(runs, list):
-        raise WorkflowAPIError("workflow runs response is missing workflow_runs")
-    matches = [
-        run for run in runs
-        if isinstance(run, dict) and run.get("display_title") == intent["correlation_title"]
-    ]
-    if len(matches) > 1:
-        raise AmbiguousWorkflowRun("multiple workflow runs match one task correlation ID")
+    matches = []
+    page = 1
+    while True:
+        payload = client.list_runs(intent["workflow_id"], intent["ref"], page=page)
+        runs = payload.get("workflow_runs")
+        if not isinstance(runs, list):
+            raise WorkflowAPIError("workflow runs response is missing workflow_runs")
+        matches.extend(
+            run for run in runs
+            if isinstance(run, dict) and run.get("display_title") == intent["correlation_title"]
+        )
+        if len(matches) > 1:
+            raise AmbiguousWorkflowRun("multiple workflow runs match one task correlation ID")
+        if len(runs) < 100:
+            break
+        page += 1
     if not matches:
         return None
     run = matches[0]
