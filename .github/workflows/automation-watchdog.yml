@@ -902,6 +902,15 @@ jobs:
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
+
+      - name: Export current durable queue snapshot for supervision
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue.json"
+          echo "AUTOMATION_QUEUE_SNAPSHOT=$RUNNER_TEMP/task_queue.json" >> "$GITHUB_ENV"
       - name: Resolve completed Discovery run from durable task correlation
         id: resolve-discovery-run
         env:
