@@ -196,7 +196,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('"source-assessment:" + run_id', watchdog)
         self.assertIn('task.get("target_program_id") == "script_assess_sources"', watchdog)
         self.assertIn('task.get("status") == "QUEUED"', watchdog)
-        self.assertIn("page={page}", watchdog)
+        self.assertIn('workflow_client.list_runs(workflow_id, "main", page)', watchdog)
         self.assertIn("if page > 20:", watchdog)
         self.assertIn('"$base_key:recovery:1"', watchdog)
         self.assertIn('proof.get("workflow_run_id", "")', watchdog)
