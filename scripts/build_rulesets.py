@@ -139,6 +139,27 @@ def promote_queue_to_capacity(rule_sets, queue_map, previous_rule_count, maximum
         queue_map.pop(key, None)
     return promoted
 
+def eligible_source_ids(source_inventory):
+    """Return only current sources eligible to corroborate newly approved rules."""
+    if not isinstance(source_inventory,list):
+        raise ValueError("source inventory must be a list")
+    eligible=set()
+    seen=set()
+    for record in source_inventory:
+        if not isinstance(record,dict) or not isinstance(record.get("id"),str) or not record["id"]:
+            raise ValueError("source inventory identity must be a non-empty string")
+        source_id=record["id"]
+        if source_id in seen:
+            raise ValueError("duplicate source inventory identity: "+source_id)
+        seen.add(source_id)
+        status=record.get("status","CURRENT")
+        if status not in {"CURRENT","STALE_QUARANTINED"}:
+            raise ValueError("unknown source quality status: "+str(status))
+        if status=="CURRENT":
+            eligible.add(source_id)
+    return eligible
+
+
 def main():
     data=read_document(LEDGER,"reviews",{"reviews":[]})
     source_cfg=json.loads(SOURCE_FILE.read_text(encoding="utf-8"))
@@ -159,10 +180,22 @@ def main():
     if any(str(source_map[sid].get("classification","")).upper()!="REJECT" or source_map[sid].get("enabled",True) is False for sid in secondary_required_any):
         raise ValueError("REJECT secondary specialist sources must be enabled and classified as REJECT")
     current=read_document(CURRENT_SNAPSHOT,"candidates",{"candidates":[]})
-    current_hashes={x["id"]:x["sha256"] for x in current.get("sources",[])}
+    current_sources=current.get("sources",[])
+    current_hashes={x["id"]:x["sha256"] for x in current_sources}
     enabled_source_ids={sid for sid,source in source_map.items() if source.get("enabled",True) is not False}
     if set(current_hashes)!=enabled_source_ids:
         raise ValueError("current source snapshot does not match enabled source registry entries")
+    # A retained baseline hash is not proof that a quarantined source is current.
+    # Quarantined sources remain visible in the inventory but cannot corroborate
+    # any newly approved rule until a fresh, validated snapshot clears quarantine.
+    quarantined_source_ids=set()
+    for source_record in current_sources:
+        source_status=source_record.get("status","CURRENT")
+        if source_status not in {"CURRENT","STALE_QUARANTINED"}:
+            raise ValueError("unknown source quality status: "+str(source_status))
+        if source_status=="STALE_QUARANTINED":
+            quarantined_source_ids.add(str(source_record["id"]))
+    eligible_source_ids=enabled_source_ids-quarantined_source_ids
     protected=json.loads(PROTECTED.read_text(encoding="utf-8"))
     base=CONFIG.read_text(encoding="utf-8")
     config_rules=all_rule_lines(base)
@@ -250,7 +283,7 @@ def main():
         for ev in item.get("evidence",[]):
             sid=str(ev.get("source_id",""))
             src=source_map.get(sid)
-            if not src or ev.get("currently_listed",True) is not True:
+            if not src or sid not in eligible_source_ids or ev.get("currently_listed",True) is not True:
                 continue
             if ev.get("sha256")!=current_hashes.get(sid):
                 continue
@@ -501,8 +534,11 @@ def main():
         "minimum_independent_sources":minimum,
         "minimum_confidence_score":threshold,
         "required_sources_by_policy":required_by_policy,
-        "source_inventory":current.get("sources",[]),
-        "source_count":len(current.get("sources",[])),
+        "source_inventory":current_sources,
+        "source_count":len(current_sources),
+        "current_source_count":len(eligible_source_ids),
+        "quarantined_source_count":len(quarantined_source_ids),
+        "quarantined_sources":sorted(quarantined_source_ids),
         "policy_conflict_total":status_counts.get("POLICY_CONFLICT",0),
         "lineage_verified_sources":sum(1 for x in current.get("sources",[]) if x.get("lineage_status")=="verified"),
         "lineage_unverified_sources":sum(1 for x in current.get("sources",[]) if x.get("lineage_status")=="unverified"),
