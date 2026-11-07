@@ -473,8 +473,8 @@ def _validate_checkpoint_writer(queue: dict, batch_id: str, predecessor: dict):
                 or record.get("fencing_token") != item.get("fencing_token")
                 or datetime.fromisoformat(record["expires_at"].replace("Z", "+00:00")) <= now):
             raise ValueError("assessment checkpoint fencing proof is stale: " + str(key))
-    if "sources/source_assessments.json" not in proof or "logical/production-pipeline" not in proof:
-        raise ValueError("assessment checkpoint requires both source-history and production-pipeline leases")
+    if "logical/source-assessment-checkpoints" not in proof or "logical/production-pipeline" not in proof:
+        raise ValueError("assessment checkpoint requires both checkpoint-state and production-pipeline leases")
     checkpoint = task.get("assessment_checkpoint")
     if checkpoint is not None:
         if (not isinstance(checkpoint, dict) or checkpoint.get("schema_version") != 1
@@ -487,7 +487,7 @@ def _validate_checkpoint_writer(queue: dict, batch_id: str, predecessor: dict):
 
 def load_assessment_checkpoint(batch_id: str, predecessor: dict, *, store=None, registry=None) -> dict:
     """Read completed URL results from the durable queue checkpoint for this task."""
-    assert_resource_lease_from_environment("sources/source_assessments.json")
+    assert_resource_lease_from_environment("logical/source-assessment-checkpoints")
     store, registry = _checkpoint_runtime(store, registry)
     from remote_task_queue_runtime import validate_candidate, validate_envelope
     queue = store.read().document
@@ -516,7 +516,7 @@ def persist_assessment_checkpoint(batch_id: str, predecessor: dict, result: dict
     """CAS-persist one completed URL result under the live task/resource fencing proof."""
     if not isinstance(result, dict) or not isinstance(result.get("url"), str):
         raise ValueError("assessment checkpoint result requires a URL")
-    assert_resource_lease_from_environment("sources/source_assessments.json")
+    assert_resource_lease_from_environment("logical/source-assessment-checkpoints")
     store, registry = _checkpoint_runtime(store, registry)
     from remote_task_queue_runtime import validate_candidate, validate_envelope
     from task_queue_runtime import stamp, now_utc
