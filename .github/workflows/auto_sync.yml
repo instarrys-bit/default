@@ -64,7 +64,7 @@ jobs:
     timeout-minutes: 300
     env:
       PYTHONPATH: scripts
-      SOURCE_DISCOVERY_MODE: ${{ vars.SOURCE_DISCOVERY_MODE || 'independent' }}
+      SOURCE_DISCOVERY_MODE: ${{ vars.SOURCE_DISCOVERY_MODE || 'monolithic_fallback' }}
     permissions:
       contents: read
       actions: read
