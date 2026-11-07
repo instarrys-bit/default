@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "release_id": "shadowrocket-automation-source-dag-dormant-2026.11.07.1",
-  "release_status": "candidate_dormant_pending_global_resource_audit",
+  "release_status": "baseline_snapshot",
   "created_on": "2026-11-07",
   "purpose": "Dormant independent source DAG implementation. No Python adapter activation or production dispatch until issues #192 and #193 acceptance criteria are met.",
   "component_schemas": {
