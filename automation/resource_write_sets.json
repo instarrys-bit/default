@@ -931,21 +931,75 @@
         "input state archive"
       ],
       "side_effects": [
-        "Two modes: restore_state() into an isolated audit workspace and restore_publish_outputs() for an explicit allowlist of reports/rulesets/source artifacts. Publish mode validates the complete archive before mutation and rejects modules/uu.conf."
+        "restore_state() restores prior high-volume state only into the isolated audit runner workspace.",
+        "restore_publish_outputs() restores only rulesets/** from the verified audit artifact; each file is protected by its exact live resource lease before any directory/file mutation.",
+        "The production publisher stages only rulesets/**; modules/uu.conf, modules, JS scripts, sources/**, data/** and reports/** are never published by this restore path."
       ],
       "evidence": "restore_state() and restore_publish_outputs() enumerate separate allowlists, write through .restore-tmp/.publish-tmp files and replace destinations; publish mode may also unlink legacy base JSON when a sharded manifest is authoritative.",
       "lease_keys": [
         "logical/production-pipeline",
-        "all allowlisted logical document/resource paths"
+        "rulesets/direct.list",
+        "rulesets/proxy.list",
+        "rulesets/reject.list",
+        "rulesets/manifest.json",
+        "rulesets/pending_queue.json",
+        "rulesets/lifecycle_state.json",
+        "rulesets/config_conflict_archive.json",
+        "rulesets/reject_review_queue.json"
       ],
-      "lease_enforcement": "The auto_sync publish path asserts the live Watchdog resource lease at its publication boundary and stages only explicit allowlisted paths; no per-mutation filesystem hook exists. The initial workspace restore is isolated to the workflow runner. No independent adapter is enabled.",
+      "lease_enforcement": "restore_state() is per-run isolated workspace only. restore_publish_outputs() calls assert_resource_lease_from_environment for each exact rulesets file before creating parent directories or writing; the workflow holds the live Watchdog task lease and logical/production-pipeline lease through publish.",
       "publish_resources": [
-        "Only PUBLISH_FILES and PUBLISH_DIR_PREFIXES allowlisted paths"
+        "rulesets/**"
       ],
       "ephemeral_unpublished_resources": [
-        "Runner-local restored state before publish"
+        "data/domain_candidates.json",
+        "data/domain_candidates.json.manifest.json",
+        "data/candidates.json",
+        "data/candidates.json.manifest.json",
+        "data/source_pending.json",
+        "data/primary_snapshot.txt",
+        "data/secondary_snapshot.txt",
+        "sources/domain_reviews.json",
+        "sources/domain_reviews.json.manifest.json",
+        "sources/review_cursor.json",
+        "sources/rule_provenance.json",
+        "sources/rule_provenance.json.manifest.json",
+        "sources/discovered_sources.json",
+        "sources/discovered_sources.json.manifest.json",
+        "sources/source_assessments.json",
+        "sources/source_assessments.json.manifest.json",
+        "sources/source_candidates.json",
+        "sources/source_candidates.json.manifest.json",
+        "data/source_snapshots/<source_id>.txt",
+        "data/domain_candidates.json.parts-<digest>/part-*.jsonl",
+        "data/candidates.json.parts-<digest>/part-*.jsonl",
+        "sources/domain_reviews.json.parts-<digest>/part-*.jsonl",
+        "sources/rule_provenance.json.parts-<digest>/part-*.jsonl",
+        "sources/discovered_sources.json.parts-<digest>/part-*.jsonl",
+        "sources/source_assessments.json.parts-<digest>/part-*.jsonl",
+        "sources/source_candidates.json.parts-<digest>/part-*.jsonl",
+        "reports/project-status.md",
+        "reports/project-status.json",
+        "reports/automation/heartbeat.json",
+        "reports/automation/state_store.json",
+        "reports/external-domain-audit.md",
+        "reports/config-drift-audit.md",
+        "reports/config-drift-audit.json",
+        "reports/ruleset-reference-audit.md",
+        "reports/ruleset-reference-audit.json",
+        "reports/ruleset-config-overlap-audit.md",
+        "reports/ruleset-config-overlap-audit.json",
+        "reports/ruleset-config-conflict-sync.md",
+        "reports/ruleset-config-conflict-sync.json",
+        "reports/source-lineage-audit.json",
+        "reports/source-discovery.md",
+        "reports/source-assessment.md",
+        "reports/source-candidate-matrix.md",
+        "reports/source-activation.md",
+        "reports/policy-source-overlap.md",
+        "reports/lifecycle/**"
       ],
-      "write_boundary_fencing": "Privileged multi-resource writer. The shared production-pipeline lease serializes the auto_sync publish path; each actual path still needs to be represented in the archive allowlist and resource inventory. No path outside the explicit allowlist is writable."
+      "write_boundary_fencing": "Repository publication is limited to the exact rulesets/** prefix; exact current resource keys are acquired by workflow_auto_sync and revalidated per file before restoration. No global filesystem guard is used."
     },
     {
       "program_id": "script_select_domain_rules",
@@ -1129,8 +1183,20 @@
         "script_restore_automation_state",
         "script_sync_ruleset_config_conflicts"
       ],
-      "lock_key": "resource:rulesets/published-lists",
-      "mode": "exclusive"
+      "lock_key": "logical/production-pipeline + exact rulesets path leases + concurrency:shadowrocket-main-writer",
+      "mode": "exclusive",
+      "paths": [
+        "rulesets/direct.list",
+        "rulesets/proxy.list",
+        "rulesets/reject.list",
+        "rulesets/manifest.json",
+        "rulesets/pending_queue.json",
+        "rulesets/lifecycle_state.json",
+        "rulesets/config_conflict_archive.json",
+        "rulesets/reject_review_queue.json"
+      ],
+      "enforcement": "workflow_auto_sync holds the Watchdog task and logical/production-pipeline lease plus exact rulesets resource leases; restore_publish_outputs asserts each exact file lease. Watchdog manifest-integrity shares the shadowrocket-main-writer job concurrency group.",
+      "note": "Only rulesets/** is committed. The archive restore and final git staging both reject non-ruleset paths."
     },
     {
       "resource": "rulesets/lifecycle_state.json",
@@ -1151,10 +1217,12 @@
         "script_lifecycle_audit",
         "script_refresh_ruleset_manifest",
         "script_restore_automation_state",
-        "script_sync_ruleset_config_conflicts"
+        "script_sync_ruleset_config_conflicts",
+        "workflow_automation_watchdog"
       ],
-      "lock_key": "resource:rulesets/manifest.json",
-      "mode": "exclusive"
+      "lock_key": "rulesets/manifest.json + concurrency:shadowrocket-main-writer",
+      "mode": "exclusive",
+      "enforcement": "auto_sync holds exact rulesets/manifest.json resource lease; Watchdog manifest-integrity job uses the same shadowrocket-main-writer concurrency group with cancel-in-progress:false, preventing cross-workflow overlap."
     },
     {
       "resource": "rulesets/pending_queue.json",
