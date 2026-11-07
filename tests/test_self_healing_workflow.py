@@ -118,11 +118,12 @@ class SelfHealingWorkflowTests(unittest.TestCase):
 
 
 
-    def test_hourly_watchdog_is_the_recovery_entrypoint_without_self_triggering_pushes(self):
+    def test_watchdog_reconciles_durable_queue_every_15_minutes_without_self_triggering_pushes(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         watchdog = WATCHDOG.read_text(encoding="utf-8")
         self.assertNotIn('    - cron: "0 * * * *"', workflow)
-        self.assertIn('    - cron: "0 * * * *"', watchdog)
+        self.assertIn('    - cron: "*/15 * * * *"', watchdog)
+        self.assertIn('    - cron: "30 22 * * *"', watchdog)
         self.assertNotIn("  push:", workflow)
         self.assertNotIn("  stale-run-watch:", workflow)
 
