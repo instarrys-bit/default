@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "audit_id": "resource-ownership-audit-2026.11.04.3",
+  "audit_id": "resource-ownership-audit-2026.11.07.source-dag1",
   "status": "partial_static_audit",
-  "purpose": "Identify known overlapping write resources before independent capability scheduling. This inventory is deliberately fail-closed and is not an execution authorization.",
+  "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
     "registry_blob_sha": "c4871f015961830718346a1d3dea18e0283c036e",
     "adapters_blob_sha": "7b93d8b8625f8973826de8034e29476f7ab0f4af",
@@ -12,6 +12,7 @@
       ".github/workflows/dashboard-pages.yml",
       ".github/workflows/request-intake.yml",
       ".github/workflows/self-healing-agent.yml",
+      ".github/workflows/source-discovery.yml",
       ".github/workflows/validate-config.yml",
       "scripts/append_step_summary.py",
       "scripts/apply_safe_repair.py",
@@ -68,11 +69,33 @@
       "tests/test_restore_automation_state.py",
       "tests/test_task_queue.py",
       "tests/test_task_queue_runtime.py",
-      "tests/test_workflow_config_guard_order.py",
-      ".github/workflows/source-discovery.yml"
+      "tests/test_workflow_config_guard_order.py"
     ],
-    "limitation": "No repository-local filesystem write interception or path-only write tracing is installed. The audit job uses read-only repository permissions; publication is limited to explicit ruleset staging paths, followed by independent remote verification. Resource leases remain for task ownership and concurrency coordination.",
-    "reviewed_at": "2026-11-04"
+    "limitation": "The source discovery and assessment DAG writes outputs only beneath per-run RUNNER_TEMP and uploads immutable artifacts. Their only shared mutation is the task-bound GitHub Issue #315 append-only queue checkpoint CAS, fenced by logical/source-assessment-checkpoints and logical/production-pipeline. This narrows the DAG's shared write surface but does not complete transitive writer coverage, dynamic path tracing, or cross-workflow concurrency proof for the remaining production writers.",
+    "reviewed_at": "2026-11-04",
+    "isolated_ephemeral_outputs": [
+      {
+        "program_id": "script_discover_sources",
+        "root": "AUTOMATION_ARTIFACT_ROOT under RUNNER_TEMP",
+        "paths": [
+          "sources/discovered_sources.json",
+          "reports/source-discovery.md"
+        ],
+        "repository_publication": false,
+        "verification": "producer identity + complete logical-document SHA-256 + immutable Actions artifact"
+      },
+      {
+        "program_id": "script_assess_sources",
+        "root": "AUTOMATION_ARTIFACT_ROOT under RUNNER_TEMP",
+        "paths": [
+          "sources/source_assessments.json",
+          "data/source_assessments_runtime.json",
+          "reports/source-assessment.md"
+        ],
+        "repository_publication": false,
+        "verification": "independent verifier + immutable Actions artifact"
+      }
+    ]
   },
   "protected_resources": {
     "modules/uu.conf": {
@@ -341,31 +364,6 @@
       "note": "The storage helper uses atomic replacement, JSONL shards, manifest switching, and old-shard cleanup. Locking by program ID is insufficient; lock the canonical document path and include manifest/shards in the same lease. The low-level helper is itself registered as a dynamic writer; callers must declare the canonical document and lease across all helper-managed child mutations."
     },
     {
-      "id": "source_assessment_artifacts",
-      "paths": [
-        "sources/source_assessments.json",
-        "data/source_assessments_runtime.json",
-        "reports/source-assessment.md"
-      ],
-      "known_writers": [
-        "script_assess_sources",
-        "script_restore_automation_state",
-        "workflow_auto_sync"
-      ],
-      "lock_key": "logical/production-pipeline + sources/source_assessments.json + data/source_assessments_runtime.json + reports/source-assessment.md",
-      "required_mode": "exclusive",
-      "status": "live_fenced_writers_reviewed_partial_transitive_audit",
-      "note": "Scheduler atomically acquires shared logical/production-pipeline mutex plus exclusive leases for all three outputs. Child re-reads live queue and checks exact fencing token before each JSON base/manifest/shard/staging/cleanup mutation and report write. After independent verification, scheduler publishes only persistent history and report using fetch/rebase/non-force push; runtime fingerprints stay runner-local. Sharded read-only discovery input is hashed before and after execution. The auto_sync publish job also restores allowlisted assessment history and report artifacts from the audited archive; restore_automation_state.py is fenced by the same live logical/production-pipeline lease, so it is serialized against independent assessment.",
-      "lease_seconds": 480,
-      "publish_resources": [
-        "sources/source_assessments.json",
-        "reports/source-assessment.md"
-      ],
-      "ephemeral_unpublished_resources": [
-        "data/source_assessments_runtime.json"
-      ]
-    },
-    {
       "id": "source_candidate_artifacts",
       "paths": [
         "sources/source_candidates.json",
@@ -382,23 +380,6 @@
       "note": "Candidate matrix reads runtime or persistent assessments plus source lineage, then writes a logical JSON document through json_document_store and a Markdown report. Allowlisted publish-mode restore is an additional writer and is serialized by the same auto_sync logical production-pipeline fence."
     },
     {
-      "id": "source_discovery_artifacts",
-      "paths": [
-        "sources/discovered_sources.json",
-        "reports/source-discovery.md"
-      ],
-      "known_writers": [
-        "script_discover_sources",
-        "script_restore_automation_state",
-        "workflow_auto_sync",
-        "workflow_source_discovery"
-      ],
-      "lock_key": "sources/discovered_sources.json + reports/source-discovery.md (exclusive per-resource leases shared with workflow_auto_sync)",
-      "required_mode": "exclusive",
-      "status": "direct_write_paths_confirmed_dynamic_document_store_children",
-      "note": "discovered_sources.json is written through json_document_store with an explicit logical-document lease assertion covering the base file, adjacent manifest, content-addressed shards, staging and old-shard cleanup. reports/source-discovery.md has a separate explicit live lease assertion. GITHUB_STEP_SUMMARY is a per-run ephemeral output and is intentionally excluded from shared repository resource ownership. Allowlisted publish-mode restore is an additional writer and is serialized by the same auto_sync logical production-pipeline fence. The dedicated workflow_source_discovery writer now uses the same two exclusive resource keys as workflow_auto_sync and validates the exact Watchdog dispatch identity before writes. Its adapter remains disabled pending HOLD/authorization; the monolithic fallback remains active to avoid duplicate or missing assessment."
-    },
-    {
       "id": "watchdog_unregistered_path_registry",
       "paths": [
         "automation/unregistered_path_registry.json"
@@ -411,6 +392,21 @@
       "required_mode": "compare_and_swap",
       "status": "bounded_cas_retry_implemented_concurrent_integration_unproven",
       "note": "Watchdog now re-reads the current Blob SHA and re-merges the same run-scoped paths on each of up to three conditional Contents API PUT attempts. observed_run_ids makes retries idempotent when another run updates the path between attempts. Conflicts after the third attempt fail closed. Distinct runs remain concurrent; parallel-run integration/no-lost-update proof is outstanding."
+    },
+    {
+      "id": "independent_source_assessment_queue_checkpoint",
+      "paths": [
+        "GitHub Issue #315 task.assessment_checkpoint"
+      ],
+      "writers": [
+        "script_assess_sources",
+        "script_remote_task_queue_runtime",
+        "workflow_automation_watchdog"
+      ],
+      "lock_key": "github-issue-comment-chain:315 + logical/production-pipeline + logical/source-assessment-checkpoints",
+      "required_mode": "append_only_issue_snapshot_CAS_with_live_task_and_resource_fences",
+      "status": "bounded_task_checkpoint_fenced",
+      "note": "Per-URL results are stored only in the currently claimed task's assessment_checkpoint. Each mutation uses the append-only Issue #315 snapshot CAS and validates task identity, active task lease, exact predecessor run/digest and both logical resource fencing tokens. No repository assessment document is written or published."
     }
   ],
   "scheduling_gates": {
@@ -421,7 +417,8 @@
       "The scheduler atomically acquires the shared production mutex and all declared output leases.",
       "The child re-reads live queue state and checks the exact active fencing token at every filesystem mutation boundary.",
       "The independent verifier accepts only matching runtime/persistent/report artifacts.",
-      "A controlled post-merge scheduler canary passes without changing modules/uu.conf."
+      "A controlled post-merge scheduler canary passes without changing modules/uu.conf.",
+      "For the independent source DAG, confirm the verified discovery artifact root is used by enqueue, claim, execute and post-execution read-only digest checks; all assessment outputs stay under RUNNER_TEMP and no repository path is staged."
     ]
   }
 }
