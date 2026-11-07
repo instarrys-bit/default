@@ -158,7 +158,9 @@
         "data/domain_candidates.json",
         "data/domain_candidates.json.manifest.json",
         "data/domain_candidates.json.parts-<digest>/part-*.jsonl",
-        "data/domain_candidates.json.parts.tmp-*"
+        "data/domain_candidates.json.parts.tmp-*",
+        "data/candidates.json",
+        "data/source_pending.json"
       ],
       "known_writers": [
         "script_collect_domains",
@@ -168,7 +170,20 @@
       "lock_key": "logical/production-pipeline + data/domain_candidates.json",
       "required_mode": "exclusive_exact_document_lease",
       "status": "fenced_at_each_document_store_mutation",
-      "note": "collect_domains and import_request_observations now call write_document(..., lease_required=True) for the shared data/domain_candidates.json document; collect_domains also fences data/candidates.json, data/source_pending.json and dynamic source snapshots. restore_automation_state restores only into the isolated workspace and never publishes these files."
+      "note": "collect_domains and import_request_observations use the shared JSON document store for data/domain_candidates.json; collect_domains also applies exact path fencing to data/candidates.json and data/source_pending.json. Dynamic data/source_snapshots/<source_id>.txt files have a separate parent-directory lease group. restore_automation_state restores only into the isolated workspace and never publishes these files."
+    },
+    {
+      "id": "source_snapshot_files",
+      "paths": [
+        "data/source_snapshots/<source_id>.txt"
+      ],
+      "known_writers": [
+        "script_collect_domains"
+      ],
+      "lock_key": "logical/production-pipeline + data/source_snapshots",
+      "required_mode": "exclusive_exact_directory_and_child_path_lease",
+      "status": "fenced_at_each_dynamic_snapshot_write",
+      "note": "collect_domains validates each source_id, asserts the data/source_snapshots parent directory before creation, then asserts the exact child path immediately before each write. The shared resource matcher maps child paths to the parent lease key and rejects symlink/hard-link aliases. restore_automation_state writes only to the isolated audit workspace."
     },
     {
       "id": "domain_review_ledger",
@@ -468,8 +483,8 @@
       ],
       "lock_key": "resource:<canonical-document-path>",
       "required_mode": "exclusive_per_document",
-      "status": "active_shared_callers_use_exact_per_document_leases",
-      "note": "The helper uses atomic replacement, JSONL shards, manifest switching and cleanup. It is not an independent capability and installs no global filesystem guard. Every active shared caller now explicitly sets lease_required=True and the exact canonical document path is asserted before each helper-managed mutation; independent source artifacts and restore outputs remain runner-local."
+      "status": "repository_mutations_fenced_by_shared_document_store",
+      "note": "The shared helper now asserts a live per-document resource fence for every repository-local base, manifest, temporary, shard, staging, final-directory and cleanup mutation, even when a legacy caller passes lease_required=False. Actual dynamic child paths map to the parent logical-document lease; repository and external-to-repository symlink aliases and hard links are rejected. Runner-local paths outside the repository remain isolated."
     },
     {
       "id": "source_assessment_artifacts",
