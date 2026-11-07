@@ -388,12 +388,14 @@ def main():
     if len(rows)>MAX_CANDIDATE_RECORDS:
         raise ValueError(f"candidate review input exceeds hard limit: {len(rows):,} > {MAX_CANDIDATE_RECORDS:,}")
     assert_resource_lease_from_environment("logical/production-pipeline")
+    assert_resource_lease_for_repository_path(ROOT, "data/source_snapshots")
     SNAPSHOT_DIR.mkdir(parents=True,exist_ok=True)
     for sid,info in source_data.items():
         if info["stale"]:
             continue
         path=snapshot_path(sid)
         assert_resource_lease_from_environment("logical/production-pipeline")
+        assert_resource_lease_for_repository_path(ROOT, path.relative_to(ROOT).as_posix())
         path.write_text("\n".join(sorted(info["domains"]))+"\n",encoding="utf-8")
     write_document(BUFFER,{"schema_version":2,"updated_at":now,"bootstrapped_sources":sorted(bootstrapped_sources),"candidates":list(queue.values())},"candidates",lease_required=True)
     assert_resource_lease_for_repository_path(ROOT, "data/source_pending.json")

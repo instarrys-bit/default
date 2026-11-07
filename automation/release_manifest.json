@@ -24,11 +24,11 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "6d058edabc4fac6f8f143d5ec2b319bd373d003a"
+      "git_blob_sha": "04d8e7235ae3995595ea075d054d3d0abb22f23a"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "5189c635d5cab41b11272bf2f1a4f2c5c5bf893f"
+      "git_blob_sha": "2a5b77adaa2acbced166c8a8fe82466e611dead5"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -82,7 +82,7 @@
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "cd9378cdcee96ac156fd15e9b0b4b91442d21a9e"
+      "git_blob_sha": "3c025e642d92c2c9a9dbfb01beda8c866874f454"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
@@ -90,7 +90,7 @@
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "46023ba634fd23abc2f5eca2be71e407a055400b"
+      "git_blob_sha": "e2280498e744df4b05d86059626c61422b2ac85a"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",

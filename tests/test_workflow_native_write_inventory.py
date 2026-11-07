@@ -86,5 +86,14 @@ class WorkflowNativeWriteInventoryTests(unittest.TestCase):
         self.assertIn("actions/deploy-pages", workflow)
 
 
+    def test_assessment_artifact_upload_requires_verified_task_and_output(self):
+        workflow = (ROOT / ".github/workflows/automation-watchdog.yml").read_text(encoding="utf-8")
+        self.assertIn("processed_task_ids.add(task_id)", workflow)
+        self.assertIn('"processed_task_ids": sorted(processed_task_ids)', workflow)
+        self.assertNotIn('"processed_task_ids": sorted(processed_ids)', workflow)
+        self.assertIn("steps.run-queue.outputs.assessment_output_expected == 'true'", workflow)
+        self.assertIn("if-no-files-found: error", workflow)
+
+
 if __name__ == "__main__":
     unittest.main()

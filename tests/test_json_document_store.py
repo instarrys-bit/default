@@ -60,8 +60,38 @@ class JsonDocumentStoreTests(unittest.TestCase):
             self.assertEqual(result["storage"], "jsonl-shards-v1")
             expected = path.relative_to(ROOT).as_posix()
             self.assertGreater(len(checked), 5)
-            self.assertTrue(all(key == expected for key in checked))
+            self.assertTrue(all(
+                key == expected or key.startswith(expected + ".") or key.startswith(expected + "/")
+                for key in checked
+            ))
+            self.assertTrue(any(".parts.tmp-" in key for key in checked))
+            self.assertTrue(any("part-" in key for key in checked))
             self.assertEqual(store.read_document(path, "reviews"), payload)
+
+    def test_repository_write_cannot_disable_live_fencing_with_legacy_flag(self):
+        import resource_lease_runtime
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            path = Path(tmp) / "ledger.json"
+            payload = {"reviews": [{"domain": "example.com"}]}
+            with patch.object(
+                resource_lease_runtime,
+                "assert_resource_lease_from_environment",
+                side_effect=ValueError("missing live lease"),
+            ) as check:
+                with self.assertRaisesRegex(ValueError, "missing live lease"):
+                    store.write_document(path, payload, "reviews", lease_required=False)
+            self.assertTrue(check.called)
+            self.assertFalse(path.exists())
+
+    def test_repository_document_write_rejects_symlink_alias(self):
+        with tempfile.TemporaryDirectory() as outside, tempfile.TemporaryDirectory(dir=ROOT) as local:
+            link = Path(local) / "alias"
+            link.symlink_to(outside, target_is_directory=True)
+            path = link / "ledger.json"
+            payload = {"reviews": [{"domain": "example.com"}]}
+            with self.assertRaisesRegex(ValueError, "may not traverse symlinks"):
+                store.write_document(path, payload, "reviews", lease_required=False)
+            self.assertFalse((Path(outside) / "ledger.json").exists())
 
     def test_shard_checksum_failure_fails_closed(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -103,6 +133,29 @@ class JsonDocumentStoreTests(unittest.TestCase):
             records = [{"domain": "one.example"}, {"domain": "two.example"}]
             path.write_text(json.dumps({"reviews": records}), encoding="utf-8")
             self.assertEqual(list(store.iter_document_records(path, "reviews")), records)
+
+
+    def test_repository_document_write_rejects_hard_link_alias(self):
+        import resource_lease_runtime
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            original = Path(tmp) / "original.json"
+            alias = Path(tmp) / "alias.json"
+            original.write_text("{}", encoding="utf-8")
+            import os
+            os.link(original, alias)
+            with self.assertRaisesRegex(ValueError, "hard-linked file"):
+                store.write_document(alias, {"reviews": []}, "reviews", lease_required=False)
+            self.assertEqual(original.read_text(encoding="utf-8"), "{}")
+
+
+    def test_runner_local_external_symlink_cannot_alias_repository_document(self):
+        with tempfile.TemporaryDirectory(dir=ROOT) as local, tempfile.TemporaryDirectory() as outside:
+            alias = Path(outside) / "repository-alias"
+            alias.symlink_to(local, target_is_directory=True)
+            path = alias / "ledger.json"
+            with self.assertRaisesRegex(ValueError, "external document path may not alias into the repository"):
+                store.write_document(path, {"reviews": []}, "reviews", lease_required=False)
+            self.assertFalse((Path(local) / "ledger.json").exists())
 
 
 if __name__ == "__main__":
