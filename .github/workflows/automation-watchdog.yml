@@ -1286,7 +1286,7 @@ jobs:
                   with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
                       output.write(f"handoff_state={handoff_state}\n")
                   with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
-                      summary.write("A durable Discovery/Assessment task exists, but its exact successful predecessor run is not yet verifiable; replacement Discovery dispatch is held.\\n")
+                      summary.write("A durable Discovery/Assessment task exists, but its exact successful predecessor run is not yet verifiable; replacement Discovery dispatch is held.\n")
                   print(json.dumps({"resolved":False,"handoff_state":handoff_state}))
               else:
                   print("No completed or verifying Discovery task or queued Assessment task needs downstream reconciliation.")
@@ -1299,9 +1299,9 @@ jobs:
               output.write("assessment_task_ids=" + ",".join(handoff.get("task_ids", [])) + "\n")
               output.write("duplicate_assessment_task_ids=" + ",".join(handoff.get("duplicate_task_ids", [])) + "\n")
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
-              summary.write(f"Resolved Discovery task {task['task_id']} to exact run {run_id}; assessment handoff state: {handoff_state}.\\n")
+              summary.write(f"Resolved Discovery task {task['task_id']} to exact run {run_id}; assessment handoff state: {handoff_state}.\n")
               if handoff and handoff.get("duplicate_task_ids"):
-                  summary.write("Historical duplicate Assessment task IDs: " + ", ".join(handoff["duplicate_task_ids"]) + "\\n")
+                  summary.write("Historical duplicate Assessment task IDs: " + ", ".join(handoff["duplicate_task_ids"]) + "\n")
           print(json.dumps({"resolved":True,"task_id":task["task_id"],"run_id":run_id,"head_sha":head_sha,"handoff_state":handoff_state,"assessment_task_ids":handoff.get("task_ids",[]),"duplicate_assessment_task_ids":handoff.get("duplicate_task_ids",[])}))
           PY
       - name: Download artifact from the exact discovery workflow run
