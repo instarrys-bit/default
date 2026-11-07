@@ -240,9 +240,9 @@
           "logical/production-pipeline",
           "logical/source-assessment-checkpoints"
         ],
-        "lease_seconds": 480,
+        "lease_seconds": 3600,
         "fencing_required": true,
-        "coverage": "Only the durable per-URL task assessment_checkpoint in GitHub Issue #315 is shared state. It is updated by append-only Issue snapshot CAS under the active task lease and these two logical resource fences. All assessment JSON and reports are runner-local outputs uploaded as an immutable Actions artifact; no repository file is written or published."
+        "coverage": "Only the durable per-URL task assessment_checkpoint in GitHub Issue #315 is shared state. It is updated by append-only Issue snapshot CAS under the active task lease and these two logical resource fences. All assessment JSON and reports are runner-local outputs uploaded as an immutable Actions artifact; no repository file is written or published. Resource lease is 3600 seconds, at least four 15-minute Watchdog reconciliation intervals, so a missed workflow_run event cannot expire the fence before scheduled verification."
       },
       "read_only_resources": [
         "sources/discovered_sources.json",
@@ -1920,10 +1920,10 @@
         "resource_keys": [
           "logical/source-discovery-run"
         ],
-        "lease_seconds": 1800,
+        "lease_seconds": 3600,
         "fencing_required": true,
         "enforcement_boundary": "Exact Watchdog dispatch identity and live logical/source-discovery-run fencing proof are asserted before writing to the isolated RUNNER_TEMP workspace; no repository publication is permitted.",
-        "coverage": "All discovery document, manifest, shard, staging and report writes are confined to the per-run RUNNER_TEMP workspace. The logical lease binds the task/worker and prevents duplicate discovery dispatch; immutable Actions artifact digest and producer identity are independently verified."
+        "coverage": "All discovery document, manifest, shard, staging and report writes are confined to the per-run RUNNER_TEMP workspace. The logical lease binds the task/worker and prevents duplicate discovery dispatch; immutable Actions artifact digest and producer identity are independently verified. Resource lease is 3600 seconds, at least four 15-minute Watchdog reconciliation intervals, so a missed workflow_run event cannot expire the fence before scheduled verification."
       }
     }
   ]
