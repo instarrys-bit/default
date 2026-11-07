@@ -67,9 +67,11 @@
       "target_program_id": "script_assess_sources",
       "target_kind": "python_component",
       "adapter_type": "python_cli",
-      "enabled": false,
+      "enabled": true,
       "interface_status": "reviewed",
-      "allowed_callers": [],
+      "allowed_callers": [
+        "workflow_automation_watchdog"
+      ],
       "entrypoint": {
         "path": "scripts/assess_sources.py",
         "executable": "python3",
@@ -1869,9 +1871,11 @@
       "target_program_id": "workflow_source_discovery",
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
-      "enabled": false,
+      "enabled": true,
       "interface_status": "workflow_dispatch_reviewed",
-      "allowed_callers": [],
+      "allowed_callers": [
+        "workflow_automation_watchdog"
+      ],
       "workflow": {
         "path": ".github/workflows/source-discovery.yml",
         "dispatchable": true,
@@ -1897,8 +1901,8 @@
       },
       "timeout_seconds": 30,
       "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_HOLD_authorization_and_DAG_acceptance"
+        "max_attempts": 1,
+        "policy": "one bounded retry only after the exact failed workflow run is independently verified; unresolved dispatch intent is reconciled without redispatch"
       },
       "completion": {
         "success_condition": "completed_successful_workflow_with_exact_producer_identity_and_verified_immutable_artifact",
