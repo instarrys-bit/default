@@ -1333,7 +1333,7 @@ jobs:
           printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin --idempotency-key "$idempotency_key" --priority 55 enqueue-source-discovery
           unset queue_token
 
-      - name: Recover leases, verify results, and run one bounded task
+      - name: Recover leases, verify results, and dispatch up to two independent tasks
         id: run-queue
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -1346,7 +1346,7 @@ jobs:
           mkdir -p "$AUTOMATION_ARTIFACT_ROOT"
           queue_token="$GITHUB_TOKEN"
           unset GITHUB_TOKEN
-          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --token-stdin --repository "$GITHUB_REPOSITORY" --branch main --max-tasks 1 run-once | tee /tmp/task-scheduler-report.json
+          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --token-stdin --repository "$GITHUB_REPOSITORY" --branch main --max-tasks 2 run-once | tee /tmp/task-scheduler-report.json
           GITHUB_TOKEN="$queue_token" python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue_after.json"
           unset queue_token
           cat /tmp/task-scheduler-report.json >> "$GITHUB_STEP_SUMMARY"
