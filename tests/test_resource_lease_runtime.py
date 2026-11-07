@@ -2,7 +2,9 @@ import copy
 import json
 import sys
 import tempfile
+import threading
 import unittest
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
@@ -21,11 +23,13 @@ from resource_lease_runtime import (
 class MemoryStore:
     def __init__(self, document):
         self.document = copy.deepcopy(document)
+        self.lock = threading.RLock()
 
     def mutate(self, mutator):
-        candidate, result = mutator(copy.deepcopy(self.document))
-        self.document = copy.deepcopy(candidate)
-        return copy.deepcopy(result)
+        with self.lock:
+            candidate, result = mutator(copy.deepcopy(self.document))
+            self.document = copy.deepcopy(candidate)
+            return copy.deepcopy(result)
 
 
 def queue_with_task(task_id, worker, token, expiry):
@@ -110,6 +114,59 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
         self.assertFalse(result["acquired"])
         self.assertEqual(result["blocked_resource"], "rulesets/direct.list")
         self.assertNotIn("reports/new.json", self.store.document["resource_leases"])
+
+    def test_concurrent_workers_cannot_acquire_the_same_resource_and_stale_fence_is_rejected(self):
+        expiry = (self.now + timedelta(minutes=10)).isoformat().replace("+00:00", "Z")
+        queue = queue_with_task("task_a", "worker_a", "task-token-a", expiry)
+        queue["tasks"].append({
+            "task_id": "task_b", "status": "CLAIMED",
+            "lease": {"owner": "worker_b", "token": "task-token-b", "expires_at": expiry},
+        })
+        store = MemoryStore(queue)
+        barrier = threading.Barrier(2)
+
+        def acquire(task_id, worker_id, token):
+            barrier.wait(timeout=5)
+            return acquire_resource_leases(
+                task_id, worker_id, token, ["logical/concurrent-worker-contention"],
+                store, now=self.now,
+            )
+
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            futures = [
+                pool.submit(acquire, "task_a", "worker_a", "task-token-a"),
+                pool.submit(acquire, "task_b", "worker_b", "task-token-b"),
+            ]
+            results = [future.result(timeout=10) for future in futures]
+
+        self.assertEqual(sum(1 for result in results if result["acquired"]), 1)
+        winner = next(result for result in results if result["acquired"])
+        blocked = next(result for result in results if not result["acquired"])
+        self.assertEqual(blocked["reason"], "resource held by another active task")
+        winner_task = winner["task_id"]
+        winner_worker = winner["worker_id"]
+        winner_token = "task-token-a" if winner_task == "task_a" else "task-token-b"
+        loser_task = "task_b" if winner_task == "task_a" else "task_a"
+        loser_worker = "worker_b" if winner_task == "task_a" else "worker_a"
+        loser_token = "task-token-b" if loser_task == "task_b" else "task-token-a"
+        old_resource = winner["resources"]["logical/concurrent-worker-contention"]
+        release_resource_leases(winner_task, winner_worker, winner_token, winner["resources"], store, now=self.now)
+        retry = acquire_resource_leases(
+            loser_task, loser_worker, loser_token, ["logical/concurrent-worker-contention"],
+            store, now=self.now + timedelta(seconds=1),
+        )
+        self.assertTrue(retry["acquired"])
+        self.assertEqual(retry["resources"]["logical/concurrent-worker-contention"]["fencing_token"],
+                         old_resource["fencing_token"] + 1)
+        with self.assertRaisesRegex(ValueError, "fencing check failed"):
+            assert_resource_lease(
+                store.document, task_id=winner_task, worker_id=winner_worker,
+                task_lease_token=winner_token, resource_path="logical/concurrent-worker-contention",
+                lease_id=old_resource["lease_id"], fencing_token=old_resource["fencing_token"],
+                now=self.now + timedelta(seconds=1),
+            )
+        release_resource_leases(loser_task, loser_worker, loser_token, retry["resources"],
+                                store, now=self.now + timedelta(seconds=1))
 
     def test_expired_lease_takeover_increments_fencing_token(self):
         first = acquire_resource_leases("task_a", "worker_a", "task-token-a",
