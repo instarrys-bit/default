@@ -13,7 +13,7 @@
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "c2abca9c662f0bb5d3d4199b2bdf1c03aecb65c1"
+      "git_blob_sha": "6d358799ec5015f242cdf3ab4e54d55dec5b5790"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -28,7 +28,7 @@
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "6a9d0ab4ee0e35fce954f1851c2ece75225d94e5"
+      "git_blob_sha": "143a7ea5cb74e1c3302ebac8a3fbc41884241d00"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -82,7 +82,7 @@
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "c2abca9c662f0bb5d3d4199b2bdf1c03aecb65c1"
+      "git_blob_sha": "6d358799ec5015f242cdf3ab4e54d55dec5b5790"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
@@ -90,7 +90,7 @@
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "559c00f4e4adee35f0975148a9e845a3843b314c"
+      "git_blob_sha": "081a32989e41c2c7aa4f962f9772a1e337587308"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -118,7 +118,7 @@
     },
     "import_request_observations": {
       "path": "scripts/import_request_observations.py",
-      "git_blob_sha": "44bf4312d22ebbcec22d34240891faea29b69c1b"
+      "git_blob_sha": "f7f02951c6eb8e5263ae34ac7105ecd7923e774b"
     },
     "assessment_artifact_verifier": {
       "path": "scripts/verify_assess_sources_artifacts.py",
@@ -150,7 +150,7 @@
     },
     "config_conflict_sync": {
       "path": "scripts/sync_ruleset_config_conflicts.py",
-      "git_blob_sha": "872824a91cbc0fcec4299bb1eb327a710c9c809a"
+      "git_blob_sha": "1efbc59d77819ca0471201aa9af136286c5779f2"
     },
     "ruleset_manifest_refresh": {
       "path": "scripts/refresh_ruleset_manifest.py",
@@ -159,6 +159,10 @@
     "automation_state_restore": {
       "path": "scripts/restore_automation_state.py",
       "git_blob_sha": "8b33e2056892159338bf3fd07f7886f4d1c1d689"
+    },
+    "resource_write_inventory": {
+      "path": "automation/resource_write_sets.json",
+      "git_blob_sha": "71908cecb95432d516c4a18814c512742a1e76eb"
     }
   },
   "compatibility": {
