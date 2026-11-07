@@ -62,6 +62,8 @@ jobs:
           python-version: "3.11"
       - name: Run publish-base queue and monitoring regression tests
         run: python3 -m unittest discover -s tests -p 'test_publish_base_integration.py' -v
+      - name: Run full deterministic unit regression suite
+        run: python3 -m unittest discover -s tests -v
       - name: Parse every GitHub Actions workflow before structural tests
         run: |
           set -euo pipefail
