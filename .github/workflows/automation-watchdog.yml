@@ -951,7 +951,7 @@ jobs:
           # and content digest above are the provenance boundary; no sources/ commit is required.
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
               stream.write(f"SOURCE_ARTIFACT_SHA256={artifact_digest}\n")
-              stream.write(f"AUTOMATION_PREDECESSOR_ARTIFACT_ROOT={root}\\n")
+              stream.write(f"AUTOMATION_PREDECESSOR_ARTIFACT_ROOT={root}\n")
           PY
 
       - name: Enqueue source assessment after successful discovery workflow
