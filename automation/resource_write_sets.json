@@ -510,12 +510,13 @@
       "evidence": "main() writes every current source snapshot with Path.write_text, writes data/domain_candidates.json and data/candidates.json through write_document with its default lease_required=false, and directly replaces data/source_pending.json.",
       "write_boundary_fencing": "The auto_sync task holds logical/production-pipeline plus exact per-document leases. All outputs are checkout-workspace state and are never committed; production publication remains rulesets/** only.",
       "lease_keys": [
-        "logical/production-pipeline",
+        "data/candidates.json",
         "data/domain_candidates.json",
         "data/source_pending.json",
-        "data/candidates.json"
+        "data/source_snapshots",
+        "logical/production-pipeline"
       ],
-      "lease_enforcement": "write_document uses lease_required=True for both logical JSON documents; data/source_pending.json asserts its exact path lease before write; dynamic source snapshots assert logical/production-pipeline before each write and directory creation.",
+      "lease_enforcement": "The auto_sync task acquires logical/production-pipeline plus exact document and data/source_snapshots leases. data/source_snapshots is asserted before directory creation and each validated child path is asserted immediately before write; document-store outputs assert actual base/manifest/staging/shard/final/cleanup paths.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [
         "data/source_snapshots/<source_id>.txt (one file for each current non-stale source)",
