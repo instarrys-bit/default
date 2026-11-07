@@ -448,5 +448,14 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         contract = json.loads((ROOT / "automation" / "capability_contracts" / "assess_sources.json").read_text(encoding="utf-8"))
         self.assertEqual(contract["resource_contract"]["lease_seconds"], by_id["script_assess_sources"]["resource_contract"]["lease_seconds"])
 
+    def test_discovery_handoff_reuses_verified_run_evidence_and_accepts_queue_intent_commit_sha(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        resolver = workflow.split("Resolve completed Discovery run from durable task correlation", 1)[1].split("Download artifact from the exact discovery workflow run", 1)[0]
+        self.assertIn('evidence = (task.get("result") or {}).get("run_evidence")', resolver)
+        self.assertIn("validate_run_head_sha(workflow_client, intent, run.get(\"head_sha\"))", resolver)
+        self.assertIn("head_sha_relationship", resolver)
+        self.assertIn("expected_correlation_titles(intent)", resolver)
+        self.assertNotIn("run.get(\"head_sha\") == requested_sha", resolver)
+
 if __name__ == "__main__":
     unittest.main()
