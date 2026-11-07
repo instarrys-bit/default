@@ -64,7 +64,6 @@ jobs:
     timeout-minutes: 300
     env:
       PYTHONPATH: scripts
-      SOURCE_DISCOVERY_MODE: ${{ vars.SOURCE_DISCOVERY_MODE || 'monolithic_fallback' }}
     permissions:
       contents: read
       actions: read
@@ -75,6 +74,13 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+
+      - name: Resolve source execution mode from production control
+        id: source-mode
+        run: |
+          set -euo pipefail
+          mode="$(jq -er '.source_discovery_mode | select(. == "independent" or . == "monolithic_fallback")' automation/production_control.json)"
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
 
       - name: Export durable queue snapshot from Issue state
         env:
@@ -316,19 +322,19 @@ jobs:
           python3 -m unittest discover -s tests -v
 
       - name: Discover candidate source repositories (non-activating)
-        if: ${{ env.SOURCE_DISCOVERY_MODE != 'independent' }}
+        if: ${{ steps.source-mode.outputs.mode != 'independent' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: python3 scripts/discover_sources.py
 
       - name: Assess discovered rule-list syntax and policy claims
-        if: ${{ env.SOURCE_DISCOVERY_MODE != 'independent' }}
+        if: ${{ steps.source-mode.outputs.mode != 'independent' }}
         run: |
           python3 scripts/assess_sources.py
           python3 scripts/append_step_summary.py --input reports/source-assessment.md
 
       - name: Preserve complete source assessment report
-        if: ${{ always() && env.SOURCE_DISCOVERY_MODE != 'independent' }}
+        if: ${{ always() && steps.source-mode.outputs.mode != 'independent' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: source-assessment-report

@@ -143,6 +143,7 @@ jobs:
       - name: Discover candidates without activating sources
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          AUTOMATION_TASK_PROCESS: "1"
           AUTOMATION_ARTIFACT_ROOT: ${{ runner.temp }}/source-discovery-workspace
         run: python3 scripts/discover_sources.py
 

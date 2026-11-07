@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "inventory_id": "resource-write-sets-2026.11.05.integration1",
+  "inventory_id": "resource-write-sets-2026.11.07-source-dag-active1",
   "status": "partial_static_entrypoint_review",
   "policy": {
     "lock_identity": "canonical logical resource path, not program ID",
@@ -1311,13 +1311,13 @@
     "Static Python mutation-site and workflow-native scans do not prove transient write-and-revert activity, Git metadata changes, external side effects or unexecuted call paths. No global filesystem guard or Python audit hook is installed."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-source-dag-dormant-2026.11.07.1",
-    "release_manifest_blob_sha": "be5c1aca1d80d858e815d30c73da6178be533d71",
-    "program_registry_blob_sha": "8ccc7809c98a90c2abfa11f4a0520ca33092e588",
-    "execution_adapters_blob_sha": "6d358799ec5015f242cdf3ab4e54d55dec5b5790",
+    "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
+    "release_manifest_blob_sha": "fb6e556ad2201557564aa9235271da1af124bc46",
+    "program_registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
+    "execution_adapters_blob_sha": "7bd4ab144a1eab08e9b9786078847aef6e953a8a",
     "added_after_release_baseline": true,
-    "note": "The independent source DAG remains dormant; both adapters are disabled and the monolithic fallback remains authoritative. Repository publication is rulesets/** only. Runtime/transitive writer and cross-workflow concurrency acceptance remains open.",
-    "reviewed_at": "2026-11-05"
+    "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #315 checkpoint. Repository publication authority remains rulesets/** only. The global static/transitive inventory remains partial for unrelated capabilities.",
+    "reviewed_at": "2026-11-07"
   },
   "scheduler_lock_contract": {
     "logical_resource_key": "logical/production-pipeline",

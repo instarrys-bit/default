@@ -4,8 +4,8 @@
   "program_id": "script_assess_sources",
   "implementation_path": "scripts/assess_sources.py",
   "implementation_blob_sha": "c825d64b9da2462bbca5e8932aab92729ae3088c",
-  "review_status": "reviewed_but_dispatch_blocked_pending_issue_193_and_post_merge_canary",
-  "dispatch_status": "disabled",
+  "review_status": "reviewed_scoped_source_dag_enabled_pending_live_e2e",
+  "dispatch_status": "enabled",
   "entrypoint": {
     "command": [
       "python3",
@@ -21,7 +21,7 @@
       "{task_input_file}"
     ],
     "task_scheduler_compatible": true,
-    "reason": "Watchdog-gated scheduler dispatch is enabled; bounded retries reuse the same producer-run-scoped URL batch and never activate sources."
+    "reason": "Watchdog-gated scheduler dispatch is enabled under the exact release allowlist; the assessor remains non-activating and writes only runner-local immutable artifacts plus the fenced Issue #315 checkpoint."
   },
   "inputs": {
     "repository_snapshot": [
@@ -140,16 +140,15 @@
       "sources/domain_sources.json": "not written; assessment does not activate sources"
     },
     "publication_policy": {
-      "publish_resources": [
-        "sources/source_assessments.json",
-        "reports/source-assessment.md"
-      ],
+      "publish_resources": [],
       "excluded_resources": [
+        "sources/source_assessments.json",
         "data/source_assessments_runtime.json",
+        "reports/source-assessment.md",
         "modules/uu.conf",
         "sources/domain_sources.json"
       ],
-      "method": "After independent artifact verification, scheduler commits only allowlisted persistent history/report paths and their manifest/shard children; it fetches and rebases onto latest main, checks live leases and protected/read-only digests, then performs a non-force push and confirms the remote main SHA."
+      "method": "After independent artifact verification, upload the three assessment outputs as an immutable Actions artifact only. No repository filesystem write, Contents API write, commit, push, or source activation is permitted."
     }
   },
   "resource_contract": {
@@ -178,7 +177,7 @@
     "idempotency_key": "task_id + predecessor workflow_run_id + predecessor artifact_sha256 + URL; completed URL results are immutable within the task checkpoint.",
     "retry_policy": "Resume the same predecessor-bound batch from the durable task-queue checkpoint. Reuse every completed URL result; repeat network reads only for URLs not yet checkpointed or whose prior fetch failed before a result was stored.",
     "timeout_seconds": 240,
-    "timeout_note": "Task input caps each run at 20 URLs, 1 MB per URL and 10 MB aggregate. Each successful URL is checkpointed immediately by a fenced queue CAS; task/resource lease is 480 seconds to cover assessment, independent verification and fenced artifact publication.",
+    "timeout_note": "Task input caps each run at 20 URLs, 1 MB per URL and 10 MB aggregate. Each successful URL is checkpointed immediately by a fenced queue CAS; the 480-second task/resource lease covers assessment and independent artifact verification.",
     "success_predicate": [
       "Process exits with code 0 and stdout satisfies the reviewed output schema.",
       "activated equals 0.",
@@ -195,31 +194,30 @@
     "required_predecessor": "script_discover_sources",
     "edge_semantics": "The Watchdog workflow_run gate downloads the artifact from the exact successful main-branch Shadowrocket Source Discovery (Watchdog) run, validates producer run ID/head SHA and the logical-document digest, then enqueues Assessment idempotently.",
     "registry_dependency_declared": true,
-    "note": "The producer commits and uploads the same complete legacy/sharded logical document. Watchdog verifies the exact run proof, downloaded artifact digest, embedded producer metadata and equality with current main; the scheduler independently rechecks the current logical-document digest before claim and the assessor rechecks it before and after execution.",
+    "note": "The producer writes only to its isolated RUNNER_TEMP workspace and uploads the complete logical document as an immutable artifact. Watchdog verifies the exact run proof, downloaded artifact digest and embedded producer metadata; no sources/ commit or equality with the main-branch baseline is required.",
     "registry_dependency_program_id": "script_discover_sources",
     "required_predecessor_artifact": "sources/discovered_sources.json",
-    "input_snapshot_validation": "The scheduler hashes the complete legacy/sharded discovered_sources document before and after assessment and rejects publication if it changes.",
-    "scheduler_enforcement": "The Watchdog downloads the artifact using the workflow_run ID, verifies the proof's workflow name, numeric run ID, full producer commit SHA, allowlisted artifact path and complete logical-document digest, then confirms that the current main document has the same digest and producer metadata. enqueue_source_assessment_task checks the digest again, and scheduler.build_execution_plan rejects changed or missing predecessor content before claim."
+    "input_snapshot_validation": "The scheduler hashes the complete legacy/sharded discovered_sources document under the verified external predecessor artifact root before claim and after assessment; it rejects missing or changed artifact content.",
+    "scheduler_enforcement": "The Watchdog downloads the artifact using the exact workflow_run ID, verifies workflow name, numeric run ID, full producer commit SHA, allowlisted artifact path and complete logical-document digest, then sets AUTOMATION_PREDECESSOR_ARTIFACT_ROOT to the verified external artifact directory. enqueue_source_assessment_task and scheduler.build_execution_plan independently recheck that exact external artifact digest before claim; the assessor rechecks it before and after execution."
   },
   "permission_boundary": {
-    "filesystem": "The proposed independent mode is runner-local only, but remains dormant and non-dispatchable pending global resource audit. Production monolithic mode retains the existing resource lease boundary.",
+    "filesystem": "Active independent mode writes assessment documents only beneath AUTOMATION_ARTIFACT_ROOT under RUNNER_TEMP. The only shared mutation is the bounded Issue #315 task checkpoint under the live task lease and both logical resource fences. No repository checkout file is modified.",
     "network": "HTTPS raw.githubusercontent.com only, repository-bound URL and same-host redirect checks.",
     "github_api": "The assessor may only read and CAS-update the current task's bounded checkpoint in the durable Issue #315 queue using the scheduler-supplied token. It performs no Contents API writes, Git commits, or pushes.",
     "protected_config": "modules/uu.conf is immutable and outside this capability's write set."
   },
   "blockers": [
-    "Full transitive writer inventory and cross-workflow runtime trace reconciliation under issue #193 remain a global acceptance gate.",
-    "End-to-end Watchdog-dispatched discovery-to-assessment execution and immutable artifact upload must pass after this PR merges.",
-    "Issue #193 is a hard prerequisite: no independent Python adapter enablement until complete transitive writer, dynamic path, and cross-workflow fencing evidence passes.",
-    "Issue #192 remains open until a non-production end-to-end producer-artifact-consumer canary passes."
+    "A post-merge Watchdog-dispatched Discovery → Assessment run and immutable artifact verification are still required as live end-to-end evidence.",
+    "Durable per-URL interruption/resume is unit-tested; live multi-run interruption/resume evidence remains pending.",
+    "The global transitive writer inventory for unrelated non-dispatchable capabilities, dynamic path aliases and cross-workflow effects remains partial; those capabilities remain deny-by-default.",
+    "Production ruleset publication must continue to pass the rulesets/** staged-path fence and independent remote verification; modules/uu.conf must remain byte-for-byte unchanged."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-baseline-2026.11.05.1",
-    "release_manifest_blob_sha": "4c4c2dfd8dbb6e80be388eb65e11ee51700c9046",
+    "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
     "program_registry_blob_sha": "5105f2c04affc964b5b6caf1de09561c5f8ab644",
     "execution_adapters_blob_sha": "d40ed3c60452eeaa6e21888152394f0a68fd57c4",
-    "added_after_release_baseline": false,
-    "note": "References the refreshed baseline snapshot. This is review provenance only, not dispatch authorization; independent Python dispatch remains blocked by the release compatibility and runtime-enforcement gates."
+    "added_after_release_baseline": true,
+    "note": "The release manifest pins this contract's current blob; the contract intentionally does not reverse-pin the manifest to avoid a circular hash dependency. This is review provenance only."
   },
   "dependency_contract": {
     "predecessor_program_id": "script_discover_sources",
