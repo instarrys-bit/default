@@ -213,7 +213,7 @@ def main() -> int:
     result = build_matrix(assessments, lineage)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
-    write_document(OUTPUT, result, "candidates")
+    write_document(OUTPUT, result, "candidates", lease_required=True)
     REPORT.write_text(render_report(result), encoding="utf-8")
     print(json.dumps({
         "candidate_publishers": result["candidate_count"],
