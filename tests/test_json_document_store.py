@@ -64,6 +64,8 @@ class JsonDocumentStoreTests(unittest.TestCase):
                 key == expected or key.startswith(expected + ".") or key.startswith(expected + "/")
                 for key in checked
             ))
+            self.assertTrue(any(".parts.tmp-" in key for key in checked))
+            self.assertTrue(any("part-" in key for key in checked))
             self.assertEqual(store.read_document(path, "reviews"), payload)
 
     def test_repository_write_cannot_disable_live_fencing_with_legacy_flag(self):
@@ -131,6 +133,19 @@ class JsonDocumentStoreTests(unittest.TestCase):
             records = [{"domain": "one.example"}, {"domain": "two.example"}]
             path.write_text(json.dumps({"reviews": records}), encoding="utf-8")
             self.assertEqual(list(store.iter_document_records(path, "reviews")), records)
+
+
+    def test_repository_document_write_rejects_hard_link_alias(self):
+        import resource_lease_runtime
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            original = Path(tmp) / "original.json"
+            alias = Path(tmp) / "alias.json"
+            original.write_text("{}", encoding="utf-8")
+            import os
+            os.link(original, alias)
+            with self.assertRaisesRegex(ValueError, "hard-linked file"):
+                store.write_document(alias, {"reviews": []}, "reviews", lease_required=False)
+            self.assertEqual(original.read_text(encoding="utf-8"), "{}")
 
 
 if __name__ == "__main__":
