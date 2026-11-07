@@ -142,6 +142,21 @@ class TransitiveWriteSiteInventoryTests(unittest.TestCase):
                             "transitively imported mutating helper must have an explicit classification",
                         )
 
+    def test_manual_selector_report_mutations_require_exact_live_resource_leases(self):
+        source = (ROOT / "scripts" / "select_domain_rules.py").read_text(encoding="utf-8")
+        self.assertIn('assert_resource_lease_from_environment("reports/approved-domain-rules.list")', source)
+        self.assertIn('assert_resource_lease_from_environment("reports/rule-selector-audit.md")', source)
+        entry = self.writers["script_select_domain_rules"]
+        self.assertEqual(
+            entry["lease_keys"],
+            ["reports/approved-domain-rules.list", "reports/rule-selector-audit.md"],
+        )
+        adapters = json.loads((ROOT / "automation/execution_adapters.json").read_text(encoding="utf-8"))
+        adapter = next(x for x in adapters["adapters"] if x["target_program_id"] == "script_select_domain_rules")
+        self.assertFalse(adapter["enabled"])
+        self.assertEqual(adapter["allowed_callers"], [])
+        self.assertEqual(adapter["publish_resources"], [])
+
     def test_scan_metadata_declares_partial_scope_and_limitations(self):
         scan = self.inventory["direct_mutation_scan"]
         self.assertEqual(scan["status"], "partial_python_direct_callsite_scan")
