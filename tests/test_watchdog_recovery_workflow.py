@@ -299,7 +299,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("unset GITHUB_TOKEN", workflow)
         self.assertIn("--token-stdin", workflow)
         self.assertIn("python3 scripts/task_scheduler.py", workflow)
-        self.assertIn("--max-tasks 1 run-once", workflow)
+        self.assertIn("--max-tasks 2 run-once", workflow)
+        self.assertIn("dispatch up to two independent tasks", workflow)
         self.assertIn("github.event.workflow_run.head_branch == 'main'", workflow)
 
     def test_production_audit_is_watchdog_queue_owned(self):
