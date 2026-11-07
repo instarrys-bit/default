@@ -214,11 +214,10 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "4c4c2dfd8dbb6e80be388eb65e11ee51700c9046",
     "program_registry_blob_sha": "5105f2c04affc964b5b6caf1de09561c5f8ab644",
     "execution_adapters_blob_sha": "d40ed3c60452eeaa6e21888152394f0a68fd57c4",
     "added_after_release_baseline": true,
-    "note": "Scoped source-assessment adapter is enabled by the exact release allowlist and Watchdog caller contract. This metadata does not authorize repository publication; the adapter has empty write_resources and publish_resources."
+    "note": "The release manifest pins this contract's current blob; the contract intentionally does not reverse-pin the manifest to avoid a circular hash dependency. This is review provenance only."
   },
   "dependency_contract": {
     "predecessor_program_id": "script_discover_sources",
