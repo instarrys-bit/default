@@ -23,6 +23,17 @@ class ReleaseManifestSmokeTests(unittest.TestCase):
         self.assertEqual(result["independent_python_dispatch"], "scoped_source_dag_enabled")
 
 
+    def test_active_release_requires_complete_non_activating_handoff_evidence(self):
+        manifest = json.loads((ROOT / "automation/release_manifest.json").read_text(encoding="utf-8"))
+        self.assertEqual(manifest["release_status"], "active_with_live_handoff_evidence")
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "release_manifest.json"
+            invalid = json.loads(json.dumps(manifest))
+            invalid["live_handoff_evidence"]["activation_count"] = 1
+            path.write_text(json.dumps(invalid), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "activation_count must be zero"):
+                validate_release_manifest(ROOT, path)
+
     def test_release_pins_are_immutable_baseline_references(self):
         manifest = json.loads((ROOT / "automation/release_manifest.json").read_text(encoding="utf-8"))
 

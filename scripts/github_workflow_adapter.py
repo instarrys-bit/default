@@ -250,8 +250,23 @@ def validate_run_head_sha(client: GitHubWorkflowClient, intent: dict, actual_sha
     return "queue_intent_commit_only"
 
 
+def expected_correlation_titles(intent: dict) -> set[str]:
+    """Return only exact, workflow-specific titles for a persisted task correlation."""
+    title = intent.get("correlation_title")
+    titles = {title} if isinstance(title, str) and title else set()
+    if intent.get("workflow_path") == ".github/workflows/source-discovery.yml":
+        correlation_id = intent.get("correlation_id")
+        if isinstance(correlation_id, str) and re.fullmatch(r"task_[0-9a-f]{24}-a[1-9][0-9]*", correlation_id):
+            # The dedicated Discovery workflow has historically used this exact prefix.
+            # Keep it as a narrow compatibility alias while preserving the full task ID.
+            titles.add(f"Source discovery {correlation_id}")
+    return titles
+
 def find_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict | None:
     """Find exactly one run by workflow ID, ref, SHA, event, and unique run-name."""
+    titles = expected_correlation_titles(intent)
+    if not titles:
+        raise WorkflowAPIError("persisted workflow task correlation title is missing")
     matches = []
     page = 1
     while True:
@@ -261,7 +276,7 @@ def find_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict | No
             raise WorkflowAPIError("workflow runs response is missing workflow_runs")
         matches.extend(
             run for run in runs
-            if isinstance(run, dict) and run.get("display_title") == intent["correlation_title"]
+            if isinstance(run, dict) and run.get("display_title") in titles
         )
         if len(matches) > 1:
             raise AmbiguousWorkflowRun("multiple workflow runs match one task correlation ID")
@@ -303,9 +318,9 @@ def inspect_correlated_run(client: GitHubWorkflowClient, intent: dict,
         "workflow_id": intent["workflow_id"],
         "event": "workflow_dispatch",
         "head_branch": intent["ref"],
-        "display_title": intent["correlation_title"],
     }
-    if any(run.get(key) != value for key, value in required.items()):
+    if (any(run.get(key) != value for key, value in required.items())
+            or run.get("display_title") not in expected_correlation_titles(intent)):
         raise WorkflowAPIError("workflow run identity does not match the persisted dispatch intent")
     if listed is not None and run.get("head_sha") != listed.get("head_sha"):
         raise WorkflowAPIError("workflow run identity commit SHA changed between list and detail reads")
