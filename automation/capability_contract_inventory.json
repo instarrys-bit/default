@@ -8,7 +8,7 @@
     "python_components": 52,
     "python_components_with_concrete_io_contract": 1,
     "python_components_with_declared_registry_dependencies": 4,
-    "independently_dispatchable_python_components": 1,
+    "independently_dispatchable_python_components": 0,
     "note": "Counts reflect registry declarations, not runtime call-graph completeness."
   },
   "policy": {
@@ -115,10 +115,10 @@
         "GitHub Issue #315 task.assessment_checkpoint: per-URL result and fingerprint checkpoint (durable CAS state)"
       ],
       "current_invocation": "python_module_or_workflow_step",
-      "contract_status": "runner_local_artifact_only_with_fenced_queue_checkpoint",
-      "dispatch_status": "enabled",
+      "contract_status": "reviewed_dormant_pending_issue_193",
+      "dispatch_status": "disabled",
       "missing_contract_fields": [],
-      "audit_note": "Independent task mode consumes the exact verified producer artifact from RUNNER_TEMP, writes all documents to a per-run RUNNER_TEMP artifact root, and performs no repository file or Contents API writes. Per-URL progress is the only shared mutation and is fenced by the task lease, logical/source-assessment-checkpoints and logical/production-pipeline. The global audit for unrelated non-dispatchable writers remains partial.",
+      "audit_note": "Runner-local artifact implementation is a candidate only. Adapter and orchestration remain disabled until Issue #193 is closed and Issue #192 canary acceptance is met.",
       "contract_sample_path": "automation/capability_contracts/assess_sources.json"
     },
     {
@@ -1708,8 +1708,8 @@
         "runner-local sources/discovered_sources.json and report under RUNNER_TEMP",
         "source-discovery-output immutable artifact with exact workflow/run/head provenance and complete logical-document SHA-256 proof"
       ],
-      "contract_status": "runner_local_artifact_only_verified_predecessor_handoff",
-      "dispatch_status": "enabled",
+      "contract_status": "implemented_dormant_pending_issue_193_and_192_canary",
+      "dispatch_status": "disabled",
       "resource_keys": [
         "logical/source-discovery-run"
       ],
