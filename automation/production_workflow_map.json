@@ -298,7 +298,7 @@
     "Dashboard generation is observer-only and is not a production stage."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-independent-source-dag-2026.11.07.1",
+    "release_id": "shadowrocket-automation-source-dag-dormant-2026.11.07.1",
     "release_manifest_blob_sha": "e938aafc149bbf700603ccba40f7f70ced5dd030",
     "program_registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
     "execution_adapters_blob_sha": "79dfe3d3a3322c7eec4ae0178e85c53ada75efe4",
@@ -311,7 +311,7 @@
   "independent_dags": [
     {
       "id": "source_discovery_to_assessment",
-      "status": "implemented_enabled_pending_post_merge_canary",
+      "status": "implemented_dormant_pending_issue_192_193_acceptance",
       "producer": {
         "program_id": "workflow_source_discovery",
         "workflow_path": ".github/workflows/source-discovery.yml",
@@ -355,9 +355,9 @@
         "rule": "When SOURCE_DISCOVERY_MODE=independent, auto_sync's monolithic discovery and assessment steps are skipped; the Watchdog-owned independent producer and its exact workflow_run consumer are the sole discovery/assessment path. The monolithic steps remain only as explicit fallback when mode is monolithic_fallback."
       },
       "activation": {
-        "producer_adapter_enabled": true,
-        "producer_program_orchestration_enabled": true,
-        "assessment_adapter_enabled": true,
+        "producer_adapter_enabled": false,
+        "producer_program_orchestration_enabled": false,
+        "assessment_adapter_enabled": false,
         "production_dispatch_performed": false,
         "repository_write_authority": "rulesets/** only",
         "assessment_repository_write_resources": []
