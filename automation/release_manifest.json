@@ -13,7 +13,7 @@
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "939b3dc93eb9cc51d448dd114d1593d858255443"
+      "git_blob_sha": "c8a6a2e996f989646f436ed855447875313737e3"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -82,15 +82,15 @@
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "939b3dc93eb9cc51d448dd114d1593d858255443"
+      "git_blob_sha": "c8a6a2e996f989646f436ed855447875313737e3"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "82a12d5db5b6d6018f2aa2eb8e2931536c53cd9e"
+      "git_blob_sha": "e916e09b3a6c02d0edbf77b49532c2f8c7b58d96"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "44e631b91c7b92bb0876e17cbf678ec56d7d7509"
+      "git_blob_sha": "87adcd415e08e5a667f416570bcc7d053c27304d"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -122,7 +122,7 @@
     },
     "assessment_artifact_verifier": {
       "path": "scripts/verify_assess_sources_artifacts.py",
-      "git_blob_sha": "0f93d85340f75e310f19482b66c3f965748fd8c7"
+      "git_blob_sha": "64c6114f45bc1e6fd574b69f6e51d4e3af851572"
     },
     "release_manifest_validator": {
       "path": "scripts/validate_release_manifest.py",
