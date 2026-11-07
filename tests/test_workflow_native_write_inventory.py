@@ -64,6 +64,16 @@ class WorkflowNativeWriteInventoryTests(unittest.TestCase):
         self.assertEqual(inventory["workflow_native_scan"]["workflow_count"], len(WORKFLOWS))
         self.assertTrue(all(site["workflow_path"] in WORKFLOWS for site in self.sites))
 
+    def test_watchdog_manifest_writer_serializes_with_auto_sync(self):
+        watchdog = (ROOT / ".github/workflows/automation-watchdog.yml").read_text(encoding="utf-8")
+        auto_sync = (ROOT / ".github/workflows/auto_sync.yml").read_text(encoding="utf-8")
+        start = watchdog.index("  manifest-integrity:")
+        section = watchdog[start:watchdog.find("\n  ", start + 4)]
+        self.assertIn("group: shadowrocket-main-writer", section)
+        self.assertIn("cancel-in-progress: false", section)
+        self.assertIn("group: shadowrocket-main-writer", auto_sync)
+        self.assertIn("cancel-in-progress: false", auto_sync)
+
     def test_each_workflow_native_side_effect_has_resource_and_boundary_evidence(self):
         for site in self.sites:
             with self.subTest(workflow=site["workflow_path"], step=site["step_name"]):
