@@ -11,7 +11,7 @@
       "access": "read_only",
       "writers_allowed": []
     },
-    "dispatch": "This inventory is evidence, not an execution grant. Independent Python dispatch remains disabled."
+    "dispatch": "Evidence is not an execution grant. The reviewed independent Source Discovery → Assessment DAG and production workflow are Watchdog-owned and release-allowlisted; all unrelated Python capabilities remain deny-by-default."
   },
   "document_store_semantics": {
     "implementation": "scripts/json_document_store.py",
@@ -89,7 +89,7 @@
         "reports/source-assessment.md",
         "logical/source-assessment-checkpoints"
       ],
-      "lease_enforcement": "Monolithic checkout-workspace writes assert each exact path lease when the Watchdog resource proof is present; independent task mode writes only under RUNNER_TEMP and uses no shared filesystem lease. The durable per-URL task checkpoint is updated via append-only Issue #315 CAS with active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences.",
+      "lease_enforcement": "The durable per-URL checkpoint is updated via append-only Issue #315 CAS under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences. The 3600-second resource lease exceeds four 15-minute Watchdog reconciliation intervals; pending verification renews it before expiry. All assessment JSON and reports remain per-run immutable artifacts.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [
         "sources/source_assessments.json (monolithic checkout workspace only)",
@@ -99,7 +99,7 @@
         "$AUTOMATION_ARTIFACT_ROOT/data/source_assessments_runtime.json",
         "$AUTOMATION_ARTIFACT_ROOT/reports/source-assessment.md"
       ],
-      "lease_seconds": 480,
+      "lease_seconds": 3600,
       "publication": "No repository publication for assessment artifacts; monolithic report is retained only as a run artifact, independent mode uploads immutable runner-local outputs. Production Git commits remain restricted to rulesets/**.",
       "write_boundary_fencing": "All shared checkpoint mutations are live-fenced; checkout workspace writes are exact-path lease checked in the monolithic pipeline; independent artifacts are isolated per run. Neither mode publishes source assessment documents to the repository. The production publisher stages rulesets/** only.",
       "additional_serialized_writers": [],
@@ -1314,7 +1314,7 @@
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
     "release_manifest_blob_sha": "64ad9e946ab02513172e94db42c097298260ce0c",
     "program_registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
-    "execution_adapters_blob_sha": "7bd4ab144a1eab08e9b9786078847aef6e953a8a",
+    "execution_adapters_blob_sha": "dc058e31c9959bda6ffed7a25c38207c9ab0dc50",
     "added_after_release_baseline": true,
     "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #315 checkpoint. Repository publication authority remains rulesets/** only. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07"
@@ -1675,5 +1675,10 @@
       "workflow steps not exercised in the current CI run",
       "dynamic repository paths and cross-workflow concurrency"
     ]
-  }
+  },
+  "production_deliverables": [
+    "rulesets/direct.list",
+    "rulesets/proxy.list",
+    "rulesets/reject.list"
+  ]
 }
