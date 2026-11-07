@@ -1046,7 +1046,7 @@
       ],
       "lock_key": "logical/production-pipeline + sources/domain_sources.json + sources/source_activation_log.json",
       "mode": "exclusive",
-      "enforcement": "Current auto_sync production writes and publish restoration are serialized by the live Watchdog logical production-pipeline fence and central mutation hook; auto_activate_sources does not request explicit per-resource leases.",
+      "enforcement": "Current auto_sync production writes and publish restoration are serialized by the Watchdog logical/production-pipeline lease. script_auto_activate_sources does not request explicit per-resource leases; this remains an unresolved writer boundary and the component stays non-dispatchable.",
       "note": "Source activation changes future production input collection. Treat as a production registry writer, not a report-only stage; independent dispatch remains blocked until compatible per-resource lease proof exists."
     },
     {
@@ -1071,7 +1071,7 @@
       ],
       "lock_key": "resource:data/domain_candidates.json",
       "mode": "exclusive",
-      "enforcement": "Current writes occur in the serialized auto_sync production pipeline under the central live fencing guard. import_request_observations and collect_domains use write_document without lease_required=True; restore path is separately fenced by the same production mutex.",
+      "enforcement": "Current writes occur in the serialized auto_sync production pipeline under logical/production-pipeline. import_request_observations and collect_domains use write_document without lease_required=True; no global filesystem guard is present. Exact per-document fencing and concurrent external writers remain unresolved.",
       "note": "Lease must cover legacy base JSON, adjacent manifest, all content-addressed shard files, staging directories, manifest switch and old shard cleanup."
     },
     {
@@ -1256,17 +1256,17 @@
     }
   ],
   "not_yet_proven": [
-    "Complete transitive write sets for every registered Python component; the inventory now records 34 direct writer entrypoints found in this pass but is not a machine-verified filesystem trace.",
+    "Complete transitive write sets for every registered Python component; the inventory now records 28 shared repository writer entrypoints in this pass but is not a machine-verified filesystem trace.",
     "Dynamic path selection and caller-controlled output paths require runtime enforcement tests, especially diagnosis, incident-state, review-cursor and repair utilities.",
     "Cross-workflow request-intake and Watchdog writes to automation/unregistered_path_registry.json need concurrent-run integration tests proving bounded CAS conflict recovery and no lost updates.",
     "Cross-workflow request-intake pushes to sources/request_domain_observations.json use run-ID concurrency groups plus git fetch/rebase/push retry; concurrent same-domain and different-domain runs, conflict retries and retry exhaustion still need integration proof.",
     "Shared JSON document writers for data/domain_candidates.json and sources/rule_provenance.json need compatible per-document leases, including all manifest/shard/staging/cleanup mutations and restore paths.",
-    "All lifecycle, archive, ruleset list, manifest and report writers must be enumerated against actual workflow call sites; auto_sync's central write fence does not prove independent non-auto_sync writers.",
+    "All lifecycle, archive, ruleset list, manifest and report writers must be enumerated against actual workflow call sites; the auto_sync logical/production-pipeline mutex does not prove independent non-auto_sync writers or per-mutation resource fencing.",
     "Atomic multi-resource lease acquisition and compatibility of per-resource locks across all independent/cross-workflow writers remain unproven.",
     "Static entrypoint inventory does not prove absence of unregistered dynamic writes, subprocess writes, external API mutations or filesystem writes hidden behind imported helpers.",
     "All remaining registered Python components must be checked for indirect writes through imported helpers, subprocesses and dynamically selected outputs; report-only writers and active source-registry writers must remain distinct.",
-    "The 54 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and one external workflow-dispatch side-effect adapter. Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths.",
-    "Persistent repository-tree tracing complements Python audit hooks but does not prove transient write-and-revert activity, Git metadata changes, external side effects or unexecuted call paths."
+    "The 52 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and one external workflow-dispatch side-effect adapter. Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths.",
+    "Static Python mutation-site and workflow-native scans do not prove transient write-and-revert activity, Git metadata changes, external side effects or unexecuted call paths. No global filesystem guard or Python audit hook is installed."
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-dormant-2026.11.07.1",
