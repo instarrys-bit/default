@@ -90,7 +90,7 @@
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "7eeb2ed75e495fc1414978a930e6139718506900"
+      "git_blob_sha": "4aa375e7f37deb78db3adc634631346dad05c022"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
