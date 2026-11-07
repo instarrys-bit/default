@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "55eb1f7de70efbc72eaeae7b9425d4d2d7786f71"
+      "git_blob_sha": "2a3f6d6243837db65d3d3ec9e73ec859bedc4248"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -166,7 +166,7 @@
     },
     "source_handoff_policy": {
       "path": "scripts/source_handoff_policy.py",
-      "git_blob_sha": "5764ff880804d5e1047b0e7cf7c0fa3c8708b663"
+      "git_blob_sha": "526fc98e9fc70b2a7a436fc12186524d5630f2b2"
     }
   },
   "compatibility": {
@@ -184,6 +184,7 @@
     "python_adapter_default_deny": true
   },
   "known_gaps": [
+    "Terminal Discovery tasks with an independently verified Assessment are now excluded from pending handoff reconciliation so they cannot block a later daily Discovery cycle; a fresh post-merge runtime cycle is still required to verify the fix.",
     "Historical duplicate Assessment tasks exist for Discovery run 42373818238 (legacy and parser-v2 keys); the new resolver recognizes both by predecessor identity and suppresses future duplicate enqueue. A fresh post-merge Discovery → Assessment run is still required to prove the corrected one-to-one path.",
     "Live multi-run interruption/resume contention canary remains desirable for further hardening.",
     "The global transitive writer inventory for unrelated non-dispatchable capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
