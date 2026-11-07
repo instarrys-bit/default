@@ -458,13 +458,18 @@
         "Builds non-activating source candidate matrix; no active source registry write."
       ],
       "evidence": "main() selects runtime or persistent assessment input, reads lineage, then calls write_document(OUTPUT, result, 'candidates') and writes REPORT.",
-      "write_boundary_fencing": "The production audit job is read-only (contents:read). The publisher revalidates the exact Watchdog task and live resource lease, stages only the explicit ruleset publication allowlist, and is followed by independent remote ruleset verification. Repository-local filesystem mutations are not intercepted by a filesystem hook. Independent writers require separate ownership and lease proof.",
-      "additional_serialized_writers": [
-        "script_restore_automation_state"
-      ],
-      "additional_writer_boundary": "script_restore_automation_state is an additional allowlisted publish-mode writer for this resource; restoration occurs in the auto_sync publish job under the same live logical/production-pipeline fencing lease. This is not proof of independent cross-workflow lease compatibility.",
+      "write_boundary_fencing": "Exact source-candidate document lease and logical/production-pipeline serialize the shared logical document; report is run-local. Repository commits remain rulesets/** only.",
+      "additional_serialized_writers": [],
+      "additional_writer_boundary": "restore_automation_state may restore this file into the isolated audit workspace only; it is not published to the repository.",
       "lease_keys": [
-        "logical/production-pipeline"
+        "logical/production-pipeline",
+        "sources/source_candidates.json"
+      ],
+      "lease_enforcement": "write_document is called with lease_required=True for sources/source_candidates.json; its manifest, staging, shard and cleanup mutations reassert the same canonical document lease. Markdown report remains run-local.",
+      "publish_resources": [],
+      "ephemeral_unpublished_resources": [
+        "sources/source_candidates.json",
+        "reports/source-candidate-matrix.md"
       ]
     },
     {
@@ -549,9 +554,18 @@
         "Resumable deterministic review; updates the review cursor and ledger in bounded checkpoints."
       ],
       "evidence": "main() checkpoints sources/domain_reviews.json through write_document with lease_required defaulting to false and writes sources/review_cursor.json through atomic_json using a sibling .tmp file and replace.",
-      "write_boundary_fencing": "The production audit job is read-only (contents:read). The publisher revalidates the exact Watchdog task and live resource lease, stages only the explicit ruleset publication allowlist, and is followed by independent remote ruleset verification. Repository-local filesystem mutations are not intercepted by a filesystem hook. Independent writers require separate ownership and lease proof.",
+      "write_boundary_fencing": "Review ledger and cursor are per-run checkout workspace state restored/archived by the audit workflow; exact document leases are asserted at every write boundary. Neither is published to the repository.",
       "lease_keys": [
-        "logical/production-pipeline"
+        "logical/production-pipeline",
+        "sources/domain_reviews.json",
+        "sources/review_cursor.json"
+      ],
+      "lease_enforcement": "write_document is called with lease_required=True for sources/domain_reviews.json; atomic_json asserts the exact sources/review_cursor.json lease before directory creation, temporary write and replace.",
+      "publish_resources": [],
+      "ephemeral_unpublished_resources": [
+        "sources/domain_reviews.json (JSON document or manifest/shard/staging children)",
+        "sources/review_cursor.json",
+        "sources/review_cursor.json.tmp"
       ]
     },
     {
@@ -656,14 +670,14 @@
       "lease_keys": [
         "resource:<canonical logical document path>"
       ],
-      "lease_enforcement": "The production publisher requires a live Watchdog task/resource lease before git push. The config validation workflow has contents:read and only mutates its ephemeral validation workspace; it cannot publish repository changes.",
+      "lease_enforcement": "write_document(lease_required=True) calls _assert_document_lease before parent creation, temporary file writes, atomic replacements, staging directory creation, shard writes, manifest switch, legacy unlink and superseded-shard cleanup. Callers must pass the exact canonical logical document lease; default-false remains for isolated temporary workspaces.",
       "publish_resources": [
         "caller-selected logical JSON document and all authoritative child paths"
       ],
       "ephemeral_unpublished_resources": [
         "temporary staging files and directories"
       ],
-      "write_boundary_fencing": "Low-level shared writer helper, not an independently dispatchable capability. Resource identity is the canonical logical document path, never the helper/program ID."
+      "write_boundary_fencing": "The helper is not independently dispatchable and installs no global filesystem guard. Each shared caller explicitly opts into lease_required=True; the exact canonical document path is the resource key across base file, manifest, shards, staging and cleanup."
     },
     {
       "program_id": "script_lifecycle_audit",
