@@ -344,6 +344,20 @@ def protected_config_digest(root: Path = ROOT) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def external_read_only_resource_root(root: Path, relative: str) -> Path:
+    """Resolve the exact discovery predecessor from the verified runner-local artifact only."""
+    if relative != "sources/discovered_sources.json":
+        return root
+    supplied = os.environ.get("AUTOMATION_PREDECESSOR_ARTIFACT_ROOT")
+    if not supplied:
+        return root
+    artifact_root = Path(supplied).resolve()
+    runner_temp = Path(os.environ.get("RUNNER_TEMP", tempfile.gettempdir())).resolve()
+    if not artifact_root.is_relative_to(runner_temp) or artifact_root == root.resolve():
+        raise ValueError("predecessor artifact root must be isolated under RUNNER_TEMP")
+    return artifact_root
+
+
 def read_only_resource_digests(root: Path, paths: list[str]) -> dict[str, str | None]:
     if not isinstance(paths, list) or any(not isinstance(path, str) or not path or path.startswith("/") or chr(92) in path or any(part in {"", ".", ".."} for part in path.split("/")) for path in paths):
         raise ValueError("read_only_resources must contain safe repository-relative file paths")
@@ -351,9 +365,10 @@ def read_only_resource_digests(root: Path, paths: list[str]) -> dict[str, str | 
         raise ValueError("read_only_resources contains duplicate paths")
     result={}
     for relative in paths:
-        path=(root/relative).resolve()
-        if not path.is_relative_to(root.resolve()):
-            raise ValueError(f"read-only resource resolves outside repository: {relative}")
+        resource_root = external_read_only_resource_root(root, relative)
+        path=(resource_root/relative).resolve()
+        if not path.is_relative_to(resource_root.resolve()):
+            raise ValueError(f"read-only resource resolves outside its authorized root: {relative}")
         if path.exists() and not path.is_file():
             raise ValueError(f"read-only resource must be a file: {relative}")
         digest=hashlib.sha256()
@@ -370,7 +385,7 @@ def read_only_resource_digests(root: Path, paths: list[str]) -> dict[str, str | 
                 raise ValueError(f"read-only document manifest is invalid: {relative}") from exc
             if not isinstance(value,dict):
                 raise ValueError(f"read-only document manifest must be an object: {relative}")
-            if not manifest.resolve().is_relative_to(root.resolve()):
+            if not manifest.resolve().is_relative_to(resource_root.resolve()):
                 raise ValueError(f"read-only document manifest resolves outside repository: {relative}")
             directory=value.get("shard_directory")
             shards=value.get("shards")
@@ -384,7 +399,7 @@ def read_only_resource_digests(root: Path, paths: list[str]) -> dict[str, str | 
                 if not isinstance(name,str) or Path(name).name!=name or not name.endswith(".jsonl"):
                     raise ValueError(f"read-only document shard entry is invalid: {relative}")
                 shard_path=manifest.parent/directory/name
-                if not shard_path.resolve().is_relative_to(root.resolve()):
+                if not shard_path.resolve().is_relative_to(resource_root.resolve()):
                     raise ValueError(f"read-only document shard resolves outside repository: {relative}/{directory}/{name}")
                 if not shard_path.is_file():
                     raise ValueError(f"read-only document shard is missing: {relative}/{directory}/{name}")
@@ -441,6 +456,9 @@ def safe_child_environment(root: Path = ROOT) -> dict[str, str]:
     environment = {key: os.environ[key] for key in SAFE_ENV_KEYS if key in os.environ}
     environment["PYTHONPATH"] = os.pathsep.join((str(root), str(root / "scripts")))
     environment["PYTHONDONTWRITEBYTECODE"] = "1"
+    for key in ("AUTOMATION_PREDECESSOR_ARTIFACT_ROOT", "AUTOMATION_ARTIFACT_ROOT"):
+        if os.environ.get(key):
+            environment[key] = os.environ[key]
     return environment
 
 
