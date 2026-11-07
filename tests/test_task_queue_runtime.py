@@ -63,6 +63,20 @@ class TaskQueueRuntimeTests(unittest.TestCase):
             with queue_lock(repository_queue):
                 pass
 
+    def test_legacy_queue_rejects_symlink_and_hardlink_escapes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            symlink = root / "repo-symlink"
+            symlink.symlink_to(ROOT / "README.md")
+            with self.assertRaisesRegex(ValueError, "outside the repository workspace"):
+                with queue_lock(symlink):
+                    pass
+            hardlink = root / "repo-hardlink"
+            os.link(ROOT / "README.md", hardlink)
+            with self.assertRaisesRegex(ValueError, "hard-linked paths"):
+                with queue_lock(hardlink):
+                    pass
+
     def payload(self, **overrides):
         value = {
             "idempotency_key": "runtime:test:once",
