@@ -1316,7 +1316,7 @@
     "program_registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
     "execution_adapters_blob_sha": "dc058e31c9959bda6ffed7a25c38207c9ab0dc50",
     "added_after_release_baseline": true,
-    "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #315 checkpoint. Repository publication authority remains rulesets/** only. The global static/transitive inventory remains partial for unrelated capabilities.",
+    "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #315 checkpoint. Repository mutations are governed per capability by explicit exclusive resource_contract.resource_keys; control-plane metadata is separately inventoried. The production auto_sync publisher stages only the three rule-set deliverables under rulesets/**. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07"
   },
   "scheduler_lock_contract": {
@@ -1680,5 +1680,20 @@
     "rulesets/direct.list",
     "rulesets/proxy.list",
     "rulesets/reject.list"
-  ]
+  ],
+  "repository_write_policy": {
+    "model": "per-capability-explicit-resource-contract",
+    "allowed_repository_write_resources": "Only exact paths declared in the capability's exclusive resource_contract.resource_keys may be written or published; each shared path must have the corresponding live lease and fencing assertion.",
+    "control_plane_paths": "Explicitly declared and fenced control-plane metadata paths are permitted; they are not globally blocked by the production ruleset publisher's staging allowlist.",
+    "protected_paths": [
+      "modules/**",
+      "**/*.js"
+    ],
+    "production_publisher_scope": [
+      "rulesets/direct.list",
+      "rulesets/proxy.list",
+      "rulesets/reject.list"
+    ],
+    "production_publisher_boundary": "auto_sync stages only rulesets/** because the production deliverables are the three rule sets; this is a publisher-specific boundary, not a system-wide write restriction."
+  }
 }
