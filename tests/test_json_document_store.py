@@ -60,8 +60,36 @@ class JsonDocumentStoreTests(unittest.TestCase):
             self.assertEqual(result["storage"], "jsonl-shards-v1")
             expected = path.relative_to(ROOT).as_posix()
             self.assertGreater(len(checked), 5)
-            self.assertTrue(all(key == expected for key in checked))
+            self.assertTrue(all(
+                key == expected or key.startswith(expected + ".") or key.startswith(expected + "/")
+                for key in checked
+            ))
             self.assertEqual(store.read_document(path, "reviews"), payload)
+
+    def test_repository_write_cannot_disable_live_fencing_with_legacy_flag(self):
+        import resource_lease_runtime
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            path = Path(tmp) / "ledger.json"
+            payload = {"reviews": [{"domain": "example.com"}]}
+            with patch.object(
+                resource_lease_runtime,
+                "assert_resource_lease_from_environment",
+                side_effect=ValueError("missing live lease"),
+            ) as check:
+                with self.assertRaisesRegex(ValueError, "missing live lease"):
+                    store.write_document(path, payload, "reviews", lease_required=False)
+            self.assertTrue(check.called)
+            self.assertFalse(path.exists())
+
+    def test_repository_document_write_rejects_symlink_alias(self):
+        with tempfile.TemporaryDirectory() as outside, tempfile.TemporaryDirectory(dir=ROOT) as local:
+            link = Path(local) / "alias"
+            link.symlink_to(outside, target_is_directory=True)
+            path = link / "ledger.json"
+            payload = {"reviews": [{"domain": "example.com"}]}
+            with self.assertRaisesRegex(ValueError, "may not traverse symlinks"):
+                store.write_document(path, payload, "reviews", lease_required=False)
+            self.assertFalse((Path(outside) / "ledger.json").exists())
 
     def test_shard_checksum_failure_fails_closed(self):
         with tempfile.TemporaryDirectory() as tmp:
