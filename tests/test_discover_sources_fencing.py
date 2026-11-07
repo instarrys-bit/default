@@ -30,6 +30,26 @@ class DiscoverSourcesFencingTests(unittest.TestCase):
             assert_lease.assert_called_once_with("reports/source-discovery.md")
             self.assertTrue(report.is_file())
 
+    def test_independent_discovery_writes_only_to_isolated_runner_artifacts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            runner = Path(directory)
+            output = runner / "sources" / "discovered_sources.json"
+            report = runner / "reports" / "source-discovery.md"
+            output.parent.mkdir(parents=True)
+            report.parent.mkdir(parents=True)
+            data = {"candidates": []}
+            with patch.dict("os.environ", {"RUNNER_TEMP": directory}, clear=True), \
+                 patch.object(discover_sources, "INDEPENDENT_ARTIFACT_MODE", True), \
+                 patch.object(discover_sources, "ARTIFACT_ROOT", runner), \
+                 patch.object(discover_sources, "OUTPUT", output), \
+                 patch.object(discover_sources, "REPORT", report), \
+                 patch.object(discover_sources, "write_document") as write_document, \
+                 patch.object(discover_sources, "assert_resource_lease_from_environment") as assert_lease:
+                discover_sources.persist_discovery_outputs(data)
+            write_document.assert_called_once_with(output, data, "candidates", lease_required=False)
+            assert_lease.assert_not_called()
+            self.assertTrue(report.is_file())
+
     def test_fatal_discovery_error_returns_nonzero_and_preserves_previous_inventory(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
