@@ -41,22 +41,34 @@ class TaskSchedulerTests(unittest.TestCase):
         self.assertFalse(second["created"])
         self.assertEqual(first["task_id"], second["task_id"])
 
+    def test_source_discovery_revision_change_gets_a_new_daily_task(self):
+        registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
+        first = enqueue_source_discovery_task(
+            self.store, registry, idempotency_key="source-discovery:2026-11-07:abcdef123456"
+        )
+        refreshed = enqueue_source_discovery_task(
+            self.store, registry, idempotency_key="source-discovery:2026-11-07:123456abcdef"
+        )
+        self.assertTrue(first["created"])
+        self.assertTrue(refreshed["created"])
+        self.assertNotEqual(first["task_id"], refreshed["task_id"])
+
     def test_source_discovery_recovery_requires_dead_letter_and_is_bounded(self):
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
-        base = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07")
-        with self.assertRaisesRegex(ValueError, "requires a dead-lettered daily Discovery task"):
+        base = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:abcdef123456")
+        with self.assertRaisesRegex(ValueError, "dead-lettered matching Discovery task"):
             enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:abcdef123456:recovery:1")
         task = self.store.document["tasks"][0]
         task["status"] = "DEAD_LETTER"
         task["attempts"] = task["max_attempts"]
         task["last_error"] = {"type": "workflow_run_failed", "message": "resource lease expired"}
         task["state_history"] = ["QUEUED", "CLAIMED", "DEAD_LETTER"]
-        recovery = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:recovery:1")
+        recovery = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:abcdef123456:recovery:1")
         duplicate = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:recovery:1")
         self.assertTrue(recovery["created"])
         self.assertFalse(duplicate["created"])
         self.assertEqual(recovery["task_id"], duplicate["task_id"])
-        with self.assertRaisesRegex(ValueError, "one recovery key"):
+        with self.assertRaisesRegex(ValueError, "requires a UTC-day key"):
             enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:abcdef123456:recovery:2")
 
     def test_generated_python_cache_paths_are_discarded_from_artifact_sets(self):
