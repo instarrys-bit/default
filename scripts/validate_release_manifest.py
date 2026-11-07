@@ -330,8 +330,24 @@ def validate_release_manifest(root: Path = ROOT, manifest_path: Path | None = No
     migration = doc.get("next_migration_gate")
     if not isinstance(migration, dict) or not isinstance(migration.get("required_before_independent_python_dispatch"), list):
         raise ValueError("next_migration_gate requirements are missing")
-    if migration.get("completion_status") != "blocked_pending_contract_and_runtime_enforcement":
-        raise ValueError("independent Python dispatch must remain blocked pending contract/runtime enforcement")
+    completion_status = migration.get("completion_status")
+    if completion_status == "blocked_pending_contract_and_runtime_enforcement":
+        if enabled_python:
+            raise ValueError("Python adapters are enabled while the release gate remains blocked")
+        dispatch_state = "blocked"
+    elif completion_status == "approved_scoped_source_dag":
+        approved = migration.get("approved_programs")
+        policy_ids = sorted(item.get("target_program_id") for item in doc["python_adapter_policy"]["allowed_adapters"])
+        if (not isinstance(approved, list) or approved != sorted(set(approved))
+                or approved != policy_ids or approved != ["script_assess_sources"]):
+            raise ValueError("scoped source-DAG approval must exactly match the reviewed Python adapter allowlist")
+        for item in doc["python_adapter_policy"]["allowed_adapters"]:
+            adapter = next((entry for entry in adapters_doc["adapters"] if entry.get("target_program_id") == item["target_program_id"]), {})
+            if adapter.get("write_resources") != [] or adapter.get("publish_resources") != []:
+                raise ValueError("scoped source-DAG Python adapter must have no repository write or publish resources")
+        dispatch_state = "scoped_source_dag_enabled"
+    else:
+        raise ValueError("unknown independent Python dispatch gate state")
 
     return {
         "valid": True,
@@ -339,7 +355,7 @@ def validate_release_manifest(root: Path = ROOT, manifest_path: Path | None = No
         "schema_version": version,
         "verified_git_blob_pins": len(checked) + len(EXPECTED_PINS),
         "python_adapters_enabled": enabled_python,
-        "independent_python_dispatch": "blocked",
+        "independent_python_dispatch": dispatch_state,
     }
 
 
