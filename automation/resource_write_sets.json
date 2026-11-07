@@ -664,7 +664,10 @@
         "caller-selected logical JSON document"
       ],
       "side_effects": [
-        "Shared storage helper used by multiple registered programs; performs atomic legacy-file replacement or sharded JSONL writes, manifest switch, and cleanup."
+        "Shared storage helper used by multiple registered programs; performs atomic legacy-file replacement or sharded JSONL writes, manifest switch, and cleanup.",
+        "Every repository-local mutation reasserts the live canonical resource lease on the actual base, manifest, shard, staging, and cleanup path; lease proof maps child paths to the parent logical-document key.",
+        "Repository symlink and hard-link aliases are rejected before mutation. Runner-local paths outside the repository remain isolated and do not require repository leases.",
+        "The legacy lease_required=False argument is compatibility-only and cannot bypass repository fencing."
       ],
       "evidence": "_atomic_write() creates a temporary file, writes and fsyncs it, then os.replace()s the target. write_document() may write a legacy file or create a staging directory, shard files, atomically replace the manifest, remove the old base file and delete superseded shard directories.",
       "lease_keys": [
@@ -1068,8 +1071,8 @@
       ],
       "lock_key": "resource:data/domain_candidates.json",
       "mode": "exclusive",
-      "enforcement": "Current writes occur in the serialized auto_sync production pipeline under logical/production-pipeline. import_request_observations and collect_domains use write_document without lease_required=True; no global filesystem guard is present. Exact per-document fencing and concurrent external writers remain unresolved.",
-      "note": "Lease must cover legacy base JSON, adjacent manifest, all content-addressed shard files, staging directories, manifest switch and old shard cleanup."
+      "enforcement": "Every json_document_store mutation re-reads the live Issue #315 queue and asserts the exact logical document fence on the actual base/manifest/shard/staging/cleanup path; child paths map to the parent resource key. Repository symlink/hard-link aliases are rejected. The production pipeline lease remains an additional coarse mutex.",
+      "note": "Cross-workflow writer contention, retry exhaustion and lost-update integration proof still remain required; per-mutation fencing is now fail-closed in the shared document store."
     },
     {
       "resource": "durable task queue control-plane state",
@@ -1222,8 +1225,8 @@
       ],
       "lock_key": "logical/production-pipeline + resource-specific document/report lease",
       "mode": "exclusive",
-      "enforcement": "Current production builder and publish restore are serialized by the Watchdog logical production-pipeline live fence. The JSON document writer additionally uses its documented logical-document lease where explicitly asserted.",
-      "note": "Restore can write the same allowlisted base/manifest/shards/report; all dynamic document children and cleanup operations must remain within the same logical resource lease."
+      "enforcement": "Every repository-local json_document_store mutation reasserts the live resource fence against the actual base/manifest/shard/staging/cleanup path; child paths map to the parent logical-document key, and symlink/hard-link aliases fail closed. The production-pipeline lease remains an additional coarse mutex.",
+      "note": "The shared document helper now enforces the per-document fence on every repository mutation. Cross-workflow concurrent-writer and retry-exhaustion runtime evidence remains pending."
     },
     {
       "resource": "source discovery artifact document",
@@ -1293,8 +1296,8 @@
       ],
       "lock_key": "resource:sources/rule_provenance.json",
       "mode": "exclusive",
-      "enforcement": "Current production writes are serialized by the auto_sync logical/production-pipeline lease, which coordinates the workflow but does not intercept local filesystem mutations. build_rule_provenance uses write_document with lease_required default false; restore uses explicit allowlisted archive paths.",
-      "note": "Lease must cover base file, manifest, shard set, staging, atomic switch and cleanup."
+      "enforcement": "Every repository-local json_document_store mutation reasserts the live resource fence against the actual base/manifest/shard/staging/cleanup path; child paths map to the parent logical-document key, and symlink/hard-link aliases fail closed. The production-pipeline lease remains an additional coarse mutex.",
+      "note": "The shared document helper now enforces the per-document fence on every repository mutation. Cross-workflow concurrent-writer and retry-exhaustion runtime evidence remains pending."
     }
   ],
   "not_yet_proven": [
@@ -1302,7 +1305,7 @@
     "Dynamic path selection and caller-controlled output paths require runtime enforcement tests, especially diagnosis, incident-state, review-cursor and repair utilities.",
     "The Watchdog reads automation/unregistered_path_registry.json but does not write it; static call-site evidence shows no repository writer. Retain this as a read-only control-plane input and verify no indirect writer appears in the complete import graph.",
     "The request-intake workflow uses the fixed shared concurrency group shadowrocket-domain-intake (cancel-in-progress:false) plus Git-ref CAS for sources/request_domain_observations.json; same-domain and different-domain concurrent-run integration tests, retry exhaustion and live Actions evidence remain pending.",
-    "Exact per-document leases are now required for data/domain_candidates.json, data/candidates.json, data/source_pending.json and sources/rule_provenance.json; the complete dynamic manifest/shard/staging/cleanup and restore-path integration proof remains pending.",
+    "Per-document fencing is now enforced by json_document_store for repository-local base, manifest, shard, staging and cleanup mutations; concurrent-writer, restore-path and retry-exhaustion integration proof remains pending.",
     "Non-ruleset shared JSON documents (notably data/domain_candidates.json, sources/rule_provenance.json and dynamic source snapshots) still need complete concurrent-writer integration proof; source registry activation outputs are runner-local proposals only.",
     "Atomic multi-resource lease acquisition and compatibility of per-resource locks across all independent/cross-workflow writers remain unproven.",
     "Static entrypoint inventory does not prove absence of unregistered dynamic writes, subprocess writes, external API mutations or filesystem writes hidden behind imported helpers.",
