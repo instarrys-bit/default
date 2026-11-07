@@ -5,7 +5,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from source_handoff_policy import classify_assessment_handoff
+from source_handoff_policy import classify_assessment_handoff, discovery_task_requires_handoff
 
 
 def assessment_task(task_id, run_id, status="SUCCEEDED", key=None, verified=True, created_at="2026-11-07T12:00:00Z"):
@@ -26,7 +26,46 @@ def assessment_task(task_id, run_id, status="SUCCEEDED", key=None, verified=True
     }
 
 
+def discovery_task(run_id="42373818238", status="SUCCEEDED", include_run_evidence=True):
+    result = {"run_evidence": {"run_id": run_id}} if include_run_evidence else {}
+    return {
+        "task_id": "task_discovery",
+        "target_program_id": "workflow_source_discovery",
+        "status": status,
+        "result": result,
+    }
+
+
 class SourceHandoffPolicyTests(unittest.TestCase):
+    def test_verified_assessment_releases_terminal_discovery_for_next_cycle(self):
+        discovery = discovery_task()
+        assessment = assessment_task("task_assessed", "42373818238")
+        self.assertFalse(discovery_task_requires_handoff(discovery, [discovery, assessment]))
+
+    def test_succeeded_discovery_without_verified_assessment_still_needs_handoff(self):
+        discovery = discovery_task()
+        self.assertTrue(discovery_task_requires_handoff(discovery, [discovery]))
+
+    def test_active_assessment_keeps_discovery_handoff_blocked(self):
+        discovery = discovery_task()
+        assessment = assessment_task("task_active", "42373818238", status="QUEUED", verified=False)
+        self.assertTrue(discovery_task_requires_handoff(discovery, [discovery, assessment]))
+
+    def test_invalid_assessment_evidence_keeps_discovery_visible(self):
+        discovery = discovery_task()
+        assessment = assessment_task("task_invalid", "42373818238", verified=False)
+        self.assertTrue(discovery_task_requires_handoff(discovery, [discovery, assessment]))
+
+    def test_missing_discovery_run_evidence_remains_pending_for_exact_resolution(self):
+        discovery = discovery_task(include_run_evidence=False)
+        assessment = assessment_task("task_assessed", "42373818238")
+        self.assertTrue(discovery_task_requires_handoff(discovery, [discovery, assessment]))
+
+    def test_nonterminal_discovery_is_not_released_by_old_assessment(self):
+        discovery = discovery_task(status="VERIFYING")
+        assessment = assessment_task("task_assessed", "42373818238")
+        self.assertTrue(discovery_task_requires_handoff(discovery, [discovery, assessment]))
+
     def test_no_existing_assessment_is_ready(self):
         result = classify_assessment_handoff([], "42373818238")
         self.assertEqual(result["state"], "ready")
