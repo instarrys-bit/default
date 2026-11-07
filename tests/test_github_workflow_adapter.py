@@ -16,6 +16,8 @@ class FakeGitHub:
     def __init__(self):
         self.dispatched = []
         self.runs = []
+        self.run_pages = {}
+        self.list_pages_requested = []
         self.run_detail = {}
         self.commits = {}
         self.workflow = {"id": 1234, "path": ".github/workflows/request-intake.yml", "state": "active"}
@@ -33,9 +35,12 @@ class FakeGitHub:
         self.dispatched.append((workflow_id, ref, inputs))
         return None
 
-    def list_runs(self, workflow_id, ref):
+    def list_runs(self, workflow_id, ref, page=1):
         self.list_request = (workflow_id, ref)
-        return {"workflow_runs": self.runs}
+        self.list_pages_requested.append(page)
+        if self.run_pages:
+            return {"workflow_runs": self.run_pages.get(page, [])}
+        return {"workflow_runs": self.runs if page == 1 else []}
 
     def get_run(self, run_id):
         return self.run_detail[run_id]
@@ -139,6 +144,25 @@ class WorkflowAdapterTests(unittest.TestCase):
         self.client.runs.append(dict(matching, id=89))
         with self.assertRaises(AmbiguousWorkflowRun):
             find_correlated_run(self.client, intent)
+
+    def test_find_correlated_run_paginates_past_newer_workflow_runs(self):
+        intent = self.prepare()
+        decoys = [
+            {
+                "id": index, "workflow_id": 1234, "event": "workflow_dispatch",
+                "head_branch": "main", "head_sha": "a" * 40,
+                "display_title": f"Automation task unrelated-{index}", "status": "completed",
+            }
+            for index in range(100)
+        ]
+        matching = {
+            "id": 888, "workflow_id": 1234, "event": "workflow_dispatch",
+            "head_branch": "main", "head_sha": "a" * 40,
+            "display_title": intent["correlation_title"], "status": "completed",
+        }
+        self.client.run_pages = {1: decoys, 2: [matching]}
+        self.assertEqual(find_correlated_run(self.client, intent), matching)
+        self.assertEqual(self.client.list_pages_requested, [1, 2])
 
     def test_inspection_does_not_assume_dispatch_acceptance_means_success(self):
         intent = self.prepare()
