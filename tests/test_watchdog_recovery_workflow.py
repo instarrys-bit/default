@@ -195,7 +195,10 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("workflow_dispatch", watchdog)
         self.assertIn('"source-assessment:" + run_id', watchdog)
         self.assertIn('task.get("target_program_id") == "script_assess_sources"', watchdog)
-        self.assertIn('task.get("status") == "QUEUED"', watchdog)
+        self.assertIn('task.get("status") in {"QUEUED", "VERIFYING", "COMPLETED", "SUCCEEDED"}', watchdog)
+        self.assertIn("page={page}", watchdog)
+        self.assertIn("if page > 20:", watchdog)
+        self.assertIn('base_key + ":recovery:1"', watchdog)
         self.assertIn('proof.get("workflow_run_id", "")', watchdog)
         self.assertIn('actions/runs/{run_id}', watchdog)
         self.assertIn("Queued Assessment predecessor does not resolve to its exact successful Discovery run.", watchdog)
@@ -220,6 +223,21 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         auto_sync = next(x for x in adapters["adapters"] if x["target_program_id"] == "workflow_auto_sync")
         self.assertIn("sources/discovered_sources.json", auto_sync["resource_contract"]["resource_keys"])
         self.assertIn("reports/source-discovery.md", auto_sync["resource_contract"]["resource_keys"])
+
+    def test_source_reconciliation_scans_all_pages_and_recovers_completed_assessment_predecessors(self):
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
+        self.assertIn("while page <= 20:", watchdog)
+        self.assertIn("page += 1", watchdog)
+        self.assertIn("Discovery workflow run history exceeds the bounded 2,000-run reconciliation window", watchdog)
+        self.assertIn('task.get("status") in {"QUEUED", "VERIFYING", "COMPLETED", "SUCCEEDED"}', watchdog)
+
+    def test_source_discovery_retries_once_after_a_dead_lettered_daily_task(self):
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
+        self.assertIn('base_status="$(jq -r', watchdog)
+        self.assertIn('"$base_key:recovery:1"', watchdog)
+        self.assertIn('[ "$base_status" = "DEAD_LETTER" ]', watchdog)
+        self.assertIn('[ "$base_status" = "FAILED" ]', watchdog)
+        self.assertIn('if [ -n "$recovery_key" ]; then', watchdog)
 
     def test_auto_sync_accepts_verifying_phase_resource_lease_after_task_lease_release(self):
         audit = AUTO_SYNC.read_text(encoding="utf-8")
