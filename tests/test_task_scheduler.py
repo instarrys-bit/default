@@ -201,12 +201,12 @@ class TaskSchedulerTests(unittest.TestCase):
         }
         first = enqueue_source_assessment_task(
             self.store, registry, adapters,
-            idempotency_key="source-assessment:41770000000",
+            idempotency_key="source-assessment:41770000000:parser-v2",
             input_payload=payload, root=source_root,
         )
         second = enqueue_source_assessment_task(
             self.store, registry, adapters,
-            idempotency_key="source-assessment:41770000000",
+            idempotency_key="source-assessment:41770000000:parser-v2",
             input_payload=payload, root=source_root,
         )
         self.assertTrue(first["created"])
@@ -241,7 +241,7 @@ class TaskSchedulerTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "no longer matches"):
             enqueue_source_assessment_task(
                 self.store, registry, adapters,
-                idempotency_key="source-assessment:41770000001",
+                idempotency_key="source-assessment:41770000001:parser-v2",
                 input_payload=payload, root=source_root,
             )
 
