@@ -3,7 +3,9 @@ run-name: Automation task ${{ inputs.automation_task_id || 'manual' }}
 
 on:
   schedule:
-    - cron: "0 * * * *"
+    # GITHUB_TOKEN-dispatched workflow completions do not reliably emit workflow_run events.
+    # Reconcile the durable queue every 15 minutes so blocked downstream tasks resume promptly.
+    - cron: "*/15 * * * *"
     - cron: "30 22 * * *"
   workflow_dispatch:
     inputs:
