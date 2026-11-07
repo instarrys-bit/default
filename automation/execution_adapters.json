@@ -1287,8 +1287,10 @@
           "rulesets/reject.list",
           "rulesets/reject_review_queue.json",
           "sources/discovered_sources.json",
+          "sources/domain_reviews.json",
           "sources/review_cursor.json",
-          "sources/rule_provenance.json"
+          "sources/rule_provenance.json",
+          "sources/source_candidates.json"
         ],
         "lease_seconds": 21600,
         "fencing_required": true,
