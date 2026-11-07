@@ -6,7 +6,7 @@
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 5,
-    "step_count": 52,
+    "step_count": 54,
     "independent_python_dispatch_enabled": false,
     "independent_workflow_count": 1
   },
@@ -46,144 +46,152 @@
           "order": 6
         },
         {
-          "name": "Verify registered user config baseline",
+          "name": "Detect runner-local config baseline proposal",
           "order": 7
         },
         {
-          "name": "Capture and verify the exact production input fingerprint",
+          "name": "Preserve config baseline proposal as immutable run artifact",
           "order": 8
         },
         {
-          "name": "Stop stale audit before discovery and source downloads",
+          "name": "Verify registered user config baseline",
           "order": 9
         },
         {
-          "name": "Compile and run deterministic review tests",
+          "name": "Capture and verify the exact production input fingerprint",
           "order": 10
         },
         {
-          "name": "Discover candidate source repositories (non-activating)",
+          "name": "Stop stale audit before discovery and source downloads",
           "order": 11
         },
         {
-          "name": "Assess discovered rule-list syntax and policy claims",
+          "name": "Compile and run deterministic review tests",
           "order": 12
         },
         {
-          "name": "Preserve complete source assessment report",
+          "name": "Discover candidate source repositories (non-activating)",
           "order": 13
         },
         {
-          "name": "Restore prior high-volume automation state",
+          "name": "Assess discovered rule-list syntax and policy claims",
           "order": 14
         },
         {
-          "name": "Remove published and queued rules that conflict with uu.conf",
+          "name": "Preserve complete source assessment report",
           "order": 15
         },
         {
-          "name": "Import observed request hostnames as unclassified candidates",
+          "name": "Restore prior high-volume automation state",
           "order": 16
         },
         {
-          "name": "Audit public source lineage and shared upstreams",
+          "name": "Remove published and queued rules that conflict with uu.conf",
           "order": 17
         },
         {
-          "name": "Audit domain-level policy-source overlap and contradictions",
+          "name": "Import observed request hostnames as unclassified candidates",
           "order": 18
         },
         {
-          "name": "Build automated source candidate and lineage matrix",
+          "name": "Audit public source lineage and shared upstreams",
           "order": 19
         },
         {
-          "name": "Admit stable policy-evidenced sources without AI review",
+          "name": "Audit domain-level policy-source overlap and contradictions",
           "order": 20
         },
         {
-          "name": "Collect and cross-check all enabled domain sources",
+          "name": "Build automated source candidate and lineage matrix",
           "order": 21
         },
         {
-          "name": "Stop stale audit before expensive deterministic review",
+          "name": "Admit stable policy-evidenced sources without AI review",
           "order": 22
         },
         {
-          "name": "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services",
+          "name": "Collect and cross-check all enabled domain sources",
           "order": 23
         },
         {
-          "name": "Preserve resumable review cursor checkpoint",
+          "name": "Stop stale audit before expensive deterministic review",
           "order": 24
         },
         {
-          "name": "Build standalone DIRECT, PROXY and REJECT rule sets",
+          "name": "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services",
           "order": 25
         },
         {
-          "name": "Summarize REJECT secondary screening",
+          "name": "Preserve resumable review cursor checkpoint",
           "order": 26
         },
         {
-          "name": "Evaluate lifecycle milestones and monthly capacity review",
+          "name": "Build standalone DIRECT, PROXY and REJECT rule sets",
           "order": 27
         },
         {
-          "name": "Run conservative lifecycle audit and selectable restoration",
+          "name": "Summarize REJECT secondary screening",
           "order": 28
         },
         {
-          "name": "Reconcile final uu.conf scope coverage after all rule mutations",
+          "name": "Evaluate lifecycle milestones and monthly capacity review",
           "order": 29
         },
         {
-          "name": "Reconcile final RULE-SET manifest counts",
+          "name": "Run conservative lifecycle audit and selectable restoration",
           "order": 30
         },
         {
-          "name": "Build append-only rule-level provenance ledger",
+          "name": "Reconcile final uu.conf scope coverage after all rule mutations",
           "order": 31
         },
         {
-          "name": "Validate Shadowrocket config structure",
+          "name": "Reconcile final RULE-SET manifest counts",
           "order": 32
         },
         {
-          "name": "Audit RULE-SET references against generated outputs (read-only)",
+          "name": "Build append-only rule-level provenance ledger",
           "order": 33
         },
         {
-          "name": "Audit candidate scope coverage against user config (read-only)",
+          "name": "Validate Shadowrocket config structure",
           "order": 34
         },
         {
-          "name": "Audit managed config drift (read-only)",
+          "name": "Audit RULE-SET references against generated outputs (read-only)",
           "order": 35
         },
         {
-          "name": "Run read-only full-source regression audit",
+          "name": "Audit candidate scope coverage against user config (read-only)",
           "order": 36
         },
         {
-          "name": "Build consolidated project status",
+          "name": "Audit managed config drift (read-only)",
           "order": 37
         },
         {
-          "name": "Write successful audit heartbeat",
+          "name": "Run read-only full-source regression audit",
           "order": 38
         },
         {
-          "name": "Record durable automation state pointer",
+          "name": "Build consolidated project status",
           "order": 39
         },
         {
-          "name": "Package allowlisted audit outputs",
+          "name": "Write successful audit heartbeat",
           "order": 40
         },
         {
-          "name": "Upload allowlisted audit outputs",
+          "name": "Record durable automation state pointer",
           "order": 41
+        },
+        {
+          "name": "Package allowlisted audit outputs",
+          "order": 42
+        },
+        {
+          "name": "Upload allowlisted audit outputs",
+          "order": 43
         }
       ]
     },
