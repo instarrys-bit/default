@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
-  "release_status": "baseline_snapshot",
-  "created_on": "2026-11-05",
-  "purpose": "Integrated reliability baseline: Watchdog task ownership and resource-lease coordination, production-input fingerprint validation, stale queued-task recovery, and explicit ruleset publication allowlisting with independent remote verification.",
+  "release_id": "shadowrocket-automation-independent-source-dag-2026.11.07.1",
+  "release_status": "scoped_independent_source_dag",
+  "created_on": "2026-11-07",
+  "purpose": "Independent source discovery and assessment DAG with verified runner-local artifact handoff, queue-only fenced progress, and strict ruleset-only repository publication.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "c4871f015961830718346a1d3dea18e0283c036e"
+      "git_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "82012007de750c605d5ef27a355ece7321cdc51a"
+      "git_blob_sha": "79dfe3d3a3322c7eec4ae0178e85c53ada75efe4"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -24,11 +24,11 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "ccfd914d80ff7db2d51ca9eab99234d6f4278dee"
+      "git_blob_sha": "d836ad7e2b46d0aaefdc741d2b6b56cf952876af"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "f02e575a504495d595050c069abb053ca41c324b"
+      "git_blob_sha": "8f1c5b86dc17be81ed2b7ec1f44d0ac6d3105370"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -42,7 +42,7 @@
     },
     "source_assessor": {
       "path": "scripts/assess_sources.py",
-      "git_blob_sha": "e83176283ee528886349a1ff5a0dc036d01eb0f9"
+      "git_blob_sha": "c825d64b9da2462bbca5e8932aab92729ae3088c"
     },
     "task_queue_validator": {
       "path": "scripts/task_queue.py",
@@ -54,7 +54,7 @@
     },
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
-      "git_blob_sha": "3be6b4bd6f5dbd2b580ae678cfed9cb60236e9fa"
+      "git_blob_sha": "8e3e2b20f0ef121757c36ec74bb7ce3e5f564e6f"
     },
     "remote_task_queue_runtime": {
       "path": "scripts/remote_task_queue_runtime.py",
@@ -62,7 +62,7 @@
     },
     "task_scheduler": {
       "path": "scripts/task_scheduler.py",
-      "git_blob_sha": "09bb620f1aa39ada02435ae686ae37f3900e2711"
+      "git_blob_sha": "355dd341b8e90124dd51af82927b81c9edaec5f1"
     },
     "resource_lease_runtime": {
       "path": "scripts/resource_lease_runtime.py",
@@ -70,27 +70,27 @@
     },
     "source_discovery_workflow": {
       "path": ".github/workflows/source-discovery.yml",
-      "git_blob_sha": "e8c57e985e9f2b514607b9eeaf4f5b17e68bfb9d"
+      "git_blob_sha": "5e4a526291c0217356473b4a0ff41afbdaf3e742"
     },
     "source_discovery_implementation": {
       "path": "scripts/discover_sources.py",
-      "git_blob_sha": "beb5b98d8f1b052aeac0671d8795a8396122266b"
+      "git_blob_sha": "b893f5f8cd0f38605296c483d453d892ed6e2cfc"
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "c4871f015961830718346a1d3dea18e0283c036e"
+      "git_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "7b93d8b8625f8973826de8034e29476f7ab0f4af"
+      "git_blob_sha": "79dfe3d3a3322c7eec4ae0178e85c53ada75efe4"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "ef133ab86ccf24965eaafa0372f6a3f33802cce3"
+      "git_blob_sha": "aee5ee62967ae865a78fa0f52a9375a7a58482bd"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "14daa858fe8055efe76113a0f5f9abc27f1db5b8"
+      "git_blob_sha": "e25bf86050266af47b966fa712ce76d6fe352a2a"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -119,6 +119,18 @@
     "import_request_observations": {
       "path": "scripts/import_request_observations.py",
       "git_blob_sha": "44bf4312d22ebbcec22d34240891faea29b69c1b"
+    },
+    "resource_write_sets": {
+      "path": "automation/resource_write_sets.json",
+      "git_blob_sha": "67cc74cf886052a44d7e4c3c5efcbeb216ea1956"
+    },
+    "assessment_artifact_verifier": {
+      "path": "scripts/verify_assess_sources_artifacts.py",
+      "git_blob_sha": "0f93d85340f75e310f19482b66c3f965748fd8c7"
+    },
+    "release_manifest_validator": {
+      "path": "scripts/validate_release_manifest.py",
+      "git_blob_sha": "95e733af003ac1ea19d98d32b1f7df27cc3f5240"
     }
   },
   "compatibility": {
@@ -136,29 +148,44 @@
     "python_adapter_default_deny": true
   },
   "known_gaps": [
-    "Write-path ownership and indirect side effects still require machine-checked coverage across all independent writers.",
-    "The declared review-engine version is not yet pinned to a verified source revision.",
-    "Resource ownership audit is still a partial static review; restore_automation_state is an additional serialized writer for source assessment history/report artifacts.",
-    "Review cursor checkpoint persistence is protected by the production workflow's top-level main-writer concurrency group and the live Watchdog fencing lease; complete transitive writer tracing remains outstanding.",
-    "Historical terminal tasks are resolved only when completed failure evidence proves their source SHA is superseded; unknown outcomes, current-main failures, active leases and unrelated task types remain untouched.",
-    "Durable per-URL assessment checkpoints are implemented in the task queue; live multi-run interruption/resume integration evidence is still pending.",
-    "Independent source discovery workflow and immutable run-bound artifact handoff are implemented on the integration branch but remain dormant until HOLD/authorization and monolithic cutover; no production dispatch has occurred."
+    "The global transitive writer audit for unrelated, non-dispatchable Python components and workflow-native writers remains partial; those adapters remain default-deny.",
+    "The deterministic review-engine source revision is not yet pinned to a verified commit.",
+    "A post-merge Watchdog-dispatched discovery-to-assessment run and remote immutable artifact verification have not yet been performed.",
+    "Durable per-URL checkpoint interruption/resume is unit-tested; live multi-run interruption/resume evidence remains pending."
   ],
   "next_migration_gate": {
     "required_before_independent_python_dispatch": [
-      "Complete capability input/output contracts.",
-      "Validate executable entrypoints and argument schemas.",
-      "Declare read and write resource sets, including indirect writes.",
-      "Enforce exclusive resource leases for overlapping writers.",
-      "Record input snapshot hashes and output artifact hashes.",
-      "Verify config-baseline immutability before and after execution.",
-      "Run isolated canary tests with all new adapters disabled by default."
+      "Complete transitive write-set evidence for any additional Python adapter before it is allowlisted.",
+      "Keep every additional repository publication path inside rulesets/** and verify it independently.",
+      "Resolve all dynamic path aliases and shared logical resource leases for any newly enabled writer.",
+      "Run isolated canary tests with new adapters disabled by default before adding them to the allowlist."
     ],
-    "completion_status": "blocked_pending_contract_and_runtime_enforcement"
+    "completion_status": "approved_scoped_source_dag",
+    "approved_programs": [
+      "script_assess_sources"
+    ]
   },
   "python_adapter_policy": {
     "schema_version": 1,
     "default_decision": "deny",
-    "allowed_adapters": []
+    "allowed_adapters": [
+      {
+        "target_program_id": "script_assess_sources",
+        "capability": "source_assessment",
+        "release_id": "shadowrocket-automation-independent-source-dag-2026.11.07.1",
+        "adapter_entry_sha256": "1a8eb3b567629f08c4850b6217bbd51a02a56ef47b0f179088d3c73ad8b079f3",
+        "registry_entry_sha256": "9f448f101ba172d74d0b0669a7c761f74d3d06b98609779e825f6bbab7c22288",
+        "source_path": "scripts/assess_sources.py",
+        "source_git_blob_sha": "c825d64b9da2462bbca5e8932aab92729ae3088c",
+        "allowed_callers": [
+          "workflow_automation_watchdog"
+        ],
+        "input_contract_sha256": "3f089ec52a26ba8a7e70d158dcc2e64438743f88cdc03ae0f75cf967291392c2",
+        "output_contract_sha256": "ff475c522d1d58633246112adea18ef7d921ac89944f4a1dc7178cb5aad78aba",
+        "dependency_contract_sha256": "9701a5ebc55ea76c2f7795af9efcb7d4679fc32f09d16bc00583d6bfe0bda6cf",
+        "resource_contract_sha256": "dfacfff8673199bf44ad4f56ed375cb214cb788267ace1f24268acf5833869ed",
+        "verifier_contract_sha256": "601c151692490aa9f8eb5b669c223e7c5be7eddfd8e16daf21b785097a7e662d"
+      }
+    ]
   }
 }
