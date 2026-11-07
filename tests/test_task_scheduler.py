@@ -35,8 +35,8 @@ class MemoryStore:
 class TaskSchedulerTests(unittest.TestCase):
     def test_source_discovery_daily_enqueue_is_idempotent(self):
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
-        first = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07")
-        second = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07")
+        first = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:abcdef123456")
+        second = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:abcdef123456")
         self.assertTrue(first["created"])
         self.assertFalse(second["created"])
         self.assertEqual(first["task_id"], second["task_id"])
@@ -45,7 +45,7 @@ class TaskSchedulerTests(unittest.TestCase):
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
         base = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07")
         with self.assertRaisesRegex(ValueError, "requires a dead-lettered daily Discovery task"):
-            enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:recovery:1")
+            enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:abcdef123456:recovery:1")
         task = self.store.document["tasks"][0]
         task["status"] = "DEAD_LETTER"
         task["attempts"] = task["max_attempts"]
@@ -57,7 +57,7 @@ class TaskSchedulerTests(unittest.TestCase):
         self.assertFalse(duplicate["created"])
         self.assertEqual(recovery["task_id"], duplicate["task_id"])
         with self.assertRaisesRegex(ValueError, "one recovery key"):
-            enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:recovery:2")
+            enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:abcdef123456:recovery:2")
 
     def test_generated_python_cache_paths_are_discarded_from_artifact_sets(self):
         paths = [
