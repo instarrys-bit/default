@@ -12,6 +12,7 @@
       ".github/workflows/dashboard-pages.yml",
       ".github/workflows/request-intake.yml",
       ".github/workflows/self-healing-agent.yml",
+      ".github/workflows/self-healing-tests.yml",
       ".github/workflows/source-discovery.yml",
       ".github/workflows/validate-config.yml",
       "scripts/append_step_summary.py",
@@ -72,7 +73,7 @@
       "tests/test_task_queue_runtime.py",
       "tests/test_workflow_config_guard_order.py"
     ],
-    "limitation": "The source DAG's monolithic checkout outputs are local workflow workspace files protected by exact resource leases; independent mode uses RUNNER_TEMP. Neither mode publishes source documents to the repository. The global audit remains partial for other dynamic paths, runtime traces and cross-workflow lease compatibility.",
+    "limitation": "The AST inventory classifies all registered Python mutation sites and imported local helpers; the workflow-native scanner now covers all eight repository workflows. Dynamic shell construction, action-internal effects, full runtime mutation traces and cross-workflow resource lease compatibility still require runtime evidence. Historical fenced_file_writer.py references are stale: the file is absent from main and this candidate; no global file guard is used or reintroduced.",
     "reviewed_at": "2026-11-04",
     "isolated_ephemeral_outputs": [
       {
