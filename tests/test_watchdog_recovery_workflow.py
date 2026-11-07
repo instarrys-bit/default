@@ -433,5 +433,20 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('$file.status != "removed"', workflow)
         self.assertIn('$manifest[0].production_input_paths | index($file.filename)', workflow)
 
+    def test_independent_source_resource_leases_outlive_watchdog_reconciliation_window(self):
+        import re
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        match = re.search(r'cron:\\s*"\\*/([0-9]+) \\* \\* \\* \\*"', workflow)
+        self.assertIsNotNone(match, "Watchdog reconciliation cron must be explicit")
+        reconciliation_seconds = int(match.group(1)) * 60
+        adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
+        by_id = {item["target_program_id"]: item for item in adapters["adapters"]}
+        for program_id in ("workflow_source_discovery", "script_assess_sources"):
+            with self.subTest(program_id=program_id):
+                lease_seconds = by_id[program_id]["resource_contract"]["lease_seconds"]
+                self.assertGreaterEqual(lease_seconds, reconciliation_seconds * 4)
+        contract = json.loads((ROOT / "automation" / "capability_contracts" / "assess_sources.json").read_text(encoding="utf-8"))
+        self.assertEqual(contract["resource_contract"]["lease_seconds"], by_id["script_assess_sources"]["resource_contract"]["lease_seconds"])
+
 if __name__ == "__main__":
     unittest.main()
