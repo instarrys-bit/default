@@ -46,8 +46,13 @@ def _assert_document_lease(path: Path, required: bool = True) -> None:
     try:
         relative_path = normalized_path.relative_to(repository_root)
     except ValueError:
-        # Runner-local outputs are deliberately outside the repository boundary.
-        return
+        # A runner-local path is allowed only if it does not resolve through an
+        # external symlink into the repository.
+        try:
+            normalized_path.resolve(strict=False).relative_to(repository_root)
+        except ValueError:
+            return
+        raise ValueError("external document path may not alias into the repository")
     assert_resource_lease_for_repository_path(repository_root, relative_path.as_posix())
 
 
