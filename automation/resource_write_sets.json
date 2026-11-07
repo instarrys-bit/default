@@ -1176,6 +1176,21 @@
       "note": "These files hold the approval record and derived pins for the exact owner-authored modules/uu.conf blob. Historical state restoration is not permitted to replace sources/policy.json or the release-pin metadata."
     },
     {
+      "id": "rulesets/config_conflict_archive.json",
+      "resource": "rulesets/config_conflict_archive.json",
+      "paths": [
+        "rulesets/config_conflict_archive.json"
+      ],
+      "writers": [
+        "script_sync_ruleset_config_conflicts",
+        "script_restore_automation_state",
+        "workflow_auto_sync"
+      ],
+      "lock_key": "logical/production-pipeline + rulesets/config_conflict_archive.json",
+      "mode": "exclusive",
+      "enforcement": "The Watchdog production task acquires the exact resource lease and restore_publish_outputs reasserts it before writing."
+    },
+    {
       "resource": "rulesets/direct.list, rulesets/proxy.list, rulesets/reject.list",
       "writers": [
         "script_build_rulesets",
@@ -1205,7 +1220,7 @@
         "script_restore_automation_state",
         "workflow_auto_sync"
       ],
-      "lock_key": "resource:rulesets/lifecycle_state.json",
+      "lock_key": "logical/production-pipeline + rulesets/lifecycle_state.json",
       "mode": "exclusive",
       "enforcement": "The current production call is serialized by the Watchdog logical/production-pipeline lease; no repository-local filesystem interception is installed. No independent writer path was found in the reviewed workflow call sites.",
       "note": "Lifecycle gate updates scheduling state; keep this separate from the lifecycle audit's published lists, pending queue, archives and manifest."
@@ -1220,7 +1235,7 @@
         "script_sync_ruleset_config_conflicts",
         "workflow_automation_watchdog"
       ],
-      "lock_key": "rulesets/manifest.json + concurrency:shadowrocket-main-writer",
+      "lock_key": "logical/production-pipeline + rulesets/manifest.json + concurrency:shadowrocket-main-writer",
       "mode": "exclusive",
       "enforcement": "auto_sync holds exact rulesets/manifest.json resource lease; Watchdog manifest-integrity job uses the same shadowrocket-main-writer concurrency group with cancel-in-progress:false, preventing cross-workflow overlap."
     },
@@ -1232,8 +1247,24 @@
         "script_restore_automation_state",
         "script_sync_ruleset_config_conflicts"
       ],
-      "lock_key": "resource:rulesets/pending_queue.json",
+      "lock_key": "logical/production-pipeline + rulesets/pending_queue.json",
       "mode": "exclusive"
+    },
+    {
+      "id": "rulesets/reject_review_queue.json",
+      "resource": "rulesets/reject_review_queue.json",
+      "paths": [
+        "rulesets/reject_review_queue.json"
+      ],
+      "writers": [
+        "script_sync_ruleset_config_conflicts",
+        "script_lifecycle_audit",
+        "script_restore_automation_state",
+        "workflow_auto_sync"
+      ],
+      "lock_key": "logical/production-pipeline + rulesets/reject_review_queue.json",
+      "mode": "exclusive",
+      "enforcement": "The Watchdog production task acquires the exact resource lease and restore_publish_outputs reasserts it before writing."
     },
     {
       "resource": "source candidate artifact document",
@@ -1294,19 +1325,6 @@
       "note": "A bare-Git integration test simulates two runner clones that start from the same base, race to push, and verifies the loser fetches/resets/replays and preserves both distinct and overlapping hostnames. Real GitHub Actions concurrent-run integration remains outstanding."
     },
     {
-      "resource": "sources/rule_provenance.json logical document",
-      "writers": [
-        "script_build_rule_provenance",
-        "script_json_document_store",
-        "script_restore_automation_state",
-        "workflow_auto_sync"
-      ],
-      "lock_key": "resource:sources/rule_provenance.json",
-      "mode": "exclusive",
-      "enforcement": "Current production writes are serialized by the auto_sync logical/production-pipeline lease, which coordinates the workflow but does not intercept local filesystem mutations. build_rule_provenance uses write_document with lease_required default false; restore uses explicit allowlisted archive paths.",
-      "note": "Lease must cover base file, manifest, shard set, staging, atomic switch and cleanup."
-    },
-    {
       "resource": "sources/review_cursor.json",
       "paths": [
         "sources/review_cursor.json"
@@ -1321,6 +1339,19 @@
       "mode": "exclusive",
       "enforcement": "The Watchdog-dispatched production task holds both logical/production-pipeline and sources/review_cursor.json fencing leases. The failed-run recovery job revalidates the exact live task proof before mutation and shares the shadowrocket-main-writer concurrency group.",
       "note": "The failed/cancelled audit cursor is validated and persisted only to the canonical checkpoint path. No other repository path is staged by the recovery job."
+    },
+    {
+      "resource": "sources/rule_provenance.json logical document",
+      "writers": [
+        "script_build_rule_provenance",
+        "script_json_document_store",
+        "script_restore_automation_state",
+        "workflow_auto_sync"
+      ],
+      "lock_key": "resource:sources/rule_provenance.json",
+      "mode": "exclusive",
+      "enforcement": "Current production writes are serialized by the auto_sync logical/production-pipeline lease, which coordinates the workflow but does not intercept local filesystem mutations. build_rule_provenance uses write_document with lease_required default false; restore uses explicit allowlisted archive paths.",
+      "note": "Lease must cover base file, manifest, shard set, staging, atomic switch and cleanup."
     }
   ],
   "not_yet_proven": [
@@ -1555,10 +1586,12 @@
         "rulesets/reject.list",
         "rulesets/manifest.json",
         "rulesets/pending_queue.json",
-        "rulesets/archive.json"
+        "rulesets/lifecycle_state.json",
+        "rulesets/config_conflict_archive.json",
+        "rulesets/reject_review_queue.json"
       ],
-      "fence": "Watchdog task lease plus logical production lease; rulesets-only staging allowlist and final staged-path fence.",
-      "boundary": "Main-branch publication is restricted to rulesets/** and independently verified."
+      "fence": "Watchdog task lease plus logical/production-pipeline lease and exact resource leases for every rulesets/** file; restore_publish_outputs reasserts the exact file lease; rulesets-only staging allowlist and final staged-path fence.",
+      "boundary": "Main-branch publication is restricted to rulesets/**; sources/**, data/**, reports/**, modules/** and JS scripts are never staged or published."
     },
     {
       "workflow_path": ".github/workflows/automation-watchdog.yml",
