@@ -1301,15 +1301,25 @@ jobs:
           from pathlib import Path
           report = json.loads(Path("/tmp/task-scheduler-report.json").read_text(encoding="utf-8"))
           queue = json.loads((Path(os.environ["RUNNER_TEMP"]) / "task_queue_after.json").read_text(encoding="utf-8"))
-          processed_ids = {
-              item.get("task_id") for item in report.get("processed", [])
-              if isinstance(item, dict) and isinstance(item.get("task_id"), str)
+          tasks_by_id = {
+              task.get("task_id"): task for task in queue.get("tasks", [])
+              if isinstance(task, dict) and isinstance(task.get("task_id"), str)
           }
-          expected = any(
-              task.get("task_id") in processed_ids
-              and task.get("target_program_id") == "script_assess_sources"
-              for task in queue.get("tasks", [])
-          )
+          expected = False
+          for item in report.get("processed", []):
+              if not isinstance(item, dict) or not isinstance(item.get("task_id"), str):
+                  continue
+              task_id = item["task_id"]
+              task = tasks_by_id.get(task_id, {})
+              if task.get("target_program_id") != "script_assess_sources":
+                  continue
+              verified = (item.get("verification") or {}).get("verified", [])
+              if item.get("status") != "SUCCEEDED" or task_id not in verified:
+                  raise SystemExit(f"Assessment task {task_id} did not reach independently verified SUCCEEDED.")
+              artifact_root = Path(os.environ["AUTOMATION_ARTIFACT_ROOT"])
+              if not any(path.is_file() for path in artifact_root.rglob("*")):
+                  raise SystemExit(f"Assessment task {task_id} was verified but produced no runner-local artifact files.")
+              expected = True
           value = "true" if expected else "false"
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
               output.write(f"assessment_output_expected={value}\\n")
