@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "4448bbf9253bde23bba5a4700040b17523ec9c96"
+      "git_blob_sha": "cc9fedd066bd87de6453a302630e165b7543ec1b"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -90,7 +90,7 @@
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "119907f9702157a1c95d422ab49cbf85771889dc"
+      "git_blob_sha": "2e3749f1ab3b1945362913829d1bf5ca634acd20"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
