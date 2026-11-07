@@ -54,7 +54,7 @@
     },
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
-      "git_blob_sha": "73b05e55eb84e195520eefffb086b51854d346de"
+      "git_blob_sha": "8d4cb4effce7ab4ed02d4c3d2cd84935d7394d96"
     },
     "remote_task_queue_runtime": {
       "path": "scripts/remote_task_queue_runtime.py",
