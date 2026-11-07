@@ -18,8 +18,8 @@ permissions:
   actions: write
   issues: write
 
-# Serialize this repository writer with production publication, Watchdog state
-# mutations and self-healing repairs. Git-ref CAS remains a second safety layer.
+# Serialize intake submissions with one another. This workflow only appends
+# observations to Issue #317; it never writes repository files or rulesets.
 concurrency:
   group: shadowrocket-domain-intake
   cancel-in-progress: false
