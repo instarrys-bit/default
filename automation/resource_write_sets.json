@@ -1312,11 +1312,11 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "027134689ecf51a27c5040d8aee60698c211e4c7",
-    "program_registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
-    "execution_adapters_blob_sha": "dc058e31c9959bda6ffed7a25c38207c9ab0dc50",
+    "release_manifest_blob_sha": "55fd4f737782be4fbdd2130c8b6cd4d4b895f602",
+    "program_registry_blob_sha": "c8d9c1608ec89eb6eb634930b199115d71116cda",
+    "execution_adapters_blob_sha": "cd9378cdcee96ac156fd15e9b0b4b91442d21a9e",
     "added_after_release_baseline": true,
-    "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #315 checkpoint. Repository publication authority remains rulesets/** only. The global static/transitive inventory remains partial for unrelated capabilities.",
+    "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #315 checkpoint. Repository mutations are governed per capability by explicit exclusive resource_contract.resource_keys; control-plane metadata is separately inventoried. The production auto_sync publisher stages only the three rule-set deliverables under rulesets/**. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07"
   },
   "scheduler_lock_contract": {
@@ -1473,6 +1473,12 @@
       "source": "scripts/watchdog_recovery_policy.py",
       "classification": "pure_policy_library_no_repository_mutation",
       "evidence": "Computes bounded recovery eligibility from supplied run metadata; no filesystem or external write calls."
+    },
+    {
+      "program_id": "script_source_handoff_policy",
+      "source": "scripts/source_handoff_policy.py",
+      "classification": "pure_deterministic_policy_helper_no_side_effects",
+      "evidence": "classify_assessment_handoff() only reads the supplied in-memory task list and workflow run ID and returns a deterministic classification. It performs no filesystem, network, GitHub API, queue mutation, workflow dispatch, or repository write."
     }
   ],
   "control_plane_side_effects": [
@@ -1511,7 +1517,7 @@
   "direct_mutation_scan": {
     "status": "partial_python_direct_callsite_scan",
     "scanner": "tests/test_transitive_write_site_inventory.py",
-    "registered_component_count": 52,
+    "registered_component_count": 53,
     "mutation_api_families": [
       "Path/open write modes",
       "Path write_text/write_bytes/unlink/mkdir/replace/rename/touch",
@@ -1680,5 +1686,20 @@
     "rulesets/direct.list",
     "rulesets/proxy.list",
     "rulesets/reject.list"
-  ]
+  ],
+  "repository_write_policy": {
+    "model": "per-capability-explicit-resource-contract",
+    "allowed_repository_write_resources": "Only exact paths declared in the capability's exclusive resource_contract.resource_keys may be written or published; each shared path must have the corresponding live lease and fencing assertion.",
+    "control_plane_paths": "Explicitly declared and fenced control-plane metadata paths are permitted; they are not globally blocked by the production ruleset publisher's staging allowlist.",
+    "protected_paths": [
+      "modules/**",
+      "**/*.js"
+    ],
+    "production_publisher_scope": [
+      "rulesets/direct.list",
+      "rulesets/proxy.list",
+      "rulesets/reject.list"
+    ],
+    "production_publisher_boundary": "auto_sync stages only rulesets/** because the production deliverables are the three rule sets; this is a publisher-specific boundary, not a system-wide write restriction."
+  }
 }

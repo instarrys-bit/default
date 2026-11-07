@@ -207,7 +207,7 @@
     "protected_config": "modules/uu.conf is immutable and outside this capability's write set."
   },
   "blockers": [
-    "A post-merge Watchdog-dispatched Discovery → Assessment run and immutable artifact verification are still required as live end-to-end evidence.",
+    "The existing durable queue contains two historical successful Assessment tasks for Discovery run 42373818238 (legacy and parser-v2 idempotency keys); the new predecessor-based resolver recognizes both and suppresses further duplicates. A fresh post-merge run is required to prove exactly one Assessment task for a new Discovery run.",
     "Durable per-URL interruption/resume is unit-tested; live multi-run interruption/resume evidence remains pending.",
     "The global transitive writer inventory for unrelated non-dispatchable capabilities, dynamic path aliases and cross-workflow effects remains partial; those capabilities remain deny-by-default.",
     "Production ruleset publication must continue to pass the rulesets/** staged-path fence and independent remote verification; modules/uu.conf must remain byte-for-byte unchanged."
@@ -224,7 +224,31 @@
     "artifact_path": "sources/discovered_sources.json",
     "producer_workflow_name": "Shadowrocket Source Discovery (Watchdog)",
     "edge_type": "intended_successful_workflow_run_with_immutable_artifact_digest",
-    "enforcement": "Watchdog enqueues only from the successful production workflow_run event on main; scheduler verifies the immutable predecessor identity and artifact digest."
+    "enforcement": "The Watchdog reconciles the durable Discovery task correlation and independently verified workflow run evidence, validates the exact immutable artifact, then enqueues at most one Assessment task for that predecessor. Existing Assessment tasks are classified by predecessor.workflow_run_id and legacy idempotency-key prefix; only state=ready may enqueue with canonical key source-assessment:<workflow_run_id>. Already-assessed, pending, invalid-evidence, retry-required, or unresolved-predecessor states suppress replacement Discovery dispatch.",
+    "assessment_task_deduplication": {
+      "identity": "exact predecessor.workflow_run_id",
+      "canonical_idempotency_key": "source-assessment:<workflow_run_id>",
+      "legacy_keys_recognized": [
+        "source-assessment:<workflow_run_id>",
+        "source-assessment:<workflow_run_id>:*"
+      ],
+      "verified_success_requires": [
+        "task.status=SUCCEEDED",
+        "task.verification.status=passed",
+        "task.result.artifact_verification.valid=true",
+        "task.result.artifact_verification.activation_count=0"
+      ],
+      "states": [
+        "ready",
+        "already_assessed",
+        "assessment_pending",
+        "assessment_evidence_invalid",
+        "assessment_retry_required",
+        "awaiting_discovery_run",
+        "awaiting_assessment_predecessor"
+      ],
+      "rule": "Only ready may enqueue Assessment. Every other state suppresses duplicate enqueue and replacement Discovery dispatch; retry-required remains visible for bounded recovery rather than silently creating a new Discovery run."
+    }
   },
   "retry_policy": {
     "max_attempts": 3,

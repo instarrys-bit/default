@@ -193,7 +193,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("requested_head_sha", watchdog)
         self.assertIn("correlation_id", watchdog)
         self.assertIn("workflow_dispatch", watchdog)
-        self.assertIn('"source-assessment:" + run_id', watchdog)
+        self.assertIn("classify_assessment_handoff(tasks, run_id)", watchdog)
+        self.assertIn('--idempotency-key "source-assessment:$SOURCE_RUN_ID"', watchdog)
         self.assertIn('task.get("target_program_id") == "script_assess_sources"', watchdog)
         self.assertIn('task.get("status") == "QUEUED"', watchdog)
         self.assertIn('workflow_client.list_runs(workflow_id, "main", page)', watchdog)
@@ -457,7 +458,23 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("expected_correlation_titles(intent)", resolver)
         self.assertIn('sys.path.insert(0, "scripts")', resolver)
         self.assertNotIn("run.get(\"head_sha\") == requested_sha", resolver)
-        self.assertIn('"source-assessment:" + run_id + ":parser-v2" in existing_keys', resolver)
+        self.assertIn("classify_assessment_handoff(tasks, run_id)", resolver)
+        self.assertIn("handoff_state", resolver)
+        self.assertNotIn("parser-v2", resolver)
+        self.assertIn('--idempotency-key "source-assessment:$SOURCE_RUN_ID"', workflow)
 
+
+    def test_existing_assessment_suppresses_duplicate_enqueue_and_replacement_discovery(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        resolver = workflow.split("Resolve completed Discovery run from durable task correlation", 1)[1].split("Download artifact from the exact discovery workflow run", 1)[0]
+        enqueue_assessment = workflow.split("Enqueue source assessment after successful discovery workflow", 1)[1].split("Enqueue independent source discovery only after its authorization gate opens", 1)[0]
+        enqueue_discovery = workflow.split("Enqueue independent source discovery only after its authorization gate opens", 1)[1].split("Recover leases, verify results, and run one bounded task", 1)[0]
+        self.assertIn("classify_assessment_handoff(tasks, run_id)", resolver)
+        self.assertIn("duplicate_assessment_task_ids", resolver)
+        self.assertIn("awaiting_discovery_run", resolver)
+        self.assertIn("handoff_state == 'ready'", enqueue_assessment)
+        self.assertIn('source-assessment:$SOURCE_RUN_ID"', enqueue_assessment)
+        self.assertIn("handoff_state == ''", enqueue_discovery)
+        self.assertNotIn("parser-v2", resolver + enqueue_assessment)
 if __name__ == "__main__":
     unittest.main()

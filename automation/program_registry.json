@@ -1785,6 +1785,33 @@
         "max_attempts": 1,
         "timeout_seconds": 1800
       }
+    },
+    {
+      "id": "script_source_handoff_policy",
+      "path": "scripts/source_handoff_policy.py",
+      "kind": "python_component",
+      "responsibility": "classify Discovery-to-Assessment handoff state by exact predecessor workflow run identity and suppress duplicate assessment or replacement discovery tasks",
+      "capabilities": [
+        "source_handoff_deduplication"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "durable task queue snapshot",
+        "exact successful Discovery workflow run ID"
+      ],
+      "outputs": [
+        "deterministic handoff state and canonical/duplicate Assessment task IDs"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Pure deterministic policy helper. It performs no filesystem, network, GitHub API, queue mutation, workflow dispatch, repository write, source activation, or protected-config access; caller permissions remain authoritative.",
+      "health_check": "Covered by tests/test_source_handoff_policy.py and Watchdog structural regression tests.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     }
   ]
 }

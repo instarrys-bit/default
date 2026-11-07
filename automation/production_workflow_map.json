@@ -2,7 +2,7 @@
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
   "workflow_blob_sha": "5189c635d5cab41b11272bf2f1a4f2c5c5bf893f",
-  "registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
+  "registry_blob_sha": "c8d9c1608ec89eb6eb634930b199115d71116cda",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 5,
@@ -311,9 +311,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "027134689ecf51a27c5040d8aee60698c211e4c7",
-    "program_registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
-    "execution_adapters_blob_sha": "dc058e31c9959bda6ffed7a25c38207c9ab0dc50",
+    "release_manifest_blob_sha": "55fd4f737782be4fbdd2130c8b6cd4d4b895f602",
+    "program_registry_blob_sha": "c8d9c1608ec89eb6eb634930b199115d71116cda",
+    "execution_adapters_blob_sha": "cd9378cdcee96ac156fd15e9b0b4b91442d21a9e",
     "added_after_release_baseline": true,
     "note": "The independent source DAG is enabled under the scoped release allowlist. The production deliverables are exactly DIRECT, PROXY and REJECT; queue/checkpoint state and immutable runner-local artifacts are separate control-plane/runtime resources. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07",
@@ -355,6 +355,16 @@
           "downloaded immutable artifact logical-document digest equals producer proof",
           "producer metadata inside document matches exact run ID and head SHA",
           "the verified external artifact root is used for enqueue, plan, claim, child execution and post-execution read-only digest checks"
+        ],
+        "deduplication_helper": "scripts/source_handoff_policy.py",
+        "deduplication_states": [
+          "ready",
+          "already_assessed",
+          "assessment_pending",
+          "assessment_evidence_invalid",
+          "assessment_retry_required",
+          "awaiting_discovery_run",
+          "awaiting_assessment_predecessor"
         ]
       },
       "consumer": {
@@ -364,7 +374,7 @@
         "required_predecessor_digest": true
       },
       "duplicate_protection": {
-        "rule": "When SOURCE_DISCOVERY_MODE=independent, auto_sync's monolithic discovery and assessment steps are skipped; the Watchdog-owned independent producer and its exact workflow_run consumer are the sole discovery/assessment path. The monolithic steps remain only as explicit fallback when mode is monolithic_fallback."
+        "rule": "The Watchdog classifies existing Assessment tasks by exact predecessor.workflow_run_id, with legacy idempotency-key compatibility. A verified successful Assessment suppresses re-enqueue; a queued/claimed/verifying or retry-required Assessment suppresses replacement Discovery. Only a predecessor with no matching Assessment may enqueue once under the canonical source-assessment:<workflow_run_id> key. When SOURCE_DISCOVERY_MODE=independent, auto_sync monolithic discovery/assessment remain disabled."
       },
       "activation": {
         "producer_adapter_enabled": true,
@@ -385,5 +395,6 @@
     "rulesets/direct.list",
     "rulesets/proxy.list",
     "rulesets/reject.list"
-  ]
+  ],
+  "repository_write_policy": "Per-capability explicit exclusive resource_contract.resource_keys; control-plane state is separately inventoried. The production publisher stages only the three ruleset deliverables under rulesets/**; this is not a global automation write restriction."
 }

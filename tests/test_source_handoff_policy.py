@@ -1,0 +1,78 @@
+import sys
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from source_handoff_policy import classify_assessment_handoff
+
+
+def assessment_task(task_id, run_id, status="SUCCEEDED", key=None, verified=True, created_at="2026-11-07T12:00:00Z"):
+    return {
+        "task_id": task_id,
+        "target_program_id": "script_assess_sources",
+        "idempotency_key": key or f"source-assessment:{run_id}",
+        "created_at": created_at,
+        "status": status,
+        "input": {"predecessor": {"workflow_run_id": run_id}},
+        "verification": {"status": "passed" if verified else "failed"},
+        "result": {
+            "artifact_verification": {
+                "valid": verified,
+                "activation_count": 0 if verified else 1,
+            }
+        },
+    }
+
+
+class SourceHandoffPolicyTests(unittest.TestCase):
+    def test_no_existing_assessment_is_ready(self):
+        result = classify_assessment_handoff([], "42373818238")
+        self.assertEqual(result["state"], "ready")
+        self.assertEqual(result["task_ids"], [])
+
+    def test_legacy_and_versioned_keys_for_same_run_are_deduplicated(self):
+        tasks = [
+            assessment_task("task_legacy", "42373818238", key="source-assessment:42373818238"),
+            assessment_task("task_versioned", "42373818238", key="source-assessment:42373818238:parser-v2",
+                            created_at="2026-11-07T13:00:00Z"),
+        ]
+        result = classify_assessment_handoff(tasks, "42373818238")
+        self.assertEqual(result["state"], "already_assessed")
+        self.assertEqual(result["canonical_task_id"], "task_legacy")
+        self.assertEqual(result["duplicate_task_ids"], ["task_versioned"])
+
+    def test_predecessor_identity_deduplicates_even_when_keys_differ(self):
+        tasks = [
+            assessment_task("task_a", "42373818238", key="assessment:old-format"),
+            assessment_task("task_b", "42373818238", key="assessment:new-format"),
+        ]
+        result = classify_assessment_handoff(tasks, "42373818238")
+        self.assertEqual(result["state"], "already_assessed")
+        self.assertEqual(result["task_ids"], ["task_a", "task_b"])
+
+    def test_active_assessment_prevents_replacement_discovery_and_duplicate_enqueue(self):
+        task = assessment_task("task_active", "42373818238", status="QUEUED", verified=False)
+        result = classify_assessment_handoff([task], "42373818238")
+        self.assertEqual(result["state"], "assessment_pending")
+        self.assertEqual(result["canonical_task_id"], "task_active")
+
+    def test_dead_letter_assessment_is_recovery_required_not_a_new_discovery(self):
+        task = assessment_task("task_dead", "42373818238", status="DEAD_LETTER", verified=False)
+        result = classify_assessment_handoff([task], "42373818238")
+        self.assertEqual(result["state"], "assessment_retry_required")
+
+    def test_succeeded_task_requires_independent_verification_and_non_activation(self):
+        invalid = assessment_task("task_invalid", "42373818238", verified=False)
+        result = classify_assessment_handoff([invalid], "42373818238")
+        self.assertEqual(result["state"], "assessment_evidence_invalid")
+
+    def test_idempotency_prefix_match_is_delimiter_bounded(self):
+        other = assessment_task("task_other", "42373818239", key="source-assessment:42373818239")
+        result = classify_assessment_handoff([other], "4237381823")
+        self.assertEqual(result["state"], "ready")
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)

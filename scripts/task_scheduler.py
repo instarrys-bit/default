@@ -212,21 +212,19 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
                 if isinstance(lease_seconds, bool) or not isinstance(lease_seconds, int) or not 1 <= lease_seconds <= 21600:
                     raise ValueError("resource_contract lease_seconds must be from 1 to 21600")
             publish_resources = adapter.get("publish_resources", [])
-            if not isinstance(publish_resources,list) or len(publish_resources)!=len(set(publish_resources)):
+            write_resources = adapter.get("write_resources", [])
+            if not isinstance(publish_resources, list) or len(publish_resources) != len(set(publish_resources)):
                 raise ValueError("publish_resources must be a unique path list")
+            if not isinstance(write_resources, list) or len(write_resources) != len(set(write_resources)):
+                raise ValueError("write_resources must be a unique path list")
+            if write_resources or publish_resources:
+                resource_keys = resource_contract.get("resource_keys", []) if isinstance(resource_contract, dict) else []
+                validate_repository_write_scope(write_resources, publish_resources, resource_keys)
             if publish_resources:
-                write_resources=adapter.get("write_resources",[])
-                resource_keys=resource_contract.get("resource_keys",[]) if isinstance(resource_contract,dict) else []
-                if (not isinstance(write_resources,list) or len(write_resources)!=len(set(write_resources))
-                        or any(path not in resource_keys or path=="modules/uu.conf" for path in write_resources)
-                        or any(path not in write_resources for path in publish_resources)):
-                    raise ValueError("write_resources and publish_resources must be unique nested subsets of exclusive non-config resource keys")
-                if any(not isinstance(path,str) or not (path == "rulesets" or path.startswith("rulesets/")) for path in write_resources + publish_resources):
-                    raise ValueError("automation repository write authority is restricted to rulesets/**")
-                if not isinstance(adapter.get("completion",{}).get("artifact_verifier"),dict):
+                if not isinstance(adapter.get("completion", {}).get("artifact_verifier"), dict):
                     raise ValueError("publishing task artifacts requires an independent artifact verifier")
-                output_contract=adapter.get("output_contract")
-                if not isinstance(output_contract,dict) or "artifact_publication" not in output_contract.get("required",[]):
+                output_contract = adapter.get("output_contract")
+                if not isinstance(output_contract, dict) or "artifact_publication" not in output_contract.get("required", []):
                     raise ValueError("publishing adapter output contract must require artifact_publication")
             read_only_resources = adapter.get("read_only_resources", [])
             read_only_digests = read_only_resource_digests(root, read_only_resources)
@@ -578,6 +576,36 @@ def generated_python_cache_paths(paths) -> list[str]:
     return sorted({path for path in paths if is_generated_python_cache_path(path)})
 
 
+def validate_repository_write_scope(write_resources: list, publish_resources: list, resource_keys: list) -> None:
+    """Require every repository mutation to be explicitly fenced and non-protected.
+
+    This is a per-capability resource contract, not a global rulesets/** write
+    restriction. The production auto_sync publisher separately stages only the
+    three declared ruleset deliverables under its own workflow-level path fence.
+    """
+    if not isinstance(write_resources, list) or not isinstance(publish_resources, list):
+        raise ValueError("repository write and publish resources must be lists")
+    if not isinstance(resource_keys, list):
+        raise ValueError("resource contract keys must be a list")
+    if len(write_resources) != len(set(write_resources)) or len(publish_resources) != len(set(publish_resources)):
+        raise ValueError("repository write and publish resources must be unique")
+    if any(path not in write_resources for path in publish_resources):
+        raise ValueError("publish_resources must be a subset of write_resources")
+    for path in write_resources + publish_resources:
+        if (
+            not isinstance(path, str)
+            or not path
+            or path.startswith("/")
+            or chr(92) in path
+            or any(part in {"", ".", ".."} for part in path.split("/"))
+        ):
+            raise ValueError("repository write resource contains an unsafe path")
+        if path == "modules" or path.startswith("modules/") or path.lower().endswith(".js"):
+            raise ValueError("repository write resource targets protected modules or JavaScript")
+        if path not in resource_keys:
+            raise ValueError("repository write resource is not declared in the exclusive resource contract")
+
+
 def publishable_resource_path(path: str, resources: list[str]) -> bool:
     """Accept only exact logical outputs and their known JSONL document-store children."""
     for logical in resources:
@@ -621,19 +649,9 @@ def publish_task_artifacts(task: dict, adapter: dict, store, protected_digest: s
     if not resources:
         return {"published":False,"commit_sha":"","paths":[]}
     write_resources=adapter.get("write_resources",[])
-    if (not isinstance(resources,list) or len(resources)!=len(set(resources))
-            or not isinstance(write_resources,list) or len(write_resources)!=len(set(write_resources))):
-        raise ValueError("publish_resources and write_resources must be unique path lists")
-    contract=adapter.get("resource_contract",{})
-    keys=contract.get("resource_keys",[]) if isinstance(contract,dict) else []
-    if (any(path not in keys or path=="modules/uu.conf" for path in write_resources)
-            or any(path not in write_resources for path in resources)):
-        raise ValueError("publish_resources must be a subset of exclusive non-config write_resources")
-    if any(not isinstance(path,str) or not (path == "rulesets" or path.startswith("rulesets/")) for path in write_resources + resources):
-        raise ValueError("automation repository write authority is restricted to rulesets/**")
-    if any(not isinstance(path,str) or path.startswith("/") or chr(92) in path
-           or any(part in {"",".",".."} for part in path.split("/")) for path in resources):
-        raise ValueError("publish_resources contains an unsafe repository path")
+    contract = adapter.get("resource_contract", {})
+    keys = contract.get("resource_keys", []) if isinstance(contract, dict) else []
+    validate_repository_write_scope(write_resources, resources, keys)
 
     def run_git(args, env, *, timeout=45):
         completed=subprocess.run(
