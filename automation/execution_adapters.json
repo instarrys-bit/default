@@ -67,9 +67,11 @@
       "target_program_id": "script_assess_sources",
       "target_kind": "python_component",
       "adapter_type": "python_cli",
-      "enabled": false,
+      "enabled": true,
       "interface_status": "reviewed",
-      "allowed_callers": [],
+      "allowed_callers": [
+        "workflow_automation_watchdog"
+      ],
       "entrypoint": {
         "path": "scripts/assess_sources.py",
         "executable": "python3",
@@ -152,8 +154,7 @@
           "parser_candidates",
           "policy_candidates",
           "activated",
-          "artifact_verification",
-          "artifact_publication"
+          "artifact_verification"
         ],
         "properties": {
           "assessed": {
@@ -216,36 +217,13 @@
                 }
               }
             }
-          },
-          "artifact_publication": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "published",
-              "commit_sha",
-              "paths"
-            ],
-            "properties": {
-              "published": {
-                "type": "boolean"
-              },
-              "commit_sha": {
-                "type": "string"
-              },
-              "paths": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            }
           }
         }
       },
       "timeout_seconds": 240,
       "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_dedicated_discovery_workflow_is_live"
+        "max_attempts": 1,
+        "policy": "one bounded retry with durable per-URL checkpoint resume; no repository artifact publication"
       },
       "completion": {
         "success_condition": "exit_zero_schema_valid_and_independent_artifact_verifier_valid",
@@ -260,30 +238,22 @@
         "mode": "exclusive",
         "resource_keys": [
           "logical/production-pipeline",
-          "sources/source_assessments.json",
-          "data/source_assessments_runtime.json",
-          "reports/source-assessment.md"
+          "logical/source-assessment-checkpoints"
         ],
         "lease_seconds": 480,
         "fencing_required": true,
-        "coverage": "Exclusive logical document locks cover legacy JSON, adjacent manifests, content-addressed shard directories, temporary staging and old-shard cleanup. After each URL result, the assessor atomically CAS-updates the current task's assessment_checkpoint in automation/task_queue.json; the update is fenced by the active task lease and both logical/production-pipeline and sources/source_assessments.json resource leases. Retries restore completed URL results and continue with the first incomplete URL."
+        "coverage": "Only the durable per-URL task assessment_checkpoint in GitHub Issue #315 is shared state. It is updated by append-only Issue snapshot CAS under the active task lease and these two logical resource fences. All assessment JSON and reports are runner-local outputs uploaded as an immutable Actions artifact; no repository file is written or published."
       },
       "read_only_resources": [
         "sources/discovered_sources.json",
+        "sources/source_assessments.json",
         "sources/domain_sources.json"
       ],
       "required_read_only_resources": [
         "sources/discovered_sources.json"
       ],
-      "publish_resources": [
-        "sources/source_assessments.json",
-        "reports/source-assessment.md"
-      ],
-      "write_resources": [
-        "sources/source_assessments.json",
-        "data/source_assessments_runtime.json",
-        "reports/source-assessment.md"
-      ],
+      "publish_resources": [],
+      "write_resources": [],
       "dependency_contract": {
         "predecessor_program_id": "script_discover_sources",
         "artifact_path": "sources/discovered_sources.json",
@@ -1870,9 +1840,11 @@
       "target_program_id": "workflow_source_discovery",
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
-      "enabled": false,
+      "enabled": true,
       "interface_status": "workflow_dispatch_reviewed",
-      "allowed_callers": [],
+      "allowed_callers": [
+        "workflow_automation_watchdog"
+      ],
       "workflow": {
         "path": ".github/workflows/source-discovery.yml",
         "dispatchable": true,
@@ -1921,7 +1893,7 @@
         "lease_seconds": 1800,
         "fencing_required": true,
         "enforcement_boundary": "exact Watchdog dispatch identity and live per-resource fencing assertion before each filesystem mutation and immediately before main-branch publication",
-        "coverage": "Discovery document base JSON, manifest, content-addressed shards, staging and cleanup share one logical document lease; report uses its own exclusive lease."
+        "coverage": "The producer writes only into an isolated RUNNER_TEMP workspace. The discovered document base JSON, manifest, shards, staging and report are runner-local and uploaded as one immutable Actions artifact. No repository file is modified or published; the lease binds the exact Watchdog task and workflow run."
       }
     }
   ]
