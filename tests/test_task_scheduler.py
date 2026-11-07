@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from remote_task_queue_runtime import claim_remote, enqueue_remote
 from task_queue_runtime import now_utc, stamp, manual_authorization_record, validate_manual_authorization
-from task_scheduler import run_scheduler_once, build_execution_plan, enqueue_source_assessment_task, enqueue_source_discovery_task, enqueue_auto_sync_task, assert_current_production_input, supersede_stale_queued_production_tasks, generated_python_cache_paths, publishable_resource_path
+from task_scheduler import run_scheduler_once, build_execution_plan, enqueue_source_assessment_task, enqueue_source_discovery_task, enqueue_auto_sync_task, assert_current_production_input, supersede_stale_queued_production_tasks, generated_python_cache_paths, publishable_resource_path, validate_repository_write_scope
 
 
 class MemoryStore:
@@ -590,6 +590,28 @@ class TaskSchedulerTests(unittest.TestCase):
         self.assertEqual(superseded, [stale["task_id"]])
         self.assertEqual(store.document["tasks"][0]["status"], "CANCELLED")
         self.assertEqual(store.document["tasks"][0]["last_error"]["type"], "stale_production_input_superseded")
+
+
+    def test_explicit_resource_contract_allows_control_plane_paths_without_global_rulesets_only_cap(self):
+        validate_repository_write_scope(
+            ["automation/production_control.json", "rulesets/direct.list"],
+            ["rulesets/direct.list"],
+            ["automation/production_control.json", "rulesets/direct.list", "logical/production-pipeline"],
+        )
+
+    def test_explicit_resource_contract_still_rejects_modules_javascript_and_undeclared_paths(self):
+        keys = ["modules/uu.conf", "modules/AdBlock.sgmodule", "scripts/Clean_Pro.js", "automation/production_control.json"]
+        for path in ("modules/uu.conf", "modules/AdBlock.sgmodule", "scripts/Clean_Pro.js"):
+            with self.subTest(path=path):
+                with self.assertRaisesRegex(ValueError, "protected modules or JavaScript"):
+                    validate_repository_write_scope([path], [path], keys)
+        with self.assertRaisesRegex(ValueError, "not declared"):
+            validate_repository_write_scope(
+                ["automation/unlisted.json"], ["automation/unlisted.json"],
+                ["automation/production_control.json"],
+            )
+        with self.assertRaisesRegex(ValueError, "unsafe path"):
+            validate_repository_write_scope(["../modules/uu.conf"], ["../modules/uu.conf"], ["../modules/uu.conf"])
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
