@@ -34,7 +34,26 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
         self.assertIn("hagezi dns-blocklists", discovery.QUERIES)
         self.assertIn("国内域名规则", discovery.QUERIES)
         self.assertIn("开源分流规则", discovery.QUERIES)
+        self.assertIn("Surge domain-set direct proxy reject rules", discovery.QUERIES)
+        self.assertIn("China DNS accelerated domain list", discovery.QUERIES)
+        self.assertIn("Chinese adblock domain rules AdRules", discovery.QUERIES)
+        self.assertIn("Loyalsoldier/surge-rules", discovery.SEED_SOURCE_URLS)
+        self.assertIn("felixonmars/dnsmasq-china-list", discovery.SEED_SOURCE_URLS)
+        self.assertIn("Cats-Team/AdRules", discovery.SEED_SOURCE_URLS)
+        self.assertIn("QuixoticHeart/rule-set", discovery.SEED_SOURCE_URLS)
+        self.assertIn("MetaCubeX/meta-rules-dat", discovery.SEED_SOURCE_URLS)
+        self.assertEqual(
+            discovery.SEED_SOURCE_URLS["Loyalsoldier/surge-rules"],
+            [
+                "https://raw.githubusercontent.com/Loyalsoldier/surge-rules/release/direct.txt",
+                "https://raw.githubusercontent.com/Loyalsoldier/surge-rules/release/proxy.txt",
+                "https://raw.githubusercontent.com/Loyalsoldier/surge-rules/release/reject.txt",
+            ],
+        )
         self.assertFalse(any("apple" in query.lower() for query in discovery.QUERIES))
+        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        self.assertIn('discovery_revision="$(git rev-parse HEAD:scripts/discover_sources.py | cut -c1-12)"', watchdog)
+        self.assertIn('base_key="source-discovery:$discovery_day:$discovery_revision"', watchdog)
 
 
     def test_tree_scans_rotate_unscanned_and_failed_repositories_first(self):
