@@ -1280,6 +1280,7 @@ jobs:
           unset queue_token
 
       - name: Recover leases, verify results, and run one bounded task
+        id: run-queue
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -1292,15 +1293,51 @@ jobs:
           queue_token="$GITHUB_TOKEN"
           unset GITHUB_TOKEN
           printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --token-stdin --repository "$GITHUB_REPOSITORY" --branch main --max-tasks 1 run-once | tee /tmp/task-scheduler-report.json
+          GITHUB_TOKEN="$queue_token" python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue_after.json"
           unset queue_token
           cat /tmp/task-scheduler-report.json >> "$GITHUB_STEP_SUMMARY"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          report = json.loads(Path("/tmp/task-scheduler-report.json").read_text(encoding="utf-8"))
+          queue = json.loads((Path(os.environ["RUNNER_TEMP"]) / "task_queue_after.json").read_text(encoding="utf-8"))
+          tasks_by_id = {
+              task.get("task_id"): task for task in queue.get("tasks", [])
+              if isinstance(task, dict) and isinstance(task.get("task_id"), str)
+          }
+          expected = False
+          processed_task_ids = set()
+          for item in report.get("processed", []):
+              if not isinstance(item, dict) or not isinstance(item.get("task_id"), str):
+                  continue
+              task_id = item["task_id"]
+              processed_task_ids.add(task_id)
+              task = tasks_by_id.get(task_id, {})
+              if task.get("target_program_id") != "script_assess_sources":
+                  continue
+              verified = (item.get("verification") or {}).get("verified", [])
+              if item.get("status") != "SUCCEEDED" or task_id not in verified:
+                  raise SystemExit(f"Assessment task {task_id} did not reach independently verified SUCCEEDED.")
+              artifact_root = Path(os.environ["AUTOMATION_ARTIFACT_ROOT"])
+              if not any(path.is_file() for path in artifact_root.rglob("*")):
+                  raise SystemExit(f"Assessment task {task_id} was verified but produced no runner-local artifact files.")
+              expected = True
+          value = "true" if expected else "false"
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"assessment_output_expected={value}\\n")
+          print(json.dumps({
+              "processed_task_ids": sorted(processed_ids),
+              "assessment_output_expected": expected,
+              "queue_revision_after": queue.get("revision"),
+          }, sort_keys=True))
+          PY
       - name: Upload verified source assessment outputs as immutable artifact
-        if: always()
+        if: ${{ always() && steps.run-queue.outputs.assessment_output_expected == 'true' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: source-assessment-output
           path: ${{ runner.temp }}/source-assessment-output/
-          if-no-files-found: ignore
+          if-no-files-found: error
           retention-days: 30
 
   stale-run-watch:
