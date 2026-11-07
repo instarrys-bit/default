@@ -1271,6 +1271,9 @@
       "resource_contract": {
         "mode": "exclusive",
         "resource_keys": [
+          "data/candidates.json",
+          "data/domain_candidates.json",
+          "data/source_pending.json",
           "logical/production-pipeline",
           "reports/source-discovery.md",
           "rulesets/config_conflict_archive.json",
@@ -1284,7 +1287,8 @@
           "rulesets/reject.list",
           "rulesets/reject_review_queue.json",
           "sources/discovered_sources.json",
-          "sources/review_cursor.json"
+          "sources/review_cursor.json",
+          "sources/rule_provenance.json"
         ],
         "lease_seconds": 21600,
         "fencing_required": true,
