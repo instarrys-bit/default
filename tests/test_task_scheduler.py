@@ -64,7 +64,7 @@ class TaskSchedulerTests(unittest.TestCase):
         task["last_error"] = {"type": "workflow_run_failed", "message": "resource lease expired"}
         task["state_history"] = ["QUEUED", "CLAIMED", "DEAD_LETTER"]
         recovery = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:abcdef123456:recovery:1")
-        duplicate = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:recovery:1")
+        duplicate = enqueue_source_discovery_task(self.store, registry, idempotency_key="source-discovery:2026-11-07:abcdef123456:recovery:1")
         self.assertTrue(recovery["created"])
         self.assertFalse(duplicate["created"])
         self.assertEqual(recovery["task_id"], duplicate["task_id"])
