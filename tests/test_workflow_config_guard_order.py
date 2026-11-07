@@ -291,9 +291,14 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         for path in ("sources/policy.json", "automation/release_manifest.json", "automation/production_workflow_map.json", "automation/resource_write_sets.json"):
             self.assertNotIn(path, publish)
         restore = (ROOT / "scripts" / "restore_automation_state.py").read_text(encoding="utf-8")
-        self.assertNotIn('"sources/policy.json"', restore.split("PUBLISH_FILES = {", 1)[1].split("}", 1)[0])
+        self.assertIn("PUBLISH_FILES = set()", restore)
+        self.assertIn('PUBLISH_DIR_PREFIXES = ("rulesets/",)', restore)
+        self.assertNotIn('"sources/policy.json"', restore)
         registrar = (ROOT / "scripts" / "register_config_baseline.py").read_text(encoding="utf-8")
         self.assertIn("build_release_pin_updates", registrar)
+        self.assertIn("write_baseline_proposal(proposal)", registrar)
+        self.assertIn("RUNNER_TEMP", registrar)
+        self.assertNotIn("POLICY.write_text", registrar)
 
 
     def test_manual_authorization_is_bound_to_one_durable_task_scope(self):
