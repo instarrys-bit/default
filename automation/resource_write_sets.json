@@ -1382,7 +1382,7 @@
     "Cross-workflow request-intake and Watchdog writes to automation/unregistered_path_registry.json need concurrent-run integration tests proving bounded CAS conflict recovery and no lost updates.",
     "Cross-workflow request-intake pushes to sources/request_domain_observations.json use run-ID concurrency groups plus git fetch/rebase/push retry; concurrent same-domain and different-domain runs, conflict retries and retry exhaustion still need integration proof.",
     "Shared JSON document writers for data/domain_candidates.json and sources/rule_provenance.json need compatible per-document leases, including all manifest/shard/staging/cleanup mutations and restore paths.",
-    "All lifecycle, archive, ruleset list, manifest and report writers must be enumerated against actual workflow call sites; the auto_sync logical/production-pipeline mutex does not prove independent non-auto_sync writers or per-mutation resource fencing.",
+    "Non-ruleset shared JSON documents (notably data/domain_candidates.json, sources/rule_provenance.json and source registry activation) still need complete per-document leases and concurrent-writer proof; ruleset writers now have exact per-path leases and the Watchdog manifest writer shares the main-writer concurrency group..",
     "Atomic multi-resource lease acquisition and compatibility of per-resource locks across all independent/cross-workflow writers remain unproven.",
     "Static entrypoint inventory does not prove absence of unregistered dynamic writes, subprocess writes, external API mutations or filesystem writes hidden behind imported helpers.",
     "All remaining registered Python components must be checked for indirect writes through imported helpers, subprocesses and dynamically selected outputs; report-only writers and active source-registry writers must remain distinct.",
@@ -1614,7 +1614,7 @@
         "rulesets/lifecycle_observations.json",
         "rulesets/deletion_archive.json"
       ],
-      "fence": "Watchdog task lease plus logical/production-pipeline lease and exact resource leases for every rulesets/** file; restore_publish_outputs reasserts the exact file lease; rulesets-only staging allowlist and final staged-path fence.",
+      "fence": "Watchdog task lease plus logical/production-pipeline lease and exact per-file resource leases for all rulesets/** outputs; restore_publish_outputs reasserts each exact file lease; rulesets-only staging and final staged-path fence.",
       "boundary": "Main-branch publication is restricted to rulesets/**; sources/**, data/**, reports/**, modules/** and JS scripts are never staged or published."
     },
     {
@@ -1628,8 +1628,8 @@
       "resources": [
         "rulesets/manifest.json"
       ],
-      "fence": "Main-branch guarded workflow and manifest-only allowlist; publication follows validation.",
-      "boundary": "Main-branch metadata-only commit; does not change DIRECT/PROXY/REJECT lists."
+      "fence": "The manifest-integrity job has job-level concurrency group shadowrocket-main-writer with cancel-in-progress:false, shared with auto_sync; refresh_ruleset_manifest.py permits the no-task-lease path only for this exact serialized Watchdog job.",
+      "boundary": "Manifest-only rulesets/manifest.json repair; git add allowlist is exact, no rule list, source, report, module or config file is published."
     },
     {
       "workflow_path": ".github/workflows/request-intake.yml",
