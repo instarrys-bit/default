@@ -9,7 +9,7 @@ class CollectDomainsResourceFenceTests(unittest.TestCase):
     def test_auto_sync_declares_source_snapshot_parent_lease(self):
         adapters = json.loads((ROOT / "automation/execution_adapters.json").read_text(encoding="utf-8"))
         auto_sync = next(item for item in adapters["adapters"] if item["target_program_id"] == "workflow_auto_sync")
-        self.assertIn("data/source_snapshots", auto_sync["resource_contract"]["resource_keys"])
+        self.assertIn("data/source_snapshots", auto_sync["resource_contract"]["resource_keys"])\n        writer = next(item for item in write_sets["confirmed_write_sets"] if item["program_id"] == "script_collect_domains")\n        self.assertIn("data/source_snapshots", writer["lease_keys"])
 
     def test_collect_domains_fences_parent_and_each_dynamic_snapshot_path(self):
         source = (ROOT / "scripts/collect_domains.py").read_text(encoding="utf-8")
