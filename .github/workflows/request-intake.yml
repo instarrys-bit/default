@@ -18,8 +18,8 @@ permissions:
   actions: write
   issues: write
 
-# Serialize this repository writer with production publication, Watchdog state
-# mutations and self-healing repairs. Git-ref CAS remains a second safety layer.
+# Serialize intake submissions with one another. This workflow only appends
+# observations to Issue #317; it never writes repository files or rulesets.
 concurrency:
   group: shadowrocket-domain-intake
   cancel-in-progress: false
@@ -35,36 +35,60 @@ jobs:
           persist-credentials: false
 
       - name: Validate and persist submitted hostnames
+        id: validate
         env:
           DOMAINS: ${{ inputs.domains }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import json, os, re
+          import json
+          import os
+          import re
           from pathlib import Path
 
           raw = os.environ.get("DOMAINS", "")
-          submitted = [value.strip().lower().rstrip(".") for value in re.split(r"[\s,;]+", raw) if value.strip()]
+          submitted = [
+              value.strip().lower().rstrip(".")
+              for value in re.split(r"[\s,;]+", raw)
+              if value.strip()
+          ]
+
+          # Some manual dispatch clients submit "0" as an empty-input sentinel.
+          # Treat that exact value as an empty batch, never as a hostname.
+          if submitted == ["0"]:
+              submitted = []
           if not submitted:
-              raise SystemExit("No hostnames supplied.")
+              with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+                  output.write("has_domains=false\n")
+              print("No hostnames submitted; intake completed as a safe no-op.")
+              raise SystemExit(0)
+
           if len(submitted) > 500:
               raise SystemExit("Maximum 500 hostnames per intake run.")
+          submitted = list(dict.fromkeys(submitted))
 
-          pattern = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
+          pattern = re.compile(
+              r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)"
+              r"(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$"
+          )
           invalid = sorted({value for value in submitted if not pattern.fullmatch(value)})
           if invalid:
               raise SystemExit("Invalid hostname(s): " + ", ".join(invalid[:30]))
 
           destination = Path(os.environ["RUNNER_TEMP"]) / "request-domains.json"
-          destination.write_text(json.dumps(submitted, ensure_ascii=False) + "\n", encoding="utf-8")
-          print(f"Validated {len(submitted)} hostname observations for external intake storage.")
+          destination.write_text(
+              json.dumps(submitted, ensure_ascii=False) + "\n",
+              encoding="utf-8",
+          )
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write("has_domains=true\n")
+          print(f"Validated {len(submitted)} unique hostname observations for external intake storage.")
+          PY
 
       - name: Append observation batch to external intake Issue
+        if: steps.validate.outputs.has_domains == 'true'
         env:
-          GH_TOKEN: \${{ github.token }}
-          GITHUB_REPOSITORY: \${{ github.repository }}
-          GITHUB_RUN_ID: \${{ github.run_id }}
-          GITHUB_ACTOR: \${{ github.actor }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           python3 - "$RUNNER_TEMP/request-domains.json" "$RUNNER_TEMP/intake-comment.md" <<'PY'
@@ -87,6 +111,7 @@ jobs:
           gh api --method POST "repos/$GITHUB_REPOSITORY/issues/317/comments" -f body="$(cat "$RUNNER_TEMP/intake-comment.md")" >/dev/null
 
       - name: Request ruleset audit through Watchdog queue
+        if: steps.validate.outputs.has_domains == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |

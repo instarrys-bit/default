@@ -60,7 +60,13 @@ class JsonDocumentStoreTests(unittest.TestCase):
             self.assertEqual(result["storage"], "jsonl-shards-v1")
             expected = path.relative_to(ROOT).as_posix()
             self.assertGreater(len(checked), 5)
-            self.assertTrue(all(key == expected for key in checked))
+            # Each mutation is checked against its actual file/staging path.
+            # The durable proof is scoped to the logical document, so all
+            # checked paths must be that document or one of its child artifacts.
+            self.assertTrue(all(
+                key == expected or key.startswith(expected + ".") or key.startswith(expected + "/")
+                for key in checked
+            ))
             self.assertEqual(store.read_document(path, "reviews"), payload)
 
     def test_shard_checksum_failure_fails_closed(self):
