@@ -1084,10 +1084,14 @@ jobs:
                           or run.get("display_title") not in expected_correlation_titles(intent)):
                       raise SystemExit("Persisted Discovery run evidence does not match the exact task correlation.")
                   relationship = validate_run_head_sha(workflow_client, intent, run.get("head_sha"))
-                  if (evidence.get("head_sha") != run.get("head_sha")
-                          or evidence.get("head_sha_relationship") != relationship
-                          ):
-                      raise SystemExit("Persisted Discovery run identity or SHA relationship verification failed.")
+                  # Older durable queue records may not contain these optional result fields.
+                  # The actual run SHA is independently validated against the persisted
+                  # requested_head_sha by validate_run_head_sha above.
+                  persisted_head_sha = evidence.get("head_sha")
+                  persisted_relationship = evidence.get("head_sha_relationship")
+                  if ((persisted_head_sha is not None and persisted_head_sha != run.get("head_sha"))
+                          or (persisted_relationship is not None and persisted_relationship != relationship)):
+                      raise SystemExit("Persisted Discovery run evidence conflicts with the verified run identity.")
                   # Run status/conclusion are mutable lifecycle fields. The exact run
                   # identity and current GitHub API state are authoritative; a normal
                   # queued -> in_progress -> completed transition is not evidence drift.
