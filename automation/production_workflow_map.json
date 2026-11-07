@@ -298,14 +298,14 @@
     "Dashboard generation is observer-only and is not a production stage."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-baseline-2026.11.05.integration2",
-    "release_manifest_blob_sha": "3eb9b559fce5df56e0e6fcb1df5cde21a55475c3",
+    "release_id": "shadowrocket-automation-independent-source-dag-2026.11.07.1",
+    "release_manifest_blob_sha": "e938aafc149bbf700603ccba40f7f70ced5dd030",
     "program_registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
     "execution_adapters_blob_sha": "79dfe3d3a3322c7eec4ae0178e85c53ada75efe4",
     "added_after_release_baseline": true,
-    "note": "Refreshed against the integration branch's current workflow, registry, release manifest and adapter blobs. Independent Python dispatch remains disabled; the source-discovery workflow is implemented but dormant. Static inventory evidence is not execution authorization.",
+    "note": "Updated against the scoped source DAG candidate: runner-local immutable artifacts, external predecessor digest binding, and no repository publication from source assessment. Remaining global audit applies to other non-dispatchable capabilities.",
     "reviewed_at": "2026-11-05",
-    "registry_blob_sha": "595d5c1d2327251342b9d205f5aadee58e2393ff",
+    "registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
     "source_dag_scope": "script_assess_sources only; all other Python adapters remain default-deny"
   },
   "independent_dags": [
