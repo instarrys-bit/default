@@ -67,12 +67,12 @@ class WorkflowNativeWriteInventoryTests(unittest.TestCase):
     def test_watchdog_manifest_writer_serializes_with_auto_sync(self):
         watchdog = (ROOT / ".github/workflows/automation-watchdog.yml").read_text(encoding="utf-8")
         auto_sync = (ROOT / ".github/workflows/auto_sync.yml").read_text(encoding="utf-8")
-        start = watchdog.index("  manifest-integrity:")
-        section = watchdog[start:watchdog.find("\n  ", start + 4)]
-        self.assertIn("group: shadowrocket-main-writer", section)
-        self.assertIn("cancel-in-progress: false", section)
-        self.assertIn("group: shadowrocket-main-writer", auto_sync)
-        self.assertIn("cancel-in-progress: false", auto_sync)
+        self.assertRegex(
+            watchdog,
+            r"(?ms)^  manifest-integrity:\\n(?:(?!^  [A-Za-z0-9_-]+:).)*?^    concurrency:\\n      group: shadowrocket-main-writer\\n      cancel-in-progress: false",
+        )
+        self.assertRegex(auto_sync, r"(?m)^  group: shadowrocket-main-writer$")
+        self.assertRegex(auto_sync, r"(?m)^  cancel-in-progress: false$")
 
     def test_each_workflow_native_side_effect_has_resource_and_boundary_evidence(self):
         for site in self.sites:
