@@ -55,6 +55,31 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "safe repository-relative"):
                 assert_resource_lease_for_repository_path(ROOT, "../modules/uu.conf")
 
+    def test_repository_path_helper_rejects_symlink_aliases(self):
+        with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryDirectory() as outside:
+            root = Path(directory)
+            target = Path(outside) / "owner-config"
+            target.write_text("protected", encoding="utf-8")
+            link = root / "rulesets" / "direct.list"
+            link.parent.mkdir()
+            link.symlink_to(target)
+            with self.assertRaisesRegex(ValueError, "symlinks"):
+                assert_resource_lease_for_repository_path(root, "rulesets/direct.list")
+
+    def test_repository_path_helper_rejects_hardlink_aliases(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "source"
+            source.write_text("shared inode", encoding="utf-8")
+            alias = root / "rulesets" / "direct.list"
+            alias.parent.mkdir()
+            try:
+                alias.hardlink_to(source)
+            except OSError as exc:
+                self.skipTest(f"hard links are unavailable: {exc}")
+            with self.assertRaisesRegex(ValueError, "hard-linked"):
+                assert_resource_lease_for_repository_path(root, "rulesets/direct.list")
+
     def test_acquires_sorted_resources_and_fencing_asserts(self):
         result = acquire_resource_leases(
             "task_a", "worker_a", "task-token-a",
