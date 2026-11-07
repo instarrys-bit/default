@@ -90,7 +90,7 @@
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "e25bf86050266af47b966fa712ce76d6fe352a2a"
+      "git_blob_sha": "9833de55d0020f717e4647b15cb6c250153847ba"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -120,10 +120,6 @@
       "path": "scripts/import_request_observations.py",
       "git_blob_sha": "44bf4312d22ebbcec22d34240891faea29b69c1b"
     },
-    "resource_write_sets": {
-      "path": "automation/resource_write_sets.json",
-      "git_blob_sha": "67cc74cf886052a44d7e4c3c5efcbeb216ea1956"
-    },
     "assessment_artifact_verifier": {
       "path": "scripts/verify_assess_sources_artifacts.py",
       "git_blob_sha": "0f93d85340f75e310f19482b66c3f965748fd8c7"
@@ -131,6 +127,10 @@
     "release_manifest_validator": {
       "path": "scripts/validate_release_manifest.py",
       "git_blob_sha": "95e733af003ac1ea19d98d32b1f7df27cc3f5240"
+    },
+    "production_workflow_map": {
+      "path": "automation/production_workflow_map.json",
+      "git_blob_sha": "3f01707b6a0da920a7c31c31904aa464e051e41f"
     }
   },
   "compatibility": {
