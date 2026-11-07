@@ -771,44 +771,6 @@
       ]
     },
     {
-      "program_id": "script_register_config_baseline",
-      "source": "scripts/register_config_baseline.py",
-      "writes": [
-        "sources/policy.json",
-        "automation/release_manifest.json",
-        "automation/production_workflow_map.json",
-        "automation/resource_write_sets.json"
-      ],
-      "document_store": [],
-      "dynamic_children": [],
-      "read_resources": [
-        "modules/uu.conf",
-        "sources/policy.json",
-        "automation/release_manifest.json",
-        "automation/production_workflow_map.json",
-        "automation/resource_write_sets.json",
-        "owner-authored GitHub commit history"
-      ],
-      "side_effects": [
-        "Uses git history and GitHub commit-author association checks to approve only owner-authored modules/uu.conf changes.",
-        "Updates only baseline/pin metadata; never changes modules/uu.conf.",
-        "The same update refreshes the release-manifest pins in the workflow map and this write inventory."
-      ],
-      "evidence": "main() verifies the exact current config blob and owner-authored push/history before changing metadata. build_release_pin_updates() prepares release_manifest.json, production_workflow_map.json, and resource_write_sets.json pin updates; main() then writes those three files together with sources/policy.json.",
-      "lease_keys": [
-        "logical/production-pipeline"
-      ],
-      "lease_enforcement": "The production publisher requires a live Watchdog task/resource lease before git push. The config validation workflow has contents:read and only mutates its ephemeral validation workspace; it cannot publish repository changes.",
-      "publish_resources": [
-        "sources/policy.json",
-        "automation/release_manifest.json",
-        "automation/production_workflow_map.json",
-        "automation/resource_write_sets.json"
-      ],
-      "ephemeral_unpublished_resources": [],
-      "write_boundary_fencing": "All four durable files are committed by the auto_sync publisher under the same exclusive logical/production-pipeline lease, after a fresh live fencing-token assertion. modules/uu.conf is read-only and excluded from every write set."
-    },
-    {
       "program_id": "script_resource_lease_runtime",
       "source": "scripts/resource_lease_runtime.py",
       "writes": [
@@ -1421,6 +1383,12 @@
       "evidence": "--register-ledger mode writes the supplied Watchdog inbox path; automation-watchdog.yml re-reads the latest Blob SHA on each of up to three attempts and conditionally PUTs the merged ledger. --merge-observations mode reads a runner-temp submitted batch and the latest sources/request_domain_observations.json, then writes the merged ledger; request-intake.yml fetches origin/main and resets its isolated runner workspace to that exact latest commit before each merge/commit/non-force push attempt.. Current callers write only per-run workflow workspace, RUNNER_TEMP, /tmp, or GITHUB_STEP_SUMMARY outputs. These are never committed to repository state; no shared cross-runner resource is mutated. Any future caller must constrain output to its run-local artifact root and upload it as an artifact."
     },
     {
+      "program_id": "script_register_config_baseline",
+      "source": "scripts/register_config_baseline.py",
+      "classification": "runner_local_config_baseline_review_proposal_non_dispatchable",
+      "evidence": "The script reads modules/uu.conf, sources/policy.json and release/workflow inventory inputs. It verifies owner-authored config changes and constructs proposed metadata updates in memory, then writes only $RUNNER_TEMP/config-baseline-proposal.json. The auto_sync workflow uploads that proposal as an immutable run artifact before baseline verification fails closed. It never writes sources/policy.json, release_manifest.json, production_workflow_map.json, resource_write_sets.json or modules/uu.conf."
+    },
+    {
       "program_id": "script_review_cursor",
       "source": "scripts/review_cursor.py",
       "classification": "pure_library_no_repository_mutation",
@@ -1559,7 +1527,8 @@
       "transient write-and-revert activity",
       "external filesystem/API effects not represented as literal Request methods",
       "unexecuted runtime branches and indirect dynamic imports",
-      "The legacy local task_queue_runtime is explicitly non-dispatchable and restricted to runner/OS temporary storage; it is not a cross-runner queue."
+      "The legacy local task_queue_runtime is explicitly non-dispatchable and restricted to runner/OS temporary storage; it is not a cross-runner queue.",
+      "Config baseline owner-approval script is proposal-only: all proposed metadata updates are emitted under RUNNER_TEMP and uploaded as an immutable artifact; no repository files are mutated or published."
     ]
   },
   "workflow_native_write_sites": [
