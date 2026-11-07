@@ -913,6 +913,57 @@ jobs:
           set -euo pipefail
           python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue.json"
           echo "AUTOMATION_QUEUE_SNAPSHOT=$RUNNER_TEMP/task_queue.json" >> "$GITHUB_ENV"
+      - name: Report exact Discovery and Assessment task-level evidence
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          queue = json.loads(Path(os.environ['AUTOMATION_QUEUE_SNAPSHOT']).read_text(encoding='utf-8'))
+          targets = {'workflow_source_discovery', 'script_assess_sources'}
+          tasks = [task for task in queue.get('tasks', []) if task.get('target_program_id') in targets]
+          summary = {
+              'queue_revision': queue.get('revision'),
+              'discovery_task_count': sum(t.get('target_program_id') == 'workflow_source_discovery' for t in tasks),
+              'assessment_task_count': sum(t.get('target_program_id') == 'script_assess_sources' for t in tasks),
+              'tasks': [],
+          }
+          for task in tasks:
+              result = task.get('result') or {}
+              evidence = result.get('run_evidence') or {}
+              artifact = result.get('artifact_verification') or {}
+              predecessor = (task.get('input') or {}).get('predecessor') or {}
+              lease = task.get('resource_lease') or {}
+              summary['tasks'].append({
+                  'task_id': task.get('task_id'),
+                  'target_program_id': task.get('target_program_id'),
+                  'status': task.get('status'),
+                  'idempotency_key': task.get('idempotency_key'),
+                  'dispatch_correlation_id': (task.get('dispatch_intent') or {}).get('correlation_id'),
+                  'requested_head_sha': (task.get('dispatch_intent') or {}).get('requested_head_sha'),
+                  'run_id': evidence.get('run_id'),
+                  'actual_head_sha': evidence.get('head_sha'),
+                  'run_status': evidence.get('status'),
+                  'run_conclusion': evidence.get('conclusion'),
+                  'predecessor_run_id': predecessor.get('workflow_run_id'),
+                  'predecessor_head_sha': predecessor.get('workflow_head_sha'),
+                  'predecessor_artifact_sha256': predecessor.get('artifact_sha256'),
+                  'verification_status': (task.get('verification') or {}).get('status'),
+                  'artifact_valid': artifact.get('valid'),
+                  'artifact_activation_count': artifact.get('activation_count'),
+                  'artifact_sha256': artifact.get('artifact_sha256'),
+                  'artifact_paths': artifact.get('verified_artifacts'),
+                  'resource_lease_status': lease.get('status'),
+                  'resource_lease_expires_at': lease.get('expires_at'),
+                  'resource_fencing_tokens': {key: value.get('fencing_token') for key, value in (lease.get('resources') or {}).items() if isinstance(value, dict)},
+              })
+          summary['tasks'].sort(key=lambda t: (t.get('target_program_id') or '', t.get('task_id') or ''))
+          encoded = json.dumps(summary, ensure_ascii=False, sort_keys=True, indent=2)
+          print(encoded)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as output:
+              output.write('### Durable Discovery / Assessment task evidence\n\n')
+              output.write('```json\n' + encoded + '\n```\n')
+          PY
       - name: Resolve completed Discovery run from durable task correlation
         id: resolve-discovery-run
         env:
