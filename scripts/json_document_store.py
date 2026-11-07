@@ -56,17 +56,20 @@ def _atomic_write(path: Path, data: bytes, *, lease_required: bool = True) -> No
     path.parent.mkdir(parents=True, exist_ok=True)
     _assert_document_lease(path, lease_required)
     fd, temporary = tempfile.mkstemp(prefix=path.name + ".", suffix=".tmp", dir=str(path.parent))
+    temporary_path = Path(temporary)
     try:
+        _assert_document_lease(temporary_path, lease_required)
         with os.fdopen(fd, "wb") as stream:
-            _assert_document_lease(path, lease_required)
+            _assert_document_lease(temporary_path, lease_required)
             stream.write(data)
             stream.flush()
             os.fsync(stream.fileno())
+        _assert_document_lease(temporary_path, lease_required)
         _assert_document_lease(path, lease_required)
         os.replace(temporary, path)
     except Exception:
         try:
-            _assert_document_lease(path, lease_required)
+            _assert_document_lease(temporary_path, lease_required)
         except Exception:
             pass  # Preserve the temporary file rather than mutate without a valid fence.
         else:
@@ -217,8 +220,9 @@ def write_document(path: Path, payload: dict, collection_key: str, *, lease_requ
             raise ValueError("internal shard sizing error")
         name = f"part-{shard_index:06d}.jsonl"
         raw = bytes(shard_buffer)
-        _assert_document_lease(path, lease_required)
-        (staging / name).write_bytes(raw)
+        shard_path = staging / name
+        _assert_document_lease(shard_path, lease_required)
+        shard_path.write_bytes(raw)
         shard_entries.append({
             "file": name,
             "records": len(raw.splitlines()),
@@ -245,10 +249,11 @@ def write_document(path: Path, payload: dict, collection_key: str, *, lease_requ
         final_directory = path.parent / shard_directory
         if final_directory.exists():
             # Same content-addressed version is already complete and may be live.
-            _assert_document_lease(path, lease_required)
+            _assert_document_lease(staging, lease_required)
             shutil.rmtree(staging)
         else:
-            _assert_document_lease(path, lease_required)
+            _assert_document_lease(staging, lease_required)
+            _assert_document_lease(final_directory, lease_required)
             os.replace(staging, final_directory)
 
         manifest = {
@@ -273,13 +278,13 @@ def write_document(path: Path, payload: dict, collection_key: str, *, lease_requ
             path.unlink()
         for old in path.parent.glob(path.name + ".parts-*"):
             if old.is_dir() and old.name != shard_directory:
-                _assert_document_lease(path, lease_required)
+                _assert_document_lease(old, lease_required)
                 shutil.rmtree(old)
         return {"storage": "jsonl-shards-v1", "records": len(records), "bytes": total_shard_bytes, "shards": len(shard_entries)}
     except Exception:
         if staging.exists():
             try:
-                _assert_document_lease(path, lease_required)
+                _assert_document_lease(staging, lease_required)
             except Exception:
                 pass  # Leave an orphaned staging directory rather than clean up without the live fence.
             else:
