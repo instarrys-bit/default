@@ -78,16 +78,22 @@
       "program_id": "script_assess_sources",
       "source": "scripts/assess_sources.py",
       "writes": [
+        "sources/source_assessments.json (monolithic checkout workspace only)",
+        "data/source_assessments_runtime.json (monolithic checkout workspace only)",
+        "reports/source-assessment.md (monolithic checkout workspace only)",
         "$AUTOMATION_ARTIFACT_ROOT/sources/source_assessments.json",
         "$AUTOMATION_ARTIFACT_ROOT/data/source_assessments_runtime.json",
         "$AUTOMATION_ARTIFACT_ROOT/reports/source-assessment.md"
       ],
       "document_store": [
+        "sources/source_assessments.json",
+        "data/source_assessments_runtime.json",
         "$AUTOMATION_ARTIFACT_ROOT/sources/source_assessments.json",
         "$AUTOMATION_ARTIFACT_ROOT/data/source_assessments_runtime.json"
       ],
       "dynamic_children": [
-        "runner-local content-addressed manifests/shards/staging under AUTOMATION_ARTIFACT_ROOT; no repository paths"
+        "checkout workspace manifests/shards/staging under sources/source_assessments.json and data/source_assessments_runtime.json",
+        "runner-local manifests/shards/staging under AUTOMATION_ARTIFACT_ROOT"
       ],
       "read_resources": [
         "verified external $AUTOMATION_PREDECESSOR_ARTIFACT_ROOT/sources/discovered_sources.json",
@@ -101,20 +107,26 @@
       "evidence": "Independent task mode resolves the discovery predecessor from AUTOMATION_PREDECESSOR_ARTIFACT_ROOT and writes runtime/history/report documents only beneath AUTOMATION_ARTIFACT_ROOT. write_document uses no repository resource lease because the workspace is per-run isolated. Shared progress is written only through the fenced Issue #315 queue CAS.",
       "lease_keys": [
         "logical/production-pipeline",
+        "sources/source_assessments.json",
+        "data/source_assessments_runtime.json",
+        "reports/source-assessment.md",
         "logical/source-assessment-checkpoints"
       ],
-      "lease_enforcement": "Queue checkpoint CAS re-reads the durable queue and validates the exact task lease plus both live logical fencing tokens before each checkpoint mutation. Runner-local artifacts are isolated to the current RUNNER_TEMP directory.",
+      "lease_enforcement": "Monolithic checkout-workspace writes assert each exact path lease when the Watchdog resource proof is present; independent task mode writes only under RUNNER_TEMP and uses no shared filesystem lease. The durable per-URL task checkpoint is updated via append-only Issue #315 CAS with active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [
+        "sources/source_assessments.json (monolithic checkout workspace only)",
+        "data/source_assessments_runtime.json (monolithic checkout workspace only)",
+        "reports/source-assessment.md (monolithic checkout workspace only)",
         "$AUTOMATION_ARTIFACT_ROOT/sources/source_assessments.json",
         "$AUTOMATION_ARTIFACT_ROOT/data/source_assessments_runtime.json",
         "$AUTOMATION_ARTIFACT_ROOT/reports/source-assessment.md"
       ],
       "lease_seconds": 480,
-      "publication": "No repository publication; the Watchdog uploads the independently verified runner-local output folder as an immutable Actions artifact.",
-      "write_boundary_fencing": "No shared repository filesystem writes. Per-run output isolation plus task-bound, live-fenced append-only queue CAS is the only shared mutation.",
+      "publication": "No repository publication for assessment artifacts; monolithic report is retained only as a run artifact, independent mode uploads immutable runner-local outputs. Production Git commits remain restricted to rulesets/**.",
+      "write_boundary_fencing": "All shared checkpoint mutations are live-fenced; checkout workspace writes are exact-path lease checked in the monolithic pipeline; independent artifacts are isolated per run. Neither mode publishes source assessment documents to the repository. The production publisher stages rulesets/** only.",
       "additional_serialized_writers": [],
-      "additional_writer_boundary": "No persistent source-assessment artifact writer remains; the main-branch source_assessments.json is a read-only baseline."
+      "additional_writer_boundary": "Restore/publish paths do not publish source assessment history or reports to the repository; only the ruleset publisher may commit rulesets/**."
     },
     {
       "program_id": "script_audit_config_drift",
@@ -640,14 +652,18 @@
       "program_id": "script_discover_sources",
       "source": "scripts/discover_sources.py",
       "writes": [
+        "sources/discovered_sources.json (monolithic checkout workspace only)",
+        "reports/source-discovery.md (monolithic checkout workspace only)",
         "$AUTOMATION_ARTIFACT_ROOT/sources/discovered_sources.json",
         "$AUTOMATION_ARTIFACT_ROOT/reports/source-discovery.md"
       ],
       "document_store": [
+        "sources/discovered_sources.json",
         "$AUTOMATION_ARTIFACT_ROOT/sources/discovered_sources.json"
       ],
       "dynamic_children": [
-        "runner-local manifest, content-addressed shards and staging under AUTOMATION_ARTIFACT_ROOT"
+        "checkout workspace manifest/shards/staging under sources/discovered_sources.json",
+        "runner-local manifest/shards/staging under AUTOMATION_ARTIFACT_ROOT"
       ],
       "read_resources": [
         "sources/external_intelligence_catalog.json",
@@ -658,13 +674,18 @@
         "Discovery inventory and report are written only under isolated RUNNER_TEMP and uploaded as an immutable Actions artifact; no repository file is modified."
       ],
       "evidence": "Independent workflow seeds the current main discovery document into an isolated RUNNER_TEMP workspace, runs discover_sources.py with AUTOMATION_ARTIFACT_ROOT, verifies producer identity and complete logical-document digest, then uploads the workspace as an immutable artifact.",
-      "write_boundary_fencing": "The exact Watchdog durable task and active resource lease proof are verified before execution. File outputs are isolated per run under RUNNER_TEMP; no shared repository filesystem mutation or publication occurs.",
+      "write_boundary_fencing": "The monolithic workflow's exact resource leases cover checkout workspace outputs; independent discovery writes are confined to RUNNER_TEMP and verified before immutable artifact upload. Neither mode publishes discovery documents to the repository.",
       "ephemeral_outputs": [
         "GITHUB_STEP_SUMMARY (runner-local; warning path overwrites and success path appends)"
       ],
       "additional_serialized_writers": [],
-      "additional_writer_boundary": "No persistent discovery artifact writer remains; the main-branch discovery document is a read-only baseline.",
-      "lease_keys": []
+      "additional_writer_boundary": "The script_restore_automation_state writer is separately serialized by logical/production-pipeline and may not publish discovery files.",
+      "lease_keys": [
+        "sources/discovered_sources.json",
+        "reports/source-discovery.md"
+      ],
+      "lease_enforcement": "Monolithic mode calls write_document with lease_required=True for sources/discovered_sources.json and asserts the exact report lease before report writes. Independent mode writes only to a per-run RUNNER_TEMP artifact root with no shared filesystem mutation.",
+      "publication": "No repository publication; the independent producer uploads an immutable Actions artifact, while monolithic checkout outputs remain run-local. Production Git commits remain restricted to rulesets/**."
     },
     {
       "program_id": "script_github_queue_store",
