@@ -1563,8 +1563,10 @@ jobs:
               print("")
               raise SystemExit(0)
           safe = [t for t in tasks if isinstance(t, dict) and t.get("target_program_id") != "workflow_auto_sync" and t.get("status") in {"QUEUED", "CLAIMED", "VERIFYING", "SUCCEEDED"}]
-          source = [t for t in safe if t.get("target_program_id") in {"workflow_source_discovery", "script_assess_sources"}]
-          candidates = source or safe
+          discovery_queued = [t for t in safe if t.get("target_program_id") == "workflow_source_discovery" and t.get("status") == "QUEUED"]
+          assessment_queued = [t for t in safe if t.get("target_program_id") == "script_assess_sources" and t.get("status") == "QUEUED"]
+          active_source = [t for t in safe if t.get("target_program_id") in {"workflow_source_discovery", "script_assess_sources"} and t.get("status") in {"CLAIMED", "VERIFYING"}]
+          candidates = discovery_queued or assessment_queued or active_source or safe
           if not candidates:
               print("")
           else:
