@@ -696,7 +696,7 @@ jobs:
       contents: read
       issues: write
     runs-on: ubuntu-24.04
-    timeout-minutes: 8
+    timeout-minutes: 15
     env:
       PYTHONDONTWRITEBYTECODE: "1"
     steps:
@@ -1106,11 +1106,24 @@ jobs:
               if isinstance(correlation, str) and correlation and isinstance(requested_sha, str) and len(requested_sha) == 40:
                   pending.append((task, correlation, requested_sha))
           pending.sort(key=lambda x: x[0].get("created_at", ""), reverse=True)
+          existing_artifact_recovery_keys = {
+              task.get("idempotency_key") for task in tasks
+              if isinstance(task, dict) and isinstance(task.get("idempotency_key"), str)
+              and task.get("idempotency_key").endswith(":artifact-recovery:1")
+          }
           assessment_tasks = [
               task for task in tasks
               if task.get("target_program_id") == "script_assess_sources"
-              and task.get("status") == "QUEUED"
               and isinstance((task.get("input") or {}).get("predecessor"), dict)
+              and (
+                  task.get("status") == "QUEUED"
+                  or (
+                      task.get("status") == "SUCCEEDED"
+                      and isinstance(task.get("idempotency_key"), str)
+                      and task.get("idempotency_key").endswith(":recovery:2")
+                      and task.get("idempotency_key").rsplit(":recovery:2", 1)[0] + ":artifact-recovery:1" not in existing_artifact_recovery_keys
+                  )
+              )
           ]
           print(json.dumps({
               "queue_revision": queue.get("revision"),
@@ -1438,6 +1451,36 @@ jobs:
           printf '%s' "$queue_token" | python3 scripts/task_scheduler.py             --repository "$GITHUB_REPOSITORY" --branch main --token-stdin             --idempotency-key "$assessment_key"             --priority 60 --input-json "$task_input" enqueue-source-assessment
           unset queue_token
 
+      - name: Enqueue one artifact-recovery Assessment after verified success without supervisor upload
+        if: ${{ steps.resolve-discovery-run.outputs.run_id != '' && steps.resolve-discovery-run.outputs.handoff_state == 'already_assessed' && steps.verify-discovery-artifact.outputs.valid == 'true' && steps.source-mode.outputs.mode == 'independent' }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          SOURCE_RUN_ID: ${{ steps.resolve-discovery-run.outputs.run_id }}
+          AUTOMATION_QUEUE_SNAPSHOT: ${{ runner.temp }}/task_queue.json
+        run: |
+          set -euo pipefail
+          base_key="source-assessment:$SOURCE_RUN_ID:parser-v2"
+          recovery_two_key="$base_key:recovery:2"
+          artifact_recovery_key="$base_key:artifact-recovery:1"
+          recovery_two="$(jq -c --arg key "$recovery_two_key" '[.tasks[]? | select(.idempotency_key == $key)] | last // empty' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          if [ -z "$recovery_two" ] || [ "$(jq -r '.status // ""' <<< "$recovery_two")" != "SUCCEEDED" ] || [ "$(jq -r '.verification.status // ""' <<< "$recovery_two")" != "passed" ] || [ "$(jq -r '.result.artifact_verification.valid // false' <<< "$recovery_two")" != "true" ] || [ "$(jq -r '.result.artifact_verification.activation_count // -1' <<< "$recovery_two")" != "0" ]; then
+            echo "No independently verified recovery:2 task requires artifact recovery."
+            exit 0
+          fi
+          existing="$(jq -r --arg key "$artifact_recovery_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .task_id // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          if [ -n "$existing" ]; then
+            echo "The single artifact-recovery task already exists ($existing); no duplicate will be enqueued."
+            exit 0
+          fi
+          predecessor="$(jq -c '.input.predecessor' <<< "$recovery_two")"
+          task_input="$(jq -cn --argjson predecessor "$predecessor" '{max_urls:4,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}')"
+          echo "Enqueueing one bounded artifact-recovery Assessment for Discovery run $SOURCE_RUN_ID."
+          queue_token="$GITHUB_TOKEN"
+          unset GITHUB_TOKEN
+          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin --idempotency-key "$artifact_recovery_key" --priority 100 --input-json "$task_input" enqueue-source-assessment
+          unset queue_token
+
       - name: Enqueue independent source discovery only after its authorization gate opens
         if: ${{ (steps.resolve-discovery-run.outputs.run_id == '' && steps.resolve-discovery-run.outputs.handoff_state == '') || steps.verify-discovery-artifact.outputs.valid == 'false' }}
         env:
@@ -1481,7 +1524,7 @@ jobs:
           printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin --idempotency-key "$idempotency_key" --priority 55 enqueue-source-discovery
           unset queue_token
 
-      - name: Recover leases, verify results, and dispatch up to two independent tasks
+      - name: Recover leases, verify results, and dispatch one task before artifact upload
         id: run-queue
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -1494,7 +1537,7 @@ jobs:
           mkdir -p "$AUTOMATION_ARTIFACT_ROOT"
           queue_token="$GITHUB_TOKEN"
           unset GITHUB_TOKEN
-          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --token-stdin --repository "$GITHUB_REPOSITORY" --branch main --max-tasks 2 run-once | tee /tmp/task-scheduler-report.json
+          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --token-stdin --repository "$GITHUB_REPOSITORY" --branch main --max-tasks 1 run-once | tee /tmp/task-scheduler-report.json
           GITHUB_TOKEN="$queue_token" python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue_after.json"
           unset queue_token
           cat /tmp/task-scheduler-report.json >> "$GITHUB_STEP_SUMMARY"
