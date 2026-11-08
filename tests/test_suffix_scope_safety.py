@@ -13,6 +13,21 @@ class SuffixScopeSafetyTests(unittest.TestCase):
         status, _ = inspect_suffix_scope("example.com", "DIRECT", rules, [], {})
         self.assertIsNone(status)
 
+    def test_suffix_index_preserves_covering_rules_among_many_unrelated_rules(self):
+        unrelated = [
+            DomainRule("DOMAIN-SUFFIX", f"unrelated-{i}.invalid", "DIRECT", i + 1,
+                       f"DOMAIN-SUFFIX,unrelated-{i}.invalid,DIRECT")
+            for i in range(1500)
+        ]
+        covering = DomainRule(
+            "DOMAIN-SUFFIX", "example.com", "PROXY", 2000,
+            "DOMAIN-SUFFIX,example.com,PROXY"
+        )
+        rules = RuleIndex(unrelated + [covering])
+        status, reason = inspect_suffix_scope("sub.example.com", "DIRECT", rules, [], {})
+        self.assertEqual(status, "CONFLICT")
+        self.assertIn("fully covering config suffix scope", reason)
+
     def test_suffix_is_held_for_conflicting_ancestor_suffix_rule(self):
         rules = RuleIndex([DomainRule("DOMAIN-SUFFIX", "example.com", "PROXY", 10, "DOMAIN-SUFFIX,example.com,PROXY")])
         status, _ = inspect_suffix_scope("sub.example.com", "DIRECT", rules, [], {})
