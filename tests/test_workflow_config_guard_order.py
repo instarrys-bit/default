@@ -260,14 +260,14 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
 
     def test_owner_config_registration_precedes_fingerprint_and_parallel_read_only_tests(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        preflight = workflow.split("  preflight:", 1)[1].split("\\n  audit:", 1)[0]
-        audit = workflow.split("\\n  audit:", 1)[1].split("\\n  publish:", 1)[0]
+        preflight = workflow.split("  preflight:", 1)[1].split("\n  audit:", 1)[0]
+        audit = workflow.split("\n  audit:", 1)[1].split("\n  publish:", 1)[0]
         registration = audit.index("Register repository-owner-approved uu.conf changes")
         fingerprint = audit.index("Capture and verify the exact production input fingerprint")
         self.assertLess(registration, fingerprint)
         self.assertIn("Compile and run deterministic review tests", preflight)
         self.assertNotIn("Compile and run deterministic review tests", audit)
-        publish = workflow.split("\\n  publish:", 1)[1].split("\\n  persist-review-cursor:", 1)[0]
+        publish = workflow.split("\n  publish:", 1)[1].split("\n  persist-review-cursor:", 1)[0]
         self.assertIn("needs: [audit, preflight]", publish)
         archive = workflow.split("          base_files=(", 1)[1].split("          )", 1)[0]
         self.assertNotIn("sources/policy.json", archive)
