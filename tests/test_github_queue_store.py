@@ -82,9 +82,46 @@ class GitHubIssueQueueStoreTests(unittest.TestCase):
         self.assertEqual(latest.document, candidate)
         self.assertEqual(new_sha, latest.content_sha)
         payload = json.loads(self.comments[-1]["body"].split("\n", 1)[1])
+        self.assertEqual(payload["kind"], "commit")
         self.assertEqual(payload["encoding"], "gzip+base64")
-        self.assertEqual(gzip.decompress(__import__("base64").b64decode(payload["data"])), self.store._canonical_bytes(candidate))
+        parts = {}
+        for comment in self.comments:
+            body = comment["body"]
+            if body.startswith("<!-- shadowrocket-automation-queue:v2 -->\\n"):
+                item = json.loads(body.split("\\n", 1)[1])
+                if item.get("kind") == "part" and item.get("sha256") == payload["sha256"]:
+                    parts[item["index"]] = item["data"]
+        encoded = "".join(parts[index] for index in range(payload["total"]))
+        self.assertEqual(gzip.decompress(__import__("base64").b64decode(encoded)), self.store._canonical_bytes(candidate))
         self.assertEqual(payload["previous_sha256"], hashlib.sha256(self.store._canonical_bytes(self.document)).hexdigest())
+
+    def test_large_snapshot_is_chunked_and_round_trips(self):
+        blob = "".join(hashlib.sha256(str(index).encode()).hexdigest() for index in range(5000))
+        candidate = {"schema_version": 1, "revision": 5, "tasks": [{"task_id": "large", "evidence": blob}]}
+        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+            current = self.store._ensure_bootstrap()
+            self.store.compare_and_swap(candidate, current.content_sha)
+            latest = self.store.read()
+        self.assertEqual(latest.document, candidate)
+        self.assertGreater(len(self.comments), 3)
+        self.assertTrue(all(len(item["body"].encode("utf-8")) < 60_000 for item in self.comments))
+        self.assertEqual(latest.content_sha, f"5:{hashlib.sha256(self.store._canonical_bytes(candidate)).hexdigest()}")
+
+    def test_incomplete_chunk_upload_is_ignored(self):
+        raw = self.store._canonical_bytes({"schema_version": 1, "revision": 5, "tasks": []})
+        compressed = __import__("gzip").compress(raw, mtime=0)
+        encoded = __import__("base64").b64encode(compressed).decode("ascii")
+        payload = {
+            "schema_version": 2, "kind": "part", "revision": 5,
+            "previous_sha256": hashlib.sha256(self.store._canonical_bytes(self.document)).hexdigest(),
+            "sha256": hashlib.sha256(raw).hexdigest(), "encoding": "gzip+base64",
+            "index": 0, "total": 2, "data": encoded,
+        }
+        self.comments.append({"id": 1, "body": "<!-- shadowrocket-automation-queue:v2 -->\\n" + json.dumps(payload)})
+        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+            snapshot = self.store.read()
+        self.assertEqual(snapshot.document, self.document)
+        self.assertEqual(snapshot.content_sha, "")
 
     def test_blind_write_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "blind writes"):
