@@ -15,9 +15,22 @@ def request(url, token, limit=5_000_000):
     return data
 
 def download_archive(url, token):
+    import urllib.error
+    class NoRedirect(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, req, fp, code, msg, headers, newurl):
+            return None
     req=urllib.request.Request(url,headers={"Accept":"application/vnd.github+json","Authorization":"Bearer "+token,"X-GitHub-Api-Version":"2022-11-28","User-Agent":"Shadowrocket-Source-Handoff/1.0"})
-    opener=urllib.request.build_opener(urllib.request.HTTPRedirectHandler())
-    with opener.open(req,timeout=60) as response:
+    opener=urllib.request.build_opener(NoRedirect())
+    try:
+        response=opener.open(req,timeout=60)
+    except urllib.error.HTTPError as exc:
+        if exc.code not in {301,302,303,307,308}:
+            raise
+        location=exc.headers.get("Location")
+        if not location:
+            raise ValueError("GitHub artifact redirect has no signed location")
+        response=urllib.request.urlopen(urllib.request.Request(location,headers={"User-Agent":"Shadowrocket-Source-Handoff/1.0"}),timeout=60)
+    with response:
         data=response.read(LIMIT+1)
     if len(data)>LIMIT: raise ValueError("Actions artifact archive exceeds size limit")
     return data
