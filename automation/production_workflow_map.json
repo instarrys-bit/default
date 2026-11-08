@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "03beb428d418044025bfb012c27da678c6ad5b61",
+  "workflow_blob_sha": "8f01446b17654a91b2d7d5fb961ada7d8b72759c",
   "registry_blob_sha": "2b595ebf040b6624435ecfa5eb436bfdf56df5cc",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 6,
-    "step_count": 58,
+    "step_count": 59,
     "independent_python_dispatch_enabled": true,
     "independent_workflow_count": 1
   },
@@ -144,80 +144,84 @@
           "order": 25
         },
         {
-          "name": "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services",
+          "name": "Restore latest failed-run review checkpoint and delta journal",
           "order": 26
         },
         {
-          "name": "Preserve resumable review cursor checkpoint",
+          "name": "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services",
           "order": 27
         },
         {
-          "name": "Build standalone DIRECT, PROXY and REJECT rule sets",
+          "name": "Preserve resumable review cursor checkpoint",
           "order": 28
         },
         {
-          "name": "Summarize REJECT secondary screening",
+          "name": "Build standalone DIRECT, PROXY and REJECT rule sets",
           "order": 29
         },
         {
-          "name": "Evaluate lifecycle milestones and monthly capacity review",
+          "name": "Summarize REJECT secondary screening",
           "order": 30
         },
         {
-          "name": "Run conservative lifecycle audit and selectable restoration",
+          "name": "Evaluate lifecycle milestones and monthly capacity review",
           "order": 31
         },
         {
-          "name": "Reconcile final uu.conf scope coverage after all rule mutations",
+          "name": "Run conservative lifecycle audit and selectable restoration",
           "order": 32
         },
         {
-          "name": "Reconcile final RULE-SET manifest counts",
+          "name": "Reconcile final uu.conf scope coverage after all rule mutations",
           "order": 33
         },
         {
-          "name": "Build append-only rule-level provenance ledger",
+          "name": "Reconcile final RULE-SET manifest counts",
           "order": 34
         },
         {
-          "name": "Validate Shadowrocket config structure",
+          "name": "Build append-only rule-level provenance ledger",
           "order": 35
         },
         {
-          "name": "Audit RULE-SET references against generated outputs (read-only)",
+          "name": "Validate Shadowrocket config structure",
           "order": 36
         },
         {
-          "name": "Audit candidate scope coverage against user config (read-only)",
+          "name": "Audit RULE-SET references against generated outputs (read-only)",
           "order": 37
         },
         {
-          "name": "Audit managed config drift (read-only)",
+          "name": "Audit candidate scope coverage against user config (read-only)",
           "order": 38
         },
         {
-          "name": "Run read-only full-source regression audit",
+          "name": "Audit managed config drift (read-only)",
           "order": 39
         },
         {
-          "name": "Build consolidated project status",
+          "name": "Run read-only full-source regression audit",
           "order": 40
         },
         {
-          "name": "Write successful audit heartbeat",
+          "name": "Build consolidated project status",
           "order": 41
         },
         {
-          "name": "Record durable automation state pointer",
+          "name": "Write successful audit heartbeat",
           "order": 42
         },
         {
-          "name": "Package allowlisted audit outputs",
+          "name": "Record durable automation state pointer",
           "order": 43
         },
         {
-          "name": "Upload allowlisted audit outputs",
+          "name": "Package allowlisted audit outputs",
           "order": 44
+        },
+        {
+          "name": "Upload allowlisted audit outputs",
+          "order": 45
         }
       ]
     },
