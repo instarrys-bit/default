@@ -460,6 +460,8 @@ def _review_resource_metrics():
 
 
 def main():
+    pipeline_started=time.monotonic()
+    input_load_started=time.monotonic()
     source_cfg=json.loads(POLICY.read_text(encoding="utf-8"))
     protected=json.loads(PROTECTED.read_text(encoding="utf-8"))
     collected=read_document(CANDIDATES,"candidates",{"candidates":[],"sources":[]})
@@ -484,7 +486,10 @@ def main():
     minimum=int(score_cfg["minimum_independent_sources"])
     now=datetime.now(timezone.utc).isoformat()
     correlated_pairs=load_correlated_publishers()
+    ledger_load_started=time.monotonic()
     review_map={x["domain"]:x for x in iter_document_records(OUTPUT,"reviews")}
+    ledger_load_seconds=time.monotonic()-ledger_load_started
+    input_load_seconds=ledger_load_started-input_load_started
     if len(review_map)>MAX_REVIEW_RECORDS:
         fail(f"historical review ledger exceeds hard limit: {len(review_map):,} > {MAX_REVIEW_RECORDS:,}")
     lifecycle_state=json.loads(LIFECYCLE_STATE.read_text(encoding="utf-8")) if LIFECYCLE_STATE.exists() else {}
@@ -508,6 +513,7 @@ def main():
     candidates=collected.get("candidates",[])
     if len(candidates)>MAX_REVIEW_RECORDS:
         fail(f"candidate review input exceeds hard limit: {len(candidates):,} > {MAX_REVIEW_RECORDS:,}")
+    snapshot_started=time.monotonic()
     context_sha256=review_context_fingerprint(
         source_cfg,protected,config,current_hashes,correlated_pairs,lifecycle_active,published_identities
     )
@@ -515,6 +521,7 @@ def main():
         "candidate_snapshot":snapshot_digest(collected.get("sources",[]),candidates),
         "review_context":context_sha256,
     })
+    snapshot_fingerprint_seconds=time.monotonic()-snapshot_started
     cursor_state=json.loads(CURSOR.read_text(encoding="utf-8")) if CURSOR.exists() else {}
     start_index=resume_index(cursor_state,snapshot_sha256,len(candidates))
     batch_size=5000
@@ -655,16 +662,20 @@ def main():
             }
             # Append only changed records. The small delta manifest is the commit
             # point; the cursor advances only after the delta is durable.
+            delta_write_started=time.monotonic()
             append_result=append_document_records(
                 OUTPUT,metadata,"reviews",pending_updates,
                 delta_run_epoch*(len(candidates)+1)+batch_end,lease_required=True
             )
+            delta_write_seconds=time.monotonic()-delta_write_started
             pending_updates=[]
+            cursor_write_started=time.monotonic()
             atomic_json(CURSOR,{
                 **checkpoint(snapshot_sha256,len(candidates),batch_end,batch_size),
                 "updated_at":now,
                 "last_checkpoint_domain":candidates[batch_end-1].get("domain") if batch_end else None,
             })
+            cursor_write_seconds=time.monotonic()-cursor_write_started
             print(
                 "Review checkpoint: "
                 + json.dumps({
@@ -672,6 +683,8 @@ def main():
                     "batch_candidates":batch_end-batch_start,
                     "delta_records":append_result["records"],
                     "delta_bytes":append_result["bytes"],
+                    "delta_write_seconds":round(delta_write_seconds,3),
+                    "cursor_write_seconds":round(cursor_write_seconds,3),
                     "ledger_records":len(review_map),
                     "worker_count":worker_count if executor is not None else 1,
                 },sort_keys=True),
@@ -686,6 +699,7 @@ def main():
     reviews=sorted(review_map.values(),key=lambda x:x["domain"])
     total_counts={}
     for item in reviews: total_counts[item["status"]]=total_counts.get(item["status"],0)+1
+    compaction_started=time.monotonic()
     compacted_through=max(
         document_delta_watermark(OUTPUT,"reviews"),
         delta_run_epoch*(len(candidates)+1)+len(candidates),
@@ -697,6 +711,7 @@ def main():
     },"reviews",lease_required=True)
     # The compacted base is durable before the overlay manifest is removed.
     clear_document_delta(OUTPUT,"reviews",lease_required=True)
+    compaction_seconds=time.monotonic()-compaction_started
     atomic_json(CURSOR,{**checkpoint(snapshot_sha256,len(candidates),len(candidates),batch_size,"complete"),"updated_at":now,"last_checkpoint_domain":candidates[-1].get("domain") if candidates else None})
     print("Review storage: "+json.dumps(compact_result,sort_keys=True))
     print("Review metrics: "+json.dumps({
@@ -704,7 +719,12 @@ def main():
         "ledger_records":len(reviews),
         "resumed_from":start_index,
         "processed_this_run":len(candidates)-start_index,
-        "elapsed_seconds":round(time.monotonic()-review_started,2),
+        "input_load_seconds":round(input_load_seconds,2),
+        "ledger_load_seconds":round(ledger_load_seconds,2),
+        "snapshot_fingerprint_seconds":round(snapshot_fingerprint_seconds,2),
+        "review_loop_seconds":round(time.monotonic()-review_started,2),
+        "compaction_seconds":round(compaction_seconds,2),
+        "total_seconds":round(time.monotonic()-pipeline_started,2),
         "parent_cpu_seconds":round(time.process_time()-parent_cpu_started,2),
         "configured_workers":worker_count,
         "config_domain_rules":rules_count,
