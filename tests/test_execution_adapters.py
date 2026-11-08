@@ -91,7 +91,7 @@ class ExecutionAdapterTests(unittest.TestCase):
         self.assertEqual(assessment_program["orchestration"]["max_attempts"], 2)
         self.assertEqual(assessment_program["orchestration"]["timeout_seconds"], 480)
         self.assertEqual(assessment_adapter["timeout_seconds"], 300)
-        self.assertEqual(assessment_adapter["retry"]["max_attempts"], 2)
+        self.assertEqual(assessment_adapter["retry"]["max_attempts"], 1)
 
     def test_valid_minimal_inventory(self):
         root, ap, rp, _ = self.make_repo()
