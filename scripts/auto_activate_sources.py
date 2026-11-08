@@ -93,6 +93,9 @@ def activate(registry: dict, matrix: dict, now: str | None = None) -> tuple[dict
         repository = str(candidate.get("repository", "")).strip()
         if policy not in POLICIES or not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repository):
             continue
+        if policy == "REJECT":
+            decisions.append({"repository": repository, "policy": policy, "decision": "held_manual_approval_required", "reason": "new REJECT source admission is never automated; an explicit human approval and manual registry change are required"})
+            continue
         if not candidate.get("activation_eligible") or candidate.get("archived"):
             decisions.append({"repository": repository, "policy": policy, "decision": "held", "reason": "policy evidence is not strong or publisher is archived"})
             continue
