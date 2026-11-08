@@ -4,8 +4,8 @@
   "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
-    "registry_blob_sha": "c22acdc8c1a9f47b90a05d5c24fadeaf5152adae",
-    "adapters_blob_sha": "e56a9ebeb4f3ba131c1c8106e693902fa6a1a83b",
+    "registry_blob_sha": "e94d7ff0aa33bc239abdece4182277cfa2a8bc6f",
+    "adapters_blob_sha": "afce52f0125b81026d6821138024344c920bfcae",
     "inspected_sources": [
       ".github/workflows/auto_sync.yml",
       ".github/workflows/automation-watchdog.yml",
