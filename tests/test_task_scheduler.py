@@ -501,6 +501,18 @@ class TaskSchedulerTests(unittest.TestCase):
         self.assertEqual(report["processed_count"], 0)
         self.assertEqual(self.store.document["tasks"][0]["status"], "QUEUED")
 
+    def test_scheduler_stops_when_claim_returns_none_instead_of_spinning(self):
+        task = self.enqueue()["task"]
+        with patch("task_scheduler.claim_remote", return_value=None) as claim:
+            report = run_scheduler_once(
+                self.store, self.registry, self.adapters,
+                worker_id="scheduler-test", max_tasks=2, root=self.root, now=self.now,
+            )
+        self.assertEqual(claim.call_count, 1)
+        self.assertEqual(report["processed_count"], 0)
+        self.assertEqual(self.store.document["tasks"][0]["task_id"], task["task_id"])
+        self.assertEqual(self.store.document["tasks"][0]["status"], "QUEUED")
+
     def test_child_modification_of_protected_config_stops_scheduler(self):
         self.script.write_text(
             "import json\n"
