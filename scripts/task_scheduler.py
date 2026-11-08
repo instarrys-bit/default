@@ -1069,6 +1069,7 @@ def enqueue_source_assessment_task(store, registry: dict, adapters: dict, *,
     errors = validate_json_schema(input_payload, adapter.get("input_contract"))
     if errors:
         raise ValueError("source assessment input contract failed: " + "; ".join(errors[:5]))
+    expected_key = f"source-assessment:{predecessor['workflow_run_id']}:parser-v2"
     recovery_one_key = expected_key + ":recovery:1"
     recovery_two_key = expected_key + ":recovery:2"
     if idempotency_key not in {expected_key, recovery_one_key, recovery_two_key}:
