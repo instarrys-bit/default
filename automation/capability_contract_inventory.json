@@ -2,12 +2,12 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-source-dag-active-2026-11-07",
   "status": "baseline_inventory",
-  "source_registry_blob_sha": "879a0aef9c1489e9d2aee22f7216cf678c8f3b31",
+  "source_registry_blob_sha": "c22acdc8c1a9f47b90a05d5c24fadeaf5152adae",
   "summary": {
-    "registered_programs": 61,
-    "python_components": 53,
+    "registered_programs": 62,
+    "python_components": 54,
     "python_components_with_concrete_io_contract": 1,
-    "python_components_with_declared_registry_dependencies": 4,
+    "python_components_with_declared_registry_dependencies": 5,
     "independently_dispatchable_python_components": 1,
     "note": "Counts reflect registry declarations, not runtime call-graph completeness."
   },
@@ -1073,6 +1073,38 @@
       "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
     },
     {
+      "id": "script_resolve_source_artifacts",
+      "path": "scripts/resolve_source_artifacts.py",
+      "declared_capabilities": [
+        "source_artifact_handoff"
+      ],
+      "registry_dependencies": [
+        "script_discover_sources",
+        "script_assess_sources"
+      ],
+      "current_registry_inputs": [
+        "durable task queue snapshot",
+        "exact immutable Discovery and Assessment Actions artifacts"
+      ],
+      "current_registry_outputs": [
+        "verified artifact roots beneath RUNNER_TEMP"
+      ],
+      "current_invocation": "internal production workflow step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "idempotency_key",
+        "resource_lease_keys",
+        "independent_verifier"
+      ],
+      "audit_note": "Read-only GitHub Actions artifact resolver. Downloads only exact predecessor-bound artifacts, verifies complete content manifests, extracts only beneath RUNNER_TEMP, and fails closed. It has no repository write, source activation, or uu.conf access."
+    },
+    {
       "id": "script_resource_lease_runtime",
       "path": "scripts/resource_lease_runtime.py",
       "declared_capabilities": [
@@ -1197,6 +1229,38 @@
         "independent_verifier"
       ],
       "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_source_handoff_policy",
+      "path": "scripts/source_handoff_policy.py",
+      "declared_capabilities": [
+        "source_handoff_deduplication"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "durable task queue snapshot",
+        "exact successful Discovery workflow run ID"
+      ],
+      "current_registry_outputs": [
+        "deterministic handoff classification",
+        "canonical and duplicate Assessment task IDs"
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "standalone_input_schema",
+        "standalone_output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Pure deterministic helper imported by the Watchdog handoff resolver; no filesystem, network, queue, workflow-dispatch, or repository mutation. It is not independently dispatchable."
     },
     {
       "id": "script_source_registry",
@@ -1689,38 +1753,6 @@
         "independent_verifier"
       ],
       "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
-    },
-    {
-      "id": "script_source_handoff_policy",
-      "path": "scripts/source_handoff_policy.py",
-      "declared_capabilities": [
-        "source_handoff_deduplication"
-      ],
-      "registry_dependencies": [],
-      "current_registry_inputs": [
-        "durable task queue snapshot",
-        "exact successful Discovery workflow run ID"
-      ],
-      "current_registry_outputs": [
-        "deterministic handoff classification",
-        "canonical and duplicate Assessment task IDs"
-      ],
-      "current_invocation": "python_module_or_workflow_step",
-      "contract_status": "incomplete",
-      "dispatch_status": "disabled",
-      "missing_contract_fields": [
-        "standalone_input_schema",
-        "standalone_output_schema",
-        "read_resources",
-        "write_resources",
-        "transitive_side_effects",
-        "dependency_edges",
-        "idempotency_key",
-        "resource_lease_keys",
-        "success_predicate",
-        "independent_verifier"
-      ],
-      "audit_note": "Pure deterministic helper imported by the Watchdog handoff resolver; no filesystem, network, queue, workflow-dispatch, or repository mutation. It is not independently dispatchable."
     }
   ],
   "workflow_capabilities": [
