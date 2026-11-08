@@ -456,4 +456,3 @@ def clear_document_delta(path: Path, collection_key: str, *, lease_required: boo
         if directory.exists():
             _assert_document_lease(directory, lease_required)
             shutil.rmtree(directory)
-\n
