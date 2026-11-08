@@ -1070,11 +1070,12 @@ def enqueue_source_assessment_task(store, registry: dict, adapters: dict, *,
     if errors:
         raise ValueError("source assessment input contract failed: " + "; ".join(errors[:5]))
     expected_key = f"source-assessment:{predecessor['workflow_run_id']}:parser-v2"
-    recovery_key = expected_key + ":recovery:1"
-    if idempotency_key not in {expected_key, recovery_key}:
+    recovery_one_key = expected_key + ":recovery:1"
+    recovery_two_key = expected_key + ":recovery:2"
+    if idempotency_key not in {expected_key, recovery_one_key, recovery_two_key}:
         raise ValueError("source assessment idempotency key must be bound to its producer workflow run")
     precondition = None
-    if idempotency_key == recovery_key:
+    if idempotency_key == recovery_one_key:
         def require_dead_lettered_assessment(queue):
             base = next((item for item in queue.get("tasks", [])
                          if item.get("idempotency_key") == expected_key), None)
@@ -1084,15 +1085,46 @@ def enqueue_source_assessment_task(store, registry: dict, adapters: dict, *,
                                 if isinstance(base.get("input"), dict) else None)
             if base_predecessor != predecessor:
                 raise ValueError("source assessment recovery predecessor proof differs from the dead-lettered task")
-            other_recoveries = [
+            prior_recoveries = [
                 item for item in queue.get("tasks", [])
                 if isinstance(item.get("idempotency_key"), str)
                 and item.get("idempotency_key").startswith(expected_key + ":recovery:")
-                and item.get("idempotency_key") != recovery_key
             ]
-            if other_recoveries:
-                raise ValueError("only one source assessment recovery attempt is allowed for this Discovery run")
+            if prior_recoveries:
+                raise ValueError("first source assessment recovery already exists for this Discovery run")
         precondition = require_dead_lettered_assessment
+    elif idempotency_key == recovery_two_key:
+        def require_timeout_corrected_recovery(queue):
+            base = next((item for item in queue.get("tasks", [])
+                         if item.get("idempotency_key") == expected_key), None)
+            first = next((item for item in queue.get("tasks", [])
+                          if item.get("idempotency_key") == recovery_one_key), None)
+            if base is None or base.get("status") != "DEAD_LETTER":
+                raise ValueError("second assessment recovery requires the exact base task to be DEAD_LETTER")
+            if first is None or first.get("status") != "DEAD_LETTER":
+                raise ValueError("second assessment recovery requires recovery:1 to be DEAD_LETTER")
+            for prior in (base, first):
+                prior_predecessor = ((prior.get("input") or {}).get("predecessor")
+                                     if isinstance(prior.get("input"), dict) else None)
+                if prior_predecessor != predecessor:
+                    raise ValueError("assessment recovery predecessor proof differs from prior task evidence")
+            prior_input = first.get("input") if isinstance(first.get("input"), dict) else {}
+            prior_error = first.get("last_error") if isinstance(first.get("last_error"), dict) else {}
+            if prior_error.get("type") != "execution_timeout" or prior_input.get("max_urls", 0) <= 4:
+                raise ValueError("second assessment recovery is reserved for an oversized batch execution timeout")
+            if input_payload.get("max_urls", 21) > 4:
+                raise ValueError("second assessment recovery must use a batch of at most four URLs")
+            if adapter.get("timeout_seconds", 0) < 300:
+                raise ValueError("second assessment recovery requires the reviewed 300-second adapter budget")
+            unexpected = [
+                item for item in queue.get("tasks", [])
+                if isinstance(item.get("idempotency_key"), str)
+                and item.get("idempotency_key").startswith(expected_key + ":recovery:")
+                and item.get("idempotency_key") not in {recovery_one_key, recovery_two_key}
+            ]
+            if unexpected:
+                raise ValueError("unexpected assessment recovery task exists; refusing another retry")
+        precondition = require_timeout_corrected_recovery
     result = enqueue_remote({
         "idempotency_key": idempotency_key,
         "trace_id": f"discovery-run:{predecessor['workflow_run_id']}:{predecessor['workflow_head_sha'][:12]}",

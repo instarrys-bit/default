@@ -220,10 +220,10 @@
           }
         }
       },
-      "timeout_seconds": 240,
+      "timeout_seconds": 300,
       "retry": {
         "max_attempts": 1,
-        "policy": "one bounded retry with durable per-URL checkpoint resume; no repository artifact publication"
+        "policy": "up to two bounded sequential recovery tasks; the second is permitted only after an execution timeout and must resume with at most four URLs; no repository artifact publication"
       },
       "completion": {
         "success_condition": "exit_zero_schema_valid_and_independent_artifact_verifier_valid",
