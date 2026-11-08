@@ -357,6 +357,9 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("GITHUB_REPOSITORY: ${{ github.repository }}", supervision)
         self.assertIn("timeout-minutes: 15", supervision)
         self.assertIn("--max-tasks 1 run-once", supervision)
+        self.assertIn('--task-id "$selected_task_id"', supervision)
+        self.assertIn('t.get("target_program_id") != "workflow_auto_sync"', supervision)
+        self.assertIn("discovery_queued or assessment_queued", supervision)
         self.assertIn("dispatch one task before artifact upload", supervision)
 
         canary_start = watchdog.index("  assessment-canary:")
