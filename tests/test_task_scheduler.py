@@ -223,6 +223,7 @@ class TaskSchedulerTests(unittest.TestCase):
             {"id": "script_assess_sources", "capabilities": ["source_assessment"],
              "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
                                "max_attempts": 1, "timeout_seconds": 480}},
+            {"id": "script_verify_assess_sources_artifacts", "capabilities": ["source_assessment_artifact_verification"]},
         ]}
         schema = {
             "type": "object",
@@ -343,7 +344,12 @@ class TaskSchedulerTests(unittest.TestCase):
         second_task["attempts"] = 1
         second_task["state_history"].extend(["CLAIMED", "SUCCEEDED"])
         second_task["lease"] = None
-        second_task["verification"] = {"status": "passed"}
+        second_task["verification"] = {
+            "verifier_program_id": "script_verify_assess_sources_artifacts",
+            "status": "passed",
+            "verified_at": "2026-11-08T00:00:00Z",
+            "contract_sha256": "a" * 64,
+        }
         second_task["result"] = {"artifact_verification": {"valid": True, "activation_count": 0}}
         self.store.document["revision"] += 1
         artifact_recovery = enqueue_source_assessment_task(
