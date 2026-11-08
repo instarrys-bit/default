@@ -67,6 +67,7 @@
       "scripts/verify_published_rulesets.py",
       "scripts/verify_recovery_run.py",
       "scripts/watchdog_recovery_policy.py",
+      "tests/test_auto_activate_sources.py",
       "tests/test_config_baseline_registration.py",
       "tests/test_production_intent.py",
       "tests/test_remote_task_queue_runtime.py",
@@ -152,7 +153,7 @@
       "lock_key": "read-only main-branch source registry and activation baseline",
       "required_mode": "read_only",
       "status": "no_repository_writer_source_activation_artifact_only",
-      "note": "auto_activate_sources reads the committed source registry and candidate matrix, then emits the effective merged registry/log/report only under RUNNER_TEMP. The current auto_sync run passes that registry path to collect_domains.py; no repository source registry or activation log is written or published."
+      "note": "The committed source registry is read-only. Newly discovered DIRECT/PROXY sources may enter a runner-local effective registry only after deterministic evidence, stability and parser gates. Newly discovered REJECT sources are always held for explicit human approval and are never auto-activated. The effective registry, activation log and report remain under RUNNER_TEMP; no repository source registry or activation log is committed."
     },
     {
       "id": "domain_candidate_buffer",
