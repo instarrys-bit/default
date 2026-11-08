@@ -1,16 +1,38 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "7a048b44b09e6135736984ea3fdd6761231dabbb",
+  "workflow_blob_sha": "0f8210a2bf2dfc7f37c7f21e4b3fbb7b4ebf1f82",
   "registry_blob_sha": "2b595ebf040b6624435ecfa5eb436bfdf56df5cc",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
-    "job_count": 5,
-    "step_count": 56,
+    "job_count": 6,
+    "step_count": 58,
     "independent_python_dispatch_enabled": true,
     "independent_workflow_count": 1
   },
   "job_graph": [
+    {
+      "id": "preflight",
+      "needs": [],
+      "condition": null,
+      "permissions": {
+        "contents": "read"
+      },
+      "steps": [
+        {
+          "name": "Checkout audited commit",
+          "order": 1
+        },
+        {
+          "name": "Set up Python",
+          "order": 2
+        },
+        {
+          "name": "Compile and run deterministic review tests",
+          "order": 3
+        }
+      ]
+    },
     {
       "id": "audit",
       "needs": [],
@@ -74,139 +96,136 @@
           "order": 13
         },
         {
-          "name": "Compile and run deterministic review tests",
+          "name": "Discover candidate source repositories (non-activating)",
           "order": 14
         },
         {
-          "name": "Discover candidate source repositories (non-activating)",
+          "name": "Assess discovered rule-list syntax and policy claims",
           "order": 15
         },
         {
-          "name": "Assess discovered rule-list syntax and policy claims",
+          "name": "Preserve complete source assessment report",
           "order": 16
         },
         {
-          "name": "Preserve complete source assessment report",
+          "name": "Restore prior high-volume automation state",
           "order": 17
         },
         {
-          "name": "Restore prior high-volume automation state",
+          "name": "Remove published and queued rules that conflict with uu.conf",
           "order": 18
         },
         {
-          "name": "Remove published and queued rules that conflict with uu.conf",
+          "name": "Import observed request hostnames as unclassified candidates",
           "order": 19
         },
         {
-          "name": "Import observed request hostnames as unclassified candidates",
+          "name": "Audit public source lineage and shared upstreams",
           "order": 20
         },
         {
-          "name": "Audit public source lineage and shared upstreams",
+          "name": "Audit domain-level policy-source overlap and contradictions",
           "order": 21
         },
         {
-          "name": "Audit domain-level policy-source overlap and contradictions",
+          "name": "Build automated source candidate and lineage matrix",
           "order": 22
         },
         {
-          "name": "Build automated source candidate and lineage matrix",
+          "name": "Merge qualified discovered sources into the run-local production registry",
           "order": 23
         },
         {
-          "name": "Merge qualified discovered sources into the run-local production registry",
+          "name": "Collect and cross-check all enabled domain sources",
           "order": 24
         },
         {
-          "name": "Collect and cross-check all enabled domain sources",
+          "name": "Stop stale audit before expensive deterministic review",
           "order": 25
         },
         {
-          "name": "Stop stale audit before expensive deterministic review",
+          "name": "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services",
           "order": 26
         },
         {
-          "name": "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services",
+          "name": "Preserve resumable review cursor checkpoint",
           "order": 27
         },
         {
-          "name": "Preserve resumable review cursor checkpoint",
+          "name": "Build standalone DIRECT, PROXY and REJECT rule sets",
           "order": 28
         },
         {
-          "name": "Build standalone DIRECT, PROXY and REJECT rule sets",
+          "name": "Summarize REJECT secondary screening",
           "order": 29
         },
         {
-          "name": "Summarize REJECT secondary screening",
+          "name": "Evaluate lifecycle milestones and monthly capacity review",
           "order": 30
         },
         {
-          "name": "Evaluate lifecycle milestones and monthly capacity review",
+          "name": "Run conservative lifecycle audit and selectable restoration",
           "order": 31
         },
         {
-          "name": "Run conservative lifecycle audit and selectable restoration",
+          "name": "Reconcile final uu.conf scope coverage after all rule mutations",
           "order": 32
         },
         {
-          "name": "Reconcile final uu.conf scope coverage after all rule mutations",
+          "name": "Reconcile final RULE-SET manifest counts",
           "order": 33
         },
         {
-          "name": "Reconcile final RULE-SET manifest counts",
+          "name": "Build append-only rule-level provenance ledger",
           "order": 34
         },
         {
-          "name": "Build append-only rule-level provenance ledger",
+          "name": "Validate Shadowrocket config structure",
           "order": 35
         },
         {
-          "name": "Validate Shadowrocket config structure",
+          "name": "Audit RULE-SET references against generated outputs (read-only)",
           "order": 36
         },
         {
-          "name": "Audit RULE-SET references against generated outputs (read-only)",
+          "name": "Audit candidate scope coverage against user config (read-only)",
           "order": 37
         },
         {
-          "name": "Audit candidate scope coverage against user config (read-only)",
+          "name": "Audit managed config drift (read-only)",
           "order": 38
         },
         {
-          "name": "Audit managed config drift (read-only)",
+          "name": "Run read-only full-source regression audit",
           "order": 39
         },
         {
-          "name": "Run read-only full-source regression audit",
+          "name": "Build consolidated project status",
           "order": 40
         },
         {
-          "name": "Build consolidated project status",
+          "name": "Write successful audit heartbeat",
           "order": 41
         },
         {
-          "name": "Write successful audit heartbeat",
+          "name": "Record durable automation state pointer",
           "order": 42
         },
         {
-          "name": "Record durable automation state pointer",
+          "name": "Package allowlisted audit outputs",
           "order": 43
         },
         {
-          "name": "Package allowlisted audit outputs",
-          "order": 44
-        },
-        {
           "name": "Upload allowlisted audit outputs",
-          "order": 45
+          "order": 44
         }
       ]
     },
     {
       "id": "publish",
       "needs": [
-        "audit"
+        "audit",
+        "preflight"
       ],
       "condition": null,
       "permissions": {
@@ -268,9 +287,10 @@
       "id": "notify-failure",
       "needs": [
         "audit",
+        "preflight",
         "publish"
       ],
-      "condition": "${{ always() && (needs.audit.result == 'failure' || needs.publish.result == 'failure') }}",
+      "condition": "${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled' || needs.preflight.result == 'failure' || needs.preflight.result == 'cancelled' || needs.publish.result == 'failure' || needs.publish.result == 'cancelled') }}",
       "permissions": {
         "issues": "write"
       },
