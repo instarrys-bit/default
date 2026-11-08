@@ -183,6 +183,29 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
         self.assertEqual(task["status"], "CLAIMED")
         self.assertEqual(task["lease"]["owner"], "worker-a")
 
+    def test_assessment_artifact_recovery_precedes_downstream_high_priority_tasks(self):
+        self.registry["programs"].append({
+            "id": "script_assess_sources", "capabilities": ["source_assessment"],
+            "orchestration": {"enabled": True, "allowed_callers": ["script_requester"],
+                              "max_attempts": 1, "timeout_seconds": 300},
+        })
+        enqueue_remote(
+            self.payload(idempotency_key="downstream-audit", priority=100),
+            self.store, self.registry, self.now,
+        )
+        enqueue_remote(
+            self.payload(
+                idempotency_key="source-assessment:123:parser-v2:artifact-recovery:1",
+                target_program_id="script_assess_sources",
+                capability="source_assessment",
+                priority=50,
+            ),
+            self.store, self.registry, self.now,
+        )
+        task = self.claim("worker-a", self.now)
+        self.assertEqual(task["target_program_id"], "script_assess_sources")
+        self.assertIn(":artifact-recovery:1", task["idempotency_key"])
+
     def test_completion_requires_matching_lease(self):
         enqueue_remote(self.payload(), self.store, self.registry, self.now)
         task = self.claim("worker-a", self.now)

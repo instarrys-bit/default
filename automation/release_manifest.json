@@ -13,7 +13,7 @@
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "7af7d9161b9059723a68e0952a06e0e042a5661c"
+      "git_blob_sha": "e56a9ebeb4f3ba131c1c8106e693902fa6a1a83b"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "7f6ff62d7109b08b06a58d43ed6bd73699dbc9fb"
+      "git_blob_sha": "6dd9a18d13eb979c6981a9750ccde2e154d4508a"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -58,11 +58,11 @@
     },
     "remote_task_queue_runtime": {
       "path": "scripts/remote_task_queue_runtime.py",
-      "git_blob_sha": "4ad0158046be8099050c0b081066a1cec0ebc1a0"
+      "git_blob_sha": "cd55f27f176bcf6959b88755d73f9dfbe15af1b4"
     },
     "task_scheduler": {
       "path": "scripts/task_scheduler.py",
-      "git_blob_sha": "2a32dbb230524c1793fda1bffe2600c552d1b1b6"
+      "git_blob_sha": "e3bcc8605b25e1c0001403527e7d627d60351e23"
     },
     "resource_lease_runtime": {
       "path": "scripts/resource_lease_runtime.py",
@@ -82,7 +82,7 @@
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "7af7d9161b9059723a68e0952a06e0e042a5661c"
+      "git_blob_sha": "e56a9ebeb4f3ba131c1c8106e693902fa6a1a83b"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
@@ -90,7 +90,7 @@
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "46023ba634fd23abc2f5eca2be71e407a055400b"
+      "git_blob_sha": "35a80c0eafd628a8be9874be13bb56529e12b5c3"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -213,7 +213,7 @@
         "target_program_id": "script_assess_sources",
         "capability": "source_assessment",
         "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-        "adapter_entry_sha256": "9dfb18a6bd28d7f1376e38f9ae4eb4b36c772d8c3f13244f9694e56245516bb7",
+        "adapter_entry_sha256": "65b9ab6f1aff621b6d0aaf0d30a2ee156f37f66a902c0b9bd1d2a0f527dd04d7",
         "registry_entry_sha256": "9f448f101ba172d74d0b0669a7c761f74d3d06b98609779e825f6bbab7c22288",
         "source_path": "scripts/assess_sources.py",
         "source_git_blob_sha": "e0129b2dc91c58f1642338d3d7e67db332d6e0bb",
