@@ -218,20 +218,20 @@ class GitHubContentsQueueStore:
                 "encoding": "gzip+base64", "index": index, "total": total,
                 "data": part,
             }
-            self._post_comment(MARKER_V2 + "\\n" + json.dumps(payload, sort_keys=True, separators=(",", ":")))
+            self._post_comment(MARKER_V2 + "\n" + json.dumps(payload, sort_keys=True, separators=(",", ":")))
         commit = {
             "schema_version": 2, "kind": "commit", "revision": revision,
             "previous_sha256": previous_sha256, "sha256": digest,
             "encoding": "gzip+base64", "total": total,
         }
-        return self._post_comment(MARKER_V2 + "\\n" + json.dumps(commit, sort_keys=True, separators=(",", ":")))
+        return self._post_comment(MARKER_V2 + "\n" + json.dumps(commit, sort_keys=True, separators=(",", ":")))
 
     def _decode_v2_commit(self, comment: dict[str, Any], comments: list[dict[str, Any]]) -> tuple[int, str | None, str, dict[str, Any]] | None:
         body = comment.get("body")
-        if not isinstance(body, str) or not body.startswith(MARKER_V2 + "\\n"):
+        if not isinstance(body, str) or not body.startswith(MARKER_V2 + "\n"):
             return None
         try:
-            payload = json.loads(body.split("\\n", 1)[1])
+            payload = json.loads(body.split("\n", 1)[1])
             if payload.get("schema_version") != 2 or payload.get("kind") != "commit" or payload.get("encoding") != "gzip+base64":
                 return None
             revision, digest, total = payload.get("revision"), payload.get("sha256"), payload.get("total")
@@ -244,9 +244,9 @@ class GitHubContentsQueueStore:
             parts: dict[int, str] = {}
             for item in comments:
                 part_body = item.get("body")
-                if not isinstance(part_body, str) or not part_body.startswith(MARKER_V2 + "\\n"):
+                if not isinstance(part_body, str) or not part_body.startswith(MARKER_V2 + "\n"):
                     continue
-                part = json.loads(part_body.split("\\n", 1)[1])
+                part = json.loads(part_body.split("\n", 1)[1])
                 if (part.get("schema_version") == 2 and part.get("kind") == "part"
                         and part.get("revision") == revision and part.get("sha256") == digest
                         and part.get("previous_sha256") == previous and part.get("total") == total):
