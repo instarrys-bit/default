@@ -1600,7 +1600,7 @@ jobs:
                   "artifact_sha256": manifest_sha,
               }
               (artifact_root / "source-assessment-proof.json").write_text(
-                  json.dumps(proof, sort_keys=True, separators=(",", ":")) + "\\n", encoding="utf-8"
+                  json.dumps(proof, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8"
               )
               expected = True
               with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
