@@ -1349,7 +1349,7 @@
       "program_id": "script_auto_activate_sources",
       "source": "scripts/auto_activate_sources.py",
       "classification": "runner_local_effective_source_registry_artifact",
-      "evidence": "The workflow-invoked script reads sources/domain_sources.json and source_candidates.json as read-only inputs, plus the exact verified Discovery artifact under RUNNER_TEMP when independent mode is enabled. It writes the merged effective registry, activation log and report only beneath RUNNER_TEMP; exports the exact registry/report paths through GITHUB_ENV; collect_domains.py consumes that validated runner-local registry. No repository file, committed source registry, ruleset or modules/uu.conf is modified."
+      "evidence": "The workflow-invoked script reads sources/domain_sources.json and source_candidates.json as read-only inputs, plus the exact verified Discovery artifact under RUNNER_TEMP when independent mode is enabled. It may add only eligible DIRECT/PROXY sources to a run-local effective registry. Every newly discovered REJECT source is held for explicit human approval and never auto-activated. Registry/log/report outputs remain under RUNNER_TEMP; collect_domains.py consumes the validated run-local registry. No repository file, ruleset or modules/uu.conf is modified."
     },
     {
       "program_id": "script_build_dashboard_snapshot",
