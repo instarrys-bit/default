@@ -1413,13 +1413,22 @@ jobs:
           task_input="$(jq -cn --argjson predecessor "$predecessor"             '{max_urls:4,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}')"
           base_key="source-assessment:$SOURCE_RUN_ID:parser-v2"
           assessment_status="$(jq -r --arg key "$base_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
-          recovery_key="$(jq -r --arg prefix "$base_key:recovery:" '[.tasks[]? | select((.idempotency_key // "") | startswith($prefix))] | last | .idempotency_key // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          recovery_one_key="$base_key:recovery:1"
+          recovery_two_key="$base_key:recovery:2"
+          recovery_one_status="$(jq -r --arg key "$recovery_one_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          recovery_two_status="$(jq -r --arg key "$recovery_two_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
           if [ "$assessment_status" = "DEAD_LETTER" ]; then
-            if [ -n "$recovery_key" ]; then
-              echo "The single bounded Assessment recovery was already used ($recovery_key); no further automatic retry is permitted."
+            if [ -n "$recovery_two_status" ]; then
+              echo "The timeout-corrected second Assessment recovery was already used ($recovery_two_key); no further automatic retry is permitted."
               exit 0
+            elif [ "$recovery_one_status" = "DEAD_LETTER" ]; then
+              assessment_key="$recovery_two_key"
+            elif [ -n "$recovery_one_status" ]; then
+              echo "The first bounded Assessment recovery is already $recovery_one_status; waiting for its terminal evidence."
+              exit 0
+            else
+              assessment_key="$recovery_one_key"
             fi
-            assessment_key="$base_key:recovery:1"
           else
             assessment_key="$base_key"
           fi
