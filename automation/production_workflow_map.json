@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "0f8210a2bf2dfc7f37c7f21e4b3fbb7b4ebf1f82",
+  "workflow_blob_sha": "03beb428d418044025bfb012c27da678c6ad5b61",
   "registry_blob_sha": "2b595ebf040b6624435ecfa5eb436bfdf56df5cc",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
