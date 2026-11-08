@@ -193,7 +193,7 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
         if isinstance(task, dict) and (
             task.get("status") == "VERIFYING"
             or (
-                task.get("status") in {"QUEUED", "DEAD_LETTER"}
+                task.get("status") in {"CLAIMED", "QUEUED", "DEAD_LETTER"}
                 and isinstance(task.get("dispatch_intent"), dict)
                 and not isinstance(task.get("verification"), dict)
             )
@@ -225,9 +225,44 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
                     prior_result = task.get("result")
                     prior_evidence = prior_result.get("run_evidence", {}) if isinstance(prior_result, dict) else {}
                     known_run_id = prior_evidence.get("run_id") if isinstance(prior_evidence, dict) else None
-                    workflow_observations[task["task_id"]] = inspect_correlated_run(
+                    observation = inspect_correlated_run(
                         workflow_client, intent, known_run_id=known_run_id
                     )
+                    # A Watchdog runner can be cancelled after claiming a task and
+                    # persisting dispatch intent but before it completes the queue
+                    # transition to VERIFYING. Reconcile the child correlation first.
+                    # If no child run exists and the exact owning Watchdog run is
+                    # terminal for at least two minutes, fence off the ambiguous
+                    # dispatch instead of holding production resources for hours.
+                    if (
+                        task.get("status") == "CLAIMED"
+                        and observation.get("state") == "pending"
+                        and observation.get("run_id") is None
+                    ):
+                        lease = task.get("lease") if isinstance(task.get("lease"), dict) else {}
+                        owner = lease.get("owner")
+                        if isinstance(owner, str) and owner.isdigit():
+                            owner_run = workflow_client.get_run(int(owner))
+                            owner_updated = owner_run.get("updated_at")
+                            owner_path = owner_run.get("path")
+                            owner_terminal = (
+                                owner_run.get("status") == "completed"
+                                and owner_run.get("conclusion") in {"cancelled", "failure", "timed_out"}
+                                and owner_run.get("head_branch") == "main"
+                                and owner_path == ".github/workflows/automation-watchdog.yml"
+                                and isinstance(owner_updated, str)
+                            )
+                            if owner_terminal:
+                                completed_at = datetime.fromisoformat(owner_updated.replace("Z", "+00:00"))
+                                if (now - completed_at).total_seconds() >= 120:
+                                    observation = {
+                                        "state": "abandoned",
+                                        "reason": "owning Watchdog run is terminal and no correlated child workflow run exists after the reconciliation grace period",
+                                        "owner_run_id": int(owner),
+                                        "owner_conclusion": owner_run.get("conclusion"),
+                                        "owner_updated_at": owner_updated,
+                                    }
+                    workflow_observations[task["task_id"]] = observation
                 except (WorkflowAPIError, ValueError, KeyError) as exc:
                     workflow_observations[task["task_id"]] = {"state": "error", "reason": str(exc)[:1000]}
 
@@ -241,7 +276,7 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
         for task in queue["tasks"]:
             status = task.get("status")
             has_recoverable_intent = (
-                status in {"QUEUED", "DEAD_LETTER"}
+                status in {"CLAIMED", "QUEUED", "DEAD_LETTER"}
                 and isinstance(task.get("dispatch_intent"), dict)
                 and not isinstance(task.get("verification"), dict)
             )
@@ -254,6 +289,45 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
                 continue
 
             if adapter.get("adapter_type") == "github_actions_workflow":
+                observation = workflow_observations.get(task["task_id"])
+                if isinstance(observation, dict) and observation.get("state") == "abandoned":
+                    workflow_contract = adapter.get("workflow", {})
+                    contract_sha = hashlib.sha256(
+                        json.dumps(workflow_contract, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+                    ).hexdigest()
+                    task["result"] = {
+                        **(task.get("dispatch_intent") or {}),
+                        "dispatch_state": "unknown",
+                        "dispatch_uncertainty": observation["reason"],
+                    }
+                    task["verification"] = {
+                        "verifier_program_id": VERIFIER_ID,
+                        "verified_at": stamp(now),
+                        "contract_sha256": contract_sha,
+                        "status": "failed",
+                    }
+                    task["last_error"] = {
+                        "type": "abandoned_scheduler_run_dispatch_outcome_unknown",
+                        "message": observation["reason"],
+                        "evidence": {
+                            "owner_run_id": observation.get("owner_run_id"),
+                            "owner_conclusion": observation.get("owner_conclusion"),
+                            "owner_updated_at": observation.get("owner_updated_at"),
+                            "correlation_id": (task.get("dispatch_intent") or {}).get("correlation_id"),
+                        },
+                    }
+                    if task.get("resource_lease", {}).get("status") == "ACTIVE":
+                        try:
+                            release_resource_leases_in_queue(queue, task, now)
+                        except ValueError:
+                            task["resource_lease"]["status"] = "LOST"
+                            task["resource_lease"]["lost_at"] = stamp(now)
+                    task["lease"] = None
+                    task["status"] = "DEAD_LETTER"
+                    task["state_history"].append("DEAD_LETTER")
+                    rejected.append(task["task_id"])
+                    changed = True
+                    continue
                 if (adapter.get("interface_status") != "workflow_dispatch_reviewed"
                         or not isinstance(adapter.get("workflow"), dict)):
                     blocked.append({"task_id": task["task_id"], "reason": "workflow adapter contract is not reviewed"})
