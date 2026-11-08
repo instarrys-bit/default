@@ -50,6 +50,29 @@ class DiscoverSourcesFencingTests(unittest.TestCase):
             assert_lease.assert_not_called()
             self.assertTrue(report.is_file())
 
+    def test_missing_curated_seed_repository_is_recorded_and_skipped(self):
+        error = __import__("urllib.error", fromlist=["HTTPError"]).HTTPError(
+            "https://api.github.com/repos/removed/seed", 404, "Not Found", {}, None
+        )
+        errors = []
+        with patch.object(discover_sources, "request_json", side_effect=error):
+            result = discover_sources.fetch_seed_repository("removed/seed", "", errors)
+        self.assertIsNone(result)
+        self.assertEqual(errors, [{
+            "seed_repository": "removed/seed",
+            "url": "https://api.github.com/repos/removed/seed",
+            "http_status": 404,
+            "error": "curated_seed_repository_not_found",
+        }])
+
+    def test_non_404_curated_seed_error_still_fails_closed(self):
+        error = __import__("urllib.error", fromlist=["HTTPError"]).HTTPError(
+            "https://api.github.com/repos/removed/seed", 503, "Unavailable", {}, None
+        )
+        with patch.object(discover_sources, "request_json", side_effect=error):
+            with self.assertRaises(__import__("urllib.error", fromlist=["HTTPError"]).HTTPError):
+                discover_sources.fetch_seed_repository("removed/seed", "", [])
+
     def test_fatal_discovery_error_returns_nonzero_and_preserves_previous_inventory(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
