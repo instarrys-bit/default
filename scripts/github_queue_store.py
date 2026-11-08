@@ -21,8 +21,10 @@ from urllib.request import Request, urlopen
 
 
 MARKER = "<!-- shadowrocket-automation-queue:v1 -->"
+MARKER_V2 = "<!-- shadowrocket-automation-queue:v2 -->"
 DEFAULT_ISSUE_NUMBER = 315
 MAX_COMMENT_BYTES = 60_000
+CHUNK_DATA_CHARS = 40_000
 
 
 class QueueStoreError(RuntimeError):
@@ -189,18 +191,103 @@ class GitHubContentsQueueStore:
                 raise GitHubAPIError("durable queue comment history exceeds the pagination safety limit")
         return comments
 
-    def _append(self, document: dict[str, Any], previous_sha256: str | None) -> int:
-        body = self._encode_comment(document, previous_sha256)
+    def _post_comment(self, body: str) -> int:
+        if len(body.encode("utf-8")) > MAX_COMMENT_BYTES:
+            raise GitHubAPIError("queue snapshot chunk exceeds the safe GitHub comment size")
         result = self._request("POST", self.comments_endpoint, {"body": body})
         comment_id = result.get("id") if isinstance(result, dict) else None
         if isinstance(comment_id, bool) or not isinstance(comment_id, int):
             raise GitHubAPIError("GitHub Issue comment response is missing its numeric ID")
         return comment_id
 
+    def _append(self, document: dict[str, Any], previous_sha256: str | None) -> int:
+        raw = self._canonical_bytes(document)
+        compressed = gzip.compress(raw, mtime=0)
+        encoded = base64.b64encode(compressed).decode("ascii")
+        digest = hashlib.sha256(raw).hexdigest()
+        revision = document.get("revision")
+        # Preserve the compact one-comment v1 representation for ordinary
+        # snapshots; use chunking only when the complete payload exceeds the
+        # safe comment size. This prevents unnecessary growth of Issue history.
+        legacy_payload = {
+            "schema_version": 1, "revision": revision,
+            "previous_sha256": previous_sha256, "sha256": digest,
+            "encoding": "gzip+base64", "data": encoded,
+        }
+        legacy_body = MARKER + "\n" + json.dumps(legacy_payload, sort_keys=True, separators=(",", ":"))
+        if len(legacy_body.encode("utf-8")) <= MAX_COMMENT_BYTES:
+            return self._post_comment(legacy_body)
+        total = max(1, (len(encoded) + CHUNK_DATA_CHARS - 1) // CHUNK_DATA_CHARS)
+        # Parts are immutable and independently addressable. The final commit
+        # comment is the only record readers accept, so interrupted uploads are
+        # ignored and concurrent writers cannot mix their chunks.
+        for index in range(total):
+            part = encoded[index * CHUNK_DATA_CHARS:(index + 1) * CHUNK_DATA_CHARS]
+            payload = {
+                "schema_version": 2, "kind": "part", "revision": revision,
+                "previous_sha256": previous_sha256, "sha256": digest,
+                "encoding": "gzip+base64", "index": index, "total": total,
+                "data": part,
+            }
+            self._post_comment(MARKER_V2 + "\n" + json.dumps(payload, sort_keys=True, separators=(",", ":")))
+        commit = {
+            "schema_version": 2, "kind": "commit", "revision": revision,
+            "previous_sha256": previous_sha256, "sha256": digest,
+            "encoding": "gzip+base64", "total": total,
+        }
+        return self._post_comment(MARKER_V2 + "\n" + json.dumps(commit, sort_keys=True, separators=(",", ":")))
+
+    def _decode_v2_commit(self, comment: dict[str, Any], comments: list[dict[str, Any]]) -> tuple[int, str | None, str, dict[str, Any]] | None:
+        body = comment.get("body")
+        if not isinstance(body, str) or not body.startswith(MARKER_V2 + "\n"):
+            return None
+        try:
+            payload = json.loads(body.split("\n", 1)[1])
+            if payload.get("schema_version") != 2 or payload.get("kind") != "commit" or payload.get("encoding") != "gzip+base64":
+                return None
+            revision, digest, total = payload.get("revision"), payload.get("sha256"), payload.get("total")
+            previous = payload.get("previous_sha256")
+            if (isinstance(revision, bool) or not isinstance(revision, int)
+                    or not isinstance(total, int) or isinstance(total, bool) or total < 1
+                    or not isinstance(digest, str) or len(digest) != 64
+                    or (previous is not None and (not isinstance(previous, str) or len(previous) != 64))):
+                raise ValueError("invalid chunked queue commit metadata")
+            parts: dict[int, str] = {}
+            for item in comments:
+                part_body = item.get("body")
+                if not isinstance(part_body, str) or not part_body.startswith(MARKER_V2 + "\n"):
+                    continue
+                part = json.loads(part_body.split("\n", 1)[1])
+                if (part.get("schema_version") == 2 and part.get("kind") == "part"
+                        and part.get("revision") == revision and part.get("sha256") == digest
+                        and part.get("previous_sha256") == previous and part.get("total") == total):
+                    index, data = part.get("index"), part.get("data")
+                    if isinstance(index, int) and not isinstance(index, bool) and 0 <= index < total and isinstance(data, str):
+                        parts.setdefault(index, data)
+            if len(parts) != total:
+                return None
+            encoded = "".join(parts[index] for index in range(total))
+            compressed = base64.b64decode(encoded, validate=True)
+            raw = gzip.decompress(compressed)
+            actual_digest = hashlib.sha256(raw).hexdigest()
+            if actual_digest != digest:
+                raise ValueError("chunked queue snapshot digest mismatch")
+            document = json.loads(raw.decode("utf-8"))
+            if not isinstance(document, dict) or document.get("revision") != revision:
+                raise ValueError("chunked queue snapshot revision mismatch")
+            comment_id = comment.get("id")
+            if isinstance(comment_id, bool) or not isinstance(comment_id, int):
+                raise ValueError("chunked queue commit is missing its numeric ID")
+            return revision, previous, digest, document
+        except (KeyError, TypeError, ValueError, UnicodeDecodeError, json.JSONDecodeError, OSError) as exc:
+            raise GitHubAPIError(f"invalid durable queue snapshot commit: {exc}") from None
+
     def _canonical_snapshot(self, comments: list[dict[str, Any]]) -> QueueSnapshot | None:
         candidates: list[tuple[int, int, str | None, str, dict[str, Any]]] = []
         for comment in comments:
             decoded = self._decode_comment(comment)
+            if decoded is None:
+                decoded = self._decode_v2_commit(comment, comments)
             if decoded is None:
                 continue
             revision, previous, digest, document = decoded

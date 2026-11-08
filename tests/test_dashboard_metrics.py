@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from build_dashboard_snapshot import build_candidate_review_metrics, watchdog_schedule
+from build_dashboard_snapshot import build_candidate_review_metrics, build_task_stage_metrics, watchdog_schedule
 
 
 class WatchdogScheduleDashboardTests(unittest.TestCase):
@@ -31,6 +31,16 @@ class WatchdogScheduleDashboardTests(unittest.TestCase):
         result = watchdog_schedule(self.WORKFLOW, now)
         self.assertEqual(result["next_scheduled_trigger_at"], "2026-11-04T23:00:00+00:00")
 
+    def test_reports_next_quarter_hour_watchdog_trigger(self):
+        schedule = """on:
+  schedule:
+    - cron: "*/15 * * * *"
+"""
+        now = datetime(2026, 11, 4, 22, 10, tzinfo=timezone.utc)
+        result = watchdog_schedule(schedule, now)
+        self.assertEqual(result["next_scheduled_trigger_at"], "2026-11-04T22:15:00+00:00")
+        self.assertEqual(result["schedule_state"], "known")
+
     def test_unknown_cron_fails_closed(self):
         unsupported = """on:
   schedule:
@@ -43,6 +53,22 @@ class WatchdogScheduleDashboardTests(unittest.TestCase):
     def test_naive_clock_is_rejected(self):
         with self.assertRaises(ValueError):
             watchdog_schedule(self.WORKFLOW, datetime(2026, 11, 4, 22, 10))
+
+
+class PipelineTaskDashboardMetricsTests(unittest.TestCase):
+    def test_reports_discovery_and_assessment_task_states_separately(self):
+        tasks = [
+            {"target_program_id": "workflow_source_discovery", "status": "SUCCEEDED", "updated_at": "2026-11-08T01:00:00Z"},
+            {"target_program_id": "workflow_source_discovery", "status": "QUEUED"},
+            {"target_program_id": "script_assess_sources", "status": "CLAIMED"},
+            {"target_program_id": "workflow_auto_sync", "status": "DEAD_LETTER"},
+        ]
+        discovery = build_task_stage_metrics(tasks, "workflow_source_discovery")
+        assessment = build_task_stage_metrics(tasks, "script_assess_sources")
+        self.assertEqual(discovery["total"], 2)
+        self.assertEqual(discovery["by_status"], {"SUCCEEDED": 1, "QUEUED": 1})
+        self.assertEqual(assessment["by_status"], {"CLAIMED": 1})
+        self.assertEqual(discovery["last_task_at"], "2026-11-08T01:00:00Z")
 
 
 class CandidateReviewDashboardMetricsTests(unittest.TestCase):

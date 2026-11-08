@@ -53,6 +53,7 @@ jobs:
       - name: Build sanitized dashboard data
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: python3 scripts/build_dashboard_snapshot.py
       - name: Configure GitHub Pages

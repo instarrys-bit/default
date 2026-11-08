@@ -40,7 +40,15 @@ def watchdog_schedule(workflow_text, now=None):
         return {"cron": [], "next_scheduled_trigger_at": None, "schedule_state": "unavailable"}
     candidates = []
     for expression in expressions:
-        if expression == "0 * * * *":
+        if expression == "*/15 * * * *":
+            next_minute = ((now.minute // 15) + 1) * 15
+            candidate = now.replace(second=0, microsecond=0)
+            if next_minute >= 60:
+                candidate = candidate.replace(minute=0) + timedelta(hours=1)
+            else:
+                candidate = candidate.replace(minute=next_minute)
+            candidates.append(candidate)
+        elif expression == "0 * * * *":
             candidates.append(now.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1))
         elif expression == "30 22 * * *":
             candidate = now.replace(hour=22, minute=30, second=0, microsecond=0)
@@ -71,6 +79,27 @@ def build_dead_letter_metrics(tasks):
         "dead_letter_failures": failures,
         "dead_letter_cancelled": cancelled,
         "dead_letter_unclassified": unclassified,
+    }
+
+
+def build_task_stage_metrics(tasks, target_program_id):
+    selected = [
+        task for task in tasks
+        if isinstance(task, dict) and task.get("target_program_id") == target_program_id
+    ]
+    status_counts = {}
+    for task in selected:
+        status = str(task.get("status", "UNKNOWN")).upper()
+        status_counts[status] = status_counts.get(status, 0) + 1
+    timestamps = [
+        task.get("updated_at") or task.get("created_at")
+        for task in selected
+        if isinstance(task.get("updated_at") or task.get("created_at"), str)
+    ]
+    return {
+        "total": len(selected),
+        "by_status": status_counts,
+        "last_task_at": max(timestamps) if timestamps else None,
     }
 
 
@@ -134,6 +163,8 @@ def main():
         status = str(task.get("status", "UNKNOWN")).upper()
         queue_status[status] = queue_status.get(status, 0) + 1
     
+    discovery_metrics = build_task_stage_metrics(tasks, "workflow_source_discovery")
+    assessment_metrics = build_task_stage_metrics(tasks, "script_assess_sources")
     production_tasks = [t for t in tasks if t.get("target_program_id") == "workflow_auto_sync"]
     prod_status = {}
     for task in production_tasks:
@@ -164,7 +195,9 @@ def main():
             print("watchdog schedule unavailable: " + str(exc))
             schedule = {"cron": [], "next_scheduled_trigger_at": None, "schedule_state": "unavailable"}
         repo = os.environ.get("GITHUB_REPOSITORY", "")
-        token = os.environ.get("GH_TOKEN", "")
+        # The workflow exposes github.token as GITHUB_TOKEN. Accept both names
+        # so dashboard diagnostics do not silently degrade to "unknown".
+        token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN", "")
         if not repo or not token:
             return {"workflow_state": "unknown", "last_run_status": "unknown",
                     "last_run_conclusion": None, "last_run_at": None, **schedule}
@@ -214,6 +247,14 @@ def main():
             "reject_manual_pending": as_int(manifest.get("reject_manual_hold_count"))
         },
         "queue": {"total": len(tasks), "by_status": queue_status},
+        "pipeline": {
+            "source_discovery": discovery_metrics,
+            "source_assessment": assessment_metrics,
+            "ruleset_production": {
+                "total": len(production_tasks),
+                "by_status": prod_status,
+            }
+        },
         "production": {
             "dispatch_mode": production_control.get("dispatch_mode") if production_control.get("dispatch_mode") in ("enabled", "hold") else "unknown",
             "dispatch_updated_at": production_control.get("updated_at") if isinstance(production_control.get("updated_at"), str) else None,
