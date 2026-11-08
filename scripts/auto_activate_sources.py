@@ -20,7 +20,10 @@ REGISTRY = ROOT / "sources/domain_sources.json"
 MATRIX = ROOT / "sources/source_candidates.json"
 LOG = ROOT / "sources/source_activation_log.json"
 DISCOVERED = ROOT / "sources/discovered_sources.json"
-ARTIFACT_ROOT = Path(os.environ.get("AUTOMATION_ARTIFACT_ROOT") or Path(os.environ.get("RUNNER_TEMP", tempfile.gettempdir())) / "source-activation").resolve()
+RUNNER_TEMP_ROOT = Path(os.environ.get("RUNNER_TEMP", tempfile.gettempdir())).resolve()
+ARTIFACT_ROOT = Path(os.environ.get("AUTOMATION_ARTIFACT_ROOT") or RUNNER_TEMP_ROOT / "source-activation").resolve()
+if ARTIFACT_ROOT == RUNNER_TEMP_ROOT or not ARTIFACT_ROOT.is_relative_to(RUNNER_TEMP_ROOT):
+    raise ValueError("source activation artifacts must remain inside the isolated RUNNER_TEMP directory")
 REGISTRY_OUTPUT = ARTIFACT_ROOT / "sources/domain_sources.json"
 LOG_OUTPUT = ARTIFACT_ROOT / "sources/source_activation_log.json"
 REPORT = ARTIFACT_ROOT / "reports/source-activation.md"
@@ -196,7 +199,13 @@ def main() -> None:
         lines.append(f"- {item['decision']}: {item['repository']} / {item['policy']} — {item['reason']}")
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print(json.dumps({"activated": activated, "decisions": decisions}, ensure_ascii=False, sort_keys=True))
+    policy_counts = {policy: sum(1 for source in registry["sources"] if str(source.get("classification", "")).upper() == policy and source.get("enabled", True) is not False) for policy in sorted(POLICIES)}
+    github_env = os.environ.get("GITHUB_ENV")
+    if github_env:
+        with open(github_env, "a", encoding="utf-8") as stream:
+            stream.write(f"SHADOWROCKET_SOURCE_REGISTRY={REGISTRY_OUTPUT}\n")
+            stream.write(f"SHADOWROCKET_SOURCE_ACTIVATION_REPORT={REPORT}\n")
+    print(json.dumps({"activated": activated, "decisions": decisions, "effective_source_count": len(registry["sources"]), "enabled_source_counts_by_policy": policy_counts, "effective_registry": str(REGISTRY_OUTPUT)}, ensure_ascii=False, sort_keys=True))
 
 
 if __name__ == "__main__":
