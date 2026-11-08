@@ -98,6 +98,40 @@
       ],
       "integration_status": "bounded_runtime_adapter",
       "activation": "never_from_catalog"
+    },
+    {
+      "id": "fortune-china-500",
+      "category": "enterprise_rankings",
+      "provider": "Fortune China",
+      "endpoint": "https://www.fortunechina.com/fortune500/c/2026-07/21/content_475324.htm",
+      "data_types": [
+        "enterprise_ranked_entity"
+      ],
+      "integration_status": "bounded_top_100_entity_discovery",
+      "activation": "evidence_only",
+      "ranking_id": "fortune-china-500",
+      "ranking_year": 2026,
+      "rank_column": 0,
+      "company_column": 2,
+      "region": "China",
+      "ranking_basis": "annual revenue"
+    },
+    {
+      "id": "fortune-global-500",
+      "category": "enterprise_rankings",
+      "provider": "Fortune",
+      "endpoint": "https://www.fortune.com/ranking/global500/",
+      "data_types": [
+        "enterprise_ranked_entity"
+      ],
+      "integration_status": "bounded_top_100_entity_discovery",
+      "activation": "evidence_only",
+      "ranking_id": "fortune-global-500",
+      "ranking_year": 2026,
+      "rank_column": 0,
+      "company_column": 1,
+      "region": "Global",
+      "ranking_basis": "annual revenue"
     }
   ],
   "required_future_controls": [
