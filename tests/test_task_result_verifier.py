@@ -3,6 +3,7 @@ import json
 import hashlib
 import sys
 import unittest
+from unittest.mock import Mock, patch
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -43,6 +44,9 @@ class TaskResultVerifierTests(unittest.TestCase):
             {"id": "script_assess_sources", "capabilities": ["source_assessment"],
              "orchestration": {"enabled": True, "allowed_callers": ["script_requester"],
                                "max_attempts": 2, "timeout_seconds": 240}},
+            {"id": "workflow_auto_sync", "capabilities": ["production_sync"],
+             "orchestration": {"enabled": True, "allowed_callers": ["script_requester"],
+                               "max_attempts": 2, "timeout_seconds": 18000}},
         ]}
         self.now = datetime(2026, 11, 3, 4, 0, tzinfo=timezone.utc)
         self.schema = {
@@ -166,6 +170,49 @@ class TaskResultVerifierTests(unittest.TestCase):
         self.assertEqual(report["rejected"], [])
         self.assertEqual(report["blocked"][0]["task_id"], task["task_id"])
         self.assertEqual(self.store.document, before)
+
+    def test_cancelled_watchdog_claim_without_child_run_is_dead_lettered_and_releases_claim(self):
+        enqueue_remote({
+            "idempotency_key": "watchdog-abandoned-claim:test",
+            "requester_program_id": "script_requester",
+            "target_program_id": "workflow_auto_sync",
+            "capability": "production_sync",
+            "input": {},
+        }, self.store, self.registry, self.now)
+        task_id = self.store.document["tasks"][0]["task_id"]
+        claim_remote("12345", self.store, self.registry, eligible_task_ids={task_id}, now=self.now)
+        task = self.store.document["tasks"][0]
+        task["dispatch_intent"] = {
+            "workflow_id": 99, "workflow_path": ".github/workflows/auto_sync.yml",
+            "ref": "main", "requested_head_sha": "a" * 40, "task_id": task_id,
+            "dispatch_attempt": 1, "correlation_id": f"{task_id}-a1",
+            "correlation_title": f"Automation task {task_id}-a1",
+            "inputs": {"automation_task_id": f"{task_id}-a1"},
+            "prepared_at": "2026-11-03T03:50:00Z",
+        }
+        adapters = {"schema_version": 1, "adapters": [{
+            "target_program_id": "workflow_auto_sync",
+            "adapter_type": "github_actions_workflow", "enabled": True,
+            "interface_status": "workflow_dispatch_reviewed",
+            "workflow": {"path": ".github/workflows/auto_sync.yml", "dispatchable": True},
+        }]}
+        client = Mock()
+        client.get_run.return_value = {
+            "status": "completed", "conclusion": "cancelled", "head_branch": "main",
+            "path": ".github/workflows/automation-watchdog.yml",
+            "updated_at": "2026-11-03T03:57:00Z",
+        }
+        with patch("task_result_verifier.inspect_correlated_run", return_value={
+            "state": "pending", "reason": "correlated workflow run is not visible yet",
+        }):
+            report = verify_pending_remote(self.store, self.registry, adapters, self.now, workflow_client=client)
+        saved = self.store.document["tasks"][0]
+        self.assertEqual(report["rejected"], [task_id])
+        self.assertEqual(saved["status"], "DEAD_LETTER")
+        self.assertIsNone(saved["lease"])
+        self.assertEqual(saved["verification"]["status"], "failed")
+        self.assertEqual(saved["last_error"]["type"], "abandoned_scheduler_run_dispatch_outcome_unknown")
+        client.get_run.assert_called_once_with(12345)
 
     def test_schema_rejects_unsupported_keywords(self):
         with self.assertRaisesRegex(ValueError, "unsupported schema keywords"):
