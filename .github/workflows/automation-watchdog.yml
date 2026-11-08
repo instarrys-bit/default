@@ -1566,7 +1566,45 @@ jobs:
               artifact_root = Path(os.environ["AUTOMATION_ARTIFACT_ROOT"])
               if not any(path.is_file() for path in artifact_root.rglob("*")):
                   raise SystemExit(f"Assessment task {task_id} was verified but produced no runner-local artifact files.")
+              if task.get("status") != "SUCCEEDED" or (task.get("verification") or {}).get("status") != "passed":
+                  raise SystemExit(f"Assessment task {task_id} is not durably verified SUCCEEDED.")
+              result = task.get("result") or {}
+              artifact_verification = result.get("artifact_verification") or {}
+              if artifact_verification.get("valid") is not True or artifact_verification.get("activation_count") != 0:
+                  raise SystemExit(f"Assessment task {task_id} did not prove non-activation.")
+              predecessor = (task.get("input") or {}).get("predecessor")
+              required = ("program_id", "workflow_name", "workflow_run_id", "workflow_head_sha", "artifact_path", "artifact_sha256")
+              if not isinstance(predecessor, dict) or any(not predecessor.get(key) for key in required):
+                  raise SystemExit(f"Assessment task {task_id} has no complete immutable Discovery predecessor proof.")
+              files = []
+              for path in sorted(artifact_root.rglob("*")):
+                  if path.is_file() and path.name != "source-assessment-proof.json":
+                      files.append({"path": path.relative_to(artifact_root).as_posix(),
+                                    "sha256": __import__("hashlib").sha256(path.read_bytes()).hexdigest()})
+              if not files:
+                  raise SystemExit("Assessment artifact file manifest is empty.")
+              manifest_sha = __import__("hashlib").sha256(
+                  json.dumps(files, sort_keys=True, separators=(",", ":")).encode("utf-8")
+              ).hexdigest()
+              proof = {
+                  "schema_version": 1,
+                  "assessment_task_id": task_id,
+                  "task_status": task["status"],
+                  "verification_status": task["verification"]["status"],
+                  "artifact_verification": artifact_verification,
+                  "predecessor": {key: predecessor[key] for key in required},
+                  "producer_workflow_path": ".github/workflows/automation-watchdog.yml",
+                  "producer_workflow_run_id": os.environ["GITHUB_RUN_ID"],
+                  "producer_workflow_head_sha": os.environ["GITHUB_SHA"],
+                  "files": files,
+                  "artifact_sha256": manifest_sha,
+              }
+              (artifact_root / "source-assessment-proof.json").write_text(
+                  json.dumps(proof, sort_keys=True, separators=(",", ":")) + "\\n", encoding="utf-8"
+              )
               expected = True
+              with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+                  output.write(f"assessment_task_id={task_id}\\n")
           value = "true" if expected else "false"
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
               output.write(f"assessment_output_expected={value}\n")
