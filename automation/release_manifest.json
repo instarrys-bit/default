@@ -74,7 +74,7 @@
     },
     "source_discovery_implementation": {
       "path": "scripts/discover_sources.py",
-      "git_blob_sha": "3d419502da3c0972b25bb05c75990cd92b1a4d5f"
+      "git_blob_sha": "519472138563c7169fdec91e13934742e8373f46"
     },
     "program_registry": {
       "path": "automation/program_registry.json",
@@ -167,6 +167,10 @@
     "source_handoff_policy": {
       "path": "scripts/source_handoff_policy.py",
       "git_blob_sha": "526fc98e9fc70b2a7a436fc12186524d5630f2b2"
+    },
+    "enterprise_ranking_catalog": {
+      "path": "sources/external_intelligence_catalog.json",
+      "git_blob_sha": "eb3132b24688b3fd3ec031cd3aacf7294d5e1fe0"
     }
   },
   "compatibility": {
