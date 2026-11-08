@@ -387,6 +387,29 @@ def main():
     batch_size=5000
     review_started=time.monotonic()
     processed_since_resume=0
+    last_progress_index=start_index
+    def emit_progress(completed_index):
+        nonlocal last_progress_index
+        processed=completed_index-start_index
+        elapsed=max(time.monotonic()-review_started,0.001)
+        rate=processed/elapsed
+        remaining=max(len(candidates)-completed_index,0)
+        eta=remaining/rate if rate>0 else None
+        print(
+            "Review progress: "
+            + json.dumps({
+                "completed": completed_index,
+                "total": len(candidates),
+                "resumed_from": start_index,
+                "processed_this_run": processed,
+                "rate_per_second": round(rate,2),
+                "elapsed_seconds": round(elapsed,1),
+                "eta_seconds": round(eta,1) if eta is not None else None,
+                "run_counts": run_counts,
+            },ensure_ascii=False,sort_keys=True),
+            flush=True,
+        )
+        last_progress_index=completed_index
     for candidate_index,item in enumerate(candidates[start_index:],start=start_index):
         domain=str(item.get("domain","")).lower().rstrip(".")
         if not DOMAIN_RE.fullmatch(domain): fail("invalid candidate domain: "+domain)
@@ -394,6 +417,8 @@ def main():
         input_fingerprint=candidate_review_fingerprint(item,context_sha256)
         if previous_record and previous_record.get("review_fingerprint")==input_fingerprint:
             run_counts["UNCHANGED"]=run_counts.get("UNCHANGED",0)+1
+            if (candidate_index+1-last_progress_index)>=250 or candidate_index+1==len(candidates):
+                emit_progress(candidate_index+1)
             continue
         policy=str(item.get("classification","")).upper()
         raw_evidence=item.get("evidence",[])
@@ -481,25 +506,10 @@ def main():
             # Checkpoints need not be sorted; the final publication is sorted once.
             write_document(OUTPUT,{"schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,"source_snapshot":collected.get("sources",[]),"run_counts":run_counts,"counts":partial_counts,"reviews":list(review_map.values())},"reviews",lease_required=True)
             atomic_json(CURSOR,{**checkpoint(snapshot_sha256,len(candidates),candidate_index+1,batch_size),"updated_at":now,"last_checkpoint_domain":domain})
-            processed_since_resume=candidate_index+1-start_index
-            elapsed=max(time.monotonic()-review_started,0.001)
-            rate=processed_since_resume/elapsed
-            remaining=max(len(candidates)-(candidate_index+1),0)
-            eta=remaining/rate if rate>0 else None
-            print(
-                "Review progress: "
-                + json.dumps({
-                    "completed": candidate_index+1,
-                    "total": len(candidates),
-                    "resumed_from": start_index,
-                    "processed_this_run": processed_since_resume,
-                    "rate_per_second": round(rate,2),
-                    "elapsed_seconds": round(elapsed,1),
-                    "eta_seconds": round(eta,1) if eta is not None else None,
-                    "run_counts": run_counts,
-                },ensure_ascii=False,sort_keys=True),
-                flush=True,
-            )
+            if candidate_index+1>last_progress_index:
+                emit_progress(candidate_index+1)
+        elif (candidate_index+1-last_progress_index)>=250 or candidate_index+1==len(candidates):
+            emit_progress(candidate_index+1)
     reviews=sorted(review_map.values(),key=lambda x:x["domain"])
     total_counts={}
     for item in reviews: total_counts[item["status"]]=total_counts.get(item["status"],0)+1
