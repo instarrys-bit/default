@@ -18,6 +18,7 @@ class FakeGitHub:
         self.runs = []
         self.run_pages = {}
         self.list_pages_requested = []
+        self.list_created_since = []
         self.run_detail = {}
         self.commits = {}
         self.workflow = {"id": 1234, "path": ".github/workflows/request-intake.yml", "state": "active"}
@@ -35,9 +36,10 @@ class FakeGitHub:
         self.dispatched.append((workflow_id, ref, inputs))
         return None
 
-    def list_runs(self, workflow_id, ref, page=1):
+    def list_runs(self, workflow_id, ref, page=1, created_since=None):
         self.list_request = (workflow_id, ref)
         self.list_pages_requested.append(page)
+        self.list_created_since.append(created_since)
         if self.run_pages:
             return {"workflow_runs": self.run_pages.get(page, [])}
         return {"workflow_runs": self.runs if page == 1 else []}
@@ -180,6 +182,7 @@ class WorkflowAdapterTests(unittest.TestCase):
         self.client.run_pages = {1: decoys, 2: [matching]}
         self.assertEqual(find_correlated_run(self.client, intent), matching)
         self.assertEqual(self.client.list_pages_requested, [1, 2])
+        self.assertEqual(self.client.list_created_since, [intent["prepared_at"][:10]] * 2)
 
     def test_inspection_does_not_assume_dispatch_acceptance_means_success(self):
         intent = self.prepare()
