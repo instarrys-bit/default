@@ -1266,7 +1266,7 @@
       ],
       "lock_key": "git-ref-cas:sources/request_domain_observations.json",
       "mode": "optimistic_git_ref_compare_and_swap",
-      "enforcement": "No active workflow writes this seed file. Historical request observations remain in the append-only GitHub Issue #317 ledger and are consumed read-only by production intent and candidate import.",
+      "enforcement": "The request-intake workflow did not write this repository file. script_production_intent maintains the local observation ledger from the append-only GitHub Issue #317 ledger; the candidate importer reads it. The manual Issue #317 writer has been retired.",
       "note": "The manual request-intake workflow has been retired. Existing Issue #317 comments and the read-only importer remain available; no replacement writer or production dispatch path is introduced."
     },
     {
