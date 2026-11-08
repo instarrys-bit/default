@@ -133,7 +133,7 @@ def main():
         if read_only_resource_digests(discovery_root,["sources/discovered_sources.json"])["sources/discovered_sources.json"]!=pred["artifact_sha256"]: raise ValueError("Discovery logical document digest mismatch")
         runs=[]
         url=f"{API}/repos/{repo}/actions/workflows/automation-watchdog.yml/runs?branch=main&per_page=100"
-        for page in range(1,6):
+        for page in range(1,3):
             batch=api_json(url+f"&page={page}",token).get("workflow_runs",[])
             runs.extend(batch)
             if len(batch)<100: break
