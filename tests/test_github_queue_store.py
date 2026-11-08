@@ -87,8 +87,8 @@ class GitHubIssueQueueStoreTests(unittest.TestCase):
         parts = {}
         for comment in self.comments:
             body = comment["body"]
-            if body.startswith("<!-- shadowrocket-automation-queue:v2 -->\\n"):
-                item = json.loads(body.split("\\n", 1)[1])
+            if body.startswith("<!-- shadowrocket-automation-queue:v2 -->\n"):
+                item = json.loads(body.split("\n", 1)[1])
                 if item.get("kind") == "part" and item.get("sha256") == payload["sha256"]:
                     parts[item["index"]] = item["data"]
         encoded = "".join(parts[index] for index in range(payload["total"]))
@@ -117,7 +117,7 @@ class GitHubIssueQueueStoreTests(unittest.TestCase):
             "sha256": hashlib.sha256(raw).hexdigest(), "encoding": "gzip+base64",
             "index": 0, "total": 2, "data": encoded,
         }
-        self.comments.append({"id": 1, "body": "<!-- shadowrocket-automation-queue:v2 -->\\n" + json.dumps(payload)})
+        self.comments.append({"id": 1, "body": "<!-- shadowrocket-automation-queue:v2 -->\n" + json.dumps(payload)})
         with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
             snapshot = self.store.read()
         self.assertEqual(snapshot.document, self.document)
