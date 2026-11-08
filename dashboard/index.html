@@ -250,7 +250,7 @@ async function load(){try{
  const failed=Number(d.production.dead_letter_failures ?? d.production.dead_letter)||0,done=Number(q.SUCCEEDED)||0;
  const cancelled=Number(d.production.cancelled_total)||0;
  const pipeline=d.pipeline||{},discovery=pipeline.source_discovery||{},assessment=pipeline.source_assessment||{};
- const stageSummary=stage=>Object.entries(stage.by_status||{}).map(([status,count])=>status+" "+n(count)).join(" · ")||"暂无任务";
+ const stageSummary=stage=>Object.entries(stage.by_status||{}).map(([status,count])=>String(status).replace(/[^A-Z_]/g,"")+" "+n(count)).join(" · ")||"暂无任务";
  el("queue").innerHTML=
   '<div class="status-line"><i class="live-dot" style="background:'+(a.workflow_state==="active"?"var(--green)":"var(--amber)")+'"></i><strong>'+automationLabel+'</strong><span>'+state+'</span></div>'+
   '<div class="task-flow">'+
