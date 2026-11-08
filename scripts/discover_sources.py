@@ -25,7 +25,7 @@ ARTIFACT_ROOT = Path(os.environ.get("AUTOMATION_ARTIFACT_ROOT", ROOT)).resolve()
 INDEPENDENT_ARTIFACT_MODE = bool(os.environ.get("AUTOMATION_ARTIFACT_ROOT"))
 
 CATALOG_PATH = ROOT / "sources/external_intelligence_catalog.json"
-CATALOG_ALLOWED_HOSTS = {"github.com", "urlhaus.abuse.ch", "openphish.com", "crt.sh", "stat.ripe.net", "www.iana.org", "gitlab.com", "codeberg.org", "fortunechina.com", "fortune.com"}
+CATALOG_ALLOWED_HOSTS = {"github.com", "urlhaus.abuse.ch", "openphish.com", "crt.sh", "stat.ripe.net", "www.iana.org", "gitlab.com", "codeberg.org", "www.fortunechina.com", "www.fortune.com"}
 
 def validate_external_intelligence_catalog(data: dict) -> dict:
     if data.get("schema_version") != 1 or not isinstance(data.get("providers"), list):
@@ -295,8 +295,8 @@ def collect_external_intelligence(catalog: dict) -> dict:
     statuses.append({"provider_id": "urlhaus", "status": "awaiting_auth_key", "records": 0})
     statuses.append({"provider_id": "openphish", "status": "blocked_pending_terms_review", "records": 0})
     statuses.append({"provider_id": "adguard-filters", "status": "covered_by_existing_github_discovery", "records": 0})
-    collect("fortune-china-500", providers["fortune-china-500"]["endpoint"], "fortunechina.com", parse_fortune_rankings)
-    collect("fortune-global-500", providers["fortune-global-500"]["endpoint"], "fortune.com", parse_fortune_rankings)
+    collect("fortune-china-500", providers["fortune-china-500"]["endpoint"], "www.fortunechina.com", parse_fortune_rankings)
+    collect("fortune-global-500", providers["fortune-global-500"]["endpoint"], "www.fortune.com", parse_fortune_rankings)
     gitlab_url = providers["gitlab-projects"]["endpoint"] + "?" + urllib.parse.urlencode({"search": "shadowrocket rules", "simple": "true", "per_page": 20, "order_by": "last_activity_at", "sort": "desc"})
     collect("gitlab-projects", gitlab_url, "gitlab.com", lambda p, provider, url: parse_repository_search_payload(p, provider, url, "gitlab.com"))
     codeberg_url = providers["codeberg-repositories"]["endpoint"] + "?" + urllib.parse.urlencode({"q": "shadowrocket rules", "limit": 20})
