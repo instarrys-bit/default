@@ -21,7 +21,7 @@ class FakeGitHub:
         self.list_created_since = []
         self.run_detail = {}
         self.commits = {}
-        self.workflow = {"id": 1234, "path": ".github/workflows/request-intake.yml", "state": "active"}
+        self.workflow = {"id": 1234, "path": ".github/workflows/test-dispatch.yml", "state": "active"}
         self.ref = {"object": {"sha": "a" * 40}}
 
     def get_workflow(self, path):
@@ -60,7 +60,7 @@ class WorkflowAdapterTests(unittest.TestCase):
             "interface_status": "workflow_dispatch_reviewed",
             "allowed_callers": ["workflow_automation_watchdog"],
             "workflow": {
-                "path": ".github/workflows/request-intake.yml",
+                "path": ".github/workflows/test-dispatch.yml",
                 "dispatchable": True,
                 "allowed_refs": ["main"],
                 "inputs": [
@@ -90,7 +90,7 @@ class WorkflowAdapterTests(unittest.TestCase):
         disabled = dict(self.adapter, enabled=False)
         with self.assertRaisesRegex(ValueError, "disabled"):
             validate_dispatch_request(disabled, self.task, "main")
-        unauthorized = dict(self.task, requester_program_id="workflow_request_intake")
+        unauthorized = dict(self.task, requester_program_id="workflow_unregistered_caller")
         with self.assertRaisesRegex(ValueError, "caller allowlist"):
             validate_dispatch_request(self.adapter, unauthorized, "main")
         with self.assertRaisesRegex(ValueError, "not allowlisted"):
