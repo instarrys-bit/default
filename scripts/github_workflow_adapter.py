@@ -106,10 +106,16 @@ class GitHubWorkflowClient:
             {"ref": ref, "inputs": inputs},
         )
 
-    def list_runs(self, workflow_id: int, ref: str, page: int = 1) -> dict:
+    def list_runs(self, workflow_id: int, ref: str, page: int = 1,
+                  created_since: str | None = None) -> dict:
         if isinstance(page, bool) or not isinstance(page, int) or page < 1:
             raise ValueError("workflow run page must be a positive integer")
-        query = urlencode({"event": "workflow_dispatch", "branch": ref, "per_page": 100, "page": page})
+        params = {"event": "workflow_dispatch", "branch": ref, "per_page": 100, "page": page}
+        if created_since is not None:
+            if not isinstance(created_since, str) or not re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", created_since):
+                raise ValueError("workflow run created_since must be an ISO date")
+            params["created"] = f">={created_since}"
+        query = urlencode(params)
         return self.request("GET", f"actions/workflows/{workflow_id}/runs?{query}")
 
     def get_run(self, run_id: int) -> dict:
@@ -269,8 +275,12 @@ def find_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict | No
         raise WorkflowAPIError("persisted workflow task correlation title is missing")
     matches = []
     page = 1
+    prepared_at = intent.get("prepared_at")
+    created_since = prepared_at[:10] if isinstance(prepared_at, str) and re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}T.*", prepared_at) else None
     while True:
-        payload = client.list_runs(intent["workflow_id"], intent["ref"], page=page)
+        payload = client.list_runs(
+            intent["workflow_id"], intent["ref"], page=page, created_since=created_since
+        )
         runs = payload.get("workflow_runs")
         if not isinstance(runs, list):
             raise WorkflowAPIError("workflow runs response is missing workflow_runs")
