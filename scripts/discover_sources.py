@@ -730,7 +730,7 @@ def render_report(data: dict) -> str:
         "",
         f"- Candidate repositories retained: **{data['candidate_count']}**",
         f"- Search coverage: **{data.get('query_complete_count', 0)}/{data.get('query_count', 0)}** complete; **{data.get('query_capped_count', 0)}** page-capped; **{data.get('query_error_count', 0)}** request errors.",
-        f"- Enterprise discovery: **{data.get("enterprise_search", {}).get("ranking_target_count", 0)}** ranked companies in scope; **{data.get("enterprise_search", {}).get("queries_this_run", 0)}** company searches this run.",
+        f"- Enterprise discovery: **{data.get('enterprise_search', {}).get('ranking_target_count', 0)}** ranked companies in scope; **{data.get('enterprise_search', {}).get('queries_this_run', 0)}** company searches this run.",
         "- Discovery is a lead-generation stage only; no candidate is activated automatically.",
         "- Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.",
         "",
