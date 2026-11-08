@@ -220,7 +220,7 @@
           }
         }
       },
-      "timeout_seconds": 240,
+      "timeout_seconds": 300,
       "retry": {
         "max_attempts": 1,
         "policy": "one bounded retry with durable per-URL checkpoint resume; no repository artifact publication"
