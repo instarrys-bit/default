@@ -9,7 +9,6 @@ WORKFLOWS = [
     ".github/workflows/auto_sync.yml",
     ".github/workflows/automation-watchdog.yml",
     ".github/workflows/dashboard-pages.yml",
-    ".github/workflows/request-intake.yml",
     ".github/workflows/self-healing-agent.yml",
     ".github/workflows/self-healing-tests.yml",
     ".github/workflows/validate-config.yml",
