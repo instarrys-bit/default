@@ -102,10 +102,10 @@ def inspect_suffix_scope(domain: str, policy: str, rules, conditional, protected
     # Only a parent/equal DOMAIN-SUFFIX rule covers the complete suffix scope.
     # Exact or child-suffix rules are narrower exceptions and do not suppress it.
     covering = [
-        rule for rule in rules.rules
+        rule
+        for parent in ancestors(domain)
+        for rule in rules.suffix.get(parent, [])
         if rule.policy != "REJECT"
-        and rule.kind == "DOMAIN-SUFFIX"
-        and (domain == rule.domain or domain.endswith("." + rule.domain))
     ]
     if covering:
         policies = {rule.policy for rule in covering}

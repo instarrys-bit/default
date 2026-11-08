@@ -1,16 +1,38 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "7a048b44b09e6135736984ea3fdd6761231dabbb",
+  "workflow_blob_sha": "d804334b7ac1a1d7f23359ee767404921aa06d7b",
   "registry_blob_sha": "2b595ebf040b6624435ecfa5eb436bfdf56df5cc",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
-    "job_count": 5,
-    "step_count": 56,
+    "job_count": 6,
+    "step_count": 59,
     "independent_python_dispatch_enabled": true,
     "independent_workflow_count": 1
   },
   "job_graph": [
+    {
+      "id": "preflight",
+      "needs": [],
+      "condition": null,
+      "permissions": {
+        "contents": "read"
+      },
+      "steps": [
+        {
+          "name": "Checkout audited commit",
+          "order": 1
+        },
+        {
+          "name": "Set up Python",
+          "order": 2
+        },
+        {
+          "name": "Compile and run deterministic review tests",
+          "order": 3
+        }
+      ]
+    },
     {
       "id": "audit",
       "needs": [],
@@ -74,55 +96,55 @@
           "order": 13
         },
         {
-          "name": "Compile and run deterministic review tests",
+          "name": "Discover candidate source repositories (non-activating)",
           "order": 14
         },
         {
-          "name": "Discover candidate source repositories (non-activating)",
+          "name": "Assess discovered rule-list syntax and policy claims",
           "order": 15
         },
         {
-          "name": "Assess discovered rule-list syntax and policy claims",
+          "name": "Preserve complete source assessment report",
           "order": 16
         },
         {
-          "name": "Preserve complete source assessment report",
+          "name": "Restore prior high-volume automation state",
           "order": 17
         },
         {
-          "name": "Restore prior high-volume automation state",
+          "name": "Remove published and queued rules that conflict with uu.conf",
           "order": 18
         },
         {
-          "name": "Remove published and queued rules that conflict with uu.conf",
+          "name": "Import observed request hostnames as unclassified candidates",
           "order": 19
         },
         {
-          "name": "Import observed request hostnames as unclassified candidates",
+          "name": "Audit public source lineage and shared upstreams",
           "order": 20
         },
         {
-          "name": "Audit public source lineage and shared upstreams",
+          "name": "Audit domain-level policy-source overlap and contradictions",
           "order": 21
         },
         {
-          "name": "Audit domain-level policy-source overlap and contradictions",
+          "name": "Build automated source candidate and lineage matrix",
           "order": 22
         },
         {
-          "name": "Build automated source candidate and lineage matrix",
+          "name": "Merge qualified discovered sources into the run-local production registry",
           "order": 23
         },
         {
-          "name": "Merge qualified discovered sources into the run-local production registry",
+          "name": "Collect and cross-check all enabled domain sources",
           "order": 24
         },
         {
-          "name": "Collect and cross-check all enabled domain sources",
+          "name": "Stop stale audit before expensive deterministic review",
           "order": 25
         },
         {
-          "name": "Stop stale audit before expensive deterministic review",
+          "name": "Restore latest failed-run review checkpoint and delta journal",
           "order": 26
         },
         {
@@ -206,7 +228,8 @@
     {
       "id": "publish",
       "needs": [
-        "audit"
+        "audit",
+        "preflight"
       ],
       "condition": null,
       "permissions": {
@@ -268,9 +291,10 @@
       "id": "notify-failure",
       "needs": [
         "audit",
+        "preflight",
         "publish"
       ],
-      "condition": "${{ always() && (needs.audit.result == 'failure' || needs.publish.result == 'failure') }}",
+      "condition": "${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled' || needs.preflight.result == 'failure' || needs.preflight.result == 'cancelled' || needs.publish.result == 'failure' || needs.publish.result == 'cancelled') }}",
       "permissions": {
         "issues": "write"
       },

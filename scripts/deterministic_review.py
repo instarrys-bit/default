@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import hashlib,json,re,sys
+import hashlib,json,re,sys,time,os,multiprocessing
+from concurrent.futures import ProcessPoolExecutor
+try:
+    import resource
+except ImportError:  # pragma: no cover - Windows test runners
+    resource = None
 from functools import lru_cache
 from pathlib import Path
 from datetime import datetime,timezone
 from domain_rule_engine import RuleIndex,load_domain_rules,inspect_suffix_scope
 from source_registry import validate_registry
 from review_cursor import snapshot_digest,resume_index,checkpoint
-from json_document_store import read_document,write_document,iter_document_records
+from json_document_store import read_document,write_document,iter_document_records,append_document_records,clear_document_delta,document_delta_watermark
 from resource_lease_runtime import assert_resource_lease_for_repository_path
 from audit_ruleset_config_overlap import scope_covers_candidate
 ROOT=Path(__file__).resolve().parents[1]
@@ -214,10 +219,21 @@ def inspect(domain,rules,conditional,base,protected,candidate_policy=None,candid
     candidate_scope = "suffix_candidate" if candidate_suffix else "exact_candidate"
 
     # Compare complete scopes only. No first-match winner or rule ordering is used.
-    covering = [
-        rule for rule in rules.rules
-        if rule.policy != "REJECT" and scope_covers_candidate(candidate_scope, domain, rule.kind, rule.domain)
-    ]
+    # Use the prebuilt exact/suffix indexes instead of scanning every config
+    # rule for every candidate. Keep line ordering for byte-stable audit reasons.
+    if candidate_suffix:
+        covering = [
+            rule
+            for parent in ('.'.join(domain.split('.')[i:]) for i in range(len(domain.split('.'))))
+            for rule in rules.suffix.get(parent, [])
+            if rule.policy != "REJECT"
+        ]
+    else:
+        covering = [
+            rule for rule in rules.matches_host(domain)
+            if rule.policy != "REJECT"
+        ]
+    covering.sort(key=lambda rule: rule.line)
     if covering:
         policies = {rule.policy for rule in covering}
         evidence = "; ".join(
@@ -315,7 +331,137 @@ def inspect(domain,rules,conditional,base,protected,candidate_policy=None,candid
             return result,"Matches fully covering skip-proxy direct-bypass entry "+item
     return None,None
 
+
+_REVIEW_WORKER_CONTEXT = None
+
+
+def _build_review_record(item, domain, input_fingerprint, context, now):
+    """Pure candidate decision function. Workers never read or write repository state."""
+    source_map = context["source_map"]
+    current_hashes = context["current_hashes"]
+    score_cfg = context["score_cfg"]
+    source_weights = context["source_weights"]
+    minimum = context["minimum"]
+    threshold = context["threshold"]
+    correlated_pairs = context["correlated_pairs"]
+    index = context["index"]
+    conditional = context["conditional"]
+    protected = context["protected"]
+    base = context["base"]
+    skip_proxy = context["skip_proxy"]
+
+    policy = str(item.get("classification", "")).upper()
+    raw_evidence = item.get("evidence", [])
+    candidate_policies = {str(x).upper() for x in item.get("candidate_policies", [])}
+    source_entry_type = "exact_candidate"
+    if policy == "CONFLICT" or len(candidate_policies) > 1:
+        evidence = []
+        for evidence_policy in ("DIRECT", "PROXY", "REJECT"):
+            evidence.extend(validate_evidence(raw_evidence, source_map, current_hashes, evidence_policy))
+        unique = {(x.get("source_id"), x.get("sha256")): x for x in evidence}
+        evidence = list(unique.values())
+        confidence, source_ids, publishers, groups, _ = evidence_gate(
+            evidence, source_weights, minimum, threshold, (), correlated_pairs
+        )
+        status = "POLICY_CONFLICT"
+        reason = "The same domain is listed by sources assigning different routing policies: " + ", ".join(sorted(candidate_policies))
+        policy = "CONFLICT"
+    elif policy not in {"DIRECT", "PROXY", "REJECT"}:
+        evidence = []
+        confidence, source_ids, publishers, groups, _ = evidence_gate(
+            [], source_weights, minimum, threshold, (), correlated_pairs
+        )
+        status = "REVIEW"
+        reason = "No currently enabled source provides a supported policy classification"
+    else:
+        evidence = validate_evidence(raw_evidence, source_map, current_hashes, policy)
+        required_sources = set(score_cfg.get("required_sources_by_policy", {}).get(policy, []))
+        suffix_evidence = [x for x in evidence if x.get("entry_type") == "suffix_candidate"]
+        suffix_confidence, suffix_source_ids, suffix_publishers, suffix_groups, suffix_qualified = evidence_gate(
+            suffix_evidence, source_weights, minimum, threshold, required_sources, correlated_pairs
+        )
+        if suffix_qualified:
+            source_entry_type = "suffix_candidate"
+            evidence = suffix_evidence
+            confidence, source_ids, publishers, groups, qualified = (
+                suffix_confidence, suffix_source_ids, suffix_publishers, suffix_groups, suffix_qualified
+            )
+        else:
+            source_entry_type = "exact_candidate"
+            confidence, source_ids, publishers, groups, qualified = evidence_gate(
+                evidence, source_weights, minimum, threshold, required_sources, correlated_pairs
+            )
+        scope_status, scope_reason = (None, None)
+        if source_entry_type == "suffix_candidate":
+            scope_status, scope_reason = inspect_suffix_scope(
+                domain, policy, index, conditional, protected, skip_proxy
+            )
+        if scope_status:
+            status, reason = scope_status, scope_reason
+        else:
+            status, reason = inspect(
+                domain, index, conditional, base, protected, policy,
+                candidate_suffix=(source_entry_type == "suffix_candidate")
+            )
+        if status is None:
+            if not qualified:
+                status = "REVIEW"
+                reason = "Current source identity, publisher, policy, independence, scope or confidence evidence is below configured threshold"
+            else:
+                status = "APPROVED"
+                reason = "Policy and domain scope evidence agree across distinct configured publishers; lineage is recorded separately and is not a blanket veto; all local gates passed"
+
+    return {
+        "domain": domain,
+        "source_entry_type": source_entry_type,
+        "candidate_policies": sorted(candidate_policies),
+        "classification": policy,
+        "policy": policy,
+        "confidence": confidence,
+        "status": status,
+        "reason": reason,
+        "evidence": evidence,
+        "source_count": len(source_ids),
+        "publisher_count": len(publishers),
+        "independence_group_count": len(groups),
+        "rejected_evidence_count": len(raw_evidence) - len(evidence),
+        "duplicate_check": "PASS" if status not in {"DUPLICATE", "ALREADY_COVERED"} else status,
+        "conflict_check": "PASS" if status not in {"CONFLICT", "POLICY_CONFLICT", "REVIEW"} else status,
+        "risk_check": "VETO" if status == "RISK_HOLD" else "PASS",
+        "decision_engine": "deterministic-domain-audit/4.1",
+        "reviewed_at": now,
+        "review_fingerprint": input_fingerprint,
+        "config_authority": "modules/uu.conf",
+    }
+
+
+def _init_review_worker(context):
+    global _REVIEW_WORKER_CONTEXT
+    _REVIEW_WORKER_CONTEXT = context
+
+
+def _review_candidate_worker(task):
+    item, domain, input_fingerprint, now = task
+    if _REVIEW_WORKER_CONTEXT is None:
+        raise RuntimeError("review worker context was not initialized")
+    return _build_review_record(item, domain, input_fingerprint, _REVIEW_WORKER_CONTEXT, now)
+
+
+def _review_resource_metrics():
+    if resource is None:
+        return {}
+    own = resource.getrusage(resource.RUSAGE_SELF)
+    children = resource.getrusage(resource.RUSAGE_CHILDREN)
+    return {
+        "parent_cpu_seconds": round(own.ru_utime + own.ru_stime, 2),
+        "worker_cpu_seconds": round(children.ru_utime + children.ru_stime, 2),
+        "max_rss_kib": int(max(own.ru_maxrss, children.ru_maxrss)),
+    }
+
+
 def main():
+    pipeline_started=time.monotonic()
+    input_load_started=time.monotonic()
     source_cfg=json.loads(POLICY.read_text(encoding="utf-8"))
     protected=json.loads(PROTECTED.read_text(encoding="utf-8"))
     collected=read_document(CANDIDATES,"candidates",{"candidates":[],"sources":[]})
@@ -340,7 +486,10 @@ def main():
     minimum=int(score_cfg["minimum_independent_sources"])
     now=datetime.now(timezone.utc).isoformat()
     correlated_pairs=load_correlated_publishers()
+    ledger_load_started=time.monotonic()
     review_map={x["domain"]:x for x in iter_document_records(OUTPUT,"reviews")}
+    ledger_load_seconds=time.monotonic()-ledger_load_started
+    input_load_seconds=ledger_load_started-input_load_started
     if len(review_map)>MAX_REVIEW_RECORDS:
         fail(f"historical review ledger exceeds hard limit: {len(review_map):,} > {MAX_REVIEW_RECORDS:,}")
     lifecycle_state=json.loads(LIFECYCLE_STATE.read_text(encoding="utf-8")) if LIFECYCLE_STATE.exists() else {}
@@ -364,6 +513,7 @@ def main():
     candidates=collected.get("candidates",[])
     if len(candidates)>MAX_REVIEW_RECORDS:
         fail(f"candidate review input exceeds hard limit: {len(candidates):,} > {MAX_REVIEW_RECORDS:,}")
+    snapshot_started=time.monotonic()
     context_sha256=review_context_fingerprint(
         source_cfg,protected,config,current_hashes,correlated_pairs,lifecycle_active,published_identities
     )
@@ -371,112 +521,216 @@ def main():
         "candidate_snapshot":snapshot_digest(collected.get("sources",[]),candidates),
         "review_context":context_sha256,
     })
+    snapshot_fingerprint_seconds=time.monotonic()-snapshot_started
     cursor_state=json.loads(CURSOR.read_text(encoding="utf-8")) if CURSOR.exists() else {}
     start_index=resume_index(cursor_state,snapshot_sha256,len(candidates))
     batch_size=5000
-    for candidate_index,item in enumerate(candidates[start_index:],start=start_index):
-        domain=str(item.get("domain","")).lower().rstrip(".")
-        if not DOMAIN_RE.fullmatch(domain): fail("invalid candidate domain: "+domain)
-        previous_record=review_map.get(domain)
-        input_fingerprint=candidate_review_fingerprint(item,context_sha256)
-        if previous_record and previous_record.get("review_fingerprint")==input_fingerprint:
-            run_counts["UNCHANGED"]=run_counts.get("UNCHANGED",0)+1
-            continue
-        policy=str(item.get("classification","")).upper()
-        raw_evidence=item.get("evidence",[])
-        candidate_policies={str(x).upper() for x in item.get("candidate_policies",[])}
-        source_entry_type="exact_candidate"
-        if policy=="CONFLICT" or len(candidate_policies)>1:
-            evidence=[]
-            for evidence_policy in ("DIRECT","PROXY","REJECT"):
-                evidence.extend(validate_evidence(raw_evidence,source_map,current_hashes,evidence_policy))
-            unique={(x.get("source_id"),x.get("sha256")):x for x in evidence}
-            evidence=list(unique.values())
-            confidence,source_ids,publishers,groups,_=evidence_gate(evidence,source_weights,minimum,threshold,(),correlated_pairs)
-            status="POLICY_CONFLICT"
-            reason="The same domain is listed by sources assigning different routing policies: "+", ".join(sorted(candidate_policies))
-            policy="CONFLICT"
-        elif policy not in {"DIRECT","PROXY","REJECT"}:
-            evidence=[]
-            confidence,source_ids,publishers,groups,_=evidence_gate([],source_weights,minimum,threshold,(),correlated_pairs)
-            status="REVIEW"
-            reason="No currently enabled source provides a supported policy classification"
-        else:
-            evidence=validate_evidence(raw_evidence,source_map,current_hashes,policy)
-            required_sources=set(score_cfg.get("required_sources_by_policy",{}).get(policy,[]))
-            suffix_evidence=[x for x in evidence if x.get("entry_type")=="suffix_candidate"]
-            suffix_confidence,suffix_source_ids,suffix_publishers,suffix_groups,suffix_qualified=evidence_gate(
-                suffix_evidence,source_weights,minimum,threshold,required_sources,correlated_pairs
+    delta_run_epoch=time.time_ns()
+    review_started=time.monotonic()
+    parent_cpu_started=time.process_time()
+    last_progress_index=start_index
+    pending_updates=[]
+    worker_count=int(os.environ.get("REVIEW_WORKERS","4"))
+    worker_count=max(1,min(worker_count,4))
+    rules_count=len(index.rules)
+    context={
+        "source_map":source_map,
+        "current_hashes":current_hashes,
+        "score_cfg":score_cfg,
+        "source_weights":source_weights,
+        "minimum":minimum,
+        "threshold":threshold,
+        "correlated_pairs":correlated_pairs,
+        "index":index,
+        "conditional":conditional,
+        "protected":protected,
+        "base":base,
+        "skip_proxy":parse_skip_proxy(base),
+    }
+    executor=None
+    if worker_count>1 and len(candidates)-start_index>1:
+        try:
+            executor=ProcessPoolExecutor(
+                max_workers=worker_count,
+                mp_context=multiprocessing.get_context("fork"),
+                initializer=_init_review_worker,
+                initargs=(context,),
             )
-            if suffix_qualified:
-                source_entry_type="suffix_candidate"
-                evidence=suffix_evidence
-                confidence,source_ids,publishers,groups,qualified=(
-                    suffix_confidence,suffix_source_ids,suffix_publishers,suffix_groups,suffix_qualified
-                )
-            else:
-                source_entry_type="exact_candidate"
-                confidence,source_ids,publishers,groups,qualified=evidence_gate(evidence,source_weights,minimum,threshold,required_sources,correlated_pairs)
-            scope_status,scope_reason=(None,None)
-            if source_entry_type=="suffix_candidate":
-                scope_status,scope_reason=inspect_suffix_scope(
-                    domain,policy,index,conditional,protected,parse_skip_proxy(base)
-                )
-            if scope_status:
-                status,reason=scope_status,scope_reason
-            else:
-                status,reason=inspect(domain,index,conditional,base,protected,policy,candidate_suffix=(source_entry_type=="suffix_candidate"))
-            if status is None:
-                if not qualified:
-                    status="REVIEW"; reason="Current source identity, publisher, policy, independence, scope or confidence evidence is below configured threshold"
+        except (OSError,ValueError,RuntimeError) as exc:
+            print("Review parallelism unavailable; using serial fallback: "+str(exc),flush=True)
+            executor=None
+
+    def emit_progress(completed_index):
+        nonlocal last_progress_index
+        processed=completed_index-start_index
+        elapsed=max(time.monotonic()-review_started,0.001)
+        rate=processed/elapsed
+        remaining=max(len(candidates)-completed_index,0)
+        eta=remaining/rate if rate>0 else None
+        print(
+            "Review progress: "
+            + json.dumps({
+                "completed":completed_index,
+                "total":len(candidates),
+                "resumed_from":start_index,
+                "processed_this_run":processed,
+                "rate_per_second":round(rate,2),
+                "elapsed_seconds":round(elapsed,1),
+                "eta_seconds":round(eta,1) if eta is not None else None,
+                "run_counts":run_counts,
+                "worker_count":worker_count if executor is not None else 1,
+                "ledger_records":len(review_map),
+                "config_domain_rules":rules_count,
+                "conditional_rules":len(conditional),
+                **_review_resource_metrics(),
+            },ensure_ascii=False,sort_keys=True),
+            flush=True,
+        )
+        last_progress_index=completed_index
+
+    try:
+        for batch_start in range(start_index,len(candidates),batch_size):
+            batch_end=min(batch_start+batch_size,len(candidates))
+            changed=[]
+            for candidate_index in range(batch_start,batch_end):
+                item=candidates[candidate_index]
+                domain=str(item.get("domain","")).lower().rstrip(".")
+                if not DOMAIN_RE.fullmatch(domain):
+                    fail("invalid candidate domain: "+domain)
+                previous_record=review_map.get(domain)
+                input_fingerprint=candidate_review_fingerprint(item,context_sha256)
+                if previous_record and previous_record.get("review_fingerprint")==input_fingerprint:
+                    run_counts["UNCHANGED"]=run_counts.get("UNCHANGED",0)+1
                 else:
-                    status="APPROVED"; reason="Policy and domain scope evidence agree across distinct configured publishers; lineage is recorded separately and is not a blanket veto; all local gates passed"
-        new_record={
-            "domain":domain,"source_entry_type":source_entry_type,"candidate_policies":sorted(candidate_policies),"classification":policy,"policy":policy,"confidence":confidence,
-            "status":status,"reason":reason,"evidence":evidence,"source_count":len(source_ids),"publisher_count":len(publishers),"independence_group_count":len(groups),
-            "rejected_evidence_count":len(raw_evidence)-len(evidence),
-            "duplicate_check":"PASS" if status not in {"DUPLICATE","ALREADY_COVERED"} else status,
-            "conflict_check":"PASS" if status not in {"CONFLICT","POLICY_CONFLICT","REVIEW"} else status,
-            "risk_check":"VETO" if status=="RISK_HOLD" else "PASS",
-            "decision_engine":"deterministic-domain-audit/4.1","reviewed_at":now,
-            "review_fingerprint":input_fingerprint,
-            "config_authority":"modules/uu.conf"
-        }
-        previous_policy=str(previous_record.get("policy","")).upper() if previous_record else ""
-        previous_scope=str(previous_record.get("source_entry_type","exact_candidate")) if previous_record else "exact_candidate"
-        was_published=(previous_policy,domain,previous_scope) in published_identities
-        if (not lifecycle_active and status=="REVIEW" and previous_record
-            and previous_record.get("status")=="APPROVED" and was_published):
-            new_record=dict(previous_record)
-            new_record["lifecycle_hold"]={
-                "status":"HELD_UNTIL_LIFECYCLE_ACTIVATION",
-                "reason":"Temporary evidence insufficiency does not remove an already-published rule before the 5,000-rule lifecycle gate activates.",
-                "checked_at":now
+                    changed.append((candidate_index,item,domain,input_fingerprint,previous_record))
+
+                if (candidate_index+1-last_progress_index)>=250:
+                    emit_progress(candidate_index+1)
+
+            tasks=[(item,domain,input_fingerprint,now) for _,item,domain,input_fingerprint,_ in changed]
+            if executor is not None and tasks:
+                try:
+                    computed=list(executor.map(_review_candidate_worker,tasks,chunksize=64))
+                except Exception as exc:
+                    print("Review worker pool failed; recomputing current batch serially: "+str(exc),flush=True)
+                    executor.shutdown(wait=True,cancel_futures=True)
+                    executor=None
+                    computed=[
+                        _build_review_record(item,domain,input_fingerprint,context,now)
+                        for _,item,domain,input_fingerprint,_ in changed
+                    ]
+            else:
+                computed=[
+                    _build_review_record(item,domain,input_fingerprint,context,now)
+                    for _,item,domain,input_fingerprint,_ in changed
+                ]
+
+            # Only this parent process mutates the review map or durable files.
+            for (candidate_index,item,domain,input_fingerprint,previous_record),new_record in zip(changed,computed):
+                status=new_record["status"]
+                previous_policy=str(previous_record.get("policy","")).upper() if previous_record else ""
+                previous_scope=str(previous_record.get("source_entry_type","exact_candidate")) if previous_record else "exact_candidate"
+                was_published=(previous_policy,domain,previous_scope) in published_identities
+                if (not lifecycle_active and status=="REVIEW" and previous_record
+                    and previous_record.get("status")=="APPROVED" and was_published):
+                    new_record=dict(previous_record)
+                    new_record["lifecycle_hold"]={
+                        "status":"HELD_UNTIL_LIFECYCLE_ACTIVATION",
+                        "reason":"Temporary evidence insufficiency does not remove an already-published rule before the 5,000-rule lifecycle gate activates.",
+                        "checked_at":now
+                    }
+                if domain not in review_map and len(review_map)>=MAX_REVIEW_RECORDS:
+                    fail(f"historical review ledger would exceed hard limit: {MAX_REVIEW_RECORDS:,}")
+                previous_status=str(previous_record.get("status","UNKNOWN")) if previous_record else None
+                if previous_status:
+                    partial_counts[previous_status]=partial_counts.get(previous_status,0)-1
+                    if partial_counts[previous_status]<=0:
+                        partial_counts.pop(previous_status,None)
+                review_map[domain]=new_record
+                pending_updates.append(new_record)
+                record_status=str(new_record.get("status","UNKNOWN"))
+                partial_counts[record_status]=partial_counts.get(record_status,0)+1
+                run_counts[status]=run_counts.get(status,0)+1
+
+            metadata={
+                "schema_version":3,
+                "engine":"deterministic-domain-audit/4.1",
+                "updated_at":now,
+                "source_snapshot":collected.get("sources",[]),
+                "run_counts":run_counts,
+                "counts":partial_counts,
             }
-        if domain not in review_map and len(review_map)>=MAX_REVIEW_RECORDS:
-            fail(f"historical review ledger would exceed hard limit: {MAX_REVIEW_RECORDS:,}")
-        previous_status=str(previous_record.get("status","UNKNOWN")) if previous_record else None
-        if previous_status:
-            partial_counts[previous_status]=partial_counts.get(previous_status,0)-1
-            if partial_counts[previous_status]<=0:
-                partial_counts.pop(previous_status,None)
-        review_map[domain]=new_record
-        record_status=str(new_record.get("status","UNKNOWN"))
-        partial_counts[record_status]=partial_counts.get(record_status,0)+1
-        run_counts[status]=run_counts.get(status,0)+1
-        if (candidate_index+1)%batch_size==0 or candidate_index+1==len(candidates):
-            # Checkpoints need not be sorted; the final publication is sorted once.
-            write_document(OUTPUT,{"schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,"source_snapshot":collected.get("sources",[]),"run_counts":run_counts,"counts":partial_counts,"reviews":list(review_map.values())},"reviews",lease_required=True)
-            atomic_json(CURSOR,{**checkpoint(snapshot_sha256,len(candidates),candidate_index+1,batch_size),"updated_at":now,"last_checkpoint_domain":domain})
+            # Append only changed records. The small delta manifest is the commit
+            # point; the cursor advances only after the delta is durable.
+            delta_write_started=time.monotonic()
+            append_result=append_document_records(
+                OUTPUT,metadata,"reviews",pending_updates,
+                delta_run_epoch*(len(candidates)+1)+batch_end,lease_required=True
+            )
+            delta_write_seconds=time.monotonic()-delta_write_started
+            pending_updates=[]
+            cursor_write_started=time.monotonic()
+            atomic_json(CURSOR,{
+                **checkpoint(snapshot_sha256,len(candidates),batch_end,batch_size),
+                "updated_at":now,
+                "last_checkpoint_domain":candidates[batch_end-1].get("domain") if batch_end else None,
+            })
+            cursor_write_seconds=time.monotonic()-cursor_write_started
+            print(
+                "Review checkpoint: "
+                + json.dumps({
+                    "next_index":batch_end,
+                    "batch_candidates":batch_end-batch_start,
+                    "delta_records":append_result["records"],
+                    "delta_bytes":append_result["bytes"],
+                    "delta_write_seconds":round(delta_write_seconds,3),
+                    "cursor_write_seconds":round(cursor_write_seconds,3),
+                    "ledger_records":len(review_map),
+                    "worker_count":worker_count if executor is not None else 1,
+                },sort_keys=True),
+                flush=True,
+            )
+            if batch_end>last_progress_index:
+                emit_progress(batch_end)
+    finally:
+        if executor is not None:
+            executor.shutdown(wait=True,cancel_futures=True)
+
     reviews=sorted(review_map.values(),key=lambda x:x["domain"])
     total_counts={}
     for item in reviews: total_counts[item["status"]]=total_counts.get(item["status"],0)+1
-    write_document(OUTPUT,{
+    compaction_started=time.monotonic()
+    compacted_through=max(
+        document_delta_watermark(OUTPUT,"reviews"),
+        delta_run_epoch*(len(candidates)+1)+len(candidates),
+    )
+    compact_result=write_document(OUTPUT,{
         "schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,
         "source_snapshot":collected.get("sources",[]),"run_counts":run_counts,
-        "counts":total_counts,"reviews":reviews
+        "counts":total_counts,"_delta_compacted_through":compacted_through,"reviews":reviews
     },"reviews",lease_required=True)
+    # The compacted base is durable before the overlay manifest is removed.
+    clear_document_delta(OUTPUT,"reviews",lease_required=True)
+    compaction_seconds=time.monotonic()-compaction_started
     atomic_json(CURSOR,{**checkpoint(snapshot_sha256,len(candidates),len(candidates),batch_size,"complete"),"updated_at":now,"last_checkpoint_domain":candidates[-1].get("domain") if candidates else None})
+    print("Review storage: "+json.dumps(compact_result,sort_keys=True))
+    print("Review metrics: "+json.dumps({
+        "candidate_count":len(candidates),
+        "ledger_records":len(reviews),
+        "resumed_from":start_index,
+        "processed_this_run":len(candidates)-start_index,
+        "input_load_seconds":round(input_load_seconds,2),
+        "ledger_load_seconds":round(ledger_load_seconds,2),
+        "snapshot_fingerprint_seconds":round(snapshot_fingerprint_seconds,2),
+        "review_loop_seconds":round(time.monotonic()-review_started,2),
+        "compaction_seconds":round(compaction_seconds,2),
+        "total_seconds":round(time.monotonic()-pipeline_started,2),
+        "parent_cpu_seconds":round(time.process_time()-parent_cpu_started,2),
+        "configured_workers":worker_count,
+        "config_domain_rules":rules_count,
+        "conditional_rules":len(conditional),
+        **_review_resource_metrics(),
+    },sort_keys=True))
     print("Deterministic review complete: "+json.dumps(run_counts,ensure_ascii=False,sort_keys=True))
     print("Review cursor: "+json.dumps({"status":"complete","candidate_count":len(candidates),"snapshot_sha256":snapshot_sha256,"correlated_publisher_pairs":len(correlated_pairs)},sort_keys=True))
     print("Historical ledger entries: "+str(len(reviews))+"; candidates reviewed this run: "+str(len(collected.get("candidates",[])))+" (hard ceiling: 30,000,000).")

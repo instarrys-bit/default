@@ -59,11 +59,36 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  preflight:
+    name: Read-only validation (parallel with audit)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout audited commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+
+      - name: Compile and run deterministic review tests
+        run: |
+          python3 -m compileall -q scripts tests
+          python3 -m unittest discover -s tests -v
+
   audit:
     runs-on: ubuntu-24.04
     timeout-minutes: 300
     env:
       PYTHONPATH: scripts
+      REVIEW_WORKERS: "2"
     permissions:
       contents: read
       actions: read
@@ -325,11 +350,6 @@ jobs:
           set -euo pipefail
           bash scripts/verify_publish_base.sh --check-only
 
-      - name: Compile and run deterministic review tests
-        run: |
-          python3 -m compileall -q scripts tests
-          python3 -m unittest discover -s tests -v
-
       - name: Discover candidate source repositories (non-activating)
         if: ${{ steps.source-mode.outputs.mode != 'independent' }}
         env:
@@ -444,6 +464,43 @@ jobs:
         run: |
           set -euo pipefail
           bash scripts/verify_publish_base.sh --check-only
+      - name: Restore latest failed-run review checkpoint and delta journal
+        env:
+          GH_TOKEN: \${{ github.token }}
+          REPO: \${{ github.repository }}
+          CURRENT_RUN_ID: \${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          failed_runs="$(gh api "repos/$REPO/actions/runs?per_page=100" --jq '.workflow_runs[] | select(.path == ".github/workflows/auto_sync.yml" and .head_branch == "main" and (.conclusion == "failure" or .conclusion == "cancelled")) | .id' || true)"
+          for run_id in $failed_runs; do
+            [ "$run_id" = "$CURRENT_RUN_ID" ] && continue
+            artifact_id="$(gh api "repos/$REPO/actions/runs/$run_id/artifacts" --jq '[.artifacts[] | select(.name == "failed-review-cursor-recovery" and .expired == false)] | first | .id // empty' 2>/dev/null || true)"
+            [ -n "$artifact_id" ] || continue
+            recovery_dir="$RUNNER_TEMP/failed-review-recovery"
+            rm -rf "$recovery_dir"
+            mkdir -p "$recovery_dir"
+            gh run download "$run_id" --name failed-review-cursor-recovery --dir "$recovery_dir"
+            cursor_file="$(find "$recovery_dir" -type f -name review_cursor.json -print -quit)"
+            delta_manifest="$(find "$recovery_dir" -type f -name domain_reviews.json.delta.manifest.json -print -quit)"
+            delta_dir="$(find "$recovery_dir" -type d -name domain_reviews.json.delta -print -quit)"
+            [ -n "$cursor_file" ] || continue
+            cursor_status="$(jq -r '.status // ""' "$cursor_file")"
+            # An in-progress cursor is valid only together with its committed delta journal.
+            if [ "$cursor_status" = "in_progress" ] && { [ -z "$delta_manifest" ] || [ -z "$delta_dir" ]; }; then
+              echo "Ignoring incomplete failed-run checkpoint from $run_id; its durable delta journal is missing."
+              continue
+            fi
+            if [ "$cursor_status" != "in_progress" ]; then
+              continue
+            fi
+            cp "$cursor_file" sources/review_cursor.json
+            cp "$delta_manifest" sources/domain_reviews.json.delta.manifest.json
+            rm -rf sources/domain_reviews.json.delta
+            cp -a "$delta_dir" sources/domain_reviews.json.delta
+            echo "Restored snapshot-bound review checkpoint and checksummed delta journal from failed run $run_id (artifact $artifact_id)."
+            break
+          done
+
       - name: "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services"
         run: python3 scripts/deterministic_review.py
 
@@ -452,7 +509,10 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: review-cursor-checkpoint
-          path: sources/review_cursor.json
+          path: |
+            sources/review_cursor.json
+            sources/domain_reviews.json.delta.manifest.json
+            sources/domain_reviews.json.delta/
           if-no-files-found: ignore
           retention-days: 90
 
@@ -661,10 +721,11 @@ jobs:
           name: deterministic-audit-output
           path: ${{ runner.temp }}/audit-output.tar.gz
           if-no-files-found: error
+          compression-level: 0
           retention-days: 90
 
   publish:
-    needs: audit
+    needs: [audit, preflight]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
@@ -877,13 +938,13 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: failed-review-cursor-recovery
-          path: cursor-artifact/review_cursor.json
+          path: cursor-artifact/
           if-no-files-found: ignore
           retention-days: 90
 
   notify-failure:
-    if: ${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled' || needs.publish.result == 'failure' || needs.publish.result == 'cancelled') }}
-    needs: [audit, publish]
+    if: ${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled' || needs.preflight.result == 'failure' || needs.preflight.result == 'cancelled' || needs.publish.result == 'failure' || needs.publish.result == 'cancelled') }}
+    needs: [audit, preflight, publish]
     runs-on: ubuntu-24.04
     permissions:
       issues: write

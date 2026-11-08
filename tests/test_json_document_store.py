@@ -103,6 +103,75 @@ class JsonDocumentStoreTests(unittest.TestCase):
                 self.assertEqual(streamed, payload["reviews"])
                 self.assertEqual(len(streamed), len(store.read_document(path, "reviews")["reviews"]))
 
+    def test_append_only_delta_overlays_legacy_records_and_metadata(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            path.write_text(json.dumps({
+                "schema_version": 1, "counts": {"APPROVED": 1},
+                "reviews": [{"domain": "example.com", "status": "REVIEW"}],
+            }), encoding="utf-8")
+            store.append_document_records(
+                path, {"schema_version": 1, "counts": {"APPROVED": 1, "REVIEW": 1}},
+                "reviews", [{"domain": "example.com", "status": "APPROVED"}], 5000,
+            )
+            records = list(store.iter_document_records(path, "reviews"))
+            self.assertEqual([item["status"] for item in records], ["REVIEW", "APPROVED"])
+            restored = store.read_document(path, "reviews")
+            self.assertEqual(restored["counts"], {"APPROVED": 1, "REVIEW": 1})
+            latest = {item["domain"]: item for item in restored["reviews"]}
+            self.assertEqual(latest["example.com"]["status"], "APPROVED")
+
+    def test_delta_checkpoint_retry_atomically_replaces_only_that_checkpoint(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            path.write_text(json.dumps({"reviews": []}), encoding="utf-8")
+            store.append_document_records(path, {}, "reviews", [{"domain": "a.example"}], 5000)
+            store.append_document_records(path, {}, "reviews", [{"domain": "a.example", "status": "new"}], 5000)
+            records = list(store.iter_document_records(path, "reviews"))
+            self.assertEqual(len(records), 1)
+            self.assertEqual(records[0]["status"], "new")
+
+    def test_delta_checksum_failure_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            path.write_text(json.dumps({"reviews": []}), encoding="utf-8")
+            store.append_document_records(path, {}, "reviews", [{"domain": "a.example"}], 5000)
+            manifest = json.loads(store.delta_manifest_path(path).read_text(encoding="utf-8"))
+            segment = path.parent / manifest["delta_directory"] / manifest["segments"][0]["file"]
+            segment.write_bytes(segment.read_bytes() + b"corrupt")
+            with self.assertRaisesRegex(ValueError, "delta segment checksum mismatch"):
+                list(store.iter_document_records(path, "reviews"))
+
+    def test_compaction_watermark_makes_interrupted_delta_cleanup_idempotent(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            path.write_text(json.dumps({"reviews": [{"domain": "a.example", "status": "old"}]}), encoding="utf-8")
+            store.append_document_records(path, {}, "reviews",
+                                          [{"domain": "a.example", "status": "new"}], 9000)
+            watermark = store.document_delta_watermark(path, "reviews")
+            compacted = {
+                "_delta_compacted_through": watermark,
+                "reviews": [{"domain": "a.example", "status": "new"}],
+            }
+            store.write_document(path, compacted, "reviews")
+            # Simulate a crash after the base swap but before deleting the delta manifest.
+            self.assertEqual(store.read_document(path, "reviews"), compacted)
+            self.assertEqual(list(store.iter_document_records(path, "reviews")), compacted["reviews"])
+
+    def test_compaction_can_clear_delta_after_base_commit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            path.write_text(json.dumps({"reviews": [{"domain": "a.example", "status": "old"}]}), encoding="utf-8")
+            store.append_document_records(path, {"schema_version": 1}, "reviews",
+                                          [{"domain": "a.example", "status": "new"}], 5000)
+            compacted = {"schema_version": 1, "reviews": [
+                {"domain": "a.example", "status": "new"}
+            ]}
+            store.write_document(path, compacted, "reviews")
+            store.clear_document_delta(path, "reviews")
+            self.assertFalse(store.delta_manifest_path(path).exists())
+            self.assertEqual(store.read_document(path, "reviews"), compacted)
+
     def test_iter_document_records_reads_legacy_json(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "ledger.json"
