@@ -39,6 +39,8 @@ def _read_delta_manifest(path: Path, collection_key: str) -> dict | None:
     directory = str(manifest.get("delta_directory", ""))
     if not directory or Path(directory).name != directory:
         raise ValueError(f"unsafe delta directory in {manifest_file}")
+    if not isinstance(manifest.get("metadata", {}), dict) or not isinstance(manifest.get("segments", []), list):
+        raise ValueError(f"invalid delta manifest collections: {manifest_file}")
     return manifest
 
 
@@ -205,6 +207,7 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
             result = dict(default) if default is not None else {collection_key: []}
         if not isinstance(result.get(collection_key, []), list):
             raise ValueError(f"document collection {collection_key!r} is not a list: {path}")
+        result.setdefault(collection_key, [])
         delta = _read_delta_manifest(path, collection_key)
         if delta:
             result.update(delta.get("metadata", {}))
