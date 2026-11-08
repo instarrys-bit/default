@@ -206,8 +206,21 @@ def render_report(data: dict) -> str:
     ])
     return "\n".join(rows)
 
+def assessment_input_path() -> Path:
+    supplied = os.environ.get("AUTOMATION_SOURCE_ASSESSMENT_ROOT", "").strip()
+    if not supplied:
+        return RUNTIME_ASSESSMENTS if RUNTIME_ASSESSMENTS.exists() else ASSESSMENTS
+    root = Path(supplied).resolve()
+    runner_temp = Path(os.environ.get("RUNNER_TEMP", "/tmp")).resolve()
+    if not root.is_relative_to(runner_temp) or root == runner_temp:
+        raise ValueError("verified Assessment artifact root must remain beneath RUNNER_TEMP")
+    runtime = root / "data/source_assessments_runtime.json"
+    if not runtime.exists() and not runtime.with_name(runtime.name + ".manifest.json").exists():
+        raise FileNotFoundError("verified Assessment artifact is missing runtime assessment output")
+    return runtime
+
 def main() -> int:
-    assessment_path = RUNTIME_ASSESSMENTS if RUNTIME_ASSESSMENTS.exists() else ASSESSMENTS
+    assessment_path = assessment_input_path()
     assessments = read_document(assessment_path, "assessments", {"assessments": []})
     lineage = json.loads(LINEAGE.read_text(encoding="utf-8"))
     result = build_matrix(assessments, lineage)
