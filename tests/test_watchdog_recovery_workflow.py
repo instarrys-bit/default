@@ -243,6 +243,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('workflow_client.list_runs(workflow_id, "main", page)', watchdog)
         self.assertIn("if page > 20:", watchdog)
         self.assertIn('"$base_key:recovery:1"', watchdog)
+        self.assertIn('"$base_key:recovery:2"', watchdog)
         self.assertIn('proof.get("workflow_run_id", "")', watchdog)
         self.assertIn('actions/runs/{run_id}', watchdog)
         self.assertIn("Queued Assessment predecessor does not resolve to its exact successful Discovery run.", watchdog)
