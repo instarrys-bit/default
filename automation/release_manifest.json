@@ -13,7 +13,7 @@
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "812a31155a88bf0429f8713da08a6b5acb5ea0b5"
+      "git_blob_sha": "7af7d9161b9059723a68e0952a06e0e042a5661c"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -82,7 +82,7 @@
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "812a31155a88bf0429f8713da08a6b5acb5ea0b5"
+      "git_blob_sha": "7af7d9161b9059723a68e0952a06e0e042a5661c"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
