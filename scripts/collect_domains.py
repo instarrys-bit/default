@@ -2,7 +2,7 @@
 """Collect policy-labelled domain evidence from every enabled registered source."""
 from __future__ import annotations
 
-import hashlib,json,re,sys,time,urllib.error,urllib.request
+import hashlib,json,os,re,sys,time,urllib.error,urllib.request
 from pathlib import Path
 from urllib.parse import urlparse
 from datetime import datetime,timezone
@@ -12,6 +12,22 @@ from resource_lease_runtime import assert_resource_lease_for_repository_path, as
 
 ROOT=Path(__file__).resolve().parents[1]
 SOURCES=ROOT/"sources/domain_sources.json"
+
+def source_registry_path():
+    configured=os.environ.get("SHADOWROCKET_SOURCE_REGISTRY", "").strip()
+    if not configured:
+        return SOURCES
+    runner_temp_value=os.environ.get("RUNNER_TEMP", "").strip()
+    if not runner_temp_value:
+        raise ValueError("SHADOWROCKET_SOURCE_REGISTRY requires RUNNER_TEMP isolation")
+    runner_temp=Path(runner_temp_value).resolve()
+    selected=Path(configured).resolve()
+    if selected == runner_temp or not selected.is_relative_to(runner_temp):
+        raise ValueError("runtime source registry must remain inside RUNNER_TEMP")
+    if not selected.is_file():
+        raise FileNotFoundError("runtime merged source registry is missing: "+str(selected))
+    return selected
+
 BUFFER=ROOT/"data/domain_candidates.json"
 SNAPSHOT_DIR=ROOT/"data/source_snapshots"
 OUTPUT=ROOT/"data/candidates.json"
@@ -259,7 +275,7 @@ def read_snapshot(source_id):
     return None
 
 def main():
-    cfg=json.loads(SOURCES.read_text(encoding="utf-8"))
+    cfg=json.loads(source_registry_path().read_text(encoding="utf-8"))
     buf=read_document(BUFFER,"candidates",{"candidates":[],"bootstrapped_sources":[]})
     pending_data=json.loads(PENDING.read_text(encoding="utf-8")) if PENDING.exists() else {"schema_version":1,"sources":{}}
     pending_sources=dict(pending_data.get("sources",{}))
