@@ -78,6 +78,11 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Compile and run deterministic review tests
+        run: |
+          python3 -m compileall -q scripts tests
+          python3 -m unittest discover -s tests -v
+
   audit:
     runs-on: ubuntu-24.04
     timeout-minutes: 300
@@ -344,11 +349,6 @@ jobs:
         run: |
           set -euo pipefail
           bash scripts/verify_publish_base.sh --check-only
-
-      - name: Compile and run deterministic review tests
-        run: |
-          python3 -m compileall -q scripts tests
-          python3 -m unittest discover -s tests -v
 
       - name: Discover candidate source repositories (non-activating)
         if: ${{ steps.source-mode.outputs.mode != 'independent' }}
