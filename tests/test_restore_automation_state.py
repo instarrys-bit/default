@@ -127,6 +127,7 @@ class RestoreAutomationStateTests(unittest.TestCase):
     def test_publish_restore_copies_only_allowlisted_outputs_and_rejects_config(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp); archive=root/"audit.tar.gz"; repo=root/"repo"
+            self.setup_publish_baseline(repo)
             self.make_archive(archive, [
                 ("sources/policy.json", "{}"),
                 ("reports/project-status.md", "ok"),
