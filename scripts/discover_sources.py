@@ -638,6 +638,7 @@ def render_report(data: dict) -> str:
         "# Automated source discovery",
         "",
         f"- Candidate repositories retained: **{data['candidate_count']}**",
+        f"- Search coverage: **{data.get('query_complete_count', 0)}/{data.get('query_count', 0)}** complete; **{data.get('query_capped_count', 0)}** page-capped; **{data.get('query_error_count', 0)}** request errors.",
         "- Discovery is a lead-generation stage only; no candidate is activated automatically.",
         "- Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.",
         "",
@@ -922,7 +923,7 @@ def main() -> int:
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:
         with Path(summary).open("a", encoding="utf-8") as stream:
-            stream.write(f"## Source discovery\n\nRepositories seen: **{len(discovered)}**. Tree scans this run: **{len(tree_scan_batch)}**. Tree-scan backlog: **{merged['tree_scan_backlog_count']}**. Truncated trees: **{len(tree_truncated)}**. Candidates retained: **{merged['candidate_count']}**. Failed queries: **{len(discovery_errors)}**. No source was activated.\n")
+            stream.write(f"## Source discovery\n\nQueries complete: **{merged.get('query_complete_count', 0)}/{merged.get('query_count', 0)}**; page-capped: **{merged.get('query_capped_count', 0)}**; query errors: **{merged.get('query_error_count', 0)}**. Repositories seen: **{len(discovered)}**. Tree scans this run: **{len(tree_scan_batch)}**. Tree-scan backlog: **{merged['tree_scan_backlog_count']}**. Truncated trees: **{len(tree_truncated)}**. Candidates retained: **{merged['candidate_count']}**. Failed queries: **{len(discovery_errors)}**. No source was activated.\n")
             intel = merged.get("external_intelligence", {})
             stream.write(f"\n## Multi-source intelligence collection\n\nProvider leads catalogued: **{len(catalog['providers'])}**. Typed observations collected: **{intel.get('total_records', 0)}** across **{sum(1 for x in intel.get('provider_status', []) if x.get('status') == 'collected')}** provider adapters. Bytes read: **{intel.get('total_bytes', 0)}**. Policy effect: **none**. CT and RIPEstat require explicit query inputs.\n")
             for item in intel.get("provider_status", []):
