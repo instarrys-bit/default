@@ -427,6 +427,10 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
                     except ValueError:
                         task["resource_lease"]["status"] = "LOST"
                         task["resource_lease"]["lost_at"] = stamp(now)
+                # A reconciled workflow may have originated from a CLAIMED task
+                # whose scheduler runner was cancelled. Terminal/requeued states
+                # must not retain that runner's task lease.
+                task["lease"] = None
                 changed = True
                 continue
 
