@@ -42,12 +42,14 @@ def _read_delta_manifest(path: Path, collection_key: str) -> dict | None:
     return manifest
 
 
-def _iter_delta_records(path: Path, collection_key: str):
+def _iter_delta_records(path: Path, collection_key: str, after_checkpoint: int = -1):
     manifest = _read_delta_manifest(path, collection_key)
     if not manifest:
         return
     directory = str(manifest["delta_directory"])
     for segment in manifest.get("segments", []):
+        if int(segment.get("checkpoint_index", -1)) <= after_checkpoint:
+            continue
         name = str(segment.get("file", ""))
         if not name or Path(name).name != name or not name.endswith(".jsonl"):
             raise ValueError(f"unsafe delta segment name in {path}: {name!r}")
@@ -64,6 +66,13 @@ def _iter_delta_records(path: Path, collection_key: str):
                 count += 1
         if count != int(segment.get("records", -1)):
             raise ValueError(f"delta segment record-count mismatch: {segment_path}")
+
+
+def document_delta_watermark(path: Path, collection_key: str) -> int:
+    manifest = _read_delta_manifest(Path(path), collection_key)
+    if not manifest:
+        return -1
+    return max((int(item.get("checkpoint_index", -1)) for item in manifest.get("segments", [])), default=-1)
 
 
 def _compact_bytes(value: Any) -> bytes:
@@ -143,6 +152,7 @@ def iter_document_records(path: Path, collection_key: str):
             if not isinstance(records, list):
                 raise ValueError(f"document collection {collection_key!r} is not a list: {path}")
             yield from records
+            watermark = int(payload.get("_delta_compacted_through", -1))
     else:
         if manifest_file.stat().st_size > MAX_FILE_BYTES:
             raise ValueError(f"shard manifest exceeds {MAX_FILE_BYTES} bytes: {manifest_file}")
@@ -176,7 +186,13 @@ def iter_document_records(path: Path, collection_key: str):
                 raise ValueError(f"shard record-count mismatch: {shard_path}")
         if total_records != int(manifest.get("record_count", -1)):
             raise ValueError(f"document record-count mismatch: {manifest_file}")
-    yield from _iter_delta_records(path, collection_key)
+        metadata = manifest.get("metadata", {})
+        if not isinstance(metadata, dict):
+            raise ValueError(f"invalid metadata in {manifest_file}")
+        watermark = int(metadata.get("_delta_compacted_through", -1))
+    if not manifest_file.exists() and not path.exists():
+        watermark = -1
+    yield from _iter_delta_records(path, collection_key, watermark)
 
 def read_document(path: Path, collection_key: str, default: dict | None = None) -> dict:
     """Read legacy JSON or verify and reconstruct a sharded document."""
@@ -192,7 +208,9 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
         delta = _read_delta_manifest(path, collection_key)
         if delta:
             result.update(delta.get("metadata", {}))
-            result[collection_key].extend(_iter_delta_records(path, collection_key))
+            result[collection_key].extend(_iter_delta_records(
+                path, collection_key, int(result.get("_delta_compacted_through", -1))
+            ))
         return result
 
     if manifest_file.stat().st_size > MAX_FILE_BYTES:
@@ -231,7 +249,9 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
     delta = _read_delta_manifest(path, collection_key)
     if delta:
         result.update(delta.get("metadata", {}))
-        result[collection_key].extend(_iter_delta_records(path, collection_key))
+        result[collection_key].extend(_iter_delta_records(
+            path, collection_key, int(result.get("_delta_compacted_through", -1))
+        ))
     return result
 
 
@@ -370,7 +390,8 @@ def append_document_records(
     path = Path(path)
     if checkpoint_index < 0:
         raise ValueError("checkpoint index must be non-negative")
-    if not isinstance(payload_metadata, dict) or not isinstance(records, list):
+    if (not isinstance(payload_metadata, dict) or collection_key in payload_metadata
+            or not isinstance(records, list)):
         raise ValueError("delta metadata and records must be dictionary/list values")
     directory_name = path.name + ".delta"
     directory = path.parent / directory_name
