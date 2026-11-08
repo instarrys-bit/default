@@ -380,6 +380,8 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("The timeout-corrected second Assessment recovery was already used", block)
         self.assertIn("enqueue-source-assessment", block)
         self.assertIn("Enqueue one artifact-recovery Assessment", block)
+        self.assertIn("task.get(\"status\") == \"SUCCEEDED\"", block)
+        self.assertIn("endswith(\":recovery:2\")", block)
         self.assertIn("artifact-recovery:1", block)
         self.assertIn("already_assessed", block)
 
