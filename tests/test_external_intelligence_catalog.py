@@ -15,7 +15,7 @@ class ExternalIntelligenceCatalogTests(unittest.TestCase):
 
     def test_catalog_is_valid_and_non_activating(self):
         catalog = discover_sources.load_external_intelligence_catalog()
-        self.assertEqual(len(catalog["providers"]), 8)
+        self.assertEqual(len(catalog["providers"]), 10)
         self.assertTrue(all(item["activation"] in {"never_from_catalog", "candidate_only", "evidence_only"} for item in catalog["providers"]))
 
     def test_catalog_rejects_duplicate_provider_ids(self):
