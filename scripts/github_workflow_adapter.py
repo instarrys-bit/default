@@ -112,7 +112,7 @@ class GitHubWorkflowClient:
             raise ValueError("workflow run page must be a positive integer")
         params = {"event": "workflow_dispatch", "branch": ref, "per_page": 100, "page": page}
         if created_since is not None:
-            if not isinstance(created_since, str) or not re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", created_since):
+            if not isinstance(created_since, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", created_since):
                 raise ValueError("workflow run created_since must be an ISO date")
             params["created"] = f">={created_since}"
         query = urlencode(params)
@@ -276,7 +276,7 @@ def find_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict | No
     matches = []
     page = 1
     prepared_at = intent.get("prepared_at")
-    created_since = prepared_at[:10] if isinstance(prepared_at, str) and re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}T.*", prepared_at) else None
+    created_since = prepared_at[:10] if isinstance(prepared_at, str) and re.fullmatch(r"\d{4}-\d{2}-\d{2}T.*", prepared_at) else None
     while True:
         payload = client.list_runs(
             intent["workflow_id"], intent["ref"], page=page, created_since=created_since
