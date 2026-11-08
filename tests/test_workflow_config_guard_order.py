@@ -33,49 +33,15 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn('select(.head_branch == "main" and .head_sha == $sha', watchdog)
         self.assertIn('select(.head_branch == "main" and .conclusion == "success")', watchdog)
 
-    def test_main_writers_are_serialized_or_use_safe_rebase(self):
+    def test_main_writers_are_serialized_and_retired_intake_is_absent(self):
         auto_sync = WORKFLOW.read_text(encoding="utf-8")
-        intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
-        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("group: shadowrocket-main-writer", auto_sync)
-        # Intake appends validated observations to Issue #317 and never writes repository files.
-        self.assertIn("group: shadowrocket-domain-intake", intake)
-        self.assertIn("contents: read", intake)
-        self.assertIn("issues: write", intake)
-        self.assertIn("issues/317/comments", intake)
-        self.assertNotIn("git add", intake)
-        self.assertNotIn("git commit", intake)
-        self.assertNotIn("git push", intake)
+        self.assertIn("group: shadowrocket-main-writer", watchdog)
         manifest_writer = watchdog.split("  manifest-integrity:", 1)[1]
         self.assertIn("group: shadowrocket-main-writer", manifest_writer)
-        self.assertNotIn("github-only-domain-intake", intake)
+        self.assertFalse((ROOT / ".github" / "workflows" / "request-intake.yml").exists())
 
-    def test_request_intake_replays_same_run_batch_against_latest_main_without_force_push(self):
-        intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
-        self.assertIn("Append observation batch to external intake Issue", intake)
-        self.assertIn("shadowrocket-domain-observation:v1", intake)
-        self.assertIn("issues/317/comments", intake)
-        self.assertIn("request_deterministic_audit=true", intake)
-        self.assertNotIn("git add", intake)
-        self.assertNotIn("git commit", intake)
-        self.assertNotIn("git push", intake)
-
-    def test_request_intake_validation_and_dispatch_handoff_are_well_formed(self):
-        intake = (ROOT / ".github" / "workflows" / "request-intake.yml").read_text(encoding="utf-8")
-        # Every embedded Python heredoc must terminate; this catches the original
-        # shell parse failure that swallowed the following workflow steps.
-        self.assertEqual(intake.count("<<'PY'"), intake.splitlines().count("          PY"))
-        self.assertIn("id: validate", intake)
-        self.assertIn('output.write("has_domains=false\\n")', intake)
-        self.assertIn('output.write("has_domains=true\\n")', intake)
-        self.assertIn('if: steps.validate.outputs.has_domains == \'true\'', intake)
-        self.assertEqual(intake.count("if: steps.validate.outputs.has_domains == 'true'"), 2)
-        self.assertIn("GH_TOKEN: ${{ github.token }}", intake)
-        self.assertNotIn("\\${{ github.token }}", intake)
-        self.assertNotIn("\\${{ github.repository }}", intake)
-        self.assertNotIn("\\${{ github.run_id }}", intake)
-        self.assertNotIn("\\${{ github.actor }}", intake)
-        self.assertIn('gh workflow run automation-watchdog.yml --ref main', intake)
 
     def test_self_healing_never_cancels_non_main_runs_or_cross_closes_incidents(self):
         healing = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")
