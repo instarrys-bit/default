@@ -49,7 +49,6 @@
   ],
   "non_production_path_patterns": [
     ".github/workflows/automation-watchdog.yml",
-    ".github/workflows/request-intake.yml",
     ".github/workflows/restore-inventory.yml",
     ".github/workflows/self-healing-agent.yml",
     ".github/workflows/self-healing-tests.yml",
