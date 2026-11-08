@@ -162,7 +162,7 @@
     },
     "source_handoff_policy": {
       "path": "scripts/source_handoff_policy.py",
-      "git_blob_sha": "9d7236a8d55e1e5e01fd87a91f8f47009362c21f"
+      "git_blob_sha": "42714fcb6fa4cf5e0c5f08cb8ecaa3722287ba9a"
     },
     "enterprise_ranking_catalog": {
       "path": "sources/external_intelligence_catalog.json",
