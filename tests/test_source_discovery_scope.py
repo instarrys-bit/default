@@ -20,11 +20,11 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
         discovery = load_script("discover_sources")
         self.assertGreaterEqual(len(discovery.QUERIES), 80)
         self.assertGreaterEqual(discovery.MAX_REPOS_PER_QUERY, 100)
-        self.assertGreaterEqual(discovery.MAX_README_REPOSITORIES, 1_500)
+        self.assertGreaterEqual(discovery.MAX_README_REPOSITORIES, 2_500)
         self.assertGreaterEqual(discovery.MAX_SEARCH_PAGES, 10)
-        self.assertGreaterEqual(discovery.MAX_TREE_REPOSITORIES, 500)
+        self.assertGreaterEqual(discovery.MAX_TREE_REPOSITORIES, 750)
         self.assertGreaterEqual(discovery.MAX_TREE_SCAN_WORKERS, 2)
-        self.assertGreaterEqual(discovery.MAX_TREE_ENTRIES_PER_REPOSITORY, 3_000)
+        self.assertGreaterEqual(discovery.MAX_TREE_ENTRIES_PER_REPOSITORY, 5_000)
         self.assertGreaterEqual(discovery.MAX_README_BYTES, 1_000_000)
         self.assertIn("open source domain ruleset", discovery.QUERIES)
         self.assertTrue(callable(discovery.discover_tree_urls))
@@ -34,6 +34,12 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
         self.assertIn("hagezi dns-blocklists", discovery.QUERIES)
         self.assertIn("国内域名规则", discovery.QUERIES)
         self.assertIn("开源分流规则", discovery.QUERIES)
+        self.assertIn("RPZ domain reputation feeds", discovery.QUERIES)
+        self.assertIn("mobile application domain list Android iOS", discovery.QUERIES)
+        self.assertIn("恶意软件命令控制域名情报", discovery.QUERIES)
+        self.assertIn("AdguardTeam/HostlistsRegistry", discovery.SEED_SOURCE_URLS)
+        self.assertIn("StevenBlack/hosts", discovery.SEED_SOURCE_URLS)
+        self.assertIn("easylist/easyprivacy", discovery.SEED_SOURCE_URLS)
         self.assertIn("Surge domain-set direct proxy reject rules", discovery.QUERIES)
         self.assertIn("China DNS accelerated domain list", discovery.QUERIES)
         self.assertIn("Chinese adblock domain rules AdRules", discovery.QUERIES)
@@ -57,6 +63,56 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
         self.assertIn('sha256sum | cut -c1-12', watchdog)
         self.assertIn('base_key="source-discovery:$discovery_day:$discovery_revision"', watchdog)
 
+
+    def test_fortune_rankings_produce_exactly_100_provenanced_enterprise_targets(self):
+        discovery = load_script("discover_sources")
+        html = "<table>" + "".join(
+            f"<tr><td>{rank}</td><td>Company {rank}</td></tr>" for rank in range(1, 101)
+        ) + "</table>"
+        provider = {
+            "id": "fortune-global-500", "provider": "Fortune", "ranking_id": "fortune-global-500",
+            "ranking_year": 2026, "rank_column": 0, "company_column": 1,
+            "region": "Global", "ranking_basis": "annual revenue", "activation": "evidence_only",
+        }
+        records = discovery.parse_fortune_rankings(html.encode(), provider, "https://fortune.com/ranking/global500/")
+        self.assertEqual(len(records), 100)
+        self.assertEqual(records[0]["value"], "Company 1")
+        self.assertEqual(records[-1]["metadata"]["rank"], 100)
+        self.assertEqual(records[0]["data_type"], "enterprise_ranked_entity")
+        self.assertEqual(records[0]["activation"], "evidence_only")
+
+    def test_enterprise_company_queries_rotate_with_stable_cursor_and_no_policy_effect(self):
+        discovery = load_script("discover_sources")
+        observations = []
+        for ranking_id, region in (("fortune-china-500", "China"), ("fortune-global-500", "Global")):
+            for rank in range(1, 101):
+                observations.append({
+                    "data_type": "enterprise_ranked_entity", "value": f"{ranking_id} Company {rank}",
+                    "metadata": {"ranking_id": ranking_id, "ranking_year": 2026, "rank": rank, "region": region},
+                })
+        intel = {"observations": observations}
+        first = discovery.build_enterprise_search_batch(intel, {}, batch_size=20)
+        second = discovery.build_enterprise_search_batch(intel, {
+            "enterprise_search_cursor": first["cursor_next"],
+            "enterprise_search_fingerprint": first["fingerprint"],
+        }, batch_size=20)
+        self.assertEqual(first["target_count"], 200)
+        self.assertEqual(len(first["jobs"]), 20)
+        self.assertEqual(len(second["jobs"]), 20)
+        self.assertEqual(first["cursor_next"], second["cursor_start"])
+        self.assertTrue(set(x["company"] for x in first["jobs"]).isdisjoint(
+            set(x["company"] for x in second["jobs"])
+        ))
+        self.assertTrue(all(x["scope"] == "enterprise_top100" for x in first["jobs"]))
+
+    def test_enterprise_rankings_are_registered_as_evidence_only_providers(self):
+        discovery = load_script("discover_sources")
+        catalog = discovery.load_external_intelligence_catalog()
+        providers = {x["id"]: x for x in catalog["providers"]}
+        self.assertEqual(providers["fortune-china-500"]["activation"], "evidence_only")
+        self.assertEqual(providers["fortune-global-500"]["activation"], "evidence_only")
+        self.assertEqual(providers["fortune-china-500"]["company_column"], 2)
+        self.assertEqual(providers["fortune-global-500"]["company_column"], 1)
 
     def test_tree_scans_rotate_unscanned_and_failed_repositories_first(self):
         discovery = load_script("discover_sources")

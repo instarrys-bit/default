@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import io
+from html.parser import HTMLParser
 import json
 import os
 import re
@@ -24,7 +25,7 @@ ARTIFACT_ROOT = Path(os.environ.get("AUTOMATION_ARTIFACT_ROOT", ROOT)).resolve()
 INDEPENDENT_ARTIFACT_MODE = bool(os.environ.get("AUTOMATION_ARTIFACT_ROOT"))
 
 CATALOG_PATH = ROOT / "sources/external_intelligence_catalog.json"
-CATALOG_ALLOWED_HOSTS = {"github.com", "urlhaus.abuse.ch", "openphish.com", "crt.sh", "stat.ripe.net", "www.iana.org", "gitlab.com", "codeberg.org"}
+CATALOG_ALLOWED_HOSTS = {"github.com", "urlhaus.abuse.ch", "openphish.com", "crt.sh", "stat.ripe.net", "www.iana.org", "gitlab.com", "codeberg.org", "www.fortunechina.com", "www.fortune.com"}
 
 def validate_external_intelligence_catalog(data: dict) -> dict:
     if data.get("schema_version") != 1 or not isinstance(data.get("providers"), list):
@@ -178,6 +179,94 @@ def parse_ripestat_payload(payload: bytes, provider: dict, source_url: str) -> l
     digest = hashlib.sha256(payload).hexdigest()
     return [_external_observation(provider, "network_infrastructure", value, source_url, digest, metadata={"name": str(data.get("name") or "")[:300], "type": str(data.get("type") or "")[:80]})]
 
+class _RankingTableParser(HTMLParser):
+    """Extract simple HTML table rows without third-party dependencies."""
+    def __init__(self):
+        super().__init__()
+        self.rows, self.row, self.cell = [], None, None
+
+    def handle_starttag(self, tag, attrs):
+        tag = tag.lower()
+        if tag == "tr":
+            self.row = []
+        elif tag in {"td", "th"} and self.row is not None:
+            self.cell = []
+
+    def handle_data(self, data):
+        if self.cell is not None:
+            self.cell.append(data)
+
+    def handle_endtag(self, tag):
+        tag = tag.lower()
+        if tag in {"td", "th"} and self.cell is not None and self.row is not None:
+            self.row.append(" ".join("".join(self.cell).split()))
+            self.cell = None
+        elif tag == "tr" and self.row is not None:
+            if self.row:
+                self.rows.append(self.row)
+            self.row, self.cell = None, None
+
+
+def parse_fortune_rankings(payload: bytes, provider: dict, source_url: str) -> list[dict]:
+    """Extract official top-100 companies as discovery targets, never routing policy."""
+    parser = _RankingTableParser()
+    parser.feed(payload.decode("utf-8-sig", errors="replace"))
+    rank_column = int(provider.get("rank_column", 0))
+    company_column = int(provider.get("company_column", 1))
+    ranked = {}
+    for row in parser.rows:
+        if len(row) <= max(rank_column, company_column):
+            continue
+        rank_text = re.sub(r"[^0-9]", "", row[rank_column])
+        if not rank_text:
+            continue
+        rank = int(rank_text)
+        company = re.sub(r"\s+", " ", row[company_column]).strip()
+        if 1 <= rank <= 100 and company and company.lower() not in {"company", "name"}:
+            ranked[rank] = company
+    if len(ranked) != 100:
+        raise ValueError(f"official ranking table yielded {len(ranked)}/100 top-ranked companies")
+    digest = hashlib.sha256(payload).hexdigest()
+    return [
+        _external_observation(provider, "enterprise_ranked_entity", ranked[rank], source_url, digest,
+            metadata={"ranking_id": provider["ranking_id"], "ranking_year": provider["ranking_year"],
+                      "rank": rank, "region": provider["region"], "ranking_basis": provider["ranking_basis"],
+                      "scope": "top_100"})
+        for rank in range(1, 101)
+    ]
+
+
+def build_enterprise_search_batch(external_intelligence: dict, previous: dict, batch_size: int = 20) -> dict:
+    """Rotate ranked companies through normal repository discovery queries."""
+    entities = {}
+    for item in external_intelligence.get("observations", []):
+        if not isinstance(item, dict) or item.get("data_type") != "enterprise_ranked_entity":
+            continue
+        name = str(item.get("value", "")).strip()
+        metadata = item.get("metadata") if isinstance(item.get("metadata"), dict) else {}
+        if not name or not metadata.get("ranking_id"):
+            continue
+        key = name.casefold()
+        entities.setdefault(key, {"company": name, "rankings": []})["rankings"].append({
+            "ranking_id": metadata.get("ranking_id"), "ranking_year": metadata.get("ranking_year"),
+            "rank": metadata.get("rank"), "region": metadata.get("region")})
+    ordered = sorted(entities.values(), key=lambda x: (min(int(v.get("rank", 10000)) for v in x["rankings"]), x["company"].casefold()))
+    fingerprint = hashlib.sha256(json.dumps(ordered, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")).hexdigest()
+    cursor = previous.get("enterprise_search_cursor", 0)
+    if previous.get("enterprise_search_fingerprint") != fingerprint or isinstance(cursor, bool) or not isinstance(cursor, int) or cursor < 0:
+        cursor = 0
+    if not ordered:
+        return {"jobs": [], "target_count": 0, "cursor_start": 0, "cursor_next": 0, "fingerprint": fingerprint, "status": "ranking_data_unavailable"}
+    cursor %= len(ordered)
+    count = min(max(1, int(batch_size)), len(ordered))
+    selected = [ordered[(cursor + offset) % len(ordered)] for offset in range(count)]
+    jobs = [{"query": '"' + x["company"].replace('"', "") + '" domain rules',
+              "scope": "enterprise_top100", "company": x["company"], "rankings": x["rankings"]}
+             for x in selected]
+    return {"jobs": jobs, "target_count": len(ordered), "cursor_start": cursor,
+            "cursor_next": (cursor + count) % len(ordered), "fingerprint": fingerprint, "status": "rotating"}
+
+
 def collect_external_intelligence(catalog: dict) -> dict:
     """Read bounded public feeds into typed, non-policy observations."""
     providers = {item["id"]: item for item in catalog["providers"]}
@@ -206,6 +295,8 @@ def collect_external_intelligence(catalog: dict) -> dict:
     statuses.append({"provider_id": "urlhaus", "status": "awaiting_auth_key", "records": 0})
     statuses.append({"provider_id": "openphish", "status": "blocked_pending_terms_review", "records": 0})
     statuses.append({"provider_id": "adguard-filters", "status": "covered_by_existing_github_discovery", "records": 0})
+    collect("fortune-china-500", providers["fortune-china-500"]["endpoint"], "www.fortunechina.com", parse_fortune_rankings)
+    collect("fortune-global-500", providers["fortune-global-500"]["endpoint"], "www.fortune.com", parse_fortune_rankings)
     gitlab_url = providers["gitlab-projects"]["endpoint"] + "?" + urllib.parse.urlencode({"search": "shadowrocket rules", "simple": "true", "per_page": 20, "order_by": "last_activity_at", "sort": "desc"})
     collect("gitlab-projects", gitlab_url, "gitlab.com", lambda p, provider, url: parse_repository_search_payload(p, provider, url, "gitlab.com"))
     codeberg_url = providers["codeberg-repositories"]["endpoint"] + "?" + urllib.parse.urlencode({"q": "shadowrocket rules", "limit": 20})
@@ -241,10 +332,10 @@ MAX_README_BYTES = 1_500_000
 # Paginated repository search plus bounded repository-tree scans.
 MAX_REPOS_PER_QUERY = 100
 MAX_SEARCH_PAGES = 10
-MAX_README_REPOSITORIES = 1_500
-MAX_TREE_REPOSITORIES = 500
+MAX_README_REPOSITORIES = 2_500
+MAX_TREE_REPOSITORIES = 750
 MAX_TREE_SCAN_WORKERS = 4
-MAX_TREE_ENTRIES_PER_REPOSITORY = 3_000
+MAX_TREE_ENTRIES_PER_REPOSITORY = 5_000
 QUERIES = [
     "shadowrocket rules",
     "China domain list",
@@ -339,6 +430,46 @@ QUERIES = [
     "MetaCubeX meta-rules-dat geosite domains",
     "v2fly domain-list-community geosite categories",
     "community direct proxy reject domain lists with documented policy",
+    "community domain routing ruleset maintained 2025 2026",
+    "application-specific domain lists China services",
+    "cloud provider service domains AWS Azure Google Cloud",
+    "CDN edge network domains allowlist blocklist",
+    "software update telemetry domains list",
+    "mobile application domain list Android iOS",
+    "game platform domains direct proxy rules",
+    "messaging collaboration service domain rules",
+    "video music streaming domain routing rules",
+    "ecommerce payment fintech domain lists",
+    "regional internet service domain datasets Asia",
+    "DNS response policy zone domain blocklist",
+    "RPZ domain reputation feeds",
+    "public suffix list private suffix dataset",
+    "certificate transparency domain discovery datasets",
+    "network threat intelligence IOC domain feeds",
+    "phishing malware command control domain feeds",
+    "newly registered domains reputation lists",
+    "tracking analytics measurement domain lists",
+    "anti-censorship proxy bypass domain rules",
+    "China mainland services domain direct rules",
+    "international services domain proxy rules",
+    "Shadowrocket Loon Surge rule provider repositories",
+    "Quantumult X rewrite filter rule repositories",
+    "Clash Meta mihomo rule provider domain datasets",
+    "AdGuard DNS filter allowlist denylist repositories",
+    "NextDNS community blocklist allowlist domains",
+    "Pi-hole gravity domain lists maintained",
+    "Unbound RPZ domain policy feeds",
+    "GitLab domain filtering rules repositories",
+    "Codeberg DNS filtering rules repositories",
+    "国内应用域名列表",
+    "云服务 CDN 域名规则",
+    "移动应用域名数据集",
+    "游戏服务域名分流规则",
+    "国际流媒体域名规则",
+    "恶意软件命令控制域名情报",
+    "新注册域名信誉数据",
+    "DNS RPZ 域名策略列表",
+    "代理绕过域名规则库",
 ]
 LIST_EXTENSIONS = (".list", ".txt", ".conf")
 SEED_SOURCE_URLS = {
@@ -392,6 +523,15 @@ SEED_SOURCE_URLS = {
     "big-xiaolongxia/china-rules": [],
     "MetaCubeX/meta-rules-dat": [],
     "v2fly/domain-list-community": [],
+    "AdguardTeam/HostlistsRegistry": [],
+    "hagezi/dns-blocklists": [],
+    "StevenBlack/hosts": [],
+    "1Hosts/1Hosts": [],
+    "notracking/hosts-blocklists": [],
+    "easylist/easylist": [],
+    "easylist/easyprivacy": [],
+    "DandelionSprout/adfilt": [],
+    "Firebog/filterlists": [],
 }
 SENSITIVE_PATH_RE = re.compile(r"(?:porn|adult|nsfw|xxx|sex[-_]?content)", re.I)
 RELEVANCE_RE = re.compile(r"(?:shadowrocket|domain|geosite|rules?|blocklist|adblock|dns|proxy|direct|china|gfw|clash|sing[-_]?box|v2ray|surge|loon|quantumult|hosts)", re.I)
@@ -589,6 +729,8 @@ def render_report(data: dict) -> str:
         "# Automated source discovery",
         "",
         f"- Candidate repositories retained: **{data['candidate_count']}**",
+        f"- Search coverage: **{data.get('query_complete_count', 0)}/{data.get('query_count', 0)}** complete; **{data.get('query_capped_count', 0)}** page-capped; **{data.get('query_error_count', 0)}** request errors.",
+        f"- Enterprise discovery: **{data.get('enterprise_search', {}).get('ranking_target_count', 0)}** ranked companies in scope; **{data.get('enterprise_search', {}).get('queries_this_run', 0)}** company searches this run.",
         "- Discovery is a lead-generation stage only; no candidate is activated automatically.",
         "- Search-query labels are not policy evidence. China/geosite labels do not imply DIRECT; proxy/GFW labels do not imply PROXY.",
         "",
@@ -696,7 +838,15 @@ def main() -> int:
     discovered: dict[str, dict] = {}
     discovery_errors: list[dict] = []
     try:
-        for query in QUERIES:
+        external_intelligence = collect_external_intelligence(catalog)
+        enterprise_batch = build_enterprise_search_batch(external_intelligence, existing, batch_size=20)
+        search_jobs = [{"query": query, "scope": "general"} for query in QUERIES] + enterprise_batch["jobs"]
+        query_coverage = []
+        for search_job in search_jobs:
+            query = search_job["query"]
+            pages_read = 0
+            results_seen = 0
+            stop_reason = "page_limit_reached"
             for page in range(1, MAX_SEARCH_PAGES + 1):
                 params = urllib.parse.urlencode({
                     "q": query, "sort": "updated", "order": "desc",
@@ -706,9 +856,13 @@ def main() -> int:
                     result = request_json("https://api.github.com/search/repositories?" + params, token)
                 except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError) as exc:
                     discovery_errors.append({"query": query, "page": page, "error": str(exc)})
+                    stop_reason = "request_error"
                     break
+                pages_read += 1
                 items = result.get("items", [])
+                results_seen += len(items)
                 if not items:
+                    stop_reason = "empty_page"
                     break
                 for repo_data in items:
                     full_name = str(repo_data.get("full_name", ""))
@@ -747,7 +901,14 @@ def main() -> int:
                         }
                     discovered[full_name]["search_queries"].append(query)
                 if len(items) < MAX_REPOS_PER_QUERY:
+                    stop_reason = "short_page"
                     break
+            query_coverage.append({
+                "query": query, "scope": search_job["scope"], "company": search_job.get("company"),
+                "pages_read": pages_read, "results_seen": results_seen,
+                "stop_reason": stop_reason,
+                "complete": stop_reason in {"empty_page", "short_page"},
+            })
 
 
         for full_name, seed_urls in SEED_SOURCE_URLS.items():
@@ -826,10 +987,23 @@ def main() -> int:
         merged["tree_errors"] = tree_errors
         merged["tree_truncated_repositories"] = tree_truncated
         merged["search_pages_per_query"] = MAX_SEARCH_PAGES
+        merged["query_coverage"] = query_coverage
+        merged["query_count"] = len(query_coverage)
+        merged["query_complete_count"] = sum(1 for item in query_coverage if item["complete"])
+        merged["query_capped_count"] = sum(1 for item in query_coverage if item["stop_reason"] == "page_limit_reached")
+        merged["query_error_count"] = sum(1 for item in query_coverage if item["stop_reason"] == "request_error")
         merged["tree_repositories_scanned"] = len(tree_scan_batch)
         merged["tree_scan_backlog_count"] = sum(1 for item in merged["candidates"] if not item.get("tree_scanned_at") or item.get("tree_scan_status") in {"error", "truncated"})
         merged["tree_scan_complete_count"] = sum(1 for item in merged["candidates"] if item.get("tree_scan_status") == "complete")
-        merged["external_intelligence"] = collect_external_intelligence(catalog)
+        merged["external_intelligence"] = external_intelligence
+        merged["enterprise_search"] = {
+            "status": enterprise_batch["status"], "ranking_target_count": enterprise_batch["target_count"],
+            "queries_this_run": len(enterprise_batch["jobs"]), "cursor_start": enterprise_batch["cursor_start"],
+            "cursor_next": enterprise_batch["cursor_next"], "fingerprint": enterprise_batch["fingerprint"],
+            "ranking_sources": ["fortune-china-500", "fortune-global-500"], "policy_effect": "none",
+        }
+        merged["enterprise_search_cursor"] = enterprise_batch["cursor_next"]
+        merged["enterprise_search_fingerprint"] = enterprise_batch["fingerprint"]
     except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError) as exc:
         message = "Source discovery degraded; previous discovery inventory retained. " + str(exc)
         print("WARNING: " + message, file=sys.stderr)
@@ -854,7 +1028,8 @@ def main() -> int:
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:
         with Path(summary).open("a", encoding="utf-8") as stream:
-            stream.write(f"## Source discovery\n\nRepositories seen: **{len(discovered)}**. Tree scans this run: **{len(tree_scan_batch)}**. Tree-scan backlog: **{merged['tree_scan_backlog_count']}**. Truncated trees: **{len(tree_truncated)}**. Candidates retained: **{merged['candidate_count']}**. Failed queries: **{len(discovery_errors)}**. No source was activated.\n")
+            enterprise = merged.get("enterprise_search", {})
+            stream.write(f"## Source discovery\n\nEnterprise targets: **{enterprise.get('ranking_target_count', 0)}**; company queries this run: **{enterprise.get('queries_this_run', 0)}**. Queries complete: **{merged.get('query_complete_count', 0)}/{merged.get('query_count', 0)}**; page-capped: **{merged.get('query_capped_count', 0)}**; query errors: **{merged.get('query_error_count', 0)}**. Repositories seen: **{len(discovered)}**. Tree scans this run: **{len(tree_scan_batch)}**. Tree-scan backlog: **{merged['tree_scan_backlog_count']}**. Truncated trees: **{len(tree_truncated)}**. Candidates retained: **{merged['candidate_count']}**. Failed queries: **{len(discovery_errors)}**. No source was activated.\n")
             intel = merged.get("external_intelligence", {})
             stream.write(f"\n## Multi-source intelligence collection\n\nProvider leads catalogued: **{len(catalog['providers'])}**. Typed observations collected: **{intel.get('total_records', 0)}** across **{sum(1 for x in intel.get('provider_status', []) if x.get('status') == 'collected')}** provider adapters. Bytes read: **{intel.get('total_bytes', 0)}**. Policy effect: **none**. CT and RIPEstat require explicit query inputs.\n")
             for item in intel.get("provider_status", []):
