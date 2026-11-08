@@ -332,6 +332,28 @@ class TaskSchedulerTests(unittest.TestCase):
         self.assertTrue(second["created"])
         self.assertEqual(second["status"], "QUEUED")
         self.assertEqual(self.store.document["tasks"][2]["input"]["max_urls"], 4)
+        with self.assertRaisesRegex(ValueError, "recovery:2 to be independently verified SUCCEEDED"):
+            enqueue_source_assessment_task(
+                self.store, registry, adapters,
+                idempotency_key="source-assessment:41770000002:parser-v2:artifact-recovery:1",
+                input_payload=corrected_payload, root=source_root,
+            )
+        second_task = self.store.document["tasks"][2]
+        second_task["status"] = "SUCCEEDED"
+        second_task["attempts"] = 1
+        second_task["state_history"].extend(["CLAIMED", "SUCCEEDED"])
+        second_task["lease"] = None
+        second_task["verification"] = {"status": "passed"}
+        second_task["result"] = {"artifact_verification": {"valid": True, "activation_count": 0}}
+        self.store.document["revision"] += 1
+        artifact_recovery = enqueue_source_assessment_task(
+            self.store, registry, adapters,
+            idempotency_key="source-assessment:41770000002:parser-v2:artifact-recovery:1",
+            input_payload=corrected_payload, root=source_root,
+        )
+        self.assertTrue(artifact_recovery["created"])
+        self.assertEqual(artifact_recovery["status"], "QUEUED")
+        self.assertEqual(self.store.document["tasks"][3]["input"]["max_urls"], 4)
         with self.assertRaisesRegex(ValueError, "idempotency key must be bound"):
             enqueue_source_assessment_task(
                 self.store, registry, adapters,
