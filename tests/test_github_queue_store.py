@@ -82,17 +82,9 @@ class GitHubIssueQueueStoreTests(unittest.TestCase):
         self.assertEqual(latest.document, candidate)
         self.assertEqual(new_sha, latest.content_sha)
         payload = json.loads(self.comments[-1]["body"].split("\n", 1)[1])
-        self.assertEqual(payload["kind"], "commit")
+        self.assertEqual(payload["schema_version"], 1)
         self.assertEqual(payload["encoding"], "gzip+base64")
-        parts = {}
-        for comment in self.comments:
-            body = comment["body"]
-            if body.startswith("<!-- shadowrocket-automation-queue:v2 -->\n"):
-                item = json.loads(body.split("\n", 1)[1])
-                if item.get("kind") == "part" and item.get("sha256") == payload["sha256"]:
-                    parts[item["index"]] = item["data"]
-        encoded = "".join(parts[index] for index in range(payload["total"]))
-        self.assertEqual(gzip.decompress(__import__("base64").b64decode(encoded)), self.store._canonical_bytes(candidate))
+        self.assertEqual(gzip.decompress(__import__("base64").b64decode(payload["data"])), self.store._canonical_bytes(candidate))
         self.assertEqual(payload["previous_sha256"], hashlib.sha256(self.store._canonical_bytes(self.document)).hexdigest())
 
     def test_large_snapshot_is_chunked_and_round_trips(self):
@@ -185,7 +177,7 @@ class GitHubIssueQueueStoreTests(unittest.TestCase):
         with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
             result = self.store.mutate(lambda queue: (queue, "unchanged"))
         self.assertEqual(result, "unchanged")
-        self.assertEqual(len(self.comments), 2)  # one chunk plus the bootstrap commit marker
+        self.assertEqual(len(self.comments), 1)  # compact bootstrap snapshot stays in one comment
 
 
 if __name__ == "__main__":
