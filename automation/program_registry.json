@@ -1564,6 +1564,7 @@
         "script_refresh_ruleset_manifest",
         "script_register_config_baseline",
         "script_remote_task_queue_runtime",
+        "script_resolve_source_artifacts",
         "script_resource_lease_runtime",
         "script_restore_automation_state",
         "script_sync_ruleset_config_conflicts",
