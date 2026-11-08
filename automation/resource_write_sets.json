@@ -1262,13 +1262,12 @@
     {
       "resource": "sources/request_domain_observations.json",
       "writers": [
-        "script_production_intent",
-        "workflow_request_intake"
+        "script_production_intent"
       ],
       "lock_key": "git-ref-cas:sources/request_domain_observations.json",
       "mode": "optimistic_git_ref_compare_and_swap",
-      "enforcement": "request-intake now retains the immutable submitted batch in RUNNER_TEMP and, on each of up to three attempts, fetches latest main, resets the isolated workspace, replays the same run-ID idempotent merge, and performs a non-force push. The helper records observed_run_ids so a lost push response followed by workflow rerun is a no-op.",
-      "note": "A bare-Git integration test simulates two runner clones that start from the same base, race to push, and verifies the loser fetches/resets/replays and preserves both distinct and overlapping hostnames. Real GitHub Actions concurrent-run integration remains outstanding."
+      "enforcement": "The request-intake workflow did not write this repository file. script_production_intent maintains the local observation ledger from the append-only GitHub Issue #317 ledger; the candidate importer reads it. The manual Issue #317 writer has been retired.",
+      "note": "The manual request-intake workflow has been retired. Existing Issue #317 comments and the read-only importer remain available; no replacement writer or production dispatch path is introduced."
     },
     {
       "resource": "sources/review_cursor.json",
@@ -1304,7 +1303,6 @@
     "Complete transitive write sets for every registered Python component; the inventory now records 25 shared repository writer entrypoints in this pass but is not a machine-verified filesystem trace.",
     "Dynamic path selection and caller-controlled output paths require runtime enforcement tests, especially diagnosis, incident-state, review-cursor and repair utilities.",
     "The Watchdog reads automation/unregistered_path_registry.json but does not write it; static call-site evidence shows no repository writer. Retain this as a read-only control-plane input and verify no indirect writer appears in the complete import graph.",
-    "The request-intake workflow uses the fixed shared concurrency group shadowrocket-domain-intake (cancel-in-progress:false) plus Git-ref CAS for sources/request_domain_observations.json; same-domain and different-domain concurrent-run integration tests, retry exhaustion and live Actions evidence remain pending.",
     "Exact per-document leases are now required for data/domain_candidates.json, data/candidates.json, data/source_pending.json and sources/rule_provenance.json; the complete dynamic manifest/shard/staging/cleanup and restore-path integration proof remains pending.",
     "Non-ruleset shared JSON documents (notably data/domain_candidates.json, sources/rule_provenance.json and dynamic source snapshots) still need complete concurrent-writer integration proof; source registry activation outputs are runner-local proposals only.",
     "Atomic multi-resource lease acquisition and compatibility of per-resource locks across all independent/cross-workflow writers remain unproven.",
@@ -1315,9 +1313,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "bd793b369a793ad471e5394181ac9e57a928c06e",
-    "program_registry_blob_sha": "e94d7ff0aa33bc239abdece4182277cfa2a8bc6f",
-    "execution_adapters_blob_sha": "afce52f0125b81026d6821138024344c920bfcae",
+    "release_manifest_blob_sha": "f15e2f169c9d2324a53bea45eb3c8e4e875bf2b7",
+    "program_registry_blob_sha": "2b595ebf040b6624435ecfa5eb436bfdf56df5cc",
+    "execution_adapters_blob_sha": "5c389bb9df0ff3cd410a4b929c4d3c48b0f55e4b",
     "added_after_release_baseline": true,
     "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #315 checkpoint. Repository mutations are governed per capability by explicit exclusive resource_contract.resource_keys; control-plane metadata is separately inventoried. The production auto_sync publisher stages only the three rule-set deliverables under rulesets/**. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07"
@@ -1385,7 +1383,7 @@
       "program_id": "script_production_intent",
       "source": "scripts/production_intent.py",
       "classification": "runner_local_ephemeral_output_non_dispatchable",
-      "evidence": "--register-ledger mode writes the supplied Watchdog inbox path; automation-watchdog.yml re-reads the latest Blob SHA on each of up to three attempts and conditionally PUTs the merged ledger. --merge-observations mode reads a runner-temp submitted batch and the latest sources/request_domain_observations.json, then writes the merged ledger; request-intake.yml fetches origin/main and resets its isolated runner workspace to that exact latest commit before each merge/commit/non-force push attempt.. Current callers write only per-run workflow workspace, RUNNER_TEMP, /tmp, or GITHUB_STEP_SUMMARY outputs. These are never committed to repository state; no shared cross-runner resource is mutated. Any future caller must constrain output to its run-local artifact root and upload it as an artifact."
+      "evidence": "--register-ledger mode writes the supplied Watchdog inbox path; automation-watchdog.yml re-reads the latest Blob SHA on each of up to three attempts and conditionally PUTs the merged ledger. --merge-observations mode reads a runner-temp submitted batch and the latest sources/request_domain_observations.json. The retired request-intake workflow is not an active repository writer. Current callers write only per-run workflow workspace, RUNNER_TEMP, /tmp, or GITHUB_STEP_SUMMARY outputs. These are never committed to repository state; no shared cross-runner resource is mutated. Any future caller must constrain output to its run-local artifact root and upload it as an artifact."
     },
     {
       "program_id": "script_register_config_baseline",
@@ -1587,18 +1585,6 @@
       "boundary": "Manifest-only rulesets/manifest.json repair; git add allowlist is exact, no rule list, source, report, module or config file is published."
     },
     {
-      "workflow_path": ".github/workflows/request-intake.yml",
-      "step_name": "Request ruleset audit through Watchdog queue",
-      "mutation_kinds": [
-        "workflow_dispatch"
-      ],
-      "resources": [
-        "GitHub Issue #315 durable queue comments (external state)"
-      ],
-      "fence": "Dispatches the Watchdog with explicit deterministic-audit authorization; Watchdog enqueues through append-only Issue #315 snapshots.",
-      "boundary": "Control-plane request only; no repository file write or direct ruleset publication."
-    },
-    {
       "workflow_path": ".github/workflows/self-healing-agent.yml",
       "step_name": "Close recovered validator incidents",
       "mutation_kinds": [
@@ -1645,36 +1631,12 @@
       ],
       "fence": "task_scheduler.py appends compressed SHA-256 chained queue snapshots to Issue #315 with bounded conflict retry.",
       "boundary": "External control-plane state only; no repository file is written by queue persistence."
-    },
-    {
-      "workflow_path": ".github/workflows/request-intake.yml",
-      "step_name": "Append observation batch to external intake Issue",
-      "mutation_kinds": [
-        "github_issue_comment_post"
-      ],
-      "resources": [
-        "GitHub Issue #317 comments (external request-observation ledger)"
-      ],
-      "fence": "Fixed workflow concurrency group shadowrocket-domain-intake with cancel-in-progress:false serializes every intake run; each batch is append-only, tagged with a unique run ID, and downstream merge is idempotent by run ID.",
-      "boundary": "External Issue #317 control-plane metadata only. contents:read; no repository file writes or direct ruleset publication."
-    },
-    {
-      "workflow_path": ".github/workflows/request-intake.yml",
-      "step_name": "Append observation batch to external intake Issue",
-      "mutation_kinds": [
-        "github_issue_comment_post"
-      ],
-      "resources": [
-        "GitHub Issue #317 comments (external request-observation ledger)"
-      ],
-      "fence": "Fixed workflow concurrency group shadowrocket-domain-intake with cancel-in-progress:false serializes every intake run; each batch is append-only, tagged with a unique run ID, and downstream merge is idempotent by run ID.",
-      "boundary": "External Issue #317 control-plane metadata only. contents:read; no repository file writes or direct ruleset publication."
     }
   ],
   "workflow_native_scan": {
     "status": "partial_workflow_shell_pattern_scan",
     "scanner": "tests/test_workflow_native_write_inventory.py",
-    "workflow_count": 8,
+    "workflow_count": 7,
     "detected_mutation_families": [
       "git add/commit/push/reset/checkout",
       "GitHub issue PATCH",

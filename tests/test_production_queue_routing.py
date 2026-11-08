@@ -5,7 +5,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WATCHDOG = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
 AUTO_SYNC = ROOT / ".github" / "workflows" / "auto_sync.yml"
-REQUEST_INTAKE = ROOT / ".github" / "workflows" / "request-intake.yml"
 
 
 class ProductionQueueRoutingTests(unittest.TestCase):
@@ -47,14 +46,18 @@ class ProductionQueueRoutingTests(unittest.TestCase):
         self.assertNotIn('idempotency_key="auto-sync-superseded:$SOURCE_RUN_ID"', workflow)
         self.assertIn("bash scripts/verify_publish_base.sh --check-only", workflow)
 
-    def test_observation_intake_dispatches_watchdog_not_auto_sync(self):
-        workflow = REQUEST_INTAKE.read_text(encoding="utf-8")
-        self.assertIn("gh workflow run automation-watchdog.yml", workflow)
-        self.assertNotIn("gh workflow run auto_sync.yml", workflow)
+    def test_retired_request_intake_is_not_a_production_dependency(self):
+        self.assertFalse((ROOT / ".github" / "workflows" / "request-intake.yml").exists())
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
-        programs = {item["id"]: item for item in registry["programs"]}
-        self.assertEqual(programs["workflow_request_intake"]["dispatches"], ["workflow_automation_watchdog"])
-        self.assertIn("workflow_auto_sync", programs["workflow_automation_watchdog"]["dispatches"])
+        programs = {item["id"] for item in registry["programs"]}
+        self.assertNotIn("workflow_request_intake", programs)
+        adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
+        self.assertNotIn("workflow_request_intake", {item["target_program_id"] for item in adapters["adapters"]})
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
+        self.assertIn("enqueue-auto-sync", watchdog)
+        production_inputs = json.loads((ROOT / "automation" / "production_inputs.json").read_text(encoding="utf-8"))
+        self.assertIn(".github/workflows/request-intake.yml", production_inputs["non_production_path_patterns"])
+        self.assertTrue((ROOT / "scripts" / "import_request_observations.py").exists())
 
     def test_auto_sync_requires_a_matching_persisted_watchdog_task(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")

@@ -4,13 +4,12 @@
   "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
-    "registry_blob_sha": "e94d7ff0aa33bc239abdece4182277cfa2a8bc6f",
-    "adapters_blob_sha": "afce52f0125b81026d6821138024344c920bfcae",
+    "registry_blob_sha": "2b595ebf040b6624435ecfa5eb436bfdf56df5cc",
+    "adapters_blob_sha": "5c389bb9df0ff3cd410a4b929c4d3c48b0f55e4b",
     "inspected_sources": [
       ".github/workflows/auto_sync.yml",
       ".github/workflows/automation-watchdog.yml",
       ".github/workflows/dashboard-pages.yml",
-      ".github/workflows/request-intake.yml",
       ".github/workflows/self-healing-agent.yml",
       ".github/workflows/self-healing-tests.yml",
       ".github/workflows/source-discovery.yml",
@@ -330,13 +329,11 @@
       "paths": [
         "GitHub Issue #317 comments (external request-observation ledger)"
       ],
-      "known_writers": [
-        "workflow_request_intake"
-      ],
-      "lock_key": "shadowrocket-domain-intake workflow concurrency group + append-only Issue #317 comments",
+      "known_writers": [],
+      "lock_key": "historical append-only GitHub Issue #317 comments; no active writer",
       "required_mode": "append_only_issue_comment_batches",
-      "status": "external_issue_ledger_read_by_production_fingerprint_and_candidate_importer",
-      "note": "The request-intake workflow serializes all runs through the fixed shadowrocket-domain-intake concurrency group with cancel-in-progress:false, then appends run-ID-tagged Issue #317 batches. Downstream merge is idempotent by run ID."
+      "status": "historical_external_issue_ledger_read_only",
+      "note": "The manual request-intake workflow is retired. Existing Issue #317 observation comments are preserved and remain readable by production fingerprinting and candidate import; no active workflow appends new batches."
     },
     {
       "id": "review_cursor_checkpoint",

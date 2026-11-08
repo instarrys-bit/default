@@ -1755,53 +1755,6 @@
       }
     },
     {
-      "target_program_id": "workflow_request_intake",
-      "target_kind": "github_actions_workflow",
-      "adapter_type": "github_actions_workflow",
-      "enabled": false,
-      "interface_status": "workflow_dispatch_reviewed",
-      "allowed_callers": [],
-      "workflow": {
-        "path": ".github/workflows/request-intake.yml",
-        "dispatchable": true,
-        "inputs": [
-          {
-            "name": "domains",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "automation_task_id",
-            "type": "string",
-            "required": false
-          }
-        ],
-        "allowed_refs": [
-          "main"
-        ],
-        "caller_permissions_required": [
-          "actions:write",
-          "issues:write"
-        ]
-      },
-      "timeout_seconds": 30,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_dispatcher_and_run_verifier"
-      },
-      "completion": {
-        "success_condition": "run_status_completed_and_conclusion_success",
-        "required_result_fields": [
-          "run_id",
-          "html_url",
-          "head_sha",
-          "status",
-          "conclusion"
-        ],
-        "independent_verification_required": true
-      }
-    },
-    {
       "target_program_id": "workflow_self_healing_agent",
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",

@@ -1656,36 +1656,6 @@
       }
     },
     {
-      "id": "workflow_request_intake",
-      "path": ".github/workflows/request-intake.yml",
-      "kind": "github_actions_workflow",
-      "responsibility": "accept and validate manually submitted hostname observations, then request deterministic audit",
-      "capabilities": [
-        "manual_observation_intake"
-      ],
-      "invocation": "manual dispatch",
-      "inputs": [
-        "GitHub event payload",
-        "repository state and declared workflow inputs"
-      ],
-      "outputs": [
-        "validated hostname batch appended to GitHub Issue #317",
-        "Watchdog deterministic audit request; no repository file changes"
-      ],
-      "depends_on": [],
-      "dispatches": [
-        "workflow_automation_watchdog"
-      ],
-      "permission_boundary": "Job-scoped permissions are contents:read, actions:write, issues:write. The workflow appends validated observations to GitHub Issue #317 and dispatches the Watchdog; it never commits or modifies repository files.",
-      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
-      "orchestration": {
-        "enabled": false,
-        "allowed_callers": [],
-        "max_attempts": 0,
-        "timeout_seconds": 300
-      }
-    },
-    {
       "id": "workflow_self_healing_agent",
       "path": ".github/workflows/self-healing-agent.yml",
       "kind": "github_actions_workflow",
