@@ -241,10 +241,10 @@ MAX_README_BYTES = 1_500_000
 # Paginated repository search plus bounded repository-tree scans.
 MAX_REPOS_PER_QUERY = 100
 MAX_SEARCH_PAGES = 10
-MAX_README_REPOSITORIES = 1_500
-MAX_TREE_REPOSITORIES = 500
+MAX_README_REPOSITORIES = 2_500
+MAX_TREE_REPOSITORIES = 750
 MAX_TREE_SCAN_WORKERS = 4
-MAX_TREE_ENTRIES_PER_REPOSITORY = 3_000
+MAX_TREE_ENTRIES_PER_REPOSITORY = 5_000
 QUERIES = [
     "shadowrocket rules",
     "China domain list",
@@ -339,6 +339,46 @@ QUERIES = [
     "MetaCubeX meta-rules-dat geosite domains",
     "v2fly domain-list-community geosite categories",
     "community direct proxy reject domain lists with documented policy",
+    "community domain routing ruleset maintained 2025 2026",
+    "application-specific domain lists China services",
+    "cloud provider service domains AWS Azure Google Cloud",
+    "CDN edge network domains allowlist blocklist",
+    "software update telemetry domains list",
+    "mobile application domain list Android iOS",
+    "game platform domains direct proxy rules",
+    "messaging collaboration service domain rules",
+    "video music streaming domain routing rules",
+    "ecommerce payment fintech domain lists",
+    "regional internet service domain datasets Asia",
+    "DNS response policy zone domain blocklist",
+    "RPZ domain reputation feeds",
+    "public suffix list private suffix dataset",
+    "certificate transparency domain discovery datasets",
+    "network threat intelligence IOC domain feeds",
+    "phishing malware command control domain feeds",
+    "newly registered domains reputation lists",
+    "tracking analytics measurement domain lists",
+    "anti-censorship proxy bypass domain rules",
+    "China mainland services domain direct rules",
+    "international services domain proxy rules",
+    "Shadowrocket Loon Surge rule provider repositories",
+    "Quantumult X rewrite filter rule repositories",
+    "Clash Meta mihomo rule provider domain datasets",
+    "AdGuard DNS filter allowlist denylist repositories",
+    "NextDNS community blocklist allowlist domains",
+    "Pi-hole gravity domain lists maintained",
+    "Unbound RPZ domain policy feeds",
+    "GitLab domain filtering rules repositories",
+    "Codeberg DNS filtering rules repositories",
+    "国内应用域名列表",
+    "云服务 CDN 域名规则",
+    "移动应用域名数据集",
+    "游戏服务域名分流规则",
+    "国际流媒体域名规则",
+    "恶意软件命令控制域名情报",
+    "新注册域名信誉数据",
+    "DNS RPZ 域名策略列表",
+    "代理绕过域名规则库",
 ]
 LIST_EXTENSIONS = (".list", ".txt", ".conf")
 SEED_SOURCE_URLS = {
@@ -392,6 +432,15 @@ SEED_SOURCE_URLS = {
     "big-xiaolongxia/china-rules": [],
     "MetaCubeX/meta-rules-dat": [],
     "v2fly/domain-list-community": [],
+    "AdguardTeam/HostlistsRegistry": [],
+    "hagezi/dns-blocklists": [],
+    "StevenBlack/hosts": [],
+    "1Hosts/1Hosts": [],
+    "notracking/hosts-blocklists": [],
+    "easylist/easylist": [],
+    "easylist/easyprivacy": [],
+    "DandelionSprout/adfilt": [],
+    "Firebog/filterlists": [],
 }
 SENSITIVE_PATH_RE = re.compile(r"(?:porn|adult|nsfw|xxx|sex[-_]?content)", re.I)
 RELEVANCE_RE = re.compile(r"(?:shadowrocket|domain|geosite|rules?|blocklist|adblock|dns|proxy|direct|china|gfw|clash|sing[-_]?box|v2ray|surge|loon|quantumult|hosts)", re.I)
@@ -696,7 +745,11 @@ def main() -> int:
     discovered: dict[str, dict] = {}
     discovery_errors: list[dict] = []
     try:
+        query_coverage = []
         for query in QUERIES:
+            pages_read = 0
+            results_seen = 0
+            stop_reason = "page_limit_reached"
             for page in range(1, MAX_SEARCH_PAGES + 1):
                 params = urllib.parse.urlencode({
                     "q": query, "sort": "updated", "order": "desc",
@@ -706,9 +759,13 @@ def main() -> int:
                     result = request_json("https://api.github.com/search/repositories?" + params, token)
                 except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError) as exc:
                     discovery_errors.append({"query": query, "page": page, "error": str(exc)})
+                    stop_reason = "request_error"
                     break
+                pages_read += 1
                 items = result.get("items", [])
+                results_seen += len(items)
                 if not items:
+                    stop_reason = "empty_page"
                     break
                 for repo_data in items:
                     full_name = str(repo_data.get("full_name", ""))
@@ -747,7 +804,13 @@ def main() -> int:
                         }
                     discovered[full_name]["search_queries"].append(query)
                 if len(items) < MAX_REPOS_PER_QUERY:
+                    stop_reason = "short_page"
                     break
+            query_coverage.append({
+                "query": query, "pages_read": pages_read, "results_seen": results_seen,
+                "stop_reason": stop_reason,
+                "complete": stop_reason in {"empty_page", "short_page"},
+            })
 
 
         for full_name, seed_urls in SEED_SOURCE_URLS.items():
@@ -826,6 +889,11 @@ def main() -> int:
         merged["tree_errors"] = tree_errors
         merged["tree_truncated_repositories"] = tree_truncated
         merged["search_pages_per_query"] = MAX_SEARCH_PAGES
+        merged["query_coverage"] = query_coverage
+        merged["query_count"] = len(query_coverage)
+        merged["query_complete_count"] = sum(1 for item in query_coverage if item["complete"])
+        merged["query_capped_count"] = sum(1 for item in query_coverage if item["stop_reason"] == "page_limit_reached")
+        merged["query_error_count"] = sum(1 for item in query_coverage if item["stop_reason"] == "request_error")
         merged["tree_repositories_scanned"] = len(tree_scan_batch)
         merged["tree_scan_backlog_count"] = sum(1 for item in merged["candidates"] if not item.get("tree_scanned_at") or item.get("tree_scan_status") in {"error", "truncated"})
         merged["tree_scan_complete_count"] = sum(1 for item in merged["candidates"] if item.get("tree_scan_status") == "complete")
