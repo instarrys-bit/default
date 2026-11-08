@@ -30,172 +30,176 @@
           "order": 2
         },
         {
-          "name": "Export durable queue snapshot from Issue state",
+          "name": "Resolve exact independent Discovery and Assessment artifacts",
           "order": 3
         },
         {
-          "name": "Set up Python",
+          "name": "Export durable queue snapshot from Issue state",
           "order": 4
         },
         {
-          "name": "Verify Watchdog-owned durable task dispatch",
+          "name": "Set up Python",
           "order": 5
         },
         {
-          "name": "Verify live Watchdog resource lease before production audit",
+          "name": "Verify Watchdog-owned durable task dispatch",
           "order": 6
         },
         {
-          "name": "Register repository-owner-approved uu.conf changes (never edit the config)",
+          "name": "Verify live Watchdog resource lease before production audit",
           "order": 7
         },
         {
-          "name": "Detect runner-local config baseline proposal",
+          "name": "Register repository-owner-approved uu.conf changes (never edit the config)",
           "order": 8
         },
         {
-          "name": "Preserve config baseline proposal as immutable run artifact",
+          "name": "Detect runner-local config baseline proposal",
           "order": 9
         },
         {
-          "name": "Verify registered user config baseline",
+          "name": "Preserve config baseline proposal as immutable run artifact",
           "order": 10
         },
         {
-          "name": "Capture and verify the exact production input fingerprint",
+          "name": "Verify registered user config baseline",
           "order": 11
         },
         {
-          "name": "Stop stale audit before discovery and source downloads",
+          "name": "Capture and verify the exact production input fingerprint",
           "order": 12
         },
         {
-          "name": "Compile and run deterministic review tests",
+          "name": "Stop stale audit before discovery and source downloads",
           "order": 13
         },
         {
-          "name": "Discover candidate source repositories (non-activating)",
+          "name": "Compile and run deterministic review tests",
           "order": 14
         },
         {
-          "name": "Assess discovered rule-list syntax and policy claims",
+          "name": "Discover candidate source repositories (non-activating)",
           "order": 15
         },
         {
-          "name": "Preserve complete source assessment report",
+          "name": "Assess discovered rule-list syntax and policy claims",
           "order": 16
         },
         {
-          "name": "Restore prior high-volume automation state",
+          "name": "Preserve complete source assessment report",
           "order": 17
         },
         {
-          "name": "Remove published and queued rules that conflict with uu.conf",
+          "name": "Restore prior high-volume automation state",
           "order": 18
         },
         {
-          "name": "Import observed request hostnames as unclassified candidates",
+          "name": "Remove published and queued rules that conflict with uu.conf",
           "order": 19
         },
         {
-          "name": "Audit public source lineage and shared upstreams",
+          "name": "Import observed request hostnames as unclassified candidates",
           "order": 20
         },
         {
-          "name": "Audit domain-level policy-source overlap and contradictions",
+          "name": "Audit public source lineage and shared upstreams",
           "order": 21
         },
         {
-          "name": "Build automated source candidate and lineage matrix",
+          "name": "Audit domain-level policy-source overlap and contradictions",
           "order": 22
         },
         {
-          "name": "Merge qualified discovered sources into the run-local production registry",
+          "name": "Build automated source candidate and lineage matrix",
           "order": 23
         },
         {
-          "name": "Collect and cross-check all enabled domain sources",
+          "name": "Merge qualified discovered sources into the run-local production registry",
           "order": 24
         },
         {
-          "name": "Stop stale audit before expensive deterministic review",
+          "name": "Collect and cross-check all enabled domain sources",
           "order": 25
         },
         {
-          "name": "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services",
+          "name": "Stop stale audit before expensive deterministic review",
           "order": 26
         },
         {
-          "name": "Preserve resumable review cursor checkpoint",
+          "name": "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services",
           "order": 27
         },
         {
-          "name": "Build standalone DIRECT, PROXY and REJECT rule sets",
+          "name": "Preserve resumable review cursor checkpoint",
           "order": 28
         },
         {
-          "name": "Summarize REJECT secondary screening",
+          "name": "Build standalone DIRECT, PROXY and REJECT rule sets",
           "order": 29
         },
         {
-          "name": "Evaluate lifecycle milestones and monthly capacity review",
+          "name": "Summarize REJECT secondary screening",
           "order": 30
         },
         {
-          "name": "Run conservative lifecycle audit and selectable restoration",
+          "name": "Evaluate lifecycle milestones and monthly capacity review",
           "order": 31
         },
         {
-          "name": "Reconcile final uu.conf scope coverage after all rule mutations",
+          "name": "Run conservative lifecycle audit and selectable restoration",
           "order": 32
         },
         {
-          "name": "Reconcile final RULE-SET manifest counts",
+          "name": "Reconcile final uu.conf scope coverage after all rule mutations",
           "order": 33
         },
         {
-          "name": "Build append-only rule-level provenance ledger",
+          "name": "Reconcile final RULE-SET manifest counts",
           "order": 34
         },
         {
-          "name": "Validate Shadowrocket config structure",
+          "name": "Build append-only rule-level provenance ledger",
           "order": 35
         },
         {
-          "name": "Audit RULE-SET references against generated outputs (read-only)",
+          "name": "Validate Shadowrocket config structure",
           "order": 36
         },
         {
-          "name": "Audit candidate scope coverage against user config (read-only)",
+          "name": "Audit RULE-SET references against generated outputs (read-only)",
           "order": 37
         },
         {
-          "name": "Audit managed config drift (read-only)",
+          "name": "Audit candidate scope coverage against user config (read-only)",
           "order": 38
         },
         {
-          "name": "Run read-only full-source regression audit",
+          "name": "Audit managed config drift (read-only)",
           "order": 39
         },
         {
-          "name": "Build consolidated project status",
+          "name": "Run read-only full-source regression audit",
           "order": 40
         },
         {
-          "name": "Write successful audit heartbeat",
+          "name": "Build consolidated project status",
           "order": 41
         },
         {
-          "name": "Record durable automation state pointer",
+          "name": "Write successful audit heartbeat",
           "order": 42
         },
         {
-          "name": "Package allowlisted audit outputs",
+          "name": "Record durable automation state pointer",
           "order": 43
         },
         {
-          "name": "Upload allowlisted audit outputs",
+          "name": "Package allowlisted audit outputs",
           "order": 44
+        },
+        {
+          "name": "Upload allowlisted audit outputs",
+          "order": 45
         }
       ]
     },
