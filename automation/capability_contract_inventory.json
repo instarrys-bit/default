@@ -2,7 +2,7 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-source-dag-active-2026-11-07",
   "status": "baseline_inventory",
-  "source_registry_blob_sha": "3b6af842a4bf95dd7eb1b2310252d72eba205596",
+  "source_registry_blob_sha": "879a0aef9c1489e9d2aee22f7216cf678c8f3b31",
   "summary": {
     "registered_programs": 61,
     "python_components": 53,
@@ -341,7 +341,9 @@
       "declared_capabilities": [
         "source_activation_gate"
       ],
-      "registry_dependencies": [],
+      "registry_dependencies": [
+        "script_build_source_candidates"
+      ],
       "current_registry_inputs": [
         "CLI arguments and/or imported Python inputs as defined by the implementation"
       ],
@@ -528,7 +530,9 @@
       "declared_capabilities": [
         "domain_collection"
       ],
-      "registry_dependencies": [],
+      "registry_dependencies": [
+        "script_auto_activate_sources"
+      ],
       "current_registry_inputs": [
         "CLI arguments and/or imported Python inputs as defined by the implementation"
       ],
