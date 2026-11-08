@@ -128,6 +128,8 @@ class RestoreAutomationStateTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp); archive=root/"audit.tar.gz"; repo=root/"repo"
             self.setup_publish_baseline(repo)
+            config_before=(repo/"modules/uu.conf").read_bytes()
+            policy_before=(repo/"sources/policy.json").read_bytes()
             self.make_archive(archive, [
                 ("sources/policy.json", "{}"),
                 ("reports/project-status.md", "ok"),
@@ -137,13 +139,16 @@ class RestoreAutomationStateTests(unittest.TestCase):
             ])
             with self.assertRaisesRegex(ValueError, "owner-managed read-only config"):
                 restore_publish_outputs(archive, repo)
-            self.assertFalse((repo/"modules/uu.conf").exists())
-            self.assertFalse((repo/"sources/policy.json").exists())
+            self.assertEqual((repo/"modules/uu.conf").read_bytes(), config_before)
+            self.assertEqual((repo/"sources/policy.json").read_bytes(), policy_before)
+            self.assertFalse((repo/"rulesets/direct.list").exists())
 
     def test_publish_restore_copies_only_rulesets_and_ignores_other_outputs(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp); archive=root/"audit.tar.gz"; repo=root/"repo"
             self.setup_publish_baseline(repo)
+            config_before=(repo/"modules/uu.conf").read_bytes()
+            policy_before=(repo/"sources/policy.json").read_bytes()
             self.make_archive(archive, [
                 ("sources/policy.json", "{}"),
                 ("reports/project-status.md", "ok"),
@@ -157,7 +162,8 @@ class RestoreAutomationStateTests(unittest.TestCase):
             self.assertEqual(result["restored_files"], 1)
             self.assertTrue((repo/"rulesets/direct.list").exists())
             self.assertFalse((repo/"reports/project-status.md").exists())
-            self.assertFalse((repo/"sources/policy.json").exists())
+            self.assertEqual((repo/"modules/uu.conf").read_bytes(), config_before)
+            self.assertEqual((repo/"sources/policy.json").read_bytes(), policy_before)
             self.assertFalse((repo/"sources/source_assessments.json.manifest.json").exists())
             self.assertFalse((repo/"sources/source_assessments.json.parts-abcd/part-000000.jsonl").exists())
             lease.assert_called_once_with("rulesets/direct.list")
