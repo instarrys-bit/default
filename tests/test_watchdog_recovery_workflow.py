@@ -282,6 +282,23 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('[ "$base_status" = "DEAD_LETTER" ]', watchdog)
         self.assertIn('if [ -n "$recovery_key" ]; then', watchdog)
 
+    def test_discovery_enqueue_refreshes_authoritative_queue_and_skips_completed_handoff(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        step = workflow.split(
+            "Enqueue independent source discovery only after its authorization gate opens", 1
+        )[1].split(
+            "Recover leases, verify results, and dispatch one task before artifact upload", 1
+        )[0]
+        snapshot = 'task_queue_before_discovery_enqueue.json'
+        self.assertIn("remote_task_queue_runtime.py", step)
+        self.assertIn(snapshot, step)
+        self.assertLess(step.index(snapshot), step.index('base_status="$(jq -r'))
+        self.assertIn('export AUTOMATION_QUEUE_SNAPSHOT', step)
+        self.assertIn('recovery_status="$(jq -r', step)
+        self.assertIn('if [ "$base_status" = "SUCCEEDED" ]', step)
+        self.assertIn("skipping duplicate enqueue", step)
+        self.assertIn("enqueue-source-discovery", step)
+
     def test_auto_sync_accepts_verifying_phase_resource_lease_after_task_lease_release(self):
         audit = AUTO_SYNC.read_text(encoding="utf-8")
         gate = audit.split("Verify Watchdog-owned durable task dispatch", 1)[1].split("Verify live Watchdog resource lease", 1)[0]
