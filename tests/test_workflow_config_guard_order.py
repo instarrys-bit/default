@@ -372,6 +372,11 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         start = watchdog.index("      - name: Enqueue source assessment after successful discovery workflow")
         end = watchdog.index("      - name: Enqueue independent source discovery", start)
         block = watchdog[start:end]
+        resolver_start = watchdog.index("      - name: Resolve completed Discovery run")
+        resolver_end = watchdog.index("      - name: Enqueue source assessment after successful discovery workflow", resolver_start)
+        resolver = watchdog[resolver_start:resolver_end]
+        self.assertIn('task.get("status") == "SUCCEEDED"', resolver)
+        self.assertIn('endswith(":recovery:2")', resolver)
         self.assertIn("handoff_state == 'assessment_retry_required'", block)
         self.assertIn("steps.verify-discovery-artifact.outputs.valid == 'true'", block)
         self.assertIn('assessment_status" = "DEAD_LETTER"', block)
@@ -380,8 +385,6 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("The timeout-corrected second Assessment recovery was already used", block)
         self.assertIn("enqueue-source-assessment", block)
         self.assertIn("Enqueue one artifact-recovery Assessment", block)
-        self.assertIn("task.get(\"status\") == \"SUCCEEDED\"", block)
-        self.assertIn("endswith(\":recovery:2\")", block)
         self.assertIn("artifact-recovery:1", block)
         self.assertIn("already_assessed", block)
 
