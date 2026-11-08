@@ -24,11 +24,11 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "6dd9a18d13eb979c6981a9750ccde2e154d4508a"
+      "git_blob_sha": "d7191c23c477f1c5470775658c849611cace57b3"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "346b12965d546fb2ecab31aa309d5acf2179fa5c"
+      "git_blob_sha": "7a048b44b09e6135736984ea3fdd6761231dabbb"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -90,7 +90,7 @@
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "f46e92525fb5bc9a00a69086d61a2f4d6d702b0a"
+      "git_blob_sha": "fc30fb386fd2127415e65e78667fdd6820d77148"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -106,7 +106,7 @@
     },
     "production_input_manifest": {
       "path": "automation/production_inputs.json",
-      "git_blob_sha": "5a6c81450f4d05fdbc79c8ac8d076b7f19934c8b"
+      "git_blob_sha": "030135c42b714bdd7b4e18d0fa1957196335f19a"
     },
     "task_queue_store": {
       "path": "scripts/github_queue_store.py",
@@ -171,6 +171,30 @@
     "enterprise_ranking_catalog": {
       "path": "sources/external_intelligence_catalog.json",
       "git_blob_sha": "eb3132b24688b3fd3ec031cd3aacf7294d5e1fe0"
+    },
+    "source_artifact_resolver": {
+      "path": "scripts/resolve_source_artifacts.py",
+      "git_blob_sha": "345e5162cb2e60b8e2b6de841c7d2716316c07cb"
+    },
+    "source_candidate_builder": {
+      "path": "scripts/build_source_candidates.py",
+      "git_blob_sha": "0bb219944b39dd530de307ea467e9f1aba0e7b9d"
+    },
+    "source_lineage_audit": {
+      "path": "scripts/audit_source_lineage.py",
+      "git_blob_sha": "e21c734bb63f22815114f6d2d4ca6454136cfce3"
+    },
+    "source_activation": {
+      "path": "scripts/auto_activate_sources.py",
+      "git_blob_sha": "3d29ad9db23d6ab14dc78d5323303515abeeaebf"
+    },
+    "resource_write_set_inventory": {
+      "path": "automation/resource_write_sets.json",
+      "git_blob_sha": "302b627229fb28ef427278da861c959c2c56a488"
+    },
+    "production_workflow_map": {
+      "path": "automation/production_workflow_map.json",
+      "git_blob_sha": "d7b22106ac254edc41fabc3b86f7aa11424cd923"
     }
   },
   "compatibility": {
