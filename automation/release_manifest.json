@@ -112,10 +112,6 @@
       "path": "scripts/github_queue_store.py",
       "git_blob_sha": "29ebc707503b802df09800db561f854bede83d4a"
     },
-    "request_intake_workflow": {
-      "path": ".github/workflows/request-intake.yml",
-      "git_blob_sha": "7e24c9a18a044eddbcd8d5e7e01777a71d060694"
-    },
     "import_request_observations": {
       "path": "scripts/import_request_observations.py",
       "git_blob_sha": "f7f02951c6eb8e5263ae34ac7105ecd7923e774b"
