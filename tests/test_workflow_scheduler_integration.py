@@ -58,7 +58,7 @@ class FakeWorkflowClient:
         self.dispatches.append((workflow_id, ref, inputs))
         return None
 
-    def list_runs(self, workflow_id, ref, page=1):
+    def list_runs(self, workflow_id, ref, page=1, created_since=None):
         return {"workflow_runs": self.runs if page == 1 else []}
 
     def get_run(self, run_id):
