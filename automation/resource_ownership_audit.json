@@ -4,7 +4,7 @@
   "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
-    "registry_blob_sha": "3b6af842a4bf95dd7eb1b2310252d72eba205596",
+    "registry_blob_sha": "879a0aef9c1489e9d2aee22f7216cf678c8f3b31",
     "adapters_blob_sha": "e56a9ebeb4f3ba131c1c8106e693902fa6a1a83b",
     "inspected_sources": [
       ".github/workflows/auto_sync.yml",
@@ -100,7 +100,7 @@
           "reports/source-activation.md"
         ],
         "repository_publication": false,
-        "verification": "Main registry and candidate matrix are read-only; all proposed outputs use ARTIFACT_ROOT/RUNNER_TEMP; adapter and orchestration disabled."
+        "verification": "The main registry and candidate matrix are read-only. The effective merged registry, activation log and report remain under RUNNER_TEMP; the exact registry path is exported to the same audit run and consumed by collect_domains.py. No source registry or activation log is committed."
       },
       {
         "program_id": "script_discover_sources",
@@ -150,7 +150,7 @@
       "lock_key": "read-only main-branch source registry and activation baseline",
       "required_mode": "read_only",
       "status": "no_repository_writer_source_activation_artifact_only",
-      "note": "auto_activate_sources now reads the main source registry and emits proposed registry/log/report files only under AUTOMATION_ARTIFACT_ROOT or RUNNER_TEMP. Its adapter and orchestration are disabled. No production workflow writes sources/domain_sources.json or sources/source_activation_log.json."
+      "note": "auto_activate_sources reads the committed source registry and candidate matrix, then emits the effective merged registry/log/report only under RUNNER_TEMP. The current auto_sync run passes that registry path to collect_domains.py; no repository source registry or activation log is written or published."
     },
     {
       "id": "domain_candidate_buffer",

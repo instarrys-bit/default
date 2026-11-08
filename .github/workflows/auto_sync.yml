@@ -417,10 +417,13 @@ jobs:
           python3 scripts/build_source_candidates.py
           python3 scripts/append_step_summary.py --input reports/source-candidate-matrix.md
 
-      - name: Admit stable policy-evidenced sources without AI review
+      - name: Merge qualified discovered sources into the run-local production registry
         run: |
+          set -euo pipefail
           python3 scripts/auto_activate_sources.py
-          python3 scripts/append_step_summary.py --input reports/source-activation.md
+          test -s "$RUNNER_TEMP/source-activation/sources/domain_sources.json"
+          test -s "$RUNNER_TEMP/source-activation/reports/source-activation.md"
+          python3 scripts/append_step_summary.py --input "$RUNNER_TEMP/source-activation/reports/source-activation.md"
 
       - name: Collect and cross-check all enabled domain sources
         run: python3 scripts/collect_domains.py
