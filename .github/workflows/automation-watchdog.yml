@@ -1603,8 +1603,6 @@ jobs:
                   json.dumps(proof, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8"
               )
               expected = True
-              with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
-                  output.write(f"assessment_task_id={task_id}\\n")
           value = "true" if expected else "false"
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
               output.write(f"assessment_output_expected={value}\n")
