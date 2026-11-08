@@ -185,7 +185,7 @@ class GitHubIssueQueueStoreTests(unittest.TestCase):
         with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
             result = self.store.mutate(lambda queue: (queue, "unchanged"))
         self.assertEqual(result, "unchanged")
-        self.assertEqual(len(self.comments), 1)
+        self.assertEqual(len(self.comments), 2)  # one chunk plus the bootstrap commit marker
 
 
 if __name__ == "__main__":
