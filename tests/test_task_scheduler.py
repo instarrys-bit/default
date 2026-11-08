@@ -303,6 +303,7 @@ class TaskSchedulerTests(unittest.TestCase):
             input_payload=payload, root=source_root,
         )
         self.store.document["tasks"][0]["status"] = "DEAD_LETTER"
+        self.store.document["tasks"][0]["state_history"].append("DEAD_LETTER")
         self.store.document["revision"] += 1
         recovery = enqueue_source_assessment_task(
             self.store, registry, adapters,
