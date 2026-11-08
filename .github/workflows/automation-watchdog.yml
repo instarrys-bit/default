@@ -1410,7 +1410,7 @@ jobs:
             exit 1
           fi
           predecessor="$(jq -cn             --arg program_id "script_discover_sources"             --arg workflow_name "$SOURCE_WORKFLOW_NAME"             --arg run_id "$SOURCE_RUN_ID"             --arg head_sha "$SOURCE_HEAD_SHA"             --arg artifact_path "sources/discovered_sources.json"             --arg artifact_sha256 "$artifact_sha"             '{program_id:$program_id,workflow_name:$workflow_name,workflow_run_id:$run_id,workflow_head_sha:$head_sha,artifact_path:$artifact_path,artifact_sha256:$artifact_sha256}')"
-          task_input="$(jq -cn --argjson predecessor "$predecessor"             '{max_urls:20,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}')"
+          task_input="$(jq -cn --argjson predecessor "$predecessor"             '{max_urls:4,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}')"
           base_key="source-assessment:$SOURCE_RUN_ID:parser-v2"
           assessment_status="$(jq -r --arg key "$base_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
           recovery_key="$(jq -r --arg prefix "$base_key:recovery:" '[.tasks[]? | select((.idempotency_key // "") | startswith($prefix))] | last | .idempotency_key // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
