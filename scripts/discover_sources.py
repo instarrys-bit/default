@@ -576,6 +576,23 @@ def request_json(url: str, token: str = "") -> dict:
             time.sleep(min(30.0, 2.0 ** (attempt + 1)))
     raise RuntimeError("GitHub API retry budget exhausted")
 
+def fetch_seed_repository(full_name: str, token: str, errors: list[dict]) -> dict | None:
+    """Treat a deleted/private curated seed as a per-seed miss, not a failed discovery run."""
+    url = "https://api.github.com/repos/" + full_name
+    try:
+        return request_json(url, token)
+    except urllib.error.HTTPError as exc:
+        if exc.code != 404:
+            raise
+        errors.append({
+            "seed_repository": full_name,
+            "url": url,
+            "http_status": 404,
+            "error": "curated_seed_repository_not_found",
+        })
+        return None
+
+
 def fetch_readme(owner: str, repo: str, branch: str) -> str:
     if not all(re.fullmatch(r"[A-Za-z0-9_.-]+", x) for x in (owner, repo, branch)):
         return ""
@@ -914,7 +931,9 @@ def main() -> int:
         for full_name, seed_urls in SEED_SOURCE_URLS.items():
             owner, name = full_name.split("/", 1)
             if full_name not in discovered:
-                repo_data = request_json("https://api.github.com/repos/" + full_name, token)
+                repo_data = fetch_seed_repository(full_name, token, discovery_errors)
+                if repo_data is None:
+                    continue
                 branch = str(repo_data.get("default_branch") or "main")
                 readme = fetch_readme(owner, name, branch)
                 discovered[full_name] = {
@@ -1005,7 +1024,11 @@ def main() -> int:
         merged["enterprise_search_cursor"] = enterprise_batch["cursor_next"]
         merged["enterprise_search_fingerprint"] = enterprise_batch["fingerprint"]
     except (OSError, urllib.error.URLError, ValueError, json.JSONDecodeError) as exc:
-        message = "Source discovery degraded; previous discovery inventory retained. " + str(exc)
+        if isinstance(exc, urllib.error.HTTPError):
+            detail = f"HTTP {exc.code} for {exc.url}"
+        else:
+            detail = str(exc)
+        message = "Source discovery degraded; previous discovery inventory retained. " + detail
         print("WARNING: " + message, file=sys.stderr)
         summary = os.environ.get("GITHUB_STEP_SUMMARY")
         if summary:
