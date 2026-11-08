@@ -2,7 +2,7 @@
 """Safely restore only allowlisted automation state, including JSONL shard sets."""
 from __future__ import annotations
 
-import argparse, json, tarfile
+import argparse, hashlib, json, tarfile
 from pathlib import Path, PurePosixPath
 from resource_lease_runtime import assert_resource_lease_from_environment
 
@@ -33,6 +33,41 @@ REQUIRED_ANY_GROUPS = (
 )
 PUBLISH_FILES = set()
 PUBLISH_DIR_PREFIXES = ("rulesets/",)
+
+
+def git_blob_sha(data: bytes) -> str:
+    return hashlib.sha1(b"blob " + str(len(data)).encode("ascii") + bytes([0]) + data).hexdigest()
+
+
+def verify_managed_config_baseline(root: Path) -> dict:
+    """Fail closed unless the checked-out owner config matches its committed baseline."""
+    policy_path = root / "sources" / "policy.json"
+    config_path = root / "modules" / "uu.conf"
+    if not policy_path.is_file() or not config_path.is_file():
+        raise ValueError("publish preflight requires sources/policy.json and modules/uu.conf")
+    try:
+        policy = json.loads(policy_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError("publish preflight cannot read the managed-config policy") from exc
+    guard = policy.get("managed_config_guard")
+    if not isinstance(guard, dict) or guard.get("path") != "modules/uu.conf":
+        raise ValueError("publish preflight requires modules/uu.conf as the sole managed config baseline")
+    protection = guard.get("content_protection")
+    if (guard.get("content_immutable_to_automation") is not True
+            or not isinstance(protection, dict)
+            or protection.get("automation_may_modify_content") is not False):
+        raise ValueError("publish preflight refuses a managed config without an explicit read-only protection policy")
+    expected = guard.get("approved_git_blob_sha")
+    if not isinstance(expected, str) or len(expected) != 40 or any(ch not in "0123456789abcdef" for ch in expected):
+        raise ValueError("publish preflight found an invalid approved uu.conf Git blob SHA")
+    actual = git_blob_sha(config_path.read_bytes())
+    if actual != expected:
+        raise ValueError(
+            "publish preflight blocked before repository mutation: "
+            f"modules/uu.conf blob SHA {actual} differs from approved baseline {expected}; "
+            "register the owner-verified baseline on main first, then rerun the audit"
+        )
+    return {"path": "modules/uu.conf", "git_blob_sha": actual}
 
 
 def allowed(name: str) -> bool:
@@ -100,6 +135,7 @@ def publish_allowed(name: str) -> bool:
 def restore_publish_outputs(archive: Path, root: Path) -> dict:
     """Restore only explicitly publishable outputs, under the caller's live write fence."""
     root = root.resolve()
+    baseline_before = verify_managed_config_baseline(root)
     restored, total_bytes = [], 0
     with tarfile.open(archive, "r:gz") as tar:
         selected = []
@@ -151,7 +187,10 @@ def restore_publish_outputs(archive: Path, root: Path) -> dict:
     for base in ("sources/discovered_sources.json", "sources/source_assessments.json", "sources/source_candidates.json"):
         if base + ".manifest.json" in seen and base not in seen:
             (root / base).unlink(missing_ok=True)
-    return {"restored_files": len(restored), "restored_bytes": total_bytes, "paths": sorted(restored)}
+    baseline_after = verify_managed_config_baseline(root)
+    if baseline_after != baseline_before:
+        raise ValueError("managed uu.conf baseline changed during ruleset publication restore")
+    return {"restored_files": len(restored), "restored_bytes": total_bytes, "paths": sorted(restored), "config_baseline": baseline_after}
 
 
 def main() -> int:
