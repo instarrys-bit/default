@@ -276,7 +276,7 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
         for task in queue["tasks"]:
             status = task.get("status")
             has_recoverable_intent = (
-                status in {"QUEUED", "DEAD_LETTER"}
+                status in {"CLAIMED", "QUEUED", "DEAD_LETTER"}
                 and isinstance(task.get("dispatch_intent"), dict)
                 and not isinstance(task.get("verification"), dict)
             )
