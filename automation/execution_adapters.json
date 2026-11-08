@@ -263,6 +263,31 @@
       }
     },
     {
+      "target_program_id": "script_audit_adapter_activation",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/audit_adapter_activation.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_interface_review"
+      },
+      "completion": {
+        "success_condition": "read_only_activation_audit_report_generated",
+        "independent_verification_required": true
+      }
+    },
+    {
       "target_program_id": "script_audit_config_drift",
       "target_kind": "python_component",
       "adapter_type": "python_cli",
@@ -434,6 +459,31 @@
       },
       "completion": {
         "success_condition": "process_exit_code_zero_and_output_contract_validated",
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "script_build_dashboard_snapshot",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/build_dashboard_snapshot.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_interface_review"
+      },
+      "completion": {
+        "success_condition": "process_exit_code_zero_and_snapshot_schema_validated",
         "independent_verification_required": true
       }
     },
@@ -663,6 +713,56 @@
       }
     },
     {
+      "target_program_id": "script_github_queue_store",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/github_queue_store.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_interface_review"
+      },
+      "completion": {
+        "success_condition": "storage_operation_and_independent_queue_integrity_verification_pass",
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "script_github_workflow_adapter",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/github_workflow_adapter.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_interface_review"
+      },
+      "completion": {
+        "success_condition": "workflow_run_identity_matches_and_completed_conclusion_is_success",
+        "independent_verification_required": true
+      }
+    },
+    {
       "target_program_id": "script_import_request_observations",
       "target_kind": "python_component",
       "adapter_type": "python_cli",
@@ -788,6 +888,56 @@
       }
     },
     {
+      "target_program_id": "script_persist_review_cursor",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/persist_review_cursor.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_interface_review"
+      },
+      "completion": {
+        "success_condition": "cursor_artifact_validated_and_persisted_or_safe_noop",
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "script_production_intent",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/production_intent.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_interface_review"
+      },
+      "completion": {
+        "success_condition": "process_exit_code_zero_and_output_contract_validated",
+        "independent_verification_required": true
+      }
+    },
+    {
       "target_program_id": "script_refresh_ruleset_manifest",
       "target_kind": "python_component",
       "adapter_type": "python_cli",
@@ -821,6 +971,84 @@
       "allowed_callers": [],
       "entrypoint": {
         "path": "scripts/register_config_baseline.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_interface_review"
+      },
+      "completion": {
+        "success_condition": "process_exit_code_zero_and_output_contract_validated",
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "script_remote_task_queue_runtime",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/remote_task_queue_runtime.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_interface_review"
+      },
+      "completion": {
+        "success_condition": "remote_state_transition_and_independent_queue_integrity_verification_pass",
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "script_resolve_source_artifacts",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/resolve_source_artifacts.py",
+        "executable": "python3",
+        "argv_template": [
+          "{queue_snapshot_file}",
+          "{artifact_output_dir}"
+        ],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_as_standalone_adapter_internal_workflow_step_only"
+      },
+      "completion": {
+        "success_condition": "workflow_step_exit_zero_after_exact_artifact_provenance_and_digest_verification",
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "script_resource_lease_runtime",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/resource_lease_runtime.py",
         "executable": "python3",
         "argv_template": [],
         "shell": false
@@ -928,6 +1156,31 @@
       }
     },
     {
+      "target_program_id": "script_source_handoff_policy",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/source_handoff_policy.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_interface_review"
+      },
+      "completion": {
+        "success_condition": "pure_deterministic_handoff_classification_returned",
+        "independent_verification_required": true
+      }
+    },
+    {
       "target_program_id": "script_source_registry",
       "target_kind": "python_component",
       "adapter_type": "python_cli",
@@ -1028,6 +1281,56 @@
       }
     },
     {
+      "target_program_id": "script_task_result_verifier",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/task_result_verifier.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_interface_review"
+      },
+      "completion": {
+        "success_condition": "all_processed_results_pass_reviewed_contract_and_queue_integrity_validation",
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "script_task_scheduler",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/task_scheduler.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_interface_review"
+      },
+      "completion": {
+        "success_condition": "only_reviewed_adapter_tasks_are_executed_and_results_are_independently_verified",
+        "independent_verification_required": true
+      }
+    },
+    {
       "target_program_id": "script_validate_config",
       "target_kind": "python_component",
       "adapter_type": "python_cli",
@@ -1036,6 +1339,31 @@
       "allowed_callers": [],
       "entrypoint": {
         "path": "scripts/validate_config.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_interface_review"
+      },
+      "completion": {
+        "success_condition": "process_exit_code_zero_and_output_contract_validated",
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "script_validate_execution_adapters",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/validate_execution_adapters.py",
         "executable": "python3",
         "argv_template": [],
         "shell": false
@@ -1068,6 +1396,56 @@
       "input_contract": null,
       "output_contract": null,
       "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_interface_review"
+      },
+      "completion": {
+        "success_condition": "process_exit_code_zero_and_output_contract_validated",
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "script_validate_release_manifest",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/validate_release_manifest.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_interface_review"
+      },
+      "completion": {
+        "success_condition": "process_exit_code_zero_and_output_contract_validated",
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "script_verify_assess_sources_artifacts",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/verify_assess_sources_artifacts.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 60,
       "retry": {
         "max_attempts": 0,
         "policy": "disabled_until_interface_review"
@@ -1348,6 +1726,38 @@
       }
     },
     {
+      "target_program_id": "workflow_read_only_dashboard_pages",
+      "target_kind": "github_actions_workflow",
+      "adapter_type": "github_actions_workflow",
+      "enabled": false,
+      "interface_status": "event_only",
+      "allowed_callers": [],
+      "workflow": {
+        "path": ".github/workflows/dashboard-pages.yml",
+        "dispatchable": false,
+        "inputs": [],
+        "allowed_refs": [
+          "main"
+        ],
+        "caller_permissions_required": [
+          "actions:write",
+          "issues:write"
+        ]
+      },
+      "timeout_seconds": 30,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_dispatcher_and_run_verifier"
+      },
+      "completion": {
+        "success_condition": "pages_deployment_completed_successfully",
+        "required_result_fields": [
+          "page_url"
+        ],
+        "independent_verification_required": true
+      }
+    },
+    {
       "target_program_id": "workflow_request_intake",
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
@@ -1475,399 +1885,6 @@
       }
     },
     {
-      "target_program_id": "workflow_validate_config",
-      "target_kind": "github_actions_workflow",
-      "adapter_type": "github_actions_workflow",
-      "enabled": false,
-      "interface_status": "event_only",
-      "allowed_callers": [],
-      "workflow": {
-        "path": ".github/workflows/validate-config.yml",
-        "dispatchable": false,
-        "inputs": [],
-        "allowed_refs": [
-          "main"
-        ],
-        "caller_permissions_required": [
-          "actions:write",
-          "issues:write"
-        ]
-      },
-      "timeout_seconds": 30,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_dispatcher_and_run_verifier"
-      },
-      "completion": {
-        "success_condition": "run_status_completed_and_conclusion_success",
-        "required_result_fields": [
-          "run_id",
-          "html_url",
-          "head_sha",
-          "status",
-          "conclusion"
-        ],
-        "independent_verification_required": true
-      }
-    },
-    {
-      "target_program_id": "script_validate_execution_adapters",
-      "target_kind": "python_component",
-      "adapter_type": "python_cli",
-      "enabled": false,
-      "interface_status": "unreviewed",
-      "allowed_callers": [],
-      "entrypoint": {
-        "path": "scripts/validate_execution_adapters.py",
-        "executable": "python3",
-        "argv_template": [],
-        "shell": false
-      },
-      "input_contract": null,
-      "output_contract": null,
-      "timeout_seconds": 300,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_interface_review"
-      },
-      "completion": {
-        "success_condition": "process_exit_code_zero_and_output_contract_validated",
-        "independent_verification_required": true
-      }
-    },
-    {
-      "target_program_id": "script_github_queue_store",
-      "target_kind": "python_component",
-      "adapter_type": "python_cli",
-      "enabled": false,
-      "interface_status": "unreviewed",
-      "allowed_callers": [],
-      "entrypoint": {
-        "path": "scripts/github_queue_store.py",
-        "executable": "python3",
-        "argv_template": [],
-        "shell": false
-      },
-      "input_contract": null,
-      "output_contract": null,
-      "timeout_seconds": 300,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_interface_review"
-      },
-      "completion": {
-        "success_condition": "storage_operation_and_independent_queue_integrity_verification_pass",
-        "independent_verification_required": true
-      }
-    },
-    {
-      "target_program_id": "script_remote_task_queue_runtime",
-      "target_kind": "python_component",
-      "adapter_type": "python_cli",
-      "enabled": false,
-      "interface_status": "unreviewed",
-      "allowed_callers": [],
-      "entrypoint": {
-        "path": "scripts/remote_task_queue_runtime.py",
-        "executable": "python3",
-        "argv_template": [],
-        "shell": false
-      },
-      "input_contract": null,
-      "output_contract": null,
-      "timeout_seconds": 300,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_interface_review"
-      },
-      "completion": {
-        "success_condition": "remote_state_transition_and_independent_queue_integrity_verification_pass",
-        "independent_verification_required": true
-      }
-    },
-    {
-      "target_program_id": "script_task_result_verifier",
-      "target_kind": "python_component",
-      "adapter_type": "python_cli",
-      "enabled": false,
-      "interface_status": "unreviewed",
-      "allowed_callers": [],
-      "entrypoint": {
-        "path": "scripts/task_result_verifier.py",
-        "executable": "python3",
-        "argv_template": [],
-        "shell": false
-      },
-      "input_contract": null,
-      "output_contract": null,
-      "timeout_seconds": 300,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_interface_review"
-      },
-      "completion": {
-        "success_condition": "all_processed_results_pass_reviewed_contract_and_queue_integrity_validation",
-        "independent_verification_required": true
-      }
-    },
-    {
-      "target_program_id": "script_task_scheduler",
-      "target_kind": "python_component",
-      "adapter_type": "python_cli",
-      "enabled": false,
-      "interface_status": "unreviewed",
-      "allowed_callers": [],
-      "entrypoint": {
-        "path": "scripts/task_scheduler.py",
-        "executable": "python3",
-        "argv_template": [],
-        "shell": false
-      },
-      "input_contract": null,
-      "output_contract": null,
-      "timeout_seconds": 300,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_interface_review"
-      },
-      "completion": {
-        "success_condition": "only_reviewed_adapter_tasks_are_executed_and_results_are_independently_verified",
-        "independent_verification_required": true
-      }
-    },
-    {
-      "target_program_id": "script_github_workflow_adapter",
-      "target_kind": "python_component",
-      "adapter_type": "python_cli",
-      "enabled": false,
-      "interface_status": "unreviewed",
-      "allowed_callers": [],
-      "entrypoint": {
-        "path": "scripts/github_workflow_adapter.py",
-        "executable": "python3",
-        "argv_template": [],
-        "shell": false
-      },
-      "input_contract": null,
-      "output_contract": null,
-      "timeout_seconds": 300,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_interface_review"
-      },
-      "completion": {
-        "success_condition": "workflow_run_identity_matches_and_completed_conclusion_is_success",
-        "independent_verification_required": true
-      }
-    },
-    {
-      "target_program_id": "script_audit_adapter_activation",
-      "target_kind": "python_component",
-      "adapter_type": "python_cli",
-      "enabled": false,
-      "interface_status": "unreviewed",
-      "allowed_callers": [],
-      "entrypoint": {
-        "path": "scripts/audit_adapter_activation.py",
-        "executable": "python3",
-        "argv_template": [],
-        "shell": false
-      },
-      "input_contract": null,
-      "output_contract": null,
-      "timeout_seconds": 300,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_interface_review"
-      },
-      "completion": {
-        "success_condition": "read_only_activation_audit_report_generated",
-        "independent_verification_required": true
-      }
-    },
-    {
-      "target_program_id": "script_persist_review_cursor",
-      "target_kind": "python_component",
-      "adapter_type": "python_cli",
-      "enabled": false,
-      "interface_status": "unreviewed",
-      "allowed_callers": [],
-      "entrypoint": {
-        "path": "scripts/persist_review_cursor.py",
-        "executable": "python3",
-        "argv_template": [],
-        "shell": false
-      },
-      "input_contract": null,
-      "output_contract": null,
-      "timeout_seconds": 300,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_interface_review"
-      },
-      "completion": {
-        "success_condition": "cursor_artifact_validated_and_persisted_or_safe_noop",
-        "independent_verification_required": true
-      }
-    },
-    {
-      "target_program_id": "script_production_intent",
-      "target_kind": "python_component",
-      "adapter_type": "python_cli",
-      "enabled": false,
-      "interface_status": "unreviewed",
-      "allowed_callers": [],
-      "entrypoint": {
-        "path": "scripts/production_intent.py",
-        "executable": "python3",
-        "argv_template": [],
-        "shell": false
-      },
-      "input_contract": null,
-      "output_contract": null,
-      "timeout_seconds": 300,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_interface_review"
-      },
-      "completion": {
-        "success_condition": "process_exit_code_zero_and_output_contract_validated",
-        "independent_verification_required": true
-      }
-    },
-    {
-      "target_program_id": "script_build_dashboard_snapshot",
-      "target_kind": "python_component",
-      "adapter_type": "python_cli",
-      "enabled": false,
-      "interface_status": "unreviewed",
-      "allowed_callers": [],
-      "entrypoint": {
-        "path": "scripts/build_dashboard_snapshot.py",
-        "executable": "python3",
-        "argv_template": [],
-        "shell": false
-      },
-      "input_contract": null,
-      "output_contract": null,
-      "timeout_seconds": 300,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_interface_review"
-      },
-      "completion": {
-        "success_condition": "process_exit_code_zero_and_snapshot_schema_validated",
-        "independent_verification_required": true
-      }
-    },
-    {
-      "target_program_id": "workflow_read_only_dashboard_pages",
-      "target_kind": "github_actions_workflow",
-      "adapter_type": "github_actions_workflow",
-      "enabled": false,
-      "interface_status": "event_only",
-      "allowed_callers": [],
-      "workflow": {
-        "path": ".github/workflows/dashboard-pages.yml",
-        "dispatchable": false,
-        "inputs": [],
-        "allowed_refs": [
-          "main"
-        ],
-        "caller_permissions_required": [
-          "actions:write",
-          "issues:write"
-        ]
-      },
-      "timeout_seconds": 30,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_dispatcher_and_run_verifier"
-      },
-      "completion": {
-        "success_condition": "pages_deployment_completed_successfully",
-        "required_result_fields": [
-          "page_url"
-        ],
-        "independent_verification_required": true
-      }
-    },
-    {
-      "target_program_id": "script_validate_release_manifest",
-      "target_kind": "python_component",
-      "adapter_type": "python_cli",
-      "enabled": false,
-      "interface_status": "unreviewed",
-      "allowed_callers": [],
-      "entrypoint": {
-        "path": "scripts/validate_release_manifest.py",
-        "executable": "python3",
-        "argv_template": [],
-        "shell": false
-      },
-      "input_contract": null,
-      "output_contract": null,
-      "timeout_seconds": 300,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_interface_review"
-      },
-      "completion": {
-        "success_condition": "process_exit_code_zero_and_output_contract_validated",
-        "independent_verification_required": true
-      }
-    },
-    {
-      "target_program_id": "script_resource_lease_runtime",
-      "target_kind": "python_component",
-      "adapter_type": "python_cli",
-      "enabled": false,
-      "interface_status": "unreviewed",
-      "allowed_callers": [],
-      "entrypoint": {
-        "path": "scripts/resource_lease_runtime.py",
-        "executable": "python3",
-        "argv_template": [],
-        "shell": false
-      },
-      "input_contract": null,
-      "output_contract": null,
-      "timeout_seconds": 300,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_interface_review"
-      },
-      "completion": {
-        "success_condition": "process_exit_code_zero_and_output_contract_validated",
-        "independent_verification_required": true
-      }
-    },
-    {
-      "target_program_id": "script_verify_assess_sources_artifacts",
-      "target_kind": "python_component",
-      "adapter_type": "python_cli",
-      "enabled": false,
-      "interface_status": "unreviewed",
-      "allowed_callers": [],
-      "entrypoint": {
-        "path": "scripts/verify_assess_sources_artifacts.py",
-        "executable": "python3",
-        "argv_template": [],
-        "shell": false
-      },
-      "input_contract": null,
-      "output_contract": null,
-      "timeout_seconds": 60,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_interface_review"
-      },
-      "completion": {
-        "success_condition": "process_exit_code_zero_and_output_contract_validated",
-        "independent_verification_required": true
-      }
-    },
-    {
       "target_program_id": "workflow_source_discovery",
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
@@ -1927,27 +1944,38 @@
       }
     },
     {
-      "target_program_id": "script_source_handoff_policy",
-      "target_kind": "python_component",
-      "adapter_type": "python_cli",
+      "target_program_id": "workflow_validate_config",
+      "target_kind": "github_actions_workflow",
+      "adapter_type": "github_actions_workflow",
       "enabled": false,
-      "interface_status": "unreviewed",
+      "interface_status": "event_only",
       "allowed_callers": [],
-      "entrypoint": {
-        "path": "scripts/source_handoff_policy.py",
-        "executable": "python3",
-        "argv_template": [],
-        "shell": false
+      "workflow": {
+        "path": ".github/workflows/validate-config.yml",
+        "dispatchable": false,
+        "inputs": [],
+        "allowed_refs": [
+          "main"
+        ],
+        "caller_permissions_required": [
+          "actions:write",
+          "issues:write"
+        ]
       },
-      "input_contract": null,
-      "output_contract": null,
-      "timeout_seconds": 300,
+      "timeout_seconds": 30,
       "retry": {
         "max_attempts": 0,
-        "policy": "disabled_until_interface_review"
+        "policy": "disabled_until_dispatcher_and_run_verifier"
       },
       "completion": {
-        "success_condition": "pure_deterministic_handoff_classification_returned",
+        "success_condition": "run_status_completed_and_conclusion_success",
+        "required_result_fields": [
+          "run_id",
+          "html_url",
+          "head_sha",
+          "status",
+          "conclusion"
+        ],
         "independent_verification_required": true
       }
     }
