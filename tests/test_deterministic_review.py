@@ -194,6 +194,43 @@ class UrlRegexScopeTests(unittest.TestCase):
 
 
 
+class IndexedConfigScopePerformanceTests(unittest.TestCase):
+    def test_indexed_lookup_preserves_full_scope_conflict_detection(self):
+        unrelated = [
+            DomainRule("DOMAIN-SUFFIX", f"unrelated-{i}.invalid", "DIRECT", i + 1,
+                       f"DOMAIN-SUFFIX,unrelated-{i}.invalid,DIRECT")
+            for i in range(1200)
+        ]
+        rules = RuleIndex(unrelated + [
+            DomainRule("DOMAIN-SUFFIX", "example.com", "DIRECT", 2000,
+                       "DOMAIN-SUFFIX,example.com,DIRECT"),
+            DomainRule("DOMAIN", "api.example.com", "PROXY", 2001,
+                       "DOMAIN,api.example.com,PROXY"),
+        ])
+        status, reason = inspect(
+            "api.example.com", rules, [],
+            "[General]\\nskip-proxy = \\n[Rule]\\n[Host]\\n", {}, "DIRECT"
+        )
+        self.assertEqual(status, "REVIEW")
+        self.assertIn("DOMAIN-SUFFIX example.com => DIRECT", reason)
+        self.assertIn("DOMAIN api.example.com => PROXY", reason)
+
+    def test_suffix_candidate_ignores_narrower_exact_child_rules(self):
+        rules = RuleIndex([
+            DomainRule("DOMAIN", "api.example.com", "PROXY", 1,
+                       "DOMAIN,api.example.com,PROXY"),
+            DomainRule("DOMAIN-SUFFIX", "other.example", "DIRECT", 2,
+                       "DOMAIN-SUFFIX,other.example,DIRECT"),
+        ])
+        status, reason = inspect(
+            "example.com", rules, [],
+            "[General]\\nskip-proxy = \\n[Rule]\\n[Host]\\n", {}, "DIRECT",
+            candidate_suffix=True
+        )
+        self.assertIsNone(status)
+        self.assertIsNone(reason)
+
+
 class ConfigScopeCoverageTests(unittest.TestCase):
     def test_reject_rules_after_first_ruleset_are_excluded_from_automatic_conflict_decisions(self):
         base = """[General]
