@@ -206,6 +206,17 @@ class GitHubContentsQueueStore:
         encoded = base64.b64encode(compressed).decode("ascii")
         digest = hashlib.sha256(raw).hexdigest()
         revision = document.get("revision")
+        # Preserve the compact one-comment v1 representation for ordinary
+        # snapshots; use chunking only when the complete payload exceeds the
+        # safe comment size. This prevents unnecessary growth of Issue history.
+        legacy_payload = {
+            "schema_version": 1, "revision": revision,
+            "previous_sha256": previous_sha256, "sha256": digest,
+            "encoding": "gzip+base64", "data": encoded,
+        }
+        legacy_body = MARKER + "\\n" + json.dumps(legacy_payload, sort_keys=True, separators=(",", ":"))
+        if len(legacy_body.encode("utf-8")) <= MAX_COMMENT_BYTES:
+            return self._post_comment(legacy_body)
         total = max(1, (len(encoded) + CHUNK_DATA_CHARS - 1) // CHUNK_DATA_CHARS)
         # Parts are immutable and independently addressable. The final commit
         # comment is the only record readers accept, so interrupted uploads are
