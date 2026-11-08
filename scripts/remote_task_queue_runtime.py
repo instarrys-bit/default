@@ -198,7 +198,14 @@ def claim_remote(worker_id: str, store: GitHubContentsQueueStore,
         if not eligible:
             validate_candidate(queue, registry)
             return queue, None
-        eligible.sort(key=lambda pair: (-pair[0]["priority"], pair[0]["created_at"], pair[0]["task_id"]))
+        eligible.sort(key=lambda pair: (
+            0 if (
+                pair[0].get("target_program_id") == "script_assess_sources"
+                and isinstance(pair[0].get("idempotency_key"), str)
+                and ":artifact-recovery:" in pair[0]["idempotency_key"]
+            ) else 1,
+            -pair[0]["priority"], pair[0]["created_at"], pair[0]["task_id"],
+        ))
         for task, policy in eligible:
             task["status"] = "CLAIMED"
             task["attempts"] += 1
