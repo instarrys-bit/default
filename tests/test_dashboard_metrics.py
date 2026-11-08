@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from build_dashboard_snapshot import build_candidate_review_metrics, build_task_stage_metrics, watchdog_schedule
+from build_dashboard_snapshot import build_candidate_review_metrics, build_task_stage_metrics, build_combined_task_runtime_metrics, watchdog_schedule
 
 
 class WatchdogScheduleDashboardTests(unittest.TestCase):
@@ -69,6 +69,29 @@ class PipelineTaskDashboardMetricsTests(unittest.TestCase):
         self.assertEqual(discovery["by_status"], {"SUCCEEDED": 1, "QUEUED": 1})
         self.assertEqual(assessment["by_status"], {"CLAIMED": 1})
         self.assertEqual(discovery["last_task_at"], "2026-11-08T01:00:00Z")
+
+
+class CombinedTaskRuntimeDashboardMetricsTests(unittest.TestCase):
+    def test_combines_production_discovery_and_assessment_lanes(self):
+        tasks = [
+            {"target_program_id": "workflow_auto_sync", "status": "SUCCEEDED"},
+            {"target_program_id": "workflow_auto_sync", "status": "DEAD_LETTER"},
+            {"target_program_id": "workflow_source_discovery", "status": "SUCCEEDED"},
+            {"target_program_id": "workflow_source_discovery", "status": "QUEUED"},
+            {"target_program_id": "script_assess_sources", "status": "CLAIMED"},
+            {"target_program_id": "unrelated_program", "status": "CLAIMED"},
+        ]
+        result = build_combined_task_runtime_metrics(
+            tasks, ("workflow_auto_sync", "workflow_source_discovery", "script_assess_sources")
+        )
+        self.assertEqual(result, {
+            "total": 5,
+            "by_status": {"SUCCEEDED": 2, "DEAD_LETTER": 1, "QUEUED": 1, "CLAIMED": 1},
+            "active": 2,
+            "succeeded": 2,
+            "dead_letter": 1,
+            "cancelled": 0,
+        })
 
 
 class CandidateReviewDashboardMetricsTests(unittest.TestCase):

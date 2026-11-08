@@ -103,6 +103,28 @@ def build_task_stage_metrics(tasks, target_program_id):
     }
 
 
+ 
+def build_combined_task_runtime_metrics(tasks, target_program_ids):
+    """Aggregate production, Discovery and Assessment task lanes."""
+    targets = set(target_program_ids)
+    selected = [
+        task for task in tasks
+        if isinstance(task, dict) and task.get("target_program_id") in targets
+    ]
+    by_status = {}
+    for task in selected:
+        status = str(task.get("status", "UNKNOWN")).upper()
+        by_status[status] = by_status.get(status, 0) + 1
+    return {
+        "total": len(selected),
+        "by_status": by_status,
+        "active": sum(by_status.get(status, 0) for status in ("QUEUED", "CLAIMED", "VERIFYING")),
+        "succeeded": by_status.get("SUCCEEDED", 0),
+        "dead_letter": by_status.get("DEAD_LETTER", 0),
+        "cancelled": by_status.get("CANCELLED", 0),
+    }
+
+
 def build_candidate_review_metrics(candidates, review_records, cursor=None, ledger_updated_at=None):
     candidate_domains = {
         str(item.get("domain", "")).lower().rstrip(".")
@@ -166,6 +188,9 @@ def main():
     discovery_metrics = build_task_stage_metrics(tasks, "workflow_source_discovery")
     assessment_metrics = build_task_stage_metrics(tasks, "script_assess_sources")
     production_tasks = [t for t in tasks if t.get("target_program_id") == "workflow_auto_sync"]
+    combined_task_runtime = build_combined_task_runtime_metrics(
+        tasks, ("workflow_auto_sync", "workflow_source_discovery", "script_assess_sources")
+    )
     prod_status = {}
     for task in production_tasks:
         status = str(task.get("status", "UNKNOWN")).upper()
@@ -250,6 +275,7 @@ def main():
         "pipeline": {
             "source_discovery": discovery_metrics,
             "source_assessment": assessment_metrics,
+            "task_runtime": combined_task_runtime,
             "ruleset_production": {
                 "total": len(production_tasks),
                 "by_status": prod_status,
