@@ -213,7 +213,7 @@
         "target_program_id": "script_assess_sources",
         "capability": "source_assessment",
         "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-        "adapter_entry_sha256": "e9f2bbec6bd22230933e151919a3929f09af70985afb7ad9fc8bf04eeff6bb4f",
+        "adapter_entry_sha256": "9dfb18a6bd28d7f1376e38f9ae4eb4b36c772d8c3f13244f9694e56245516bb7",
         "registry_entry_sha256": "9f448f101ba172d74d0b0669a7c761f74d3d06b98609779e825f6bbab7c22288",
         "source_path": "scripts/assess_sources.py",
         "source_git_blob_sha": "e0129b2dc91c58f1642338d3d7e67db332d6e0bb",
