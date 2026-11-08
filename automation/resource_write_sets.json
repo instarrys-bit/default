@@ -500,12 +500,13 @@
         "data/source_pending.json",
         "data/source_snapshots/<source_id>.txt",
         "data/primary_snapshot.txt (legacy fallback)",
-        "data/secondary_snapshot.txt (legacy fallback)"
+        "data/secondary_snapshot.txt (legacy fallback)",
+        "$RUNNER_TEMP/source-activation/sources/domain_sources.json (effective merged registry; validated and runner-local)"
       ],
       "side_effects": [
-        "Bounded HTTPS reads from registered raw.githubusercontent.com source URLs; writes source snapshots and candidate buffers; no activation."
+        "Bounded HTTPS reads from the effective merged registry: fixed production sources plus newly admitted discovery candidates. Writes source snapshots and candidate buffers; source admission itself is performed by script_auto_activate_sources."
       ],
-      "evidence": "main() writes every current source snapshot with Path.write_text, writes data/domain_candidates.json and data/candidates.json through write_document with its default lease_required=false, and directly replaces data/source_pending.json.",
+      "evidence": "main() loads source_registry_path(): the committed sources/domain_sources.json baseline when no override is present, or the exact SHADOWROCKET_SOURCE_REGISTRY file only when it resolves beneath RUNNER_TEMP. It validates the complete merged registry before fetching any source. It writes source snapshots and candidate buffers through the existing resource-lease fences.",
       "write_boundary_fencing": "The auto_sync task holds logical/production-pipeline plus exact per-document leases. All outputs are checkout-workspace state and are never committed; production publication remains rulesets/** only.",
       "lease_keys": [
         "logical/production-pipeline",
@@ -1345,8 +1346,8 @@
     {
       "program_id": "script_auto_activate_sources",
       "source": "scripts/auto_activate_sources.py",
-      "classification": "runner_local_source_activation_candidate_artifact_non_dispatchable",
-      "evidence": "The script reads sources/domain_sources.json and source_candidates.json as read-only inputs. Proposed registry, activation log and report outputs are written only under AUTOMATION_ARTIFACT_ROOT or RUNNER_TEMP. Its adapter and orchestration remain disabled; no source registry or activation log is committed to the repository."
+      "classification": "runner_local_effective_source_registry_artifact",
+      "evidence": "The workflow-invoked script reads sources/domain_sources.json, source_candidates.json and discovered_sources.json as read-only inputs. It writes the merged effective registry, activation log and report only beneath RUNNER_TEMP; exports the exact registry/report paths through GITHUB_ENV; collect_domains.py consumes that validated runner-local registry. No repository file, committed source registry, ruleset or modules/uu.conf is modified by this script."
     },
     {
       "program_id": "script_build_dashboard_snapshot",
