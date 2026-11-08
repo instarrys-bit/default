@@ -14,6 +14,14 @@ def request(url, token, limit=5_000_000):
     if len(data)>limit: raise ValueError("GitHub response exceeds size limit")
     return data
 
+def download_archive(url, token):
+    req=urllib.request.Request(url,headers={"Accept":"application/vnd.github+json","Authorization":"Bearer "+token,"X-GitHub-Api-Version":"2022-11-28","User-Agent":"Shadowrocket-Source-Handoff/1.0"})
+    opener=urllib.request.build_opener(urllib.request.HTTPRedirectHandler())
+    with opener.open(req,timeout=60) as response:
+        data=response.read(LIMIT+1)
+    if len(data)>LIMIT: raise ValueError("Actions artifact archive exceeds size limit")
+    return data
+
 def api_json(url,token):
     value=json.loads(request(url,token).decode("utf-8"))
     if not isinstance(value,dict): raise ValueError("GitHub API response is not an object")
@@ -71,7 +79,7 @@ def download_artifact(repo,run_id,name,token,dest):
     if len(found)!=1: raise ValueError(f"run {run_id}: expected one unexpired {name}")
     item=found[0]
     if not 0<int(item.get("size_in_bytes",0))<=LIMIT: raise ValueError("artifact size outside limit")
-    data=request(item["archive_download_url"],token,LIMIT)
+    data=download_archive(item["archive_download_url"],token)
     return extract(data,dest),item
 
 def resolve_task(queue):
