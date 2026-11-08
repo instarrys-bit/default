@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "346b12965d546fb2ecab31aa309d5acf2179fa5c",
+  "workflow_blob_sha": "7a048b44b09e6135736984ea3fdd6761231dabbb",
   "registry_blob_sha": "879a0aef9c1489e9d2aee22f7216cf678c8f3b31",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
@@ -30,15 +30,15 @@
           "order": 2
         },
         {
-          "name": "Resolve exact independent Discovery and Assessment artifacts",
+          "name": "Export durable queue snapshot from Issue state",
           "order": 3
         },
         {
-          "name": "Export durable queue snapshot from Issue state",
+          "name": "Set up Python",
           "order": 4
         },
         {
-          "name": "Set up Python",
+          "name": "Resolve exact independent Discovery and Assessment artifacts",
           "order": 5
         },
         {
@@ -322,7 +322,7 @@
     "note": "The independent source DAG is enabled under the scoped release allowlist. The production deliverables are exactly DIRECT, PROXY and REJECT; queue/checkpoint state and immutable runner-local artifacts are separate control-plane/runtime resources. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07",
     "registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
-    "source_dag_scope": "workflow_source_discovery plus script_assess_sources; exact Watchdog caller, immutable artifact digest, non-activation, no repository writes from either stage"
+    "source_dag_scope": "End-to-end Watchdog-owned Discovery → immutable artifact verification → non-activating Assessment → immutable Assessment artifact proof → production artifact re-verification → source matrix → deterministic admission → production collection. REJECT remains manually approved; uu.conf is read-only."
   },
   "independent_dags": [
     {
