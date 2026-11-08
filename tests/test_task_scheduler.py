@@ -269,7 +269,7 @@ class TaskSchedulerTests(unittest.TestCase):
         self.assertEqual(self.store.document["tasks"][0]["requester_program_id"], "workflow_automation_watchdog")
         self.assertEqual(self.store.document["tasks"][0]["target_program_id"], "script_assess_sources")
 
-    def test_source_assessment_dead_letter_gets_one_provenance_bound_recovery(self):
+    def test_source_assessment_allows_one_timeout_corrected_second_recovery(self):
         source_root = self.root
         (source_root / "sources").mkdir(exist_ok=True)
         artifact = source_root / "sources" / "discovered_sources.json"
@@ -283,12 +283,13 @@ class TaskSchedulerTests(unittest.TestCase):
         adapters = {"schema_version": 1, "adapters": [{
             "target_program_id": "script_assess_sources", "enabled": True,
             "adapter_type": "python_cli", "interface_status": "reviewed",
+            "timeout_seconds": 300,
             "input_contract": {"type": "object", "required": ["predecessor"],
                                "properties": {"predecessor": {"type": "object"}}},
         }]}
         from task_scheduler import read_only_resource_digests
         digest = read_only_resource_digests(source_root, ["sources/discovered_sources.json"])["sources/discovered_sources.json"]
-        payload = {"max_urls": 1, "max_file_bytes": 1000000, "max_total_bytes": 1000000,
+        payload = {"max_urls": 20, "max_file_bytes": 1000000, "max_total_bytes": 10000000,
                    "predecessor": {
                        "program_id": "script_discover_sources",
                        "workflow_name": "Shadowrocket Source Discovery (Watchdog)",
@@ -317,11 +318,25 @@ class TaskSchedulerTests(unittest.TestCase):
         self.assertEqual(self.store.document["tasks"][1]["input"], payload)
         self.assertEqual(self.store.document["tasks"][1]["idempotency_key"],
                          "source-assessment:41770000002:parser-v2:recovery:1")
+        self.store.document["tasks"][1]["status"] = "DEAD_LETTER"
+        self.store.document["tasks"][1]["attempts"] = self.store.document["tasks"][1]["max_attempts"]
+        self.store.document["tasks"][1]["state_history"].extend(["CLAIMED", "FAILED", "DEAD_LETTER"])
+        self.store.document["tasks"][1]["last_error"] = {"type": "execution_timeout"}
+        self.store.document["revision"] += 1
+        corrected_payload = dict(payload, max_urls=4)
+        second = enqueue_source_assessment_task(
+            self.store, registry, adapters,
+            idempotency_key="source-assessment:41770000002:parser-v2:recovery:2",
+            input_payload=corrected_payload, root=source_root,
+        )
+        self.assertTrue(second["created"])
+        self.assertEqual(second["status"], "QUEUED")
+        self.assertEqual(self.store.document["tasks"][2]["input"]["max_urls"], 4)
         with self.assertRaisesRegex(ValueError, "idempotency key must be bound"):
             enqueue_source_assessment_task(
                 self.store, registry, adapters,
-                idempotency_key="source-assessment:41770000002:parser-v2:recovery:2",
-                input_payload=payload, root=source_root,
+                idempotency_key="source-assessment:41770000002:parser-v2:recovery:3",
+                input_payload=corrected_payload, root=source_root,
             )
 
     def test_source_assessment_recovery_requires_dead_lettered_base(self):
