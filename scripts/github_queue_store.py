@@ -214,7 +214,7 @@ class GitHubContentsQueueStore:
             "previous_sha256": previous_sha256, "sha256": digest,
             "encoding": "gzip+base64", "data": encoded,
         }
-        legacy_body = MARKER + "\\n" + json.dumps(legacy_payload, sort_keys=True, separators=(",", ":"))
+        legacy_body = MARKER + "\n" + json.dumps(legacy_payload, sort_keys=True, separators=(",", ":"))
         if len(legacy_body.encode("utf-8")) <= MAX_COMMENT_BYTES:
             return self._post_comment(legacy_body)
         total = max(1, (len(encoded) + CHUNK_DATA_CHARS - 1) // CHUNK_DATA_CHARS)
