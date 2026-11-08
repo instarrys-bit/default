@@ -1265,7 +1265,11 @@ def run_scheduler_once(store, registry: dict, adapters: dict, *,
             resource_keys_by_target=resource_keys_by_target, now=iteration_now
         )
         if task is None:
-            continue
+            # The plan is only a snapshot: a resource lease may be acquired by
+            # another worker between planning and claim. Re-reading the same
+            # eligible set cannot resolve that conflict and would spin forever.
+            # Leave the task queued and let the next Watchdog reconciliation retry.
+            break
         adapter = adapter_index(adapters)[task["target_program_id"]]
         processed.append(execute_claimed_task(task, adapter, store, registry, adapters, root, now))
 
