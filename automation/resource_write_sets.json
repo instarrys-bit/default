@@ -1636,7 +1636,7 @@
   "workflow_native_scan": {
     "status": "partial_workflow_shell_pattern_scan",
     "scanner": "tests/test_workflow_native_write_inventory.py",
-    "workflow_count": 8,
+    "workflow_count": 7,
     "detected_mutation_families": [
       "git add/commit/push/reset/checkout",
       "GitHub issue PATCH",
