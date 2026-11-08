@@ -1070,8 +1070,29 @@ def enqueue_source_assessment_task(store, registry: dict, adapters: dict, *,
     if errors:
         raise ValueError("source assessment input contract failed: " + "; ".join(errors[:5]))
     expected_key = f"source-assessment:{predecessor['workflow_run_id']}:parser-v2"
-    if idempotency_key != expected_key:
+    recovery_key = expected_key + ":recovery:1"
+    if idempotency_key not in {expected_key, recovery_key}:
         raise ValueError("source assessment idempotency key must be bound to its producer workflow run")
+    precondition = None
+    if idempotency_key == recovery_key:
+        def require_dead_lettered_assessment(queue):
+            base = next((item for item in queue.get("tasks", [])
+                         if item.get("idempotency_key") == expected_key), None)
+            if base is None or base.get("status") != "DEAD_LETTER":
+                raise ValueError("source assessment recovery requires its exact base task to be DEAD_LETTER")
+            base_predecessor = ((base.get("input") or {}).get("predecessor")
+                                if isinstance(base.get("input"), dict) else None)
+            if base_predecessor != predecessor:
+                raise ValueError("source assessment recovery predecessor proof differs from the dead-lettered task")
+            other_recoveries = [
+                item for item in queue.get("tasks", [])
+                if isinstance(item.get("idempotency_key"), str)
+                and item.get("idempotency_key").startswith(expected_key + ":recovery:")
+                and item.get("idempotency_key") != recovery_key
+            ]
+            if other_recoveries:
+                raise ValueError("only one source assessment recovery attempt is allowed for this Discovery run")
+        precondition = require_dead_lettered_assessment
     result = enqueue_remote({
         "idempotency_key": idempotency_key,
         "trace_id": f"discovery-run:{predecessor['workflow_run_id']}:{predecessor['workflow_head_sha'][:12]}",
@@ -1080,7 +1101,7 @@ def enqueue_source_assessment_task(store, registry: dict, adapters: dict, *,
         "capability": "source_assessment",
         "priority": priority,
         "input": input_payload,
-    }, store, registry)
+    }, store, registry, precondition=precondition)
     task = result["task"]
     return {
         "created": result["created"],
