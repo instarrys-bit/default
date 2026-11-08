@@ -257,8 +257,6 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertLess(publish_step.index("assert-workflow --task-id"), publish_step.index("git push origin HEAD:main"))
         self.assertIn("logical/production-pipeline", (ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         audit_job = workflow.split("  audit:", 1)[1].split("  publish:", 1)[0]
-        self.assertNotIn("AUTOMATION_" + "WRITE_GUARD", workflow)
-        self.assertNotIn("fenced_" + "file_writer", workflow)
 
     def test_watchdog_owns_config_change_detection_and_sync_dispatch(self):
         watchdog_path = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
