@@ -1,10 +1,12 @@
 import json
 import sys
 import unittest
+import multiprocessing
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
-from deterministic_review import DOMAIN_RE, evidence_gate, inspect, validate_evidence, review_context_fingerprint, candidate_review_fingerprint, publisher_ancestry_pairs
+from deterministic_review import DOMAIN_RE, evidence_gate, inspect, validate_evidence, review_context_fingerprint, candidate_review_fingerprint, publisher_ancestry_pairs, _build_review_record, _init_review_worker, _review_candidate_worker
 from domain_rule_engine import RuleIndex, DomainRule, inspect_suffix_scope
 from deterministic_review import CONFIG as REVIEW_CONFIG
 from build_rulesets import CONFIG as RULESET_CONFIG, reject_secondary_decision, reject_queue_entry_authorized
@@ -12,6 +14,48 @@ from select_domain_rules import CONFIG as SELECTOR_CONFIG
 from audit_external_domains import CONFIG as EXTERNAL_AUDIT_CONFIG
 from collect_domains import bootstrap_source_domains, check_source_delta, parse_adblock, parse_domain_list, parse_source
 from source_registry import validate_registry
+
+
+class ParallelReviewParityTests(unittest.TestCase):
+    def test_parallel_worker_results_match_serial_decisions_in_input_order(self):
+        context = {
+            "source_map": {},
+            "current_hashes": {},
+            "score_cfg": {"required_sources_by_policy": {}},
+            "source_weights": {},
+            "minimum": 2,
+            "threshold": 0.8,
+            "correlated_pairs": set(),
+            "index": RuleIndex([]),
+            "conditional": [],
+            "protected": {},
+            "base": "[General]\\nskip-proxy = \\n[Rule]\\n[Host]\\n",
+            "skip_proxy": [],
+        }
+        now = "2026-11-09T00:00:00+00:00"
+        candidates = [
+            ({"domain": "one.example", "classification": "DIRECT", "evidence": []},
+             "one.example", "a" * 64, now),
+            ({"domain": "two.example", "classification": "UNKNOWN", "evidence": []},
+             "two.example", "b" * 64, now),
+            ({"domain": "three.example", "classification": "PROXY", "evidence": []},
+             "three.example", "c" * 64, now),
+        ]
+        expected = [
+            _build_review_record(item, domain, fingerprint, context, timestamp)
+            for item, domain, fingerprint, timestamp in candidates
+        ]
+        with ProcessPoolExecutor(
+            max_workers=2,
+            mp_context=multiprocessing.get_context("fork"),
+            initializer=_init_review_worker,
+            initargs=(context,),
+        ) as pool:
+            actual = list(pool.map(_review_candidate_worker, candidates, chunksize=1))
+        self.assertEqual(actual, expected)
+        self.assertEqual([item["domain"] for item in actual], [
+            "one.example", "two.example", "three.example"
+        ])
 
 
 class ReviewFingerprintTests(unittest.TestCase):
