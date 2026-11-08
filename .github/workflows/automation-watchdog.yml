@@ -1492,6 +1492,15 @@ jobs:
           set -euo pipefail
           test "$SOURCE_DISCOVERY_MODE" = "independent" || exit 0
           test "$(jq -r '.dispatch_mode' automation/production_control.json)" = "enabled" || exit 0
+
+          # The health-check snapshot may be stale by the time queue supervision
+          # reaches this step. Re-read the canonical Issue #315 queue immediately
+          # before deriving the Discovery idempotency key.
+          GITHUB_TOKEN="$GITHUB_TOKEN" python3 scripts/remote_task_queue_runtime.py \
+            --repository "$GITHUB_REPOSITORY" --branch main snapshot \
+            --output "$RUNNER_TEMP/task_queue_before_discovery_enqueue.json"
+          AUTOMATION_QUEUE_SNAPSHOT="$RUNNER_TEMP/task_queue_before_discovery_enqueue.json"
+          export AUTOMATION_QUEUE_SNAPSHOT
           adapter_enabled="$(jq -r '[.adapters[] | select(.target_program_id == "workflow_source_discovery")][0].enabled // false' automation/execution_adapters.json)"
           program_enabled="$(jq -r '[.programs[] | select(.id == "workflow_source_discovery")][0].orchestration.enabled // false' automation/program_registry.json)"
           adapter_caller_allowed="$(jq -r '[.adapters[] | select(.target_program_id == "workflow_source_discovery")][0].allowed_callers | index("workflow_automation_watchdog") != null' automation/execution_adapters.json)"
@@ -1511,6 +1520,12 @@ jobs:
           base_key="source-discovery:$discovery_day:$discovery_revision"
           base_status="$(jq -r --arg key "$base_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
           recovery_key="$(jq -r --arg prefix "$base_key:recovery:" '[.tasks[]? | select((.idempotency_key // "") | startswith($prefix))] | last | .idempotency_key // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          recovery_status="$(jq -r --arg prefix "$base_key:recovery:" '[.tasks[]? | select((.idempotency_key // "") | startswith($prefix))] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          if [ "$base_status" = "SUCCEEDED" ] && { [ -z "$recovery_key" ] || [ "$recovery_status" = "SUCCEEDED" ]; }; then
+            echo "The current Discovery cycle already succeeded and its handoff has been reconciled; skipping duplicate enqueue."
+            echo "- Discovery enqueue: skipped (already succeeded; no duplicate task created)." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
           if [ -n "$recovery_key" ]; then
             idempotency_key="$recovery_key"
           elif [ "$base_status" = "DEAD_LETTER" ]; then
