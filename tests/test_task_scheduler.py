@@ -280,6 +280,7 @@ class TaskSchedulerTests(unittest.TestCase):
             {"id": "script_assess_sources", "capabilities": ["source_assessment"],
              "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
                                "max_attempts": 1, "timeout_seconds": 480}},
+            {"id": "script_verify_assess_sources_artifacts", "capabilities": ["source_assessment_artifact_verification"]},
         ]}
         adapters = {"schema_version": 1, "adapters": [{
             "target_program_id": "script_assess_sources", "enabled": True,
