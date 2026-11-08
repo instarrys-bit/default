@@ -373,7 +373,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("steps.verify-discovery-artifact.outputs.valid == 'true'", block)
         self.assertIn('assessment_status" = "DEAD_LETTER"', block)
         self.assertIn('recovery:1', block)
-        self.assertIn("only one bounded Assessment recovery", block)
+        self.assertIn("The single bounded Assessment recovery was already used", block)
         self.assertIn("enqueue-source-assessment", block)
 
     def test_watchdog_reports_unknown_paths_without_repository_registry_writes(self):
