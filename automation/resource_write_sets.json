@@ -1316,8 +1316,8 @@
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
     "release_manifest_blob_sha": "9023837b2f0f89e35025415d59d1e99a5e855840",
-    "program_registry_blob_sha": "c22acdc8c1a9f47b90a05d5c24fadeaf5152adae",
-    "execution_adapters_blob_sha": "e56a9ebeb4f3ba131c1c8106e693902fa6a1a83b",
+    "program_registry_blob_sha": "e94d7ff0aa33bc239abdece4182277cfa2a8bc6f",
+    "execution_adapters_blob_sha": "afce52f0125b81026d6821138024344c920bfcae",
     "added_after_release_baseline": true,
     "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #315 checkpoint. Repository mutations are governed per capability by explicit exclusive resource_contract.resource_keys; control-plane metadata is separately inventoried. The production auto_sync publisher stages only the three rule-set deliverables under rulesets/**. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07"
@@ -1394,10 +1394,22 @@
       "evidence": "The script reads modules/uu.conf, sources/policy.json and release/workflow inventory inputs. It verifies owner-authored config changes and constructs proposed metadata updates in memory, then writes only $RUNNER_TEMP/config-baseline-proposal.json. The auto_sync workflow uploads that proposal as an immutable run artifact before baseline verification fails closed. It never writes sources/policy.json, release_manifest.json, production_workflow_map.json, resource_write_sets.json or modules/uu.conf."
     },
     {
+      "program_id": "script_resolve_source_artifacts",
+      "source": "scripts/resolve_source_artifacts.py",
+      "classification": "runner_local_verified_artifact_resolver",
+      "evidence": "The resolver reads the durable task queue and immutable GitHub Actions artifact metadata, downloads only the exact predecessor-bound Discovery and Assessment archives, verifies producer/task identities and complete SHA-256 manifests, and extracts only beneath RUNNER_TEMP. Its filesystem writes and GITHUB_ENV/GITHUB_STEP_SUMMARY outputs are run-local; it never writes repository files, source registries, rulesets or modules/uu.conf."
+    },
+    {
       "program_id": "script_review_cursor",
       "source": "scripts/review_cursor.py",
       "classification": "pure_library_no_repository_mutation",
       "evidence": "Cursor parsing/hash/checkpoint helper functions only; no direct file mutation sites."
+    },
+    {
+      "program_id": "script_source_handoff_policy",
+      "source": "scripts/source_handoff_policy.py",
+      "classification": "pure_deterministic_policy_helper_no_side_effects",
+      "evidence": "classify_assessment_handoff() only reads the supplied in-memory task list and workflow run ID and returns a deterministic classification. It performs no filesystem, network, GitHub API, queue mutation, workflow dispatch, or repository write."
     },
     {
       "program_id": "script_source_registry",
@@ -1476,12 +1488,6 @@
       "source": "scripts/watchdog_recovery_policy.py",
       "classification": "pure_policy_library_no_repository_mutation",
       "evidence": "Computes bounded recovery eligibility from supplied run metadata; no filesystem or external write calls."
-    },
-    {
-      "program_id": "script_source_handoff_policy",
-      "source": "scripts/source_handoff_policy.py",
-      "classification": "pure_deterministic_policy_helper_no_side_effects",
-      "evidence": "classify_assessment_handoff() only reads the supplied in-memory task list and workflow run ID and returns a deterministic classification. It performs no filesystem, network, GitHub API, queue mutation, workflow dispatch, or repository write."
     }
   ],
   "control_plane_side_effects": [
@@ -1520,7 +1526,7 @@
   "direct_mutation_scan": {
     "status": "partial_python_direct_callsite_scan",
     "scanner": "tests/test_transitive_write_site_inventory.py",
-    "registered_component_count": 53,
+    "registered_component_count": 54,
     "mutation_api_families": [
       "Path/open write modes",
       "Path write_text/write_bytes/unlink/mkdir/replace/rename/touch",
