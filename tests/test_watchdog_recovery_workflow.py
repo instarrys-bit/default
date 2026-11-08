@@ -188,7 +188,10 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('"artifact_sha256": digest', proof)
         self.assertIn("steps.verify-discovery-artifact.outputs.valid == 'false'", watchdog)
         self.assertIn("steps.verify-discovery-artifact.outputs.valid == 'true'", watchdog)
-        self.assertIn("git rev-parse HEAD:.github/workflows/source-discovery.yml", watchdog)
+        self.assertIn("from source_handoff_policy import discovery_pipeline_revision", watchdog)
+        self.assertIn("print(discovery_pipeline_revision(Path.cwd()))", watchdog)
+        policy = (ROOT / "scripts" / "source_handoff_policy.py").read_text(encoding="utf-8")
+        self.assertIn('".github/workflows/source-discovery.yml"', policy)
 
     def test_independent_source_discovery_and_assessment_are_enabled_with_runner_local_handoff(self):
         source = (ROOT / ".github" / "workflows" / "source-discovery.yml").read_text(encoding="utf-8")
