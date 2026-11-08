@@ -265,7 +265,9 @@
       "outputs": [
         "Return values and/or repository artifacts as defined by the implementation"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "script_build_source_candidates"
+      ],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
       "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
@@ -395,7 +397,9 @@
       "outputs": [
         "Return values and/or repository artifacts as defined by the implementation"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "script_auto_activate_sources"
+      ],
       "dispatches": [],
       "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
       "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
