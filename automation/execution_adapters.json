@@ -1022,10 +1022,7 @@
       "entrypoint": {
         "path": "scripts/resolve_source_artifacts.py",
         "executable": "python3",
-        "argv_template": [
-          "{queue_snapshot_file}",
-          "{artifact_output_dir}"
-        ],
+        "argv_template": [],
         "shell": false
       },
       "input_contract": null,
