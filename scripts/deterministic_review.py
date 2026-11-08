@@ -13,7 +13,7 @@ from datetime import datetime,timezone
 from domain_rule_engine import RuleIndex,load_domain_rules,inspect_suffix_scope
 from source_registry import validate_registry
 from review_cursor import snapshot_digest,resume_index,checkpoint
-from json_document_store import read_document,write_document,iter_document_records,append_document_records,clear_document_delta
+from json_document_store import read_document,write_document,iter_document_records,append_document_records,clear_document_delta,document_delta_watermark
 from resource_lease_runtime import assert_resource_lease_for_repository_path
 from audit_ruleset_config_overlap import scope_covers_candidate
 ROOT=Path(__file__).resolve().parents[1]
@@ -518,6 +518,7 @@ def main():
     cursor_state=json.loads(CURSOR.read_text(encoding="utf-8")) if CURSOR.exists() else {}
     start_index=resume_index(cursor_state,snapshot_sha256,len(candidates))
     batch_size=5000
+    delta_run_epoch=time.time_ns()
     review_started=time.monotonic()
     parent_cpu_started=time.process_time()
     last_progress_index=start_index
@@ -655,7 +656,8 @@ def main():
             # Append only changed records. The small delta manifest is the commit
             # point; the cursor advances only after the delta is durable.
             append_result=append_document_records(
-                OUTPUT,metadata,"reviews",pending_updates,batch_end,lease_required=True
+                OUTPUT,metadata,"reviews",pending_updates,
+                delta_run_epoch*(len(candidates)+1)+batch_end,lease_required=True
             )
             pending_updates=[]
             atomic_json(CURSOR,{
@@ -684,10 +686,14 @@ def main():
     reviews=sorted(review_map.values(),key=lambda x:x["domain"])
     total_counts={}
     for item in reviews: total_counts[item["status"]]=total_counts.get(item["status"],0)+1
+    compacted_through=max(
+        document_delta_watermark(OUTPUT,"reviews"),
+        delta_run_epoch*(len(candidates)+1)+len(candidates),
+    )
     compact_result=write_document(OUTPUT,{
         "schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,
         "source_snapshot":collected.get("sources",[]),"run_counts":run_counts,
-        "counts":total_counts,"reviews":reviews
+        "counts":total_counts,"_delta_compacted_through":compacted_through,"reviews":reviews
     },"reviews",lease_required=True)
     # The compacted base is durable before the overlay manifest is removed.
     clear_document_delta(OUTPUT,"reviews",lease_required=True)
