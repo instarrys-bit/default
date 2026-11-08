@@ -90,7 +90,7 @@
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "705f223eec9897cbed72567bdc94e452c74415c2"
+      "git_blob_sha": "bbb0caaaa5ac1f2f031683753e1c0832635e8bbe"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -186,7 +186,7 @@
     },
     "source_activation": {
       "path": "scripts/auto_activate_sources.py",
-      "git_blob_sha": "3d29ad9db23d6ab14dc78d5323303515abeeaebf"
+      "git_blob_sha": "59153ed15b66dd349884f27b8c2d761c0b8291a7"
     }
   },
   "compatibility": {
