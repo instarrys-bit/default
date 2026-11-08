@@ -10,7 +10,6 @@
       ".github/workflows/auto_sync.yml",
       ".github/workflows/automation-watchdog.yml",
       ".github/workflows/dashboard-pages.yml",
-      ".github/workflows/request-intake.yml",
       ".github/workflows/self-healing-agent.yml",
       ".github/workflows/self-healing-tests.yml",
       ".github/workflows/source-discovery.yml",
@@ -330,13 +329,11 @@
       "paths": [
         "GitHub Issue #317 comments (external request-observation ledger)"
       ],
-      "known_writers": [
-        "workflow_request_intake"
-      ],
-      "lock_key": "shadowrocket-domain-intake workflow concurrency group + append-only Issue #317 comments",
+      "known_writers": [],
+      "lock_key": "historical append-only GitHub Issue #317 comments; no active writer",
       "required_mode": "append_only_issue_comment_batches",
-      "status": "external_issue_ledger_read_by_production_fingerprint_and_candidate_importer",
-      "note": "The request-intake workflow serializes all runs through the fixed shadowrocket-domain-intake concurrency group with cancel-in-progress:false, then appends run-ID-tagged Issue #317 batches. Downstream merge is idempotent by run ID."
+      "status": "historical_external_issue_ledger_read_only",
+      "note": "The manual request-intake workflow is retired. Existing Issue #317 observation comments are preserved and remain readable by production fingerprinting and candidate import; no active workflow appends new batches."
     },
     {
       "id": "review_cursor_checkpoint",
