@@ -59,11 +59,31 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  preflight:
+    name: Read-only validation (parallel with audit)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout audited commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+
   audit:
     runs-on: ubuntu-24.04
     timeout-minutes: 300
     env:
       PYTHONPATH: scripts
+      REVIEW_WORKERS: "4"
     permissions:
       contents: read
       actions: read
@@ -664,7 +684,7 @@ jobs:
           retention-days: 90
 
   publish:
-    needs: audit
+    needs: [audit, preflight]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
@@ -882,8 +902,8 @@ jobs:
           retention-days: 90
 
   notify-failure:
-    if: ${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled' || needs.publish.result == 'failure' || needs.publish.result == 'cancelled') }}
-    needs: [audit, publish]
+    if: ${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled' || needs.preflight.result == 'failure' || needs.preflight.result == 'cancelled' || needs.publish.result == 'failure' || needs.publish.result == 'cancelled') }}
+    needs: [audit, preflight, publish]
     runs-on: ubuntu-24.04
     permissions:
       issues: write
