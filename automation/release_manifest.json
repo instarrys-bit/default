@@ -62,7 +62,7 @@
     },
     "task_scheduler": {
       "path": "scripts/task_scheduler.py",
-      "git_blob_sha": "c9cdde05c6bfb783787fcf7e738d88633e5136dd"
+      "git_blob_sha": "2a32dbb230524c1793fda1bffe2600c552d1b1b6"
     },
     "resource_lease_runtime": {
       "path": "scripts/resource_lease_runtime.py",
