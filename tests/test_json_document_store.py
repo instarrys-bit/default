@@ -142,6 +142,22 @@ class JsonDocumentStoreTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "delta segment checksum mismatch"):
                 list(store.iter_document_records(path, "reviews"))
 
+    def test_compaction_watermark_makes_interrupted_delta_cleanup_idempotent(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            path.write_text(json.dumps({"reviews": [{"domain": "a.example", "status": "old"}]}), encoding="utf-8")
+            store.append_document_records(path, {}, "reviews",
+                                          [{"domain": "a.example", "status": "new"}], 9000)
+            watermark = store.document_delta_watermark(path, "reviews")
+            compacted = {
+                "_delta_compacted_through": watermark,
+                "reviews": [{"domain": "a.example", "status": "new"}],
+            }
+            store.write_document(path, compacted, "reviews")
+            # Simulate a crash after the base swap but before deleting the delta manifest.
+            self.assertEqual(store.read_document(path, "reviews"), compacted)
+            self.assertEqual(list(store.iter_document_records(path, "reviews")), compacted["reviews"])
+
     def test_compaction_can_clear_delta_after_base_commit(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "ledger.json"
