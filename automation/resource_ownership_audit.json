@@ -5,7 +5,7 @@
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
     "registry_blob_sha": "3b6af842a4bf95dd7eb1b2310252d72eba205596",
-    "adapters_blob_sha": "cd9378cdcee96ac156fd15e9b0b4b91442d21a9e",
+    "adapters_blob_sha": "812a31155a88bf0429f8713da08a6b5acb5ea0b5",
     "inspected_sources": [
       ".github/workflows/auto_sync.yml",
       ".github/workflows/automation-watchdog.yml",
