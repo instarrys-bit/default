@@ -222,7 +222,7 @@
       },
       "timeout_seconds": 300,
       "retry": {
-        "max_attempts": 2,
+        "max_attempts": 1,
         "policy": "two total attempts with one bounded retry; resume from durable per-URL checkpoint; no repository artifact publication"
       },
       "completion": {
