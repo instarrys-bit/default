@@ -20,6 +20,52 @@ def manifest_path(path: Path) -> Path:
     return path.with_name(path.name + MANIFEST_SUFFIX)
 
 
+def delta_manifest_path(path: Path) -> Path:
+    return path.with_name(path.name + ".delta.manifest.json")
+
+
+def _read_delta_manifest(path: Path, collection_key: str) -> dict | None:
+    manifest_file = delta_manifest_path(path)
+    if not manifest_file.exists():
+        return None
+    if manifest_file.stat().st_size > MAX_FILE_BYTES:
+        raise ValueError(f"delta manifest exceeds {MAX_FILE_BYTES} bytes: {manifest_file}")
+    manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+    if (manifest.get("schema_version") != 1
+            or manifest.get("format") != "jsonl-delta-v1"
+            or manifest.get("logical_path") != path.name
+            or manifest.get("collection_key") != collection_key):
+        raise ValueError(f"delta manifest identity or format mismatch: {manifest_file}")
+    directory = str(manifest.get("delta_directory", ""))
+    if not directory or Path(directory).name != directory:
+        raise ValueError(f"unsafe delta directory in {manifest_file}")
+    return manifest
+
+
+def _iter_delta_records(path: Path, collection_key: str):
+    manifest = _read_delta_manifest(path, collection_key)
+    if not manifest:
+        return
+    directory = str(manifest["delta_directory"])
+    for segment in manifest.get("segments", []):
+        name = str(segment.get("file", ""))
+        if not name or Path(name).name != name or not name.endswith(".jsonl"):
+            raise ValueError(f"unsafe delta segment name in {path}: {name!r}")
+        segment_path = path.parent / directory / name
+        raw = segment_path.read_bytes()
+        if len(raw) > MAX_FILE_BYTES:
+            raise ValueError(f"delta segment exceeds {MAX_FILE_BYTES} bytes: {segment_path}")
+        if hashlib.sha256(raw).hexdigest() != segment.get("sha256"):
+            raise ValueError(f"delta segment checksum mismatch: {segment_path}")
+        count = 0
+        for line in raw.splitlines():
+            if line:
+                yield json.loads(line)
+                count += 1
+        if count != int(segment.get("records", -1)):
+            raise ValueError(f"delta segment record-count mismatch: {segment_path}")
+
+
 def _compact_bytes(value: Any) -> bytes:
     return json.dumps(value, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
 
@@ -91,14 +137,46 @@ def iter_document_records(path: Path, collection_key: str):
     path = Path(path)
     manifest_file = manifest_path(path)
     if not manifest_file.exists():
-        if not path.exists():
-            return
-        payload = json.loads(path.read_text(encoding="utf-8"))
-        records = payload.get(collection_key, [])
-        if not isinstance(records, list):
-            raise ValueError(f"document collection {collection_key!r} is not a list: {path}")
-        yield from records
-        return
+        if path.exists():
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            records = payload.get(collection_key, [])
+            if not isinstance(records, list):
+                raise ValueError(f"document collection {collection_key!r} is not a list: {path}")
+            yield from records
+    else:
+        if manifest_file.stat().st_size > MAX_FILE_BYTES:
+            raise ValueError(f"shard manifest exceeds {MAX_FILE_BYTES} bytes: {manifest_file}")
+        manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+        if manifest.get("schema_version") != 1 or manifest.get("format") != "jsonl-shards-v1":
+            raise ValueError(f"unsupported shard manifest: {manifest_file}")
+        if manifest.get("logical_path") != path.name or manifest.get("collection_key") != collection_key:
+            raise ValueError(f"shard manifest identity mismatch: {manifest_file}")
+        directory = str(manifest.get("shard_directory", ""))
+        if not directory or Path(directory).name != directory:
+            raise ValueError(f"unsafe shard directory in {manifest_file}")
+        total_records = 0
+        for shard in manifest.get("shards", []):
+            name = str(shard.get("file", ""))
+            if not name or Path(name).name != name or not name.endswith(".jsonl"):
+                raise ValueError(f"unsafe shard name in {manifest_file}: {name!r}")
+            shard_path = manifest_file.parent / directory / name
+            raw = shard_path.read_bytes()
+            if len(raw) > MAX_FILE_BYTES:
+                raise ValueError(f"shard exceeds {MAX_FILE_BYTES} bytes: {shard_path}")
+            if hashlib.sha256(raw).hexdigest() != shard.get("sha256"):
+                raise ValueError(f"shard checksum mismatch: {shard_path}")
+            shard_count = 0
+            for line in raw.splitlines():
+                if not line:
+                    continue
+                yield json.loads(line)
+                shard_count += 1
+                total_records += 1
+            if shard_count != int(shard.get("records", -1)):
+                raise ValueError(f"shard record-count mismatch: {shard_path}")
+        if total_records != int(manifest.get("record_count", -1)):
+            raise ValueError(f"document record-count mismatch: {manifest_file}")
+    yield from _iter_delta_records(path, collection_key)
 
     if manifest_file.stat().st_size > MAX_FILE_BYTES:
         raise ValueError(f"shard manifest exceeds {MAX_FILE_BYTES} bytes: {manifest_file}")
@@ -140,8 +218,16 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
     manifest_file = manifest_path(path)
     if not manifest_file.exists():
         if path.exists():
-            return json.loads(path.read_text(encoding="utf-8"))
-        return default if default is not None else {collection_key: []}
+            result = json.loads(path.read_text(encoding="utf-8"))
+        else:
+            result = dict(default) if default is not None else {collection_key: []}
+        if not isinstance(result.get(collection_key, []), list):
+            raise ValueError(f"document collection {collection_key!r} is not a list: {path}")
+        delta = _read_delta_manifest(path, collection_key)
+        if delta:
+            result.update(delta.get("metadata", {}))
+            result[collection_key].extend(_iter_delta_records(path, collection_key))
+        return result
 
     if manifest_file.stat().st_size > MAX_FILE_BYTES:
         raise ValueError(f"shard manifest exceeds {MAX_FILE_BYTES} bytes: {manifest_file}")
@@ -176,6 +262,10 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
         raise ValueError(f"invalid metadata in {manifest_file}")
     result = dict(metadata)
     result[collection_key] = records
+    delta = _read_delta_manifest(path, collection_key)
+    if delta:
+        result.update(delta.get("metadata", {}))
+        result[collection_key].extend(_iter_delta_records(path, collection_key))
     return result
 
 
@@ -295,3 +385,109 @@ def write_document(path: Path, payload: dict, collection_key: str, *, lease_requ
             else:
                 shutil.rmtree(staging, ignore_errors=True)
         raise
+
+def append_document_records(
+    path: Path,
+    payload_metadata: dict,
+    collection_key: str,
+    records: list[dict],
+    checkpoint_index: int,
+    *,
+    lease_required: bool = True,
+) -> dict:
+    """Append one immutable, checksummed review delta and atomically advance its manifest.
+
+    Segment files are content-addressed by checkpoint and payload hash. A crash
+    before the manifest swap leaves only an ignored orphan; retrying the same
+    checkpoint cannot corrupt the currently committed delta view.
+    """
+    path = Path(path)
+    if checkpoint_index < 0:
+        raise ValueError("checkpoint index must be non-negative")
+    if not isinstance(payload_metadata, dict) or not isinstance(records, list):
+        raise ValueError("delta metadata and records must be dictionary/list values")
+    directory_name = path.name + ".delta"
+    directory = path.parent / directory_name
+    _assert_document_lease(directory, lease_required)
+    directory.mkdir(parents=True, exist_ok=True)
+    _assert_document_lease(directory, lease_required)
+
+    manifest_file = delta_manifest_path(path)
+    previous = _read_delta_manifest(path, collection_key) or {
+        "schema_version": 1,
+        "format": "jsonl-delta-v1",
+        "logical_path": path.name,
+        "collection_key": collection_key,
+        "delta_directory": directory_name,
+        "metadata": {},
+        "segments": [],
+    }
+    if previous.get("delta_directory") != directory_name:
+        raise ValueError("delta directory identity changed unexpectedly")
+
+    segments = list(previous.get("segments", []))
+    if records:
+        chunks = []
+        buffer = bytearray()
+        for record in records:
+            line = _compact_bytes(record) + b"\\n"
+            if len(line) > MAX_FILE_BYTES:
+                raise ValueError("one delta record exceeds the 50 MiB single-file limit")
+            if buffer and len(buffer) + len(line) > SHARD_TARGET_BYTES:
+                chunks.append(bytes(buffer))
+                buffer = bytearray()
+            buffer.extend(line)
+        if buffer:
+            chunks.append(bytes(buffer))
+
+        replacements = []
+        for part, raw in enumerate(chunks):
+            digest = hashlib.sha256(raw).hexdigest()
+            name = f"batch-{checkpoint_index:012d}-{part:03d}-{digest[:16]}.jsonl"
+            segment_path = directory / name
+            if not segment_path.exists():
+                _atomic_write(segment_path, raw, lease_required=lease_required)
+            elif hashlib.sha256(segment_path.read_bytes()).hexdigest() != digest:
+                raise ValueError(f"immutable delta segment collision: {segment_path}")
+            replacements.append({
+                "checkpoint_index": checkpoint_index,
+                "file": name,
+                "records": len(raw.splitlines()),
+                "bytes": len(raw),
+                "sha256": digest,
+            })
+        segments = [item for item in segments if int(item.get("checkpoint_index", -1)) != checkpoint_index]
+        segments.extend(replacements)
+        segments.sort(key=lambda item: (int(item.get("checkpoint_index", -1)), item.get("file", "")))
+
+    manifest = dict(previous)
+    manifest["metadata"] = dict(payload_metadata)
+    manifest["segments"] = segments
+    manifest_bytes = (json.dumps(manifest, ensure_ascii=False, indent=2) + "\\n").encode("utf-8")
+    if len(manifest_bytes) > MAX_FILE_BYTES:
+        raise ValueError("delta manifest exceeds the 50 MiB single-file limit")
+    _atomic_write(manifest_file, manifest_bytes, lease_required=lease_required)
+    return {
+        "storage": "jsonl-delta-v1",
+        "checkpoint_index": checkpoint_index,
+        "records": len(records),
+        "segments": len(segments),
+        "bytes": sum(int(item.get("bytes", 0)) for item in segments),
+    }
+
+
+def clear_document_delta(path: Path, collection_key: str, *, lease_required: bool = True) -> None:
+    """Remove the delta manifest first; orphaned immutable segments are harmless."""
+    path = Path(path)
+    manifest_file = delta_manifest_path(path)
+    if not manifest_file.exists():
+        return
+    _assert_document_lease(manifest_file, lease_required)
+    manifest = _read_delta_manifest(path, collection_key)
+    manifest_file.unlink()
+    if manifest:
+        directory = path.parent / str(manifest["delta_directory"])
+        if directory.exists():
+            _assert_document_lease(directory, lease_required)
+            shutil.rmtree(directory)
+\n
