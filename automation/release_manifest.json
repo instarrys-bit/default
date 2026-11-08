@@ -158,7 +158,7 @@
     },
     "automation_state_restore": {
       "path": "scripts/restore_automation_state.py",
-      "git_blob_sha": "8b33e2056892159338bf3fd07f7886f4d1c1d689"
+      "git_blob_sha": "ebf7053b9dee13fcc1a29f563206aea904daa235"
     },
     "production_control": {
       "path": "automation/production_control.json",

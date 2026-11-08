@@ -6,6 +6,23 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from restore_automation_state import PUBLISH_FILES, restore_state, restore_publish_outputs
 
 class RestoreAutomationStateTests(unittest.TestCase):
+    def setup_publish_baseline(self, repo):
+        config = b"[General]\\n[Rule]\\n[Host]\\n"
+        config_path = repo / "modules" / "uu.conf"
+        config_path.parent.mkdir(parents=True, exist_ok=True)
+        config_path.write_bytes(config)
+        import hashlib, json
+        blob_sha = hashlib.sha1(b"blob " + str(len(config)).encode("ascii") + bytes([0]) + config).hexdigest()
+        policy = {"managed_config_guard": {
+            "path": "modules/uu.conf",
+            "approved_git_blob_sha": blob_sha,
+            "content_immutable_to_automation": True,
+            "content_protection": {"automation_may_modify_content": False}
+        }}
+        policy_path = repo / "sources" / "policy.json"
+        policy_path.parent.mkdir(parents=True, exist_ok=True)
+        policy_path.write_text(json.dumps(policy), encoding="utf-8")
+
     def make_archive(self, path, entries):
         with tarfile.open(path, "w:gz") as tar:
             for name, content in entries:
@@ -110,6 +127,9 @@ class RestoreAutomationStateTests(unittest.TestCase):
     def test_publish_restore_copies_only_allowlisted_outputs_and_rejects_config(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp); archive=root/"audit.tar.gz"; repo=root/"repo"
+            self.setup_publish_baseline(repo)
+            config_before=(repo/"modules/uu.conf").read_bytes()
+            policy_before=(repo/"sources/policy.json").read_bytes()
             self.make_archive(archive, [
                 ("sources/policy.json", "{}"),
                 ("reports/project-status.md", "ok"),
@@ -119,12 +139,16 @@ class RestoreAutomationStateTests(unittest.TestCase):
             ])
             with self.assertRaisesRegex(ValueError, "owner-managed read-only config"):
                 restore_publish_outputs(archive, repo)
-            self.assertFalse((repo/"modules/uu.conf").exists())
-            self.assertFalse((repo/"sources/policy.json").exists())
+            self.assertEqual((repo/"modules/uu.conf").read_bytes(), config_before)
+            self.assertEqual((repo/"sources/policy.json").read_bytes(), policy_before)
+            self.assertFalse((repo/"rulesets/direct.list").exists())
 
     def test_publish_restore_copies_only_rulesets_and_ignores_other_outputs(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp); archive=root/"audit.tar.gz"; repo=root/"repo"
+            self.setup_publish_baseline(repo)
+            config_before=(repo/"modules/uu.conf").read_bytes()
+            policy_before=(repo/"sources/policy.json").read_bytes()
             self.make_archive(archive, [
                 ("sources/policy.json", "{}"),
                 ("reports/project-status.md", "ok"),
@@ -138,7 +162,8 @@ class RestoreAutomationStateTests(unittest.TestCase):
             self.assertEqual(result["restored_files"], 1)
             self.assertTrue((repo/"rulesets/direct.list").exists())
             self.assertFalse((repo/"reports/project-status.md").exists())
-            self.assertFalse((repo/"sources/policy.json").exists())
+            self.assertEqual((repo/"modules/uu.conf").read_bytes(), config_before)
+            self.assertEqual((repo/"sources/policy.json").read_bytes(), policy_before)
             self.assertFalse((repo/"sources/source_assessments.json.manifest.json").exists())
             self.assertFalse((repo/"sources/source_assessments.json.parts-abcd/part-000000.jsonl").exists())
             lease.assert_called_once_with("rulesets/direct.list")
@@ -146,7 +171,7 @@ class RestoreAutomationStateTests(unittest.TestCase):
     def test_publish_restore_removes_legacy_monolith_when_manifest_is_present(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp); archive=root/"audit.tar.gz"; repo=root/"repo"
-            (repo/"sources").mkdir(parents=True)
+            self.setup_publish_baseline(repo)
             (repo/"sources/discovered_sources.json").write_text("legacy", encoding="utf-8")
             self.make_archive(archive, [("sources/discovered_sources.json.manifest.json", "{}")])
             restore_publish_outputs(archive, repo)
@@ -154,6 +179,30 @@ class RestoreAutomationStateTests(unittest.TestCase):
             self.assertFalse((repo/"sources/discovered_sources.json.manifest.json").exists())
 
 
+
+    def test_publish_preflight_blocks_baseline_mismatch_before_any_restore(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp); archive=root/"audit.tar.gz"; repo=root/"repo"
+            self.setup_publish_baseline(repo)
+            config=repo/"modules/uu.conf"
+            config.write_bytes(config.read_bytes()+b"# owner changed\\n")
+            self.make_archive(archive, [("rulesets/direct.list", "DOMAIN,example.com\\n")])
+            with self.assertRaisesRegex(ValueError, "publish preflight blocked before repository mutation"):
+                restore_publish_outputs(archive, repo)
+            self.assertFalse((repo/"rulesets/direct.list").exists())
+
+    def test_publish_preflight_requires_explicit_config_read_only_policy(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp); archive=root/"audit.tar.gz"; repo=root/"repo"
+            self.setup_publish_baseline(repo)
+            policy_path=repo/"sources/policy.json"
+            import json
+            policy=json.loads(policy_path.read_text(encoding="utf-8"))
+            policy["managed_config_guard"]["content_protection"]["automation_may_modify_content"]=True
+            policy_path.write_text(json.dumps(policy), encoding="utf-8")
+            self.make_archive(archive, [("rulesets/direct.list", "DOMAIN,example.com\\n")])
+            with self.assertRaisesRegex(ValueError, "explicit read-only protection"):
+                restore_publish_outputs(archive, repo)
 
     def test_publish_allowlist_is_rulesets_only(self):
         from restore_automation_state import PUBLISH_DIR_PREFIXES
