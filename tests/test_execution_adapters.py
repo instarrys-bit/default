@@ -86,6 +86,12 @@ class ExecutionAdapterTests(unittest.TestCase):
         self.assertEqual(audit_adapter["allowed_callers"], ["workflow_automation_watchdog"])
         self.assertEqual(audit_program["orchestration"]["max_attempts"], 2)
         self.assertEqual(audit_adapter["retry"]["max_attempts"], 1)
+        assessment_program = next(item for item in registry["programs"] if item["id"] == "script_assess_sources")
+        assessment_adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "script_assess_sources")
+        self.assertEqual(assessment_program["orchestration"]["max_attempts"], 2)
+        self.assertEqual(assessment_program["orchestration"]["timeout_seconds"], 480)
+        self.assertEqual(assessment_adapter["timeout_seconds"], 300)
+        self.assertEqual(assessment_adapter["retry"]["max_attempts"], 2)
 
     def test_valid_minimal_inventory(self):
         root, ap, rp, _ = self.make_repo()
