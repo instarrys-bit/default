@@ -28,21 +28,21 @@ DISCOVERY_PIPELINE_REVISION_PATHS = (
 
 
 def discovery_pipeline_revision(root: Path | None = None) -> str:
-    \"\"\"Fingerprint every implementation and contract in the independent source DAG.
+    """Fingerprint every implementation and contract in the independent source DAG.
 
     The daily Discovery idempotency key must change when queue, scheduler,
     handoff, fencing, Assessment, or verification code changes—not only when
     the producer script changes. This permits one fresh same-day run after a
     DAG implementation change while preserving deduplication for an unchanged
     pipeline revision.
-    \"\"\"
+    """
     repository_root = Path(root).resolve() if root is not None else Path(__file__).resolve().parents[1]
     digest = hashlib.sha256()
     for relative in DISCOVERY_PIPELINE_REVISION_PATHS:
         path = (repository_root / relative).resolve()
         if not path.is_relative_to(repository_root) or not path.is_file():
             raise ValueError(f"Discovery pipeline revision input is missing or unsafe: {relative}")
-        digest.update(relative.encode("utf-8") + b"\\0")
+        digest.update(relative.encode("utf-8") + b"\0")
         digest.update(hashlib.sha256(path.read_bytes()).digest())
     return digest.hexdigest()[:12]
 
