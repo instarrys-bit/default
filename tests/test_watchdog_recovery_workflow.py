@@ -522,6 +522,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("handoff_state == 'assessment_retry_required'", enqueue_assessment)
         self.assertIn('source-assessment:$SOURCE_RUN_ID:parser-v2', enqueue_assessment)
         self.assertIn('recovery:1', enqueue_assessment)
+        self.assertIn('recovery:2', enqueue_assessment)
+        self.assertIn('{max_urls:4,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}', enqueue_assessment)
         self.assertIn("handoff_state == ''", enqueue_discovery)
         self.assertNotIn("parser-v2", resolver)
 if __name__ == "__main__":
