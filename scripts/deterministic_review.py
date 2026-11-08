@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import hashlib,json,re,sys
+import hashlib,json,re,sys,time
 from functools import lru_cache
 from pathlib import Path
 from datetime import datetime,timezone
@@ -214,10 +214,21 @@ def inspect(domain,rules,conditional,base,protected,candidate_policy=None,candid
     candidate_scope = "suffix_candidate" if candidate_suffix else "exact_candidate"
 
     # Compare complete scopes only. No first-match winner or rule ordering is used.
-    covering = [
-        rule for rule in rules.rules
-        if rule.policy != "REJECT" and scope_covers_candidate(candidate_scope, domain, rule.kind, rule.domain)
-    ]
+    # Use the prebuilt exact/suffix indexes instead of scanning every config
+    # rule for every candidate. Keep line ordering for byte-stable audit reasons.
+    if candidate_suffix:
+        covering = [
+            rule
+            for parent in ('.'.join(domain.split('.')[i:]) for i in range(len(domain.split('.'))))
+            for rule in rules.suffix.get(parent, [])
+            if rule.policy != "REJECT"
+        ]
+    else:
+        covering = [
+            rule for rule in rules.matches_host(domain)
+            if rule.policy != "REJECT"
+        ]
+    covering.sort(key=lambda rule: rule.line)
     if covering:
         policies = {rule.policy for rule in covering}
         evidence = "; ".join(
@@ -374,6 +385,8 @@ def main():
     cursor_state=json.loads(CURSOR.read_text(encoding="utf-8")) if CURSOR.exists() else {}
     start_index=resume_index(cursor_state,snapshot_sha256,len(candidates))
     batch_size=5000
+    review_started=time.monotonic()
+    processed_since_resume=0
     for candidate_index,item in enumerate(candidates[start_index:],start=start_index):
         domain=str(item.get("domain","")).lower().rstrip(".")
         if not DOMAIN_RE.fullmatch(domain): fail("invalid candidate domain: "+domain)
@@ -468,6 +481,25 @@ def main():
             # Checkpoints need not be sorted; the final publication is sorted once.
             write_document(OUTPUT,{"schema_version":3,"engine":"deterministic-domain-audit/4.1","updated_at":now,"source_snapshot":collected.get("sources",[]),"run_counts":run_counts,"counts":partial_counts,"reviews":list(review_map.values())},"reviews",lease_required=True)
             atomic_json(CURSOR,{**checkpoint(snapshot_sha256,len(candidates),candidate_index+1,batch_size),"updated_at":now,"last_checkpoint_domain":domain})
+            processed_since_resume=candidate_index+1-start_index
+            elapsed=max(time.monotonic()-review_started,0.001)
+            rate=processed_since_resume/elapsed
+            remaining=max(len(candidates)-(candidate_index+1),0)
+            eta=remaining/rate if rate>0 else None
+            print(
+                "Review progress: "
+                + json.dumps({
+                    "completed": candidate_index+1,
+                    "total": len(candidates),
+                    "resumed_from": start_index,
+                    "processed_this_run": processed_since_resume,
+                    "rate_per_second": round(rate,2),
+                    "elapsed_seconds": round(elapsed,1),
+                    "eta_seconds": round(eta,1) if eta is not None else None,
+                    "run_counts": run_counts,
+                },ensure_ascii=False,sort_keys=True),
+                flush=True,
+            )
     reviews=sorted(review_map.values(),key=lambda x:x["domain"])
     total_counts={}
     for item in reviews: total_counts[item["status"]]=total_counts.get(item["status"],0)+1
