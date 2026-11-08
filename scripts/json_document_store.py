@@ -420,7 +420,7 @@ def append_document_records(
         chunks = []
         buffer = bytearray()
         for record in records:
-            line = _compact_bytes(record) + b"\\n"
+            line = _compact_bytes(record) + bytes([10])
             if len(line) > MAX_FILE_BYTES:
                 raise ValueError("one delta record exceeds the 50 MiB single-file limit")
             if buffer and len(buffer) + len(line) > SHARD_TARGET_BYTES:
@@ -453,7 +453,7 @@ def append_document_records(
     manifest = dict(previous)
     manifest["metadata"] = dict(payload_metadata)
     manifest["segments"] = segments
-    manifest_bytes = (json.dumps(manifest, ensure_ascii=False, indent=2) + "\\n").encode("utf-8")
+    manifest_bytes = json.dumps(manifest, ensure_ascii=False, indent=2).encode("utf-8") + bytes([10])
     if len(manifest_bytes) > MAX_FILE_BYTES:
         raise ValueError("delta manifest exceeds the 50 MiB single-file limit")
     _atomic_write(manifest_file, manifest_bytes, lease_required=lease_required)
