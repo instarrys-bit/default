@@ -187,14 +187,6 @@
     "source_activation": {
       "path": "scripts/auto_activate_sources.py",
       "git_blob_sha": "3d29ad9db23d6ab14dc78d5323303515abeeaebf"
-    },
-    "resource_write_set_inventory": {
-      "path": "automation/resource_write_sets.json",
-      "git_blob_sha": "302b627229fb28ef427278da861c959c2c56a488"
-    },
-    "production_workflow_map": {
-      "path": "automation/production_workflow_map.json",
-      "git_blob_sha": "d7b22106ac254edc41fabc3b86f7aa11424cd923"
     }
   },
   "compatibility": {
