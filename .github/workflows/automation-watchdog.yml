@@ -1537,7 +1537,47 @@ jobs:
           mkdir -p "$AUTOMATION_ARTIFACT_ROOT"
           queue_token="$GITHUB_TOKEN"
           unset GITHUB_TOKEN
-          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --token-stdin --repository "$GITHUB_REPOSITORY" --branch main --max-tasks 1 run-once | tee /tmp/task-scheduler-report.json
+          GITHUB_TOKEN="$queue_token" python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue_before_dispatch.json"
+          selected_task_id="$(python3 - <<'PY'
+          import json, sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from source_handoff_policy import classify_assessment_handoff
+
+          control = json.loads(Path("automation/production_control.json").read_text(encoding="utf-8"))
+          tasks = json.loads((Path(__import__("os").environ["RUNNER_TEMP"]) / "task_queue_before_dispatch.json").read_text(encoding="utf-8")).get("tasks", [])
+          if control.get("source_discovery_mode") != "independent":
+              print("")
+              raise SystemExit(0)
+          discoveries = [t for t in tasks if isinstance(t, dict) and t.get("target_program_id") == "workflow_source_discovery"]
+          latest = max(discoveries, key=lambda t: (str(t.get("created_at") or ""), str(t.get("task_id") or "")), default=None)
+          gate_open = False
+          if isinstance(latest, dict) and latest.get("status") == "SUCCEEDED":
+              evidence = ((latest.get("result") or {}).get("run_evidence") or {})
+              run_id = evidence.get("run_id")
+              if isinstance(run_id, int) and not isinstance(run_id, bool):
+                  run_id = str(run_id)
+              if isinstance(run_id, str) and run_id.isdigit():
+                  gate_open = classify_assessment_handoff(tasks, run_id).get("state") == "already_assessed"
+          if gate_open:
+              print("")
+              raise SystemExit(0)
+          safe = [t for t in tasks if isinstance(t, dict) and t.get("target_program_id") != "workflow_auto_sync" and t.get("status") in {"QUEUED", "CLAIMED", "VERIFYING", "SUCCEEDED"}]
+          source = [t for t in safe if t.get("target_program_id") in {"workflow_source_discovery", "script_assess_sources"}]
+          candidates = source or safe
+          if not candidates:
+              print("")
+          else:
+              rank = {"QUEUED": 0, "CLAIMED": 1, "VERIFYING": 1, "SUCCEEDED": 2}
+              chosen = min(candidates, key=lambda t: (rank.get(t.get("status"), 9), -int(t.get("priority", 0) or 0), str(t.get("created_at") or ""), str(t.get("task_id") or "")))
+              print(chosen.get("task_id") or "")
+          PY
+          )"
+          if [ -n "$selected_task_id" ]; then
+            printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --token-stdin --repository "$GITHUB_REPOSITORY" --branch main --task-id "$selected_task_id" --max-tasks 1 run-once | tee /tmp/task-scheduler-report.json
+          else
+            printf '%s\n' '{"processed":[],"scheduler_skipped":"no safe non-production task while the independent Assessment gate is closed"}' | tee /tmp/task-scheduler-report.json
+          fi
           GITHUB_TOKEN="$queue_token" python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue_after.json"
           unset queue_token
           cat /tmp/task-scheduler-report.json >> "$GITHUB_STEP_SUMMARY"
