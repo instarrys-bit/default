@@ -29,9 +29,10 @@ on:
       - "Shadowrocket Source Discovery (Watchdog)"
       - "Validate Shadowrocket config against user baseline"
       - "Shadowrocket self-healing agent"
+      - "Automation task manual"
     types: [completed]
   schedule:
-    - cron: "17 * * * *"
+    - cron: "*/5 * * * *"
 permissions:
   contents: read
   actions: read

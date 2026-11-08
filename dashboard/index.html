@@ -256,7 +256,7 @@ async function load(){try{
   '<div class="task '+(queued?"active":"")+'"><div class="task-label">等待处理</div><div class="task-value">'+n(queued)+'</div><div class="task-state">QUEUED</div></div>'+
   '<div class="task '+(running||verifying?"active":"")+'"><div class="task-label">执行 / 核验</div><div class="task-value">'+n(running+verifying)+'</div><div class="task-state">RUNNING</div></div>'+
   '<div class="task '+(done?"done":"")+'"><div class="task-label">已完成任务</div><div class="task-value">'+n(done)+'</div><div class="task-state">SUCCEEDED</div></div></div>'+
-  '<div class="queue-foot"><span>纳入统计<b>'+n(runtime.total)+'</b></span><span>未完成<b>'+n(active)+'</b></span><span>失败暂停<b style="color:'+(failed?"var(--red)":"#dce5f7")+'">'+n(failed)+'</b></span><span>取消记录<b>'+n(cancelled)+'</b></span><span>最近监控<b>'+fmtTime(a.last_run_at)+'</b></span><span>生产派发<b>'+(d.production.dispatch_mode==="enabled"?"开启":d.production.dispatch_mode==="hold"?"暂停":"未知") +'</b></span></div>';
+  '<div class="queue-foot"><span>纳入统计<b>'+n(runtime.total)+'</b></span><span>未完成<b>'+n(active)+'</b></span><span>失败暂停<b style="color:'+(failed?"var(--red)":"#dce5f7")+'">'+n(failed)+'</b></span><span>取消记录<b>'+n(cancelled)+'</b></span><span>生产派发<b>'+(d.production.dispatch_mode==="enabled"?"开启":d.production.dispatch_mode==="hold"?"暂停":"未知") +'</b></span></div>';
  const published=Number(d.lifecycle.published_rule_count)||0,milestone=Number(d.lifecycle.next_milestone)||0,progress=pct(published,milestone);
  const lifecycleStatus=d.lifecycle.status==="normal_incremental"?"按新增数量逐步检查":d.lifecycle.status||"暂时无法确认";
  const lastReview=d.lifecycle.latest_review_status==="not_due"?"尚未达到检查条件":d.lifecycle.latest_review_status||"暂无记录";
