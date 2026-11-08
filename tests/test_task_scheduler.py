@@ -269,6 +269,100 @@ class TaskSchedulerTests(unittest.TestCase):
         self.assertEqual(self.store.document["tasks"][0]["requester_program_id"], "workflow_automation_watchdog")
         self.assertEqual(self.store.document["tasks"][0]["target_program_id"], "script_assess_sources")
 
+    def test_source_assessment_dead_letter_gets_one_provenance_bound_recovery(self):
+        source_root = self.root
+        (source_root / "sources").mkdir(exist_ok=True)
+        artifact = source_root / "sources" / "discovered_sources.json"
+        artifact.write_text('{"candidates":[]}\\n', encoding="utf-8")
+        registry = {"programs": [
+            {"id": "workflow_automation_watchdog", "capabilities": ["top_level_supervision"]},
+            {"id": "script_assess_sources", "capabilities": ["source_assessment"],
+             "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
+                               "max_attempts": 1, "timeout_seconds": 480}},
+        ]}
+        adapters = {"schema_version": 1, "adapters": [{
+            "target_program_id": "script_assess_sources", "enabled": True,
+            "adapter_type": "python_cli", "interface_status": "reviewed",
+            "input_contract": {"type": "object", "required": ["predecessor"],
+                               "properties": {"predecessor": {"type": "object"}}},
+        }]}
+        from task_scheduler import read_only_resource_digests
+        digest = read_only_resource_digests(source_root, ["sources/discovered_sources.json"])["sources/discovered_sources.json"]
+        payload = {"max_urls": 1, "max_file_bytes": 1000000, "max_total_bytes": 1000000,
+                   "predecessor": {
+                       "program_id": "script_discover_sources",
+                       "workflow_name": "Shadowrocket Source Discovery (Watchdog)",
+                       "workflow_run_id": "41770000002",
+                       "workflow_head_sha": "b" * 40,
+                       "artifact_path": "sources/discovered_sources.json",
+                       "artifact_sha256": digest,
+                   }}
+        base = enqueue_source_assessment_task(
+            self.store, registry, adapters,
+            idempotency_key="source-assessment:41770000002:parser-v2",
+            input_payload=payload, root=source_root,
+        )
+        self.store.document["tasks"][0]["status"] = "DEAD_LETTER"
+        self.store.document["tasks"][0]["attempts"] = self.store.document["tasks"][0]["max_attempts"]
+        self.store.document["tasks"][0]["state_history"].extend(["CLAIMED", "FAILED", "DEAD_LETTER"])
+        self.store.document["tasks"][0]["last_error"] = {"type": "test_dead_letter"}
+        self.store.document["revision"] += 1
+        recovery = enqueue_source_assessment_task(
+            self.store, registry, adapters,
+            idempotency_key="source-assessment:41770000002:parser-v2:recovery:1",
+            input_payload=payload, root=source_root,
+        )
+        self.assertTrue(recovery["created"])
+        self.assertEqual(recovery["status"], "QUEUED")
+        self.assertEqual(self.store.document["tasks"][1]["input"], payload)
+        self.assertEqual(self.store.document["tasks"][1]["idempotency_key"],
+                         "source-assessment:41770000002:parser-v2:recovery:1")
+        with self.assertRaisesRegex(ValueError, "idempotency key must be bound"):
+            enqueue_source_assessment_task(
+                self.store, registry, adapters,
+                idempotency_key="source-assessment:41770000002:parser-v2:recovery:2",
+                input_payload=payload, root=source_root,
+            )
+
+    def test_source_assessment_recovery_requires_dead_lettered_base(self):
+        source_root = self.root
+        (source_root / "sources").mkdir(exist_ok=True)
+        artifact = source_root / "sources" / "discovered_sources.json"
+        artifact.write_text('{"candidates":[]}\\n', encoding="utf-8")
+        registry = {"programs": [
+            {"id": "workflow_automation_watchdog", "capabilities": ["top_level_supervision"]},
+            {"id": "script_assess_sources", "capabilities": ["source_assessment"],
+             "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
+                               "max_attempts": 1, "timeout_seconds": 480}},
+        ]}
+        adapters = {"schema_version": 1, "adapters": [{
+            "target_program_id": "script_assess_sources", "enabled": True,
+            "adapter_type": "python_cli", "interface_status": "reviewed",
+            "input_contract": {"type": "object", "required": ["predecessor"],
+                               "properties": {"predecessor": {"type": "object"}}},
+        }]}
+        from task_scheduler import read_only_resource_digests
+        digest = read_only_resource_digests(source_root, ["sources/discovered_sources.json"])["sources/discovered_sources.json"]
+        payload = {"predecessor": {
+            "program_id": "script_discover_sources",
+            "workflow_name": "Shadowrocket Source Discovery (Watchdog)",
+            "workflow_run_id": "41770000003",
+            "workflow_head_sha": "c" * 40,
+            "artifact_path": "sources/discovered_sources.json",
+            "artifact_sha256": digest,
+        }}
+        enqueue_source_assessment_task(
+            self.store, registry, adapters,
+            idempotency_key="source-assessment:41770000003:parser-v2",
+            input_payload=payload, root=source_root,
+        )
+        with self.assertRaisesRegex(ValueError, "requires its exact base task to be DEAD_LETTER"):
+            enqueue_source_assessment_task(
+                self.store, registry, adapters,
+                idempotency_key="source-assessment:41770000003:parser-v2:recovery:1",
+                input_payload=payload, root=source_root,
+            )
+
     def test_source_assessment_enqueue_rejects_stale_predecessor_digest(self):
         source_root = self.root
         (source_root / "sources").mkdir(exist_ok=True)

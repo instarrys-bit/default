@@ -1372,7 +1372,7 @@ jobs:
           PY
 
       - name: Enqueue source assessment after successful discovery workflow
-        if: ${{ steps.resolve-discovery-run.outputs.run_id != '' && steps.resolve-discovery-run.outputs.handoff_state == 'ready' && steps.verify-discovery-artifact.outputs.valid == 'true' }}
+        if: ${{ steps.resolve-discovery-run.outputs.run_id != '' && (steps.resolve-discovery-run.outputs.handoff_state == 'ready' || steps.resolve-discovery-run.outputs.handoff_state == 'assessment_retry_required') && steps.verify-discovery-artifact.outputs.valid == 'true' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -1380,6 +1380,7 @@ jobs:
           SOURCE_RUN_ID: ${{ steps.resolve-discovery-run.outputs.run_id }}
           SOURCE_HEAD_SHA: ${{ steps.resolve-discovery-run.outputs.head_sha }}
           SOURCE_WORKFLOW_NAME: Shadowrocket Source Discovery (Watchdog)
+          AUTOMATION_QUEUE_SNAPSHOT: ${{ runner.temp }}/task_queue.json
         run: |
           set -euo pipefail
           if [ "$SOURCE_DISCOVERY_MODE" != "independent" ]; then
@@ -1410,9 +1411,22 @@ jobs:
           fi
           predecessor="$(jq -cn             --arg program_id "script_discover_sources"             --arg workflow_name "$SOURCE_WORKFLOW_NAME"             --arg run_id "$SOURCE_RUN_ID"             --arg head_sha "$SOURCE_HEAD_SHA"             --arg artifact_path "sources/discovered_sources.json"             --arg artifact_sha256 "$artifact_sha"             '{program_id:$program_id,workflow_name:$workflow_name,workflow_run_id:$run_id,workflow_head_sha:$head_sha,artifact_path:$artifact_path,artifact_sha256:$artifact_sha256}')"
           task_input="$(jq -cn --argjson predecessor "$predecessor"             '{max_urls:20,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}')"
+          base_key="source-assessment:$SOURCE_RUN_ID:parser-v2"
+          assessment_status="$(jq -r --arg key "$base_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          recovery_key="$(jq -r --arg prefix "$base_key:recovery:" '[.tasks[]? | select((.idempotency_key // "") | startswith($prefix))] | last | .idempotency_key // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          if [ "$assessment_status" = "DEAD_LETTER" ]; then
+            if [ -n "$recovery_key" ]; then
+              echo "The single bounded Assessment recovery was already used ($recovery_key); no further automatic retry is permitted."
+              exit 0
+            fi
+            assessment_key="$base_key:recovery:1"
+          else
+            assessment_key="$base_key"
+          fi
+          echo "Assessment enqueue key: $assessment_key (base status: ${assessment_status:-none})"
           queue_token="$GITHUB_TOKEN"
           unset GITHUB_TOKEN
-          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py             --repository "$GITHUB_REPOSITORY" --branch main --token-stdin             --idempotency-key "source-assessment:$SOURCE_RUN_ID:parser-v2"             --priority 60 --input-json "$task_input" enqueue-source-assessment
+          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py             --repository "$GITHUB_REPOSITORY" --branch main --token-stdin             --idempotency-key "$assessment_key"             --priority 60 --input-json "$task_input" enqueue-source-assessment
           unset queue_token
 
       - name: Enqueue independent source discovery only after its authorization gate opens

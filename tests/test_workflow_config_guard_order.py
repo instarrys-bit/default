@@ -364,6 +364,18 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("if: ${{ false }}", canary)
 
 
+    def test_watchdog_recovers_dead_lettered_assessment_only_after_exact_artifact_verification(self):
+        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
+        start = watchdog.index("      - name: Enqueue source assessment after successful discovery workflow")
+        end = watchdog.index("      - name: Enqueue independent source discovery", start)
+        block = watchdog[start:end]
+        self.assertIn("handoff_state == 'assessment_retry_required'", block)
+        self.assertIn("steps.verify-discovery-artifact.outputs.valid == 'true'", block)
+        self.assertIn('assessment_status" = "DEAD_LETTER"', block)
+        self.assertIn('recovery:1', block)
+        self.assertIn("The single bounded Assessment recovery was already used", block)
+        self.assertIn("enqueue-source-assessment", block)
+
     def test_watchdog_reports_unknown_paths_without_repository_registry_writes(self):
         watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
         start = watchdog.index("            REVIEW_REQUIRED)")
