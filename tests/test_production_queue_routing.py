@@ -55,6 +55,9 @@ class ProductionQueueRoutingTests(unittest.TestCase):
         self.assertNotIn("workflow_request_intake", {item["target_program_id"] for item in adapters["adapters"]})
         watchdog = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("enqueue-auto-sync", watchdog)
+        production_inputs = json.loads((ROOT / "automation" / "production_inputs.json").read_text(encoding="utf-8"))
+        self.assertIn(".github/workflows/request-intake.yml", production_inputs["non_production_path_patterns"])
+        self.assertTrue((ROOT / "scripts" / "import_request_observations.py").exists())
 
     def test_auto_sync_requires_a_matching_persisted_watchdog_task(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
