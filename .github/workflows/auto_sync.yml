@@ -96,6 +96,15 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Resolve exact independent Discovery and Assessment artifacts
+        if: ${{ steps.source-mode.outputs.mode == 'independent' }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          python3 scripts/resolve_source_artifacts.py "$AUTOMATION_QUEUE_SNAPSHOT" "$RUNNER_TEMP/source-handoff"
+
       - name: Verify Watchdog-owned durable task dispatch
         env:
           GH_TOKEN: ${{ github.token }}

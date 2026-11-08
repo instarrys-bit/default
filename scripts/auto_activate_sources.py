@@ -66,7 +66,17 @@ def candidate_file(candidate: dict) -> dict | None:
 def activate(registry: dict, matrix: dict, now: str | None = None) -> tuple[dict, list[dict], list[dict]]:
     timestamp = now or datetime.now(timezone.utc).isoformat()
     existing = validate_registry(registry)
-    discovered_data = read_document(DISCOVERED, "candidates", {"candidates": []})
+    discovered_path = DISCOVERED
+    supplied_discovery_root = os.environ.get("AUTOMATION_SOURCE_DISCOVERY_ROOT", "").strip()
+    if supplied_discovery_root:
+        root = Path(supplied_discovery_root).resolve()
+        runner_temp = Path(os.environ.get("RUNNER_TEMP", tempfile.gettempdir())).resolve()
+        if not root.is_relative_to(runner_temp) or root == runner_temp:
+            raise ValueError("verified Discovery artifact root must remain beneath RUNNER_TEMP")
+        discovered_path = root / "sources/discovered_sources.json"
+        if not discovered_path.exists() and not discovered_path.with_name(discovered_path.name + ".manifest.json").exists():
+            raise FileNotFoundError("verified Discovery artifact is missing discovered_sources.json")
+    discovered_data = read_document(discovered_path, "candidates", {"candidates": []})
     discovered_by_repo = {str(x.get("repository", "")).lower(): x for x in discovered_data.get("candidates", [])}
     existing_publishers = {
         (str(source.get("classification", "")).upper(), str(source.get("publisher", "")))
@@ -82,6 +92,9 @@ def activate(registry: dict, matrix: dict, now: str | None = None) -> tuple[dict
         policy = str(candidate.get("policy", "")).upper()
         repository = str(candidate.get("repository", "")).strip()
         if policy not in POLICIES or not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repository):
+            continue
+        if policy == "REJECT":
+            decisions.append({"repository": repository, "policy": policy, "decision": "held_manual_approval_required", "reason": "new REJECT source admission is never automated; an explicit human approval and manual registry change are required"})
             continue
         if not candidate.get("activation_eligible") or candidate.get("archived"):
             decisions.append({"repository": repository, "policy": policy, "decision": "held", "reason": "policy evidence is not strong or publisher is archived"})

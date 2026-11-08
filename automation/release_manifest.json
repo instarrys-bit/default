@@ -24,11 +24,11 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "6dd9a18d13eb979c6981a9750ccde2e154d4508a"
+      "git_blob_sha": "ef5e37e02f9c691547bfd3c1c76c07c06b0e470f"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "346b12965d546fb2ecab31aa309d5acf2179fa5c"
+      "git_blob_sha": "7a048b44b09e6135736984ea3fdd6761231dabbb"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -78,19 +78,19 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "879a0aef9c1489e9d2aee22f7216cf678c8f3b31"
+      "git_blob_sha": "e94d7ff0aa33bc239abdece4182277cfa2a8bc6f"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "e56a9ebeb4f3ba131c1c8106e693902fa6a1a83b"
+      "git_blob_sha": "afce52f0125b81026d6821138024344c920bfcae"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "f7b63a706a102b443f3d572d0e162ae44a7699ba"
+      "git_blob_sha": "ceb65d7cfc1bedac205f9f455cfc9b8410b2234a"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "f46e92525fb5bc9a00a69086d61a2f4d6d702b0a"
+      "git_blob_sha": "640c072d46a34b98354c5133eda13a97bead060e"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -106,7 +106,7 @@
     },
     "production_input_manifest": {
       "path": "automation/production_inputs.json",
-      "git_blob_sha": "5a6c81450f4d05fdbc79c8ac8d076b7f19934c8b"
+      "git_blob_sha": "030135c42b714bdd7b4e18d0fa1957196335f19a"
     },
     "task_queue_store": {
       "path": "scripts/github_queue_store.py",
@@ -171,6 +171,22 @@
     "enterprise_ranking_catalog": {
       "path": "sources/external_intelligence_catalog.json",
       "git_blob_sha": "eb3132b24688b3fd3ec031cd3aacf7294d5e1fe0"
+    },
+    "source_artifact_resolver": {
+      "path": "scripts/resolve_source_artifacts.py",
+      "git_blob_sha": "0fddee7d9c95d11f4c0e88abee1f9f5bfc8ed45c"
+    },
+    "source_candidate_builder": {
+      "path": "scripts/build_source_candidates.py",
+      "git_blob_sha": "0bb219944b39dd530de307ea467e9f1aba0e7b9d"
+    },
+    "source_lineage_audit": {
+      "path": "scripts/audit_source_lineage.py",
+      "git_blob_sha": "e21c734bb63f22815114f6d2d4ca6454136cfce3"
+    },
+    "source_activation": {
+      "path": "scripts/auto_activate_sources.py",
+      "git_blob_sha": "59153ed15b66dd349884f27b8c2d761c0b8291a7"
     }
   },
   "compatibility": {

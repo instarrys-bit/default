@@ -96,6 +96,13 @@ class AutoActivationTests(unittest.TestCase):
         _, activated, _ = activate(base_registry(), {"candidates": [candidate(archived=True)]})
         self.assertEqual(activated, [])
 
+    @patch("auto_activate_sources.urlopen")
+    def test_new_reject_sources_always_require_human_approval(self, mocked_urlopen):
+        _, activated, decisions = activate(base_registry(), {"candidates": [candidate(repo="new/reject", policy="REJECT")]})
+        self.assertEqual(activated, [])
+        self.assertEqual(decisions[0]["decision"], "held_manual_approval_required")
+        mocked_urlopen.assert_not_called()
+
     def test_same_publisher_is_not_registered_twice(self):
         registry = base_registry()
         registry["sources"].append({"id":"existing-new","publisher":"new/direct","role":"independent_policy_corroboration","url":"https://raw.githubusercontent.com/new/direct/old/list","format":"domain-only","weight":0.4,"classification":"DIRECT","minimum_entries":1,"independence_group":"new/direct","lineage_status":"unverified","upstream_repositories":[]})

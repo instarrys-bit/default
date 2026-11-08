@@ -284,12 +284,13 @@
       "dynamic_children": [],
       "read_resources": [
         "sources/domain_sources.json",
-        "sources/discovered_sources.json"
+        "sources/discovered_sources.json",
+        "$RUNNER_TEMP/source-handoff/<discovery-run>/sources/discovered_sources.json (exact verified predecessor artifact)"
       ],
       "side_effects": [
         "Read-only lineage/reference audit; output is an audit report and does not promote source lineage to verified."
       ],
-      "evidence": "main() reads the active source registry and discovery document, then writes reports/source-lineage-audit.json.",
+      "evidence": "main() reads the active source registry and the exact verified Discovery artifact selected by resolve_source_artifacts.py when independent mode is enabled; otherwise it uses the repository baseline. It writes only reports/source-lineage-audit.json.",
       "lease_keys": [
         "logical/production-pipeline",
         "reports/source-lineage-audit.json"
@@ -452,12 +453,13 @@
       "read_resources": [
         "data/source_assessments_runtime.json (preferred when present)",
         "sources/source_assessments.json (fallback)",
-        "reports/source-lineage-audit.json"
+        "reports/source-lineage-audit.json",
+        "$RUNNER_TEMP/source-handoff/<assessment-run>/data/source_assessments_runtime.json (exact verified Assessment artifact; preferred in independent mode)"
       ],
       "side_effects": [
         "Builds non-activating source candidate matrix; no active source registry write."
       ],
-      "evidence": "main() selects runtime or persistent assessment input, reads lineage, then calls write_document(OUTPUT, result, 'candidates') and writes REPORT.",
+      "evidence": "assessment_input_path() uses AUTOMATION_SOURCE_ASSESSMENT_ROOT only when it resolves beneath RUNNER_TEMP, then reads the verified runtime assessment document; fallback remains the committed assessment history in monolithic mode. It reads lineage and writes the candidate matrix.",
       "write_boundary_fencing": "Exact source-candidate document lease and logical/production-pipeline serialize the shared logical document; report is run-local. Repository commits remain rulesets/** only.",
       "additional_serialized_writers": [],
       "additional_writer_boundary": "restore_automation_state may restore this file into the isolated audit workspace only; it is not published to the repository.",
@@ -1313,9 +1315,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "dfd9d4cb9687975a5d44ff8264d3c702f7428b9e",
-    "program_registry_blob_sha": "879a0aef9c1489e9d2aee22f7216cf678c8f3b31",
-    "execution_adapters_blob_sha": "e56a9ebeb4f3ba131c1c8106e693902fa6a1a83b",
+    "release_manifest_blob_sha": "27872ce03c65ebfcbdd57a9dd6f4492b38efb71c",
+    "program_registry_blob_sha": "e94d7ff0aa33bc239abdece4182277cfa2a8bc6f",
+    "execution_adapters_blob_sha": "afce52f0125b81026d6821138024344c920bfcae",
     "added_after_release_baseline": true,
     "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #315 checkpoint. Repository mutations are governed per capability by explicit exclusive resource_contract.resource_keys; control-plane metadata is separately inventoried. The production auto_sync publisher stages only the three rule-set deliverables under rulesets/**. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07"
@@ -1347,7 +1349,7 @@
       "program_id": "script_auto_activate_sources",
       "source": "scripts/auto_activate_sources.py",
       "classification": "runner_local_effective_source_registry_artifact",
-      "evidence": "The workflow-invoked script reads sources/domain_sources.json, source_candidates.json and discovered_sources.json as read-only inputs. It writes the merged effective registry, activation log and report only beneath RUNNER_TEMP; exports the exact registry/report paths through GITHUB_ENV; collect_domains.py consumes that validated runner-local registry. No repository file, committed source registry, ruleset or modules/uu.conf is modified by this script."
+      "evidence": "The workflow-invoked script reads sources/domain_sources.json and source_candidates.json as read-only inputs, plus the exact verified Discovery artifact under RUNNER_TEMP when independent mode is enabled. It may add only eligible DIRECT/PROXY sources to a run-local effective registry. Every newly discovered REJECT source is held for explicit human approval and never auto-activated. Registry/log/report outputs remain under RUNNER_TEMP; collect_domains.py consumes the validated run-local registry. No repository file, ruleset or modules/uu.conf is modified."
     },
     {
       "program_id": "script_build_dashboard_snapshot",
@@ -1392,10 +1394,22 @@
       "evidence": "The script reads modules/uu.conf, sources/policy.json and release/workflow inventory inputs. It verifies owner-authored config changes and constructs proposed metadata updates in memory, then writes only $RUNNER_TEMP/config-baseline-proposal.json. The auto_sync workflow uploads that proposal as an immutable run artifact before baseline verification fails closed. It never writes sources/policy.json, release_manifest.json, production_workflow_map.json, resource_write_sets.json or modules/uu.conf."
     },
     {
+      "program_id": "script_resolve_source_artifacts",
+      "source": "scripts/resolve_source_artifacts.py",
+      "classification": "runner_local_verified_artifact_resolver",
+      "evidence": "The resolver reads the durable task queue and immutable GitHub Actions artifact metadata, downloads only the exact predecessor-bound Discovery and Assessment archives, verifies producer/task identities and complete SHA-256 manifests, and extracts only beneath RUNNER_TEMP. Its filesystem writes and GITHUB_ENV/GITHUB_STEP_SUMMARY outputs are run-local; it never writes repository files, source registries, rulesets or modules/uu.conf."
+    },
+    {
       "program_id": "script_review_cursor",
       "source": "scripts/review_cursor.py",
       "classification": "pure_library_no_repository_mutation",
       "evidence": "Cursor parsing/hash/checkpoint helper functions only; no direct file mutation sites."
+    },
+    {
+      "program_id": "script_source_handoff_policy",
+      "source": "scripts/source_handoff_policy.py",
+      "classification": "pure_deterministic_policy_helper_no_side_effects",
+      "evidence": "classify_assessment_handoff() only reads the supplied in-memory task list and workflow run ID and returns a deterministic classification. It performs no filesystem, network, GitHub API, queue mutation, workflow dispatch, or repository write."
     },
     {
       "program_id": "script_source_registry",
@@ -1474,12 +1488,6 @@
       "source": "scripts/watchdog_recovery_policy.py",
       "classification": "pure_policy_library_no_repository_mutation",
       "evidence": "Computes bounded recovery eligibility from supplied run metadata; no filesystem or external write calls."
-    },
-    {
-      "program_id": "script_source_handoff_policy",
-      "source": "scripts/source_handoff_policy.py",
-      "classification": "pure_deterministic_policy_helper_no_side_effects",
-      "evidence": "classify_assessment_handoff() only reads the supplied in-memory task list and workflow run ID and returns a deterministic classification. It performs no filesystem, network, GitHub API, queue mutation, workflow dispatch, or repository write."
     }
   ],
   "control_plane_side_effects": [
@@ -1518,7 +1526,7 @@
   "direct_mutation_scan": {
     "status": "partial_python_direct_callsite_scan",
     "scanner": "tests/test_transitive_write_site_inventory.py",
-    "registered_component_count": 53,
+    "registered_component_count": 54,
     "mutation_api_families": [
       "Path/open write modes",
       "Path write_text/write_bytes/unlink/mkdir/replace/rename/touch",

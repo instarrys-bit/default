@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "346b12965d546fb2ecab31aa309d5acf2179fa5c",
-  "registry_blob_sha": "879a0aef9c1489e9d2aee22f7216cf678c8f3b31",
+  "workflow_blob_sha": "7a048b44b09e6135736984ea3fdd6761231dabbb",
+  "registry_blob_sha": "e94d7ff0aa33bc239abdece4182277cfa2a8bc6f",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 5,
-    "step_count": 55,
+    "step_count": 56,
     "independent_python_dispatch_enabled": true,
     "independent_workflow_count": 1
   },
@@ -38,164 +38,168 @@
           "order": 4
         },
         {
-          "name": "Verify Watchdog-owned durable task dispatch",
+          "name": "Resolve exact independent Discovery and Assessment artifacts",
           "order": 5
         },
         {
-          "name": "Verify live Watchdog resource lease before production audit",
+          "name": "Verify Watchdog-owned durable task dispatch",
           "order": 6
         },
         {
-          "name": "Register repository-owner-approved uu.conf changes (never edit the config)",
+          "name": "Verify live Watchdog resource lease before production audit",
           "order": 7
         },
         {
-          "name": "Detect runner-local config baseline proposal",
+          "name": "Register repository-owner-approved uu.conf changes (never edit the config)",
           "order": 8
         },
         {
-          "name": "Preserve config baseline proposal as immutable run artifact",
+          "name": "Detect runner-local config baseline proposal",
           "order": 9
         },
         {
-          "name": "Verify registered user config baseline",
+          "name": "Preserve config baseline proposal as immutable run artifact",
           "order": 10
         },
         {
-          "name": "Capture and verify the exact production input fingerprint",
+          "name": "Verify registered user config baseline",
           "order": 11
         },
         {
-          "name": "Stop stale audit before discovery and source downloads",
+          "name": "Capture and verify the exact production input fingerprint",
           "order": 12
         },
         {
-          "name": "Compile and run deterministic review tests",
+          "name": "Stop stale audit before discovery and source downloads",
           "order": 13
         },
         {
-          "name": "Discover candidate source repositories (non-activating)",
+          "name": "Compile and run deterministic review tests",
           "order": 14
         },
         {
-          "name": "Assess discovered rule-list syntax and policy claims",
+          "name": "Discover candidate source repositories (non-activating)",
           "order": 15
         },
         {
-          "name": "Preserve complete source assessment report",
+          "name": "Assess discovered rule-list syntax and policy claims",
           "order": 16
         },
         {
-          "name": "Restore prior high-volume automation state",
+          "name": "Preserve complete source assessment report",
           "order": 17
         },
         {
-          "name": "Remove published and queued rules that conflict with uu.conf",
+          "name": "Restore prior high-volume automation state",
           "order": 18
         },
         {
-          "name": "Import observed request hostnames as unclassified candidates",
+          "name": "Remove published and queued rules that conflict with uu.conf",
           "order": 19
         },
         {
-          "name": "Audit public source lineage and shared upstreams",
+          "name": "Import observed request hostnames as unclassified candidates",
           "order": 20
         },
         {
-          "name": "Audit domain-level policy-source overlap and contradictions",
+          "name": "Audit public source lineage and shared upstreams",
           "order": 21
         },
         {
-          "name": "Build automated source candidate and lineage matrix",
+          "name": "Audit domain-level policy-source overlap and contradictions",
           "order": 22
         },
         {
-          "name": "Merge qualified discovered sources into the run-local production registry",
+          "name": "Build automated source candidate and lineage matrix",
           "order": 23
         },
         {
-          "name": "Collect and cross-check all enabled domain sources",
+          "name": "Merge qualified discovered sources into the run-local production registry",
           "order": 24
         },
         {
-          "name": "Stop stale audit before expensive deterministic review",
+          "name": "Collect and cross-check all enabled domain sources",
           "order": 25
         },
         {
-          "name": "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services",
+          "name": "Stop stale audit before expensive deterministic review",
           "order": 26
         },
         {
-          "name": "Preserve resumable review cursor checkpoint",
+          "name": "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services",
           "order": 27
         },
         {
-          "name": "Build standalone DIRECT, PROXY and REJECT rule sets",
+          "name": "Preserve resumable review cursor checkpoint",
           "order": 28
         },
         {
-          "name": "Summarize REJECT secondary screening",
+          "name": "Build standalone DIRECT, PROXY and REJECT rule sets",
           "order": 29
         },
         {
-          "name": "Evaluate lifecycle milestones and monthly capacity review",
+          "name": "Summarize REJECT secondary screening",
           "order": 30
         },
         {
-          "name": "Run conservative lifecycle audit and selectable restoration",
+          "name": "Evaluate lifecycle milestones and monthly capacity review",
           "order": 31
         },
         {
-          "name": "Reconcile final uu.conf scope coverage after all rule mutations",
+          "name": "Run conservative lifecycle audit and selectable restoration",
           "order": 32
         },
         {
-          "name": "Reconcile final RULE-SET manifest counts",
+          "name": "Reconcile final uu.conf scope coverage after all rule mutations",
           "order": 33
         },
         {
-          "name": "Build append-only rule-level provenance ledger",
+          "name": "Reconcile final RULE-SET manifest counts",
           "order": 34
         },
         {
-          "name": "Validate Shadowrocket config structure",
+          "name": "Build append-only rule-level provenance ledger",
           "order": 35
         },
         {
-          "name": "Audit RULE-SET references against generated outputs (read-only)",
+          "name": "Validate Shadowrocket config structure",
           "order": 36
         },
         {
-          "name": "Audit candidate scope coverage against user config (read-only)",
+          "name": "Audit RULE-SET references against generated outputs (read-only)",
           "order": 37
         },
         {
-          "name": "Audit managed config drift (read-only)",
+          "name": "Audit candidate scope coverage against user config (read-only)",
           "order": 38
         },
         {
-          "name": "Run read-only full-source regression audit",
+          "name": "Audit managed config drift (read-only)",
           "order": 39
         },
         {
-          "name": "Build consolidated project status",
+          "name": "Run read-only full-source regression audit",
           "order": 40
         },
         {
-          "name": "Write successful audit heartbeat",
+          "name": "Build consolidated project status",
           "order": 41
         },
         {
-          "name": "Record durable automation state pointer",
+          "name": "Write successful audit heartbeat",
           "order": 42
         },
         {
-          "name": "Package allowlisted audit outputs",
+          "name": "Record durable automation state pointer",
           "order": 43
         },
         {
-          "name": "Upload allowlisted audit outputs",
+          "name": "Package allowlisted audit outputs",
           "order": 44
+        },
+        {
+          "name": "Upload allowlisted audit outputs",
+          "order": 45
         }
       ]
     },
@@ -311,14 +315,14 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "dfd9d4cb9687975a5d44ff8264d3c702f7428b9e",
-    "program_registry_blob_sha": "879a0aef9c1489e9d2aee22f7216cf678c8f3b31",
-    "execution_adapters_blob_sha": "e56a9ebeb4f3ba131c1c8106e693902fa6a1a83b",
+    "release_manifest_blob_sha": "27872ce03c65ebfcbdd57a9dd6f4492b38efb71c",
+    "program_registry_blob_sha": "e94d7ff0aa33bc239abdece4182277cfa2a8bc6f",
+    "execution_adapters_blob_sha": "afce52f0125b81026d6821138024344c920bfcae",
     "added_after_release_baseline": true,
     "note": "The independent source DAG is enabled under the scoped release allowlist. The production deliverables are exactly DIRECT, PROXY and REJECT; queue/checkpoint state and immutable runner-local artifacts are separate control-plane/runtime resources. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07",
     "registry_blob_sha": "2df45874fd70216c818be1c259598871769f0d0d",
-    "source_dag_scope": "workflow_source_discovery plus script_assess_sources; exact Watchdog caller, immutable artifact digest, non-activation, no repository writes from either stage"
+    "source_dag_scope": "End-to-end Watchdog-owned Discovery → immutable artifact verification → non-activating Assessment → immutable Assessment artifact proof → production artifact re-verification → source matrix → deterministic admission → production collection. REJECT remains manually approved; uu.conf is read-only."
   },
   "independent_dags": [
     {

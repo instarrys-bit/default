@@ -222,7 +222,17 @@ def audit_registry(config: dict, fetcher=fetch_text, candidates: list[dict] | No
 
 def main():
     config = json.loads(REGISTRY.read_text(encoding="utf-8"))
-    candidates = read_document(DISCOVERY, "candidates", {"candidates": []}).get("candidates", [])
+    discovery_path = DISCOVERY
+    supplied_root = os.environ.get("AUTOMATION_SOURCE_DISCOVERY_ROOT", "").strip()
+    if supplied_root:
+        root = Path(supplied_root).resolve()
+        runner_temp = Path(os.environ.get("RUNNER_TEMP", "/tmp")).resolve()
+        if not root.is_relative_to(runner_temp) or root == runner_temp:
+            raise ValueError("verified Discovery artifact root must remain beneath RUNNER_TEMP")
+        discovery_path = root / "sources/discovered_sources.json"
+        if not discovery_path.exists() and not discovery_path.with_name(discovery_path.name + ".manifest.json").exists():
+            raise FileNotFoundError("verified Discovery artifact is missing discovered_sources.json")
+    candidates = read_document(discovery_path, "candidates", {"candidates": []}).get("candidates", [])
     previous_report = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {}
     report = audit_registry(config, candidates=candidates, previous_report=previous_report)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
