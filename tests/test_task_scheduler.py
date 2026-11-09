@@ -335,7 +335,7 @@ class TaskSchedulerTests(unittest.TestCase):
         self.assertEqual(second["status"], "QUEUED")
         self.assertEqual(self.store.document["tasks"][2]["input"]["max_urls"], 4)
         second_task = self.store.document["tasks"][2]
-        with self.assertRaisesRegex(ValueError, "exact prior Assessment task ID"):
+        with self.assertRaisesRegex(ValueError, "exact verified Assessment task ID"):
             enqueue_source_assessment_task(
                 self.store, registry, adapters,
                 idempotency_key="source-assessment:41770000002:parser-v2:artifact-recovery:1",
