@@ -8,12 +8,12 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "cedd1d7a8410a920a6a6c598f55cdb556f7c7dd7"
+      "git_blob_sha": "ac9fc0584ee103492b5d2b72a04c3cdc56ac6e57"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "3b28f3bdc39d52e0a656f39468834ac7cc149bde"
+      "git_blob_sha": "4317fcdf8edabdff81af00d46f3a1e28529525ae"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "3824b79e817b1ec0e771ebb0a214dae56bbd0eb5"
+      "git_blob_sha": "8232e4e5f3b6ee914b83789b5d149c8ac68e18fd"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -78,19 +78,19 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "00cb9c14870b437b8d6b65d3969cb0fc93b6608a"
+      "git_blob_sha": "ac9fc0584ee103492b5d2b72a04c3cdc56ac6e57"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "dda7b282f293c1e8c22f30d54ca9337699c21039"
+      "git_blob_sha": "4317fcdf8edabdff81af00d46f3a1e28529525ae"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "219b3eec0fd4bcbdd7d7c134560bbc6c65a63dde"
+      "git_blob_sha": "d75193b13243afb887d75ade389c83425e4e3b4b"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "0875a8a7f6a1519c4535f3ee05990d9c485c970b"
+      "git_blob_sha": "c723bd1a8ffe9d9e1e1e9c59b4faf09262993b91"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -183,6 +183,10 @@
     "source_activation": {
       "path": "scripts/auto_activate_sources.py",
       "git_blob_sha": "59153ed15b66dd349884f27b8c2d761c0b8291a7"
+    },
+    "assessment_completion_relay_workflow": {
+      "path": ".github/workflows/assessment-completion-relay.yml",
+      "git_blob_sha": "1fd26abfb0f74ee505e7f2984d9d5df27ae18c87"
     }
   },
   "compatibility": {

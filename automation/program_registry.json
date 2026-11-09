@@ -1818,6 +1818,34 @@
         "max_attempts": 0,
         "timeout_seconds": 300
       }
+    },
+    {
+      "id": "workflow_assessment_completion_relay",
+      "path": ".github/workflows/assessment-completion-relay.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "verify the exact completed Assessment producer and immutable artifact before requesting one Watchdog reconciliation",
+      "capabilities": [
+        "assessment_completion_handoff"
+      ],
+      "invocation": "internal workflow_dispatch from the Watchdog after Assessment artifact upload",
+      "inputs": [
+        "exact producer_run_id",
+        "completed Watchdog run identity",
+        "source-assessment-output artifact metadata"
+      ],
+      "outputs": [
+        "one idempotent Watchdog workflow_dispatch request after exact producer and artifact metadata verification"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Job-scoped actions:write and contents:read only. Reads exact workflow-run and artifact metadata; dispatches only the existing Watchdog. No repository contents writes, no queue mutation, no ruleset publication, and no access to modules/uu.conf beyond metadata-free workflow context.",
+      "health_check": "Fails closed unless the exact producer run is completed successfully on main and has exactly one non-expired source-assessment-output artifact bound to the same run and head SHA; duplicate Watchdog dispatches are suppressed by the exact producer-specific run title.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 480
+      }
     }
   ]
 }

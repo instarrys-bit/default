@@ -2,9 +2,9 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-source-dag-active-2026-11-07",
   "status": "baseline_inventory",
-  "source_registry_blob_sha": "00cb9c14870b437b8d6b65d3969cb0fc93b6608a",
+  "source_registry_blob_sha": "ac9fc0584ee103492b5d2b72a04c3cdc56ac6e57",
   "summary": {
-    "registered_programs": 61,
+    "registered_programs": 62,
     "python_components": 54,
     "python_components_with_concrete_io_contract": 1,
     "python_components_with_declared_registry_dependencies": 5,
@@ -1782,6 +1782,29 @@
         "logical/source-discovery-run"
       ],
       "verifier": "automation-watchdog workflow_run handler verifies exact run identity, uploaded artifact digest and producer metadata, then enqueues Assessment exactly once using the artifact root for subsequent claim and execution digest checks."
+    },
+    {
+      "id": "workflow_assessment_completion_relay",
+      "path": ".github/workflows/assessment-completion-relay.yml",
+      "declared_capabilities": [
+        "assessment_completion_handoff"
+      ],
+      "registry_dependencies": [],
+      "current_invocation": "internal workflow_dispatch from the Watchdog after Assessment artifact upload",
+      "current_registry_inputs": [
+        "exact producer_run_id",
+        "completed Watchdog run identity",
+        "source-assessment-output artifact metadata"
+      ],
+      "current_registry_outputs": [
+        "one idempotent Watchdog workflow_dispatch request after exact producer and artifact metadata verification"
+      ],
+      "contract_status": "bounded_control_plane_relay",
+      "dispatch_status": "internal_relay_only",
+      "resource_keys": [
+        "logical/source-dag-supervision"
+      ],
+      "verifier": "The relay verifies completed successful producer identity and exact unique non-expired artifact metadata; the Watchdog then performs the existing independent artifact-content verification, queue CAS, lease/fencing and production authorization."
     }
   ],
   "review_context": {

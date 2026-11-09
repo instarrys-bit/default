@@ -281,7 +281,14 @@ class WatchdogAssessmentResumeContractTests(unittest.TestCase):
         self.assertIn("assessment_producer_run_id:", workflow)
         self.assertIn("Wake Watchdog after verified Assessment artifact upload", workflow)
         self.assertIn("steps.run-queue.outputs.assessment_output_expected == 'true'", workflow)
-        self.assertIn("inputs:{assessment_producer_run_id:$run_id}", workflow)
+        self.assertIn("assessment-completion-relay.yml/dispatches", workflow)
+        self.assertIn("inputs:{producer_run_id:$run_id}", workflow)
+        self.assertNotIn("automation-watchdog.yml/dispatches", workflow)
+        relay = (ROOT / ".github" / "workflows" / "assessment-completion-relay.yml").read_text(encoding="utf-8")
+        self.assertIn("producer.get('status') != 'completed'", relay)
+        self.assertIn("producer.get('conclusion') != 'success'", relay)
+        self.assertIn("source-assessment-output", relay)
+        self.assertIn("automation-watchdog.yml/dispatches", relay)
 
     def test_production_dispatch_waits_for_exact_successful_assessment_producer(self):
         workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")

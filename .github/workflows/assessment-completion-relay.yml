@@ -1,0 +1,108 @@
+name: Shadowrocket Assessment completion relay
+run-name: Automation task ${{ inputs.automation_task_id || 'manual' }} | Assessment relay ${{ inputs.producer_run_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      automation_task_id:
+        description: Optional task correlation; leave blank for this control-plane relay
+        required: false
+        type: string
+      producer_run_id:
+        description: Exact Watchdog run that uploaded source-assessment-output
+        required: true
+        type: string
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: assessment-completion-relay-${{ inputs.producer_run_id }}
+  cancel-in-progress: false
+
+jobs:
+  verify-and-resume:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Verify completed Assessment producer and immutable artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PRODUCER_RUN_ID: ${{ inputs.producer_run_id }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, re, subprocess, time
+
+          repo = os.environ['REPO']
+          run_id = os.environ['PRODUCER_RUN_ID']
+          if not re.fullmatch(r'[0-9]+', run_id):
+              raise SystemExit('Malformed Assessment producer run ID.')
+
+          def gh_json(*args):
+              raw = subprocess.check_output(['gh', 'api', *args], text=True)
+              return json.loads(raw)
+
+          producer = None
+          for _ in range(180):
+              producer = gh_json(f'repos/{repo}/actions/runs/{run_id}')
+              if producer.get('status') == 'completed':
+                  break
+              time.sleep(2)
+          if not isinstance(producer, dict) or producer.get('status') != 'completed':
+              raise SystemExit('Assessment producer did not complete within 6 minutes.')
+          if (producer.get('path') != '.github/workflows/automation-watchdog.yml'
+                  or producer.get('head_branch') != 'main'
+                  or producer.get('conclusion') != 'success'
+                  or not re.fullmatch(r'[0-9a-f]{40}', str(producer.get('head_sha', '')))):
+              raise SystemExit('Assessment producer identity/conclusion failed exact verification.')
+
+          artifacts = gh_json(f'repos/{repo}/actions/runs/{run_id}/artifacts?per_page=100').get('artifacts', [])
+          matches = [
+              item for item in artifacts
+              if item.get('name') == 'source-assessment-output'
+              and item.get('expired') is False
+              and str((item.get('workflow_run') or {}).get('id')) == run_id
+              and (item.get('workflow_run') or {}).get('head_branch') == 'main'
+              and (item.get('workflow_run') or {}).get('head_sha') == producer['head_sha']
+          ]
+          if len(matches) != 1:
+              raise SystemExit(f'Expected exactly one non-expired source-assessment-output artifact for producer {run_id}; found {len(matches)}.')
+
+          print(json.dumps({
+              'producer_run_id': run_id,
+              'producer_head_sha': producer['head_sha'],
+              'artifact_id': matches[0]['id'],
+              'artifact_name': matches[0]['name'],
+              'artifact_size_in_bytes': matches[0].get('size_in_bytes'),
+              'producer_conclusion': producer['conclusion'],
+              'verified': True,
+          }, sort_keys=True))
+          PY
+
+      - name: Dispatch one idempotent Watchdog reconciliation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_API_URL: ${{ github.api_url }}
+          REPO: ${{ github.repository }}
+          PRODUCER_RUN_ID: ${{ inputs.producer_run_id }}
+        run: |
+          set -euo pipefail
+          title="Automation task manual | Assessment reconcile $PRODUCER_RUN_ID"
+          runs_json="$(gh api "repos/$REPO/actions/workflows/automation-watchdog.yml/runs?event=workflow_dispatch&branch=main&per_page=100")"
+          existing="$(printf '%s' "$runs_json" | jq --arg title "$title" '[.workflow_runs[] | select(.display_title == $title)] | length')"
+          if [ "$existing" -gt 0 ]; then
+            echo "A Watchdog reconciliation for producer $PRODUCER_RUN_ID already exists; duplicate dispatch suppressed."
+            exit 0
+          fi
+          payload="$(jq -n --arg ref 'main' --arg run_id "$PRODUCER_RUN_ID" '{ref:$ref,inputs:{assessment_producer_run_id:$run_id}}')"
+          curl --fail-with-body --silent --show-error \
+            --request POST \
+            --header 'Accept: application/vnd.github+json' \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            --header 'X-GitHub-Api-Version: 2022-11-28' \
+            "$GITHUB_API_URL/repos/$REPO/actions/workflows/automation-watchdog.yml/dispatches" \
+            --data "$payload"
+          echo "Dispatched exactly one Watchdog reconciliation for completed Assessment producer $PRODUCER_RUN_ID."

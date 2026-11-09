@@ -1,5 +1,5 @@
 name: Shadowrocket automation watchdog
-run-name: Automation task ${{ inputs.automation_task_id || 'manual' }}
+run-name: Automation task ${{ inputs.automation_task_id || 'manual' }} | Assessment reconcile ${{ inputs.assessment_producer_run_id || 'none' }}
 
 on:
   schedule:
@@ -1879,15 +1879,15 @@ jobs:
           ASSESSMENT_PRODUCER_RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          payload="$(jq -n --arg ref "main" --arg run_id "$ASSESSMENT_PRODUCER_RUN_ID" '{ref:$ref,inputs:{assessment_producer_run_id:$run_id}}')"
+          payload="$(jq -n --arg ref 'main' --arg run_id "$ASSESSMENT_PRODUCER_RUN_ID" '{ref:$ref,inputs:{producer_run_id:$run_id}}')"
           curl --fail-with-body --silent --show-error \
             --request POST \
-            --header "Accept: application/vnd.github+json" \
+            --header 'Accept: application/vnd.github+json' \
             --header "Authorization: Bearer $GITHUB_TOKEN" \
-            --header "X-GitHub-Api-Version: 2022-11-28" \
-            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/workflows/automation-watchdog.yml/dispatches" \
+            --header 'X-GitHub-Api-Version: 2022-11-28' \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/workflows/assessment-completion-relay.yml/dispatches" \
             --data "$payload"
-          echo "Requested a follow-up Watchdog pass for Assessment producer run $ASSESSMENT_PRODUCER_RUN_ID."
+          echo "Requested isolated completion relay for Assessment producer run $ASSESSMENT_PRODUCER_RUN_ID."
 
       - name: Dispatch one production audit after verified Assessment artifact is available
         if: ${{ steps.source-mode.outputs.mode == 'independent' }}
