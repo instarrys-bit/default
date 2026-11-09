@@ -294,6 +294,7 @@ class WatchdogAssessmentResumeContractTests(unittest.TestCase):
         self.assertIn('".github/workflows/auto_sync.yml"', workflow)
         self.assertIn('producer.get("status") == "completed"', workflow)
         self.assertIn('producer.get("conclusion") != "success"', workflow)
+        self.assertIn('expected_path == ".github/workflows/auto_sync.yml" and not producer.get("conclusion")', workflow)
         self.assertIn("queue reconciliation is held", workflow)
         self.assertLess(
             workflow.index("Wait for exact callback producer completion before queue reconciliation"),
