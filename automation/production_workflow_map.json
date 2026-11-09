@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "d804334b7ac1a1d7f23359ee767404921aa06d7b",
+  "workflow_blob_sha": "b3d9b3d766c38d336c50dde2a741df33a1ab3bf8",
   "registry_blob_sha": "00cb9c14870b437b8d6b65d3969cb0fc93b6608a",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
-    "job_count": 6,
-    "step_count": 59,
+    "job_count": 7,
+    "step_count": 60,
     "independent_python_dispatch_enabled": true,
     "independent_workflow_count": 1
   },
@@ -321,6 +321,23 @@
           "order": 1
         }
       ]
+    },
+    {
+      "id": "watchdog-reconciliation",
+      "needs": [
+        "notify-failure",
+        "resolve-failure"
+      ],
+      "condition": "${{ always() }}",
+      "permissions": {
+        "actions": "write"
+      },
+      "steps": [
+        {
+          "name": "Dispatch Watchdog reconciliation for this exact production run",
+          "order": 1
+        }
+      ]
     }
   ],
   "architecture_findings": [
@@ -341,9 +358,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "ed0a29624cbe833957cfb92ef2086d4c9e4fafcf",
+    "release_manifest_blob_sha": "663b2c0f2c98d071b879ceeda8e277b6f8ba90b9",
     "program_registry_blob_sha": "00cb9c14870b437b8d6b65d3969cb0fc93b6608a",
-    "execution_adapters_blob_sha": "dda7b282f293c1e8c22f30d54ca9337699c21039",
+    "execution_adapters_blob_sha": "3b28f3bdc39d52e0a656f39468834ac7cc149bde",
     "added_after_release_baseline": true,
     "note": "The independent source DAG is enabled under the scoped release allowlist. The production deliverables are exactly DIRECT, PROXY and REJECT; queue/checkpoint state and immutable runner-local artifacts are separate control-plane/runtime resources. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07",

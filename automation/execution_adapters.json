@@ -1701,6 +1701,16 @@
             "name": "source_discovery_run_id",
             "type": "string",
             "required": false
+          },
+          {
+            "name": "assessment_producer_run_id",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "production_producer_run_id",
+            "type": "string",
+            "required": false
           }
         ],
         "allowed_refs": [

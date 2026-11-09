@@ -273,3 +273,57 @@ class SourceHandoffPolicyTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class WatchdogAssessmentResumeContractTests(unittest.TestCase):
+    def test_assessment_artifact_upload_dispatches_exact_followup_watchdog(self):
+        workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        self.assertIn("assessment_producer_run_id:", workflow)
+        self.assertIn("Wake Watchdog after verified Assessment artifact upload", workflow)
+        self.assertIn("steps.run-queue.outputs.assessment_output_expected == 'true'", workflow)
+        self.assertIn("inputs:{assessment_producer_run_id:$run_id}", workflow)
+
+    def test_production_dispatch_waits_for_exact_successful_assessment_producer(self):
+        workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        self.assertIn("Wait for exact callback producer completion before queue reconciliation", workflow)
+        self.assertIn("SOURCE_DISCOVERY_RUN_ID: ${{ inputs.source_discovery_run_id || '' }}", workflow)
+        self.assertIn("ASSESSMENT_PRODUCER_RUN_ID: ${{ inputs.assessment_producer_run_id || '' }}", workflow)
+        self.assertIn("PRODUCTION_PRODUCER_RUN_ID: ${{ inputs.production_producer_run_id || '' }}", workflow)
+        self.assertIn('".github/workflows/source-discovery.yml"', workflow)
+        self.assertIn('".github/workflows/automation-watchdog.yml"', workflow)
+        self.assertIn('".github/workflows/auto_sync.yml"', workflow)
+        self.assertIn('producer.get("status") == "completed"', workflow)
+        self.assertIn('producer.get("conclusion") != "success"', workflow)
+        self.assertIn('expected_path == ".github/workflows/auto_sync.yml" and not producer.get("conclusion")', workflow)
+        self.assertIn("queue reconciliation is held", workflow)
+        self.assertLess(
+            workflow.index("Wait for exact callback producer completion before queue reconciliation"),
+            workflow.index("Resolve completed Discovery run from durable task correlation"),
+        )
+
+
+    def test_production_completion_dispatches_exact_run_to_watchdog(self):
+        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        production = (ROOT / ".github" / "workflows" / "auto_sync.yml").read_text(encoding="utf-8")
+        self.assertIn("production_producer_run_id:", watchdog)
+        self.assertIn("Wake Watchdog after production workflow completion", production)
+        self.assertIn("PRODUCTION_RUN_ID: ${{ github.run_id }}", production)
+        self.assertIn("inputs:{production_producer_run_id:$run_id}", production)
+        self.assertIn("workflow_dispatch", production)
+
+    def test_discovery_resolver_initializes_repository_context_before_run_lookup(self):
+        workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        resolver = workflow.split("Resolve completed Discovery run from durable task correlation", 1)[1].split(
+            "Download artifact from the exact discovery workflow run", 1
+        )[0]
+        self.assertIn('repo, token = os.environ["GITHUB_REPOSITORY"], os.environ["GITHUB_TOKEN"]', resolver)
+        self.assertLess(resolver.index("repo, token ="), resolver.index("run_url ="))
+
+    def test_watchdog_verifies_all_pending_results_before_selecting_any_new_task(self):
+        workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        run_queue = workflow.split("Recover leases, verify results, and dispatch one task before artifact upload", 1)[1].split(
+            "Upload verified source assessment outputs as immutable artifact", 1
+        )[0]
+        self.assertIn('SCHEDULER_ACTION="run""-once"', run_queue)
+        self.assertIn('--verify-only "$SCHEDULER_ACTION"', run_queue)
+        self.assertLess(run_queue.index('--verify-only "$SCHEDULER_ACTION"'), run_queue.index("selected_task_id="))

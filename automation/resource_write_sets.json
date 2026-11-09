@@ -1324,9 +1324,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "ed0a29624cbe833957cfb92ef2086d4c9e4fafcf",
+    "release_manifest_blob_sha": "663b2c0f2c98d071b879ceeda8e277b6f8ba90b9",
     "program_registry_blob_sha": "00cb9c14870b437b8d6b65d3969cb0fc93b6608a",
-    "execution_adapters_blob_sha": "dda7b282f293c1e8c22f30d54ca9337699c21039",
+    "execution_adapters_blob_sha": "3b28f3bdc39d52e0a656f39468834ac7cc149bde",
     "added_after_release_baseline": true,
     "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #423 checkpoint. Repository mutations are governed per capability by explicit exclusive resource_contract.resource_keys; control-plane metadata is separately inventoried. The production auto_sync publisher stages only the three rule-set deliverables under rulesets/**. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07"
@@ -1642,6 +1642,18 @@
       ],
       "fence": "task_scheduler.py appends compressed SHA-256 chained queue snapshots to Issue #423 with bounded conflict retry.",
       "boundary": "External control-plane state only; no repository file is written by queue persistence."
+    },
+    {
+      "workflow_path": ".github/workflows/auto_sync.yml",
+      "step_name": "Dispatch Watchdog reconciliation for this exact production run",
+      "mutation_kinds": [
+        "github_actions_workflow_dispatch"
+      ],
+      "resources": [
+        "GitHub Actions Watchdog workflow reconciliation run"
+      ],
+      "fence": "The callback carries the exact completed auto_sync run ID. Watchdog verifies the run ID, auto_sync workflow path, main branch and completed successful conclusion before queue reconciliation; callback has no repository contents write permission.",
+      "boundary": "External workflow_dispatch wake-up only; no repository files or rulesets are written by this callback."
     }
   ],
   "workflow_native_scan": {

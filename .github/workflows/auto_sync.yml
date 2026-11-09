@@ -995,3 +995,30 @@ jobs:
             gh issue comment "$issue" --repo "$REPO" --body "A later full deterministic audit and publish succeeded. Recovery run: $RUN_URL"
             gh issue close "$issue" --repo "$REPO"
           done <<< "$issues"
+
+  watchdog-reconciliation:
+    name: Wake Watchdog after production workflow completion
+    needs: [notify-failure, resolve-failure]
+    if: ${{ always() }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    permissions:
+      actions: write
+    steps:
+      - name: Dispatch Watchdog reconciliation for this exact production run
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_API_URL: ${{ github.api_url }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PRODUCTION_RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          payload="$(jq -n --arg ref "main" --arg run_id "$PRODUCTION_RUN_ID" '{ref:$ref,inputs:{production_producer_run_id:$run_id}}')"
+          curl --fail-with-body --silent --show-error \
+            --request POST \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer $GITHUB_TOKEN" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/workflows/automation-watchdog.yml/dispatches" \
+            --data "$payload"
+          echo "Requested exact-run Watchdog reconciliation for production run $PRODUCTION_RUN_ID."
