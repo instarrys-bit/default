@@ -5,7 +5,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from source_handoff_policy import classify_assessment_handoff, discovery_task_requires_handoff
+from source_handoff_policy import classify_assessment_handoff, discovery_task_requires_handoff, select_source_worker_task
 
 
 def assessment_task(task_id, run_id, status="SUCCEEDED", key=None, verified=True, created_at="2026-11-07T12:00:00Z"):
@@ -128,6 +128,35 @@ class SourceHandoffPolicyTests(unittest.TestCase):
         other = assessment_task("task_other", "42373818239", key="source-assessment:42373818239")
         result = classify_assessment_handoff([other], "4237381823")
         self.assertEqual(result["state"], "ready")
+
+
+    def test_artifact_recovery_is_selected_after_assessment_gate_opens(self):
+        discovery = discovery_task(run_id="42417075148")
+        assessment = assessment_task("task_assessed", "42417075148")
+        recovery = assessment_task(
+            "task_artifact_recovery",
+            "42417075148",
+            status="QUEUED",
+            verified=False,
+            key="source-assessment:42417075148:parser-v2:artifact-recovery:1",
+            created_at="2026-11-07T14:00:00Z",
+        )
+        self.assertEqual(
+            select_source_worker_task([discovery, assessment, recovery]),
+            "task_artifact_recovery",
+        )
+
+    def test_verified_assessment_gate_blocks_other_work_without_artifact_recovery(self):
+        discovery = discovery_task(run_id="42417075148")
+        assessment = assessment_task("task_assessed", "42417075148")
+        unrelated = {
+            "task_id": "task_unrelated",
+            "target_program_id": "script_other",
+            "status": "QUEUED",
+            "priority": 100,
+        }
+        self.assertEqual(select_source_worker_task([discovery, assessment, unrelated]), "")
+
 
 
 if __name__ == "__main__":

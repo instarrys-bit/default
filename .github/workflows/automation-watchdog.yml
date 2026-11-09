@@ -1080,6 +1080,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           SOURCE_DISCOVERY_MODE: ${{ steps.source-mode.outputs.mode }}
+          REQUESTED_ASSESSMENT_TASK_ID: ${{ inputs.automation_task_id || '' }}
           AUTOMATION_QUEUE_SNAPSHOT: ${{ runner.temp }}/task_queue.json
           EVENT_SOURCE_RUN_ID: ${{ github.event.workflow_run.path == '.github/workflows/source-discovery.yml' && github.event.workflow_run.id || '' }}
         run: |
@@ -1111,20 +1112,65 @@ jobs:
               if isinstance(task, dict) and isinstance(task.get("idempotency_key"), str)
               and task.get("idempotency_key").endswith(":artifact-recovery:1")
           }
-          assessment_tasks = [
-              task for task in tasks
-              if task.get("target_program_id") == "script_assess_sources"
-              and isinstance((task.get("input") or {}).get("predecessor"), dict)
-              and (
-                  task.get("status") == "QUEUED"
-                  or (
-                      task.get("status") == "SUCCEEDED"
-                      and isinstance(task.get("idempotency_key"), str)
-                      and task.get("idempotency_key").endswith(":recovery:2")
-                      and task.get("idempotency_key").rsplit(":recovery:2", 1)[0] + ":artifact-recovery:1" not in existing_artifact_recovery_keys
+          import sys
+          sys.path.insert(0, ".github/workflow_helpers")
+          from check_source_assessment_artifact import find_matching_assessment_artifact
+
+          requested_task_id = os.environ.get("REQUESTED_ASSESSMENT_TASK_ID", "").strip()
+          requested_task = next((task for task in tasks if isinstance(task, dict) and task.get("task_id") == requested_task_id), None) if requested_task_id else None
+          if requested_task_id and requested_task is None:
+              raise SystemExit("Requested automation_task_id is not present in the durable queue.")
+          task_by_key = {
+              task.get("idempotency_key"): task
+              for task in tasks
+              if isinstance(task, dict) and isinstance(task.get("idempotency_key"), str)
+          }
+          assessment_candidates = [requested_task] if requested_task and requested_task.get("target_program_id") == "script_assess_sources" else tasks
+          assessment_tasks = []
+          for task in assessment_candidates:
+              if not isinstance(task, dict):
+                  continue
+              if task.get("target_program_id") == "script_assess_sources":
+                  predecessor = (task.get("input") or {}).get("predecessor")
+              else:
+                  continue
+              if not isinstance(predecessor, dict):
+                  continue
+              if task.get("status") == "QUEUED":
+                  assessment_tasks.append(task)
+                  continue
+              if task.get("status") == "SUCCEEDED":
+                  key = str(task.get("idempotency_key") or "")
+                  if key.endswith(":artifact-recovery:1"):
+                      continue
+                  base_key = key
+                  if base_key.endswith(":recovery:2"):
+                      base_key = base_key.rsplit(":recovery:2", 1)[0]
+                  elif base_key.endswith(":recovery:1"):
+                      base_key = base_key.rsplit(":recovery:1", 1)[0]
+                  recovery_key = base_key + ":artifact-recovery:1"
+                  recovery_task = task_by_key.get(recovery_key)
+                  if recovery_task is not None:
+                      if recovery_task.get("status") in {"QUEUED", "CLAIMED", "VERIFYING"}:
+                          assessment_tasks.append(recovery_task)
+                      continue
+                  predecessor_run_id = str(predecessor.get("workflow_run_id") or "")
+                  predecessor_head_sha = str(predecessor.get("workflow_head_sha") or "")
+                  predecessor_artifact_sha = str(predecessor.get("artifact_sha256") or "")
+                  if not (predecessor_run_id.isdigit() and len(predecessor_head_sha) == 40 and len(predecessor_artifact_sha) == 64):
+                      continue
+                  artifact_state = find_matching_assessment_artifact(
+                      repo,
+                      token,
+                      {
+                          "workflow_run_id": predecessor_run_id,
+                          "workflow_head_sha": predecessor_head_sha,
+                          "artifact_sha256": predecessor_artifact_sha,
+                      },
                   )
-              )
-          ]
+                  if not artifact_state.get("found"):
+                      assessment_tasks.append(task)
+          assessment_tasks.sort(key=lambda task: (str(task.get("created_at") or ""), str(task.get("task_id") or "")))
           print(json.dumps({
               "queue_revision": queue.get("revision"),
               "queue_snapshot": str(queue_path),
@@ -1457,23 +1503,58 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           SOURCE_RUN_ID: ${{ steps.resolve-discovery-run.outputs.run_id }}
+          SOURCE_HEAD_SHA: ${{ steps.resolve-discovery-run.outputs.head_sha }}
+          SOURCE_ARTIFACT_SHA256: ${{ env.SOURCE_ARTIFACT_SHA256 }}
           AUTOMATION_QUEUE_SNAPSHOT: ${{ runner.temp }}/task_queue.json
         run: |
           set -euo pipefail
-          base_key="source-assessment:$SOURCE_RUN_ID:parser-v2"
-          recovery_two_key="$base_key:recovery:2"
+          if [[ ! "$SOURCE_ARTIFACT_SHA256" =~ ^[0-9a-f]{64}$ ]]; then
+            echo "A verified Discovery artifact digest is required for Assessment artifact recovery." >&2
+            exit 1
+          fi
+          artifact_check="$(python3 .github/workflow_helpers/check_source_assessment_artifact.py --repository "$GITHUB_REPOSITORY" --workflow-run-id "$SOURCE_RUN_ID" --workflow-head-sha "$SOURCE_HEAD_SHA" --artifact-sha256 "$SOURCE_ARTIFACT_SHA256")"
+          echo "$artifact_check"
+          if [ "$(jq -r '.found // false' <<< "$artifact_check")" = "true" ]; then
+            echo "A matching immutable Assessment artifact already exists; no recovery task is needed."
+            exit 0
+          fi
+          verified_task="$(jq -c --arg run "$SOURCE_RUN_ID" '
+            [.tasks[]? | select(
+              .target_program_id == "script_assess_sources"
+              and .status == "SUCCEEDED"
+              and .verification.status == "passed"
+              and .result.artifact_verification.valid == true
+              and .result.artifact_verification.activation_count == 0
+              and ((.input.predecessor.workflow_run_id // "") | tostring) == $run
+            )] | sort_by(.created_at) | last // empty
+          ' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          if [ -z "$verified_task" ]; then
+            echo "No independently verified Assessment task exists for Discovery run $SOURCE_RUN_ID." >&2
+            exit 1
+          fi
+          base_key="$(jq -r '.idempotency_key // ""' <<< "$verified_task")"
+          case "$base_key" in
+            *:recovery:2) base_key="${base_key%:recovery:2}" ;;
+            *:recovery:1) base_key="${base_key%:recovery:1}" ;;
+            *:parser-v2) ;;
+            *) base_key="source-assessment:$SOURCE_RUN_ID:parser-v2" ;;
+          esac
           artifact_recovery_key="$base_key:artifact-recovery:1"
-          recovery_two="$(jq -c --arg key "$recovery_two_key" '[.tasks[]? | select(.idempotency_key == $key)] | last // empty' "$AUTOMATION_QUEUE_SNAPSHOT")"
-          if [ -z "$recovery_two" ] || [ "$(jq -r '.status // ""' <<< "$recovery_two")" != "SUCCEEDED" ] || [ "$(jq -r '.verification.status // ""' <<< "$recovery_two")" != "passed" ] || [ "$(jq -r '.result.artifact_verification.valid // false' <<< "$recovery_two")" != "true" ] || [ "$(jq -r '.result.artifact_verification.activation_count // -1' <<< "$recovery_two")" != "0" ]; then
-            echo "No independently verified recovery:2 task requires artifact recovery."
-            exit 0
-          fi
-          existing="$(jq -r --arg key "$artifact_recovery_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .task_id // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          existing="$(jq -c --arg key "$artifact_recovery_key" '[.tasks[]? | select(.idempotency_key == $key)] | last // empty' "$AUTOMATION_QUEUE_SNAPSHOT")"
           if [ -n "$existing" ]; then
-            echo "The single artifact-recovery task already exists ($existing); no duplicate will be enqueued."
-            exit 0
+            existing_status="$(jq -r '.status // ""' <<< "$existing")"
+            case "$existing_status" in
+              QUEUED|CLAIMED|VERIFYING|SUCCEEDED)
+                echo "The idempotent artifact-recovery task already exists with status $existing_status; no duplicate will be enqueued."
+                exit 0
+                ;;
+              *)
+                echo "The one allowed artifact-recovery task is terminal ($existing_status) but no valid immutable artifact exists; holding the gate." >&2
+                exit 1
+                ;;
+            esac
           fi
-          predecessor="$(jq -c '.input.predecessor' <<< "$recovery_two")"
+          predecessor="$(jq -c '.input.predecessor' <<< "$verified_task")"
           task_input="$(jq -cn --argjson predecessor "$predecessor" '{max_urls:4,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}')"
           echo "Enqueueing one bounded artifact-recovery Assessment for Discovery run $SOURCE_RUN_ID."
           queue_token="$GITHUB_TOKEN"
@@ -1554,40 +1635,17 @@ jobs:
           unset GITHUB_TOKEN
           GITHUB_TOKEN="$queue_token" python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue_before_dispatch.json"
           selected_task_id="$(python3 - <<'PY'
-          import json, sys
+          import json, os, sys
           from pathlib import Path
           sys.path.insert(0, "scripts")
-          from source_handoff_policy import classify_assessment_handoff
+          from source_handoff_policy import select_source_worker_task
 
           control = json.loads(Path("automation/production_control.json").read_text(encoding="utf-8"))
-          tasks = json.loads((Path(__import__("os").environ["RUNNER_TEMP"]) / "task_queue_before_dispatch.json").read_text(encoding="utf-8")).get("tasks", [])
+          tasks = json.loads((Path(os.environ["RUNNER_TEMP"]) / "task_queue_before_dispatch.json").read_text(encoding="utf-8")).get("tasks", [])
           if control.get("source_discovery_mode") != "independent":
               print("")
               raise SystemExit(0)
-          discoveries = [t for t in tasks if isinstance(t, dict) and t.get("target_program_id") == "workflow_source_discovery"]
-          latest = max(discoveries, key=lambda t: (str(t.get("created_at") or ""), str(t.get("task_id") or "")), default=None)
-          gate_open = False
-          if isinstance(latest, dict) and latest.get("status") == "SUCCEEDED":
-              evidence = ((latest.get("result") or {}).get("run_evidence") or {})
-              run_id = evidence.get("run_id")
-              if isinstance(run_id, int) and not isinstance(run_id, bool):
-                  run_id = str(run_id)
-              if isinstance(run_id, str) and run_id.isdigit():
-                  gate_open = classify_assessment_handoff(tasks, run_id).get("state") == "already_assessed"
-          if gate_open:
-              print("")
-              raise SystemExit(0)
-          safe = [t for t in tasks if isinstance(t, dict) and t.get("target_program_id") != "workflow_auto_sync" and t.get("status") in {"QUEUED", "CLAIMED", "VERIFYING", "SUCCEEDED"}]
-          discovery_queued = [t for t in safe if t.get("target_program_id") == "workflow_source_discovery" and t.get("status") == "QUEUED"]
-          assessment_queued = [t for t in safe if t.get("target_program_id") == "script_assess_sources" and t.get("status") == "QUEUED"]
-          active_source = [t for t in safe if t.get("target_program_id") in {"workflow_source_discovery", "script_assess_sources"} and t.get("status") in {"CLAIMED", "VERIFYING"}]
-          candidates = discovery_queued or assessment_queued or active_source or safe
-          if not candidates:
-              print("")
-          else:
-              rank = {"QUEUED": 0, "CLAIMED": 1, "VERIFYING": 1, "SUCCEEDED": 2}
-              chosen = min(candidates, key=lambda t: (rank.get(t.get("status"), 9), -int(t.get("priority", 0) or 0), str(t.get("created_at") or ""), str(t.get("task_id") or "")))
-              print(chosen.get("task_id") or "")
+          print(select_source_worker_task(tasks))
           PY
           )"
           if [ -n "$selected_task_id" ]; then
