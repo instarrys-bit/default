@@ -86,7 +86,7 @@ jobs:
           PRODUCER_RUN_ID: ${{ inputs.producer_run_id }}
         run: |
           set -euo pipefail
-          title="Assessment reconcile $PRODUCER_RUN_ID"
+          title="Automation task manual | Assessment reconcile $PRODUCER_RUN_ID"
           runs_json="$(gh api "repos/$REPO/actions/workflows/automation-watchdog.yml/runs?event=workflow_dispatch&branch=main&per_page=100")"
           existing="$(printf '%s' "$runs_json" | jq --arg title "$title" '[.workflow_runs[] | select(.display_title == $title)] | length')"
           if [ "$existing" -gt 0 ]; then
