@@ -64,6 +64,32 @@ class GitHubIssueQueueStoreTests(unittest.TestCase):
             return FakeResponse({"id": self.next_id - 1})
         raise AssertionError(f"unexpected method: {request.method}")
 
+    def test_rebuilt_queue_uses_clean_seed_instead_of_stale_revision_250(self):
+        stale = Path(self.temp.name) / "stale-task-queue.json"
+        stale.write_text(json.dumps({"schema_version": 1, "revision": 250, "tasks": []}), encoding="utf-8")
+        seed = Path(self.temp.name) / "clean-seed.json"
+        clean = {
+            "schema_version": 1,
+            "revision": 0,
+            "tasks": [],
+            "resource_leases": {},
+            "manual_authorizations": {},
+        }
+        seed.write_text(json.dumps(clean), encoding="utf-8")
+        rebuilt = GitHubContentsQueueStore(
+            "owner/repo",
+            str(stale),
+            token="test-token",
+            api_url="https://api.example.test",
+            issue_number=423,
+            bootstrap_path=str(seed),
+        )
+        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+            snapshot = rebuilt.read()
+        self.assertEqual(snapshot.document, clean)
+        self.assertEqual(snapshot.content_sha, "")
+        self.assertEqual(len(self.comments), 0)
+
     def test_read_only_consumer_does_not_bootstrap_or_write(self):
         with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
             snapshot = self.store.read()
