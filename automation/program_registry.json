@@ -1837,9 +1837,7 @@
         "one idempotent Watchdog workflow_dispatch request after exact producer and artifact metadata verification"
       ],
       "depends_on": [],
-      "dispatches": [
-        "workflow_automation_watchdog"
-      ],
+      "dispatches": [],
       "permission_boundary": "Job-scoped actions:write and contents:read only. Reads exact workflow-run and artifact metadata; dispatches only the existing Watchdog. No repository contents writes, no queue mutation, no ruleset publication, and no access to modules/uu.conf beyond metadata-free workflow context.",
       "health_check": "Fails closed unless the exact producer run is completed successfully on main and has exactly one non-expired source-assessment-output artifact bound to the same run and head SHA; duplicate Watchdog dispatches are suppressed by the exact producer-specific run title.",
       "orchestration": {
