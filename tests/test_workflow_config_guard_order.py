@@ -197,7 +197,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         validation = (ROOT / ".github" / "workflows" / "validate-config.yml").read_text(encoding="utf-8")
         self.assertIn("Verify owner-approved config baseline registration in non-main validation", validation)
         self.assertIn('git merge-base origin/main "$head_sha"', validation)
-        self.assertIn("python3 scripts/verify_baseline_registration.py --base", validation)
+        self.assertIn("python3 scripts/verify_baseline.py --base", validation)
         verifier = (ROOT / "scripts" / "verify_baseline_registration.py").read_text(encoding="utf-8")
         self.assertIn('run_git("diff", "--quiet", base, head, "--", CONFIG_PATH)', verifier)
         self.assertIn('run_git("log", "--format=%H"', verifier)
