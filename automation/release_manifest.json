@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "7e69c47aad7b6e618a04607a374522dfcb2bd225"
+      "git_blob_sha": "550d1421dc30d8b579751cbfba4b8a3d632a9fa8"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -54,7 +54,7 @@
     },
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
-      "git_blob_sha": "ea95978cff6c4f9dcdd3a9c8d059914b52f3da35"
+      "git_blob_sha": "337712a8807e67af4707c62a667c2817746ea3e9"
     },
     "remote_task_queue_runtime": {
       "path": "scripts/remote_task_queue_runtime.py",
@@ -78,19 +78,19 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "cedd1d7a8410a920a6a6c598f55cdb556f7c7dd7"
+      "git_blob_sha": "b070391943d57a9ec75b40805ab2e32e6c9fe255"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "f43ecfd1296995740aec219ff5ed71f90e5daefd"
+      "git_blob_sha": "28d8ebc336b5a302e0c9f1e19f69a9bdb767a892"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "10e87629d869c09098315732dcac9c1f067a8c3e"
+      "git_blob_sha": "7af4e6fca9868a0c2e1d6f4e98ba13dda6cf2aa7"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "54b20b052f98d6901b3a11c42667a233072db347"
+      "git_blob_sha": "d0202d87e3d88b91d7a287b24a19fb2b1c743060"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -110,7 +110,7 @@
     },
     "task_queue_store": {
       "path": "scripts/github_queue_store.py",
-      "git_blob_sha": "29ebc707503b802df09800db561f854bede83d4a"
+      "git_blob_sha": "95695b95701fb6f85f1dd96d47f32d5c2edaeca2"
     },
     "import_request_observations": {
       "path": "scripts/import_request_observations.py",
