@@ -285,9 +285,14 @@ class WatchdogAssessmentResumeContractTests(unittest.TestCase):
 
     def test_production_dispatch_waits_for_exact_successful_assessment_producer(self):
         workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
-        self.assertIn("ASSESSMENT_PRODUCER_RUN_ID: ${{ inputs.assessment_producer_run_id || '' }}", workflow)
+        self.assertIn("Wait for exact Assessment producer completion before queue reconciliation", workflow)
+        self.assertIn("ASSESSMENT_PRODUCER_RUN_ID: ${{ inputs.assessment_producer_run_id }}", workflow)
         self.assertIn('producer.get("status") == "completed"', workflow)
         self.assertIn('producer.get("path") != ".github/workflows/automation-watchdog.yml"', workflow)
         self.assertIn('producer.get("conclusion") != "success"', workflow)
-        self.assertIn("production remains held", workflow)
+        self.assertIn("queue reconciliation is held", workflow)
+        self.assertLess(
+            workflow.index("Wait for exact Assessment producer completion before queue reconciliation"),
+            workflow.index("Resolve completed Discovery run from durable task correlation"),
+        )
 
