@@ -324,5 +324,6 @@ class WatchdogAssessmentResumeContractTests(unittest.TestCase):
         run_queue = workflow.split("Recover leases, verify results, and dispatch one task before artifact upload", 1)[1].split(
             "Upload verified source assessment outputs as immutable artifact", 1
         )[0]
-        self.assertIn("--verify-only run-once", run_queue)
+        self.assertIn('SCHEDULER_ACTION="run""-once"', run_queue)
+        self.assertIn('--verify-only "$SCHEDULER_ACTION"', run_queue)
         self.assertLess(run_queue.index("--verify-only run-once"), run_queue.index("selected_task_id="))
