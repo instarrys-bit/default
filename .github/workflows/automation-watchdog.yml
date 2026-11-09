@@ -1829,18 +1829,18 @@ jobs:
               default=None,
           )
           if not isinstance(latest, dict) or latest.get("status") != "SUCCEEDED" or (latest.get("verification") or {}).get("status") != "passed":
-              print("Production dispatch held: latest Discovery is not independently verified SUCCEEDED.")
+              print("Production dispatch held: latest Discovery is not independently verified SUCCEEDED.", file=sys.stderr)
               raise SystemExit(0)
           evidence = (latest.get("result") or {}).get("run_evidence") or {}
           run_id = evidence.get("run_id")
           if isinstance(run_id, int) and not isinstance(run_id, bool):
               run_id = str(run_id)
           if not isinstance(run_id, str) or not run_id.isdigit():
-              print("Production dispatch held: latest Discovery run identity is missing.")
+              print("Production dispatch held: latest Discovery run identity is missing.", file=sys.stderr)
               raise SystemExit(0)
           handoff = classify_assessment_handoff(tasks, run_id)
           if handoff.get("state") != "already_assessed":
-              print("Production dispatch held: latest Discovery has no independently verified non-activating Assessment.")
+              print("Production dispatch held: latest Discovery has no independently verified non-activating Assessment.", file=sys.stderr)
               raise SystemExit(0)
           assessment = next((task for task in tasks if isinstance(task, dict) and task.get("task_id") == handoff.get("canonical_task_id")), None)
           predecessor = ((assessment or {}).get("input") or {}).get("predecessor")
@@ -1856,13 +1856,13 @@ jobs:
               },
           )
           if artifact.get("found") is not True:
-              print("Production dispatch held: exact immutable Assessment artifact is not yet available; Watchdog will retry after artifact recovery.")
+              print("Production dispatch held: exact immutable Assessment artifact is not yet available; Watchdog will retry after artifact recovery.", file=sys.stderr)
               raise SystemExit(0)
           selected = select_production_worker_task(tasks)
           if selected:
-              print("Selected one queued production task after exact Discovery/Assessment artifact verification: " + selected)
+              print("Selected one queued production task after exact Discovery/Assessment artifact verification: " + selected, file=sys.stderr)
           else:
-              print("No eligible queued production task; no duplicate dispatch attempted.")
+              print("No eligible queued production task; no duplicate dispatch attempted.", file=sys.stderr)
           print(selected)
           PY
           )"
@@ -1877,12 +1877,11 @@ jobs:
             --repository "$GITHUB_REPOSITORY" --branch main --token-stdin \
             --worker-id "watchdog-production-$GITHUB_RUN_ID" \
             --task-id "$selected_task_id" --max-tasks 1 run-once | tee "$RUNNER_TEMP/production-dispatch-result.json"
-          unset queue_token
-
           export SELECTED_PRODUCTION_TASK_ID="$selected_task_id"
           GITHUB_TOKEN="$queue_token" python3 scripts/remote_task_queue_runtime.py \
             --repository "$GITHUB_REPOSITORY" --branch main snapshot \
             --output "$RUNNER_TEMP/task_queue_after_production_dispatch.json"
+          unset queue_token
           python3 - <<'PY'
           import json, os
           from pathlib import Path
