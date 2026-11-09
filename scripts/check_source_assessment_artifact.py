@@ -171,7 +171,12 @@ def find_matching_assessment_artifact(repository: str, token: str, expected: dic
                 f"{API_ROOT}/repos/{repository}/actions/artifacts/{artifact['id']}/zip",
                 token,
             )
-            proof_name, proof = _proof_from_archive(archive_bytes)
+            try:
+                proof_name, proof = _proof_from_archive(archive_bytes)
+            except ValueError:
+                # Unrelated historical artifacts without a usable proof are not
+                # accepted as evidence; they do not block a fresh bounded recovery.
+                continue
             predecessor = proof.get("predecessor") or {}
             if str(predecessor.get("workflow_run_id", "")) != str(expected["workflow_run_id"]):
                 continue
