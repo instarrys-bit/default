@@ -64,6 +64,32 @@ class GitHubIssueQueueStoreTests(unittest.TestCase):
             return FakeResponse({"id": self.next_id - 1})
         raise AssertionError(f"unexpected method: {request.method}")
 
+    def test_rebuilt_queue_uses_clean_seed_instead_of_stale_revision_250(self):
+        stale = Path(self.temp.name) / "stale-task-queue.json"
+        stale.write_text(json.dumps({"schema_version": 1, "revision": 250, "tasks": []}), encoding="utf-8")
+        seed = Path(self.temp.name) / "clean-seed.json"
+        clean = {
+            "schema_version": 1,
+            "revision": 0,
+            "tasks": [],
+            "resource_leases": {},
+            "manual_authorizations": {},
+        }
+        seed.write_text(json.dumps(clean), encoding="utf-8")
+        rebuilt = GitHubContentsQueueStore(
+            "owner/repo",
+            str(stale),
+            token="test-token",
+            api_url="https://api.example.test",
+            issue_number=423,
+            bootstrap_path=str(seed),
+        )
+        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+            snapshot = rebuilt.read()
+        self.assertEqual(snapshot.document, clean)
+        self.assertEqual(snapshot.content_sha, "")
+        self.assertEqual(len(self.comments), 0)
+
     def test_read_only_consumer_does_not_bootstrap_or_write(self):
         with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
             snapshot = self.store.read()
@@ -172,6 +198,20 @@ class GitHubIssueQueueStoreTests(unittest.TestCase):
         with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
             with self.assertRaisesRegex(ValueError, "queue document object"):
                 self.store.mutate(lambda queue: ([], None))
+
+    def test_mutate_reuses_its_snapshot_instead_of_rescanning_before_append(self):
+        def add_task(queue):
+            queue["revision"] += 1
+            queue["tasks"].append({"task_id": "new"})
+            return queue, "added"
+
+        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+            result = self.store.mutate(add_task)
+        self.assertEqual(result, "added")
+        get_calls = [request for request in self.calls if request.method == "GET"]
+        # Initial read, post-bootstrap verification, and post-append canonical
+        # verification. A fourth full-history GET would be redundant.
+        self.assertEqual(len(get_calls), 3)
 
     def test_unchanged_mutation_does_not_append(self):
         with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):

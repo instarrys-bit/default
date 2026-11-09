@@ -4,8 +4,8 @@
   "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
-    "registry_blob_sha": "cedd1d7a8410a920a6a6c598f55cdb556f7c7dd7",
-    "adapters_blob_sha": "f43ecfd1296995740aec219ff5ed71f90e5daefd",
+    "registry_blob_sha": "00cb9c14870b437b8d6b65d3969cb0fc93b6608a",
+    "adapters_blob_sha": "28d8ebc336b5a302e0c9f1e19f69a9bdb767a892",
     "inspected_sources": [
       ".github/workflow_helpers/check_source_assessment_artifact.py",
       ".github/workflows/auto_sync.yml",
@@ -80,7 +80,7 @@
       "tests/test_watchdog_recovery_workflow.py",
       "tests/test_workflow_config_guard_order.py"
     ],
-    "limitation": "The active Source Discovery → Assessment DAG is scoped to runner-local immutable artifacts and a fenced Issue #315 checkpoint. The production repository publisher remains restricted to rulesets/**. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
+    "limitation": "The active Source Discovery → Assessment DAG is scoped to runner-local immutable artifacts and a fenced Issue #423 checkpoint. The production repository publisher remains restricted to rulesets/**. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
     "reviewed_at": "2026-11-07",
     "isolated_ephemeral_outputs": [
       {
@@ -193,7 +193,7 @@
     {
       "id": "durable_task_queue_control_plane",
       "paths": [
-        "GitHub Issue #315 comments (external durable state)"
+        "GitHub Issue #423 comments (external durable state)"
       ],
       "writers": [
         "script_github_queue_store",
@@ -202,24 +202,24 @@
         "script_task_scheduler",
         "workflow_automation_watchdog"
       ],
-      "lease_key": "github-issue-comment-chain:315",
+      "lease_key": "github-issue-comment-chain:423",
       "status": "append_only_issue_snapshot_chain_reviewed",
-      "note": "The durable queue is control-plane state stored as append-only, compressed GitHub Issue #315 comments. Each snapshot is SHA-256 chained to the prior revision; concurrent duplicate revisions resolve deterministically by earliest canonical comment ID. The repository automation/task_queue.json file is read-only bootstrap state. Local task_queue_runtime is runner-local only."
+      "note": "The durable queue is control-plane state stored as append-only, compressed GitHub Issue #423 comments. Each snapshot is SHA-256 chained to the prior revision; concurrent duplicate revisions resolve deterministically by earliest canonical comment ID. The repository automation/task_queue_rebuild_seed.json file is read-only bootstrap state. Local task_queue_runtime is runner-local only."
     },
     {
       "id": "independent_source_assessment_queue_checkpoint",
       "paths": [
-        "GitHub Issue #315 task.assessment_checkpoint"
+        "GitHub Issue #423 task.assessment_checkpoint"
       ],
       "writers": [
         "script_assess_sources",
         "script_remote_task_queue_runtime",
         "workflow_automation_watchdog"
       ],
-      "lock_key": "github-issue-comment-chain:315 + logical/production-pipeline + logical/source-assessment-checkpoints + logical/source-dag-supervision",
+      "lock_key": "github-issue-comment-chain:423 + logical/production-pipeline + logical/source-assessment-checkpoints + logical/source-dag-supervision",
       "required_mode": "append_only_issue_snapshot_CAS_with_live_task_and_resource_fences",
       "status": "bounded_task_checkpoint_fenced",
-      "note": "Per-URL results are stored only in the currently claimed task's assessment_checkpoint. Each mutation uses the append-only Issue #315 snapshot CAS and validates task identity, active task lease, exact predecessor run/digest and both logical resource fencing tokens. No repository assessment document is written or published. Discovery and Assessment also share logical/source-dag-supervision, held from task claim through independent workflow verification so overlapping Watchdog events cannot execute different source-DAG stages concurrently."
+      "note": "Per-URL results are stored only in the currently claimed task's assessment_checkpoint. Each mutation uses the append-only Issue #423 snapshot CAS and validates task identity, active task lease, exact predecessor run/digest and both logical resource fencing tokens. No repository assessment document is written or published. Discovery and Assessment also share logical/source-dag-supervision, held from task claim through independent workflow verification so overlapping Watchdog events cannot execute different source-DAG stages concurrently."
     },
     {
       "id": "lifecycle_gate_state",
@@ -489,7 +489,7 @@
       "lock_key": "logical/production-pipeline + logical/source-assessment-checkpoints + logical/source-dag-supervision + exact assessment output resource keys in monolithic mode; per-run RUNNER_TEMP isolation in independent mode",
       "required_mode": "isolated_per_run_artifact_workspace",
       "status": "active_runner_local_artifacts_and_fenced_issue_checkpoint",
-      "note": "Independent assessment JSON and report are per-run RUNNER_TEMP artifacts. Watchdog adds a provenance proof binding the exact Assessment task, verified Discovery predecessor, producer workflow run/head SHA and every artifact file digest before immutable upload. Production independently resolves and verifies that artifact; only the bounded task assessment_checkpoint is shared through Issue #315 CAS. No assessment document is committed or published."
+      "note": "Independent assessment JSON and report are per-run RUNNER_TEMP artifacts. Watchdog adds a provenance proof binding the exact Assessment task, verified Discovery predecessor, producer workflow run/head SHA and every artifact file digest before immutable upload. Production independently resolves and verifies that artifact; only the bounded task assessment_checkpoint is shared through Issue #423 CAS. No assessment document is committed or published."
     },
     {
       "id": "source_candidate_artifacts",
@@ -541,7 +541,7 @@
     {
       "id": "independent_source_dag_supervision",
       "paths": [
-        "GitHub Issue #315 resource_leases[logical/source-dag-supervision]"
+        "GitHub Issue #423 resource_leases[logical/source-dag-supervision]"
       ],
       "known_writers": [
         "workflow_source_discovery",
@@ -565,6 +565,6 @@
       "Global dynamic path, third-party Action and cross-workflow runtime evidence remains required before enabling unrelated capabilities."
     ]
   },
-  "limitation": "The active Source Discovery → Assessment DAG is scoped to runner-local immutable artifacts and a fenced Issue #315 checkpoint. Per-capability repository writes are validated against explicit exclusive resource_contract.resource_keys; protected modules/** and JavaScript remain unwritable. The production repository publisher stages only the three ruleset deliverables under rulesets/**; this is not a system-wide automation write limit. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
+  "limitation": "The active Source Discovery → Assessment DAG is scoped to runner-local immutable artifacts and a fenced Issue #423 checkpoint. Per-capability repository writes are validated against explicit exclusive resource_contract.resource_keys; protected modules/** and JavaScript remain unwritable. The production repository publisher stages only the three ruleset deliverables under rulesets/**; this is not a system-wide automation write limit. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
   "reviewed_at": "2026-11-09"
 }

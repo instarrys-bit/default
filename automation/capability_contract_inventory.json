@@ -2,7 +2,7 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-source-dag-active-2026-11-07",
   "status": "baseline_inventory",
-  "source_registry_blob_sha": "cedd1d7a8410a920a6a6c598f55cdb556f7c7dd7",
+  "source_registry_blob_sha": "00cb9c14870b437b8d6b65d3969cb0fc93b6608a",
   "summary": {
     "registered_programs": 61,
     "python_components": 54,
@@ -112,13 +112,13 @@
       "current_registry_outputs": [
         "stdout JSON: assessed, bytes_read, parser_candidates, policy_candidates, activated=0, artifact_verification",
         "runner-local source_assessment history/runtime/report uploaded as immutable Actions artifact; no repository publication",
-        "GitHub Issue #315 task.assessment_checkpoint: per-URL result and fingerprint checkpoint (durable CAS state)"
+        "GitHub Issue #423 task.assessment_checkpoint: per-URL result and fingerprint checkpoint (durable CAS state)"
       ],
       "current_invocation": "python_module_or_workflow_step",
       "contract_status": "reviewed_active_scoped_source_dag",
       "dispatch_status": "enabled",
       "missing_contract_fields": [],
-      "audit_note": "The non-activating assessor is enabled only for workflow_automation_watchdog under the exact release allowlist. It reads the verified immutable Discovery artifact, writes outputs only beneath RUNNER_TEMP, and mutates only its bounded fenced Issue #315 checkpoint. Watchdog handoff deduplicates by exact predecessor workflow_run_id and a canonical source-assessment:<workflow_run_id> key.",
+      "audit_note": "The non-activating assessor is enabled only for workflow_automation_watchdog under the exact release allowlist. It reads the verified immutable Discovery artifact, writes outputs only beneath RUNNER_TEMP, and mutates only its bounded fenced Issue #423 checkpoint. Watchdog handoff deduplicates by exact predecessor workflow_run_id and a canonical source-assessment:<workflow_run_id> key.",
       "contract_sample_path": "automation/capability_contracts/assess_sources.json"
     },
     {

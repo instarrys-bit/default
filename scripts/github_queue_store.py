@@ -22,7 +22,7 @@ from urllib.request import Request, urlopen
 
 MARKER = "<!-- shadowrocket-automation-queue:v1 -->"
 MARKER_V2 = "<!-- shadowrocket-automation-queue:v2 -->"
-DEFAULT_ISSUE_NUMBER = 315
+DEFAULT_ISSUE_NUMBER = 423
 MAX_COMMENT_BYTES = 60_000
 CHUNK_DATA_CHARS = 40_000
 
@@ -64,6 +64,7 @@ class GitHubContentsQueueStore:
         api_url: str = "https://api.github.com",
         timeout: int = 20,
         issue_number: int | None = None,
+        bootstrap_path: str | None = None,
     ) -> None:
         if not repository or "/" not in repository:
             raise ValueError("repository must be owner/name")
@@ -86,6 +87,14 @@ class GitHubContentsQueueStore:
             raise ValueError("AUTOMATION_QUEUE_ISSUE_NUMBER must be a positive integer") from None
         if self.issue_number < 1:
             raise ValueError("AUTOMATION_QUEUE_ISSUE_NUMBER must be a positive integer")
+        if issue_number is None and self.issue_number == 315:
+            raise ValueError("durable queue Issue #315 is retired; use Issue #423")
+        self.bootstrap_path = bootstrap_path or os.environ.get("AUTOMATION_QUEUE_BOOTSTRAP_PATH") or (
+            "automation/task_queue_rebuild_seed.json"
+            if self.issue_number == DEFAULT_ISSUE_NUMBER else path
+        )
+        if not self.bootstrap_path or ".." in self.bootstrap_path.split("/"):
+            raise ValueError("bootstrap_path must be a safe path")
 
     @property
     def comments_endpoint(self) -> str:
@@ -325,9 +334,9 @@ class GitHubContentsQueueStore:
         snapshot = self._canonical_snapshot(comments)
         if snapshot is not None:
             return snapshot
-        bootstrap_path = Path(self.path)
+        bootstrap_file = Path(self.bootstrap_path)
         try:
-            document = json.loads(bootstrap_path.read_text(encoding="utf-8"))
+            document = json.loads(bootstrap_file.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             raise GitHubAPIError("no durable queue snapshot exists and the read-only bootstrap queue is unavailable") from None
         if not isinstance(document, dict) or isinstance(document.get("revision"), bool) or not isinstance(document.get("revision"), int):
@@ -345,12 +354,21 @@ class GitHubContentsQueueStore:
             raise GitHubAPIError("queue bootstrap comment was not visible after creation")
         return snapshot
 
-    def compare_and_swap(self, document: dict[str, Any], expected_sha: str) -> str:
+    def _compare_and_swap_from_snapshot(
+        self, document: dict[str, Any], expected_sha: str, current: QueueSnapshot
+    ) -> str:
+        """Append against a previously read snapshot, then verify the canonical winner.
+
+        The final read is the concurrency check: if another writer appended the
+        same next revision first, or advanced the chain while this writer was
+        preparing its candidate, the candidate cannot become the canonical
+        snapshot and the mutation is retried. Reusing the caller's just-read
+        snapshot avoids a redundant full-history scan before the append.
+        """
         if not isinstance(document, dict):
             raise ValueError("queue document must be an object")
         if not expected_sha:
             raise ValueError("expected_sha is required; blind writes are prohibited")
-        current = self.read()
         if not current.content_sha:
             raise ConcurrentUpdate("queue snapshot chain is not initialized; use mutate() to bootstrap")
         if current.content_sha != expected_sha:
@@ -365,6 +383,14 @@ class GitHubContentsQueueStore:
         if latest.content_sha != candidate_sha:
             raise ConcurrentUpdate("another queue mutation won the same revision; retry against canonical state")
         return candidate_sha
+
+    def compare_and_swap(self, document: dict[str, Any], expected_sha: str) -> str:
+        if not isinstance(document, dict):
+            raise ValueError("queue document must be an object")
+        if not expected_sha:
+            raise ValueError("expected_sha is required; blind writes are prohibited")
+        current = self.read()
+        return self._compare_and_swap_from_snapshot(document, expected_sha, current)
 
     def mutate(
         self,
@@ -384,7 +410,7 @@ class GitHubContentsQueueStore:
             if candidate == snapshot.document:
                 return result
             try:
-                self.compare_and_swap(candidate, snapshot.content_sha)
+                self._compare_and_swap_from_snapshot(candidate, snapshot.content_sha, snapshot)
                 return result
             except ConcurrentUpdate:
                 if attempt >= max_conflicts:

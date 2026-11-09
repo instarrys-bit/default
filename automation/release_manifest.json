@@ -3,7 +3,7 @@
   "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
   "release_status": "active_with_live_handoff_evidence",
   "created_on": "2026-11-07",
-  "purpose": "Scoped independent Source Discovery → non-activating Source Assessment DAG. Only the Watchdog caller may enqueue the assessor; its output documents remain runner-local immutable artifacts and the sole shared mutation is the fenced Issue #315 checkpoint.",
+  "purpose": "Scoped independent Source Discovery → non-activating Source Assessment DAG. Only the Watchdog caller may enqueue the assessor; its output documents remain runner-local immutable artifacts and the sole shared mutation is the fenced Issue #423 checkpoint.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "7e69c47aad7b6e618a04607a374522dfcb2bd225"
+      "git_blob_sha": "550d1421dc30d8b579751cbfba4b8a3d632a9fa8"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -54,7 +54,7 @@
     },
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
-      "git_blob_sha": "ea95978cff6c4f9dcdd3a9c8d059914b52f3da35"
+      "git_blob_sha": "337712a8807e67af4707c62a667c2817746ea3e9"
     },
     "remote_task_queue_runtime": {
       "path": "scripts/remote_task_queue_runtime.py",
@@ -78,19 +78,19 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "cedd1d7a8410a920a6a6c598f55cdb556f7c7dd7"
+      "git_blob_sha": "00cb9c14870b437b8d6b65d3969cb0fc93b6608a"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "f43ecfd1296995740aec219ff5ed71f90e5daefd"
+      "git_blob_sha": "28d8ebc336b5a302e0c9f1e19f69a9bdb767a892"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "10e87629d869c09098315732dcac9c1f067a8c3e"
+      "git_blob_sha": "219b3eec0fd4bcbdd7d7c134560bbc6c65a63dde"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "54b20b052f98d6901b3a11c42667a233072db347"
+      "git_blob_sha": "f52570b3e7213e92253354e3e8219929d6714268"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -106,11 +106,11 @@
     },
     "production_input_manifest": {
       "path": "automation/production_inputs.json",
-      "git_blob_sha": "030135c42b714bdd7b4e18d0fa1957196335f19a"
+      "git_blob_sha": "d37ce83356bd09e180b2e9f967ad8b843c991b36"
     },
     "task_queue_store": {
       "path": "scripts/github_queue_store.py",
-      "git_blob_sha": "29ebc707503b802df09800db561f854bede83d4a"
+      "git_blob_sha": "c8ad579841b3af88fc785187855c26b076ee0d78"
     },
     "import_request_observations": {
       "path": "scripts/import_request_observations.py",
@@ -225,8 +225,8 @@
         "target_program_id": "script_assess_sources",
         "capability": "source_assessment",
         "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-        "adapter_entry_sha256": "208b3e0858d340343b979ba35f932099183293ec257d5389ad395b590c7ebf70",
-        "registry_entry_sha256": "9f448f101ba172d74d0b0669a7c761f74d3d06b98609779e825f6bbab7c22288",
+        "adapter_entry_sha256": "48cd3d69af8b644e6d1ae5c70654e09b476f0f24761a5134f773184029569f45",
+        "registry_entry_sha256": "edf486b9da0698c41af8ac6997f8c4576fa0843d6301a92ecea2674a70a65fe3",
         "source_path": "scripts/assess_sources.py",
         "source_git_blob_sha": "e0129b2dc91c58f1642338d3d7e67db332d6e0bb",
         "allowed_callers": [
@@ -235,7 +235,7 @@
         "input_contract_sha256": "3f089ec52a26ba8a7e70d158dcc2e64438743f88cdc03ae0f75cf967291392c2",
         "output_contract_sha256": "ff475c522d1d58633246112adea18ef7d921ac89944f4a1dc7178cb5aad78aba",
         "dependency_contract_sha256": "9701a5ebc55ea76c2f7795af9efcb7d4679fc32f09d16bc00583d6bfe0bda6cf",
-        "resource_contract_sha256": "280dc3104c67d9626d481b36c67d10ff84dacf44030ec4374fa8efd129172ed3",
+        "resource_contract_sha256": "7fde2a73336d76303066cc6de21791202afa96bb1bf83628734549f9963143ba",
         "verifier_contract_sha256": "601c151692490aa9f8eb5b669c223e7c5be7eddfd8e16daf21b785097a7e662d"
       }
     ]

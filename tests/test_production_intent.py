@@ -98,7 +98,7 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertEqual(result["status"], "INPUT_CHANGED")
 
     def test_generated_outputs_do_not_create_production_demand(self):
-        result = classify_paths(["reports/status.json", "rulesets/direct.list", "automation/task_queue.json"], self.manifest)
+        result = classify_paths(["reports/status.json", "rulesets/direct.list", "automation/task_queue.json", "automation/task_queue_rebuild_seed.json"], self.manifest)
         self.assertEqual(result["status"], "NO_INPUT_CHANGE")
 
     def test_monitoring_paths_are_classified_without_production_demand(self):
