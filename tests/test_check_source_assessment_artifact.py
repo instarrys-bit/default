@@ -3,12 +3,14 @@ import io
 import json
 import sys
 import unittest
+from unittest.mock import patch
 import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / ".github" / "workflow_helpers"))
 
+import check_source_assessment_artifact as artifact_helper
 from check_source_assessment_artifact import verify_assessment_archive
 
 
@@ -123,6 +125,59 @@ class AssessmentArtifactVerifierTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "does not match GitHub artifact metadata"):
             verify_assessment_archive(blob, artifact, self.producer_run, self.expected)
 
+
+
+    def test_skips_untrusted_producer_runs_before_downloading_artifacts(self):
+        artifacts = [
+            {
+                "id": 1,
+                "name": artifact_helper.ASSESSMENT_ARTIFACT_NAME,
+                "expired": False,
+                "workflow_run": {"id": 101, "head_branch": "feature", "head_sha": "a" * 40},
+            },
+            {
+                "id": 2,
+                "name": artifact_helper.ASSESSMENT_ARTIFACT_NAME,
+                "expired": False,
+                "workflow_run": {"id": 102, "head_branch": "main", "head_sha": "b" * 40},
+            },
+            {
+                "id": 3,
+                "name": artifact_helper.ASSESSMENT_ARTIFACT_NAME,
+                "expired": False,
+                "workflow_run": {"id": 103, "head_branch": "main", "head_sha": "c" * 40},
+            },
+        ]
+        failed_run = {
+            "id": 102,
+            "path": artifact_helper.ASSESSMENT_WORKFLOW_PATH,
+            "head_branch": "main",
+            "head_sha": "b" * 40,
+            "status": "completed",
+            "conclusion": "failure",
+        }
+        successful_run = {
+            "id": 103,
+            "path": artifact_helper.ASSESSMENT_WORKFLOW_PATH,
+            "head_branch": "main",
+            "head_sha": "c" * 40,
+            "status": "completed",
+            "conclusion": "success",
+        }
+        proof = {"predecessor": {"workflow_run_id": self.expected["workflow_run_id"]}}
+        with (
+            patch.object(artifact_helper, "_get_json", side_effect=[{"artifacts": artifacts}, failed_run, successful_run]),
+            patch.object(artifact_helper, "_get_bytes", return_value=b"verified-archive") as get_bytes,
+            patch.object(artifact_helper, "_proof_from_archive", return_value=("source-assessment-proof.json", proof)),
+            patch.object(artifact_helper, "verify_assessment_archive", return_value={"verified": True}),
+        ):
+            result = artifact_helper.find_matching_assessment_artifact("owner/repo", "token", self.expected)
+        self.assertTrue(result["found"])
+        self.assertTrue(result["verified"])
+        get_bytes.assert_called_once_with(
+            f"{artifact_helper.API_ROOT}/repos/owner/repo/actions/artifacts/3/zip",
+            "token",
+        )
 
 if __name__ == "__main__":
     unittest.main()
