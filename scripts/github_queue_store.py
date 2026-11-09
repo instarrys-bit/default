@@ -22,7 +22,7 @@ from urllib.request import Request, urlopen
 
 MARKER = "<!-- shadowrocket-automation-queue:v1 -->"
 MARKER_V2 = "<!-- shadowrocket-automation-queue:v2 -->"
-DEFAULT_ISSUE_NUMBER = 315
+DEFAULT_ISSUE_NUMBER = 423
 MAX_COMMENT_BYTES = 60_000
 CHUNK_DATA_CHARS = 40_000
 
@@ -64,6 +64,7 @@ class GitHubContentsQueueStore:
         api_url: str = "https://api.github.com",
         timeout: int = 20,
         issue_number: int | None = None,
+        bootstrap_path: str | None = None,
     ) -> None:
         if not repository or "/" not in repository:
             raise ValueError("repository must be owner/name")
@@ -86,6 +87,13 @@ class GitHubContentsQueueStore:
             raise ValueError("AUTOMATION_QUEUE_ISSUE_NUMBER must be a positive integer") from None
         if self.issue_number < 1:
             raise ValueError("AUTOMATION_QUEUE_ISSUE_NUMBER must be a positive integer")
+        self.bootstrap_path = bootstrap_path or os.environ.get("AUTOMATION_QUEUE_BOOTSTRAP_PATH") or (
+            "automation/task_queue_rebuild_seed.json"
+            if self.issue_number == DEFAULT_ISSUE_NUMBER else path
+        )
+        if (not self.bootstrap_path or ".." in self.bootstrap_path.split("/")
+                or self.bootstrap_path.startswith("/")):
+            raise ValueError("bootstrap_path must be a safe repository-relative path")
 
     @property
     def comments_endpoint(self) -> str:
@@ -325,9 +333,9 @@ class GitHubContentsQueueStore:
         snapshot = self._canonical_snapshot(comments)
         if snapshot is not None:
             return snapshot
-        bootstrap_path = Path(self.path)
+        bootstrap_file = Path(self.bootstrap_path)
         try:
-            document = json.loads(bootstrap_path.read_text(encoding="utf-8"))
+            document = json.loads(bootstrap_file.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             raise GitHubAPIError("no durable queue snapshot exists and the read-only bootstrap queue is unavailable") from None
         if not isinstance(document, dict) or isinstance(document.get("revision"), bool) or not isinstance(document.get("revision"), int):
