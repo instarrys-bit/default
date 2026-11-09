@@ -112,13 +112,13 @@
       "current_registry_outputs": [
         "stdout JSON: assessed, bytes_read, parser_candidates, policy_candidates, activated=0, artifact_verification",
         "runner-local source_assessment history/runtime/report uploaded as immutable Actions artifact; no repository publication",
-        "GitHub Issue #315 task.assessment_checkpoint: per-URL result and fingerprint checkpoint (durable CAS state)"
+        "GitHub Issue #423 task.assessment_checkpoint: per-URL result and fingerprint checkpoint (durable CAS state)"
       ],
       "current_invocation": "python_module_or_workflow_step",
       "contract_status": "reviewed_active_scoped_source_dag",
       "dispatch_status": "enabled",
       "missing_contract_fields": [],
-      "audit_note": "The non-activating assessor is enabled only for workflow_automation_watchdog under the exact release allowlist. It reads the verified immutable Discovery artifact, writes outputs only beneath RUNNER_TEMP, and mutates only its bounded fenced Issue #315 checkpoint. Watchdog handoff deduplicates by exact predecessor workflow_run_id and a canonical source-assessment:<workflow_run_id> key.",
+      "audit_note": "The non-activating assessor is enabled only for workflow_automation_watchdog under the exact release allowlist. It reads the verified immutable Discovery artifact, writes outputs only beneath RUNNER_TEMP, and mutates only its bounded fenced Issue #423 checkpoint. Watchdog handoff deduplicates by exact predecessor workflow_run_id and a canonical source-assessment:<workflow_run_id> key.",
       "contract_sample_path": "automation/capability_contracts/assess_sources.json"
     },
     {
