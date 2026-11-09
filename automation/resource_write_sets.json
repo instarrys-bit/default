@@ -1681,6 +1681,19 @@
       ],
       "fence": "Closes only exact incident issues after verified recovery run evidence.",
       "boundary": "GitHub issue metadata only."
+    },
+    {
+      "workflow_path": ".github/workflows/source-discovery.yml",
+      "step_name": "Dispatch Watchdog reconciliation for this exact Discovery run",
+      "mutation_kinds": [
+        "workflow_dispatch_api"
+      ],
+      "resources": [
+        "GitHub Actions workflow dispatch: automation-watchdog.yml",
+        "logical/source-dag-supervision"
+      ],
+      "fence": "The callback is emitted only after the exact Discovery artifact is uploaded. Watchdog validates the exact Discovery run ID, workflow path, main branch, completed successful conclusion and immutable artifact provenance before queue reconciliation.",
+      "boundary": "External workflow_dispatch wake-up only; no repository contents, source catalog, rulesets or modules/uu.conf are written by the callback."
     }
   ],
   "workflow_native_scan": {
