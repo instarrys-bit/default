@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "cf41f1ca95d324f1d292c5b6be07f4020a3e926e"
+      "git_blob_sha": "6aa5bc95d07bbf5dab9d68229ab7dc5861d76ded"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -62,7 +62,7 @@
     },
     "task_scheduler": {
       "path": "scripts/task_scheduler.py",
-      "git_blob_sha": "e3bcc8605b25e1c0001403527e7d627d60351e23"
+      "git_blob_sha": "c5a7bf25327d35150013ef90d0ad5df8bc0ac3e5"
     },
     "resource_lease_runtime": {
       "path": "scripts/resource_lease_runtime.py",
