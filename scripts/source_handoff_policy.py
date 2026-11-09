@@ -269,7 +269,7 @@ def classify_assessment_handoff(tasks: list, workflow_run_id: str) -> dict:
         "reason": "No Assessment task exists for this exact Discovery run.",
     }
 
-def select_production_worker_task(tasks: list) -> str:
+def select_production_worker_task(tasks: list, current_fingerprint: str) -> str:
     """Select one queued production audit only after the latest Discovery has a verified Assessment.
 
     This is deliberately separate from select_source_worker_task: the source worker
@@ -278,6 +278,8 @@ def select_production_worker_task(tasks: list) -> str:
     """
     if not isinstance(tasks, list):
         raise ValueError("tasks must be a list")
+    if not isinstance(current_fingerprint, str) or len(current_fingerprint) != 64:
+        raise ValueError("current production fingerprint must be a SHA-256 hex digest")
     discoveries = [
         task for task in tasks
         if isinstance(task, dict) and task.get("target_program_id") == "workflow_source_discovery"
@@ -320,7 +322,7 @@ def select_production_worker_task(tasks: list) -> str:
         and task["input"].get("production_decision") in {
             "INPUT_CHANGED", "SCHEDULE_DUE", "RECOVERY_REQUIRED", "USER_AUTHORIZED_MANUAL_AUDIT"
         }
-        and isinstance(task["input"].get("production_fingerprint"), str)
+        and task["input"].get("production_fingerprint") == current_fingerprint
     ]
     if not candidates:
         return ""
