@@ -3,6 +3,8 @@ import io
 import json
 import sys
 import unittest
+import urllib.error
+from email.message import Message
 from unittest.mock import patch
 import zipfile
 from pathlib import Path
@@ -177,7 +179,53 @@ class AssessmentArtifactVerifierTests(unittest.TestCase):
         get_bytes.assert_called_once_with(
             f"{artifact_helper.API_ROOT}/repos/owner/repo/actions/artifacts/3/zip",
             "token",
+            max_bytes=artifact_helper.MAX_ASSESSMENT_ARCHIVE_BYTES,
         )
+
+
+    def test_artifact_redirect_does_not_forward_github_token_to_storage(self):
+        api_url = "https://api.github.com/repos/owner/repo/actions/artifacts/123/zip"
+        headers = Message()
+        headers["Location"] = "https://objects.example.test/signed/artifact.zip"
+        redirect = urllib.error.HTTPError(api_url, 302, "Found", headers, io.BytesIO())
+        opener = unittest.mock.Mock()
+        opener.open.side_effect = redirect
+        payload = b"verified-zip"
+        with (
+            patch.object(artifact_helper.urllib.request, "build_opener", return_value=opener),
+            patch.object(artifact_helper.urllib.request, "urlopen", return_value=io.BytesIO(payload)) as storage_open,
+        ):
+            result = artifact_helper._get_bytes(api_url, "github-secret", max_bytes=100)
+
+        self.assertEqual(result, payload)
+        api_request = opener.open.call_args.args[0]
+        storage_request = storage_open.call_args.args[0]
+        self.assertEqual(api_request.get_header("Authorization"), "Bearer github-secret")
+        self.assertIsNone(storage_request.get_header("Authorization"))
+        self.assertEqual(storage_request.full_url, "https://objects.example.test/signed/artifact.zip")
+
+    def test_api_response_size_limit_is_enforced(self):
+        opener = unittest.mock.Mock()
+        opener.open.return_value = io.BytesIO(b"1234")
+        with patch.object(artifact_helper.urllib.request, "build_opener", return_value=opener):
+            with self.assertRaisesRegex(ValueError, "safety limit"):
+                artifact_helper._get_bytes("https://api.github.com/test", "token", max_bytes=3)
+
+    def test_redirect_without_location_fails_closed(self):
+        headers = Message()
+        redirect = urllib.error.HTTPError(
+            "https://api.github.com/repos/owner/repo/actions/artifacts/123/zip",
+            302, "Found", headers, io.BytesIO(),
+        )
+        opener = unittest.mock.Mock()
+        opener.open.side_effect = redirect
+        with patch.object(artifact_helper.urllib.request, "build_opener", return_value=opener):
+            with self.assertRaisesRegex(ValueError, "no signed location"):
+                artifact_helper._get_bytes(
+                    "https://api.github.com/repos/owner/repo/actions/artifacts/123/zip",
+                    "token",
+                )
+
 
 if __name__ == "__main__":
     unittest.main()
