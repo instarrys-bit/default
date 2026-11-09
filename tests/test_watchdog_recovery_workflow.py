@@ -150,6 +150,12 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("assert-workflow", cursor)
         self.assertNotIn("git push", cursor)
 
+    def test_assessment_batches_use_the_reviewed_twenty_url_contract_limit(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        self.assertEqual(workflow.count("{max_urls:20,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}"), 2)
+        self.assertNotIn("{max_urls:4,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}", workflow)
+        contract = json.loads((ROOT / "automation/capability_contracts/assess_sources.json").read_text(encoding="utf-8"))
+        self.assertEqual(contract["inputs"]["remote_inputs"]["max_urls_per_run"], 20)
     def test_assessment_artifact_upload_output_uses_real_newlines(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         run_queue = workflow.split("name: Recover leases, verify results, and dispatch one task before artifact upload", 1)[1].split("name: Upload verified source assessment outputs as immutable artifact", 1)[0]
