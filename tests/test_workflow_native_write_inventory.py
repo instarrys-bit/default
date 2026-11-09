@@ -26,6 +26,7 @@ PATTERNS = {
     "github_issue_patch": re.compile(r"\bgh\s+api\b.*--method\s+PATCH", re.I),
     "github_issue_comment_post": re.compile(r"\bgh\s+api\b.*--method\s+POST", re.I),
     "workflow_dispatch": re.compile(r"\bgh\s+workflow\s+run\b"),
+    "workflow_dispatch_api": re.compile(r"actions/workflows/[A-Za-z0-9_.-]+/dispatches"),
 }
 
 
