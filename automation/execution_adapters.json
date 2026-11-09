@@ -1696,6 +1696,11 @@
             "name": "automation_task_id",
             "type": "string",
             "required": false
+          },
+          {
+            "name": "source_discovery_run_id",
+            "type": "string",
+            "required": false
           }
         ],
         "allowed_refs": [
