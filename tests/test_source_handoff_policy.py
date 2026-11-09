@@ -130,9 +130,6 @@ class SourceHandoffPolicyTests(unittest.TestCase):
         self.assertEqual(result["state"], "ready")
 
 
-if __name__ == "__main__":
-    unittest.main(verbosity=2)
-
     def test_artifact_recovery_is_selected_after_assessment_gate_opens(self):
         discovery = discovery_task(run_id="42417075148")
         assessment = assessment_task("task_assessed", "42417075148")
@@ -160,3 +157,7 @@ if __name__ == "__main__":
         }
         self.assertEqual(select_source_worker_task([discovery, assessment, unrelated]), "")
 
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
