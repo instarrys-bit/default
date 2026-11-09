@@ -334,13 +334,20 @@ class TaskSchedulerTests(unittest.TestCase):
         self.assertTrue(second["created"])
         self.assertEqual(second["status"], "QUEUED")
         self.assertEqual(self.store.document["tasks"][2]["input"]["max_urls"], 4)
-        with self.assertRaisesRegex(ValueError, "recovery:2 to be independently verified SUCCEEDED"):
+        second_task = self.store.document["tasks"][2]
+        with self.assertRaisesRegex(ValueError, "exact prior Assessment task ID"):
             enqueue_source_assessment_task(
                 self.store, registry, adapters,
                 idempotency_key="source-assessment:41770000002:parser-v2:artifact-recovery:1",
                 input_payload=corrected_payload, root=source_root,
             )
-        second_task = self.store.document["tasks"][2]
+        with self.assertRaisesRegex(ValueError, "independently verified SUCCEEDED"):
+            enqueue_source_assessment_task(
+                self.store, registry, adapters,
+                idempotency_key="source-assessment:41770000002:parser-v2:artifact-recovery:1",
+                input_payload=corrected_payload, root=source_root,
+                recovery_of_task_id=second_task["task_id"],
+            )
         second_task["status"] = "SUCCEEDED"
         second_task["attempts"] = 1
         second_task["state_history"].extend(["CLAIMED", "SUCCEEDED"])
@@ -357,6 +364,7 @@ class TaskSchedulerTests(unittest.TestCase):
             self.store, registry, adapters,
             idempotency_key="source-assessment:41770000002:parser-v2:artifact-recovery:1",
             input_payload=corrected_payload, root=source_root,
+            recovery_of_task_id=second_task["task_id"],
         )
         self.assertTrue(artifact_recovery["created"])
         self.assertEqual(artifact_recovery["status"], "QUEUED")
@@ -367,6 +375,70 @@ class TaskSchedulerTests(unittest.TestCase):
                 idempotency_key="source-assessment:41770000002:parser-v2:recovery:3",
                 input_payload=corrected_payload, root=source_root,
             )
+
+    def test_artifact_recovery_accepts_verified_base_success_without_retry_chain(self):
+        source_root = self.root
+        (source_root / "sources").mkdir(exist_ok=True)
+        artifact = source_root / "sources" / "discovered_sources.json"
+        artifact.write_text('{"candidates":[]}\\n', encoding="utf-8")
+        registry = {"programs": [
+            {"id": "workflow_automation_watchdog", "capabilities": ["top_level_supervision"]},
+            {"id": "script_assess_sources", "capabilities": ["source_assessment"],
+             "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
+                               "max_attempts": 1, "timeout_seconds": 480}},
+            {"id": "script_verify_assess_sources_artifacts", "capabilities": ["source_assessment_artifact_verification"]},
+        ]}
+        adapters = {"schema_version": 1, "adapters": [{
+            "target_program_id": "script_assess_sources", "enabled": True,
+            "adapter_type": "python_cli", "interface_status": "reviewed",
+            "timeout_seconds": 300,
+            "input_contract": {"type": "object", "required": ["predecessor"],
+                               "properties": {"predecessor": {"type": "object"}}},
+        }]}
+        from task_scheduler import read_only_resource_digests
+        digest = read_only_resource_digests(source_root, ["sources/discovered_sources.json"])["sources/discovered_sources.json"]
+        payload = {"max_urls": 4, "max_file_bytes": 1000000, "max_total_bytes": 10000000,
+                   "predecessor": {
+                       "program_id": "script_discover_sources",
+                       "workflow_name": "Shadowrocket Source Discovery (Watchdog)",
+                       "workflow_run_id": "41770000004",
+                       "workflow_head_sha": "d" * 40,
+                       "artifact_path": "sources/discovered_sources.json",
+                       "artifact_sha256": digest,
+                   }}
+        base = enqueue_source_assessment_task(
+            self.store, registry, adapters,
+            idempotency_key="source-assessment:41770000004:parser-v2",
+            input_payload=payload, root=source_root,
+        )
+        prior = self.store.document["tasks"][0]
+        prior["status"] = "SUCCEEDED"
+        prior["attempts"] = 1
+        prior["state_history"].extend(["CLAIMED", "SUCCEEDED"])
+        prior["lease"] = None
+        prior["verification"] = {
+            "verifier_program_id": "script_verify_assess_sources_artifacts",
+            "status": "passed",
+            "verified_at": "2026-11-09T00:00:00Z",
+            "contract_sha256": "b" * 64,
+        }
+        prior["result"] = {"artifact_verification": {"valid": True, "activation_count": 0}}
+        self.store.document["revision"] += 1
+        with self.assertRaisesRegex(ValueError, "exact verified Assessment task ID"):
+            enqueue_source_assessment_task(
+                self.store, registry, adapters,
+                idempotency_key="source-assessment:41770000004:parser-v2:artifact-recovery:1",
+                input_payload=payload, root=source_root,
+            )
+        recovery = enqueue_source_assessment_task(
+            self.store, registry, adapters,
+            idempotency_key="source-assessment:41770000004:parser-v2:artifact-recovery:1",
+            input_payload=payload, root=source_root,
+            recovery_of_task_id=base["task_id"],
+        )
+        self.assertTrue(recovery["created"])
+        self.assertEqual(recovery["status"], "QUEUED")
+        self.assertEqual(len(self.store.document["tasks"]), 2)
 
     def test_source_assessment_recovery_requires_dead_lettered_base(self):
         source_root = self.root
