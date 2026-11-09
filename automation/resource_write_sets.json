@@ -784,7 +784,7 @@
       "document_store": [],
       "dynamic_children": [],
       "read_resources": [
-        "GitHub Issue #423 queue snapshots; automation/task_queue.json is read-only bootstrap",
+        "GitHub Issue #423 queue snapshots; automation/task_queue_rebuild_seed.json is read-only bootstrap",
         "automation/program_registry.json",
         "automation/execution_adapters.json",
         "automation/production_control.json"
@@ -1014,7 +1014,7 @@
       "document_store": [],
       "dynamic_children": [],
       "read_resources": [
-        "GitHub Issue #423 queue snapshots; automation/task_queue.json is read-only bootstrap",
+        "GitHub Issue #423 queue snapshots; automation/task_queue_rebuild_seed.json is read-only bootstrap",
         "automation/program_registry.json",
         "automation/execution_adapters.json",
         "automation/production_control.json"
