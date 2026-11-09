@@ -33,6 +33,7 @@ def discovery_task(run_id="42373818238", status="SUCCEEDED", include_run_evidenc
         "task_id": "task_discovery",
         "target_program_id": "workflow_source_discovery",
         "status": status,
+        "verification": {"status": "passed"},
         "result": result,
     }
 
