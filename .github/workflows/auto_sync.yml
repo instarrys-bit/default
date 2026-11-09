@@ -466,12 +466,12 @@ jobs:
           bash scripts/verify_publish_base.sh --check-only
       - name: Restore latest failed-run review checkpoint and delta journal
         env:
-          GH_TOKEN: \${{ github.token }}
-          REPO: \${{ github.repository }}
-          CURRENT_RUN_ID: \${{ github.run_id }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          CURRENT_RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          failed_runs="$(gh api "repos/$REPO/actions/runs?per_page=100" --jq '.workflow_runs[] | select(.path == ".github/workflows/auto_sync.yml" and .head_branch == "main" and (.conclusion == "failure" or .conclusion == "cancelled")) | .id' || true)"
+          failed_runs="$(gh api --paginate --slurp "repos/$REPO/actions/runs?per_page=100" --jq '.[] | .workflow_runs[] | select(.path == ".github/workflows/auto_sync.yml" and .head_branch == "main" and (.conclusion == "failure" or .conclusion == "cancelled")) | .id' || true)"
           for run_id in $failed_runs; do
             [ "$run_id" = "$CURRENT_RUN_ID" ] && continue
             artifact_id="$(gh api "repos/$REPO/actions/runs/$run_id/artifacts" --jq '[.artifacts[] | select(.name == "failed-review-cursor-recovery" and .expired == false)] | first | .id // empty' 2>/dev/null || true)"

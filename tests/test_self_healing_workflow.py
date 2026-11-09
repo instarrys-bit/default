@@ -82,6 +82,15 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn("CONFIG_BASELINE_MISMATCH TEST_FAILURE PYTHON_IMPORT_FAILURE", workflow)
         self.assertIn("The protected config was not modified.", workflow)
 
+    def test_failed_checkpoint_recovery_uses_expanded_github_context_and_paginated_history(self):
+        workflow = AUTO_SYNC.read_text(encoding="utf-8")
+        recovery = workflow.split("      - name: Restore latest failed-run review checkpoint and delta journal", 1)[1].split("      - name: " + chr(34) + "Audit each domain:", 1)[0]
+        self.assertIn("GH_TOKEN: ${{ github.token }}", recovery)
+        self.assertIn("REPO: ${{ github.repository }}", recovery)
+        self.assertIn("CURRENT_RUN_ID: ${{ github.run_id }}", recovery)
+        self.assertNotIn("\${{", recovery)
+        self.assertIn("gh api --paginate --slurp", recovery)
+        self.assertIn("failed-review-cursor-recovery", recovery)
     def test_baseline_registration_has_owner_history_credentials(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
         self.assertGreaterEqual(workflow.count("GH_TOKEN: ${{ github.token }}"), 2)
