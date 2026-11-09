@@ -285,7 +285,7 @@ class WatchdogAssessmentResumeContractTests(unittest.TestCase):
 
     def test_production_dispatch_waits_for_exact_successful_assessment_producer(self):
         workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
-        self.assertIn("Wait for exact Assessment producer completion before queue reconciliation", workflow)
+        self.assertIn("Wait for exact callback producer completion before queue reconciliation", workflow)
         self.assertIn("SOURCE_DISCOVERY_RUN_ID: ${{ inputs.source_discovery_run_id || '' }}", workflow)
         self.assertIn("ASSESSMENT_PRODUCER_RUN_ID: ${{ inputs.assessment_producer_run_id || '' }}", workflow)
         self.assertIn("PRODUCTION_PRODUCER_RUN_ID: ${{ inputs.production_producer_run_id || '' }}", workflow)
@@ -296,7 +296,7 @@ class WatchdogAssessmentResumeContractTests(unittest.TestCase):
         self.assertIn('producer.get("conclusion") != "success"', workflow)
         self.assertIn("queue reconciliation is held", workflow)
         self.assertLess(
-            workflow.index("Wait for exact Assessment producer completion before queue reconciliation"),
+            workflow.index("Wait for exact callback producer completion before queue reconciliation"),
             workflow.index("Resolve completed Discovery run from durable task correlation"),
         )
 
