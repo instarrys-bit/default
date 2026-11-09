@@ -1584,7 +1584,7 @@ jobs:
           test "$(jq -r '.dispatch_mode' automation/production_control.json)" = "enabled" || exit 0
 
           # The health-check snapshot may be stale by the time queue supervision
-          # reaches this step. Re-read the canonical Issue #315 queue immediately
+          # reaches this step. Re-read the canonical Issue #423 queue immediately
           # before deriving the Discovery idempotency key.
           GITHUB_TOKEN="$GITHUB_TOKEN" python3 scripts/remote_task_queue_runtime.py \
             --repository "$GITHUB_REPOSITORY" --branch main snapshot \
