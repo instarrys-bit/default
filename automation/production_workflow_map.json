@@ -329,7 +329,8 @@
     "Assessment's only shared mutation is the per-URL task checkpoint in GitHub Issue #315, guarded by task lease and logical resource fences.",
     "The production publisher is the single controlled writer for the three policy outputs rulesets/direct.list, rulesets/proxy.list and rulesets/reject.list, together with their required manifest/lifecycle/queue metadata. This is a production-output boundary, not a system-wide automation write restriction. Watchdog queue/checkpoint state, immutable Actions artifacts and runner-local workspaces are inventoried separately; modules/uu.conf and user-managed module/JavaScript assets remain unwritable.",
     "Other non-dispatchable Python capabilities retain default-deny status until their own complete transitive side-effect and resource contracts are reviewed.",
-    "Daily Discovery idempotency now fingerprints the producer, Watchdog handoff, durable queue, scheduler, fencing, Assessment, verifier and their active contracts; changes in the DAG receive a new same-day task key without weakening per-revision deduplication."
+    "Daily Discovery idempotency now fingerprints the producer, Watchdog handoff, durable queue, scheduler, fencing, Assessment, verifier and their active contracts; changes in the DAG receive a new same-day task key without weakening per-revision deduplication.",
+    "Watchdog task supervision uses per-run GitHub concurrency identities; Discovery and Assessment are serialized by the shared logical/source-dag-supervision lease acquired atomically with task claim and held through verification."
   ],
   "decomposition_constraints": [
     "Preserve the audit -> publish dependency and the existing single-writer concurrency boundary.",
@@ -340,9 +341,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "59e655bed0567b0959bcb8acfccb8d0766cf92e0",
+    "release_manifest_blob_sha": "73457eb161d0419105615fa16099929c0860c2fd",
     "program_registry_blob_sha": "cedd1d7a8410a920a6a6c598f55cdb556f7c7dd7",
-    "execution_adapters_blob_sha": "d9e5256a92cc90fc570c13e0aa38158228f4feb3",
+    "execution_adapters_blob_sha": "f43ecfd1296995740aec219ff5ed71f90e5daefd",
     "added_after_release_baseline": true,
     "note": "The independent source DAG is enabled under the scoped release allowlist. The production deliverables are exactly DIRECT, PROXY and REJECT; queue/checkpoint state and immutable runner-local artifacts are separate control-plane/runtime resources. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07",

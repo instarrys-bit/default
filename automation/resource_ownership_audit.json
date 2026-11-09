@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "audit_id": "resource-ownership-audit-2026.11.07.source-dag2",
+  "audit_id": "resource-ownership-audit-2026.11.09.source-dag3",
   "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
     "registry_blob_sha": "cedd1d7a8410a920a6a6c598f55cdb556f7c7dd7",
-    "adapters_blob_sha": "d9e5256a92cc90fc570c13e0aa38158228f4feb3",
+    "adapters_blob_sha": "f43ecfd1296995740aec219ff5ed71f90e5daefd",
     "inspected_sources": [
       ".github/workflow_helpers/check_source_assessment_artifact.py",
       ".github/workflows/auto_sync.yml",
@@ -216,10 +216,10 @@
         "script_remote_task_queue_runtime",
         "workflow_automation_watchdog"
       ],
-      "lock_key": "github-issue-comment-chain:315 + logical/production-pipeline + logical/source-assessment-checkpoints",
+      "lock_key": "github-issue-comment-chain:315 + logical/production-pipeline + logical/source-assessment-checkpoints + logical/source-dag-supervision",
       "required_mode": "append_only_issue_snapshot_CAS_with_live_task_and_resource_fences",
       "status": "bounded_task_checkpoint_fenced",
-      "note": "Per-URL results are stored only in the currently claimed task's assessment_checkpoint. Each mutation uses the append-only Issue #315 snapshot CAS and validates task identity, active task lease, exact predecessor run/digest and both logical resource fencing tokens. No repository assessment document is written or published."
+      "note": "Per-URL results are stored only in the currently claimed task's assessment_checkpoint. Each mutation uses the append-only Issue #315 snapshot CAS and validates task identity, active task lease, exact predecessor run/digest and both logical resource fencing tokens. No repository assessment document is written or published. Discovery and Assessment also share logical/source-dag-supervision, held from task claim through independent workflow verification so overlapping Watchdog events cannot execute different source-DAG stages concurrently."
     },
     {
       "id": "lifecycle_gate_state",
@@ -486,7 +486,7 @@
       "known_writers": [
         "script_assess_sources"
       ],
-      "lock_key": "logical/production-pipeline + exact assessment output resource keys in monolithic mode; per-run RUNNER_TEMP isolation in independent mode",
+      "lock_key": "logical/production-pipeline + logical/source-assessment-checkpoints + logical/source-dag-supervision + exact assessment output resource keys in monolithic mode; per-run RUNNER_TEMP isolation in independent mode",
       "required_mode": "isolated_per_run_artifact_workspace",
       "status": "active_runner_local_artifacts_and_fenced_issue_checkpoint",
       "note": "Independent assessment JSON and report are per-run RUNNER_TEMP artifacts. Watchdog adds a provenance proof binding the exact Assessment task, verified Discovery predecessor, producer workflow run/head SHA and every artifact file digest before immutable upload. Production independently resolves and verifies that artifact; only the bounded task assessment_checkpoint is shared through Issue #315 CAS. No assessment document is committed or published."
@@ -519,7 +519,7 @@
         "script_discover_sources",
         "workflow_source_discovery"
       ],
-      "lock_key": "sources/discovered_sources.json + reports/source-discovery.md exact leases in monolithic mode; per-run RUNNER_TEMP isolation in independent mode",
+      "lock_key": "logical/source-discovery-run + logical/source-dag-supervision + exact document/report leases in monolithic mode; per-run RUNNER_TEMP isolation in independent mode",
       "required_mode": "isolated_per_run_artifact_workspace",
       "status": "monolithic_exact_path_leases_and_independent_runner_local",
       "note": "Independent Discovery writes only to per-run RUNNER_TEMP and uploads an immutable artifact with producer identity and complete logical-document digest. Production downloads the exact predecessor artifact selected by the verified Assessment task and rechecks the digest before lineage audit and source admission. No discovery files are committed; production publication remains rulesets/** only."
@@ -537,6 +537,20 @@
       "required_mode": "compare_and_swap",
       "status": "bounded_cas_retry_implemented_concurrent_integration_unproven",
       "note": "Watchdog now re-reads the current Blob SHA and re-merges the same run-scoped paths on each of up to three conditional Contents API PUT attempts. observed_run_ids makes retries idempotent when another run updates the path between attempts. Conflicts after the third attempt fail closed. Distinct runs remain concurrent; parallel-run integration/no-lost-update proof is outstanding."
+    },
+    {
+      "id": "independent_source_dag_supervision",
+      "paths": [
+        "GitHub Issue #315 resource_leases[logical/source-dag-supervision]"
+      ],
+      "known_writers": [
+        "workflow_source_discovery",
+        "script_assess_sources"
+      ],
+      "lock_key": "logical/source-dag-supervision",
+      "required_mode": "exclusive_task_scoped_resource_lease",
+      "status": "fenced_at_claim_and_held_through_verification",
+      "note": "Discovery and Assessment adapters acquire this shared durable resource lease atomically with task claim. The lease remains active through asynchronous workflow verification and is released only after verified completion. Concurrent Watchdog runs may overlap; queue snapshot CAS, task claim and this common fencing lease permit only one source-DAG task to execute at a time. GitHub job concurrency is not used as the task serialization authority."
     }
   ],
   "scheduling_gates": {
@@ -552,5 +566,5 @@
     ]
   },
   "limitation": "The active Source Discovery → Assessment DAG is scoped to runner-local immutable artifacts and a fenced Issue #315 checkpoint. Per-capability repository writes are validated against explicit exclusive resource_contract.resource_keys; protected modules/** and JavaScript remain unwritable. The production repository publisher stages only the three ruleset deliverables under rulesets/**; this is not a system-wide automation write limit. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
-  "reviewed_at": "2026-11-07"
+  "reviewed_at": "2026-11-09"
 }

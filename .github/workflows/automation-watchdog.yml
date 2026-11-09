@@ -874,7 +874,8 @@ jobs:
 
   task-queue-supervision:
     concurrency:
-      group: shadowrocket-watchdog-task-supervision
+      # Per-run identity prevents GitHub's single-pending-job policy from dropping events; queue CAS and shared source-DAG lease serialize claims.
+      group: shadowrocket-watchdog-task-supervision-${{ github.run_id }}
       cancel-in-progress: false
     env:
       GITHUB_ACTOR_ID: ${{ github.actor_id }}
@@ -1096,6 +1097,7 @@ jobs:
           queue_path = Path(os.environ.get("AUTOMATION_QUEUE_SNAPSHOT") or (Path(os.environ["RUNNER_TEMP"]) / "task_queue.json"))
           queue = json.loads(queue_path.read_text(encoding="utf-8"))
           tasks = queue.get("tasks", [])
+          repo, token = os.environ["GITHUB_REPOSITORY"], os.environ["GITHUB_TOKEN"]
           handoff = None
           handoff_state = ""
           pending = []
