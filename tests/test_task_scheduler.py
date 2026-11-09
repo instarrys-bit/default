@@ -412,6 +412,7 @@ class TaskSchedulerTests(unittest.TestCase):
             input_payload=payload, root=source_root,
         )
         prior = self.store.document["tasks"][0]
+        prior["idempotency_key"] = "source-assessment:legacy-run-key"
         prior["status"] = "SUCCEEDED"
         prior["attempts"] = 1
         prior["state_history"].extend(["CLAIMED", "SUCCEEDED"])
