@@ -1,9 +1,13 @@
+import os
 import sys
+import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
+import audit_source_lineage as lineage_module
 from audit_source_lineage import audit_registry, shared_reference_pairs
 
 
@@ -71,6 +75,41 @@ class SourceLineageIsolationTests(unittest.TestCase):
         report = audit_registry(config, fetcher=unexpected_fetch, candidates=candidates, previous_report=prior)
         self.assertEqual(report["candidate_readme_audited_count"], 1)
         self.assertEqual(report["candidate_sources"][0]["referenced_repositories"], ["upstream/base"])
+
+
+    def test_main_loads_verified_discovery_root_from_environment(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            artifact_root = root / "discovery"
+            (artifact_root / "sources").mkdir(parents=True)
+            (artifact_root / "sources/discovered_sources.json").write_text(
+                '{"candidates":[]}', encoding="utf-8"
+            )
+            registry = root / "domain_sources.json"
+            registry.write_text('{"sources":[]}', encoding="utf-8")
+            output = root / "source-lineage-audit.json"
+            expected_report = {
+                "audited_source_count": 0,
+                "shared_upstream_pairs": [],
+                "lineage_verified_count": 0,
+                "lineage_partial_count": 0,
+                "lineage_unverified_count": 0,
+            }
+            with (
+                patch.object(lineage_module, "ROOT", root),
+                patch.object(lineage_module, "REGISTRY", registry),
+                patch.object(lineage_module, "DISCOVERY", root / "fallback.json"),
+                patch.object(lineage_module, "OUTPUT", output),
+                patch.object(lineage_module, "read_document", return_value={"candidates": []}) as read_doc,
+                patch.object(lineage_module, "audit_registry", return_value=expected_report),
+                patch.dict(os.environ, {
+                    "AUTOMATION_SOURCE_DISCOVERY_ROOT": str(artifact_root),
+                    "RUNNER_TEMP": str(root),
+                }),
+            ):
+                lineage_module.main()
+                self.assertEqual(read_doc.call_args.args[0], artifact_root / "sources/discovered_sources.json")
+                self.assertTrue(output.is_file())
 
 
 if __name__ == "__main__":
