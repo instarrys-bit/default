@@ -10,6 +10,7 @@ import json
 import os
 import re
 import sys
+import warnings
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -167,7 +168,17 @@ def load_request_observation_ledger(root: Path, base_payload: dict | None = None
         try:
             with urlopen(request, timeout=15) as response:
                 comments = json.load(response)
-        except (HTTPError, URLError, TimeoutError, OSError, json.JSONDecodeError) as exc:
+        except HTTPError as exc:
+            if exc.code in {404, 410}:
+                warnings.warn(
+                    f"external request observation ledger Issue #{REQUEST_OBSERVATION_ISSUE_NUMBER} "
+                    f"is unavailable (HTTP {exc.code}); using the checked-in seed only",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
+                return base_payload
+            raise ValueError(f"cannot read external request observation ledger: HTTP {exc.code}") from None
+        except (URLError, TimeoutError, OSError, json.JSONDecodeError) as exc:
             raise ValueError(f"cannot read external request observation ledger: {type(exc).__name__}") from None
         if not isinstance(comments, list):
             raise ValueError("external request observation comments must be an array")
