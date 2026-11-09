@@ -86,11 +86,11 @@
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "a577c6db074957891dc8cd30ee8031b1403032ff"
+      "git_blob_sha": "2441ad683dea26025c7038febee7509f930de613"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "854bfd0d3c343182276fb95253a2a33d953b17ca"
+      "git_blob_sha": "0951a808d7f67dc3a5a956d0c50b36da92e82d10"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
