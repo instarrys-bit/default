@@ -4,6 +4,7 @@ import sys
 import tempfile
 import unittest
 from io import BytesIO
+from urllib.error import HTTPError
 from unittest.mock import patch
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -65,6 +66,22 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertEqual(rows["new.example"]["observations"], 2)
         self.assertEqual(rows["new.example"]["observed_run_ids"], ["intake-901"])
         self.assertEqual(rows["other.example"]["observations"], 1)
+
+    def test_deleted_external_observation_issue_falls_back_to_checked_in_seed(self):
+        seed = {"schema_version": 1, "observations": []}
+        error = HTTPError(
+            "https://api.github.com/repos/owner/repo/issues/317/comments",
+            410,
+            "Gone",
+            {},
+            None,
+        )
+        with patch("production_intent.urlopen", side_effect=error):
+            with self.assertWarnsRegex(RuntimeWarning, "using the checked-in seed only"):
+                ledger = load_request_observation_ledger(
+                    self.root, seed, repository="owner/repo", token="test-token"
+                )
+        self.assertEqual(ledger, seed)
 
     def test_external_issue_observation_batches_change_production_fingerprint(self):
         (self.root / "sources" / "request_domain_observations.json").write_text(
