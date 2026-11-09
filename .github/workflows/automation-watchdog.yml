@@ -985,6 +985,7 @@ jobs:
           token = os.environ["GITHUB_TOKEN"]
           queue = json.loads(Path(os.environ["AUTOMATION_QUEUE_SNAPSHOT"]).read_text(encoding="utf-8"))
           tasks = queue.get("tasks", [])
+          repo, token = os.environ["GITHUB_REPOSITORY"], os.environ["GITHUB_TOKEN"]
           discoveries = [
               task for task in tasks
               if isinstance(task, dict) and task.get("target_program_id") == "workflow_source_discovery"
@@ -1181,7 +1182,6 @@ jobs:
           if not pending and not assessment_tasks:
               print("No completed or verifying Discovery task or queued Assessment task needs downstream reconciliation.")
               raise SystemExit(0)
-          repo, token = os.environ["GITHUB_REPOSITORY"], os.environ["GITHUB_TOKEN"]
           resolved = None
 
           # A queued Assessment task already contains the exact predecessor run ID,
