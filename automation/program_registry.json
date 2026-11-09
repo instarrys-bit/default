@@ -891,6 +891,36 @@
       }
     },
     {
+      "id": "script_register_discovered_sources",
+      "path": "scripts/register_discovered_sources.py",
+      "kind": "python_component",
+      "responsibility": "Persist every discovered repository and each supported rule-list file as a durable non-activating candidate record.",
+      "capabilities": [
+        "source_candidate_registration"
+      ],
+      "invocation": "auto_sync audit workflow step after exact Discovery artifact resolution",
+      "inputs": [
+        "Exact verified source-discovery-output artifact (or explicit monolithic fallback inventory)",
+        "Prior rulesets/source_candidate_registry.json"
+      ],
+      "outputs": [
+        "rulesets/source_candidate_registry.json; no active source registry or policy rule set mutation"
+      ],
+      "depends_on": [
+        "script_json_document_store",
+        "script_resource_lease_runtime"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Runs only inside the existing Watchdog-owned auto_sync audit. Writes only rulesets/source_candidate_registry.json under the live logical/production-pipeline resource fence; the existing single publisher stages rulesets/** only. It cannot modify modules/uu.conf, sources/domain_sources.json, or DIRECT/PROXY/REJECT rules.",
+      "health_check": "Deterministic registration tests, verified Discovery provenance, stable repository+URL identity, and successful auto_sync artifact/publication validation.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
       "id": "script_remote_task_queue_runtime",
       "path": "scripts/remote_task_queue_runtime.py",
       "kind": "python_component",
@@ -1525,6 +1555,34 @@
       }
     },
     {
+      "id": "workflow_assessment_completion_relay",
+      "path": ".github/workflows/assessment-completion-relay.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "verify the exact completed Assessment producer and immutable artifact before requesting one Watchdog reconciliation",
+      "capabilities": [
+        "assessment_completion_handoff"
+      ],
+      "invocation": "internal workflow_dispatch from the Watchdog after Assessment artifact upload",
+      "inputs": [
+        "exact producer_run_id",
+        "completed Watchdog run identity",
+        "source-assessment-output artifact metadata"
+      ],
+      "outputs": [
+        "one idempotent Watchdog workflow_dispatch request after exact producer and artifact metadata verification"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Job-scoped actions:write and contents:read only. Reads exact workflow-run and artifact metadata; dispatches only the existing Watchdog. No repository contents writes, no queue mutation, no ruleset publication, and no access to modules/uu.conf beyond metadata-free workflow context.",
+      "health_check": "Fails closed unless the exact producer run is completed successfully on main and has exactly one non-expired source-assessment-output artifact bound to the same run and head SHA; duplicate Watchdog dispatches are suppressed by the exact producer-specific run title.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 480
+      }
+    },
+    {
       "id": "workflow_auto_sync",
       "path": ".github/workflows/auto_sync.yml",
       "kind": "github_actions_workflow",
@@ -1563,6 +1621,7 @@
         "script_lifecycle_gate",
         "script_refresh_ruleset_manifest",
         "script_register_config_baseline",
+        "script_register_discovered_sources",
         "script_remote_task_queue_runtime",
         "script_resolve_source_artifacts",
         "script_resource_lease_runtime",
@@ -1817,34 +1876,6 @@
         "allowed_callers": [],
         "max_attempts": 0,
         "timeout_seconds": 300
-      }
-    },
-    {
-      "id": "workflow_assessment_completion_relay",
-      "path": ".github/workflows/assessment-completion-relay.yml",
-      "kind": "github_actions_workflow",
-      "responsibility": "verify the exact completed Assessment producer and immutable artifact before requesting one Watchdog reconciliation",
-      "capabilities": [
-        "assessment_completion_handoff"
-      ],
-      "invocation": "internal workflow_dispatch from the Watchdog after Assessment artifact upload",
-      "inputs": [
-        "exact producer_run_id",
-        "completed Watchdog run identity",
-        "source-assessment-output artifact metadata"
-      ],
-      "outputs": [
-        "one idempotent Watchdog workflow_dispatch request after exact producer and artifact metadata verification"
-      ],
-      "depends_on": [],
-      "dispatches": [],
-      "permission_boundary": "Job-scoped actions:write and contents:read only. Reads exact workflow-run and artifact metadata; dispatches only the existing Watchdog. No repository contents writes, no queue mutation, no ruleset publication, and no access to modules/uu.conf beyond metadata-free workflow context.",
-      "health_check": "Fails closed unless the exact producer run is completed successfully on main and has exactly one non-expired source-assessment-output artifact bound to the same run and head SHA; duplicate Watchdog dispatches are suppressed by the exact producer-specific run title.",
-      "orchestration": {
-        "enabled": false,
-        "allowed_callers": [],
-        "max_attempts": 0,
-        "timeout_seconds": 480
       }
     }
   ]
