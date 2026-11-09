@@ -3,7 +3,7 @@
   "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
   "release_status": "active_with_live_handoff_evidence",
   "created_on": "2026-11-07",
-  "purpose": "Scoped independent Source Discovery → non-activating Source Assessment DAG. Only the Watchdog caller may enqueue the assessor; its output documents remain runner-local immutable artifacts and the sole shared mutation is the fenced Issue #423 checkpoint.",
+  "purpose": "Scoped independent Source Discovery → non-activating Source Assessment DAG with a gated Watchdog dispatch into the reviewed deterministic production workflow. Assessment outputs remain immutable Actions artifacts; production publication remains restricted to rulesets/**.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "0e8d134ac712ccc9b74b757e30da28e7d9773a53"
+      "git_blob_sha": "ef961f986659d4a835e7b74bed267566b2b80e44"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -162,7 +162,7 @@
     },
     "source_handoff_policy": {
       "path": "scripts/source_handoff_policy.py",
-      "git_blob_sha": "b8beb74126ecc6eb90709374d5cf4823fb3cd45b"
+      "git_blob_sha": "3681530cde7aeab09dc39a544101d0a5195f3937"
     },
     "enterprise_ranking_catalog": {
       "path": "sources/external_intelligence_catalog.json",
@@ -200,11 +200,11 @@
     "python_adapter_default_deny": true
   },
   "known_gaps": [
-    "Terminal Discovery tasks with an independently verified Assessment are now excluded from pending handoff reconciliation so they cannot block a later daily Discovery cycle; a fresh post-merge runtime cycle is still required to verify the fix.",
     "Historical duplicate Assessment tasks exist for Discovery run 42373818238 (legacy and parser-v2 keys); the new resolver recognizes both by predecessor identity and suppresses future duplicate enqueue. A fresh post-merge Discovery → Assessment run is still required to prove the corrected one-to-one path.",
     "Live multi-run interruption/resume contention canary remains desirable for further hardening.",
     "The global transitive writer inventory for unrelated non-dispatchable capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
-    "The deterministic review-engine source revision is not yet pinned to a verified commit."
+    "The deterministic review-engine source revision is not yet pinned to a verified commit.",
+    "The post-Assessment production dispatcher is newly wired and still requires a live Watchdog → auto_sync → ruleset publication run to establish end-to-end unattended production evidence."
   ],
   "next_migration_gate": {
     "required_before_independent_python_dispatch": [
