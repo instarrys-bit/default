@@ -18,10 +18,6 @@ on:
         description: 'Internal task correlation ID; leave blank for manual runs'
         required: false
         type: string
-      assessment_artifact_recovery_run_id:
-        description: 'Exact successful Discovery workflow run ID whose Assessment output artifact should be recovered; leave blank for automatic reconciliation'
-        required: false
-        type: string
   workflow_run:
     workflows:
       - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
@@ -1084,9 +1080,10 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           SOURCE_DISCOVERY_MODE: ${{ steps.source-mode.outputs.mode }}
+          REQUESTED_ASSESSMENT_TASK_ID: ${{ inputs.automation_task_id || '' }}
           AUTOMATION_QUEUE_SNAPSHOT: ${{ runner.temp }}/task_queue.json
           EVENT_SOURCE_RUN_ID: ${{ github.event.workflow_run.path == '.github/workflows/source-discovery.yml' && github.event.workflow_run.id || '' }}
-          REQUESTED_SOURCE_RUN_ID: ${{ inputs.assessment_artifact_recovery_run_id || '' }}
+          REQUESTED_ASSESSMENT_TASK_ID: ${{ inputs.automation_task_id || '' }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -1116,33 +1113,62 @@ jobs:
               if isinstance(task, dict) and isinstance(task.get("idempotency_key"), str)
               and task.get("idempotency_key").endswith(":artifact-recovery:1")
           }
-          requested_run_id = os.environ.get("REQUESTED_SOURCE_RUN_ID", "").strip()
-          event_run_id = os.environ.get("EVENT_SOURCE_RUN_ID", "").strip()
-          target_run_id = requested_run_id or event_run_id
+          import sys
+          sys.path.insert(0, ".github/scripts")
+          from check_source_assessment_artifact import find_matching_assessment_artifact
+
+          requested_task_id = os.environ.get("REQUESTED_ASSESSMENT_TASK_ID", "").strip()
+          requested_task = next((task for task in tasks if isinstance(task, dict) and task.get("task_id") == requested_task_id), None) if requested_task_id else None
+          if requested_task_id and requested_task is None:
+              raise SystemExit("Requested automation_task_id is not present in the durable queue.")
+          task_by_key = {
+              task.get("idempotency_key"): task
+              for task in tasks
+              if isinstance(task, dict) and isinstance(task.get("idempotency_key"), str)
+          }
+          assessment_candidates = [requested_task] if requested_task and requested_task.get("target_program_id") == "script_assess_sources" else tasks
           assessment_tasks = []
-          for task in tasks:
-              if (not isinstance(task, dict)
-                      or task.get("target_program_id") != "script_assess_sources"
-                      or not isinstance((task.get("input") or {}).get("predecessor"), dict)):
+          for task in assessment_candidates:
+              if not isinstance(task, dict) or task.get("target_program_id") != "script_assess_sources":
                   continue
-              predecessor_run_id = str(((task.get("input") or {}).get("predecessor") or {}).get("workflow_run_id", ""))
-              key = task.get("idempotency_key")
-              status = task.get("status")
-              eligible = status == "QUEUED"
-              if status == "SUCCEEDED":
-                  if target_run_id:
-                      eligible = predecessor_run_id == target_run_id
-                  else:
-                      eligible = (
-                          isinstance(key, str)
-                          and key.endswith(":recovery:2")
-                          and key.rsplit(":recovery:2", 1)[0] + ":artifact-recovery:1" not in existing_artifact_recovery_keys
-                      )
-              if eligible and (not target_run_id or predecessor_run_id == target_run_id):
+              predecessor = (task.get("input") or {}).get("predecessor")
+              if not isinstance(predecessor, dict):
+                  continue
+              if task.get("status") == "QUEUED":
                   assessment_tasks.append(task)
-          assessment_tasks.sort(key=lambda task: (str(task.get("created_at") or ""), str(task.get("task_id") or "")), reverse=True)
-          if requested_run_id and not assessment_tasks:
-              raise SystemExit(f"No durable Assessment task is tied to requested Discovery run {requested_run_id}.")
+                  continue
+              if task.get("status") == "SUCCEEDED":
+                  key = str(task.get("idempotency_key") or "")
+                  if key.endswith(":artifact-recovery:1"):
+                      continue
+                  base_key = key
+                  if base_key.endswith(":recovery:2"):
+                      base_key = base_key.rsplit(":recovery:2", 1)[0]
+                  elif base_key.endswith(":recovery:1"):
+                      base_key = base_key.rsplit(":recovery:1", 1)[0]
+                  recovery_key = base_key + ":artifact-recovery:1"
+                  recovery_task = task_by_key.get(recovery_key)
+                  if recovery_task is not None:
+                      if recovery_task.get("status") in {"QUEUED", "CLAIMED", "VERIFYING"}:
+                          assessment_tasks.append(recovery_task)
+                      continue
+                  predecessor_run_id = str(predecessor.get("workflow_run_id") or "")
+                  predecessor_head_sha = str(predecessor.get("workflow_head_sha") or "")
+                  predecessor_artifact_sha = str(predecessor.get("artifact_sha256") or "")
+                  if not (predecessor_run_id.isdigit() and len(predecessor_head_sha) == 40 and len(predecessor_artifact_sha) == 64):
+                      continue
+                  artifact_state = find_matching_assessment_artifact(
+                      repo,
+                      token,
+                      {
+                          "workflow_run_id": predecessor_run_id,
+                          "workflow_head_sha": predecessor_head_sha,
+                          "artifact_sha256": predecessor_artifact_sha,
+                      },
+                  )
+                  if not artifact_state.get("found"):
+                      assessment_tasks.append(task)
+          assessment_tasks.sort(key=lambda task: (str(task.get("created_at") or ""), str(task.get("task_id") or "")))
           print(json.dumps({
               "queue_revision": queue.get("revision"),
               "queue_snapshot": str(queue_path),
@@ -1201,7 +1227,7 @@ jobs:
               sys.path.insert(0, "scripts")
               from github_workflow_adapter import GitHubWorkflowClient, expected_correlation_titles, validate_run_head_sha
               workflow_client = GitHubWorkflowClient(repo, token)
-              event_run_id = os.environ.get("REQUESTED_SOURCE_RUN_ID", "").strip() or os.environ.get("EVENT_SOURCE_RUN_ID", "").strip()
+              event_run_id = os.environ.get("EVENT_SOURCE_RUN_ID", "").strip()
 
               # A verified task result contains the exact workflow run ID and actual
               # run SHA. Prefer it over a list query, which may be delayed or omit
@@ -1469,7 +1495,7 @@ jobs:
           printf '%s' "$queue_token" | python3 scripts/task_scheduler.py             --repository "$GITHUB_REPOSITORY" --branch main --token-stdin             --idempotency-key "$assessment_key"             --priority 60 --input-json "$task_input" enqueue-source-assessment
           unset queue_token
 
-      - name: Enqueue one artifact-recovery Assessment when immutable output is missing
+      - name: Enqueue one artifact-recovery Assessment after verified success without supervisor upload
         if: ${{ steps.resolve-discovery-run.outputs.run_id != '' && steps.resolve-discovery-run.outputs.handoff_state == 'already_assessed' && steps.verify-discovery-artifact.outputs.valid == 'true' && steps.source-mode.outputs.mode == 'independent' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -1484,7 +1510,7 @@ jobs:
             echo "A verified Discovery artifact digest is required for Assessment artifact recovery." >&2
             exit 1
           fi
-          artifact_check="$(python3 scripts/check_source_assessment_artifact.py --repository "$GITHUB_REPOSITORY" --workflow-run-id "$SOURCE_RUN_ID" --workflow-head-sha "$SOURCE_HEAD_SHA" --artifact-sha256 "$SOURCE_ARTIFACT_SHA256")"
+          artifact_check="$(python3 .github/scripts/check_source_assessment_artifact.py --repository "$GITHUB_REPOSITORY" --workflow-run-id "$SOURCE_RUN_ID" --workflow-head-sha "$SOURCE_HEAD_SHA" --artifact-sha256 "$SOURCE_ARTIFACT_SHA256")"
           echo "$artifact_check"
           if [ "$(jq -r '.found // false' <<< "$artifact_check")" = "true" ]; then
             echo "A matching immutable Assessment artifact already exists; no recovery task is needed."
