@@ -8,12 +8,12 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "3b6af842a4bf95dd7eb1b2310252d72eba205596"
+      "git_blob_sha": "5201a2c8a3950e2047475109f72cfef409538df4"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "e56a9ebeb4f3ba131c1c8106e693902fa6a1a83b"
+      "git_blob_sha": "d9e5256a92cc90fc570c13e0aa38158228f4feb3"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "4b2450310d932c3c88e8818cd2a7cb62819a53f3"
+      "git_blob_sha": "b1ca8cf499c6fe7f5d7db9893447634c7f4ef99d"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -78,19 +78,19 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "2b595ebf040b6624435ecfa5eb436bfdf56df5cc"
+      "git_blob_sha": "5201a2c8a3950e2047475109f72cfef409538df4"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "5c389bb9df0ff3cd410a4b929c4d3c48b0f55e4b"
+      "git_blob_sha": "d9e5256a92cc90fc570c13e0aa38158228f4feb3"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "4581d70e3b366be6b29285c548b3f571c88e8322"
+      "git_blob_sha": "82e818555e1c09765d4f16fc57278fefa464b5ea"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "99ebb153492f512f94de2bd38cbed3c806efb9ff"
+      "git_blob_sha": "c88cdd1c5b1a30773ea3d961198c21aaa7360969"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -162,7 +162,7 @@
     },
     "source_handoff_policy": {
       "path": "scripts/source_handoff_policy.py",
-      "git_blob_sha": "526fc98e9fc70b2a7a436fc12186524d5630f2b2"
+      "git_blob_sha": "cdb80cf1c2988b1b80e43dc6538991ce753d4584"
     },
     "enterprise_ranking_catalog": {
       "path": "sources/external_intelligence_catalog.json",
@@ -225,7 +225,7 @@
         "target_program_id": "script_assess_sources",
         "capability": "source_assessment",
         "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-        "adapter_entry_sha256": "65b9ab6f1aff621b6d0aaf0d30a2ee156f37f66a902c0b9bd1d2a0f527dd04d7",
+        "adapter_entry_sha256": "c04ce1ff08be52628fee17bec81bf43a306e4adce19ecdcc4703d8867ba22837",
         "registry_entry_sha256": "9f448f101ba172d74d0b0669a7c761f74d3d06b98609779e825f6bbab7c22288",
         "source_path": "scripts/assess_sources.py",
         "source_git_blob_sha": "e0129b2dc91c58f1642338d3d7e67db332d6e0bb",

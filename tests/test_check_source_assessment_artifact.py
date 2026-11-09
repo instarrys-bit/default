@@ -7,7 +7,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / ".github" / "scripts"))
+sys.path.insert(0, str(ROOT / "scripts"))
 
 from check_source_assessment_artifact import verify_assessment_archive
 
@@ -110,6 +110,18 @@ class AssessmentArtifactVerifierTests(unittest.TestCase):
         wrong_run = dict(self.producer_run, path=".github/workflows/source-discovery.yml")
         with self.assertRaisesRegex(ValueError, "workflow path"):
             verify_assessment_archive(blob, artifact, wrong_run, self.expected)
+
+    def test_rejects_missing_artifact_zip_digest(self):
+        blob, artifact, _ = self.make_archive()
+        artifact["digest"] = None
+        with self.assertRaisesRegex(ValueError, "valid ZIP SHA-256 digest"):
+            verify_assessment_archive(blob, artifact, self.producer_run, self.expected)
+
+    def test_rejects_mismatched_artifact_zip_digest(self):
+        blob, artifact, _ = self.make_archive()
+        artifact["digest"] = "sha256:" + "0" * 64
+        with self.assertRaisesRegex(ValueError, "does not match GitHub artifact metadata"):
+            verify_assessment_archive(blob, artifact, self.producer_run, self.expected)
 
 
 if __name__ == "__main__":

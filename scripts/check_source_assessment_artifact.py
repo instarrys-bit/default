@@ -79,9 +79,13 @@ def verify_assessment_archive(
         raise ValueError("Assessment artifact producer run is not a successful completed main-branch Watchdog run")
     if artifact_run.get("head_sha") != producer_run.get("head_sha"):
         raise ValueError("Assessment artifact run head SHA does not match producer run metadata")
+    if artifact_run.get("head_branch") != producer_run.get("head_branch"):
+        raise ValueError("Assessment artifact run branch does not match producer run metadata")
     digest = artifact.get("digest")
     actual_zip_digest = hashlib.sha256(archive_bytes).hexdigest()
-    if isinstance(digest, str) and digest.startswith("sha256:") and digest[7:] != actual_zip_digest:
+    if not isinstance(digest, str) or not re.fullmatch(r"sha256:[0-9a-f]{64}", digest):
+        raise ValueError("GitHub artifact metadata is missing a valid ZIP SHA-256 digest")
+    if digest[7:] != actual_zip_digest:
         raise ValueError("Downloaded Assessment artifact ZIP SHA-256 does not match GitHub artifact metadata")
 
     proof_name, proof = _proof_from_archive(archive_bytes)
