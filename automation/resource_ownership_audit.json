@@ -46,6 +46,7 @@
       "scripts/production_intent.py",
       "scripts/refresh_ruleset_manifest.py",
       "scripts/register_config_baseline.py",
+      "scripts/register_discovered_sources.py",
       "scripts/remote_task_queue_runtime.py",
       "scripts/resolve_source_artifacts.py",
       "scripts/resource_lease_runtime.py",
@@ -82,7 +83,7 @@
       "tests/test_workflow_config_guard_order.py",
       "tests/test_workflow_native_write_inventory.py"
     ],
-    "limitation": "The active Source Discovery → Assessment DAG is scoped to runner-local immutable artifacts and a fenced Issue #423 checkpoint. The production repository publisher remains restricted to rulesets/**. The Assessment completion relay only reads exact workflow/artifact metadata and dispatches the existing Watchdog; it has no repository content or ruleset write path. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
+    "limitation": "The active Source Discovery → Assessment DAG remains scoped to runner-local immutable artifacts and a fenced Issue #423 checkpoint. A separate durable non-activating source-candidate registry is committed only as rulesets/source_candidate_registry.json by the existing single auto_sync publisher under the Watchdog logical/production-pipeline fence. Protected modules/** and JavaScript remain unwritable. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
     "reviewed_at": "2026-11-07",
     "isolated_ephemeral_outputs": [
       {
@@ -282,27 +283,29 @@
     {
       "id": "published_ruleset_artifacts",
       "paths": [
+        "rulesets/config_conflict_archive.json",
+        "rulesets/deletion_archive.json",
         "rulesets/direct.list",
+        "rulesets/lifecycle_observations.json",
+        "rulesets/lifecycle_state.json",
+        "rulesets/manifest.json",
+        "rulesets/pending_queue.json",
         "rulesets/proxy.list",
         "rulesets/reject.list",
-        "rulesets/pending_queue.json",
         "rulesets/reject_review_queue.json",
-        "rulesets/config_conflict_archive.json",
-        "rulesets/lifecycle_observations.json",
-        "rulesets/deletion_archive.json",
-        "rulesets/lifecycle_state.json",
-        "rulesets/manifest.json"
+        "rulesets/source_candidate_registry.json"
       ],
       "known_writers": [
         "script_build_rulesets",
         "script_lifecycle_audit",
+        "script_register_discovered_sources",
         "script_restore_automation_state",
         "script_sync_ruleset_config_conflicts"
       ],
       "lock_key": "logical/production-pipeline + exact rulesets file leases",
       "required_mode": "exclusive_exact_path_resource_leases",
       "status": "fenced_at_each_writer_mutation",
-      "note": "All ruleset writers run under the Watchdog logical/production-pipeline lease and explicitly assert the exact output path lease before each published-file mutation. The archive restore path is rulesets-only and asserts each exact path. No global file guard is used."
+      "note": "Policy rule-set writers assert their exact output leases. The non-policy source candidate registry is written by script_register_discovered_sources under the same Watchdog logical/production-pipeline fence and is included only because the single publisher is restricted to rulesets/**. No global file guard is used."
     },
     {
       "id": "reports_and_audit_outputs",
@@ -553,6 +556,20 @@
       "required_mode": "exclusive_task_scoped_resource_lease",
       "status": "fenced_at_claim_and_held_through_verification",
       "note": "Discovery and Assessment adapters acquire this shared durable resource lease atomically with task claim. The lease remains active through asynchronous workflow verification and is released only after verified completion. Concurrent Watchdog runs may overlap; queue snapshot CAS, task claim and this common fencing lease permit only one source-DAG task to execute at a time. GitHub job concurrency is not used as the task serialization authority."
+    },
+    {
+      "id": "discovered_source_candidate_registry",
+      "paths": [
+        "rulesets/source_candidate_registry.json"
+      ],
+      "known_writers": [
+        "script_register_discovered_sources",
+        "script_restore_automation_state"
+      ],
+      "lock_key": "logical/production-pipeline",
+      "required_mode": "exclusive_live_resource_lease",
+      "status": "fenced_single_publisher_rulesets_only",
+      "note": "Stores every discovered candidate repository and each supported rule-list file as a durable, non-activating record. Source identity is repository+URL; discovery provenance and first/last-seen run IDs are retained. External intelligence is excluded. The registry is never treated as an active policy source."
     }
   ],
   "scheduling_gates": {
@@ -567,6 +584,6 @@
       "Global dynamic path, third-party Action and cross-workflow runtime evidence remains required before enabling unrelated capabilities."
     ]
   },
-  "limitation": "The active Source Discovery → Assessment DAG is scoped to runner-local immutable artifacts and a fenced Issue #423 checkpoint. Per-capability repository writes are validated against explicit exclusive resource_contract.resource_keys; protected modules/** and JavaScript remain unwritable. The production repository publisher stages only the three ruleset deliverables under rulesets/**; this is not a system-wide automation write limit. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
+  "limitation": "The active Source Discovery → Assessment DAG is scoped to runner-local immutable artifacts and a fenced Issue #423 checkpoint. The production repository publisher stages rulesets/** only: the three policy rule-set deliverables plus the non-policy discovered-source candidate registry. The registry remains unclassified and inactive. Per-capability repository writes are validated against explicit exclusive resource_contract.resource_keys; protected modules/** and JavaScript remain unwritable. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
   "reviewed_at": "2026-11-09"
 }
