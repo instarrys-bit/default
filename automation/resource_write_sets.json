@@ -1034,6 +1034,39 @@
         "task-result.json"
       ],
       "write_boundary_fencing": "Durable queue state is external Issue comment history, not a repository file; task and resource lease/fencing validation remains mandatory. Temporary paths are runner-local."
+    },
+    {
+      "program_id": "script_register_discovered_sources",
+      "source": "scripts/register_discovered_sources.py",
+      "writes": [
+        "rulesets/source_candidate_registry.json",
+        "rulesets/.source_candidate_registry.*.tmp"
+      ],
+      "document_store": [],
+      "dynamic_children": [],
+      "read_resources": [
+        "verified AUTOMATION_SOURCE_DISCOVERY_ROOT/sources/discovered_sources.json",
+        "rulesets/source_candidate_registry.json (prior durable registry)"
+      ],
+      "side_effects": [
+        "Merges every discovered candidate repository and each supported rule-list URL into a durable non-activating registry.",
+        "External-intelligence observations are excluded; no DIRECT/PROXY/REJECT classification or source activation is performed.",
+        "Writes only beneath rulesets/** and is published only by the existing single auto_sync publisher."
+      ],
+      "evidence": "main() resolves the exact verified Discovery artifact in independent mode (or the explicit monolithic fallback), validates repository-bound raw.githubusercontent.com URLs, merges stable repository/file identities, and atomically replaces rulesets/source_candidate_registry.json.",
+      "write_boundary_fencing": "The script re-reads the durable queue and asserts the exact rulesets path; the existing Watchdog logical/production-pipeline resource fence is the covering lease. The auto_sync publisher stages rulesets/** only.",
+      "additional_serialized_writers": [
+        "script_restore_automation_state"
+      ],
+      "additional_writer_boundary": "Restore is runner-local before audit; repository publication remains through the existing auto_sync single-writer path.",
+      "lease_keys": [
+        "logical/production-pipeline"
+      ],
+      "lease_enforcement": "assert_resource_lease_from_environment is called before directory/file mutation and again immediately before atomic replacement.",
+      "publish_resources": [
+        "rulesets/source_candidate_registry.json"
+      ],
+      "ephemeral_unpublished_resources": []
     }
   ],
   "confirmed_shared_write_groups": [
