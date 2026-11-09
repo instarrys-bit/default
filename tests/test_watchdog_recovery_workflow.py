@@ -532,5 +532,17 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('{max_urls:4,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}', enqueue_assessment)
         self.assertIn("handoff_state == ''", enqueue_discovery)
         self.assertNotIn("parser-v2", resolver)
+
+    def test_discovery_handoff_resolver_initializes_api_context_before_artifact_lookup(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        resolver = workflow.split("      - name: Resolve completed Discovery run from durable task correlation", 1)[1].split(
+            "      - name: Download artifact from the exact discovery workflow run", 1
+        )[0]
+        self.assertIn('repo, token = os.environ["GITHUB_REPOSITORY"], os.environ["GITHUB_TOKEN"]', resolver)
+        self.assertLess(
+            resolver.index('repo, token = os.environ["GITHUB_REPOSITORY"], os.environ["GITHUB_TOKEN"]'),
+            resolver.index("find_matching_assessment_artifact("),
+        )
+
 if __name__ == "__main__":
     unittest.main()
