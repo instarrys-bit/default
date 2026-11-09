@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "bbac4831cd248815bd88cc41728e520ccd5009fd",
+  "workflow_blob_sha": "7a18801c347a6f530c7953896b02d6d0709fb328",
   "registry_blob_sha": "ac9fc0584ee103492b5d2b72a04c3cdc56ac6e57",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 7,
-    "step_count": 60,
+    "step_count": 61,
     "independent_python_dispatch_enabled": true,
     "independent_workflow_count": 1
   },
@@ -208,20 +208,24 @@
           "order": 41
         },
         {
-          "name": "Write successful audit heartbeat",
+          "name": "Persist discovered source candidate registry (non-activating)",
           "order": 42
         },
         {
-          "name": "Record durable automation state pointer",
+          "name": "Write successful audit heartbeat",
           "order": 43
         },
         {
-          "name": "Package allowlisted audit outputs",
+          "name": "Record durable automation state pointer",
           "order": 44
         },
         {
-          "name": "Upload allowlisted audit outputs",
+          "name": "Package allowlisted audit outputs",
           "order": 45
+        },
+        {
+          "name": "Upload allowlisted audit outputs",
+          "order": 46
         }
       ]
     },
