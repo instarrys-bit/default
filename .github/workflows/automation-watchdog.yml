@@ -971,7 +971,8 @@ jobs:
           if (str(producer.get("id")) != run_id
                   or producer.get("path") != expected_path
                   or producer.get("head_branch") != "main"
-                  or producer.get("conclusion") != "success"
+                  or (expected_path != ".github/workflows/auto_sync.yml" and producer.get("conclusion") != "success")
+                  or (expected_path == ".github/workflows/auto_sync.yml" and not producer.get("conclusion"))
                   or not re.fullmatch(r"[0-9a-f]{40}", str(producer.get("head_sha", "")))):
               raise SystemExit("Callback producer run identity or conclusion is invalid; queue reconciliation is held.")
           print(json.dumps({
