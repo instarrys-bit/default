@@ -100,7 +100,7 @@ jobs:
             echo "Could not resolve the current main-branch baseline for non-main validation." >&2
             exit 1
           fi
-          python3 scripts/verify_baseline_registration.py --base "$base_sha" --head "$head_sha"
+          python3 scripts/verify_baseline.py --verify-registration --base "$base_sha" --head "$head_sha"
       - name: Recover owner-approved config baseline in validation workspace
         if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         env:
