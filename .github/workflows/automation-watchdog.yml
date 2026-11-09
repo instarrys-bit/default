@@ -1556,12 +1556,17 @@ jobs:
                 ;;
             esac
           fi
+          verified_task_id="$(jq -r '.task_id // ""' <<< "$verified_task")"
+          if [[ ! "$verified_task_id" =~ ^task_[0-9a-f]{24}$ ]]; then
+            echo "The selected verified Assessment task has an invalid task ID." >&2
+            exit 1
+          fi
           predecessor="$(jq -c '.input.predecessor' <<< "$verified_task")"
           task_input="$(jq -cn --argjson predecessor "$predecessor" '{max_urls:4,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}')"
           echo "Enqueueing one bounded artifact-recovery Assessment for Discovery run $SOURCE_RUN_ID."
           queue_token="$GITHUB_TOKEN"
           unset GITHUB_TOKEN
-          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin --idempotency-key "$artifact_recovery_key" --priority 100 --input-json "$task_input" enqueue-source-assessment
+          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin --idempotency-key "$artifact_recovery_key" --recovery-of-task-id "$verified_task_id" --priority 100 --input-json "$task_input" enqueue-source-assessment
           unset queue_token
 
       - name: Enqueue independent source discovery only after its authorization gate opens
