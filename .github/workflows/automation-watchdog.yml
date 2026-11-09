@@ -1595,9 +1595,17 @@ jobs:
             exit 0
           fi
           discovery_day="$(date -u +%F)"
-          # A changed discovery implementation must get a fresh daily task key;
-          # otherwise an earlier successful run would suppress the expanded scan.
-          discovery_revision="$(printf '%s\n%s\n' "$(git rev-parse HEAD:scripts/discover_sources.py)" "$(git rev-parse HEAD:.github/workflows/source-discovery.yml)" | sha256sum | cut -c1-12)"
+          # Bind daily idempotency to the entire Discovery -> Assessment DAG.
+          # Queue, scheduler, handoff, fencing, assessor, or verifier changes
+          # must not be hidden behind a successful task from an older revision.
+          discovery_revision="$(python3 - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from source_handoff_policy import discovery_pipeline_revision
+          print(discovery_pipeline_revision(Path.cwd()))
+          PY
+          )"
           base_key="source-discovery:$discovery_day:$discovery_revision"
           base_status="$(jq -r --arg key "$base_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
           recovery_key="$(jq -r --arg prefix "$base_key:recovery:" '[.tasks[]? | select((.idempotency_key // "") | startswith($prefix))] | last | .idempotency_key // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
