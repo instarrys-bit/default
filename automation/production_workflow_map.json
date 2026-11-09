@@ -2,7 +2,7 @@
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
   "workflow_blob_sha": "d804334b7ac1a1d7f23359ee767404921aa06d7b",
-  "registry_blob_sha": "cedd1d7a8410a920a6a6c598f55cdb556f7c7dd7",
+  "registry_blob_sha": "00cb9c14870b437b8d6b65d3969cb0fc93b6608a",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 6,
@@ -342,8 +342,8 @@
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
     "release_manifest_blob_sha": "aada3bc81866f00dd2bcc06b153ca783bec9b293",
-    "program_registry_blob_sha": "cedd1d7a8410a920a6a6c598f55cdb556f7c7dd7",
-    "execution_adapters_blob_sha": "f43ecfd1296995740aec219ff5ed71f90e5daefd",
+    "program_registry_blob_sha": "00cb9c14870b437b8d6b65d3969cb0fc93b6608a",
+    "execution_adapters_blob_sha": "28d8ebc336b5a302e0c9f1e19f69a9bdb767a892",
     "added_after_release_baseline": true,
     "note": "The independent source DAG is enabled under the scoped release allowlist. The production deliverables are exactly DIRECT, PROXY and REJECT; queue/checkpoint state and immutable runner-local artifacts are separate control-plane/runtime resources. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07",
