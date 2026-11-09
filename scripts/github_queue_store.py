@@ -87,6 +87,8 @@ class GitHubContentsQueueStore:
             raise ValueError("AUTOMATION_QUEUE_ISSUE_NUMBER must be a positive integer") from None
         if self.issue_number < 1:
             raise ValueError("AUTOMATION_QUEUE_ISSUE_NUMBER must be a positive integer")
+        if issue_number is None and self.issue_number == 315:
+            raise ValueError("durable queue Issue #315 is retired; use Issue #423")
         self.bootstrap_path = bootstrap_path or os.environ.get("AUTOMATION_QUEUE_BOOTSTRAP_PATH") or (
             "automation/task_queue_rebuild_seed.json"
             if self.issue_number == DEFAULT_ISSUE_NUMBER else path
