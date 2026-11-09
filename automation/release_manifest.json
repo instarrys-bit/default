@@ -13,7 +13,7 @@
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "cdd874c6bceb02e943a8f5ed5c49ddd76211cf36"
+      "git_blob_sha": "3b28f3bdc39d52e0a656f39468834ac7cc149bde"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -24,11 +24,11 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "a8a7586de23403cb1d212c76d6ff8fbd5083aa70"
+      "git_blob_sha": "2f796209cdeb025493595678f4a929d1b1228192"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "7a048b44b09e6135736984ea3fdd6761231dabbb"
+      "git_blob_sha": "b3d9b3d766c38d336c50dde2a741df33a1ab3bf8"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -90,7 +90,7 @@
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "22936dcaeec82ced3390649ff0aee7b0853f23c6"
+      "git_blob_sha": "0875a8a7f6a1519c4535f3ee05990d9c485c970b"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
