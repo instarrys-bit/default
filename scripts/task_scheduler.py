@@ -1142,9 +1142,8 @@ def enqueue_source_assessment_task(store, registry: dict, adapters: dict, *,
             ):
                 raise ValueError("artifact recovery source task is not a Watchdog-owned Assessment")
             prior_key = prior.get("idempotency_key")
-            allowed_prefix = f"source-assessment:{predecessor['workflow_run_id']}:"
-            if not isinstance(prior_key, str) or not prior_key.startswith(allowed_prefix):
-                raise ValueError("artifact recovery source task idempotency key is not bound to the Discovery run")
+            if not isinstance(prior_key, str) or not prior_key.startswith("source-assessment:"):
+                raise ValueError("artifact recovery source task is not in the source-assessment idempotency namespace")
             prior_input = prior.get("input") if isinstance(prior.get("input"), dict) else {}
             if prior_input.get("predecessor") != predecessor:
                 raise ValueError("artifact recovery predecessor proof differs from the selected Assessment task")

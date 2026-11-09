@@ -1561,6 +1561,8 @@ jobs:
             echo "The selected verified Assessment task has an invalid task ID." >&2
             exit 1
           fi
+          verified_task_key="$(jq -r '.idempotency_key // ""' <<< "$verified_task")"
+          echo "Using verified Assessment anchor task=$verified_task_id key=$verified_task_key for Discovery run $SOURCE_RUN_ID."
           predecessor="$(jq -c '.input.predecessor' <<< "$verified_task")"
           task_input="$(jq -cn --argjson predecessor "$predecessor" '{max_urls:4,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}')"
           echo "Enqueueing one bounded artifact-recovery Assessment for Discovery run $SOURCE_RUN_ID."
