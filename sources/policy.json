@@ -135,17 +135,23 @@
   },
   "managed_config_guard": {
     "path": "modules/uu.conf",
-    "approved_git_blob_sha": "0ff45612d802cfd64a1937ff3e0a1c8ed984b04c",
+    "approved_git_blob_sha": "5464d18d2a0c88ffcd5a7a992b5f5c0e10835ced",
     "description": "Authoritative owner-managed Shadowrocket config. Automation may read, identify, hash, diff, and register baseline metadata only after owner verification; it must never rewrite file contents, user-authored rules, or existing functionality.",
     "last_user_approved_baseline_update": {
-      "previous_blob_sha": "165dc3d4a84173b9fc7495a57e4aed6bd1d058e9",
-      "new_blob_sha": "0ff45612d802cfd64a1937ff3e0a1c8ed984b04c",
-      "reason": "Register the exact config version from an owner-authored push.",
-      "approval_mode": "owner_push_changed_config",
-      "config_change_commits": [],
+      "previous_blob_sha": "0ff45612d802cfd64a1937ff3e0a1c8ed984b04c",
+      "new_blob_sha": "5464d18d2a0c88ffcd5a7a992b5f5c0e10835ced",
+      "reason": "Recover an interrupted registration after verifying every intervening uu.conf-changing commit is associated with the repository owner on GitHub. Automation does not edit uu.conf.",
+      "approval_mode": "recovered_owner_authored_config_history",
+      "config_change_commits": [
+        "9f0938adfe3f4b79f5d72c2dbc4cd7b465fd47b5",
+        "75003350be0c171c52be62a5bb24948150d3cd2b",
+        "a6997f5f8aada8a32dcaf66cc4c8b70a528537d9",
+        "6e23b4539f76fdedafc07a0e886a4c14595a91f6",
+        "f96e52e56b2be7746518f904fecc6cdd67246cc8"
+      ],
       "actor": "instarrys-bit",
-      "commit_sha": "ad420ae623e7987f58aa1d862677017db2567a05",
-      "registered_at": "2026-11-07T15:39:08Z"
+      "commit_sha": "14e6e3933d99e5b15b155b7f8a0f4325c0487725",
+      "registered_at": "2026-11-09T02:38:35Z"
     },
     "content_immutable_to_automation": true,
     "content_protection": {
