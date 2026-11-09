@@ -1297,13 +1297,16 @@ def summarize_active_tasks(queue: dict) -> list[dict]:
 
 def run_scheduler_once(store, registry: dict, adapters: dict, *,
                        worker_id: str, max_tasks: int = 1, task_id: str | None = None,
-                       root: Path = ROOT, now: datetime | None = None) -> dict:
+                       root: Path = ROOT, now: datetime | None = None,
+                       verify_only: bool = False) -> dict:
     if not isinstance(max_tasks, int) or isinstance(max_tasks, bool) or not 1 <= max_tasks <= 10:
         raise ValueError("max_tasks must be an integer from 1 to 10")
     if not isinstance(worker_id, str) or not worker_id.strip():
         raise ValueError("worker_id is required")
     if task_id is not None and (not isinstance(task_id,str) or not task_id.strip()):
         raise ValueError("task_id filter must be a non-empty string")
+    if not isinstance(verify_only, bool):
+        raise ValueError("verify_only must be a boolean")
     fixed_now = now
     initial_now = now or now_utc()
     dispatch_mode = production_dispatch_mode(root)
@@ -1322,6 +1325,32 @@ def run_scheduler_once(store, registry: dict, adapters: dict, *,
     recovered = recover_remote(store, registry, initial_now)
     initial_verification = verify_pending_remote(store, registry, adapters, initial_now)
     superseded_stale_tasks = supersede_stale_queued_production_tasks(store, registry, root)
+    if verify_only:
+        final_snapshot = store.read().document
+        validate_candidate(final_snapshot, registry)
+        active_tasks = summarize_active_tasks(final_snapshot)
+        active_fingerprints = sorted({
+            item["production_fingerprint"]
+            for item in active_tasks
+            if item.get("target_program_id") == "workflow_auto_sync"
+            and (
+                item.get("status") in {"CLAIMED", "VERIFYING"}
+                or (item.get("status") == "QUEUED" and isinstance(item.get("dispatch_intent"), dict))
+            )
+            and isinstance(item.get("production_fingerprint"), str)
+        })
+        return {
+            "verification_only": True,
+            "processed_count": 0,
+            "processed": [],
+            "blocked": [],
+            "initial_verification": initial_verification,
+            "recovered_count": len(recovered),
+            "superseded_stale_production_task_ids": superseded_stale_tasks,
+            "queue_revision": final_snapshot["revision"],
+            "active_task_summaries": active_tasks,
+            "active_production_fingerprints": active_fingerprints,
+        }
     processed = []
     blocked_seen = {}
 
@@ -1389,6 +1418,7 @@ def main() -> int:
     parser.add_argument("--worker-id", default=os.environ.get("GITHUB_RUN_ID") or ("scheduler-" + uuid.uuid4().hex[:12]))
     parser.add_argument("--max-tasks", type=int, default=1)
     parser.add_argument("--task-id", help="Run only this eligible durable task ID")
+    parser.add_argument("--verify-only", action="store_true", help="Recover and verify pending tasks without claiming or dispatching any task")
     parser.add_argument("--token-stdin", action="store_true")
     parser.add_argument("--idempotency-key")
     parser.add_argument("--recovery-of-task-id", help="Exact verified Assessment task being used as the artifact-recovery proof")
@@ -1447,9 +1477,12 @@ def main() -> int:
                 priority=args.priority, input_payload=input_payload,
             ), ensure_ascii=False))
         else:
+            if args.verify_only and args.command != "run-once":
+                raise ValueError("--verify-only is valid only with run-once")
             print(json.dumps(run_scheduler_once(
                 store, registry, adapters, worker_id=args.worker_id,
                 max_tasks=args.max_tasks, task_id=args.task_id,
+                verify_only=args.verify_only,
             ), ensure_ascii=False))
         return 0
     except (ValueError, OSError, QueueStoreError, ProtectedConfigMutationError) as exc:
