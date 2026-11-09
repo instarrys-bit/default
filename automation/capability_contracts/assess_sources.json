@@ -21,7 +21,7 @@
       "{task_input_file}"
     ],
     "task_scheduler_compatible": true,
-    "reason": "Watchdog-gated scheduler dispatch is enabled under the exact release allowlist; the assessor remains non-activating and writes only runner-local immutable artifacts plus the fenced Issue #315 checkpoint."
+    "reason": "Watchdog-gated scheduler dispatch is enabled under the exact release allowlist; the assessor remains non-activating and writes only runner-local immutable artifacts plus the fenced Issue #423 checkpoint."
   },
   "inputs": {
     "repository_snapshot": [
@@ -162,7 +162,7 @@
       "logical/source-assessment-checkpoints"
     ],
     "dynamic_children_share_parent_lease": true,
-    "lock_scope_note": "The only shared mutation is the bounded per-URL assessment_checkpoint in GitHub Issue #315, updated through append-only snapshot CAS under the active task lease and both logical resource fences. The three assessment documents are isolated runner-local artifacts; no repository filesystem write or Contents API publication occurs. The exact discovered_sources predecessor digest is read from the verified external artifact root before and after execution.",
+    "lock_scope_note": "The only shared mutation is the bounded per-URL assessment_checkpoint in GitHub Issue #423, updated through append-only snapshot CAS under the active task lease and both logical resource fences. The three assessment documents are isolated runner-local artifacts; no repository filesystem write or Contents API publication occurs. The exact discovered_sources predecessor digest is read from the verified external artifact root before and after execution.",
     "required_predecessor_artifacts": [
       "sources/discovered_sources.json"
     ],
@@ -188,7 +188,7 @@
     ],
     "independent_verifier": "scripts/verify_assess_sources_artifacts.py independently checks runner-local runtime/history/report consistency, fingerprints exclusion and non-activation.",
     "remote_fetches_may_repeat": true,
-    "repository_writes": "No repository file writes, commits, or GitHub Contents API writes. Per-URL progress is stored only in GitHub Issue #315 durable queue snapshots through append-only CAS under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences."
+    "repository_writes": "No repository file writes, commits, or GitHub Contents API writes. Per-URL progress is stored only in GitHub Issue #423 durable queue snapshots through append-only CAS under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences."
   },
   "dependency_edges": {
     "required_predecessor": "script_discover_sources",
@@ -201,9 +201,9 @@
     "scheduler_enforcement": "The Watchdog downloads the artifact using the exact workflow_run ID, verifies workflow name, numeric run ID, full producer commit SHA, allowlisted artifact path and complete logical-document digest, then sets AUTOMATION_PREDECESSOR_ARTIFACT_ROOT to the verified external artifact directory. enqueue_source_assessment_task and scheduler.build_execution_plan independently recheck that exact external artifact digest before claim; the assessor rechecks it before and after execution."
   },
   "permission_boundary": {
-    "filesystem": "Active independent mode writes assessment documents only beneath AUTOMATION_ARTIFACT_ROOT under RUNNER_TEMP. The only shared mutation is the bounded Issue #315 task checkpoint under the live task lease and both logical resource fences. No repository checkout file is modified.",
+    "filesystem": "Active independent mode writes assessment documents only beneath AUTOMATION_ARTIFACT_ROOT under RUNNER_TEMP. The only shared mutation is the bounded Issue #423 task checkpoint under the live task lease and both logical resource fences. No repository checkout file is modified.",
     "network": "HTTPS raw.githubusercontent.com only, repository-bound URL and same-host redirect checks.",
-    "github_api": "The assessor may only read and CAS-update the current task's bounded checkpoint in the durable Issue #315 queue using the scheduler-supplied token. It performs no Contents API writes, Git commits, or pushes.",
+    "github_api": "The assessor may only read and CAS-update the current task's bounded checkpoint in the durable Issue #423 queue using the scheduler-supplied token. It performs no Contents API writes, Git commits, or pushes.",
     "protected_config": "modules/uu.conf is immutable and outside this capability's write set."
   },
   "blockers": [
@@ -255,7 +255,7 @@
     "total_attempts_including_initial": true,
     "identity": "workflow_run_id + artifact_sha256",
     "batch_selection": "deterministic stable offset",
-    "resume": "durable per-URL result checkpoint in GitHub Issue #315 durable queue snapshots (repository bootstrap is read-only), atomically updated with queue Issue snapshot chain under active task/resource fencing",
+    "resume": "durable per-URL result checkpoint in GitHub Issue #423 durable queue snapshots (repository bootstrap is read-only), atomically updated with queue Issue snapshot chain under active task/resource fencing",
     "remote_fetches_may_repeat": "only for URLs not yet checkpointed or whose previous fetch failed before a result was persisted",
     "repository_writes": "per-URL durable queue checkpoint; final verified history/report outputs under live fenced leases"
   }
