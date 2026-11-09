@@ -1129,9 +1129,12 @@ jobs:
           assessment_candidates = [requested_task] if requested_task and requested_task.get("target_program_id") == "script_assess_sources" else tasks
           assessment_tasks = []
           for task in assessment_candidates:
-              if not isinstance(task, dict) or task.get("target_program_id") != "script_assess_sources":
+              if not isinstance(task, dict):
                   continue
-              predecessor = (task.get("input") or {}).get("predecessor")
+              if task.get("target_program_id") == "script_assess_sources":
+                  predecessor = (task.get("input") or {}).get("predecessor")
+              else:
+                  continue
               if not isinstance(predecessor, dict):
                   continue
               if task.get("status") == "QUEUED":
