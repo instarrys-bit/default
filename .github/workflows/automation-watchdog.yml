@@ -1814,6 +1814,7 @@ jobs:
           import json, os, sys
           from pathlib import Path
           sys.path.insert(0, "scripts")
+          sys.path.insert(0, ".github/workflow_helpers")
           from source_handoff_policy import classify_assessment_handoff, select_production_worker_task
           from production_intent import load_manifest, compute_fingerprint
           from check_source_assessment_artifact import find_matching_assessment_artifact
