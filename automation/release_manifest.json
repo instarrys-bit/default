@@ -225,8 +225,8 @@
         "target_program_id": "script_assess_sources",
         "capability": "source_assessment",
         "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-        "adapter_entry_sha256": "208b3e0858d340343b979ba35f932099183293ec257d5389ad395b590c7ebf70",
-        "registry_entry_sha256": "9f448f101ba172d74d0b0669a7c761f74d3d06b98609779e825f6bbab7c22288",
+        "adapter_entry_sha256": "48cd3d69af8b644e6d1ae5c70654e09b476f0f24761a5134f773184029569f45",
+        "registry_entry_sha256": "edf486b9da0698c41af8ac6997f8c4576fa0843d6301a92ecea2674a70a65fe3",
         "source_path": "scripts/assess_sources.py",
         "source_git_blob_sha": "e0129b2dc91c58f1642338d3d7e67db332d6e0bb",
         "allowed_callers": [
@@ -235,7 +235,7 @@
         "input_contract_sha256": "3f089ec52a26ba8a7e70d158dcc2e64438743f88cdc03ae0f75cf967291392c2",
         "output_contract_sha256": "ff475c522d1d58633246112adea18ef7d921ac89944f4a1dc7178cb5aad78aba",
         "dependency_contract_sha256": "9701a5ebc55ea76c2f7795af9efcb7d4679fc32f09d16bc00583d6bfe0bda6cf",
-        "resource_contract_sha256": "280dc3104c67d9626d481b36c67d10ff84dacf44030ec4374fa8efd129172ed3",
+        "resource_contract_sha256": "7fde2a73336d76303066cc6de21791202afa96bb1bf83628734549f9963143ba",
         "verifier_contract_sha256": "601c151692490aa9f8eb5b669c223e7c5be7eddfd8e16daf21b785097a7e662d"
       }
     ]
