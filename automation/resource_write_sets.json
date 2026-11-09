@@ -1090,7 +1090,7 @@
       "lock_key": "github-issue-comment-chain:423",
       "mode": "append_only_revision_chain",
       "enforcement": "Queue mutations append compressed SHA-256 verified snapshots to Issue #423 comments; each revision references the prior digest and canonical earliest comment ID wins duplicate revisions. Losing writers re-read and reapply within a bounded retry budget.",
-      "note": "automation/task_queue.json remains read-only bootstrap; local task_queue_runtime remains runner-local. Source assessor checkpoints and resource leases share the external queue state."
+      "note": "automation/task_queue_rebuild_seed.json is the read-only bootstrap for the rebuilt Issue #423 queue; local task_queue_runtime remains runner-local. Source assessor checkpoints and resource leases share the external queue state."
     },
     {
       "resource": "logical/production-pipeline",
