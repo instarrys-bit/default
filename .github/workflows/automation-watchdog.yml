@@ -26,6 +26,10 @@ on:
         description: 'Exact Watchdog run that uploaded the verified Assessment artifact; set only by the Assessment completion callback'
         required: false
         type: string
+      production_producer_run_id:
+        description: 'Exact auto_sync run to reconcile; set only by the production completion callback'
+        required: false
+        type: string
   workflow_run:
     workflows:
       - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
@@ -922,27 +926,37 @@ jobs:
           set -euo pipefail
           python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue.json"
           echo "AUTOMATION_QUEUE_SNAPSHOT=$RUNNER_TEMP/task_queue.json" >> "$GITHUB_ENV"
-      - name: Wait for exact Assessment producer completion before queue reconciliation
-        if: ${{ inputs.assessment_producer_run_id != '' }}
+      - name: Wait for exact callback producer completion before queue reconciliation
+        if: ${{ inputs.source_discovery_run_id != '' || inputs.assessment_producer_run_id != '' || inputs.production_producer_run_id != '' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          ASSESSMENT_PRODUCER_RUN_ID: ${{ inputs.assessment_producer_run_id }}
+          SOURCE_DISCOVERY_RUN_ID: ${{ inputs.source_discovery_run_id || '' }}
+          ASSESSMENT_PRODUCER_RUN_ID: ${{ inputs.assessment_producer_run_id || '' }}
+          PRODUCTION_PRODUCER_RUN_ID: ${{ inputs.production_producer_run_id || '' }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
           import json, os, re, time, urllib.request
           repository = os.environ["GITHUB_REPOSITORY"]
           token = os.environ["GITHUB_TOKEN"]
-          run_id = os.environ["ASSESSMENT_PRODUCER_RUN_ID"]
+          callbacks = [
+              (os.environ.get("SOURCE_DISCOVERY_RUN_ID", "").strip(), ".github/workflows/source-discovery.yml"),
+              (os.environ.get("ASSESSMENT_PRODUCER_RUN_ID", "").strip(), ".github/workflows/automation-watchdog.yml"),
+              (os.environ.get("PRODUCTION_PRODUCER_RUN_ID", "").strip(), ".github/workflows/auto_sync.yml"),
+          ]
+          callbacks = [(run_id, path) for run_id, path in callbacks if run_id]
+          if len(callbacks) != 1:
+              raise SystemExit("Exactly one recognized callback producer run ID is required.")
+          run_id, expected_path = callbacks[0]
           if not run_id.isdigit():
-              raise SystemExit("Assessment completion callback supplied a malformed producer run ID.")
+              raise SystemExit("Callback producer supplied a malformed workflow run ID.")
           url = f"https://api.github.com/repos/{repository}/actions/runs/{run_id}"
           headers = {
               "Accept": "application/vnd.github+json",
               "Authorization": "Bearer " + token,
               "X-GitHub-Api-Version": "2022-11-28",
-              "User-Agent": "Shadowrocket-Watchdog-Assessment-Completion/1.0",
+              "User-Agent": "Shadowrocket-Watchdog-Completion-Reconciler/1.0",
           }
           producer = None
           for attempt in range(90):
@@ -953,15 +967,16 @@ jobs:
                   break
               time.sleep(2)
           if not isinstance(producer, dict) or producer.get("status") != "completed":
-              raise SystemExit("Assessment artifact producer did not complete within the bounded 180-second callback wait; queue reconciliation is held.")
+              raise SystemExit("Callback producer did not complete within the bounded 180-second wait; queue reconciliation is held.")
           if (str(producer.get("id")) != run_id
-                  or producer.get("path") != ".github/workflows/automation-watchdog.yml"
+                  or producer.get("path") != expected_path
                   or producer.get("head_branch") != "main"
                   or producer.get("conclusion") != "success"
                   or not re.fullmatch(r"[0-9a-f]{40}", str(producer.get("head_sha", "")))):
-              raise SystemExit("Assessment artifact producer run identity or conclusion is invalid; queue reconciliation is held.")
+              raise SystemExit("Callback producer run identity or conclusion is invalid; queue reconciliation is held.")
           print(json.dumps({
-              "assessment_producer_run_id": run_id,
+              "producer_run_id": run_id,
+              "producer_workflow_path": expected_path,
               "producer_head_sha": producer["head_sha"],
               "producer_status": producer["status"],
               "producer_conclusion": producer["conclusion"],
