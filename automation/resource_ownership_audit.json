@@ -204,7 +204,7 @@
       ],
       "lease_key": "github-issue-comment-chain:423",
       "status": "append_only_issue_snapshot_chain_reviewed",
-      "note": "The durable queue is control-plane state stored as append-only, compressed GitHub Issue #423 comments. Each snapshot is SHA-256 chained to the prior revision; concurrent duplicate revisions resolve deterministically by earliest canonical comment ID. The repository automation/task_queue.json file is read-only bootstrap state. Local task_queue_runtime is runner-local only."
+      "note": "The durable queue is control-plane state stored as append-only, compressed GitHub Issue #423 comments. Each snapshot is SHA-256 chained to the prior revision; concurrent duplicate revisions resolve deterministically by earliest canonical comment ID. The repository automation/task_queue_rebuild_seed.json file is read-only bootstrap state. Local task_queue_runtime is runner-local only."
     },
     {
       "id": "independent_source_assessment_queue_checkpoint",
