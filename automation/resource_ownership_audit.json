@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audit_id": "resource-ownership-audit-2026.11.09.source-dag3",
+  "audit_id": "resource-ownership-audit-2026.11.10.discovered-source-registry1",
   "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
@@ -302,8 +302,8 @@
         "script_restore_automation_state",
         "script_sync_ruleset_config_conflicts"
       ],
-      "lock_key": "logical/production-pipeline + exact rulesets file leases",
-      "required_mode": "exclusive_exact_path_resource_leases",
+      "lock_key": "logical/production-pipeline + exact rulesets file leases for policy outputs",
+      "required_mode": "exclusive live resource fencing: exact-path leases for policy outputs; logical/production-pipeline lease for the candidate registry",
       "status": "fenced_at_each_writer_mutation",
       "note": "Policy rule-set writers assert their exact output leases. The non-policy source candidate registry is written by script_register_discovered_sources under the same Watchdog logical/production-pipeline fence and is included only because the single publisher is restricted to rulesets/**. No global file guard is used."
     },
@@ -585,5 +585,5 @@
     ]
   },
   "limitation": "The active Source Discovery → Assessment DAG is scoped to runner-local immutable artifacts and a fenced Issue #423 checkpoint. The production repository publisher stages rulesets/** only: the three policy rule-set deliverables plus the non-policy discovered-source candidate registry. The registry remains unclassified and inactive. Per-capability repository writes are validated against explicit exclusive resource_contract.resource_keys; protected modules/** and JavaScript remain unwritable. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
-  "reviewed_at": "2026-11-09"
+  "reviewed_at": "2026-11-10"
 }
