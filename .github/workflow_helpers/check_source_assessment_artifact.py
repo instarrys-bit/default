@@ -171,6 +171,25 @@ def find_matching_assessment_artifact(repository: str, token: str, expected: dic
             producer_run_id = workflow_run.get("id")
             if not isinstance(producer_run_id, int) or isinstance(producer_run_id, bool):
                 continue
+            # The archive is private and expensive to download. Reject non-main,
+            # failed, incomplete, or wrong-workflow producers from artifact metadata
+            # and the authenticated run record before following the ZIP redirect.
+            if workflow_run.get("head_branch") != "main":
+                continue
+            producer_run = _get_json(
+                f"{API_ROOT}/repos/{repository}/actions/runs/{producer_run_id}",
+                token,
+            )
+            if (
+                str(producer_run.get("id", "")) != str(producer_run_id)
+                or producer_run.get("path") != ASSESSMENT_WORKFLOW_PATH
+                or producer_run.get("head_branch") != "main"
+                or producer_run.get("status") != "completed"
+                or producer_run.get("conclusion") != "success"
+                or workflow_run.get("head_sha") != producer_run.get("head_sha")
+                or workflow_run.get("head_branch") != producer_run.get("head_branch")
+            ):
+                continue
             archive_bytes = _get_bytes(
                 f"{API_ROOT}/repos/{repository}/actions/artifacts/{artifact['id']}/zip",
                 token,
@@ -178,16 +197,11 @@ def find_matching_assessment_artifact(repository: str, token: str, expected: dic
             try:
                 proof_name, proof = _proof_from_archive(archive_bytes)
             except ValueError:
-                # Unrelated historical artifacts without a usable proof are not
-                # accepted as evidence; they do not block a fresh bounded recovery.
+                # Historical artifacts without a usable proof are not evidence.
                 continue
             predecessor = proof.get("predecessor") or {}
             if str(predecessor.get("workflow_run_id", "")) != str(expected["workflow_run_id"]):
                 continue
-            producer_run = _get_json(
-                f"{API_ROOT}/repos/{repository}/actions/runs/{producer_run_id}",
-                token,
-            )
             verified = verify_assessment_archive(archive_bytes, artifact, producer_run, expected)
             matches.append(verified)
         if len(artifacts) < 100:
