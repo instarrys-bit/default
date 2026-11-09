@@ -1764,6 +1764,7 @@ jobs:
           mkdir -p "$AUTOMATION_ARTIFACT_ROOT"
           queue_token="$GITHUB_TOKEN"
           unset GITHUB_TOKEN
+          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --token-stdin --repository "$GITHUB_REPOSITORY" --branch main --max-tasks 1 --verify-only run-once | tee /tmp/task-queue-verification-report.json
           GITHUB_TOKEN="$queue_token" python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue_before_dispatch.json"
           selected_task_id="$(python3 - <<'PY'
           import json, os, sys
@@ -1786,6 +1787,7 @@ jobs:
           fi
           GITHUB_TOKEN="$queue_token" python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue_after.json"
           unset queue_token
+          cat /tmp/task-queue-verification-report.json >> "$GITHUB_STEP_SUMMARY"
           cat /tmp/task-scheduler-report.json >> "$GITHUB_STEP_SUMMARY"
           python3 - <<'PY'
           import json, os
