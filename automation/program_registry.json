@@ -84,7 +84,7 @@
       ],
       "dispatches": [],
       "permission_boundary": "Read only the exact verified discovery artifact and read-only baseline files. Write assessment documents only under the isolated RUNNER_TEMP artifact root; no repository file writes, commits, or GitHub Contents API writes. The sole shared mutation is the current task's bounded assessment_checkpoint in GitHub Issue #315, guarded by the active task lease, logical/source-assessment-checkpoints and logical/production-pipeline fences. No source activation; modules/uu.conf and sources/domain_sources.json remain read-only.",
-      "health_check": "Scheduler validates the exact discovery predecessor digest from the external runner-local artifact root, the assessor validates task/resource fencing before each queue checkpoint CAS, and verify_assess_sources_artifacts.py independently checks the runner-local output documents and non-activation.",
+      "health_check": "Scheduler validates the exact discovery predecessor digest from the external runner-local artifact root, the assessor validates task/resource fencing before each queue checkpoint CAS, verify_assess_sources_artifacts.py independently checks runner-local output documents and non-activation, and check_source_assessment_artifact.py verifies the immutable Actions ZIP digest, producer run identity, predecessor proof, file hashes, and activated=0.",
       "orchestration": {
         "enabled": true,
         "allowed_callers": [
