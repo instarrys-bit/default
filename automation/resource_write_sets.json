@@ -1239,7 +1239,7 @@
         "script_restore_automation_state",
         "workflow_auto_sync"
       ],
-      "lock_key": "sources/discovered_sources.json + reports/source-discovery.md (exclusive logical document and report leases shared with workflow_auto_sync)",
+      "lock_key": "logical/source-dag-supervision + logical/source-discovery-run + sources/discovered_sources.json + reports/source-discovery.md (exclusive logical document/report leases in monolithic mode; per-run RUNNER_TEMP isolation in independent mode)",
       "mode": "exclusive",
       "enforcement": "Current production builder and publish restore are serialized by the Watchdog logical production-pipeline live fence. The JSON document writer additionally uses its documented logical-document lease where explicitly asserted.",
       "note": "Restore can write the same allowlisted base/manifest/shards/report; all dynamic document children and cleanup operations must remain within the same logical resource lease. The dedicated source-discovery workflow is registered but its adapter remains disabled. It uses the exact same discovered_sources.json and report resource leases as workflow_auto_sync; immutable run artifact handoff is verified by Watchdog before assessment enqueue.",
@@ -1297,6 +1297,17 @@
       "mode": "exclusive",
       "enforcement": "Current production writes are serialized by the auto_sync logical/production-pipeline lease, which coordinates the workflow but does not intercept local filesystem mutations. build_rule_provenance uses write_document with lease_required default false; restore uses explicit allowlisted archive paths.",
       "note": "Lease must cover base file, manifest, shard set, staging, atomic switch and cleanup."
+    },
+    {
+      "resource": "logical/source-dag-supervision",
+      "writers": [
+        "workflow_source_discovery",
+        "script_assess_sources"
+      ],
+      "lock_key": "logical/source-dag-supervision",
+      "mode": "exclusive",
+      "enforcement": "The durable queue acquires this common resource lease atomically with a task claim and keeps it active through asynchronous workflow verification; monotonically increasing fencing tokens prevent stale workers from proceeding.",
+      "note": "Discovery and Assessment share one task-scoped fence. Watchdog jobs may run concurrently without losing pending events; CAS plus this common lease prevents two different source-DAG stages from executing simultaneously."
     }
   ],
   "not_yet_proven": [
@@ -1315,7 +1326,7 @@
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
     "release_manifest_blob_sha": "59e655bed0567b0959bcb8acfccb8d0766cf92e0",
     "program_registry_blob_sha": "cedd1d7a8410a920a6a6c598f55cdb556f7c7dd7",
-    "execution_adapters_blob_sha": "d9e5256a92cc90fc570c13e0aa38158228f4feb3",
+    "execution_adapters_blob_sha": "f43ecfd1296995740aec219ff5ed71f90e5daefd",
     "added_after_release_baseline": true,
     "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #315 checkpoint. Repository mutations are governed per capability by explicit exclusive resource_contract.resource_keys; control-plane metadata is separately inventoried. The production auto_sync publisher stages only the three rule-set deliverables under rulesets/**. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07"
