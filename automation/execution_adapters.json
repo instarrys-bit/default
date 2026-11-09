@@ -989,6 +989,31 @@
       }
     },
     {
+      "target_program_id": "script_register_discovered_sources",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/register_discovered_sources.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_interface_review"
+      },
+      "completion": {
+        "success_condition": "process_exit_code_zero_and_durable_registry_artifact_present",
+        "independent_verification_required": true
+      }
+    },
+    {
       "target_program_id": "script_remote_task_queue_runtime",
       "target_kind": "python_component",
       "adapter_type": "python_cli",
@@ -1554,6 +1579,52 @@
       }
     },
     {
+      "target_program_id": "workflow_assessment_completion_relay",
+      "target_kind": "github_actions_workflow",
+      "adapter_type": "github_actions_workflow",
+      "enabled": false,
+      "interface_status": "workflow_dispatch_reviewed",
+      "allowed_callers": [],
+      "workflow": {
+        "path": ".github/workflows/assessment-completion-relay.yml",
+        "dispatchable": true,
+        "inputs": [
+          {
+            "name": "automation_task_id",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "producer_run_id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "allowed_refs": [
+          "main"
+        ],
+        "caller_permissions_required": [
+          "actions:write",
+          "issues:write"
+        ]
+      },
+      "timeout_seconds": 480,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_dispatcher_and_run_verifier"
+      },
+      "completion": {
+        "success_condition": "exact_completed_assessment_producer_and_unique_artifact_verified_then_watchdog_dispatch_requested",
+        "required_result_fields": [
+          "producer_run_id",
+          "producer_head_sha",
+          "artifact_id",
+          "verified"
+        ],
+        "independent_verification_required": true
+      }
+    },
+    {
       "target_program_id": "workflow_auto_sync",
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
@@ -1942,52 +2013,6 @@
           "head_sha",
           "status",
           "conclusion"
-        ],
-        "independent_verification_required": true
-      }
-    },
-    {
-      "target_program_id": "workflow_assessment_completion_relay",
-      "target_kind": "github_actions_workflow",
-      "adapter_type": "github_actions_workflow",
-      "enabled": false,
-      "interface_status": "workflow_dispatch_reviewed",
-      "allowed_callers": [],
-      "workflow": {
-        "path": ".github/workflows/assessment-completion-relay.yml",
-        "dispatchable": true,
-        "inputs": [
-          {
-            "name": "automation_task_id",
-            "type": "string",
-            "required": false
-          },
-          {
-            "name": "producer_run_id",
-            "type": "string",
-            "required": true
-          }
-        ],
-        "allowed_refs": [
-          "main"
-        ],
-        "caller_permissions_required": [
-          "actions:write",
-          "issues:write"
-        ]
-      },
-      "timeout_seconds": 480,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_dispatcher_and_run_verifier"
-      },
-      "completion": {
-        "success_condition": "exact_completed_assessment_producer_and_unique_artifact_verified_then_watchdog_dispatch_requested",
-        "required_result_fields": [
-          "producer_run_id",
-          "producer_head_sha",
-          "artifact_id",
-          "verified"
         ],
         "independent_verification_required": true
       }

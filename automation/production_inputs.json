@@ -25,6 +25,7 @@
     "scripts/verify_baseline.py",
     "scripts/audit_source_lineage.py",
     "scripts/discover_sources.py",
+    "scripts/register_discovered_sources.py",
     "scripts/assess_sources.py",
     "scripts/build_source_candidates.py",
     "scripts/audit_policy_source_overlap.py",

@@ -571,6 +571,9 @@ jobs:
           python3 scripts/build_project_status.py
           python3 scripts/append_step_summary.py --input reports/project-status.md
 
+      - name: Persist discovered source candidate registry (non-activating)
+        run: python3 scripts/register_discovered_sources.py
+
       - name: Write successful audit heartbeat
         env:
           GH_TOKEN: ${{ github.token }}
