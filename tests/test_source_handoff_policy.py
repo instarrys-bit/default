@@ -326,4 +326,4 @@ class WatchdogAssessmentResumeContractTests(unittest.TestCase):
         )[0]
         self.assertIn('SCHEDULER_ACTION="run""-once"', run_queue)
         self.assertIn('--verify-only "$SCHEDULER_ACTION"', run_queue)
-        self.assertLess(run_queue.index("--verify-only run-once"), run_queue.index("selected_task_id="))
+        self.assertLess(run_queue.index('--verify-only "$SCHEDULER_ACTION"'), run_queue.index("selected_task_id="))
