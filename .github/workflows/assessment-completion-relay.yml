@@ -1,9 +1,13 @@
 name: Shadowrocket Assessment completion relay
-run-name: Assessment completion relay ${{ inputs.producer_run_id }}
+run-name: Automation task ${{ inputs.automation_task_id || 'manual' }} | Assessment relay ${{ inputs.producer_run_id }}
 
 on:
   workflow_dispatch:
     inputs:
+      automation_task_id:
+        description: Optional task correlation; leave blank for this control-plane relay
+        required: false
+        type: string
       producer_run_id:
         description: Exact Watchdog run that uploaded source-assessment-output
         required: true
