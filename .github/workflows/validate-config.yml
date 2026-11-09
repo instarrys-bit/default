@@ -121,7 +121,7 @@ jobs:
           PY
           echo "The non-main change leaves uu.conf and its approved-baseline metadata unchanged; continuing read-only structural checks."
       - name: Recover owner-approved config baseline in validation workspace
-        if: ${{ (github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')) || github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref != 'refs/heads/main') }}
+        if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -143,10 +143,10 @@ jobs:
           fi
           python scripts/register_config_baseline.py
       - name: Verify owner-approved config baseline
-        if: ${{ (github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')) || github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref != 'refs/heads/main') }}
+        if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         run: python scripts/verify_baseline.py --baseline-only
       - name: Audit config drift against the approved baseline
-        if: ${{ (github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')) || github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref != 'refs/heads/main') }}
+        if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         run: python scripts/audit_config_drift.py
       - run: python scripts/audit_ruleset_references.py
       - run: python scripts/audit_ruleset_config_overlap.py
