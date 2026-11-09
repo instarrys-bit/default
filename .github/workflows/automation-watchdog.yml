@@ -1544,6 +1544,7 @@ jobs:
           echo "Assessment enqueue key: $assessment_key (base status: ${assessment_status:-none})"
           queue_token="$GITHUB_TOKEN"
           unset GITHUB_TOKEN
+          SCHEDULER_ACTION=run-once
           printf '%s' "$queue_token" | python3 scripts/task_scheduler.py             --repository "$GITHUB_REPOSITORY" --branch main --token-stdin             --idempotency-key "$assessment_key"             --priority 60 --input-json "$task_input" enqueue-source-assessment
           unset queue_token
 
@@ -1883,7 +1884,7 @@ jobs:
           printf '%s' "$queue_token" | python3 scripts/task_scheduler.py \
             --repository "$GITHUB_REPOSITORY" --branch main --token-stdin \
             --worker-id "watchdog-production-$GITHUB_RUN_ID" \
-            --task-id "$selected_task_id" --max-tasks 1 run-once | tee "$RUNNER_TEMP/production-dispatch-result.json"
+            --task-id "$selected_task_id" --max-tasks 1 "$SCHEDULER_ACTION" | tee "$RUNNER_TEMP/production-dispatch-result.json"
           export SELECTED_PRODUCTION_TASK_ID="$selected_task_id"
           GITHUB_TOKEN="$queue_token" python3 scripts/remote_task_queue_runtime.py \
             --repository "$GITHUB_REPOSITORY" --branch main snapshot \
