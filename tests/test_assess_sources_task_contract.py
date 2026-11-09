@@ -123,7 +123,7 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
         self.assertEqual(adapter["write_resources"], [])
         self.assertEqual(adapter["publish_resources"], [])
         self.assertEqual(adapter["resource_contract"]["resource_keys"],
-                         ["logical/production-pipeline", "logical/source-assessment-checkpoints"])
+                         ["logical/production-pipeline", "logical/source-assessment-checkpoints", "logical/source-dag-supervision"])
 
     def test_verified_discovery_artifact_is_resolved_from_runner_temp(self):
         with tempfile.TemporaryDirectory() as repository_dir, tempfile.TemporaryDirectory() as runner_dir:
