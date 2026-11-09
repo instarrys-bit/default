@@ -874,7 +874,8 @@ jobs:
 
   task-queue-supervision:
     concurrency:
-      group: shadowrocket-watchdog-task-supervision
+      # Unique run IDs preserve every event; durable queue CAS and shared source-DAG fencing serialize task claims.
+      group: shadowrocket-watchdog-task-supervision-${{ github.run_id }}
       cancel-in-progress: false
     env:
       GITHUB_ACTOR_ID: ${{ github.actor_id }}
