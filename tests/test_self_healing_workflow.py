@@ -84,7 +84,7 @@ class SelfHealingWorkflowTests(unittest.TestCase):
 
     def test_failed_checkpoint_recovery_uses_expanded_github_context_and_paginated_history(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
-        recovery = workflow.split("      - name: Restore latest failed-run review checkpoint and delta journal", 1)[1].split("      - name: \\\"Audit each domain:", 1)[0]
+        recovery = workflow.split("      - name: Restore latest failed-run review checkpoint and delta journal", 1)[1].split("      - name: " + chr(34) + "Audit each domain:", 1)[0]
         self.assertIn("GH_TOKEN: ${{ github.token }}", recovery)
         self.assertIn("REPO: ${{ github.repository }}", recovery)
         self.assertIn("CURRENT_RUN_ID: ${{ github.run_id }}", recovery)
