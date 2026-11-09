@@ -1034,7 +1034,8 @@ def enqueue_source_discovery_task(store, registry: dict, *, idempotency_key: str
 
 def enqueue_source_assessment_task(store, registry: dict, adapters: dict, *,
                                    idempotency_key: str, input_payload: dict,
-                                   priority: int = 60, root: Path = ROOT) -> dict:
+                                   priority: int = 60, root: Path = ROOT,
+                                   recovery_of_task_id: str | None = None) -> dict:
     """Enqueue one bounded assessment only from a successful discovery-producing Watchdog event."""
     if not isinstance(idempotency_key, str) or not idempotency_key.startswith("source-assessment:"):
         raise ValueError("source assessment requires a Watchdog-scoped idempotency key")
@@ -1127,36 +1128,52 @@ def enqueue_source_assessment_task(store, registry: dict, adapters: dict, *,
                 raise ValueError("unexpected assessment recovery task exists; refusing another retry")
         precondition = require_timeout_corrected_recovery
     elif idempotency_key == artifact_recovery_key:
+        if not isinstance(recovery_of_task_id, str) or not re.fullmatch(r"task_[0-9a-f]{24}", recovery_of_task_id):
+            raise ValueError("artifact recovery requires the exact verified Assessment task ID")
         def require_verified_assessment_for_artifact_recovery(queue):
-            base = next((item for item in queue.get("tasks", [])
-                         if item.get("idempotency_key") == expected_key), None)
-            first = next((item for item in queue.get("tasks", [])
-                          if item.get("idempotency_key") == recovery_one_key), None)
-            second = next((item for item in queue.get("tasks", [])
-                           if item.get("idempotency_key") == recovery_two_key), None)
-            for prior in (base, first, second):
-                if prior is None:
-                    raise ValueError("artifact recovery requires the exact base, recovery:1 and recovery:2 tasks")
-                prior_predecessor = ((prior.get("input") or {}).get("predecessor")
-                                     if isinstance(prior.get("input"), dict) else None)
-                if prior_predecessor != predecessor:
-                    raise ValueError("artifact recovery predecessor proof differs from prior task evidence")
-            if base.get("status") != "DEAD_LETTER" or first.get("status") != "DEAD_LETTER":
-                raise ValueError("artifact recovery requires the original and first recovery tasks to be DEAD_LETTER")
-            if second.get("status") != "SUCCEEDED" or (second.get("verification") or {}).get("status") != "passed":
-                raise ValueError("artifact recovery requires recovery:2 to be independently verified SUCCEEDED")
-            verification = (second.get("result") or {}).get("artifact_verification") or {}
+            tasks = queue.get("tasks", [])
+            prior = next((item for item in tasks
+                          if isinstance(item, dict) and item.get("task_id") == recovery_of_task_id), None)
+            if prior is None:
+                raise ValueError("artifact recovery predecessor Assessment task ID is not present in the canonical queue")
+            if (
+                prior.get("target_program_id") != "script_assess_sources"
+                or prior.get("requester_program_id") != "workflow_automation_watchdog"
+            ):
+                raise ValueError("artifact recovery source task is not a Watchdog-owned Assessment")
+            prior_key = prior.get("idempotency_key")
+            allowed_prefix = f"source-assessment:{predecessor['workflow_run_id']}:"
+            if not isinstance(prior_key, str) or not prior_key.startswith(allowed_prefix):
+                raise ValueError("artifact recovery source task idempotency key is not bound to the Discovery run")
+            prior_input = prior.get("input") if isinstance(prior.get("input"), dict) else {}
+            if prior_input.get("predecessor") != predecessor:
+                raise ValueError("artifact recovery predecessor proof differs from the selected Assessment task")
+            if prior.get("status") != "SUCCEEDED" or (prior.get("verification") or {}).get("status") != "passed":
+                raise ValueError("artifact recovery requires the exact prior Assessment task to be independently verified SUCCEEDED")
+            verification = (prior.get("result") or {}).get("artifact_verification") or {}
             if verification.get("valid") is not True or verification.get("activation_count") != 0:
                 raise ValueError("artifact recovery requires a valid non-activating Assessment result")
+            active = [
+                item for item in tasks
+                if isinstance(item, dict)
+                and item.get("task_id") != recovery_of_task_id
+                and item.get("target_program_id") == "script_assess_sources"
+                and ((item.get("input") or {}).get("predecessor") if isinstance(item.get("input"), dict) else None) == predecessor
+                and item.get("status") in {"QUEUED", "CLAIMED", "VERIFYING"}
+            ]
+            if active:
+                raise ValueError("artifact recovery is blocked while another Assessment task for this Discovery run is active")
             if input_payload.get("max_urls", 21) > 4 or adapter.get("timeout_seconds", 0) < 300:
                 raise ValueError("artifact recovery must use at most four URLs and the reviewed 300-second budget")
             if any(
                 isinstance(item.get("idempotency_key"), str)
                 and item.get("idempotency_key") == artifact_recovery_key
-                for item in queue.get("tasks", [])
+                for item in tasks
             ):
                 raise ValueError("Assessment artifact recovery already exists for this Discovery run")
         precondition = require_verified_assessment_for_artifact_recovery
+    elif recovery_of_task_id is not None:
+        raise ValueError("--recovery-of-task-id is valid only for artifact-recovery Assessment tasks")
     result = enqueue_remote({
         "idempotency_key": idempotency_key,
         "trace_id": f"discovery-run:{predecessor['workflow_run_id']}:{predecessor['workflow_head_sha'][:12]}",
@@ -1375,6 +1392,7 @@ def main() -> int:
     parser.add_argument("--task-id", help="Run only this eligible durable task ID")
     parser.add_argument("--token-stdin", action="store_true")
     parser.add_argument("--idempotency-key")
+    parser.add_argument("--recovery-of-task-id", help="Exact verified Assessment task being used as the artifact-recovery proof")
     parser.add_argument("--priority", type=int, default=80)
     parser.add_argument("--input-json", default="{}")
     parser.add_argument("--current-main-sha", help="Current main commit used to resolve superseded terminal tasks")
@@ -1407,6 +1425,7 @@ def main() -> int:
             print(json.dumps(enqueue_source_assessment_task(
                 store, registry, adapters, idempotency_key=args.idempotency_key,
                 priority=args.priority, input_payload=input_payload,
+                recovery_of_task_id=args.recovery_of_task_id,
             ), ensure_ascii=False))
         elif args.command == "resolve-superseded-dead-letters":
             if not args.current_main_sha:
