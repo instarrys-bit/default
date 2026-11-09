@@ -1575,7 +1575,8 @@
       "workflow_path": ".github/workflows/auto_sync.yml",
       "step_name": "Dispatch Watchdog reconciliation for this exact production run",
       "mutation_kinds": [
-        "github_actions_workflow_dispatch"
+        "github_actions_workflow_dispatch",
+        "workflow_dispatch_api"
       ],
       "resources": [
         "GitHub Actions Watchdog workflow reconciliation run"
