@@ -53,6 +53,79 @@ def discovery_task_requires_handoff(task: dict, tasks: list) -> bool:
     return True
 
 
+def select_source_worker_task(tasks: list) -> str:
+    """Select one safe source task, allowing artifact recovery after the gate opens.
+
+    A verified Assessment closes the production gate, but a queued artifact-recovery
+    task is still required to materialize the immutable output artifact. It must run
+    before any new Discovery task so the predecessor evidence is not stranded.
+    """
+    if not isinstance(tasks, list):
+        raise ValueError("tasks must be a list")
+    safe = [
+        task for task in tasks
+        if isinstance(task, dict)
+        and task.get("target_program_id") != "workflow_auto_sync"
+        and task.get("status") in {"QUEUED", "CLAIMED", "VERIFYING", "SUCCEEDED"}
+    ]
+    artifact_recovery = [
+        task for task in safe
+        if task.get("target_program_id") == "script_assess_sources"
+        and task.get("status") in {"QUEUED", "CLAIMED", "VERIFYING"}
+        and isinstance(task.get("idempotency_key"), str)
+        and task["idempotency_key"].endswith(":artifact-recovery:1")
+    ]
+    if artifact_recovery:
+        candidates = artifact_recovery
+    else:
+        discoveries = [
+            task for task in safe
+            if task.get("target_program_id") == "workflow_source_discovery"
+        ]
+        latest = max(
+            discoveries,
+            key=lambda task: (str(task.get("created_at") or ""), str(task.get("task_id") or "")),
+            default=None,
+        )
+        gate_open = False
+        if isinstance(latest, dict) and latest.get("status") == "SUCCEEDED":
+            evidence = ((latest.get("result") or {}).get("run_evidence") or {})
+            run_id = evidence.get("run_id")
+            if isinstance(run_id, int) and not isinstance(run_id, bool):
+                run_id = str(run_id)
+            if isinstance(run_id, str) and run_id.isdigit():
+                gate_open = classify_assessment_handoff(tasks, run_id).get("state") == "already_assessed"
+        if gate_open:
+            return ""
+        discovery_queued = [
+            task for task in safe
+            if task.get("target_program_id") == "workflow_source_discovery" and task.get("status") == "QUEUED"
+        ]
+        assessment_queued = [
+            task for task in safe
+            if task.get("target_program_id") == "script_assess_sources" and task.get("status") == "QUEUED"
+        ]
+        active_source = [
+            task for task in safe
+            if task.get("target_program_id") in {"workflow_source_discovery", "script_assess_sources"}
+            and task.get("status") in {"CLAIMED", "VERIFYING"}
+        ]
+        candidates = discovery_queued or assessment_queued or active_source or safe
+    if not candidates:
+        return ""
+    rank = {"QUEUED": 0, "CLAIMED": 1, "VERIFYING": 1, "SUCCEEDED": 2}
+    chosen = min(
+        candidates,
+        key=lambda task: (
+            rank.get(task.get("status"), 9),
+            -int(task.get("priority", 0) or 0),
+            str(task.get("created_at") or ""),
+            str(task.get("task_id") or ""),
+        ),
+    )
+    return str(chosen.get("task_id") or "")
+
+
 def classify_assessment_handoff(tasks: list, workflow_run_id: str) -> dict:
     """Classify all Assessment tasks tied to one immutable Discovery run.
 
@@ -148,3 +221,76 @@ def classify_assessment_handoff(tasks: list, workflow_run_id: str) -> dict:
         "duplicate_task_ids": [],
         "reason": "No Assessment task exists for this exact Discovery run.",
     }
+
+
+def select_source_worker_task(tasks: list) -> str:
+    """Select one safe source task, allowing artifact recovery after the gate opens.
+
+    A verified Assessment closes the production gate, but a queued artifact-recovery
+    task is still required to materialize the immutable output artifact. It must run
+    before any new Discovery task so the predecessor evidence is not stranded.
+    """
+    if not isinstance(tasks, list):
+        raise ValueError("tasks must be a list")
+    safe = [
+        task for task in tasks
+        if isinstance(task, dict)
+        and task.get("target_program_id") != "workflow_auto_sync"
+        and task.get("status") in {"QUEUED", "CLAIMED", "VERIFYING", "SUCCEEDED"}
+    ]
+    artifact_recovery = [
+        task for task in safe
+        if task.get("target_program_id") == "script_assess_sources"
+        and task.get("status") in {"QUEUED", "CLAIMED", "VERIFYING"}
+        and isinstance(task.get("idempotency_key"), str)
+        and task["idempotency_key"].endswith(":artifact-recovery:1")
+    ]
+    if artifact_recovery:
+        candidates = artifact_recovery
+    else:
+        discoveries = [
+            task for task in safe
+            if task.get("target_program_id") == "workflow_source_discovery"
+        ]
+        latest = max(
+            discoveries,
+            key=lambda task: (str(task.get("created_at") or ""), str(task.get("task_id") or "")),
+            default=None,
+        )
+        gate_open = False
+        if isinstance(latest, dict) and latest.get("status") == "SUCCEEDED":
+            evidence = ((latest.get("result") or {}).get("run_evidence") or {})
+            run_id = evidence.get("run_id")
+            if isinstance(run_id, int) and not isinstance(run_id, bool):
+                run_id = str(run_id)
+            if isinstance(run_id, str) and run_id.isdigit():
+                gate_open = classify_assessment_handoff(tasks, run_id).get("state") == "already_assessed"
+        if gate_open:
+            return ""
+        discovery_queued = [
+            task for task in safe
+            if task.get("target_program_id") == "workflow_source_discovery" and task.get("status") == "QUEUED"
+        ]
+        assessment_queued = [
+            task for task in safe
+            if task.get("target_program_id") == "script_assess_sources" and task.get("status") == "QUEUED"
+        ]
+        active_source = [
+            task for task in safe
+            if task.get("target_program_id") in {"workflow_source_discovery", "script_assess_sources"}
+            and task.get("status") in {"CLAIMED", "VERIFYING"}
+        ]
+        candidates = discovery_queued or assessment_queued or active_source or safe
+    if not candidates:
+        return ""
+    rank = {"QUEUED": 0, "CLAIMED": 1, "VERIFYING": 1, "SUCCEEDED": 2}
+    chosen = min(
+        candidates,
+        key=lambda task: (
+            rank.get(task.get("status"), 9),
+            -int(task.get("priority", 0) or 0),
+            str(task.get("created_at") or ""),
+            str(task.get("task_id") or ""),
+        ),
+    )
+    return str(chosen.get("task_id") or "")
