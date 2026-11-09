@@ -358,9 +358,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "1b21c59f5228c9afaef7da801d6acbfc69de5805",
+    "release_manifest_blob_sha": "f6ff028c3e7405cc1dbf4a6df0f955d3c5087890",
     "program_registry_blob_sha": "00cb9c14870b437b8d6b65d3969cb0fc93b6608a",
-    "execution_adapters_blob_sha": "cdd874c6bceb02e943a8f5ed5c49ddd76211cf36",
+    "execution_adapters_blob_sha": "3b28f3bdc39d52e0a656f39468834ac7cc149bde",
     "added_after_release_baseline": true,
     "note": "The independent source DAG is enabled under the scoped release allowlist. The production deliverables are exactly DIRECT, PROXY and REJECT; queue/checkpoint state and immutable runner-local artifacts are separate control-plane/runtime resources. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07",
