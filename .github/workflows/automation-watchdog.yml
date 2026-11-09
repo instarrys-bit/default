@@ -1113,6 +1113,7 @@ jobs:
               and task.get("idempotency_key").endswith(":artifact-recovery:1")
           }
           import sys
+          sys.path.insert(0, ".github/workflow_helpers")
           from check_source_assessment_artifact import find_matching_assessment_artifact
 
           requested_task_id = os.environ.get("REQUESTED_ASSESSMENT_TASK_ID", "").strip()
@@ -1511,7 +1512,7 @@ jobs:
             echo "A verified Discovery artifact digest is required for Assessment artifact recovery." >&2
             exit 1
           fi
-          artifact_check="$(python3 scripts/check_source_assessment_artifact.py --repository "$GITHUB_REPOSITORY" --workflow-run-id "$SOURCE_RUN_ID" --workflow-head-sha "$SOURCE_HEAD_SHA" --artifact-sha256 "$SOURCE_ARTIFACT_SHA256")"
+          artifact_check="$(python3 .github/workflow_helpers/check_source_assessment_artifact.py --repository "$GITHUB_REPOSITORY" --workflow-run-id "$SOURCE_RUN_ID" --workflow-head-sha "$SOURCE_HEAD_SHA" --artifact-sha256 "$SOURCE_ARTIFACT_SHA256")"
           echo "$artifact_check"
           if [ "$(jq -r '.found // false' <<< "$artifact_check")" = "true" ]; then
             echo "A matching immutable Assessment artifact already exists; no recovery task is needed."

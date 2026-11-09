@@ -7,7 +7,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / ".github" / "workflow_helpers"))
 
 from check_source_assessment_artifact import verify_assessment_archive
 
@@ -72,7 +72,7 @@ class AssessmentArtifactVerifierTests(unittest.TestCase):
             "name": "source-assessment-output",
             "expired": False,
             "digest": "sha256:" + hashlib.sha256(blob).hexdigest(),
-            "workflow_run": {"id": self.producer_run["id"], "head_sha": self.producer_run["head_sha"]},
+            "workflow_run": {"id": self.producer_run["id"], "head_sha": self.producer_run["head_sha"], "head_branch": "main"},
         }
         return blob, artifact, proof
 

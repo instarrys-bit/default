@@ -1313,8 +1313,8 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "5b3d3560d7ea0b8dacd3e2c762831a05304a6f88",
-    "program_registry_blob_sha": "5201a2c8a3950e2047475109f72cfef409538df4",
+    "release_manifest_blob_sha": "f282d605fc38e9f1dae6062a7a9ac91a462f56e9",
+    "program_registry_blob_sha": "2b595ebf040b6624435ecfa5eb436bfdf56df5cc",
     "execution_adapters_blob_sha": "d9e5256a92cc90fc570c13e0aa38158228f4feb3",
     "added_after_release_baseline": true,
     "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #315 checkpoint. Repository mutations are governed per capability by explicit exclusive resource_contract.resource_keys; control-plane metadata is separately inventoried. The production auto_sync publisher stages only the three rule-set deliverables under rulesets/**. The global static/transitive inventory remains partial for unrelated capabilities.",
@@ -1354,12 +1354,6 @@
       "source": "scripts/build_dashboard_snapshot.py",
       "classification": "runner_local_ephemeral_output_non_dispatchable",
       "evidence": "main() writes dashboard/data.json; dashboard-pages.yml builds and uploads it as a Pages artifact.. Current callers write only per-run workflow workspace, RUNNER_TEMP, /tmp, or GITHUB_STEP_SUMMARY outputs. These are never committed to repository state; no shared cross-runner resource is mutated. Any future caller must constrain output to its run-local artifact root and upload it as an artifact."
-    },
-    {
-      "program_id": "script_check_source_assessment_artifact",
-      "source": "scripts/check_source_assessment_artifact.py",
-      "classification": "read_only_github_actions_artifact_verifier",
-      "evidence": "Lists and downloads immutable GitHub Actions artifacts and producer-run metadata; verifies exact predecessor and producer identities, ZIP SHA-256, file hashes and activation_count=0. No repository Contents API or Issue queue writes, no workflow dispatch, no source activation, and no uu.conf access."
     },
     {
       "program_id": "script_diagnose_workflow_failure",

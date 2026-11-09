@@ -446,36 +446,6 @@
       }
     },
     {
-      "id": "script_check_source_assessment_artifact",
-      "path": "scripts/check_source_assessment_artifact.py",
-      "kind": "python_component",
-      "responsibility": "find and verify the exact immutable source-assessment-output artifact for a Discovery predecessor",
-      "capabilities": [
-        "source_assessment_artifact_verification",
-        "assessment_artifact_recovery_gate"
-      ],
-      "invocation": "python_cli",
-      "inputs": [
-        "GitHub repository name",
-        "exact Discovery workflow run ID, head SHA and artifact SHA-256",
-        "read-only GitHub Actions artifact and workflow-run metadata"
-      ],
-      "outputs": [
-        "found flag and matching immutable Assessment artifact ID",
-        "verified Assessment producer run identity and artifact manifest digest"
-      ],
-      "depends_on": [],
-      "dispatches": [],
-      "permission_boundary": "Read-only GitHub Actions artifact/run metadata and immutable artifact downloads using the invoking Watchdog token. No repository Contents API writes, no Issue queue mutation, no workflow dispatch, no source activation, and no modules/uu.conf access.",
-      "health_check": "Deterministic tests reject mismatched predecessor/producer identity, wrong workflow path, expired or missing artifacts, ZIP/file/manifest SHA-256 mismatches, unexpected files, and activated!=0.",
-      "orchestration": {
-        "enabled": false,
-        "allowed_callers": [],
-        "max_attempts": 0,
-        "timeout_seconds": 300
-      }
-    },
-    {
       "id": "script_collect_domains",
       "path": "scripts/collect_domains.py",
       "kind": "python_component",
@@ -1634,7 +1604,6 @@
         "remote queue recovery and verification report"
       ],
       "depends_on": [
-        "script_check_source_assessment_artifact",
         "script_discover_sources",
         "script_production_intent",
         "script_refresh_ruleset_manifest",
