@@ -618,6 +618,25 @@ class TaskSchedulerTests(unittest.TestCase):
         self.assertEqual(report["processed_count"], 0)
         self.assertEqual(self.store.document["tasks"][0]["status"], "QUEUED")
 
+    def test_verify_only_reconciles_pending_results_without_claiming_or_dispatching(self):
+        self.enqueue()
+        with patch("task_scheduler.recover_remote", return_value=[]) as recover, \
+             patch("task_scheduler.verify_pending_remote", return_value={"verified_count": 1, "deferred_count": 0}) as verify, \
+             patch("task_scheduler.supersede_stale_queued_production_tasks", return_value=[]), \
+             patch("task_scheduler.claim_remote", side_effect=AssertionError("verify-only must never claim")) as claim:
+            report = run_scheduler_once(
+                self.store, self.registry, self.adapters,
+                worker_id="watchdog-verify-only", max_tasks=1,
+                root=self.root, now=self.now, verify_only=True,
+            )
+        recover.assert_called_once()
+        verify.assert_called_once()
+        claim.assert_not_called()
+        self.assertTrue(report["verification_only"])
+        self.assertEqual(report["processed_count"], 0)
+        self.assertEqual(report["initial_verification"]["verified_count"], 1)
+        self.assertEqual(self.store.document["tasks"][0]["status"], "QUEUED")
+
     def test_scheduler_stops_when_claim_returns_none_instead_of_spinning(self):
         task = self.enqueue()["task"]
         with patch("task_scheduler.claim_remote", return_value=None) as claim:
