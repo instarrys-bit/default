@@ -3,7 +3,7 @@
   "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
   "release_status": "active_with_live_handoff_evidence",
   "created_on": "2026-11-07",
-  "purpose": "Scoped independent Source Discovery → non-activating Source Assessment DAG. Only the Watchdog caller may enqueue the assessor; its output documents remain runner-local immutable artifacts and the sole shared mutation is the fenced Issue #315 checkpoint.",
+  "purpose": "Scoped independent Source Discovery → non-activating Source Assessment DAG. Only the Watchdog caller may enqueue the assessor; its output documents remain runner-local immutable artifacts and the sole shared mutation is the fenced Issue #423 checkpoint.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
