@@ -1324,7 +1324,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "6f411efff48e692cfff7889d7a73e531ea294b25",
+    "release_manifest_blob_sha": "68b92d866355aeb49c153c3bf42431d850192b76",
     "program_registry_blob_sha": "ac9fc0584ee103492b5d2b72a04c3cdc56ac6e57",
     "execution_adapters_blob_sha": "4317fcdf8edabdff81af00d46f3a1e28529525ae",
     "added_after_release_baseline": true,
