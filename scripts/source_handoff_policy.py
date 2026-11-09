@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -269,7 +270,7 @@ def classify_assessment_handoff(tasks: list, workflow_run_id: str) -> dict:
         "reason": "No Assessment task exists for this exact Discovery run.",
     }
 
-def select_production_worker_task(tasks: list, current_fingerprint: str) -> str:
+def select_production_worker_task(tasks: list, current_fingerprint: str, now: datetime | None = None) -> str:
     """Select one queued production audit only after the latest Discovery has a verified Assessment.
 
     This is deliberately separate from select_source_worker_task: the source worker
@@ -278,6 +279,10 @@ def select_production_worker_task(tasks: list, current_fingerprint: str) -> str:
     """
     if not isinstance(tasks, list):
         raise ValueError("tasks must be a list")
+    now = now or datetime.now(timezone.utc)
+    if not isinstance(now, datetime) or now.tzinfo is None:
+        raise ValueError("now must be a timezone-aware datetime")
+    now = now.astimezone(timezone.utc)
     if not isinstance(current_fingerprint, str) or len(current_fingerprint) != 64:
         raise ValueError("current production fingerprint must be a SHA-256 hex digest")
     discoveries = [
@@ -311,19 +316,30 @@ def select_production_worker_task(tasks: list, current_fingerprint: str) -> str:
                      or (task.get("status") == "QUEUED" and isinstance(task.get("dispatch_intent"), dict)))):
             return ""
 
-    candidates = [
-        task for task in tasks
-        if isinstance(task, dict)
-        and task.get("target_program_id") == "workflow_auto_sync"
-        and task.get("status") == "QUEUED"
-        and task.get("lease") is None
-        and task.get("dispatch_intent") is None
-        and isinstance(task.get("input"), dict)
-        and task["input"].get("production_decision") in {
-            "INPUT_CHANGED", "SCHEDULE_DUE", "RECOVERY_REQUIRED", "USER_AUTHORIZED_MANUAL_AUDIT"
-        }
-        and task["input"].get("production_fingerprint") == current_fingerprint
-    ]
+    candidates = []
+    for task in tasks:
+        if (not isinstance(task, dict)
+                or task.get("target_program_id") != "workflow_auto_sync"
+                or task.get("status") != "QUEUED"
+                or task.get("lease") is not None
+                or task.get("dispatch_intent") is not None
+                or not isinstance(task.get("input"), dict)
+                or task["input"].get("production_decision") not in {
+                    "INPUT_CHANGED", "SCHEDULE_DUE", "RECOVERY_REQUIRED", "USER_AUTHORIZED_MANUAL_AUDIT"
+                }
+                or task["input"].get("production_fingerprint") != current_fingerprint):
+            continue
+        not_before = task.get("not_before")
+        if not_before:
+            try:
+                retry_at = datetime.fromisoformat(str(not_before).replace("Z", "+00:00"))
+            except ValueError:
+                continue
+            # A retry is not dispatchable until its durable backoff expires.
+            # Treat malformed/naive timestamps as unsafe and leave the task queued.
+            if retry_at.tzinfo is None or retry_at.astimezone(timezone.utc) > now:
+                continue
+        candidates.append(task)
     if not candidates:
         return ""
     selected = min(

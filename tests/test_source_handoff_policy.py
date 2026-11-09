@@ -1,6 +1,7 @@
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -223,6 +224,57 @@ class SourceHandoffPolicyTests(unittest.TestCase):
             select_production_worker_task([discovery, assessment, production], "a" * 64),
             "task_production",
         )
+
+
+    def test_production_retry_respects_durable_not_before_backoff(self):
+        discovery = discovery_task(run_id="42417075148")
+        assessment = assessment_task("task_assessed", "42417075148")
+        production = {
+            "task_id": "task_production_retry",
+            "target_program_id": "workflow_auto_sync",
+            "status": "QUEUED",
+            "lease": None,
+            "dispatch_intent": None,
+            "priority": 80,
+            "not_before": "2026-11-10T00:00:30Z",
+            "input": {
+                "production_decision": "INPUT_CHANGED",
+                "production_fingerprint": "a" * 64,
+            },
+        }
+        before_backoff = datetime(2026, 11, 10, 0, 0, 0, tzinfo=timezone.utc)
+        after_backoff = datetime(2026, 11, 10, 0, 0, 31, tzinfo=timezone.utc)
+        self.assertEqual(
+            select_production_worker_task([discovery, assessment, production], "a" * 64, now=before_backoff),
+            "",
+        )
+        self.assertEqual(
+            select_production_worker_task([discovery, assessment, production], "a" * 64, now=after_backoff),
+            "task_production_retry",
+        )
+
+    def test_malformed_production_retry_timestamp_fails_closed(self):
+        discovery = discovery_task(run_id="42417075148")
+        assessment = assessment_task("task_assessed", "42417075148")
+        production = {
+            "task_id": "task_bad_retry_time",
+            "target_program_id": "workflow_auto_sync",
+            "status": "QUEUED",
+            "lease": None,
+            "dispatch_intent": None,
+            "priority": 80,
+            "not_before": "not-a-timestamp",
+            "input": {"production_decision": "INPUT_CHANGED", "production_fingerprint": "a" * 64},
+        }
+        self.assertEqual(
+            select_production_worker_task(
+                [discovery, assessment, production],
+                "a" * 64,
+                now=datetime(2026, 11, 10, 0, 0, 31, tzinfo=timezone.utc),
+            ),
+            "",
+        )
+
 
     def test_production_dispatch_stays_closed_without_verified_assessment(self):
         discovery = discovery_task(run_id="42417075148")
