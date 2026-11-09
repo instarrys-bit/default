@@ -364,6 +364,8 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("enqueue-source-assessment", block)
         self.assertIn("Enqueue one artifact-recovery Assessment", block)
         self.assertIn("artifact-recovery:1", block)
+        self.assertIn("--recovery-of-task-id", block)
+        self.assertIn("verified_task_id", block)
         self.assertIn("already_assessed", block)
 
     def test_watchdog_reports_unknown_paths_without_repository_registry_writes(self):
