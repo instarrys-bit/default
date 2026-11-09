@@ -87,7 +87,8 @@ jobs:
         run: |
           set -euo pipefail
           title="Assessment reconcile $PRODUCER_RUN_ID"
-          existing="$(gh api --paginate "repos/$REPO/actions/workflows/automation-watchdog.yml/runs?event=workflow_dispatch&branch=main&per_page=100" --jq "[.workflow_runs[] | select(.display_title == \\"$title\\")] | length" | awk '{s += $1} END {print s+0}')"
+          runs_json="$(gh api "repos/$REPO/actions/workflows/automation-watchdog.yml/runs?event=workflow_dispatch&branch=main&per_page=100")"
+          existing="$(printf '%s' "$runs_json" | jq --arg title "$title" '[.workflow_runs[] | select(.display_title == $title)] | length')"
           if [ "$existing" -gt 0 ]; then
             echo "A Watchdog reconciliation for producer $PRODUCER_RUN_ID already exists; duplicate dispatch suppressed."
             exit 0
