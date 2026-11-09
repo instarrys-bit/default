@@ -269,4 +269,71 @@ def classify_assessment_handoff(tasks: list, workflow_run_id: str) -> dict:
         "reason": "No Assessment task exists for this exact Discovery run.",
     }
 
+def select_production_worker_task(tasks: list, current_fingerprint: str) -> str:
+    """Select one queued production audit only after the latest Discovery has a verified Assessment.
+
+    This is deliberately separate from select_source_worker_task: the source worker
+    stops at the Assessment boundary, while this selector is the sole handoff into
+    the already-reviewed production workflow adapter.
+    """
+    if not isinstance(tasks, list):
+        raise ValueError("tasks must be a list")
+    if not isinstance(current_fingerprint, str) or len(current_fingerprint) != 64:
+        raise ValueError("current production fingerprint must be a SHA-256 hex digest")
+    discoveries = [
+        task for task in tasks
+        if isinstance(task, dict) and task.get("target_program_id") == "workflow_source_discovery"
+    ]
+    latest = max(
+        discoveries,
+        key=lambda task: (str(task.get("created_at") or ""), str(task.get("task_id") or "")),
+        default=None,
+    )
+    if not isinstance(latest, dict) or latest.get("status") != "SUCCEEDED":
+        return ""
+    if (latest.get("verification") or {}).get("status") != "passed":
+        return ""
+    evidence = (latest.get("result") or {}).get("run_evidence") or {}
+    run_id = evidence.get("run_id")
+    if isinstance(run_id, int) and not isinstance(run_id, bool):
+        run_id = str(run_id)
+    if not isinstance(run_id, str) or not run_id.isdigit():
+        return ""
+    if classify_assessment_handoff(tasks, run_id).get("state") != "already_assessed":
+        return ""
+
+    # An already-dispatched production task owns the pipeline until Watchdog
+    # reconciles its exact workflow run; never start a second writer.
+    for task in tasks:
+        if (isinstance(task, dict)
+                and task.get("target_program_id") == "workflow_auto_sync"
+                and (task.get("status") in {"CLAIMED", "VERIFYING"}
+                     or (task.get("status") == "QUEUED" and isinstance(task.get("dispatch_intent"), dict)))):
+            return ""
+
+    candidates = [
+        task for task in tasks
+        if isinstance(task, dict)
+        and task.get("target_program_id") == "workflow_auto_sync"
+        and task.get("status") == "QUEUED"
+        and task.get("lease") is None
+        and task.get("dispatch_intent") is None
+        and isinstance(task.get("input"), dict)
+        and task["input"].get("production_decision") in {
+            "INPUT_CHANGED", "SCHEDULE_DUE", "RECOVERY_REQUIRED", "USER_AUTHORIZED_MANUAL_AUDIT"
+        }
+        and task["input"].get("production_fingerprint") == current_fingerprint
+    ]
+    if not candidates:
+        return ""
+    selected = min(
+        candidates,
+        key=lambda task: (
+            -int(task.get("priority", 0) or 0),
+            str(task.get("created_at") or ""),
+            str(task.get("task_id") or ""),
+        ),
+    )
+    task_id = selected.get("task_id")
+    return task_id if isinstance(task_id, str) and task_id else ""
 
