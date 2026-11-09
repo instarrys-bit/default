@@ -915,7 +915,7 @@
         "script_task_queue"
       ],
       "dispatches": [],
-      "permission_boundary": "Requires caller-provided GitHub Issues read/write permission for Issue #423; repository task_queue.json is read-only bootstrap state and no repository Contents write is performed.",
+      "permission_boundary": "Requires caller-provided GitHub Issues read/write permission for Issue #423; repository task_queue_rebuild_seed.json is read-only bootstrap state and no repository Contents write is performed.",
       "health_check": "Unit tests for Issue-backed enqueue, idempotency, priority claims, lease ownership, retry/dead-letter transitions, and expired-lease recovery.",
       "orchestration": {
         "enabled": false,
