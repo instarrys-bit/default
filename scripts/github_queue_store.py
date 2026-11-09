@@ -345,12 +345,21 @@ class GitHubContentsQueueStore:
             raise GitHubAPIError("queue bootstrap comment was not visible after creation")
         return snapshot
 
-    def compare_and_swap(self, document: dict[str, Any], expected_sha: str) -> str:
+    def _compare_and_swap_from_snapshot(
+        self, document: dict[str, Any], expected_sha: str, current: QueueSnapshot
+    ) -> str:
+        """Append against a previously read snapshot, then verify the canonical winner.
+
+        The final read is the concurrency check: if another writer appended the
+        same next revision first, or advanced the chain while this writer was
+        preparing its candidate, the candidate cannot become the canonical
+        snapshot and the mutation is retried. Reusing the caller's just-read
+        snapshot avoids a redundant full-history scan before the append.
+        """
         if not isinstance(document, dict):
             raise ValueError("queue document must be an object")
         if not expected_sha:
             raise ValueError("expected_sha is required; blind writes are prohibited")
-        current = self.read()
         if not current.content_sha:
             raise ConcurrentUpdate("queue snapshot chain is not initialized; use mutate() to bootstrap")
         if current.content_sha != expected_sha:
@@ -365,6 +374,14 @@ class GitHubContentsQueueStore:
         if latest.content_sha != candidate_sha:
             raise ConcurrentUpdate("another queue mutation won the same revision; retry against canonical state")
         return candidate_sha
+
+    def compare_and_swap(self, document: dict[str, Any], expected_sha: str) -> str:
+        if not isinstance(document, dict):
+            raise ValueError("queue document must be an object")
+        if not expected_sha:
+            raise ValueError("expected_sha is required; blind writes are prohibited")
+        current = self.read()
+        return self._compare_and_swap_from_snapshot(document, expected_sha, current)
 
     def mutate(
         self,
@@ -384,7 +401,7 @@ class GitHubContentsQueueStore:
             if candidate == snapshot.document:
                 return result
             try:
-                self.compare_and_swap(candidate, snapshot.content_sha)
+                self._compare_and_swap_from_snapshot(candidate, snapshot.content_sha, snapshot)
                 return result
             except ConcurrentUpdate:
                 if attempt >= max_conflicts:
