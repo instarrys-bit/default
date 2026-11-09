@@ -13,7 +13,7 @@
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "f43ecfd1296995740aec219ff5ed71f90e5daefd"
+      "git_blob_sha": "dda7b282f293c1e8c22f30d54ca9337699c21039"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "550d1421dc30d8b579751cbfba4b8a3d632a9fa8"
+      "git_blob_sha": "0e8d134ac712ccc9b74b757e30da28e7d9773a53"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -70,7 +70,7 @@
     },
     "source_discovery_workflow": {
       "path": ".github/workflows/source-discovery.yml",
-      "git_blob_sha": "4ddc2561478f1a3b565ac9792a08a9f6d5724ad6"
+      "git_blob_sha": "df722d1357d3dc1fe3bf7f687bcc3f6808225b2b"
     },
     "source_discovery_implementation": {
       "path": "scripts/discover_sources.py",
@@ -82,7 +82,7 @@
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "28d8ebc336b5a302e0c9f1e19f69a9bdb767a892"
+      "git_blob_sha": "dda7b282f293c1e8c22f30d54ca9337699c21039"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",

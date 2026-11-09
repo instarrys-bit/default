@@ -18,6 +18,10 @@ on:
         description: 'Internal task correlation ID; leave blank for manual runs'
         required: false
         type: string
+      source_discovery_run_id:
+        description: 'Exact Discovery run to reconcile; set only by the Discovery callback'
+        required: false
+        type: string
   workflow_run:
     workflows:
       - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
@@ -1083,7 +1087,7 @@ jobs:
           SOURCE_DISCOVERY_MODE: ${{ steps.source-mode.outputs.mode }}
           REQUESTED_ASSESSMENT_TASK_ID: ${{ inputs.automation_task_id || '' }}
           AUTOMATION_QUEUE_SNAPSHOT: ${{ runner.temp }}/task_queue.json
-          EVENT_SOURCE_RUN_ID: ${{ github.event.workflow_run.path == '.github/workflows/source-discovery.yml' && github.event.workflow_run.id || '' }}
+          EVENT_SOURCE_RUN_ID: ${{ inputs.source_discovery_run_id || (github.event.workflow_run.path == '.github/workflows/source-discovery.yml' && github.event.workflow_run.id) || '' }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -1281,6 +1285,50 @@ jobs:
                   handoff_state = handoff["state"]
                   resolved = (task, run)
                   break
+
+          # Exact-run callback: the Discovery worker wakes this Watchdog just
+          # before exiting. Poll that run until completion instead of relying on
+          # GITHUB_TOKEN-generated workflow_run events or periodic cron timing.
+          if resolved is None and pending and event_run_id:
+              import sys, time
+              sys.path.insert(0, "scripts")
+              from github_workflow_adapter import GitHubWorkflowClient, expected_correlation_titles, validate_run_head_sha
+              workflow_client = GitHubWorkflowClient(repo, token)
+              if not event_run_id.isdigit():
+                  raise SystemExit("Discovery callback supplied a non-numeric workflow run ID.")
+              callback_run = workflow_client.get_run(int(event_run_id))
+              matching = [
+                  item for item in pending
+                  if callback_run.get("path") == ".github/workflows/source-discovery.yml"
+                  and callback_run.get("workflow_id") == (item[0].get("dispatch_intent") or {}).get("workflow_id")
+                  and callback_run.get("event") == "workflow_dispatch"
+                  and callback_run.get("head_branch") == "main"
+                  and callback_run.get("display_title") in expected_correlation_titles(item[0].get("dispatch_intent") or {})
+              ]
+              if len(matching) != 1:
+                  raise SystemExit("Exact Discovery callback run does not match exactly one pending durable task correlation.")
+              task, correlation, requested_sha = matching[0]
+              validate_run_head_sha(workflow_client, task.get("dispatch_intent") or {}, callback_run.get("head_sha"))
+              deadline = time.monotonic() + 150
+              while callback_run.get("status") in {"queued", "in_progress", "waiting", "pending"} and time.monotonic() < deadline:
+                  time.sleep(3)
+                  callback_run = workflow_client.get_run(int(event_run_id))
+              if callback_run.get("status") != "completed":
+                  raise SystemExit("Exact Discovery run did not reach completed state within the bounded callback reconciliation window.")
+              if callback_run.get("conclusion") != "success":
+                  raise SystemExit(f"Exact Discovery run completed with {callback_run.get('conclusion')!r}; Assessment handoff is held.")
+              artifact_url = f"https://api.github.com/repos/{repo}/actions/runs/{event_run_id}/artifacts?per_page=100"
+              artifact_req = urllib.request.Request(artifact_url, headers={"Accept":"application/vnd.github+json","Authorization":"Bearer "+token,"X-GitHub-Api-Version":"2022-11-28","User-Agent":"Shadowrocket-Watchdog-Discovery-Reconciler/1.0"})
+              with urllib.request.urlopen(artifact_req, timeout=30) as response:
+                  artifacts = json.loads(response.read(2_000_000).decode("utf-8")).get("artifacts", [])
+              exact = [a for a in artifacts if a.get("name") == "source-discovery-output" and a.get("expired") is False
+                  and str((a.get("workflow_run") or {}).get("id")) == event_run_id
+                  and (a.get("workflow_run") or {}).get("head_sha") == callback_run.get("head_sha")]
+              if len(exact) != 1:
+                  raise SystemExit("The exact successful Discovery callback run must have exactly one unexpired source-discovery-output artifact.")
+              handoff = classify_assessment_handoff(tasks, event_run_id)
+              handoff_state = handoff["state"]
+              resolved = (task, callback_run)
 
           if resolved is None and pending:
               import sys
