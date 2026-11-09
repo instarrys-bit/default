@@ -8,7 +8,7 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "2b595ebf040b6624435ecfa5eb436bfdf56df5cc"
+      "git_blob_sha": "cedd1d7a8410a920a6a6c598f55cdb556f7c7dd7"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "5d53c79182f09f2398885ad81006f68571ae4fdf"
+      "git_blob_sha": "9709a41ce85d24f2f3c00426826131312d0cb04a"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -78,7 +78,7 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "2b595ebf040b6624435ecfa5eb436bfdf56df5cc"
+      "git_blob_sha": "cedd1d7a8410a920a6a6c598f55cdb556f7c7dd7"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -86,11 +86,11 @@
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "4581d70e3b366be6b29285c548b3f571c88e8322"
+      "git_blob_sha": "10e87629d869c09098315732dcac9c1f067a8c3e"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "1097a69fbe5e2516748034ce982997bb66ddf3b3"
+      "git_blob_sha": "42ee93d0e4b12a51749d0fc4a1e77d6299633ca3"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -162,7 +162,7 @@
     },
     "source_handoff_policy": {
       "path": "scripts/source_handoff_policy.py",
-      "git_blob_sha": "cdb80cf1c2988b1b80e43dc6538991ce753d4584"
+      "git_blob_sha": "b8beb74126ecc6eb90709374d5cf4823fb3cd45b"
     },
     "enterprise_ranking_catalog": {
       "path": "sources/external_intelligence_catalog.json",

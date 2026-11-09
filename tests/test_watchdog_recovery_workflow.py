@@ -188,7 +188,10 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('"artifact_sha256": digest', proof)
         self.assertIn("steps.verify-discovery-artifact.outputs.valid == 'false'", watchdog)
         self.assertIn("steps.verify-discovery-artifact.outputs.valid == 'true'", watchdog)
-        self.assertIn("git rev-parse HEAD:.github/workflows/source-discovery.yml", watchdog)
+        self.assertIn("from source_handoff_policy import discovery_pipeline_revision", watchdog)
+        self.assertIn("print(discovery_pipeline_revision(Path.cwd()))", watchdog)
+        policy = (ROOT / "scripts" / "source_handoff_policy.py").read_text(encoding="utf-8")
+        self.assertIn('".github/workflows/source-discovery.yml"', policy)
 
     def test_independent_source_discovery_and_assessment_are_enabled_with_runner_local_handoff(self):
         source = (ROOT / ".github" / "workflows" / "source-discovery.yml").read_text(encoding="utf-8")
@@ -281,23 +284,6 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('"$base_key:recovery:1"', watchdog)
         self.assertIn('[ "$base_status" = "DEAD_LETTER" ]', watchdog)
         self.assertIn('if [ -n "$recovery_key" ]; then', watchdog)
-
-    def test_discovery_enqueue_refreshes_authoritative_queue_and_skips_completed_handoff(self):
-        workflow = WATCHDOG.read_text(encoding="utf-8")
-        step = workflow.split(
-            "Enqueue independent source discovery only after its authorization gate opens", 1
-        )[1].split(
-            "Recover leases, verify results, and dispatch one task before artifact upload", 1
-        )[0]
-        snapshot = 'task_queue_before_discovery_enqueue.json'
-        self.assertIn("remote_task_queue_runtime.py", step)
-        self.assertIn(snapshot, step)
-        self.assertLess(step.index(snapshot), step.index('base_status="$(jq -r'))
-        self.assertIn('export AUTOMATION_QUEUE_SNAPSHOT', step)
-        self.assertIn('recovery_status="$(jq -r', step)
-        self.assertIn('if [ "$base_status" = "SUCCEEDED" ]', step)
-        self.assertIn("skipping duplicate enqueue", step)
-        self.assertIn("enqueue-source-discovery", step)
 
     def test_auto_sync_accepts_verifying_phase_resource_lease_after_task_lease_release(self):
         audit = AUTO_SYNC.read_text(encoding="utf-8")

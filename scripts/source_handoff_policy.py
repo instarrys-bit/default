@@ -1,6 +1,53 @@
 """Deterministic de-duplication policy for Discovery -> Assessment handoffs."""
 from __future__ import annotations
 
+import hashlib
+from pathlib import Path
+
+
+DISCOVERY_PIPELINE_REVISION_PATHS = (
+    ".github/workflows/automation-watchdog.yml",
+    ".github/workflows/source-discovery.yml",
+    "automation/capability_contracts/assess_sources.json",
+    "automation/execution_adapters.json",
+    "automation/program_registry.json",
+    "scripts/assess_sources.py",
+    "scripts/discover_sources.py",
+    "scripts/github_queue_store.py",
+    "scripts/github_workflow_adapter.py",
+    "scripts/json_document_store.py",
+    "scripts/remote_task_queue_runtime.py",
+    "scripts/resolve_source_artifacts.py",
+    "scripts/resource_lease_runtime.py",
+    "scripts/source_handoff_policy.py",
+    "scripts/task_queue.py",
+    "scripts/task_result_verifier.py",
+    "scripts/task_scheduler.py",
+    "scripts/verify_assess_sources_artifacts.py",
+)
+
+
+def discovery_pipeline_revision(root: Path | None = None) -> str:
+    """Fingerprint every implementation and contract in the independent source DAG.
+
+    The daily Discovery idempotency key must change when queue, scheduler,
+    handoff, fencing, Assessment, or verification code changes—not only when
+    the producer script changes. This permits one fresh same-day run after a
+    DAG implementation change while preserving deduplication for an unchanged
+    pipeline revision.
+    """
+    repository_root = Path(root).resolve() if root is not None else Path(__file__).resolve().parents[1]
+    digest = hashlib.sha256()
+    for relative in DISCOVERY_PIPELINE_REVISION_PATHS:
+        path = (repository_root / relative).resolve()
+        if not path.is_relative_to(repository_root) or not path.is_file():
+            raise ValueError(f"Discovery pipeline revision input is missing or unsafe: {relative}")
+        digest.update(relative.encode("utf-8") + b"\0")
+        digest.update(hashlib.sha256(path.read_bytes()).digest())
+    return digest.hexdigest()[:12]
+
+
+
 
 ACTIVE_ASSESSMENT_STATUSES = {"QUEUED", "CLAIMED", "VERIFYING"}
 
@@ -223,74 +270,3 @@ def classify_assessment_handoff(tasks: list, workflow_run_id: str) -> dict:
     }
 
 
-def select_source_worker_task(tasks: list) -> str:
-    """Select one safe source task, allowing artifact recovery after the gate opens.
-
-    A verified Assessment closes the production gate, but a queued artifact-recovery
-    task is still required to materialize the immutable output artifact. It must run
-    before any new Discovery task so the predecessor evidence is not stranded.
-    """
-    if not isinstance(tasks, list):
-        raise ValueError("tasks must be a list")
-    safe = [
-        task for task in tasks
-        if isinstance(task, dict)
-        and task.get("target_program_id") != "workflow_auto_sync"
-        and task.get("status") in {"QUEUED", "CLAIMED", "VERIFYING", "SUCCEEDED"}
-    ]
-    artifact_recovery = [
-        task for task in safe
-        if task.get("target_program_id") == "script_assess_sources"
-        and task.get("status") in {"QUEUED", "CLAIMED", "VERIFYING"}
-        and isinstance(task.get("idempotency_key"), str)
-        and task["idempotency_key"].endswith(":artifact-recovery:1")
-    ]
-    if artifact_recovery:
-        candidates = artifact_recovery
-    else:
-        discoveries = [
-            task for task in safe
-            if task.get("target_program_id") == "workflow_source_discovery"
-        ]
-        latest = max(
-            discoveries,
-            key=lambda task: (str(task.get("created_at") or ""), str(task.get("task_id") or "")),
-            default=None,
-        )
-        gate_open = False
-        if isinstance(latest, dict) and latest.get("status") == "SUCCEEDED":
-            evidence = ((latest.get("result") or {}).get("run_evidence") or {})
-            run_id = evidence.get("run_id")
-            if isinstance(run_id, int) and not isinstance(run_id, bool):
-                run_id = str(run_id)
-            if isinstance(run_id, str) and run_id.isdigit():
-                gate_open = classify_assessment_handoff(tasks, run_id).get("state") == "already_assessed"
-        if gate_open:
-            return ""
-        discovery_queued = [
-            task for task in safe
-            if task.get("target_program_id") == "workflow_source_discovery" and task.get("status") == "QUEUED"
-        ]
-        assessment_queued = [
-            task for task in safe
-            if task.get("target_program_id") == "script_assess_sources" and task.get("status") == "QUEUED"
-        ]
-        active_source = [
-            task for task in safe
-            if task.get("target_program_id") in {"workflow_source_discovery", "script_assess_sources"}
-            and task.get("status") in {"CLAIMED", "VERIFYING"}
-        ]
-        candidates = discovery_queued or assessment_queued or active_source or safe
-    if not candidates:
-        return ""
-    rank = {"QUEUED": 0, "CLAIMED": 1, "VERIFYING": 1, "SUCCEEDED": 2}
-    chosen = min(
-        candidates,
-        key=lambda task: (
-            rank.get(task.get("status"), 9),
-            -int(task.get("priority", 0) or 0),
-            str(task.get("created_at") or ""),
-            str(task.get("task_id") or ""),
-        ),
-    )
-    return str(chosen.get("task_id") or "")

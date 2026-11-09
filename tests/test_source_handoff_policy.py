@@ -1,11 +1,12 @@
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from source_handoff_policy import classify_assessment_handoff, discovery_task_requires_handoff, select_source_worker_task
+from source_handoff_policy import (DISCOVERY_PIPELINE_REVISION_PATHS, classify_assessment_handoff, discovery_pipeline_revision, discovery_task_requires_handoff, select_source_worker_task)
 
 
 def assessment_task(task_id, run_id, status="SUCCEEDED", key=None, verified=True, created_at="2026-11-07T12:00:00Z"):
@@ -156,6 +157,49 @@ class SourceHandoffPolicyTests(unittest.TestCase):
             "priority": 100,
         }
         self.assertEqual(select_source_worker_task([discovery, assessment, unrelated]), "")
+
+
+
+    def test_pipeline_revision_changes_when_handoff_or_queue_code_changes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for relative in DISCOVERY_PIPELINE_REVISION_PATHS:
+                path = root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("baseline", encoding="utf-8")
+            before = discovery_pipeline_revision(root)
+            (root / "scripts/task_scheduler.py").write_text("changed scheduler", encoding="utf-8")
+            self.assertNotEqual(before, discovery_pipeline_revision(root))
+
+    def test_pipeline_revision_ignores_unrelated_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for relative in DISCOVERY_PIPELINE_REVISION_PATHS:
+                path = root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("baseline", encoding="utf-8")
+            before = discovery_pipeline_revision(root)
+            (root / "README.md").write_text("unrelated", encoding="utf-8")
+            self.assertEqual(before, discovery_pipeline_revision(root))
+
+    def test_pipeline_revision_fails_closed_when_a_component_is_missing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with self.assertRaisesRegex(ValueError, "missing or unsafe"):
+                discovery_pipeline_revision(Path(directory))
+
+    def test_pipeline_revision_changes_when_watchdog_or_assessor_changes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for relative in DISCOVERY_PIPELINE_REVISION_PATHS:
+                path = root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("baseline", encoding="utf-8")
+            before = discovery_pipeline_revision(root)
+            for relative in (".github/workflows/automation-watchdog.yml", "scripts/assess_sources.py"):
+                path = root / relative
+                path.write_text("changed", encoding="utf-8")
+                self.assertNotEqual(before, discovery_pipeline_revision(root))
+                path.write_text("baseline", encoding="utf-8")
 
 
 
