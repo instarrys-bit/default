@@ -898,7 +898,7 @@
       "capabilities": [
         "source_candidate_registration"
       ],
-      "invocation": "auto_sync audit workflow step after exact Discovery artifact resolution",
+      "invocation": "python_module_or_workflow_step",
       "inputs": [
         "Exact verified source-discovery-output artifact (or explicit monolithic fallback inventory)",
         "Prior rulesets/source_candidate_registry.json"
