@@ -273,3 +273,21 @@ class SourceHandoffPolicyTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class WatchdogAssessmentResumeContractTests(unittest.TestCase):
+    def test_assessment_artifact_upload_dispatches_exact_followup_watchdog(self):
+        workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        self.assertIn("assessment_producer_run_id:", workflow)
+        self.assertIn("Wake Watchdog after verified Assessment artifact upload", workflow)
+        self.assertIn("steps.run-queue.outputs.assessment_output_expected == 'true'", workflow)
+        self.assertIn("inputs:{assessment_producer_run_id:$run_id}", workflow)
+
+    def test_production_dispatch_waits_for_exact_successful_assessment_producer(self):
+        workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        self.assertIn("ASSESSMENT_PRODUCER_RUN_ID: ${{ inputs.assessment_producer_run_id || '' }}", workflow)
+        self.assertIn('producer.get("status") == "completed"', workflow)
+        self.assertIn('producer.get("path") != ".github/workflows/automation-watchdog.yml"', workflow)
+        self.assertIn('producer.get("conclusion") != "success"', workflow)
+        self.assertIn("production remains held", workflow)
+
