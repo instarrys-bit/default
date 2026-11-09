@@ -1357,8 +1357,8 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "f229cc1a0e0ddf1ec315276f81aa68ff462bf2b1",
-    "program_registry_blob_sha": "034846c5c8abe76df1da21f536fc3bf175e06b5c",
+    "release_manifest_blob_sha": "4c531150476b61139e27900fdbd49623d60690a9",
+    "program_registry_blob_sha": "e5e1e678eec2bd9208934db8a73b867d49de5efc",
     "execution_adapters_blob_sha": "8e51a3622ea43fdd4029ed730f3223c06cd72b18",
     "added_after_release_baseline": true,
     "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #423 checkpoint. Repository mutations are governed per capability by explicit exclusive resource_contract.resource_keys; control-plane metadata is separately inventoried. The production auto_sync publisher stages only the three rule-set deliverables under rulesets/**. The global static/transitive inventory remains partial for unrelated capabilities.",
@@ -1568,7 +1568,7 @@
   "direct_mutation_scan": {
     "status": "partial_python_direct_callsite_scan",
     "scanner": "tests/test_transitive_write_site_inventory.py",
-    "registered_component_count": 54,
+    "registered_component_count": 55,
     "mutation_api_families": [
       "Path/open write modes",
       "Path write_text/write_bytes/unlink/mkdir/replace/rename/touch",
