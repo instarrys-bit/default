@@ -186,7 +186,7 @@
     },
     "assessment_completion_relay_workflow": {
       "path": ".github/workflows/assessment-completion-relay.yml",
-      "git_blob_sha": "85e9bf1fb487428ab84f131bc60f62eccd4a281f"
+      "git_blob_sha": "1fd26abfb0f74ee505e7f2984d9d5df27ae18c87"
     }
   },
   "compatibility": {
