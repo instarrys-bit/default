@@ -13,7 +13,7 @@
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "3b28f3bdc39d52e0a656f39468834ac7cc149bde"
+      "git_blob_sha": "4317fcdf8edabdff81af00d46f3a1e28529525ae"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -82,7 +82,7 @@
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "3b28f3bdc39d52e0a656f39468834ac7cc149bde"
+      "git_blob_sha": "4317fcdf8edabdff81af00d46f3a1e28529525ae"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
@@ -90,7 +90,7 @@
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "b5b109e21c42d19b244e30a7f52bb1601808f165"
+      "git_blob_sha": "c723bd1a8ffe9d9e1e1e9c59b4faf09262993b91"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -186,7 +186,7 @@
     },
     "assessment_completion_relay_workflow": {
       "path": ".github/workflows/assessment-completion-relay.yml",
-      "git_blob_sha": "6fa63b742bf7d99935b0b0e3686372dc7c5e51cd"
+      "git_blob_sha": "85e9bf1fb487428ab84f131bc60f62eccd4a281f"
     }
   },
   "compatibility": {
