@@ -1542,7 +1542,6 @@ jobs:
             assessment_key="$base_key"
           fi
           echo "Assessment enqueue key: $assessment_key (base status: ${assessment_status:-none})"
-          echo "task_id=$selected_task_id" >> "$GITHUB_OUTPUT"
           queue_token="$GITHUB_TOKEN"
           unset GITHUB_TOKEN
           printf '%s' "$queue_token" | python3 scripts/task_scheduler.py             --repository "$GITHUB_REPOSITORY" --branch main --token-stdin             --idempotency-key "$assessment_key"             --priority 60 --input-json "$task_input" enqueue-source-assessment
