@@ -1428,6 +1428,8 @@ def main() -> int:
     parser.add_argument("command", choices=["plan", "run-once", "enqueue-auto-sync", "enqueue-source-discovery", "enqueue-source-assessment", "resolve-superseded-dead-letters"])
     args = parser.parse_args()
     try:
+        if args.verify_only and args.command != "run-once":
+            raise ValueError("--verify-only is valid only with run-once")
         token = sys.stdin.read().strip() if args.token_stdin else None
         if args.command in {"run-once", "enqueue-auto-sync", "enqueue-source-discovery", "enqueue-source-assessment", "resolve-superseded-dead-letters"} and not token:
             raise ValueError(f"{args.command} requires a queue token supplied through --token-stdin")
@@ -1477,8 +1479,6 @@ def main() -> int:
                 priority=args.priority, input_payload=input_payload,
             ), ensure_ascii=False))
         else:
-            if args.verify_only and args.command != "run-once":
-                raise ValueError("--verify-only is valid only with run-once")
             print(json.dumps(run_scheduler_once(
                 store, registry, adapters, worker_id=args.worker_id,
                 max_tasks=args.max_tasks, task_id=args.task_id,
