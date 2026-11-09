@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "ef961f986659d4a835e7b74bed267566b2b80e44"
+      "git_blob_sha": "1fd2bcda42cbc300da055be36f981131dd121574"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -162,7 +162,7 @@
     },
     "source_handoff_policy": {
       "path": "scripts/source_handoff_policy.py",
-      "git_blob_sha": "3681530cde7aeab09dc39a544101d0a5195f3937"
+      "git_blob_sha": "eb45db08d70acbd5a8919df1494b7029183daf88"
     },
     "enterprise_ranking_catalog": {
       "path": "sources/external_intelligence_catalog.json",
