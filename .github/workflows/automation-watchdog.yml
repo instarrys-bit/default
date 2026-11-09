@@ -1843,6 +1843,10 @@ jobs:
           if handoff.get("state") != "already_assessed":
               print("Production dispatch held: latest Discovery has no independently verified non-activating Assessment.", file=sys.stderr)
               raise SystemExit(0)
+          control = json.loads(Path("automation/production_control.json").read_text(encoding="utf-8"))
+          if control.get("dispatch_mode") != "enabled":
+              print("Production dispatch held by automation/production_control.json.", file=sys.stderr)
+              raise SystemExit(0)
           assessment = next((task for task in tasks if isinstance(task, dict) and task.get("task_id") == handoff.get("canonical_task_id")), None)
           predecessor = ((assessment or {}).get("input") or {}).get("predecessor")
           if not isinstance(predecessor, dict):
