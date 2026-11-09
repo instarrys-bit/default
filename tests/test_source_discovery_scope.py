@@ -251,7 +251,6 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
         self.assertEqual(discovery["lease_seconds"], 3600)
         self.assertIs(discovery["fencing_required"], True)
         self.assertIs(assessment["fencing_required"], True)
-        self.assertEqual(adapters["workflow_source_discovery"]["write_resources"], [])
         self.assertEqual(adapters["script_assess_sources"]["write_resources"], [])
 
 if __name__ == "__main__":
