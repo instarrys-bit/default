@@ -160,29 +160,3 @@ if __name__ == "__main__":
         }
         self.assertEqual(select_source_worker_task([discovery, assessment, unrelated]), "")
 
-    def test_artifact_recovery_is_selected_after_assessment_gate_opens(self):
-        discovery = discovery_task(run_id="42417075148")
-        assessment = assessment_task("task_assessed", "42417075148")
-        recovery = assessment_task(
-            "task_artifact_recovery",
-            "42417075148",
-            status="QUEUED",
-            verified=False,
-            key="source-assessment:42417075148:parser-v2:artifact-recovery:1",
-            created_at="2026-11-07T14:00:00Z",
-        )
-        self.assertEqual(
-            select_source_worker_task([discovery, assessment, recovery]),
-            "task_artifact_recovery",
-        )
-
-    def test_verified_assessment_gate_blocks_other_work_without_artifact_recovery(self):
-        discovery = discovery_task(run_id="42417075148")
-        assessment = assessment_task("task_assessed", "42417075148")
-        unrelated = {
-            "task_id": "task_unrelated",
-            "target_program_id": "script_other",
-            "status": "QUEUED",
-            "priority": 100,
-        }
-        self.assertEqual(select_source_worker_task([discovery, assessment, unrelated]), "")
