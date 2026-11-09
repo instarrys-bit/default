@@ -3,7 +3,7 @@
   "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
   "release_status": "active_with_live_handoff_evidence",
   "created_on": "2026-11-07",
-  "purpose": "Scoped independent Source Discovery → non-activating Source Assessment DAG with a gated Watchdog dispatch into the reviewed deterministic production workflow. Assessment outputs remain immutable Actions artifacts; production publication remains restricted to rulesets/**.",
+  "purpose": "Scoped independent Source Discovery → non-activating Source Assessment DAG with a gated Watchdog dispatch into the reviewed deterministic production workflow. The only shared mutation in the source DAG is the fenced Issue #423 checkpoint; Assessment outputs remain immutable Actions artifacts and production publication remains restricted to rulesets/**.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "95bb3a4ad3b9244921078a438000799225c21619"
+      "git_blob_sha": "5850e80a5faf6b5fb66a0092d4c169e798f3cf90"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
