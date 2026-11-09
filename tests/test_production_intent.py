@@ -662,5 +662,18 @@ class ProductionIntentTests(unittest.TestCase):
         entry = next(item for item in ledger["entries"] if item["path"] == path)
         self.assertEqual(entry["status"], "CLASSIFIED_CONTROL_PLANE")
 
+
+    def test_assessment_completion_relay_is_registered_as_control_plane(self):
+        ledger = json.loads((ROOT / "automation" / "unregistered_path_registry.json").read_text(encoding="utf-8"))
+        entries = {item["path"]: item for item in ledger["entries"]}
+        path = ".github/workflows/assessment-completion-relay.yml"
+        self.assertIn(path, entries)
+        entry = entries[path]
+        self.assertEqual(entry["status"], "CLASSIFIED_CONTROL_PLANE")
+        self.assertIn("immutable artifact", entry["classification_reason"])
+        self.assertIn("contents:read", entry["classification_basis"])
+        self.assertIn("rulesets/**", entry["classification_basis"])
+
+
 if __name__ == "__main__":
     unittest.main()
