@@ -3,6 +3,26 @@
   "purpose": "Watchdog inbox for unregistered repository paths; registration is not approval.",
   "entries": [
     {
+      "path": ".github/workflows/assessment-completion-relay.yml",
+      "status": "CLASSIFIED_CONTROL_PLANE",
+      "first_seen_at": "2026-11-09T18:38:09Z",
+      "last_seen_at": "2026-11-09T18:59:47Z",
+      "seen_count": 5,
+      "observed_run_ids": [
+        "42675657132",
+        "42677301147",
+        "42677648939",
+        "42678200477",
+        "42678972660"
+      ],
+      "last_seen_event": "push",
+      "last_seen_revision": "9fd4d5241e75600133f00379a2ee55976d9a1348",
+      "last_seen_run_id": "42678972660",
+      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/42678972660",
+      "classification_reason": "Assessment completion relay: verifies the exact completed Watchdog Assessment producer and its unique immutable artifact, then dispatches one idempotent Watchdog reconciliation. It does not publish DIRECT, PROXY or REJECT rules and does not write repository contents.",
+      "classification_basis": "Audited the current workflow. It has actions:write and contents:read only; it reads Actions run/artifact metadata and dispatches the Watchdog workflow. It has no contents:write permission, no repository checkout or file mutation, and no ruleset publication step. This exact path is orchestration-only control-plane code; the production publisher remains restricted to rulesets/** and modules/uu.conf remains read-only."
+    },
+    {
       "path": ".github/workflows/dashboard-pages.yml",
       "status": "CLASSIFIED_MONITORING",
       "first_seen_at": "2026-11-03T17:12:05.157284Z",
