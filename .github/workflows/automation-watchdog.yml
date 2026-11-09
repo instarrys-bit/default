@@ -874,7 +874,7 @@ jobs:
 
   task-queue-supervision:
     concurrency:
-      # Unique run IDs preserve every event; durable queue CAS and shared source-DAG fencing serialize task claims.
+      # Per-run identity prevents GitHub's single-pending-job policy from dropping events; queue CAS and shared source-DAG lease serialize claims.
       group: shadowrocket-watchdog-task-supervision-${{ github.run_id }}
       cancel-in-progress: false
     env:
@@ -1972,7 +1972,7 @@ jobs:
 
   task-queue-supervision:
     concurrency:
-      # Unique run IDs preserve every event; durable queue CAS and shared source-DAG fencing serialize task claims.
+      # Per-run identity prevents GitHub's single-pending-job policy from dropping events; queue CAS and shared source-DAG lease serialize claims.
       group: shadowrocket-watchdog-task-supervision-${{ github.run_id }}
       cancel-in-progress: false
     env:
@@ -2280,6 +2280,7 @@ jobs:
           if not pending and not assessment_tasks:
               print("No completed or verifying Discovery task or queued Assessment task needs downstream reconciliation.")
               raise SystemExit(0)
+          repo, token = os.environ["GITHUB_REPOSITORY"], os.environ["GITHUB_TOKEN"]
           resolved = None
 
           # A queued Assessment task already contains the exact predecessor run ID,
