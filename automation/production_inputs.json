@@ -48,6 +48,7 @@
     "scripts/resolve_source_artifacts.py"
   ],
   "non_production_path_patterns": [
+    ".github/workflow_helpers/check_source_assessment_artifact.py",
     ".github/workflows/automation-watchdog.yml",
     ".github/workflows/request-intake.yml",
     ".github/workflows/restore-inventory.yml",
