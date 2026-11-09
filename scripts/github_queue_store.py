@@ -91,9 +91,8 @@ class GitHubContentsQueueStore:
             "automation/task_queue_rebuild_seed.json"
             if self.issue_number == DEFAULT_ISSUE_NUMBER else path
         )
-        if (not self.bootstrap_path or ".." in self.bootstrap_path.split("/")
-                or self.bootstrap_path.startswith("/")):
-            raise ValueError("bootstrap_path must be a safe repository-relative path")
+        if not self.bootstrap_path or ".." in self.bootstrap_path.split("/"):
+            raise ValueError("bootstrap_path must be a safe path")
 
     @property
     def comments_endpoint(self) -> str:
