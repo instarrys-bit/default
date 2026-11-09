@@ -318,3 +318,11 @@ class WatchdogAssessmentResumeContractTests(unittest.TestCase):
         )[0]
         self.assertIn('repo, token = os.environ["GITHUB_REPOSITORY"], os.environ["GITHUB_TOKEN"]', resolver)
         self.assertLess(resolver.index("repo, token ="), resolver.index("run_url ="))
+
+    def test_watchdog_verifies_all_pending_results_before_selecting_any_new_task(self):
+        workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        run_queue = workflow.split("Recover leases, verify results, and dispatch one task before artifact upload", 1)[1].split(
+            "Upload verified source assessment outputs as immutable artifact", 1
+        )[0]
+        self.assertIn("--verify-only run-once", run_queue)
+        self.assertLess(run_queue.index("--verify-only run-once"), run_queue.index("selected_task_id="))
