@@ -286,9 +286,13 @@ class WatchdogAssessmentResumeContractTests(unittest.TestCase):
     def test_production_dispatch_waits_for_exact_successful_assessment_producer(self):
         workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn("Wait for exact Assessment producer completion before queue reconciliation", workflow)
-        self.assertIn("ASSESSMENT_PRODUCER_RUN_ID: ${{ inputs.assessment_producer_run_id }}", workflow)
+        self.assertIn("SOURCE_DISCOVERY_RUN_ID: ${{ inputs.source_discovery_run_id || '' }}", workflow)
+        self.assertIn("ASSESSMENT_PRODUCER_RUN_ID: ${{ inputs.assessment_producer_run_id || '' }}", workflow)
+        self.assertIn("PRODUCTION_PRODUCER_RUN_ID: ${{ inputs.production_producer_run_id || '' }}", workflow)
+        self.assertIn('".github/workflows/source-discovery.yml"', workflow)
+        self.assertIn('".github/workflows/automation-watchdog.yml"', workflow)
+        self.assertIn('".github/workflows/auto_sync.yml"', workflow)
         self.assertIn('producer.get("status") == "completed"', workflow)
-        self.assertIn('producer.get("path") != ".github/workflows/automation-watchdog.yml"', workflow)
         self.assertIn('producer.get("conclusion") != "success"', workflow)
         self.assertIn("queue reconciliation is held", workflow)
         self.assertLess(
@@ -296,3 +300,12 @@ class WatchdogAssessmentResumeContractTests(unittest.TestCase):
             workflow.index("Resolve completed Discovery run from durable task correlation"),
         )
 
+
+    def test_production_completion_dispatches_exact_run_to_watchdog(self):
+        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        production = (ROOT / ".github" / "workflows" / "auto_sync.yml").read_text(encoding="utf-8")
+        self.assertIn("production_producer_run_id:", watchdog)
+        self.assertIn("Wake Watchdog after production workflow completion", production)
+        self.assertIn("PRODUCTION_RUN_ID: ${{ github.run_id }}", production)
+        self.assertIn("inputs:{production_producer_run_id:$run_id}", production)
+        self.assertIn("workflow_dispatch", production)
