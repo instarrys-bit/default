@@ -220,7 +220,7 @@ class SourceHandoffPolicyTests(unittest.TestCase):
             },
         }
         self.assertEqual(
-            select_production_worker_task([discovery, assessment, production]),
+            select_production_worker_task([discovery, assessment, production], "a" * 64),
             "task_production",
         )
 
@@ -235,7 +235,7 @@ class SourceHandoffPolicyTests(unittest.TestCase):
             "priority": 80,
             "input": {"production_decision": "SCHEDULE_DUE", "production_fingerprint": "a" * 64},
         }
-        self.assertEqual(select_production_worker_task([discovery, production]), "")
+        self.assertEqual(select_production_worker_task([discovery, production], "a" * 64), "")
 
     def test_active_production_run_prevents_duplicate_dispatch(self):
         discovery = discovery_task(run_id="42417075148")
@@ -255,7 +255,7 @@ class SourceHandoffPolicyTests(unittest.TestCase):
             "priority": 100,
             "input": {"production_decision": "SCHEDULE_DUE", "production_fingerprint": "b" * 64},
         }
-        self.assertEqual(select_production_worker_task([discovery, assessment, active, queued]), "")
+        self.assertEqual(select_production_worker_task([discovery, assessment, active, queued], "b" * 64), "")
 
     def test_invalid_assessment_does_not_release_production_task(self):
         discovery = discovery_task(run_id="42417075148")
@@ -269,7 +269,7 @@ class SourceHandoffPolicyTests(unittest.TestCase):
             "priority": 80,
             "input": {"production_decision": "SCHEDULE_DUE", "production_fingerprint": "a" * 64},
         }
-        self.assertEqual(select_production_worker_task([discovery, assessment, production]), "")
+        self.assertEqual(select_production_worker_task([discovery, assessment, production], "a" * 64), "")
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
