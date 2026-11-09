@@ -1559,6 +1559,31 @@
   },
   "workflow_native_write_sites": [
     {
+      "workflow_path": ".github/workflows/assessment-completion-relay.yml",
+      "step_name": "Dispatch one idempotent Watchdog reconciliation",
+      "mutation_kinds": [
+        "workflow_dispatch_api"
+      ],
+      "resources": [
+        "GitHub Actions workflow dispatch: automation-watchdog.yml",
+        "logical/source-dag-supervision"
+      ],
+      "fence": "The relay re-verifies the exact completed producer and artifact metadata, then suppresses duplicates by the producer-specific Watchdog run title before dispatch.",
+      "boundary": "Dispatches only the existing Watchdog workflow; all production selection, durable queue CAS, leases/fencing, authorization, artifact-content verification and ruleset-only publication remain in the existing control plane."
+    },
+    {
+      "workflow_path": ".github/workflows/auto_sync.yml",
+      "step_name": "Dispatch Watchdog reconciliation for this exact production run",
+      "mutation_kinds": [
+        "github_actions_workflow_dispatch"
+      ],
+      "resources": [
+        "GitHub Actions Watchdog workflow reconciliation run"
+      ],
+      "fence": "The callback carries the exact completed auto_sync run ID. Watchdog verifies the run ID, auto_sync workflow path, main branch and completed successful conclusion before queue reconciliation; callback has no repository contents write permission.",
+      "boundary": "External workflow_dispatch wake-up only; no repository files or rulesets are written by this callback."
+    },
+    {
       "workflow_path": ".github/workflows/auto_sync.yml",
       "step_name": "Verify base commit and safely publish allowlisted outputs",
       "mutation_kinds": [
@@ -1583,6 +1608,18 @@
     },
     {
       "workflow_path": ".github/workflows/automation-watchdog.yml",
+      "step_name": "Enqueue source assessment after successful discovery workflow",
+      "mutation_kinds": [
+        "git_reset"
+      ],
+      "resources": [
+        "GitHub Issue #423 durable queue comments (external state)"
+      ],
+      "fence": "task_scheduler.py appends compressed SHA-256 chained queue snapshots to Issue #423 with bounded conflict retry.",
+      "boundary": "External control-plane state only; no repository file is written by queue persistence."
+    },
+    {
+      "workflow_path": ".github/workflows/automation-watchdog.yml",
       "step_name": "Publish manifest-only metadata repair",
       "mutation_kinds": [
         "git_add",
@@ -1596,28 +1633,17 @@
       "boundary": "Manifest-only rulesets/manifest.json repair; git add allowlist is exact, no rule list, source, report, module or config file is published."
     },
     {
-      "workflow_path": ".github/workflows/self-healing-agent.yml",
-      "step_name": "Close recovered validator incidents",
+      "workflow_path": ".github/workflows/automation-watchdog.yml",
+      "step_name": "Wake Watchdog after verified Assessment artifact upload",
       "mutation_kinds": [
-        "github_issue_patch"
+        "workflow_dispatch_api"
       ],
       "resources": [
-        "GitHub validator incident issue state"
+        "GitHub Actions workflow dispatch: assessment-completion-relay.yml",
+        "logical/source-dag-supervision"
       ],
-      "fence": "Closes only exact incident issues after verified recovery run evidence.",
-      "boundary": "GitHub issue metadata only."
-    },
-    {
-      "workflow_path": ".github/workflows/self-healing-agent.yml",
-      "step_name": "Close recovered deterministic-audit incidents",
-      "mutation_kinds": [
-        "github_issue_patch"
-      ],
-      "resources": [
-        "GitHub deterministic-audit incident issue state"
-      ],
-      "fence": "Closes only exact incident issues after full audit and publish success evidence.",
-      "boundary": "GitHub issue metadata only."
+      "fence": "The callback is emitted only after the exact Assessment artifact upload step succeeds; the relay validates the exact producer run, completed success conclusion, main branch, head SHA and unique non-expired artifact before it can request Watchdog reconciliation.",
+      "boundary": "Dispatches only the isolated completion relay. It does not write repository contents, task queue state, rulesets or modules/uu.conf."
     },
     {
       "workflow_path": ".github/workflows/dashboard-pages.yml",
@@ -1632,48 +1658,49 @@
       "boundary": "External Pages publication, not a repository file writer."
     },
     {
-      "workflow_path": ".github/workflows/automation-watchdog.yml",
-      "step_name": "Enqueue source assessment after successful discovery workflow",
+      "workflow_path": ".github/workflows/self-healing-agent.yml",
+      "step_name": "Close recovered deterministic-audit incidents",
       "mutation_kinds": [
-        "git_reset"
+        "github_issue_patch"
       ],
       "resources": [
-        "GitHub Issue #423 durable queue comments (external state)"
+        "GitHub deterministic-audit incident issue state"
       ],
-      "fence": "task_scheduler.py appends compressed SHA-256 chained queue snapshots to Issue #423 with bounded conflict retry.",
-      "boundary": "External control-plane state only; no repository file is written by queue persistence."
+      "fence": "Closes only exact incident issues after full audit and publish success evidence.",
+      "boundary": "GitHub issue metadata only."
     },
     {
-      "workflow_path": ".github/workflows/auto_sync.yml",
-      "step_name": "Dispatch Watchdog reconciliation for this exact production run",
+      "workflow_path": ".github/workflows/self-healing-agent.yml",
+      "step_name": "Close recovered validator incidents",
       "mutation_kinds": [
-        "github_actions_workflow_dispatch"
+        "github_issue_patch"
       ],
       "resources": [
-        "GitHub Actions Watchdog workflow reconciliation run"
+        "GitHub validator incident issue state"
       ],
-      "fence": "The callback carries the exact completed auto_sync run ID. Watchdog verifies the run ID, auto_sync workflow path, main branch and completed successful conclusion before queue reconciliation; callback has no repository contents write permission.",
-      "boundary": "External workflow_dispatch wake-up only; no repository files or rulesets are written by this callback."
+      "fence": "Closes only exact incident issues after verified recovery run evidence.",
+      "boundary": "GitHub issue metadata only."
     }
   ],
   "workflow_native_scan": {
     "status": "partial_workflow_shell_pattern_scan",
     "scanner": "tests/test_workflow_native_write_inventory.py",
-    "workflow_count": 7,
+    "workflow_count": 8,
     "detected_mutation_families": [
-      "git add/commit/push/reset/checkout",
-      "GitHub issue PATCH",
       "GitHub Actions workflow_dispatch",
+      "GitHub Actions workflow_dispatch REST API",
+      "GitHub Issue comments POST",
       "GitHub Pages deploy action",
-      "GitHub Issue comments POST"
+      "GitHub issue PATCH",
+      "git add/commit/push/reset/checkout"
     ],
     "limitations": [
       "dynamic command construction",
       "shell functions and sourced scripts",
-      "unrecognized HTTP mutation methods or API clients",
       "side effects hidden inside third-party GitHub Actions",
       "workflow steps not exercised in the current CI run",
-      "dynamic repository paths and cross-workflow concurrency"
+      "dynamic repository paths and cross-workflow concurrency",
+      "curl-based GitHub API mutations are recognized only for the exact Actions workflow-dispatch endpoint pattern"
     ]
   },
   "production_deliverables": [
