@@ -310,3 +310,11 @@ class WatchdogAssessmentResumeContractTests(unittest.TestCase):
         self.assertIn("PRODUCTION_RUN_ID: ${{ github.run_id }}", production)
         self.assertIn("inputs:{production_producer_run_id:$run_id}", production)
         self.assertIn("workflow_dispatch", production)
+
+    def test_discovery_resolver_initializes_repository_context_before_run_lookup(self):
+        workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        resolver = workflow.split("Resolve completed Discovery run from durable task correlation", 1)[1].split(
+            "Download artifact from the exact discovery workflow run", 1
+        )[0]
+        self.assertIn('repo, token = os.environ["GITHUB_REPOSITORY"], os.environ["GITHUB_TOKEN"]', resolver)
+        self.assertLess(resolver.index("repo, token ="), resolver.index("run_url ="))
