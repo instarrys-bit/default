@@ -82,6 +82,33 @@ def build_dead_letter_metrics(tasks):
     }
 
 
+def build_source_pipeline_metrics(discovered, assessments, candidates, registry):
+    """Keep active sources distinct from discovered and assessed source candidates."""
+    discovered_rows = discovered.get("candidates", [])
+    assessment_rows = assessments.get("assessments", [])
+    candidate_rows = candidates.get("candidates", [])
+    repositories = registry.get("repositories", [])
+    source_files = registry.get("source_files", [])
+    return {
+        "discovered_repository_count": as_int(discovered.get("candidate_count")) or (
+            len(discovered_rows) if isinstance(discovered_rows, list) else 0
+        ),
+        "assessed_file_count": len(assessment_rows) if isinstance(assessment_rows, list) else 0,
+        "source_candidate_count": as_int(candidates.get("candidate_count")) or (
+            len(candidate_rows) if isinstance(candidate_rows, list) else 0
+        ),
+        "eligible_candidate_count": as_int(candidates.get("eligible_candidate_count")),
+        "durable_repository_count": as_int(registry.get("repository_count")) or (
+            len(repositories) if isinstance(repositories, list) else 0
+        ),
+        "durable_source_file_count": as_int(registry.get("source_file_count")) or (
+            len(source_files) if isinstance(source_files, list) else 0
+        ),
+        "pending_assessment_count": as_int(registry.get("pending_assessment_count")),
+        "registry_published": bool(registry),
+    }
+
+
 def build_task_stage_metrics(tasks, target_program_id):
     selected = [
         task for task in tasks
@@ -178,6 +205,13 @@ def main():
     candidate_review = build_candidate_review_metrics(
         candidates, review_records, review_cursor, review_ledger_updated_at
     )
+    discovered_sources = read_document(ROOT / "sources" / "discovered_sources.json", "candidates", {"candidates": []})
+    source_assessments = read_document(ROOT / "sources" / "source_assessments.json", "assessments", {"assessments": []})
+    source_candidates = read_json("sources/source_candidates.json")
+    durable_source_registry = read_json("rulesets/source_candidate_registry.json")
+    source_pipeline = build_source_pipeline_metrics(
+        discovered_sources, source_assessments, source_candidates, durable_source_registry
+    )
     
     tasks = queue_doc.get("tasks", []) if isinstance(queue_doc.get("tasks"), list) else []
     queue_status = {}
@@ -254,7 +288,11 @@ def main():
         "automation": watchdog_status(),
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
         "source_commit": os.environ.get("GITHUB_SHA", "local"),
-        "sources": {"source_count": source_count, "candidate_count": candidate_count},
+        "sources": {
+            "source_count": source_count,
+            "candidate_count": candidate_count,
+            **source_pipeline,
+        },
         "candidate_review": candidate_review,
         "rulesets": {
             "by_policy": {p: as_int(counts.get(p)) for p in ("DIRECT", "PROXY", "REJECT")},
