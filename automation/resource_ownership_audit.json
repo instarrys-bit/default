@@ -4,10 +4,11 @@
   "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
-    "registry_blob_sha": "00cb9c14870b437b8d6b65d3969cb0fc93b6608a",
+    "registry_blob_sha": "14d33abddc2a7e2906a8c7e8c82632b6d27d84d5",
     "adapters_blob_sha": "3b28f3bdc39d52e0a656f39468834ac7cc149bde",
     "inspected_sources": [
       ".github/workflow_helpers/check_source_assessment_artifact.py",
+      ".github/workflows/assessment-completion-relay.yml",
       ".github/workflows/auto_sync.yml",
       ".github/workflows/automation-watchdog.yml",
       ".github/workflows/dashboard-pages.yml",
@@ -80,7 +81,7 @@
       "tests/test_watchdog_recovery_workflow.py",
       "tests/test_workflow_config_guard_order.py"
     ],
-    "limitation": "The active Source Discovery → Assessment DAG is scoped to runner-local immutable artifacts and a fenced Issue #423 checkpoint. The production repository publisher remains restricted to rulesets/**. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
+    "limitation": "The active Source Discovery → Assessment DAG is scoped to runner-local immutable artifacts and a fenced Issue #423 checkpoint. The production repository publisher remains restricted to rulesets/**. The Assessment completion relay only reads exact workflow/artifact metadata and dispatches the existing Watchdog; it has no repository content or ruleset write path. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
     "reviewed_at": "2026-11-07",
     "isolated_ephemeral_outputs": [
       {
