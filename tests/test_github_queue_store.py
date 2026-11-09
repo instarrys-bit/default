@@ -173,6 +173,20 @@ class GitHubIssueQueueStoreTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "queue document object"):
                 self.store.mutate(lambda queue: ([], None))
 
+    def test_mutate_reuses_its_snapshot_instead_of_rescanning_before_append(self):
+        def add_task(queue):
+            queue["revision"] += 1
+            queue["tasks"].append({"task_id": "new"})
+            return queue, "added"
+
+        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+            result = self.store.mutate(add_task)
+        self.assertEqual(result, "added")
+        get_calls = [request for request in self.calls if request.method == "GET"]
+        # Initial read, post-bootstrap verification, and post-append canonical
+        # verification. A fourth full-history GET would be redundant.
+        self.assertEqual(len(get_calls), 3)
+
     def test_unchanged_mutation_does_not_append(self):
         with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
             result = self.store.mutate(lambda queue: (queue, "unchanged"))
