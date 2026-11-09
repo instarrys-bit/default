@@ -1,5 +1,5 @@
 name: Shadowrocket automation watchdog
-run-name: ${{ inputs.assessment_producer_run_id != '' && format('Assessment reconcile {0}', inputs.assessment_producer_run_id) || format('Automation task {0}', inputs.automation_task_id || 'manual') }}
+run-name: Automation task ${{ inputs.automation_task_id || 'manual' }} | Assessment reconcile ${{ inputs.assessment_producer_run_id || 'none' }}
 
 on:
   schedule:
@@ -1870,7 +1870,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-      - name: Request isolated Assessment completion relay
+      - name: Wake Watchdog after verified Assessment artifact upload
         if: ${{ success() && steps.run-queue.outputs.assessment_output_expected == 'true' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
