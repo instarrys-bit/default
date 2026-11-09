@@ -162,6 +162,20 @@ class SourceHandoffPolicyTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "missing or unsafe"):
                 discovery_pipeline_revision(Path(directory))
 
+    def test_pipeline_revision_changes_when_watchdog_or_assessor_changes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for relative in DISCOVERY_PIPELINE_REVISION_PATHS:
+                path = root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("baseline", encoding="utf-8")
+            before = discovery_pipeline_revision(root)
+            for relative in (".github/workflows/automation-watchdog.yml", "scripts/assess_sources.py"):
+                path = root / relative
+                path.write_text("changed", encoding="utf-8")
+                self.assertNotEqual(before, discovery_pipeline_revision(root))
+                path.write_text("baseline", encoding="utf-8")
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
