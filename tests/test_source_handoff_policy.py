@@ -6,7 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from source_handoff_policy import (DISCOVERY_PIPELINE_REVISION_PATHS, classify_assessment_handoff, discovery_pipeline_revision, discovery_task_requires_handoff, select_source_worker_task)
+from source_handoff_policy import (DISCOVERY_PIPELINE_REVISION_PATHS, classify_assessment_handoff, discovery_pipeline_revision, discovery_task_requires_handoff, select_source_worker_task, select_production_worker_task)
 
 
 def assessment_task(task_id, run_id, status="SUCCEEDED", key=None, verified=True, created_at="2026-11-07T12:00:00Z"):
@@ -202,6 +202,73 @@ class SourceHandoffPolicyTests(unittest.TestCase):
                 path.write_text("baseline", encoding="utf-8")
 
 
+
+    def test_verified_assessment_releases_one_queued_production_task(self):
+        discovery = discovery_task(run_id="42417075148")
+        assessment = assessment_task("task_assessed", "42417075148")
+        production = {
+            "task_id": "task_production",
+            "target_program_id": "workflow_auto_sync",
+            "status": "QUEUED",
+            "lease": None,
+            "dispatch_intent": None,
+            "priority": 80,
+            "input": {
+                "production_decision": "SCHEDULE_DUE",
+                "production_fingerprint": "a" * 64,
+            },
+        }
+        self.assertEqual(
+            select_production_worker_task([discovery, assessment, production]),
+            "task_production",
+        )
+
+    def test_production_dispatch_stays_closed_without_verified_assessment(self):
+        discovery = discovery_task(run_id="42417075148")
+        production = {
+            "task_id": "task_production",
+            "target_program_id": "workflow_auto_sync",
+            "status": "QUEUED",
+            "lease": None,
+            "dispatch_intent": None,
+            "priority": 80,
+            "input": {"production_decision": "SCHEDULE_DUE", "production_fingerprint": "a" * 64},
+        }
+        self.assertEqual(select_production_worker_task([discovery, production]), "")
+
+    def test_active_production_run_prevents_duplicate_dispatch(self):
+        discovery = discovery_task(run_id="42417075148")
+        assessment = assessment_task("task_assessed", "42417075148")
+        active = {
+            "task_id": "task_active_production",
+            "target_program_id": "workflow_auto_sync",
+            "status": "VERIFYING",
+            "dispatch_intent": {"correlation_id": "already-dispatched"},
+        }
+        queued = {
+            "task_id": "task_queued_production",
+            "target_program_id": "workflow_auto_sync",
+            "status": "QUEUED",
+            "lease": None,
+            "dispatch_intent": None,
+            "priority": 100,
+            "input": {"production_decision": "SCHEDULE_DUE", "production_fingerprint": "b" * 64},
+        }
+        self.assertEqual(select_production_worker_task([discovery, assessment, active, queued]), "")
+
+    def test_invalid_assessment_does_not_release_production_task(self):
+        discovery = discovery_task(run_id="42417075148")
+        assessment = assessment_task("task_assessed", "42417075148", verified=False)
+        production = {
+            "task_id": "task_production",
+            "target_program_id": "workflow_auto_sync",
+            "status": "QUEUED",
+            "lease": None,
+            "dispatch_intent": None,
+            "priority": 80,
+            "input": {"production_decision": "SCHEDULE_DUE", "production_fingerprint": "a" * 64},
+        }
+        self.assertEqual(select_production_worker_task([discovery, assessment, production]), "")
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
