@@ -8,7 +8,7 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "034846c5c8abe76df1da21f536fc3bf175e06b5c"
+      "git_blob_sha": "e5e1e678eec2bd9208934db8a73b867d49de5efc"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -78,7 +78,7 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "034846c5c8abe76df1da21f536fc3bf175e06b5c"
+      "git_blob_sha": "e5e1e678eec2bd9208934db8a73b867d49de5efc"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -86,11 +86,11 @@
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "2441ad683dea26025c7038febee7509f930de613"
+      "git_blob_sha": "65882df65f65e511c1cceec089c2563dd4d0c81a"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "0951a808d7f67dc3a5a956d0c50b36da92e82d10"
+      "git_blob_sha": "7baed487c1c55225df68d405464ea20770ab050f"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
