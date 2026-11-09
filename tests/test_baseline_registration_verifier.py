@@ -1,5 +1,9 @@
+import sys
 import unittest
+from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
 from verify_baseline_registration import validate_registration_metadata
 
 
