@@ -1,10 +1,12 @@
 import sys
 import unittest
+from tempfile import TemporaryDirectory
+from unittest.mock import patch
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from build_source_candidates import build_matrix
+from build_source_candidates import assessment_input_path, build_matrix
 
 
 class SourceCandidateLineagePolicyTests(unittest.TestCase):
@@ -45,6 +47,21 @@ class SourceCandidateLineagePolicyTests(unittest.TestCase):
         self.assertTrue(candidate["activation_eligible"])
         self.assertEqual(candidate["activation_blockers"], [])
         self.assertEqual(candidate["lineage_warning"], "possible_shared_readme_references; correlation signal only")
+
+
+    def test_assessment_input_path_reads_verified_artifact_environment(self):
+        with TemporaryDirectory() as temporary:
+            root = Path(temporary) / "assessment-artifact"
+            root.mkdir()
+            runtime = root / "data" / "source_assessments_runtime.json"
+            runtime.parent.mkdir()
+            runtime.write_text('{"assessments": []}', encoding="utf-8")
+            with patch.dict("os.environ", {
+                "AUTOMATION_SOURCE_ASSESSMENT_ROOT": str(root),
+                "RUNNER_TEMP": temporary,
+            }):
+                self.assertEqual(assessment_input_path(), runtime)
+
 
     def test_archived_publisher_remains_blocked(self):
         result = build_matrix(
