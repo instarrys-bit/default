@@ -1542,6 +1542,7 @@ jobs:
             assessment_key="$base_key"
           fi
           echo "Assessment enqueue key: $assessment_key (base status: ${assessment_status:-none})"
+          echo "task_id=$selected_task_id" >> "$GITHUB_OUTPUT"
           queue_token="$GITHUB_TOKEN"
           unset GITHUB_TOKEN
           printf '%s' "$queue_token" | python3 scripts/task_scheduler.py             --repository "$GITHUB_REPOSITORY" --branch main --token-stdin             --idempotency-key "$assessment_key"             --priority 60 --input-json "$task_input" enqueue-source-assessment
@@ -1801,6 +1802,109 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+      - name: Dispatch one production audit after verified Assessment artifact is available
+        if: ${{ steps.source-mode.outputs.mode == 'independent' }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue_before_production_dispatch.json"
+          selected_task_id="$(python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from source_handoff_policy import classify_assessment_handoff, select_production_worker_task
+          from check_source_assessment_artifact import find_matching_assessment_artifact
+
+          queue = json.loads((Path(os.environ["RUNNER_TEMP"]) / "task_queue_before_production_dispatch.json").read_text(encoding="utf-8"))
+          tasks = queue.get("tasks", [])
+          discoveries = [
+              task for task in tasks
+              if isinstance(task, dict) and task.get("target_program_id") == "workflow_source_discovery"
+          ]
+          latest = max(
+              discoveries,
+              key=lambda task: (str(task.get("created_at") or ""), str(task.get("task_id") or "")),
+              default=None,
+          )
+          if not isinstance(latest, dict) or latest.get("status") != "SUCCEEDED" or (latest.get("verification") or {}).get("status") != "passed":
+              print("Production dispatch held: latest Discovery is not independently verified SUCCEEDED.")
+              raise SystemExit(0)
+          evidence = (latest.get("result") or {}).get("run_evidence") or {}
+          run_id = evidence.get("run_id")
+          if isinstance(run_id, int) and not isinstance(run_id, bool):
+              run_id = str(run_id)
+          if not isinstance(run_id, str) or not run_id.isdigit():
+              print("Production dispatch held: latest Discovery run identity is missing.")
+              raise SystemExit(0)
+          handoff = classify_assessment_handoff(tasks, run_id)
+          if handoff.get("state") != "already_assessed":
+              print("Production dispatch held: latest Discovery has no independently verified non-activating Assessment.")
+              raise SystemExit(0)
+          assessment = next((task for task in tasks if isinstance(task, dict) and task.get("task_id") == handoff.get("canonical_task_id")), None)
+          predecessor = ((assessment or {}).get("input") or {}).get("predecessor")
+          if not isinstance(predecessor, dict):
+              raise SystemExit("Verified Assessment task is missing its immutable Discovery predecessor proof.")
+          artifact = find_matching_assessment_artifact(
+              os.environ["GITHUB_REPOSITORY"],
+              os.environ["GITHUB_TOKEN"],
+              {
+                  "workflow_run_id": str(predecessor.get("workflow_run_id", "")),
+                  "workflow_head_sha": predecessor.get("workflow_head_sha"),
+                  "artifact_sha256": predecessor.get("artifact_sha256"),
+              },
+          )
+          if artifact.get("found") is not True:
+              print("Production dispatch held: exact immutable Assessment artifact is not yet available; Watchdog will retry after artifact recovery.")
+              raise SystemExit(0)
+          selected = select_production_worker_task(tasks)
+          if selected:
+              print("Selected one queued production task after exact Discovery/Assessment artifact verification: " + selected)
+          else:
+              print("No eligible queued production task; no duplicate dispatch attempted.")
+          print(selected)
+          PY
+          )"
+          if [ -z "$selected_task_id" ]; then
+            echo "No production workflow dispatch was necessary in this Watchdog pass."
+            exit 0
+          fi
+
+          queue_token="$GITHUB_TOKEN"
+          unset GITHUB_TOKEN
+          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py \
+            --repository "$GITHUB_REPOSITORY" --branch main --token-stdin \
+            --worker-id "watchdog-production-$GITHUB_RUN_ID" \
+            --task-id "$selected_task_id" --max-tasks 1 run-once | tee "$RUNNER_TEMP/production-dispatch-result.json"
+          unset queue_token
+
+          export SELECTED_PRODUCTION_TASK_ID="$selected_task_id"
+          GITHUB_TOKEN="$queue_token" python3 scripts/remote_task_queue_runtime.py \
+            --repository "$GITHUB_REPOSITORY" --branch main snapshot \
+            --output "$RUNNER_TEMP/task_queue_after_production_dispatch.json"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          queue = json.loads((Path(os.environ["RUNNER_TEMP"]) / "task_queue_after_production_dispatch.json").read_text(encoding="utf-8"))
+          task_id = os.environ["SELECTED_PRODUCTION_TASK_ID"]
+          task = next((item for item in queue.get("tasks", []) if isinstance(item, dict) and item.get("task_id") == task_id), None)
+          if not isinstance(task, dict):
+              raise SystemExit("Selected production task disappeared from the durable queue after dispatch.")
+          if task.get("status") not in {"VERIFYING", "SUCCEEDED"}:
+              raise SystemExit("Production task did not persist a dispatched/verified state: " + str(task.get("status")))
+          intent = task.get("dispatch_intent") or {}
+          if intent.get("workflow_path") != ".github/workflows/auto_sync.yml" or intent.get("ref") != "main":
+              raise SystemExit("Production dispatch intent does not identify the reviewed main auto_sync workflow.")
+          print(json.dumps({
+              "task_id": task_id,
+              "status": task.get("status"),
+              "correlation_id": intent.get("correlation_id"),
+              "workflow_path": intent.get("workflow_path"),
+              "queue_revision": queue.get("revision"),
+          }, sort_keys=True))
+          PY
+ 
   stale-run-watch:
     permissions:
       actions: write
