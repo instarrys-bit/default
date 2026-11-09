@@ -8,7 +8,9 @@ import io
 import json
 import os
 import re
+import urllib.error
 import urllib.request
+from urllib.parse import urljoin, urlsplit
 import zipfile
 from pathlib import PurePosixPath
 
@@ -31,10 +33,52 @@ def _headers(token: str) -> dict:
     }
 
 
-def _get_bytes(url: str, token: str) -> bytes:
+MAX_API_RESPONSE_BYTES = 2_000_000
+MAX_ASSESSMENT_ARCHIVE_BYTES = 50_000_000
+REDIRECT_CODES = {301, 302, 303, 307, 308}
+
+
+def _get_bytes(
+    url: str,
+    token: str,
+    *,
+    max_bytes: int = MAX_API_RESPONSE_BYTES,
+) -> bytes:
+    if isinstance(max_bytes, bool) or not isinstance(max_bytes, int) or max_bytes < 1:
+        raise ValueError("GitHub response byte limit must be a positive integer")
     request = urllib.request.Request(url, headers=_headers(token))
-    with urllib.request.urlopen(request, timeout=60) as response:
-        return response.read()
+
+    class NoRedirect(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, req, fp, code, msg, headers, newurl):
+            return None
+
+    opener = urllib.request.build_opener(NoRedirect())
+    try:
+        response = opener.open(request, timeout=60)
+    except urllib.error.HTTPError as exc:
+        if exc.code not in REDIRECT_CODES:
+            raise
+        location = exc.headers.get("Location")
+        exc.close()
+        if not location:
+            raise ValueError("GitHub artifact redirect has no signed location")
+        signed_url = urljoin(url, location)
+        # GitHub's artifact endpoint redirects to a short-lived object-storage
+        # URL. The GitHub bearer token is valid only for api.github.com and
+        # must never be forwarded to the storage host.
+        headers = {"User-Agent": "Shadowrocket-Assessment-Artifact-Verifier/1.0"}
+        if urlsplit(signed_url).netloc.lower() == urlsplit(url).netloc.lower():
+            headers = _headers(token)
+        response = urllib.request.urlopen(
+            urllib.request.Request(signed_url, headers=headers),
+            timeout=60,
+        )
+
+    with response:
+        payload = response.read(max_bytes + 1)
+    if len(payload) > max_bytes:
+        raise ValueError(f"GitHub response exceeds the {max_bytes}-byte safety limit")
+    return payload
 
 
 def _get_json(url: str, token: str) -> dict:
@@ -193,6 +237,7 @@ def find_matching_assessment_artifact(repository: str, token: str, expected: dic
             archive_bytes = _get_bytes(
                 f"{API_ROOT}/repos/{repository}/actions/artifacts/{artifact['id']}/zip",
                 token,
+                max_bytes=MAX_ASSESSMENT_ARCHIVE_BYTES,
             )
             try:
                 proof_name, proof = _proof_from_archive(archive_bytes)
