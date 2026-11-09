@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from collections import defaultdict
 from pathlib import Path
 from json_document_store import read_document, write_document
