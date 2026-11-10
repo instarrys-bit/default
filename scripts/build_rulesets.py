@@ -314,6 +314,13 @@ def main():
     current=read_document(CURRENT_SNAPSHOT,"candidates",{"candidates":[]})
     current_sources=current.get("sources",[])
     current_hashes={x["id"]:x["sha256"] for x in current_sources}
+    current_candidates=current.get("candidates",[])
+    candidate_map={}
+    for candidate in current_candidates:
+        domain=str(candidate.get("domain","")).lower().rstrip(".")
+        if not domain or domain in candidate_map:
+            raise ValueError("current source snapshot contains a missing or duplicate domain identity")
+        candidate_map[domain]=candidate
     enabled_source_ids={sid for sid,source in source_map.items() if source.get("enabled",True) is not False}
     if set(current_hashes)!=enabled_source_ids:
         raise ValueError("current source snapshot does not match enabled source registry entries")
@@ -339,7 +346,14 @@ def main():
     config_archive=json.loads(config_archive_path.read_text(encoding="utf-8")) if config_archive_path.exists() else {"items":[]}
     config_conflict_archived={(str(x.get("policy","")).upper(),str(x.get("rule",""))) for x in config_archive.get("items",[]) if not x.get("restored_at") and not x.get("superseded_at")}
     archived_deleted |= config_conflict_archived
-    manual_reject_approvals=load_reject_approvals()
+    approval_document=load_reject_approval_document()
+    manual_reject_approvals=approval_document["approved_rules"]
+    approved_queue_items=approval_document["approved_queue_items"]
+    previous_reject_queue_path=OUT/"reject_review_queue.json"
+    previous_reject_queue_doc=json.loads(previous_reject_queue_path.read_text(encoding="utf-8")) if previous_reject_queue_path.exists() else {"schema_version":1,"items":[]}
+    previous_reject_queue_items=previous_reject_queue_doc.get("items",[])
+    if not isinstance(previous_reject_queue_items,list):
+        raise ValueError("previous REJECT review queue items must be a list")
     previous_published={policy:set() for policy in POLICIES}
     for policy in POLICIES:
         previous_path=OUT/(policy.lower()+".list")
@@ -348,6 +362,10 @@ def main():
     previously_published_reject = previously_published_reject_rules(
         previous_published["REJECT"], config_archive
     )
+    if manual_reject_approvals and not approved_queue_items:
+        orphaned=manual_reject_approvals-previously_published_reject
+        if orphaned:
+            raise ValueError("manual REJECT approvals have no preserved eligible queue evidence snapshot: "+", ".join(sorted(orphaned)[:10]))
     rule_sets={policy:set() for policy in POLICIES}
     new_approved={policy:set() for policy in POLICIES}
     published_domain_policies={}
@@ -378,7 +396,9 @@ def main():
     reject_secondary_eligible_count=0
     reject_manual_hold_count=0
     reject_manual_approval_outside_shortlist_count=0
+    reject_manual_approval_hold_count=0
     reject_review_queue_items=[]
+    manual_queue_approved_identities=set()
     reject_secondary_passed_lines=set()
     reviews=data.get("reviews",[])
     if len({str(item.get("domain","")).lower() for item in reviews})!=len(reviews):
@@ -533,6 +553,139 @@ def main():
         new_approved[policy].add((scope,domain))
         approved_review_rules.add((policy,scope,domain))
         approved+=1
+
+    ledger_domains={str(item.get("domain","")).lower().rstrip(".") for item in reviews}
+    prior_queue_by_rule={}
+    for queued_item in previous_reject_queue_items:
+        if not isinstance(queued_item,dict) or not isinstance(queued_item.get("rule"),str):
+            raise ValueError("previous REJECT review queue contains a malformed item")
+        prior_queue_by_rule[queued_item["rule"]]=queued_item
+    queue_domains=set()
+    for queued_item in list(prior_queue_by_rule.values())+list(approved_queue_items):
+        domain=str(queued_item.get("domain","")).lower().rstrip(".")
+        if domain:
+            queue_domains.add(domain)
+    reject_candidate_count+=len(queue_domains-ledger_domains)
+
+    # The approval ledger preserves the exact eligible queue records that the owner reviewed.
+    # Revalidate each against this run's freshly collected source evidence before publication.
+    for queued_item in approved_queue_items:
+        line=queued_item["rule"]
+        domain=str(queued_item["domain"]).lower().rstrip(".")
+        scope=str(queued_item["scope"])
+        identity=("REJECT",scope,domain)
+        if line not in manual_reject_approvals:
+            raise ValueError("approved queue evidence is not covered by the manual approval ledger: "+line)
+        if identity in approved_review_rules:
+            manual_queue_approved_identities.add(identity)
+            continue
+        decision=revalidate_manual_reject_queue_item(
+            queued_item,candidate_map,source_map,current_hashes,eligible_source_ids,
+            scoring,minimum,threshold,correlated_pairs
+        )
+        if not decision["eligible"]:
+            reject_manual_approval_hold_count+=1
+            reject_manual_approval_outside_shortlist_count+=1
+            held+=1
+            for reason_code in decision["reasons"]:
+                reject_secondary_hold_reason_counts[reason_code]+=1
+            reject_review_queue_items.append({
+                **queued_item,
+                "status":"MANUALLY_APPROVED_HELD",
+                "manual_approval":True,
+                "reason":"Manual approval is recorded, but current source evidence no longer satisfies the publication gate: "+", ".join(decision["reasons"])
+            })
+            continue
+        reject_secondary_eligible_count+=1
+        reject_secondary_passed_lines.add(line)
+        if ( "REJECT",line ) in archived_deleted:
+            reject_manual_approval_hold_count+=1
+            held+=1
+            reject_review_queue_items.append({
+                **queued_item,"status":"MANUALLY_APPROVED_HELD","manual_approval":True,
+                "reason":"Previously archived/deleted rule remains held until explicitly restored"
+            })
+            continue
+        if domain in published_domain_policies:
+            if published_domain_policies[domain]!="REJECT":
+                raise ValueError("manually approved REJECT domain conflicts with an already published policy: "+domain)
+            approved_review_rules.add(identity)
+            approved+=1
+            manual_queue_approved_identities.add(identity)
+            continue
+        candidate_line=line
+        scope_result=classify_rule("REJECT",candidate_line,config_rules,config_skip_proxy,prepared_config_rules)
+        if scope_result["status"]!="NO_CONFLICT":
+            reject_manual_approval_hold_count+=1
+            held+=1
+            baseline_conflict_holds.append({
+                "domain":domain,"policy":"REJECT","scope":scope,
+                "status":scope_result["status"],"reason":scope_result["reason"],
+                "config_line":scope_result.get("config_line"),
+                "config_rule":scope_result.get("config_rule"),
+                "effective_config_policy":scope_result.get("effective_policy")
+            })
+            reject_review_queue_items.append({
+                **queued_item,"status":"MANUALLY_APPROVED_HELD","manual_approval":True,
+                "reason":"Manual approval is recorded, but current uu.conf scope checks block publication: "+scope_result["reason"]
+            })
+            continue
+        if scope=="suffix_candidate":
+            local_status,reason=inspect_suffix_scope(
+                domain,"REJECT",index,conditional,protected,parse_skip_proxy(base)
+            )
+            if local_status:
+                reject_manual_approval_hold_count+=1
+                held+=1
+                baseline_conflict_holds.append({"domain":domain,"policy":"REJECT","scope":scope,"status":local_status,"reason":reason})
+                reject_review_queue_items.append({
+                    **queued_item,"status":"MANUALLY_APPROVED_HELD","manual_approval":True,
+                    "reason":"Manual approval is recorded, but current suffix-scope safety checks block publication: "+reason
+                })
+                continue
+        local_status,reason=inspect(
+            domain,index,conditional,base,protected,"REJECT",
+            candidate_suffix=(scope=="suffix_candidate")
+        )
+        if local_status:
+            reject_manual_approval_hold_count+=1
+            held+=1
+            baseline_conflict_holds.append({"domain":domain,"policy":"REJECT","scope":scope,"status":local_status,"reason":reason})
+            reject_review_queue_items.append({
+                **queued_item,"status":"MANUALLY_APPROVED_HELD","manual_approval":True,
+                "reason":"Manual approval is recorded, but current local safety checks block publication: "+reason
+            })
+            continue
+        if domain in seen and seen[domain]!="REJECT":
+            raise ValueError("manually approved REJECT domain conflicts with another reviewed policy: "+domain)
+        seen[domain]="REJECT"
+        new_approved["REJECT"].add((scope,domain))
+        approved_review_rules.add(identity)
+        approved+=1
+        manual_queue_approved_identities.add(identity)
+
+    existing_review_queue_rules={item.get("rule") for item in reject_review_queue_items if isinstance(item,dict)}
+    for queued_item in prior_queue_by_rule.values():
+        line=queued_item["rule"]
+        if line in manual_reject_approvals or line in existing_review_queue_rules:
+            continue
+        decision=revalidate_manual_reject_queue_item(
+            queued_item,candidate_map,source_map,current_hashes,eligible_source_ids,
+            scoring,minimum,threshold,correlated_pairs
+        )
+        if decision["eligible"]:
+            reject_secondary_eligible_count+=1
+            reject_manual_hold_count+=1
+            preserved={**queued_item,"status":"ELIGIBLE_FOR_MANUAL_APPROVAL"}
+            reject_review_queue_items.append(preserved)
+        else:
+            held+=1
+            for reason_code in decision["reasons"]:
+                reject_secondary_hold_reason_counts[reason_code]+=1
+            reject_review_queue_items.append({
+                **queued_item,"status":"EVIDENCE_REFRESH_REQUIRED",
+                "reason":"Candidate remains visible, but current source evidence must be refreshed before approval: "+", ".join(decision["reasons"])
+            })
 
     assert_resource_lease_for_repository_path(ROOT, "rulesets/reject_review_queue.json")
     OUT.mkdir(parents=True,exist_ok=True)
