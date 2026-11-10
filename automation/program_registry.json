@@ -1877,6 +1877,35 @@
         "max_attempts": 0,
         "timeout_seconds": 300
       }
+    },
+    {
+      "id": "script_validate_source_registry_artifact",
+      "path": "scripts/validate_source_registry_artifact.py",
+      "kind": "python_component",
+      "responsibility": "Replay one pinned historical Source Discovery artifact through the exact candidate-registry migration, JSONL shard writer and SHA/count verifier in an isolated temporary directory without touching repository state.",
+      "capabilities": [
+        "source_candidate_registry_artifact_validation"
+      ],
+      "invocation": "read_only_validation_workflow_step",
+      "inputs": [
+        "Pinned source-discovery-output artifact ZIP, artifact SHA-256, inventory SHA-256, producer run ID and producer head SHA"
+      ],
+      "outputs": [
+        "Runner-local temporary sharded registry manifest and verified round-trip summary; no repository mutation"
+      ],
+      "depends_on": [
+        "script_json_document_store",
+        "script_register_discovered_sources"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Read-only validation component. It verifies artifact provenance, calls the production registry builder/encoder and JSON document store only against a temporary directory outside the checkout, then verifies every shard and reconstructed logical registry. It cannot write repository paths, modify modules/uu.conf, activate sources, or change DIRECT/PROXY/REJECT rules.",
+      "health_check": "Pinned artifact and inventory SHA-256 match; producer run/head match; exact repository/source counts match; every shard remains below 40,000,000 bytes; manifest and shard SHA/count checks pass; reconstructed registry equals the logical registry.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     }
   ]
 }
