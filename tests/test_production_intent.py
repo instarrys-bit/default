@@ -187,6 +187,21 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertTrue(entry["classification_reason"])
         self.assertTrue(entry["classification_basis"])
 
+    def test_source_registry_persistence_code_is_classified_as_production_input(self):
+        manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
+        paths = [
+            "scripts/register_discovered_sources.py",
+            "scripts/json_document_store.py",
+            "scripts/validate_source_registry_artifact.py",
+        ]
+        for path in paths:
+            with self.subTest(path=path):
+                self.assertIn(path, manifest["production_input_paths"])
+                result = classify_paths([path], manifest)
+                self.assertEqual(result["status"], "INPUT_CHANGED")
+                self.assertEqual(result["production_input_changes"], [path])
+                self.assertEqual(result["unknown_changes"], [])
+
     def test_repository_manifest_classifies_retired_restore_inventory_paths_as_non_production(self):
         manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
         paths = [
