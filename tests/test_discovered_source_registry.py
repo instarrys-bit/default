@@ -1,11 +1,13 @@
 import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from register_discovered_sources import (build_registry, source_id_for, encode_registry_storage, decode_registry_storage)
+from json_document_store import manifest_path, read_document, write_document
 
 
 class DiscoveredSourceRegistryTests(unittest.TestCase):
@@ -93,6 +95,48 @@ class DiscoveredSourceRegistryTests(unittest.TestCase):
         self.assertEqual(updated["repository_count"], 1)
         self.assertEqual(updated["source_file_count"], 2)
         self.assertEqual(updated["source_files"][0]["first_seen_run_id"], "123456")
+
+    def test_1647_repositories_and_47457_rule_files_survive_shard_round_trip(self):
+        candidates = []
+        total_urls = 47457
+        for index in range(1647):
+            count = 29 if index < 1341 else 28
+            repository = f"scale-org-{index // 100}/rules-{index}"
+            urls = [
+                f"https://raw.githubusercontent.com/{repository}/main/rules/part-{part:03d}.list"
+                for part in range(count)
+            ]
+            candidates.append({
+                "repository": repository,
+                "default_branch": "main",
+                "rule_list_urls": urls,
+                "tree_scan_status": "complete",
+                "discovered_at": "2026-11-10T00:00:00+00:00",
+            })
+        self.assertEqual(sum(len(item["rule_list_urls"]) for item in candidates), total_urls)
+        discovery = {"schema_version": 1, "candidates": candidates}
+        logical = build_registry({}, discovery, self.provenance, "2026-11-10T01:00:00+00:00")
+        self.assertEqual(logical["repository_count"], 1647)
+        self.assertEqual(logical["source_file_count"], total_urls)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "source_candidate_registry.json"
+            stored = encode_registry_storage(logical)
+            result = write_document(
+                path, stored, "records", lease_required=False,
+                force_sharded=True, max_file_bytes=40_000_000,
+                shard_target_bytes=35_000_000,
+            )
+            self.assertEqual(result["storage"], "jsonl-shards-v1")
+            manifest = json.loads(manifest_path(path).read_text(encoding="utf-8"))
+            self.assertEqual(manifest["record_count"], 1647 + total_urls)
+            self.assertTrue(all(item["bytes"] <= 40_000_000 for item in manifest["shards"]))
+            restored = decode_registry_storage(read_document(path, "records"))
+            self.assertEqual(restored["repository_count"], 1647)
+            self.assertEqual(restored["source_file_count"], total_urls)
+            self.assertEqual(restored["discovery_fingerprint"], logical["discovery_fingerprint"])
+            self.assertEqual(restored["source_files"][0]["source_id"],
+                             logical["source_files"][0]["source_id"])
 
     def test_rejects_rule_url_from_another_repository(self):
         invalid = json.loads(json.dumps(self.discovery))
