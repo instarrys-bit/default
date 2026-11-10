@@ -87,10 +87,10 @@
     }
   ],
   "dns_invariants": {
-    "dns-server": "https://dns.quad9.net/dns-query#proxy&no-h3, https://dns.google/dns-query#proxy&no-h3",
-    "fallback-dns-server": "https://cloudflare-dns.com/dns-query#proxy&no-h3",
-    "direct-dns-server": "https://doh.pub/dns-query#no-h3, https://dns.alidns.com/dns-query#no-h3",
-    "proxy-dns-server": "https://dns.quad9.net/dns-query#no-h3, https://dns.google/dns-query#no-h3",
+    "dns-server": "https://dns.quad9.net/dns-query#proxy, https://dns.google/dns-query#proxy",
+    "fallback-dns-server": "https://cloudflare-dns.com/dns-query#proxy",
+    "direct-dns-server": "https://doh.pub/dns-query, https://dns.alidns.com/dns-query",
+    "proxy-dns-server": "https://dns.quad9.net/dns-query, https://dns.google/dns-query",
     "dns-direct-system": "false",
     "dns-direct-fallback-proxy": "false",
     "hijack-dns": ":53"
