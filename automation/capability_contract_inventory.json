@@ -4,8 +4,8 @@
   "status": "baseline_inventory",
   "source_registry_blob_sha": "9b5ef6ba95ccfbd6dcf96a4c1646f8c939421bec",
   "summary": {
-    "registered_programs": 63,
-    "python_components": 55,
+    "registered_programs": 56,
+    "python_components": 56,
     "python_components_with_concrete_io_contract": 1,
     "python_components_with_declared_registry_dependencies": 6,
     "independently_dispatchable_python_components": 1,
@@ -1631,6 +1631,35 @@
         "independent_verifier"
       ],
       "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_validate_source_registry_artifact",
+      "path": "scripts/validate_source_registry_artifact.py",
+      "declared_capabilities": [
+        "source_candidate_registry_artifact_validation"
+      ],
+      "registry_dependencies": [
+        "script_json_document_store",
+        "script_register_discovered_sources"
+      ],
+      "current_registry_inputs": [
+        "Pinned historical Source Discovery artifact ZIP and producer provenance"
+      ],
+      "current_registry_outputs": [
+        "Runner-local temporary sharded registry manifest and verified round-trip summary; no repository state mutation"
+      ],
+      "current_invocation": "read_only_validation_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "transitive_side_effects",
+        "idempotency_key",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Read-only CI validator. All writes are confined to tempfile.TemporaryDirectory() outside the checkout; it cannot dispatch, activate sources or mutate policy."
     },
     {
       "id": "script_verify_assess_sources_artifacts",
