@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from register_discovered_sources import build_registry, source_id_for
+from register_discovered_sources import (build_registry, source_id_for, encode_registry_storage, decode_registry_storage)
 
 
 class DiscoveredSourceRegistryTests(unittest.TestCase):
@@ -72,6 +72,27 @@ class DiscoveredSourceRegistryTests(unittest.TestCase):
     def test_external_intelligence_observations_are_not_rule_sources(self):
         result = build_registry({}, self.discovery, self.provenance, "2026-11-10T01:00:00+00:00")
         self.assertNotIn("not-a-rule-source.example", json.dumps(result))
+
+    def test_v1_registry_round_trips_through_typed_shard_schema(self):
+        original = build_registry({}, self.discovery, self.provenance, "2026-11-10T01:00:00+00:00")
+        stored = encode_registry_storage(original)
+        self.assertEqual(stored["schema_version"], 2)
+        self.assertEqual(stored["storage_format"], "typed-jsonl-shards-v1")
+        self.assertNotIn("repositories", stored)
+        self.assertNotIn("source_files", stored)
+        self.assertEqual(decode_registry_storage(stored), original)
+
+    def test_v1_legacy_registry_is_accepted_without_migration_loss(self):
+        original = build_registry({}, self.discovery, self.provenance, "2026-11-10T01:00:00+00:00")
+        restored = decode_registry_storage(original)
+        self.assertEqual(restored, original)
+        next_provenance = {**self.provenance, "workflow_run_id": "123457",
+                           "workflow_head_sha": "c" * 40, "artifact_sha256": "d" * 64}
+        updated = build_registry(restored, self.discovery, next_provenance,
+                                 "2026-11-11T01:00:00+00:00")
+        self.assertEqual(updated["repository_count"], 1)
+        self.assertEqual(updated["source_file_count"], 2)
+        self.assertEqual(updated["source_files"][0]["first_seen_run_id"], "123456")
 
     def test_rejects_rule_url_from_another_repository(self):
         invalid = json.loads(json.dumps(self.discovery))
