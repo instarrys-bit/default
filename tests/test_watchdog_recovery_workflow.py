@@ -163,11 +163,14 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn('output.write(f"assessment_output_expected={value}\\\\n")', run_queue)
         self.assertIn("steps.run-queue.outputs.assessment_output_expected == 'true'", workflow)
         self.assertIn("Upload verified source assessment outputs as immutable artifact", workflow)
-    def test_active_production_audit_is_cancelled_until_independent_assessment_passes(self):
+    def test_active_production_audit_is_cancelled_only_when_no_verified_assessment_exists(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("Cancel active production audits while independent Assessment gate is closed", workflow)
         cancel = workflow.split("Cancel active production audits while independent Assessment gate is closed", 1)[1].split("Resolve completed Discovery run from durable task correlation", 1)[0]
-        self.assertIn("classify_assessment_handoff(tasks, run_id)", cancel)
+        self.assertIn("latest_verified_assessed_discovery(tasks)", cancel)
+        self.assertIn("newer unassessed Discovery tasks do not close the production gate", cancel)
+        self.assertNotIn("latest = max(", cancel)
+        self.assertNotIn("classify_assessment_handoff(tasks, run_id)", cancel)
         self.assertIn("validate_run_head_sha(client, intent, run.get(\"head_sha\"))", cancel)
         self.assertIn("/actions/runs/{run_id}/cancel", cancel)
         self.assertIn('task.get("target_program_id") != "workflow_auto_sync"', cancel)
