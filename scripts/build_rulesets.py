@@ -356,8 +356,10 @@ def main():
     previous_reject_queue_path=OUT/"reject_review_queue.json"
     previous_reject_queue_doc=json.loads(previous_reject_queue_path.read_text(encoding="utf-8")) if previous_reject_queue_path.exists() else {"schema_version":1,"items":[]}
     previous_reject_queue_items=previous_reject_queue_doc.get("items",[])
-    if not isinstance(previous_reject_queue_items,list):
-        raise ValueError("previous REJECT review queue items must be a list")
+    if (previous_reject_queue_doc.get("schema_version")!=1
+            or previous_reject_queue_doc.get("policy")!="REJECT"
+            or not isinstance(previous_reject_queue_items,list)):
+        raise ValueError("previous REJECT review queue has an unsupported schema or policy")
     previous_published={policy:set() for policy in POLICIES}
     for policy in POLICIES:
         previous_path=OUT/(policy.lower()+".list")
@@ -563,6 +565,8 @@ def main():
     for queued_item in previous_reject_queue_items:
         if not isinstance(queued_item,dict) or not isinstance(queued_item.get("rule"),str):
             raise ValueError("previous REJECT review queue contains a malformed item")
+        if queued_item["rule"] in prior_queue_by_rule:
+            raise ValueError("previous REJECT review queue contains a duplicate rule: "+queued_item["rule"])
         prior_queue_by_rule[queued_item["rule"]]=queued_item
     queue_domains=set()
     for queued_item in list(prior_queue_by_rule.values())+list(approved_queue_items):
