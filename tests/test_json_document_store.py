@@ -46,6 +46,31 @@ class JsonDocumentStoreTests(unittest.TestCase):
                 self.assertTrue(shard_dir.is_dir())
                 self.assertTrue(all(p.stat().st_size <= 4096 for p in shard_dir.glob("*.jsonl")))
 
+    def test_force_sharded_and_per_document_limit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "registry.json"
+            payload = {"records": [{"id": i, "payload": "r" * 600} for i in range(10)]}
+            result = store.write_document(
+                path, payload, "records", force_sharded=True,
+                max_file_bytes=2048, shard_target_bytes=1500,
+            )
+            self.assertEqual(result["storage"], "jsonl-shards-v1")
+            self.assertFalse(path.exists())
+            manifest = json.loads(store.manifest_path(path).read_text(encoding="utf-8"))
+            self.assertEqual(manifest["max_file_bytes"], 2048)
+            shard_dir = path.parent / manifest["shard_directory"]
+            self.assertTrue(all(p.stat().st_size <= 2048 for p in shard_dir.glob("*.jsonl")))
+            self.assertEqual(store.read_document(path, "records"), payload)
+
+    def test_invalid_per_document_shard_limits_are_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "registry.json"
+            with self.assertRaisesRegex(ValueError, "shard_target_bytes"):
+                store.write_document(
+                    path, {"records": []}, "records",
+                    max_file_bytes=1024, shard_target_bytes=2048,
+                )
+
     def test_sharded_document_writes_recheck_logical_lease_at_each_mutation(self):
         import resource_lease_runtime
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
