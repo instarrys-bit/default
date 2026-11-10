@@ -1182,15 +1182,30 @@ jobs:
           repo, token = os.environ["GITHUB_REPOSITORY"], os.environ["GITHUB_TOKEN"]
           handoff = None
           handoff_state = ""
+          # Reconcile only the newest relevant Discovery cycle (or the exact
+          # Discovery callback). Scanning every historical task causes an
+          # unbounded series of artifact API lookups as the append-only queue grows.
+          event_run_id = os.environ.get("EVENT_SOURCE_RUN_ID", "").strip()
+          discoveries = [
+              task for task in tasks
+              if isinstance(task, dict) and task.get("target_program_id") == "workflow_source_discovery"
+          ]
+          if event_run_id:
+              discoveries = [
+                  task for task in discoveries
+                  if str(((task.get("result") or {}).get("run_evidence") or {}).get("run_id") or "") == event_run_id
+              ]
+          else:
+              discoveries.sort(key=lambda task: (str(task.get("created_at") or ""), str(task.get("task_id") or "")), reverse=True)
+              discoveries = discoveries[:1]
           pending = []
-          for task in tasks:
+          for task in discoveries:
               if not discovery_task_requires_handoff(task, tasks):
                   continue
               intent = task.get("dispatch_intent") or {}
               correlation, requested_sha = intent.get("correlation_id"), intent.get("requested_head_sha")
               if isinstance(correlation, str) and correlation and isinstance(requested_sha, str) and len(requested_sha) == 40:
                   pending.append((task, correlation, requested_sha))
-          pending.sort(key=lambda x: x[0].get("created_at", ""), reverse=True)
           existing_artifact_recovery_keys = {
               task.get("idempotency_key") for task in tasks
               if isinstance(task, dict) and isinstance(task.get("idempotency_key"), str)
@@ -1209,7 +1224,20 @@ jobs:
               for task in tasks
               if isinstance(task, dict) and isinstance(task.get("idempotency_key"), str)
           }
-          assessment_candidates = [requested_task] if requested_task and requested_task.get("target_program_id") == "script_assess_sources" else tasks
+          if requested_task and requested_task.get("target_program_id") == "script_assess_sources":
+              assessment_candidates = [requested_task]
+          else:
+              # Limit Assessment recovery checks to the exact predecessor in
+              # the single Discovery cycle selected above, never all history.
+              latest_discovery_run_id = ""
+              if discoveries:
+                  latest_discovery_run_id = str((((discoveries[0].get("result") or {}).get("run_evidence") or {}).get("run_id")) or "")
+              assessment_candidates = [
+                  task for task in tasks
+                  if isinstance(task, dict)
+                  and task.get("target_program_id") == "script_assess_sources"
+                  and str(((task.get("input") or {}).get("predecessor") or {}).get("workflow_run_id") or "") == latest_discovery_run_id
+              ] if latest_discovery_run_id else []
           assessment_tasks = []
           for task in assessment_candidates:
               if not isinstance(task, dict):
