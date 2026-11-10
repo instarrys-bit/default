@@ -3,7 +3,7 @@
   "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
   "release_status": "active_with_live_handoff_evidence",
   "created_on": "2026-11-07",
-  "purpose": "Scoped independent Source Discovery → non-activating Source Assessment DAG with a gated Watchdog dispatch into the reviewed deterministic production workflow. The only shared mutation in the source DAG is the fenced Issue #423 checkpoint; Assessment outputs remain immutable Actions artifacts and production publication remains restricted to rulesets/**.",
+  "purpose": "Scoped independent Source Discovery → non-activating Source Assessment DAG for new-source activation, alongside deterministic ruleset publication from currently registered sources. Source Assessment gates activation only; manually approved REJECT queue items are revalidated against current source evidence and uu.conf before publication. The only shared mutation in the source DAG is the fenced Issue #423 checkpoint; Assessment outputs remain immutable Actions artifacts and production publication remains restricted to rulesets/**.",
   "component_schemas": {
     "program_registry": {
       "path": "automation/program_registry.json",
@@ -228,7 +228,7 @@
     "Live multi-run interruption/resume contention canary remains desirable for further hardening.",
     "The global transitive writer inventory for unrelated non-dispatchable capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
     "The deterministic review-engine source revision is not yet pinned to a verified commit.",
-    "The post-Assessment production dispatcher is newly wired and still requires a live Watchdog → auto_sync → ruleset publication run to establish end-to-end unattended production evidence."
+    "A live Watchdog → auto_sync → ruleset publication run is still required to establish end-to-end unattended production evidence; Source Assessment gates new-source activation only and does not block publication from currently registered sources."
   ],
   "next_migration_gate": {
     "required_before_independent_python_dispatch": [
