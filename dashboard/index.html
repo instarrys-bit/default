@@ -11,7 +11,7 @@
 html{background:var(--bg);scroll-behavior:smooth}
 body{margin:0;min-height:100vh;color:var(--text);font:14px/1.5 var(--font);background:radial-gradient(ellipse at 10% -8%,rgba(71,115,206,.20),transparent 34%),radial-gradient(ellipse at 92% 12%,rgba(30,170,143,.09),transparent 28%),linear-gradient(160deg,#0a1020 0%,#0b1222 54%,#090e1b 100%);font-synthesis:none}
 button{font:inherit}
-.shell{width:min(1600px,100%);margin:auto;padding:28px clamp(14px,3vw,42px) 24px}
+.shell{width:100%;max-width:none;margin:0;padding:28px clamp(18px,2.2vw,36px) 24px}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:27px}
 .brand{display:flex;align-items:center;gap:12px;min-width:0}
 .brand-mark{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#76aaff,#426cda);box-shadow:0 8px 28px rgba(70,117,224,.3);font-size:19px;font-weight:850;color:white;letter-spacing:-1px}
@@ -225,16 +225,16 @@ async function load(){try{
  const s=d.sources||{};
  const registryState=s.registry_published?"已写入正式候选登记库":"候选登记库等待生产发布";
  const sourceMetrics=[
-  ["发现仓库",s.discovered_repository_count,"自动发现结果，不代表已审核"],
+  ["发现仓库",s.discovered_repository_count,"累计发现的仓库数量"],
   ["评估文件",s.assessed_file_count,"累计来源文件评估记录"],
   ["来源候选",s.source_candidate_count,"候选来源目录"],
-  ["符合候选资格",s.eligible_candidate_count,"仍需来源级审核与启用"],
+  ["符合候选资格",s.eligible_candidate_count,"符合当前候选条件的数量"],
   ["登记仓库",s.durable_repository_count,registryState],
   ["登记规则文件",s.durable_source_file_count,"逐仓库、逐规则文件登记"]
  ];
  el("source-pipeline").innerHTML=
   '<div class="source-metric-grid">'+sourceMetrics.map(([label,value,note])=>'<div class="source-metric"><span>'+label+'</span><b>'+n(value)+'</b><small>'+note+'</small></div>').join("")+'</div>'+
-  '<div class="micro-note">正式启用来源：'+n(s.source_count)+'。候选来源不会自动变成 DIRECT / PROXY / REJECT 来源；仍须完成来源级审核。</div>';
+  '';
  const a=d.automation||{};
  const state=a.workflow_state==="active"?(a.last_run_status==="in_progress"?"监控正在运行":(a.last_run_status==="queued"||a.last_run_status==="waiting")?"监控任务排队中":a.last_run_conclusion==="success"?"最近检查正常":a.last_run_conclusion?"最近检查异常":"已启用，暂无运行记录"):(a.workflow_state==="disabled"?"未启用":"状态暂时无法确认");
  const stateClass=state.indexOf("正常")>=0||state.indexOf("运行")>=0?"good":state.indexOf("异常")>=0?"bad":"";
