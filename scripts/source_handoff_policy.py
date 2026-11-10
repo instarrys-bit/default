@@ -271,11 +271,11 @@ def classify_assessment_handoff(tasks: list, workflow_run_id: str) -> dict:
     }
 
 def select_production_worker_task(tasks: list, current_fingerprint: str, now: datetime | None = None) -> str:
-    """Select one queued production audit only after the latest Discovery has a verified Assessment.
+    """Select one queued production audit for the currently registered source set.
 
-    This is deliberately separate from select_source_worker_task: the source worker
-    stops at the Assessment boundary, while this selector is the sole handoff into
-    the already-reviewed production workflow adapter.
+    Discovery -> Assessment gates activation of newly discovered sources only.
+    Production independently recollects registered sources and validates current
+    evidence, configuration conflicts and protected domains before publishing.
     """
     if not isinstance(tasks, list):
         raise ValueError("tasks must be a list")
@@ -285,27 +285,6 @@ def select_production_worker_task(tasks: list, current_fingerprint: str, now: da
     now = now.astimezone(timezone.utc)
     if not isinstance(current_fingerprint, str) or len(current_fingerprint) != 64:
         raise ValueError("current production fingerprint must be a SHA-256 hex digest")
-    discoveries = [
-        task for task in tasks
-        if isinstance(task, dict) and task.get("target_program_id") == "workflow_source_discovery"
-    ]
-    latest = max(
-        discoveries,
-        key=lambda task: (str(task.get("created_at") or ""), str(task.get("task_id") or "")),
-        default=None,
-    )
-    if not isinstance(latest, dict) or latest.get("status") != "SUCCEEDED":
-        return ""
-    if (latest.get("verification") or {}).get("status") != "passed":
-        return ""
-    evidence = (latest.get("result") or {}).get("run_evidence") or {}
-    run_id = evidence.get("run_id")
-    if isinstance(run_id, int) and not isinstance(run_id, bool):
-        run_id = str(run_id)
-    if not isinstance(run_id, str) or not run_id.isdigit():
-        return ""
-    if classify_assessment_handoff(tasks, run_id).get("state") != "already_assessed":
-        return ""
 
     # An already-dispatched production task owns the pipeline until Watchdog
     # reconciles its exact workflow run; never start a second writer.
