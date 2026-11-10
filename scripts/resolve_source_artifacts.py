@@ -169,6 +169,13 @@ def main():
         print(json.dumps({"valid":True,"discovery_run_id":pred["workflow_run_id"],"assessment_task_id":task["task_id"],"assessment_run_id":assessment_run_id,"assessment_sha256":assessment_digest},sort_keys=True))
         return 0
     except Exception as exc:
-        print("SOURCE HANDOFF BLOCKED: "+str(exc),file=sys.stderr); return 1
+        # Source Assessment is required before activating newly discovered sources,
+        # but it must not block publication from the already registered source set.
+        # No artifact environment variables are exported on this path, so downstream
+        # activation sees no verified Discovery input and cannot activate new sources.
+        message="SOURCE HANDOFF UNAVAILABLE; continuing with registered sources only: "+str(exc)
+        print(message,file=sys.stderr)
+        print(json.dumps({"valid":False,"source_activation_skipped":True,"reason":str(exc)},sort_keys=True))
+        return 0
 
 if __name__=="__main__": raise SystemExit(main())
