@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audit_id": "resource-ownership-audit-2026.11.10.discovered-source-registry-sharded1",
+  "audit_id": "resource-ownership-audit-2026.11.10.source-registry-artifact-replay",
   "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
@@ -64,6 +64,7 @@
       "scripts/validate_execution_adapters.py",
       "scripts/validate_program_registry.py",
       "scripts/validate_release_manifest.py",
+      "scripts/validate_source_registry_artifact.py",
       "scripts/verify_assess_sources_artifacts.py",
       "scripts/verify_baseline.py",
       "scripts/verify_published_rulesets.py",
@@ -71,6 +72,8 @@
       "scripts/watchdog_recovery_policy.py",
       "tests/test_auto_activate_sources.py",
       "tests/test_config_baseline_registration.py",
+      "tests/test_discovered_source_registry.py",
+      "tests/test_json_document_store.py",
       "tests/test_production_intent.py",
       "tests/test_remote_task_queue_runtime.py",
       "tests/test_restore_automation_state.py",
@@ -81,9 +84,7 @@
       "tests/test_task_scheduler.py",
       "tests/test_watchdog_recovery_workflow.py",
       "tests/test_workflow_config_guard_order.py",
-      "tests/test_workflow_native_write_inventory.py",
-      "tests/test_discovered_source_registry.py",
-      "tests/test_json_document_store.py"
+      "tests/test_workflow_native_write_inventory.py"
     ],
     "limitation": "The active Source Discovery → Assessment DAG remains scoped to runner-local immutable artifacts and a fenced Issue #423 checkpoint. A separate durable non-activating source-candidate registry is committed only as rulesets/source_candidate_registry.json by the existing single auto_sync publisher under the Watchdog logical/production-pipeline fence. Protected modules/** and JavaScript remain unwritable. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
     "reviewed_at": "2026-11-07",
