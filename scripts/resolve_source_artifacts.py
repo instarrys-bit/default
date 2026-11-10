@@ -98,16 +98,16 @@ def download_artifact(repo,run_id,name,token,dest):
 def resolve_task(queue):
     tasks=queue.get("tasks")
     if not isinstance(tasks,list): raise ValueError("queue tasks missing")
-    discoveries=[t for t in tasks if isinstance(t,dict) and t.get("target_program_id")=="workflow_source_discovery"]
-    latest=max(discoveries,key=lambda t:(str(t.get("created_at","")),str(t.get("task_id",""))),default=None)
-    if not latest or latest.get("status")!="SUCCEEDED" or (latest.get("verification") or {}).get("status")!="passed": raise ValueError("latest Discovery is not verified SUCCEEDED")
+    from source_handoff_policy import classify_assessment_handoff, latest_verified_assessed_discovery
+    latest=latest_verified_assessed_discovery(tasks)
+    if not latest: raise ValueError("no independently verified Discovery has a verified Assessment")
     run_id=(latest.get("result") or {}).get("run_evidence",{}).get("run_id")
-    if isinstance(run_id,bool) or not isinstance(run_id,int) or run_id<=0: raise ValueError("Discovery run ID missing")
-    from source_handoff_policy import classify_assessment_handoff
-    if classify_assessment_handoff(tasks,str(run_id)).get("state")!="already_assessed": raise ValueError("latest Discovery has no verified Assessment")
+    if isinstance(run_id,bool) or not isinstance(run_id,int) or run_id<=0: raise ValueError("verified Discovery run ID missing")
+    handoff=classify_assessment_handoff(tasks,str(run_id))
     candidates=[t for t in tasks if isinstance(t,dict) and t.get("target_program_id")=="script_assess_sources" and str(((t.get("input") or {}).get("predecessor") or {}).get("workflow_run_id",""))==str(run_id) and t.get("status")=="SUCCEEDED" and (t.get("verification") or {}).get("status")=="passed" and ((t.get("result") or {}).get("artifact_verification") or {}).get("valid") is True and ((t.get("result") or {}).get("artifact_verification") or {}).get("activation_count")==0]
-    if not candidates: raise ValueError("no verified Assessment matches latest Discovery")
-    task=max(candidates,key=lambda t:(str(t.get("updated_at","")),str(t.get("task_id",""))))
+    if not candidates: raise ValueError("no verified Assessment matches selected Discovery")
+    task=next((t for t in candidates if t.get("task_id")==handoff.get("canonical_task_id")),None)
+    if task is None: raise ValueError("canonical verified Assessment task is missing")
     pred=(task.get("input") or {}).get("predecessor")
     if not isinstance(pred,dict) or pred.get("artifact_path")!="sources/discovered_sources.json": raise ValueError("Assessment predecessor is invalid")
     return task,pred
