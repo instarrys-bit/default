@@ -121,6 +121,12 @@ class GitHubWorkflowClient:
     def get_run(self, run_id: int) -> dict:
         return self.request("GET", f"actions/runs/{run_id}")
 
+    def cancel_run(self, run_id: int):
+        """Request cancellation of one exact correlated workflow run."""
+        if isinstance(run_id, bool) or not isinstance(run_id, int) or run_id <= 0:
+            raise ValueError("workflow run ID must be a positive integer")
+        return self.request("POST", f"actions/runs/{run_id}/cancel")
+
     def get_commit(self, commit_sha: str) -> dict:
         if not isinstance(commit_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", commit_sha):
             raise WorkflowAPIError("workflow run commit SHA is invalid")
@@ -336,7 +342,7 @@ def inspect_correlated_run(client: GitHubWorkflowClient, intent: dict,
         raise WorkflowAPIError("workflow run identity commit SHA changed between list and detail reads")
     head_sha_relationship = validate_run_head_sha(client, intent, run.get("head_sha"))
     if run.get("status") != "completed":
-        return {"state": "pending", "run_id": run_id, "html_url": run.get("html_url"), "run_status": run.get("status")}
+        return {"state": "pending", "run_id": run_id, "html_url": run.get("html_url"), "run_status": run.get("status"), "run_created_at": run.get("created_at")}
     conclusion = run.get("conclusion")
     evidence = {
         "run_id": run_id,
