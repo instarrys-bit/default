@@ -210,6 +210,7 @@ def decode_registry_storage(payload: dict) -> dict:
             raise ValueError("sharded source registry contains an unknown record type")
     result = {key: value for key, value in payload.items() if key != "records"}
     result.pop("storage_format", None)
+    result.pop("record_count", None)
     result["schema_version"] = REGISTRY_SCHEMA
     result["repositories"] = repositories
     result["source_files"] = source_files
