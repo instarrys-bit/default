@@ -2,7 +2,7 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-source-dag-active-2026-11-07",
   "status": "baseline_inventory",
-  "source_registry_blob_sha": "12559717bc2a377f9aa98305338ef8019a2a5c9f",
+  "source_registry_blob_sha": "9b5ef6ba95ccfbd6dcf96a4c1646f8c939421bec",
   "summary": {
     "registered_programs": 63,
     "python_components": 55,
