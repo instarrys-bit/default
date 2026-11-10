@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from resolve_source_artifacts import extract, verify_manifest
+from resolve_source_artifacts import extract, resolve_task, verify_manifest
 
 
 class SourceArtifactHandoffTests(unittest.TestCase):
@@ -19,6 +19,41 @@ class SourceArtifactHandoffTests(unittest.TestCase):
             files = [{"path": "runtime.json", "sha256": hashlib.sha256(payload).hexdigest()}]
             manifest_sha = hashlib.sha256(json.dumps(files, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
             verify_manifest(root, {"files": files, "artifact_sha256": manifest_sha}, "proof.json")
+
+    def test_resolver_uses_last_verified_assessment_when_newer_discovery_is_pending(self):
+        older = {
+            "task_id": "task_discovery_old",
+            "target_program_id": "workflow_source_discovery",
+            "status": "SUCCEEDED",
+            "created_at": "2026-11-07T12:00:00Z",
+            "verification": {"status": "passed"},
+            "result": {"run_evidence": {"run_id": 42373818238}},
+        }
+        assessment = {
+            "task_id": "task_assessment_old",
+            "target_program_id": "script_assess_sources",
+            "status": "SUCCEEDED",
+            "created_at": "2026-11-07T12:30:00Z",
+            "input": {"predecessor": {
+                "workflow_run_id": "42373818238",
+                "workflow_head_sha": "a" * 40,
+                "artifact_path": "sources/discovered_sources.json",
+                "artifact_sha256": "b" * 64,
+            }},
+            "verification": {"status": "passed"},
+            "result": {"artifact_verification": {"valid": True, "activation_count": 0}},
+        }
+        newer = {
+            "task_id": "task_discovery_new",
+            "target_program_id": "workflow_source_discovery",
+            "status": "QUEUED",
+            "created_at": "2026-11-08T12:00:00Z",
+            "verification": {"status": "passed"},
+            "result": {},
+        }
+        selected, predecessor = resolve_task({"tasks": [older, assessment, newer]})
+        self.assertEqual(selected["task_id"], "task_assessment_old")
+        self.assertEqual(predecessor["workflow_run_id"], "42373818238")
 
     def test_modified_file_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
