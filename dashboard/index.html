@@ -79,6 +79,12 @@ button{font:inherit}
 .review-cell b{display:block;margin-top:5px;font-size:16px;line-height:1.2;font-weight:780;font-variant-numeric:tabular-nums}
 .review-cell.warn b{color:var(--amber)}.review-cell.bad b{color:var(--red)}.review-cell.good b{color:var(--green)}
 .micro-note{margin-top:11px;color:#75839e;font-size:9px;line-height:1.5}
+.source-metric-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.source-metric{padding:11px 12px;border-radius:10px;background:rgba(7,13,25,.34);border:1px solid rgba(150,172,215,.09);min-width:0}
+.source-metric span{display:block;color:#8c9ab4;font-size:9px;line-height:1.35}
+.source-metric b{display:block;margin-top:5px;font-size:18px;line-height:1.2;font-weight:780;font-variant-numeric:tabular-nums}
+.source-metric small{display:block;margin-top:4px;color:#7787a4;font-size:9px;line-height:1.35}
+
 .status-line{display:flex;align-items:center;gap:10px;padding:11px 12px;border:1px solid rgba(67,214,160,.15);border-radius:11px;background:rgba(67,214,160,.045);margin:-2px 0 16px}
 .status-line .live-dot{flex:0 0 7px}
 .status-line strong{font-size:11px;font-weight:700}
@@ -191,6 +197,10 @@ button{font:inherit}
   <div class="card-head"><div><div class="card-title">审核概况</div><div class="card-subtitle">历史记录覆盖与审核分类结果</div></div><span class="card-tag">REVIEW</span></div>
   <div id="review"><div class="loading">正在读取审核数据…</div></div>
  </article>
+ <article class="card source-pipeline">
+  <div class="card-head"><div><div class="card-title">来源发现与准入</div><div class="card-subtitle">发现候选不等于正式启用；来源审核与规则审核分开统计</div></div><span class="card-tag">SOURCE PIPELINE</span></div>
+  <div id="source-pipeline"><div class="loading">正在读取来源流水线…</div></div>
+ </article>
  <article class="card queue">
   <div class="card-head"><div><div class="card-title">任务运行状态</div><div class="card-subtitle">原有生产任务 + Discovery + Assessment 合并统计</div></div><span class="card-tag">TASK FLOW</span></div>
   <div id="queue"><div class="loading">正在读取任务状态…</div></div>
@@ -209,8 +219,21 @@ const pct=(v,t)=>t>0?Math.max(0,Math.min(100,v/t*100)):0;
 let lastSuccessfulLoad=null;let snapshotGeneratedAt=null;let lastLoadError=null;
 async function load(){try{
  const r=await fetch("./data.json?refresh="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);const d=await r.json();lastSuccessfulLoad=new Date();snapshotGeneratedAt=d.generated_at?new Date(d.generated_at):null;lastLoadError=null;tickClock();
- const cards=[["已发布规则",n(d.rulesets.published_total),"当前规则集规模","published"],["候选池总量",n(d.candidate_review.candidate_total),"候选记录，不等同于待筛选","candidate"],["规则来源",n(d.sources.source_count),"当前纳入统计的来源数","sources"],["待人工审核 · REJECT",n(d.review.reject_manual_pending),"未经人工授权不会自动发布","alert"]];
+ const cards=[["已发布规则",n(d.rulesets.published_total),"当前规则集规模","published"],["候选池总量",n(d.candidate_review.candidate_total),"候选记录，不等同于待筛选","candidate"],["已启用来源",n(d.sources.source_count),"通过准入并正式启用的规则来源","sources"],["待人工审核 · REJECT",n(d.review.reject_manual_pending),"未经人工授权不会自动发布","alert"]];
  el("summary").innerHTML=cards.map(x=>'<article class="kpi '+x[3]+'"><div class="kpi-label">'+x[0]+'</div><div class="kpi-value">'+x[1]+'</div><div class="kpi-foot">'+x[2]+'</div></article>').join("");
+ const s=d.sources||{};
+ const registryState=s.registry_published?"已写入正式候选登记库":"候选登记库等待生产发布";
+ const sourceMetrics=[
+  ["发现仓库",s.discovered_repository_count,"自动发现结果，不代表已审核"],
+  ["评估文件",s.assessed_file_count,"累计来源文件评估记录"],
+  ["来源候选",s.source_candidate_count,"候选来源目录"],
+  ["符合候选资格",s.eligible_candidate_count,"仍需来源级审核与启用"],
+  ["登记仓库",s.durable_repository_count,registryState],
+  ["登记规则文件",s.durable_source_file_count,"逐仓库、逐规则文件登记"]
+ ];
+ el("source-pipeline").innerHTML=
+  '<div class="source-metric-grid">'+sourceMetrics.map(([label,value,note])=>'<div class="source-metric"><span>'+label+'</span><b>'+n(value)+'</b><small>'+note+'</small></div>').join("")+'</div>'+
+  '<div class="micro-note">正式启用来源：'+n(s.source_count)+'。候选来源不会自动变成 DIRECT / PROXY / REJECT 来源；仍须完成来源级审核。</div>';
  const a=d.automation||{};
  const state=a.workflow_state==="active"?(a.last_run_status==="in_progress"?"监控正在运行":(a.last_run_status==="queued"||a.last_run_status==="waiting")?"监控任务排队中":a.last_run_conclusion==="success"?"最近检查正常":a.last_run_conclusion?"最近检查异常":"已启用，暂无运行记录"):(a.workflow_state==="disabled"?"未启用":"状态暂时无法确认");
  const stateClass=state.indexOf("正常")>=0||state.indexOf("运行")>=0?"good":state.indexOf("异常")>=0?"bad":"";
