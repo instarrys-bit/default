@@ -1039,11 +1039,18 @@
       "program_id": "script_register_discovered_sources",
       "source": "scripts/register_discovered_sources.py",
       "writes": [
-        "rulesets/source_candidate_registry.json",
-        "rulesets/.source_candidate_registry.*.tmp"
+        "rulesets/source_candidate_registry.json.manifest.json",
+        "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl",
+        "rulesets/source_candidate_registry.json (legacy schema-v1 input only)"
       ],
-      "document_store": [],
-      "dynamic_children": [],
+      "document_store": [
+        "rulesets/source_candidate_registry.json"
+      ],
+      "dynamic_children": [
+        "rulesets/source_candidate_registry.json.manifest.json",
+        "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl",
+        "rulesets/source_candidate_registry.json.parts.tmp-* staging directories"
+      ],
       "read_resources": [
         "verified AUTOMATION_SOURCE_DISCOVERY_ROOT/sources/discovered_sources.json",
         "rulesets/source_candidate_registry.json (prior durable registry)"
@@ -1053,18 +1060,20 @@
         "External-intelligence observations are excluded; no DIRECT/PROXY/REJECT classification or source activation is performed.",
         "Writes only beneath rulesets/** and is published only by the existing single auto_sync publisher."
       ],
-      "evidence": "main() resolves the exact verified Discovery artifact in independent mode (or the explicit monolithic fallback), validates repository-bound raw.githubusercontent.com URLs, merges stable repository/file identities, and atomically replaces rulesets/source_candidate_registry.json.",
+      "evidence": "main() reads schema-v1 legacy JSON or verifies the schema-v2 JSONL shard manifest and every shard SHA-256/count, merges stable repository/file identities, then writes the canonical logical document through json_document_store.write_document(force_sharded=True) with a 40,000,000-byte per-file cap and 35,000,000-byte shard target. The adjacent manifest is the atomic commit point; all base/manifest/shard/staging mutations are checked against the live resource lease.",
       "write_boundary_fencing": "The script re-reads the durable queue and asserts the exact rulesets path; the existing Watchdog logical/production-pipeline resource fence is the covering lease. The auto_sync publisher stages rulesets/** only.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
       "additional_writer_boundary": "Restore is runner-local before audit; repository publication remains through the existing auto_sync single-writer path.",
       "lease_keys": [
-        "logical/production-pipeline"
-      ],
-      "lease_enforcement": "assert_resource_lease_from_environment is called before directory/file mutation and again immediately before atomic replacement.",
-      "publish_resources": [
+        "logical/production-pipeline",
         "rulesets/source_candidate_registry.json"
+      ],
+      "lease_enforcement": "json_document_store rechecks the live logical-document lease for the base path, staging directory, each shard, manifest replacement and old-shard cleanup; production-pipeline remains the outer Watchdog fence.",
+      "publish_resources": [
+        "rulesets/source_candidate_registry.json.manifest.json",
+        "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl"
       ],
       "ephemeral_unpublished_resources": []
     }
