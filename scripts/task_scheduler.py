@@ -154,7 +154,7 @@ def supersede_stale_queued_production_tasks(store, registry: dict, root: Path = 
     return store.mutate(mutate)
 
 def production_source_assessment_gate(tasks: list, root: Path = ROOT) -> bool:
-    """Require a verified, non-activating Assessment for the newest Discovery in independent mode."""
+    """Require a verified, non-activating Assessment for the newest usable Discovery in independent mode."""
     control = load_object(Path(root) / "automation" / "production_control.json", "production control")
     mode = control.get("source_discovery_mode")
     if mode == "monolithic_fallback":
