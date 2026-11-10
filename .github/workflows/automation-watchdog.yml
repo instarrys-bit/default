@@ -1060,33 +1060,21 @@ jobs:
           from pathlib import Path
           import sys
           sys.path.insert(0, "scripts")
-          from source_handoff_policy import classify_assessment_handoff
+          from source_handoff_policy import latest_verified_assessed_discovery
           from github_workflow_adapter import GitHubWorkflowClient, expected_correlation_titles, validate_run_head_sha
 
           repo = os.environ["GITHUB_REPOSITORY"]
           token = os.environ["GITHUB_TOKEN"]
           queue = json.loads(Path(os.environ["AUTOMATION_QUEUE_SNAPSHOT"]).read_text(encoding="utf-8"))
           tasks = queue.get("tasks", [])
-          discoveries = [
-              task for task in tasks
-              if isinstance(task, dict) and task.get("target_program_id") == "workflow_source_discovery"
-          ]
-          latest = max(
-              discoveries,
-              key=lambda task: (str(task.get("created_at") or ""), str(task.get("task_id") or "")),
-              default=None,
-          )
-          gate_open = False
-          if isinstance(latest, dict) and latest.get("status") == "SUCCEEDED":
-              result = latest.get("result") or {}
-              evidence = result.get("run_evidence") or {}
-              run_id = evidence.get("run_id")
-              if isinstance(run_id, int) and not isinstance(run_id, bool):
-                  run_id = str(run_id)
-              if isinstance(run_id, str) and run_id.isdigit():
-                  gate_open = classify_assessment_handoff(tasks, run_id).get("state") == "already_assessed"
+          # A newer queued/active/unassessed Discovery is non-activating and must
+          # not invalidate the last independently verified source snapshot.
+          # Only cancel an active production audit when no verified assessed
+          # Discovery exists at all.
+          latest = latest_verified_assessed_discovery(tasks)
+          gate_open = isinstance(latest, dict)
           if gate_open:
-              print("Latest independent Discovery has a verified non-activating Assessment; production cancellation gate is open.")
+              print("A verified Discovery/Assessment snapshot remains available; newer unassessed Discovery tasks do not close the production gate.")
               raise SystemExit(0)
 
           client = GitHubWorkflowClient(repo, token)
