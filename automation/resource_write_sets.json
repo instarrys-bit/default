@@ -1380,8 +1380,8 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "799be862f8a1f72cfded0305c4ef317de5081095",
-    "program_registry_blob_sha": "fd77829bc96a27da38dec998ebd2883ea09f57bf",
+    "release_manifest_blob_sha": "95ccfedcb2dc4d6c48be28d95c709f3840da9f22",
+    "program_registry_blob_sha": "3a7d10a33d15dac84b5526f8e7be9b5c76fcdcca",
     "execution_adapters_blob_sha": "73cc70899f43dd02265b961805aa815cb7884789",
     "added_after_release_baseline": true,
     "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #423 checkpoint. Repository mutations are governed per capability by explicit exclusive resource_contract.resource_keys; control-plane metadata is separately inventoried. The production auto_sync publisher stages only the three rule-set deliverables under rulesets/**. The global static/transitive inventory remains partial for unrelated capabilities.",

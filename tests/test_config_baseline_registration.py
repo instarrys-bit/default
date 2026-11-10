@@ -228,6 +228,9 @@ class ConfigBaselineRegistrationTests(unittest.TestCase):
                 "path": "modules/uu.conf", "git_blob_sha": "a" * 40, "access": "read_only"}}}
             workflow_map = {"review_context": {"release_manifest_blob_sha": "b" * 40}}
             write_sets = {"review_context": {"release_manifest_blob_sha": "b" * 40}}
+            (root / "automation" / "release_manifest.json").write_text(json.dumps(release), encoding="utf-8")
+            (root / "automation" / "production_workflow_map.json").write_text(json.dumps(workflow_map), encoding="utf-8")
+            (root / "automation" / "resource_write_sets.json").write_text(json.dumps(write_sets), encoding="utf-8")
             release_text, map_text, sets_text = build_release_pin_updates(root, "modules/uu.conf", sha)
             changed = apply_baseline_updates(root, "modules/uu.conf", sha, policy, release_text, map_text, sets_text)
             self.assertEqual(changed, ["automation/production_workflow_map.json",
