@@ -27,9 +27,9 @@ POLICIES={"DIRECT","PROXY","REJECT"}
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
 
 
-def load_reject_approvals(path=REJECT_APPROVALS):
+def load_reject_approval_document(path=REJECT_APPROVALS):
     if not path.exists():
-        return set()
+        return {"approved_rules": set(), "approved_queue_items": [], "approval_source": None}
     payload=json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(payload,dict) or payload.get("schema_version")!=1:
         raise ValueError("reject manual-approval ledger has an unsupported schema")
@@ -38,13 +38,40 @@ def load_reject_approvals(path=REJECT_APPROVALS):
         raise ValueError("reject manual-approval ledger approved_rules must be a list")
     approved=set()
     for line in entries:
-        if not isinstance(line,str) or not re.fullmatch(r"DOMAIN(?:-SUFFIX)?,[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+",line,re.IGNORECASE):
+        if not isinstance(line,str) or not re.fullmatch(r"DOMAIN(?:-SUFFIX)?,[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+",line,re.IGNORECASE):
             raise ValueError("invalid manually approved REJECT rule: "+str(line))
         normalized=line.split(",",1)[0].upper()+","+line.split(",",1)[1].lower().rstrip(".")
         if normalized in approved:
             raise ValueError("duplicate manually approved REJECT rule: "+normalized)
         approved.add(normalized)
-    return approved
+    items=payload.get("approved_queue_items",[])
+    if not isinstance(items,list):
+        raise ValueError("approved_queue_items must be a list")
+    if items:
+        item_rules=[]
+        for item in items:
+            if not isinstance(item,dict) or not isinstance(item.get("rule"),str):
+                raise ValueError("approved queue evidence item is malformed")
+            item_rules.append(item["rule"].split(",",1)[0].upper()+","+item["rule"].split(",",1)[1].lower().rstrip("."))
+        if len(item_rules)!=len(set(item_rules)) or set(item_rules)!=approved:
+            raise ValueError("approved queue evidence snapshot does not exactly match approved_rules")
+        source=payload.get("approval_source")
+        if (not isinstance(source,dict)
+                or source.get("path")!="rulesets/reject_review_queue.json"
+                or not isinstance(source.get("git_blob_sha"),str)
+                or not re.fullmatch(r"[0-9a-f]{40}",source.get("git_blob_sha",""))
+                or source.get("approved_item_count")!=len(items)
+                or not isinstance(source.get("queue_updated_at"),str)):
+            raise ValueError("manual approval source provenance is missing or invalid")
+    return {
+        "approved_rules": approved,
+        "approved_queue_items": items,
+        "approval_source": payload.get("approval_source"),
+    }
+
+
+def load_reject_approvals(path=REJECT_APPROVALS):
+    return load_reject_approval_document(path)["approved_rules"]
 
 
 def reject_rule_authorized(line, previously_published, manual_approvals):
@@ -90,6 +117,76 @@ def reject_secondary_decision(evidence, scoring, minimum, threshold, correlated_
         "minimum_current_sources": minimum_sources,
         "minimum_independent_publishers": minimum_groups,
         "required_any_sources": sorted(required_any_sources),
+    }
+
+
+def revalidate_manual_reject_queue_item(item, candidate_map, source_map, current_hashes,
+                                         eligible_source_ids, scoring, minimum, threshold,
+                                         correlated_pairs):
+    """Revalidate a previously human-approved REJECT queue record against this run's fresh sources."""
+    domain=str(item.get("domain","")).lower().rstrip(".")
+    scope=str(item.get("scope",""))
+    expected_line=("DOMAIN-SUFFIX," if scope=="suffix_candidate" else "DOMAIN,")+domain
+    if (item.get("policy")!="REJECT" or item.get("rule")!=expected_line
+            or scope not in {"exact_candidate","suffix_candidate"}
+            or not DOMAIN_RE.fullmatch(domain)):
+        return {"eligible":False,"reasons":["malformed_approved_queue_identity"],"secondary":None,"valid_evidence":[]}
+    source_ids=item.get("source_ids")
+    publishers=item.get("publishers")
+    groups=item.get("independent_publisher_groups")
+    if (not isinstance(source_ids,list) or not source_ids or len(source_ids)!=len(set(source_ids))
+            or not isinstance(publishers,list) or not publishers or len(publishers)!=len(set(publishers))
+            or not isinstance(groups,list) or not groups or any(not isinstance(group,list) or not group for group in groups)):
+        return {"eligible":False,"reasons":["malformed_approved_queue_evidence"],"secondary":None,"valid_evidence":[]}
+    if (int(item.get("current_source_count",0))!=len(source_ids)
+            or int(item.get("independent_publisher_count",0))!=len(groups)
+            or set(x for group in groups for x in group)!=set(publishers)):
+        return {"eligible":False,"reasons":["approved_queue_evidence_counts_mismatch"],"secondary":None,"valid_evidence":[]}
+    candidate=candidate_map.get(domain)
+    if not isinstance(candidate,dict):
+        return {"eligible":False,"reasons":["approved_domain_missing_from_current_source_snapshot"],"secondary":None,"valid_evidence":[]}
+    candidate_policies={str(value).upper() for value in candidate.get("candidate_policies",[])}
+    if candidate_policies!={"REJECT"}:
+        return {"eligible":False,"reasons":["current_source_policy_conflict_or_mismatch"],"secondary":None,"valid_evidence":[]}
+    valid=[]
+    for ev in candidate.get("evidence",[]):
+        sid=str(ev.get("source_id",""))
+        src=source_map.get(sid)
+        if not src or sid not in eligible_source_ids or ev.get("currently_listed",True) is not True:
+            continue
+        if ev.get("sha256")!=current_hashes.get(sid):
+            continue
+        if str(src.get("classification","")).upper()!="REJECT" or str(ev.get("classification","")).upper()!="REJECT":
+            continue
+        if ev.get("publisher")!=src.get("publisher"):
+            continue
+        if ev.get("independence_group")!=src.get("independence_group"):
+            continue
+        if ev.get("url")!=src.get("url"):
+            continue
+        if ev.get("lineage_status")!=src.get("lineage_status"):
+            continue
+        if src.get("policy_evidence") is not None and ev.get("policy_evidence")!=src.get("policy_evidence"):
+            continue
+        if ev.get("upstream_repositories")!=src.get("upstream_repositories",[]):
+            continue
+        if scope=="suffix_candidate" and ev.get("entry_type")!="suffix_candidate":
+            continue
+        valid.append(ev)
+    required=set(scoring.get("required_sources_by_policy",{}).get("REJECT",[]))
+    secondary=reject_secondary_decision(valid,scoring,minimum,threshold,correlated_pairs,required)
+    reasons=list(secondary["reasons"])
+    if not set(source_ids).issubset(set(secondary["source_ids"])):
+        reasons.append("approved_source_evidence_no_longer_current")
+    if not set(publishers).issubset(set(secondary["publishers"])):
+        reasons.append("approved_publishers_no_longer_current")
+    if len(groups)>int(secondary["independent_publisher_count"]):
+        reasons.append("approved_independent_publisher_groups_no_longer_current")
+    return {
+        "eligible":not reasons,
+        "reasons":sorted(set(reasons)),
+        "secondary":secondary,
+        "valid_evidence":valid,
     }
 
 
