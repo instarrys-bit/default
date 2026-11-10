@@ -283,7 +283,7 @@ def write_document(
     # Estimate compact size without constructing an unbounded serialized document.
     metadata_bytes = _compact_bytes(metadata)
     if len(metadata_bytes) > file_limit:
-        raise ValueError("document metadata exceeds the 50 MB single-file limit")
+        raise ValueError(f"document metadata exceeds the {file_limit}-byte single-file limit")
     estimate = len(metadata_bytes) + len(collection_key.encode("utf-8")) + 16
     for record in records:
         estimate += len(_compact_bytes(record)) + 1
@@ -333,7 +333,7 @@ def write_document(
         for record in records:
             line = _compact_bytes(record) + b"\n"
             if len(line) > file_limit:
-                raise ValueError("one record exceeds the 50 MiB single-file limit")
+                raise ValueError(f"one record exceeds the {file_limit}-byte single-file limit")
             digest.update(line)
             if shard_buffer and len(shard_buffer) + len(line) > shard_limit:
                 flush_shard()
@@ -366,7 +366,7 @@ def write_document(
         }
         manifest_bytes = (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
         if len(manifest_bytes) > file_limit:
-            raise ValueError("shard manifest exceeds the 50 MB single-file limit")
+            raise ValueError(f"shard manifest exceeds the {file_limit}-byte single-file limit")
         _atomic_write(manifest_file, manifest_bytes, lease_required=lease_required)
         # The manifest is authoritative only after its atomic replacement.
         if path.exists():
