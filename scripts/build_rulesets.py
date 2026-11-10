@@ -689,7 +689,10 @@ def main():
 
     assert_resource_lease_for_repository_path(ROOT, "rulesets/reject_review_queue.json")
     OUT.mkdir(parents=True,exist_ok=True)
-    reject_review_queue_items.sort(key=lambda item:(item["domain"],item["scope"]))
+    reject_review_queue_items.sort(key=lambda item:(item["domain"],item["scope"],item.get("status","")))
+    pending_manual_approval_count=sum(1 for item in reject_review_queue_items if item.get("status")=="ELIGIBLE_FOR_MANUAL_APPROVAL")
+    manual_approved_held_count=sum(1 for item in reject_review_queue_items if item.get("status")=="MANUALLY_APPROVED_HELD")
+    evidence_refresh_required_count=sum(1 for item in reject_review_queue_items if item.get("status")=="EVIDENCE_REFRESH_REQUIRED")
     reject_queue_path=OUT/"reject_review_queue.json"
     assert_resource_lease_for_repository_path(ROOT, "rulesets/reject_review_queue.json")
     reject_queue_path.write_text(json.dumps({
@@ -703,7 +706,9 @@ def main():
             "manual_approval_required":True
         },
         "eligible_count":reject_secondary_eligible_count,
-        "pending_manual_approval_count":len(reject_review_queue_items),
+        "pending_manual_approval_count":pending_manual_approval_count,
+        "manual_approved_held_count":manual_approved_held_count,
+        "evidence_refresh_required_count":evidence_refresh_required_count,
         "items":reject_review_queue_items
     },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     report_dir=ROOT/"reports"
@@ -712,10 +717,12 @@ def main():
         "# REJECT 二次筛选报告","",
         f"- REJECT 相关候选总量：{reject_candidate_count}",
         f"- 一审未通过/暂缓：{sum(reject_first_stage_status_counts.values())}",
-        f"- 二审通过、等待人工审批：{len(reject_review_queue_items)}",
-        f"- 二审通过总量（含本轮已获人工授权）：{reject_secondary_eligible_count}",
+        f"- 二审通过、等待人工审批：{pending_manual_approval_count}",
+        f"- 已人工批准但被当前校验暂缓：{manual_approved_held_count}",
+        f"- 当前证据需刷新：{evidence_refresh_required_count}",
+        f"- 二审通过总量（含已获人工授权）：{reject_secondary_eligible_count}",
         f"- 二审门槛：至少 {secondary_min_sources} 个当前来源、至少 {secondary_min_groups} 个独立发布者，并至少包含一个指定专业广告拦截来源。",
-        "- 新 REJECT 规则不会自动发布；必须逐条写入 sources/reject_manual_approvals.json。",
+        "- 已批准规则会在当前来源证据、配置冲突及保护域名检查通过后直接进入正式规则集；未批准规则仍留在人工审核队列。",
         "",
         "## 一审状态暂缓统计","",
     ]
@@ -725,9 +732,11 @@ def main():
     report_lines.extend(["","## 待人工审批候选",""])
     report_lines.extend(["| 规则 | 当前来源数 | 独立发布者组 | 置信度 | 来源 |","|---|---:|---:|---:|---|"])
     for item in reject_review_queue_items:
+        if item.get("status") not in {"ELIGIBLE_FOR_MANUAL_APPROVAL","MANUALLY_APPROVED_HELD","EVIDENCE_REFRESH_REQUIRED"}:
+            continue
         report_lines.append(
-            f"| {item['rule']} | {item['current_source_count']} | {item['independent_publisher_count']} | "
-            f"{item['confidence']:.2f} | {', '.join(item['source_ids'])} |"
+            f"| {item['rule']} | {item.get('current_source_count',0)} | {item.get('independent_publisher_count',0)} | "
+            f"{float(item.get('confidence',0)):.2f} | {', '.join(item.get('source_ids',[]))} |"
         )
     (report_dir/"reject-secondary-review.md").write_text("\\n".join(report_lines)+"\n",encoding="utf-8")
     queue_path=OUT/"pending_queue.json"
@@ -811,6 +820,12 @@ def main():
         for policy in POLICIES
         for scope,domain in rule_sets[policy]
     }
+    queued_rule_keys=set(queue_map)
+    unaccounted_manual_approvals=manual_queue_approved_identities-published_rule_keys-queued_rule_keys
+    if unaccounted_manual_approvals:
+        raise ValueError("manually approved REJECT rules were neither published nor retained for capacity: "+", ".join(sorted(x[2] for x in unaccounted_manual_approvals)[:10]))
+    manual_queue_approved_published_count=len(manual_queue_approved_identities & published_rule_keys)
+    manual_queue_approved_capacity_count=len(manual_queue_approved_identities & queued_rule_keys)
     publication_accounting=build_publication_accounting(
         published_rule_keys,approved_review_rules,set(promoted),approved
     )
@@ -853,11 +868,22 @@ def main():
         "reject_manual_approval_required":True,
         "reject_manual_approval_count":len(manual_reject_approvals),
         "reject_manual_hold_count":reject_manual_hold_count,
+        "manual_approval_queue_snapshot":{
+            "source":approval_document.get("approval_source"),
+            "approved_snapshot_count":len(approved_queue_items),
+            "currently_eligible_approved_count":len(manual_queue_approved_identities),
+            "published_count":manual_queue_approved_published_count,
+            "queued_for_capacity_count":manual_queue_approved_capacity_count,
+            "held_by_current_checks_count":reject_manual_approval_hold_count
+        },
         "reject_secondary_review":{
             "candidate_count":reject_candidate_count,
             "first_stage_held_by_status":dict(sorted(reject_first_stage_status_counts.items())),
             "eligible_for_manual_approval_count":reject_secondary_eligible_count,
-            "pending_manual_approval_count":len(reject_review_queue_items),
+            "pending_manual_approval_count":pending_manual_approval_count,
+            "manual_approved_held_count":manual_approved_held_count,
+            "evidence_refresh_required_count":evidence_refresh_required_count,
+            "manual_approval_hold_count":reject_manual_approval_hold_count,
             "manual_approval_outside_shortlist_count":reject_manual_approval_outside_shortlist_count,
             "held_reason_counts":dict(sorted(reject_secondary_hold_reason_counts.items())),
             "minimum_current_sources":secondary_min_sources,
