@@ -48,21 +48,24 @@ def load_reject_approval_document(path=REJECT_APPROVALS):
     if not isinstance(items,list):
         raise ValueError("approved_queue_items must be a list")
     if "approved_queue_items" in payload:
-        item_rules=[]
-        for item in items:
-            if not isinstance(item,dict) or not isinstance(item.get("rule"),str):
-                raise ValueError("approved queue evidence item is malformed")
-            item_rules.append(item["rule"].split(",",1)[0].upper()+","+item["rule"].split(",",1)[1].lower().rstrip("."))
-        if len(item_rules)!=len(set(item_rules)) or set(item_rules)!=approved:
-            raise ValueError("approved queue evidence snapshot does not exactly match approved_rules")
-        source=payload.get("approval_source")
-        if (not isinstance(source,dict)
-                or source.get("path")!="rulesets/reject_review_queue.json"
-                or not isinstance(source.get("git_blob_sha"),str)
-                or not re.fullmatch(r"[0-9a-f]{40}",source.get("git_blob_sha",""))
-                or source.get("approved_item_count")!=len(items)
-                or not isinstance(source.get("queue_updated_at"),str)):
-            raise ValueError("manual approval source provenance is missing or invalid")
+        if approved and not items:
+            raise ValueError("manual approvals are missing their preserved queue evidence snapshot")
+        if items:
+            item_rules=[]
+            for item in items:
+                if not isinstance(item,dict) or not isinstance(item.get("rule"),str):
+                    raise ValueError("approved queue evidence item is malformed")
+                item_rules.append(item["rule"].split(",",1)[0].upper()+","+item["rule"].split(",",1)[1].lower().rstrip("."))
+            if len(item_rules)!=len(set(item_rules)) or set(item_rules)!=approved:
+                raise ValueError("approved queue evidence snapshot does not exactly match approved_rules")
+            source=payload.get("approval_source")
+            if (not isinstance(source,dict)
+                    or source.get("path")!="rulesets/reject_review_queue.json"
+                    or not isinstance(source.get("git_blob_sha"),str)
+                    or not re.fullmatch(r"[0-9a-f]{40}",source.get("git_blob_sha",""))
+                    or source.get("approved_item_count")!=len(items)
+                    or not isinstance(source.get("queue_updated_at"),str)):
+                raise ValueError("manual approval source provenance is missing or invalid")
     return {
         "approved_rules": approved,
         "approved_queue_items": items,
