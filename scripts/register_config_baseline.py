@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 
+import argparse
 import hashlib
 import json
 import os
@@ -127,77 +128,94 @@ def write_baseline_proposal(proposal: dict) -> Path:
     return destination
 
 
+
+def apply_baseline_updates(root: Path, config_path: str, config_sha: str, policy: dict,
+                           release_text: str, workflow_map_text: str, write_sets_text: str) -> list[str]:
+    """Apply only owner-verified baseline metadata and prove config bytes remain unchanged."""
+    config = root / config_path
+    before = config.read_bytes()
+    if git_blob_sha(before) != config_sha:
+        raise ValueError("uu.conf changed after owner-history verification; refusing metadata sync")
+    updates = {
+        "sources/policy.json": json.dumps(policy, ensure_ascii=False, indent=2) + "\n",
+        "automation/release_manifest.json": release_text,
+        "automation/production_workflow_map.json": workflow_map_text,
+        "automation/resource_write_sets.json": write_sets_text,
+    }
+    for relative, content in updates.items():
+        destination = root / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        temporary = destination.with_name(destination.name + f".baseline-sync-{os.getpid()}.tmp")
+        temporary.write_text(content, encoding="utf-8")
+        os.replace(temporary, destination)
+    after = config.read_bytes()
+    if after != before or git_blob_sha(after) != config_sha:
+        raise ValueError("protected modules/uu.conf bytes changed during metadata sync")
+    return sorted(updates)
+
+
 def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--apply", action="store_true",
+                        help="Apply owner-verified metadata-only sync; reserved for Watchdog baseline-sync.")
+    args = parser.parse_args()
     policy = json.loads(POLICY.read_text(encoding="utf-8"))
     guard = policy["managed_config_guard"]
-    config_path = ROOT / guard["path"]
-    actual = git_blob_sha(config_path.read_bytes())
+    actual = git_blob_sha((ROOT / guard["path"]).read_bytes())
     previous = str(guard["approved_git_blob_sha"])
     changed = actual != previous
 
-    direct_push_approval = owner_approved_push_changed_config()
-    recovered_commits = [] if direct_push_approval else owner_approved_config_history(guard)
-    if not direct_push_approval and not recovered_commits:
+    # Require GitHub owner attribution for every intervening config-changing commit.
+    commits = owner_approved_config_history(guard)
+    if not commits:
         if changed:
-            raise ValueError(
-                "uu.conf differs from the approved baseline, but no current or recoverable owner-approved config change was verified; refusing automatic approval."
-            )
-        print(json.dumps({"registered": False, "reason": "no owner-approved uu.conf change", "blob_sha": actual}))
+            raise ValueError("uu.conf differs from the approved baseline, but every intervening owner-authored config commit could not be verified; refusing automatic approval.")
+        print(json.dumps({"registered": False, "reason": "no owner-verified uu.conf baseline drift",
+                          "blob_sha": actual, "config_file_modified": False}, sort_keys=True))
         return 0
-
     if not changed:
-        print(json.dumps({"registered": False, "reason": "owner push did not change config content", "blob_sha": actual}))
+        print(json.dumps({"registered": False, "reason": "registered baseline already matches main",
+                          "blob_sha": actual, "config_file_modified": False}, sort_keys=True))
         return 0
 
+    owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "")
+    approval_mode = "recovered_owner_authored_config_history"
     guard["approved_git_blob_sha"] = actual
-    approval_mode = "owner_push_changed_config" if direct_push_approval else "recovered_owner_authored_config_history"
     guard["last_user_approved_baseline_update"] = {
         "previous_blob_sha": previous,
         "new_blob_sha": actual,
-        "reason": (
-            "Register the exact config version from an owner-authored push."
-            if direct_push_approval else
-            "Recover an interrupted registration after verifying every intervening uu.conf-changing commit is associated with the repository owner on GitHub. Automation does not edit uu.conf."
-        ),
+        "reason": "Watchdog synchronized the exact main-branch uu.conf Git blob after verifying every intervening config-changing commit is associated with the repository owner. Only baseline metadata and derived release pins are updated; uu.conf bytes are immutable to automation.",
         "approval_mode": approval_mode,
-        "config_change_commits": recovered_commits,
-        "actor": os.environ.get("GITHUB_ACTOR"),
-        "commit_sha": os.environ.get("GITHUB_SHA"),
+        "config_change_commits": commits,
+        "actor": owner,
+        "commit_sha": commits[0],
         "registered_at": datetime.now(timezone.utc).isoformat(),
     }
-    release_manifest_text, workflow_map_text, write_sets_text = build_release_pin_updates(ROOT, guard["path"], actual)
-    proposal = {
-        "schema_version": 1,
-        "status": "requires_manual_repository_review",
-        "path": guard["path"],
-        "previous_blob_sha": previous,
-        "new_blob_sha": actual,
-        "actor": os.environ.get("GITHUB_ACTOR"),
-        "approval_mode": approval_mode,
-        "config_change_commits": recovered_commits,
-        "proposed_updates": {
-            "sources/policy.json": policy,
-            "automation/release_manifest.json": json.loads(release_manifest_text),
-            "automation/production_workflow_map.json": json.loads(workflow_map_text),
-            "automation/resource_write_sets.json": json.loads(write_sets_text),
-        },
-        "repository_files_modified": False,
-        "config_file_modified": False,
+    release_text, map_text, sets_text = build_release_pin_updates(ROOT, guard["path"], actual)
+    proposed = {
+        "sources/policy.json": policy,
+        "automation/release_manifest.json": json.loads(release_text),
+        "automation/production_workflow_map.json": json.loads(map_text),
+        "automation/resource_write_sets.json": json.loads(sets_text),
     }
+    if args.apply:
+        updated = apply_baseline_updates(ROOT, guard["path"], actual, policy, release_text, map_text, sets_text)
+        print(json.dumps({"registered": True, "path": guard["path"], "previous_blob_sha": previous,
+                          "new_blob_sha": actual, "approval_mode": approval_mode,
+                          "config_change_commits": commits, "metadata_paths_updated": updated,
+                          "repository_files_modified": True, "config_file_modified": False,
+                          "config_bytes_unchanged": True}, ensure_ascii=False, sort_keys=True))
+        return 0
+    proposal = {"schema_version": 1, "status": "requires_watchdog_baseline_sync", "path": guard["path"],
+                "previous_blob_sha": previous, "new_blob_sha": actual, "actor": owner,
+                "approval_mode": approval_mode, "config_change_commits": commits,
+                "proposed_updates": proposed, "repository_files_modified": False, "config_file_modified": False}
     proposal_path = write_baseline_proposal(proposal)
-    print(json.dumps({
-        "registered": False,
-        "proposal_created": True,
-        "proposal_path": str(proposal_path),
-        "path": guard["path"],
-        "previous_blob_sha": previous,
-        "new_blob_sha": actual,
-        "actor": os.environ.get("GITHUB_ACTOR"),
-        "approval_mode": approval_mode,
-        "config_change_commits": recovered_commits,
-        "repository_files_modified": False,
-        "config_file_modified": False,
-    }, ensure_ascii=False, sort_keys=True))
+    print(json.dumps({"registered": False, "proposal_created": True, "proposal_path": str(proposal_path),
+                      "path": guard["path"], "previous_blob_sha": previous, "new_blob_sha": actual,
+                      "actor": owner, "approval_mode": approval_mode, "config_change_commits": commits,
+                      "repository_files_modified": False, "config_file_modified": False},
+                     ensure_ascii=False, sort_keys=True))
     return 0
 
 

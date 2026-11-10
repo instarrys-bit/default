@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "15521f413a1fcb1c476619b7513b96e9703562aa"
+      "git_blob_sha": "23035b263382d37414b86b5261247a3b7de23d1d"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -205,7 +205,23 @@
     "production_may_not_write_config_baseline": true,
     "ruleset_writers_require_resource_exclusive_lease": true,
     "reject_rule_publication_requires_explicit_approval": true,
-    "python_adapter_default_deny": true
+    "python_adapter_default_deny": true,
+    "watchdog_baseline_metadata_sync": {
+      "writer": "automation-watchdog.yml baseline-sync job",
+      "trigger": [
+        "main push",
+        "15-minute schedule"
+      ],
+      "authorization": "Every uu.conf-changing commit since the last registered owner baseline anchor must be associated with the repository owner on GitHub.",
+      "write_allowlist": [
+        "sources/policy.json",
+        "automation/release_manifest.json",
+        "automation/production_workflow_map.json",
+        "automation/resource_write_sets.json"
+      ],
+      "protected_config": "modules/uu.conf remains byte-for-byte read-only",
+      "stale_main_guard": "Require origin/main to equal the exact triggering GITHUB_SHA before pushing metadata."
+    }
   },
   "known_gaps": [
     "Historical duplicate Assessment tasks exist for Discovery run 42373818238 (legacy and parser-v2 keys); the new resolver recognizes both by predecessor identity and suppresses future duplicate enqueue. A fresh post-merge Discovery → Assessment run is still required to prove the corrected one-to-one path.",
