@@ -253,6 +253,57 @@ class TaskResultVerifierTests(unittest.TestCase):
         self.assertIsNone(saved["lease"])
         self.assertNotIn("dispatch_intent", saved)
 
+    def test_overlong_pending_workflow_is_cancelled_and_reconciled(self):
+        enqueue_remote({
+            "idempotency_key": "workflow-timeout:test:once",
+            "requester_program_id": "script_requester",
+            "target_program_id": "workflow_auto_sync",
+            "capability": "production_sync",
+            "input": {},
+        }, self.store, self.registry, self.now)
+        task_id = self.store.document["tasks"][0]["task_id"]
+        claim_remote("12345", self.store, self.registry, eligible_task_ids={task_id}, now=self.now)
+        task = self.store.document["tasks"][0]
+        task["dispatch_intent"] = {
+            "workflow_id": 99, "workflow_path": ".github/workflows/auto_sync.yml",
+            "ref": "main", "requested_head_sha": "a" * 40, "task_id": task_id,
+            "dispatch_attempt": 1, "correlation_id": f"{task_id}-a1",
+            "correlation_title": f"Automation task {task_id}-a1",
+            "inputs": {"automation_task_id": f"{task_id}-a1"},
+            "prepared_at": "2026-11-03T03:50:00Z",
+        }
+        task["status"] = "VERIFYING"
+        task["state_history"].append("VERIFYING")
+        task["lease"] = None
+        task["result"] = {
+            **task["dispatch_intent"],
+            "dispatch_state": "reconciled",
+            "run_evidence": {"run_id": 987, "status": "in_progress"},
+        }
+        adapters = {"schema_version": 1, "adapters": [{
+            "target_program_id": "workflow_auto_sync",
+            "adapter_type": "github_actions_workflow", "enabled": True,
+            "interface_status": "workflow_dispatch_reviewed",
+            "workflow": {"path": ".github/workflows/auto_sync.yml", "dispatchable": True},
+            "workflow_run_timeout_seconds": 60,
+        }]}
+        client = Mock()
+        with patch("task_result_verifier.inspect_correlated_run", return_value={
+            "state": "pending", "run_id": 987, "html_url": "https://example.invalid/run/987",
+            "run_status": "in_progress", "run_created_at": "2026-11-03T02:00:00Z",
+        }):
+            report = verify_pending_remote(
+                self.store, self.registry, adapters, self.now, workflow_client=client
+            )
+        saved = self.store.document["tasks"][0]
+        client.cancel_run.assert_called_once_with(987)
+        self.assertEqual(report["rejected"], [task_id])
+        self.assertEqual(saved["status"], "QUEUED")
+        self.assertIsNone(saved["lease"])
+        self.assertNotIn("dispatch_intent", saved)
+        self.assertEqual(saved["last_error"]["type"], "workflow_run_timeout")
+        self.assertTrue(saved["last_error"]["evidence"]["cancel_requested"])
+
     def test_schema_rejects_unsupported_keywords(self):
         with self.assertRaisesRegex(ValueError, "unsupported schema keywords"):
             validate_json_schema({"ok": True}, {"type": "object", "patternProperties": {}})
