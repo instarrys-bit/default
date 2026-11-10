@@ -47,7 +47,7 @@ def load_reject_approval_document(path=REJECT_APPROVALS):
     items=payload.get("approved_queue_items",[])
     if not isinstance(items,list):
         raise ValueError("approved_queue_items must be a list")
-    if items:
+    if "approved_queue_items" in payload:
         item_rules=[]
         for item in items:
             if not isinstance(item,dict) or not isinstance(item.get("rule"),str):
