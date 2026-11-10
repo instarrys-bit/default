@@ -63,7 +63,7 @@
         "success_predicate",
         "independent_verifier"
       ],
-      "audit_note": "Registry-level metadata only; when the optional source handoff is unavailable, no discovery root is exported and no new sources can be activated; existing registered-source ruleset publication remains independent."
+      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
     },
     {
       "id": "script_apply_safe_repair",
@@ -1134,7 +1134,7 @@
         "resource_lease_keys",
         "independent_verifier"
       ],
-      "audit_note": "Read-only GitHub Actions artifact resolver. Downloads only exact predecessor-bound artifacts, verifies complete content manifests, extracts only beneath RUNNER_TEMP, and fails closed. It has no repository write, source activation, or uu.conf access."
+      "audit_note": "Read-only GitHub Actions artifact resolver. When a verified predecessor-bound Assessment artifact exists, it verifies the complete content manifest and extracts only beneath RUNNER_TEMP. If no verified handoff exists, it returns a non-blocking skip result and exports no Discovery root, so no new source activation occurs; registered-source ruleset publication remains independent. It has no repository writes or uu.conf access."
     },
     {
       "id": "script_resource_lease_runtime",
