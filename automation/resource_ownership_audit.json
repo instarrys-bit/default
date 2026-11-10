@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "audit_id": "resource-ownership-audit-2026.11.10.discovered-source-registry1",
+  "audit_id": "resource-ownership-audit-2026.11.10.discovered-source-registry-sharded1",
   "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
-    "registry_blob_sha": "e5e1e678eec2bd9208934db8a73b867d49de5efc",
+    "registry_blob_sha": "12559717bc2a377f9aa98305338ef8019a2a5c9f",
     "adapters_blob_sha": "8e51a3622ea43fdd4029ed730f3223c06cd72b18",
     "inspected_sources": [
       ".github/workflow_helpers/check_source_assessment_artifact.py",
@@ -81,7 +81,9 @@
       "tests/test_task_scheduler.py",
       "tests/test_watchdog_recovery_workflow.py",
       "tests/test_workflow_config_guard_order.py",
-      "tests/test_workflow_native_write_inventory.py"
+      "tests/test_workflow_native_write_inventory.py",
+      "tests/test_discovered_source_registry.py",
+      "tests/test_json_document_store.py"
     ],
     "limitation": "The active Source Discovery → Assessment DAG remains scoped to runner-local immutable artifacts and a fenced Issue #423 checkpoint. A separate durable non-activating source-candidate registry is committed only as rulesets/source_candidate_registry.json by the existing single auto_sync publisher under the Watchdog logical/production-pipeline fence. Protected modules/** and JavaScript remain unwritable. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
     "reviewed_at": "2026-11-07",
@@ -560,7 +562,10 @@
     {
       "id": "discovered_source_candidate_registry",
       "paths": [
-        "rulesets/source_candidate_registry.json"
+        "rulesets/source_candidate_registry.json (logical document)",
+        "rulesets/source_candidate_registry.json.manifest.json",
+        "rulesets/source_candidate_registry.json.parts-<digest>/part-*.jsonl",
+        "rulesets/source_candidate_registry.json.parts.tmp-*"
       ],
       "known_writers": [
         "script_register_discovered_sources",
@@ -569,7 +574,7 @@
       "lock_key": "logical/production-pipeline",
       "required_mode": "exclusive_live_resource_lease",
       "status": "fenced_single_publisher_rulesets_only",
-      "note": "Stores every discovered candidate repository and each supported rule-list file as a durable, non-activating record. Source identity is repository+URL; discovery provenance and first/last-seen run IDs are retained. External intelligence is excluded. The registry is never treated as an active policy source."
+      "note": "Stores every discovered candidate repository and each supported rule-list file as typed JSONL records in a durable, non-activating registry. Schema-v1 inline JSON is migrated on the next successful write; schema-v2 readers verify the adjacent manifest, each shard SHA-256 and record count. Shard files are content-addressed; the adjacent manifest is atomically replaced only after all shards are complete. The per-file limit remains 40,000,000 bytes with a 35,000,000-byte target. Source identity is repository+URL; discovery provenance and first/last-seen run IDs are retained. External intelligence is excluded. The registry is never treated as an active policy source."
     }
   ],
   "scheduling_gates": {
