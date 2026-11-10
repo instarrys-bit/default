@@ -127,7 +127,8 @@ def revalidate_manual_reject_queue_item(item, candidate_map, source_map, current
     domain=str(item.get("domain","")).lower().rstrip(".")
     scope=str(item.get("scope",""))
     expected_line=("DOMAIN-SUFFIX," if scope=="suffix_candidate" else "DOMAIN,")+domain
-    if (item.get("policy")!="REJECT" or item.get("rule")!=expected_line
+    if (item.get("policy")!="REJECT" or item.get("status")!="ELIGIBLE_FOR_MANUAL_APPROVAL"
+            or item.get("rule")!=expected_line
             or scope not in {"exact_candidate","suffix_candidate"}
             or not DOMAIN_RE.fullmatch(domain)):
         return {"eligible":False,"reasons":["malformed_approved_queue_identity"],"secondary":None,"valid_evidence":[]}
@@ -609,10 +610,11 @@ def main():
         if domain in published_domain_policies:
             if published_domain_policies[domain]!="REJECT":
                 raise ValueError("manually approved REJECT domain conflicts with an already published policy: "+domain)
-            approved_review_rules.add(identity)
-            approved+=1
-            manual_queue_approved_identities.add(identity)
-            continue
+            if identity in rule_sets["REJECT"]:
+                approved_review_rules.add(identity)
+                approved+=1
+                manual_queue_approved_identities.add(identity)
+                continue
         candidate_line=line
         scope_result=classify_rule("REJECT",candidate_line,config_rules,config_skip_proxy,prepared_config_rules)
         if scope_result["status"]!="NO_CONFLICT":
