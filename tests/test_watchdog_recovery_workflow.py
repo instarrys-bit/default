@@ -163,20 +163,19 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn('output.write(f"assessment_output_expected={value}\\\\n")', run_queue)
         self.assertIn("steps.run-queue.outputs.assessment_output_expected == 'true'", workflow)
         self.assertIn("Upload verified source assessment outputs as immutable artifact", workflow)
-    def test_active_production_audit_is_cancelled_until_independent_assessment_passes(self):
+    def test_pending_assessment_does_not_block_registered_source_ruleset_publication(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
-        self.assertIn("Cancel active production audits while independent Assessment gate is closed", workflow)
-        cancel = workflow.split("Cancel active production audits while independent Assessment gate is closed", 1)[1].split("Resolve completed Discovery run from durable task correlation", 1)[0]
-        self.assertIn("classify_assessment_handoff(tasks, run_id)", cancel)
-        self.assertIn("validate_run_head_sha(client, intent, run.get(\"head_sha\"))", cancel)
-        self.assertIn("/actions/runs/{run_id}/cancel", cancel)
-        self.assertIn('task.get("target_program_id") != "workflow_auto_sync"', cancel)
-        self.assertIn("Production run", cancel)
-        self.assertIn("pre-assessment evidence, not an approved final publication", cancel)
-        self.assertIn("fresh gated audit is required after Assessment", cancel)
+        self.assertIn("Report source assessment state without blocking registered-source publication", workflow)
+        report = workflow.split("Report source assessment state without blocking registered-source publication", 1)[1].split("Resolve completed Discovery run from durable task correlation", 1)[0]
+        self.assertNotIn("/actions/runs/{run_id}/cancel", report)
+        self.assertIn("Existing registered-source collection and ruleset publication may proceed", report)
+        self.assertIn("New source activation remains disabled", report)
         scheduler = (ROOT / "scripts" / "task_scheduler.py").read_text(encoding="utf-8")
-        self.assertIn("production_source_assessment_gate(queue.get(\"tasks\", []), root)", scheduler)
-        self.assertIn("verified non-activating Assessment", scheduler)
+        self.assertNotIn("production_source_assessment_gate(queue.get(\"tasks\", []), root)", scheduler)
+        self.assertIn("Existing registered-source ruleset publication is independent", scheduler)
+        resolver = (ROOT / "scripts" / "resolve_source_artifacts.py").read_text(encoding="utf-8")
+        self.assertIn("SOURCE HANDOFF UNAVAILABLE; continuing with registered sources only", resolver)
+        self.assertIn('"source_activation_skipped":True', resolver)
 
     def test_discovery_reconciliation_accepts_normal_run_state_progression_and_hashes_uploaded_files(self):
         watchdog = WATCHDOG.read_text(encoding="utf-8")
