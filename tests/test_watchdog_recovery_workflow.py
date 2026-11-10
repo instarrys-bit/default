@@ -547,8 +547,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("select_production_worker_task(tasks, current_fingerprint)", worker)
         self.assertIn("Deferring the next source worker", worker)
         self.assertLess(
-            worker.index("select_production_worker_task"),
-            worker.index("select_source_worker_task"),
+            worker.index("production_task_id = select_production_worker_task"),
+            worker.index("print(select_source_worker_task(tasks))"),
         )
         self.assertIn("active_production = any(", worker)
 
