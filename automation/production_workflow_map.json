@@ -345,7 +345,7 @@
     }
   ],
   "architecture_findings": [
-    "The independent Source Discovery → Source Assessment DAG is active: both adapters are enabled and restricted to the Watchdog caller. Watchdog resolves the exact producer run, head SHA and immutable artifact digest, then deduplicates Assessment by exact predecessor run ID. The latest reconciliation verified Discovery run 42373818238 and its artifact; it found two historical Assessment tasks (one duplicate) and correctly suppressed a third enqueue because a verified Assessment already exists. A fresh one-to-one post-merge Assessment execution is still required.",
+    "The independent Source Discovery → Source Assessment DAG is active: both adapters are enabled and restricted to the Watchdog caller. Watchdog resolves the exact producer run, head SHA and immutable artifact digest, then deduplicates Assessment by exact predecessor run ID. The latest reconciliation verified Discovery run 42373818238 and its artifact; it found two historical Assessment tasks (one duplicate) and correctly suppressed a third enqueue because a verified Assessment already exists. A fresh one-to-one post-merge Assessment execution remains required before activating newly discovered sources; it does not gate publication from the already registered source set.",
     "Both source capabilities write only to isolated RUNNER_TEMP artifact roots; the main-branch source documents are read-only baselines.",
     "Assessment's only shared mutation is the per-URL task checkpoint in GitHub Issue #423, guarded by task lease and logical resource fences.",
     "The production publisher is the single controlled writer for the three policy outputs rulesets/direct.list, rulesets/proxy.list and rulesets/reject.list, together with their required manifest/lifecycle/queue metadata. This is a production-output boundary, not a system-wide automation write restriction. Watchdog queue/checkpoint state, immutable Actions artifacts and runner-local workspaces are inventoried separately; modules/uu.conf and user-managed module/JavaScript assets remain unwritable.",
@@ -369,7 +369,7 @@
     "note": "The independent source DAG is enabled under the scoped release allowlist. The production deliverables are exactly DIRECT, PROXY and REJECT; queue/checkpoint state and immutable runner-local artifacts are separate control-plane/runtime resources. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07",
     "registry_blob_sha": "cedd1d7a8410a920a6c598f55cdb556f7c7dd7",
-    "source_dag_scope": "End-to-end Watchdog-owned Discovery → immutable artifact verification → non-activating Assessment → immutable Assessment artifact proof → production artifact re-verification → source matrix → deterministic admission → production collection. REJECT remains manually approved; uu.conf is read-only."
+    "source_dag_scope": "Watchdog-owned Discovery → immutable artifact verification → non-activating Assessment → immutable Assessment artifact proof → deterministic admission of newly discovered sources. Assessment gates new-source activation only. Ruleset production independently recollects the currently registered source set, revalidates manually approved REJECT queue evidence, and runs uu.conf conflict/protection checks before publishing rulesets/**. uu.conf is read-only."
   },
   "independent_dags": [
     {
