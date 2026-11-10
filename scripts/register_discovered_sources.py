@@ -242,7 +242,9 @@ def main() -> int:
         existing = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {}
         now = datetime.now(timezone.utc).isoformat()
         result = build_registry(existing, discovery, provenance, now)
-        # This is a machine ledger with tens of thousands of source-file records.\n        # Compact JSON avoids spending the 40 MB safety budget on indentation.\n        encoded = (json.dumps(result, ensure_ascii=False, separators=(",", ":")) + "\n").encode("utf-8")
+        # This is a machine ledger with tens of thousands of source-file records.
+        # Compact JSON avoids spending the 40 MB safety budget on indentation.
+        encoded = (json.dumps(result, ensure_ascii=False, separators=(",", ":")) + "\n").encode("utf-8")
         if len(encoded) > MAX_REGISTRY_BYTES:
             raise ValueError("source candidate registry exceeds the 40 MB single-file safety limit")
         assert_resource_lease_from_environment("rulesets/source_candidate_registry.json")
