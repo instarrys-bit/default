@@ -1770,7 +1770,8 @@
         "fencing_required": true,
         "enforcement_boundary": "live task-queue proof checked by the audit gate and immediately before publish push",
         "coverage": "Exclusive logical/production-pipeline lease plus exact resource keys for the user review cursor, source-discovery checkout outputs, and every published ruleset file. The Watchdog manifest-integrity job serializes with auto_sync through the same shadowrocket-main-writer concurrency group."
-      }
+      },
+      "workflow_run_timeout_seconds": 18600
     },
     {
       "target_program_id": "workflow_automation_watchdog",
@@ -2004,7 +2005,8 @@
         "fencing_required": true,
         "enforcement_boundary": "Exact Watchdog dispatch identity and live logical/source-discovery-run plus logical/source-dag-supervision fencing proofs are asserted before writing to the isolated RUNNER_TEMP workspace; no repository publication is permitted.",
         "coverage": "All discovery document, manifest, shard, staging and report writes are confined to the per-run RUNNER_TEMP workspace. The logical lease binds the task/worker and prevents duplicate discovery dispatch; immutable Actions artifact digest and producer identity are independently verified. Resource lease is 3600 seconds, at least four 15-minute Watchdog reconciliation intervals, so a missed workflow_run event cannot expire the fence before scheduled verification. The common logical/source-dag-supervision lease serializes Discovery and Assessment tasks across concurrent Watchdog runs and remains held through independent workflow verification."
-      }
+      },
+      "workflow_run_timeout_seconds": 1800
     },
     {
       "target_program_id": "workflow_validate_config",
