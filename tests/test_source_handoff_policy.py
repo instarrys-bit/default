@@ -7,7 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from source_handoff_policy import (DISCOVERY_PIPELINE_REVISION_PATHS, classify_assessment_handoff, discovery_pipeline_revision, discovery_task_requires_handoff, select_source_worker_task, select_production_worker_task)
+from source_handoff_policy import (DISCOVERY_PIPELINE_REVISION_PATHS, classify_assessment_handoff, latest_verified_assessed_discovery, discovery_pipeline_revision, discovery_task_requires_handoff, select_source_worker_task, select_production_worker_task)
 
 
 def assessment_task(task_id, run_id, status="SUCCEEDED", key=None, verified=True, created_at="2026-11-07T12:00:00Z"):
@@ -204,6 +204,31 @@ class SourceHandoffPolicyTests(unittest.TestCase):
                 path.write_text("baseline", encoding="utf-8")
 
 
+
+    def test_newer_unassessed_discovery_does_not_block_existing_verified_snapshot(self):
+        older = discovery_task(run_id="42373818238")
+        older["created_at"] = "2026-11-07T12:00:00Z"
+        older_assessment = assessment_task("task_older_assessed", "42373818238")
+        newer = discovery_task(run_id="42417075148", status="VERIFYING")
+        newer["task_id"] = "task_discovery_newer"
+        newer["created_at"] = "2026-11-08T12:00:00Z"
+        self.assertEqual(
+            latest_verified_assessed_discovery([older, older_assessment, newer])["task_id"],
+            "task_discovery",
+        )
+        production = {
+            "task_id": "task_production",
+            "target_program_id": "workflow_auto_sync",
+            "status": "QUEUED",
+            "lease": None,
+            "dispatch_intent": None,
+            "priority": 80,
+            "input": {"production_decision": "INPUT_CHANGED", "production_fingerprint": "a" * 64},
+        }
+        self.assertEqual(
+            select_production_worker_task([older, older_assessment, newer, production], "a" * 64),
+            "task_production",
+        )
 
     def test_verified_assessment_releases_one_queued_production_task(self):
         discovery = discovery_task(run_id="42417075148")
