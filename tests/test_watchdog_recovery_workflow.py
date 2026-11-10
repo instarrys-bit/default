@@ -539,6 +539,19 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("handoff_state == ''", enqueue_discovery)
         self.assertNotIn("parser-v2", resolver)
 
+    def test_watchdog_prioritizes_queued_production_before_next_source_worker(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        worker = workflow.split(
+            "Recover leases, verify results, and dispatch one task before artifact upload", 1
+        )[1].split("Upload verified source assessment outputs as immutable artifact", 1)[0]
+        self.assertIn("select_production_worker_task(tasks, current_fingerprint)", worker)
+        self.assertIn("Deferring the next source worker", worker)
+        self.assertLess(
+            worker.index("production_task_id = select_production_worker_task"),
+            worker.index("print(select_source_worker_task(tasks))"),
+        )
+        self.assertIn("active_production = any(", worker)
+
     def test_discovery_handoff_resolver_initializes_api_context_before_artifact_lookup(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         resolver = workflow.split("      - name: Resolve completed Discovery run from durable task correlation", 1)[1].split(

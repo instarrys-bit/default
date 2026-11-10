@@ -1811,11 +1811,32 @@ jobs:
           import json, os, sys
           from pathlib import Path
           sys.path.insert(0, "scripts")
-          from source_handoff_policy import select_source_worker_task
+          from source_handoff_policy import select_source_worker_task, select_production_worker_task
+          from production_intent import load_manifest, compute_fingerprint
 
           control = json.loads(Path("automation/production_control.json").read_text(encoding="utf-8"))
           tasks = json.loads((Path(os.environ["RUNNER_TEMP"]) / "task_queue_before_dispatch.json").read_text(encoding="utf-8")).get("tasks", [])
           if control.get("source_discovery_mode") != "independent":
+              print("")
+              raise SystemExit(0)
+          if control.get("dispatch_mode") != "enabled":
+              print("")
+              raise SystemExit(0)
+          active_production = any(
+              isinstance(task, dict)
+              and task.get("target_program_id") == "workflow_auto_sync"
+              and (task.get("status") in {"CLAIMED", "VERIFYING"}
+                   or (task.get("status") == "QUEUED" and isinstance(task.get("dispatch_intent"), dict)))
+              for task in tasks
+          )
+          if active_production:
+              print("")
+              raise SystemExit(0)
+          manifest = load_manifest(Path("automation/production_inputs.json"))
+          current_fingerprint = compute_fingerprint(Path.cwd(), manifest)
+          production_task_id = select_production_worker_task(tasks, current_fingerprint)
+          if production_task_id:
+              print("Deferring the next source worker so the queued production audit can publish from the last verified source snapshot.", file=sys.stderr)
               print("")
               raise SystemExit(0)
           print(select_source_worker_task(tasks))
