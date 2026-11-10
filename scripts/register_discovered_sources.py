@@ -6,12 +6,11 @@ import hashlib
 import json
 import os
 import re
-import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
-from json_document_store import read_document
+from json_document_store import manifest_path, read_document, write_document
 from resource_lease_runtime import assert_resource_lease_from_environment
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -189,6 +188,51 @@ def build_registry(existing: dict, discovery: dict, provenance: dict, now: str) 
     }
 
 
+
+def decode_registry_storage(payload: dict) -> dict:
+    """Read schema-v1 inline JSON or schema-v2 typed JSONL-shard storage."""
+    if payload.get("schema_version") != 2 or payload.get("storage_format") != "typed-jsonl-shards-v1":
+        return payload
+    records = payload.get("records", [])
+    if not isinstance(records, list):
+        raise ValueError("sharded source registry records must be an array")
+    repositories, source_files = [], []
+    for record in records:
+        if not isinstance(record, dict):
+            raise ValueError("sharded source registry record must be an object")
+        item = dict(record)
+        kind = item.pop("record_type", "")
+        if kind == "repository":
+            repositories.append(item)
+        elif kind == "source_file":
+            source_files.append(item)
+        else:
+            raise ValueError("sharded source registry contains an unknown record type")
+    result = {key: value for key, value in payload.items() if key != "records"}
+    result.pop("storage_format", None)
+    result["schema_version"] = REGISTRY_SCHEMA
+    result["repositories"] = repositories
+    result["source_files"] = source_files
+    return result
+
+
+def encode_registry_storage(registry: dict) -> dict:
+    """Convert the stable v1 logical shape to one typed, checksummed shard collection."""
+    records = []
+    for item in registry.get("repositories", []):
+        records.append({"record_type": "repository", **item})
+    for item in registry.get("source_files", []):
+        records.append({"record_type": "source_file", **item})
+    metadata = {key: value for key, value in registry.items()
+                if key not in {"repositories", "source_files", "schema_version"}}
+    return {
+        **metadata,
+        "schema_version": 2,
+        "storage_format": "typed-jsonl-shards-v1",
+        "record_count": len(records),
+        "records": records,
+    }
+
 def load_discovery() -> tuple[dict, dict]:
     supplied_root = os.environ.get("AUTOMATION_SOURCE_DISCOVERY_ROOT", "").strip()
     if supplied_root:
@@ -239,34 +283,32 @@ def load_discovery() -> tuple[dict, dict]:
 def main() -> int:
     try:
         discovery, provenance = load_discovery()
-        existing = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {}
+        if manifest_path(OUTPUT).exists():
+            stored = read_document(OUTPUT, "records", {"records": []})
+        elif OUTPUT.exists():
+            stored = json.loads(OUTPUT.read_text(encoding="utf-8"))
+        else:
+            stored = {}
+        existing = decode_registry_storage(stored)
         now = datetime.now(timezone.utc).isoformat()
-        result = build_registry(existing, discovery, provenance, now)
-        # This is a machine ledger with tens of thousands of source-file records.
-        # Compact JSON avoids spending the 40 MB safety budget on indentation.
-        encoded = (json.dumps(result, ensure_ascii=False, separators=(",", ":")) + "\n").encode("utf-8")
-        if len(encoded) > MAX_REGISTRY_BYTES:
-            raise ValueError("source candidate registry exceeds the 40 MB single-file safety limit")
+        logical_registry = build_registry(existing, discovery, provenance, now)
+        payload = encode_registry_storage(logical_registry)
         assert_resource_lease_from_environment("rulesets/source_candidate_registry.json")
-        OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-        fd, temporary = tempfile.mkstemp(prefix=".source_candidate_registry.", suffix=".tmp", dir=OUTPUT.parent)
-        try:
-            with os.fdopen(fd, "wb") as stream:
-                stream.write(encoded)
-                stream.flush()
-                os.fsync(stream.fileno())
-            assert_resource_lease_from_environment("rulesets/source_candidate_registry.json")
-            os.replace(temporary, OUTPUT)
-        finally:
-            if os.path.exists(temporary):
-                os.unlink(temporary)
+        storage = write_document(
+            OUTPUT, payload, "records", lease_required=True,
+            force_sharded=True, max_file_bytes=MAX_REGISTRY_BYTES,
+            shard_target_bytes=35_000_000,
+        )
         print(json.dumps({
-            "registered_repositories": result["repository_count"],
-            "registered_rule_list_files": result["source_file_count"],
-            "pending_assessment": result["pending_assessment_count"],
+            "registered_repositories": logical_registry["repository_count"],
+            "registered_rule_list_files": logical_registry["source_file_count"],
+            "pending_assessment": logical_registry["pending_assessment_count"],
             "discovery_run_id": provenance["workflow_run_id"],
             "activated": 0,
             "output": "rulesets/source_candidate_registry.json",
+            "storage": storage["storage"],
+            "shard_count": storage["shards"],
+            "stored_bytes": storage["bytes"],
         }, sort_keys=True))
         return 0
     except (OSError, ValueError, json.JSONDecodeError) as exc:
