@@ -1056,12 +1056,13 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           import json
+          import os
           import sys
           from pathlib import Path
           sys.path.insert(0, "scripts")
           from source_handoff_policy import classify_assessment_handoff
 
-          queue = json.loads(Path("automation/task_queue.json").read_text(encoding="utf-8"))
+          queue = json.loads(Path(os.environ["AUTOMATION_QUEUE_SNAPSHOT"]).read_text(encoding="utf-8"))
           tasks = queue.get("tasks", [])
           discoveries = [
               task for task in tasks
