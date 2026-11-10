@@ -113,10 +113,10 @@ jobs:
           git diff --quiet "$GITHUB_SHA" -- modules/uu.conf
           git add -- sources/policy.json automation/release_manifest.json automation/production_workflow_map.json automation/resource_write_sets.json
           actual_paths="$(git diff --cached --name-only | sort)"
-          expected_paths="$(printf '%s\\n' 'automation/production_workflow_map.json' 'automation/release_manifest.json' 'automation/resource_write_sets.json' 'sources/policy.json' | sort)"
+          expected_paths=$'automation/production_workflow_map.json\nautomation/release_manifest.json\nautomation/resource_write_sets.json\nsources/policy.json'
           if [ "$actual_paths" != "$expected_paths" ]; then
             echo "Unexpected baseline metadata staging set:"
-            printf '%s\\n' "$actual_paths"
+            echo "$actual_paths"
             exit 1
           fi
           git diff --cached --quiet -- modules/uu.conf
