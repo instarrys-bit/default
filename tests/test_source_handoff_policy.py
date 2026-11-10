@@ -343,7 +343,7 @@ class WatchdogAssessmentResumeContractTests(unittest.TestCase):
         self.assertIn("source-assessment-output", relay)
         self.assertIn("automation-watchdog.yml/dispatches", relay)
 
-    def test_production_dispatch_waits_for_exact_successful_assessment_producer(self):
+    def test_callback_reconciliation_waits_for_exact_successful_producer_run(self):
         workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn("Wait for exact callback producer completion before queue reconciliation", workflow)
         self.assertIn("SOURCE_DISCOVERY_RUN_ID: ${{ inputs.source_discovery_run_id || '' }}", workflow)
