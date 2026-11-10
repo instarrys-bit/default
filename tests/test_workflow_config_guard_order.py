@@ -26,6 +26,16 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("Independently verify committed remote rulesets", workflow)
         self.assertLess(workflow.index("git push origin HEAD:main"), workflow.index("Independently verify committed remote rulesets"))
 
+    def test_watchdog_does_not_cancel_production_when_last_verified_assessment_exists(self):
+        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
+        gate = watchdog.split(
+            "      - name: Cancel active production audits while independent Assessment gate is closed", 1
+        )[1].split("      - name: Resolve completed Discovery run from durable task correlation", 1)[0]
+        self.assertIn("latest_verified_assessed_discovery(tasks)", gate)
+        self.assertIn("newer unassessed Discovery tasks do not close the production gate", gate)
+        self.assertNotIn("latest = max(", gate)
+        self.assertNotIn("discoveries = [", gate)
+
     def test_watchdog_recovery_is_main_only_and_serialized_with_publisher(self):
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn("group: shadowrocket-main-writer", watchdog)
