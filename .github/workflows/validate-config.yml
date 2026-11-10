@@ -64,6 +64,29 @@ jobs:
         run: python3 -m unittest discover -s tests -p 'test_publish_base_integration.py' -v
       - name: Run full deterministic unit regression suite
         run: python3 -m unittest discover -s tests -v
+      - name: Replay pinned Source Discovery artifact through sharded registry (read-only)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/source-discovery-output.zip"
+          root="$RUNNER_TEMP/source-discovery-artifact"
+          curl --fail --silent --show-error --location \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/13731605096/zip" \
+            --output "$archive"
+          echo "205d3cd4636c40aba3d652240838b85d286219d508259fc9bf80dc8a1869f27b  $archive" | sha256sum --check
+          mkdir -p "$root"
+          python -m zipfile -e "$archive" "$root"
+          python scripts/validate_source_registry_artifact.py \
+            --discovery-root "$root" \
+            --artifact-zip "$archive" \
+            --expected-artifact-sha256 205d3cd4636c40aba3d652240838b85d286219d508259fc9bf80dc8a1869f27b \
+            --expected-inventory-sha256 03a5f323d0e464f4d063ed8577578eb6b4f3b9cd9f7c71354bfd8422fbdf4999 \
+            --expected-run-id 42744978594 \
+            --expected-head-sha 9edfef9422caabf2dfd92b69357dfddc6f4ff106
       - name: Parse every GitHub Actions workflow before structural tests
         run: |
           set -euo pipefail
@@ -155,7 +178,7 @@ jobs:
           python scripts/audit_adapter_activation.py | python -c 'import json,sys; d=json.load(sys.stdin); print("Activation audit: programs={program_count}, adapters={adapter_count}, enabled={enabled_adapter_count}, watchdog_permissions_ready={watchdog_caller_permissions_ready}".format(**d)); print("Least-privilege canary candidates: " + (", ".join(d["least_privilege_canary_candidates"]) or "none")); assert d["activation_performed"] is False'
       - name: Validate deterministic evidence review
         run: |
-          python -m py_compile scripts/audit_adapter_activation.py scripts/github_queue_store.py scripts/github_workflow_adapter.py scripts/remote_task_queue_runtime.py scripts/task_result_verifier.py scripts/task_scheduler.py scripts/task_queue_runtime.py scripts/task_queue.py scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/validate_config.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/json_document_store.py scripts/assess_sources.py scripts/verify_assess_sources_artifacts.py scripts/build_rulesets.py
+          python -m py_compile scripts/audit_adapter_activation.py scripts/github_queue_store.py scripts/github_workflow_adapter.py scripts/remote_task_queue_runtime.py scripts/task_result_verifier.py scripts/task_scheduler.py scripts/task_queue_runtime.py scripts/task_queue.py scripts/register_config_baseline.py scripts/sync_ruleset_config_conflicts.py scripts/audit_config_drift.py scripts/audit_ruleset_references.py scripts/audit_ruleset_config_overlap.py scripts/validate_config.py scripts/collect_domains.py scripts/deterministic_review.py scripts/domain_rule_engine.py scripts/json_document_store.py scripts/register_discovered_sources.py scripts/validate_source_registry_artifact.py scripts/assess_sources.py scripts/verify_assess_sources_artifacts.py scripts/build_rulesets.py
           python -m unittest discover -s tests -v
           python -m json.tool sources/domain_sources.json >/dev/null
           python -m json.tool sources/policy.json >/dev/null

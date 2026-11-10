@@ -258,29 +258,41 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
     return result
 
 
-def write_document(path: Path, payload: dict, collection_key: str, *, lease_required: bool = True) -> dict:
-    """Write one bounded JSON file, or switch atomically to immutable JSONL shards."""
+def write_document(
+    path: Path, payload: dict, collection_key: str, *, lease_required: bool = True,
+    force_sharded: bool = False, max_file_bytes: int | None = None,
+    shard_target_bytes: int | None = None,
+) -> dict:
+    """Write one bounded JSON file, or switch atomically to immutable JSONL shards.
+
+    Per-document limits allow large ledgers to use a stricter shard budget without
+    changing the defaults for other callers.
+    """
     path = Path(path)
     if not isinstance(payload, dict) or not isinstance(payload.get(collection_key), list):
         raise ValueError(f"document must contain a list at {collection_key!r}")
     records = payload[collection_key]
     metadata = {key: value for key, value in payload.items() if key != collection_key}
+    file_limit = MAX_FILE_BYTES if max_file_bytes is None else int(max_file_bytes)
+    shard_limit = SHARD_TARGET_BYTES if shard_target_bytes is None else int(shard_target_bytes)
+    if file_limit <= 0 or shard_limit <= 0 or shard_limit > file_limit:
+        raise ValueError("document shard limits must be positive and shard_target_bytes <= max_file_bytes")
     manifest_file = manifest_path(path)
     already_sharded = manifest_file.exists()
 
     # Estimate compact size without constructing an unbounded serialized document.
     metadata_bytes = _compact_bytes(metadata)
-    if len(metadata_bytes) > MAX_FILE_BYTES:
-        raise ValueError("document metadata exceeds the 50 MB single-file limit")
+    if len(metadata_bytes) > file_limit:
+        raise ValueError(f"document metadata exceeds the {file_limit}-byte single-file limit")
     estimate = len(metadata_bytes) + len(collection_key.encode("utf-8")) + 16
     for record in records:
         estimate += len(_compact_bytes(record)) + 1
-        if estimate > MAX_FILE_BYTES:
+        if estimate > file_limit:
             break
 
-    if estimate <= MAX_FILE_BYTES and not already_sharded:
+    if estimate <= file_limit and not already_sharded and not force_sharded:
         legacy = (json.dumps(payload, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
-        if len(legacy) <= MAX_FILE_BYTES:
+        if len(legacy) <= file_limit:
             _atomic_write(path, legacy, lease_required=lease_required)
             return {"storage": "json", "records": len(records), "bytes": len(legacy), "shards": 0}
 
@@ -300,7 +312,7 @@ def write_document(path: Path, payload: dict, collection_key: str, *, lease_requ
         nonlocal shard_index, shard_buffer, total_shard_bytes
         if not shard_buffer:
             return
-        if len(shard_buffer) > MAX_FILE_BYTES:
+        if len(shard_buffer) > file_limit:
             raise ValueError("internal shard sizing error")
         name = f"part-{shard_index:06d}.jsonl"
         raw = bytes(shard_buffer)
@@ -320,10 +332,10 @@ def write_document(path: Path, payload: dict, collection_key: str, *, lease_requ
     try:
         for record in records:
             line = _compact_bytes(record) + b"\n"
-            if len(line) > MAX_FILE_BYTES:
-                raise ValueError("one record exceeds the 50 MiB single-file limit")
+            if len(line) > file_limit:
+                raise ValueError(f"one record exceeds the {file_limit}-byte single-file limit")
             digest.update(line)
-            if shard_buffer and len(shard_buffer) + len(line) > SHARD_TARGET_BYTES:
+            if shard_buffer and len(shard_buffer) + len(line) > shard_limit:
                 flush_shard()
             shard_buffer.extend(line)
         flush_shard()
@@ -347,14 +359,14 @@ def write_document(path: Path, payload: dict, collection_key: str, *, lease_requ
             "collection_key": collection_key,
             "record_count": len(records),
             "total_shard_bytes": total_shard_bytes,
-            "max_file_bytes": MAX_FILE_BYTES,
+            "max_file_bytes": file_limit,
             "shard_directory": shard_directory,
             "metadata": metadata,
             "shards": shard_entries,
         }
         manifest_bytes = (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
-        if len(manifest_bytes) > MAX_FILE_BYTES:
-            raise ValueError("shard manifest exceeds the 50 MB single-file limit")
+        if len(manifest_bytes) > file_limit:
+            raise ValueError(f"shard manifest exceeds the {file_limit}-byte single-file limit")
         _atomic_write(manifest_file, manifest_bytes, lease_required=lease_required)
         # The manifest is authoritative only after its atomic replacement.
         if path.exists():

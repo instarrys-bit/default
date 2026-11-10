@@ -901,18 +901,18 @@
       "invocation": "python_module_or_workflow_step",
       "inputs": [
         "Exact verified source-discovery-output artifact (or explicit monolithic fallback inventory)",
-        "Prior rulesets/source_candidate_registry.json"
+        "Prior rulesets/source_candidate_registry.json schema-v1 file or schema-v2 manifest and shards"
       ],
       "outputs": [
-        "rulesets/source_candidate_registry.json; no active source registry or policy rule set mutation"
+        "rulesets/source_candidate_registry.json.manifest.json plus content-addressed JSONL shard files; no active source registry or policy rule set mutation"
       ],
       "depends_on": [
         "script_json_document_store",
         "script_resource_lease_runtime"
       ],
       "dispatches": [],
-      "permission_boundary": "Runs only inside the existing Watchdog-owned auto_sync audit. Writes only rulesets/source_candidate_registry.json under the live logical/production-pipeline resource fence; the existing single publisher stages rulesets/** only. It cannot modify modules/uu.conf, sources/domain_sources.json, or DIRECT/PROXY/REJECT rules.",
-      "health_check": "Deterministic registration tests, verified Discovery provenance, stable repository+URL identity, and successful auto_sync artifact/publication validation.",
+      "permission_boundary": "Runs only inside the existing Watchdog-owned auto_sync audit. Writes only the canonical source-candidate registry and its adjacent manifest/content-addressed shards beneath rulesets/** through the existing JSON document store and live logical/production-pipeline fence. It cannot modify modules/uu.conf, sources/domain_sources.json, or DIRECT/PROXY/REJECT rules.",
+      "health_check": "Deterministic migration/idempotency/storage tests, verified Discovery provenance, stable repository+URL identity, per-file 40 MB shard bound, SHA-256/count verification, and successful auto_sync artifact/publication validation.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],
@@ -1853,6 +1853,7 @@
         "script_json_document_store",
         "script_refresh_ruleset_manifest",
         "script_register_config_baseline",
+        "script_register_discovered_sources",
         "script_remote_task_queue_runtime",
         "script_resource_lease_runtime",
         "script_select_domain_rules",
@@ -1865,12 +1866,42 @@
         "script_validate_execution_adapters",
         "script_validate_program_registry",
         "script_validate_release_manifest",
+        "script_validate_source_registry_artifact",
         "script_verify_assess_sources_artifacts",
         "script_verify_baseline"
       ],
       "dispatches": [],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
       "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_validate_source_registry_artifact",
+      "path": "scripts/validate_source_registry_artifact.py",
+      "kind": "python_component",
+      "responsibility": "Replay one pinned historical Source Discovery artifact through the exact candidate-registry migration, JSONL shard writer and SHA/count verifier in an isolated temporary directory without touching repository state.",
+      "capabilities": [
+        "source_candidate_registry_artifact_validation"
+      ],
+      "invocation": "read_only_validation_workflow_step",
+      "inputs": [
+        "Pinned source-discovery-output artifact ZIP, artifact SHA-256, inventory SHA-256, producer run ID and producer head SHA"
+      ],
+      "outputs": [
+        "Runner-local temporary sharded registry manifest and verified round-trip summary; no repository mutation"
+      ],
+      "depends_on": [
+        "script_json_document_store",
+        "script_register_discovered_sources"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Read-only validation component. It verifies artifact provenance, calls the production registry builder/encoder and JSON document store only against a temporary directory outside the checkout, then verifies every shard and reconstructed logical registry. It cannot write repository paths, modify modules/uu.conf, activate sources, or change DIRECT/PROXY/REJECT rules.",
+      "health_check": "Pinned artifact and inventory SHA-256 match; producer run/head match; exact repository/source counts match; every shard remains below 40,000,000 bytes; manifest and shard SHA/count checks pass; reconstructed registry equals the logical registry.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],

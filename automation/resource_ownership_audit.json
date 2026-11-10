@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "audit_id": "resource-ownership-audit-2026.11.10.discovered-source-registry1",
+  "audit_id": "resource-ownership-audit-2026.11.10.source-registry-artifact-replay",
   "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
-    "registry_blob_sha": "e5e1e678eec2bd9208934db8a73b867d49de5efc",
-    "adapters_blob_sha": "8e51a3622ea43fdd4029ed730f3223c06cd72b18",
+    "registry_blob_sha": "fd77829bc96a27da38dec998ebd2883ea09f57bf",
+    "adapters_blob_sha": "73cc70899f43dd02265b961805aa815cb7884789",
     "inspected_sources": [
       ".github/workflow_helpers/check_source_assessment_artifact.py",
       ".github/workflows/assessment-completion-relay.yml",
@@ -64,6 +64,7 @@
       "scripts/validate_execution_adapters.py",
       "scripts/validate_program_registry.py",
       "scripts/validate_release_manifest.py",
+      "scripts/validate_source_registry_artifact.py",
       "scripts/verify_assess_sources_artifacts.py",
       "scripts/verify_baseline.py",
       "scripts/verify_published_rulesets.py",
@@ -71,6 +72,8 @@
       "scripts/watchdog_recovery_policy.py",
       "tests/test_auto_activate_sources.py",
       "tests/test_config_baseline_registration.py",
+      "tests/test_discovered_source_registry.py",
+      "tests/test_json_document_store.py",
       "tests/test_production_intent.py",
       "tests/test_remote_task_queue_runtime.py",
       "tests/test_restore_automation_state.py",
@@ -560,7 +563,10 @@
     {
       "id": "discovered_source_candidate_registry",
       "paths": [
-        "rulesets/source_candidate_registry.json"
+        "rulesets/source_candidate_registry.json (logical document)",
+        "rulesets/source_candidate_registry.json.manifest.json",
+        "rulesets/source_candidate_registry.json.parts-<digest>/part-*.jsonl",
+        "rulesets/source_candidate_registry.json.parts.tmp-*"
       ],
       "known_writers": [
         "script_register_discovered_sources",
@@ -569,7 +575,7 @@
       "lock_key": "logical/production-pipeline",
       "required_mode": "exclusive_live_resource_lease",
       "status": "fenced_single_publisher_rulesets_only",
-      "note": "Stores every discovered candidate repository and each supported rule-list file as a durable, non-activating record. Source identity is repository+URL; discovery provenance and first/last-seen run IDs are retained. External intelligence is excluded. The registry is never treated as an active policy source."
+      "note": "Stores every discovered candidate repository and each supported rule-list file as typed JSONL records in a durable, non-activating registry. Schema-v1 inline JSON is migrated on the next successful write; schema-v2 readers verify the adjacent manifest, each shard SHA-256 and record count. Shard files are content-addressed; the adjacent manifest is atomically replaced only after all shards are complete. The per-file limit remains 40,000,000 bytes with a 35,000,000-byte target. Source identity is repository+URL; discovery provenance and first/last-seen run IDs are retained. External intelligence is excluded. The registry is never treated as an active policy source."
     }
   ],
   "scheduling_gates": {
