@@ -958,7 +958,7 @@
       "id": "script_resolve_source_artifacts",
       "path": "scripts/resolve_source_artifacts.py",
       "kind": "python_component",
-      "responsibility": "resolve and cryptographically verify the exact immutable Discovery and Assessment artifacts consumed by one production audit",
+      "responsibility": "optionally resolve and cryptographically verify the exact immutable Discovery and Assessment artifacts for new-source activation; absence of a verified handoff skips new-source activation without blocking publication from currently registered sources",
       "capabilities": [
         "source_artifact_handoff"
       ],
@@ -969,7 +969,8 @@
         "exact Assessment task and artifact"
       ],
       "outputs": [
-        "verified Discovery and Assessment artifact roots beneath RUNNER_TEMP"
+        "verified Discovery and Assessment artifact roots beneath RUNNER_TEMP when available",
+        "non-blocking source_activation_skipped result when no verified handoff is available"
       ],
       "depends_on": [
         "script_discover_sources",
@@ -977,7 +978,7 @@
       ],
       "dispatches": [],
       "permission_boundary": "Read-only GitHub Actions API access; downloads immutable artifacts only; extraction is restricted to RUNNER_TEMP; no repository writes, no rule activation, no uu.conf access.",
-      "health_check": "Covered by the repository deterministic test suite and auto_sync preflight; production stops closed when producer identity, task linkage, or content digests fail.",
+      "health_check": "When artifacts are available, producer identity, task linkage and content digests must verify exactly. When no verified Assessment handoff is available, the step returns a non-blocking skip result and exports no Discovery root, so no newly discovered source can be activated; registered-source collection and ruleset publication continue through their own evidence and uu.conf checks.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],
