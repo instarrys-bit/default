@@ -901,18 +901,18 @@
       "invocation": "python_module_or_workflow_step",
       "inputs": [
         "Exact verified source-discovery-output artifact (or explicit monolithic fallback inventory)",
-        "Prior rulesets/source_candidate_registry.json"
+        "Prior rulesets/source_candidate_registry.json schema-v1 file or schema-v2 manifest and shards"
       ],
       "outputs": [
-        "rulesets/source_candidate_registry.json; no active source registry or policy rule set mutation"
+        "rulesets/source_candidate_registry.json.manifest.json plus content-addressed JSONL shard files; no active source registry or policy rule set mutation"
       ],
       "depends_on": [
         "script_json_document_store",
         "script_resource_lease_runtime"
       ],
       "dispatches": [],
-      "permission_boundary": "Runs only inside the existing Watchdog-owned auto_sync audit. Writes only rulesets/source_candidate_registry.json under the live logical/production-pipeline resource fence; the existing single publisher stages rulesets/** only. It cannot modify modules/uu.conf, sources/domain_sources.json, or DIRECT/PROXY/REJECT rules.",
-      "health_check": "Deterministic registration tests, verified Discovery provenance, stable repository+URL identity, and successful auto_sync artifact/publication validation.",
+      "permission_boundary": "Runs only inside the existing Watchdog-owned auto_sync audit. Writes only the canonical source-candidate registry and its adjacent manifest/content-addressed shards beneath rulesets/** through the existing JSON document store and live logical/production-pipeline fence. It cannot modify modules/uu.conf, sources/domain_sources.json, or DIRECT/PROXY/REJECT rules.",
+      "health_check": "Deterministic migration/idempotency/storage tests, verified Discovery provenance, stable repository+URL identity, per-file 40 MB shard bound, SHA-256/count verification, and successful auto_sync artifact/publication validation.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],
