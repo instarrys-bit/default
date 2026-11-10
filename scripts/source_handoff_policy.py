@@ -304,7 +304,7 @@ def latest_verified_assessed_discovery(tasks: list) -> dict | None:
 
 
 def select_production_worker_task(tasks: list, current_fingerprint: str, now: datetime | None = None) -> str:
-    """Select one queued production audit only after the latest Discovery has a verified Assessment.
+    """Select one queued production audit using the newest independently verified source snapshot.
 
     This is deliberately separate from select_source_worker_task: the source worker
     stops at the Assessment boundary, while this selector is the sole handoff into
