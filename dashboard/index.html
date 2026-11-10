@@ -175,14 +175,14 @@ button{font:inherit}
 @media(max-width:900px){.shell{padding:12px 14px 10px}.bento{grid-auto-rows:minmax(165px,auto);gap:9px}}
 @media(max-width:650px){.shell{padding:12px 10px 16px}.topbar{margin-bottom:10px}.kpis{gap:7px}.kpi{min-height:74px;padding:9px 11px}.bento{gap:8px}.card{padding:13px}.footer{margin-top:12px}}
 
-/* Two-column dashboard layout */
-@media(min-width:651px){
+/* Responsive two-column dashboard layout */
+@media(min-width:761px){
  .bento{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(165px,auto)}
- .bento>.card{grid-column:auto!important;grid-row:auto!important;min-width:0}
+ .bento>.card{grid-column:auto!important;grid-row:auto!important;min-width:0;width:100%}
 }
-@media(max-width:650px){
+@media(max-width:760px){
  .bento{grid-template-columns:minmax(0,1fr)}
- .bento>.card{grid-column:1!important;grid-row:auto!important}
+ .bento>.card{grid-column:1/-1!important;grid-row:auto!important;width:100%;min-width:0}
 }
 
 </style>
