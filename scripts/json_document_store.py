@@ -359,7 +359,7 @@ def write_document(
             "collection_key": collection_key,
             "record_count": len(records),
             "total_shard_bytes": total_shard_bytes,
-            "max_file_bytes": MAX_FILE_BYTES,
+            "max_file_bytes": file_limit,
             "shard_directory": shard_directory,
             "metadata": metadata,
             "shards": shard_entries,
