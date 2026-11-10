@@ -1047,25 +1047,21 @@ jobs:
               output.write('### Durable Discovery / Assessment task evidence\n\n')
               output.write('```json\n' + encoded + '\n```\n')
           PY
-      - name: Cancel active production audits while independent Assessment gate is closed
+      - name: Report source assessment state without blocking registered-source publication
         if: ${{ steps.source-mode.outputs.mode == 'independent' }}
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
           AUTOMATION_QUEUE_SNAPSHOT: ${{ runner.temp }}/task_queue.json
+          GITHUB_STEP_SUMMARY: ${{ github.step_summary }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import json, os, time, urllib.error, urllib.request
-          from pathlib import Path
+          import json
           import sys
+          from pathlib import Path
           sys.path.insert(0, "scripts")
           from source_handoff_policy import classify_assessment_handoff
-          from github_workflow_adapter import GitHubWorkflowClient, expected_correlation_titles, validate_run_head_sha
 
-          repo = os.environ["GITHUB_REPOSITORY"]
-          token = os.environ["GITHUB_TOKEN"]
-          queue = json.loads(Path(os.environ["AUTOMATION_QUEUE_SNAPSHOT"]).read_text(encoding="utf-8"))
+          queue = json.loads(Path("automation/task_queue.json").read_text(encoding="utf-8"))
           tasks = queue.get("tasks", [])
           discoveries = [
               task for task in tasks
@@ -1076,86 +1072,32 @@ jobs:
               key=lambda task: (str(task.get("created_at") or ""), str(task.get("task_id") or "")),
               default=None,
           )
-          gate_open = False
-          if isinstance(latest, dict) and latest.get("status") == "SUCCEEDED":
-              result = latest.get("result") or {}
-              evidence = result.get("run_evidence") or {}
+          handoff_state = "no_discovery"
+          if isinstance(latest, dict):
+              evidence = ((latest.get("result") or {}).get("run_evidence") or {})
               run_id = evidence.get("run_id")
               if isinstance(run_id, int) and not isinstance(run_id, bool):
                   run_id = str(run_id)
-              if isinstance(run_id, str) and run_id.isdigit():
-                  gate_open = classify_assessment_handoff(tasks, run_id).get("state") == "already_assessed"
-          if gate_open:
-              print("Latest independent Discovery has a verified non-activating Assessment; production cancellation gate is open.")
-              raise SystemExit(0)
-
-          client = GitHubWorkflowClient(repo, token)
-          cancelled = []
-          for task in tasks:
-              if (not isinstance(task, dict)
-                      or task.get("target_program_id") != "workflow_auto_sync"
-                      or task.get("status") not in {"CLAIMED", "VERIFYING"}):
-                  continue
-              result = task.get("result") or {}
-              evidence = result.get("run_evidence") or {}
-              run_id = evidence.get("run_id")
-              if isinstance(run_id, bool) or not isinstance(run_id, int) or run_id <= 0:
-                  if task.get("status") == "VERIFYING":
-                      raise SystemExit(f"Active production task {task.get('task_id')} has no verifiable run ID; refusing downstream dispatch.")
-                  continue
-              intent = task.get("dispatch_intent") or {}
-              if intent.get("workflow_path") != ".github/workflows/auto_sync.yml":
-                  raise SystemExit(f"Production task {task.get('task_id')} does not identify the reviewed auto_sync workflow.")
-              run = client.get_run(run_id)
-              if (run.get("path") != ".github/workflows/auto_sync.yml"
-                      or run.get("workflow_id") != intent.get("workflow_id")
-                      or run.get("event") != "workflow_dispatch"
-                      or run.get("head_branch") != "main"
-                      or run.get("display_title") not in expected_correlation_titles(intent)):
-                  raise SystemExit(f"Production run {run_id} identity does not match its durable task intent; refusing cancellation.")
-              relationship = validate_run_head_sha(client, intent, run.get("head_sha"))
-              persisted_sha = evidence.get("head_sha")
-              if persisted_sha is not None and persisted_sha != run.get("head_sha"):
-                  raise SystemExit(f"Production run {run_id} persisted SHA conflicts with GitHub; refusing cancellation.")
-              if run.get("status") == "completed":
-                  if run.get("conclusion") == "success":
-                      message = f"Production run {run_id} completed before the Assessment gate opened. Its artifact is pre-assessment evidence, not an approved final publication; a fresh gated audit is required after Assessment."
-                      print(message)
-                      with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
-                          summary.write("### Pre-assessment production artifact\n\n" + message + "\n")
-                  continue
-              if run.get("status") not in {"queued", "in_progress"}:
-                  raise SystemExit(f"Production run {run_id} has unexpected status {run.get('status')!r}; refusing unsafe recovery.")
-              url = f"https://api.github.com/repos/{repo}/actions/runs/{run_id}/cancel"
-              request = urllib.request.Request(
-                  url, data=b"", method="POST",
-                  headers={
-                      "Accept": "application/vnd.github+json",
-                      "Authorization": "Bearer " + token,
-                      "X-GitHub-Api-Version": "2022-11-28",
-                      "User-Agent": "Shadowrocket-Watchdog-Assessment-Gate/1.0",
-                  },
+              handoff_state = (
+                  classify_assessment_handoff(tasks, run_id).get("state", "assessment_pending")
+                  if isinstance(run_id, str) and run_id.isdigit()
+                  else "discovery_not_verified"
               )
-              try:
-                  with urllib.request.urlopen(request, timeout=30) as response:
-                      if response.status not in {202, 204}:
-                          raise SystemExit(f"GitHub did not accept cancellation for production run {run_id}: HTTP {response.status}")
-              except urllib.error.HTTPError as exc:
-                  if exc.code not in {409, 422}:
-                      raise
-              completed = False
-              for _ in range(30):
-                  current = client.get_run(run_id)
-                  if current.get("status") == "completed":
-                      if current.get("conclusion") == "cancelled":
-                          completed = True
-                          break
-                      raise SystemExit(f"Production run {run_id} completed with {current.get('conclusion')!r} instead of cancellation.")
-                  time.sleep(1)
-              if not completed:
-                  raise SystemExit(f"Production run {run_id} cancellation was accepted but not yet confirmed; holding Assessment dispatch until the lease can be released.")
-              cancelled.append({"task_id": task.get("task_id"), "run_id": run_id, "sha_relationship": relationship})
-          print(json.dumps({"assessment_gate_open": False, "cancelled_production_runs": cancelled}, sort_keys=True))
+          result = {
+              "latest_discovery_task_id": latest.get("task_id") if isinstance(latest, dict) else None,
+              "latest_discovery_status": latest.get("status") if isinstance(latest, dict) else None,
+              "assessment_handoff_state": handoff_state,
+              "registered_source_publication_blocked": False,
+              "new_source_activation_requires_verified_assessment": True,
+          }
+          print(json.dumps(result, sort_keys=True))
+          with open(Path("automation/task_queue.json").parent / "unused", "w", encoding="utf-8") as _:
+              pass
+          with open(__import__("os").environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+              summary.write("### Source Assessment status\n\n")
+              summary.write(f"- Handoff state: `{handoff_state}`\n")
+              summary.write("- Existing registered-source collection and ruleset publication may proceed through their own current-evidence and uu.conf checks.\n")
+              summary.write("- New source activation remains disabled until a verified non-activating Assessment artifact is available.\n")
           PY
       - name: Resolve completed Discovery run from durable task correlation
         id: resolve-discovery-run
