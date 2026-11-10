@@ -63,7 +63,7 @@
         "success_predicate",
         "independent_verifier"
       ],
-      "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+      "audit_note": "Registry-level metadata only; when the optional source handoff is unavailable, no discovery root is exported and no new sources can be activated; existing registered-source ruleset publication remains independent."
     },
     {
       "id": "script_apply_safe_repair",
@@ -1118,7 +1118,8 @@
         "exact immutable Discovery and Assessment Actions artifacts"
       ],
       "current_registry_outputs": [
-        "verified artifact roots beneath RUNNER_TEMP"
+        "verified artifact roots beneath RUNNER_TEMP when a valid handoff exists",
+        "non-blocking source_activation_skipped result when no verified Assessment handoff exists"
       ],
       "current_invocation": "internal production workflow step",
       "contract_status": "incomplete",
