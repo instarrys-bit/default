@@ -2,6 +2,8 @@ import copy
 import sys
 import unittest
 import hashlib
+import json
+import tempfile
 from unittest.mock import patch
 from pathlib import Path
 
@@ -79,6 +81,21 @@ class AutoActivationTests(unittest.TestCase):
         self.assertEqual(len(activated), 1)
         source = next(x for x in registry["sources"] if x["id"] == activated[0]["id"])
         self.assertTrue(source["allow_leading_dot"])
+
+    def test_independent_mode_ignores_unverified_checkout_discovery_document(self):
+        with tempfile.TemporaryDirectory() as directory:
+            discovered = Path(directory) / "discovered_sources.json"
+            discovered.write_text(json.dumps({
+                "candidates": [{"repository": "new/direct"}]
+            }), encoding="utf-8")
+            with patch("auto_activate_sources.DISCOVERED", discovered), patch.dict(
+                "os.environ", {"SOURCE_DISCOVERY_MODE": "independent"}, clear=False
+            ):
+                _, activated, _ = activate(
+                    base_registry(), {"candidates": [candidate()]},
+                    "2026-11-01T00:00:00+00:00",
+                )
+            self.assertEqual(activated, [])
 
     def test_first_observation_is_not_activated(self):
         _, activated, _ = activate(base_registry(), {"candidates": [candidate(drift="baseline_initialized")]})
