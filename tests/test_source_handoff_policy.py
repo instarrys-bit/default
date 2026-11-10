@@ -276,7 +276,7 @@ class SourceHandoffPolicyTests(unittest.TestCase):
         )
 
 
-    def test_production_dispatch_stays_closed_without_verified_assessment(self):
+    def test_production_dispatch_does_not_wait_for_source_assessment(self):
         discovery = discovery_task(run_id="42417075148")
         production = {
             "task_id": "task_production",
@@ -287,7 +287,8 @@ class SourceHandoffPolicyTests(unittest.TestCase):
             "priority": 80,
             "input": {"production_decision": "SCHEDULE_DUE", "production_fingerprint": "a" * 64},
         }
-        self.assertEqual(select_production_worker_task([discovery, production], "a" * 64), "")
+        self.assertEqual(select_production_worker_task([discovery, production], "a" * 64), "task_production")
+        self.assertEqual(select_production_worker_task([production], "a" * 64), "task_production")
 
     def test_active_production_run_prevents_duplicate_dispatch(self):
         discovery = discovery_task(run_id="42417075148")
@@ -309,7 +310,7 @@ class SourceHandoffPolicyTests(unittest.TestCase):
         }
         self.assertEqual(select_production_worker_task([discovery, assessment, active, queued], "b" * 64), "")
 
-    def test_invalid_assessment_does_not_release_production_task(self):
+    def test_invalid_assessment_does_not_block_registered_source_production(self):
         discovery = discovery_task(run_id="42417075148")
         assessment = assessment_task("task_assessed", "42417075148", verified=False)
         production = {
@@ -321,7 +322,7 @@ class SourceHandoffPolicyTests(unittest.TestCase):
             "priority": 80,
             "input": {"production_decision": "SCHEDULE_DUE", "production_fingerprint": "a" * 64},
         }
-        self.assertEqual(select_production_worker_task([discovery, assessment, production], "a" * 64), "")
+        self.assertEqual(select_production_worker_task([discovery, assessment, production], "a" * 64), "task_production")
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
