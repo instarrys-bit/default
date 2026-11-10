@@ -270,8 +270,41 @@ def classify_assessment_handoff(tasks: list, workflow_run_id: str) -> dict:
         "reason": "No Assessment task exists for this exact Discovery run.",
     }
 
+def latest_verified_assessed_discovery(tasks: list) -> dict | None:
+    """Return the newest Discovery whose exact Assessment is independently verified.
+
+    Newer queued, active, failed, or not-yet-assessed Discovery tasks do not
+    invalidate the last usable source snapshot. They are non-activating until
+    their own Assessment succeeds, so production may safely continue from the
+    newest already-verified predecessor.
+    """
+    if not isinstance(tasks, list):
+        raise ValueError("tasks must be a list")
+    eligible = []
+    for task in tasks:
+        if (not isinstance(task, dict)
+                or task.get("target_program_id") != "workflow_source_discovery"
+                or task.get("status") != "SUCCEEDED"
+                or (task.get("verification") or {}).get("status") != "passed"):
+            continue
+        evidence = (task.get("result") or {}).get("run_evidence") or {}
+        run_id = evidence.get("run_id")
+        if isinstance(run_id, int) and not isinstance(run_id, bool):
+            run_id = str(run_id)
+        if not isinstance(run_id, str) or not run_id.isdigit():
+            continue
+        if classify_assessment_handoff(tasks, run_id).get("state") != "already_assessed":
+            continue
+        eligible.append(task)
+    return max(
+        eligible,
+        key=lambda item: (str(item.get("created_at") or ""), str(item.get("task_id") or "")),
+        default=None,
+    )
+
+
 def select_production_worker_task(tasks: list, current_fingerprint: str, now: datetime | None = None) -> str:
-    """Select one queued production audit only after the latest Discovery has a verified Assessment.
+    """Select one queued production audit using the newest independently verified source snapshot.
 
     This is deliberately separate from select_source_worker_task: the source worker
     stops at the Assessment boundary, while this selector is the sole handoff into
@@ -285,26 +318,8 @@ def select_production_worker_task(tasks: list, current_fingerprint: str, now: da
     now = now.astimezone(timezone.utc)
     if not isinstance(current_fingerprint, str) or len(current_fingerprint) != 64:
         raise ValueError("current production fingerprint must be a SHA-256 hex digest")
-    discoveries = [
-        task for task in tasks
-        if isinstance(task, dict) and task.get("target_program_id") == "workflow_source_discovery"
-    ]
-    latest = max(
-        discoveries,
-        key=lambda task: (str(task.get("created_at") or ""), str(task.get("task_id") or "")),
-        default=None,
-    )
-    if not isinstance(latest, dict) or latest.get("status") != "SUCCEEDED":
-        return ""
-    if (latest.get("verification") or {}).get("status") != "passed":
-        return ""
-    evidence = (latest.get("result") or {}).get("run_evidence") or {}
-    run_id = evidence.get("run_id")
-    if isinstance(run_id, int) and not isinstance(run_id, bool):
-        run_id = str(run_id)
-    if not isinstance(run_id, str) or not run_id.isdigit():
-        return ""
-    if classify_assessment_handoff(tasks, run_id).get("state") != "already_assessed":
+    latest = latest_verified_assessed_discovery(tasks)
+    if not isinstance(latest, dict):
         return ""
 
     # An already-dispatched production task owns the pipeline until Watchdog

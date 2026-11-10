@@ -33,7 +33,7 @@ class MemoryStore:
 
 
 class TaskSchedulerTests(unittest.TestCase):
-    def test_independent_production_gate_requires_latest_verified_non_activating_assessment(self):
+    def test_independent_production_gate_uses_latest_verified_assessment_not_newer_pending_discovery(self):
         control = self.root / "automation" / "production_control.json"
         control.write_text(json.dumps({
             "schema_version": 1, "dispatch_mode": "enabled", "source_discovery_mode": "independent"
@@ -41,12 +41,12 @@ class TaskSchedulerTests(unittest.TestCase):
         older = {
             "task_id": "task_" + "1" * 24, "target_program_id": "workflow_source_discovery",
             "status": "SUCCEEDED", "created_at": "2026-11-07T12:00:00Z",
+            "verification": {"status": "passed"},
             "result": {"run_evidence": {"run_id": 42373818238}},
         }
         older_assessment = {
             "task_id": "task_" + "2" * 24, "target_program_id": "script_assess_sources",
-            "status": "SUCCEEDED",
-            "created_at": "2026-11-07T12:30:00Z",
+            "status": "SUCCEEDED", "created_at": "2026-11-07T12:30:00Z",
             "input": {"predecessor": {"workflow_run_id": "42373818238"}},
             "verification": {"status": "passed"},
             "result": {"artifact_verification": {"valid": True, "activation_count": 0}},
@@ -54,25 +54,29 @@ class TaskSchedulerTests(unittest.TestCase):
         newer = {
             "task_id": "task_" + "3" * 24, "target_program_id": "workflow_source_discovery",
             "status": "VERIFYING", "created_at": "2026-11-08T12:00:00Z",
+            "verification": {"status": "passed"},
             "result": {"run_evidence": {"run_id": 42417075148}},
         }
-        self.assertFalse(production_source_assessment_gate([older, older_assessment, newer], self.root))
+        self.assertTrue(production_source_assessment_gate([older, older_assessment, newer], self.root))
         newer["status"] = "SUCCEEDED"
-        self.assertFalse(production_source_assessment_gate([older, older_assessment, newer], self.root))
-        latest_assessment = {
+        self.assertTrue(production_source_assessment_gate([older, older_assessment, newer], self.root))
+        newer_assessment = {
             "task_id": "task_" + "4" * 24, "target_program_id": "script_assess_sources",
-            "status": "SUCCEEDED",
-            "created_at": "2026-11-08T12:30:00Z",
+            "status": "SUCCEEDED", "created_at": "2026-11-08T12:30:00Z",
             "input": {"predecessor": {"workflow_run_id": "42417075148"}},
             "verification": {"status": "passed"},
             "result": {"artifact_verification": {"valid": True, "activation_count": 0}},
         }
         self.assertTrue(production_source_assessment_gate(
-            [older, older_assessment, newer, latest_assessment], self.root
+            [older, older_assessment, newer, newer_assessment], self.root
         ))
-        latest_assessment["result"]["artifact_verification"]["activation_count"] = 1
+        newer_assessment["result"]["artifact_verification"]["activation_count"] = 1
+        self.assertTrue(production_source_assessment_gate(
+            [older, older_assessment, newer, newer_assessment], self.root
+        ))
+        older_assessment["result"]["artifact_verification"]["valid"] = False
         self.assertFalse(production_source_assessment_gate(
-            [older, older_assessment, newer, latest_assessment], self.root
+            [older, older_assessment, newer, newer_assessment], self.root
         ))
 
     def test_source_discovery_daily_enqueue_is_idempotent(self):
