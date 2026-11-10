@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from types import SimpleNamespace
 from register_config_baseline import (
-    build_release_pin_updates, git_blob_sha, owner_approved_push_changed_config, owner_approved_config_history, write_baseline_proposal,
+    apply_baseline_updates, build_release_pin_updates, git_blob_sha, owner_approved_push_changed_config, owner_approved_config_history, write_baseline_proposal,
 )
 
 
@@ -212,6 +212,40 @@ class ConfigBaselineRegistrationTests(unittest.TestCase):
             with patch.dict(os.environ, {"RUNNER_TEMP": str(runner), "CONFIG_BASELINE_PROPOSAL_PATH": str(repo / "proposal.json")}, clear=True):
                 with self.assertRaisesRegex(ValueError, "under RUNNER_TEMP"):
                     write_baseline_proposal({"status": "test"})
+
+
+    def test_apply_mode_updates_only_baseline_metadata_and_preserves_config_bytes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "modules").mkdir()
+            (root / "modules" / "uu.conf").write_bytes(b"[General]\\n# owner content\\n")
+            original = (root / "modules" / "uu.conf").read_bytes()
+            sha = git_blob_sha(original)
+            (root / "sources").mkdir()
+            policy = {"managed_config_guard": {"path": "modules/uu.conf", "approved_git_blob_sha": sha}}
+            (root / "automation").mkdir()
+            release = {"implementation_pins": {"config_baseline": {
+                "path": "modules/uu.conf", "git_blob_sha": "a" * 40, "access": "read_only"}}}
+            workflow_map = {"review_context": {"release_manifest_blob_sha": "b" * 40}}
+            write_sets = {"review_context": {"release_manifest_blob_sha": "b" * 40}}
+            (root / "automation" / "release_manifest.json").write_text(json.dumps(release), encoding="utf-8")
+            (root / "automation" / "production_workflow_map.json").write_text(json.dumps(workflow_map), encoding="utf-8")
+            (root / "automation" / "resource_write_sets.json").write_text(json.dumps(write_sets), encoding="utf-8")
+            release_text, map_text, sets_text = build_release_pin_updates(root, "modules/uu.conf", sha)
+            changed = apply_baseline_updates(root, "modules/uu.conf", sha, policy, release_text, map_text, sets_text)
+            self.assertEqual(changed, ["automation/production_workflow_map.json",
+                "automation/release_manifest.json", "automation/resource_write_sets.json", "sources/policy.json"])
+            self.assertEqual((root / "modules" / "uu.conf").read_bytes(), original)
+            self.assertEqual(json.loads((root / "sources" / "policy.json").read_text())["managed_config_guard"]["approved_git_blob_sha"], sha)
+
+    def test_apply_mode_refuses_if_config_sha_changed_after_verification(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "modules").mkdir()
+            (root / "modules" / "uu.conf").write_bytes(b"changed")
+            with self.assertRaisesRegex(ValueError, "changed after owner-history verification"):
+                apply_baseline_updates(root, "modules/uu.conf", "a" * 40, {}, "{}", "{}", "{}")
+
 
 if __name__ == "__main__":
     unittest.main()

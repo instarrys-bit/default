@@ -70,12 +70,15 @@ concurrency:
 
 jobs:
   baseline-sync:
-    name: Audit owner-approved uu.conf baseline (read-only)
+    name: Sync owner-verified uu.conf baseline metadata (config read-only)
     if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
+    concurrency:
+      group: shadowrocket-config-baseline-sync
+      cancel-in-progress: false
     permissions:
-      contents: read
+      contents: write
       issues: write
     steps:
       - name: Checkout exact triggering main snapshot
@@ -83,12 +86,12 @@ jobs:
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0
-          persist-credentials: false
+          persist-credentials: true
       - name: Set up Python for baseline audit
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
-      - name: Audit owner-approved baseline without repository writes
+      - name: Apply owner-verified metadata-only baseline synchronization
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
@@ -100,23 +103,32 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          result="$(python3 scripts/register_config_baseline.py)"
+          result="$(python3 scripts/register_config_baseline.py --apply)"
           echo "$result"
           registered="$(printf '%s' "$result" | jq -r '.registered // false')"
-          if [ "$registered" = "true" ]; then
-            body_file="$RUNNER_TEMP/baseline-issue.md"
-            {
-              printf '%s\n\n' 'The read-only baseline audit verified an owner-approved config change. No repository files were written by automation. Review this evidence and update baseline metadata manually if appropriate:'
-              printf '%s\n' '~~~json'
-              printf '%s\n' "$result"
-              printf '%s\n' '~~~'
-            } > "$body_file"
-            gh issue create --repo "$GITHUB_REPOSITORY" \
-              --title "Owner-approved uu.conf baseline metadata requires manual reconciliation" \
-              --body-file "$body_file"
+          if [ "$registered" != "true" ]; then
+            echo "No owner-verified baseline drift; repository metadata is already synchronized."
+            exit 0
           fi
           git diff --quiet "$GITHUB_SHA" -- modules/uu.conf
-          echo "Baseline audit completed; no repository write was performed."
+          git add -- sources/policy.json automation/release_manifest.json automation/production_workflow_map.json automation/resource_write_sets.json
+          actual_paths="$(git diff --cached --name-only | sort)"
+          expected_paths="$(printf '%s\\n' 'automation/production_workflow_map.json' 'automation/release_manifest.json' 'automation/resource_write_sets.json' 'sources/policy.json' | sort)"
+          if [ "$actual_paths" != "$expected_paths" ]; then
+            echo "Unexpected baseline metadata staging set:"
+            printf '%s\\n' "$actual_paths"
+            exit 1
+          fi
+          git diff --cached --quiet -- modules/uu.conf
+          git fetch origin main
+          remote_main="$(git rev-parse origin/main)"
+          if [ "$remote_main" != "$GITHUB_SHA" ]; then
+            echo "main advanced during baseline sync; refusing stale metadata commit."
+            exit 1
+          fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Sync owner-verified uu.conf baseline metadata"
+          git push origin HEAD:main
+          echo "Owner-verified baseline metadata synchronized. modules/uu.conf was not modified."
   health-check:
     needs: [baseline-sync]
     if: ${{ always() && (needs.baseline-sync.result == 'success' || needs.baseline-sync.result == 'skipped') && (github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/source-discovery.yml' || github.event.workflow_run.path == '.github/workflows/validate-config.yml' || github.event.workflow_run.path == '.github/workflows/self-healing-agent.yml'))) }}

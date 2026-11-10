@@ -881,7 +881,7 @@
       ],
       "depends_on": [],
       "dispatches": [],
-      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "permission_boundary": "The --apply mode is callable only by the serialized automation-watchdog.yml baseline-sync job with contents:write. It verifies repository-owner identity and every intervening uu.conf-changing commit, then writes only sources/policy.json, automation/release_manifest.json, automation/production_workflow_map.json and automation/resource_write_sets.json. Default mode remains runner-local proposal-only. It never writes modules/uu.conf; no independent dispatch is enabled.",
       "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
       "orchestration": {
         "enabled": false,
