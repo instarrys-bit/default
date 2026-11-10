@@ -580,6 +580,11 @@ def main():
         identity=("REJECT",scope,domain)
         if line not in manual_reject_approvals:
             raise ValueError("approved queue evidence is not covered by the manual approval ledger: "+line)
+        if line in previously_published_reject and identity in rule_sets["REJECT"]:
+            approved_review_rules.add(identity)
+            approved+=1
+            manual_queue_approved_identities.add(identity)
+            continue
         if identity in approved_review_rules:
             manual_queue_approved_identities.add(identity)
             continue
