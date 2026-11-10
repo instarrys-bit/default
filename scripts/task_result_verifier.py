@@ -228,6 +228,42 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
                     observation = inspect_correlated_run(
                         workflow_client, intent, known_run_id=known_run_id
                     )
+                    # A pending child workflow must not renew its resource fence
+                    # forever. Apply the explicit runtime bound from the reviewed
+                    # adapter contract, request cancellation, then fence the task.
+                    run_timeout = adapter.get("workflow_run_timeout_seconds")
+                    run_created_at = observation.get("run_created_at")
+                    run_id = observation.get("run_id")
+                    if (
+                        observation.get("state") == "pending"
+                        and isinstance(run_id, int) and not isinstance(run_id, bool)
+                        and isinstance(run_timeout, int) and not isinstance(run_timeout, bool)
+                        and run_timeout > 0 and isinstance(run_created_at, str)
+                    ):
+                        try:
+                            run_started = datetime.fromisoformat(run_created_at.replace("Z", "+00:00"))
+                            elapsed = (now - run_started).total_seconds()
+                        except ValueError:
+                            elapsed = -1
+                        if elapsed >= run_timeout:
+                            cancel_error = None
+                            cancel_requested = False
+                            try:
+                                workflow_client.cancel_run(run_id)
+                                cancel_requested = True
+                            except (WorkflowAPIError, AttributeError, ValueError) as exc:
+                                cancel_error = str(exc)[:500]
+                            observation = {
+                                "state": "timed_out",
+                                "run_id": run_id,
+                                "html_url": observation.get("html_url"),
+                                "run_status": observation.get("run_status"),
+                                "run_created_at": run_created_at,
+                                "timeout_seconds": run_timeout,
+                                "elapsed_seconds": int(elapsed),
+                                "cancel_requested": cancel_requested,
+                                "cancel_error": cancel_error,
+                            }
                     # A Watchdog runner can be cancelled after claiming a task and
                     # persisting dispatch intent but before it completes the queue
                     # transition to VERIFYING. Reconcile the child correlation first.
@@ -290,6 +326,58 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
 
             if adapter.get("adapter_type") == "github_actions_workflow":
                 observation = workflow_observations.get(task["task_id"])
+                if isinstance(observation, dict) and observation.get("state") == "timed_out":
+                    workflow_contract = adapter.get("workflow", {})
+                    contract_sha = hashlib.sha256(
+                        json.dumps(workflow_contract, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+                    ).hexdigest()
+                    task["result"] = {
+                        **(task.get("dispatch_intent") or task.get("result") or {}),
+                        "dispatch_state": "timed_out",
+                        "run_evidence": {
+                            "run_id": observation.get("run_id"),
+                            "html_url": observation.get("html_url"),
+                            "status": observation.get("run_status"),
+                            "conclusion": "timed_out_by_watchdog",
+                            "created_at": observation.get("run_created_at"),
+                            "timeout_seconds": observation.get("timeout_seconds"),
+                            "elapsed_seconds": observation.get("elapsed_seconds"),
+                            "cancel_requested": observation.get("cancel_requested"),
+                            "cancel_error": observation.get("cancel_error"),
+                        },
+                    }
+                    task["verification"] = {
+                        "verifier_program_id": VERIFIER_ID,
+                        "verified_at": stamp(now),
+                        "contract_sha256": contract_sha,
+                        "status": "failed",
+                    }
+                    task["last_error"] = {
+                        "type": "workflow_run_timeout",
+                        "message": "Correlated workflow exceeded its adapter-declared runtime; cancellation was requested and its resource fence was revoked.",
+                        "evidence": task["result"]["run_evidence"],
+                    }
+                    if task.get("resource_lease", {}).get("status") == "ACTIVE":
+                        try:
+                            release_resource_leases_in_queue(queue, task, now)
+                        except ValueError:
+                            task["resource_lease"]["status"] = "LOST"
+                            task["resource_lease"]["lost_at"] = stamp(now)
+                    task["lease"] = None
+                    task["state_history"].append("FAILED")
+                    if task["attempts"] < task["max_attempts"]:
+                        task["status"] = "QUEUED"
+                        task.pop("dispatch_intent", None)
+                        task["state_history"].append("QUEUED")
+                        task["not_before"] = stamp(now + timedelta(
+                            seconds=min(900, 30 * (2 ** max(0, task["attempts"] - 1)))
+                        ))
+                    else:
+                        task["status"] = "DEAD_LETTER"
+                        task["state_history"].append("DEAD_LETTER")
+                    rejected.append(task["task_id"])
+                    changed = True
+                    continue
                 if isinstance(observation, dict) and observation.get("state") == "abandoned":
                     workflow_contract = adapter.get("workflow", {})
                     contract_sha = hashlib.sha256(
