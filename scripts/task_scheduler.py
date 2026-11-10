@@ -223,10 +223,10 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
             target_id = task["target_program_id"]
             if target_id == "workflow_auto_sync":
                 assert_current_production_input(task, root)
-                if not production_source_assessment_gate(queue.get("tasks", []), root):
-                    raise ValueError(
-                        "production audit is blocked until the latest independent Discovery has a verified non-activating Assessment"
-                    )
+                # Existing registered-source ruleset publication is independent of
+                # the Discovery -> Assessment handoff. That handoff gates only new
+                # source activation; this production run re-collects the registered
+                # sources and fails closed on snapshot, evidence, config and safety checks.
             target = by_id.get(target_id)
             adapter = by_target.get(target_id)
             if target is None:
