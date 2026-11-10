@@ -1051,7 +1051,6 @@ jobs:
         if: ${{ steps.source-mode.outputs.mode == 'independent' }}
         env:
           AUTOMATION_QUEUE_SNAPSHOT: ${{ runner.temp }}/task_queue.json
-          GITHUB_STEP_SUMMARY: ${{ github.step_summary }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
