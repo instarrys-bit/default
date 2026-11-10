@@ -1539,6 +1539,12 @@
       "source": "scripts/watchdog_recovery_policy.py",
       "classification": "pure_policy_library_no_repository_mutation",
       "evidence": "Computes bounded recovery eligibility from supplied run metadata; no filesystem or external write calls."
+    },
+    {
+      "program_id": "script_validate_source_registry_artifact",
+      "source": "scripts/validate_source_registry_artifact.py",
+      "classification": "runner_local_ephemeral_output_non_dispatchable",
+      "evidence": "The validator writes only to tempfile.TemporaryDirectory() under the GitHub runner's temporary filesystem. It invokes the existing JSON document store against that isolated path, reads the resulting manifest and shards back to verify SHA-256 digests, record counts, per-file size limits and exact logical equality, then removes the temporary directory on exit. It has no repository output path, no dispatch capability, and no source activation or policy mutation."
     }
   ],
   "control_plane_side_effects": [
@@ -1577,7 +1583,7 @@
   "direct_mutation_scan": {
     "status": "partial_python_direct_callsite_scan",
     "scanner": "tests/test_transitive_write_site_inventory.py",
-    "registered_component_count": 55,
+    "registered_component_count": 64,
     "mutation_api_families": [
       "Path/open write modes",
       "Path write_text/write_bytes/unlink/mkdir/replace/rename/touch",
