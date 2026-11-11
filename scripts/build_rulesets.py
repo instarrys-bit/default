@@ -38,7 +38,7 @@ def reject_queue_entry_authorized(line, previously_published, secondary_passed):
 
 
 def reject_secondary_decision(evidence, scoring, minimum, threshold, correlated_pairs, required_sources=()):
-    """Apply the stricter REJECT-only gate before a candidate reaches human approval."""
+    """Apply stricter REJECT-only automated evidence gates before publication."""
     config = scoring.get("reject_secondary_review", {})
     minimum_sources = int(config.get("minimum_current_sources", 3))
     minimum_groups = int(config.get("minimum_independent_publishers", 2))
