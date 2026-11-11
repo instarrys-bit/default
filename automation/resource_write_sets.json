@@ -420,7 +420,6 @@
         "data/candidates.json",
         "modules/uu.conf",
         "sources/protected_domains.json",
-        "sources/reject_manual_approvals.json",
         "rulesets/deletion_archive.json",
         "rulesets/config_conflict_archive.json",
         "rulesets/lifecycle_state.json",
@@ -431,7 +430,7 @@
       ],
       "side_effects": [
         "All three policy lists are rewritten; pending queue and manifest are rewritten.",
-        "REJECT additions remain gated by existing publication/manual-approval checks."
+        "REJECT additions are published after deterministic first-stage review, stricter secondary evidence gates, and config-conflict checks; exception items are isolated for human review."
       ],
       "evidence": "main() reads the above policy and state inputs, writes pending_queue.json, all three policy lists and rulesets/manifest.json.",
       "write_boundary_fencing": "The script explicitly asserts the exact rulesets resource lease immediately before every published-file mutation; the Watchdog-issued logical/production-pipeline lease serializes the complete auto_sync pipeline. No global filesystem guard is installed.",
