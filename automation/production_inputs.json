@@ -11,7 +11,6 @@
     "sources/policy.json",
     "sources/policy_approvals.json",
     "sources/protected_domains.json",
-    "sources/reject_manual_approvals.json",
     "sources/request_domain_observations.json",
     "scripts/restore_automation_state.py",
     "scripts/register_config_baseline.py",
