@@ -229,7 +229,7 @@ jobs:
 
           recovery_kind=""
           case "$SOURCE_CONCLUSION" in
-            timed_out|startup_failure)
+            timed_out|startup_failure|cancelled)
               recovery_kind="infrastructure"
               ;;
             failure)
