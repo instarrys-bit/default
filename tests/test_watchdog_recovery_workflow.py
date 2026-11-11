@@ -566,5 +566,12 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
             resolver.index("find_matching_assessment_artifact("),
         )
 
+    def test_stale_production_task_cancellation_is_a_safe_no_dispatch_outcome(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        self.assertIn('task.get("status") == "CANCELLED"', workflow)
+        self.assertIn('error.get("type") == "stale_production_input_superseded"', workflow)
+        self.assertIn('"disposition": "stale_input_safely_superseded"', workflow)
+        self.assertIn('raise SystemExit("Selected production task was cancelled for a reason requiring diagnosis:', workflow)
+
 if __name__ == "__main__":
     unittest.main()
