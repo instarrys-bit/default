@@ -1,29 +1,10 @@
 name: Read-only operations dashboard
 
 on:
+  # Rebuild on every main-branch commit. This avoids stale dashboards when a
+  # producer writes a new data file that was not listed in a paths filter.
   push:
     branches: [main]
-    paths:
-      - "dashboard/**"
-      - "scripts/build_dashboard_snapshot.py"
-      - "rulesets/**"
-      - "automation/task_queue.json"
-      - "automation/production_control.json"
-      - "automation/production_inputs.json"
-      - "automation/production_workflow_map.json"
-      - "sources/review_cursor.json"
-      - "sources/domain_sources.json"
-      - "sources/discovered_sources.json**"
-      - "sources/source_assessments.json**"
-      - "sources/source_candidates.json"
-      - "rulesets/source_candidate_registry.json"
-      - "reports/project-status.json"
-      - "automation/program_registry.json"
-      - "automation/execution_adapters.json"
-      - "sources/domain_reviews.json**"
-      - "data/candidates.json**"
-      - "data/**"
-      - "reports/lifecycle/**"
   workflow_run:
     # Publish one fresh snapshot after each production-relevant workflow has
     # finished. Building from latest main makes overlapping events coalesce
@@ -45,7 +26,7 @@ permissions:
 
 concurrency:
   group: github-pages-dashboard
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
