@@ -11,7 +11,9 @@
 
 ## Freshness model
 
-- Data rebuild is event-driven on completion of the deterministic production audit and Watchdog workflows, and on commits to the monitored data files.
-- An hourly schedule is a fallback in case an event is missed.
-- An open page polls the latest published snapshot every 30 seconds; this does not trigger production or mutate repository data.
-- End-to-end freshness is bounded by GitHub Actions queue time and Pages deployment time, so this is near-real-time rather than a guaranteed sub-second live stream.
+- Every commit pushed to `main` automatically triggers a new dashboard snapshot build and GitHub Pages deployment. There is no path allowlist, so newly added producer data files cannot silently miss the trigger.
+- Completion events from the listed production workflows also trigger a rebuild, including runs that finish without a new repository commit.
+- A five-minute scheduled run is retained only as a fallback for missed events; it is not the primary update mechanism.
+- An open page fetches the latest published snapshot every 5 seconds, bypassing browser cache, and displays the snapshot's actual generation timestamp.
+- New data becomes visible after the GitHub Actions build and Pages deployment complete. GitHub Pages is static hosting, so this is event-driven near-real-time, not a guaranteed sub-second push stream.
+- The dashboard remains read-only. It does not edit `modules/uu.conf`, rulesets, queues, or production controls.
