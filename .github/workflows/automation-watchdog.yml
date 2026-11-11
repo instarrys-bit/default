@@ -46,7 +46,6 @@ on:
       - "sources/policy_approvals.json"
       - "sources/protected_domains.json"
       - "sources/request_domain_observations.json"
-      - "sources/reject_manual_approvals.json"
       - "scripts/**"
       - "tests/**"
       - "modules/uu.conf"
