@@ -227,9 +227,9 @@ const n=v=>Number.isFinite(Number(v))?Number(v).toLocaleString("zh-CN"):"—";
 const el=id=>document.getElementById(id);
 const fmtTime=v=>{if(!v)return "暂无记录";const d=new Date(v);if(Number.isNaN(d.getTime()))return v;return new Intl.DateTimeFormat("zh-CN",{timeZone:"Asia/Shanghai",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).format(d);};
 const pct=(v,t)=>t>0?Math.max(0,Math.min(100,v/t*100)):0;
-let lastSuccessfulLoad=null;let snapshotGeneratedAt=null;let lastLoadError=null;let loadInFlight=false;
+let lastSuccessfulLoad=null;let lastLoadError=null;let loadInFlight=false;
 async function load(){if(loadInFlight)return;loadInFlight=true;try{
- const r=await fetch("./data.json?refresh="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);const d=await r.json();lastSuccessfulLoad=new Date();snapshotGeneratedAt=d.generated_at?new Date(d.generated_at):null;lastLoadError=null;tickClock();
+ const r=await fetch("./data.json?refresh="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);const d=await r.json();lastSuccessfulLoad=new Date();lastLoadError=null;tickClock();
  const manualQueueState=d.review.reject_manual_queue_state||"unavailable";
  const manualQueueNote=manualQueueState==="empty"?"实际审核队列为空":manualQueueState==="available"?"仅统计实际队列中的待审核条目":"审核队列不可读取，数量按 0 显示";
  const cards=[["已发布规则",n(d.rulesets.published_total),"当前规则集规模","published"],["候选池总量",n(d.candidate_review.candidate_total),"候选记录，不等同于待筛选","candidate"],["已启用来源",n(d.sources.source_count),"通过准入并正式启用的规则来源","sources"],["待人工审核 · REJECT",n(d.review.reject_manual_pending),manualQueueNote,"alert"]];
