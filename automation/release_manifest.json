@@ -122,7 +122,7 @@
     },
     "release_manifest_validator": {
       "path": "scripts/validate_release_manifest.py",
-      "git_blob_sha": "95e733af003ac1ea19d98d32b1f7df27cc3f5240"
+      "git_blob_sha": "e0a6aeac5278440820320592a61ac15563060d60"
     },
     "manual_domain_selector": {
       "path": "scripts/select_domain_rules.py",
