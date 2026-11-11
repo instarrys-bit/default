@@ -191,7 +191,7 @@ button{font:inherit}
 <main class="shell">
 <header class="topbar compact-topbar">
  <div class="brand"><div class="brand-title">自动化运营控制台</div></div>
- <div class="top-meta"><span class="meta-pill" id="snapshot-status" aria-live="polite">正在同步数据</span><time class="live-pill compact-clock" id="clock" aria-label="当前时间"></time></div>
+ <div class="top-meta"><time class="live-pill compact-clock" id="clock" aria-label="当前时间"></time></div>
 </header>
 <section class="kpis" id="summary">
  <article class="kpi published"><div class="kpi-label">已发布规则</div><div class="kpi-value">—</div><div class="kpi-foot">当前规则集规模</div></article>
@@ -302,7 +302,7 @@ async function load(){if(loadInFlight)return;loadInFlight=true;try{
   '<div class="lifecycle-details"><div class="lifecycle-detail"><span>节点进度</span><b>'+progress.toFixed(1)+'%</b></div><div class="lifecycle-detail"><span>检查安排</span><b>'+lifecycleStatus+'</b></div><div class="lifecycle-detail"><span>最近检查</span><b>'+lastReview+'</b></div><div class="lifecycle-detail"><span>容量上限</span><b>'+n(d.lifecycle.max_published_rules)+'</b></div><div class="lifecycle-detail"><span>最近成功检查</span><b>'+fmtTime(d.lifecycle.last_successful_review_at)+'</b></div><div class="lifecycle-detail"><span>监控状态</span><b class="'+stateClass+'">'+state+'</b></div></div>';
 
  }catch(e){lastLoadError=new Date();tickClock();}finally{loadInFlight=false;}}
-function tickClock(){const node=el("clock");if(node)node.textContent=new Intl.DateTimeFormat("zh-CN",{timeZone:"Asia/Shanghai",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).format(new Date());const status=el("snapshot-status");if(status){status.textContent=snapshotGeneratedAt?"数据生成 "+fmtTime(snapshotGeneratedAt):lastLoadError?"同步失败，自动重试中":"正在同步数据";}}
+function tickClock(){const node=el("clock");if(node)node.textContent=new Intl.DateTimeFormat("zh-CN",{timeZone:"Asia/Shanghai",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).format(new Date());}
 tickClock();setInterval(tickClock,1000);load();setInterval(load,5000);
 </script>
 </body>
