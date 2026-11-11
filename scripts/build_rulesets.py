@@ -384,6 +384,17 @@ def main():
                 "config_rule":scope_result.get("config_rule"),
                 "effective_config_policy":scope_result.get("effective_policy")
             })
+            if policy=="REJECT":
+                reject_exception_count+=1
+                reject_review_queue_items.append({
+                    "rule":candidate_line,"domain":domain,"scope":scope,"policy":"REJECT",
+                    "status":"HELD_FOR_EXCEPTION_REVIEW",
+                    "exception_codes":[str(scope_result["status"])],
+                    "reason":str(scope_result["reason"]),
+                    "config_line":scope_result.get("config_line"),
+                    "config_rule":scope_result.get("config_rule"),
+                    "effective_config_policy":scope_result.get("effective_policy")
+                })
             continue
         if scope=="suffix_candidate":
             local_status,reason=inspect_suffix_scope(
@@ -392,11 +403,25 @@ def main():
             if local_status:
                 held+=1
                 baseline_conflict_holds.append({"domain":domain,"policy":policy,"scope":scope,"status":local_status,"reason":reason})
+                if policy=="REJECT":
+                    reject_exception_count+=1
+                    reject_review_queue_items.append({
+                        "rule":candidate_line,"domain":domain,"scope":scope,"policy":"REJECT",
+                        "status":"HELD_FOR_EXCEPTION_REVIEW",
+                        "exception_codes":[str(local_status)],"reason":str(reason)
+                    })
                 continue
         local_status,reason=inspect(domain,index,conditional,base,protected,policy,candidate_suffix=(scope=="suffix_candidate"))
         if local_status:
             held+=1
             baseline_conflict_holds.append({"domain":domain,"policy":policy,"scope":scope,"status":local_status,"reason":reason})
+            if policy=="REJECT":
+                reject_exception_count+=1
+                reject_review_queue_items.append({
+                    "rule":candidate_line,"domain":domain,"scope":scope,"policy":"REJECT",
+                    "status":"HELD_FOR_EXCEPTION_REVIEW",
+                    "exception_codes":[str(local_status)],"reason":str(reason)
+                })
             continue
         if policy=="REJECT" and archived_line not in previously_published_reject:
             secondary=reject_secondary_decision(
