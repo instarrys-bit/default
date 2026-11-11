@@ -150,10 +150,14 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("assert-workflow", cursor)
         self.assertNotIn("git push", cursor)
 
-    def test_assessment_batches_use_the_reviewed_twenty_url_contract_limit(self):
+    def test_assessment_batches_use_twenty_urls_and_bound_second_recovery_to_four(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
-        self.assertEqual(workflow.count("{max_urls:20,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}"), 2)
-        self.assertNotIn("{max_urls:4,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}", workflow)
+        self.assertIn("assessment_max_urls=20", workflow)
+        self.assertIn('assessment_max_urls=4', workflow)
+        self.assertIn('--argjson max_urls "$assessment_max_urls"', workflow)
+        second_recovery = workflow.split('elif [ "$recovery_one_status" = "DEAD_LETTER" ]; then', 1)[1].split('elif [ -n "$recovery_one_status" ]', 1)[0]
+        self.assertIn('assessment_max_urls=4', second_recovery)
+        self.assertNotIn('assessment_max_urls=4', workflow.split('if [ "$assessment_status" = "DEAD_LETTER" ]; then', 1)[0])
         contract = json.loads((ROOT / "automation/capability_contracts/assess_sources.json").read_text(encoding="utf-8"))
         self.assertEqual(contract["inputs"]["remote_inputs"]["max_urls_per_run"], 20)
     def test_assessment_artifact_upload_output_uses_real_newlines(self):
