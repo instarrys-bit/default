@@ -349,6 +349,67 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
     return {"eligible_task_ids": eligible, "blocked": blocked}
 
 
+def cancel_stale_predecessor_tasks(store, registry: dict, adapters: dict, blocked: list,
+                                   root: Path = ROOT) -> list[str]:
+    """Terminalize queued tasks whose exact immutable predecessor artifact was superseded."""
+    stale_ids = {
+        item.get("task_id")
+        for item in blocked
+        if isinstance(item, dict)
+        and item.get("reason") == "typed predecessor artifact digest changed before task execution"
+        and isinstance(item.get("task_id"), str)
+    }
+    if not stale_ids:
+        return []
+
+    by_target = adapter_index(adapters)
+    cancelled = []
+    for task_id in sorted(stale_ids):
+        snapshot = store.read().document
+        task = next((item for item in snapshot.get("tasks", [])
+                     if isinstance(item, dict) and item.get("task_id") == task_id), None)
+        if (not isinstance(task, dict) or task.get("status") != "QUEUED"
+                or task.get("lease") is not None or task.get("dispatch_intent") is not None):
+            continue
+        adapter = by_target.get(task.get("target_program_id"))
+        dependency = adapter.get("dependency_contract") if isinstance(adapter, dict) else None
+        proof = (task.get("input") or {}).get("predecessor")
+        if not isinstance(dependency, dict) or not isinstance(proof, dict):
+            continue
+        artifact_path = dependency.get("artifact_path")
+        expected_digest = proof.get("artifact_sha256")
+        if (not isinstance(artifact_path, str) or proof.get("artifact_path") != artifact_path
+                or not isinstance(expected_digest, str) or not re.fullmatch(r"[0-9a-f]{64}", expected_digest)):
+            continue
+        observed_digest = read_only_resource_digests(root, [artifact_path]).get(artifact_path)
+        if observed_digest == expected_digest:
+            continue
+
+        def mutate(queue: dict):
+            current = next((item for item in queue.get("tasks", [])
+                            if isinstance(item, dict) and item.get("task_id") == task_id), None)
+            if (not isinstance(current, dict) or current.get("status") != "QUEUED"
+                    or current.get("lease") is not None or current.get("dispatch_intent") is not None
+                    or (current.get("input") or {}).get("predecessor") != proof):
+                return queue, False
+            current["status"] = "CANCELLED"
+            current["state_history"].append("CANCELLED")
+            current["last_error"] = {
+                "type": "stale_predecessor_artifact_superseded",
+                "message": "Queued task was cancelled before claim because its exact immutable predecessor artifact digest is no longer present; enqueue a new task against the verified predecessor.",
+                "expected_artifact_sha256": expected_digest,
+                "observed_artifact_sha256": observed_digest,
+                "artifact_path": artifact_path,
+            }
+            queue["revision"] += 1
+            validate_candidate(queue, registry)
+            return queue, True
+
+        if store.mutate(mutate):
+            cancelled.append(task_id)
+    return cancelled
+
+
 class ProtectedConfigMutationError(RuntimeError):
     """Stop the scheduler if a child process changes the protected primary config."""
 
@@ -1334,11 +1395,19 @@ def run_scheduler_once(store, registry: dict, adapters: dict, *,
         }
     processed = []
     blocked_seen = {}
+    stale_predecessor_cancelled = []
 
     for _ in range(max_tasks):
         snapshot = store.read().document
         iteration_now = fixed_now or now_utc()
         plan = build_execution_plan(snapshot, registry, adapters, root, iteration_now)
+        cancelled_now = cancel_stale_predecessor_tasks(
+            store, registry, adapters, plan["blocked"], root
+        )
+        if cancelled_now:
+            stale_predecessor_cancelled.extend(cancelled_now)
+            snapshot = store.read().document
+            plan = build_execution_plan(snapshot, registry, adapters, root, iteration_now)
         for item in plan["blocked"]:
             blocked_seen[item["task_id"]] = item["reason"]
         eligible = set(plan["eligible_task_ids"])
@@ -1383,6 +1452,7 @@ def run_scheduler_once(store, registry: dict, adapters: dict, *,
         "initial_verification": initial_verification,
         "recovered_count": len(recovered),
         "superseded_stale_production_task_ids": superseded_stale_tasks,
+        "stale_predecessor_cancelled_task_ids": sorted(set(stale_predecessor_cancelled)),
         "queue_revision": final_snapshot["revision"],
         "active_task_summaries": active_tasks,
         "active_production_fingerprints": active_fingerprints,
