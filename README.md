@@ -2,7 +2,7 @@
 
 This repository maintains four functional areas:
 
-1. **Unattended automation** — Watchdog, task queue, source discovery and collection, deterministic filtering, human-approval gates, rule production, validation, publication, recovery, audit, dashboard, and tests.
+1. **Unattended automation** — Watchdog, task queue, source discovery and collection, deterministic filtering, automatic DIRECT/PROXY/REJECT rule publication, exception-only human review, validation, recovery, audit, dashboard, and tests.
 2. **User configuration** — `modules/uu.conf`. Its user-defined rules, code, and original functions are protected from automation changes.
 3. **Modules and mapped scripts** — `modules/AdBlock.sgmodule` and its mapped script, `modules/adblock/scripts/Clean_Pro.js`.
 4. **Rule sets** — `rulesets/direct.list`, `rulesets/proxy.list`, `rulesets/reject.list`, and their required manifests and lifecycle state.
