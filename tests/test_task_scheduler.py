@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from remote_task_queue_runtime import claim_remote, enqueue_remote
 from task_queue_runtime import now_utc, stamp, manual_authorization_record, validate_manual_authorization
-from task_scheduler import run_scheduler_once, build_execution_plan, enqueue_source_assessment_task, enqueue_source_discovery_task, enqueue_auto_sync_task, assert_current_production_input, production_source_assessment_gate, supersede_stale_queued_production_tasks, generated_python_cache_paths, publishable_resource_path, validate_repository_write_scope
+from task_scheduler import run_scheduler_once, build_execution_plan, enqueue_source_assessment_task, enqueue_source_discovery_task, enqueue_auto_sync_task, assert_current_production_input, production_source_assessment_gate, supersede_stale_queued_production_tasks, cancel_stale_predecessor_tasks, generated_python_cache_paths, publishable_resource_path, validate_repository_write_scope
 
 
 class MemoryStore:
@@ -546,6 +546,13 @@ class TaskSchedulerTests(unittest.TestCase):
         plan = build_execution_plan(self.store.document, self.registry, self.adapters, self.root, self.now)
         self.assertEqual(plan["eligible_task_ids"], [])
         self.assertIn("digest changed", plan["blocked"][0]["reason"])
+        cancelled = cancel_stale_predecessor_tasks(
+            self.store, self.registry, self.adapters, plan["blocked"], self.root
+        )
+        self.assertEqual(len(cancelled), 1)
+        task = self.store.document["tasks"][0]
+        self.assertEqual(task["status"], "CANCELLED")
+        self.assertEqual(task["last_error"]["type"], "stale_predecessor_artifact_superseded")
 
     def test_reviewed_python_adapter_executes_and_is_independently_verified(self):
         task = self.enqueue()["task"]
