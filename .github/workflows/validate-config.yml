@@ -12,7 +12,6 @@ on:
       - "scripts/register_config_baseline.py"
       - "scripts/select_domain_rules.py"
       - "scripts/refresh_ruleset_manifest.py"
-      - "sources/reject_manual_approvals.json"
       - ".github/workflows/auto_sync.yml"
       - "scripts/collect_domains.py"
       - "scripts/deterministic_review.py"
@@ -182,7 +181,6 @@ jobs:
           python -m unittest discover -s tests -v
           python -m json.tool sources/domain_sources.json >/dev/null
           python -m json.tool sources/policy.json >/dev/null
-          python -m json.tool sources/reject_manual_approvals.json >/dev/null
           if [ -f sources/domain_reviews.json ]; then python -m json.tool sources/domain_reviews.json >/dev/null; fi
           if [ -f sources/domain_reviews.json.manifest.json ]; then
             PYTHONPATH=scripts python -c 'from pathlib import Path; from json_document_store import read_document; read_document(Path("sources/domain_reviews.json"), "reviews")' >/dev/null
