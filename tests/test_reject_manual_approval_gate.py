@@ -1,16 +1,17 @@
-import json
-import sys
-import tempfile
 import unittest
-from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__("pathlib").Path(__file__).resolve().parents[1]
+import sys
 sys.path.insert(0, str(ROOT / "scripts"))
-from build_rulesets import load_reject_approvals, reject_rule_authorized
+from build_rulesets import reject_rule_authorized, reject_queue_entry_authorized
 
 
-class RejectManualApprovalTests(unittest.TestCase):
-    def test_unapproved_new_rule_is_held(self):
+class RejectAutomaticPublicationTests(unittest.TestCase):
+    def test_new_rule_passes_when_automated_secondary_gate_passes(self):
+        line = "DOMAIN,new-ad.example"
+        self.assertTrue(reject_rule_authorized(line, set(), {line}))
+
+    def test_new_rule_is_held_when_secondary_gate_does_not_pass(self):
         line = "DOMAIN,new-ad.example"
         self.assertFalse(reject_rule_authorized(line, set(), set()))
 
@@ -18,28 +19,14 @@ class RejectManualApprovalTests(unittest.TestCase):
         line = "DOMAIN,existing-ad.example"
         self.assertTrue(reject_rule_authorized(line, {line}, set()))
 
-    def test_explicit_manual_approval_allows_rule(self):
-        line = "DOMAIN-SUFFIX,approved-ad.example"
-        self.assertTrue(reject_rule_authorized(line, set(), {line}))
+    def test_pending_queue_requires_current_secondary_pass(self):
+        line = "DOMAIN,queued-ad.example"
+        self.assertFalse(reject_queue_entry_authorized(line, set(), set()))
+        self.assertTrue(reject_queue_entry_authorized(line, set(), {line}))
 
-    def test_approval_ledger_normalizes_case(self):
-        with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "approvals.json"
-            path.write_text(json.dumps({
-                "schema_version": 1,
-                "approved_rules": ["domain,Example.COM"]
-            }), encoding="utf-8")
-            self.assertEqual(load_reject_approvals(path), {"DOMAIN,example.com"})
-
-    def test_malformed_approval_fails_closed(self):
-        with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "approvals.json"
-            path.write_text(json.dumps({
-                "schema_version": 1,
-                "approved_rules": ["DOMAIN,not a domain"]
-            }), encoding="utf-8")
-            with self.assertRaises(ValueError):
-                load_reject_approvals(path)
+    def test_previously_published_queue_item_is_preserved(self):
+        line = "DOMAIN,existing-ad.example"
+        self.assertTrue(reject_queue_entry_authorized(line, {line}, set()))
 
 
 if __name__ == "__main__":
