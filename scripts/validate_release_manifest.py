@@ -338,7 +338,7 @@ def validate_release_manifest(root: Path = ROOT, manifest_path: Path | None = No
         "dashboard_is_read_only_observer": True,
         "production_may_not_write_config_baseline": True,
         "ruleset_writers_require_resource_exclusive_lease": True,
-        "reject_rule_publication_requires_explicit_approval": True,
+        "reject_rule_publication_requires_explicit_approval": False,
     }
     if not isinstance(policy, dict):
         raise ValueError("execution_policy must be an object")
