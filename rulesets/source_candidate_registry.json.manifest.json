@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "format": "jsonl-shards-v1",
+  "logical_path": "source_candidate_registry.json",
+  "collection_key": "records",
+  "record_count": 49115,
+  "total_shard_bytes": 39893717,
+  "max_file_bytes": 40000000,
+  "shard_directory": "source_candidate_registry.json.parts-bb6b2454a87b5cf2",
+  "metadata": {
+    "registry_type": "discovered_source_candidates_non_activating",
+    "updated_at": "2026-11-11T01:27:45.733123+00:00",
+    "latest_discovery": {
+      "workflow_name": "Shadowrocket Source Discovery (Watchdog)",
+      "workflow_run_id": "42905899022",
+      "workflow_head_sha": "2f3a20aac2c62dcf10fbf61d47cd529f6676b1a2",
+      "artifact_sha256": "b1f5f8324d7345554db905c5b1a815d7f71fc652b7965a182f23a0d5f4162ce6",
+      "mode": "independent",
+      "recorded_at": "2026-11-11T01:27:45.733123+00:00"
+    },
+    "repository_count": 1651,
+    "source_file_count": 47464,
+    "pending_assessment_count": 47464,
+    "discovery_fingerprint": "0af2505eedc16f0b3058dc82916aa799e59893103cd20db98cc438fd9a3a889a",
+    "policy_boundary": "This is a discovery registration ledger only. It does not assign DIRECT/PROXY/REJECT, does not activate sources, and does not replace source assessment or rule-level review. External-intelligence observations are excluded from policy rule-source records.",
+    "schema_version": 2,
+    "storage_format": "typed-jsonl-shards-v1",
+    "record_count": 49115
+  },
+  "shards": [
+    {
+      "file": "part-000000.jsonl",
+      "records": 42818,
+      "bytes": 34999959,
+      "sha256": "cb93dd48068d7ea7b397c90b8031d6f767dddb222f2013c056c16c17c2bcf764"
+    },
+    {
+      "file": "part-000001.jsonl",
+      "records": 6297,
+      "bytes": 4893758,
+      "sha256": "8b26bae9dab3e7222b796c303aaed480cb1ecb66efe925f1c761dfe9f3872211"
+    }
+  ]
+}
