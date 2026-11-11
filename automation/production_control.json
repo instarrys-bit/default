@@ -1,14 +1,16 @@
 {
   "schema_version": 1,
   "dispatch_mode": "enabled",
-  "updated_at": "2026-11-06T16:40:00Z",
-  "reason": "Owner-authorized independent Source Discovery → Source Assessment cutover. The monolithic path remains available only as an explicit rollback mode; production publication remains restricted to rulesets/** and modules/uu.conf remains read-only.",
+  "updated_at": "2026-11-12T06:00:00Z",
+  "reason": "Owner-authorized REJECT auto-publication after deterministic first-stage review, stricter REJECT secondary evidence gates, and config-conflict checks. Human review is limited to exception items; production publication remains restricted to rulesets/** and modules/uu.conf remains read-only.",
   "policy": {
     "automatic_watchdog_dispatch": true,
     "explicit_manual_watchdog_authorization": true,
     "unknown_or_invalid_mode": "hold",
     "protected_config": "modules/uu.conf remains read-only",
-    "source_discovery_mode": "independent or monolithic_fallback; this checked-in control value is authoritative for both Watchdog and auto_sync."
+    "source_discovery_mode": "independent or monolithic_fallback; this checked-in control value is authoritative for both Watchdog and auto_sync.",
+    "reject_publication_mode": "automatic_after_deterministic_gates",
+    "manual_review_scope": "exceptions_only"
   },
   "source_discovery_mode": "independent"
 }
