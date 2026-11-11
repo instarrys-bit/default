@@ -897,22 +897,16 @@ class RejectSecondaryReviewTests(unittest.TestCase):
 class RejectQueueAuthorizationTests(unittest.TestCase):
     def test_previous_publication_remains_authorized(self):
         self.assertTrue(reject_queue_entry_authorized(
-            "DOMAIN,ads.example", {"DOMAIN,ads.example"}, set(), set()
+            "DOMAIN,ads.example", {"DOMAIN,ads.example"}, set()
         ))
 
-    def test_manual_approval_alone_cannot_bypass_current_secondary_review(self):
-        self.assertFalse(reject_queue_entry_authorized(
-            "DOMAIN,ads.example", set(), {"DOMAIN,ads.example"}, set()
-        ))
-
-    def test_current_secondary_pass_and_exact_manual_approval_are_both_required(self):
+    def test_current_secondary_pass_is_sufficient_for_automatic_publication(self):
         line = "DOMAIN,ads.example"
-        self.assertTrue(reject_queue_entry_authorized(
-            line, set(), {line}, {line}
-        ))
-        self.assertFalse(reject_queue_entry_authorized(
-            line, set(), set(), {line}
-        ))
+        self.assertTrue(reject_queue_entry_authorized(line, set(), {line}))
+
+    def test_without_current_secondary_pass_rule_is_held_for_exception_review(self):
+        line = "DOMAIN,ads.example"
+        self.assertFalse(reject_queue_entry_authorized(line, set(), set()))
 
 
 if __name__=="__main__":
