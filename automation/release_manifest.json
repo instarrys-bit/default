@@ -8,12 +8,12 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "3a7d10a33d15dac84b5526f8e7be9b5c76fcdcca"
+      "git_blob_sha": "bc05f1c0419ac784fae1cceb0314ad9339f141ed"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "8e51a3622ea43fdd4029ed730f3223c06cd72b18"
+      "git_blob_sha": "7583f53e8a6429d0bc99284b29ddccaa7b47cd25"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -86,11 +86,11 @@
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "65882df65f65e511c1cceec089c2563dd4d0c81a"
+      "git_blob_sha": "db653a02b793295463c729706cf54e61a2b72a5b"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "7baed487c1c55225df68d405464ea20770ab050f"
+      "git_blob_sha": "a6dc8eababb19f8c2567c994042f1480c253cec5"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -249,8 +249,8 @@
         "target_program_id": "script_assess_sources",
         "capability": "source_assessment",
         "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-        "adapter_entry_sha256": "48cd3d69af8b644e6d1ae5c70654e09b476f0f24761a5134f773184029569f45",
-        "registry_entry_sha256": "edf486b9da0698c41af8ac6997f8c4576fa0843d6301a92ecea2674a70a65fe3",
+        "adapter_entry_sha256": "41f43d7111a397e05c245c7e98f8aa09c138c17f4c72a1a691d635e2125f05d7",
+        "registry_entry_sha256": "3561ba8d23a1faed74507d01f49d84f84415af8643b17643570762b9008bc1b5",
         "source_path": "scripts/assess_sources.py",
         "source_git_blob_sha": "e0129b2dc91c58f1642338d3d7e67db332d6e0bb",
         "allowed_callers": [
