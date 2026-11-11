@@ -179,8 +179,8 @@
     },
     {
       "id": "hagezi-domains-pro",
-      "sha256": "6f6e7b8ccbc52926a2f18723278decbd76dc4a458933770738b8150f9150ba03",
-      "entries": 224048,
+      "sha256": "fad274bc604ebae6120ad106cecf926719fbbcd92a8ae103105fd41b85ba2766",
+      "entries": 222630,
       "classification": "REJECT",
       "role": "independent_adblock_corroboration",
       "lineage_status": "partial",
@@ -254,11 +254,11 @@
         "yous/youslist",
         "zakird/crux-top-lists"
       ],
-      "status": "CURRENT",
-      "error": null,
-      "pending_confirmations": 0,
-      "new_entries": 11628,
-      "removed_entries": 10210,
+      "status": "STALE_QUARANTINED",
+      "error": "hagezi-domains-pro source drift exceeds automatic safety limit: 13427 added + 12079 removed = 25506; limit 22263",
+      "pending_confirmations": 1,
+      "new_entries": 0,
+      "removed_entries": 0,
       "baseline_initialized": false,
       "bootstrap_enqueued": false
     },
@@ -305,12 +305,13 @@
     }
   ],
   "source_count": 13,
-  "current_source_count": 12,
-  "quarantined_source_count": 1,
+  "current_source_count": 11,
+  "quarantined_source_count": 2,
   "quarantined_sources": [
-    "auto-furkan-bayrak-lg-tv-blocklist-369778d8"
+    "auto-furkan-bayrak-lg-tv-blocklist-369778d8",
+    "hagezi-domains-pro"
   ],
-  "policy_conflict_total": 755,
+  "policy_conflict_total": 465,
   "lineage_verified_sources": 0,
   "lineage_unverified_sources": 11,
   "lineage_partial_sources": 2,
@@ -344,21 +345,31 @@
   "rule_count": {
     "DIRECT": 147,
     "PROXY": 3261,
-    "REJECT": 508
+    "REJECT": 510
   },
-  "published_rule_total": 3916,
+  "published_rule_total": 3918,
   "max_published_rules": 30000,
   "queued_rule_total": 0,
-  "baseline_conflict_hold_count": 15,
+  "baseline_conflict_hold_count": 42,
   "baseline_conflict_hold_sample": [
     {
-      "domain": "a.omappapi.com",
+      "domain": "51.la",
       "policy": "REJECT",
       "scope": "exact_candidate",
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L283: DOMAIN-SUFFIX,omappapi.com,REJECT [REJECT]",
+      "config_rule": "L477: DOMAIN-SUFFIX,51.la,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "adcolony.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L330: DOMAIN-SUFFIX,adcolony.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -368,7 +379,57 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L304: DOMAIN-SUFFIX,adjust.com,REJECT [REJECT]",
+      "config_rule": "L382: DOMAIN-SUFFIX,adjust.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "airpr.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L383: DOMAIN-SUFFIX,airpr.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "appboy.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L425: DOMAIN-SUFFIX,appboy.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "appier.net",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L426: DOMAIN-SUFFIX,appier.net,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "applifier.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L427: DOMAIN-SUFFIX,applifier.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "applovin.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L335: DOMAIN-SUFFIX,applovin.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -378,7 +439,17 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L350: DOMAIN-SUFFIX,appsflyer.com,REJECT [REJECT]",
+      "config_rule": "L428: DOMAIN-SUFFIX,appsflyer.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "connexity.net",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L429: DOMAIN-SUFFIX,connexity.net,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -388,7 +459,57 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L352: DOMAIN-SUFFIX,dig.bdurl.net,REJECT [REJECT]",
+      "config_rule": "L430: DOMAIN-SUFFIX,dig.bdurl.net,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "effirst.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L387: DOMAIN-SUFFIX,effirst.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "httpdns.baidubce.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L273: DOMAIN,httpdns.baidubce.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "hyprmx.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L344: DOMAIN-SUFFIX,hyprmx.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "inmobicdn.net",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L347: DOMAIN-SUFFIX,inmobicdn.net,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "inner-active.mobi",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L349: DOMAIN-SUFFIX,inner-active.mobi,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -398,7 +519,7 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L359: DOMAIN-SUFFIX,newrelic.com,REJECT [REJECT]",
+      "config_rule": "L437: DOMAIN-SUFFIX,newrelic.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -408,17 +529,37 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L314: DOMAIN-SUFFIX,kochava.com,REJECT [REJECT]",
+      "config_rule": "L392: DOMAIN-SUFFIX,kochava.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
-      "domain": "ls.hit.gemius.pl",
+      "domain": "mintegral.com",
       "policy": "REJECT",
       "scope": "exact_candidate",
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L312: DOMAIN-SUFFIX,gemius.pl,REJECT [REJECT]",
+      "config_rule": "L356: DOMAIN-SUFFIX,mintegral.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "moat.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L436: DOMAIN-SUFFIX,moat.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "moatads.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L359: DOMAIN-SUFFIX,moatads.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -428,7 +569,27 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L283: DOMAIN-SUFFIX,omappapi.com,REJECT [REJECT]",
+      "config_rule": "L361: DOMAIN-SUFFIX,omappapi.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "openx.net",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L362: DOMAIN-SUFFIX,openx.net,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "optimix.asia",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L439: DOMAIN-SUFFIX,optimix.asia,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -438,7 +599,37 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L289: DOMAIN-SUFFIX,taboola.com,REJECT [REJECT]",
+      "config_rule": "L367: DOMAIN-SUFFIX,taboola.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "pubmatic.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L363: DOMAIN-SUFFIX,pubmatic.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "quantcount.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L402: DOMAIN-SUFFIX,quantcount.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "quantserve.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L443: DOMAIN-SUFFIX,quantserve.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -448,17 +639,67 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L327: DOMAIN-SUFFIX,segment.io,REJECT [REJECT]",
+      "config_rule": "L405: DOMAIN-SUFFIX,segment.io,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
-      "domain": "t.appsflyer.com",
+      "domain": "smartadserver.com",
       "policy": "REJECT",
       "scope": "exact_candidate",
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L350: DOMAIN-SUFFIX,appsflyer.com,REJECT [REJECT]",
+      "config_rule": "L364: DOMAIN-SUFFIX,smartadserver.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "supersonic.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L366: DOMAIN-SUFFIX,supersonic.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "talkingdata.net",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L407: DOMAIN-SUFFIX,talkingdata.net,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "tapjoy.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L369: DOMAIN-SUFFIX,tapjoy.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "tapjoyads.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L370: DOMAIN-SUFFIX,tapjoyads.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "tellapart.com",
+      "policy": "PROXY",
+      "scope": "suffix_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L448: DOMAIN-SUFFIX,tellapart.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -468,7 +709,7 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L178: DOMAIN,track.tenjin.com,REJECT [REJECT]",
+      "config_rule": "L256: DOMAIN,track.tenjin.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -478,7 +719,17 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L222: DOMAIN,track.tenjin.io,REJECT [REJECT]",
+      "config_rule": "L300: DOMAIN,track.tenjin.io,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "trafficjunky.net",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L371: DOMAIN-SUFFIX,trafficjunky.net,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -488,7 +739,27 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L289: DOMAIN-SUFFIX,taboola.com,REJECT [REJECT]",
+      "config_rule": "L367: DOMAIN-SUFFIX,taboola.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "unimhk.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L374: DOMAIN-SUFFIX,unimhk.com,REJECT [REJECT]",
+      "effective_config_policy": null
+    },
+    {
+      "domain": "vungle.com",
+      "policy": "REJECT",
+      "scope": "exact_candidate",
+      "status": "CONFLICT",
+      "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
+      "config_line": null,
+      "config_rule": "L450: DOMAIN-SUFFIX,vungle.com,REJECT [REJECT]",
       "effective_config_policy": null
     },
     {
@@ -498,7 +769,7 @@
       "status": "CONFLICT",
       "reason": "Candidate scope is fully covered by explicit user-config domain scope(s); rule order is not evaluated",
       "config_line": null,
-      "config_rule": "L380: DOMAIN-SUFFIX,yoyi.tv,REJECT [REJECT]",
+      "config_rule": "L458: DOMAIN-SUFFIX,yoyi.tv,REJECT [REJECT]",
       "effective_config_policy": null
     }
   ],
@@ -527,118 +798,62 @@
       "baseline_initialized": false
     },
     "REJECT": {
-      "previous_count": 6,
-      "current_count": 508,
-      "added_count": 502,
+      "previous_count": 508,
+      "current_count": 510,
+      "added_count": 2,
       "removed_count": 0,
-      "previous_sha256": "4fc7bcf4efe4fa72e523d715207b9ed0af4a947b103f14c3035b1273b3b38140",
-      "current_sha256": "bef6f436d2e75249815e508f52fd7da3f6abce7c46fd78b94d9c05a61643f02e",
+      "previous_sha256": "bef6f436d2e75249815e508f52fd7da3f6abce7c46fd78b94d9c05a61643f02e",
+      "current_sha256": "3ee9fbeff1c2b0d707378f44e08805fda80d444eeb0860ae249ea0ecaf440897",
       "added_sample": [
-        "DOMAIN,365.freeonlinegayporn.com",
-        "DOMAIN,444.bussyhunter.com",
-        "DOMAIN,a.shemale99.com",
-        "DOMAIN,a.suptube.com",
-        "DOMAIN,a.teencfnm.com",
-        "DOMAIN,a.vfgtb.com",
-        "DOMAIN,a135.wftv.com",
-        "DOMAIN,aab.taboohome.com",
-        "DOMAIN,ab1n.net",
-        "DOMAIN,abateadversity.com"
+        "DOMAIN,alphonso.tv",
+        "DOMAIN,lgsmartad.com"
       ],
       "removed_sample": [],
       "baseline_initialized": false
     }
   },
   "reviewed_total": 168459,
-  "approved_total": 3867,
-  "promoted_queue_total": 502,
+  "approved_total": 3917,
+  "promoted_queue_total": 2,
   "publication_accounting": {
-    "published_rule_total": 3916,
-    "approved_review_total": 3867,
-    "approved_review_published_total": 3867,
+    "published_rule_total": 3918,
+    "approved_review_total": 3917,
+    "approved_review_published_total": 3917,
     "approved_review_not_published_total": 0,
-    "promoted_queue_total": 502,
+    "promoted_queue_total": 2,
     "promoted_queue_published_without_current_approval_total": 0,
     "promoted_queue_not_published_total": 0,
-    "retained_published_without_current_approval_total": 49,
-    "published_without_current_approval_total": 49,
+    "retained_published_without_current_approval_total": 1,
+    "published_without_current_approval_total": 1,
     "published_without_current_approval_sample": [
-      "DIRECT|DOMAIN-SUFFIX|360kuai.com",
-      "DIRECT|DOMAIN-SUFFIX|88cdn.com",
-      "DIRECT|DOMAIN-SUFFIX|bootcss.com",
-      "DIRECT|DOMAIN-SUFFIX|oschina.net",
-      "DIRECT|DOMAIN-SUFFIX|p2cdn.com",
-      "DIRECT|DOMAIN-SUFFIX|toutiaopage.com",
-      "PROXY|DOMAIN-SUFFIX|000webhost.com",
-      "PROXY|DOMAIN-SUFFIX|1000giri.net",
-      "PROXY|DOMAIN-SUFFIX|12bet.com",
-      "PROXY|DOMAIN-SUFFIX|1mobile.com",
-      "PROXY|DOMAIN-SUFFIX|2049bbs.xyz",
-      "PROXY|DOMAIN-SUFFIX|3boys2girls.com",
-      "PROXY|DOMAIN-SUFFIX|advertisercommunity.com",
-      "PROXY|DOMAIN-SUFFIX|blinkx.com",
-      "PROXY|DOMAIN-SUFFIX|blogcatalog.com",
-      "PROXY|DOMAIN-SUFFIX|bloglines.com",
-      "PROXY|DOMAIN-SUFFIX|bloglovin.com",
-      "PROXY|DOMAIN-SUFFIX|blogspot.bg",
-      "PROXY|DOMAIN-SUFFIX|c.go-mpulse.net",
-      "PROXY|DOMAIN-SUFFIX|ddex.io",
-      "PROXY|DOMAIN-SUFFIX|erabaru.net",
-      "PROXY|DOMAIN-SUFFIX|expekt.com",
-      "PROXY|DOMAIN-SUFFIX|exx.com",
-      "PROXY|DOMAIN-SUFFIX|fapdu.com",
-      "PROXY|DOMAIN-SUFFIX|fling.com",
-      "PROXY|DOMAIN-SUFFIX|freelotto.com",
-      "PROXY|DOMAIN-SUFFIX|from-sd.com",
-      "PROXY|DOMAIN-SUFFIX|gettrials.com",
-      "PROXY|DOMAIN-SUFFIX|gvt3.com",
-      "PROXY|DOMAIN-SUFFIX|ikwb.com",
-      "PROXY|DOMAIN-SUFFIX|ktzhk.com",
-      "PROXY|DOMAIN-SUFFIX|multiupload.com",
-      "PROXY|DOMAIN-SUFFIX|mysecondarydns.com",
-      "PROXY|DOMAIN-SUFFIX|now.im",
-      "PROXY|DOMAIN-SUFFIX|nsstatic.net",
-      "PROXY|DOMAIN-SUFFIX|nyaa.eu",
-      "PROXY|DOMAIN-SUFFIX|onion.ly",
-      "PROXY|DOMAIN-SUFFIX|page2rss.com",
-      "PROXY|DOMAIN-SUFFIX|panoramio.com",
-      "PROXY|DOMAIN-SUFFIX|paste.ee",
-      "PROXY|DOMAIN-SUFFIX|rebatesrule.net",
-      "PROXY|DOMAIN-SUFFIX|sendsmtp.com",
-      "PROXY|DOMAIN-SUFFIX|sider.ai",
-      "PROXY|DOMAIN-SUFFIX|topsy.com",
-      "PROXY|DOMAIN-SUFFIX|unblocksit.es",
-      "PROXY|DOMAIN-SUFFIX|watchmygf.net",
-      "PROXY|DOMAIN-SUFFIX|wo.tc",
-      "PROXY|DOMAIN-SUFFIX|xxuz.com",
-      "PROXY|DOMAIN-SUFFIX|ygto.com"
+      "DIRECT|DOMAIN-SUFFIX|oschina.net"
     ],
     "promoted_queue_not_published_sample": [],
-    "published_count_delta_vs_approved_review_total": 49,
+    "published_count_delta_vs_approved_review_total": 1,
     "accounting_reconciled": true
   },
-  "held_total": 164592,
+  "held_total": 164542,
   "reject_manual_approval_required": true,
   "reject_manual_approval_count": 860,
-  "reject_manual_hold_count": 70,
+  "reject_manual_hold_count": 16117,
   "reject_secondary_review": {
-    "candidate_count": 127802,
+    "candidate_count": 127508,
     "first_stage_held_by_status": {
-      "CONFLICT": 36030,
-      "POLICY_CONFLICT": 687,
-      "REVIEW": 80793,
+      "CONFLICT": 36029,
+      "POLICY_CONFLICT": 397,
+      "REVIEW": 69831,
       "RISK_HOLD": 9
     },
-    "eligible_for_manual_approval_count": 572,
-    "pending_manual_approval_count": 70,
-    "manual_approval_outside_shortlist_count": 353,
+    "eligible_for_manual_approval_count": 16119,
+    "pending_manual_approval_count": 16117,
+    "manual_approval_outside_shortlist_count": 354,
     "held_reason_counts": {
-      "first_stage_conflict": 36030,
-      "first_stage_policy_conflict": 687,
-      "first_stage_review": 80793,
+      "first_stage_conflict": 36029,
+      "first_stage_policy_conflict": 397,
+      "first_stage_review": 69831,
       "first_stage_risk_hold": 9,
-      "insufficient_current_sources": 9690,
-      "missing_specialist_adblock_source": 44
+      "insufficient_current_sources": 4574,
+      "missing_specialist_adblock_source": 47
     },
     "minimum_current_sources": 3,
     "minimum_independent_publishers": 2,
@@ -650,23 +865,23 @@
     "queue_path": "rulesets/reject_review_queue.json"
   },
   "status_count": {
-    "ALREADY_COVERED": 9526,
-    "APPROVED": 13643,
-    "CONFLICT": 36636,
-    "POLICY_CONFLICT": 755,
-    "REVIEW": 107883,
+    "ALREADY_COVERED": 9584,
+    "APPROVED": 24651,
+    "CONFLICT": 36646,
+    "POLICY_CONFLICT": 465,
+    "REVIEW": 97097,
     "RISK_HOLD": 16
   },
   "deterministic_review_progress": {
     "candidate_total": 168459,
-    "approved_total": 3867,
-    "held_total": 164592,
+    "approved_total": 3917,
+    "held_total": 164542,
     "status_count": {
-      "ALREADY_COVERED": 9526,
-      "APPROVED": 13643,
-      "CONFLICT": 36636,
-      "POLICY_CONFLICT": 755,
-      "REVIEW": 107883,
+      "ALREADY_COVERED": 9584,
+      "APPROVED": 24651,
+      "CONFLICT": 36646,
+      "POLICY_CONFLICT": 465,
+      "REVIEW": 97097,
       "RISK_HOLD": 16
     }
   },
