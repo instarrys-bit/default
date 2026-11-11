@@ -23,6 +23,34 @@ def as_int(value):
     return value if isinstance(value, int) and not isinstance(value, bool) else 0
 
 
+def read_reject_manual_queue_metrics():
+    """Count only materialized manual-review queue records; never trust manifest estimates."""
+    path = ROOT / "rulesets" / "reject_review_queue.json"
+    try:
+        raw = path.read_text(encoding="utf-8")
+    except OSError:
+        return {"count": 0, "state": "unavailable"}
+    if not raw.strip():
+        return {"count": 0, "state": "empty"}
+    try:
+        document = json.loads(raw)
+    except json.JSONDecodeError:
+        return {"count": 0, "state": "invalid"}
+    if isinstance(document, list):
+        records = document
+    elif isinstance(document, dict):
+        records = next((document.get(key) for key in ("items", "queue", "records", "domains", "reviews")
+                        if isinstance(document.get(key), list)), None)
+        if records is None:
+            return {"count": 0, "state": "invalid"}
+    else:
+        return {"count": 0, "state": "invalid"}
+    pending_statuses = {"PENDING", "PENDING_REVIEW", "REVIEW", "WAITING", "QUEUED"}
+    pending = [item for item in records if isinstance(item, dict)
+               and str(item.get("status", "PENDING")).upper() in pending_statuses]
+    return {"count": len(pending), "state": "available" if pending else "empty"}
+
+
 def watchdog_schedule(workflow_text, now=None):
     """Return the next UTC workflow trigger; unknown cron forms fail closed."""
     now = now or datetime.now(timezone.utc)
@@ -245,6 +273,7 @@ def main():
     held = as_int(manifest.get("held_total"))
     candidate_count = candidate_review["candidate_total"]
     source_count = as_int(manifest.get("source_count"))
+    reject_manual_queue = read_reject_manual_queue_metrics()
     
     def watchdog_status():
         workflow_path = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
@@ -307,7 +336,8 @@ def main():
             "policy_conflicts": as_int(manifest.get("policy_conflict_total")),
             "reject_manual_approval_required": bool(manifest.get("reject_manual_approval_required", True)),
             "reject_manual_approved": as_int(manifest.get("reject_manual_approval_count")),
-            "reject_manual_pending": as_int(manifest.get("reject_manual_hold_count"))
+            "reject_manual_pending": reject_manual_queue["count"],
+            "reject_manual_queue_state": reject_manual_queue["state"]
         },
         "queue": {"total": len(tasks), "by_status": queue_status},
         "pipeline": {
