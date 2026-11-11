@@ -2027,6 +2027,18 @@ jobs:
           task = next((item for item in queue.get("tasks", []) if isinstance(item, dict) and item.get("task_id") == task_id), None)
           if not isinstance(task, dict):
               raise SystemExit("Selected production task disappeared from the durable queue after dispatch.")
+          if task.get("status") == "CANCELLED":
+              error = task.get("last_error") if isinstance(task.get("last_error"), dict) else {}
+              if error.get("type") == "stale_production_input_superseded":
+                  print(json.dumps({
+                      "task_id": task_id,
+                      "status": "CANCELLED",
+                      "disposition": "stale_input_safely_superseded",
+                      "message": error.get("message"),
+                      "queue_revision": queue.get("revision"),
+                  }, sort_keys=True))
+                  raise SystemExit(0)
+              raise SystemExit("Selected production task was cancelled for a reason requiring diagnosis: " + json.dumps(error, sort_keys=True))
           if task.get("status") not in {"VERIFYING", "SUCCEEDED"}:
               raise SystemExit("Production task did not persist a dispatched/verified state: " + str(task.get("status")))
           intent = task.get("dispatch_intent") or {}
