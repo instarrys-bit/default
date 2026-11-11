@@ -23,8 +23,8 @@ def as_int(value):
     return value if isinstance(value, int) and not isinstance(value, bool) else 0
 
 
-def read_reject_manual_queue_metrics():
-    """Count only materialized manual-review queue records; never trust manifest estimates."""
+def read_reject_exception_queue_metrics():
+    """Count materialized exception-only review records; never trust manifest estimates."""
     path = ROOT / "rulesets" / "reject_review_queue.json"
     try:
         raw = path.read_text(encoding="utf-8")
@@ -45,7 +45,7 @@ def read_reject_manual_queue_metrics():
             return {"count": 0, "state": "invalid"}
     else:
         return {"count": 0, "state": "invalid"}
-    pending_statuses = {"PENDING", "PENDING_REVIEW", "REVIEW", "WAITING", "QUEUED"}
+    pending_statuses = {"PENDING", "PENDING_REVIEW", "REVIEW", "WAITING", "QUEUED", "HELD_FOR_EXCEPTION_REVIEW", "EXCEPTION"}
     pending = [item for item in records if isinstance(item, dict)
                and str(item.get("status", "PENDING")).upper() in pending_statuses]
     return {"count": len(pending), "state": "available" if pending else "empty"}
@@ -273,7 +273,7 @@ def main():
     held = as_int(manifest.get("held_total"))
     candidate_count = candidate_review["candidate_total"]
     source_count = as_int(manifest.get("source_count"))
-    reject_manual_queue = read_reject_manual_queue_metrics()
+    reject_exception_queue = read_reject_exception_queue_metrics()
     
     def watchdog_status():
         workflow_path = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
@@ -334,10 +334,9 @@ def main():
             "approved_total": approved,
             "held_total": held,
             "policy_conflicts": as_int(manifest.get("policy_conflict_total")),
-            "reject_manual_approval_required": bool(manifest.get("reject_manual_approval_required", True)),
-            "reject_manual_approved": as_int(manifest.get("reject_manual_approval_count")),
-            "reject_manual_pending": reject_manual_queue["count"],
-            "reject_manual_queue_state": reject_manual_queue["state"]
+            "manual_review_scope": str(manifest.get("manual_review_scope", "exceptions_only")),
+            "reject_exception_pending": reject_exception_queue["count"],
+            "reject_exception_queue_state": reject_exception_queue["state"]
         },
         "queue": {"total": len(tasks), "by_status": queue_status},
         "pipeline": {
