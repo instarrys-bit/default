@@ -220,7 +220,7 @@
           }
         }
       },
-      "timeout_seconds": 300,
+      "timeout_seconds": 900,
       "retry": {
         "max_attempts": 1,
         "policy": "one initial task; up to two sequential checkpoint-resuming recovery tasks (the second only after execution_timeout and with max_urls<=4); after any independently verified Assessment success, at most one idempotent artifact-recovery task may produce a bounded runner-local artifact batch when no valid immutable source-assessment-output artifact proves the same Discovery predecessor; artifact recovery reuses the exact predecessor proof and durable per-URL checkpoints and is never enqueued when a matching valid artifact already exists; no repository artifact publication"
