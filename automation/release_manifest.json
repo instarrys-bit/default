@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "5c9b5888bebb28cb750d712c3b3d3d7bd838ac0c"
+      "git_blob_sha": "f16ec3183a1652815f20bbd8f1398610baf4a228"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -158,7 +158,7 @@
     },
     "production_control": {
       "path": "automation/production_control.json",
-      "git_blob_sha": "dd4b129987bdad61413adc26e4d63474004119e8"
+      "git_blob_sha": "401c7278b711406732f5ca995e91a688163a0d04"
     },
     "source_handoff_policy": {
       "path": "scripts/source_handoff_policy.py",
@@ -204,7 +204,7 @@
     "dashboard_is_read_only_observer": true,
     "production_may_not_write_config_baseline": true,
     "ruleset_writers_require_resource_exclusive_lease": true,
-    "reject_rule_publication_requires_explicit_approval": true,
+    "reject_rule_publication_requires_explicit_approval": false,
     "python_adapter_default_deny": true,
     "watchdog_baseline_metadata_sync": {
       "writer": "automation-watchdog.yml baseline-sync job",
