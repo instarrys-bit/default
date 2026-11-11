@@ -39,6 +39,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
     def test_watchdog_recovery_is_main_only_and_serialized_with_publisher(self):
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn("group: shadowrocket-main-writer", watchdog)
+        self.assertIn("timed_out|startup_failure|cancelled)", watchdog)
         self.assertIn("github.event.workflow_run.head_branch == 'main'", watchdog)
         self.assertIn('select(.head_branch == "main" and .head_sha == $sha', watchdog)
         self.assertIn('select(.head_branch == "main" and .conclusion == "success")', watchdog)
