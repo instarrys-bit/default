@@ -91,7 +91,7 @@
           "workflow_automation_watchdog"
         ],
         "max_attempts": 1,
-        "timeout_seconds": 480
+        "timeout_seconds": 900
       }
     },
     {
