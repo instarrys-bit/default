@@ -197,7 +197,7 @@ button{font:inherit}
  <article class="kpi published"><div class="kpi-label">已发布规则</div><div class="kpi-value">—</div><div class="kpi-foot">当前规则集规模</div></article>
  <article class="kpi candidate"><div class="kpi-label">候选池总量</div><div class="kpi-value">—</div><div class="kpi-foot">候选记录，不等同于待筛选</div></article>
  <article class="kpi sources"><div class="kpi-label">规则来源</div><div class="kpi-value">—</div><div class="kpi-foot">当前纳入统计的来源数</div></article>
- <article class="kpi alert"><div class="kpi-label">待人工审核</div><div class="kpi-value">—</div><div class="kpi-foot">仅统计需要人工处理的异常项</div></article>
+ <article class="kpi alert"><div class="kpi-label">待人工审核</div><div class="kpi-value">—</div><div class="kpi-foot">仅统计实际待处理项目</div></article>
 </section>
 <section class="bento">
  <article class="card distribution">
@@ -231,7 +231,7 @@ let lastSuccessfulLoad=null;let lastLoadError=null;let loadInFlight=false;
 async function load(){if(loadInFlight)return;loadInFlight=true;try{
  const r=await fetch("./data.json?refresh="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);const d=await r.json();lastSuccessfulLoad=new Date();lastLoadError=null;tickClock();
  const exceptionQueueState=d.review.reject_exception_queue_state||"unavailable";
- const exceptionQueueNote=exceptionQueueState==="empty"?"当前没有需要人工处理的异常项":exceptionQueueState==="available"?"仅统计自动审核未通过的异常项":"异常队列不可读取，数量按 0 显示";
+ const exceptionQueueNote=exceptionQueueState==="empty"?"当前没有待处理项目":exceptionQueueState==="available"?"仅统计实际待处理项目":"审核数据暂不可读取，数量按 0 显示";
  const cards=[["已发布规则",n(d.rulesets.published_total),"当前规则集规模","published"],["候选池总量",n(d.candidate_review.candidate_total),"候选记录，不等同于待筛选","candidate"],["已启用来源",n(d.sources.source_count),"通过准入并正式启用的规则来源","sources"],["待人工审核",n(d.review.reject_exception_pending),exceptionQueueNote,"alert"]];
  el("summary").innerHTML=cards.map(x=>'<article class="kpi '+x[3]+'"><div class="kpi-label">'+x[0]+'</div><div class="kpi-value">'+x[1]+'</div><div class="kpi-foot">'+x[2]+'</div></article>').join("");
  const s=d.sources||{};
@@ -281,7 +281,7 @@ async function load(){if(loadInFlight)return;loadInFlight=true;try{
   '<div class="review-top"><div class="gauge" style="--pct:'+coverage+'"><div class="gauge-inner"><div class="gauge-value">'+coverage.toFixed(1)+'%</div><div class="gauge-label">记录覆盖率</div></div></div>'+
   '<div class="review-copy"><strong>'+n(recorded)+' <span style="display:inline;font-size:11px;color:#8291ad;font-weight:500">/ '+n(candidateTotal)+'</span></strong><span>候选记录中匹配到历史审核记录</span><span>未匹配记录 '+n(missing)+'</span></div></div>'+
   '<div class="review-grid">'+reviewStats.map(([label,value,cls])=>'<div class="review-cell '+cls+'"><span>'+label+'</span><b>'+n(value)+'</b></div>').join("")+'</div>'+
-  '<div class="micro-note">覆盖率只表示匹配到历史审核记录，不代表当前证据已重新审核。符合自动审核条件的规则直接发布；待人工审核数量只统计异常队列。</div>';
+  '<div class="micro-note">覆盖率只表示匹配到历史审核记录，不代表当前证据已重新审核。符合自动审核条件的规则直接发布；待人工审核数量只统计实际待处理队列。</div>';
  const pipeline=d.pipeline||{},runtime=pipeline.task_runtime||{},q=runtime.by_status||{};
  const queued=Number(q.QUEUED)||0,running=Number(q.CLAIMED)||0,verifying=Number(q.VERIFYING)||0,active=Number(runtime.active)||queued+running+verifying;
  const failed=Number(runtime.dead_letter)||0,done=Number(runtime.succeeded)||Number(q.SUCCEEDED)||0;
