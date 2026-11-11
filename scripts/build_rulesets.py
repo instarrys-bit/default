@@ -495,8 +495,9 @@ def main():
     report_lines.extend(["| 规则 | 当前来源数 | 独立发布者组 | 置信度 | 来源 |","|---|---:|---:|---:|---|"])
     for item in reject_review_queue_items:
         report_lines.append(
-            f"| {item['rule']} | {item['current_source_count']} | {item['independent_publisher_count']} | "
-            f"{item['confidence']:.2f} | {', '.join(item['source_ids'])} |"
+            f"| {item.get('rule', '')} | {item.get('current_source_count', '—')} | "
+            f"{item.get('independent_publisher_count', '—')} | "
+            f"{float(item.get('confidence', 0)):.2f} | {', '.join(item.get('source_ids', []))} |"
         )
     (report_dir/"reject-secondary-review.md").write_text("\\n".join(report_lines)+"\n",encoding="utf-8")
     queue_path=OUT/"pending_queue.json"
