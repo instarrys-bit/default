@@ -50,7 +50,7 @@
     },
     "task_result_verifier": {
       "path": "scripts/task_result_verifier.py",
-      "git_blob_sha": "a09888f1d992a7acaedf3d3661197e0cedefbc10"
+      "git_blob_sha": "a054209c30d5aeaa1bdb399b6f6782c926bf1b92"
     },
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
@@ -98,7 +98,7 @@
     },
     "github_workflow_adapter": {
       "path": "scripts/github_workflow_adapter.py",
-      "git_blob_sha": "dbd7ad85906e9d51323714b67a9487d41a34e74b"
+      "git_blob_sha": "ca6c8498e8216852b560dbe380e64b68b47d9276"
     },
     "publish_freshness_guard": {
       "path": "scripts/verify_publish_base.sh",
