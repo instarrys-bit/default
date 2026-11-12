@@ -16,11 +16,11 @@ class SourceCandidateLineagePolicyTests(unittest.TestCase):
             "policy_candidate": "DIRECT",
             "parser_candidate": "shadowrocket-domain-rules",
             "policy_evidence": "explicit_third_field",
-            "exact_domain_count": 2,
-            "suffix_domain_count": 1,
+            "exact_domain_count": 100,
+            "suffix_domain_count": 0,
             "adblock_domain_count": 0,
             "domain_only_count": 0,
-            "domain_fingerprints": fingerprints or ["a" * 16, "b" * 16],
+            "domain_fingerprints": fingerprints if fingerprints is not None else [f"{i:032x}" for i in range(100)],
             "url": "https://example.test/list",
             "duplicate_domain_lines": 0,
             "sha256": "f" * 64,
@@ -46,6 +46,8 @@ class SourceCandidateLineagePolicyTests(unittest.TestCase):
         candidate = result["candidates"][0]
         self.assertTrue(candidate["activation_eligible"])
         self.assertEqual(candidate["activation_blockers"], [])
+        self.assertEqual(candidate["domain_fingerprint_count"], 100)
+        self.assertTrue(candidate["fingerprints_complete"])
         self.assertEqual(candidate["lineage_warning"], "possible_shared_readme_references; correlation signal only")
 
 
@@ -62,6 +64,17 @@ class SourceCandidateLineagePolicyTests(unittest.TestCase):
             }):
                 self.assertEqual(assessment_input_path(), runtime)
 
+
+    def test_missing_fingerprints_fail_closed_and_do_not_count_as_independent(self):
+        result = build_matrix(
+            {"assessments": [self._assessment("publisher/a", fingerprints=[])]},
+            {"candidate_sources": [], "candidate_shared_reference_pairs": []},
+        )
+        candidate = result["candidates"][0]
+        self.assertFalse(candidate["activation_eligible"])
+        self.assertFalse(candidate["fingerprints_complete"])
+        self.assertIn("domain_fingerprints_missing_or_invalid", candidate["activation_blockers"])
+        self.assertFalse(result["policy_summary"]["DIRECT"]["activation_ready"])
 
     def test_archived_publisher_remains_blocked(self):
         result = build_matrix(
