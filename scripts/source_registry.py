@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
-from tempfile import gettempdir
 from urllib.parse import urlparse
 
 POLICIES={"DIRECT","PROXY","REJECT"}
