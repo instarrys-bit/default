@@ -371,7 +371,11 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn('assessment_status" = "DEAD_LETTER"', block)
         self.assertIn('recovery:1', block)
         self.assertIn('recovery:2', block)
-        self.assertIn("The timeout-corrected second Assessment recovery was already used", block)
+        self.assertIn('echo "retry_exhausted=false" >> "$GITHUB_OUTPUT"', block)
+        self.assertIn('echo "retry_exhausted=true" >> "$GITHUB_OUTPUT"', block)
+        self.assertIn("The timeout-corrected second Assessment recovery was dead-lettered; a fresh version-bound Discovery cycle is now permitted.", block)
+        discovery = watchdog.split("      - name: Enqueue independent source discovery", 1)[1].split("      - name: Recover leases, verify results", 1)[0]
+        self.assertIn("steps.enqueue-assessment.outputs.retry_exhausted == 'true'", discovery)
         self.assertIn("enqueue-source-assessment", block)
         self.assertIn("Enqueue one artifact-recovery Assessment", block)
         self.assertIn("artifact-recovery:1", block)

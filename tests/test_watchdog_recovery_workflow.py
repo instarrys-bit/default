@@ -127,9 +127,13 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("production:guard-reconciliation:$current_fingerprint:$failed_run_id", stale)
         self.assertIn("while IFS=", stale)
 
-    def test_run_history_checks_follow_all_api_pages(self):
+    def test_run_history_checks_use_bounded_single_page_scans(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
-        self.assertGreaterEqual(workflow.count("gh api --paginate --slurp"), 3)
+        stale = workflow.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
+        self.assertIn("automation-watchdog.yml/runs?per_page=100&status=in_progress", stale)
+        self.assertIn("auto_sync.yml/runs?per_page=100", stale)
+        self.assertNotIn("gh api --paginate --slurp", stale)
+        self.assertIn("Stale-run scan deferred", stale)
         self.assertNotIn("runs?per_page=20", workflow)
         self.assertNotIn("runs?per_page=30", workflow)
 
@@ -595,8 +599,10 @@ class WatchdogStaleRunRecoveryTests(unittest.TestCase):
         self.assertIn("(.id | tostring) != $current", stale)
         self.assertIn("(now - $started) > 1800", stale)
         self.assertIn('gh run cancel "$stale_id"', stale)
-        self.assertIn('if [ "$status" != "completed" ]; then', stale)
-        self.assertIn("cancellation is not confirmed", stale)
+        self.assertIn('if [ "$cancellation_confirmed" = "true" ]; then', stale)
+        self.assertIn("Cancellation of Watchdog run", stale)
+        self.assertIn("concurrency group will keep the next queue worker serialized", stale)
+        self.assertNotIn('if [ "$status" != "completed" ]; then', stale)
 
     def test_superseded_audit_is_cancelled_when_it_exceeds_six_hour_runtime(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
