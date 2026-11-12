@@ -60,6 +60,19 @@ def verify(result_path: Path) -> dict:
     for item in assessments:
         if not isinstance(item,dict) or not isinstance(item.get("url"),str) or not isinstance(item.get("repository"),str):
             raise ValueError("runtime assessment entry is malformed")
+        if item.get("parser_candidate") in PARSER_TYPES:
+            fingerprints=item.get("domain_fingerprints")
+            if (not isinstance(fingerprints,list)
+                    or len(fingerprints)!=len(set(fingerprints))
+                    or any(not isinstance(value,str) or len(value)!=32
+                           or any(ch not in "0123456789abcdef" for ch in value)
+                           for value in fingerprints)):
+                raise ValueError("runtime assessment is missing valid per-domain fingerprints: "+item["url"])
+            domain_count=sum(int(item.get(key,0) or 0) for key in (
+                "exact_domain_count","suffix_domain_count","adblock_domain_count","domain_only_count"
+            ))
+            if domain_count>0 and not fingerprints:
+                raise ValueError("runtime assessment has domain entries but no fingerprints: "+item["url"])
     artifact_root = RUNTIME.parents[1]
     return {"valid":True,"assessed":assessed,"historical_assessments":len(history),
             "report_bytes":REPORT.stat().st_size,"activation_count":0,
