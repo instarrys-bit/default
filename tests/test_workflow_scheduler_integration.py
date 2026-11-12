@@ -485,6 +485,46 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
         self.assertEqual(saved["status"], "SUCCEEDED")
         self.assertEqual(saved["state_history"][-2:], ["VERIFYING", "SUCCEEDED"])
 
+    def test_stale_dispatch_revision_releases_task_for_safe_retry(self):
+        task = self.enqueue()
+        task["attempts"] = 1
+        task["max_attempts"] = 2
+        task["status"] = "VERIFYING"
+        task["state_history"] = ["QUEUED", "CLAIMED", "VERIFYING"]
+        task["dispatch_intent"] = {
+            "workflow_id": 1234,
+            "workflow_path": ".github/workflows/workflow-target.yml",
+            "ref": "main",
+            "requested_head_sha": "a" * 40,
+            "task_id": task["task_id"],
+            "dispatch_attempt": 1,
+            "correlation_id": task["task_id"] + "-a1",
+            "correlation_title": "Automation task " + task["task_id"] + "-a1",
+            "prepared_at": "2026-11-03T04:00:00Z",
+        }
+        evidence = {
+            "run_id": 991,
+            "head_sha": "b" * 40,
+            "requested_head_sha": "a" * 40,
+            "head_sha_relationship": "rejected",
+            "status": "completed",
+            "conclusion": "cancelled",
+        }
+        with patch.object(task_result_verifier, "inspect_correlated_run", return_value={
+            "state": "stale", "evidence": evidence, "reason": "stale ref",
+        }):
+            report = verify_pending_remote(
+                self.store, self.registry, self.adapters, self.now,
+                workflow_client=self.client,
+            )
+        saved = self.store.document["tasks"][0]
+        self.assertEqual(report["rejected"], [task["task_id"]])
+        self.assertEqual(saved["status"], "QUEUED")
+        self.assertNotIn("dispatch_intent", saved)
+        self.assertIsNone(saved["lease"])
+        self.assertEqual(saved["last_error"]["type"], "workflow_dispatch_stale_ref")
+        self.assertEqual(saved["result"]["run_evidence"], evidence)
+
     def test_completed_failure_retries_with_new_attempt_correlation(self):
         task = self.enqueue()
         with patch.object(task_scheduler, "GitHubWorkflowClient", return_value=self.client):
