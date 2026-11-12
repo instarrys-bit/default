@@ -176,8 +176,8 @@
     "idempotent": false,
     "idempotency_key": "task_id + predecessor workflow_run_id + predecessor artifact_sha256 + URL; completed URL results are immutable within the task checkpoint.",
     "retry_policy": "Resume the same predecessor-bound batch from the durable task-queue checkpoint. Reuse every completed URL result; repeat network reads only for URLs not yet checkpointed or whose prior fetch failed before a result was stored.",
-    "timeout_seconds": 900,
-    "timeout_note": "Task input caps each run at 20 URLs, 1 MB per URL and 10 MB aggregate. Each successful URL is checkpointed immediately by a fenced queue CAS. The adapter timeout is 900 seconds; the 3600-second resource lease is renewed by Watchdog reconciliation and covers delayed workflow completion events plus independent artifact verification.",
+    "timeout_seconds": 300,
+    "timeout_note": "Task input caps each run at 20 URLs, 1 MB per URL and 10 MB aggregate. Each successful URL is checkpointed immediately by a fenced queue CAS. The adapter timeout is 300 seconds, within the scheduler's 1-300 second bound and shorter than the 900-second registered task lease; the 3600-second resource lease covers delayed workflow completion events plus independent artifact verification.",
     "success_predicate": [
       "Process exits with code 0 and stdout satisfies the reviewed output schema.",
       "activated equals 0.",
