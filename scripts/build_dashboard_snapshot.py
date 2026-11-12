@@ -110,6 +110,17 @@ def build_dead_letter_metrics(tasks):
     }
 
 
+def build_manual_review_metrics(tasks):
+    """Only exhausted runtime failures enter human review; cancellations do not."""
+    metrics = build_dead_letter_metrics(tasks)
+    return {
+        "pending": metrics["dead_letter_failures"] + metrics["dead_letter_unclassified"],
+        "failures": metrics["dead_letter_failures"],
+        "unclassified": metrics["dead_letter_unclassified"],
+        "cancelled_excluded": metrics["dead_letter_cancelled"],
+    }
+
+
 def build_source_pipeline_metrics(discovered, assessments, candidates, registry):
     """Keep active sources distinct from discovered and assessed source candidates."""
     discovered_rows = discovered.get("candidates", [])
@@ -258,6 +269,7 @@ def main():
         status = str(task.get("status", "UNKNOWN")).upper()
         prod_status[status] = prod_status.get(status, 0) + 1
     dead_letter_metrics = build_dead_letter_metrics(production_tasks)
+    manual_review_metrics = build_manual_review_metrics(tasks)
     
     successful = [t for t in production_tasks
                   if str(t.get("status", "")).upper() == "SUCCEEDED"
@@ -273,7 +285,6 @@ def main():
     held = as_int(manifest.get("held_total"))
     candidate_count = candidate_review["candidate_total"]
     source_count = as_int(manifest.get("source_count"))
-    reject_exception_queue = read_reject_exception_queue_metrics()
     
     def watchdog_status():
         workflow_path = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
@@ -334,9 +345,11 @@ def main():
             "approved_total": approved,
             "held_total": held,
             "policy_conflicts": as_int(manifest.get("policy_conflict_total")),
-            "manual_review_scope": str(manifest.get("manual_review_scope", "exceptions_only")),
-            "reject_exception_pending": reject_exception_queue["count"],
-            "reject_exception_queue_state": reject_exception_queue["state"]
+            "manual_review_scope": "runtime_exceptions_only",
+            "manual_review_pending": manual_review_metrics["pending"],
+            "manual_review_failures": manual_review_metrics["failures"],
+            "manual_review_unclassified": manual_review_metrics["unclassified"],
+            "manual_review_cancelled_excluded": manual_review_metrics["cancelled_excluded"]
         },
         "queue": {"total": len(tasks), "by_status": queue_status},
         "pipeline": {
