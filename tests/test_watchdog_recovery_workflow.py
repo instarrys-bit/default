@@ -635,3 +635,14 @@ if __name__ == "__main__":
         self.assertIn("steps.enqueue-assessment.outputs.retry_exhausted == 'true'", workflow)
         self.assertIn("discovery_pipeline_revision", discovery)
         self.assertIn("source-discovery:$discovery_day:$discovery_revision", discovery)
+
+class WatchdogRateLimitResilienceTests(unittest.TestCase):
+    def test_stale_run_scans_are_single_page_and_rate_limit_safe(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        stale = workflow.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
+        self.assertIn("actions/workflows/automation-watchdog.yml/runs?per_page=100&status=in_progress", stale)
+        self.assertNotIn("gh api --paginate --slurp", stale)
+        self.assertIn("if ! watchdog_runs=", stale)
+        self.assertIn("Stale-run scan deferred", stale)
+        self.assertIn("auto-sync-refresh.err", stale)
+        self.assertIn("no replacement will be dispatched in this pass", stale)

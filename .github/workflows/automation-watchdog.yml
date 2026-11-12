@@ -2097,7 +2097,13 @@ jobs:
           # A wedged Watchdog run can retain the task-supervision concurrency
           # slot indefinitely. Queue state is durable, so cancel only stale
           # main-branch Watchdog runs and let the next pass recover expired leases.
-          watchdog_runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/automation-watchdog.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
+          if ! watchdog_runs="$(gh api "repos/$REPO/actions/workflows/automation-watchdog.yml/runs?per_page=100&status=in_progress" 2>"$RUNNER_TEMP/watchdog-runs.err")"; then
+            echo "Warning: unable to inspect active Watchdog runs (possibly API rate-limited); queue supervision will remain serialized behind any current worker."
+            if [ -s "$RUNNER_TEMP/watchdog-runs.err" ]; then cat "$RUNNER_TEMP/watchdog-runs.err"; fi
+            echo "Stale-run scan deferred; the task-supervision concurrency group still prevents overlapping workers." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          watchdog_runs="$(jq '{workflow_runs: (.workflow_runs // [])}' <<< "$watchdog_runs")"
           watchdog_stale_lines="$(jq -r --arg current "$CURRENT_WATCHDOG_RUN_ID" '
             .workflow_runs[]
             | select(.status != "completed" and .head_branch == "main" and (.id | tostring) != $current)
@@ -2111,19 +2117,23 @@ jobs:
               [ -n "$stale_id" ] || continue
               echo "Cancelling orphaned Watchdog run $stale_id (event=$stale_event, sha=$stale_sha); durable queue state will be recovered by the next pass."
               gh run cancel "$stale_id" --repo "$REPO" || true
-              status=""
+              cancellation_confirmed=false
               for _ in {1..30}; do
-                status="$(gh api "repos/$REPO/actions/runs/$stale_id" --jq .status)"
-                if [ "$status" = "completed" ]; then
+                if status="$(gh api "repos/$REPO/actions/runs/$stale_id" --jq .status 2>/dev/null)"; then
+                  if [ "$status" = "completed" ]; then
+                    cancellation_confirmed=true
+                    break
+                  fi
+                else
                   break
                 fi
                 sleep 2
               done
-              if [ "$status" != "completed" ]; then
-                echo "Stale Watchdog run $stale_id cancellation is not confirmed; queue supervision remains blocked." >&2
-                exit 1
+              if [ "$cancellation_confirmed" = "true" ]; then
+                watchdog_cancelled_ids+=("$stale_id")
+              else
+                echo "Cancellation of Watchdog run $stale_id is not confirmed; the concurrency group will keep the next queue worker serialized."
               fi
-              watchdog_cancelled_ids+=("$stale_id")
             done <<< "$watchdog_stale_lines"
           fi
           if [ "${#watchdog_cancelled_ids[@]}" -gt 0 ]; then
@@ -2136,8 +2146,17 @@ jobs:
             } >> "$GITHUB_STEP_SUMMARY"
           fi
 
-          current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"
-          runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
+          if ! current_main="$(gh api "repos/$REPO/commits/main" --jq .sha 2>"$RUNNER_TEMP/main-sha.err")"; then
+            echo "Warning: unable to read current main SHA; deferring audit recovery to the next Watchdog pass."
+            if [ -s "$RUNNER_TEMP/main-sha.err" ]; then cat "$RUNNER_TEMP/main-sha.err"; fi
+            exit 0
+          fi
+          if ! runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" 2>"$RUNNER_TEMP/auto-sync-runs.err")"; then
+            echo "Warning: unable to inspect active auto_sync runs; deferring audit recovery to the next Watchdog pass."
+            if [ -s "$RUNNER_TEMP/auto-sync-runs.err" ]; then cat "$RUNNER_TEMP/auto-sync-runs.err"; fi
+            exit 0
+          fi
+          runs="$(jq '{workflow_runs: (.workflow_runs // [])}' <<< "$runs")"
 
           stale_lines="$(jq -r --arg sha "$current_main" '
             .workflow_runs[]
@@ -2174,7 +2193,12 @@ jobs:
               if [ "$reason" = "timeout" ]; then timed_out_any=1; timed_out_run_id="$stale_id"; fi
             done <<< "$stale_lines"
             sleep 10
-            runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
+            if ! runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" 2>"$RUNNER_TEMP/auto-sync-refresh.err")"; then
+              echo "Warning: unable to confirm audit cancellation; no replacement will be dispatched in this pass."
+              if [ -s "$RUNNER_TEMP/auto-sync-refresh.err" ]; then cat "$RUNNER_TEMP/auto-sync-refresh.err"; fi
+              exit 0
+            fi
+            runs="$(jq '{workflow_runs: (.workflow_runs // [])}' <<< "$runs")"
           fi
 
           active_count="$(jq '[.workflow_runs[] | select(.head_branch == "main" and .status != "completed")] | length' <<< "$runs")"
