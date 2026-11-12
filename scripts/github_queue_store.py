@@ -119,7 +119,7 @@ class GitHubContentsQueueStore:
         # when the client times out, so retrying it could append duplicate queue
         # snapshots and break the canonical comment chain.
         attempt = 0
-        max_get_attempts = 4
+        max_get_attempts = 7
         while True:
             try:
                 with urlopen(request, timeout=self.timeout) as response:
@@ -159,7 +159,7 @@ class GitHubContentsQueueStore:
                             delay = min(0.5 * (2 ** attempt), 4.0)
                     except (TypeError, ValueError):
                         delay = min(0.5 * (2 ** attempt), 4.0)
-                    time.sleep(max(0.0, min(delay, 60.0)))
+                    time.sleep(max(0.0, min(delay, 120.0)))
                     attempt += 1
                     continue
                 detail = " (GitHub rate limit)" if secondary_limited else ""
