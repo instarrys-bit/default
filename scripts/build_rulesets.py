@@ -182,8 +182,8 @@ def main():
     policy_control=control.get("policy",{})
     if policy_control.get("reject_publication_mode")!="automatic_after_deterministic_gates":
         raise ValueError("REJECT automatic publication is not explicitly enabled in production_control.json")
-    if policy_control.get("manual_review_scope")!="exceptions_only":
-        raise ValueError("manual review must be restricted to exception items")
+    if policy_control.get("manual_review_scope")!="runtime_exceptions_only":
+        raise ValueError("manual review must be restricted to runtime exceptions")
     data=read_document(LEDGER,"reviews",{"reviews":[]})
     source_cfg=json.loads(SOURCE_FILE.read_text(encoding="utf-8"))
     source_map=validate_registry(source_cfg)
@@ -266,8 +266,8 @@ def main():
     reject_first_stage_status_counts=Counter()
     reject_secondary_hold_reason_counts=Counter()
     reject_secondary_eligible_count=0
-    reject_exception_count=0
-    reject_review_queue_items=[]
+    reject_automated_hold_count=0
+    reject_hold_queue_items=[]
     reject_secondary_passed_lines=set()
     reviews=data.get("reviews",[])
     if len({str(item.get("domain","")).lower() for item in reviews})!=len(reviews):
@@ -285,13 +285,13 @@ def main():
             if is_reject_candidate:
                 reject_first_stage_status_counts[status]+=1
                 reject_secondary_hold_reason_counts["first_stage_"+status.lower()]+=1
-                reject_exception_count+=1
-                reject_review_queue_items.append({
+                reject_automated_hold_count+=1
+                reject_hold_queue_items.append({
                     "rule":("DOMAIN-SUFFIX," if str(item.get("source_entry_type","exact_candidate"))=="suffix_candidate" else "DOMAIN,")+str(item.get("domain","")).lower().rstrip("."),
                     "domain":str(item.get("domain","")).lower().rstrip("."),
                     "scope":str(item.get("source_entry_type","exact_candidate")),
                     "policy":"REJECT",
-                    "status":"HELD_FOR_EXCEPTION_REVIEW",
+                    "status":"HELD_FOR_AUTOMATED_RECHECK",
                     "review_status":status,
                     "reason":str(item.get("reason","First-stage deterministic review did not approve this REJECT candidate")),
                     "source_ids":sorted({str(ev.get("source_id")) for ev in item.get("evidence",[]) if ev.get("source_id")})
@@ -385,10 +385,10 @@ def main():
                 "effective_config_policy":scope_result.get("effective_policy")
             })
             if policy=="REJECT":
-                reject_exception_count+=1
-                reject_review_queue_items.append({
+                reject_automated_hold_count+=1
+                reject_hold_queue_items.append({
                     "rule":candidate_line,"domain":domain,"scope":scope,"policy":"REJECT",
-                    "status":"HELD_FOR_EXCEPTION_REVIEW",
+                    "status":"HELD_FOR_AUTOMATED_RECHECK",
                     "exception_codes":[str(scope_result["status"])],
                     "reason":str(scope_result["reason"]),
                     "config_line":scope_result.get("config_line"),
@@ -404,10 +404,10 @@ def main():
                 held+=1
                 baseline_conflict_holds.append({"domain":domain,"policy":policy,"scope":scope,"status":local_status,"reason":reason})
                 if policy=="REJECT":
-                    reject_exception_count+=1
-                    reject_review_queue_items.append({
+                    reject_automated_hold_count+=1
+                    reject_hold_queue_items.append({
                         "rule":candidate_line,"domain":domain,"scope":scope,"policy":"REJECT",
-                        "status":"HELD_FOR_EXCEPTION_REVIEW",
+                        "status":"HELD_FOR_AUTOMATED_RECHECK",
                         "exception_codes":[str(local_status)],"reason":str(reason)
                     })
                 continue
@@ -416,10 +416,10 @@ def main():
             held+=1
             baseline_conflict_holds.append({"domain":domain,"policy":policy,"scope":scope,"status":local_status,"reason":reason})
             if policy=="REJECT":
-                reject_exception_count+=1
-                reject_review_queue_items.append({
+                reject_automated_hold_count+=1
+                reject_hold_queue_items.append({
                     "rule":candidate_line,"domain":domain,"scope":scope,"policy":"REJECT",
-                    "status":"HELD_FOR_EXCEPTION_REVIEW",
+                    "status":"HELD_FOR_AUTOMATED_RECHECK",
                     "exception_codes":[str(local_status)],"reason":str(reason)
                 })
             continue
@@ -429,15 +429,15 @@ def main():
             )
             if not secondary["eligible"]:
                 held+=1
-                reject_exception_count+=1
+                reject_automated_hold_count+=1
                 for reason_code in secondary["reasons"]:
                     reject_secondary_hold_reason_counts[reason_code]+=1
-                reject_review_queue_items.append({
+                reject_hold_queue_items.append({
                     "rule":candidate_line,
                     "domain":domain,
                     "scope":scope,
                     "policy":"REJECT",
-                    "status":"HELD_FOR_EXCEPTION_REVIEW",
+                    "status":"HELD_FOR_AUTOMATED_RECHECK",
                     "confidence":secondary["confidence"],
                     "current_source_count":secondary["current_source_count"],
                     "independent_publisher_count":secondary["independent_publisher_count"],
@@ -457,7 +457,7 @@ def main():
 
     assert_resource_lease_for_repository_path(ROOT, "rulesets/reject_review_queue.json")
     OUT.mkdir(parents=True,exist_ok=True)
-    reject_review_queue_items.sort(key=lambda item:(item["domain"],item["scope"]))
+    reject_hold_queue_items.sort(key=lambda item:(item["domain"],item["scope"]))
     reject_queue_path=OUT/"reject_review_queue.json"
     assert_resource_lease_for_repository_path(ROOT, "rulesets/reject_review_queue.json")
     reject_queue_path.write_text(json.dumps({
@@ -469,20 +469,20 @@ def main():
             "minimum_independent_publishers":secondary_min_groups,
             "required_any_sources":sorted(secondary_required_any),
             "manual_approval_required":False,
-            "manual_review_scope":"exceptions_only"
+            "queue_role":"automated_candidate_recheck_holds"
         },
         "eligible_count":reject_secondary_eligible_count,
-        "pending_exception_review_count":len(reject_review_queue_items),
-        "items":reject_review_queue_items
+        "held_for_automated_recheck_count":len(reject_hold_queue_items),
+        "items":reject_hold_queue_items
     },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     report_dir=ROOT/"reports"
     report_dir.mkdir(parents=True,exist_ok=True)
     report_lines=[
-        "# REJECT 自动审核与异常项报告","",
+        "# REJECT 自动审核与暂缓项报告","",
         f"- REJECT 相关候选总量：{reject_candidate_count}",
         f"- 一审未通过/暂缓：{sum(reject_first_stage_status_counts.values())}",
         f"- 二审自动审核通过：{reject_secondary_eligible_count}",
-        f"- 转人工异常复核：{len(reject_review_queue_items)}",
+        f"- 自动暂缓、等待后续复查：{len(reject_hold_queue_items)}",
         f"- 自动发布门槛：至少 {secondary_min_sources} 个当前来源、至少 {secondary_min_groups} 个独立发布者，并至少包含一个指定专业广告拦截来源。",
         "- 通过一审、二审及配置冲突检查的 REJECT 规则自动进入发布队列；人工只处理异常项。",
         "",
@@ -491,9 +491,9 @@ def main():
     report_lines.extend(f"- {name}: {count}" for name,count in sorted(reject_first_stage_status_counts.items()))
     report_lines.extend(["","## 二审拦截原因",""])
     report_lines.extend(f"- {name}: {count}" for name,count in sorted(reject_secondary_hold_reason_counts.items()))
-    report_lines.extend(["","## 人工异常复核队列",""])
+    report_lines.extend(["","## 自动暂缓队列",""])
     report_lines.extend(["| 规则 | 当前来源数 | 独立发布者组 | 置信度 | 来源 |","|---|---:|---:|---:|---|"])
-    for item in reject_review_queue_items:
+    for item in reject_hold_queue_items:
         report_lines.append(
             f"| {item.get('rule', '')} | {item.get('current_source_count', '—')} | "
             f"{item.get('independent_publisher_count', '—')} | "
@@ -621,13 +621,13 @@ def main():
         "publication_accounting":publication_accounting,
         "held_total":held,
         "reject_manual_approval_required":False,
-        "manual_review_scope":"exceptions_only",
-        "reject_exception_review_count":reject_exception_count,
+        "queue_role":"automated_candidate_recheck_holds",
+        "reject_exception_review_count":reject_automated_hold_count,
         "reject_secondary_review":{
             "candidate_count":reject_candidate_count,
             "first_stage_held_by_status":dict(sorted(reject_first_stage_status_counts.items())),
             "automatically_eligible_count":reject_secondary_eligible_count,
-            "pending_exception_review_count":len(reject_review_queue_items),
+            "pending_exception_review_count":len(reject_hold_queue_items),
             "held_reason_counts":dict(sorted(reject_secondary_hold_reason_counts.items())),
             "minimum_current_sources":secondary_min_sources,
             "minimum_independent_publishers":secondary_min_groups,
