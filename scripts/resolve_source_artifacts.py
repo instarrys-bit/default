@@ -95,6 +95,40 @@ def download_artifact(repo,run_id,name,token,dest):
     data=download_archive(item["archive_download_url"],token)
     return extract(data,dest),item
 
+def list_assessment_producer_runs(repo,token,discovery_run_id,fetch_page=api_json):
+    """List every eligible Watchdog producer run after the exact Discovery run.
+
+    The previous two-page limit silently missed older Assessment artifacts when
+    Watchdog reconciliation generated more than 200 runs after Discovery. Bound
+    the scan at 10,000 runs and fail closed if that window is exhausted.
+    """
+    if not isinstance(discovery_run_id,str) or not discovery_run_id.isdigit():
+        raise ValueError("Discovery run ID must be a positive decimal string")
+    discovery_id=int(discovery_run_id)
+    url=f"{API}/repos/{repo}/actions/workflows/automation-watchdog.yml/runs?branch=main&per_page=100"
+    runs=[]
+    for page in range(1,101):
+        payload=fetch_page(url+f"&page={page}",token)
+        batch=payload.get("workflow_runs") if isinstance(payload,dict) else None
+        if not isinstance(batch,list):
+            raise ValueError("Watchdog workflow run listing is malformed")
+        for run in batch:
+            if not isinstance(run,dict):
+                continue
+            run_id=run.get("id")
+            if (isinstance(run_id,bool) or not isinstance(run_id,int)
+                    or run_id<=discovery_id
+                    or run.get("head_branch")!="main"
+                    or run.get("status")!="completed"
+                    or run.get("conclusion")!="success"
+                    or run.get("path")!=".github/workflows/automation-watchdog.yml"):
+                continue
+            runs.append(run)
+        if len(batch)<100:
+            return runs
+    raise ValueError("Watchdog workflow run history exceeded the bounded 10,000-run verification window")
+
+
 def resolve_task(queue):
     tasks=queue.get("tasks")
     if not isinstance(tasks,list): raise ValueError("queue tasks missing")
@@ -131,12 +165,7 @@ def main():
         if not discovery_doc.is_file(): discovery_doc=unique(discovery,"discovered_sources.json")
         discovery_root=discovery_doc.parent.parent
         if read_only_resource_digests(discovery_root,["sources/discovered_sources.json"])["sources/discovered_sources.json"]!=pred["artifact_sha256"]: raise ValueError("Discovery logical document digest mismatch")
-        runs=[]
-        url=f"{API}/repos/{repo}/actions/workflows/automation-watchdog.yml/runs?branch=main&per_page=100"
-        for page in range(1,3):
-            batch=api_json(url+f"&page={page}",token).get("workflow_runs",[])
-            runs.extend(batch)
-            if len(batch)<100: break
+        runs=list_assessment_producer_runs(repo,token,str(pred["workflow_run_id"]))
         matches=[]
         for run in runs:
             if run.get("head_branch")!="main" or run.get("status")!="completed" or run.get("conclusion")!="success" or run.get("path")!=".github/workflows/automation-watchdog.yml": continue
