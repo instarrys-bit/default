@@ -6,7 +6,7 @@ import hashlib,json,os,re,sys,time,urllib.error,urllib.request
 from pathlib import Path
 from urllib.parse import urlparse
 from datetime import datetime,timezone
-from source_registry import validate_registry
+from source_registry import load_registry, runtime_registry_path, validate_registry
 from json_document_store import read_document, write_document, manifest_path
 from resource_lease_runtime import assert_resource_lease_for_repository_path, assert_resource_lease_from_environment
 
@@ -14,19 +14,7 @@ ROOT=Path(__file__).resolve().parents[1]
 SOURCES=ROOT/"sources/domain_sources.json"
 
 def source_registry_path():
-    configured=os.environ.get("SHADOWROCKET_SOURCE_REGISTRY", "").strip()
-    if not configured:
-        return SOURCES
-    runner_temp_value=os.environ.get("RUNNER_TEMP", "").strip()
-    if not runner_temp_value:
-        raise ValueError("SHADOWROCKET_SOURCE_REGISTRY requires RUNNER_TEMP isolation")
-    runner_temp=Path(runner_temp_value).resolve()
-    selected=Path(configured).resolve()
-    if selected == runner_temp or not selected.is_relative_to(runner_temp):
-        raise ValueError("runtime source registry must remain inside RUNNER_TEMP")
-    if not selected.is_file():
-        raise FileNotFoundError("runtime merged source registry is missing: "+str(selected))
-    return selected
+    return runtime_registry_path(SOURCES)
 
 BUFFER=ROOT/"data/domain_candidates.json"
 SNAPSHOT_DIR=ROOT/"data/source_snapshots"
@@ -275,7 +263,7 @@ def read_snapshot(source_id):
     return None
 
 def main():
-    cfg=json.loads(source_registry_path().read_text(encoding="utf-8"))
+    cfg=load_registry(SOURCES)
     buf=read_document(BUFFER,"candidates",{"candidates":[],"bootstrapped_sources":[]})
     pending_data=json.loads(PENDING.read_text(encoding="utf-8")) if PENDING.exists() else {"schema_version":1,"sources":{}}
     pending_sources=dict(pending_data.get("sources",{}))
