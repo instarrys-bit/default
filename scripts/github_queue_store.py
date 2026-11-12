@@ -12,6 +12,7 @@ import gzip
 import hashlib
 import json
 import os
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
@@ -114,16 +115,36 @@ class GitHubContentsQueueStore:
             headers["Content-Type"] = "application/json"
             data = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
         request = Request(url, data=data, headers=headers, method=method)
-        try:
-            with urlopen(request, timeout=self.timeout) as response:
-                raw = response.read()
-        except HTTPError as exc:
-            detail = exc.read(2048).decode("utf-8", errors="replace").lower()
-            if exc.code == 409:
-                raise ConcurrentUpdate("queue snapshot append conflicted; re-read before retrying") from None
-            raise GitHubAPIError(f"GitHub Issues API returned HTTP {exc.code}") from None
-        except (URLError, TimeoutError, OSError):
-            raise GitHubAPIError("GitHub Issues API request failed or timed out") from None
+        # Only idempotent reads are retried. A POST may have reached GitHub even
+        # when the client times out, so retrying it could append duplicate queue
+        # snapshots and break the canonical comment chain.
+        attempt = 0
+        max_get_attempts = 4
+        while True:
+            try:
+                with urlopen(request, timeout=self.timeout) as response:
+                    raw = response.read()
+                break
+            except HTTPError as exc:
+                if exc.code == 409:
+                    raise ConcurrentUpdate("queue snapshot append conflicted; re-read before retrying") from None
+                retryable = method == "GET" and exc.code in {429, 500, 502, 503, 504}
+                if retryable and attempt + 1 < max_get_attempts:
+                    retry_after = exc.headers.get("Retry-After") if exc.headers else None
+                    try:
+                        delay = float(retry_after) if retry_after else min(0.5 * (2 ** attempt), 4.0)
+                    except (TypeError, ValueError):
+                        delay = min(0.5 * (2 ** attempt), 4.0)
+                    time.sleep(max(0.0, min(delay, 10.0)))
+                    attempt += 1
+                    continue
+                raise GitHubAPIError(f"GitHub Issues API returned HTTP {exc.code}") from None
+            except (URLError, TimeoutError, OSError):
+                if method == "GET" and attempt + 1 < max_get_attempts:
+                    time.sleep(min(0.5 * (2 ** attempt), 4.0))
+                    attempt += 1
+                    continue
+                raise GitHubAPIError("GitHub Issues API request failed or timed out") from None
         if not raw:
             return None
         try:
