@@ -661,10 +661,12 @@ class SourceAssessmentTests(unittest.TestCase):
 class SourceCandidateMatrixTests(unittest.TestCase):
     def test_multiple_files_from_one_repository_count_as_one_publisher_and_unverified_lineage_is_not_a_veto(self):
         from build_source_candidates import build_matrix
+        one_fingerprints = [f"{i:032x}" for i in range(100)]
+        two_fingerprints = [f"{i+100:032x}" for i in range(100)]
         assessments = {"assessments": [
-            {"repository":"one/rules","policy_candidate":"DIRECT","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"README_RULE-SET_reference","exact_domain_count":10,"suffix_domain_count":20,"adblock_domain_count":0,"domain_only_count":0,"url":"https://raw.githubusercontent.com/one/rules/main/a.list","archived":False},
-            {"repository":"one/rules","policy_candidate":"DIRECT","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"README_RULE-SET_reference","exact_domain_count":5,"suffix_domain_count":10,"adblock_domain_count":0,"domain_only_count":0,"url":"https://raw.githubusercontent.com/one/rules/main/b.list","archived":False},
-            {"repository":"two/rules","policy_candidate":"DIRECT","parser_candidate":"quantumult-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":2,"suffix_domain_count":3,"adblock_domain_count":0,"domain_only_count":0,"url":"https://raw.githubusercontent.com/two/rules/main/c.list","archived":False},
+            {"repository":"one/rules","policy_candidate":"DIRECT","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"README_RULE-SET_reference","exact_domain_count":100,"suffix_domain_count":0,"adblock_domain_count":0,"domain_only_count":0,"domain_fingerprints":one_fingerprints,"url":"https://raw.githubusercontent.com/one/rules/main/a.list","archived":False},
+            {"repository":"one/rules","policy_candidate":"DIRECT","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"README_RULE-SET_reference","exact_domain_count":100,"suffix_domain_count":0,"adblock_domain_count":0,"domain_only_count":0,"domain_fingerprints":one_fingerprints,"url":"https://raw.githubusercontent.com/one/rules/main/b.list","archived":False},
+            {"repository":"two/rules","policy_candidate":"DIRECT","parser_candidate":"quantumult-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":100,"suffix_domain_count":0,"adblock_domain_count":0,"domain_only_count":0,"domain_fingerprints":two_fingerprints,"url":"https://raw.githubusercontent.com/two/rules/main/c.list","archived":False},
         ]}
         lineage = {"candidate_sources": [
             {"repository":"one/rules","lineage_status":"unverified","status":"audited_reference_inventory","reference_count":0},
@@ -677,8 +679,9 @@ class SourceCandidateMatrixTests(unittest.TestCase):
 
     def test_possible_shared_readme_references_are_recorded_as_warnings_not_blockers(self):
         from build_source_candidates import build_matrix
+        fingerprints = [f"{i:032x}" for i in range(100)]
         assessments = {"assessments": [
-            {"repository":"one/rules","policy_candidate":"PROXY","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":1,"suffix_domain_count":2,"adblock_domain_count":0,"domain_only_count":0,"url":"https://raw.githubusercontent.com/one/rules/main/a.list","archived":False},
+            {"repository":"one/rules","policy_candidate":"PROXY","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":100,"suffix_domain_count":0,"adblock_domain_count":0,"domain_only_count":0,"domain_fingerprints":fingerprints,"url":"https://raw.githubusercontent.com/one/rules/main/a.list","archived":False},
         ]}
         lineage = {"candidate_sources":[{"repository":"one/rules","lineage_status":"unverified","status":"audited_reference_inventory","reference_count":1}],
                    "candidate_shared_reference_pairs":[{"repositories":["one/rules","two/rules"],"shared_readme_references":["common/upstream"]}]}
@@ -723,9 +726,9 @@ class SourceCandidateMatrixTests(unittest.TestCase):
 
     def test_near_duplicate_domain_sets_do_not_count_as_two_independent_groups(self):
         from build_source_candidates import build_matrix
-        shared = ["a"*32, "b"*32, "c"*32]
+        shared = [f"{i:032x}" for i in range(100)]
         assessments = {"assessments": [
-            {"repository":"one/rules","policy_candidate":"DIRECT","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":3,"suffix_domain_count":0,"adblock_domain_count":0,"domain_only_count":0,"domain_fingerprints":shared,"url":"https://raw.githubusercontent.com/one/rules/main/a.list","archived":False},
+            {"repository":"one/rules","policy_candidate":"DIRECT","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":100,"suffix_domain_count":0,"adblock_domain_count":0,"domain_only_count":0,"domain_fingerprints":shared,"url":"https://raw.githubusercontent.com/one/rules/main/a.list","archived":False},
             {"repository":"two/rules","policy_candidate":"DIRECT","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":3,"suffix_domain_count":0,"adblock_domain_count":0,"domain_only_count":0,"domain_fingerprints":shared,"url":"https://raw.githubusercontent.com/two/rules/main/a.list","archived":False},
         ]}
         lineage = {"candidate_sources":[
@@ -739,9 +742,10 @@ class SourceCandidateMatrixTests(unittest.TestCase):
 
     def test_cross_policy_domain_overlap_is_reported_without_raw_domains(self):
         from build_source_candidates import build_matrix
+        shared = [f"{i:032x}" for i in range(100)]
         assessments = {"assessments": [
-            {"repository":"one/direct","policy_candidate":"DIRECT","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":1,"suffix_domain_count":0,"adblock_domain_count":0,"domain_only_count":0,"domain_fingerprints":["a"*32],"url":"https://raw.githubusercontent.com/one/direct/main/a.list","archived":False},
-            {"repository":"two/proxy","policy_candidate":"PROXY","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":1,"suffix_domain_count":0,"adblock_domain_count":0,"domain_only_count":0,"domain_fingerprints":["a"*32],"url":"https://raw.githubusercontent.com/two/proxy/main/a.list","archived":False},
+            {"repository":"one/direct","policy_candidate":"DIRECT","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":100,"suffix_domain_count":0,"adblock_domain_count":0,"domain_only_count":0,"domain_fingerprints":shared,"url":"https://raw.githubusercontent.com/one/direct/main/a.list","archived":False},
+            {"repository":"two/proxy","policy_candidate":"PROXY","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":100,"suffix_domain_count":0,"adblock_domain_count":0,"domain_only_count":0,"domain_fingerprints":shared,"url":"https://raw.githubusercontent.com/two/proxy/main/a.list","archived":False},
         ]}
         lineage = {"candidate_sources":[]}
         result = build_matrix(assessments, lineage)
@@ -801,12 +805,12 @@ class DiscoveryPolicyClaimTests(unittest.TestCase):
 class HighOverlapIndependenceTests(unittest.TestCase):
     def test_high_overlap_publishers_are_not_counted_as_independent_groups(self):
         from build_source_candidates import build_matrix
-        shared = [str(i).zfill(32) for i in range(8)]
-        left = shared + ["a"*32, "b"*32]
-        right = shared + ["c"*32, "d"*32]
+        shared = [f"{i:032x}" for i in range(80)]
+        left = shared + [f"{i+100:032x}" for i in range(20)]
+        right = shared + [f"{i+200:032x}" for i in range(20)]
         assessments = {"assessments": [
-            {"repository":"one/rules","policy_candidate":"DIRECT","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":10,"suffix_domain_count":0,"adblock_domain_count":0,"domain_only_count":0,"domain_fingerprints":left,"url":"https://raw.githubusercontent.com/one/rules/main/a.list","archived":False},
-            {"repository":"two/rules","policy_candidate":"DIRECT","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":10,"suffix_domain_count":0,"adblock_domain_count":0,"domain_only_count":0,"domain_fingerprints":right,"url":"https://raw.githubusercontent.com/two/rules/main/a.list","archived":False},
+            {"repository":"one/rules","policy_candidate":"DIRECT","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":100,"suffix_domain_count":0,"adblock_domain_count":0,"domain_only_count":0,"domain_fingerprints":left,"url":"https://raw.githubusercontent.com/one/rules/main/a.list","archived":False},
+            {"repository":"two/rules","policy_candidate":"DIRECT","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":100,"suffix_domain_count":0,"adblock_domain_count":0,"domain_only_count":0,"domain_fingerprints":right,"url":"https://raw.githubusercontent.com/two/rules/main/a.list","archived":False},
         ]}
         lineage = {"candidate_sources":[
             {"repository":"one/rules","lineage_status":"verified","status":"audited_reference_inventory","reference_count":0},
