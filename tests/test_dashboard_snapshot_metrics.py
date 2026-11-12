@@ -5,7 +5,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from build_dashboard_snapshot import build_dead_letter_metrics, build_source_pipeline_metrics
+from build_dashboard_snapshot import build_dead_letter_metrics, build_manual_review_metrics, build_source_pipeline_metrics
 
 
 class DashboardDeadLetterMetricsTests(unittest.TestCase):
@@ -27,6 +27,23 @@ class DashboardDeadLetterMetricsTests(unittest.TestCase):
             "dead_letter_failures": 1,
             "dead_letter_cancelled": 1,
             "dead_letter_unclassified": 1,
+        })
+
+
+class DashboardManualReviewMetricsTests(unittest.TestCase):
+    def test_only_exhausted_runtime_failures_enter_manual_review(self):
+        tasks = [
+            {"status": "DEAD_LETTER", "last_error": {"evidence": {"conclusion": "failure"}}},
+            {"status": "DEAD_LETTER", "last_error": {"evidence": {"conclusion": "cancelled"}}},
+            {"status": "DEAD_LETTER", "last_error": {"type": "unknown"}},
+            {"status": "CLAIMED"},
+            {"status": "SUCCEEDED"},
+        ]
+        self.assertEqual(build_manual_review_metrics(tasks), {
+            "pending": 2,
+            "failures": 1,
+            "unclassified": 1,
+            "cancelled_excluded": 1,
         })
 
 
