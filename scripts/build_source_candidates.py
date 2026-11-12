@@ -48,10 +48,14 @@ def build_matrix(assessments: dict, lineage: dict) -> dict:
                 "domain_fingerprints": set(),
             }
         raw_fingerprints = item.get("domain_fingerprints")
+        raw_domain_count = sum(int(item.get(key, 0) or 0) for key in (
+            "exact_domain_count", "suffix_domain_count", "adblock_domain_count", "domain_only_count"
+        ))
         fingerprints_valid = (
             isinstance(raw_fingerprints, list)
             and len(raw_fingerprints) == len(set(raw_fingerprints))
             and all(isinstance(value, str) and re.fullmatch(r"[0-9a-f]{32}", value) for value in raw_fingerprints)
+            and (raw_domain_count == 0 or bool(raw_fingerprints))
         )
         if fingerprints_valid:
             grouped[key]["domain_fingerprints"].update(raw_fingerprints)
