@@ -351,7 +351,7 @@
     "The production publisher is the single controlled writer for the three policy outputs rulesets/direct.list, rulesets/proxy.list and rulesets/reject.list, together with their required manifest/lifecycle/queue metadata. This is a production-output boundary, not a system-wide automation write restriction. Watchdog queue/checkpoint state, immutable Actions artifacts and runner-local workspaces are inventoried separately; modules/uu.conf and user-managed module/JavaScript assets remain unwritable.",
     "Other non-dispatchable Python capabilities retain default-deny status until their own complete transitive side-effect and resource contracts are reviewed.",
     "Daily Discovery idempotency now fingerprints the producer, Watchdog handoff, durable queue, scheduler, fencing, Assessment, verifier and their active contracts; changes in the DAG receive a new same-day task key without weakening per-revision deduplication.",
-    "Watchdog task supervision uses per-run GitHub concurrency identities; Discovery and Assessment are serialized by the shared logical/source-dag-supervision lease acquired atomically with task claim and held through verification."
+    "Watchdog queue reads and task supervision are serialized per main branch to reduce GitHub Issues API rate-limit pressure; the append-only queue remains authoritative and the 15-minute schedule recovers coalesced workflow_run callbacks. Discovery and Assessment are also serialized by the shared logical/source-dag-supervision lease acquired atomically with task claim and held through verification."
   ],
   "decomposition_constraints": [
     "Preserve the audit -> publish dependency and the existing single-writer concurrency boundary.",
@@ -362,7 +362,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "a7a1c0aa7865c5acc55518b3a8bd683e4251ca7a",
+    "release_manifest_blob_sha": "9bfd1a91d316c1c63a511d2f7a5040555e7f81c3",
     "program_registry_blob_sha": "bc05f1c0419ac784fae1cceb0314ad9339f141ed",
     "execution_adapters_blob_sha": "71d2ba5061d9f0b7cbca3961dd0d85e8e0ad5a45",
     "added_after_release_baseline": true,
