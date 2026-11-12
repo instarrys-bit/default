@@ -2130,12 +2130,12 @@ jobs:
           stale_lines="$(jq -r --arg sha "$current_main" '
             .workflow_runs[]
             | select(.status != "completed" and .head_branch == "main" and .id != null)
-            | if .head_sha != $sha then [.id, "superseded", (.head_sha // "")]
-              else
-                ((.run_started_at // .created_at // "") | try fromdateiso8601 catch null) as $started
-                | select($started != null and (now - $started) > 21600)
-                | [.id, "timeout", (.head_sha // "")]
-              end
+            | ((.run_started_at // .created_at // "") | try fromdateiso8601 catch null) as $started
+            | if $started != null and (now - $started) > 21600 then
+                [.id, "timeout", (.head_sha // "")]
+              elif .head_sha != $sha then
+                [.id, "superseded", (.head_sha // "")]
+              else empty end
             | @tsv
           ' <<< "$runs")"
 

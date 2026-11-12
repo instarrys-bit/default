@@ -593,6 +593,15 @@ class WatchdogStaleRunRecoveryTests(unittest.TestCase):
         self.assertIn('if [ "$status" != "completed" ]; then', stale)
         self.assertIn("cancellation is not confirmed", stale)
 
+    def test_superseded_audit_is_cancelled_when_it_exceeds_six_hour_runtime(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        stale = workflow.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
+        age_check = stale.index("if $started != null and (now - $started) > 21600 then")
+        superseded_check = stale.index("elif .head_sha != $sha then")
+        self.assertLess(age_check, superseded_check)
+        self.assertIn('[.id, "timeout", (.head_sha // "")]', stale)
+        self.assertIn('if [ "$reason" = "timeout" ]; then timed_out_any=1;', stale)
+
     def test_queue_supervision_fails_closed_when_stale_run_recovery_fails(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         queue = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
