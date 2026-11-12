@@ -3,7 +3,7 @@
   "contract_id": "capability-script-assess-sources-v1",
   "program_id": "script_assess_sources",
   "implementation_path": "scripts/assess_sources.py",
-  "implementation_blob_sha": "e0129b2dc91c58f1642338d3d7e67db332d6e0bb",
+  "implementation_blob_sha": "915b7b30ed08a0916bdd26773e2af74d9a1a1944",
   "review_status": "reviewed_scoped_source_dag_enabled_pending_live_e2e",
   "dispatch_status": "enabled",
   "entrypoint": {
