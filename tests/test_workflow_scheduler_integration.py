@@ -502,6 +502,11 @@ class WorkflowSchedulerIntegrationTests(unittest.TestCase):
             "correlation_title": "Automation task " + task["task_id"] + "-a1",
             "prepared_at": "2026-11-03T04:00:00Z",
         }
+        task["result"] = {
+            **task["dispatch_intent"],
+            "dispatch_state": "reconciled",
+            "run_evidence": {"run_id": 991, "status": "completed"},
+        }
         evidence = {
             "run_id": 991,
             "head_sha": "b" * 40,
