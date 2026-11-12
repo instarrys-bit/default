@@ -346,7 +346,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("select_source_worker_task", supervision)
         source_policy = Path("scripts/source_handoff_policy.py").read_text(encoding="utf-8")
         self.assertIn('task.get("target_program_id") != "workflow_auto_sync"', source_policy)
-        self.assertIn("discovery_queued or assessment_queued", source_policy)
+        self.assertIn("assessment_queued or discovery_queued", source_policy)
         self.assertIn('endswith(":artifact-recovery:1")', source_policy)
         self.assertIn("dispatch one task before artifact upload", supervision)
 
