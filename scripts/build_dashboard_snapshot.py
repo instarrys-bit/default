@@ -23,34 +23,6 @@ def as_int(value):
     return value if isinstance(value, int) and not isinstance(value, bool) else 0
 
 
-def read_reject_exception_queue_metrics():
-    """Count materialized exception-only review records; never trust manifest estimates."""
-    path = ROOT / "rulesets" / "reject_review_queue.json"
-    try:
-        raw = path.read_text(encoding="utf-8")
-    except OSError:
-        return {"count": 0, "state": "unavailable"}
-    if not raw.strip():
-        return {"count": 0, "state": "empty"}
-    try:
-        document = json.loads(raw)
-    except json.JSONDecodeError:
-        return {"count": 0, "state": "invalid"}
-    if isinstance(document, list):
-        records = document
-    elif isinstance(document, dict):
-        records = next((document.get(key) for key in ("items", "queue", "records", "domains", "reviews")
-                        if isinstance(document.get(key), list)), None)
-        if records is None:
-            return {"count": 0, "state": "invalid"}
-    else:
-        return {"count": 0, "state": "invalid"}
-    pending_statuses = {"PENDING", "PENDING_REVIEW", "REVIEW", "WAITING", "QUEUED", "HELD_FOR_EXCEPTION_REVIEW", "EXCEPTION"}
-    pending = [item for item in records if isinstance(item, dict)
-               and str(item.get("status", "PENDING")).upper() in pending_statuses]
-    return {"count": len(pending), "state": "available" if pending else "empty"}
-
-
 def watchdog_schedule(workflow_text, now=None):
     """Return the next UTC workflow trigger; unknown cron forms fail closed."""
     now = now or datetime.now(timezone.utc)
