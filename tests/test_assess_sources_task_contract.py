@@ -93,7 +93,7 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
         item = {
             "url": "https://raw.githubusercontent.com/example/repo/main/list.txt",
             "repository": "example/repo", "parser_candidate": "domain-only",
-            "domain_fingerprints": ["abc123"],
+            "domain_fingerprints": ["a" * 32],
         }
         with patch.dict("os.environ", env, clear=True), \
              patch.object(assess_sources, "assert_resource_lease_from_environment"), \
@@ -110,6 +110,23 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
         saved = store.document["tasks"][0]["assessment_checkpoint"]
         self.assertEqual(saved["last_successful_url"], item["url"])
         self.assertEqual(len(saved["completed"]), 1)
+
+    def test_invalid_legacy_checkpoint_is_replaced_by_fresh_fingerprinted_result(self):
+        store, env, predecessor = self.checkpoint_fixture()
+        url = "https://raw.githubusercontent.com/example/repo/main/list.txt"
+        invalid = {
+            "url": url, "repository": "example/repo", "parser_candidate": "domain-only",
+            "exact_domain_count": 1, "domain_fingerprints": [],
+        }
+        fresh = {**invalid, "domain_fingerprints": ["a" * 32]}
+        batch_id = "discovery-run:123:" + predecessor["artifact_sha256"][:12]
+        with patch.dict("os.environ", env, clear=True), \\
+             patch.object(assess_sources, "assert_resource_lease_from_environment"), \\
+             patch("remote_task_queue_runtime.validate_candidate"):
+            assess_sources.persist_assessment_checkpoint(batch_id, predecessor, invalid, store=store, registry={})
+            assess_sources.persist_assessment_checkpoint(batch_id, predecessor, fresh, store=store, registry={})
+            restored = assess_sources.load_assessment_checkpoint(batch_id, predecessor, store=store, registry={})
+        self.assertEqual(restored[url], fresh)
 
     def test_checkpoint_rejects_stale_fencing_token(self):
         store, env, predecessor = self.checkpoint_fixture()
