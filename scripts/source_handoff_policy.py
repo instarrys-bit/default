@@ -101,25 +101,43 @@ def discovery_task_requires_handoff(task: dict, tasks: list) -> bool:
     return True
 
 
-def select_source_worker_task(tasks: list) -> str:
-    """Select one safe source task, allowing artifact recovery after the gate opens.
+def select_source_worker_task(tasks: list, predecessor_workflow_run_id: str | None = None) -> str:
+    """Select one safe source task, binding Assessment to its mounted Discovery artifact.
 
-    A verified Assessment closes the production gate, but a queued artifact-recovery
-    task is still required to materialize the immutable output artifact. It must run
-    before any new Discovery task so the predecessor evidence is not stranded.
+    The Watchdog mounts one exact Discovery artifact per run. Never select an Assessment
+    task whose typed predecessor belongs to another run: its digest cannot be checked
+    against the currently mounted artifact. Without an exact predecessor run ID, only
+    Discovery and unrelated safe tasks may be selected.
     """
     if not isinstance(tasks, list):
         raise ValueError("tasks must be a list")
+    if predecessor_workflow_run_id is not None and (
+        not isinstance(predecessor_workflow_run_id, str)
+        or not predecessor_workflow_run_id.isdigit()
+    ):
+        raise ValueError("predecessor_workflow_run_id must be a decimal workflow run ID")
     safe = [
         task for task in tasks
         if isinstance(task, dict)
         and task.get("target_program_id") != "workflow_auto_sync"
         and task.get("status") in {"QUEUED", "CLAIMED", "VERIFYING", "SUCCEEDED"}
     ]
-    artifact_recovery = [
+    runnable = [
         task for task in safe
+        if task.get("status") in {"QUEUED", "CLAIMED", "VERIFYING"}
+        and (
+            task.get("target_program_id") != "script_assess_sources"
+            or (
+                predecessor_workflow_run_id is not None
+                and isinstance(task.get("input"), dict)
+                and isinstance(task["input"].get("predecessor"), dict)
+                and task["input"]["predecessor"].get("workflow_run_id") == predecessor_workflow_run_id
+            )
+        )
+    ]
+    artifact_recovery = [
+        task for task in runnable
         if task.get("target_program_id") == "script_assess_sources"
-        and task.get("status") in {"QUEUED", "CLAIMED", "VERIFYING"}
         and isinstance(task.get("idempotency_key"), str)
         and task["idempotency_key"].endswith(":artifact-recovery:1")
     ]
@@ -146,24 +164,24 @@ def select_source_worker_task(tasks: list) -> str:
         if gate_open:
             return ""
         discovery_queued = [
-            task for task in safe
+            task for task in runnable
             if task.get("target_program_id") == "workflow_source_discovery" and task.get("status") == "QUEUED"
         ]
         assessment_queued = [
-            task for task in safe
+            task for task in runnable
             if task.get("target_program_id") == "script_assess_sources" and task.get("status") == "QUEUED"
         ]
         active_source = [
-            task for task in safe
+            task for task in runnable
             if task.get("target_program_id") in {"workflow_source_discovery", "script_assess_sources"}
             and task.get("status") in {"CLAIMED", "VERIFYING"}
         ]
         # Assessment is the required predecessor of production. Never let a queued
-        # next-cycle Discovery starve an already-enqueued Assessment or its recovery.
-        candidates = assessment_queued or discovery_queued or active_source or safe
+        # next-cycle Discovery starve an Assessment tied to the currently mounted artifact.
+        candidates = assessment_queued or discovery_queued or active_source or runnable
     if not candidates:
         return ""
-    rank = {"QUEUED": 0, "CLAIMED": 1, "VERIFYING": 1, "SUCCEEDED": 2}
+    rank = {"QUEUED": 0, "CLAIMED": 1, "VERIFYING": 1}
     chosen = min(
         candidates,
         key=lambda task: (
@@ -174,7 +192,6 @@ def select_source_worker_task(tasks: list) -> str:
         ),
     )
     return str(chosen.get("task_id") or "")
-
 
 def classify_assessment_handoff(tasks: list, workflow_run_id: str) -> dict:
     """Classify all Assessment tasks tied to one immutable Discovery run.

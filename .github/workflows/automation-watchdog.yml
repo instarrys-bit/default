@@ -1577,6 +1577,7 @@ jobs:
           PY
 
       - name: Enqueue source assessment after successful discovery workflow
+        id: enqueue-assessment
         if: ${{ steps.resolve-discovery-run.outputs.run_id != '' && (steps.resolve-discovery-run.outputs.handoff_state == 'ready' || steps.resolve-discovery-run.outputs.handoff_state == 'assessment_retry_required') && steps.verify-discovery-artifact.outputs.valid == 'true' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -1588,6 +1589,7 @@ jobs:
           AUTOMATION_QUEUE_SNAPSHOT: ${{ runner.temp }}/task_queue.json
         run: |
           set -euo pipefail
+          echo "retry_exhausted=false" >> "$GITHUB_OUTPUT"
           if [ "$SOURCE_DISCOVERY_MODE" != "independent" ]; then
             echo "Independent source DAG is not selected; monolithic auto_sync remains authoritative."
             exit 0
@@ -1624,7 +1626,12 @@ jobs:
           recovery_two_status="$(jq -r --arg key "$recovery_two_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
           if [ "$assessment_status" = "DEAD_LETTER" ]; then
             if [ -n "$recovery_two_status" ]; then
-              echo "The timeout-corrected second Assessment recovery was already used ($recovery_two_key); no further automatic retry is permitted."
+              if [ "$recovery_two_status" = "DEAD_LETTER" ]; then
+                echo "retry_exhausted=true" >> "$GITHUB_OUTPUT"
+                echo "The timeout-corrected second Assessment recovery was dead-lettered; a fresh version-bound Discovery cycle is now permitted."
+              else
+                echo "The second Assessment recovery is already $recovery_two_status; waiting for terminal evidence."
+              fi
               exit 0
             elif [ "$recovery_one_status" = "DEAD_LETTER" ]; then
               assessment_key="$recovery_two_key"
@@ -1718,7 +1725,7 @@ jobs:
           unset queue_token
 
       - name: Enqueue independent source discovery only after its authorization gate opens
-        if: ${{ (steps.resolve-discovery-run.outputs.run_id == '' && steps.resolve-discovery-run.outputs.handoff_state == '') || steps.verify-discovery-artifact.outputs.valid == 'false' }}
+        if: ${{ (steps.resolve-discovery-run.outputs.run_id == '' && steps.resolve-discovery-run.outputs.handoff_state == '') || steps.verify-discovery-artifact.outputs.valid == 'false' || steps.enqueue-assessment.outputs.retry_exhausted == 'true' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -1789,6 +1796,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF_NAME: main
+          SOURCE_RUN_ID: ${{ steps.resolve-discovery-run.outputs.run_id }}
+          SOURCE_ASSESSMENT_RETRY_EXHAUSTED: ${{ steps.enqueue-assessment.outputs.retry_exhausted }}
           AUTOMATION_ARTIFACT_ROOT: ${{ runner.temp }}/source-assessment-output
         run: |
           set -euo pipefail
@@ -1831,7 +1840,10 @@ jobs:
               print("Deferring the next source worker so the queued production audit can publish from the last verified source snapshot.", file=sys.stderr)
               print("")
               raise SystemExit(0)
-          print(select_source_worker_task(tasks))
+          predecessor_run_id = os.environ.get("SOURCE_RUN_ID", "").strip()
+          if os.environ.get("SOURCE_ASSESSMENT_RETRY_EXHAUSTED") == "true":
+              predecessor_run_id = ""
+          print(select_source_worker_task(tasks, predecessor_workflow_run_id=predecessor_run_id or None))
           PY
           )"
           if [ -n "$selected_task_id" ]; then

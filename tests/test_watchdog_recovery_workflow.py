@@ -546,6 +546,9 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('recovery:2', enqueue_assessment)
         self.assertIn('{max_urls:20,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}', enqueue_assessment)
         self.assertIn("handoff_state == ''", enqueue_discovery)
+        self.assertIn("steps.enqueue-assessment.outputs.retry_exhausted == 'true'", enqueue_discovery)
+        self.assertIn("retry_exhausted=true", enqueue_assessment)
+        self.assertIn("retry_exhausted=false", enqueue_assessment)
         self.assertNotIn("parser-v2", resolver)
 
     def test_watchdog_prioritizes_queued_production_before_next_source_worker(self):
@@ -557,9 +560,11 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("Deferring the next source worker", worker)
         self.assertLess(
             worker.index("production_task_id = select_production_worker_task"),
-            worker.index("print(select_source_worker_task(tasks))"),
+            worker.index("print(select_source_worker_task(tasks, predecessor_workflow_run_id=predecessor_run_id or None))"),
         )
         self.assertIn("active_production = any(", worker)
+        self.assertIn("SOURCE_RUN_ID: ${{ steps.resolve-discovery-run.outputs.run_id }}", worker)
+        self.assertIn("SOURCE_ASSESSMENT_RETRY_EXHAUSTED: ${{ steps.enqueue-assessment.outputs.retry_exhausted }}", worker)
 
     def test_discovery_handoff_resolver_initializes_api_context_before_artifact_lookup(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
@@ -610,3 +615,23 @@ class WatchdogStaleRunRecoveryTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+    def test_assessment_selector_uses_exact_mounted_discovery_run(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        worker = workflow.split("name: Recover leases, verify results, and dispatch one task before artifact upload", 1)[1].split("name: Upload verified source assessment outputs as immutable artifact", 1)[0]
+        self.assertIn("SOURCE_RUN_ID: ${{ steps.resolve-discovery-run.outputs.run_id }}", worker)
+        self.assertIn("SOURCE_ASSESSMENT_RETRY_EXHAUSTED: ${{ steps.enqueue-assessment.outputs.retry_exhausted }}", worker)
+        self.assertIn("predecessor_workflow_run_id=predecessor_run_id or None", worker)
+        self.assertIn('if os.environ.get("SOURCE_ASSESSMENT_RETRY_EXHAUSTED") == "true":', worker)
+        self.assertNotIn("print(select_source_worker_task(tasks))", worker)
+
+    def test_retry_exhaustion_opens_one_new_version_bound_discovery_cycle(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        assessment = workflow.split("name: Enqueue source assessment after successful discovery workflow", 1)[1].split("name: Enqueue one artifact-recovery Assessment", 1)[0]
+        discovery = workflow.split("name: Enqueue independent source discovery only after its authorization gate opens", 1)[1].split("name: Recover leases, verify results, and dispatch one task before artifact upload", 1)[0]
+        self.assertIn("id: enqueue-assessment", assessment)
+        self.assertIn('echo "retry_exhausted=false"', assessment)
+        self.assertIn('echo "retry_exhausted=true"', assessment)
+        self.assertIn("steps.enqueue-assessment.outputs.retry_exhausted == 'true'", workflow)
+        self.assertIn("discovery_pipeline_revision", discovery)
+        self.assertIn("source-discovery:$discovery_day:$discovery_revision", discovery)

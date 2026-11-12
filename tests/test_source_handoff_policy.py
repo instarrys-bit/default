@@ -145,7 +145,7 @@ class SourceHandoffPolicyTests(unittest.TestCase):
             created_at="2026-11-07T14:00:00Z",
         )
         self.assertEqual(
-            select_source_worker_task([discovery, assessment, recovery]),
+            select_source_worker_task([discovery, assessment, recovery], predecessor_workflow_run_id="42417075148"),
             "task_artifact_recovery",
         )
 
@@ -160,7 +160,7 @@ class SourceHandoffPolicyTests(unittest.TestCase):
         )
         assessment["priority"] = 1
         self.assertEqual(
-            select_source_worker_task([discovery, assessment]),
+            select_source_worker_task([discovery, assessment], predecessor_workflow_run_id="42417075148"),
             "task_assessment_pending",
         )
 
@@ -173,9 +173,39 @@ class SourceHandoffPolicyTests(unittest.TestCase):
             "status": "QUEUED",
             "priority": 100,
         }
-        self.assertEqual(select_source_worker_task([discovery, assessment, unrelated]), "")
+        self.assertEqual(select_source_worker_task([discovery, assessment, unrelated], predecessor_workflow_run_id="42417075148"), "")
 
 
+
+    def test_assessment_selection_is_scoped_to_exact_discovery_predecessor(self):
+        discovery = discovery_task(run_id="42939875322")
+        older = assessment_task("task_assessment_old", "42931914274", status="QUEUED", verified=False)
+        current = assessment_task("task_assessment_current", "42939875322", status="QUEUED", verified=False)
+        tasks = [discovery, older, current]
+        self.assertEqual(
+            select_source_worker_task(tasks, predecessor_workflow_run_id="42939875322"),
+            "task_assessment_current",
+        )
+        self.assertEqual(select_source_worker_task(tasks), "")
+
+    def test_artifact_recovery_is_scoped_to_exact_discovery_predecessor(self):
+        discovery = discovery_task(run_id="42939875322")
+        old_recovery = assessment_task(
+            "task_old_recovery", "42931914274", status="QUEUED", verified=False,
+            key="source-assessment:42931914274:parser-v2:artifact-recovery:1",
+        )
+        current_assessment = assessment_task("task_current_assessment", "42939875322")
+        current_recovery = assessment_task(
+            "task_current_recovery", "42939875322", status="QUEUED", verified=False,
+            key="source-assessment:42939875322:parser-v2:artifact-recovery:1",
+        )
+        self.assertEqual(
+            select_source_worker_task(
+                [discovery, old_recovery, current_assessment, current_recovery],
+                predecessor_workflow_run_id="42939875322",
+            ),
+            "task_current_recovery",
+        )
 
     def test_pipeline_revision_changes_when_handoff_or_queue_code_changes(self):
         with tempfile.TemporaryDirectory() as directory:
