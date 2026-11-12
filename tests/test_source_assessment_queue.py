@@ -168,6 +168,8 @@ class AssessmentQueueTests(unittest.TestCase):
             "readme_policy_claims": ["DIRECT"],
             "parser_candidate": "domain-only",
             "parser_version": 2,
+            "exact_domain_count": 1,
+            "domain_fingerprints": ["a" * 32],
         }
         self.assertTrue(assessor.assessment_cache_hit(previous, "a" * 64, ["DIRECT"]))
         self.assertFalse(assessor.assessment_cache_hit(dict(previous, parser_version=1), "a" * 64, ["DIRECT"]))
