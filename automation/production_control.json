@@ -10,7 +10,7 @@
     "protected_config": "modules/uu.conf remains read-only",
     "source_discovery_mode": "independent or monolithic_fallback; this checked-in control value is authoritative for both Watchdog and auto_sync.",
     "reject_publication_mode": "automatic_after_deterministic_gates",
-    "manual_review_scope": "exceptions_only"
+    "manual_review_scope": "runtime_exceptions_only"
   },
   "source_discovery_mode": "independent"
 }
