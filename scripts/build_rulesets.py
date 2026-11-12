@@ -10,7 +10,7 @@ from deterministic_review import inspect, parse_skip_proxy, evidence_gate, load_
 from domain_rule_engine import RuleIndex, load_domain_rules, inspect_suffix_scope
 from audit_ruleset_config_overlap import all_rule_lines, prepare_rules
 from sync_ruleset_config_conflicts import classify_rule
-from source_registry import validate_registry
+from source_registry import load_registry, validate_registry
 from resource_lease_runtime import assert_resource_lease_for_repository_path
 
 from json_document_store import read_document
@@ -185,7 +185,7 @@ def main():
     if policy_control.get("manual_review_scope")!="runtime_exceptions_only":
         raise ValueError("manual review must be restricted to runtime exceptions")
     data=read_document(LEDGER,"reviews",{"reviews":[]})
-    source_cfg=json.loads(SOURCE_FILE.read_text(encoding="utf-8"))
+    source_cfg=load_registry(SOURCE_FILE)
     source_map=validate_registry(source_cfg)
     correlated_pairs=load_correlated_publishers()
     scoring=source_cfg.get("scoring",{})
