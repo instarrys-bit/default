@@ -2,6 +2,10 @@
 """Fail-closed validation for policy-labelled domain source registries."""
 from __future__ import annotations
 
+import json
+import os
+from pathlib import Path
+from tempfile import gettempdir
 from urllib.parse import urlparse
 
 POLICIES={"DIRECT","PROXY","REJECT"}
@@ -9,6 +13,30 @@ FORMATS={"domain-only","adblock-domain-rules","shadowrocket-domain-rules","quant
 ROLES={"primary_candidate_source","independent_adblock_corroboration","independent_policy_corroboration"}
 LINEAGE_STATES={"verified","partial","unverified"}
 POLICY_EVIDENCE_STATES={"explicit_action","documented_policy"}
+
+def runtime_registry_path(default_path):
+    """Use the exact run-local activated registry across every production stage."""
+    configured=os.environ.get("SHADOWROCKET_SOURCE_REGISTRY","").strip()
+    if not configured:
+        return Path(default_path)
+    runner_value=os.environ.get("RUNNER_TEMP","").strip()
+    if not runner_value:
+        raise ValueError("SHADOWROCKET_SOURCE_REGISTRY requires RUNNER_TEMP isolation")
+    runner=Path(runner_value).resolve()
+    selected=Path(configured).resolve()
+    if selected==runner or not selected.is_relative_to(runner):
+        raise ValueError("runtime source registry must remain inside RUNNER_TEMP")
+    if not selected.is_file():
+        raise FileNotFoundError("runtime source registry is missing: "+str(selected))
+    return selected
+
+
+def load_registry(default_path):
+    path=runtime_registry_path(default_path)
+    config=json.loads(path.read_text(encoding="utf-8"))
+    validate_registry(config)
+    return config
+
 
 def validate_registry(config):
     sources=config.get("sources")
