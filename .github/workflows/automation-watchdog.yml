@@ -135,7 +135,9 @@ jobs:
     # live resource leases and fencing tokens. Keep supervision independent of
     # the publisher mutex so it can renew and verify long-running tasks.
     concurrency:
-      group: shadowrocket-watchdog-control-plane-${{ github.run_id }}
+      # Serialize Issue-queue reads and CAS recovery across all Watchdog events.
+      # Durable task state plus the 15-minute schedule recovers coalesced callbacks.
+      group: shadowrocket-watchdog-control-plane-main
       cancel-in-progress: false
     env:
       GITHUB_ACTOR_ID: ${{ github.actor_id }}
@@ -143,7 +145,7 @@ jobs:
     outputs:
       block_manifest: ${{ steps.stale-recovery.outputs.block_manifest }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 15
     permissions:
       actions: write
       contents: read
@@ -897,8 +899,9 @@ jobs:
 
   task-queue-supervision:
     concurrency:
-      # Per-run identity prevents GitHub's single-pending-job policy from dropping events; queue CAS and shared source-DAG lease serialize claims.
-      group: shadowrocket-watchdog-task-supervision-${{ github.run_id }}
+      # Serialize durable queue workers. The Issue queue is authoritative, so
+      # coalesced workflow_run callbacks are recovered by the 15-minute schedule.
+      group: shadowrocket-watchdog-task-supervision-main
       cancel-in-progress: false
     env:
       GITHUB_ACTOR_ID: ${{ github.actor_id }}
