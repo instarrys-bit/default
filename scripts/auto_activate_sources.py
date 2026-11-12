@@ -47,6 +47,8 @@ def candidate_file(candidate: dict) -> dict | None:
         evidence = item.get("policy_evidence")
         drift = item.get("drift", {})
         unique_count = int(item.get("domain_fingerprint_count", 0))
+        if item.get("domain_fingerprints_valid") is not True:
+            continue
         if item.get("parser") not in FORMATS:
             continue
         if evidence not in STRONG_EVIDENCE or drift.get("status") != "unchanged":
@@ -88,16 +90,20 @@ def activate(registry: dict, matrix: dict, now: str | None = None) -> tuple[dict
     sources = registry.setdefault("sources", [])
     weights = registry.setdefault("scoring", {}).setdefault("source_weights", {})
 
+    policy_summary = matrix.get("policy_summary", {})
     for candidate in matrix.get("candidates", []):
         policy = str(candidate.get("policy", "")).upper()
         repository = str(candidate.get("repository", "")).strip()
         if policy not in POLICIES or not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repository):
             continue
-        if policy == "REJECT":
-            decisions.append({"repository": repository, "policy": policy, "decision": "held_manual_approval_required", "reason": "new REJECT source admission is never automated; an explicit human approval and manual registry change are required"})
+        summary = policy_summary.get(policy, {})
+        if not isinstance(summary, dict) or summary.get("activation_ready") is not True or int(summary.get("independent_eligible_groups", 0)) < 2:
+            decisions.append({"repository": repository, "policy": policy, "decision": "held", "reason": "policy has fewer than two independently fingerprint-verified eligible publishers"})
             continue
-        if not candidate.get("activation_eligible") or candidate.get("archived"):
-            decisions.append({"repository": repository, "policy": policy, "decision": "held", "reason": "policy evidence is not strong or publisher is archived"})
+        if (not candidate.get("activation_eligible") or candidate.get("archived")
+                or candidate.get("fingerprints_complete") is not True
+                or int(candidate.get("domain_fingerprint_count", 0)) < MIN_UNIQUE_DOMAINS):
+            decisions.append({"repository": repository, "policy": policy, "decision": "held", "reason": "policy evidence, publisher status or validated unique-domain fingerprint requirements were not met"})
             continue
         selected = candidate_file(candidate)
         if selected is None:
@@ -154,7 +160,6 @@ def activate(registry: dict, matrix: dict, now: str | None = None) -> tuple[dict
             "independence_group": repository,
             "lineage_status": "unverified",
             "lineage_evidence_url": lineage_evidence_url,
-            "lineage_note": "Public README or source-file evidence is inventoried for provenance; no item-level domain ancestry is inferred and unverified lineage is not a publication veto.",
             "policy_evidence": "explicit_action" if evidence == "explicit_third_field" else "documented_policy",
             "upstream_repositories": [],
             "lineage_note": "Automatically admitted by deterministic parser, policy-evidence, publisher, size and two-observation stability gates. Lineage remains unverified; shared README references and domain overlap are correlation warnings, not automatic vetoes.",
@@ -200,7 +205,7 @@ def main() -> None:
         "# Deterministic source admission",
         "",
         "No AI/LLM is used. Admission requires a supported parser, strong explicit/documented policy evidence, a non-archived publisher, at least 100 unique domains, and an unchanged second observation.",
-        "Lineage gaps, shared README references and domain-set overlap are recorded as correlation warnings, not blanket vetoes. Per-domain publication still requires matching evidence from distinct publishers and source groups.",
+        "Missing or invalid fingerprints fail closed. Each policy requires at least two independent fingerprint-verified publishers. Lineage gaps and shared README references remain provenance warnings; per-domain publication still requires matching evidence from distinct publishers and source groups.",
         "",
         f"- Newly activated this run: **{len(activated)}**",
         f"- Candidate decisions: **{len(decisions)}**",
