@@ -2,7 +2,7 @@
   "schema_version": 1,
   "dispatch_mode": "enabled",
   "updated_at": "2026-11-12T06:00:00Z",
-  "reason": "Owner-authorized REJECT auto-publication after deterministic first-stage review, stricter REJECT secondary evidence gates, and config-conflict checks. Human review is limited to exception items; production publication remains restricted to rulesets/** and modules/uu.conf remains read-only.",
+  "reason": "Owner-authorized REJECT auto-publication after deterministic first-stage review, stricter REJECT secondary evidence gates, and config-conflict checks. Human review is limited to exhausted runtime exceptions; candidate holds remain automated recheck items. Production publication remains restricted to rulesets/** and modules/uu.conf remains read-only.",
   "policy": {
     "automatic_watchdog_dispatch": true,
     "explicit_manual_watchdog_authorization": true,
