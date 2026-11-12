@@ -345,9 +345,9 @@ def inspect_correlated_run(client: GitHubWorkflowClient, intent: dict,
     if (any(run.get(key) != value for key, value in required.items())
             or run.get("display_title") not in expected_correlation_titles(intent)):
         raise WorkflowAPIError("workflow run identity does not match the persisted dispatch intent")
-    if listed is not None and run.get("head_sha") != listed.get("head_sha"):
-        raise WorkflowAPIError("workflow run identity commit SHA changed between list and detail reads")
     try:
+        if listed is not None and run.get("head_sha") != listed.get("head_sha"):
+            raise WorkflowCommitMismatch("workflow run commit SHA changed between list and detail reads")
         head_sha_relationship = validate_run_head_sha(client, intent, run.get("head_sha"))
     except WorkflowCommitMismatch as exc:
         run_status = run.get("status")
