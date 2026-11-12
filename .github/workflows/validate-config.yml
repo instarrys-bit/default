@@ -49,6 +49,9 @@ permissions:
 
 jobs:
   structural-check:
+    permissions:
+      actions: read
+      contents: read
     runs-on: ubuntu-24.04
     env:
       GITHUB_BEFORE: ${{ github.event.before }}
