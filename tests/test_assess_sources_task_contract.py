@@ -120,8 +120,8 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
         }
         fresh = {**invalid, "domain_fingerprints": ["a" * 32]}
         batch_id = "discovery-run:123:" + predecessor["artifact_sha256"][:12]
-        with patch.dict("os.environ", env, clear=True), \\
-             patch.object(assess_sources, "assert_resource_lease_from_environment"), \\
+        with patch.dict("os.environ", env, clear=True), \
+             patch.object(assess_sources, "assert_resource_lease_from_environment"), \
              patch("remote_task_queue_runtime.validate_candidate"):
             assess_sources.persist_assessment_checkpoint(batch_id, predecessor, invalid, store=store, registry={})
             assess_sources.persist_assessment_checkpoint(batch_id, predecessor, fresh, store=store, registry={})
