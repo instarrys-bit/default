@@ -204,6 +204,43 @@ class GitHubIssueQueueStoreTests(unittest.TestCase):
         self.assertEqual(attempts["count"], 2)
         sleep.assert_called_once()
 
+    def test_secondary_rate_limit_on_get_retries_with_retry_after(self):
+        attempts = {"count": 0}
+
+        def rate_limited_get(request, timeout=20):
+            attempts["count"] += 1
+            if attempts["count"] == 1:
+                raise HTTPError(
+                    request.full_url, 403, "secondary rate limit",
+                    {"Retry-After": "0"}, BytesIO(b'{"message":"You have exceeded a secondary rate limit."}'),
+                )
+            return self.fake_urlopen(request, timeout)
+
+        with patch("github_queue_store.urlopen", side_effect=rate_limited_get), patch("github_queue_store.time.sleep") as sleep:
+            snapshot = self.store.read()
+
+        self.assertEqual(snapshot.document, self.document)
+        self.assertEqual(attempts["count"], 2)
+        sleep.assert_called_once_with(0.0)
+
+    def test_permission_403_is_not_retried(self):
+        attempts = {"count": 0}
+
+        def forbidden_get(request, timeout=20):
+            attempts["count"] += 1
+            raise HTTPError(
+                request.full_url, 403, "forbidden",
+                {"X-RateLimit-Remaining": "4999"},
+                BytesIO(b'{"message":"Resource not accessible by integration"}'),
+            )
+
+        with patch("github_queue_store.urlopen", side_effect=forbidden_get), patch("github_queue_store.time.sleep") as sleep:
+            with self.assertRaisesRegex(GitHubAPIError, "HTTP 403"):
+                self.store.read()
+
+        self.assertEqual(attempts["count"], 1)
+        sleep.assert_not_called()
+
     def test_ambiguous_post_failure_is_not_retried(self):
         attempts = {"count": 0}
 
