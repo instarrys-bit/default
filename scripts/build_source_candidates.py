@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from collections import defaultdict
 from pathlib import Path
 from json_document_store import read_document, write_document
@@ -46,7 +47,17 @@ def build_matrix(assessments: dict, lineage: dict) -> dict:
                 "archived": bool(item.get("archived", False)),
                 "domain_fingerprints": set(),
             }
-        grouped[key]["domain_fingerprints"].update(item.get("domain_fingerprints", []))
+        raw_fingerprints = item.get("domain_fingerprints")
+        fingerprints_valid = (
+            isinstance(raw_fingerprints, list)
+            and len(raw_fingerprints) == len(set(raw_fingerprints))
+            and all(isinstance(value, str) and re.fullmatch(r"[0-9a-f]{32}", value) for value in raw_fingerprints)
+        )
+        if fingerprints_valid:
+            grouped[key]["domain_fingerprints"].update(raw_fingerprints)
+        else:
+            grouped[key]["fingerprints_complete"] = False
+        grouped[key].setdefault("fingerprints_complete", True)
         grouped[key]["files"].append({
             "url": item["url"],
             "parser": item["parser_candidate"],
@@ -55,7 +66,8 @@ def build_matrix(assessments: dict, lineage: dict) -> dict:
             "leading_dot_domain_count": item.get("leading_dot_domain_count", 0),
             "duplicate_domain_lines": item.get("duplicate_domain_lines", 0),
             "sha256": item.get("sha256"),
-            "domain_fingerprint_count": len(item.get("domain_fingerprints", [])),
+            "domain_fingerprint_count": len(raw_fingerprints) if fingerprints_valid else 0,
+            "domain_fingerprints_valid": fingerprints_valid,
             "drift": item.get("drift", {}),
         })
     candidates = []
@@ -65,9 +77,11 @@ def build_matrix(assessments: dict, lineage: dict) -> dict:
         item["policy_evidence_strong"] = bool(evidence & {"explicit_third_field", "README_RULE-SET_reference", "README_policy_reference"})
         item["total_domain_entries"] = sum(x["domain_count"] for x in item["files"])
         item["domain_fingerprint_count"] = len(item["domain_fingerprints"])
-        item["domain_set_sha256"] = __import__("hashlib").sha256(
-            "".join(sorted(item["domain_fingerprints"])).encode("ascii")
-        ).hexdigest()
+        item["fingerprints_complete"] = bool(item.get("fingerprints_complete", True))
+        item["domain_set_sha256"] = (
+            __import__("hashlib").sha256("".join(sorted(item["domain_fingerprints"])).encode("ascii")).hexdigest()
+            if item["fingerprints_complete"] else None
+        )
         item["file_count"] = len(item["files"])
         # Lineage and shared README references are provenance/correlation signals,
         # not blanket activation vetoes. Policy evidence, publisher status and
@@ -75,12 +89,18 @@ def build_matrix(assessments: dict, lineage: dict) -> dict:
         item["activation_eligible"] = (
             item["policy_evidence_strong"]
             and not item["archived"]
+            and item["fingerprints_complete"]
+            and item["domain_fingerprint_count"] >= 100
         )
         item["activation_blockers"] = []
         if not item["policy_evidence_strong"]:
             item["activation_blockers"].append("policy_evidence_not_strong")
         if item["archived"]:
             item["activation_blockers"].append("publisher_archived")
+        if not item["fingerprints_complete"]:
+            item["activation_blockers"].append("domain_fingerprints_missing_or_invalid")
+        elif item["domain_fingerprint_count"] < 100:
+            item["activation_blockers"].append("fewer_than_100_unique_domain_fingerprints")
         item["lineage_warning"] = (
             "lineage_not_verified" if item["lineage_status"] != "verified" else None
         )
@@ -153,7 +173,7 @@ def build_matrix(assessments: dict, lineage: dict) -> dict:
         "same_policy_domain_overlap": overlap_pairs,
         "cross_policy_conflicts": cross_policy_conflicts,
         "candidates": candidates,
-        "activation_policy": "This matrix never edits the active source registry. Two independent policy-evidenced publishers per policy remain mandatory; incomplete lineage and shared README references are recorded as warnings, not blanket vetoes.",
+        "activation_policy": "This matrix never edits the active source registry. Activation requires complete validated domain fingerprints, at least 100 unique domains per publisher, and two independent policy-evidenced publishers per policy. Missing fingerprints fail closed; empty sets are never treated as proof of independence.",
     }
 
 def render_report(data: dict) -> str:
