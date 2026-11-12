@@ -87,6 +87,16 @@ class ExecutionAdapterTests(unittest.TestCase):
         self.assertEqual(audit_program["orchestration"]["max_attempts"], 2)
         self.assertEqual(audit_adapter["retry"]["max_attempts"], 1)
 
+    def test_assessment_adapter_timeout_fits_scheduler_and_registered_lease(self):
+        registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
+        adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
+        program = next(item for item in registry["programs"] if item["id"] == "script_assess_sources")
+        adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "script_assess_sources")
+        self.assertGreaterEqual(adapter["timeout_seconds"], 1)
+        self.assertLessEqual(adapter["timeout_seconds"], 300)
+        self.assertLess(adapter["timeout_seconds"], program["orchestration"]["timeout_seconds"])
+        self.assertEqual(program["orchestration"]["timeout_seconds"], 900)
+
     def test_valid_minimal_inventory(self):
         root, ap, rp, _ = self.make_repo()
         self.assertEqual(validate_execution_adapters(root, ap, rp)["adapter_count"], 2)
