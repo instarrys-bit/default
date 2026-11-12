@@ -42,7 +42,7 @@
     },
     "source_assessor": {
       "path": "scripts/assess_sources.py",
-      "git_blob_sha": "e0129b2dc91c58f1642338d3d7e67db332d6e0bb"
+      "git_blob_sha": "915b7b30ed08a0916bdd26773e2af74d9a1a1944"
     },
     "task_queue_validator": {
       "path": "scripts/task_queue.py",
@@ -118,7 +118,7 @@
     },
     "assessment_artifact_verifier": {
       "path": "scripts/verify_assess_sources_artifacts.py",
-      "git_blob_sha": "64c6114f45bc1e6fd574b69f6e51d4e3af851572"
+      "git_blob_sha": "815f6ac6826c77a0b8290c769e5df0385518f4ce"
     },
     "release_manifest_validator": {
       "path": "scripts/validate_release_manifest.py",
@@ -134,7 +134,7 @@
     },
     "ruleset_builder": {
       "path": "scripts/build_rulesets.py",
-      "git_blob_sha": "e553ef7087c1b6cf3b04e2a468675ba875a51ab7"
+      "git_blob_sha": "953e4604af30bf65e22486e6d3b848c6f0cd6954"
     },
     "lifecycle_auditor": {
       "path": "scripts/lifecycle_audit.py",
@@ -174,7 +174,7 @@
     },
     "source_candidate_builder": {
       "path": "scripts/build_source_candidates.py",
-      "git_blob_sha": "0bb219944b39dd530de307ea467e9f1aba0e7b9d"
+      "git_blob_sha": "84215b7d5ac9ed72e89436d97785c55269686753"
     },
     "source_lineage_audit": {
       "path": "scripts/audit_source_lineage.py",
@@ -182,7 +182,7 @@
     },
     "source_activation": {
       "path": "scripts/auto_activate_sources.py",
-      "git_blob_sha": "59153ed15b66dd349884f27b8c2d761c0b8291a7"
+      "git_blob_sha": "da0fa1957347b5322e3bf23d75eaed303fa4b657"
     },
     "assessment_completion_relay_workflow": {
       "path": ".github/workflows/assessment-completion-relay.yml",
@@ -252,7 +252,7 @@
         "adapter_entry_sha256": "41f43d7111a397e05c245c7e98f8aa09c138c17f4c72a1a691d635e2125f05d7",
         "registry_entry_sha256": "3561ba8d23a1faed74507d01f49d84f84415af8643b17643570762b9008bc1b5",
         "source_path": "scripts/assess_sources.py",
-        "source_git_blob_sha": "e0129b2dc91c58f1642338d3d7e67db332d6e0bb",
+        "source_git_blob_sha": "915b7b30ed08a0916bdd26773e2af74d9a1a1944",
         "allowed_callers": [
           "workflow_automation_watchdog"
         ],
