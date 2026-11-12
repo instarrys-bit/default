@@ -128,17 +128,42 @@ class GitHubContentsQueueStore:
             except HTTPError as exc:
                 if exc.code == 409:
                     raise ConcurrentUpdate("queue snapshot append conflicted; re-read before retrying") from None
-                retryable = method == "GET" and exc.code in {429, 500, 502, 503, 504}
+                error_body = b""
+                try:
+                    error_body = exc.read(4096)
+                except OSError:
+                    pass
+                error_text = error_body.decode("utf-8", errors="replace").lower()
+                headers = exc.headers or {}
+                secondary_limited = (
+                    exc.code == 403
+                    and (
+                        headers.get("X-RateLimit-Remaining") == "0"
+                        or "secondary rate limit" in error_text
+                        or "rate limit exceeded" in error_text
+                        or "abuse detection" in error_text
+                    )
+                )
+                retryable = method == "GET" and (
+                    exc.code in {429, 500, 502, 503, 504} or secondary_limited
+                )
                 if retryable and attempt + 1 < max_get_attempts:
-                    retry_after = exc.headers.get("Retry-After") if exc.headers else None
+                    retry_after = headers.get("Retry-After")
+                    reset_at = headers.get("X-RateLimit-Reset") if secondary_limited else None
                     try:
-                        delay = float(retry_after) if retry_after else min(0.5 * (2 ** attempt), 4.0)
+                        if retry_after:
+                            delay = float(retry_after)
+                        elif reset_at and headers.get("X-RateLimit-Remaining") == "0":
+                            delay = max(0.0, float(reset_at) - time.time())
+                        else:
+                            delay = min(0.5 * (2 ** attempt), 4.0)
                     except (TypeError, ValueError):
                         delay = min(0.5 * (2 ** attempt), 4.0)
-                    time.sleep(max(0.0, min(delay, 10.0)))
+                    time.sleep(max(0.0, min(delay, 60.0)))
                     attempt += 1
                     continue
-                raise GitHubAPIError(f"GitHub Issues API returned HTTP {exc.code}") from None
+                detail = " (GitHub rate limit)" if secondary_limited else ""
+                raise GitHubAPIError(f"GitHub Issues API returned HTTP {exc.code}{detail}") from None
             except (URLError, TimeoutError, OSError):
                 if method == "GET" and attempt + 1 < max_get_attempts:
                     time.sleep(min(0.5 * (2 ** attempt), 4.0))
