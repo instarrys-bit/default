@@ -29,6 +29,28 @@ class CheckpointMemoryStore:
 
 
 class AssessSourcesTaskInputTests(unittest.TestCase):
+    def test_compact_history_without_ephemeral_fingerprints_is_not_a_cache_hit(self):
+        previous = {
+            "parser_version": assess_sources.PARSER_VERSION,
+            "sha256": "a" * 64,
+            "readme_policy_claims": ["DIRECT"],
+            "parser_candidate": "domain-only",
+            "exact_domain_count": 120,
+            "domain_fingerprints": [],
+        }
+        self.assertFalse(assess_sources.assessment_cache_hit(previous, "a" * 64, ["DIRECT"]))
+
+    def test_complete_ephemeral_fingerprints_can_be_reused(self):
+        previous = {
+            "parser_version": assess_sources.PARSER_VERSION,
+            "sha256": "a" * 64,
+            "readme_policy_claims": ["DIRECT"],
+            "parser_candidate": "domain-only",
+            "exact_domain_count": 2,
+            "domain_fingerprints": ["1" * 32, "2" * 32],
+        }
+        self.assertTrue(assess_sources.assessment_cache_hit(previous, "a" * 64, ["DIRECT"]))
+
     def checkpoint_fixture(self):
         from datetime import datetime, timedelta, timezone
         now = datetime.now(timezone.utc)
