@@ -11,7 +11,7 @@ from functools import lru_cache
 from pathlib import Path
 from datetime import datetime,timezone
 from domain_rule_engine import RuleIndex,load_domain_rules,inspect_suffix_scope
-from source_registry import validate_registry
+from source_registry import load_registry, validate_registry
 from review_cursor import snapshot_digest,resume_index,checkpoint
 from json_document_store import read_document,write_document,iter_document_records,append_document_records,clear_document_delta,document_delta_watermark
 from resource_lease_runtime import assert_resource_lease_for_repository_path
@@ -462,7 +462,7 @@ def _review_resource_metrics():
 def main():
     pipeline_started=time.monotonic()
     input_load_started=time.monotonic()
-    source_cfg=json.loads(POLICY.read_text(encoding="utf-8"))
+    source_cfg=load_registry(POLICY)
     protected=json.loads(PROTECTED.read_text(encoding="utf-8"))
     collected=read_document(CANDIDATES,"candidates",{"candidates":[],"sources":[]})
     config=CONFIG.read_text(encoding="utf-8")
