@@ -1576,6 +1576,7 @@ jobs:
               output.write("valid=true\n")
           PY
 
+      # Retry budget is finite; only a dead-lettered second recovery unlocks a fresh version-bound Discovery.
       - name: Enqueue source assessment after successful discovery workflow
         id: enqueue-assessment
         if: ${{ steps.resolve-discovery-run.outputs.run_id != '' && (steps.resolve-discovery-run.outputs.handoff_state == 'ready' || steps.resolve-discovery-run.outputs.handoff_state == 'assessment_retry_required') && steps.verify-discovery-artifact.outputs.valid == 'true' }}
