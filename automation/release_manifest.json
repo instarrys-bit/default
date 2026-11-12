@@ -110,7 +110,7 @@
     },
     "task_queue_store": {
       "path": "scripts/github_queue_store.py",
-      "git_blob_sha": "c8ad579841b3af88fc785187855c26b076ee0d78"
+      "git_blob_sha": "39f94b495b399b00f7b051893b5ad3aa3c6899fe"
     },
     "import_request_observations": {
       "path": "scripts/import_request_observations.py",
