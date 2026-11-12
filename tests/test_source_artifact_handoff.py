@@ -3,11 +3,12 @@ import json
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from resolve_source_artifacts import extract, resolve_task, verify_manifest
+from resolve_source_artifacts import extract, list_watchdog_runs, resolve_task, verify_manifest
 
 
 class SourceArtifactHandoffTests(unittest.TestCase):
@@ -19,6 +20,31 @@ class SourceArtifactHandoffTests(unittest.TestCase):
             files = [{"path": "runtime.json", "sha256": hashlib.sha256(payload).hexdigest()}]
             manifest_sha = hashlib.sha256(json.dumps(files, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
             verify_manifest(root, {"files": files, "artifact_sha256": manifest_sha}, "proof.json")
+
+    def test_watchdog_artifact_lookup_scans_beyond_first_two_pages(self):
+        calls = []
+
+        def fake_api_json(url, token):
+            page = int(url.rsplit("page=", 1)[1])
+            calls.append(page)
+            if page < 3:
+                return {"workflow_runs": [{"id": (page - 1) * 100 + i} for i in range(100)]}
+            return {"workflow_runs": [{"id": 201}]}
+
+        with patch("resolve_source_artifacts.api_json", side_effect=fake_api_json):
+            runs = list_watchdog_runs("owner/repo", "token")
+
+        self.assertEqual(calls, [1, 2, 3])
+        self.assertEqual(len(runs), 201)
+        self.assertEqual(runs[-1]["id"], 201)
+
+    def test_watchdog_artifact_lookup_fails_closed_at_pagination_limit(self):
+        with patch(
+            "resolve_source_artifacts.api_json",
+            return_value={"workflow_runs": [{"id": 1}] * 100},
+        ):
+            with self.assertRaisesRegex(ValueError, "10,000-run"):
+                list_watchdog_runs("owner/repo", "token")
 
     def test_resolver_uses_last_verified_assessment_when_newer_discovery_is_pending(self):
         older = {

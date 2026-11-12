@@ -40,6 +40,24 @@ def api_json(url,token):
     if not isinstance(value,dict): raise ValueError("GitHub API response is not an object")
     return value
 
+MAX_WATCHDOG_RUN_PAGES = 100
+WORKFLOW_RUN_PAGE_SIZE = 100
+
+
+def list_watchdog_runs(repo, token):
+    """Read the bounded 10,000-run Watchdog history needed to locate old Assessment artifacts."""
+    url = f"{API}/repos/{repo}/actions/workflows/automation-watchdog.yml/runs?branch=main&per_page={WORKFLOW_RUN_PAGE_SIZE}"
+    runs = []
+    for page in range(1, MAX_WATCHDOG_RUN_PAGES + 1):
+        response = api_json(url + f"&page={page}", token)
+        batch = response.get("workflow_runs")
+        if not isinstance(batch, list):
+            raise ValueError("Watchdog workflow-run page is malformed")
+        runs.extend(batch)
+        if len(batch) < WORKFLOW_RUN_PAGE_SIZE:
+            return runs
+    raise ValueError("Watchdog workflow history exceeds the bounded 10,000-run artifact lookup window")
+
 def extract(data,destination):
     destination.mkdir(parents=True,exist_ok=True)
     with zipfile.ZipFile(io.BytesIO(data)) as archive:
@@ -131,12 +149,7 @@ def main():
         if not discovery_doc.is_file(): discovery_doc=unique(discovery,"discovered_sources.json")
         discovery_root=discovery_doc.parent.parent
         if read_only_resource_digests(discovery_root,["sources/discovered_sources.json"])["sources/discovered_sources.json"]!=pred["artifact_sha256"]: raise ValueError("Discovery logical document digest mismatch")
-        runs=[]
-        url=f"{API}/repos/{repo}/actions/workflows/automation-watchdog.yml/runs?branch=main&per_page=100"
-        for page in range(1,3):
-            batch=api_json(url+f"&page={page}",token).get("workflow_runs",[])
-            runs.extend(batch)
-            if len(batch)<100: break
+        runs = list_watchdog_runs(repo, token)
         matches=[]
         for run in runs:
             if run.get("head_branch")!="main" or run.get("status")!="completed" or run.get("conclusion")!="success" or run.get("path")!=".github/workflows/automation-watchdog.yml": continue

@@ -149,6 +149,21 @@ class SourceHandoffPolicyTests(unittest.TestCase):
             "task_artifact_recovery",
         )
 
+    def test_queued_assessment_precedes_next_queued_discovery(self):
+        discovery = discovery_task(run_id="42417075149", status="QUEUED")
+        discovery["priority"] = 100
+        assessment = assessment_task(
+            "task_assessment_pending",
+            "42417075148",
+            status="QUEUED",
+            verified=False,
+        )
+        assessment["priority"] = 1
+        self.assertEqual(
+            select_source_worker_task([discovery, assessment]),
+            "task_assessment_pending",
+        )
+
     def test_verified_assessment_gate_blocks_other_work_without_artifact_recovery(self):
         discovery = discovery_task(run_id="42417075148")
         assessment = assessment_task("task_assessed", "42417075148")

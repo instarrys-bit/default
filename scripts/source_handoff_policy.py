@@ -158,7 +158,9 @@ def select_source_worker_task(tasks: list) -> str:
             if task.get("target_program_id") in {"workflow_source_discovery", "script_assess_sources"}
             and task.get("status") in {"CLAIMED", "VERIFYING"}
         ]
-        candidates = discovery_queued or assessment_queued or active_source or safe
+        # Assessment is the required predecessor of production. Never let a queued
+        # next-cycle Discovery starve an already-enqueued Assessment or its recovery.
+        candidates = assessment_queued or discovery_queued or active_source or safe
     if not candidates:
         return ""
     rank = {"QUEUED": 0, "CLAIMED": 1, "VERIFYING": 1, "SUCCEEDED": 2}
