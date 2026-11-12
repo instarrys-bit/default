@@ -98,7 +98,7 @@
     },
     "github_workflow_adapter": {
       "path": "scripts/github_workflow_adapter.py",
-      "git_blob_sha": "ca6c8498e8216852b560dbe380e64b68b47d9276"
+      "git_blob_sha": "7fa2e86c9d4af58c5deb41666f5f7778d5904ac0"
     },
     "publish_freshness_guard": {
       "path": "scripts/verify_publish_base.sh",
