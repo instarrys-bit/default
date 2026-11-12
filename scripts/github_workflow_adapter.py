@@ -29,6 +29,10 @@ class WorkflowDispatchRejected(WorkflowAPIError):
     """GitHub explicitly rejected a dispatch request; retry may be safe."""
 
 
+class WorkflowCommitMismatch(WorkflowAPIError):
+    """A correlated run used a ref revision other than the one authorized by its task."""
+
+
 class AmbiguousWorkflowRun(WorkflowAPIError):
     """More than one run matches a task correlation marker."""
 
@@ -238,7 +242,7 @@ def validate_run_head_sha(client: GitHubWorkflowClient, intent: dict, actual_sha
     if actual_sha == expected_sha:
         return "exact"
     if not isinstance(actual_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", actual_sha):
-        raise WorkflowAPIError("correlated workflow run commit SHA is invalid")
+        raise WorkflowCommitMismatch("correlated workflow run commit SHA is invalid")
     commit = client.get_commit(actual_sha)
     parents = commit.get("parents")
     files = commit.get("files")
@@ -255,7 +259,7 @@ def validate_run_head_sha(client: GitHubWorkflowClient, intent: dict, actual_sha
         or files[0].get("status") != "modified"
         or message != "Update durable automation task queue"
     ):
-        raise WorkflowAPIError(
+        raise WorkflowCommitMismatch(
             "correlated workflow run does not match the persisted workflow/ref/SHA identity; "
             "only the exact single-parent queue-intent commit is permitted"
         )
@@ -309,7 +313,10 @@ def find_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict | No
     }
     if any(run.get(key) != value for key, value in expected.items()):
         raise WorkflowAPIError("correlated workflow run does not match the persisted workflow/ref identity")
-    validate_run_head_sha(client, intent, run.get("head_sha"))
+    # The exact run title/workflow/ref identifies the child. Validate its SHA
+    # in inspect_correlated_run so a legitimate branch-advance race can be
+    # classified as stale and safely cancelled instead of becoming an opaque
+    # verifier error that strands the task lease.
     return run
 
 
@@ -340,7 +347,47 @@ def inspect_correlated_run(client: GitHubWorkflowClient, intent: dict,
         raise WorkflowAPIError("workflow run identity does not match the persisted dispatch intent")
     if listed is not None and run.get("head_sha") != listed.get("head_sha"):
         raise WorkflowAPIError("workflow run identity commit SHA changed between list and detail reads")
-    head_sha_relationship = validate_run_head_sha(client, intent, run.get("head_sha"))
+    try:
+        head_sha_relationship = validate_run_head_sha(client, intent, run.get("head_sha"))
+    except WorkflowCommitMismatch as exc:
+        run_status = run.get("status")
+        cancel_requested = False
+        cancel_error = None
+        if run_status != "completed":
+            try:
+                client.cancel_run(run_id)
+                cancel_requested = True
+            except (WorkflowAPIError, AttributeError, ValueError) as cancel_exc:
+                cancel_error = str(cancel_exc)[:500]
+            return {
+                "state": "pending",
+                "run_id": run_id,
+                "html_url": run.get("html_url"),
+                "run_status": run_status,
+                "run_created_at": run.get("created_at"),
+                "reason": "stale workflow ref detected; cancellation requested and resource fence retained until the exact run terminates",
+                "stale_identity": {
+                    "head_sha": run.get("head_sha"),
+                    "requested_head_sha": intent.get("requested_head_sha"),
+                    "reason": str(exc)[:500],
+                    "cancel_requested": cancel_requested,
+                    "cancel_error": cancel_error,
+                },
+            }
+        return {
+            "state": "stale",
+            "evidence": {
+                "run_id": run_id,
+                "html_url": run.get("html_url"),
+                "head_sha": run.get("head_sha"),
+                "requested_head_sha": intent.get("requested_head_sha"),
+                "status": run_status,
+                "conclusion": run.get("conclusion"),
+                "head_sha_relationship": "rejected",
+                "reason": str(exc)[:500],
+            },
+            "reason": "correlated workflow run used a stale or unauthorized main revision",
+        }
     if run.get("status") != "completed":
         return {"state": "pending", "run_id": run_id, "html_url": run.get("html_url"), "run_status": run.get("status"), "run_created_at": run.get("created_at")}
     conclusion = run.get("conclusion")
