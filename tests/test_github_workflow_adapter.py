@@ -325,8 +325,8 @@ class WorkflowAdapterTests(unittest.TestCase):
         }
         self.client.runs = [listed]
         self.client.run_detail[88] = dict(listed, status="completed", conclusion="success")
-        with self.assertRaisesRegex(WorkflowAPIError, "only the exact single-parent queue-intent commit"):
-            inspect_correlated_run(self.client, intent)
+        result = inspect_correlated_run(self.client, intent)
+        self.assertEqual(result["state"], "stale")
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
