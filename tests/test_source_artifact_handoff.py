@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from resolve_source_artifacts import extract, resolve_task, verify_manifest
+from resolve_source_artifacts import extract, list_assessment_producer_runs, resolve_task, verify_manifest
 
 
 class SourceArtifactHandoffTests(unittest.TestCase):
@@ -19,6 +19,44 @@ class SourceArtifactHandoffTests(unittest.TestCase):
             files = [{"path": "runtime.json", "sha256": hashlib.sha256(payload).hexdigest()}]
             manifest_sha = hashlib.sha256(json.dumps(files, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
             verify_manifest(root, {"files": files, "artifact_sha256": manifest_sha}, "proof.json")
+
+    def test_assessment_producer_scan_reaches_runs_beyond_first_200(self):
+        discovery_run_id = "42373818238"
+        pages = {
+            1: [
+                {"id": 43000000000 - index, "path": ".github/workflows/automation-watchdog.yml",
+                 "head_branch": "main", "status": "completed", "conclusion": "success"}
+                for index in range(100)
+            ],
+            2: [
+                {"id": 42999999900 - index, "path": ".github/workflows/automation-watchdog.yml",
+                 "head_branch": "main", "status": "completed", "conclusion": "success"}
+                for index in range(100)
+            ],
+            3: [
+                {"id": 42999999700, "path": ".github/workflows/automation-watchdog.yml",
+                 "head_branch": "main", "status": "completed", "conclusion": "success"},
+                {"id": 42373818238, "path": ".github/workflows/automation-watchdog.yml",
+                 "head_branch": "main", "status": "completed", "conclusion": "success"},
+                {"id": 42999999699, "path": ".github/workflows/automation-watchdog.yml",
+                 "head_branch": "main", "status": "completed", "conclusion": "failure"},
+            ],
+        }
+        requested_pages = []
+
+        def fetch_page(url, token):
+            page = int(url.rsplit("page=", 1)[1])
+            requested_pages.append(page)
+            return {"workflow_runs": pages[page]}
+
+        runs = list_assessment_producer_runs(
+            "instarrys-bit/default", "token", discovery_run_id, fetch_page=fetch_page
+        )
+        self.assertEqual(requested_pages, [1, 2, 3])
+        self.assertEqual(len(runs), 201)
+        self.assertIn(42999999700, [run["id"] for run in runs])
+        self.assertNotIn(42373818238, [run["id"] for run in runs])
+        self.assertNotIn(42999999699, [run["id"] for run in runs])
 
     def test_resolver_uses_last_verified_assessment_when_newer_discovery_is_pending(self):
         older = {
